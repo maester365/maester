@@ -65,7 +65,7 @@
             $intervalValue = 0L
             if ([long]::TryParse($InputValue, [ref]$intervalValue)) {
                 if ($intervalValue -eq [long]::MinValue) {
-                    return $null
+                    return [timespan]::Zero
                 }
 
                 return [timespan]::FromTicks([Math]::Abs($intervalValue))
@@ -107,7 +107,7 @@
             }
         }
 
-        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled')) {
+        if ($NormalizedAttributeName -in @('iscriticalsystemobject', 'enabledconnection', 'msds-passwordcomplexityenabled', 'msds-isrodc')) {
             $convertedBoolean = $false
             if ([bool]::TryParse($InputValue, [ref]$convertedBoolean)) {
                 return $convertedBoolean
@@ -184,6 +184,9 @@
                 }
             }
             'ntsecuritydescriptor' {
+                if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+                    return $null
+                }
                 try {
                     return ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $Value
                 }
@@ -225,7 +228,7 @@
     if ($normalizedAttributeName -in @('maxpwdage', 'minpwdage', 'lockoutduration', 'msds-lockoutduration', 'msds-maximumpasswordage', 'msds-minimumpasswordage')) {
         $intervalValue = [long]$Value
         if ($intervalValue -eq [long]::MinValue) {
-            return $null
+            return [timespan]::Zero
         }
 
         return [timespan]::FromTicks([Math]::Abs($intervalValue))

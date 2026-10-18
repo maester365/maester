@@ -40,6 +40,10 @@
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    if ($null -eq $adState.DaclEntries) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
+        return $null
+    }
     Write-Verbose "Filtering/counting dacl distinct object count"
 
     $daclEntries = @($adState.DaclEntries)

@@ -16,7 +16,7 @@
     The Application (Client) ID of the Maester application to add the federated credential to.
 
     .PARAMETER GitHubRepository
-    The GitHub repository name (without the organization). E.g. maester-tests.
+    The GitHub repository name (without the organization). E.g. maester-monitoring.
     If both -GitHubOrganization and -GitHubRepository are omitted and the current working
     directory is inside a git repository whose 'origin' remote points at GitHub, both
     values are auto-detected from `git remote get-url origin`. Specifying one without
@@ -78,7 +78,7 @@
         [Parameter(Mandatory = $false)]
         [string] $GitHubOrganization,
 
-        # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-tests.
+        # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-monitoring.
         # Auto-detected from the local git remote ('origin') when omitted.
         [Parameter(Mandatory = $false)]
         [string] $GitHubRepository,

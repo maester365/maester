@@ -770,11 +770,12 @@
         "MT.1211",
         "MT.1212",
         "MT.1213",
-        "MT.1223"
+        "MT.1223",
+        "MT.1225"
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 4
+      "recentCommits": 10
     },
     {
       "id": "Mynster9361",
@@ -1690,7 +1691,7 @@
         "MT.1007"
       ],
       "initials": "BR",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "mrdos010",
@@ -1715,6 +1716,28 @@
       ],
       "initials": "A",
       "recentCommits": 0
+    },
+    {
+      "id": "Dfrank77",
+      "github": "Dfrank77",
+      "name": "Darius Frank",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Dfrank77.png",
+      "firstContribution": "2026-10-15",
+      "testsAuthored": [
+        "MT.1224"
+      ],
+      "testsContributed": [],
+      "initials": "DF",
+      "recentCommits": 4
     },
     {
       "id": "Oppedijk",
@@ -2588,7 +2611,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 162
+      "recentCommits": 164
     }
   ],
   "attributions": {
@@ -5731,6 +5754,14 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1224": {
+      "author": "Dfrank77",
+      "contributors": []
+    },
+    "MT.1225": {
+      "author": "agnivesh",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": []
@@ -6086,7 +6117,7 @@
       "path": "/docs/tests/AD-CFG-21"
     },
     "AD-CFG-22": {
-      "title": "KDS root keys count should be retrievable",
+      "title": "Exactly one KDS root key should exist",
       "path": "/docs/tests/AD-CFG-22"
     },
     "AD-CFG-23": {
@@ -6766,11 +6797,11 @@
       "path": "/docs/tests/AD-PWDPOL-03"
     },
     "AD-PWDPOL-04": {
-      "title": "Password complexity requirement should be retrievable",
+      "title": "Password complexity should be enabled",
       "path": "/docs/tests/AD-PWDPOL-04"
     },
     "AD-PWDPOL-05": {
-      "title": "Password reversible encryption status should be retrievable",
+      "title": "Password reversible encryption should be disabled",
       "path": "/docs/tests/AD-PWDPOL-05"
     },
     "AD-PWDPOL-06": {
@@ -8716,6 +8747,14 @@
     "MT.1223": {
       "title": "Agent Identities should not have high-risk Microsoft Graph permissions (Preview).",
       "path": "/docs/tests/MT.1223"
+    },
+    "MT.1224": {
+      "title": "Microsoft-managed Conditional Access policies should not be left in report-only mode.",
+      "path": "/docs/next/tests/MT.1224"
+    },
+    "MT.1225": {
+      "title": "Users should not be able to create Agent Identity Blueprints.",
+      "path": "/docs/next/tests/MT.1225"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

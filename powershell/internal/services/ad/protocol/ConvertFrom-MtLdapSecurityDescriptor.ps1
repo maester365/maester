@@ -6,6 +6,10 @@ function ConvertFrom-MtLdapSecurityDescriptor {
         [byte[]] $RawSecurityDescriptor
     )
 
+    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+        return $null
+    }
+
     function Resolve-IdentityReference {
         param(
             [AllowNull()]

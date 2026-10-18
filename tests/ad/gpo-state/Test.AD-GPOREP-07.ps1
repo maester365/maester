@@ -43,6 +43,10 @@ if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     Write-Verbose "Filtering/counting gpo deny ace count"
 
     $gpoReports = $null

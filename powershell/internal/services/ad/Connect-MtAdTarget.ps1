@@ -15,6 +15,8 @@ function Connect-MtAdTarget {
         [ValidateSet('Auto', 'Ldaps', 'StartTls')]
         [string]$TlsMode = 'Auto',
 
+        [switch]$SkipCertificateCheck,
+
         [switch]$PassThru
     )
 
@@ -135,7 +137,8 @@ function Connect-MtAdTarget {
             [string]$ConfigurationNamingContext = $null,
             [string]$SchemaNamingContext = $null,
             [string]$SelectedTlsMode = $null,
-            [string]$AuthenticationMode = $null
+            [string]$AuthenticationMode = $null,
+            [switch]$SkipCertificateCheck
         )
 
         return [ordered]@{
@@ -156,6 +159,7 @@ function Connect-MtAdTarget {
             SchemaNamingContext        = $SchemaNamingContext
             TlsMode                    = $SelectedTlsMode
             AuthenticationMode         = $AuthenticationMode
+            SkipCertificateCheck       = $SkipCertificateCheck.IsPresent
             Capabilities               = [ordered]@{
                 SupportsPaging             = $true
                 SupportsRangeRetrieval     = $true
@@ -310,7 +314,9 @@ function Connect-MtAdTarget {
             [string]$AuthenticationMode,
 
             [Parameter(Mandatory)]
-            [string]$RequestedTlsMode
+            [string]$RequestedTlsMode,
+
+            [switch]$SkipCertificateCheck
         )
 
     $lastException = $null
@@ -357,6 +363,10 @@ function Connect-MtAdTarget {
                     $connectionParameters['Credential'] = $Credential
                 }
 
+                if ($SkipCertificateCheck.IsPresent) {
+                    $connectionParameters['SkipCertificateCheck'] = $true
+                }
+
                 $connection = New-MtLdapConnection @connectionParameters
                 $rootDse = Get-MtLdapRootDse -Connection $connection
                 $targetMetadata = Get-MtAdTargetState -Connection $connection -RootDse $rootDse -ConnectedServer $Server -TlsMode $tlsAttempt.Name -AuthenticationMode $AuthenticationMode
@@ -397,9 +407,9 @@ function Connect-MtAdTarget {
     }
     if ($allCertErrors.Count -eq $allExceptions.Count -and $allExceptions.Count -gt 0) {
         if ($tlsAttempts.Count -ge 2) {
-            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+            Write-Verbose 'Both LDAPS and StartTLS failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using Connect-Maester -ActiveDirectorySkipCertificateCheck for test environments only.'
         } else {
-            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using -SkipCertificateCheck for test environments only.'
+            Write-Verbose 'LDAPS connection failed due to certificate issues. Consider: (1) installing a valid server-auth certificate on the DC, (2) trusting the DC certificate, or (3) using Connect-Maester -ActiveDirectorySkipCertificateCheck for test environments only.'
         }
     }
 
@@ -504,7 +514,7 @@ function Connect-MtAdTarget {
         }
 
         Write-Verbose "Resolved target server: '$targetServer'. Attempting AD connection with AuthMode '$authenticationMode' and TlsMode '$TlsMode'."
-        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode
+        $resolvedConnection = Connect-MtAdResolvedTarget -Server $targetServer -Credential $ActiveDirectoryCredential -AuthenticationMode $authenticationMode -RequestedTlsMode $TlsMode -SkipCertificateCheck:$SkipCertificateCheck
         $adConnectionState = Get-MtAdSessionState -Connected $true `
             -ResolvedForest $resolvedConnection.Metadata.ResolvedForest `
             -ResolvedDomain $resolvedConnection.Metadata.ResolvedDomain `
@@ -513,7 +523,8 @@ function Connect-MtAdTarget {
             -ConfigurationNamingContext $resolvedConnection.Metadata.ConfigurationNamingContext `
             -SchemaNamingContext $resolvedConnection.Metadata.SchemaNamingContext `
             -SelectedTlsMode $resolvedConnection.Metadata.TlsMode `
-            -AuthenticationMode $resolvedConnection.Metadata.AuthenticationMode
+            -AuthenticationMode $resolvedConnection.Metadata.AuthenticationMode `
+            -SkipCertificateCheck:$SkipCertificateCheck
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedForest) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryForest)) {
             throw 'Explicit selector values must resolve to the same forest/domain/server.'

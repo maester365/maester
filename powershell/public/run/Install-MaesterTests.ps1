@@ -1,16 +1,20 @@
 ﻿function Install-MaesterTests {
     <#
     .SYNOPSIS
-    Prepares a folder for your own Maester tests and configuration.
+    Not needed from Maester 3.0. Prepares a folder for your own Maester tests and configuration.
 
     .DESCRIPTION
     From Maester 3.0 the tests that ship with Maester run from the module itself, so updating the module
-    updates them and nothing needs to be copied. Install-MaesterTests prepares a folder for your custom
-    tests and configuration: it writes custom/README.md and a starter maester-config.json when they are
-    missing. It never writes a test file and never overwrites an existing file, so it is safe to call
-    on every pipeline run.
+    updates them, and Maester needs no tests folder or repository: Invoke-Maester runs the built-in tests
+    from any folder. You can remove Install-MaesterTests from your scripts and pipelines.
 
-    Run Invoke-Maester -Path <folder> to run the built-in tests together with the custom tests in it.
+    It is kept so that existing scripts keep working. It writes custom/README.md and a starter
+    maester-config.json when they are missing. It never writes a test file and never overwrites an
+    existing file, so it is safe to call on every pipeline run.
+
+    To add your own tests, run New-MtTest, which creates the custom folder. To change settings, create a
+    maester-config.json with only the settings you change. Run Invoke-Maester -Path <folder> to run the
+    built-in tests together with the custom tests and config in that folder.
 
     .PARAMETER Path
     The folder to prepare. Defaults to the current directory.
@@ -20,9 +24,9 @@
     Pester-format custom tests.
 
     .EXAMPLE
-    Install-MaesterTests -Path ./maester-tests
+    Install-MaesterTests -Path ./maester
 
-    Creates ./maester-tests with custom/README.md and maester-config.json.
+    Creates ./maester with custom/README.md and maester-config.json.
 
     .LINK
     https://maester.dev/docs/commands/Install-MaesterTests
@@ -73,4 +77,5 @@
         $message = 'Run Invoke-Maester to start testing.'
     }
     Write-Host "Maester is ready. The built-in tests run from the module; put your own tests in $customFolder.`n$message" -ForegroundColor Green
+    Write-Host 'Install-MaesterTests is no longer needed: Invoke-Maester runs the built-in tests from any folder. See https://maester.dev/docs/upgrading-from-2x' -ForegroundColor DarkGray
 }

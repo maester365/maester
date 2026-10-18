@@ -48,9 +48,10 @@ function Get-MtADGpoState {
         $protocolConnection = $null
         try {
             $protocolTargetParameters = @{
-                AuthMode = $__MtSession.ADConnection.RequestedAuthMode
-                TlsMode  = $__MtSession.ADConnection.RequestedTlsMode
-                PassThru = $true
+                AuthMode             = $__MtSession.ADConnection.RequestedAuthMode
+                TlsMode              = $__MtSession.ADConnection.RequestedTlsMode
+                SkipCertificateCheck = [bool]$__MtSession.ADConnection.SkipCertificateCheck
+                PassThru             = $true
             }
             if ($__MtSession.ADConnection.RequestedServer) {
                 $protocolTargetParameters['ActiveDirectoryServer'] = $__MtSession.ADConnection.RequestedServer
@@ -81,7 +82,14 @@ function Get-MtADGpoState {
                 $gpos = @(Get-MtLdapGpo -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 foreach ($gpo in $gpos) {
                     $flags = [int]$gpo.Flags
-                    $gpo | Add-Member -NotePropertyName GpoStatus -NotePropertyValue ($flags -band 3) -Force
+                    $rawFlags = $flags -band 3
+                    $mappedStatus = switch ($rawFlags) {
+                        0 { 3 }   # all enabled -> AllEnabled
+                        1 { 1 }   # user disabled -> UserDisabled
+                        2 { 2 }   # computer disabled -> ComputerDisabled
+                        3 { 0 }   # all disabled -> AllDisabled
+                    }
+                    $gpo | Add-Member -NotePropertyName GpoStatus -NotePropertyValue $mappedStatus -Force
                     $gpo | Add-Member -NotePropertyName CreationTime -NotePropertyValue $gpo.Created -Force
                     $gpo | Add-Member -NotePropertyName ModificationTime -NotePropertyValue $gpo.Modified -Force
                 }
@@ -93,6 +101,8 @@ function Get-MtADGpoState {
             }
 
             $parsedGpoLinks = [System.Collections.Generic.List[object]]::new()
+            $domainLinksFailed = $false
+            $siteLinksFailed = $false
             try {
                 $linkContainers = @(Get-MtLdapGpoLink -Connection $protocolConnection -SearchBase $protocolRootDse.DefaultNamingContext)
                 $gpoState['LinkContainers'] = $linkContainers
@@ -123,6 +133,9 @@ function Get-MtADGpoState {
             }
             catch {
                 Write-Verbose "Could not collect domain and OU GPO links: $($_.Exception.Message)"
+                $domainLinksFailed = $true
+                $gpoState['LinkContainers'] = $null
+                $gpoState['GPOLinks'] = $null
             }
 
             try {
@@ -155,18 +168,28 @@ function Get-MtADGpoState {
             }
             catch {
                 Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
+                $siteLinksFailed = $true
+                $gpoState['SiteContainers'] = $null
             }
-            $gpoState['GPOLinks'] = @($parsedGpoLinks)
+            if (-not $domainLinksFailed -and -not $siteLinksFailed) {
+                $gpoState['GPOLinks'] = @($parsedGpoLinks)
+            }
 
             try {
                 $applyGroupPolicyGuid = 'edacfd8f-ffb3-11d1-b41d-00a0c968f939'
                 $gpoReports = foreach ($gpo in $gpoState.GPOs) {
                     $gpoGuid = ([string]$gpo.Id).Trim('{}')
-                    $gpoLinks = @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
-                    $descriptor = $gpo.ntSecurityDescriptor
-                    if ($descriptor -is [byte[]]) {
-                        $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
-                    }
+                    $gpoLinks = if ($null -ne $gpoState.GPOLinks) {
+                        @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
+                    } else { $null }
+                $descriptor = $gpo.ntSecurityDescriptor
+                if ($descriptor -is [byte[]]) {
+                    $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
+                }
+
+                $hasDenyAce = $null
+                $hasApplyGroupPolicyAce = $null
+                if ($null -ne $descriptor) {
                     $access = @($descriptor.Access)
                     $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
                     $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
@@ -175,6 +198,7 @@ function Get-MtADGpoState {
                                 ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
                                 (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
                         } | Select-Object -First 1)
+                }
 
                     $hasVersionMismatch = $null
                     $cpasswordFound = $null
@@ -197,12 +221,14 @@ function Get-MtADGpoState {
                         Write-Verbose "Could not collect SYSVOL content for GPO '$gpoGuid': $($_.Exception.Message)"
                     }
 
-                    $enforcementEnabled = [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    $enforcementEnabled = if ($null -ne $gpoLinks) {
+                        [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
+                    } else { $null }
                     [PSCustomObject][ordered]@{
                         GPOId                  = $gpo.Id
                         GPOName                = $gpo.DisplayName
                         Name                   = $gpo.DisplayName
-                        DisabledLinks          = @($gpoLinks | Where-Object { $_.IsDisabled }).Count
+                        DisabledLinks          = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
                         HasVersionMismatch     = $hasVersionMismatch
                         CpasswordFound         = $cpasswordFound
                         DefaultPasswordFound   = $defaultPasswordFound

@@ -255,3 +255,5 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1216](./MT.1216.md) | Ensure macOS compliance policy requires a Defender machine risk score level. | Medium | Intune | Device compliance |
 | [MT.1217](./MT.1217.md) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles. | High | Intune | Device enrollment |
 | [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | High | Entra ID | Agent identities |
+| [MT.1224](./MT.1224.md) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Low | Entra ID | Conditional Access |
+| [MT.1225](./MT.1225.md) | Users should not be able to create Agent Identity Blueprints. | Medium | Entra ID | Agent identities |

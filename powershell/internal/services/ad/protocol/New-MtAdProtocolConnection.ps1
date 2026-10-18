@@ -43,5 +43,9 @@ function New-MtAdProtocolConnection {
         $ldapConnectionParameters['Credential'] = $__MtSession.ADCredential
     }
 
+    if ($ProtocolEvidence.SkipCertificateCheck) {
+        $ldapConnectionParameters['SkipCertificateCheck'] = $true
+    }
+
     return New-MtLdapConnection @ldapConnectionParameters
 }

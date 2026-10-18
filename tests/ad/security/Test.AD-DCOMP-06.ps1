@@ -1,12 +1,16 @@
 ﻿function Test-MtAdComputerStaleEnabledCount {
     <#
     .SYNOPSIS
-    Counts enabled computers that have not logged on for 180 days or more.
+    Identifies enabled computers that have not logged on for 180 days or more.
 
     .DESCRIPTION
     Stale enabled computer accounts represent a security risk as they can be
     compromised and reactivated by attackers. This test identifies enabled
     computers that have not authenticated to the domain for 180 days or more.
+
+    Because nearly every domain has at least one stale enabled computer, this
+    test returns an Investigate result (rather than Pass/Fail) so the count
+    and details are surfaced for review without causing a failing audit.
 
     Security Risk:
     - Stale enabled accounts can be reactivated and used for lateral movement
@@ -17,7 +21,7 @@
     .EXAMPLE
     Test-MtAdComputerStaleEnabledCount
 
-    Returns $true if computer data is accessible.
+    Returns the count of stale enabled computers and lists details for review.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdComputerStaleEnabledCount
@@ -52,6 +56,10 @@
     Write-Verbose "Filtering/counting computer stale enabled count"
 
     $computers = $adState.Computers
+    if ($null -eq $computers) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
     $staleThreshold = (Get-Date).AddDays(-180)
 
     # Find enabled computers that haven't logged on in 180+ days
@@ -65,7 +73,6 @@
     $neverLoggedOn = ($staleEnabledComputers | Where-Object { $null -eq $_.lastLogonDate } | Measure-Object).Count
     $notLoggedIn180Days = $staleCount - $neverLoggedOn
 
-    $testResult = $staleCount -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -99,8 +106,8 @@
     $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
 
-    return $testResult
+    return $null
 }

@@ -39,7 +39,7 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-CFG-19](./AD-CFG-19.md) | Intermediate CA details should be retrievable | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20.md) | CRL distribution points count should be retrievable | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21.md) | NTAuth certificates count should be retrievable | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22.md) | KDS root keys count should be retrievable | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22.md) | Exactly one KDS root key should exist | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23.md) | SMTP site links count should be retrievable | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24.md) | IP site links count should be retrievable | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01.md) | Computer disabled count should be retrievable | Info | Active Directory | Computers |
@@ -209,8 +209,8 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-PWDPOL-01](./AD-PWDPOL-01.md) | Password history count should be retrievable | Info | Active Directory | Password policy |
 | [AD-PWDPOL-02](./AD-PWDPOL-02.md) | Password maximum age should be retrievable | Info | Active Directory | Password policy |
 | [AD-PWDPOL-03](./AD-PWDPOL-03.md) | Password minimum length should be retrievable | Info | Active Directory | Password policy |
-| [AD-PWDPOL-04](./AD-PWDPOL-04.md) | Password complexity requirement should be retrievable | Info | Active Directory | Password policy |
-| [AD-PWDPOL-05](./AD-PWDPOL-05.md) | Password reversible encryption status should be retrievable | Info | Active Directory | Password policy |
+| [AD-PWDPOL-04](./AD-PWDPOL-04.md) | Password complexity should be enabled | Medium | Active Directory | Password policy |
+| [AD-PWDPOL-05](./AD-PWDPOL-05.md) | Password reversible encryption should be disabled | Medium | Active Directory | Password policy |
 | [AD-PWDPOL-06](./AD-PWDPOL-06.md) | Account lockout duration should be retrievable | Info | Active Directory | Password policy |
 | [AD-PWDPOL-07](./AD-PWDPOL-07.md) | Account lockout threshold should be retrievable | Info | Active Directory | Password policy |
 | [AD-REPL-01](./AD-REPL-01.md) | No replication connections should be disabled | Low | Active Directory | Replication |

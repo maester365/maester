@@ -17,8 +17,8 @@ built-in tests.
 ## Before you start
 
 - Maester is installed and you can run `Connect-Maester`. See the [installation guide](../installation.md).
-- You have a folder where you run Maester from. `Install-MaesterTests` creates one with a `custom` folder in it.
-  Your tests go in `custom`, and updating Maester never touches that folder.
+- You have a folder for your own tests, for example `~/maester`. Any empty folder works. Your tests go in a `custom`
+  folder inside it, which `New-MtTest` creates, and updating Maester never touches it.
 
 ## Step 1: Create the test
 
