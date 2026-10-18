@@ -132,7 +132,8 @@ The sketch below is the opening screen in the plain layout; a console with the r
 
 ### Boxes in the main column
 
-On a console with at least 34 rows of content (35 with the status bar) and 78 columns for the main column, the
+On a console of at least 35 rows (the dashboard keeps the last row for the status bar, shown or not, so that is 34
+rows of content) and 78 columns for the main column, the
 phases are stops on a track and every other part of the main column is a box like the panels of the right column,
 with its name in the top border. The owner picked this from mockups in October 2026 (Track, Coloured boxes, flow
 on), after a reference animation with boxed panels in their own colours and dots running along the lines between them.
