@@ -63,6 +63,28 @@
         @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 1
     }
 
+    It 'Reports multifactor authentication and terms of use joined with OR' {
+        $policy = New-GrantPolicy @{ builtInControls = @('mfa'); operator = 'OR'; termsOfUse = @('11111111-1111-1111-1111-111111111111') }
+        $problems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
+        $problems | Should -HaveCount 1
+        $problems[0] | Should -Be 'grant operator is OR'
+    }
+
+    It 'Passes multifactor authentication and terms of use joined with AND' {
+        $policy = New-GrantPolicy @{ builtInControls = @('mfa'); operator = 'AND'; termsOfUse = @('11111111-1111-1111-1111-111111111111') }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 0
+    }
+
+    It 'Reports multifactor authentication and a custom authentication factor joined with OR' {
+        $policy = New-GrantPolicy @{ builtInControls = @('mfa'); operator = 'OR'; customAuthenticationFactors = @('custom-factor') }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 1
+    }
+
+    It 'Reports a block combined with terms of use' {
+        $policy = New-GrantPolicy @{ builtInControls = @('block'); operator = 'AND'; termsOfUse = @('11111111-1111-1111-1111-111111111111') }
+        @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 1
+    }
+
     It 'Passes a policy without grant controls' {
         $policy = @{ displayName = 'Session policy'; state = 'enabled' } | ConvertTo-Json | ConvertFrom-Json
         @(Get-MtCisConditionalAccessGrantProblem -Policy $policy) | Should -HaveCount 0

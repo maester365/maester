@@ -7,6 +7,7 @@
         A block cannot be combined with other grant controls. When a policy requires multifactor authentication or an
         authentication strength together with another grant control, the grant operator must be AND, because with OR
         one control alone would satisfy the policy.
+        Terms of use and custom authentication factors count as grant controls too.
 
     .PARAMETER Policy
         A Conditional Access policy as returned by Get-MtConditionalAccessPolicy.
@@ -29,7 +30,8 @@
     $grant = $Policy.grantControls
     $builtIn = @($grant.builtInControls | Where-Object { $_ })
     $strength = [bool]$grant.authenticationStrength.id
-    $controlCount = $builtIn.Count + [int]$strength
+    $otherControls = @($grant.termsOfUse | Where-Object { $_ }) + @($grant.customAuthenticationFactors | Where-Object { $_ })
+    $controlCount = $builtIn.Count + [int]$strength + $otherControls.Count
     $problems = [System.Collections.Generic.List[string]]::new()
     if ($builtIn -contains 'block' -and $controlCount -gt 1) {
         $problems.Add('block is combined with other grant controls')
