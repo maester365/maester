@@ -22,7 +22,7 @@ GitLab for personal projects (Free):
 
 --->
 
-## Set up your Maester tests project (group) in GitLab
+## Set up a GitLab project for Maester
 
 ### Pre-requisites
 
@@ -35,27 +35,14 @@ GitLab for personal projects (Free):
 - Option C: GitLab Dedicated (Self-Host)
 -->
 
-### Create a blank new project to always use the latest available Maester tests
+### Create a blank project for the Maester pipeline
 
 - On the left sidebar, at the top, select 'Create new ()' and 'New project/repository'.
 - Select [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
-  - **Repository name**: E.g. `maester-tests`
-  - **Private**: Select this option to keep your tests private
+  - **Repository name**: E.g. `maester-monitoring`
+  - **Private**: Select this option to keep your pipeline and results private
 
-The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The project only holds the pipeline and, optionally, your own custom tests (in a `Custom` folder) and `maester-config.json`.
-
-<!--
-### 2. Create a new project and import the Maester Tests repository, to keep updated yourself
- - private-tests = ToDo
-
-1. On the left sidebar, at the top, select Create new () and New project/repository.
-2. Select Import project.
-3. Select the GitHub tab and Authenticate with GitHub
-4. ... https://github.com/maester365/maester-tests...
-
-- [Create a project from a built-in template](https://docs.gitlab.com/ee/user/project/index.html#create-a-project-from-a-built-in-template)
-
--->
+The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The project only holds the pipeline. Later, you can add a `maester-config.json` to change settings (see [Configuration](../configuration/overview.md)) and a `custom` folder for your own tests (see [Writing custom tests](../writing-tests/index.mdx)).
 
 There are many ways to authenticate with Microsoft Entra from GitHub Actions. We recommend using [**workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) as it is more secure, requires less maintenance and is the easiest to set up.
 
@@ -78,7 +65,7 @@ If you’re unable to use more advanced options like certificates stored in Azur
 - Fill in the following fields
   - **Issuer**: Your GitLab organization url or standard gitlab url `https://gitlab.com`
   - **Type**: Select **Explicit subject identifier**
-  - **Value**: `project_path:<mygroup>/<myproject>:ref_type:branch:ref:<branch>` E.g. `project_path:maester/maester-tests:ref_type:branch:ref:main`
+  - **Value**: `project_path:<mygroup>/<myproject>:ref_type:branch:ref:<branch>` E.g. `project_path:maester/maester-monitoring:ref_type:branch:ref:main`
   - **Name**: Credential name E.g. `gitlab-federated-identity`
   - **Description**: Credential name E.g. `GitLab service account federated identity`
   - **Audience**: Your GitLab organization url or standard gitlab url `https://gitlab.com`
@@ -89,7 +76,7 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 ### Create GitLab variables
 
-- Open your `maester-tests` GitLab project and go to **Settings**
+- Open your Maester GitLab project and go to **Settings**
 - Select **CI/CD** > **Variables** > **CI/CD Variables**
 - Add the three secrets listed below by selecting **Add variable**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -269,7 +256,7 @@ Client secret authentication is not recommended for long-term automation, and we
 
 ### Create GitLab variables
 
-- Open your `maester-tests` GitLab project and go to **Settings**
+- Open your Maester GitLab project and go to **Settings**
 - Select **CI/CD** > **Variables** > **CI/CD Variables**
 - Add the three secrets listed below by selecting **Add variable**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -440,7 +427,7 @@ run_maester_tests_inline:
 
 To manually run the Maester tests workflow
 
-- Open your `maester-tests` GitLab project and go to **Build**
+- Open your Maester GitLab project and go to **Build**
 - Select **Piplines** from the left pane
 - Select **New pipline** on the right top button
 - And again **New pipline** to run new pipeline
@@ -455,7 +442,7 @@ Pipeline schedules are ...
 
 ## Viewing the test results
 
-- Open your `maester-tests` GitLab project and go to **Build**
+- Open your Maester GitLab project and go to **Build**
 - Select **Artifacts** from the left pane
 - Search a artifact to view the results e.g. `run_maester_tests_*`
 - Select browse on the right to open the folder `test-results`
