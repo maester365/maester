@@ -69,69 +69,13 @@ function Get-MtRoleMember {
         [string]$MemberStatus
     )
 
-    function Get-UsersInRole {
-        [CmdletBinding()]
-        param(
-            [string]$Uri,
-            [string]$RoleId,
-            [string]$Filter,
-            [ValidateSet('Eligible', 'Active')]
-            [string]$RoleAssignmentType)
-
-        if ($Filter) {
-            $Filter = "roleDefinitionId eq '$RoleId' and $Filter"
-        } else {
-            $Filter = "roleDefinitionId eq '$RoleId'"
-        }
-
-        $params = @{
-            ApiVersion      = 'v1.0'
-            RelativeUri     = $Uri
-            Filter          = $Filter
-            QueryParameters = @{
-                expand = 'principal'
-            }
-        }
-
-        $dirAssignments = Invoke-MtGraphRequest @params -DisableCache
-
-        $assignments = @()
-        if ($dirAssignments.id.Count -eq 0) {
-            Write-Verbose 'No role assignments found'
-            return $assignments
-        }
-        $assignments += @($dirAssignments.principal)
-
-        $groups = $assignments | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.group' }
-        $groups | ForEach-Object {
-            #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-            # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
-            $groupMembers = Get-MtGroupMember -GroupId $_.id
-            if ($null -ne $groupMembers) {
-                $assignments += $groupMembers
-            }
-        }
-
-        # Append the type of assignment
-        $assignments | ForEach-Object {
-            $_ | Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $RoleAssignmentType -Force
-        }
-        return $assignments
-    }
-
     # Ensure the role lookup tables are built. Guards against the module-load-time
     # assignment of $script:MtRoles not persisting into the Pester test-execution
     # context (the cause of the MT.1020 NullReferenceException). See Get-MtRoleInfo.
     Initialize-MtRoleDefinition
 
     Write-Verbose "Getting members for RoleId: $RoleId, Role: $Role, MemberStatus: $MemberStatus"
-    if (-not $MemberStatus -or $MemberStatus -eq 'EligibleAndActive') {
-        $Eligible = $Active = $true
-    } elseif ($MemberStatus -eq 'Eligible') {
-        $Eligible = $true
-    } elseif ($MemberStatus -eq 'Active') {
-        $Active = $true
-    }
+    if (-not $MemberStatus) { $MemberStatus = 'EligibleAndActive' }
 
     if ($Role) {
         # Resolve role names to GUIDs via MtRoleDefinition.ToString(), then explicitly cast to [guid[]]
@@ -139,37 +83,29 @@ function Get-MtRoleMember {
         $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $pim = $EntraIDPlan -eq 'P2' -or $EntraIDPlan -eq 'Governance'
+    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal -DisableCache).Assignments
 
     foreach ($directoryRoleId in $RoleId) {
         $assignments = @()
-        if ($pim) {
-            try {
-                if ($Active) {
-                    $uri = 'roleManagement/directory/roleAssignmentScheduleInstances'
-                    # assignmentType eq 'Assigned' filters out eligible users that have temporarily activated the role
-                    $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active -Filter "assignmentType eq 'Assigned'"
-                }
-                if ($Eligible) {
-                    $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
-                    $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
-                }
-            } catch {
-                # subscribedSkus can report a P2 service plan that the PIM APIs do not accept
-                if ($Active -and $_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
-                    Write-Verbose 'PIM APIs require Entra ID P2 or Governance in this tenant. Using role assignments instead.'
-                    $pim = $false
-                    $assignments = @()
-                } else {
-                    throw
+        foreach ($roleAssignment in $roleAssignments | Where-Object { $_.roleDefinitionId -eq "$directoryRoleId" }) {
+            $principal = $roleAssignment.principal
+            if ($null -eq $principal) { continue }
+
+            $members = @($principal)
+            if ($principal.'@odata.type' -eq '#microsoft.graph.group') {
+                #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
+                # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
+                $groupMembers = Get-MtGroupMember -GroupId $principal.id
+                if ($null -ne $groupMembers) {
+                    $members += $groupMembers
                 }
             }
-        }
-        if (-not $pim -and $Active) {
-            #Free or P1 tenant (PIM APIs cannot be called on non-P2 tenants)
-            $uri = 'roleManagement/directory/roleAssignments'
-            $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
+
+            # Append the type of assignment
+            foreach ($member in $members) {
+                $member | Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $roleAssignment.AssignmentType -Force
+            }
+            $assignments += $members
         }
 
         $assignments | Sort-Object id -Unique

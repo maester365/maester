@@ -1,6 +1,6 @@
 BeforeAll {
     $script:manifest = (Resolve-Path "$PSScriptRoot/../../../Maester.psd1").Path
-    $script:folder = Join-Path $TestDrive 'suite'
+    $script:folder = Join-Path $TestDrive 'suite/Custom'
     $null = New-Item -ItemType Directory -Path $script:folder -Force
     @'
 Describe 'Sample' -Tag 'Sample' {
@@ -41,7 +41,7 @@ Describe 'Sample' -Tag 'Sample' {
         NoPester        = 'NOPESTER'
     }
     # A copy of the test folder with a root config and a tenant file that excludes one test and disables another.
-    $script:tenantFolder = Join-Path $TestDrive 'tenant'
+    $script:tenantFolder = Join-Path $TestDrive 'tenant/Custom'
     $null = New-Item -ItemType Directory -Path $script:tenantFolder -Force
     Copy-Item -Path (Join-Path $script:folder 'Sample.Tests.ps1') -Destination $script:tenantFolder
     '{}' | Set-Content (Join-Path $script:tenantFolder 'maester-config.json')

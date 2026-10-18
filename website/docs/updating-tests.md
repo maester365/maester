@@ -5,7 +5,7 @@ title: 🧪 Updating tests
 # Updating your Maester tests
 
 The Maester team adds new tests over time. From Maester 3.0 the built-in tests ship inside the Maester module, so
-**updating the module updates the tests**. There is nothing to copy into your tests folder.
+**updating the module updates the tests**. You don't need a tests folder, and there is nothing to copy.
 
 ### Step 1: Update the Maester module
 
@@ -36,10 +36,12 @@ New tests run automatically. If you hold new tests back until you have reviewed 
 ### Upgrading from Maester 2.x
 
 In 2.x, `Install-MaesterTests` copied the tests into your folder and `Update-MaesterTests` replaced the copies.
-In 3.0 those copies are no longer used: Maester recognises them, does not run them, and warns. Remove them once:
+In 3.0 those copies are no longer used: Maester recognises them, does not run them, and warns. If the folder
+holds no custom tests and you never changed its `maester-config.json`, you can delete the whole folder. Otherwise
+remove the copies once:
 
 ```powershell
-cd maester-tests
+cd ./maester-tests            # the folder Install-MaesterTests created in 2.x
 Update-MaesterTests -WhatIf   # list what would be removed
 Update-MaesterTests           # remove the copies (asks for confirmation; add -Force to skip it)
 ```
