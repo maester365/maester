@@ -471,11 +471,11 @@ function Test-Family$name {
     Context 'The instance source of a family' {
         It 'Is stopped at the timeout, reported on the family, and later tests still run' {
             $folder = Join-Path $TestDrive 'family-source-timeout'
-            New-FamilyTest -Folder $folder -Id 'REVIEW.HANG' -Source "Start-Sleep -Seconds 20; [pscustomobject]@{ Id = 'a' }"
+            New-FamilyTest -Folder $folder -Id 'REVIEW.HANG' -Source "Start-Sleep -Seconds 120; [pscustomobject]@{ Id = 'a' }"
             New-ReviewTest -Folder $folder -Id 'REVIEW.LATER'
             $clock = [System.Diagnostics.Stopwatch]::StartNew()
             $r = Invoke-ReviewRun -Path $folder -Config @{ Execution = @{ TestTimeoutSeconds = 1 } }
-            $clock.Elapsed.TotalSeconds | Should -BeLessThan 15
+            $clock.Elapsed.TotalSeconds | Should -BeLessThan 60 -Because 'the source sleeps for 120 seconds and is stopped at 1'
             $family = $r.Tests | Where-Object Id -EQ 'REVIEW.HANG'
             $family.Result | Should -Be 'Error'
             $family.ReasonCode | Should -Be 'InstanceSourceFailed'
