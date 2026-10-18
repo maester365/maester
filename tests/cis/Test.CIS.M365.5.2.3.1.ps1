@@ -23,7 +23,7 @@
         Area = 'authentication',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Medium',
+        UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1621',
         Control = ('cis-m365:5.2.3.1', 'nist-800-53-r5:IA-2'),

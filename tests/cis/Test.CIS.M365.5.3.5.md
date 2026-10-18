@@ -2,6 +2,8 @@
 
 Privileged Role Administrator can manage role assignments and PIM settings, which means that it can give itself, or anyone, any other role, and can weaken the approval requirements on other roles. Treating it like Global Administrator closes that route around the approval for other roles.
 
+If an attacker gets an eligible account, MFA is the first barrier to activating the role. Approval adds a second person who can refuse an activation that looks wrong, so it is a layer behind MFA.
+
 Approval slows urgent changes, so define more than one approver and agree how to handle out-of-hours requests. Microsoft Entra ID P2 or Microsoft Entra ID Governance licences are required.
 
 #### Remediation action
