@@ -62,6 +62,8 @@ BeforeAll {
             'NoComputerAccess' { $enterpriseDomainControllers, $domainAdmins }
             'Inherited' { $authenticatedUsers, $applyGroupPolicy, $enterpriseDomainControllers, $domainAdmins, (New-TestAce -Sid "$script:domainSid-1104" -Inherited) }
             'DenyOnly' { New-TestAce -Sid 'S-1-5-11' -AccessControlType 'Deny' }
+            # Allow and Deny for the same principal: access is unknown, not present.
+            'AllowAndDeny' { $authenticatedUsers, $applyGroupPolicy, (New-TestAce -Sid 'S-1-5-11' -AccessControlType 'Deny' -ActiveDirectoryRights 'GenericAll'), $enterpriseDomainControllers, $domainAdmins }
             'InheritOnly' { (New-TestAce -Sid 'S-1-5-11' -AceFlags 'ContainerInherit, InheritOnly'), $domainAdmins }
             'EmptyDacl' { }
         }
@@ -128,6 +130,8 @@ Describe 'Active Directory GPO permissions' {
             @{ PermissionProfile = 'Inherited'; PermissionsPresent = $true; HasAuthenticatedUsers = $true; HasEnterpriseDomainControllers = $true; HasDomainComputers = $false; HasInheritedPermissions = $true }
             # A Deny entry and an entry that only applies to child objects do not give the principal access.
             @{ PermissionProfile = 'DenyOnly'; PermissionsPresent = $true; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
+            # A principal that is both allowed and denied: unknown, because the masks are not compared.
+            @{ PermissionProfile = 'AllowAndDeny'; PermissionsPresent = $true; HasAuthenticatedUsers = $null; HasEnterpriseDomainControllers = $true; HasDomainComputers = $false; HasInheritedPermissions = $false }
             @{ PermissionProfile = 'InheritOnly'; PermissionsPresent = $true; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
             @{ PermissionProfile = 'EmptyDacl'; PermissionsPresent = $false; HasAuthenticatedUsers = $false; HasEnterpriseDomainControllers = $false; HasDomainComputers = $false; HasInheritedPermissions = $false }
             # Unknown is not the same as absent.

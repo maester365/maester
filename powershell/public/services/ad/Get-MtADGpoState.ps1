@@ -216,11 +216,20 @@ function Get-MtADGpoState {
                         $aces = @($access | Where-Object { $null -ne $_ })
                         # An inherit-only ACE grants nothing on the GPO itself.
                         $allowedSids = @($aces | Where-Object { $_.AccessControlType -eq 'Allow' -and [string]$_.AceFlags -notmatch 'InheritOnly' } | ForEach-Object { [string]$_.Sid })
+                        # A deny for a principal that is also allowed takes precedence, but how much of the
+                        # allow it removes depends on the access masks of both entries, which this summary
+                        # does not compare. That principal's access is unknown rather than present.
+                        $deniedSids = @($aces | Where-Object { $_.AccessControlType -eq 'Deny' -and [string]$_.AceFlags -notmatch 'InheritOnly' } | ForEach-Object { [string]$_.Sid })
                         $permissionsPresent = $aces.Count -gt 0
-                        $hasAuthenticatedUsers = $allowedSids -contains 'S-1-5-11'
-                        $hasEnterpriseDomainControllers = $allowedSids -contains 'S-1-5-9'
+                        $hasAuthenticatedUsers = if (($allowedSids -contains 'S-1-5-11') -and ($deniedSids -contains 'S-1-5-11')) { $null } else { $allowedSids -contains 'S-1-5-11' }
+                        $hasEnterpriseDomainControllers = if (($allowedSids -contains 'S-1-5-9') -and ($deniedSids -contains 'S-1-5-9')) { $null } else { $allowedSids -contains 'S-1-5-9' }
                         # Domain Computers is RID 515 of a domain SID.
-                        $hasDomainComputers = @($allowedSids -match '^S-1-5-21-\d+-\d+-\d+-515$').Count -gt 0
+                        $domainComputers = '^S-1-5-21-\d+-\d+-\d+-515$'
+                        $allowedComputers = @($allowedSids -match $domainComputers)
+                        $deniedComputers = @($deniedSids -match $domainComputers)
+                        # Only the same group being both allowed and denied is unknown: in a forest, one
+                        # domain's Domain Computers being denied says nothing about another domain's.
+                        $hasDomainComputers = if (@($allowedComputers | Where-Object { $deniedComputers -contains $_ }).Count -gt 0) { $null } else { $allowedComputers.Count -gt 0 }
                         $hasInheritedPermissions = [bool]($aces | Where-Object { $_.IsInherited } | Select-Object -First 1)
                     }
 
