@@ -32,7 +32,7 @@
     credential for GitHub Actions OIDC.
 
     .PARAMETER GitHubRepository
-    Your GitHub repository name where the workflow lives (e.g. 'maester-tests').
+    Your GitHub repository name where the workflow lives (e.g. 'maester-monitoring').
 
     .PARAMETER GitHubActions
     Enable end-to-end GitHub Actions setup. Creates a federated identity credential
@@ -96,7 +96,7 @@
         # Your GitHub organization name or GitHub username. E.g. jasonf
         [string] $GitHubOrganization,
 
-        # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-tests
+        # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-monitoring
         [string] $GitHubRepository,
 
         # Enable end-to-end GitHub Actions setup (creates a federated identity credential).

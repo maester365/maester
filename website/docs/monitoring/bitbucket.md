@@ -23,7 +23,7 @@ This guide will walk you through setting up Maester in BitBucket and automate th
 
 ### Create a blank new project to always use the latest available Maester tests
 
-The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The repository only holds the pipeline and, optionally, your own custom tests (in a `Custom` folder) and `maester-config.json`.
+The built-in Maester tests ship inside the Maester PowerShell module, and the pipeline below installs the latest module on every run. The repository only holds the pipeline. Later, you can add a `maester-config.json` to change settings (see [Configuration](../configuration/overview.md)) and a `custom` folder for your own tests (see [Writing custom tests](../writing-tests/index.mdx)).
 
 - On the top bar, at the top, select 'Create ' and select 'Repository' from the dropdown.
 
@@ -32,7 +32,7 @@ The built-in Maester tests ship inside the Maester PowerShell module, and the pi
 - Create a New Repository [Create a repository](https://support.atlassian.com/bitbucket-cloud/docs/create-a-repository/)
 
   - Project: Choose an existing project or create a new one.
-  - Repository name: Give your repository a descriptive name (e.g., maester-tests).
+  - Repository name: Give your repository a descriptive name (e.g., maester-monitoring).
   - Select the checkbox Access Level: Private Repository
     ![Create Private Repository](assets/bitbucket-create-private-repository.png)
 
@@ -64,7 +64,7 @@ Client secret authentication is not recommended for long-term automation, and we
 
 ### Create Bitbucket repository variables
 
-- Open your `maester-tests` Bitbucket repository and go to Repository settings.
+- Open your Maester Bitbucket repository and go to Repository settings.
 - Select **Pipelines** > **Repository variables**.
 - Add the three secrets listed below. Make sure to check the checkbox (`[x]`) for each variable.
     ![Bitbucket Repository Variable](assets/bitbucket-repository-variables.png)
@@ -162,7 +162,7 @@ Maester 3.0 requires PowerShell 7.4 or later, which the `mcr.microsoft.com/micro
 
 To manually run the Maester tests workflow
 
-- Open your `maester-tests` BitBucket repository.
+- Open your Maester Bitbucket repository.
 - Select **Piplines** from the left pane
 - Click Run pipeline on the top right pane.
 - Select the branch you want to run the pipeline on (e.g., main) , select the Pipeline `custom:run-maester-tests` and click Run.
@@ -172,7 +172,7 @@ To manually run the Maester tests workflow
 
 ## Viewing the test results
 
-- Open your maester-tests Bitbucket repository and go to Pipelines.
+- Open your Maester Bitbucket repository and go to Pipelines.
 - Click on the latest pipeline run  to inspect. Click on the **Run Maester Tests** step and select the **artifacts** tab on right.
     ![inspect bitbucket pipeline](assets/bitbucket-inspect-pipeline-step.png)
 - Click on the download icon to download the test results artifacts.
