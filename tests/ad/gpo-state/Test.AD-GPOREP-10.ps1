@@ -40,6 +40,10 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     Write-Verbose "Filtering/counting gpo no apply group policy ace count"
 
     $gpoReports = $gpoState.GPOReports
@@ -51,7 +55,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
 
     $gpoCount = $gpoReportsArray.Count
-    $noApplyAceCount = @($gpoReportsArray | Where-Object { -not [bool]$_.HasApplyGroupPolicyAce }).Count
+    $noApplyAceCount = @($gpoReportsArray | Where-Object { $_.HasApplyGroupPolicyAce -eq $false }).Count
 
     $testResult = $true
 

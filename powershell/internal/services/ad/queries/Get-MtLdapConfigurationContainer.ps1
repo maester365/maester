@@ -45,7 +45,12 @@
 
     $siteLinks = @()
     try {
-        $siteLinks = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
+        $rawSiteLinks = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
+        $siteLinks = @($rawSiteLinks | ForEach-Object {
+            $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
+            $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
+            $_
+        })
     }
     catch {
         Write-Verbose "Could not query Site Links: $($_.Exception.Message)"
@@ -132,9 +137,9 @@
         Write-Verbose "Could not query Directory Service: $($_.Exception.Message)"
     }
 
-    $kds = @()
+    $kds = $null
     try {
-        $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID', 'msKds-RootKeyData'))
+        $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
     }
     catch {
         Write-Verbose "Could not query KDS Root Keys: $($_.Exception.Message)"
@@ -163,6 +168,6 @@
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
-        KdsRootKeys = @($kds); ActivationObjects = @($activation)
+        KdsRootKeys = $kds; ActivationObjects = @($activation)
     }
 }

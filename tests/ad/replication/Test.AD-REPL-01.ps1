@@ -48,6 +48,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.ReplicationConnections) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
 
     $replicationConnections = $adState.ReplicationConnections
     $totalConnections = ($replicationConnections | Measure-Object).Count

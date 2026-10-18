@@ -46,6 +46,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.Computers) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
 
     $computers = $adState.Computers
 

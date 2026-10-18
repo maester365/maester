@@ -39,6 +39,10 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState.DaclEntries) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     Write-Verbose "Filtering/counting dacl identity ace distribution"
 
     $daclEntries = @($adState.DaclEntries)

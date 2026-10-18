@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 237 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 238 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
@@ -52,7 +52,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-CFG-19](./AD-CFG-19) | Intermediate CA details should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20) | CRL distribution points count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21) | NTAuth certificates count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22) | KDS root keys count should be retrievable | Active Directory | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22) | Exactly one KDS root key should exist | Active Directory | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23) | SMTP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24) | IP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01) | Computer disabled count should be retrievable | Active Directory | Info | Active Directory | Computers |
@@ -222,8 +222,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-PWDPOL-01](./AD-PWDPOL-01) | Password history count should be retrievable | Active Directory | Info | Active Directory | Password policy |
 | [AD-PWDPOL-02](./AD-PWDPOL-02) | Password maximum age should be retrievable | Active Directory | Info | Active Directory | Password policy |
 | [AD-PWDPOL-03](./AD-PWDPOL-03) | Password minimum length should be retrievable | Active Directory | Info | Active Directory | Password policy |
-| [AD-PWDPOL-04](./AD-PWDPOL-04) | Password complexity requirement should be retrievable | Active Directory | Info | Active Directory | Password policy |
-| [AD-PWDPOL-05](./AD-PWDPOL-05) | Password reversible encryption status should be retrievable | Active Directory | Info | Active Directory | Password policy |
+| [AD-PWDPOL-04](./AD-PWDPOL-04) | Password complexity should be enabled | Active Directory | Medium | Active Directory | Password policy |
+| [AD-PWDPOL-05](./AD-PWDPOL-05) | Password reversible encryption should be disabled | Active Directory | Medium | Active Directory | Password policy |
 | [AD-PWDPOL-06](./AD-PWDPOL-06) | Account lockout duration should be retrievable | Active Directory | Info | Active Directory | Password policy |
 | [AD-PWDPOL-07](./AD-PWDPOL-07) | Account lockout threshold should be retrievable | Active Directory | Info | Active Directory | Password policy |
 | [AD-REPL-01](./AD-REPL-01) | No replication connections should be disabled | Active Directory | Low | Active Directory | Replication |
@@ -710,6 +710,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1216](./MT.1216) | Ensure macOS compliance policy requires a Defender machine risk score level. | Maester | Medium | Intune | Device compliance |
 | [MT.1217](./MT.1217) | Ensure macOS LAPS is configured on Automated Device Enrollment profiles. | Maester | High | Intune | Device enrollment |
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
+| [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |

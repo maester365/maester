@@ -51,7 +51,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     }
 
     $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-    $noApplyAceReports = @($gpoReportsArray | Where-Object { -not [bool]$_.HasApplyGroupPolicyAce })
+    $noApplyAceReports = @($gpoReportsArray | Where-Object { $_.HasApplyGroupPolicyAce -eq $false })
 
     $table = "| GPO Name | HasApplyGroupPolicyAce |" + "`n"
     $table += '| --- | --- |' + "`n"
