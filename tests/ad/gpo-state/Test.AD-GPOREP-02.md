@@ -13,7 +13,8 @@
 - Review and remediate missing permissions to ensure proper GPO deployment and ACLs.
 
 #### How the Test Works
-- Aggregates GPO reports, checks PermissionsPresent property, and lists reports lacking permissions in a Markdown table.
+- Aggregates GPO reports and lists the ones whose DACL has no entries (PermissionsPresent is false) in a Markdown table.
+- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
 
 #### Related Tests
 - `Test-MtAdGpoNoPermissionsCount`.

@@ -13,7 +13,8 @@
 - Review inherited permissions and consider removing inheritance where not needed.
 
 #### How the Test Works
-- Scans GPO state for HasInheritedPermissions true and reports counts and a small sample.
+- Scans GPO state for GPO reports with a DACL entry inherited from the parent container (HasInheritedPermissions is true) and reports counts and a small sample.
+- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
 
 #### Related Tests
 - `Test-MtAdGpoInheritedPermissionsCount`.
