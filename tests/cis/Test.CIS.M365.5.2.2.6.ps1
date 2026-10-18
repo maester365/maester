@@ -1,0 +1,83 @@
+﻿function Test-MtCisUserRiskPolicy {
+    <#
+    .SYNOPSIS
+        Checks that a Conditional Access policy requires a secure password change for high user risk.
+
+    .DESCRIPTION
+        Checks that at least one enabled Conditional Access policy applies to all users and all cloud apps at the high user risk level, requires MFA and a password change, and sets the sign-in frequency to every time.
+        CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.6, L1)
+
+    .EXAMPLE
+        Test-MtCisUserRiskPolicy
+
+        Returns true if an enabled user risk policy requires MFA and a password change for high risk.
+
+    .LINK
+        https://maester.dev/docs/tests/CIS.M365.5.2.2.6
+    #>
+    [MaesterTest(
+        Id = 'CIS.M365.5.2.2.6',
+        Title = 'Enable Identity Protection user risk policies',
+        Product = 'entra',
+        Feature = 'conditional-access',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.004',
+        Control = ('cis-m365:5.2.2.6', 'nist-800-53-r5:AC-2(12)'),
+        Service = 'Graph',
+        License = 'AAD_PREMIUM_P2',
+        Author = 'JeremyFinney-lgtm'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose 'Getting Conditional Access policies...'
+    $policies = Get-MtConditionalAccessPolicy
+    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
+
+    $candidates = @($policies | Where-Object { @($_.conditions.userRiskLevels).Count -gt 0 })
+
+    $report = foreach ($policy in $candidates) {
+        $frequency = $policy.sessionControls.signInFrequency
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -TargetedCondition UserRiskLevels)
+        $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
+        $checks = [ordered]@{
+            'Scope covers the required users and apps' = $problems.Count -eq 0
+            'High user risk' = @($policy.conditions.userRiskLevels) -contains 'high'
+            'Password change required' = @($policy.grantControls.builtInControls) -contains 'passwordChange'
+            'MFA required' = [bool](@($policy.grantControls.builtInControls) -contains 'mfa' -or $policy.grantControls.authenticationStrength.id)
+            'Sign-in frequency enabled' = [bool]$frequency.isEnabled
+            'Sign-in frequency every time' = $frequency.frequencyInterval -eq 'everyTime'
+            'Grant controls combine as required' = $grantProblems.Count -eq 0
+            'Enabled' = $policy.state -eq 'enabled'
+        }
+        $failed = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
+        $details = @($problems) + @($grantProblems)
+        $failedText = $failed -join ', '
+        if ($details.Count -gt 0) { $failedText += " ($($details -join '; '))" }
+        [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; Failed = $failedText; Pass = $failed.Count -eq 0 }
+    }
+    $testResult = @($report | Where-Object { $_.Pass }).Count -gt 0
+    $passText = 'An enabled Conditional Access policy requires MFA and a password change for high user risk.'
+    $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that uses the user risk condition was found.' } else { 'No enabled Conditional Access policy requires MFA and a password change for high user risk.' }
+
+    $resultMd = "| Policy | State | Failed checks | Result |`n"
+    $resultMd += "| --- | --- | --- | --- |`n"
+    foreach ($row in $report) {
+        $resultMd += "| $($row.Name) | $($row.State) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "$failText`n`n%TestResult%"
+    }
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
+}
