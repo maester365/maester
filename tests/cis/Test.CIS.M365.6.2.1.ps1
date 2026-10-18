@@ -4,7 +4,7 @@
         Checks that mail flow rules and outbound spam policies do not forward mail to external recipients.
 
     .DESCRIPTION
-        Checks that no transport rule redirects, copies or adds recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal, and that no outbound spam policy allows automatic forwarding to external recipients.
+        Checks that no enabled transport rule that is not in audit mode redirects, copies or adds recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal, and that no outbound spam policy allows automatic forwarding to external recipients.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.2.1, L1)
 
     .EXAMPLE
@@ -42,6 +42,8 @@
 
     $findings = [System.Collections.Generic.List[object]]::new()
     foreach ($rule in $transportRules) {
+        # Disabled and audit-mode rules do not perform the recipient actions.
+        if ($rule.State -eq 'Disabled' -or $rule.Mode -in 'Audit', 'AuditAndNotify') { continue }
         foreach ($action in 'RedirectMessageTo', 'BlindCopyTo', 'CopyTo', 'AddToRecipients') {
             foreach ($address in @($rule.$action | Where-Object { $_ })) {
                 $text = "$address".Trim()

@@ -2,7 +2,7 @@
 
 Auto-forwarding is a favourite way to take mail from a compromised mailbox: the attacker adds a rule that copies every message to an outside address and then keeps receiving mail after the password is reset. It is also an easy way for a user to move company data to a personal account.
 
-The test lists transport rules that redirect, blind copy, copy or add recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal. It also lists outbound spam policies whose automatic forwarding is not **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
+The test lists transport rules that redirect, blind copy, copy or add recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal. Disabled rules and rules in audit mode are not listed, because they do not forward mail. It also lists outbound spam policies whose automatic forwarding is not **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
 
 #### Remediation action
 

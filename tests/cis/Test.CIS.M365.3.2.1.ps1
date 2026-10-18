@@ -38,11 +38,11 @@
     $policies = @(Get-MtExo -Request DlpCompliancePolicy | Where-Object { $_.EnforcementPlanes -notcontains 'CopilotExperiences' })
 
     $report = foreach ($policy in $policies) {
-        # An All inclusion covers a location only when that location has no exclusions.
+        # An All inclusion covers a location only when it has no exclusions or inclusion restrictions.
         $locations = [ordered]@{
-            Exchange = (@($policy.ExchangeLocation.ImmutableIdentity) -contains 'All') -and @($policy.ExchangeSenderMemberOfException | Where-Object { $_ }).Count -eq 0
+            Exchange = (@($policy.ExchangeLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.ExchangeSenderMemberOf) + @($policy.ExchangeSenderMemberOfException) | Where-Object { $_ }).Count -eq 0
             SharePoint = (@($policy.SharePointLocation.ImmutableIdentity) -contains 'All') -and @($policy.SharePointLocationException | Where-Object { $_ }).Count -eq 0
-            OneDrive = (@($policy.OneDriveLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.ExceptIfOneDriveSharedBy) + @($policy.ExceptIfOneDriveSharedByMemberOf) | Where-Object { $_ }).Count -eq 0
+            OneDrive = (@($policy.OneDriveLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.OneDriveSharedBy) + @($policy.OneDriveSharedByMemberOf) + @($policy.ExceptIfOneDriveSharedBy) + @($policy.ExceptIfOneDriveSharedByMemberOf) | Where-Object { $_ }).Count -eq 0
             Teams = (@($policy.TeamsLocation.ImmutableIdentity) -contains 'All') -and @($policy.TeamsLocationException | Where-Object { $_ }).Count -eq 0
         }
         $covered = @($locations.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $_.Key })

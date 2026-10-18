@@ -2,7 +2,7 @@
 
 Without DLP, sensitive information such as card numbers, national identifiers and health records can be emailed, shared or uploaded with nothing to stop it, warn the user or record it. A DLP policy gives you that control and an audit trail, even if you only start in a mode that reports. The locations it covers are the repositories and cloud storage that an attacker collects data from (T1213 and T1530), and it detects and blocks sensitive content that is sent out through a web service (T1567).
 
-The test passes when one policy is in the **Enable** mode (not test mode, not off) and covers all of at least one location with no exclusions for that location. Policies for Copilot are checked in a separate test. Licensing depends on the workload, and most DLP features need Microsoft 365 E3 or E5.
+The test passes when one policy is in the **Enable** mode (not test mode, not off) and covers all of at least one location with no exclusions or inclusion restrictions for that location. Policies for Copilot are checked in a separate test. Licensing depends on the workload, and most DLP features need Microsoft 365 E3 or E5.
 
 #### Remediation action
 
