@@ -49,7 +49,7 @@
     $daclEntries = @($adState.DaclEntries)
     $extendedRightEntries = @(
         foreach ($entry in $daclEntries) {
-            if ($entry.AccessControlType -like 'AccessAllowed*' -and [string]$entry.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)') {
+            if ($entry.AccessControlType -eq 'Allow' -and [string]$entry.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)') {
                 [PSCustomObject]@{
                     ObjectType        = if ([string]::IsNullOrWhiteSpace($entry.ObjectType) -or $entry.ObjectType -eq '00000000-0000-0000-0000-000000000000') {
                         'All / Not specified'
