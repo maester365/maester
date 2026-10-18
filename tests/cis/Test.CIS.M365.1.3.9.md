@@ -10,6 +10,8 @@ The test passes when Bookings is disabled for the organisation, or when the defa
 2. Go to **Settings** > **Org settings** > **Services** > [**Bookings**](https://admin.microsoft.com/#/Settings/Services/:/Settings/L1/Bookings).
 3. Select **Allow only selected staff to be bookable** and **Require Bookings pages to be created by an administrator**, or clear **Allow Bookings to be turned on**.
 4. Select **Save**.
+5. If Bookings stays on, connect with `Connect-ExchangeOnline` and run `Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -BookingsMailboxCreationEnabled $false`. The test reads this setting on the default policy, so set it even if you used the admin center options.
+6. To let selected users create pages, run `New-OwaMailboxPolicy -Name BookingsCreators`, then run `Set-CASMailbox -Identity <user> -OwaMailboxPolicy BookingsCreators` for each user. The test does not check which users have that policy.
 
 #### Related links
 

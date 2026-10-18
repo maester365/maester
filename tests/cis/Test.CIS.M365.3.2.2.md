@@ -8,7 +8,7 @@ The policy must be in the **Enable** mode. Once it is on, a user who posts sensi
 
 1. Sign in to the [Microsoft Purview portal](https://purview.microsoft.com).
 2. Go to **Solutions** > **Data loss prevention** > [**Policies**](https://purview.microsoft.com/datalossprevention/policies) and edit a policy, or create a new one.
-3. Under **Locations**, turn on **Teams chat and channel messages** and apply it to all accounts.
+3. Under **Locations**, turn on **Teams chat and channel messages** and apply it to all accounts, without excluding any account or group.
 4. Set the policy mode to **Turn it on right away** and save the policy.
 
 #### Related links

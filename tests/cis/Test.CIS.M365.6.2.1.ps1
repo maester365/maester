@@ -4,7 +4,7 @@
         Checks that mail flow rules and outbound spam policies do not forward mail to external recipients.
 
     .DESCRIPTION
-        Checks that no transport rule redirects mail to an address outside the accepted domains, or to a target that cannot be shown to be internal, and that no outbound spam policy allows automatic forwarding to external recipients.
+        Checks that no transport rule redirects, copies or adds recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal, and that no outbound spam policy allows automatic forwarding to external recipients.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.2.1, L1)
 
     .EXAMPLE
@@ -42,13 +42,15 @@
 
     $findings = [System.Collections.Generic.List[object]]::new()
     foreach ($rule in $transportRules) {
-        foreach ($address in @($rule.RedirectMessageTo | Where-Object { $_ })) {
-            $text = "$address".Trim()
-            $at = $text.LastIndexOf('@')
-            if ($at -lt 0) {
-                $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text (target cannot be verified as internal)" })
-            } elseif ($acceptedDomains -notcontains $text.Substring($at + 1).TrimEnd('.')) {
-                $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text (external)" })
+        foreach ($action in 'RedirectMessageTo', 'BlindCopyTo', 'CopyTo', 'AddToRecipients') {
+            foreach ($address in @($rule.$action | Where-Object { $_ })) {
+                $text = "$address".Trim()
+                $at = $text.LastIndexOf('@')
+                if ($at -lt 0) {
+                    $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in $action (target cannot be verified as internal)" })
+                } elseif ($acceptedDomains -notcontains $text.Substring($at + 1).TrimEnd('.')) {
+                    $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in $action (external)" })
+                }
             }
         }
     }

@@ -2,7 +2,7 @@
 
 SPF lists the servers that may send mail for a domain. Receiving servers use it to reject, or to mark as suspicious, mail that pretends to come from your domain. Without an SPF record, or with one that ends in a neutral or permissive qualifier, anyone can send mail that looks like it comes from you without raising a flag.
 
-The test follows a single redirect modifier. Domains in the onmicrosoft.com namespace are skipped. Parked domains that never send mail should publish a record of "v=spf1 -all".
+The test follows a redirect modifier only when the record has no all mechanism, since receivers ignore the redirect in that case. Domains in the onmicrosoft.com namespace are skipped. Parked domains that never send mail should publish a record of "v=spf1 -all".
 
 #### Remediation action
 

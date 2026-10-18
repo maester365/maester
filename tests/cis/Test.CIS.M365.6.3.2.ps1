@@ -1,10 +1,10 @@
 ﻿function Test-MtCisPersonalAccountsDisabledInOutlook {
     <#
     .SYNOPSIS
-        Checks that the default OWA policy does not allow connecting personal email accounts and calendars.
+        Checks that no Outlook on the web mailbox policy allows connecting personal email accounts and personal calendars.
 
     .DESCRIPTION
-        Checks the default Outlook on the web mailbox policy and passes when users cannot connect personal email accounts and personal calendars to Outlook.
+        Checks every Outlook on the web mailbox policy and passes when users cannot connect personal email accounts and personal calendars to Outlook.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.3.2, L1)
 
     .EXAMPLE
@@ -34,13 +34,18 @@
     [OutputType([bool])]
     param()
 
-    $owaPolicy = @(Get-MtExo -Request OwaMailboxPolicy) | Where-Object { $_.IsDefault -eq $true } | Select-Object -First 1
+    # Every policy counts, because a custom policy can be assigned to a mailbox.
+    $owaPolicies = @(Get-MtExo -Request OwaMailboxPolicy)
 
     $checks = @(
-        [pscustomobject]@{ Setting = 'PersonalAccountsEnabled'; Value = $(if ($null -eq ($owaPolicy.PersonalAccountsEnabled)) { 'Not found' } else { $owaPolicy.PersonalAccountsEnabled }); Pass = [bool]($owaPolicy.PersonalAccountsEnabled -eq $false) }
-        [pscustomobject]@{ Setting = 'PersonalAccountCalendarsEnabled'; Value = $(if ($null -eq ($owaPolicy.PersonalAccountCalendarsEnabled)) { 'Not found' } else { $owaPolicy.PersonalAccountCalendarsEnabled }); Pass = [bool]($owaPolicy.PersonalAccountCalendarsEnabled -eq $false) }
+        foreach ($owaPolicy in $owaPolicies) {
+            foreach ($setting in 'PersonalAccountsEnabled', 'PersonalAccountCalendarsEnabled') {
+                $value = $owaPolicy.$setting
+                [pscustomobject]@{ Setting = "$setting ($($owaPolicy.Name))"; Value = $(if ($null -eq $value) { 'Not found' } else { $value }); Pass = [bool]($value -eq $false) }
+            }
+        }
     )
-    $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
+    $testResult = $checks.Count -gt 0 -and @($checks | Where-Object { -not $_.Pass }).Count -eq 0
 
     $passText = 'Personal email accounts and calendars cannot be connected to Outlook.'
     $failText = 'Users can connect personal email accounts or calendars to Outlook.'

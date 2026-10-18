@@ -4,7 +4,7 @@
         Checks that every accepted domain has a DMARC policy of quarantine or reject with aggregate and forensic reporting.
 
     .DESCRIPTION
-        Looks up the DMARC record that applies to each accepted domain, falling back to the parent domain, and passes when the applied policy is quarantine or reject, covers 100 percent of mail and defines mailto addresses for aggregate (rua) and forensic (ruf) reports.
+        Looks up the DMARC record that applies to each accepted domain, falling back to the organisational domain, and passes when the applied policy is quarantine or reject, covers 100 percent of mail and defines mailto addresses for aggregate (rua) and forensic (ruf) reports.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.10, L1)
 
     .EXAMPLE
@@ -39,12 +39,12 @@
 
     $report = foreach ($domain in $domains) {
         $name = $domain.DomainName
-        $labels = $name -split '\.'
         $dmarc = $null
         $source = $null
         $unavailable = $false
-        for ($i = 0; $i -lt $labels.Count - 1; $i++) {
-            $candidate = $labels[$i..($labels.Count - 1)] -join '.'
+        # DMARC policy discovery uses the domain, then its organisational domain only.
+        $candidates = @($name, (Get-MtRegistrableDomain -DomainName $name)) | Select-Object -Unique
+        foreach ($candidate in $candidates) {
             $found = ConvertFrom-MailAuthenticationRecordDmarc -DomainName $candidate
             if ($found -is [string] -and $found -like '*not available') { $unavailable = $true; break }
             if ($found.GetType().Name -eq 'DMARCRecord') {

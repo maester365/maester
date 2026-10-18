@@ -40,8 +40,8 @@
 
     $report = foreach ($policy in $policies) {
         $coversTeams = "$($policy.Workload)" -match 'Teams'
-        # TeamsLocation must include All (all accounts) in an enabled policy
-        $coversAll = @($policy.TeamsLocation.ImmutableIdentity) -contains 'All'
+        # TeamsLocation must include All with no TeamsLocationException in an enabled policy
+        $coversAll = (@($policy.TeamsLocation.ImmutableIdentity) -contains 'All') -and @($policy.TeamsLocationException | Where-Object { $_ }).Count -eq 0
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode

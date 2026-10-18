@@ -41,7 +41,7 @@
 
     $report = foreach ($entry in @(@{ Name = 'Exchange Online Protection'; Rule = $eopRule }, @{ Name = 'Defender for Office 365'; Rule = $atpRule })) {
         $rule = $entry.Rule
-        $hasTargets = @($rule.SentTo).Count -gt 0 -or @($rule.SentToMemberOf).Count -gt 0 -or @($rule.RecipientDomainIs).Count -gt 0
+        $hasTargets = @($rule.SentTo | Where-Object { $_ }).Count -gt 0 -or @($rule.SentToMemberOf | Where-Object { $_ }).Count -gt 0 -or @($rule.RecipientDomainIs | Where-Object { $_ }).Count -gt 0
         [pscustomobject]@{
             Component = $entry.Name
             State = if ($rule) { $rule.State } else { 'Not found' }

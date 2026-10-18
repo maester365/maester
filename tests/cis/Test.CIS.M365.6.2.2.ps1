@@ -36,7 +36,7 @@
 
     Write-Verbose 'Getting mail flow rules...'
     $rules = @(Get-MtExo -Request TransportRule)
-    $failed = @($rules | Where-Object { $_.SetSCL -eq -1 -and @($_.SenderDomainIs).Count -gt 0 })
+    $failed = @($rules | Where-Object { $_.SetSCL -eq -1 -and @($_.SenderDomainIs | Where-Object { -not [string]::IsNullOrWhiteSpace("$_") }).Count -gt 0 })
     $testResult = $failed.Count -eq 0
 
     $passText = 'No mail flow rule bypasses spam filtering for specific domains.'

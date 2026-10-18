@@ -2,7 +2,7 @@
 
 DMARC tells receiving servers what to do with mail that fails SPF and DKIM alignment, and sends you reports about who is sending mail in your name. With a policy of none, spoofed mail is still delivered. Quarantine or reject stops it, and the reports show abuse and legitimate senders that you forgot.
 
-The test uses the record at the domain, or at its parent domain when the domain has none, applying the subdomain policy where one exists. The policy must apply to 100 percent of mail (no pct tag, or pct=100). Both rua and ruf addresses must be mailto addresses. Move to enforcement in steps and review the aggregate reports first.
+The test uses the record at the domain, or at its organisational domain (for example contoso.com for mail.contoso.com) when the domain has none, applying the subdomain policy where one exists. The policy must apply to 100 percent of mail (no pct tag, or pct=100). Both rua and ruf addresses must be mailto addresses. Move to enforcement in steps and review the aggregate reports first.
 
 #### Remediation action
 

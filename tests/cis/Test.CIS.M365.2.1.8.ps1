@@ -47,13 +47,16 @@
         $record = if ($spf.GetType().Name -eq 'SPFRecord') { $spf.record } else { $null }
         $effective = $record
         $detail = ''
-        if ($record -match 'redirect=(?<target>\S+)') {
+        # RFC 7208 section 5.1: a redirect is ignored when the record has an all mechanism.
+        $localAll = [regex]::Match([string]$record, '(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        if (-not $localAll.Success -and $record -match 'redirect=(?<target>\S+)') {
             $target = $Matches['target']
             $redirected = ConvertFrom-MailAuthenticationRecordSpf -DomainName $target
             $effective = if ($redirected.GetType().Name -eq 'SPFRecord') { $redirected.record } else { $null }
             $detail = "Redirects to $target"
         }
-        $pass = [bool]($effective -match '[~-]all\s*$')
+        $effectiveAll = [regex]::Match([string]$effective, '(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
         if (-not $record) {
             $detail = 'No SPF record found'
         } elseif (-not $pass) {
