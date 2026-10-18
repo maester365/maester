@@ -25,7 +25,7 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
-        Mitre = ('T1078.004', 'T1098.001'),
+        Mitre = ('T1078.004', 'T1098.005'),
         Control = ('cis-m365:5.2.2.10', 'nist-800-53-r5:IA-3'),
         Service = 'Graph',
         License = 'AAD_PREMIUM',
