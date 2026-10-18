@@ -57,11 +57,18 @@
                 -RelativeUri 'roleManagement/directory/roleDefinitions' `
                 -Select @('id', 'displayName')
         )
-        $RoleAssignments = @(
-            Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                -RelativeUri 'roleManagement/directory/roleAssignments' `
-                -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
-        )
+        # Agent Users can be made PIM-eligible for privileged roles, so eligible assignments count
+        # too. Agent identities and blueprint principals are service principals, which PIM does not
+        # allow to be eligible, so this only matters for Agent Users.
+        # Same properties as MT.1209 so the active assignments come from the Graph cache.
+        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
+        $RoleAssignments = @($RoleAssignmentResult.Assignments)
+        $EligibilityNote = ''
+        if (!$RoleAssignmentResult.EligibleChecked) {
+            Write-Verbose 'PIM-eligible role assignments were not read. Checking active assignments only.'
+            $EligibilityNote = "`n`nNote: PIM-eligible role assignments were not checked because they need " +
+                'Microsoft Entra ID P2 or Governance. Only active role assignments were checked.'
+        }
 
         $RoleDefLookup = @{}
         foreach ($Def in $RoleDefinitions) {
@@ -86,21 +93,23 @@
             $UserId = [string]$User.id
             if ([string]::IsNullOrWhiteSpace($UserId)) { continue }
 
-            # 1. Direct privileged directory roles. A role Get-MtRoleInfo does not resolve, or
-            # has not classified as privileged, is an observation, not a confirmed finding.
+            # 1. Privileged directory roles, active or PIM-eligible. A role Get-MtRoleInfo does not
+            # resolve, or has not classified as privileged, is an observation, not a confirmed finding.
             # isPrivileged is not a Graph-queryable property on unifiedRoleDefinition --
             # confirmed live, Graph returns 400 Bad Request for it in $select. Resolve privilege
             # from Maester's own built-in-roles catalog instead.
             if ($AssignmentsByUser.ContainsKey($UserId)) {
                 foreach ($Assigned in $AssignmentsByUser[$UserId]) {
+                    $IsEligible = $Assigned.AssignmentType -eq 'Eligible'
                     $DefId = [string]$Assigned.roleDefinitionId
+                    $EligibleSuffix = if ($IsEligible) { ' (eligible)' } else { '' }
                     $RoleDef = if ($RoleDefLookup.ContainsKey($DefId)) { $RoleDefLookup[$DefId] } else { $null }
                     if ($null -eq $RoleDef) {
                         $RoleObservations.Add([pscustomobject]@{
                                 UserId = $UserId
                                 DisplayName = [string]$User.displayName
                                 UserPrincipalName = [string]$User.userPrincipalName
-                                RoleName = "Unresolved role definition ($DefId)"
+                                RoleName = "Unresolved role definition ($DefId)$EligibleSuffix"
                             })
                         continue
                     }
@@ -110,19 +119,26 @@
                                 UserId = $UserId
                                 DisplayName = [string]$User.displayName
                                 UserPrincipalName = [string]$User.userPrincipalName
-                                RoleName = [string]$RoleDef.displayName
+                                RoleName = "$([string]$RoleDef.displayName)$EligibleSuffix"
                             })
                         continue
                     }
                     if (!$RoleInfo.IsPrivileged) { continue }
 
+                    if ($IsEligible) {
+                        $AccessType = 'Eligible Directory Role'
+                        $Reason = 'PIM-eligible for a privileged Entra directory role and can activate it.'
+                    } else {
+                        $AccessType = 'Directory Role'
+                        $Reason = 'Directly assigned a privileged Entra directory role.'
+                    }
                     $ExcessiveAccessFindings.Add([pscustomobject]@{
                         UserId            = $UserId
                         DisplayName       = [string]$User.displayName
                         UserPrincipalName = [string]$User.userPrincipalName
-                        AccessType        = 'Directory Role'
+                        AccessType        = $AccessType
                         PrivilegedItem    = [string]$RoleDef.displayName
-                        Reason            = 'Directly assigned a privileged Entra directory role.'
+                        Reason            = $Reason
                     })
                 }
             }
@@ -176,7 +192,7 @@
         if ($ExcessiveAccessFindings.Count -eq 0) {
             Add-MtTestResultDetail -Result (
                 'Well done. No Agent Users have confirmed privileged directory roles or ' +
-                "membership in role-assignable groups.$ObservationNote"
+                "membership in role-assignable groups.$ObservationNote$EligibilityNote"
             )
             return $true
         }
@@ -196,6 +212,7 @@
                 "$PrivItem | $Reason |"
         }
         $Result += $ObservationNote
+        $Result += $EligibilityNote
 
         Add-MtTestResultDetail -Result $Result -Severity 'High'
         return $false
