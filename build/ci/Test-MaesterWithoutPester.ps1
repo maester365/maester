@@ -20,8 +20,9 @@ $repoRoot = (Resolve-Path "$PSScriptRoot/../..").Path
 if (Get-Module -ListAvailable -Name Pester) { throw "Pester is installed: $((Get-Module -ListAvailable -Name Pester).ModuleBase -join ', ')" }
 
 $work = Join-Path ([System.IO.Path]::GetTempPath()) "maester-nopester-$([guid]::NewGuid().ToString('n'))"
-$null = New-Item -ItemType Directory -Path $work
-"Describe 'Custom' { It 'CONTOSO.1: Pester-format test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $work 'Custom.Tests.ps1')
+$null = New-Item -ItemType Directory -Path (Join-Path $work 'Custom')
+# Pester-format tests run only from a Custom folder.
+"Describe 'Custom' { It 'CONTOSO.1: Pester-format test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $work 'Custom/Custom.Tests.ps1')
 $out = Join-Path $work 'result.json'
 
 Import-Module (Join-Path $repoRoot 'powershell/Maester.psd1') -WarningAction SilentlyContinue
