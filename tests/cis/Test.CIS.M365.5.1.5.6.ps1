@@ -4,7 +4,7 @@
         Checks that the default app management policy limits the lifetime of application certificates.
 
     .DESCRIPTION
-        Checks that the default app management policy is enabled and that its asymmetric key lifetime restriction is enabled, its restriction date is reached, and it is limited to the allowed number of days for both applications and service principals.
+        Checks that the default app management policy is enabled and that its asymmetric key lifetime restriction is enabled, its restriction date is reached, no application or service principal was created before that date, and it is limited to the allowed number of days for both applications and service principals.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.5.6, L1)
 
     .EXAMPLE
@@ -41,15 +41,22 @@
     Write-Verbose 'Getting the default app management policy...'
     $appPolicy = Invoke-MtGraphRequest -RelativeUri 'policies/defaultAppManagementPolicy'
 
+    Write-Verbose 'Getting the applications and service principals...'
+    $tenantId = (Invoke-MtGraphRequest -RelativeUri 'organization').id
+    $applications = @(Invoke-MtGraphRequest -RelativeUri 'applications?$select=createdDateTime')
+    # Managed identities take no passwords, and first-party service principals belong to Microsoft.
+    $servicePrincipals = @(Invoke-MtGraphRequest -RelativeUri 'servicePrincipals?$select=createdDateTime,appOwnerOrganizationId,servicePrincipalType' | Where-Object { $_.appOwnerOrganizationId -eq $tenantId -and $_.servicePrincipalType -ne 'ManagedIdentity' })
+
     $scopes = @(
-        [pscustomobject]@{ Name = 'Applications'; Restrictions = @($appPolicy.applicationRestrictions.keyCredentials) }
-        [pscustomobject]@{ Name = 'Service principals'; Restrictions = @($appPolicy.servicePrincipalRestrictions.keyCredentials) }
+        [pscustomobject]@{ Name = 'Applications'; Restrictions = @($appPolicy.applicationRestrictions.keyCredentials); Objects = $applications }
+        [pscustomobject]@{ Name = 'Service principals'; Restrictions = @($appPolicy.servicePrincipalRestrictions.keyCredentials); Objects = $servicePrincipals }
     )
 
     $report = foreach ($scope in $scopes) {
         $restriction = $scope.Restrictions | Where-Object { $_.restrictionType -eq 'asymmetricKeyLifetime' } | Select-Object -First 1
         $startDate = $restriction.restrictForAppsCreatedAfterDateTime
-        $appliesNow = $null -eq $startDate -or ([datetime]$startDate).ToUniversalTime() -le [datetime]::UtcNow
+        $cutoff = if ($startDate) { ([datetime]$startDate).ToUniversalTime() } else { $null }
+        $createdBeforeDate = @($scope.Objects | Where-Object { $null -ne $cutoff -and ($null -eq $_.createdDateTime -or ([datetime]$_.createdDateTime).ToUniversalTime() -lt $cutoff) }).Count
         $maxLifetime = $restriction.maxLifetime
         $lifetimeDays = $null
         if ($maxLifetime) {
@@ -59,12 +66,14 @@
             'Default policy enabled' = $appPolicy.isEnabled -eq $true
             'Restriction enabled' = $restriction.state -eq 'enabled'
             'Lifetime within limit' = $null -ne $lifetimeDays -and $lifetimeDays -le $MaximumLifetimeDays
-            'Restriction date reached' = [bool]$appliesNow
+            'Restriction date reached' = $null -eq $cutoff -or $cutoff -le [datetime]::UtcNow
+            'Covers all existing objects' = $createdBeforeDate -eq 0
         }
         $failed = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         [pscustomobject]@{
             Scope = $scope.Name
             State = if ($restriction.state) { $restriction.state } else { 'Not found' }
+            CreatedBeforeDate = $createdBeforeDate
             Lifetime = if ($null -ne $lifetimeDays) { "$lifetimeDays days" } else { 'Not set' }
             Failed = $failed -join ', '
             Pass = $failed.Count -eq 0
@@ -75,10 +84,10 @@
     $passText = 'The lifetime of application certificates is limited for applications and service principals.'
     $failText = 'The lifetime of application certificates is not limited as required for applications and service principals.'
 
-    $resultMd = "| Scope | Restriction state | Maximum lifetime | Failed checks | Result |`n"
-    $resultMd += "| --- | --- | --- | --- | --- |`n"
+    $resultMd = "| Scope | Restriction state | Maximum lifetime | Created before the date | Failed checks | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Scope) | $($row.State) | $($row.Lifetime) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Scope) | $($row.State) | $($row.Lifetime) | $($row.CreatedBeforeDate) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

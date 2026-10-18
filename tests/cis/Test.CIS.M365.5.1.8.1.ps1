@@ -4,13 +4,13 @@
         Checks that password hash synchronization is enabled when directory synchronization is configured.
 
     .DESCRIPTION
-        Checks the on-premises directory synchronization settings and passes when password hash synchronization is enabled. The test is skipped as not applicable in a cloud-only tenant. Tenants that only synchronise with a different method can treat a failure as an exception.
+        Checks the on-premises directory synchronization settings and passes when password hash synchronization is enabled. The test is skipped as not applicable in a cloud-only tenant, and with an app-only connection because Microsoft Graph does not support application permissions for the synchronization endpoint. Tenants that only synchronise with a different method can treat a failure as an exception.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.8.1, L1)
 
     .EXAMPLE
         Test-MtCisPasswordHashSyncEnabled
 
-        Returns true if password hash synchronization is enabled. Returns nothing when the test is skipped in a cloud-only tenant.
+        Returns true if password hash synchronization is enabled. Returns nothing when the test is skipped in a cloud-only tenant or with an app-only connection.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.5.1.8.1
@@ -38,6 +38,11 @@
     $organization = Invoke-MtGraphRequest -RelativeUri 'organization'
     if ($organization.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
+
+    if ((Get-MgContext).AuthType -ne 'Delegated') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
         return $null
     }
 

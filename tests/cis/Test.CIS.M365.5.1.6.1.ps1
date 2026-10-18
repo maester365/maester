@@ -4,7 +4,7 @@
         Checks that guest invitations are limited to an allow list of domains.
 
     .DESCRIPTION
-        Checks the B2B collaboration restrictions and passes when invitations are allowed only to specific domains (an allow list) and no deny list is used, so that guests can be invited only from partner organisations that you approved.
+        Checks the organization default B2B collaboration restrictions and passes when invitations are allowed only to specific domains (an allow list) and no deny list is used, so that guests can be invited only from partner organisations that you approved.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.6.1, L2)
 
     .EXAMPLE
@@ -36,7 +36,7 @@
 
     Write-Verbose 'Getting the B2B management policy...'
     $policies = Invoke-MtGraphRequest -RelativeUri 'legacy/policies' -ApiVersion beta
-    $b2bPolicy = @($policies) | Where-Object { $_.type -eq 'B2BManagementPolicy' } | Select-Object -First 1
+    $b2bPolicy = @($policies) | Where-Object { $_.type -eq 'B2BManagementPolicy' -and $_.isOrganizationDefault -eq $true } | Select-Object -First 1
 
     $domainPolicy = $null
     if ($b2bPolicy) {
@@ -49,7 +49,7 @@
     $testResult = $hasAllowList -and -not $hasDenyList
 
     $passText = 'Collaboration invitations are limited to an allow list of domains.'
-    $failText = if ($null -eq $b2bPolicy) { 'No collaboration restriction policy is configured, so invitations can be sent to any domain.' } else { 'Collaboration invitations are not limited to an allow list of domains.' }
+    $failText = if ($null -eq $b2bPolicy) { 'No organization-default collaboration restriction policy is configured, so invitations can be sent to any domain.' } else { 'Collaboration invitations are not limited to an allow list of domains.' }
 
     $mode = if ($hasAllowList) { 'Allow invitations only to the specified domains' } elseif ($hasDenyList) { 'Deny invitations to the specified domains' } else { 'Allow invitations to any domain' }
     $checks = @([pscustomobject]@{ Setting = 'Collaboration restrictions'; Value = $mode; Pass = $testResult })

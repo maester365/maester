@@ -2,7 +2,7 @@
 
 Password hash synchronization sends a hash of the on-premises password hash to Microsoft Entra ID. It gives users the same password in the cloud with no dependency on on-premises servers at sign-in, and it enables Microsoft Entra ID Protection to detect leaked credentials. It is also a recovery option if federation or pass-through authentication fails.
 
-Cloud-only tenants do not use directory synchronization, so the test is skipped as not applicable. Tenants that deliberately avoid password hash synchronization can record an exception.
+Cloud-only tenants do not use directory synchronization, so the test is skipped as not applicable. Microsoft Graph reads these settings only with delegated permissions, so the test is also skipped on app-only connections. Tenants that deliberately avoid password hash synchronization can record an exception.
 
 #### Remediation action
 
