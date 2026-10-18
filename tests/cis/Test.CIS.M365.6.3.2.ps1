@@ -21,7 +21,7 @@
         Product = 'exchange',
         Feature = 'outlook',
         Area = 'data-protection',
-        ResourceType = 'Tenant',
+        ResourceType = 'Policy',
         Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
