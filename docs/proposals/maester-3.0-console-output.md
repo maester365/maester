@@ -77,7 +77,8 @@ the wordmark are the rows of the graph, and the version (and a newer version whe
 the caption of the graph. The phases and the overall progress are the two lines under it. A console of fewer than
 28 rows, or one too narrow for the wordmark and a graph, gets one line: the name in the colours of the
 wordmark, the version and the phases; the Pace graph is then under the product lanes when there are rows for it.
-The sketch below is the opening screen.
+The sketch below is the opening screen in the plain layout; a console with the rows for it has the boxed layout
+(see [Boxes in the main column](#boxes-in-the-main-column)).
 
 ```
 ┌──                                                                                  ──┐
@@ -128,6 +129,56 @@ The sketch below is the opening screen.
   the dashboard under it, so it is not sent to them.
 - **Cleanup.** `Invoke-Maester` has a `clean {}` block (PowerShell 7.3+) that restores the screen and the cursor on
   every path out: normal return, early return, error and Ctrl+C.
+
+### Boxes in the main column
+
+On a console of at least 35 rows (the dashboard keeps the last row for the status bar, shown or not, so that is 34
+rows of content) and 78 columns for the main column, the
+phases are stops on a track and every other part of the main column is a box like the panels of the right column,
+with its name in the top border. The owner picked this from mockups in October 2026 (Track, Coloured boxes, flow
+on), after a reference animation with boxed panels in their own colours and dots running along the lines between them.
+
+```
+ ✓ Prepare ━━━━━━━━ ● Run tests ━━━━━━━━━━━━━━━━━━━━━━━━━━━●┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ ○ Results ┄┄┄┄┄┄┄┄ ○ Reports
+   2.5s               0:42 · 192/352 · 54% · ETA 0:58                           ✓ 136  ✗ 39  ! 7  ? 6  – 4
+
+ ╭─ Products ─────────────────────────────────────────────────────────────────────── 7 products ─╮   (green)
+ │ Entra      ━━━━━━━━━━━━━━━━━━━━━━━━───────────────  114/182  ✓ 82   ✗ 24  ! 3  ? 3   2 running │
+ │ – Skipped  Azure (9)                                                                         │
+ ╰─────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭─ Tests ────────────────────────────────────────────────────────────────────────── 192 of 352 ─╮   (grey)
+ │ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■⠲⠲■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ │
+ ╰─────────────────────────────────────────────────────────────────────────────────────────────╯
+ ╭─ Running ─────────────────────────────────────────────────────────────────────────── 4 tests ─╮   (teal)
+ │ ⠋ MT.1005         All Conditional Access policies are configured with exclusions…      0.4s │
+ ├╌ Finished ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+ │ ✓ MT.1192         Entra recommendations are reviewed and actioned                      5.3s │
+ ╰─────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+- **Track.** The phases as stops on one line: done (✓), working (amber ●), to come (○). The line after a phase that
+  is done is solid green, the line after one to come is dotted. The line after the phase of the tests (the one that
+  was current when the tests started, else the first whose name has "test" in it) takes the room the others leave
+  (eight columns each) and fills as tests finish, up to an amber dot. The line after another phase that works has a
+  dot with a short tail that runs along it. The row under the stops has the time of each stop that started, how far
+  the tests are, what a working phase is doing (`ShowStatus`, which the plain layout writes on a line of its own),
+  and the counts at the right. When that row is too long the time left goes first, then the end of what a phase is
+  doing; while a later phase works, its status goes before the counts.
+- **Products, Pace, Tests.** The lanes in a green box, the Pace graph (when the band at the top has no room for it)
+  and the result blocks in grey boxes, with the same rules as in the plain layout.
+- **Running.** The running tests in a teal box, then under a dashed line the tests that finished, newest first, when
+  there is a row for one at least. The box takes the rows down to the insight panels, or to the bottom. After the
+  tests it is called Finished and has the finished tests alone.
+- **Colour.** Products and Running have a colour for what they hold, in the border and the title. The right column
+  uses border colour for state (red Failed, amber Drift); the two do not share a colour.
+- **Rows.** The boxes cost about four rows more than the plain lines, which come out of the list of finished tests.
+  When they would leave no room for what the plain layout keeps (a row of insight panels next to many products),
+  the main column has its plain lines.
+- **Movement.** On the ticks of the dashboard, with colour: a pulse runs along the bar of each product that has
+  tests running and along the finished part of the track, a dot runs along the line of a phase that works, and a
+  result block is bright white for about 300 ms after its test finishes. Each is a few cells of a line, which the
+  frame of the tick writes as that line. `MtConsoleRenderer.Animate` turns it off (on by default); without ticks
+  nothing moves, so frames drawn on events alone are the same every time.
 
 **Interactive runs never call `Write-Progress`.** The host's progress pane finds its place by asking the terminal for the
 cursor position (`ESC[6n`). A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top
