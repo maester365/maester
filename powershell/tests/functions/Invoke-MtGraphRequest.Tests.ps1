@@ -65,6 +65,35 @@ Describe 'Invoke-MtGraphRequest' {
         }
     }
 
+    Context 'No Graph connection' {
+        It 'Fails with a clear message when there is no Graph context' {
+            Mock Get-MgContext -ModuleName Maester { $null }
+            InModuleScope Maester {
+                { Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging } |
+                    Should -Throw '*No active Microsoft Graph context*'
+            }
+            Should -Not -Invoke Invoke-MgGraphRequest -ModuleName Maester
+        }
+
+        It 'Fails with the same message when the context carries no environment' {
+            Mock Get-MgContext -ModuleName Maester { @{ Environment = '' } }
+            InModuleScope Maester {
+                { Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging } |
+                    Should -Throw "*Connect-Maester*"
+            }
+        }
+
+        It 'Still works without a Graph context when -GraphBaseUri is supplied' {
+            Mock Get-MgContext -ModuleName Maester { $null }
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -GraphBaseUri 'https://graph.microsoft.us/' -DisablePaging
+            }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'https://graph.microsoft.us/v1.0/users'
+            }
+        }
+    }
+
     Context 'Cache keys' {
         It 'Qualifies the cache key with the resolved endpoint' {
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }

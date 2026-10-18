@@ -83,7 +83,11 @@
         [bool] $isEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
         if (!$isEndpointOverride) {
             Write-Verbose -Message "Resolving Graph endpoint from the active MgContext."
-            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
+            $mgContext = Get-MgContext
+            if (-not $mgContext -or [string]::IsNullOrEmpty($mgContext.Environment)) {
+                throw "No active Microsoft Graph context. Ensure you are connected via 'Connect-Maester', or pass -GraphBaseUri to target an endpoint explicitly."
+            }
+            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name $mgContext.Environment).GraphEndpoint)
         }
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri
