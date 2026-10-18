@@ -77,13 +77,16 @@
     )
 
     begin {
-        if ([string]::IsNullOrEmpty($GraphBaseUri)) {
-            if ([string]::IsNullOrEmpty($__MtSession.GraphBaseUri)) {
-                Write-Verbose -Message "Setting GraphBaseUri to default value from MgContext."
-                $__MtSession.GraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
-            }
+        # An explicit -GraphBaseUri is an intentional absolute endpoint override. Without one the
+        # endpoint is read from the active Graph context on every invocation, so a context switch
+        # inside a single session is picked up instead of reusing a stale session value.
+        [bool] $isEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
+        if (!$isEndpointOverride) {
+            Write-Verbose -Message "Resolving Graph endpoint from the active MgContext."
+            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
         }
-        $GraphBaseUri = $__MtSession.GraphBaseUri
+        # Exposed for callers that read the session value; no longer used to route requests.
+        $__MtSession.GraphBaseUri = $GraphBaseUri
 
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
@@ -163,12 +166,16 @@
                     $request = New-Object PSObject -Property @{
                         id      = $listRequests.Count #(New-Guid).ToString()
                         method  = $($Method)
-                        url     = $uriQueryEndpointFinal.Uri.AbsoluteUri -replace ('{0}{1}/' -f $GraphBaseUri.AbsoluteUri, $ApiVersion)
+                        url     = $uriQueryEndpointFinal.Uri.PathAndQuery.TrimStart('/') -replace ('^{0}/' -f [regex]::Escape($ApiVersion)), ''
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
                 } else {
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
+                    # Transport uri: relative by default so Microsoft Graph PowerShell routes it to
+                    # the connected environment. Cache key stays absolute, which is what keeps
+                    # entries from one environment from being served to another.
+                    $transportUri = if ($isEndpointOverride) { $uriQueryEndpointFinal.Uri.AbsoluteUri } else { $uriQueryEndpointFinal.Uri.PathAndQuery.TrimStart('/') }
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $transportUri -CacheKey $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
                     Complete-Result $results $DisablePaging
                 }
             }
@@ -183,7 +190,8 @@
                 $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
                 Write-Debug $jsonRequests
 
-                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
+                $batchTransportUri = if ($isEndpointOverride) { $uriQueryEndpoint.Uri.AbsoluteUri } else { $uriQueryEndpoint.Uri.PathAndQuery.TrimStart('/') }
+                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $batchTransportUri -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
                 $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
 
                 foreach ($results in ($resultsBatch.body)) {
