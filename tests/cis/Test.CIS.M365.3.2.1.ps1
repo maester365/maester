@@ -38,6 +38,8 @@
     $policies = @(Get-MtExo -Request DlpCompliancePolicy | Where-Object { $_.EnforcementPlanes -notcontains 'CopilotExperiences' })
 
     $report = foreach ($policy in $policies) {
+        # A policy assigned to administrative units applies only to the members of those units, so it covers no location tenant-wide.
+        $unitScoped = @($policy.PolicyRBACScopes | Where-Object { $_ }).Count -gt 0
         # An All inclusion covers a location only when it has no exclusions or inclusion restrictions.
         $locations = [ordered]@{
             Exchange = (@($policy.ExchangeLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.ExchangeSenderMemberOf) + @($policy.ExchangeSenderMemberOfException) | Where-Object { $_ }).Count -eq 0
@@ -45,11 +47,11 @@
             OneDrive = (@($policy.OneDriveLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.OneDriveSharedBy) + @($policy.OneDriveSharedByMemberOf) + @($policy.ExceptIfOneDriveSharedBy) + @($policy.ExceptIfOneDriveSharedByMemberOf) | Where-Object { $_ }).Count -eq 0
             Teams = (@($policy.TeamsLocation.ImmutableIdentity) -contains 'All') -and @($policy.TeamsLocationException | Where-Object { $_ }).Count -eq 0
         }
-        $covered = @($locations.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $_.Key })
+        $covered = if ($unitScoped) { @() } else { @($locations.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $_.Key }) }
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
-            Locations = if ($covered.Count -gt 0) { $covered -join ', ' } else { 'None' }
+            Locations = if ($unitScoped) { 'Limited to administrative units' } elseif ($covered.Count -gt 0) { $covered -join ', ' } else { 'None' }
             Pass = $policy.Mode -eq 'Enable' -and $covered.Count -gt 0
         }
     }
