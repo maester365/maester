@@ -85,22 +85,6 @@ function Connect-MtAdTarget {
         return $normalizedDomain -eq $normalizedForest -or $normalizedDomain.EndsWith(".$normalizedForest")
     }
 
-    function Test-MtServerMatchesHostName {
-        param(
-            [string]$RequestedServer,
-            [string]$ResolvedServer
-        )
-
-        $normalizedRequested = ConvertTo-MtNormalizedDnsName -Value $RequestedServer
-        $normalizedResolved = ConvertTo-MtNormalizedDnsName -Value $ResolvedServer
-
-        if ([string]::IsNullOrWhiteSpace($normalizedRequested) -or [string]::IsNullOrWhiteSpace($normalizedResolved)) {
-            return $false
-        }
-
-        return $normalizedRequested -eq $normalizedResolved -or $normalizedResolved.StartsWith("$normalizedRequested.")
-    }
-
     function Close-MtAdLdapConnection {
         param(
             $Connection
@@ -527,23 +511,19 @@ function Connect-MtAdTarget {
             -SkipCertificateCheck:$SkipCertificateCheck
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedForest) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryForest)) {
-            throw 'Explicit selector values must resolve to the same forest/domain/server.'
+            throw "The resolved forest '$($resolvedConnection.Metadata.ResolvedForest)' does not match the requested forest '$ActiveDirectoryForest'."
         }
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryDomain) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedDomain) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryDomain)) {
-            throw 'Explicit selector values must resolve to the same forest/domain/server.'
-        }
-
-        if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryServer) -and -not (Test-MtServerMatchesHostName -RequestedServer $ActiveDirectoryServer -ResolvedServer $resolvedConnection.Metadata.ResolvedServer)) {
-            throw 'Explicit selector values must resolve to the same forest/domain/server.'
+            throw "The resolved domain '$($resolvedConnection.Metadata.ResolvedDomain)' does not match the requested domain '$ActiveDirectoryDomain'."
         }
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryServer) -and -not [string]::IsNullOrWhiteSpace($ActiveDirectoryDomain) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedDomain) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryDomain)) {
-            throw 'Explicit selector values must resolve to the same forest/domain/server.'
+            throw "The resolved domain '$($resolvedConnection.Metadata.ResolvedDomain)' does not match the requested domain '$ActiveDirectoryDomain'."
         }
 
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryServer) -and -not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest) -and -not (Test-MtDomainWithinForest -Domain $resolvedConnection.Metadata.ResolvedDomain -Forest $ActiveDirectoryForest)) {
-            throw 'Explicit selector values must resolve to the same forest/domain/server.'
+            throw "The resolved domain '$($resolvedConnection.Metadata.ResolvedDomain)' is not within the requested forest '$ActiveDirectoryForest'."
         }
 
         if ($PassThru.IsPresent) {
