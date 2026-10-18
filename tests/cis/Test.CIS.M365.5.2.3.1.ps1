@@ -63,6 +63,9 @@
     foreach ($check in $checks) {
         $resultMd += "| $($check.Setting) | $($check.Value) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
+    # Exclusions need manual review, so they are listed here and do not change the result.
+    $excluded = @((@($authenticator.excludeTargets.id) + @($appInfo.excludeTarget.id) + @($locationInfo.excludeTarget.id)) | Where-Object { $_ -and $_ -ne '00000000-0000-0000-0000-000000000000' })
+    $resultMd += "| Excluded targets (review: break-glass accounts only) | $(if ($excluded) { $excluded -join ', ' } else { 'None' }) | Review |`n"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"

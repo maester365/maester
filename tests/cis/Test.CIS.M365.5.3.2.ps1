@@ -47,15 +47,23 @@
         $settings = $review.settings
         $patternType = $settings.recurrence.pattern.type
         $interval = $settings.recurrence.pattern.interval
+        # Multi-stage reviews take their reviewers and duration from the stages.
+        $stages = @($review.stageSettings | Where-Object { $_ })
+        $reviewers = @($review.reviewers | Where-Object { $_ })
+        $durationInDays = $settings.instanceDurationInDays
+        if ($stages.Count -gt 0) {
+            $reviewers = @($stages | ForEach-Object { $_.reviewers } | Where-Object { $_ })
+            $durationInDays = ($stages | Measure-Object -Property durationInDays -Sum).Sum
+        }
         $checks = [ordered]@{
             'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
-            'Reviewers' = @($review.reviewers).Count -ge 1
+            'Reviewers' = $reviewers.Count -ge 1
             'Notifications' = [bool]$settings.mailNotificationsEnabled
             'Reminders' = [bool]$settings.reminderNotificationsEnabled
-            'Duration' = $null -ne $settings.instanceDurationInDays -and $settings.instanceDurationInDays -le $MaximumInstanceDurationInDays
+            'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationInDays
             'Justification' = [bool]$settings.justificationRequiredOnApproval
             'Auto apply' = [bool]$settings.autoApplyDecisionsEnabled
-            'Default decision deny' = $settings.defaultDecision -eq 'Deny'
+            'Default decision deny' = $settings.defaultDecisionEnabled -eq $true -and $settings.defaultDecision -eq 'Deny'
             'No end date' = $settings.recurrence.range.type -eq 'noEnd'
         }
         $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })

@@ -61,17 +61,25 @@
         $settings = $review.settings
         $patternType = $settings.recurrence.pattern.type
         $interval = $settings.recurrence.pattern.interval
-        $principalQuery = @($review.scope.principalScopes.query) -join ' '
+        # Multi-stage reviews take their reviewers and duration from the stages.
+        $stages = @($review.stageSettings | Where-Object { $_ })
+        $reviewers = @($review.reviewers | Where-Object { $_ })
+        $durationInDays = $settings.instanceDurationInDays
+        if ($stages.Count -gt 0) {
+            $reviewers = @($stages | ForEach-Object { $_.reviewers } | Where-Object { $_ })
+            $durationInDays = ($stages | Measure-Object -Property durationInDays -Sum).Sum
+        }
+        $principalQueries = @($review.scope.principalScopes.query)
         $checks = [ordered]@{
-            'Users and groups in scope' = $principalQuery -match 'users' -and $principalQuery -match 'groups'
+            'Users and groups in scope' = @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?users(\?|$)' }).Count -gt 0 -and @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?groups(\?|$)' }).Count -gt 0
             'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
             'Started' = ([datetime]$startDate).ToUniversalTime() -le [datetime]::UtcNow
-            'Reviewers' = @($review.reviewers).Count -ge 1
+            'Reviewers' = $reviewers.Count -ge 1
             'In progress' = $review.status -eq 'InProgress'
             'Notifications' = [bool]$settings.mailNotificationsEnabled
             'Reminders' = [bool]$settings.reminderNotificationsEnabled
             'Justification' = [bool]$settings.justificationRequiredOnApproval
-            'Duration' = $null -ne $settings.instanceDurationInDays -and $settings.instanceDurationInDays -le $MaximumInstanceDurationInDays
+            'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationInDays
             'Auto apply' = [bool]$settings.autoApplyDecisionsEnabled
             'Default decision none' = $settings.defaultDecision -eq 'None'
             'No end date' = $settings.recurrence.range.type -eq 'noEnd'

@@ -54,6 +54,9 @@
     foreach ($check in $checks) {
         $resultMd += "| $($check.Setting) | $($check.Value) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
+    # Exclusions need manual review, so they are listed here and do not change the result.
+    $excluded = @($preferences.excludeTargets.id | Where-Object { $_ })
+    $resultMd += "| Excluded targets (review: documented exclusions only) | $(if ($excluded) { $excluded -join ', ' } else { 'None' }) | Review |`n"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"

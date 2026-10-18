@@ -15,10 +15,12 @@ Disabling the method means unverified guests can no longer redeem invitations wi
 To disable the method with PowerShell, connect with `Connect-MgGraph -Scopes 'Policy.ReadWrite.AuthenticationMethod'` and run:
 
 ```powershell
-$params = @(
-    @{ Id = 'Email'; State = 'disabled' }
-)
-Update-MgPolicyAuthenticationMethodPolicy -AuthenticationMethodConfigurations $params
+$params = @{
+    '@odata.type' = '#microsoft.graph.emailAuthenticationMethodConfiguration'
+    state = 'disabled'
+    allowExternalIdToUseEmailOtp = 'disabled'
+}
+Update-MgPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration -AuthenticationMethodConfigurationId 'Email' -BodyParameter $params
 ```
 
 #### Related links

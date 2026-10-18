@@ -36,9 +36,9 @@
     param()
 
     Write-Verbose 'Getting the user registration details report...'
-    $filter = "isMfaCapable eq false and userType eq 'Member'"
+    $filter = 'isMfaCapable eq false'
     $registrations = Invoke-MtGraphRequest -RelativeUri 'reports/authenticationMethods/userRegistrationDetails' -Filter $filter
-    $notCapable = @($registrations | Where-Object { $_.userDisplayName -notmatch 'On-Premises Directory Synchronization Service Account' })
+    $notCapable = @($registrations | Where-Object { $_.userType -eq 'Member' -and $_.userDisplayName -notmatch 'On-Premises Directory Synchronization Service Account' })
     $testResult = $notCapable.Count -eq 0
 
     $passText = 'All member users are registered for a method that can satisfy multifactor authentication.'
