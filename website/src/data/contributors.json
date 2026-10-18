@@ -770,11 +770,12 @@
         "MT.1211",
         "MT.1212",
         "MT.1213",
-        "MT.1223"
+        "MT.1223",
+        "MT.1225"
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 4
+      "recentCommits": 10
     },
     {
       "id": "Mynster9361",
@@ -1690,7 +1691,7 @@
         "MT.1007"
       ],
       "initials": "BR",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "mrdos010",
@@ -2610,7 +2611,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 162
+      "recentCommits": 164
     }
   ],
   "attributions": {
@@ -5757,6 +5758,10 @@
       "author": "Dfrank77",
       "contributors": []
     },
+    "MT.1225": {
+      "author": "agnivesh",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": []
@@ -8746,6 +8751,10 @@
     "MT.1224": {
       "title": "Microsoft-managed Conditional Access policies should not be left in report-only mode.",
       "path": "/docs/next/tests/MT.1224"
+    },
+    "MT.1225": {
+      "title": "Users should not be able to create Agent Identity Blueprints.",
+      "path": "/docs/next/tests/MT.1225"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
