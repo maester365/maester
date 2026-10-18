@@ -72,10 +72,14 @@ function ConvertFrom-MtLdapSecurityDescriptor {
         $accessControlType = switch ($Ace.AceType) {
             'AccessAllowed' { 'Allow' }
             'AccessAllowedObject' { 'Allow' }
+            'AccessAllowedCompound' { 'Allow' }
             'AccessDenied' { 'Deny' }
             'AccessDeniedObject' { 'Deny' }
             'SystemAudit' { 'Audit' }
             'SystemAuditObject' { 'Audit' }
+            # The callback forms are deliberately not mapped: they parse to CustomAce rather than
+            # KnownAce, so they arrive with no SecurityIdentifier and no access mask, and naming the
+            # raw type says more than calling an entry with no principal an allow.
             default { $Ace.AceType.ToString() }
         }
 

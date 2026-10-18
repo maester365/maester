@@ -125,4 +125,46 @@ Describe 'Active Directory DACL tests read AccessControlType as the collector em
         $script:Result | Should -BeLike "*| $resetPassword | 1 | 1 | 1 |*"
         $script:Result | Should -BeLike "*| $changePassword | 1 | 1 | 1 |*"
     }
+
+    Context 'A compound allow ACE' {
+        BeforeAll {
+            # AccessAllowedCompound is not one of the six types the converter maps, so its default
+            # branch passes the raw name through. CompoundAce derives from KnownAce, so unlike the
+            # callback forms the entry still carries a SecurityIdentifier and an access mask.
+            $script:CompoundDaclEntries = @($script:DaclEntries) + @(
+                [PSCustomObject]@{
+                    ObjectDN              = 'OU=Sales,DC=contoso,DC=com'
+                    ObjectClass           = 'organizationalUnit'
+                    ObjectName            = 'Sales'
+                    AccessControlType     = 'Allow'
+                    AceType               = 'AccessAllowedCompound'
+                    ActiveDirectoryRights = 'GenericAll'
+                    IdentityReference     = $helpdesk
+                    ObjectType            = [guid]::Empty.ToString()
+                    Sid                   = $helpdesk
+                }
+            )
+        }
+
+        BeforeEach {
+            Mock -ModuleName Maester Get-MtADDomainState { [PSCustomObject]@{ DaclEntries = $script:CompoundDaclEntries } }
+        }
+
+        It 'AD-DACL-08 counts it as an allow, so the identity row still adds up' {
+            Test-MtAdDaclIdentityAceDistribution | Should -BeTrue
+
+            # IdentityReference | ACE Count | Distinct Objects | Allow ACEs | Deny ACEs
+            # Three ACEs, three allows: without the compound mapped the row read 3 | 1 | 2 | 0.
+            $script:Result | Should -BeLike "*| $helpdesk | 3 | 1 | 3 | 0 |*"
+        }
+
+        It 'AD-DACL-09 counts its privileged right' {
+            Test-MtAdDaclPrivilegedAllowAceCount | Should -BeTrue
+
+            $script:Result | Should -BeLike '*| Total DACL ACEs | 8 |*'
+            $script:Result | Should -BeLike '*| Privileged allow ACEs | 5 |*'
+            $script:Result | Should -BeLike '*| ACEs containing GenericAll | 2 |*'
+        }
+    }
+
 }
