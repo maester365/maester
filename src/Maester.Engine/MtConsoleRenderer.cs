@@ -71,6 +71,9 @@ namespace Maester.Engine
         {
             public string Text;
             public string Plain;
+            // A line across a box (Box), with this name in it, in place of a line of text.
+            public string Rule;
+            public bool Dashed;
         }
 
         private readonly object _gate = new object();
@@ -347,6 +350,7 @@ namespace Maester.Engine
                     Write(Esc + "?25l");
                 }
                 _status = null;
+                _testPhase = CurrentPhaseIndex();
                 ResetPanelState();
                 ResetGame();
                 _insights = _facts != null && _total >= InsightLeastTests;
@@ -808,6 +812,14 @@ namespace Maester.Engine
             }
 #pragma warning restore S3241
 
+            /// <summary>A line that was built already, with its colours.</summary>
+            public LineBuilder AddLine(Line line)
+            {
+                _text.Append(_ansi ? line.Text : line.Plain);
+                _plain.Append(line.Plain);
+                return this;
+            }
+
             public Line Build() { return new Line { Text = _text.ToString(), Plain = _plain.ToString() }; }
         }
 
@@ -835,10 +847,17 @@ namespace Maester.Engine
             b.Add(Dash + " " + N(skipped), "2");
         }
 
-        private void AddBar(LineBuilder b, int done, int total, int width)
+        /// <summary>
+        /// A bar of <paramref name="width"/> columns, filled for <paramref name="done"/> of <paramref name="total"/>.
+        /// A bar with a <paramref name="pulse"/> (its place on the screen, so that two bars do not pulse together)
+        /// has a pulse running along what is done, on the ticks.
+        /// </summary>
+        private void AddBar(LineBuilder b, int done, int total, int width, int pulse = -1)
         {
             int filled = total > 0 ? (int)Math.Min(width, (long)width * done / total) : 0;
-            b.Add(new string(Unicode ? '━' : '#', filled), "32");
+            char cell = Unicode ? '━' : '#';
+            if (pulse >= 0 && filled >= 3 && Flowing) AddPulsed(b, cell, filled, (_tick * 3 / 2 + pulse * 9) % (filled + 16), "32");
+            else b.Add(new string(cell, filled), "32");
             b.Add(new string(Unicode ? '─' : '-', width - filled), "2");
         }
 
@@ -923,7 +942,20 @@ namespace Maester.Engine
             int paneWidth = PaneWidth(width);
             int mainWidth = width - 1 - PaneGap - paneWidth;
             int max = paneWidth > 0 ? mainWidth - 1 : Math.Max(20, width - 1);
-            Func<Line> blank = () => new Line { Text = string.Empty, Plain = string.Empty };
+            // The main column has boxes like the right column when it has the rows and columns for them.
+            var screen = (Boxed(max, rows) ? BuildBoxedMain(max, rows, ansi) : null) ?? BuildPlainMain(max, rows, ansi);
+            if (paneWidth > 0)
+            {
+                var pane = BuildPane(paneWidth, rows, ansi);
+                if (pane.Count > 0) return Beside(screen, pane, mainWidth, rows);
+            }
+            return screen;
+        }
+
+        /// <summary>The main column in plain lines, on a console that is short of rows or columns for its boxes.</summary>
+        private List<Line> BuildPlainMain(int max, int rows, bool ansi)
+        {
+            Func<Line> blank = Blank;
             bool tests = _running || _total > 0;
             bool info = _info != null;
 
@@ -936,7 +968,7 @@ namespace Maester.Engine
                 {
                     var p = _phases[i];
                     if (p.Done) strip.Add(Ok, "32").Add(" " + p.Name + (p.Clock != null ? " " + Short(p.Clock.Elapsed) : string.Empty), "2");
-                    else if (p.Clock != null) strip.Add(Unicode ? "●" : "*", "38;5;215").Add(" " + p.Name, "1").Add(" " + Short(p.Clock.Elapsed), "38;5;215");
+                    else if (p.Clock != null) strip.Add(Unicode ? "●" : "*", Amber).Add(" " + p.Name, "1").Add(" " + Short(p.Clock.Elapsed), Amber);
                     else strip.Add(Unicode ? "○" : "o", "2").Add(" " + p.Name, "2");
                     if (i < _phases.Count - 1) strip.Add(Unicode ? "  ─  " : "  -  ", "2");
                 }
@@ -972,15 +1004,7 @@ namespace Maester.Engine
             if (_running)
             {
                 tail.Add(new LineBuilder(ansi).Add(" Running", "1").Add(_workers.Count > 1 ? " · " + N(_workers.Count) + " tests" : string.Empty, "2").Build());
-                foreach (var w in _workers)
-                {
-                    string time = Short(w.Clock.Elapsed).PadLeft(7);
-                    var b = new LineBuilder(ansi).Add(" " + Spinner() + " ", "36").Add(FitId(w.Id) + " ", "1").Add(w.Title);
-                    var cut = Truncate(b.Build(), max - time.Length - 1, ansi);
-                    string gap = new string(' ', Math.Max(1, max - time.Length - cut.Plain.Length));
-                    tail.Add(new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time });
-                }
-                if (_workers.Count == 0) tail.Add(new LineBuilder(ansi).Add(" " + Spinner() + " ", "36").Add((_status ?? "Starting the next test") + Ellipsis(), "2").Build());
+                tail.AddRange(BuildWorkerLines(max, " ", ansi));
             }
             else if (_status != null)
             {
@@ -994,37 +1018,13 @@ namespace Maester.Engine
             // A lane whose tests were all skipped has nothing to show in a row of its own: those lanes share
             // one line, by name and number of tests. That is a lane whose tests all finished as skipped, and a
             // lane that the run gave no tests and the note "n skipped" (its service is not connected).
-            var skippedLanes = new List<Lane>();
-            if (tests) foreach (var l in _lanes) if (SkippedCount(l) > 0) skippedLanes.Add(l);
+            var skippedLanes = tests ? SkippedLanes() : new List<Lane>();
             int lanesWanted = tests ? _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0) : 0;
             int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
-            if (band)
-            {
-                header.AddRange(BuildRunBand(max, ansi));
-            }
-            else if (tests)
-            {
-                header.AddRange(BuildRunHeader(max, phases, ansi));
-            }
-            else if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
-            {
-                for (int i = 0; i < _header.Length; i++)
-                {
-                    string h = _header[i];
-                    header.Add(i == _taglineRow ? BuildTagline(ansi) : new Line { Text = ansi ? h : StripAnsi(h), Plain = StripAnsi(h) });
-                }
-            }
-            else if (_compactHeader != null)
-            {
-                header.Add(Truncate(new LineBuilder(ansi).Add(" " + _compactHeader, "1").Build(), max, ansi));
-            }
-            if (info)
-            {
-                string plainInfo = StripAnsi(_info);
-                header.Add(_infoLength <= max
-                    ? new Line { Text = ansi ? _info : plainInfo, Plain = plainInfo }
-                    : Truncate(new Line { Text = plainInfo, Plain = plainInfo }, max, ansi));
-            }
+            if (band) header.AddRange(BuildRunBand(max, ansi));
+            else if (tests) header.AddRange(BuildRunHeader(max, phases, ansi));
+            else header.AddRange(BuildOpeningHeader(max, rows, needed, ansi));
+            if (info) header.Add(BuildInfoLine(max, ansi));
             header.Add(blank());
 
             // The insight panels keep their place while the tests run: one row of them, and the tests that ran
@@ -1047,12 +1047,7 @@ namespace Maester.Engine
                     if (most < (last ? 2 : 1 + RecentLeast)) continue;
                     reserve = kept;
                     if (last) recentKept = 0;
-                    if (tail.Count > most)
-                    {
-                        int more = tail.Count - (most - 1);
-                        tail.RemoveRange(most - 1, more);
-                        tail.Add(new LineBuilder(ansi).Add("   " + Ellipsis() + " and " + N(more) + " more running", "2").Build());
-                    }
+                    LeaveMoreRunning(tail, most, ansi);
                 }
             }
 
@@ -1061,56 +1056,7 @@ namespace Maester.Engine
             int room = rows - header.Count - body.Count - tail.Count - 1;
             if (lanesWanted > 0 && room >= 2)
             {
-                var shown = new List<Lane>(_lanes);
-                shown.RemoveAll(l => skippedLanes.Contains(l));
-                int skippedLine = skippedLanes.Count > 0 ? 1 : 0;
-                room -= skippedLine;
-                int hidden = 0;
-                if (shown.Count > room)
-                {
-                    shown.Sort((a, b) =>
-                    {
-                        int byRunning = (b.Running > 0 ? 1 : 0).CompareTo(a.Running > 0 ? 1 : 0);
-                        return byRunning != 0 ? byRunning : (b.Total - b.Done).CompareTo(a.Total - a.Done);
-                    });
-                    hidden = shown.Count - (room - 1);
-                    shown.RemoveRange(room - 1, hidden);
-                    shown.Sort((a, b) => _lanes.IndexOf(a).CompareTo(_lanes.IndexOf(b)));
-                }
-                int nameWidth = 8;
-                foreach (var l in shown) nameWidth = Math.Max(nameWidth, Math.Min(18, l.Name.Length));
-                // Up to the standard width the bars are at most 24 columns; a wider column gives them the extra.
-                int barWidth = Math.Max(8, Math.Min(24, max - nameWidth - 52) + Math.Max(0, max - (MainWidth - 1)));
-                foreach (var l in shown)
-                {
-                    bool active = l.Done > 0 || l.Running > 0;
-                    var b = new LineBuilder(ansi).Add(" ").Add(Fit(l.Name, nameWidth).PadRight(nameWidth + 1), active ? "1" : "2");
-                    AddBar(b, l.Done, l.Total, barWidth);
-                    b.Add((" " + N(l.Done) + "/" + N(l.Total)).PadLeft(9) + "  ", "2");
-                    if (l.Done > 0)
-                    {
-                        b.Add((Ok + " " + N(l.Passed)).PadRight(7), "32");
-                        b.Add((Bad + " " + N(l.Failed)).PadRight(6), l.Failed > 0 ? "31" : "2");
-                        b.Add(("! " + N(l.Error)).PadRight(5), l.Error > 0 ? "33" : "2");
-                        b.Add(("? " + N(l.Investigate)).PadRight(5), l.Investigate > 0 ? "35" : "2");
-                    }
-                    else
-                    {
-                        b.Add(new string(' ', 23));
-                    }
-                    if (l.Running > 0) b.Add(" " + N(l.Running) + " running", "38;5;215");
-                    else if (!string.IsNullOrEmpty(l.Note)) b.Add(" " + l.Note, "2");
-                    else if (l.Done == 0 && l.Total > 0 && _running) b.Add(" waiting", "2");
-                    lanes.Add(Truncate(b.Build(), max, ansi));
-                }
-                if (hidden > 0) lanes.Add(new LineBuilder(ansi).Add(" " + Ellipsis() + " and " + N(hidden) + " more", "2").Build());
-                if (skippedLine > 0)
-                {
-                    var names = new List<string>();
-                    foreach (var l in skippedLanes) names.Add(l.Name + " (" + N(SkippedCount(l)) + ")");
-                    string dot = Unicode ? " · " : ", ";
-                    lanes.Add(Truncate(new LineBuilder(ansi).Add(" " + (Unicode ? "–" : "-") + " Skipped  ", "2").Add(string.Join(dot, names), "2").Build(), max, ansi));
-                }
+                lanes.AddRange(BuildLaneRows(max, room, " ", skippedLanes, ansi));
                 lanes.Add(blank());
             }
 
@@ -1126,7 +1072,7 @@ namespace Maester.Engine
             }
 
             // The results chart takes rows that are still free.
-            var chart = tests ? BuildResultsChart(max, free - pace.Count - reserve, ansi) : new List<Line>();
+            var chart = tests ? BuildResultsChart(Math.Max(10, max - 2), free - pace.Count - reserve, " ", ansi) : new List<Line>();
             if (chart.Count > 0) chart.Add(blank());
 
             var screen = new List<Line>();
@@ -1143,20 +1089,45 @@ namespace Maester.Engine
             {
                 int left = rows - screen.Count;
                 var insights = BuildInsights(max, left - Math.Min(recentKept, _recent.Count) - 1, ansi);
-                screen.AddRange(BuildRecent(max, insights.Count > 0 ? left - insights.Count - 1 : left, ansi));
+                screen.AddRange(BuildRecent(max, insights.Count > 0 ? left - insights.Count - 1 : left, " ", ansi));
                 if (insights.Count > 0)
                 {
                     while (screen.Count < rows - insights.Count) screen.Add(blank());
                     screen.AddRange(insights);
                 }
             }
-            if (screen.Count > rows) screen.RemoveRange(rows, screen.Count - rows);
-            if (paneWidth > 0)
+            return Fit(screen, rows);
+        }
+
+        /// <summary>
+        /// The header while the run prepares: the banner, when it fits with <paramref name="needed"/> rows under
+        /// it, else the one-line name.
+        /// </summary>
+        private List<Line> BuildOpeningHeader(int max, int rows, int needed, bool ansi)
+        {
+            var header = new List<Line>();
+            if (_header != null && max >= _headerWidth && rows >= _header.Length + needed)
             {
-                var pane = BuildPane(paneWidth, rows, ansi);
-                if (pane.Count > 0) return Beside(screen, pane, mainWidth, rows);
+                for (int i = 0; i < _header.Length; i++)
+                {
+                    string h = _header[i];
+                    header.Add(i == _taglineRow ? BuildTagline(ansi) : new Line { Text = ansi ? h : StripAnsi(h), Plain = StripAnsi(h) });
+                }
             }
-            return screen;
+            else if (_compactHeader != null)
+            {
+                header.Add(Truncate(new LineBuilder(ansi).Add(" " + _compactHeader, "1").Build(), max, ansi));
+            }
+            return header;
+        }
+
+        /// <summary>The line of information under the header (SetInfo), cut to the width when it is too long.</summary>
+        private Line BuildInfoLine(int max, bool ansi)
+        {
+            string plainInfo = StripAnsi(_info);
+            return _infoLength <= max
+                ? new Line { Text = ansi ? _info : plainInfo, Plain = plainInfo }
+                : Truncate(new Line { Text = plainInfo, Plain = plainInfo }, max, ansi);
         }
 
         private const int RunBandLeastRows = 28;

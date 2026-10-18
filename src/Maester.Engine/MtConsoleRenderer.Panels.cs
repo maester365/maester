@@ -364,7 +364,7 @@ namespace Maester.Engine
         }
 
         /// <summary>The tests that ran before the ones that are running, newest first, to fill <paramref name="rows"/> rows.</summary>
-        private List<Line> BuildRecent(int max, int rows, bool ansi)
+        private List<Line> BuildRecent(int max, int rows, string lead, bool ansi)
         {
             var lines = new List<Line>();
             foreach (var r in _recent)
@@ -392,7 +392,7 @@ namespace Maester.Engine
                         break;
                 }
                 string time = Short(r.Duration).PadLeft(7);
-                var b = new LineBuilder(ansi).Add(" " + mark + " ", colour).Add(FitId(r.Id) + " ", "2").Add(r.Title, "2");
+                var b = new LineBuilder(ansi).Add(lead + mark + " ", colour).Add(FitId(r.Id) + " ", "2").Add(r.Title, "2");
                 var cut = Truncate(b.Build(), max - time.Length - 1, ansi);
                 string gap = new string(' ', Math.Max(1, max - time.Length - cut.Plain.Length));
                 lines.Add(new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time });
@@ -568,6 +568,7 @@ namespace Maester.Engine
         {
             _failedBySeverity.Clear();
             _sequence.Clear();
+            _sequenceTicks.Clear();
             _finishSeconds.Clear();
             _durations.Clear();
             _slowest.Clear();
@@ -582,6 +583,7 @@ namespace Maester.Engine
         {
             RecordGameResult(id, title, result, severity);
             _sequence.Add(result);
+            _sequenceTicks.Add(_tick);
             _finishSeconds.Add(_runClock.Elapsed.TotalSeconds);
             // The tests that ran, newest first, for the list under the running tests.
             bool ran = result == "Passed" || result == "Failed" || result == "Error" || result == "Investigate";
@@ -712,6 +714,8 @@ namespace Maester.Engine
             public string Title;
             public string Badge;
             public string Colour;
+            // The colour of the title, when it has the colour of the border; else it is bold.
+            public string TitleColour;
             public List<Line> Lines = new List<Line>();
         }
 
@@ -821,7 +825,7 @@ namespace Maester.Engine
             string title = Fit(panel.Title ?? string.Empty, inner - 2);
             string badge = panel.Badge;
             if (!string.IsNullOrEmpty(badge) && title.Length + badge.Length + 8 > width) badge = null;
-            var top = new LineBuilder(ansi).Add((Unicode ? "╭" : "+") + h + " ", colour).Add(title, "1").Add(" ", colour);
+            var top = new LineBuilder(ansi).Add((Unicode ? "╭" : "+") + h + " ", colour).Add(title, panel.TitleColour != null ? "1;" + panel.TitleColour : "1").Add(" ", colour);
             int fill = width - top.Length - 1 - (badge == null ? 0 : badge.Length + 3);
             top.Add(Repeat(h, Math.Max(0, fill)), colour);
             if (badge != null) top.Add(" " + badge + " ", panel.Colour ?? "2").Add(h, colour);
@@ -830,6 +834,11 @@ namespace Maester.Engine
 
             foreach (var raw in panel.Lines)
             {
+                if (raw.Rule != null)
+                {
+                    box.Add(BoxRule(raw, width, colour, ansi));
+                    continue;
+                }
                 var line = Truncate(raw, inner, ansi);
                 string pad = new string(' ', inner - line.Plain.Length);
                 string left = ansi ? Esc + colour + "m" + v + Esc + "0m " : v + " ";
@@ -838,6 +847,15 @@ namespace Maester.Engine
             }
             box.Add(new LineBuilder(ansi).Add((Unicode ? "╰" : "+") + Repeat(h, width - 2) + (Unicode ? "╯" : "+"), colour).Build());
             return box;
+        }
+
+        /// <summary>A line across a box, from side to side, with a name in it: solid between two parts of a box, dashed over a list that goes on from the one above.</summary>
+        private Line BoxRule(Line rule, int width, string colour, bool ansi)
+        {
+            string h = Unicode ? (rule.Dashed ? "╌" : "─") : "-";
+            var b = new LineBuilder(ansi).Add((Unicode ? "├" : "+") + h + " ", colour).Add(Fit(rule.Rule, width - 6), rule.Dashed ? "2" : "1").Add(" ", colour);
+            b.Add(Repeat(h, Math.Max(0, width - b.Length - 1)), colour);
+            return b.Add(Unicode ? "┤" : "+", colour).Build();
         }
 
         private static string Repeat(string s, int count)
@@ -1228,12 +1246,17 @@ namespace Maester.Engine
         // two middle rows of dots, so that it is as tall as a square.
         private static readonly string[] SquareSpinner = { "⠲", "⠴", "⠦", "⠖" };
 
-        private List<Line> BuildResultsChart(int width, int maxRows, bool ansi)
+        /// <summary>
+        /// One square per test in rows of <paramref name="columns"/>, <paramref name="lead"/> in front of each
+        /// row, in <paramref name="maxRows"/> rows at most: a square stands for more tests when there are more
+        /// tests than places. A square whose test just got its result is bright for a moment.
+        /// </summary>
+        private List<Line> BuildResultsChart(int columns, int maxRows, string lead, bool ansi)
         {
             var lines = new List<Line>();
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
             // One square per test for as long as the rows that are free allow it: a cell each, edge to edge.
-            int columns = Math.Max(10, width - 2);
+            columns = Math.Max(10, columns);
             int rows = Math.Min(16, maxRows);
             int perRow = columns;
             int perSquare = Math.Max(1, (int)Math.Ceiling((double)_total / (columns * rows)));
@@ -1253,7 +1276,7 @@ namespace Maester.Engine
                 if (i % perRow == 0)
                 {
                     if (row != null) lines.Add(row.Build());
-                    row = new LineBuilder(ansi).Add(" ");
+                    row = new LineBuilder(ansi).Add(lead);
                 }
                 int first = i * perSquare;
                 int last = Math.Min(_total, first + perSquare);
@@ -1263,7 +1286,7 @@ namespace Maester.Engine
                 }
                 else if (first < done)
                 {
-                    row.Add(mark, SquareColour(first, Math.Min(last, done)));
+                    row.Add(mark, Fresh(first, Math.Min(last, done)) ? FreshCell : SquareColour(first, Math.Min(last, done)));
                 }
                 else
                 {
@@ -1271,7 +1294,7 @@ namespace Maester.Engine
                 }
             }
             if (row != null) lines.Add(row.Build());
-            if (caption) lines.Add(new LineBuilder(ansi).Add(" each square is " + N(perSquare) + " tests", "2").Build());
+            if (caption) lines.Add(new LineBuilder(ansi).Add(lead + "each square is " + N(perSquare) + " tests", "2").Build());
             return lines;
         }
 
