@@ -67,6 +67,43 @@
         $script:TestResult | Should -Not -Match '`agent-1`'
     }
 
+    It 'fails when an Agent Identity has Application.ReadUpdate.All' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            switch -Wildcard ($RelativeUri) {
+                'servicePrincipals/microsoft.graph.agentIdentity' {
+                    return @([pscustomobject]@{
+                            id          = 'agent-7'
+                            displayName = 'ReadUpdate agent'
+                            appId       = 'app-7'
+                        })
+                }
+                'servicePrincipals' {
+                    return @([pscustomobject]@{
+                            id       = 'graph-sp'
+                            appRoles = @([pscustomobject]@{
+                                    id    = 'readupdate-role-id'
+                                    value = 'Application.ReadUpdate.All'
+                                })
+                        })
+                }
+                'servicePrincipals/agent-7/appRoleAssignments' {
+                    return @([pscustomobject]@{
+                            appRoleId  = 'readupdate-role-id'
+                            resourceId = 'graph-sp'
+                        })
+                }
+                'servicePrincipals/agent-7/oauth2PermissionGrants' { return @() }
+                '*agent-7/inheritedAppRoleAssignments' { return @() }
+                '*agent-7/inheritedOauth2PermissionGrants' { return @() }
+                default { throw "Unexpected Graph request: $RelativeUri" }
+            }
+        }
+
+        Test-MtEntraAgentHighRiskGraphPermissions | Should -BeFalse
+        $script:TestResult | Should -Match 'Application.ReadUpdate.All'
+        $script:TestResult | Should -Match 'Application'
+    }
+
     It 'fails when an Agent Identity has a risky delegated permission' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             switch -Wildcard ($RelativeUri) {
