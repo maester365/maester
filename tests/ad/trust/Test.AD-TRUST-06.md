@@ -6,7 +6,7 @@
 - **Security Hygiene**: Unused trusts increase attack surface unnecessarily
 - **Operational Risk**: Stale trusts may fail unexpectedly when needed
 
-Trust validation occurs when the trusting domain attempts to verify the trust relationship with the trusted domain. If this hasn't happened in 60+ days, it suggests the trust is not actively used.
+Trust validation occurs when the trusting domain attempts to verify the trust relationship with the trusted domain. If this hasn't happened within the configured threshold (default 60 days), it suggests the trust is not actively used.
 
 #### Control Type
 
@@ -39,7 +39,7 @@ Remove-ADTrust -Target <TrustName>
 
 This test checks the `LastValidated` property of each trust. Trusts are considered stale if:
 - `LastValidated` is not null
-- `LastValidated` is more than 60 days in the past
+- `LastValidated` is older than the configured threshold (default 60 days)
 
 The test returns:
 - Total trust count

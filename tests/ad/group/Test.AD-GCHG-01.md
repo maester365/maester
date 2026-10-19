@@ -27,7 +27,7 @@ This test analyzes group metadata to calculate:
 - Timespan since oldest group was created
 - Average number of group modifications per year
 - Breakdown of creations and modifications by year
-- Groups modified within the last 90 days
+- Groups modified within the configured window (default 90 days)
 
 The analysis helps identify trends and patterns in group management activity.
 

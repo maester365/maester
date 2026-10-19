@@ -23,7 +23,7 @@
     #>
     [MaesterTest(
         Id = 'AD-KRBTGT-01',
-        Title = 'KRBTGT password age should not exceed 180 days',
+        Title = 'KRBTGT password age should not exceed the configured maximum',
         Product = 'ad',
         Feature = 'account-security',
         Area = 'authentication',
@@ -38,7 +38,10 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Maximum allowed age of the KRBTGT password, in days.
+        [ValidateRange(1, 3650)] [int] $MaxPasswordAgeDays = 180
+    )
 
     Write-Verbose "Starting Test-MtAdKrbtgtPasswordLastSet"
     $adState = Get-MtADDomainState -Categories @('Users')
@@ -62,7 +65,7 @@
     $daysSinceChange = if ($passwordLastSet) { (Get-Date) - $passwordLastSet } else { $null }
 
     $passwordAgeDays = if ($daysSinceChange) { [Math]::Round($daysSinceChange.TotalDays, 0) } else { [int]::MaxValue }
-    $maxAge = 180
+    $maxAge = $MaxPasswordAgeDays
     $testResult = $passwordAgeDays -le $maxAge
 
     $result = "| Property | Value |" + "`n"
@@ -76,6 +79,10 @@
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "KRBTGT account password information retrieved. This account is used for Kerberos ticket encryption.`n`n%TestResult%"
+    if ($testResult) {
+        $analysisSummary = "The KRBTGT password was last set $passwordAgeDays days ago and will not exceed the maximum age threshold ($maxAge days) for another $($maxAge - $passwordAgeDays) days."
+        $testResultMarkdown = "$analysisSummary`n`n$testResultMarkdown"
+    }
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown

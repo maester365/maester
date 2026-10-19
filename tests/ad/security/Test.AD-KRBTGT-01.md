@@ -12,7 +12,7 @@
 #### Security Recommendation
 
 1. **Rotate KRBTGT password regularly**:
-   - At least every 180 days (twice per year)
+   - At least every configured maximum (default 180 days; twice per year)
    - Immediately if compromise is suspected
 
 2. **If compromise is suspected**:
@@ -30,6 +30,7 @@
 This test retrieves the KRBTGT account from Active Directory and checks:
 - Password last set date
 - Days since last password change
+- Whether password age exceeds the configured maximum (default 180 days)
 - Account status (should be disabled)
 
 #### Related Tests
