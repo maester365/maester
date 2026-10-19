@@ -13,7 +13,7 @@ function Get-MtBuiltInPack {
     Each row has Id, Root, Manifest and Errors (from Read-MtPackManifest). Cached for the session.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject])]
+    [OutputType([pscustomobject], [object[]])]
     param(
         # Read the folders again.
         [Parameter()]

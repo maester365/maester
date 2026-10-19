@@ -12,7 +12,7 @@ function Invoke-MtPackGitHubRequest {
     message and, when the rate limit was reached, how to raise it. -UsedToken says whether a token was sent.
     #>
     [CmdletBinding()]
-    [OutputType([object])]
+    [OutputType([object], [string])]
     param(
         # The path after https://api.github.com/, such as 'repos/contoso/pack'.
         [Parameter(Mandatory)]

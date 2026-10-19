@@ -14,7 +14,7 @@ function Register-MtPackService {
     allowed loses its services. Returns the service names registered.
     #>
     [CmdletBinding()]
-    [OutputType([string])]
+    [OutputType([string[]])]
     param(
         [Parameter(Mandatory)] [AllowEmptyCollection()] [object[]] $PackSet
     )
@@ -54,7 +54,7 @@ function Initialize-MtPackSet {
     must never stop Microsoft 365 connections.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject])]
+    [OutputType([pscustomobject], [object[]])]
     param(
         [Parameter()] [string] $PackLock,
         # The folder config discovery starts from; the current folder by default.

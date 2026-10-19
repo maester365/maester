@@ -112,8 +112,7 @@ function Invoke-MtPackInstall {
         }
         if (-not $PSCmdlet.ShouldProcess($id, 'Install the pack')) { return }
 
-        $storePath = $null
-        if ($candidate.Kind -ne 'BuiltIn') { $storePath = Save-MtPackToStore -Path $candidate.Root -Digest $candidate.Digest }
+        if ($candidate.Kind -ne 'BuiltIn') { $null = Save-MtPackToStore -Path $candidate.Root -Digest $candidate.Digest }
 
         $entry = [pscustomobject][ordered]@{
             Id                 = $id
@@ -190,7 +189,7 @@ function Save-MtPackToStore {
         throw "The pack's files changed while they were copied into the store (digest $copied, expected $Digest)."
     }
     Move-Item -LiteralPath $staging -Destination $target
-    Set-MtPackReadOnly -Path $target
+    Protect-MtPackFolder -Path $target
     $target
 }
 

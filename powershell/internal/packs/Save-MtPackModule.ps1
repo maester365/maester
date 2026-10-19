@@ -96,7 +96,7 @@ function Save-MtPackModuleFromGallery {
                 if (Test-Path -LiteralPath $target) { continue }
                 $null = New-Item -Path (Split-Path -Path $target -Parent) -ItemType Directory -Force
                 Move-Item -LiteralPath $versionFolder.FullName -Destination $target
-                Set-MtPackReadOnly -Path $target
+                Protect-MtPackFolder -Path $target
             }
         }
     } finally {
@@ -151,7 +151,7 @@ function Get-MtPackModuleRequirement {
     }
 }
 
-function Set-MtPackReadOnly {
+function Protect-MtPackFolder {
     <#
     .SYNOPSIS
     Makes every file under a folder read-only, so a change to the store has to be deliberate (Maester Packs design, section 5.2).

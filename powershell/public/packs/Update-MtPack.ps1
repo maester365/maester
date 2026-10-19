@@ -84,8 +84,9 @@ function Update-MtPack {
     foreach ($previous in $targets) {
         # The source without the ref it was installed at, so the newest release is found.
         $source = ($previous.Source -replace '@[^/@]+$', '')
+        if (-not $PSCmdlet.ShouldProcess($previous.Id, 'Update the pack')) { continue }
         try {
-            $entry = Invoke-MtPackInstall -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous
+            $entry = Invoke-MtPackInstall -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous -Confirm:$false
         } catch {
             Write-Error "The pack $($previous.Id) was not updated: $($_.Exception.Message)"
             continue

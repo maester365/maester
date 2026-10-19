@@ -44,7 +44,7 @@ function Get-MtPackTestInventory {
             $ids = if ($tests.Count -gt 0) { @($tests | Where-Object Id | ForEach-Object { $_.Id }) } else { @($pack.TestIds) }
             foreach ($id in ($ids | Where-Object { $_ } | Select-Object -Unique)) {
                 $test = $tests | Where-Object { $_.Id -eq $id } | Select-Object -First 1
-                if (-not $test) { $test = New-MtPackPlaceholderTest -Id $id }
+                if (-not $test) { $test = ConvertTo-MtPackPlaceholderTest -Id $id }
                 $test | Add-Member -NotePropertyMembers ([ordered]@{
                         Source     = 'Custom'
                         PackId     = $pack.Id
@@ -66,7 +66,7 @@ function Get-MtPackTestInventory {
     }
 }
 
-function New-MtPackPlaceholderTest {
+function ConvertTo-MtPackPlaceholderTest {
     <#
     .SYNOPSIS
     Returns a test row for a pack test that could not be read, with the fields the plan and the result row use.

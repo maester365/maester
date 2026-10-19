@@ -22,7 +22,7 @@ function Resolve-MtPackSet {
     Failed), ReasonCode, Reason and TestIds. Warnings are written once.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject])]
+    [OutputType([pscustomobject], [object[]])]
     param(
         [Parameter()] [AllowNull()] [object] $RunConfig,
         # The lock file; by default the one Resolve-MtPackLockPath finds from the current folder.

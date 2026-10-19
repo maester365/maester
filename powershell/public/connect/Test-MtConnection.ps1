@@ -49,7 +49,8 @@
     param(
         # Checks if the current session is connected to the specified service
         # Maester's own services, or the service of an installed Maester Pack's connector.
-        [ArgumentCompleter({ param($commandName, $parameterName, $wordToComplete) & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams') $wordToComplete })]
+        [ArgumentCompleter({ # $args: command name, parameter name, word to complete.
+            & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams') $args[2] })]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 

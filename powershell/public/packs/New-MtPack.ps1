@@ -37,7 +37,7 @@ function New-MtPack {
     https://maester.dev/docs/commands/New-MtPack
     #>
     [CmdletBinding(SupportsShouldProcess)]
-    [OutputType([System.IO.FileInfo])]
+    [OutputType([System.IO.FileInfo], [object[]])]
     param(
         [Parameter(Mandatory, Position = 0)]
         [string] $Path,
