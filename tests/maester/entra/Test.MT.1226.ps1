@@ -28,7 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1199',
         Service = 'Graph',
-        License = 'AAD_PREMIUM',
+        License = $null,
         Lifecycle = 'Preview',
         LongRunning = $true,
         Author = 'nicolonsky'
@@ -44,7 +44,7 @@
         Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
         $federatedCredentials = @(Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/federatedIdentityCredentials" -ApiVersion beta -ErrorAction Stop)
 
-        foreach ($cred in $federatedCredentials) {
+        foreach ($cred in ($federatedCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
             $hasMutableSubject = $false
             switch -Regex ($cred.issuer) {
                 'token.actions.githubusercontent.com' {
