@@ -113,6 +113,13 @@ consent, so the "results only for catalog IDs" rule for module packs adds nothin
 
 ## 5. What it needs from the packs implementation
 
+> Checked 2026-10-19 against the loader on branch `claude/project-thread-i64voa`: `Test-MtPack -Official` passes,
+> built-in packs load from `packs/<name>/` without a lock entry, `Uses.Modules` with `Install: User` and
+> `Process: Child` and the `Catalog` key are accepted, and `-Suite MAES.ZTA` lifts `LongRunning`. The pack keeps the
+> loader's default `EnabledByDefault: true` on purpose: `EnabledByDefault: false` would also stop `-Suite` from
+> selecting it, and `LongRunning` already keeps it out of a plain run. Only the report's Packs section (item 3) is
+> still open.
+
 The pack follows the manifest of section 4.2 of the packs design and runs on the 3.0 engine, so it can land
 before the loader. These are the points where the loader decides how it ships:
 

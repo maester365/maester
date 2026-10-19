@@ -14,8 +14,12 @@ The pack is a long-running test, so `Invoke-Maester` leaves it out unless you na
 
 ```powershell
 Invoke-Maester -TestId MP.MAES.ZTA          # only the Zero Trust Assessment
+Invoke-Maester -Suite MAES.ZTA              # the same, once Maester loads packs
 Invoke-Maester -IncludeLongRunning          # everything, including the assessment
 ```
+
+The pack itself stays enabled, so naming it is enough; it is the long-running flag that keeps it out of a plain
+`Invoke-Maester`. To remove it entirely, set `Packs: [{ "Id": "maester.zero-trust-assessment", "Enabled": false }]`.
 
 To run it on every run, add it to `Selection.TestId` in `maester-config.json`, or set
 `Selection.IncludeLongRunning` to `true`. Give it time with `Execution.LongRunningTimeoutSeconds`: the assessment
