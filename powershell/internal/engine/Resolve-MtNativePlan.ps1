@@ -76,6 +76,12 @@ function Resolve-MtNativePlan {
         }
         $set = { param($disposition, $code, $detail, $legacy) $row.Disposition = $disposition; $row.ReasonCode = $code; $row.ReasonDetail = $detail; $row.LegacySkipCode = $legacy }
 
+        # A test of a pack that did not pass the loader gate: reported, never run (Maester Packs design, section 5.5).
+        if ($t.PSObject.Properties['PackStatus'] -and $t.PackStatus) {
+            & $set $t.PackStatus.Disposition $t.PackStatus.ReasonCode $t.PackStatus.Reason $(if ($t.PackStatus.Disposition -eq 'NotRun') { 'Custom' })
+            [pscustomobject]$row; continue
+        }
+
         # Invalid metadata, load failures, duplicates, newer engine required.
         if ($t.Errors -and $t.Errors.Count -gt 0) {
             $first = $t.Errors[0]
@@ -153,7 +159,9 @@ function Resolve-MtNativePlan {
         $optIn = @($t.Service | Where-Object { $registry.Services[$_].OptIn })
         $optInDisconnected = @($optIn | Where-Object { $TenantContext -and $TenantContext.Services.PSObject.Properties[$_] -and -not $TenantContext.Services.$_ })
         if ($optInDisconnected) {
-            & $set 'NotRun' 'OptInServiceNotConnected' 'Active Directory tests run only after Connect-Maester -Service ActiveDirectory.'
+            $first = $optInDisconnected[0]
+            $name = if ($registry.Services[$first].ContainsKey('DisplayName')) { $registry.Services[$first].DisplayName } else { 'Active Directory' }
+            & $set 'NotRun' 'OptInServiceNotConnected' "$name tests run only after Connect-Maester -Service $first."
             [pscustomobject]$row; continue
         }
         # A test named by its exact ID runs even if it is a preview or long-running test.
@@ -295,8 +303,10 @@ function Test-MtApplicability {
         foreach ($s in @($Test.Service)) {
             $connected = $TenantContext.Services.PSObject.Properties[$s]
             if ($connected -and -not $connected.Value) {
-                $legacy = $registry.Services[$s].LegacySkipCode
-                $text = Get-MtSkippedReason -SkippedBecause $legacy
+                $entry = $registry.Services[$s]
+                $legacy = $entry.LegacySkipCode
+                # A pack connector's service names its own connect command.
+                $text = if ($entry.ContainsKey('Pack')) { "Not connected to $($entry.DisplayName). Run Connect-Maester -Service $s." } else { Get-MtSkippedReason -SkippedBecause $legacy }
                 return & $fail 'ServiceNotConnected' $text $legacy
             }
         }

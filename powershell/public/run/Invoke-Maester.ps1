@@ -314,7 +314,15 @@
         [switch] $DryRun,
 
         # Run only the custom tests under -Path. The tests that ship with Maester always run otherwise.
-        [switch] $SkipBuiltIn
+        # The packs that ship with Maester are left out too.
+        [switch] $SkipBuiltIn,
+
+        # The pack lock file to run the installed packs from. Defaults to the MAESTER_PACK_LOCK environment
+        # variable, then to the maester-packs.lock.json beside the Maester config found from -Path.
+        [string] $PackLock,
+
+        # Do not run any Maester Pack, installed or shipped with Maester.
+        [switch] $SkipPack
     )
 
     end {
@@ -674,6 +682,29 @@
             }
         }
 
+        # Maester Packs: the loader gate decides which packs may load before any of their code runs, then
+        # their connectors join the service registry and their tests join the custom tests (Maester Packs
+        # design, sections 4.4 and 6.3). A pack test is always Source = Custom and carries Package.
+        $nativePack = @()
+        $packSet = @()
+        if (-not $SkipPack) {
+            Write-MtProgress -Activity 'Starting Maester' -Status 'Checking Maester Packs...' -Force
+            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig)
+            if ($SkipBuiltIn) { $packSet = @($packSet | Where-Object { -not $_.BuiltIn }) }
+            $nativePack = @(Get-MtPackTestInventory -PackSet $packSet)
+            # A pack test never replaces a built-in or custom test with the same ID.
+            $takenIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            foreach ($t in @($nativeCustom) + @(Get-MtTestCatalog)) { if ($t.Id) { $null = $takenIds.Add($t.Id) } }
+            $clashing = @($nativePack | Where-Object { $_.Id -and $takenIds.Contains($_.Id) })
+            if ($clashing.Count -gt 0) {
+                Write-Warning "These pack tests have the ID of another test and were not run: $(($clashing | ForEach-Object { "$($_.Id) ($($_.PackId))" }) -join ', ')."
+                $nativePack = @($nativePack | Where-Object { -not ($_.Id -and $takenIds.Contains($_.Id)) })
+            }
+        } else {
+            $null = Register-MtPackService -PackSet @()
+            $script:__MtPackSet = @()
+        }
+
         # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
         $builtInInventory = $null
         $customInventory = @()
@@ -742,7 +773,7 @@
         # IDs named in the selection or the config that match no test, Pester or native (never wildcards or
         # instances of a declared family).
         if ($needsIdSelection) {
-            $nativeAll = @($nativeBuiltIn) + @($nativeCustom)
+            $nativeAll = @($nativeBuiltIn) + @($nativeCustom) + @($nativePack)
             $plan.UnknownIds = @($plan.UnknownIds | Where-Object {
                     $id = $_
                     -not ($nativeAll | Where-Object { $_.Id -eq $id -or ($_.InstanceSource -and $id -like "$($_.Id).*") })
@@ -765,7 +796,7 @@
         }
 
         # Stages 2, 5 and 6 for native tests: the tenant context, then selection and applicability.
-        $nativeTests = @($nativeBuiltIn) + @($nativeCustom)
+        $nativeTests = @($nativeBuiltIn) + @($nativeCustom) + @($nativePack)
         $neededServices = @($nativeTests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading the tenant context...' -Force
         # The dashboard shows the tenant and the services while they are read, and fills in each answer as it comes.

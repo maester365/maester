@@ -14,7 +14,9 @@ function Invoke-MtTest {
     Test IDs to run: exact IDs or '*' wildcards. A family's instance ID runs that instance.
 
     .PARAMETER Path
-    A Test.<ID>.ps1 file or a folder of them. Without -Id every native test in it runs.
+    A Test.<ID>.ps1 file or a folder of them. Without -Id every native test in it runs. A path inside a
+    Maester Pack (a folder with maester-pack.json, or under one) runs as that pack, with its helpers and
+    connectors, as while writing the pack.
 
     .PARAMETER Parameter
     Parameter values for the test. Allowed only when exactly one test is selected.
@@ -32,6 +34,11 @@ function Invoke-MtTest {
     Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1 -Parameter @{ MaximumDays = 30 }
 
     Runs a custom test with a parameter value, as while writing it.
+
+    .EXAMPLE
+    Invoke-MtTest -Path ./my-pack
+
+    Runs every test of a Maester Pack from its folder, as while writing the pack.
 
     .LINK
     https://maester.dev/docs/commands/Invoke-MtTest
@@ -62,10 +69,23 @@ function Invoke-MtTest {
     if ($Path) {
         if (-not (Test-Path -LiteralPath $Path)) { Write-Error "The path '$Path' does not exist."; return }
         $root = if (Test-Path -LiteralPath $Path -PathType Container) { (Resolve-Path -LiteralPath $Path).Path } else { Split-Path (Resolve-Path -LiteralPath $Path).Path -Parent }
-        foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root)) { $tests.Add($t) }
+        # A path inside a Maester Pack runs as that pack, with its helpers and connectors (Maester Packs design, section 7).
+        try { $developmentPack = Get-MtPackDevelopmentSet -Path $Path } catch { Write-Error $_.Exception.Message; return }
+        if ($developmentPack) {
+            $fullPath = (Resolve-Path -LiteralPath $Path).Path
+            foreach ($t in @(Get-MtPackTestInventory -PackSet @($developmentPack))) {
+                if ($t.File -and $t.File.StartsWith($fullPath, [System.StringComparison]::Ordinal)) { $tests.Add($t) }
+            }
+        } else {
+            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root)) { $tests.Add($t) }
+        }
     }
     if ($Id) {
         $pool = if ($Path) { @($tests) } else { @(Get-MtTestCatalog) }
+        # The tests of installed packs run by ID too.
+        if (-not $Path -and ($Id | Where-Object { 'MP.' -like $_ -or $_ -like 'MP.*' })) {
+            $pool = @($pool) + @(Get-MtPackTestInventory -PackSet @(Initialize-MtPackSet) | Where-Object { -not $_.PackStatus })
+        }
         $selected = @($pool | Where-Object {
                 $t = $_
                 (Test-MtIdMatch -Id $t.Id -Pattern $Id) -or ($t.InstanceSource -and ($Id | Where-Object { $_ -like "$($t.Id).*" }))
