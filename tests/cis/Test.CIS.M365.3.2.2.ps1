@@ -42,12 +42,13 @@
         $coversTeams = "$($policy.Workload)" -match 'Teams'
         # TeamsLocation must include All with no TeamsLocationException in an enabled policy
         $coversAll = (@($policy.TeamsLocation.ImmutableIdentity) -contains 'All') -and @($policy.TeamsLocationException | Where-Object { $_ }).Count -eq 0
+        $unitScoped = @($policy.PolicyRBACScopes | Where-Object { $_ }).Count -gt 0
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
             Workload = "$($policy.Workload)"
-            AllAccounts = $coversAll
-            Pass = $coversTeams -and $policy.Mode -eq 'Enable' -and $coversAll
+            AllAccounts = $coversAll -and -not $unitScoped
+            Pass = $coversTeams -and $policy.Mode -eq 'Enable' -and $coversAll -and -not $unitScoped
         }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -ge 1
