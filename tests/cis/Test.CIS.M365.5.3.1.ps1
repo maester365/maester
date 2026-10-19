@@ -4,7 +4,7 @@
         Checks that privileged directory roles are activated through PIM instead of being permanently assigned.
 
     .DESCRIPTION
-        Checks the active role assignments for privileged directory roles. Users and groups pass when the role is activated through Privileged Identity Management, and service principals pass when the assignment has an end date. Permanently assigned Global Administrator accounts are treated as possible emergency access accounts when they are configured in EmergencyAccessAccounts or, when none are configured, when they use the onmicrosoft.com domain. At most two are accepted, and activated assignments are not counted.
+        Checks the active role assignments for privileged directory roles. Users and groups pass when the role is activated through Privileged Identity Management, and service principals pass when the assignment has an end date. Permanent Global Administrator assignments are accepted only for accounts listed in EmergencyAccessAccounts, up to two. Activated assignments are not counted.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.3.1, L2)
 
     .EXAMPLE
@@ -52,8 +52,8 @@
         if ($principalType -eq '#microsoft.graph.user' -or $principalType -eq '#microsoft.graph.group') {
             $compliant = $instance.assignmentType -eq 'Activated'
             # Only a permanent Global Administrator assignment to a user account can be an emergency access account.
-            $looksLikeEmergencyAccount = if ($emergencyIds.Count -gt 0) { $emergencyIds -contains $instance.principalId } else { $instance.principal.userPrincipalName -match 'onmicrosoft\.com$' }
-            if ($principalType -eq '#microsoft.graph.user' -and $role.id -eq $globalAdminId -and $instance.assignmentType -eq 'Assigned' -and $null -eq $instance.endDateTime -and $looksLikeEmergencyAccount) {
+            $isListedEmergencyAccount = $emergencyIds -contains $instance.principalId
+            if ($principalType -eq '#microsoft.graph.user' -and $role.id -eq $globalAdminId -and $instance.assignmentType -eq 'Assigned' -and $null -eq $instance.endDateTime -and $isListedEmergencyAccount) {
                 $isEmergencyCandidate = $true
                 $emergencyCandidates++
                 $compliant = $true
@@ -76,7 +76,7 @@
     $testResult = $failed.Count -eq 0 -and $emergencyCandidates -le 2
 
     $passText = 'Privileged roles are activated through PIM and not permanently assigned.'
-    $failText = if ($failed.Count -gt 0) { "$($failed.Count) privileged role assignment(s) are permanently assigned instead of activated." } else { "$emergencyCandidates accounts in the Global Administrator role look like emergency access accounts. At most 2 are expected." }
+    $failText = if ($failed.Count -gt 0) { "$($failed.Count) privileged role assignment(s) are permanently assigned instead of activated." } else { "$emergencyCandidates listed emergency access accounts hold permanent Global Administrator assignments. At most 2 are accepted." }
 
     $resultMd = "| Role | Principal | Type | Assignment | Result |`n"
     $resultMd += "| --- | --- | --- | --- | --- |`n"
@@ -90,7 +90,7 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "$failText`n`n%TestResult%"
+        $testResultMarkdown = "$failText Permanent Global Administrator assignments are accepted only for accounts listed in EmergencyAccessAccounts in maester-config.json. For how to configure it, see [Emergency access accounts](https://maester.dev/docs/configuration/emergency-access-accounts).`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

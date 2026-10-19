@@ -2,7 +2,7 @@
 
 An account with a permanent privileged role is a permanent target: a stolen password or token gives immediate administrative access, at any hour, with no approval, justification or time limit. Making the role eligible means the account is an ordinary user until an admin activates the role for a few hours, with MFA and an audit trail. An attacker who adds a role to an account to keep access leaves a permanent assignment, and this test lists it.
 
-The test lists every active assignment to a privileged role. Users and groups pass when the assignment type is **Activated**. Service principals pass when the assignment has an end date. Up to two permanently assigned Global Administrator accounts are accepted as emergency access accounts: the accounts in the EmergencyAccessAccounts setting when it is configured, otherwise accounts on the onmicrosoft.com domain. Microsoft Entra ID P2 or Microsoft Entra ID Governance licences are required.
+The test lists every active assignment to a privileged role. Users and groups pass when the assignment type is **Activated**. Service principals pass when the assignment has an end date. Permanent Global Administrator assignments are accepted only for accounts listed in the EmergencyAccessAccounts setting of maester-config.json, up to two. When the setting is empty, every permanent assignment fails. See [Emergency access accounts](https://maester.dev/docs/configuration/emergency-access-accounts) for how to configure it. Microsoft Entra ID P2 or Microsoft Entra ID Governance licences are required.
 
 #### Remediation action
 
@@ -10,7 +10,7 @@ The test lists every active assignment to a privileged role. Users and groups pa
 2. Go to **Entra ID** > **Roles & admins**, or open [Privileged Identity Management](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles) and select **Microsoft Entra roles**.
 3. Open **Assignments** > **Active assignments** and select each permanent assignment of a privileged role.
 4. Select **Update** and change the assignment to **Eligible**, then save.
-5. Ask the administrators to activate their role when they need it. Keep two cloud-only emergency access accounts as the only permanent Global Administrators.
+5. Ask the administrators to activate their role when they need it. Keep two cloud-only emergency access accounts as the only permanent Global Administrators, and list them in the EmergencyAccessAccounts setting of maester-config.json.
 
 #### Related links
 
