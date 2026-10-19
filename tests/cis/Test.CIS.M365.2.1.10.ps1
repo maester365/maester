@@ -46,7 +46,7 @@
         $candidates = @($name, (Get-MtRegistrableDomain -DomainName $name)) | Select-Object -Unique
         foreach ($candidate in $candidates) {
             $found = ConvertFrom-MailAuthenticationRecordDmarc -DomainName $candidate
-            if ($found -is [string] -and $found -like '*not available') { $unavailable = $true; break }
+            if ($found -is [string] -and ($found -like '*not available' -or $found -eq 'Failure to obtain record')) { $unavailable = $true; break }
             if ($found.GetType().Name -eq 'DMARCRecord') {
                 $dmarc = $found
                 $source = $candidate
