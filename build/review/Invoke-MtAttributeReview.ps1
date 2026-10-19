@@ -347,7 +347,7 @@ function Get-MtReviewRelatedTest {
         }
         [pscustomobject]$item
     }
-    @($related | Sort-Object -Property Id | Select-Object -First $MaxRelated)
+    $related | Sort-Object -Property Id | Select-Object -First $MaxRelated
 }
 
 function Get-MtReviewSystem {
