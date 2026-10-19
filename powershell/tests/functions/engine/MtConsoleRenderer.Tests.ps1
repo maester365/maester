@@ -2719,10 +2719,13 @@ Describe 'MtConsoleRenderer keys, and the game behind the dashboard' {
             $r.Height = 40; $r.FullScreen = $true; $r.RefreshIntervalMs = 10; $r.ReadKeys = $readKeys
             $r.Open()
             $r.Start(5)
-            Start-Sleep -Milliseconds 200
+            # The timer does draw: that it did not ask for keys is not because it did not run. A busy runner can
+            # take longer than a few ticks to draw four frames, so wait for them rather than for a fixed time.
+            $frames = { ([regex]::Matches($t.Writer.ToString(), [regex]::Escape("$esc[?2026h"))).Count }
+            $deadline = [DateTime]::UtcNow.AddSeconds(5)
+            while ((& $frames) -le 3 -and [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Milliseconds 50 }
+            & $frames | Should -BeGreaterThan 3
             $r.KeyPollCount | Should -Be 0
-            # The timer does draw: that it did not ask for keys is not because it did not run.
-            ([regex]::Matches($t.Writer.ToString(), [regex]::Escape("$esc[?2026h"))).Count | Should -BeGreaterThan 3
             $r.Close()
         }
         [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new()).ReadKeys | Should -BeFalse
