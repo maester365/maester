@@ -40,8 +40,12 @@
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
-    if ($null -eq $adState.DaclEntries) {
+    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
         Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
+    if ($null -eq $adState.DaclEntries) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
     Write-Verbose "Filtering/counting dacl ou object count"

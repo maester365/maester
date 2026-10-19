@@ -1,7 +1,8 @@
 ﻿function Test-MtAdKdsRootKeysCount {
     <#
     .SYNOPSIS
-    Verifies that exactly one KDS root key exists in Active Directory.
+    Verifies that the KDS root key configuration in Active Directory follows
+    Microsoft guidance.
 
     .DESCRIPTION
     KDS root keys are required for Group Managed Service Accounts (gMSA). This test
@@ -9,19 +10,21 @@
 
     - Zero keys indicates gMSAs are not in use, so the test is skipped.
     - Exactly one key is the recommended configuration; the test passes.
-    - More than one key can cause gMSA authentication failures and the test fails.
+    - Exactly two keys can cause gMSA authentication failures in specific sorting
+      scenarios and should be investigated.
+    - Three or more keys is the documented Microsoft workaround; the test passes.
 
     .EXAMPLE
     Test-MtAdKdsRootKeysCount
 
-    Returns $true if exactly one KDS root key exists.
+    Returns $true if the KDS root key count follows Microsoft guidance.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdKdsRootKeysCount
     #>
     [MaesterTest(
         Id = 'AD-CFG-22',
-        Title = 'Exactly one KDS root key should exist',
+        Title = 'KDS root key count should follow Microsoft guidance',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'infrastructure',
@@ -64,8 +67,12 @@
         return $null
     }
 
-    # Exactly one key is the desired state
-    $testResult = $kdsRootKeysCount -eq 1
+    # Evaluate against Microsoft guidance:
+    # - 1 key: recommended (pass)
+    # - 2 keys: can cause gMSA failures in specific sorting cases (investigate)
+    # - 3+ keys: documented workaround (pass)
+    $testResult = ($kdsRootKeysCount -eq 1) -or ($kdsRootKeysCount -ge 3)
+    $needsInvestigate = $kdsRootKeysCount -eq 2
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"
@@ -74,14 +81,20 @@
     $result += "| Recommended Count | 1 |" + "`n"
 
     if ($testResult) {
-        $testResultMarkdown = "✅ Exactly one KDS root key exists. This is the recommended configuration for gMSA operations.`n`n%TestResult%"
+        $testResultMarkdown = "✅ $kdsRootKeysCount KDS root key(s) exist. This follows Microsoft guidance for gMSA operations.`n`n%TestResult%"
+    } elseif ($needsInvestigate) {
+        $testResultMarkdown = "⚠️ Exactly 2 KDS root keys exist. In specific sorting scenarios this can cause gMSA authentication failures. Microsoft recommends creating a third key as a workaround rather than removing existing keys. See [Microsoft documentation](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "⚠️ $kdsRootKeysCount KDS root keys exist. Having multiple KDS root keys can cause gMSA authentication failures. Consider reviewing the key creation process and removing unnecessary keys. See [Microsoft documentation](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
+        $testResultMarkdown = "⚠️ $kdsRootKeysCount KDS root keys exist. Review the key configuration against Microsoft guidance. See [Microsoft documentation](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    if ($needsInvestigate) {
+        Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+        return $null
+    } else {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    }
 }

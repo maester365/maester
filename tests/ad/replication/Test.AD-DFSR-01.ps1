@@ -69,14 +69,17 @@
     $domainControllers = $adState.DomainControllers
     $dcCount = ($domainControllers | Measure-Object).Count
 
-    # Build a map of DC names to subscriptions
+    # Build a map of DC ServerReference to subscriptions
     $dcSubscriptionMap = @{}
     foreach ($sub in $sysvolSubscriptions) {
         $dn = [string]$sub.DistinguishedName
-        # Extract DC name from DN: CN=SYSVOL Subscription...,CN=<DCName>,...
-        if ($dn -match 'CN=([^,]+),OU=Domain Controllers') {
-            $dcName = $Matches[1]
-            $dcSubscriptionMap[$dcName] = $sub
+        # Match subscription DN against each DC's ServerReference
+        foreach ($dc in $domainControllers) {
+            if (-not [string]::IsNullOrWhiteSpace($dc.ServerReference) -and
+                $dn -like "CN=SYSVOL Subscription,CN=Domain System Volume,CN=DFSR-LocalSettings,$($dc.ServerReference)") {
+                $dcSubscriptionMap[$dc.ServerReference] = $sub
+                break
+            }
         }
     }
 
@@ -84,10 +87,10 @@
     $disabledSubscriptions = @()
     foreach ($dc in $domainControllers) {
         $dcName = if ($dc.Name) { $dc.Name } else { $dc.DnsHostName }
-        if (-not $dcSubscriptionMap.ContainsKey($dcName)) {
+        if (-not $dcSubscriptionMap.ContainsKey($dc.ServerReference)) {
             $missingDcSubscriptions += $dcName
         } else {
-            $sub = $dcSubscriptionMap[$dcName]
+            $sub = $dcSubscriptionMap[$dc.ServerReference]
             $enabled = if ($sub.'msDFSR-Enabled' -is [bool]) { $sub.'msDFSR-Enabled' } else { [string]$sub.'msDFSR-Enabled' -eq 'TRUE' }
             if (-not $enabled) {
                 $disabledSubscriptions += $dcName
