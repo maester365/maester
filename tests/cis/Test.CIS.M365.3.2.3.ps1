@@ -40,12 +40,13 @@
     $report = foreach ($policy in $policies) {
         $isCopilot = @($policy.EnforcementPlanes) -contains 'CopilotExperiences'
         $allUsers = @($policy.LocationInclusions.ImmutableIdentity) -contains 'All'
+        $unitScoped = @($policy.PolicyRBACScopes | Where-Object { $_ }).Count -gt 0
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
             Copilot = $isCopilot
             AllUsers = $allUsers
-            Pass = $isCopilot -and $policy.Mode -eq 'Enable' -and $allUsers
+            Pass = $isCopilot -and $policy.Mode -eq 'Enable' -and $allUsers -and -not $unitScoped
         }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -ge 1
