@@ -6,7 +6,8 @@
     .DESCRIPTION
     Examines application federated identity credentials for GitHub Actions and GitLab.
     Reports subjects without the provider-specific immutable identifier markers:
-    '@' for GitHub Actions and 'project_id:' for GitLab. Other issuers are not evaluated.
+    'repo:<username>@<userid>/<repo>@<repoid>:' for GitHub Actions, with numeric IDs,
+    and 'project_id:' for GitLab. Other issuers are not evaluated.
     These marker checks identify potentially mutable subjects, not full subject validity.
 
     .LINK
@@ -28,7 +29,6 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1199',
         Service = 'Graph',
-        License = $null,
         Lifecycle = 'Preview',
         LongRunning = $true,
         Author = 'nicolonsky'
@@ -49,7 +49,7 @@
             switch -Regex ($cred.issuer) {
                 'token.actions.githubusercontent.com' {
                     Write-Verbose "Found federated credential with GitHub Actions issuer: $($cred.name)"
-                    $hasMutableSubject = $cred.subject -notmatch '@'
+                    $hasMutableSubject = $cred.subject -cnotmatch '^repo:[^@/:\s]+@[0-9]+/[^@/:\s]+@[0-9]+:'
                     break
                 }
                 'gitlab' {

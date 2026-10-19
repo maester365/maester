@@ -4,7 +4,7 @@ Repository names, project paths and organization names can change or be reused. 
 
 The check examines the issuer and subject of application federated identity credentials:
 
-* GitHub Actions: Reports subjects without the @ marker used to append immutable owner and repository IDs.
+* GitHub Actions: Reports subjects that do not start with `repo:<username>@<userid>/<repo>@<repoid>:`, with numeric owner and repository IDs.
 * GitLab: Reports subjects without project_id:, which identifies the immutable project ID.
 
 The test fails when at least one evaluated credential lacks the corresponding immutable identifier marker.
