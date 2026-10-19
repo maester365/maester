@@ -82,6 +82,8 @@ cooldown when it is published; any other release starts it when each user first 
 | `Uses.Modules` | PowerShell Gallery modules, each pinned to one exact `Version`. Maester saves them into its own store and checks their files before every load. A module the user installs themselves can only be run in a separate process: `{ "Name": "X", "MinimumVersion": "2.0.0", "Install": "User", "Process": "Child" }`. |
 | `Requires.Packs` | Other packs this one needs: `{ "Id": "contoso.base", "Source": "contoso/maester-base", "Version": ">=1.0" }`. They are installed first, with their own approval. |
 | `Exports` | Functions of this pack that packs requiring it may call. |
+| `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
+| `Banner` | An image in the pack (`.png`, `.jpg` or `.webp`, at most 1 MB, 1200 × 630 pixels works best) that the pack index can show when it features the pack. |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
 
 ## Tests and helpers

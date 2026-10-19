@@ -55,7 +55,7 @@ function Read-MtPackManifest {
 
     $topLevel = @('$schema', 'Id', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
-        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog')
+        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner')
     $strictKeys = @{
         Uses        = @('Services', 'GraphScopes', 'TenantWrites', 'Network', 'Modules')
         Connector   = @('Service', 'Platform', 'DisplayName', 'File', 'Connect', 'Test', 'Disconnect', 'Describe', 'Renew', 'OptIn', 'Permissions', 'Environment')
@@ -194,6 +194,14 @@ function Read-MtPackManifest {
         }
     }
 
+    # Listing facts the pack index shows; Maester itself does not act on them.
+    $pricing = & $text 'Pricing'
+    if ($manifest.PSObject.Properties['Pricing'] -and $pricing -notin 'Free', 'Paid') { & $fail "Pricing must be Free or Paid; it is '$($manifest.Pricing)'." }
+    if ($manifest.PSObject.Properties['Banner']) {
+        $banner = & $text 'Banner'
+        if (-not $banner -or -not (Test-MtPackRelativePath -Path $banner) -or $banner -notmatch '\.(png|jpe?g|webp)$') { & $fail 'Banner must be the path of a .png, .jpg or .webp image inside the pack.' }
+    }
+
     foreach ($name in 'Listed', 'EnabledByDefault') {
         if ($manifest.PSObject.Properties[$name] -and $manifest.$name -isnot [bool]) { & $fail "$name must be true or false." }
     }
@@ -216,6 +224,7 @@ function Read-MtPackManifest {
         UserModules  = @(& $list 'Modules' $usesValue | Where-Object { $_.PSObject.Properties['Install'] -and $_.Install -eq 'User' })
     }
     $normalised['RequiredPacks'] = @($(if ($requiresSection -and $requiresSection.Value) { & $list 'Packs' $requiresSection.Value }))
+    $normalised['Pricing'] = if ($pricing -eq 'Paid') { 'Paid' } else { 'Free' }
     $normalised['EnabledByDefault'] = if ($manifest.PSObject.Properties['EnabledByDefault'] -and $manifest.EnabledByDefault -is [bool]) { $manifest.EnabledByDefault } else { $true }
     if ($code) { $normalised['Code'] = $code }
     & $result ([pscustomobject]$normalised)

@@ -65,6 +65,9 @@ Describe 'Maester Pack manifest' {
         @{ Case = 'an unknown key under Uses'; Change = { param($m) $m.Uses | Add-Member Secrets @('x') }; Code = 'InvalidManifest' }
         @{ Case = 'a module without an exact version'; Change = { param($m) $m.Uses | Add-Member Modules @(@{ Name = 'Foo'; Version = '1.*' }) }; Code = 'InvalidManifest' }
         @{ Case = 'a user-installed module loaded in Maester''s process'; Change = { param($m) $m.Uses | Add-Member Modules @(@{ Name = 'Foo'; MinimumVersion = '1.0.0'; Install = 'User' }) }; Code = 'InvalidManifest' }
+        @{ Case = 'a price that is not Free or Paid'; Change = { param($m) $m | Add-Member Pricing 'Premium' }; Code = 'InvalidManifest' }
+        @{ Case = 'a banner outside the pack'; Change = { param($m) $m | Add-Member Banner '../banner.png' }; Code = 'InvalidManifest' }
+        @{ Case = 'a banner that is not an image'; Change = { param($m) $m | Add-Member Banner 'banner.svg' }; Code = 'InvalidManifest' }
     ) {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "pack-$([guid]::NewGuid().ToString('n'))") -Edit { param($p) Set-Manifest -Pack $p -Change $Change }
         $result = Test-MtPack $pack
