@@ -62,7 +62,7 @@ param (
     [string] $ControlName = "*",
 
     # URL to the EIDSCA config file
-    [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/tnh-EidscaUpdate/config/EidscaConfig.json',
+    [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json',
 
     # Download the EIDSCA config to -ConfigPath and look up page titles that are not in the cache.
     [switch] $Download
