@@ -1,0 +1,8 @@
+{
+  "Id": "MAES.ZTA",
+  "Name": "Zero Trust Assessment",
+  "Source": "Custom",
+  "Tags": ["ZeroTrust"],
+  "RequiresMaester": "3.0",
+  "NoResultReason": "The Zero Trust Assessment did not report a result for this test."
+}
