@@ -926,12 +926,19 @@ In 3.0 the built-in tests ship in the module, so updating the module updates the
   public call sites rely on that. Because a 3.0 run no longer needs a test folder,
   people will run it from a home directory or an unrelated repository, where a
   recursive scan would execute every unrelated `*.Tests.ps1` inside the Maester module
-  with a connected tenant. So with `-Path` omitted, custom tests are scanned for only
-  when the directory is recognisably a Maester folder: config discovery finds a user
-  config file, or the directory itself contains a `Custom` folder, a 2.x suite folder,
-  or a `*.Tests.ps1` or `Test.*.ps1` file. The scan is then recursive, as in 2.x.
-  Otherwise built-ins run and one information line says to pass `-Path`.
-- **An explicit `-Path`** is always scanned recursively. If it does not exist, that is
+  with a connected tenant. So with `-Path` omitted, only the `Custom` folder of the
+  current directory is scanned (owner ruling, replacing the earlier "recognisably a
+  Maester folder" rule); config files are still read from the current directory.
+  Without a `Custom` folder built-ins run and one information line says to pass `-Path`.
+- **Pester-format custom tests run only from a `Custom` folder** (owner ruling): `-Path`
+  itself when it is or is inside one, else the `Custom` folders under `-Path`. An
+  explicit test file runs wherever it is. Other `*.Tests.ps1` files under `-Path`, most
+  of them the 2.x suite folders `Install-MaesterTests` created, are not run, and one
+  warning gives their number. Native tests (`Test.*.ps1`) are found in any folder under
+  `-Path`.
+- **Scans are three folder levels deep**, below `-Path` and below each `Custom` folder,
+  so a `-Path` that is a whole repository is not walked to the bottom.
+- **An explicit `-Path`** is always scanned. If it does not exist, that is
   a warning recorded in the result, not an abort: built-ins still run, and config
   discovery starts from the nearest existing parent folder. This keeps the
   documented `Invoke-Maester -Path ./tests/Maester/` producing a report after

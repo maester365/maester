@@ -21,7 +21,8 @@ installed, selected, configured and written has moved on. This page lists every 
    ```
 
    Start a new PowerShell session afterwards.
-3. Clean up your tests folder: `Update-MaesterTests -Path ./maester-tests -WhatIf`, then without `-WhatIf`.
+3. Clean up your 2.x tests folder. Maester 3.0 doesn't need one: if it holds no custom tests and no config
+   changes, delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then without `-WhatIf`.
 4. If you disabled built-in tests by deleting their files, disable them in `maester-config.json` instead.
 5. If you have Pester-format custom tests, install Pester 5.7.1 or later yourself, or convert the tests with
    `Convert-MtTest`.
@@ -49,17 +50,21 @@ installed, selected, configured and written has moved on. This page lists every 
 ## The built-in tests run from the module
 
 In 2.x, `Install-MaesterTests` copied the tests into a folder and `Update-MaesterTests` refreshed the copies. In
-3.0 the tests ship in the module, so **updating the module updates the tests**. Your folder now holds only your
-own tests and your configuration.
+3.0 the tests ship in the module, so **updating the module updates the tests**. You no longer need a tests folder
+or repository; keep one only for your own tests and your configuration.
 
 - **The built-in tests always run.** `-Path` is now "where my custom tests and config live". Commands documented
   for 2.x, such as `Invoke-Maester -Path ./tests/Maester` or `Invoke-Maester ./tests/Custom`, now run every
   built-in test plus the custom tests under that path. To run only your custom tests, add `-SkipBuiltIn` (or set
   `Selection.BuiltIn` to `None`). To run only some built-in tests, use `-Product`, `-Suite` and the other
   selectors below, or `-TestId`.
-- **A run needs no test folder.** Without `-Path`, Maester looks for custom tests in the current folder only when
-  it looks like a Maester folder (a `maester-config*.json` file, a `Custom` folder, a 2.x suite folder, or a test
-  file). Otherwise it runs the built-in tests and tells you to pass `-Path` for custom tests.
+- **Pester-format custom tests must be in a `Custom` folder.** `*.Tests.ps1` files elsewhere under `-Path`, such
+  as the `Maester`, `cis` or `EIDSCA` folders `Install-MaesterTests` created, are not run; Maester warns with their
+  number. Move your own tests into `Custom` and run `Update-MaesterTests` to delete the copies of built-in tests.
+- **A run needs no test folder.** Without `-Path`, Maester looks for custom tests only in the `Custom` folder of
+  the current folder. Without one it runs the built-in tests and tells you to pass `-Path` for custom tests.
+- **Folders are searched three levels deep.** Test files deeper than three folders below `-Path` (or below a
+  `Custom` folder, for Pester-format tests) are not found.
 - **A `-Path` that does not exist** is a warning, not an error: the built-in tests still run and the config is
   looked up from the nearest existing parent folder. With `-SkipBuiltIn` it stays an error.
 - **Deleting a test file no longer disables a test.** The built-in tests come back. Disable a test in the
@@ -79,7 +84,7 @@ own tests and your configuration.
 
 | Command | 2.x | 3.0 |
 | --- | --- | --- |
-| [`Install-MaesterTests`](./commands/Install-MaesterTests.mdx) | Copied every test into the folder and installed Pester. | Writes `custom/README.md` and a starter `maester-config.json` when they are missing. Never writes a test file and never overwrites a file, so pipelines can keep calling it on every run. Does not install Pester; `-SkipPesterCheck` has no effect. |
+| [`Install-MaesterTests`](./commands/Install-MaesterTests.mdx) | Copied every test into the folder and installed Pester. | Not needed: remove it from your scripts. It is kept so that existing scripts keep working, and writes `custom/README.md` and a starter `maester-config.json` when they are missing. Never writes a test file and never overwrites a file. Does not install Pester; `-SkipPesterCheck` has no effect. |
 | [`Update-MaesterTests`](./commands/Update-MaesterTests.mdx) | Overwrote the test folders with the latest tests. | Removes the 2.x copies of built-in tests: every `*.Tests.ps1` outside `Custom/` whose tests all have a current, previous or retired built-in ID, and the folders that leaves empty. Keeps files that also hold tests of your own (with a warning), and never touches `Custom/`. Asks for confirmation unless you pass `-Force`; supports `-WhatIf`. It also reduces a copy of the 2.x shipped `maester-config.json` to the rows that differ from the built-in severities or set something else. |
 
 Pipelines that clone a copy of the 2.x tests and pass its folder to `-Path` keep working: the copies are
@@ -256,7 +261,9 @@ the keys. These rows can come out differently from 2.x:
   as a step (`Install-Module Pester -MinimumVersion 5.7.1 -Force -Scope CurrentUser`), or pass a hashtable to
   `-PesterConfiguration`, or move the settings to the run configuration (`Selection`, `Output.TestResult`).
 - Pipelines that run `Install-MaesterTests` and then `Invoke-Maester -Path <that folder>` keep working; the folder
-  now holds only the README and config template.
+  now holds only the README and config template. You can remove the `Install-MaesterTests` step.
+- Pipelines that clone the `maester365/maester-tests` repository can drop the clone. That repository keeps its
+  2.x content and is not updated for 3.0, so the copies in it only produce warnings.
 - Pipelines that pass `-Path` to a folder of 2.x test copies now run the built-in tests from the module and skip
   the copies. Add `-SkipBuiltIn` only if you want your custom tests alone.
 - Use `-Config` or `MAESTER_CONFIG` to give a pipeline its own configuration without touching the repository's

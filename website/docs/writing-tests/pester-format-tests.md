@@ -28,8 +28,12 @@ The Pester 3.4 that ships with Windows is never used.
 
 ## How Pester-format tests run
 
-- Maester finds `*.Tests.ps1` files under `-Path`, the same folder it searches for native tests, and runs them
-  with one `Invoke-Pester` call after the native tests.
+- Maester runs only the `*.Tests.ps1` files that are in a `custom` folder (matched without regard to case): the
+  `-Path` folder itself when it is or is inside a `custom` folder, else the `custom` folders under `-Path`. Without
+  `-Path`, that is the `custom` folder of the current folder. Files are found up to three folder levels below each
+  `custom` folder. A test file passed as `-Path` runs wherever it is. Other `*.Tests.ps1` files under `-Path`,
+  such as the suite folders that `Install-MaesterTests` created in 2.x, are not run; Maester warns with their
+  number. Maester runs the files it finds with one `Invoke-Pester` call after the native tests.
 - The test files run inside the Maester module, as in 2.x, so `BeforeAll`, `BeforeDiscovery`, `-ForEach`,
   `-Skip`, `Context`, `Set-ItResult` and every `Should` operator work as before. Even with `-DryRun`, Pester
   discovery runs, so `BeforeDiscovery` and `Describe`-level code execute.
@@ -92,7 +96,7 @@ a copy, so you can reuse the same object for several runs:
 
 ```powershell
 Invoke-Maester -PesterConfiguration @{
-    Run    = @{ Path = './maester-tests' }
+    Run    = @{ Path = './maester' }
     Filter = @{ Tag = 'CA'; ExcludeTag = 'App' }
 }
 ```

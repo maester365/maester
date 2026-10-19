@@ -226,7 +226,7 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
 
 Describe 'Native rows in Invoke-Maester results' {
     BeforeAll {
-        $script:folder = Join-Path $TestDrive 'mixed'
+        $script:folder = Join-Path $TestDrive 'mixed/Custom'
         $null = New-Item -ItemType Directory -Path $script:folder -Force
         $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.1' -Attribute "Service = 'None', Feature = 'Mixed'"
         $null = New-NativeTestFile -Folder $script:folder -Id 'MIX.2' -Attribute "Service = 'ExchangeOnline', Feature = 'Mixed'"

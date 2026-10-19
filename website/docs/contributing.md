@@ -128,7 +128,7 @@ This command:
 - Validates the build output.
 - Unloads any other Maester module and imports the local build into the current PowerShell session.
 
-Run the packaged tests with `Invoke-Maester -Path ./module/maester-tests`. Run
+Run the packaged tests with `Invoke-Maester`; the built-in tests run from the loaded module. Run
 `Build-LocalMaester.ps1` again whenever you change module or test source.
 
 After changing files under `./report`, include `-BuildReport` to build the report,
@@ -167,7 +167,7 @@ The publishable Maester module is produced by a build script that consolidates t
 - To produce the artifact without validating or importing it, run `./build/Build-MaesterModule.ps1`.
 - `./module` is a build artifact: it is ignored by git and never committed to source control. Built modules are attached to GitHub Releases and published to the PowerShell Gallery from CI.
 - The `FunctionsToExport` list in the built `Maester.psd1` is auto-generated at build time from the public source files. Do not edit the built manifest manually.
-- The bundled test files in `./module/maester-tests` are copied at build time from `./tests`. Do not edit build output manually.
+- The built-in tests are built from `./tests`: native tests go into the module and its test catalog, and the remaining files are copied to `./module/builtin-pester`. Do not edit build output manually.
 
 ### Code style
 

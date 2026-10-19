@@ -29,7 +29,7 @@ BeforeAll {
         }
         function Test-Break { [CmdletBinding()] param() break }
         function Test-Exit { [CmdletBinding()] param() exit 3 }
-        function Test-Sleep { [CmdletBinding()] param() Start-Sleep -Seconds 30; $true }
+        function Test-Sleep { [CmdletBinding()] param() Start-Sleep -Seconds 120; $true }
         function Test-Stream {
             [CmdletBinding()] param()
             Write-Warning 'w1'
@@ -176,7 +176,7 @@ Describe 'Invoke-MtEngineRun outcomes' {
     It 'Stops a test at its deadline and reports Timeout' {
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         $r = Invoke-Fixture -Command 'Test-Sleep' -TimeoutSeconds 1
-        $sw.Elapsed.TotalSeconds | Should -BeLessThan 10
+        $sw.Elapsed.TotalSeconds | Should -BeLessThan 60 -Because 'the test sleeps for 120 seconds and is stopped at 1'
         $r.Status | Should -Be 'Timeout'
     }
 
@@ -286,22 +286,39 @@ Describe 'Invoke-MtEngineRun stop and failure handling' {
     }
 
     It 'Stops the pool when a callback throws instead of waiting for every running item' {
-        $items = 1..4 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "FAIL.$_"; Command = 'Start-Sleep'; Parameters = @{ Seconds = 20 }; Lane = 'Pool' } }
+        $items = 1..4 | ForEach-Object { [Maester.Engine.MtWorkItem]@{ Id = "FAIL.$_"; Command = 'Start-Sleep'; Parameters = @{ Seconds = 120 }; Lane = 'Pool' } }
         $clock = [System.Diagnostics.Stopwatch]::StartNew()
         { Invoke-MtEngineRun -WorkItem $items -MaxParallel 4 -NoStreamReplay -OnItemStarting { throw 'callback failed' } } | Should -Throw '*callback failed*'
-        $clock.Elapsed.TotalSeconds | Should -BeLessThan 12 -Because 'the items sleep for 20 seconds and are stopped when the callback fails'
+        $clock.Elapsed.TotalSeconds | Should -BeLessThan 60 -Because 'the items sleep for 120 seconds and are stopped when the callback fails'
         [Maester.Engine.MtSession]::LastRun.StopRequested | Should -BeFalse -Because 'nobody asked for a stop'
     }
 
     It 'Returns at the deadline of a pool item that is stuck in a blocking call, and reports the abandoned runspace' {
-        # Thread.Sleep cannot be interrupted, unlike Start-Sleep: the runspace is abandoned and closed later.
-        $item = [Maester.Engine.MtWorkItem]@{ Id = 'STUCK.1'; Command = 'Invoke-Expression'; Parameters = @{ Command = '[System.Threading.Thread]::Sleep(6000)' }; Lane = 'Pool'; TimeoutSeconds = 1 }
-        $clock = [System.Diagnostics.Stopwatch]::StartNew()
-        $r = Invoke-MtEngineRun -WorkItem $item -MaxParallel 2 -NoStreamReplay
-        $clock.Elapsed.TotalSeconds | Should -BeLessThan 5 -Because 'the run does not wait for the blocking call to return'
-        $r.Status | Should -Be 'Timeout'
-        [Maester.Engine.MtSession]::LastRun.AbandonedRunspaces | Should -Be 1
-        # Let the blocking call return while the process is alive: the pool is closed then, in the background.
-        Start-Sleep -Seconds 6
+        # A blocking .NET wait cannot be interrupted, unlike Start-Sleep: the runspace is abandoned and closed later.
+        # The wait ends when this test releases it, after the run has returned, so no time limit is needed: a run
+        # that waited for the call would see it end at its own timeout and record that. (A limit on the elapsed time
+        # failed on the macOS runners, which pause the test process for seconds at a time.)
+        $domain = [System.AppDomain]::CurrentDomain
+        $key = "Maester.Tests.Stuck.$([guid]::NewGuid())"
+        $release = [System.Threading.ManualResetEventSlim]::new($false)
+        $domain.SetData($key, $release)
+        try {
+            # The result of the wait is stored in the same statement: the stop request ends the pipeline before the next one.
+            $command = "[System.AppDomain]::CurrentDomain.SetData('$key.released', [System.AppDomain]::CurrentDomain.GetData('$key').Wait(60000))"
+            $item = [Maester.Engine.MtWorkItem]@{ Id = 'STUCK.1'; Command = 'Invoke-Expression'; Parameters = @{ Command = $command }; Lane = 'Pool'; TimeoutSeconds = 1 }
+            $r = Invoke-MtEngineRun -WorkItem $item -MaxParallel 2 -NoStreamReplay
+            $domain.GetData("$key.released") | Should -BeNullOrEmpty -Because 'the run returns while the blocking call still waits'
+            $r.Status | Should -Be 'Timeout'
+            [Maester.Engine.MtSession]::LastRun.AbandonedRunspaces | Should -Be 1
+        } finally {
+            # Let the blocking call return while the process is alive: the pool is closed then, in the background.
+            $release.Set()
+            foreach ($try in 1..200) {
+                if ($null -ne $domain.GetData("$key.released")) { break }
+                Start-Sleep -Milliseconds 50
+            }
+            $domain.SetData($key, $null)
+            $domain.SetData("$key.released", $null)
+        }
     }
 }
