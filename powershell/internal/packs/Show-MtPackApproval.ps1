@@ -1,4 +1,4 @@
-function Show-MtPackApproval {
+﻿function Show-MtPackApproval {
     <#
     .SYNOPSIS
     Shows the install prompt for a pack and returns whether it was approved (Maester Packs design, section 5.3).

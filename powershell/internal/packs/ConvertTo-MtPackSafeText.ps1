@@ -1,4 +1,4 @@
-function ConvertTo-MtPackSafeText {
+﻿function ConvertTo-MtPackSafeText {
     <#
     .SYNOPSIS
     Cleans text that comes from a pack before Maester prints it (Maester Packs design, section 5.3).

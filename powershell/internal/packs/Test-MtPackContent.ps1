@@ -275,8 +275,8 @@ function Test-MtPackScriptFile {
     # The scan.
     $microsoftModules = '^(Microsoft\.Graph(\..+)?|Az(\..+)?|ExchangeOnlineManagement|MicrosoftTeams|PnP\.PowerShell|Microsoft\.Online\.SharePoint\.PowerShell|Maester|Pester|Microsoft\.PowerShell\..+)$'
     $hostAllowed = {
-        param($name)
-        foreach ($h in $DeclaredHost) {
+        param($name, $hosts)
+        foreach ($h in $hosts) {
             if ($h.StartsWith('*.')) { if ($name.EndsWith($h.Substring(1), [System.StringComparison]::OrdinalIgnoreCase)) { return $true } }
             elseif ($h -eq $name) { return $true }
         }
@@ -296,7 +296,7 @@ function Test-MtPackScriptFile {
                 $uri = if ($arguments.Named.ContainsKey('Uri')) { $arguments.Named['Uri'] } elseif ($arguments.Positional.Count -gt 0) { $arguments.Positional[0] } else { $null }
                 $literal = Get-MtPackLiteralString -Ast $uri
                 if ($literal -and $literal -match '^https?://([^/:?#]+)') {
-                    if (-not (& $hostAllowed $Matches[1])) { & $fail 'UndeclaredNetwork' "Sends a web request to $($Matches[1]), which Uses.Network does not list." $line }
+                    if (-not (& $hostAllowed $Matches[1] $DeclaredHost)) { & $fail 'UndeclaredNetwork' "Sends a web request to $($Matches[1]), which Uses.Network does not list." $line }
                 } else { & $find 'Medium' 'DynamicUrl' 'Sends a web request to an address built at run time.' $line }
             }
             '^(Import-Module|ipmo|Install-Module|Install-PSResource|Save-Module|Save-PSResource|Install-Package)$' {
