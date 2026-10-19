@@ -98,9 +98,9 @@ background.
 - **Size:** 1200 × 630 pixels (the 1.91:1 shape of a social preview). Another size is cropped to fill that shape.
 - **Shown small:** about 600 pixels wide on a desktop and 340 on a phone. Use at most eight words of text, set large,
   and keep it away from the edges.
-- **Your own brand only.** Don't use Microsoft's, Maester's or another vendor's logo, and don't add words such as
-  "Official" or "Verified": the index shows its own badges, and a banner that suggests an endorsement can get the
-  pack removed.
+- **Your own brand.** Use another company's logo only for a pack built on that company's product, and only with its
+  permission. Don't add words such as "Official" or "Verified": the index shows its own badges, and a banner that
+  suggests an endorsement it doesn't have can get the pack removed.
 - **No secrets or real data:** a screenshot must not show a real tenant, user or key.
 
 ### Making one with an AI image tool

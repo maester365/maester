@@ -15,7 +15,8 @@ function Test-MtPackContent {
     - Findings: what a person should read before installing (Severity Medium or High, Code, Message, File, Line).
     - Risk: Low (text only and nothing to read), Medium (findings, or Gallery modules), or High (compiled or
       encoded content, archives, tenant writes, write scopes, or modules from outside the store).
-    - Binaries: every file whose bytes are not text, with its size and SHA-256.
+    - Binaries: every file whose bytes are not text, with its size and SHA-256. The manifest's Banner is not one
+      when it really is a PNG, JPEG or WebP image of at most 1 MB.
     - Tests: the pack's tests as the engine reads them, and TestIds.
     - Digest and Files: as Get-MtPackDigest returns them.
     #>
@@ -60,10 +61,14 @@ function Test-MtPackContent {
     if ($total -gt 50MB) { & $fail 'TooLarge' "The pack is $([math]::Round($total / 1MB, 1)) MB; at most 50 MB is allowed." }
     $archive = @('.zip', '.nupkg', '.7z', '.tar', '.gz', '.tgz', '.rar', '.cab', '.msi', '.jar', '.whl')
     $compiled = @('.dll', '.exe', '.so', '.dylib', '.pyc', '.pyo', '.wasm', '.class', '.node')
+    # The manifest's Banner is an image no code can load, so it is not scanned as binary content once its bytes
+    # show it really is the PNG, JPEG or WebP its name says, at most 1 MB.
+    $banner = if ($manifest -and $manifest.PSObject.Properties['Banner'] -and $manifest.Banner) { ([string]$manifest.Banner).Replace('\', '/') -replace '^\./', '' }
     foreach ($f in $digest.Files) {
         if ($f.Size -gt 20MB) { & $fail 'TooLarge' "$($f.Path) is $([math]::Round($f.Size / 1MB, 1)) MB; at most 20 MB is allowed per file." }
         $full = Join-Path $root $f.Path
         $extension = [System.IO.Path]::GetExtension($f.Path).ToLowerInvariant()
+        if ($banner -and $f.Path -ceq $banner -and $f.Size -le 1MB -and (Test-MtPackImageFile -Path $full)) { continue }
         if ($extension -in $archive -or $extension -in $compiled -or (Test-MtPackBinaryFile -Path $full)) {
             $kind = if ($extension -in $archive) { 'archive' } elseif ($extension -in $compiled) { 'compiled code' } else { 'binary content' }
             $signer = $null
@@ -201,6 +206,27 @@ function Test-MtPackBinaryFile {
         for ($i = 0; $i -lt $read; $i++) { if ($buffer[$i] -eq 0) { return $true } }
         $false
     } finally { $stream.Dispose() }
+}
+
+function Test-MtPackImageFile {
+    <#
+    .SYNOPSIS
+    True when a file's first bytes are those of the PNG, JPEG or WebP image its extension names.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param([Parameter(Mandatory)] [string] $Path)
+
+    $head = [byte[]]::new(12)
+    $stream = [System.IO.File]::OpenRead($Path)
+    try { $read = $stream.Read($head, 0, $head.Length) } finally { $stream.Dispose() }
+    if ($read -lt 12) { return $false }
+    switch -Regex ([System.IO.Path]::GetExtension($Path).ToLowerInvariant()) {
+        '^\.png$' { return $head[0] -eq 0x89 -and $head[1] -eq 0x50 -and $head[2] -eq 0x4E -and $head[3] -eq 0x47 }
+        '^\.jpe?g$' { return $head[0] -eq 0xFF -and $head[1] -eq 0xD8 -and $head[2] -eq 0xFF }
+        '^\.webp$' { return [System.Text.Encoding]::ASCII.GetString($head, 0, 4) -eq 'RIFF' -and [System.Text.Encoding]::ASCII.GetString($head, 8, 4) -eq 'WEBP' }
+    }
+    $false
 }
 
 function Get-MtPackReservedTag {

@@ -108,6 +108,21 @@ Describe 'Maester Pack content scan' {
         (Test-MtPack $pack).Risk | Should -Be 'High'
     }
 
+    It 'does not scan the declared banner as binary content when it really is an image' {
+        $png = [byte[]](0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0x0D, 0x49, 0x48, 0x44, 0x52)
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'banner') -Edit { param($p) [System.IO.File]::WriteAllBytes((Join-Path $p 'banner.png'), $png) }
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member Banner 'banner.png' }
+        $result = Test-MtPack $pack
+        $result.Risk | Should -Be 'Low'
+        $result.Binaries | Should -BeNullOrEmpty
+    }
+
+    It 'rates a binary banner High when its bytes are not the image its name says' {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'fake-banner') -Edit { param($p) [System.IO.File]::WriteAllBytes((Join-Path $p 'banner.png'), [byte[]](0x4D, 0x5A, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9)) }
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member Banner 'banner.png' }
+        (Test-MtPack $pack).Risk | Should -Be 'High'
+    }
+
     It 'refuses a test whose ID is not under the pack code' {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'wrong-id') -Edit {
             param($p)
