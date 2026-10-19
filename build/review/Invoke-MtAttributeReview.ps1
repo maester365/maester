@@ -232,6 +232,7 @@ function Get-MtReviewTarget {
         $target = [pscustomobject]@{
             Path     = $path
             Id       = [System.IO.Path]::GetFileNameWithoutExtension($path) -replace '^Test\.', ''
+            Title    = ''
             IsNew    = $null -eq $source.Base
             Changed  = @()
             Declared = [ordered]@{}
@@ -252,6 +253,7 @@ function Get-MtReviewTarget {
             if ($declared.Attributes.Contains($name)) { $target.Declared[$name] = $declared.Attributes[$name] }
         }
         if ($declared.Attributes.Contains('Id')) { $target.Id = [string] $declared.Attributes['Id'] }
+        if ($declared.Attributes.Contains('Title')) { $target.Title = [string] $declared.Attributes['Title'] }
 
         if ($target.IsNew) {
             $target.Changed = @($script:RubricAttribute)
@@ -291,6 +293,7 @@ function Get-MtReviewIndex {
         $read = Get-MtReviewAttribute -Content (Get-Content -LiteralPath $file.FullName -Raw)
         if ($read.Error) { continue }
         $entry = [ordered]@{
+            Path  = [System.IO.Path]::GetRelativePath($Root, $file.FullName) -replace '\\', '/'
             Id    = if ($read.Attributes.Contains('Id')) { [string] $read.Attributes['Id'] } else { $file.BaseName -replace '^Test\.', '' }
             Title = if ($read.Attributes.Contains('Title')) { [string] $read.Attributes['Title'] } else { '' }
         }
@@ -308,9 +311,9 @@ function Get-MtReviewRelatedTest {
     with the same check in another suite.
 
     .DESCRIPTION
-    The values come from -Index, which is read from the trusted root. A test that the pull request also changes
-    is shown with its values from the pull request, so that a change made to both tests is not reported against
-    the old value.
+    The values come from -Index, which is read from the trusted root, brought up to date with the pull request:
+    a test the pull request adds or changes is shown with its values from the pull request, and a test it
+    deletes is left out. A change made to both tests is then not reported against the old value.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -320,6 +323,8 @@ function Get-MtReviewRelatedTest {
         [object[]] $Index,
         [AllowEmptyCollection()]
         [object[]] $Changed,
+        [AllowEmptyCollection()]
+        [string[]] $Removed,
         [int] $MaxRelated = 40
     )
 
@@ -327,21 +332,25 @@ function Get-MtReviewRelatedTest {
     $feature = ConvertTo-MtReviewValue -Value $(if ($Target.Declared.Contains('Feature')) { $Target.Declared['Feature'] })
     if (-not $product -or -not $feature) { return }
 
-    $overlay = @{}
-    foreach ($other in $Changed) {
-        if ($other -and -not $other.Error -and $other.Id -ne $Target.Id) { $overlay[$other.Id] = $other.Declared }
-    }
+    $fromPullRequest = @($Changed | Where-Object { $_ -and -not $_.Error })
+    $changedIds = @($fromPullRequest | ForEach-Object { $_.Id })
+    $candidates = @(
+        $Index | Where-Object { $_.Id -notin $changedIds -and $_.Path -notin $Removed } | ForEach-Object {
+            $values = [ordered]@{}
+            foreach ($name in $script:RubricAttribute) { if ($_.PSObject.Properties[$name]) { $values[$name] = $_.$name } }
+            [pscustomobject]@{ Id = $_.Id; Title = $_.Title; Values = $values }
+        }
+        $fromPullRequest | ForEach-Object { [pscustomobject]@{ Id = $_.Id; Title = $_.Title; Values = $_.Declared } }
+    )
 
-    $related = foreach ($entry in $Index) {
-        if ($entry.Id -eq $Target.Id) { continue }
-        $values = if ($overlay.ContainsKey($entry.Id)) { $overlay[$entry.Id] } else { $entry }
+    $related = foreach ($candidate in $candidates) {
+        if ($candidate.Id -eq $Target.Id) { continue }
         $shown = [ordered]@{}
         foreach ($name in $script:RubricAttribute) {
-            $value = if ($values -is [System.Collections.IDictionary]) { if ($values.Contains($name)) { $values[$name] } } elseif ($values.PSObject.Properties[$name]) { $values.$name }
-            $shown[$name] = ConvertTo-MtReviewValue -Value $value
+            $shown[$name] = ConvertTo-MtReviewValue -Value $(if ($candidate.Values.Contains($name)) { $candidate.Values[$name] })
         }
         if ($shown['Product'] -ne $product -or $shown['Feature'] -ne $feature) { continue }
-        $item = [ordered]@{ Id = $entry.Id; Title = $entry.Title }
+        $item = [ordered]@{ Id = $candidate.Id; Title = $candidate.Title }
         foreach ($name in $script:RubricAttribute) {
             if ($name -notin 'Product', 'Feature' -and $shown[$name]) { $item[$name] = $shown[$name] }
         }
@@ -715,8 +724,11 @@ function Invoke-MtAttributeReview {
     $system = Get-MtReviewSystem -Root $Root
     # The rubric's rule that the same check in two suites gets the same value needs the other tests in view.
     $index = @(Get-MtReviewIndex -Root $Root)
+    # A test file the change lists but no longer has was deleted.
+    $removed = @($File | ForEach-Object { $_ -replace '\\', '/' } |
+            Where-Object { $_ -match '^tests/.+/Test\.[^/]+\.ps1$' -and -not (Test-Path -LiteralPath (Join-Path $HeadRoot $_) -PathType Leaf) })
     foreach ($target in $targets) {
-        if (-not $target.Error) { $target.Related = @(Get-MtReviewRelatedTest -Target $target -Index $index -Changed $targets) }
+        if (-not $target.Error) { $target.Related = @(Get-MtReviewRelatedTest -Target $target -Index $index -Changed $targets -Removed $removed) }
     }
     $results = foreach ($target in $targets) {
         if ($target.Error) {

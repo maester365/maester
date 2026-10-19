@@ -197,9 +197,16 @@ function Test-MtReviewSample {
         }
 
         It 'Shows a test the pull request also changes with its new values' {
-            $other = [pscustomobject]@{ Id = 'CISA.X.1'; Error = $null; Declared = [ordered]@{ Product = 'entra'; Feature = 'conditional-access'; Severity = 'Medium' } }
+            $other = [pscustomobject]@{ Id = 'CISA.X.1'; Title = 'Sample'; Error = $null; Declared = [ordered]@{ Product = 'entra'; Feature = 'conditional-access'; Severity = 'Medium' } }
             $related = @(Get-MtReviewRelatedTest -Target $script:relatedTarget -Index $script:index -Changed @($script:relatedTarget, $other))
             $related[0].Severity | Should -Be 'Medium'
+        }
+
+        It 'Adds tests the pull request adds and leaves out tests it deletes' {
+            $added = [pscustomobject]@{ Id = 'CIS.X.9'; Title = 'New'; Error = $null; Declared = [ordered]@{ Product = 'entra'; Feature = 'conditional-access'; Severity = 'Low' } }
+            $related = @(Get-MtReviewRelatedTest -Target $script:relatedTarget -Index $script:index -Changed @($script:relatedTarget, $added) -Removed @('tests/cisa/entra/Test.CISA.X.1.ps1'))
+            $related.Id | Should -Be @('CIS.X.9')
+            $related[0].Title | Should -Be 'New'
         }
 
         It 'Sends the related tests in the request, and none when there are none' {
