@@ -277,7 +277,7 @@ A test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `n
 2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A
    reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit
    the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the
-   same product and feature. It fails a test whose severity or taxonomy differs from the same check in another
-   suite, and whose user impact or implementation cost differs when both recommend the same fix. A maintainer can
-   overrule it.
+   same product and feature. It fails a test whose area, resource type or severity differs from the same check in
+   another suite, and whose user impact or implementation cost differs when both plainly recommend the same fix.
+   MITRE techniques and related products are not compared. A maintainer can overrule it.
 3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`.

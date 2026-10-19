@@ -47,9 +47,11 @@ judge the attributes on their merits.
 8. The same check in another suite: look in `related_tests` for a test that checks the same setting or
    requirement as the test under review, for example a CIS test and a CISA test of the same Entra setting. Judge
    it from the titles and the test's own description. Tests that only share a feature are not the same check.
-   When one is the same check, `Product`, `Feature`, `Area`, `ResourceType` and `Severity` describe the check and
-   the risk, so they must be the same in both. `UserImpact` and `ImplementationCost` rate the fix each test's
-   Markdown recommends, so they must be the same only when both tests recommend the same fix. `Mitre` and
+   Related tests already share `Product` and `Feature`. When one is the same check, `Area`, `ResourceType` and
+   `Severity` describe the check and the risk, so they must be the same in both. `UserImpact` and
+   `ImplementationCost` rate the fix each test's Markdown recommends, and `related_tests` does not carry the
+   related test's fix, so they must be the same only when the titles and the test's own description make plain
+   that both tests recommend the same fix; when that is not plain, do not compare them. `Mitre` and
    `RelatedProduct` follow each test's own description and are exempt. For each attribute in
    `attributes_to_review` that must match and differs from that test's value, report a finding even if the
    declared value is defensible on its own. Set `expected` to the value the rubric gives for both tests. When that is the declared
