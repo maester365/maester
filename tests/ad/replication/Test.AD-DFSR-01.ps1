@@ -67,6 +67,17 @@
 
     # Get domain controllers for per-DC comparison
     $domainControllers = $adState.DomainControllers
+    # Filter to DCs in the current domain only — DomainControllers searches the forest-wide
+    # Sites container and returns DCs from all domains, while DfsrSubscriptions searches
+    # only the current domain's DefaultNamingContext. Without this filter, child-domain DCs
+    # appear as missing subscriptions when the test targets the root domain.
+    $currentDomainDn = if ($adState.RootDSE) { $adState.RootDSE.DefaultNamingContext } else { $null }
+    if ($currentDomainDn) {
+        $currentDomain = ($currentDomainDn -split ',') -replace '^DC=' -join '.'
+        $domainControllers = @($domainControllers | Where-Object {
+            $_.DnsHostName -and ($_.DnsHostName -replace '^[^.]+\.', '') -eq $currentDomain
+        })
+    }
     $dcCount = ($domainControllers | Measure-Object).Count
 
     # Build a map of DC ServerReference to subscriptions

@@ -285,13 +285,13 @@ Describe 'AD-DACL tests: platform and availability checks' {
 
             $originalIsWindows = $IsWindows
             try {
-                $IsWindows = $false
+                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $false)
                 $PSVersionTable.PSEdition = 'Core'
                 $result = Test-MtAdDaclOuObjectCount
                 $result | Should -Be $null
             }
             finally {
-                $IsWindows = $originalIsWindows
+                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $originalIsWindows)
             }
         }
     }
@@ -305,12 +305,12 @@ Describe 'AD-DACL tests: platform and availability checks' {
 
             $originalIsWindows = $IsWindows
             try {
-                $IsWindows = $true
+                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $true)
                 $result = Test-MtAdDaclOuObjectCount
                 $result | Should -Be $null
             }
             finally {
-                $IsWindows = $originalIsWindows
+                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $originalIsWindows)
             }
         }
     }
