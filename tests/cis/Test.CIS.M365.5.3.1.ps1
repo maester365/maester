@@ -76,7 +76,7 @@
     $testResult = $failed.Count -eq 0 -and $emergencyCandidates -le 2
 
     $passText = 'Privileged roles are activated through PIM and not permanently assigned.'
-    $failText = if ($failed.Count -gt 0) { "$($failed.Count) privileged role assignment(s) are permanently assigned instead of activated." } else { "$emergencyCandidates listed emergency access accounts hold permanent Global Administrator assignments. At most 2 are accepted." }
+    $failText = if ($failed.Count -gt 0) { "$($failed.Count) privileged role assignment(s) are not activated." } else { "$emergencyCandidates listed emergency access accounts hold permanent Global Administrator assignments. At most 2 are accepted." }
 
     $resultMd = "| Role | Principal | Type | Assignment | Result |`n"
     $resultMd += "| --- | --- | --- | --- | --- |`n"
