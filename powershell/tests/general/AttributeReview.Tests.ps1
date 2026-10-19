@@ -12,14 +12,14 @@ Describe 'Attribute review script' {
 
         function New-TestFileText {
             [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
-            param([string] $Severity = 'High', [string] $Area = 'authentication', [string] $Body = '$true')
+            param([string] $Severity = 'High', [string] $Area = 'authentication', [string] $Body = '$true', [string] $Id = 'MT.9001', [string] $Feature = 'conditional-access')
             @"
 function Test-MtReviewSample {
     [MaesterTest(
-        Id = 'MT.9001',
+        Id = '$Id',
         Title = 'Sample',
         Product = 'entra',
-        Feature = 'conditional-access',
+        Feature = '$Feature',
         Area = '$Area',
         ResourceType = 'Tenant',
         Severity = '$Severity',
@@ -167,6 +167,48 @@ function Test-MtReviewSample {
 
         It 'Serializes to valid JSON' {
             { $script:body | ConvertTo-Json -Depth 30 | ConvertFrom-Json -Depth 30 } | Should -Not -Throw
+        }
+    }
+
+    Context 'Related tests' {
+        BeforeAll {
+            $script:relatedRoot = New-ReviewTree 'related-root'
+            $null = New-Item -ItemType Directory -Path (Join-Path $script:relatedRoot 'tests/cisa/entra') -Force
+            New-TestFileText -Id 'CISA.X.1' -Severity 'High' | Set-Content (Join-Path $script:relatedRoot 'tests/cisa/entra/Test.CISA.X.1.ps1')
+            New-TestFileText -Id 'CISA.X.2' -Feature 'authentication-methods' | Set-Content (Join-Path $script:relatedRoot 'tests/cisa/entra/Test.CISA.X.2.ps1')
+            New-TestFileText -Severity 'Medium' | Set-Content (Join-Path $script:relatedRoot $script:path)
+            $script:index = @(Get-MtReviewIndex -Root $script:relatedRoot)
+            $head = New-ReviewTree 'related-head'
+            New-TestFileText -Severity 'Medium' | Set-Content (Join-Path $head $script:path)
+            $script:relatedTarget = @(Get-MtReviewTarget -Root (New-ReviewTree 'related-empty') -HeadRoot $head -File $script:path)[0]
+        }
+
+        It 'Reads every test under the root without running it' {
+            $script:index.Id | Should -Contain 'CISA.X.1'
+            ($script:index | Where-Object Id -EQ 'CISA.X.1').Severity | Should -Be 'High'
+            ($script:index | Where-Object Id -EQ 'CISA.X.1').Title | Should -Be 'Sample'
+        }
+
+        It 'Lists only other tests with the same product and feature' {
+            $related = @(Get-MtReviewRelatedTest -Target $script:relatedTarget -Index $script:index -Changed @($script:relatedTarget))
+            $related.Id | Should -Be @('CISA.X.1')
+            $related[0].Severity | Should -Be 'High'
+            $related[0].Mitre | Should -Be 'T1078.004, T1110'
+        }
+
+        It 'Shows a test the pull request also changes with its new values' {
+            $other = [pscustomobject]@{ Id = 'CISA.X.1'; Error = $null; Declared = [ordered]@{ Product = 'entra'; Feature = 'conditional-access'; Severity = 'Medium' } }
+            $related = @(Get-MtReviewRelatedTest -Target $script:relatedTarget -Index $script:index -Changed @($script:relatedTarget, $other))
+            $related[0].Severity | Should -Be 'Medium'
+        }
+
+        It 'Sends the related tests in the request, and none when there are none' {
+            $script:relatedTarget.Related = @(Get-MtReviewRelatedTest -Target $script:relatedTarget -Index $script:index -Changed @())
+            $body = New-MtReviewRequestBody -Target $script:relatedTarget -System @() -Model 'm' -Effort 'high'
+            $body.messages[0].content | Should -Match 'related_tests: \[\{"Id":"CISA\.X\.1"'
+            $script:relatedTarget.Related = @()
+            $body = New-MtReviewRequestBody -Target $script:relatedTarget -System @() -Model 'm' -Effort 'high'
+            $body.messages[0].content | Should -Match 'related_tests: none'
         }
     }
 

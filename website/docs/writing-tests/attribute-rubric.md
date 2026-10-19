@@ -276,5 +276,7 @@ A test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `n
    have, or is a CIS or CISA test without a `Control` for its own framework.
 2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A
    reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit
-   the rubric, with the value it expected and the reason. A maintainer can overrule it.
+   the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the
+   same product and feature, so it fails a test whose value differs from the same check in another suite. A
+   maintainer can overrule it.
 3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`.
