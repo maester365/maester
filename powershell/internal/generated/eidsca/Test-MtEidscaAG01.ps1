@@ -36,7 +36,7 @@ function Test-MtEidscaAG01 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is one of the following values **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Info'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Low'
 
     return $tenantValue
 }

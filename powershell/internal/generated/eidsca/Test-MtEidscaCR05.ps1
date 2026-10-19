@@ -36,7 +36,7 @@ function Test-MtEidscaCR05 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/adminConsentRequestPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Medium'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Low'
 
     return $tenantValue
 }

@@ -36,7 +36,7 @@ function Test-MtEidscaAF06 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Medium'
 
     return $tenantValue
 }
