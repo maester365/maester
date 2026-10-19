@@ -83,8 +83,43 @@ cooldown when it is published; any other release starts it when each user first 
 | `Requires.Packs` | Other packs this one needs: `{ "Id": "contoso.base", "Source": "contoso/maester-base", "Version": ">=1.0" }`. They are installed first, with their own approval. |
 | `Exports` | Functions of this pack that packs requiring it may call. |
 | `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
-| `Banner` | An image in the pack (`.png`, `.jpg` or `.webp`, at most 1 MB, 1200 × 630 pixels works best) that the pack index can show when it features the pack. |
+| `Banner` | An image in the pack that the pack index shows when it features the pack. See [Banner image](#banner-image). |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
+
+## Banner image
+
+A banner is optional. When the maintainers feature a pack on [packs.maester.cloud](https://packs.maester.cloud), the
+card shows the banner beside the pack's description; without one, the card shows the pack's code and name on a dark
+background.
+
+- **File:** `.png`, `.jpg` or `.webp`, at most 1 MB, inside the pack, for example `"Banner": "assets/banner.png"`.
+  The index reads the type from the file's contents, not its name, and SVG is refused. A banner that fails these
+  checks is left out and the card falls back to the code and name.
+- **Size:** 1200 × 630 pixels (the 1.91:1 shape of a social preview). Another size is cropped to fill that shape.
+- **Shown small:** about 600 pixels wide on a desktop and 340 on a phone. Use at most eight words of text, set large,
+  and keep it away from the edges.
+- **Your own brand only.** Don't use Microsoft's, Maester's or another vendor's logo, and don't add words such as
+  "Official" or "Verified": the index shows its own badges, and a banner that suggests an endorsement can get the
+  pack removed.
+- **No secrets or real data:** a screenshot must not show a real tenant, user or key.
+
+### Making one with an AI image tool
+
+Any image tool that takes a text prompt can make a banner. Image tools often misspell words, so check every letter,
+or ask for an image with no text and add the title yourself in an editor. Fill in the parts in angle brackets:
+
+```text
+A wide banner image, 1200 x 630 pixels, for a software add-on called "<pack name>".
+It checks the security settings of <service, for example Google Workspace> for IT administrators.
+Style: clean, modern, flat illustration on a <dark navy / deep teal / near-black> gradient background,
+with a simple abstract motif suggesting <what the pack checks, for example identity, email, devices>.
+Text: the title "<pack name>" in large, bold, white sans-serif letters on the left,
+and the line "<one short phrase, at most six words>" below it in smaller letters.
+Leave a margin of at least 60 pixels on every side. No other text, no logos, no people,
+no photos of screens, no badges or seals.
+```
+
+For an image without text, replace the `Text:` line with `No text at all; leave the left half plain for a title.`
 
 ## Tests and helpers
 
