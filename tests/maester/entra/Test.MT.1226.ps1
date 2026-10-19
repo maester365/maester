@@ -25,7 +25,7 @@
         ResourceType = 'Application',
         Severity = 'Medium',
         UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1199',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
