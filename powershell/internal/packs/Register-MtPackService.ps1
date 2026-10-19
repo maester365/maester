@@ -54,7 +54,7 @@ function Initialize-MtPackSet {
     must never stop Microsoft 365 connections.
     #>
     [CmdletBinding()]
-    [OutputType([pscustomobject], [System.Array])]
+    [OutputType([pscustomobject], [object[]], [System.Array])]
     param(
         [Parameter()] [string] $PackLock,
         # The folder config discovery starts from; the current folder by default.
