@@ -45,7 +45,7 @@
     },
     {
       "Id": "EIDSCA.AF04",
-      "Severity": "Medium",
+      "Severity": "Low",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -60,7 +60,7 @@
     },
     {
       "Id": "EIDSCA.AF05",
-      "Severity": "Medium",
+      "Severity": "Low",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -75,7 +75,7 @@
     },
     {
       "Id": "EIDSCA.AF06",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -90,12 +90,10 @@
     },
     {
       "Id": "EIDSCA.AG01",
-      "Severity": "High",
+      "Severity": "Info",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
-      "UserImpact": "Low",
-      "ImplementationCost": "Medium",
       "Mitre": [
         "None"
       ],
@@ -150,7 +148,7 @@
     },
     {
       "Id": "EIDSCA.AM02",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -365,7 +363,7 @@
     },
     {
       "Id": "EIDSCA.AP10",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "user-settings",
       "Area": "applications",
       "ResourceType": "Tenant",
@@ -381,10 +379,38 @@
       ]
     },
     {
-      "Id": "EIDSCA.AP14",
-      "Severity": "Low",
+      "Id": "EIDSCA.AP12",
+      "Severity": "Medium",
       "Feature": "user-settings",
       "Area": "access-control",
+      "ResourceType": "Tenant",
+      "UserImpact": "Medium",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-6(10)"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP14",
+      "Severity": "Info",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "ResourceType": "Tenant",
+      "Mitre": [
+        "None"
+      ],
+      "Control": [
+        "nist-800-53-r5:AC-3"
+      ]
+    },
+    {
+      "Id": "EIDSCA.AP15",
+      "Severity": "Medium",
+      "Feature": "agent-identities",
+      "Area": "ai",
       "ResourceType": "Tenant",
       "UserImpact": "Low",
       "ImplementationCost": "Low",
@@ -392,7 +418,7 @@
         "None"
       ],
       "Control": [
-        "nist-800-53-r5:AC-3"
+        "nist-800-53-r5:AC-6(10)"
       ]
     },
     {
@@ -414,7 +440,7 @@
     },
     {
       "Id": "EIDSCA.AT01",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "authentication-methods",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -558,6 +584,18 @@
       ]
     },
     {
+      "Id": "EIDSCA.CR05",
+      "Severity": "Medium",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "ResourceType": "Tenant",
+      "UserImpact": "Low",
+      "ImplementationCost": "Low",
+      "Mitre": [
+        "None"
+      ]
+    },
+    {
       "Id": "EIDSCA.PR01",
       "Severity": "High",
       "RelatedProduct": [
@@ -610,7 +648,7 @@
     },
     {
       "Id": "EIDSCA.PR05",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "password-protection",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -625,7 +663,7 @@
     },
     {
       "Id": "EIDSCA.PR06",
-      "Severity": "Medium",
+      "Severity": "High",
       "Feature": "password-protection",
       "Area": "authentication",
       "ResourceType": "Tenant",
@@ -655,7 +693,7 @@
     },
     {
       "Id": "EIDSCA.ST09",
-      "Severity": "Low",
+      "Severity": "Medium",
       "Feature": "groups",
       "Area": "external-access",
       "ResourceType": "Tenant",

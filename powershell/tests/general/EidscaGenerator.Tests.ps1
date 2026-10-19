@@ -194,6 +194,69 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         Get-Content -Path (Join-Path $paths.PowerShellFunctionsPath 'Test-MtEidscaZZ97.ps1') -Raw | Should -Not -Match 'SkippedBecause'
     }
 
+    It 'preserves and evaluates CurrentValue expressions containing $_ (<Name>)' -TestCases @(
+        @{
+            Name = 'AP08-style pipeline'
+            CurrentValue = "assignments | Where-Object { `$_ -like 'ManagePermissionGrantsForSelf.*' -and `$_ -ne 'ManagePermissionGrantsForSelf.microsoft-user-default-low' } | Measure-Object | Select-Object -ExpandProperty Count"
+            RecommendedValue = '0'
+            MatchingResult = @{ assignments = @('ManagePermissionGrantsForSelf.microsoft-user-default-low') }
+            OtherResult = @{ assignments = @('ManagePermissionGrantsForSelf.microsoft-user-default-legacy') }
+            ExpectedValue = '0'
+            OtherValue = '1'
+        }
+        @{
+            Name = 'CR05-style predicate'
+            CurrentValue = 'reviewers.Count -gt 0 -and @($result.reviewers | Where-Object { $null -eq $_ -or $_.queryType -ne ''MicrosoftGraph'' }).Count -eq 0'
+            RecommendedValue = 'true'
+            MatchingResult = @{ reviewers = @(@{ queryType = 'MicrosoftGraph' }) }
+            OtherResult = @{ reviewers = @($null, @{ queryType = 'Other' }) }
+            ExpectedValue = 'True'
+            OtherValue = 'False'
+        }
+    ) {
+        param($CurrentValue, $RecommendedValue, $MatchingResult, $OtherResult, $ExpectedValue, $OtherValue)
+
+        $paths = New-GeneratorOutput -Root (Join-Path $TestDrive 'expressions')
+        $configPath = Join-Path $TestDrive 'expressions.json'
+        $fixture = @(@{
+            CollectedBy = 'Maester'
+            ControlArea = @(@{
+                ControlName = 'Expression fixture'
+                GraphUri = 'https://graph.microsoft.com/v1.0/fixture/settings'
+                GraphDocsUrl = ''
+                Controls = @(@{
+                    CheckId = 'EIDSCA.ZZ96'
+                    DisplayName = 'Expression setting'
+                    CurrentValue = $CurrentValue
+                    RecommendedValue = $RecommendedValue
+                    DefaultValue = ''
+                    Severity = 'Medium'
+                })
+            })
+        })
+        [System.IO.File]::WriteAllText($configPath, (ConvertTo-Json -InputObject $fixture -Depth 10))
+        & $script:EidscaBuildScript @paths -ConfigPath $configPath
+
+        $functionPath = Join-Path $paths.PowerShellFunctionsPath 'Test-MtEidscaZZ96.ps1'
+        $content = Get-Content -LiteralPath $functionPath -Raw
+        $content.Contains('$rawValue = $result.' + $CurrentValue) | Should -BeTrue
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile($functionPath, [ref] $null, [ref] $errors)
+        $errors | Should -BeNullOrEmpty
+        $ast.EndBlock.Statements.Count | Should -Be 1
+
+        # Execute the generated function with tenant data to check the pipeline and predicate semantics.
+        $invoke = {
+            param($Path, $GraphResult)
+            function Invoke-MtGraphRequest { $GraphResult }
+            function Add-MtTestResultDetail {}
+            . $Path
+            Test-MtEidscaZZ96
+        }
+        (& $invoke $functionPath $MatchingResult) | Should -BeExactly $ExpectedValue
+        (& $invoke $functionPath $OtherResult) | Should -BeExactly $OtherValue
+    }
+
     It 'committed EIDSCA files match what the generator produces (drift check)' {
         # Rerun the generator offline (local EIDSCA config and page title cache) into a temporary folder.
         # The value functions and the dispatcher share one folder, as in powershell/internal/generated/eidsca.

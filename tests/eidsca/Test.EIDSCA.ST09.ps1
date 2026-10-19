@@ -18,7 +18,7 @@ function Test-MtCheckEidscaST09 {
         Feature = 'groups',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'Low',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

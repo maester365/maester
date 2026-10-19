@@ -5,7 +5,7 @@ You can work with your Security key provider to determine the AAGuids of their d
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.aaGuids -notcontains $null -eq 'true'
+.keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains '' -eq 'true'
 ```
 
 #### Remediation action

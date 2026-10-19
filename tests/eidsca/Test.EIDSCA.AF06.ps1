@@ -4,11 +4,11 @@ function Test-MtCheckEidscaAF06 {
     Checks if Authentication Method - FIDO2 security key - Restrict specific keys is 'true'
 
     .DESCRIPTION
-    Defines if list of AADGUID will be used to allow or block registration.
+    Defines whether the configured AAGUID list is used to allow or block registration.
 
     Reads the tenant value of
     https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-    .keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') with Test-MtEidscaAF06
+    .keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains '' -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') with Test-MtEidscaAF06
     and passes when it -eq 'true'.
     #>
     [MaesterTest(
@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAF06 {
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098.005',
@@ -35,7 +35,7 @@ function Test-MtCheckEidscaAF06 {
     $eidscaAF04Result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
     [string]$eidscaAF04Value = $eidscaAF04Result.keyRestrictions.isEnforced
     if ( $EnabledAuthMethods -notcontains 'Fido2' -or $eidscaAF04Value -eq $false ) {
-        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled and key restriction not enforced.'
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled or key restrictions are not enforced.'
         return $null
     }
 
