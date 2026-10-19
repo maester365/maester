@@ -51,10 +51,10 @@
 
     $config = $adState.Configuration
 
-    # If the KDS query failed, we cannot determine the count
-    if ($null -eq $config -or $null -eq $config.KdsRootKeys) {
-        Add-MtTestResultDetail -Result "Unable to retrieve KDS root key information. Ensure you have appropriate permissions and the Active Directory module is installed."
-        return $false
+    # If the configuration query failed, skip rather than fail
+    if ($null -eq $config) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Unable to retrieve configuration container data from Active Directory.'
+        return $null
     }
 
     # Count valid KDS root keys (those with a creation timestamp)
