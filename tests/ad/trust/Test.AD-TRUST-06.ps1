@@ -87,6 +87,8 @@
 
     if ($totalCount -eq 0) {
         $testResultMarkdown = "No trusts are configured in this domain. The analysis would change if one or more trusts were created.`n`n%TestResult%"
+    } elseif ($staleCount -eq 0 -and $unknownCount -gt 0) {
+        $testResultMarkdown = "No stale trusts detected. $unknownCount trust(s) have an unknown validation status. The remaining $($totalCount - $unknownCount) configured trust(s) have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
     } elseif ($staleCount -eq 0) {
         $testResultMarkdown = "All $totalCount configured trusts have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
     } else {

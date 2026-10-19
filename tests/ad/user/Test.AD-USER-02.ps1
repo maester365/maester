@@ -81,15 +81,13 @@
                 Select-Object -First 1 -ExpandProperty LastLogonDate
 
             if ($null -eq $oldestLastLogonDate) {
-                $oldestLastLogon = 'unavailable'
-                $daysUntilThreshold = 'unavailable'
+                $testResultMarkdown += "`n`nThere are $enabledCount enabled users. None have a recorded last logon date, so dormant status cannot be determined from available data."
             } else {
                 $oldestLastLogonDate = [datetime]$oldestLastLogonDate
                 $oldestLastLogon = $oldestLastLogonDate.ToString('yyyy-MM-dd')
                 $daysUntilThreshold = [Math]::Max(1, [Math]::Ceiling(($oldestLastLogonDate.AddDays($thresholdDays) - (Get-Date)).TotalDays))
+                $testResultMarkdown += "`n`nThere are $enabledCount enabled users. The oldest last logon date is $oldestLastLogon. No users currently exceed the dormant threshold of $thresholdDays days. The oldest user would reach the threshold in $daysUntilThreshold days."
             }
-
-            $testResultMarkdown += "`n`nThere are $enabledCount enabled users. The oldest last logon date is $oldestLastLogon. No users currently exceed the dormant threshold of $thresholdDays days. The oldest user would reach the threshold in $daysUntilThreshold days."
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {

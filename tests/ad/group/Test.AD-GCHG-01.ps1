@@ -104,7 +104,7 @@
             }
 
             # Track recently modified groups
-            $daysSinceModified = ($now - $group.modifyTimeStamp).Days
+            $daysSinceModified = ($now - $group.modifyTimeStamp).TotalDays
             if ($daysSinceModified -le $RecentModificationDays) {
                 $recentlyModified += [PSCustomObject]@{
                     Name = $group.Name
