@@ -17,6 +17,9 @@
     - FOREST_READER_PASSWORD
 #>
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
+param()
+
 BeforeDiscovery {
     $script:HasLabCredentials =
         $env:ROOT_READER_PASSWORD -and
