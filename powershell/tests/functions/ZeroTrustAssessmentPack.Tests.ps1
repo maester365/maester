@@ -121,7 +121,7 @@ Describe 'Zero Trust Assessment pack' {
             # A stand-in for the ZeroTrustAssessment module: it records what it was called with and writes the
             # fixture report where Invoke-ZtAssessment writes its own.
             $script:FakeModules = Join-Path $TestDrive 'modules'
-            $moduleFolder = New-Item -ItemType Directory -Path (Join-Path $script:FakeModules 'ZeroTrustAssessment' '9.9.9') -Force
+            $moduleFolder = New-Item -ItemType Directory -Path (Join-Path -Path $script:FakeModules -ChildPath 'ZeroTrustAssessment' -AdditionalChildPath '9.9.9') -Force
             $script:CallLog = Join-Path $TestDrive 'calls.json'
             Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psd1') -Value "@{ RootModule = 'ZeroTrustAssessment.psm1'; ModuleVersion = '9.9.9'; FunctionsToExport = 'Connect-ZtAssessment', 'Invoke-ZtAssessment' }"
             Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psm1') -Value @"
@@ -152,7 +152,7 @@ function Invoke-ZtAssessment {
                 EmergencyAccessAccounts          = @([pscustomobject]@{ Type = 'User'; UserPrincipalName = 'breakglass@contoso.com' })
             }
             $rows.Count | Should -Be 12
-            Test-Path (Join-Path $output 'zt-export' 'ZeroTrustAssessmentReport.json') | Should -BeTrue
+            Test-Path (Join-Path -Path $output -ChildPath 'zt-export' -AdditionalChildPath 'ZeroTrustAssessmentReport.json') | Should -BeTrue
 
             $call = Get-Content -LiteralPath $script:CallLog -Raw | ConvertFrom-Json
             $call.Assessment.Path | Should -Be $output

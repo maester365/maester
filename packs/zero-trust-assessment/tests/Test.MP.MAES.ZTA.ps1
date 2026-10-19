@@ -59,7 +59,7 @@ function Read-MtZtaReport {
     if (Test-Path -LiteralPath $Path -PathType Container) {
         $file = @(
             (Join-Path $Path 'ZeroTrustAssessmentReport.json'),
-            (Join-Path $Path 'zt-export' 'ZeroTrustAssessmentReport.json')
+            (Join-Path -Path $Path -ChildPath 'zt-export' -AdditionalChildPath 'ZeroTrustAssessmentReport.json')
         ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
     }
     if (-not $file -or -not (Test-Path -LiteralPath $file -PathType Leaf)) {
@@ -212,7 +212,7 @@ Invoke-ZtAssessment @assessment
     $startInfo.UseShellExecute = $false
     $process = $null
     try {
-        Write-Host "Running the Microsoft Zero Trust Assessment $($module.Version) in a separate PowerShell process. This can take an hour or more on a large tenant."
+        Write-Information -InformationAction Continue -MessageData "Running the Microsoft Zero Trust Assessment $($module.Version) in a separate PowerShell process. This can take an hour or more on a large tenant."
         $process = [System.Diagnostics.Process]::Start($startInfo)
         # Wait in short steps so a stop request (a timeout or Ctrl+C) is seen between them.
         while (-not $process.WaitForExit(1000)) { }
@@ -228,7 +228,7 @@ Invoke-ZtAssessment @assessment
 
     [pscustomobject]@{
         OutputPath = $outputPath
-        ReportPath = Join-Path $outputPath 'zt-export' 'ZeroTrustAssessmentReport.json'
+        ReportPath = Join-Path -Path $outputPath -ChildPath 'zt-export' -AdditionalChildPath 'ZeroTrustAssessmentReport.json'
         Temporary  = $temporary
     }
 }

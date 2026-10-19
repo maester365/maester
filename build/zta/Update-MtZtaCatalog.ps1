@@ -28,7 +28,7 @@ Where to write the catalog. Defaults to packs/zero-trust-assessment/catalog.json
 param(
     [string] $SourcePath,
 
-    [string] $OutputPath = (Join-Path $PSScriptRoot '..' '..' 'packs' 'zero-trust-assessment' 'catalog.json')
+    [string] $OutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', 'packs', 'zero-trust-assessment', 'catalog.json')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -40,7 +40,7 @@ if (-not $SourcePath) {
 }
 $manifestPath = @(
     (Join-Path $SourcePath 'ZeroTrustAssessment.psd1'),
-    (Join-Path $SourcePath 'src' 'powershell' 'ZeroTrustAssessment.psd1')
+    (Join-Path -Path $SourcePath -ChildPath 'src' -AdditionalChildPath 'powershell', 'ZeroTrustAssessment.psd1')
 ) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 if (-not $manifestPath) { throw "No ZeroTrustAssessment.psd1 under $SourcePath." }
 $moduleRoot = Split-Path -Parent $manifestPath
@@ -109,4 +109,4 @@ $catalog = [ordered]@{
     Tests        = @($tests | Sort-Object { [int]$_.TestId })
 }
 $catalog | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $OutputPath -Encoding utf8NoBOM
-Write-Host "Wrote $(@($tests).Count) tests from ZeroTrustAssessment $($manifest.ModuleVersion) to $OutputPath."
+Write-Information -InformationAction Continue -MessageData "Wrote $(@($tests).Count) tests from ZeroTrustAssessment $($manifest.ModuleVersion) to $OutputPath."
