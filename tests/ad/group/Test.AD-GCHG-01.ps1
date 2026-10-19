@@ -109,7 +109,7 @@
                 $recentlyModified += [PSCustomObject]@{
                     Name = $group.Name
                     LastModified = $group.modifyTimeStamp
-                    DaysAgo = $daysSinceModified
+                    DaysAgo = [Math]::Floor($daysSinceModified)
                 }
             }
         }

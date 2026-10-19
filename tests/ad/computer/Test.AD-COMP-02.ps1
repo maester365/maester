@@ -83,8 +83,9 @@
 
         $testResultMarkdown = "Active Directory computer objects have been analyzed. $dormantCount out of $enabledCount enabled computers ($percentage%) have not logged on for more than $thresholdDays days.`n`n%TestResult%"
         if ($dormantCount -eq 0) {
-            $oldestLastLogonDate = $computers |
-                Where-Object { $_.Enabled -eq $true -and $null -ne $_.lastLogonDate } |
+            $datedEnabledComputers = $computers | Where-Object { $_.Enabled -eq $true -and $null -ne $_.lastLogonDate }
+            $undatedEnabledCount = $enabledCount - $datedEnabledComputers.Count
+            $oldestLastLogonDate = $datedEnabledComputers |
                 Sort-Object -Property lastLogonDate |
                 Select-Object -First 1 -ExpandProperty lastLogonDate
 
@@ -94,7 +95,8 @@
                 $oldestLastLogonDate = [datetime]$oldestLastLogonDate
                 $oldestLastLogon = $oldestLastLogonDate.ToString('yyyy-MM-dd')
                 $daysUntilThreshold = [Math]::Max(1, [Math]::Ceiling(($oldestLastLogonDate.AddDays($thresholdDays) - (Get-Date)).TotalDays))
-                $testResultMarkdown += "`n`nThere are $enabledCount enabled computers. The oldest last logon date is $oldestLastLogon. No computers currently exceed the dormant threshold of $thresholdDays days. The oldest computer would reach the threshold in $daysUntilThreshold days."
+                $undatedNote = if ($undatedEnabledCount -gt 0) { " $undatedEnabledCount enabled computer(s) have no recorded logon date and are not counted in this analysis." } else { "" }
+                $testResultMarkdown += "`n`nThere are $enabledCount enabled computers. The oldest last logon date is $oldestLastLogon. No computers currently exceed the dormant threshold of $thresholdDays days. The oldest computer would reach the threshold in $daysUntilThreshold days.$undatedNote"
             }
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
