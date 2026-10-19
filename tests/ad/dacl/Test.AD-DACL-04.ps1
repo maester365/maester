@@ -35,14 +35,14 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclConflictObjectDetails"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
-        return $null
-    }
-    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }
     if ($null -eq $adState.DaclEntries) {

@@ -38,12 +38,11 @@
             $params = @{ RelativeSearchBase = $RelativeSearchBase; Scope = $Scope; Filter = $Filter; Attributes = $Attributes }
             if ($PSBoundParameters.ContainsKey('SecurityDescriptorFlags')) { $params['SecurityDescriptorFlags'] = $SecurityDescriptorFlags }
             return @(Invoke-ConfigurationSearch @params)
-        } catch {
-            $msg = $_.Exception.Message
-            if ($msg -match 'NoSuchObject|object does not exist|does not exist in the directory|不存在') {
+        } catch [System.DirectoryServices.Protocols.DirectoryOperationException] {
+            if ($_.Exception.Response.ResultCode -eq [System.DirectoryServices.Protocols.ResultCode]::NoSuchObject) {
                 return @()
             }
-            throw
+            throw  # Re-throw genuine LDAP failures so the category handler skips
         }
     }
 
@@ -82,7 +81,7 @@
 
     $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
 
-    $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
+    $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Microsoft SPP,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
 
     $enrollmentTemplates = [string[]]@($enterprise | ForEach-Object { @($_.certificateTemplates) } | Sort-Object -Unique)
 

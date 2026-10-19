@@ -36,13 +36,13 @@
 
     Write-Verbose "Starting Test-MtAdDaclUnresolvedSidDetails"
 
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }
     if ($null -eq $adState.DaclEntries) {

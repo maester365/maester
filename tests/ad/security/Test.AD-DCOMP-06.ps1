@@ -120,13 +120,11 @@
         Add-MtTestResultDetail -Result $testResultMarkdown
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
         return $true
+    } else {
+        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+        Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
+        return $null
     }
-
-    $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
-
-    return $null
 }

@@ -201,6 +201,9 @@
                 $response = $Connection.SendRequest($request)
             }
         }
+        catch [System.DirectoryServices.Protocols.DirectoryOperationException] {
+            throw  # Preserve the typed exception so callers can inspect ResultCode
+        }
         catch [System.OperationCanceledException] {
             throw 'LDAP search was cancelled.'
         }

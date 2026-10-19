@@ -1,5 +1,5 @@
-BeforeAll {
-    Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+﻿BeforeAll {
+    Import-Module "$PSScriptRoot/../../../powershell/Maester.psd1" -Force
 }
 
 BeforeDiscovery {
@@ -97,6 +97,7 @@ Describe 'AD-DFSR-01: DFS-R subscription matching' {
                             ServerReference = 'CN=DC1,OU=Tier0,OU=Domain Controllers,DC=contoso,DC=com'
                         }
                     )
+                    RootDSE = [PSCustomObject]@{ DefaultNamingContext = 'DC=contoso,DC=com' }
                 }
             }
 
@@ -123,6 +124,7 @@ Describe 'AD-DFSR-01: DFS-R subscription matching' {
                             ServerReference = 'CN=DC2,OU=Domain Controllers,DC=contoso,DC=com'
                         }
                     )
+                    RootDSE = [PSCustomObject]@{ DefaultNamingContext = 'DC=contoso,DC=com' }
                 }
             }
 
@@ -276,42 +278,28 @@ Describe 'AD query helpers propagate errors instead of returning @()' -Skip:(-no
 }
 
 Describe 'AD-DACL tests: platform and availability checks' {
-    It 'AD-DACL-02 skips with NotSupported on non-Windows' {
+    It 'AD-DACL-02 skips with NotSupported when platform is unsupported' {
         InModuleScope Maester {
-            Mock Get-MtADDomainState -ModuleName Maester {
-                return [ordered]@{ DaclEntries = $null }
-            }
+            Mock Test-MtAdDaclPlatformSupported -ModuleName Maester { $false }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $originalIsWindows = $IsWindows
-            try {
-                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $false)
-                $PSVersionTable.PSEdition = 'Core'
-                $result = Test-MtAdDaclOuObjectCount
-                $result | Should -Be $null
-            }
-            finally {
-                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $originalIsWindows)
-            }
+            $result = Test-MtAdDaclOuObjectCount
+            $result | Should -Be $null
+            Assert-MockCalled Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'NotSupported' } -Exactly 1
         }
     }
 
-    It 'AD-DACL-02 skips with Custom when DACL data is unavailable on Windows' {
+    It 'AD-DACL-02 skips with Custom when DACL data is unavailable on supported platform' {
         InModuleScope Maester {
+            Mock Test-MtAdDaclPlatformSupported -ModuleName Maester { $true }
             Mock Get-MtADDomainState -ModuleName Maester {
                 return [ordered]@{ DaclEntries = $null }
             }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $originalIsWindows = $IsWindows
-            try {
-                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $true)
-                $result = Test-MtAdDaclOuObjectCount
-                $result | Should -Be $null
-            }
-            finally {
-                $ExecutionContext.SessionState.PSVariable.Set('IsWindows', $originalIsWindows)
-            }
+            $result = Test-MtAdDaclOuObjectCount
+            $result | Should -Be $null
+            Assert-MockCalled Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -eq 'DACL data is unavailable.' } -Exactly 1
         }
     }
 }

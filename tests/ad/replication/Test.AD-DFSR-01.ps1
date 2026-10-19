@@ -73,9 +73,8 @@
     # appear as missing subscriptions when the test targets the root domain.
     $currentDomainDn = if ($adState.RootDSE) { $adState.RootDSE.DefaultNamingContext } else { $null }
     if ($currentDomainDn) {
-        $currentDomain = ($currentDomainDn -split ',') -replace '^DC=' -join '.'
         $domainControllers = @($domainControllers | Where-Object {
-            $_.DnsHostName -and ($_.DnsHostName -replace '^[^.]+\.', '') -eq $currentDomain
+            -not [string]::IsNullOrWhiteSpace($_.ServerReference) -and $_.ServerReference.EndsWith($currentDomainDn)
         })
     }
     $dcCount = ($domainControllers | Measure-Object).Count
@@ -84,10 +83,10 @@
     $dcSubscriptionMap = @{}
     foreach ($sub in $sysvolSubscriptions) {
         $dn = [string]$sub.DistinguishedName
-        # Match subscription DN against each DC's ServerReference
+        # Match subscription DN against each DC's ServerReference using literal equality
         foreach ($dc in $domainControllers) {
             if (-not [string]::IsNullOrWhiteSpace($dc.ServerReference) -and
-                $dn -like "CN=SYSVOL Subscription,CN=Domain System Volume,CN=DFSR-LocalSettings,$($dc.ServerReference)") {
+                $dn -eq "CN=SYSVOL Subscription,CN=Domain System Volume,CN=DFSR-LocalSettings,$($dc.ServerReference)") {
                 $dcSubscriptionMap[$dc.ServerReference] = $sub
                 break
             }
@@ -128,7 +127,7 @@
     }
 
     if ($disabledSubscriptions.Count -gt 0) {
-        $result += "`n**DCs with Disabled DFS-R Subscription:**" + "`n" + "`n"
+        $result += "`n**DCs with Disabled Subscription:**" + "`n" + "`n"
         $result += "| DC Name |" + "`n"
         $result += "| --- |" + "`n"
         foreach ($dcName in $disabledSubscriptions | Select-Object -First 10) {
