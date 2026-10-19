@@ -34,6 +34,8 @@ function Get-MtPack {
         [string] $PackLock
     )
 
+    Write-Verbose "Get-MtPack: Id=$($Id -join ', ') PackLock=$PackLock"
+
     foreach ($pack in (Initialize-MtPackSet -PackLock $PackLock)) {
         if ($Id -and -not ($Id | Where-Object { $pack.Id -like $_ })) { continue }
         $m = $pack.Manifest

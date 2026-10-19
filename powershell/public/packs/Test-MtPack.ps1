@@ -38,6 +38,8 @@ function Test-MtPack {
         [switch] $Official
     )
 
+    Write-Verbose "Test-MtPack: Path=$Path"
+
     $full = (Resolve-Path -LiteralPath $Path -ErrorAction Stop).Path
     $content = Test-MtPackContent -Path $full -Official:$Official
     [pscustomobject][ordered]@{

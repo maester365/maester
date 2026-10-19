@@ -135,6 +135,9 @@ function Resolve-MtNativePlan {
                 & $set 'NotRun' 'NotSelected' "Not selected by -$($miss.Selector) ($($miss.Value -join ', '))."
                 [pscustomobject]$row; continue
             }
+            # A pack's suite named exactly by -Suite turns the pack on, as an exact ID does: its preview and
+            # long-running tests run too (Maester Packs design, section 4.7).
+            if ($t.PSObject.Properties['PackId'] -and $t.PackId -and ($Selection.Suite | Where-Object { -not $_.Contains('*') -and $_ -eq $t.Suite })) { $row.ExactlyNamed = $true }
         }
 
         # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its

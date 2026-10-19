@@ -57,6 +57,8 @@ function New-MtPack {
         [switch] $Connector
     )
 
+    Write-Verbose "New-MtPack: Path=$Path Id=$Id Code=$Code"
+
     $Code = $Code.ToUpperInvariant()
     $publisher, $short = $Id.Split('.', 2)
     $pascal = ($short -split '-' | Where-Object { $_ } | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join ''

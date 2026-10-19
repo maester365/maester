@@ -95,7 +95,7 @@ function Test-MtPackContent {
     # Every PowerShell file: function definitions only; names unique; then the scan.
     $functionFiles = @{}
     $declaredHosts = @($manifest.Uses.Network)
-    $declaredModules = @($manifest.Uses.Modules | ForEach-Object { [string]$_.Name })
+    $declaredModules = @(@($manifest.Uses.Modules) + @($manifest.Uses.UserModules) | ForEach-Object { [string]$_.Name })
     $declaredWrites = @($manifest.Uses.TenantWrites).Count -gt 0
     foreach ($f in ($digest.Files | Where-Object { $_.Path -match '\.ps(m?)1$' })) {
         $scan = Test-MtPackScriptFile -Path (Join-Path $root $f.Path) -DeclaredHost $declaredHosts -DeclaredModule $declaredModules -DeclaredWrites:$declaredWrites
@@ -159,7 +159,12 @@ function Test-MtPackContent {
     if (@($manifest.Uses.Modules).Count -gt 0) {
         & $find 'Medium' 'Dependencies' "The pack uses $(@($manifest.Uses.Modules).Count) PowerShell Gallery module(s): $(($manifest.Uses.Modules | ForEach-Object { "$($_.Name) $($_.Version)" }) -join ', ')." $null $null
     }
-    $writeScopes = @($manifest.Uses.GraphScopes | Where-Object { $_ -match 'ReadWrite|\.Write|Manage|FullControl' })
+    if (@($manifest.Uses.UserModules).Count -gt 0) {
+        $named = ($manifest.Uses.UserModules | ForEach-Object { $v = if ($_.PSObject.Properties['Version'] -and $_.Version) { " $($_.Version)" } elseif ($_.PSObject.Properties['MinimumVersion'] -and $_.MinimumVersion) { " $($_.MinimumVersion) or newer" } else { '' }; "$($_.Name)$v" }) -join ', '
+        # Externally managed code: the lock cannot pin it, so the risk and the policy say so (Sam Erde's review of the design).
+        & $find 'High' 'UserModules' "The pack runs your own install of $named in a separate PowerShell process. Maester does not save, pin or check those files, so a change to them needs no new approval." $null $null
+    }
+    $writeScopes = @($manifest.Uses.GraphScopes | Where-Object { $_ -match 'ReadWrite|\.Write(\.|$)|\.Manage[A-Za-z]*(\.|$)|FullControl|\.Send(\.|$)' })
     if ($writeScopes) { & $find 'High' 'WriteScope' "The pack asks for Microsoft Graph scopes that can change your tenant: $($writeScopes -join ', ')." $null $null }
     if ($declaredWrites) { & $find 'High' 'TenantWrite' "The pack declares changes it can make to your tenant: $(@($manifest.Uses.TenantWrites) -join ', ')." $null $null }
 

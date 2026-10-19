@@ -35,6 +35,8 @@ function Uninstall-MtPack {
         [string] $PackLock
     )
 
+    Write-Verbose "Uninstall-MtPack: Id=$($Id -join ', ')"
+
     $where = Resolve-MtPackLockPath -PackLock $PackLock -Path (Get-Location).Path
     $lock = Read-MtPackLock -Path $where.LockPath
     $removed = [System.Collections.Generic.List[string]]::new()

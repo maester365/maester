@@ -43,6 +43,8 @@ function Restore-MtPack {
         [string] $PackLock
     )
 
+    Write-Verbose "Restore-MtPack: Id=$($Id -join ', ') PackLock=$PackLock"
+
     $where = Resolve-MtPackLockPath -PackLock $PackLock -Path (Get-Location).Path
     if (-not (Test-Path -LiteralPath $where.LockPath -PathType Leaf)) { throw "There is no pack lock file at '$($where.LockPath)'." }
     $lock = Read-MtPackLock -Path $where.LockPath

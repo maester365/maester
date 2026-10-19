@@ -152,7 +152,7 @@
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
       # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
-      [ArgumentCompleter({ param($commandName, $parameterName, $wordToComplete) Get-MtServiceCompletion -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline' -WordToComplete $wordToComplete })]
+      [ArgumentCompleter({ param($commandName, $parameterName, $wordToComplete) & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline') $wordToComplete })]
       [string[]]$Service = 'Graph',
 
       # Settings for the connectors of Maester Packs, by service: @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }.

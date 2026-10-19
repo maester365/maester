@@ -52,6 +52,8 @@ function Set-MtConnectionState {
         [string] $Service
     )
 
+    Write-Verbose "Set-MtConnectionState: Service=$Service Account=$Account"
+
     $resolved = Resolve-MtConnectionStateService -Service $Service -SessionState $PSCmdlet.SessionState -Write
     if (-not $PSCmdlet.ShouldProcess($resolved, 'Keep the connection state')) { return }
     if (-not $__MtSession.PackConnections) { $__MtSession.PackConnections = @{} }

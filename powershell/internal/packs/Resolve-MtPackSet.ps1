@@ -92,6 +92,9 @@ function Resolve-MtPackSet {
         $row.Manifest = $read.Manifest
         if ($read.Errors.Count -gt 0) { & $stop $row 'Failed' 'PackLoadFailed' "The pack $($entry.Id) has a problem: $($read.Errors[0].Message)"; continue }
         $problem = Test-MtPackPolicy -Policy $Policy -PackId $entry.Id -Publisher $entry.Publisher -Source $entry.Source -Digest $entry.Digest -Risk $(if ($entry.AcceptedRisk) { $entry.AcceptedRisk } else { 'High' })
+        if (-not $problem -and @($read.Manifest.Uses.UserModules).Count -gt 0 -and -not $Policy.AllowExternalEnvironments) {
+            $problem = "The pack $($entry.Id) runs modules you install yourself, and PackPolicy.AllowExternalEnvironments is false."
+        }
         if ($problem) { & $stop $row 'NotAllowed' 'PackNotAllowed' $problem; continue }
         $list = & $getBlocklist
         $block = Find-MtPackBlock -Entry $list.Entries -PackId $entry.Id -Version $entry.Version -Digest $entry.Digest -RepositoryId ([long]$entry.RepositoryId) -OwnerId ([long]$entry.OwnerId)
@@ -114,7 +117,8 @@ function Resolve-MtPackSet {
     $moduleVersion = $ExecutionContext.SessionState.Module.Version
     foreach ($row in ($rows.Values | Where-Object Status -EQ 'Ready')) {
         $m = $row.Manifest
-        if ($m.PSObject.Properties['RequiresMaester'] -and $m.RequiresMaester -and -not (Test-MtVersionRange -Range ([string]$m.RequiresMaester) -Version $moduleVersion)) {
+        # A pack that ships with Maester always matches the module it ships in, whose source says 3.0.0 until a release sets it.
+        if (-not $row.BuiltIn -and $m.PSObject.Properties['RequiresMaester'] -and $m.RequiresMaester -and -not (Test-MtVersionRange -Range ([string]$m.RequiresMaester) -Version $moduleVersion)) {
             & $stop $row 'Failed' 'RequiresNewerMaester' "The pack $($row.Id) requires Maester $($m.RequiresMaester); this is $moduleVersion."
             continue
         }

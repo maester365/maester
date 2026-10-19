@@ -95,6 +95,9 @@ function Invoke-MtPackInstall {
 
         $publisher = if ($candidate.Kind -eq 'GitHub') { $candidate.Owner } else { [string]$manifest.Publisher }
         $problem = Test-MtPackPolicy -Policy $Policy -PackId $id -Publisher $publisher -Source $candidate.Source -Digest $candidate.Digest -Risk $candidate.Risk -BuiltIn:($candidate.Kind -eq 'BuiltIn')
+        if (-not $problem -and $candidate.Kind -ne 'BuiltIn' -and @($manifest.Uses.UserModules).Count -gt 0 -and -not $Policy.AllowExternalEnvironments) {
+            $problem = 'It runs modules you install yourself, and PackPolicy.AllowExternalEnvironments is false.'
+        }
         if ($problem) { throw "The pack $id was not installed. $problem" }
         $blocklist = Get-MtPackBlocklist -RequireFresh:$Policy.RequireFreshBlocklist
         if ($blocklist.Warning) { Write-Warning $blocklist.Warning }

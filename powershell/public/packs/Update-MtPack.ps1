@@ -70,6 +70,8 @@ function Update-MtPack {
         [switch] $Force
     )
 
+    Write-Verbose "Update-MtPack: Id=$($Id -join ', ') Version=$Version"
+
     if ($Version -and @($Id).Count -ne 1) { throw '-Version needs exactly one -Id.' }
     $where = Resolve-MtPackLockPath -PackLock $PackLock -Path (Get-Location).Path
     $lock = Read-MtPackLock -Path $where.LockPath

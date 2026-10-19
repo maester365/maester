@@ -166,7 +166,10 @@ function Get-MtPackFirstSeen {
     }
     $key = "$RepositoryId/$($Commit.ToLowerInvariant())"
     if ($seen.ContainsKey($key)) {
-        return ([datetime]::Parse([string]$seen[$key], [cultureinfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::AdjustToUniversal -bor [System.Globalization.DateTimeStyles]::AssumeUniversal))
+        # ConvertFrom-Json reads an ISO date as a DateTime already; [string] on it would drop the fraction of a second.
+        $value = $seen[$key]
+        if ($value -is [datetime]) { return $value.ToUniversalTime() }
+        return ([datetime]::Parse([string]$value, [cultureinfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::AdjustToUniversal -bor [System.Globalization.DateTimeStyles]::AssumeUniversal))
     }
     $now = [datetime]::UtcNow
     $seen[$key] = $now.ToString('o', [cultureinfo]::InvariantCulture)

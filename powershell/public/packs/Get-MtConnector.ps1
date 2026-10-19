@@ -26,6 +26,8 @@ function Get-MtConnector {
         [string[]] $Service
     )
 
+    Write-Verbose "Get-MtConnector: Service=$($Service -join ', ')"
+
     $null = Initialize-MtPackSet
     $registry = (Get-MtServiceRegistry).Services
     foreach ($name in ($registry.Keys | Sort-Object)) {

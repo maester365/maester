@@ -11,8 +11,12 @@ function Read-MtPackManifest {
     - An unknown top-level key is a warning, as for suite.json. An unknown key inside Uses, Connectors,
       Requires, Permissions or Runtime is an error, because those keys describe what the pack can reach and
       leaving one out would hide it from the install prompt.
-    - Runtime other than Script, and Catalog, are refused with RuntimeNotSupported: packs in other languages
-      (section 4.8) need a newer Maester.
+    - Runtime other than Script is refused with RuntimeNotSupported: packs in other languages (section 4.8)
+      need a newer Maester. Catalog, a JSON file in the pack that lists its tests, is read by listings only;
+      the tests always come from Suites.
+    - A module in Uses.Modules is pinned to one exact Version and saved by Maester (Install Maester, the
+      default), or is the user's own install (Install User) that the pack runs in a child process (Process
+      Child), never in Maester's: Maester then neither saves nor imports it, and it may name a MinimumVersion.
     - The publisher's code and the connector service names are checked against the reserved list
       (section 4.6). -Official allows the names reserved for packs from the maester365 organisation.
     #>
@@ -58,7 +62,7 @@ function Read-MtPackManifest {
         Requires    = @('Packs')
         RequiredPack = @('Source', 'Id', 'Version')
         Permissions = @('Role', 'Scopes')
-        Module      = @('Name', 'Version')
+        Module      = @('Name', 'Version', 'MinimumVersion', 'Install', 'Process')
     }
     $checkKeys = {
         param($object, $allowed, $where)
@@ -87,7 +91,8 @@ function Read-MtPackManifest {
         elseif ($runtime.Value -isnot [string]) { & $checkKeys $runtime.Value @('Kind') 'Runtime' }
     }
     if ($manifest.PSObject.Properties['Catalog'] -and $null -ne $manifest.Catalog) {
-        & $fail 'The pack lists its tests in a Catalog, which needs a newer version of Maester.' 'RuntimeNotSupported'
+        if ($manifest.Catalog -isnot [string]) { & $fail 'The pack describes its tests with a Catalog object, which needs a newer version of Maester.' 'RuntimeNotSupported' }
+        elseif (-not (Test-MtPackRelativePath -Path $manifest.Catalog)) { & $fail "Catalog must be a JSON file inside the pack; '$($manifest.Catalog)' is not one." }
     }
 
     # Identity.
@@ -97,7 +102,9 @@ function Read-MtPackManifest {
         & $fail "Id must be '<publisher>.<name>' in lower case, for example 'contoso.google-workspace'; it is '$id'."
     }
     if (-not $publisher) { & $fail 'Publisher is required: the GitHub user or organisation that owns the pack.' }
-    elseif ($id -and $id.Split('.')[0] -ne $publisher.ToLowerInvariant()) { & $fail "Id must start with the publisher: '$($publisher.ToLowerInvariant()).<name>'." }
+    elseif ($id -and $id.Split('.')[0] -ne $publisher.ToLowerInvariant() -and -not ($publisher -eq 'maester365' -and $id.Split('.')[0] -eq 'maester')) {
+        & $fail "Id must start with the publisher: '$($publisher.ToLowerInvariant()).<name>'."
+    }
     if ($id -and $id.Split('.')[0] -in 'maester', 'maester365' -and -not $Official) {
         & $fail "The publisher '$($id.Split('.')[0])' is reserved for packs from the maester365 organisation."
     }
@@ -155,9 +162,21 @@ function Read-MtPackManifest {
         else {
             & $checkKeys $uses.Value $strictKeys.Uses 'Uses'
             foreach ($m in @(& $list 'Modules' $uses.Value)) {
-                if ($m -isnot [pscustomobject] -or -not $m.PSObject.Properties['Name'] -or -not $m.PSObject.Properties['Version']) { & $fail 'Each entry of Uses.Modules needs Name and Version.'; continue }
+                if ($m -isnot [pscustomobject] -or -not $m.PSObject.Properties['Name']) { & $fail 'Each entry of Uses.Modules needs a Name.'; continue }
                 & $checkKeys $m $strictKeys.Module "The module '$($m.Name)' in Uses.Modules"
-                if ([string]$m.Version -notmatch '^\d+(\.\d+){1,3}(-[0-9A-Za-z.-]+)?$') { & $fail "The module '$($m.Name)' must be pinned to one exact version, such as 1.4.2; it is '$($m.Version)'." }
+                $install = if ($m.PSObject.Properties['Install'] -and $m.Install) { [string]$m.Install } else { 'Maester' }
+                $process = if ($m.PSObject.Properties['Process'] -and $m.Process) { [string]$m.Process } else { 'Maester' }
+                if ($install -notin 'Maester', 'User') { & $fail "The module '$($m.Name)' has Install '$install'; it must be Maester or User." }
+                if ($process -notin 'Maester', 'Child') { & $fail "The module '$($m.Name)' has Process '$process'; it must be Maester or Child." }
+                if ($install -eq 'User' -and $process -ne 'Child') {
+                    & $fail "The module '$($m.Name)' is the user's own install (Install User), so it can only run in a child process (Process Child): a module Maester imports must be saved and pinned by Maester."
+                }
+                $exact = '^\d+(\.\d+){1,3}(-[0-9A-Za-z.-]+)?$'
+                if ($install -eq 'Maester' -and [string]$m.Version -notmatch $exact) { & $fail "The module '$($m.Name)' must be pinned to one exact version, such as 1.4.2; it is '$($m.Version)'." }
+                foreach ($k in 'Version', 'MinimumVersion') {
+                    if ($install -eq 'User' -and $m.PSObject.Properties[$k] -and $m.$k -and [string]$m.$k -notmatch $exact) { & $fail "The $k of the module '$($m.Name)' must be a version such as 2.6.0; it is '$($m.$k)'." }
+                }
+                if ($install -eq 'Maester' -and $m.PSObject.Properties['MinimumVersion'] -and $m.MinimumVersion) { & $fail "The module '$($m.Name)' is saved by Maester, so it is pinned with Version, not MinimumVersion." }
             }
             foreach ($h in @(& $list 'Network' $uses.Value)) {
                 if ($h -isnot [string] -or $h -notmatch '^(\*\.)?[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$') { & $fail "Uses.Network must list host names, such as 'admin.googleapis.com'; '$h' is not one." }
@@ -192,7 +211,9 @@ function Read-MtPackManifest {
         GraphScopes  = [string[]]@(& $list 'GraphScopes' $usesValue)
         TenantWrites = [string[]]@(& $list 'TenantWrites' $usesValue)
         Network      = [string[]]@(& $list 'Network' $usesValue)
-        Modules      = @(& $list 'Modules' $usesValue)
+        Modules      = @(& $list 'Modules' $usesValue | Where-Object { -not ($_.PSObject.Properties['Install'] -and $_.Install -eq 'User') })
+        # Modules the user installs and the pack runs in a child process: never saved, pinned or imported by Maester.
+        UserModules  = @(& $list 'Modules' $usesValue | Where-Object { $_.PSObject.Properties['Install'] -and $_.Install -eq 'User' })
     }
     $normalised['RequiredPacks'] = @($(if ($requiresSection -and $requiresSection.Value) { & $list 'Packs' $requiresSection.Value }))
     $normalised['EnabledByDefault'] = if ($manifest.PSObject.Properties['EnabledByDefault'] -and $manifest.EnabledByDefault -is [bool]) { $manifest.EnabledByDefault } else { $true }

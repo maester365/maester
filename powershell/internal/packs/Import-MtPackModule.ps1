@@ -49,7 +49,8 @@ function Import-MtPackModule {
     if ($Pack.Modules.Count -gt 0 -and -not (@($env:PSModulePath -split [System.IO.Path]::PathSeparator) -contains $store)) {
         $env:PSModulePath = $store + [System.IO.Path]::PathSeparator + $env:PSModulePath
     }
-    $declared = @($m.Uses.Modules | ForEach-Object { [string]$_.Name })
+    # A module the pack runs in a child process is not imported here.
+    $declared = @($m.Uses.Modules | Where-Object { -not ($_.PSObject.Properties['Process'] -and $_.Process -eq 'Child') } | ForEach-Object { [string]$_.Name })
     $modulePaths = @($Pack.Modules | Where-Object { $_.Name -in $declared } | ForEach-Object { Join-Path $_.Path "$($_.Name).psd1" })
 
     # Exports of required packs.

@@ -42,6 +42,8 @@ function Get-MtConnectionState {
         [switch] $Detailed
     )
 
+    Write-Verbose "Get-MtConnectionState: Service=$Service"
+
     $resolved = Resolve-MtConnectionStateService -Service $Service -SessionState $PSCmdlet.SessionState
     if (-not $__MtSession.PackConnections -or -not $__MtSession.PackConnections.ContainsKey($resolved)) { return }
     $state = $__MtSession.PackConnections[$resolved]

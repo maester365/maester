@@ -26,6 +26,8 @@ function Clear-MtConnectionState {
         [string] $Service
     )
 
+    Write-Verbose "Clear-MtConnectionState: Service=$Service"
+
     $resolved = Resolve-MtConnectionStateService -Service $Service -SessionState $PSCmdlet.SessionState -Write
     if ($__MtSession.PackConnections -and $__MtSession.PackConnections.ContainsKey($resolved) -and $PSCmdlet.ShouldProcess($resolved, 'Forget the connection state')) {
         $__MtSession.PackConnections.Remove($resolved)
