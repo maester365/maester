@@ -22,10 +22,10 @@
         Feature = 'client-access',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
-        Mitre = ('T1078.004', 'T1110.003'),
+        Mitre = 'None',
         Control = ('cis-m365:6.5.1', 'nist-800-53-r5:IA-2'),
         Service = 'ExchangeOnline',
         Author = 'JeremyFinney-lgtm'
