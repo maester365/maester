@@ -26,7 +26,7 @@
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
-        Mitre = 'None',
+        Mitre = 'T1219',
         Control = ('cis-m365:8.5.7', 'nist-800-53-r5:AC-3'),
         Service = 'Teams',
         Author = 'JeremyFinney-lgtm'
