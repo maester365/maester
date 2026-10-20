@@ -74,7 +74,8 @@
     $currentDomainDn = if ($adState.RootDSE) { $adState.RootDSE.DefaultNamingContext } else { $null }
     if ($currentDomainDn) {
         $domainControllers = @($domainControllers | Where-Object {
-            -not [string]::IsNullOrWhiteSpace($_.ServerReference) -and $_.ServerReference.EndsWith($currentDomainDn)
+            -not [string]::IsNullOrWhiteSpace($_.ServerReference) -and
+            (($_.ServerReference -split ',' | Where-Object { $_.Trim().StartsWith('DC=') }) -join ',') -eq $currentDomainDn
         })
     }
     $dcCount = ($domainControllers | Measure-Object).Count

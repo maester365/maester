@@ -37,7 +37,7 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
 
     BeforeAll {
         if (-not (Get-Module Maester -ErrorAction SilentlyContinue)) {
-            Import-Module "$PSScriptRoot/../../powershell/Maester.psd1" -Force -ErrorAction Stop
+            Import-Module "$PSScriptRoot/../../Maester.psd1" -Force -ErrorAction Stop
         }
     }
 
@@ -88,6 +88,10 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
                 $null -eq $_.lastLogonDate -or $_.lastLogonDate -lt $staleThreshold
             }
             $staleCount = ($staleEnabledComputers | Measure-Object).Count
+
+            # Invoke the test through its supported entrypoint and assert investigate outcome
+            $testResult = Test-MtAdComputerStaleEnabledCount -StaleThresholdDays 1
+            $testResult | Should -Be $null -Because 'AD-DCOMP-06 should investigate when stale enabled computers exist'
 
             # With a 1-day threshold in a fresh lab, most or all computers appear stale
             $staleCount | Should -BeGreaterThan 0 -Because 'a 1-day threshold in a fresh lab should flag at least one computer as stale'

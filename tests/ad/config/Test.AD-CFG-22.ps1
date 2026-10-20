@@ -58,6 +58,12 @@
     $kdsRootKeys = @($config.KdsRootKeys | Where-Object { $null -ne $_.'msKds-CreateTime' })
     $kdsRootKeysCount = ($kdsRootKeys | Measure-Object).Count
 
+    # Build the metric table once so both result paths can include it
+    $result = "| Metric | Value |" + "`n"
+    $result += "| --- | --- |" + "`n"
+    $result += "| KDS Root Keys (gMSA) | $kdsRootKeysCount |" + "`n"
+    $result += "| Recommended Count | 1 |" + "`n"
+
     # Zero keys means gMSAs are not deployed; skip the test
     if ($kdsRootKeysCount -eq 0) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'No KDS root keys found. Group Managed Service Accounts (gMSA) are not in use in this environment.'
@@ -75,12 +81,6 @@
     }
 
     $testResult = ($kdsRootKeysCount -eq 1) -or ($kdsRootKeysCount -ge 3)
-
-    # Generate markdown results
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| KDS Root Keys (gMSA) | $kdsRootKeysCount |" + "`n"
-    $result += "| Recommended Count | 1 |" + "`n"
 
     if ($testResult) {
         $testResultMarkdown = "✅ KDS root key count is acceptable. This is the recommended configuration for gMSA operations.`n`n%TestResult%"
