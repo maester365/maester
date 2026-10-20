@@ -13,7 +13,7 @@
     "@remixicon/react": "^4.9.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.4.16",
-    "lucide-react": "^1.55.0",
+    "lucide-react": "^1.58.0",
     "marked": "^18.1.0",
     "preact": "^11.0.1",
     "react": "npm:@preact/compat@^18.3.2",
