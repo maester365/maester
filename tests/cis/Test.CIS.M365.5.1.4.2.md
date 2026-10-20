@@ -2,7 +2,7 @@
 
 A high limit lets one compromised account register many devices. Each registered device can hold tokens for the account and can be used to hide among legitimate devices. A low cap limits the number that can be created and makes unusual registration activity easier to notice.
 
-The limit applies per user across all device types. Users who need more devices can be handled as exceptions by an administrator.
+The limit applies per user to Microsoft Entra joined and Microsoft Entra registered devices, and doesn't apply to Microsoft Entra hybrid joined devices. Users who need more devices can be handled as exceptions by an administrator.
 
 #### Remediation action
 

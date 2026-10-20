@@ -12,7 +12,7 @@ The restriction applies to certificates added after it takes effect, on applicat
 
 #### Related links
 
-* [Microsoft Entra admin center - App registrations](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM)
+* [Microsoft Entra admin center - Application policies](https://aka.ms/app-mgmt-policy-ux)
 * [Enforce app management policies in Microsoft Entra ID](https://learn.microsoft.com/graph/api/resources/appmanagementpolicy)
 * [Update tenantAppManagementPolicy](https://learn.microsoft.com/graph/api/tenantappmanagementpolicy-update)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.1.5.6](https://www.cisecurity.org/benchmark/microsoft_365)

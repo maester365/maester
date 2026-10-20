@@ -38,21 +38,21 @@
     $appPolicy = Invoke-MtGraphRequest -RelativeUri 'policies/defaultAppManagementPolicy'
 
     Write-Verbose 'Getting the applications and service principals...'
-    $tenantId = (Invoke-MtGraphRequest -RelativeUri 'organization').id
+    $microsoftTenantIds = @('72f988bf-86f1-41af-91ab-2d7cd011db47', 'f8cdef31-a31e-4b4a-93e4-5f571e91255a')
     $applications = @(Invoke-MtGraphRequest -RelativeUri 'applications?$select=createdDateTime')
     # Managed identities take no passwords, and first-party service principals belong to Microsoft.
-    $servicePrincipals = @(Invoke-MtGraphRequest -RelativeUri 'servicePrincipals?$select=createdDateTime,appOwnerOrganizationId,servicePrincipalType' | Where-Object { $_.appOwnerOrganizationId -eq $tenantId -and $_.servicePrincipalType -ne 'ManagedIdentity' })
+    $servicePrincipals = @(Invoke-MtGraphRequest -RelativeUri 'servicePrincipals?$select=createdDateTime,appOwnerOrganizationId,servicePrincipalType' | Where-Object { $_.appOwnerOrganizationId -notin $microsoftTenantIds -and $_.servicePrincipalType -ne 'ManagedIdentity' })
 
     $scopes = @(
-        [pscustomobject]@{ Name = 'Applications'; Restrictions = @($appPolicy.applicationRestrictions.passwordCredentials); Objects = $applications }
-        [pscustomobject]@{ Name = 'Service principals'; Restrictions = @($appPolicy.servicePrincipalRestrictions.passwordCredentials); Objects = $servicePrincipals }
+        [pscustomobject]@{ Name = 'Applications'; Restrictions = @($appPolicy.applicationRestrictions.passwordCredentials); Objects = $applications; MissingCreatedDate = $null }
+        [pscustomobject]@{ Name = 'Service principals'; Restrictions = @($appPolicy.servicePrincipalRestrictions.passwordCredentials); Objects = $servicePrincipals; MissingCreatedDate = ([datetime]'2019-01-01T00:00:00Z').ToUniversalTime() } # Service principals without a creation date count as created on 2019-01-01.
     )
 
     $report = foreach ($scope in $scopes) {
         $restriction = $scope.Restrictions | Where-Object { $_.restrictionType -eq 'customPasswordAddition' } | Select-Object -First 1
         $startDate = $restriction.restrictForAppsCreatedAfterDateTime
         $cutoff = if ($startDate) { ([datetime]$startDate).ToUniversalTime() } else { $null }
-        $createdBeforeDate = @($scope.Objects | Where-Object { $null -ne $cutoff -and ($null -eq $_.createdDateTime -or ([datetime]$_.createdDateTime).ToUniversalTime() -lt $cutoff) }).Count
+        $createdBeforeDate = @($scope.Objects | Where-Object { $createdOn = if ($null -ne $_.createdDateTime) { ([datetime]$_.createdDateTime).ToUniversalTime() } else { $scope.MissingCreatedDate }; $null -ne $cutoff -and ($null -eq $createdOn -or $createdOn -lt $cutoff) }).Count
         $checks = [ordered]@{
             'Default policy enabled' = $appPolicy.isEnabled -eq $true
             'Restriction enabled' = $restriction.state -eq 'enabled'
