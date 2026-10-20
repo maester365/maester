@@ -40,7 +40,7 @@
     $report = foreach ($domain in $domains) {
         $name = $domain.DomainName
         $spf = ConvertFrom-MailAuthenticationRecordSpf -DomainName $name
-        if ($spf -is [string] -and $spf -like '*not available') {
+        if ($spf -is [string] -and ($spf -like '*not available' -or $spf -eq 'DNS lookup unavailable')) {
             [pscustomobject]@{ Domain = $name; Record = $null; Pass = $null; Detail = 'DNS lookup not available' }
             continue
         }

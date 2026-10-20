@@ -132,9 +132,11 @@
         }
         try {
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
-                $spfRecord = [SPFRecord]::new((Resolve-DnsName @spfSplat | `
+                $spfTxt = Resolve-DnsName @spfSplat | `
                             Where-Object { $_.Type -eq "TXT" } | `
-                            Where-Object { $_.Strings -imatch $matchRecord }).Strings)
+                            Where-Object { $_.Strings -imatch $matchRecord }
+                if (-not $spfTxt) { return "Failure to obtain record" }
+                $spfRecord = [SPFRecord]::new($spfTxt.Strings)
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
@@ -144,9 +146,11 @@
                         NameServer  = $spfSplat.Server
                         ErrorAction = $spfSplat.ErrorAction
                     }
-                    $spfRecord = [SPFRecord]::new(((Resolve-Dns @spfSplatAlt).Answers | `
+                    $spfTxt = (Resolve-Dns @spfSplatAlt).Answers | `
                                 Where-Object { $_.RecordType -eq "TXT" } | `
-                                Where-Object { $_.Text -imatch $matchRecord }).Text)
+                                Where-Object { $_.Text -imatch $matchRecord }
+                    if (-not $spfTxt) { return "Failure to obtain record" }
+                    $spfRecord = [SPFRecord]::new($spfTxt.Text)
                 } else {
                     Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -158,7 +162,9 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            return "Failure to obtain record"
+            # NXDOMAIN: the name has no records, so no SPF record exists.
+            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') { return "Failure to obtain record" }
+            return "DNS lookup unavailable"
         }
 
         return $spfRecord
