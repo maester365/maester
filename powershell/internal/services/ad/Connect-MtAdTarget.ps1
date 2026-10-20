@@ -510,6 +510,13 @@ function Connect-MtAdTarget {
             -AuthenticationMode $resolvedConnection.Metadata.AuthenticationMode `
             -SkipCertificateCheck:$SkipCertificateCheck
 
+        # Diagnostic logging: report any difference between requested and resolved identity
+        $requestedForLog = if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryServer)) { $ActiveDirectoryServer } elseif (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryDomain)) { $ActiveDirectoryDomain } elseif (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest)) { $ActiveDirectoryForest } else { '(ambient discovery)' }
+        $resolvedForLog = $resolvedConnection.Metadata.ResolvedServer
+        if ((ConvertTo-MtNormalizedDnsName -Value $requestedForLog) -ne (ConvertTo-MtNormalizedDnsName -Value $resolvedForLog)) {
+            Write-Verbose "Active Directory server identity: requested='$requestedForLog', resolved='$resolvedForLog', domain='$($resolvedConnection.Metadata.ResolvedDomain)', forest='$($resolvedConnection.Metadata.ResolvedForest)'"
+        }
+
         if (-not [string]::IsNullOrWhiteSpace($ActiveDirectoryForest) -and (ConvertTo-MtNormalizedDnsName -Value $resolvedConnection.Metadata.ResolvedForest) -ne (ConvertTo-MtNormalizedDnsName -Value $ActiveDirectoryForest)) {
             throw "The resolved forest '$($resolvedConnection.Metadata.ResolvedForest)' does not match the requested forest '$ActiveDirectoryForest'."
         }
