@@ -52,9 +52,11 @@ Describe 'AD-CFG-22: KDS root key count' {
                     }
                 }
             }
+            Mock Add-MtTestResultDetail -ModuleName Maester { }
 
             $result = Test-MtAdKdsRootKeysCount
             $result | Should -Be $null
+            Assert-MockCalled Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate -eq $true } -Exactly 1
         }
     }
 
@@ -272,6 +274,13 @@ Describe 'AD query helpers propagate errors instead of returning @()' -Skip:(-no
     It 'Get-MtLdapPrinter throws on query failure' {
         InModuleScope Maester {
             { Get-MtLdapPrinter -Connection $script:testLdapConnection -SearchBase 'DC=contoso,DC=com' } |
+                Should -Throw '*Simulated LDAP query failure*'
+        }
+    }
+
+    It 'Get-MtLdapGroupMember throws on query failure when SkipMemoization is used' {
+        InModuleScope Maester {
+            { Get-MtLdapGroupMember -Connection $script:testLdapConnection -GroupDistinguishedName 'CN=TestGroup,DC=contoso,DC=com' -SkipMemoization } |
                 Should -Throw '*Simulated LDAP query failure*'
         }
     }

@@ -1,4 +1,4 @@
-#Requires -Modules @{ModuleName='Pester';ModuleVersion='5.0.0'}
+﻿#Requires -Modules @{ModuleName='Pester';ModuleVersion='5.0.0'}
 #Requires -Version 7.0
 
 <#
@@ -37,7 +37,7 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
 
     BeforeAll {
         if (-not (Get-Module Maester -ErrorAction SilentlyContinue)) {
-            Import-Module "$PSScriptRoot/../../../powershell/Maester.psd1" -Force -ErrorAction Stop
+            Import-Module "$PSScriptRoot/../../powershell/Maester.psd1" -Force -ErrorAction Stop
         }
     }
 
@@ -56,18 +56,18 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
             $connectResult | Should -Not -BeNullOrEmpty
             $connectResult.Status | Should -Be 'Connected'
 
-            $adState = Get-MtADDomainState -Categories @('Computers') -Refresh
-            $adState | Should -Not -BeNullOrEmpty
-            $adState.Computers | Should -Not -BeNullOrEmpty
+            # Invoke the test through its supported entrypoint and assert pass outcome
+            $testResult = Test-MtAdComputerStaleEnabledCount -StaleThresholdDays 180
+            $testResult | Should -Be $true -Because 'AD-DCOMP-06 should pass when no stale enabled computers exist'
 
+            # Diagnostic precondition: verify stale count is 0
+            $adState = Get-MtADDomainState -Categories @('Computers') -Refresh
             $enabledComputers = $adState.Computers | Where-Object { $_.Enabled -eq $true }
             $staleThreshold = (Get-Date).AddDays(-180)
             $staleEnabledComputers = $enabledComputers | Where-Object {
                 $null -eq $_.lastLogonDate -or $_.lastLogonDate -lt $staleThreshold
             }
             $staleCount = ($staleEnabledComputers | Measure-Object).Count
-
-            # The actual test returns $true (pass) when 0 stale computers exist
             $staleCount | Should -Be 0 -Because 'a fresh lab should have 0 stale enabled computers at 180 days'
         }
 
@@ -90,7 +90,7 @@ Describe 'Active Directory Threshold Validation' -Tag 'LabOnly', 'ActiveDirector
             $staleCount = ($staleEnabledComputers | Measure-Object).Count
 
             # With a 1-day threshold in a fresh lab, most or all computers appear stale
-            $staleCount | Should -BeGreaterOrEqual 0 -Because 'the threshold logic correctly evaluates stale counts'
+            $staleCount | Should -BeGreaterThan 0 -Because 'a 1-day threshold in a fresh lab should flag at least one computer as stale'
         }
     }
 }
