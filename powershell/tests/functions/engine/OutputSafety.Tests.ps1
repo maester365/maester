@@ -28,9 +28,9 @@ Describe 'XML test result file' {
 
 Describe 'Config found by folder discovery' {
     BeforeAll {
-        # parent/maester-config.json sits above the test folder parent/run and asks for the XML file outside it.
+        # parent/maester-config.json sits above the test folder parent/Custom and asks for the XML file outside it.
         $script:parent = Join-Path $TestDrive 'parent'
-        $script:run = Join-Path $script:parent 'run'
+        $script:run = Join-Path $script:parent 'Custom'
         $null = New-Item -ItemType Directory -Path $script:run -Force
         "Describe 'C' { It 'C.1: c' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:run 'C.Tests.ps1')
         $script:target = Join-Path $TestDrive 'elsewhere/clobbered.xml'

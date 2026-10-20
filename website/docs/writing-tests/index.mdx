@@ -52,7 +52,7 @@ existing files unless you pass `-Force`. Only `-Id` and `-Title` are required; `
 Put your tests in a folder of your own, usually `custom/` inside the folder you run Maester from:
 
 ```text
-maester-tests/
+maester/
   maester-config.json        (optional: your run configuration)
   custom/
     Test.CONTOSO.1001.ps1
@@ -61,13 +61,16 @@ maester-tests/
     maester-config.json      (optional: an overlay on the root config)
 ```
 
-`Invoke-Maester -Path ./maester-tests` finds every `Test.*.ps1` file under the path, in any subfolder. If you
-leave out `-Path`, Maester scans the current folder only when it looks like a Maester folder (it has a
-`maester-config*.json` file, a `custom` folder, a 2.x suite folder, or a `*.Tests.ps1` or `Test.*.ps1` file).
-Otherwise only the built-in tests run.
+`Invoke-Maester -Path ./maester` finds every `Test.*.ps1` file under the path, in any subfolder up to three
+levels deep (`./maester/a/b/c/Test.CONTOSO.1001.ps1`). If you leave out `-Path`, Maester looks for custom
+tests only in the `custom` folder of the current folder, and reads the config files of the current folder. Without
+a `custom` folder only the built-in tests run.
+
+Pester-format tests (`*.Tests.ps1`) must be in a `custom` folder: `-Path` itself, or a `custom` folder under it.
+See [Pester-format tests](./pester-format-tests.md).
 
 Maester matches the `custom` folder name without regard to case, so a `Custom` folder created by Maester 2.x keeps
-working, and `New-MtTest` and `Install-MaesterTests` write into it when it exists.
+working, and `New-MtTest` writes into it when it exists.
 
 Rules for a test file:
 

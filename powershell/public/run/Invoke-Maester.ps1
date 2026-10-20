@@ -8,7 +8,7 @@
 
     For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-    By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the current directory and all subdirectories recursively, except Active Directory tests, preview tests and long-running tests. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
+    By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (Test.*.ps1) are found anywhere under the path and Pester-format custom tests (*.Tests.ps1) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
     -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 
@@ -30,12 +30,12 @@
     .EXAMPLE
     Invoke-Maester
 
-    Runs the built-in tests and the custom tests under the current folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
+    Runs the built-in tests and the custom tests in the ./Custom folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
 
     .EXAMPLE
-    Invoke-Maester ./maester-tests
+    Invoke-Maester ./maester
 
-    Runs the built-in tests and the custom tests in the folder ./maester-tests (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
+    Runs the built-in tests and the custom tests and maester-config.json in the folder ./maester (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester -Tag 'CA' -IncludeLongRunning
@@ -68,9 +68,9 @@
     Runs the tests and generates a report of the results in the specified file.
 
     .EXAMPLE
-    Invoke-Maester -Path ./tests/EIDSCA
+    Invoke-Maester -Path ./maester/Custom -SkipBuiltIn
 
-    Runs tests in the EIDSCA folder.
+    Runs only the custom tests in the ./maester/Custom folder.
 
     .EXAMPLE
     Invoke-Maester -MailRecipient john@contoso.com
@@ -95,14 +95,14 @@
     .EXAMPLE
     ```powershell
     $configuration = New-PesterConfiguration
-    $configuration.Run.Path = './tests/Maester'
+    $configuration.Run.Path = './tests/Custom'
     $configuration.Filter.Tag = 'CA'
     $configuration.Filter.ExcludeTag = 'App'
 
     Invoke-Maester -PesterConfiguration $configuration
     ```
 
-    Runs Pester tests in the ./tests/Maester folder that include the 'CA' tag and exclude the 'App' tag.
+    Runs the built-in tests and the custom tests in the ./tests/Custom folder that include the 'CA' tag and exclude the 'App' tag.
 
     .EXAMPLE
     ```powershell
@@ -143,7 +143,9 @@
     [Alias('Invoke-MtMaester')]
     [CmdletBinding()]
     param (
-        # The folder that holds your tests and configuration, or the path of one test file. Wildcards are not expanded.
+        # The folder that holds your custom tests and configuration, or the path of one test file. Native tests are found
+        # in any folder under it, Pester-format tests only in a Custom folder, up to three folder levels deep.
+        # Without -Path, the Custom folder of the current folder is used. Wildcards are not expanded.
         [Parameter(Position = 0)]
         [string] $Path,
 
@@ -550,21 +552,15 @@
             Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'
         }
 
-        $pesterRunPath = @()
-        if ($testSource.BuiltInFiles.Count -gt 0) { $pesterRunPath += $testSource.BuiltInRoot }
-        if ($testSource.CustomFiles.Count -gt 0) { $pesterRunPath += $testSource.CustomRoot }
-        $pesterRunPath = @(Get-MtOutermostPath -Path $pesterRunPath)
-        $wantedFiles = [System.Collections.Generic.HashSet[string]]::new([string[]]@($testSource.BuiltInFiles + $testSource.CustomFiles), [System.StringComparer]::OrdinalIgnoreCase)
-        $pesterExcludePath = @(foreach ($root in $pesterRunPath) {
-                Get-ChildItem -LiteralPath $root -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
-                    ForEach-Object { $_.FullName } | Where-Object { -not $wantedFiles.Contains($_) }
-            })
+        # The selected files, not their folders: Pester would walk a folder past the scan's depth limit and the
+        # Custom folder rule, and every file it should skip would have to be listed in Run.ExcludePath.
+        $pesterRunPath = @(@($testSource.BuiltInFiles) + @($testSource.CustomFiles))
 
         # What the engine decides for the Pester provider. A PesterConfiguration is built from it (and the
         # caller's -PesterConfiguration) only when the plan has Pester-format tests.
         $pesterFilter = [PSCustomObject]@{
             RunPath           = @($pesterRunPath)
-            ExcludePath       = @($pesterExcludePath)
+            ExcludePath       = @()
             Tag               = @($Tag | Where-Object { $_ })
             ExcludeTag        = @($ExcludeTag | Where-Object { $_ })
             ExcludeLine       = @()
@@ -661,10 +657,7 @@
         foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $null = $catalogIds.Add($t.Id) } }
         $nativeCustom = @()
         if ($testSource.CustomRoot) {
-            $resolvedBuiltInRoot = [System.IO.Path]::GetFullPath($testSource.BuiltInRoot).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
-            $customNativeFiles = @(Get-ChildItem -LiteralPath $testSource.CustomRoot -Recurse -File -Filter 'Test.*.ps1' -ErrorAction SilentlyContinue |
-                    ForEach-Object { $_.FullName } |
-                    Where-Object { -not $_.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $_ -like '*[\/]Custom[\/]*' })
+            $customNativeFiles = @($testSource.CustomNativeFiles)
             if ($customNativeFiles.Count -gt 0) {
                 $nativeCustom = @(Get-MtNativeTestInventory -Path $customNativeFiles -Root $customSuiteRoot -FrameworkPath $testSource.CustomRoot)
                 # A custom native test with a built-in ID is not loaded; the built-in runs (design section 8).

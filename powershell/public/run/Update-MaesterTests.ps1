@@ -19,12 +19,12 @@
     Does not ask for confirmation.
 
     .EXAMPLE
-    Update-MaesterTests -Path ./maester-tests -WhatIf
+    Update-MaesterTests -Path ./tests -WhatIf
 
     Lists the files that would be removed.
 
     .EXAMPLE
-    Update-MaesterTests -Path ./maester-tests -Force
+    Update-MaesterTests -Path ./tests -Force
 
     Removes the copies without asking.
 

@@ -775,7 +775,7 @@ jobs:
 ```
 
 :::info
-The built-in tests ship inside the Maester module, so the pipeline doesn't download or install any test files. Each run installs the latest Maester module and its tests; to control upgrades, pin a version (for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`). To add your own tests, commit a `Custom` folder (and optionally a `maester-config.json`) to the repository; running `Install-MaesterTests` in your local clone creates both. Add `Pester` (5.7.1 or later) to the installed modules only if you have [Pester-format custom tests](../writing-tests/pester-format-tests.md). If you set this up with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
+The built-in tests ship inside the Maester module, so the pipeline doesn't download or install any test files. Each run installs the latest Maester module and its tests; to control upgrades, pin a version (for example `Install-Module Maester -RequiredVersion 3.0.0 -Force`). To add your own tests, commit a `custom` folder to the repository, and to change settings, a `maester-config.json` (see [Writing custom tests](../writing-tests/index.mdx) and [Configuration](../configuration/overview.md)). Add `Pester` (5.7.1 or later) to the installed modules only if you have [Pester-format custom tests](../writing-tests/pester-format-tests.md). If you set this up with Maester 2.x, see [Upgrading from 2.x](../upgrading-from-2x.md).
 :::
 
 ## Viewing the Azure Resources

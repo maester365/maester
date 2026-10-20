@@ -61,7 +61,7 @@
         }
         $Result = Invoke-Maester @maesterParams
         # Dynamically calculate expected counts from smoke test files
-        $smokeTestFiles = Get-ChildItem -Path $maesterParams.Path -Filter *.ps1
+        $smokeTestFiles = Get-ChildItem -Path $maesterParams.Path -Filter *.ps1 -Recurse
         $expectedTotalCount = 0
         $expectedPassedCount = 0
         $expectedFailedCount = 0
@@ -135,7 +135,7 @@
         BeforeAll {
             if (Get-MgContext) { Disconnect-Graph }
 
-            $script:piiTestsPath = Join-Path $TestDrive 'piitests'
+            $script:piiTestsPath = Join-Path $TestDrive 'piitests/Custom'
             $null = New-Item -Path $script:piiTestsPath -ItemType Directory -Force
             Set-Content -Path (Join-Path $script:piiTestsPath 'Pii.Tests.ps1') -Value @'
 Describe 'PiiSample' -Tag 'PiiSample' {

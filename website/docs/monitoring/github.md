@@ -19,7 +19,7 @@ This guide will walk you through setting up Maester in GitHub and automate the r
 
 GitHub is the quickest and easiest way to get started with automating Maester. The [free tier](https://github.com/pricing) includes 2,000 minutes per month for private repositories which is more than enough to run your Maester tests daily.
 
-## Set up your Maester tests repository in GitHub
+## Set up a GitHub repository for Maester
 
 ### Pre-requisites
 
@@ -27,13 +27,15 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
 
 ## Create a new GitHub repository
 
+The Maester tests ship inside the Maester PowerShell module, so the repository doesn't hold any tests. It only holds the GitHub Actions workflow that runs Maester. You can use a repository you already have, or create one:
+
 - Open [https://github.com/new](https://github.com/new)
 - Fill in the following fields:
-  - **Repository name**: E.g. `maester-tests`
-  - **Private**: Select this option to keep your tests private
+  - **Repository name**: E.g. `maester-monitoring`
+  - **Private**: Select this option to keep your workflow and results private
 - Select **Create repository**
 
-The built-in Maester tests ship inside the Maester PowerShell module, so you don't need to copy them into this repository. It holds your workflow and, optionally, your own custom tests (in a `custom` folder) and `maester-config.json`. Running `Install-MaesterTests` in your local clone creates a starter `custom/README.md` and `maester-config.json` that you can commit.
+Later, you can add a `maester-config.json` to change settings (see [Configuration](../configuration/overview.md)) and a `custom` folder for your own tests (see [Writing custom tests](../writing-tests/index.mdx)). The workflows below pick them up when they are there.
 
 ## Set up the GitHub Actions workflow
 
@@ -51,7 +53,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 
 :::tip PowerShell shortcut
 
-If you have the `Maester` PowerShell module and the [GitHub CLI](https://cli.github.com/) installed, the next four sections (create Entra app, grant permissions, add federated credentials, set GitHub secrets) can be completed in a single command from inside your `maester-tests` clone:
+If you have the `Maester` PowerShell module and the [GitHub CLI](https://cli.github.com/) installed, the next four sections (create Entra app, grant permissions, add federated credentials, set GitHub secrets) can be completed in a single command from inside a local clone of the repository:
 
 ```powershell
 Connect-Maester -Service Azure
@@ -75,7 +77,7 @@ The portal-based steps below remain fully supported.
 - For **Federated credential scenario**, select **GitHub Actions deploying Azure resources**
 - Fill in the following fields
   - **Organization**: Your GitHub organization name or GitHub username. E.g. `jasonf`
-  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-tests`
+  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-monitoring`
   - **Entity type**: `Branch`
   - **GitHub branch name**: `main`
   - **Credential details** > **Name**: E.g. `maester-devops`
@@ -83,7 +85,7 @@ The portal-based steps below remain fully supported.
 
 ### Add Entra tenant info to GitHub repo
 
-- Open your `maester-tests` GitHub repository and go to **Settings**
+- Open your Maester GitHub repository and go to **Settings**
 - Select **Security** > **Secrets and variables** > **Actions**
 - Add the secrets listed below by selecting **New repository secret**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -125,7 +127,7 @@ jobs:
           client_id: ${{ secrets.AZURE_CLIENT_ID }}
           # Use Maester 3.0. Without this the action keeps installing Maester 2.x.
           maester_major_version: "3"
-          # Check out this repository to run your custom tests and maester-config.json (if any)
+          # Check out this repository to use its maester-config.json and custom tests, if it has any
           include_private_tests: true
           include_exchange: false
           include_teams: false
@@ -168,7 +170,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 - For **Federated credential scenario**, select **GitHub Actions deploying Azure resources**
 - Fill in the following fields
   - **Organization**: Your GitHub organization name or GitHub username. E.g. `jasonf`
-  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-tests`
+  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-monitoring`
   - **Entity type**: `Branch`
   - **GitHub branch name**: `main`
   - **Credential details** > **Name**: E.g. `maester-devops`
@@ -176,7 +178,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 
 ### Create GitHub secrets
 
-- Open your `maester-tests` GitHub repository and go to **Settings**
+- Open your Maester GitHub repository and go to **Settings**
 - Select **Security** > **Secrets and variables** > **Actions**
 - Add the secrets listed below by selecting **New repository secret**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -265,7 +267,7 @@ Client secret authentication is not recommended for long-term automation, and we
 
 ### Create GitHub secrets
 
-- Open your `maester-tests` GitHub repository and go to **Settings**
+- Open your Maester GitHub repository and go to **Settings**
 - Select **Security** > **Secrets and variables** > **Actions**
 - Add the three secrets listed below by selecting **New repository secret**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
@@ -353,7 +355,7 @@ jobs:
 
 To manually run the Maester tests workflow
 
-- Open your `maester-tests` GitHub repository and go to **Actions**
+- Open your Maester GitHub repository and go to **Actions**
 - Select **Maester Daily Tests** from the left pane
 - Select **Run workflow** drop-down from the right pane
 - Select **Run workflow** button to start the workflow
@@ -361,7 +363,7 @@ To manually run the Maester tests workflow
 
 ## Viewing test results
 
-- Open your `maester-tests` GitHub repository and go to **Actions**
+- Open your Maester GitHub repository and go to **Actions**
 - Select a workflow run to view the results e.g. `Maester Daily Tests`
 
 ### Summary view
@@ -395,4 +397,4 @@ The Maester team adds new tests over time. The built-in tests ship inside the Ma
 - The workflows above install the latest Maester release on every run (`maester_version: latest` for the action, `Install-Module Maester -Force` for the custom workflows), so new tests are picked up automatically.
 - To control when you upgrade, pin a version instead, for example `maester_version: 3.0.0` or `Install-Module Maester -RequiredVersion 3.0.0 -Force`, and raise it when you are ready.
 
-Your repository only needs to hold your own custom tests and configuration; there is nothing to update in it. If you set up this repository with Maester 2.x by copying the `maester-tests` repository and running `Update-MaesterTests`, see [Upgrading from 2.x](../upgrading-from-2x.md) to clean it up.
+There is nothing to update in your repository: it holds only the workflow and, if you added them, your configuration and custom tests. If you set up this repository with Maester 2.x by copying the `maester-tests` repository, see [Upgrading from 2.x](../upgrading-from-2x.md) to clean it up.
