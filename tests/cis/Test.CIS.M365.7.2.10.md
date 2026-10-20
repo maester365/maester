@@ -10,7 +10,7 @@ Requiring guests to verify again every 15 days or less limits how long a stale o
 4. Select **People who use a verification code must reauthenticate after this many days** and enter **15** or fewer.
 5. Select **Save**.
 
-When SharePoint and OneDrive integration with Microsoft Entra B2B is turned on, the Microsoft Entra email one-time passcode settings apply instead of this setting.
+When SharePoint and OneDrive integration with Microsoft Entra B2B is turned on (CIS 7.2.2), Microsoft Entra guest settings take precedence over this setting for new guests. This test still audits the SharePoint values as defined by CIS 7.2.10. See CIS 5.2.3.7 for the recommended Email OTP configuration.
 
 To apply the setting with PowerShell, connect with `Connect-PnPOnline -Url https://<tenant>-admin.sharepoint.com -Interactive` and run:
 

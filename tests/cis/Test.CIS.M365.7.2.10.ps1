@@ -37,6 +37,7 @@
 
     Write-Verbose 'Test-MtCisSpoGuestReauthentication: Checking the verification code settings'
     $spoTenant = Get-MtSpo
+
     $attestationRequired = $spoTenant.EmailAttestationRequired
     $reauthDays = $spoTenant.EmailAttestationReAuthDays
     $testResult = ($attestationRequired -eq $true) -and ($null -ne $reauthDays) -and ($reauthDays -le 15)
@@ -53,7 +54,11 @@
     $resultMarkdown += "| Setting | Value | Result |`n"
     $resultMarkdown += "| --- | --- | --- |`n"
     $resultMarkdown += "| EmailAttestationRequired | $displayRequired | $(if ($attestationRequired -eq $true) { 'Pass' } else { 'Fail' }) |`n"
-    $resultMarkdown += "| EmailAttestationReAuthDays | $displayDays | $(if ($null -ne $reauthDays -and $reauthDays -le 15) { 'Pass' } else { 'Fail' }) |"
+    $resultMarkdown += "| EmailAttestationReAuthDays | $displayDays | $(if ($null -ne $reauthDays -and $reauthDays -le 15) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "| EnableAzureADB2BIntegration | $($spoTenant.EnableAzureADB2BIntegration) | Info |"
+    if ($spoTenant.EnableAzureADB2BIntegration -eq $true) {
+        $resultMarkdown += "`n`n> **Note:** SharePoint and OneDrive integration with Microsoft Entra B2B is enabled, so Entra guest settings take precedence over these SharePoint values for new guests. CIS 5.2.3.7 recommends disabling the Email OTP method; review that control separately."
+    }
 
     Add-MtTestResultDetail -Result $resultMarkdown
     return $testResult
