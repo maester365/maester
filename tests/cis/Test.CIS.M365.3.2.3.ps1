@@ -28,6 +28,7 @@
         Mitre = ('T1213.002', 'T1530'),
         Control = ('cis-m365:3.2.3', 'nist-800-53-r5:AC-4'),
         Service = 'SecurityCompliance',
+        License = 'EXCHANGE_DLP',
         Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
