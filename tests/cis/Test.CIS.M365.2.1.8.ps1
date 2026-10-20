@@ -52,6 +52,10 @@
         if (-not $localAll.Success -and $record -match 'redirect=(?<target>\S+)') {
             $target = $Matches['target']
             $redirected = ConvertFrom-MailAuthenticationRecordSpf -DomainName $target
+            if ($redirected -is [string] -and ($redirected -like '*not available' -or $redirected -eq 'DNS lookup unavailable')) {
+                [pscustomobject]@{ Domain = $name; Record = $record; Pass = $null; Detail = "DNS lookup not available for $target" }
+                continue
+            }
             $effective = if ($redirected.GetType().Name -eq 'SPFRecord') { $redirected.record } else { $null }
             $detail = "Redirects to $target"
         }
