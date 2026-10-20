@@ -31,7 +31,7 @@
     .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 
-    Returns [DMARCRecord] or "Failure to obtain record"
+    Returns [DMARCRecord], "Failure to obtain record" when the record name does not exist (NXDOMAIN), or "DNS lookup unavailable" when the lookup fails for another reason
 
     .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDmarc
@@ -261,7 +261,9 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            return "Failure to obtain record"
+            # NXDOMAIN: the name has no records, so no DMARC record exists.
+            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') { return "Failure to obtain record" }
+            return "DNS lookup unavailable"
         }
 
         return $dmarcRecord

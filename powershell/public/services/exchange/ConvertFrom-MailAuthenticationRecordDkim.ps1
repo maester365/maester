@@ -26,7 +26,7 @@
     .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDkim -DomainName "microsoft.com"
 
-    Returns [DKIMRecord] or "Failure to obtain record"
+    Returns [DKIMRecord], "Failure to obtain record" when the record name does not exist (NXDOMAIN), or "DNS lookup unavailable" when the lookup fails for another reason
 
     .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDkim
@@ -136,7 +136,9 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            return "Failure to obtain record"
+            # NXDOMAIN means the record name has no records; any other lookup failure is reported as unavailable.
+            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') { return "Failure to obtain record" }
+            return "DNS lookup unavailable"
         }
 
         return $dkimRecord

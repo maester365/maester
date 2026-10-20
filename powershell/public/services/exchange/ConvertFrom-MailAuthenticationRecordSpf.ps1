@@ -20,7 +20,7 @@
     .EXAMPLE
     ConvertFrom-MailAuthenticationRecordSpf -DomainName "microsoft.com"
 
-    Returns [SPFRecord] object or "Failure to obtain record"
+    Returns [SPFRecord] object, "Failure to obtain record" when no SPF record exists, or "DNS lookup unavailable" when the lookup fails for another reason
 
     .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf
