@@ -40,6 +40,7 @@
         [pscustomobject]@{ Setting = 'External sender identification enabled'; Value = $(if ($null -eq ($externalInOutlook.Enabled)) { 'Not found' } else { $externalInOutlook.Enabled }); Pass = [bool]($externalInOutlook.Enabled -eq $true) }
     )
     $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
+    $exceptions = @($externalInOutlook.AllowList | Where-Object { $_ })
 
     $passText = 'External sender identification is enabled.'
     $failText = 'External sender identification is not enabled.'
@@ -55,6 +56,8 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
+    $exceptionText = if ($exceptions.Count -gt 0) { $exceptions -join ', ' } else { 'None' }
+    $resultMd += "`nException list (not part of the result): $exceptionText`n"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 
     Add-MtTestResultDetail -Result $testResultMarkdown
