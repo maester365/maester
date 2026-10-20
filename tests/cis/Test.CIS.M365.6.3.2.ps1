@@ -1,10 +1,10 @@
 ﻿function Test-MtCisPersonalAccountsDisabledInOutlook {
     <#
     .SYNOPSIS
-        Checks that no Outlook on the web mailbox policy allows connecting personal email accounts and personal calendars.
+        Checks that the default Outlook on the web mailbox policy does not allow connecting personal email accounts and personal calendars.
 
     .DESCRIPTION
-        Checks every Outlook on the web mailbox policy and passes when users cannot connect personal email accounts and personal calendars to Outlook.
+        Checks the default Outlook on the web mailbox policy and passes when users cannot connect personal email accounts and personal calendars to Outlook. Custom mailbox policies are not checked.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.3.2, L1)
 
     .EXAMPLE
@@ -21,7 +21,7 @@
         Product = 'exchange',
         Feature = 'outlook',
         Area = 'data-protection',
-        ResourceType = 'Policy',
+        ResourceType = 'Tenant',
         Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
@@ -34,8 +34,8 @@
     [OutputType([bool])]
     param()
 
-    # Every policy counts, because a custom policy can be assigned to a mailbox.
-    $owaPolicies = @(Get-MtExo -Request OwaMailboxPolicy)
+    # Only the default policy is checked. A custom policy applies only to the mailboxes it is assigned to, and is not checked.
+    $owaPolicies = @(Get-MtExo -Request OwaMailboxPolicy | Where-Object { $_.IsDefault -eq $true })
 
     $checks = @(
         foreach ($owaPolicy in $owaPolicies) {
