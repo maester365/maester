@@ -3,6 +3,20 @@ Describe 'Get-MtGraphScope' {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     }
 
+    It 'Includes AccessReview.Read.All in default scopes' {
+        $scopes = Get-MtGraphScope
+
+        $scopes | Should -Contain 'AccessReview.Read.All'
+    }
+
+    It 'Keeps AccessReview.Read.All before AuditLog.Read.All' {
+        $scopes = Get-MtGraphScope
+        $accessReviewIndex = [array]::IndexOf($scopes, 'AccessReview.Read.All')
+        $auditLogIndex = [array]::IndexOf($scopes, 'AuditLog.Read.All')
+
+        $accessReviewIndex | Should -BeLessThan $auditLogIndex
+    }
+
     It 'Includes EntitlementManagement.Read.All in default scopes' {
         $scopes = Get-MtGraphScope
 
