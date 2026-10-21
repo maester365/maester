@@ -8,6 +8,9 @@
     Requires Azure DevOps organization backed by a Microsoft Entra tenant and
     Azure DevOps Administrator permissions.
 
+    Requires Azure DevOps to be connected with a user account. The test is skipped when connected
+    as a service principal or managed identity.
+
     https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens
 
 .EXAMPLE
@@ -43,6 +46,10 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
     param()
 
     Write-Verbose "Running Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation"
+
+    if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+    }
 
 $Policy = Get-ADOPSTenantPolicy -PolicyCategory EnableLeakedPersonalAccessTokenAutoRevocation -Force
 
