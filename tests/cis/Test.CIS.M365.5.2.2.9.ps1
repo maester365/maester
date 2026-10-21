@@ -4,7 +4,7 @@
         Checks that a Conditional Access policy requires a compliant or hybrid joined device for all users and apps.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy requires a compliant device, optionally together with a hybrid joined device, for all users in all cloud apps, using the OR operator.
+        Checks that at least one enabled Conditional Access policy requires a compliant or hybrid joined device, for all users in all cloud apps, using the OR operator.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.9, L1)
 
     .EXAMPLE
@@ -37,17 +37,16 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { @($_.grantControls.builtInControls) -contains 'compliantDevice' -or @($_.grantControls.builtInControls) -contains 'domainJoinedDevice' })
 
     $report = foreach ($policy in $candidates) {
         $grants = @($policy.grantControls.builtInControls)
         $otherGrants = @($grants | Where-Object { $_ -ne 'compliantDevice' -and $_ -ne 'domainJoinedDevice' })
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
-            'Compliant device required' = $grants -contains 'compliantDevice' -and $otherGrants.Count -eq 0
+            'Compliant or hybrid joined device required' = ($grants -contains 'compliantDevice' -or $grants -contains 'domainJoinedDevice') -and $otherGrants.Count -eq 0
             'Operator is OR' = $policy.grantControls.operator -eq 'OR'
             'Enabled' = $policy.state -eq 'enabled'
         }

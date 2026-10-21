@@ -4,7 +4,7 @@ Asking a risky sign-in for MFA still leaves the account open to an attacker who 
 
 The policy needs Microsoft Entra ID P2 licences. Expect some false positives, so involve the helpdesk before enabling it.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

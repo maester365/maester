@@ -4,7 +4,7 @@ A browser that someone leaves open on a shared or personal computer keeps the Mi
 
 Two parts are needed: an activity-based timeout policy with a web session idle timeout of 3 hours or less, and a Conditional Access policy that uses **Use app enforced restrictions** for browser access to Office 365 so that the timeout applies to unmanaged devices. The test looks at both.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

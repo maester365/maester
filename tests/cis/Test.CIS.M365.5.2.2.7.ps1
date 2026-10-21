@@ -37,7 +37,6 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { @($_.conditions.signInRiskLevels).Count -gt 0 })
 
@@ -45,7 +44,7 @@
         $frequency = $policy.sessionControls.signInFrequency
         $blocks = @($policy.grantControls.builtInControls) -contains 'block'
         $riskLevels = @($policy.conditions.signInRiskLevels)
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -TargetedCondition SignInRiskLevels)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -TargetedCondition SignInRiskLevels)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0

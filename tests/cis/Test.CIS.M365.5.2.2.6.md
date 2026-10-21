@@ -4,7 +4,7 @@ Microsoft Entra ID Protection marks an account as high risk when it has strong e
 
 The policy needs Microsoft Entra ID P2 licences. Policies that also select medium or low risk are accepted, as long as high is included.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

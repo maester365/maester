@@ -4,7 +4,7 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Get-MtCisConditionalAccessScopeProblem, Get-MtCisAdministratorRole
 
-        $script:EmergencyUser = '11111111-1111-1111-1111-111111111111'
+        $script:ExcludedUser = '11111111-1111-1111-1111-111111111111'
         $script:OtherGroup = '22222222-2222-2222-2222-222222222222'
         $script:DirSyncRole = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
         $script:OnPremSyncRole = 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'
@@ -28,21 +28,29 @@
             @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 1
         }
 
-        It 'Passes an emergency access user as an exclusion' {
-            $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeUsers = @($script:EmergencyUser) }; applications = @{ includeApplications = @('All') } }
-            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $script:EmergencyUser) | Should -HaveCount 0
+        It 'Does not report a user exclusion' {
+            $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeUsers = @($script:ExcludedUser) }; applications = @{ includeApplications = @('All') } }
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 0
         }
 
-        It 'Reports an excluded user that is not an emergency access account' {
-            $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeUsers = @($script:EmergencyUser) }; applications = @{ includeApplications = @('All') } }
-            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId @()) | Should -HaveCount 1
-        }
-
-        It 'Reports an excluded group that is not an emergency access account' {
+        It 'Does not report a group exclusion' {
             $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeGroups = @($script:OtherGroup) }; applications = @{ includeApplications = @('All') } }
-            $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId @($script:EmergencyUser))
-            $problems | Should -HaveCount 1
-            $problems[0] | Should -BeLike 'excludes group*'
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 0
+        }
+
+        It 'Does not report guest or external user exclusions' {
+            $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeGuestsOrExternalUsers = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest' } }; applications = @{ includeApplications = @('All') } }
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 0
+        }
+
+        It 'Accepts a non-empty user scope when the check requires users not equal to None' {
+            $policy = New-TestPolicy @{ users = @{ includeUsers = @('user-1') }; applications = @{ includeApplications = @('All') } }
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users NotNone) | Should -HaveCount 0
+        }
+
+        It 'Reports None when the check requires users not equal to None' {
+            $policy = New-TestPolicy @{ users = @{ includeUsers = @('None') }; applications = @{ includeApplications = @('All') } }
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users NotNone) | Should -Be 'no users are included'
         }
 
         It 'Passes the Directory Synchronization Accounts role as an exclusion' {
@@ -60,11 +68,6 @@
             @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 1
         }
 
-        It 'Reports excluded guests or external users' {
-            $policy = New-TestPolicy @{ users = @{ includeUsers = @('All'); excludeGuestsOrExternalUsers = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest' } }; applications = @{ includeApplications = @('All') } }
-            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 1
-        }
-
         It 'Passes a policy for administrative roles that includes all 15 roles' {
             $roleIds = @(Get-MtCisAdministratorRole | ForEach-Object { $_.Id })
             $policy = New-TestPolicy @{ users = @{ includeRoles = $roleIds }; applications = @{ includeApplications = @('All') } }
@@ -79,9 +82,11 @@
             $problems[0] | Should -BeLike '*Application Administrator*'
         }
 
-        It 'Passes an all users policy for administrative roles' {
+        It 'Requires explicit administrator roles instead of all users' {
             $policy = New-TestPolicy @{ users = @{ includeUsers = @('All') }; applications = @{ includeApplications = @('All') } }
-            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles) | Should -HaveCount 0
+            $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles)
+            $problems | Should -HaveCount 1
+            $problems[0] | Should -BeLike 'administrative roles not included*'
         }
     }
 
@@ -92,9 +97,9 @@
             @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Applications 'Office365') | Should -HaveCount 0
         }
 
-        It 'Reports an excluded application when all apps are targeted' {
+        It 'Does not report excluded applications when all apps are targeted' {
             $policy = New-TestPolicy @{ users = @{ includeUsers = @('All') }; applications = @{ includeApplications = @('All'); excludeApplications = @('00000002-0000-0ff1-ce00-000000000000') } }
-            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 1
+            @(Get-MtCisConditionalAccessScopeProblem -Policy $policy) | Should -HaveCount 0
         }
 
         It 'Reports a targeted application that the policy excludes' {

@@ -4,13 +4,13 @@ A stolen password or session token is far less useful when sign-in is limited to
 
 This is a high-impact control: personal and partner devices lose access unless you provide an alternative such as browser-only access with session controls. Enrol devices in Microsoft Intune and define compliance policies before enabling the policy, and use report-only mode first.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Go to **Entra ID** > **Conditional Access** > [**Policies**](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) and select **New policy**.
-3. Under **Users**, include **All users**. Exclude your emergency access accounts and any service accounts that cannot use a managed device.
+3. Under **Users**, include **All users**. Exclude your emergency access accounts.
 4. Under **Target resources**, select **All resources (formerly All cloud apps)**.
 5. Under **Grant**, select **Grant access**, then **Require device to be marked as compliant** and optionally **Require Microsoft Entra hybrid joined device**. Choose **Require one of the selected controls**.
 6. Set **Enable policy** to **On** (use **Report-only** first to measure the impact) and select **Create**.

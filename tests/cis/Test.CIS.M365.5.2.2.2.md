@@ -4,7 +4,7 @@ Passwords are the most common way into Microsoft 365 accounts: they are phished,
 
 The policy must target all users and all resources, require MFA or an authentication strength, and be enabled. Policies that apply only at a certain risk level, or that are in report-only mode, do not satisfy the test. Excluding emergency access accounts is expected.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

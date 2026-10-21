@@ -41,7 +41,6 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { $_.sessionControls.signInFrequency.isEnabled -eq $true -and (@($_.conditions.signInRiskLevels).Count -eq 0 -and @($_.conditions.userRiskLevels).Count -eq 0) })
 
@@ -56,7 +55,7 @@
             }
         }
         $frequencyOk = $frequency.frequencyInterval -eq 'everyTime' -or ($null -ne $frequencyHours -and $frequencyHours -le ($MaximumSignInFrequencyDays * 24))
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
             'Sign-in frequency enabled' = [bool]$frequency.isEnabled

@@ -4,7 +4,7 @@ Push notifications, SMS and one-time codes can be relayed by an adversary-in-the
 
 Users need a registered FIDO2 security key, Windows Hello for Business or a certificate before the policy is enabled for them, otherwise they are locked out. Roll out in report-only mode and keep emergency access accounts excluded.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

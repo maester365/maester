@@ -7,7 +7,7 @@
         Checks that at least one enabled Conditional Access policy blocks access for all users and all cloud apps, where either all locations are included and every excluded location is a trusted or country named location, or only country named locations are included. Country named locations cannot be marked as trusted, so they are accepted as exclusions.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.15, L2)
 
-    .EXAMPLE
+       Checks that an enabled Conditional Access policy blocks access for all users and all cloud apps, includes all locations or only country named locations, and excludes AllTrusted or at least one trusted IP named location.
         Test-MtCisGeographicAccessControls
 
         Returns true if an enabled policy blocks sign-ins from outside the trusted locations.
@@ -37,7 +37,6 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
     Write-Verbose 'Getting named locations...'
     $locations = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/namedLocations'
     $countryIds = @($locations | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.countryNamedLocation' } | ForEach-Object { $_.id })
@@ -46,14 +45,13 @@
     $candidates = @($policies | Where-Object { @($_.conditions.locations.excludeLocations).Count -gt 0 -or @($_.conditions.locations.includeLocations).Count -gt 0 })
 
     $report = foreach ($policy in $candidates) {
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -TargetedCondition Locations)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -TargetedCondition Locations)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $includeLocations = @($policy.conditions.locations.includeLocations | Where-Object { $_ })
         $excludeLocations = @($policy.conditions.locations.excludeLocations | Where-Object { $_ })
-        # Either all locations minus trusted or country locations, or only country locations.
-        $excludedAllowed = @($excludeLocations | Where-Object { $trustedIds -notcontains $_ -and $countryIds -notcontains $_ }).Count -eq 0
-        $allExcept = $includeLocations -contains 'All' -and $excludeLocations.Count -gt 0 -and $excludedAllowed
-        $onlyCountries = $includeLocations.Count -gt 0 -and @($includeLocations | Where-Object { $countryIds -notcontains $_ }).Count -eq 0 -and @($excludeLocations | Where-Object { $trustedIds -notcontains $_ }).Count -eq 0
+        $hasTrustedExclusion = @($excludeLocations | Where-Object { $trustedIds -contains $_ }).Count -gt 0
+        $allExcept = $includeLocations -contains 'All' -and $hasTrustedExclusion
+        $onlyCountries = $includeLocations.Count -gt 0 -and @($includeLocations | Where-Object { $countryIds -notcontains $_ }).Count -eq 0 -and $hasTrustedExclusion
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
             'Location condition covers the required locations' = $allExcept -or $onlyCountries

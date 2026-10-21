@@ -2,9 +2,9 @@
 
 In device code phishing, an attacker starts a device code sign-in and tricks the victim into entering the code on the genuine Microsoft sign-in page. The victim completes MFA and the attacker receives valid tokens. The flow exists for devices without a keyboard, which most organisations do not use.
 
-Blocking it removes the technique. If a few devices genuinely need it, exclude them explicitly instead of leaving the flow open to everyone.
+Blocking it removes the technique for all users. Excluding devices, users or groups other than emergency access accounts causes this check to fail.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

@@ -37,12 +37,11 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { (@($_.grantControls.builtInControls) -contains 'mfa' -or $_.grantControls.authenticationStrength.id) -and (@($_.conditions.signInRiskLevels).Count -eq 0 -and @($_.conditions.userRiskLevels).Count -eq 0) })
 
     $report = foreach ($policy in $candidates) {
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AdministratorRoles)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0

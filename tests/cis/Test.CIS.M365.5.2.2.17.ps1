@@ -37,14 +37,13 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     # Graph returns transferMethods as one comma-separated string or as an array.
     $candidates = @($policies | Where-Object { @((@($_.conditions.authenticationFlows.transferMethods) -join ',') -split ',' | ForEach-Object { $_.Trim() }) -contains 'authenticationTransfer' })
 
     $report = foreach ($policy in $candidates) {
         $methods = @((@($policy.conditions.authenticationFlows.transferMethods) -join ',') -split ',' | ForEach-Object { $_.Trim() })
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -TargetedCondition AuthenticationFlows)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -TargetedCondition AuthenticationFlows)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0

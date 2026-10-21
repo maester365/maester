@@ -4,7 +4,7 @@ A session token that stays valid for days or survives a browser restart can be s
 
 The policy must apply to the same set of administrative roles as the MFA test, cover all cloud apps, set a sign-in frequency of 4 hours or less (or every time), set persistent browser session to **Never persistent** and be enabled.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

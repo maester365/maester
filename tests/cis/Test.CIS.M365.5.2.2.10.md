@@ -4,7 +4,7 @@ An attacker who has a password and can register their own authentication method 
 
 The policy applies to the register security information user action rather than to apps. Users who need to register from a new device can use a temporary access pass from a managed device or the office network.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

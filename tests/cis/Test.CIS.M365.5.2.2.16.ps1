@@ -7,10 +7,10 @@
         Checks that at least one enabled Conditional Access policy requires token protection (secure sign-in session) for Exchange Online, SharePoint Online and Microsoft Teams, on Windows desktop clients.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.16, L2)
 
-    .EXAMPLE
+       Checks that at least one enabled Conditional Access policy has a user scope other than None and requires token protection (secure sign-in session) for Exchange Online, SharePoint Online and Microsoft Teams on Windows desktop clients.
         Test-MtCisTokenProtection
 
-        Returns true if an enabled policy enforces token protection for the supported apps on Windows.
+        Returns true if an enabled policy enforces token protection for the required apps on Windows with a non-empty user scope.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.5.2.2.16
@@ -37,7 +37,6 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
     $requiredApps = @(
         '00000002-0000-0ff1-ce00-000000000000'  # Office 365 Exchange Online
         '00000003-0000-0ff1-ce00-000000000000'  # Office 365 SharePoint Online
@@ -49,7 +48,7 @@
     $report = foreach ($policy in $candidates) {
         $includedApps = @($policy.conditions.applications.includeApplications)
         $missingApps = @($requiredApps | Where-Object { $includedApps -notcontains $_ })
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -Applications $requiredApps -TargetedCondition Platforms, ClientAppTypes)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users NotNone -Applications $requiredApps -TargetedCondition Platforms, ClientAppTypes)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
             'Exchange, SharePoint and Teams'           = $missingApps.Count -eq 0

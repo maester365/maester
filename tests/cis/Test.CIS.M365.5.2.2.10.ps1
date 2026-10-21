@@ -4,7 +4,7 @@
         Checks that a Conditional Access policy requires a managed device to register security information.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy applies to all users for the register security information user action and requires a compliant device, optionally together with a hybrid joined device, using the OR operator.
+        Checks that at least one enabled Conditional Access policy applies to all users for the register security information user action and requires a compliant or hybrid joined device, using the OR operator.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.10, L1)
 
     .EXAMPLE
@@ -37,18 +37,17 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { @($_.conditions.applications.includeUserActions).Count -gt 0 })
 
     $report = foreach ($policy in $candidates) {
         $grants = @($policy.grantControls.builtInControls)
         $otherGrants = @($grants | Where-Object { $_ -ne 'compliantDevice' -and $_ -ne 'domainJoinedDevice' })
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -Applications 'urn:user:registersecurityinfo')
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -Applications 'urn:user:registersecurityinfo')
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
             'Register security information' = @($policy.conditions.applications.includeUserActions) -contains 'urn:user:registersecurityinfo'
-            'Compliant device required' = $grants -contains 'compliantDevice' -and $otherGrants.Count -eq 0
+            'Compliant or hybrid joined device required' = ($grants -contains 'compliantDevice' -or $grants -contains 'domainJoinedDevice') -and $otherGrants.Count -eq 0
             'Operator is OR' = $policy.grantControls.operator -eq 'OR'
             'Enabled' = $policy.state -eq 'enabled'
         }

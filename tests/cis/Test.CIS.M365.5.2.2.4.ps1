@@ -41,12 +41,11 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { $_.sessionControls.persistentBrowser.isEnabled })
 
     $report = foreach ($policy in $candidates) {
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AdministratorRoles)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles)
         $frequency = $policy.sessionControls.signInFrequency
         $frequencyHours = $null
         if ($frequency.frequencyInterval -eq 'timeBased') {

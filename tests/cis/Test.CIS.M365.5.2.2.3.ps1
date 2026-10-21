@@ -37,13 +37,12 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $candidates = @($policies | Where-Object { @($_.conditions.clientAppTypes) -contains 'exchangeActiveSync' -or @($_.conditions.clientAppTypes) -contains 'other' })
 
     $report = foreach ($policy in $candidates) {
         $clientAppTypes = @($policy.conditions.clientAppTypes)
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -TargetedCondition ClientAppTypes)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -TargetedCondition ClientAppTypes)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0

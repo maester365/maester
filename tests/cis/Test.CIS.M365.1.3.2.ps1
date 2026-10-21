@@ -43,7 +43,6 @@
     Write-Verbose 'Getting the activity-based timeout policy and Conditional Access policies...'
     $timeoutPolicies = @(Invoke-MtGraphRequest -RelativeUri 'policies/activityBasedTimeoutPolicies' | Where-Object { $_ })
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
 
     $timeoutSpan = $null
     if ($timeoutPolicies.Count -gt 0) {
@@ -59,7 +58,7 @@
     $report = foreach ($policy in $candidates) {
         $apps = @($policy.conditions.applications.includeApplications)
         $clients = @($policy.conditions.clientAppTypes)
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AllUsers -Applications 'Office365' -TargetedCondition ClientAppTypes)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers -Applications 'Office365' -TargetedCondition ClientAppTypes)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
             'Office 365 apps only' = $apps.Count -eq 1 -and $apps -contains 'Office365'
@@ -76,7 +75,7 @@
     $testResult = $timeoutOk -and $policyOk
 
     $passText = 'The idle session timeout is limited and a Conditional Access policy enforces it for browser sessions.'
-    $failText = if (-not $timeoutOk -and -not $policyOk) { 'There is no idle session timeout of 3 hours or less, and no Conditional Access policy that enforces app restrictions for browsers.' } elseif (-not $timeoutOk) { 'There is no idle session timeout of 3 hours or less.' } else { 'No Conditional Access policy enforces app restrictions for browser sessions of Microsoft 365 apps.' }
+    $failText = if (-not $timeoutOk -and -not $policyOk) { "There is no idle session timeout of $MaximumIdleTimeoutHours hours or less, and no Conditional Access policy that enforces app restrictions for browsers." } elseif (-not $timeoutOk) { "There is no idle session timeout of $MaximumIdleTimeoutHours hours or less." } else { 'No Conditional Access policy enforces app restrictions for browser sessions of Microsoft 365 apps.' }
 
     $timeoutText = if ($timeoutSpan) { "$($timeoutSpan.TotalHours) hours" } else { 'Not configured' }
     $resultMd = "| Setting | Value | Result |`n"

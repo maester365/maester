@@ -1,10 +1,10 @@
-﻿An enabled Conditional Access policy blocks sign-ins from every location except the trusted ones.
+﻿An enabled Conditional Access policy blocks access from selected untrusted locations and excludes at least one trusted location.
 
 Most organisations know where their staff sign in from. A policy that blocks all locations except the trusted ones, or the countries you operate in, stops a large share of credential attacks that come from elsewhere without any extra step for users.
 
-The policy must apply to all users and all cloud apps, block access and be enabled. It either includes all locations and excludes only trusted or country named locations, or includes only the countries you list. Country named locations cannot be marked as trusted, so they are accepted as exclusions. Plan for travelling users, for example with a temporary exclusion group, and remember that attackers can use VPNs in allowed countries, so this does not replace MFA.
+The policy must apply to all users and all cloud apps, block access and be enabled. It must include all locations or only selected country locations, and exclude **All trusted networks and locations** or at least one trusted IP location. Without a trusted-location exclusion, a block policy could block every sign-in. Plan for travelling users, for example with a temporary exclusion group, and remember that attackers can use VPNs in allowed countries, so this does not replace MFA.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

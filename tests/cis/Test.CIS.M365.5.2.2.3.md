@@ -4,7 +4,7 @@ Legacy authentication protocols such as POP, IMAP, SMTP AUTH and older Office cl
 
 The policy must apply to all users and all cloud apps, select both **Exchange ActiveSync clients** and **Other clients**, block access and be enabled. Check the sign-in logs for legacy usage first, because blocking breaks applications that still depend on these protocols.
 
-Only emergency access accounts listed in [EmergencyAccessAccounts](https://maester.dev/docs/configuration/emergency-access-accounts) are accepted as exclusions, and a condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

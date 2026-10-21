@@ -4,18 +4,15 @@
         Returns why a Conditional Access policy does not cover the users and applications that a CIS check requires.
 
     .DESCRIPTION
-        Reads who the policy includes and excludes, which applications it targets and which conditions narrow it.
-        Only emergency access accounts from EmergencyAccessAccounts and the two directory synchronization roles may be excluded.
-        A narrowing condition is reported unless the check is about that condition.
+        Reads who the policy includes, which applications it targets and which conditions narrow it. User and group
+        exclusions, and application exclusions for all-app policies, are not evaluated. A narrowing condition is
+        reported unless the check is about that condition.
 
     .PARAMETER Policy
         A Conditional Access policy as returned by Get-MtConditionalAccessPolicy.
 
     .PARAMETER Users
         AllUsers requires All in includeUsers. AdministratorRoles also accepts a policy that includes every role from Get-MtCisAdministratorRole.
-
-    .PARAMETER EmergencyAccessId
-        Object IDs of the emergency access accounts and groups, as returned by Get-MtEmergencyAccessAccount.
 
     .PARAMETER Applications
         All, or the application IDs or user action that the check targets.
@@ -24,9 +21,9 @@
         Narrowing conditions that the check itself is about. These are not reported.
 
     .EXAMPLE
-        Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency
+        Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers
 
-        Returns no text when the policy covers all users and all cloud apps without unexpected exclusions.
+        Returns reasons when the policy does not cover all users and all cloud apps.
 
     .OUTPUTS
         System.String
@@ -37,9 +34,7 @@
         [Parameter(Mandatory)]
         [object] $Policy,
 
-        [string[]] $EmergencyAccessId = @(),
-
-        [ValidateSet('AllUsers', 'AdministratorRoles')]
+        [ValidateSet('AllUsers', 'AdministratorRoles', 'NotNone')]
         [string] $Users = 'AllUsers',
 
         [string[]] $Applications = @('All'),
@@ -58,23 +53,15 @@
     $includedUsers = @($userScope.includeUsers | Where-Object { $_ })
     if ($Users -eq 'AllUsers') {
         if ($includedUsers -notcontains 'All') { $problems.Add('not all users are included') }
-    } elseif ($includedUsers -notcontains 'All') {
+    } elseif ($Users -eq 'AdministratorRoles') {
         $includedRoles = @($userScope.includeRoles | Where-Object { $_ })
         $missingRoles = @(Get-MtCisAdministratorRole | Where-Object { $includedRoles -notcontains $_.Id } | ForEach-Object { $_.Name })
         if ($missingRoles.Count -gt 0) { $problems.Add("administrative roles not included: $($missingRoles -join ', ')") }
-    }
-
-    foreach ($id in @($userScope.excludeUsers | Where-Object { $_ })) {
-        if ($EmergencyAccessId -notcontains $id) { $problems.Add("excludes user $id") }
-    }
-    foreach ($id in @($userScope.excludeGroups | Where-Object { $_ })) {
-        if ($EmergencyAccessId -notcontains $id) { $problems.Add("excludes group $id") }
+    } elseif ($includedUsers.Count -eq 0 -or $includedUsers -contains 'None') {
+        $problems.Add('no users are included')
     }
     foreach ($id in @($userScope.excludeRoles | Where-Object { $_ })) {
         if ($syncRoleIds -notcontains $id) { $problems.Add("excludes role $id") }
-    }
-    if (@($userScope.excludeGuestsOrExternalUsers.guestOrExternalUserTypes | Where-Object { $_ }).Count -gt 0) {
-        $problems.Add('excludes guests or external users')
     }
 
     $includedApps = @($appScope.includeApplications | Where-Object { $_ })
@@ -82,7 +69,6 @@
     $excludedApps = @($appScope.excludeApplications | Where-Object { $_ })
     if ($Applications -contains 'All') {
         if ($includedApps -notcontains 'All') { $problems.Add('not all cloud apps are included') }
-        if ($excludedApps.Count -gt 0) { $problems.Add("excludes applications $($excludedApps -join ', ')") }
     } else {
         $covered = @($includedApps + $includedActions)
         $notTargeted = @($Applications | Where-Object { $covered -notcontains $_ })

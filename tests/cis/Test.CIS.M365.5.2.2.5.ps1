@@ -7,7 +7,7 @@
         Checks that at least one enabled Conditional Access policy requires an authentication strength made of exactly the phishing-resistant methods (Windows Hello for Business, FIDO2 security key and certificate-based authentication) for the administrative roles in all cloud apps.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.5, L2)
 
-    .EXAMPLE
+       Checks that at least one enabled Conditional Access policy requires an authentication strength whose allowed combinations contain one or more phishing-resistant methods and no other methods for the administrative roles in all cloud apps.
         Test-MtCisPhishingResistantMfaForAdministrators
 
         Returns true if an enabled policy requires phishing-resistant MFA for the administrative roles.
@@ -37,20 +37,18 @@
 
     Write-Verbose 'Getting Conditional Access policies...'
     $policies = Get-MtConditionalAccessPolicy
-    $emergency = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
     $phishingResistantMethods = @('windowsHelloForBusiness', 'fido2', 'x509CertificateMultiFactor')
 
     $candidates = @($policies | Where-Object { $_.grantControls.authenticationStrength.id -and (@($_.conditions.signInRiskLevels).Count -eq 0 -and @($_.conditions.userRiskLevels).Count -eq 0) })
 
     $report = foreach ($policy in $candidates) {
-        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -EmergencyAccessId $emergency -Users AdministratorRoles)
+        $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $allowed = @($policy.grantControls.authenticationStrength.allowedCombinations)
         $otherMethods = @($allowed | Where-Object { $phishingResistantMethods -notcontains $_ })
-        $missingMethods = @($phishingResistantMethods | Where-Object { $allowed -notcontains $_ })
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
-            'Phishing-resistant strength only' = $otherMethods.Count -eq 0 -and $missingMethods.Count -eq 0
+            'Phishing-resistant strength only' = $allowed.Count -gt 0 -and $otherMethods.Count -eq 0
             'Grant controls combine as required' = $grantProblems.Count -eq 0
             'Enabled' = $policy.state -eq 'enabled'
         }
