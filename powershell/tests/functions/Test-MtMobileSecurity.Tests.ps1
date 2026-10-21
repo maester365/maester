@@ -50,9 +50,9 @@
                 [bool] $UsbDebuggingDisabled = $true,
                 $MinimumSecurityPatchLevel = ([datetime]::UtcNow.AddDays(-30).ToString('yyyy-MM-dd')),
                 [bool] $PasswordRequired = $true,
-                $PasswordComplexity = 'high',
-                $PasswordMinimumLength = 6,
-                $PasswordInactivityMinutes = 15,
+                $ComplexityValue = 'high',
+                $MinimumLength = 6,
+                $InactivityMinutes = 15,
                 [bool] $RequiresThreatProtection = $true
             )
 
@@ -69,9 +69,9 @@
                 UsbDebuggingDisabled      = $UsbDebuggingDisabled
                 MinimumSecurityPatchLevel = $MinimumSecurityPatchLevel
                 PasswordRequired          = $PasswordRequired
-                PasswordComplexity        = $PasswordComplexity
-                PasswordMinimumLength     = $PasswordMinimumLength
-                PasswordInactivityMinutes = $PasswordInactivityMinutes
+                PasswordComplexity        = $ComplexityValue
+                PasswordMinimumLength     = $MinimumLength
+                PasswordInactivityMinutes = $InactivityMinutes
                 RequiresThreatProtection  = $RequiresThreatProtection
             }
         }
@@ -522,7 +522,7 @@
 
         It 'fails when the inactivity lock is not configured' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
-                return @(Get-TestAndroidPolicy -PasswordInactivityMinutes $null)
+                return @(Get-TestAndroidPolicy -InactivityMinutes $null)
             }
 
             Test-MtAndroidPasswordPolicy | Should -BeFalse
@@ -532,8 +532,8 @@
         It 'does not count requirements met across two different policies' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(
-                    (Get-TestAndroidPolicy -Name 'Length only' -PasswordMinimumLength 8 -PasswordInactivityMinutes $null),
-                    (Get-TestAndroidPolicy -Name 'Lock only' -PasswordMinimumLength 4 -PasswordInactivityMinutes 5)
+                    (Get-TestAndroidPolicy -Name 'Length only' -MinimumLength 8 -InactivityMinutes $null),
+                    (Get-TestAndroidPolicy -Name 'Lock only' -MinimumLength 4 -InactivityMinutes 5)
                 )
             }
 
@@ -544,7 +544,7 @@
             # The values this property accepts are not verified, so the check reports it and does not
             # gate on it. A policy that meets the other requirements still passes.
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
-                return @(Get-TestAndroidPolicy -PasswordComplexity 'someFutureComplexity')
+                return @(Get-TestAndroidPolicy -ComplexityValue 'someFutureComplexity')
             }
 
             Test-MtAndroidPasswordPolicy | Should -BeTrue
@@ -553,7 +553,7 @@
 
         It 'reports a missing complexity value as not reported' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
-                return @(Get-TestAndroidPolicy -PasswordComplexity $null)
+                return @(Get-TestAndroidPolicy -ComplexityValue $null)
             }
 
             Test-MtAndroidPasswordPolicy | Should -BeTrue
@@ -571,7 +571,7 @@
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(
                     (Get-TestAndroidPolicy -Name 'Strict'),
-                    (Get-TestAndroidPolicy -Name 'Lenient' -PasswordMinimumLength 4 -AssignmentCount 2)
+                    (Get-TestAndroidPolicy -Name 'Lenient' -MinimumLength 4 -AssignmentCount 2)
                 )
             }
 
