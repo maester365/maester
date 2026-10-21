@@ -274,7 +274,9 @@ The EIDSCA tests and documentation are maintained in the [EIDSCA repository → 
 
 The [/build/eidsca/Update-EidscaTests.ps1](https://github.com/maester365/maester/blob/main/build/eidsca/Update-EidscaTests.ps1) script is used to generate the EIDSCA commands in the Maester module along with the EIDSCA tests and documentation.
 
-The script is currently run manually and is not automated as part of the build process as we need to verify the changes before they are committed.
+The `update-eidsca-tests` workflow runs the script with `-Download` every week and opens a pull request with the changes, so they are verified before they are merged. To run it yourself, use `./build/eidsca/Update-EidscaTests.ps1 -Download`.
+
+The EIDSCA config is the source of every value of a check except the Maester classification, which it does not carry. Severity, title, description, the recommended value and the remediation come from the EIDSCA repository; change them there. The Maester classification of each check (`Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control` and `RelatedProduct`) is in [/build/eidsca/eidsca-test-metadata.json](https://github.com/maester365/maester/blob/main/build/eidsca/eidsca-test-metadata.json), chosen with the [attribute rubric](./writing-tests/attribute-rubric.md). When the EIDSCA repository adds a check, the generator warns that it has no row in that file and the unit tests fail until the row is added.
 
 The illustration below shows the workflow for integrating EIDSCA tests and documentation into Maester.
 

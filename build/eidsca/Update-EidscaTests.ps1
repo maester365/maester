@@ -13,9 +13,11 @@
   The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
   files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
-  Severity and the classification attributes (RelatedProduct, Feature, Area, ResourceType, UserImpact,
-  ImplementationCost, Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed
-  (design section 11), so regeneration keeps them. Edit the metadata file, never the generated tests.
+  Severity comes from the EIDSCA config, which is the source of truth for it. The Maester classification attributes
+  that the EIDSCA config does not carry (RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost,
+  Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design
+  section 11), so regeneration keeps them. Edit the metadata file, never the generated tests. A check without a
+  metadata row is generated with a warning and fails the attribute unit tests until the row is added.
 
   .EXAMPLE
     ./build/eidsca/Update-EidscaTests.ps1
@@ -48,8 +50,8 @@ param (
     # Cache of the web page titles used in the generated Markdown links. -Download adds missing titles.
     [string] $PageTitleCachePath = "$PSScriptRoot/PageTitles.json",
 
-    # Maester metadata of each check that the EIDSCA config does not carry: TestSettings rows with Id, Severity
-    # and the optional RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre. Read only.
+    # Maester classification of each check that the EIDSCA config does not carry: TestSettings rows with Id and the
+    # RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre and Control. Read only.
     [string] $MaesterConfigPath = "$PSScriptRoot/eidsca-test-metadata.json",
 
     # Authorship seed with the author and contributors of each check (design section 11).
@@ -632,7 +634,7 @@ if (Test-Path -LiteralPath $PageTitleCachePath) {
     }
 }
 
-# Severity and classification (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
+# Classification (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
 $metadataById = @{}
 if (Test-Path -LiteralPath $MaesterConfigPath) {
     foreach ($row in (Get-Content -LiteralPath $MaesterConfigPath -Raw | ConvertFrom-Json).TestSettings) {
@@ -688,9 +690,13 @@ foreach ($control in $aadsc) {
         # The native test: attribute, skip check and the comparison the 2.x Pester It made.
         $skipCheck = GetSkipCheck -controlItem $controlItem -discoveryLines $Discovery -controlLookup $controlLookup
         $metadata = $metadataById[$controlItem.CheckId]
+        if (-not $metadata) {
+            Write-Warning "$($controlItem.CheckId) has no row in $(Split-Path -Leaf $MaesterConfigPath). Add its Maester classification there."
+        }
         $metadataValue = { param($name) if ($metadata -and $metadata.PSObject.Properties[$name]) { $metadata.$name } }
-        $severity = & $metadataValue 'Severity'
-        if (-not $severity) { $severity = $controlItem.Severity }
+        # Severity is maintained in the EIDSCA config; an Info test has no UserImpact or ImplementationCost.
+        $severity = $controlItem.Severity
+        $isInfo = $severity -eq 'Info'
         $authorship = $authorshipById[$controlItem.CheckId]
         $authors = @(if ($authorship -and $authorship.author) { $authorship.author -split ';' } else { $DefaultAuthor }) | Where-Object { $_ }
         $contributors = @(if ($authorship) { $authorship.contributors_recommended -split ';' }) | Where-Object { $_ -and $_ -notin $authors }
@@ -703,8 +709,8 @@ foreach ($control in $aadsc) {
             Area               = & $metadataValue 'Area'
             ResourceType       = & $metadataValue 'ResourceType'
             Severity           = $severity
-            UserImpact         = & $metadataValue 'UserImpact'
-            ImplementationCost = & $metadataValue 'ImplementationCost'
+            UserImpact         = if (-not $isInfo) { & $metadataValue 'UserImpact' }
+            ImplementationCost = if (-not $isInfo) { & $metadataValue 'ImplementationCost' }
             Mitre              = @(& $metadataValue 'Mitre' | Where-Object { $_ })
             Control            = @(& $metadataValue 'Control' | Where-Object { $_ })
             Service            = @('Graph')

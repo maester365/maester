@@ -1,0 +1,63 @@
+name: update-eidsca-tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: update-eidsca-tests
+  cancel-in-progress: false
+
+jobs:
+  update-eidsca-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Update EIDSCA tests from the EIDSCA config
+        id: update
+        shell: pwsh
+        run: |
+          # A check without a row in eidsca-test-metadata.json is generated with a warning; list those in the pull request.
+          $warnings = @(./build/eidsca/Update-EidscaTests.ps1 -Download 3>&1 | ForEach-Object { "$_" } |
+              Where-Object { $_ -like '*has no row in*' -or $_ -like '*Could not read the page title*' } | Sort-Object -Unique)
+          $notes = if ($warnings.Count -gt 0) {
+              "### Needs attention before merging`n`n" + (($warnings | ForEach-Object { "- $_" }) -join "`n")
+          } else { '' }
+          "notes<<EIDSCA_NOTES`n$notes`nEIDSCA_NOTES" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore: update EIDSCA tests from the EIDSCA config'
+          branch: 'automation/update-eidsca-tests'
+          delete-branch: true
+          title: 'chore: update EIDSCA tests from the EIDSCA config'
+          body: |
+            Refreshes `build/eidsca/EidscaConfig.json` from the [EIDSCA config](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv4/config/EidscaConfig.json) in the Attack & Defense Playbook repository and regenerates the EIDSCA tests with `./build/eidsca/Update-EidscaTests.ps1 -Download`.
+
+            The EIDSCA config is the source of each check's severity, title, description, recommended value and remediation. The Maester classification it does not carry (`Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control`, `RelatedProduct`) is in `build/eidsca/eidsca-test-metadata.json`.
+
+            Reviewer checklist:
+            - A new check needs a row in `build/eidsca/eidsca-test-metadata.json`, chosen with the [attribute rubric](https://maester.dev/docs/next/writing-tests/attribute-rubric); the unit tests fail until it has one.
+            - Check changed query logic and skip conditions in `powershell/internal/generated/eidsca/` against a tenant.
+
+            ${{ steps.update.outputs.notes }}

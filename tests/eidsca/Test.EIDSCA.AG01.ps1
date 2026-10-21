@@ -4,7 +4,7 @@ function Test-MtCheckEidscaAG01 {
     Checks if Authentication Method - General Settings - Manage migration is one of the following values @('migrationComplete', '')
 
     .DESCRIPTION
-    The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. In January 2024, the legacy multifactor authentication and self-service password reset policies will be deprecated and you'll manage all authentication methods here in the authentication methods policy. Use this control to manage your migration from the legacy policies to the new unified policy.
+    The state of migration from the legacy multifactor authentication and self-service password reset (SSPR) policies to the Authentication methods policy. Legacy policies are respected in the premigration and migrationInProgress states and ignored in the migrationComplete state.
 
     Reads the tenant value of
     https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAG01 {
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',

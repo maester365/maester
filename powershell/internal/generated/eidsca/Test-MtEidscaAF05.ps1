@@ -9,14 +9,14 @@ function Test-MtEidscaAF05 {
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the tenant value of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains ''
 
     The native test EIDSCA.AF05 passes when this value -eq 'true'.
 
     .EXAMPLE
     Test-MtEidscaAF05
 
-    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null
+    Returns the tenant value of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains ''
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -24,7 +24,7 @@ function Test-MtEidscaAF05 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $rawValue = $result.keyRestrictions.aaGuids -notcontains $null
+    $rawValue = $result.keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains ''
     [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
     $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
