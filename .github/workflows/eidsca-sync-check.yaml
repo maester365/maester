@@ -1,0 +1,64 @@
+# Compares the EIDSCA config in the Attack & Defense Playbook repository with the copy and classification Maester
+# generates its EIDSCA tests from. While they differ, one issue labelled eidsca-sync stays open, assigned to the
+# EIDSCA maintainer, and each run updates it. When they match it is closed; the next difference opens a new one.
+name: eidsca-sync-check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 6 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: eidsca-sync-check
+  cancel-in-progress: false
+
+env:
+  SYNC_LABEL: eidsca-sync
+  SYNC_ASSIGNEE: Cloud-Architekt
+  SYNC_TITLE: Maester and EIDSCA are not in sync
+
+jobs:
+  eidsca-sync-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+
+      - name: Compare the EIDSCA config with Maester
+        run: node website/scripts/check-eidsca-sync.mjs --json "$RUNNER_TEMP/eidsca-sync.json" --markdown "$RUNNER_TEMP/eidsca-sync.md"
+
+      - name: Open, update or close the sync issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          count=$(jq '.count' "$RUNNER_TEMP/eidsca-sync.json")
+          issue=$(gh issue list --label "$SYNC_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+
+          if [ "$count" -gt 0 ]; then
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body-file "$RUNNER_TEMP/eidsca-sync.md"
+              echo "Updated issue #$issue with $count difference(s)."
+            else
+              gh label create "$SYNC_LABEL" --color 5319e7 --description "Maester and the EIDSCA config differ" --force
+              url=$(gh issue create --title "$SYNC_TITLE" --body-file "$RUNNER_TEMP/eidsca-sync.md" --label "$SYNC_LABEL")
+              gh issue edit "$url" --add-assignee "$SYNC_ASSIGNEE" || echo "::warning::Could not assign $SYNC_ASSIGNEE to $url."
+              echo "Opened $url with $count difference(s)."
+            fi
+          elif [ -n "$issue" ]; then
+            gh issue close "$issue" --reason completed --comment "Maester and the EIDSCA config are in sync again. The next difference opens a new issue."
+            echo "Closed issue #$issue."
+          else
+            echo "Maester and the EIDSCA config are in sync."
+          fi
