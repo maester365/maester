@@ -7,7 +7,7 @@ The restriction applies to new secrets added after it takes effect, on applicati
 #### Remediation action
 
 1. Connect to Microsoft Graph with an account that has the Global Administrator role, or with the Security Administrator and Application Administrator roles.
-2. Create or update the default app management policy with the Microsoft Graph API or Microsoft Graph PowerShell, as described in the Microsoft Learn articles below.
+2. Retrieve the current default app management policy before sending an update. Preserve all existing `passwordCredentials` entries under both `applicationRestrictions` and `servicePrincipalRestrictions` in the update. Sending only the new restriction can disable other active restrictions.
 3. Set `isEnabled` to `true` and, under both `applicationRestrictions` and `servicePrincipalRestrictions`, add a `passwordCredentials` restriction of type `passwordLifetime` with `maxLifetime` set to `P180D` or shorter, `state` set to `enabled` and `restrictForAppsCreatedAfterDateTime` set to a date before the oldest application in the tenant, such as the date the tenant was created. Applications created before that date are exempt, so a later date leaves existing applications out.
 
 #### Related links

@@ -23,7 +23,7 @@
         Area = 'devices',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Medium',
+        UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098.005',
         Control = ('cis-m365:5.1.4.1', 'nist-800-53-r5:IA-3'),
