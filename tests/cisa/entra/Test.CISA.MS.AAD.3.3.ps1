@@ -22,7 +22,7 @@
         Area = 'authentication',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1110', 'T1621'),
         Control = 'cisa-scuba:MS.AAD.3.3',
