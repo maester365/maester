@@ -4,6 +4,8 @@ B2B collaboration is a feature within Microsoft Entra External ID that allows fo
 
 Ensure users can only send invitations to **specified domains**.
 
+This check evaluates every B2B management policy returned by Microsoft Graph, not only the organization default. It does not inspect which applications or service principals are assigned each policy.
+
 > **Note:** This list works independently from OneDrive for Business and SharePoint Online allow/block lists. To restrict individual file sharing in SharePoint Online, set up an allow or blocklist for OneDrive for Business and SharePoint Online. For instance, in SharePoint or OneDrive users can still share with external users from prohibited domains by using Anyone links if they haven't been disabled.
 
 #### Rationale

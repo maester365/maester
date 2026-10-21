@@ -4,7 +4,7 @@
         Checks that guest invitations are limited to an allow list of domains.
 
     .DESCRIPTION
-        Checks the organization default B2B collaboration restrictions and passes when invitations are allowed only to specific domains (an allow list) and no deny list is used, so that guests can be invited only from partner organisations that you approved.
+        Checks every B2B management policy and passes when each allows invitations only to specific domains (an allow list) and none uses a deny list, so that guests can be invited only from partner organisations that you approved.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.6.1, L2)
 
     .EXAMPLE
@@ -36,27 +36,49 @@
 
     Write-Verbose 'Getting the B2B management policy...'
     $policies = Invoke-MtGraphRequest -RelativeUri 'legacy/policies' -ApiVersion beta
-    $b2bPolicy = @($policies) | Where-Object { $_.type -eq 'B2BManagementPolicy' -and $_.isOrganizationDefault -eq $true } | Select-Object -First 1
+    $b2bPolicies = @($policies) | Where-Object { $_.type -eq 'B2BManagementPolicy' }
+    $checks = @(
+        foreach ($b2bPolicy in $b2bPolicies) {
+            $policyName = if ($b2bPolicy.displayName) { $b2bPolicy.displayName } else { $b2bPolicy.id }
+            $policyType = if ($b2bPolicy.isOrganizationDefault -eq $true) { 'Organization default' } else { 'Non-default' }
+            $definitions = @($b2bPolicy.definition)
 
-    $domainPolicy = $null
-    if ($b2bPolicy) {
-        $definition = @($b2bPolicy.definition)[0] | ConvertFrom-Json
-        $domainPolicy = $definition.B2BManagementPolicy.InvitationsAllowedAndBlockedDomainsPolicy
+            if ($definitions.Count -eq 0) {
+                [pscustomobject]@{
+                    Policy = "$policyName ($policyType)"
+                    Value = 'Definition not found'
+                    Pass = $false
+                }
+            } else {
+                foreach ($policyDefinition in $definitions) {
+                    $definition = $policyDefinition | ConvertFrom-Json
+                    $domainPolicy = $definition.B2BManagementPolicy.InvitationsAllowedAndBlockedDomainsPolicy
+                    $names = @($domainPolicy.PSObject.Properties.Name)
+                    $hasAllowList = $names -contains 'AllowedDomains'
+                    $hasDenyList = $names -contains 'BlockedDomains'
+                    $mode = if ($hasAllowList) { 'Allow invitations only to the specified domains' } elseif ($hasDenyList) { 'Deny invitations to the specified domains' } else { 'Allow invitations to any domain' }
+
+                    [pscustomobject]@{
+                        Policy = "$policyName ($policyType)"
+                        Value = $mode
+                        Pass = $hasAllowList -and -not $hasDenyList
+                    }
+                }
+            }
+        }
+    )
+    if ($b2bPolicies.Count -eq 0) {
+        $checks = @([pscustomobject]@{ Policy = 'B2B management policy'; Value = 'Not found'; Pass = $false })
     }
-    $names = @($domainPolicy.PSObject.Properties.Name)
-    $hasAllowList = $names -contains 'AllowedDomains'
-    $hasDenyList = $names -contains 'BlockedDomains'
-    $testResult = $hasAllowList -and -not $hasDenyList
+    $testResult = $b2bPolicies.Count -gt 0 -and @($checks | Where-Object { -not $_.Pass }).Count -eq 0
 
-    $passText = 'Collaboration invitations are limited to an allow list of domains.'
-    $failText = if ($null -eq $b2bPolicy) { 'No organization-default collaboration restriction policy is configured, so invitations can be sent to any domain.' } else { 'Collaboration invitations are not limited to an allow list of domains.' }
+    $passText = 'All B2B management policies limit collaboration invitations to an allow list of domains.'
+    $failText = if ($b2bPolicies.Count -eq 0) { 'No B2B management policy is configured, so invitations can be sent to any domain.' } else { 'At least one B2B management policy is not limited to an allow list of domains.' }
 
-    $mode = if ($hasAllowList) { 'Allow invitations only to the specified domains' } elseif ($hasDenyList) { 'Deny invitations to the specified domains' } else { 'Allow invitations to any domain' }
-    $checks = @([pscustomobject]@{ Setting = 'Collaboration restrictions'; Value = $mode; Pass = $testResult })
-    $resultMd = "| Setting | Value | Result |`n"
+    $resultMd = "| Policy | Value | Result |`n"
     $resultMd += "| --- | --- | --- |`n"
     foreach ($check in $checks) {
-        $resultMd += "| $($check.Setting) | $($check.Value) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($check.Policy) | $($check.Value) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

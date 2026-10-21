@@ -43,10 +43,10 @@
     $failText = "Guest invitations are not limited to administrators and Guest Inviters ($value)."
 
     $checks = @(
-        [pscustomobject]@{ 
+        [pscustomobject]@{
             Setting = 'allowInvitesFrom'
             Value = $(if ($value) { $value } else { 'Not found' })
-            Pass = $testResult 
+            Pass = $testResult
         }
     )
     $resultMd = "| Setting | Value | Result |`n"

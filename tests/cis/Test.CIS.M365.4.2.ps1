@@ -36,9 +36,9 @@
     param()
 
     Write-Verbose 'Getting the device enrollment configurations...'
-    $configurations = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/deviceEnrollmentConfigurations' -ApiVersion beta |  
-Where-Object { $_.id -match 'DefaultPlatformRestrictions' -and $_.priority 
-eq 0 } 
+    $default = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/deviceEnrollmentConfigurations' -ApiVersion beta |
+        Where-Object { $_.id -match 'DefaultPlatformRestrictions' -and $_.priority -eq 0 } |
+        Select-Object -First 1
 
     $platforms = [ordered]@{
         'Windows' = $default.windowsRestriction
@@ -50,18 +50,18 @@ eq 0 }
     $checks = foreach ($platform in $platforms.Keys) {
         $restriction = $platforms[$platform]
         $value = if ($null -eq $restriction) {
-             'Not found' 
-         } elseif ($restriction.platformBlocked -eq $true) { 
-             'Platform blocked' 
-         } elseif ($restriction.personalDeviceEnrollmentBlocked -eq $true) {
-             'Personal devices blocked' 
-         } else { 
-             'Personal devices allowed' 
-         }
-        [pscustomobject]@{ 
+            'Not found'
+        } elseif ($restriction.platformBlocked -eq $true) {
+            'Platform blocked'
+        } elseif ($restriction.personalDeviceEnrollmentBlocked -eq $true) {
+            'Personal devices blocked'
+        } else {
+            'Personal devices allowed'
+        }
+        [pscustomobject]@{
             Setting = $platform
             Value = $value
-            Pass = $restriction.platformBlocked -eq $true -or $restriction.personalDeviceEnrollmentBlocked -eq $true 
+            Pass = $restriction.platformBlocked -eq $true -or $restriction.personalDeviceEnrollmentBlocked -eq $true
         }
     }
     $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
