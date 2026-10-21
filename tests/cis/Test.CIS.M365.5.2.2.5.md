@@ -4,6 +4,8 @@ Push notifications, SMS and one-time codes can be relayed by an adversary-in-the
 
 Users need a registered FIDO2 security key, Windows Hello for Business or a certificate before the policy is enabled for them, otherwise they are locked out. Roll out in report-only mode and keep emergency access accounts excluded.
 
+The allowed combinations must be a non-empty subset of Windows Hello for Business, FIDO2 or certificate-based multifactor authentication. It does not need to include all three, and any other method makes the check fail.
+
 User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
