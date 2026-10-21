@@ -36,8 +36,9 @@
     param()
 
     Write-Verbose 'Getting the device enrollment configurations...'
-    $configurations = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/deviceEnrollmentConfigurations' -ApiVersion beta
-    $default = @($configurations) | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.deviceEnrollmentPlatformRestrictionsConfiguration' -and $_.deviceEnrollmentConfigurationType -eq 'defaultPlatformRestrictions' } | Select-Object -First 1
+    $configurations = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/deviceEnrollmentConfigurations' -ApiVersion beta |  
+Where-Object { $_.id -match 'DefaultPlatformRestrictions' -and $_.priority 
+eq 0 } 
 
     $platforms = [ordered]@{
         'Windows' = $default.windowsRestriction
