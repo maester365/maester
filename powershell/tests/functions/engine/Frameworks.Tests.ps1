@@ -327,7 +327,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     }
 
     It 'Gives every <Prefix> test a Benchmark of <Framework>, from the first Control of the test' -ForEach @(
-        @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 62 }
+    @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 76 }
         @{ Prefix = 'CIS.GH.'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
         @{ Prefix = 'CISA.'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
     ) {
@@ -410,7 +410,9 @@ Describe 'Benchmark and Control on result rows' {
         # A custom folder: the fixture suite and one Pester-format test.
         $script:runFolder = Join-Path $TestDrive 'run'
         Copy-Item -LiteralPath (Join-Path $script:valid 'contoso') -Destination $script:runFolder -Recurse
-        "Describe 'Pester block' { It 'PES.1: pester test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:runFolder 'Pester.Tests.ps1')
+        # Pester-format tests run only from a Custom folder.
+        $null = New-Item -ItemType Directory -Path (Join-Path $script:runFolder 'Custom') -Force
+        "Describe 'Pester block' { It 'PES.1: pester test' { `$true | Should -BeTrue } }" | Set-Content (Join-Path $script:runFolder 'Custom/Pester.Tests.ps1')
 
         # Invoke-Maester calls Invoke-Pester, so the runs happen in a child process: all of them in one, for speed.
         # The built-in suites are read without a tenant: -DryRun runs no test, and a row says why its test would
@@ -479,7 +481,7 @@ Describe 'Benchmark and Control on result rows' {
 
     It 'Gives the rows of the CIS suite their Benchmark without a tenant' {
         $rows = @((Get-Run 'Cis').Tests | Where-Object Suite -EQ 'CIS')
-        $rows.Count | Should -Be 67
+    $rows.Count | Should -Be 81
         @($rows | Where-Object { $_.Result -notin 'NotRun', 'Skipped' -or $_.ReasonCode -eq 'NotSelected' } | ForEach-Object Id) | Should -BeNullOrEmpty -Because 'the suite is selected and nothing runs'
         @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'cis-m365', 'cis-github' -or $_.Benchmark.Level -cnotin 'L1', 'L2' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
         $row = $rows | Where-Object Id -EQ 'CIS.M365.1.1.1'
@@ -722,7 +724,7 @@ Describe 'Docs export' {
 
     It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {
         $cis = @($script:export.Tests | Where-Object { $_.Id -like 'CIS.*' })
-        $cis.Count | Should -Be 67
+    $cis.Count | Should -Be 81
         @($cis | Where-Object { $_.Benchmark.Level -cnotmatch '^L[12]$' } | ForEach-Object Id) | Should -BeNullOrEmpty
         $generator = Get-Content -LiteralPath (Join-Path $script:repoRoot 'website/scripts/generate-test-docs.mjs') -Raw
         $generator | Should -Match 'test\.Benchmark\?\.Level' -Because 'the title prefix comes from Benchmark'

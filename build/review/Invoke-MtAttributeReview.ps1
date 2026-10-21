@@ -6,7 +6,8 @@ Reviews the rubric attributes of new and changed Maester tests with a reviewer m
 For every test that is new, or whose rubric attributes changed, this script sends the test's attribute values,
 its source and its Markdown file to the Claude API together with the attribute rubric
 (website/docs/writing-tests/attribute-rubric.md) and the taxonomy (powershell/assets/MaesterTaxonomy.psd1), and
-asks whether each value fits the rubric. It writes attribute-review.json and attribute-review.md and returns:
+asks whether each value fits the rubric. It also sends the rubric attributes of the other tests under -Root with the
+same Product and Feature, so that the model can hold the test to the same value as the same check in another suite. It writes attribute-review.json and attribute-review.md and returns:
 
     0  every reviewed attribute fits the rubric, or nothing needed review
     1  at least one attribute does not fit the rubric
@@ -231,12 +232,14 @@ function Get-MtReviewTarget {
         $target = [pscustomobject]@{
             Path     = $path
             Id       = [System.IO.Path]::GetFileNameWithoutExtension($path) -replace '^Test\.', ''
+            Title    = ''
             IsNew    = $null -eq $source.Base
             Changed  = @()
             Declared = [ordered]@{}
             Previous = $null
             Source   = $source.Head
             Markdown = $markdown.Head
+            Related  = @()
             Error    = $null
         }
 
@@ -250,6 +253,7 @@ function Get-MtReviewTarget {
             if ($declared.Attributes.Contains($name)) { $target.Declared[$name] = $declared.Attributes[$name] }
         }
         if ($declared.Attributes.Contains('Id')) { $target.Id = [string] $declared.Attributes['Id'] }
+        if ($declared.Attributes.Contains('Title')) { $target.Title = [string] $declared.Attributes['Title'] }
 
         if ($target.IsNew) {
             $target.Changed = @($script:RubricAttribute)
@@ -270,6 +274,89 @@ function Get-MtReviewTarget {
         }
         $target
     }
+}
+
+function Get-MtReviewIndex {
+    <#
+    .SYNOPSIS
+    Reads the id, title and rubric attributes of every test under -Root, without running any of them.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [string] $Root
+    )
+
+    $testsFolder = Join-Path $Root 'tests'
+    if (-not (Test-Path -LiteralPath $testsFolder -PathType Container)) { return }
+    foreach ($file in Get-ChildItem -LiteralPath $testsFolder -Filter 'Test.*.ps1' -File -Recurse) {
+        $read = Get-MtReviewAttribute -Content (Get-Content -LiteralPath $file.FullName -Raw)
+        if ($read.Error) { continue }
+        $entry = [ordered]@{
+            Path  = [System.IO.Path]::GetRelativePath($Root, $file.FullName) -replace '\\', '/'
+            Id    = if ($read.Attributes.Contains('Id')) { [string] $read.Attributes['Id'] } else { $file.BaseName -replace '^Test\.', '' }
+            Title = if ($read.Attributes.Contains('Title')) { [string] $read.Attributes['Title'] } else { '' }
+        }
+        foreach ($name in $script:RubricAttribute) {
+            if ($read.Attributes.Contains($name)) { $entry[$name] = $read.Attributes[$name] }
+        }
+        [pscustomobject]$entry
+    }
+}
+
+function Get-MtReviewRelatedTest {
+    <#
+    .SYNOPSIS
+    Returns the other tests with the same Product and Feature as the target, so the reviewer can compare a test
+    with the same check in another suite.
+
+    .DESCRIPTION
+    The values come from -Index, which is read from the trusted root, brought up to date with the pull request:
+    a test the pull request adds or changes is shown with its values from the pull request, and a test it
+    deletes is left out. A change made to both tests is then not reported against the old value.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [pscustomobject] $Target,
+        [AllowEmptyCollection()]
+        [object[]] $Index,
+        [AllowEmptyCollection()]
+        [object[]] $Changed,
+        [AllowEmptyCollection()]
+        [string[]] $Removed,
+        [int] $MaxRelated = 40
+    )
+
+    $product = ConvertTo-MtReviewValue -Value $(if ($Target.Declared.Contains('Product')) { $Target.Declared['Product'] })
+    $feature = ConvertTo-MtReviewValue -Value $(if ($Target.Declared.Contains('Feature')) { $Target.Declared['Feature'] })
+    if (-not $product -or -not $feature) { return }
+
+    $fromPullRequest = @($Changed | Where-Object { $_ -and -not $_.Error })
+    $changedIds = @($fromPullRequest | ForEach-Object { $_.Id })
+    $candidates = @(
+        $Index | Where-Object { $_.Id -notin $changedIds -and $_.Path -notin $Removed } | ForEach-Object {
+            $values = [ordered]@{}
+            foreach ($name in $script:RubricAttribute) { if ($_.PSObject.Properties[$name]) { $values[$name] = $_.$name } }
+            [pscustomobject]@{ Id = $_.Id; Title = $_.Title; Values = $values }
+        }
+        $fromPullRequest | ForEach-Object { [pscustomobject]@{ Id = $_.Id; Title = $_.Title; Values = $_.Declared } }
+    )
+
+    $related = foreach ($candidate in $candidates) {
+        if ($candidate.Id -eq $Target.Id) { continue }
+        $shown = [ordered]@{}
+        foreach ($name in $script:RubricAttribute) {
+            $shown[$name] = ConvertTo-MtReviewValue -Value $(if ($candidate.Values.Contains($name)) { $candidate.Values[$name] })
+        }
+        if ($shown['Product'] -ne $product -or $shown['Feature'] -ne $feature) { continue }
+        $item = [ordered]@{ Id = $candidate.Id; Title = $candidate.Title }
+        foreach ($name in $script:RubricAttribute) {
+            if ($name -notin 'Product', 'Feature' -and $shown[$name]) { $item[$name] = $shown[$name] }
+        }
+        [pscustomobject]$item
+    }
+    $related | Sort-Object -Property Id | Select-Object -First $MaxRelated
 }
 
 function Get-MtReviewSystem {
@@ -328,12 +415,14 @@ function New-MtReviewRequestBody {
     $nonce = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32(100000000, 999999999)
     $previous = if ($Target.IsNew) { 'none' } else { $Target.Previous | ConvertTo-Json -Depth 4 -Compress }
     $markdown = if ($Target.Markdown) { $Target.Markdown } else { '(the test has no Markdown file)' }
+    $related = if (@($Target.Related).Count -gt 0) { ConvertTo-Json -InputObject @($Target.Related) -Depth 4 -Compress } else { 'none' }
     $user = @(
         "Review this $(if ($Target.IsNew) { 'new' } else { 'changed' }) test: $($Target.Id) ($($Target.Path))."
         ''
         "attributes_to_review: $($Target.Changed -join ', ')"
         "declared_attributes: $($Target.Declared | ConvertTo-Json -Depth 4 -Compress)"
         "previous_attributes: $previous"
+        "related_tests: $related"
         ''
         "<test_source_$nonce>"
         $Target.Source
@@ -633,6 +722,14 @@ function Invoke-MtAttributeReview {
     }
 
     $system = Get-MtReviewSystem -Root $Root
+    # The rubric's rule that the same check in two suites gets the same value needs the other tests in view.
+    $index = @(Get-MtReviewIndex -Root $Root)
+    # A test file the change lists but no longer has was deleted.
+    $removed = @($File | ForEach-Object { $_ -replace '\\', '/' } |
+            Where-Object { $_ -match '^tests/.+/Test\.[^/]+\.ps1$' -and -not (Test-Path -LiteralPath (Join-Path $HeadRoot $_) -PathType Leaf) })
+    foreach ($target in $targets) {
+        if (-not $target.Error) { $target.Related = @(Get-MtReviewRelatedTest -Target $target -Index $index -Changed $targets -Removed $removed) }
+    }
     $results = foreach ($target in $targets) {
         if ($target.Error) {
             $failed = ConvertFrom-MtReviewResponse -Target $target -Response $null

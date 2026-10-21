@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 6
+      "recentCommits": 5
     },
     {
       "id": "Cloud-Architekt",
@@ -770,11 +770,12 @@
         "MT.1211",
         "MT.1212",
         "MT.1213",
-        "MT.1223"
+        "MT.1223",
+        "MT.1225"
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 4
+      "recentCommits": 10
     },
     {
       "id": "Mynster9361",
@@ -873,6 +874,41 @@
       ],
       "testsContributed": [],
       "initials": "NS",
+      "recentCommits": 0
+    },
+    {
+      "id": "JeremyFinney-lgtm",
+      "github": "JeremyFinney-lgtm",
+      "name": "JeremyFinney-lgtm",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/JeremyFinney-lgtm.png",
+      "firstContribution": "",
+      "testsAuthored": [
+        "CIS.M365.5.2.3.1",
+        "CIS.M365.5.2.3.2",
+        "CIS.M365.5.2.3.3",
+        "CIS.M365.5.2.3.4",
+        "CIS.M365.5.2.3.6",
+        "CIS.M365.5.2.3.7",
+        "CIS.M365.5.2.3.8",
+        "CIS.M365.5.2.3.9",
+        "CIS.M365.5.2.3.10",
+        "CIS.M365.5.3.1",
+        "CIS.M365.5.3.2",
+        "CIS.M365.5.3.3",
+        "CIS.M365.5.3.4",
+        "CIS.M365.5.3.5"
+      ],
+      "testsContributed": [],
+      "initials": "JL",
       "recentCommits": 0
     },
     {
@@ -1200,7 +1236,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 5
+      "recentCommits": 1
     },
     {
       "id": "RobbeVandenDaele",
@@ -1490,7 +1526,7 @@
         "MT.1110"
       ],
       "initials": "JG",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "bastienperez",
@@ -1690,7 +1726,7 @@
         "MT.1007"
       ],
       "initials": "BR",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "mrdos010",
@@ -1736,7 +1772,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 4
+      "recentCommits": 5
     },
     {
       "id": "Oppedijk",
@@ -1859,16 +1895,19 @@
     {
       "id": "earbona23",
       "github": "earbona23",
-      "name": "eduardarbona",
-      "title": "",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
       "mvp": false,
       "mvpUrl": "",
       "pinLast": false,
-      "company": "",
-      "location": "",
+      "company": "ArrankaGo LLC",
+      "location": "Dominican Republic",
       "locationFlag": "",
-      "url": "",
-      "socials": {},
+      "url": "https://consulting.arrankago.com",
+      "socials": {
+        "linkedin": "eduard-arbona-99872b403",
+        "bluesky": "arbona.bsky.social"
+      },
       "avatar": "https://github.com/earbona23.png",
       "firstContribution": "2026-09-14",
       "testsAuthored": [],
@@ -1876,7 +1915,7 @@
         "MT.1011",
         "MT.1024"
       ],
-      "initials": "E",
+      "initials": "EA",
       "recentCommits": 4
     },
     {
@@ -2179,7 +2218,7 @@
         "MT.1071"
       ],
       "initials": "MM",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "mattcave",
@@ -2610,7 +2649,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 162
+      "recentCommits": 167
     }
   ],
   "attributions": {
@@ -4086,11 +4125,67 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.5.2.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.2.3.5": {
       "author": "oed-metzb",
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.2.3.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.6.5.3": {
       "author": "weyCC81",
@@ -5755,6 +5850,10 @@
     },
     "MT.1224": {
       "author": "Dfrank77",
+      "contributors": []
+    },
+    "MT.1225": {
+      "author": "agnivesh",
       "contributors": []
     },
     "ORCA.100": {
@@ -7431,9 +7530,65 @@
       "title": "(L1) Ensure that guest user access is restricted",
       "path": "/docs/tests/CIS.M365.5.1.6.2"
     },
+    "CIS.M365.5.2.3.1": {
+      "title": "(L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.1"
+    },
+    "CIS.M365.5.2.3.2": {
+      "title": "(L1) Ensure custom banned passwords lists are used",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.2"
+    },
+    "CIS.M365.5.2.3.3": {
+      "title": "(L1) Ensure password protection is enabled for on-prem Active Directory",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.3"
+    },
+    "CIS.M365.5.2.3.4": {
+      "title": "(L1) Ensure all member users are 'MFA capable'",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.4"
+    },
     "CIS.M365.5.2.3.5": {
       "title": "(L1) Ensure weak authentication methods are disabled",
       "path": "/docs/tests/CIS.M365.5.2.3.5"
+    },
+    "CIS.M365.5.2.3.6": {
+      "title": "(L1) Ensure system-preferred multifactor authentication is enabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.6"
+    },
+    "CIS.M365.5.2.3.7": {
+      "title": "(L2) Ensure the email OTP authentication method is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.7"
+    },
+    "CIS.M365.5.2.3.8": {
+      "title": "(L1) Ensure that Account 'Lockout threshold' is '10' or less",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.8"
+    },
+    "CIS.M365.5.2.3.9": {
+      "title": "(L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.9"
+    },
+    "CIS.M365.5.2.3.10": {
+      "title": "(L1) Ensure Microsoft Authenticator on companion applications is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.10"
+    },
+    "CIS.M365.5.3.1": {
+      "title": "(L2) Ensure privileged role assignments are activated and not assigned",
+      "path": "/docs/next/tests/CIS.M365.5.3.1"
+    },
+    "CIS.M365.5.3.2": {
+      "title": "(L1) Ensure 'Access reviews' for guest users are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.2"
+    },
+    "CIS.M365.5.3.3": {
+      "title": "(L1) Ensure 'Access reviews' for privileged roles are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.3"
+    },
+    "CIS.M365.5.3.4": {
+      "title": "(L1) Ensure approval is required for Global Administrator role activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.4"
+    },
+    "CIS.M365.5.3.5": {
+      "title": "(L1) Ensure approval is required for Privileged Role Administrator activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.5"
     },
     "CIS.M365.6.5.3": {
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
@@ -8746,6 +8901,10 @@
     "MT.1224": {
       "title": "Microsoft-managed Conditional Access policies should not be left in report-only mode.",
       "path": "/docs/next/tests/MT.1224"
+    },
+    "MT.1225": {
+      "title": "Users should not be able to create Agent Identity Blueprints.",
+      "path": "/docs/next/tests/MT.1225"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
