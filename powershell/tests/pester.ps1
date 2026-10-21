@@ -22,11 +22,12 @@
     [switch]
     $Coverage,
 
-    # How many pwsh processes run test files at the same time. The default is half the processor count,
-    # at most 4. Each process needs up to about 1 GB of memory, so use 1 on a small VM.
+    # How many pwsh processes run test files at the same time. The default is 2 (1 on a single-core machine):
+    # each process needs up to about 1.3 GB of memory, and 4 at once peaked at about 4.4 GB. On a machine with
+    # memory to spare, -ThrottleLimit 4 runs the suite in about half the time.
     [ValidateRange(1, 64)]
     [int]
-    $ThrottleLimit = [Math]::Max(1, [Math]::Min(4, [int][Math]::Ceiling([Environment]::ProcessorCount / 2))),
+    $ThrottleLimit = [Math]::Min(2, [Environment]::ProcessorCount),
 
     # How many test files each pwsh process runs before it exits and frees its memory.
     [ValidateRange(1, 1000)]

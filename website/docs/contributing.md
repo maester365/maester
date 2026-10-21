@@ -189,7 +189,7 @@ The publishable Maester module is produced by a build script that consolidates t
 
 - QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
 - When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
-- `pester.ps1` runs the test files in batches of eight, each batch in its own pwsh process, with half your processor count of processes at a time (at most four). Each process needs up to about 1 GB of memory: on a small VM use `-ThrottleLimit 1`.
+- `pester.ps1` runs the test files in batches of eight, each batch in its own pwsh process, two processes at a time. Each process needs up to about 1.3 GB of memory. On a small VM use `-ThrottleLimit 1`; on a machine with memory to spare, `-ThrottleLimit 4` runs the suite in about half the time.
 - While you work, run only the files that cover your change. `-Include` and `-Exclude` take file name patterns:
 
   ```powershell
