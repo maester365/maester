@@ -7,8 +7,8 @@ The restriction only affects credentials added after it takes effect, and existi
 #### Remediation action
 
 1. Connect to Microsoft Graph with an account that has the Global Administrator role, or with the Security Administrator and Application Administrator roles.
-2. Retrieve the current default app management policy before sending an update. Preserve all existing `passwordCredentials` entries under both `applicationRestrictions` and `servicePrincipalRestrictions` in the update. Sending only the new restriction can disable other active restrictions.
-3. Set `isEnabled` to `true` and, under both `applicationRestrictions` and `servicePrincipalRestrictions`, add a `passwordCredentials` restriction of type `passwordAddition` with `state` set to `enabled` and `restrictForAppsCreatedAfterDateTime` set to a date before the oldest application in the tenant, such as the date the tenant was created. Applications created before that date are exempt, so a later date leaves existing applications out.
+2. Retrieve the current default app management policy before sending an update. In each of `applicationRestrictions` and `servicePrincipalRestrictions`, find the `passwordCredentials` entry whose `restrictionType` is `passwordAddition`. Modify that entry in place when it exists; add one only when no matching entry exists. Preserve every other `passwordCredentials` entry in both collections in the update. Sending only the target restriction can disable other active restrictions.
+3. Set `isEnabled` to `true`. For each matching `passwordAddition` entry, set `state` to `enabled` and keep its existing `restrictForAppsCreatedAfterDateTime` if it is earlier than the oldest object in that collection. Otherwise, set it to a date before the oldest application or service principal in that collection. Use the same enabled state and an appropriate cutoff date for any new entry. Objects created before their collection's cutoff date are exempt.
 4. Check that your applications use certificates or managed identities before enforcing.
 
 #### Related links

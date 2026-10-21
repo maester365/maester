@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 6
+      "recentCommits": 5
     },
     {
       "id": "Cloud-Architekt",
@@ -877,6 +877,41 @@
       "recentCommits": 0
     },
     {
+      "id": "JeremyFinney-lgtm",
+      "github": "JeremyFinney-lgtm",
+      "name": "JeremyFinney-lgtm",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/JeremyFinney-lgtm.png",
+      "firstContribution": "",
+      "testsAuthored": [
+        "CIS.M365.5.2.3.1",
+        "CIS.M365.5.2.3.2",
+        "CIS.M365.5.2.3.3",
+        "CIS.M365.5.2.3.4",
+        "CIS.M365.5.2.3.6",
+        "CIS.M365.5.2.3.7",
+        "CIS.M365.5.2.3.8",
+        "CIS.M365.5.2.3.9",
+        "CIS.M365.5.2.3.10",
+        "CIS.M365.5.3.1",
+        "CIS.M365.5.3.2",
+        "CIS.M365.5.3.3",
+        "CIS.M365.5.3.4",
+        "CIS.M365.5.3.5"
+      ],
+      "testsContributed": [],
+      "initials": "JL",
+      "recentCommits": 0
+    },
+    {
       "id": "thomas-s-schmidt",
       "github": "thomas-s-schmidt",
       "name": "Thomas Schmidt",
@@ -1201,7 +1236,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 4
+      "recentCommits": 1
     },
     {
       "id": "RobbeVandenDaele",
@@ -2180,7 +2215,7 @@
         "MT.1071"
       ],
       "initials": "MM",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "mattcave",
@@ -2611,7 +2646,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 169
+      "recentCommits": 167
     }
   ],
   "attributions": {
@@ -4087,11 +4122,67 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.5.2.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.2.3.5": {
       "author": "oed-metzb",
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.2.3.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.6.5.3": {
       "author": "weyCC81",
@@ -7436,9 +7527,65 @@
       "title": "(L1) Ensure that guest user access is restricted",
       "path": "/docs/tests/CIS.M365.5.1.6.2"
     },
+    "CIS.M365.5.2.3.1": {
+      "title": "(L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.1"
+    },
+    "CIS.M365.5.2.3.2": {
+      "title": "(L1) Ensure custom banned passwords lists are used",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.2"
+    },
+    "CIS.M365.5.2.3.3": {
+      "title": "(L1) Ensure password protection is enabled for on-prem Active Directory",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.3"
+    },
+    "CIS.M365.5.2.3.4": {
+      "title": "(L1) Ensure all member users are 'MFA capable'",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.4"
+    },
     "CIS.M365.5.2.3.5": {
       "title": "(L1) Ensure weak authentication methods are disabled",
       "path": "/docs/tests/CIS.M365.5.2.3.5"
+    },
+    "CIS.M365.5.2.3.6": {
+      "title": "(L1) Ensure system-preferred multifactor authentication is enabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.6"
+    },
+    "CIS.M365.5.2.3.7": {
+      "title": "(L2) Ensure the email OTP authentication method is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.7"
+    },
+    "CIS.M365.5.2.3.8": {
+      "title": "(L1) Ensure that Account 'Lockout threshold' is '10' or less",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.8"
+    },
+    "CIS.M365.5.2.3.9": {
+      "title": "(L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.9"
+    },
+    "CIS.M365.5.2.3.10": {
+      "title": "(L1) Ensure Microsoft Authenticator on companion applications is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.10"
+    },
+    "CIS.M365.5.3.1": {
+      "title": "(L2) Ensure privileged role assignments are activated and not assigned",
+      "path": "/docs/next/tests/CIS.M365.5.3.1"
+    },
+    "CIS.M365.5.3.2": {
+      "title": "(L1) Ensure 'Access reviews' for guest users are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.2"
+    },
+    "CIS.M365.5.3.3": {
+      "title": "(L1) Ensure 'Access reviews' for privileged roles are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.3"
+    },
+    "CIS.M365.5.3.4": {
+      "title": "(L1) Ensure approval is required for Global Administrator role activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.4"
+    },
+    "CIS.M365.5.3.5": {
+      "title": "(L1) Ensure approval is required for Privileged Role Administrator activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.5"
     },
     "CIS.M365.6.5.3": {
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
