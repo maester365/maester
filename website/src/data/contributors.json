@@ -1526,7 +1526,7 @@
         "MT.1110"
       ],
       "initials": "JG",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "bastienperez",
@@ -1895,16 +1895,19 @@
     {
       "id": "earbona23",
       "github": "earbona23",
-      "name": "eduardarbona",
-      "title": "",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
       "mvp": false,
       "mvpUrl": "",
       "pinLast": false,
-      "company": "",
-      "location": "",
+      "company": "ArrankaGo LLC",
+      "location": "Dominican Republic",
       "locationFlag": "",
-      "url": "",
-      "socials": {},
+      "url": "https://consulting.arrankago.com",
+      "socials": {
+        "linkedin": "eduard-arbona-99872b403",
+        "bluesky": "arbona.bsky.social"
+      },
       "avatar": "https://github.com/earbona23.png",
       "firstContribution": "2026-09-14",
       "testsAuthored": [],
@@ -1912,7 +1915,7 @@
         "MT.1011",
         "MT.1024"
       ],
-      "initials": "E",
+      "initials": "EA",
       "recentCommits": 4
     },
     {
