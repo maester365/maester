@@ -1,22 +1,48 @@
-﻿Password hash synchronization is enabled for tenants that synchronise identities from an on-premises Active Directory.
+5.1.8.1 (L1) Ensure that password hash sync is enabled for hybrid deployments
 
-Password hash synchronization sends a hash of the on-premises password hash to Microsoft Entra ID. It gives users the same password in the cloud with no dependency on on-premises servers at sign-in, and it enables Microsoft Entra ID Protection to detect leaked credentials. It is also a recovery option if federation or pass-through authentication fails.
+Password Hash Synchronization is one of the sign-in methods used to enable hybrid identity authentication. With this method, Microsoft Entra Connect synchronizes a cryptographically derived representation of a user's on-premises Active Directory password to Microsoft Entra ID.
 
-Cloud-only tenants do not use directory synchronization, so the test is skipped as not applicable. Microsoft Graph reads these settings only with delegated permissions, so the test is also skipped on app-only connections. Tenants that deliberately avoid password hash synchronization can record an exception.
+The original NT password hash (MD4) is never transmitted to Entra ID. Instead, Entra Connect computes a SHA-256 hash of the original MD4 hash and synchronizes that value. Because only this secondary hash is stored in the cloud, the credential material in Entra ID cannot be reused for on-premises pass-the-hash attacks, even if compromised.
 
-#### Remediation action
+> **Note:** This recommendation applies only to Microsoft 365 tenants operating in a hybrid identity configuration using Microsoft Entra Connect. It does not apply to federated or cloud-only deployments.
 
-1. Sign in to the server that runs Microsoft Entra Connect and open the **Microsoft Entra Connect** wizard.
-2. Select **Change user sign-in** and enable **Password Hash Synchronization**, or select **Customize synchronization options** and enable it there.
-3. Finish the wizard and wait for the next synchronisation cycle.
-4. For Microsoft Entra Cloud Sync, open **Entra ID** > **Entra Connect** > [**Cloud Sync**](https://entra.microsoft.com/#view/Microsoft_AAD_Connect_Provisioning/AzureADConnectMenuBlade/~/CloudSync) and enable password hash synchronization in the configuration.
+#### Rationale
+
+Password hash synchronization helps by reducing the number of passwords your users need to maintain to just one and enables leaked credential detection for your hybrid accounts. Leaked credential protection is leveraged through Entra ID Protection and is a subset of that feature which can help identify if an organization's user account passwords have appeared on the dark web or public spaces.
+
+Using other options for your directory synchronization may be less resilient as Microsoft can still process sign-ins to 365 with Hash Sync even if a network connection to your on-premises environment is not available. This minimizes downtime and ensures business continuity.
+
+#### Impact
+
+Compliance or regulatory restrictions may exist, depending on the organization's business sector, that preclude hashed versions of passwords from being securely transmitted to cloud data centers.
+
+#### Remediation action:
+
+To remediate using the on-premises Microsoft Entra Connect tool:
+
+1. Log in to the on-premises server that hosts the Microsoft Entra Connect tool.
+2. Double-click the **Azure AD Connect** icon that was created on the desktop.
+3. Click **Configure**.
+4. On the **Additional tasks** page, select **Customize synchronization options** and click **Next**.
+5. Enter the username and password for your global administrator.
+6. On the **Connect your directories** screen, click **Next**.
+7. On the **Domain and OU filtering** screen, click **Next**.
+8. On the **Optional features** screen, check **Password hash synchronization** and click **Next**.
+9. On the **Ready to configure** screen, click **Configure**.
+10. Once the configuration completes, click **Exit**.
+
+> **Note:** Microsoft Entra Connect sync is disabled by default. Password Hash Sync is Microsoft's recommended setting for new deployments.
 
 #### Related links
 
-* [Microsoft Entra admin center - Microsoft Entra Connect](https://entra.microsoft.com/#view/Microsoft_AAD_Connect_Provisioning/AzureADConnectMenuBlade/~/GetStarted)
-* [What is password hash synchronization with Microsoft Entra ID](https://learn.microsoft.com/entra/identity/hybrid/connect/whatis-phs)
-* [Implement password hash synchronization with Microsoft Entra Connect Sync](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-password-hash-synchronization)
-* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.1.8.1](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Microsoft Entra admin center](https://entra.microsoft.com)
+* [What is password hash synchronization with Microsoft Entra ID?](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-phs)
+* [Implement password hash synchronization with Microsoft Entra Connect Sync](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-password-hash-synchronization)
+* [Microsoft Entra Connect Sync: Staging server and disaster recovery](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-sync-staging-server)
+* [onPremisesDirectorySynchronizationFeature resource type](https://learn.microsoft.com/en-us/graph/api/resources/onpremisesdirectorysynchronizationfeature?view=graph-rest-1.0)
+* [Download Microsoft Entra Connect](https://www.microsoft.com/en-us/download/details.aspx?id=47594)
+* [CIS Microsoft 365 Foundations Benchmark - Page 278](https://www.cisecurity.org/benchmark/microsoft_365)
+
 
 <!--- Results --->
 %TestResult%
