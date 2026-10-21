@@ -20,7 +20,7 @@
     {
         $policy = Invoke-MtAzureRequest `
             -RelativeUri '/providers/Microsoft.Subscription/policies/default' `
-            -ApiVersion '2021-01-01-privatepreview'
+            -ApiVersion '2021-10-01'
     }
     catch {
         Write-Verbose "Error retrieving subscription policy: $_"
