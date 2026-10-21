@@ -1,0 +1,126 @@
+# Keeps Maester's EIDSCA tests in sync with the EIDSCA config in the Attack & Defense Playbook repository.
+# While the two differ, one issue (labelled eidsca-sync) and one pull request (branch automation/eidsca-sync) stay
+# open, both assigned to the EIDSCA maintainer, and every run updates them. The pull request closes the issue when it
+# is merged; the next difference opens a new issue and pull request. See https://maester.dev/eidsca-sync.
+name: eidsca-sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: eidsca-sync
+  cancel-in-progress: false
+
+env:
+  SYNC_LABEL: eidsca-sync
+  SYNC_ASSIGNEE: Cloud-Architekt
+  SYNC_TITLE: Maester and EIDSCA are not in sync
+
+jobs:
+  eidsca-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+
+      - name: Compare the EIDSCA config with Maester
+        id: compare
+        run: |
+          node website/scripts/check-eidsca-sync.mjs --json "$RUNNER_TEMP/eidsca-sync.json" --markdown "$RUNNER_TEMP/eidsca-sync.md"
+          echo "count=$(jq '.count' "$RUNNER_TEMP/eidsca-sync.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Open, update or close the sync issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COUNT: ${{ steps.compare.outputs.count }}
+        run: |
+          issue=$(gh issue list --label "$SYNC_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ "$COUNT" -gt 0 ]; then
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body-file "$RUNNER_TEMP/eidsca-sync.md"
+              echo "Updated issue #$issue with $COUNT difference(s)."
+            else
+              gh label create "$SYNC_LABEL" --color 5319e7 --description "Maester and the EIDSCA config differ" --force
+              url=$(gh issue create --title "$SYNC_TITLE" --body-file "$RUNNER_TEMP/eidsca-sync.md" --label "$SYNC_LABEL")
+              issue="${url##*/}"
+              gh issue edit "$issue" --add-assignee "$SYNC_ASSIGNEE" || echo "::warning::Could not assign $SYNC_ASSIGNEE to issue #$issue."
+              echo "Opened issue #$issue with $COUNT difference(s)."
+            fi
+            echo "number=$issue" >> "$GITHUB_OUTPUT"
+          elif [ -n "$issue" ]; then
+            gh issue close "$issue" --reason completed --comment "Maester and the EIDSCA config are in sync again. The next difference opens a new issue."
+            echo "Closed issue #$issue."
+          else
+            echo "Maester and the EIDSCA config are in sync."
+          fi
+
+      - name: Update EIDSCA tests from the EIDSCA config
+        id: update
+        shell: pwsh
+        run: |
+          # A check without a row in eidsca-test-metadata.json is generated with a warning; list those in the pull request.
+          $warnings = @(./build/eidsca/Update-EidscaTests.ps1 -Download 3>&1 | ForEach-Object { "$_" } |
+              Where-Object { $_ -like '*has no row in*' -or $_ -like '*Could not read the page title*' } | Sort-Object -Unique)
+          $notes = if ($warnings.Count -gt 0) {
+              "### Needs attention before merging`n`n" + (($warnings | ForEach-Object { "- $_" }) -join "`n")
+          } else { '' }
+          "notes<<EIDSCA_NOTES`n$notes`nEIDSCA_NOTES" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      # With no changes against main, the action closes an open pull request and deletes its branch.
+      - name: Create or update the sync pull request
+        id: pr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore: update EIDSCA tests from the EIDSCA config'
+          branch: 'automation/eidsca-sync'
+          delete-branch: true
+          title: 'chore: update EIDSCA tests from the EIDSCA config'
+          assignees: ${{ env.SYNC_ASSIGNEE }}
+          body: |
+            ${{ steps.issue.outputs.number && format('Closes #{0}', steps.issue.outputs.number) || '' }}
+
+            Refreshes `build/eidsca/EidscaConfig.json` from the [EIDSCA config](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv4/config/EidscaConfig.json) in the Attack & Defense Playbook repository and regenerates the EIDSCA tests with `./build/eidsca/Update-EidscaTests.ps1 -Download`. The weekly sync updates this pull request until it is merged. The [EIDSCA sync page](https://maester.dev/eidsca-sync) shows how the EIDSCA config maps to Maester.
+
+            The EIDSCA config is the source of each check's severity, title, description, recommended value and remediation. The Maester classification it does not carry (`Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control`, `RelatedProduct`) is in `build/eidsca/eidsca-test-metadata.json`.
+
+            Reviewer checklist:
+            - A new check needs a row in `build/eidsca/eidsca-test-metadata.json`, chosen with the [attribute rubric](https://maester.dev/docs/next/writing-tests/attribute-rubric); the unit tests fail until it has one.
+            - Check changed query logic and skip conditions in `powershell/internal/generated/eidsca/` against a tenant.
+
+            ${{ steps.update.outputs.notes }}
+
+      - name: Link the pull request from the issue
+        if: steps.issue.outputs.number && steps.pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ steps.issue.outputs.number }}
+          PR: ${{ steps.pr.outputs.pull-request-number }}
+        run: |
+          { cat "$RUNNER_TEMP/eidsca-sync.md"; printf '\nSync pull request: #%s\n' "$PR"; } > "$RUNNER_TEMP/eidsca-sync-linked.md"
+          gh issue edit "$ISSUE" --body-file "$RUNNER_TEMP/eidsca-sync-linked.md"

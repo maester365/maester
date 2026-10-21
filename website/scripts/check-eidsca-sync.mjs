@@ -1,5 +1,5 @@
 // Compares the EIDSCA config upstream with the copy and classification in this repository, for the weekly
-// eidsca-sync-check workflow. Writes the differences as JSON and the body of the sync issue as Markdown.
+// eidsca-sync workflow. Writes the differences as JSON and the body of the sync issue as Markdown.
 //
 //   node scripts/check-eidsca-sync.mjs [--upstream <file>] [--json <file>] [--markdown <file>]
 //

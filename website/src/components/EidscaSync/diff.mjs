@@ -120,7 +120,7 @@ export function diffEidsca({ upstream, repo, metadata }) {
         id,
         kind: "new",
         title: `${up.area.ControlName} - ${up.item.DisplayName}`,
-        action: "Merge the weekly EIDSCA update pull request to add the test" + (rows.has(id) ? "." : ", and add its row to eidsca-test-metadata.json."),
+        action: "Merge the EIDSCA sync pull request to add the test" + (rows.has(id) ? "." : ", and add its row to eidsca-test-metadata.json."),
       });
     } else if (!upGenerated && localGenerated) {
       differences.push({
@@ -128,8 +128,8 @@ export function diffEidsca({ upstream, repo, metadata }) {
         kind: "removed",
         title: `${local.area.ControlName} - ${local.item.DisplayName}`,
         action: up
-          ? "The check has no recommended value upstream any more. Merge the weekly EIDSCA update pull request to remove the test, or restore the value upstream."
-          : "The check is not in the EIDSCA config any more. Merge the weekly EIDSCA update pull request to remove the test, or restore it upstream.",
+          ? "The check has no recommended value upstream any more. Merge the EIDSCA sync pull request to remove the test, or restore the value upstream."
+          : "The check is not in the EIDSCA config any more. Merge the EIDSCA sync pull request to remove the test, or restore it upstream.",
       });
     } else if (upGenerated && localGenerated) {
       const changes = [
@@ -142,7 +142,7 @@ export function diffEidsca({ upstream, repo, metadata }) {
           kind: "changed",
           title: `${up.area.ControlName} - ${up.item.DisplayName}`,
           changes,
-          action: "Merge the weekly EIDSCA update pull request to bring these values into Maester.",
+          action: "Merge the EIDSCA sync pull request to bring these values into Maester.",
         });
       }
     }
@@ -201,7 +201,7 @@ export function renderIssueMarkdown(differences, { checkedAt, workflowUrl } = {}
     "",
     `See the [EIDSCA sync page](${SYNC_PAGE_URL}) for how the EIDSCA config maps to Maester and to compare the two live.`,
     "",
-    "Most differences are cleared by merging the weekly `chore: update EIDSCA tests from the EIDSCA config` pull request. This issue is updated by the weekly check while differences remain, and closed when there are none.",
+    "The linked EIDSCA sync pull request brings the EIDSCA config into Maester and closes this issue when it is merged. A weekly check updates both while differences remain; the next difference after that opens a new issue and pull request.",
     "",
     "| Check | Difference | Details | What to do |",
     "| --- | --- | --- | --- |",

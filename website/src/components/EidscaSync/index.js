@@ -222,9 +222,9 @@ export default function EidscaSync() {
             functions that read the tenant value, for every check that has a recommended value.
           </li>
           <li>
-            Every week, a workflow downloads the EIDSCA config, regenerates the tests and opens a pull request. A second
-            workflow compares the EIDSCA config with Maester and keeps one open issue, assigned to the EIDSCA
-            maintainer, while they differ. It closes the issue when they match again.
+            Every week, a workflow compares the EIDSCA config with Maester. While they differ, it keeps one issue and one
+            pull request with the regenerated tests open, both assigned to the EIDSCA maintainer, and updates them.
+            Merging the pull request closes the issue; the next difference starts a new pair.
           </li>
         </ol>
       </section>
