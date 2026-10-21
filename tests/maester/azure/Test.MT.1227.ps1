@@ -28,7 +28,7 @@
 
     $policy = Get-MtAzureSubscriptionPolicy
 
-    if(isnull($policy)) {
+    if($null -eq $policy) {
         $testResult = $false
         $testResultMarkdown = 'No tenant subscription policy was returned. This check cannot determine the effective transfer-blocking behavior from an absent policy. Verify the tenant''s effective settings and configure an explicit policy if needed.'
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
