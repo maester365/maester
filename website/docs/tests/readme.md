@@ -23,7 +23,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 63 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -382,7 +382,21 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | (L1) Ensure the admin consent workflow is enabled | CIS | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | (L1) Ensure that guest user access is restricted | CIS | Medium | Entra ID | External identities |
+| [CIS.M365.5.2.3.1](./CIS.M365.5.2.3.1) | (L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue | CIS | Medium | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.10](./CIS.M365.5.2.3.10) | (L1) Ensure Microsoft Authenticator on companion applications is disabled | CIS | Low | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.2](./CIS.M365.5.2.3.2) | (L1) Ensure custom banned passwords lists are used | CIS | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.3](./CIS.M365.5.2.3.3) | (L1) Ensure password protection is enabled for on-prem Active Directory | CIS | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.4](./CIS.M365.5.2.3.4) | (L1) Ensure all member users are 'MFA capable' | CIS | High | Entra ID | Authentication methods |
 | [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5) | (L1) Ensure weak authentication methods are disabled | CIS | High | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.6](./CIS.M365.5.2.3.6) | (L1) Ensure system-preferred multifactor authentication is enabled | CIS | Low | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.7](./CIS.M365.5.2.3.7) | (L2) Ensure the email OTP authentication method is disabled | CIS | Medium | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.8](./CIS.M365.5.2.3.8) | (L1) Ensure that Account 'Lockout threshold' is '10' or less | CIS | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.9](./CIS.M365.5.2.3.9) | (L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds | CIS | Medium | Entra ID | Password protection |
+| [CIS.M365.5.3.1](./CIS.M365.5.3.1) | (L2) Ensure privileged role assignments are activated and not assigned | CIS | High | Entra ID | Privileged Identity Management |
+| [CIS.M365.5.3.2](./CIS.M365.5.3.2) | (L1) Ensure 'Access reviews' for guest users are configured | CIS | Medium | Entra ID | Identity Governance |
+| [CIS.M365.5.3.3](./CIS.M365.5.3.3) | (L1) Ensure 'Access reviews' for privileged roles are configured | CIS | Medium | Entra ID | Identity Governance |
+| [CIS.M365.5.3.4](./CIS.M365.5.3.4) | (L1) Ensure approval is required for Global Administrator role activation | CIS | Medium | Entra ID | Privileged Identity Management |
+| [CIS.M365.5.3.5](./CIS.M365.5.3.5) | (L1) Ensure approval is required for Privileged Role Administrator activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Medium | Exchange Online | Outlook |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11) | (L1) Ensure the SharePoint default sharing link permission is set | CIS | Medium | SharePoint | Sharing links |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Medium | SharePoint | External sharing |
