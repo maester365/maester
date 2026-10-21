@@ -189,6 +189,22 @@ The publishable Maester module is produced by a build script that consolidates t
 
 - QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
 - When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
+- `pester.ps1` runs each test file in its own pwsh process, half your processor count at a time (at most four). Each process needs about 0.5 to 1 GB of memory: on a small VM use `-ThrottleLimit 1`.
+- While you work, run only the files that cover your change. `-Include` and `-Exclude` take file name patterns:
+
+  ```powershell
+  # The unit tests of the commands you changed
+  ./powershell/tests/pester.ps1 -TestGeneral $false -Include 'Get-MtUser*', 'Test-MtCa*'
+
+  # The checks that a new or changed native test must pass
+  ./powershell/tests/pester.ps1 -TestFunctions $false -Include 'NativeTest*', 'RepositoryLayout*', 'MaesterTestTags*', 'LegacyIds*'
+
+  # Everything except the slowest files, which regenerate the golden fixtures and the ORCA and EIDSCA tests
+  ./powershell/tests/pester.ps1 -Exclude 'Golden*', 'GeneratedFileFormatting*', 'OrcaGenerator*', 'EidscaGenerator*'
+  ```
+
+- Run the whole suite once before you push, or let the pull request's build run it.
+- On Windows, Microsoft Defender scans every script the module loads. If your policy allows it, excluding the folder of your clone from real-time scanning makes the run several times faster.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
@@ -254,7 +270,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 ##### Test your code
 
 - We run a bunch of pester tests on your code when a PR is raised and will block merge until the issues are addressed.
-- Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
+- Before you submit the PR, run the tests locally by running `./powershell/tests/pester.ps1`. See [Pester Tests](#pester-tests) for running a subset while you work.
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
