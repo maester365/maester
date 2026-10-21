@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoInheritedPermissionsCount {
+function Test-MtAdGpoInheritedPermissionsCount {
     <#
     .SYNOPSIS
     Counts GPO reports with inherited permissions.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

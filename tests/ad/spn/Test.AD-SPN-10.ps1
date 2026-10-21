@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnUnknownDetails {
+function Test-MtAdUserSpnUnknownDetails {
     <#
     .SYNOPSIS
     Provides detailed information about unidentified SPN service classes on user accounts.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

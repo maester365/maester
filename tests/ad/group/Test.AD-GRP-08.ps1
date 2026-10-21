@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupDomainLocalCount {
+function Test-MtAdGroupDomainLocalCount {
     <#
     .SYNOPSIS
     Counts the number of domain local groups in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

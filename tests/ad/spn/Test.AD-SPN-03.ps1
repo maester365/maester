@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerSpnUnknownCount {
+function Test-MtAdComputerSpnUnknownCount {
     <#
     .SYNOPSIS
     Counts unidentified SPN service classes on computer accounts.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

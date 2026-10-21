@@ -1,4 +1,4 @@
-﻿function Test-MtAdSiteTotalCount {
+function Test-MtAdSiteTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Active Directory sites.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:site:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

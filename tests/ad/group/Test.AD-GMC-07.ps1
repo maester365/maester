@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberForeignSidDetails {
+function Test-MtAdGroupMemberForeignSidDetails {
     <#
     .SYNOPSIS
     Details of foreign security principals by their domain of origin.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

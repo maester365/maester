@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserAdminCountCount {
+function Test-MtAdUserAdminCountCount {
     <#
     .SYNOPSIS
     Counts users with AdminCount set in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

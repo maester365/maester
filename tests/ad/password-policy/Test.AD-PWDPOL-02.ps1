@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordMaxAge {
+function Test-MtAdPasswordMaxAge {
     <#
     .SYNOPSIS
     Checks the maximum password age configured in the default domain password policy.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = ('T1110.002', 'T1078.002'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.maxPwdAge:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

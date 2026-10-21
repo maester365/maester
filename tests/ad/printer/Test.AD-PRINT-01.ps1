@@ -1,4 +1,4 @@
-﻿function Test-MtAdPrinterTotalCount {
+function Test-MtAdPrinterTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of printers published in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:printQueue:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

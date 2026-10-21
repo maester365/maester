@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclInheritedObjectTypeDetails {
+function Test-MtAdDaclInheritedObjectTypeDetails {
     <#
     .SYNOPSIS
     Returns inherited object type breakdown from Active Directory DACL entries.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetIpv6Count {
+function Test-MtAdSubnetIpv6Count {
     <#
     .SYNOPSIS
     Counts the number of IPv6 subnets configured in Active Directory.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

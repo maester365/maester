@@ -1,4 +1,4 @@
-﻿function Test-MtAdOptionalFeatureCount {
+function Test-MtAdOptionalFeatureCount {
     <#
     .SYNOPSIS
     Retrieves the count of Active Directory optional features.
@@ -31,6 +31,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

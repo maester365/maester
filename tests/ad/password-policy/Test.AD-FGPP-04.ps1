@@ -1,4 +1,4 @@
-﻿function Test-MtAdFineGrainedPolicyAppliesTo {
+function Test-MtAdFineGrainedPolicyAppliesTo {
     <#
     .SYNOPSIS
     Shows which users and groups each fine-grained password policy applies to.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer.name:ReadProperty', 'ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty', 'ActiveDirectory:Ldap:group.name:ReadProperty', 'ActiveDirectory:Ldap:user.name:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

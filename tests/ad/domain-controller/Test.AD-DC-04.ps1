@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcSmbSigningEnabledCount {
+function Test-MtAdDcSmbSigningEnabledCount {
     <#
     .SYNOPSIS
     Counts domain controllers with SMB signing enabled.
@@ -29,6 +29,7 @@
         Mitre = 'T1557',
         Control = 'nist-800-53-r5:SC-8',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\SmbConfigurations:MSFT_SmbServerConfiguration:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

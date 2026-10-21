@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordMinLength {
+function Test-MtAdPasswordMinLength {
     <#
     .SYNOPSIS
     Checks the minimum password length configured in the default domain password policy.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.minPwdLength:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -146,8 +146,9 @@
         Permission         = @{
             Type        = 'string[]'
             Required    = 'No'
-            Pattern     = '^[^,\r\n]*[^,\s][^,\r\n]*$'
-            Description = 'Permissions the test needs, one per element, no commas. Recorded; not enforced.'
+            # <Service>:<Kind>:<Name>, or several joined with |. The name may contain colons; no commas.
+            Pattern     = '^\s*[A-Za-z][A-Za-z0-9.\-]*:[A-Za-z]+:[^,|\r\n]*[^,|\s](\s*\|\s*[A-Za-z][A-Za-z0-9.\-]*:[A-Za-z]+:[^,|\r\n]*[^,|\s])*\s*$'
+            Description = 'Permissions the test needs, written <Service>:<Kind>:<Name>. The test needs every element; | inside an element joins alternatives, any one of which is enough, least privileged first. Recorded; not enforced.'
         }
         TenantType         = @{
             Type          = 'string[]'

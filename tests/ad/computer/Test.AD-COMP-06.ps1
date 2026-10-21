@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerInDefaultContainer {
+function Test-MtAdComputerInDefaultContainer {
     <#
     .SYNOPSIS
     Counts computers located in the default Computers container.
@@ -31,6 +31,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

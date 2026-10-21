@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclUnresolvedSidCount {
+function Test-MtAdDaclUnresolvedSidCount {
     <#
     .SYNOPSIS
     Counts unresolved SID references in Active Directory DACL entries.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

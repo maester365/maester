@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerStaleEnabledCount {
+function Test-MtAdComputerStaleEnabledCount {
     <#
     .SYNOPSIS
     Identifies enabled computers that have not logged on for 180 days or more.
@@ -39,6 +39,7 @@
         Mitre = 'T1078.002',
         Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

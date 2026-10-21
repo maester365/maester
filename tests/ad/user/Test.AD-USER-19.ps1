@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserInContainerCount {
+function Test-MtAdUserInContainerCount {
     <#
     .SYNOPSIS
     Counts users located in container objects instead of OUs.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

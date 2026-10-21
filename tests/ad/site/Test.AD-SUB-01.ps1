@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetTotalCount {
+function Test-MtAdSubnetTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Active Directory subnets.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

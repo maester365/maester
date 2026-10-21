@@ -1,4 +1,4 @@
-﻿function Test-MtAdDomainNameNonStandardDetails {
+function Test-MtAdDomainNameNonStandardDetails {
     <#
     .SYNOPSIS
     Lists details of domain names that don't comply with RFC standards.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

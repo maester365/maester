@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberAccountTypeCount {
+function Test-MtAdGroupMemberAccountTypeCount {
     <#
     .SYNOPSIS
     Counts the distinct account types of members across Active Directory groups.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

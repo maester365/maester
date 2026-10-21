@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustedRootCaDetails {
+function Test-MtAdTrustedRootCaDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about trusted root certificate authorities.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

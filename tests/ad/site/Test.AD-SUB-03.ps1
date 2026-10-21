@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetCatchAllCount {
+function Test-MtAdSubnetCatchAllCount {
     <#
     .SYNOPSIS
     Counts the number of catch-all subnets (overly broad RFC1918 ranges).
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

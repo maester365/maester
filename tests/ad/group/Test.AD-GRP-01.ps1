@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupAdminCount {
+function Test-MtAdGroupAdminCount {
     <#
     .SYNOPSIS
     Counts groups with AdminCount set in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDomainFunctionalLevel {
+function Test-MtAdDomainFunctionalLevel {
     <#
     .SYNOPSIS
     Retrieves the current domain functional level.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.name:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

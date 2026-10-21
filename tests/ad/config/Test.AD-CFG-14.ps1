@@ -1,4 +1,4 @@
-﻿function Test-MtAdEnrollmentTemplatesCount {
+function Test-MtAdEnrollmentTemplatesCount {
     <#
     .SYNOPSIS
     Counts the number of certificate templates available for enrollment.
@@ -23,6 +23,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

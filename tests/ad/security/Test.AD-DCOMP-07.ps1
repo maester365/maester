@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDnsHostNameCount {
+function Test-MtAdComputerDnsHostNameCount {
     <#
     .SYNOPSIS
     Counts computers with DNS host name configured.
@@ -32,6 +32,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

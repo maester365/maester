@@ -1,4 +1,4 @@
-﻿function Test-MtAdFineGrainedPolicyValueCount {
+function Test-MtAdFineGrainedPolicyValueCount {
     <#
     .SYNOPSIS
     Analyzes distinct values across all fine-grained password policies.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

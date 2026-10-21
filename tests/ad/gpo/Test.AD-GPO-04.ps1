@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoUnlinkedCount {
+function Test-MtAdGpoUnlinkedCount {
     <#
     .SYNOPSIS
     Counts Active Directory GPOs that are not linked to any OU, domain, or site.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdLdapQueryPolicyCount {
+function Test-MtAdLdapQueryPolicyCount {
     <#
     .SYNOPSIS
     Counts Active Directory LDAP query policies.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

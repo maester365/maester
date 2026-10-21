@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustDetails {
+function Test-MtAdTrustDetails {
     <#
     .SYNOPSIS
     Lists detailed information about all Active Directory trusts.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdForestDomainCount {
+function Test-MtAdForestDomainCount {
     <#
     .SYNOPSIS
     Counts the number of domains in the forest.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

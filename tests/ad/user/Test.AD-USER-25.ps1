@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserBuiltInAdminPasswordAgeDetails {
+function Test-MtAdUserBuiltInAdminPasswordAgeDetails {
     <#
     .SYNOPSIS
     Returns password age details for built-in administrator style accounts.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = ('T1078.001', 'T1110.003'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

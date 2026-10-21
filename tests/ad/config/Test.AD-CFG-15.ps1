@@ -1,4 +1,4 @@
-﻿function Test-MtAdEnrollmentCaCertificateDetails {
+function Test-MtAdEnrollmentCaCertificateDetails {
     <#
     .SYNOPSIS
     Returns Enterprise CA certificate validity details for AD enrollment.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

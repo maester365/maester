@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcSmbv311EnabledCount {
+function Test-MtAdDcSmbv311EnabledCount {
     <#
     .SYNOPSIS
     Counts domain controllers with SMBv3.1.1 protocol enabled.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\SmbConfigurations:MSFT_SmbServerConfiguration:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

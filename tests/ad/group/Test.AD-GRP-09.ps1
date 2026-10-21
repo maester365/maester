@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupGlobalCount {
+function Test-MtAdGroupGlobalCount {
     <#
     .SYNOPSIS
     Counts the number of global groups in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

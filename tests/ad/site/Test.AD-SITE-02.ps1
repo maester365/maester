@@ -1,4 +1,4 @@
-﻿function Test-MtAdSiteWithoutDcCount {
+function Test-MtAdSiteWithoutDcCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory sites without domain controllers.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:site:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

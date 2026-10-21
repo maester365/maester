@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerCreatorSidCount {
+function Test-MtAdComputerCreatorSidCount {
     <#
     .SYNOPSIS
     Counts computers with the ms-ds-CreatorSid attribute set.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDelegationDetails {
+function Test-MtAdComputerDelegationDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of delegation configuration per computer.
@@ -33,6 +33,7 @@
         Severity = 'Info',
         Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDefaultQueryPolicy {
+function Test-MtAdDefaultQueryPolicy {
     <#
     .SYNOPSIS
     Returns default LDAP query policy limits from Active Directory.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

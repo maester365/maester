@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserManagerSetCount {
+function Test-MtAdUserManagerSetCount {
     <#
     .SYNOPSIS
     Counts users with the manager attribute set in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

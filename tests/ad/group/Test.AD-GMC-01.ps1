@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberDistinctGroupCount {
+function Test-MtAdGroupMemberDistinctGroupCount {
     <#
     .SYNOPSIS
     Counts the distinct groups that have members in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

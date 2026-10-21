@@ -1,4 +1,4 @@
-﻿function Test-MtAdRecycleBinStatus {
+function Test-MtAdRecycleBinStatus {
     <#
     .SYNOPSIS
     Retrieves the Active Directory Recycle Bin status.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty', 'ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

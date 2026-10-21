@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserBuiltInAdminCount {
+function Test-MtAdUserBuiltInAdminCount {
     <#
     .SYNOPSIS
     Counts built-in administrator style user accounts.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

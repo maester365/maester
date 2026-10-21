@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerOperatingSystemCount {
+function Test-MtAdComputerOperatingSystemCount {
     <#
     .SYNOPSIS
     Counts the number of distinct operating systems in use by domain computers.
@@ -33,6 +33,7 @@
         Mitre = 'None',
         Control = 'nist-800-53-r5:CM-8',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoLinkedCount {
+function Test-MtAdGpoLinkedCount {
     <#
     .SYNOPSIS
     Counts distinct GPOs that have at least one enabled link (active GPOs).
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

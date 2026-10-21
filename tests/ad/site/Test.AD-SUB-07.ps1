@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetNonInternalDetails {
+function Test-MtAdSubnetNonInternalDetails {
     <#
     .SYNOPSIS
     Lists the non-RFC1918 (public IP) subnets in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

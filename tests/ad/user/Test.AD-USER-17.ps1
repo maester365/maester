@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserProfilePathCount {
+function Test-MtAdUserProfilePathCount {
     <#
     .SYNOPSIS
     Counts users with a profile path configured in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

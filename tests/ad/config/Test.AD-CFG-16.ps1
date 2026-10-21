@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustedRootCaCount {
+function Test-MtAdTrustedRootCaCount {
     <#
     .SYNOPSIS
     Counts the trusted root certificate authorities configured in Active Directory.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustStaleDetails {
+function Test-MtAdTrustStaleDetails {
     <#
     .SYNOPSIS
     Lists detailed information about stale trusts in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

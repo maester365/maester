@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcReadOnlyCount {
+function Test-MtAdDcReadOnlyCount {
     <#
     .SYNOPSIS
     Counts read-only domain controllers (RODCs) in the domain.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdKrbtgtPasswordLastSet {
+function Test-MtAdKrbtgtPasswordLastSet {
     <#
     .SYNOPSIS
     Checks when the KRBTGT account password was last set.
@@ -34,6 +34,7 @@
         Mitre = 'T1558.001',
         Control = 'nist-800-53-r5:IA-5',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

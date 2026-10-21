@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoDenyAceCount {
+function Test-MtAdGpoDenyAceCount {
     <#
     .SYNOPSIS
     Counts GPO reports that include a Deny ACE.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

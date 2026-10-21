@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclIdentityAceDistribution {
+function Test-MtAdDaclIdentityAceDistribution {
     <#
     .SYNOPSIS
     Returns the ACE distribution per identity in collected DACL data.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

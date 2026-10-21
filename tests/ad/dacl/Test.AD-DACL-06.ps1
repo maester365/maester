@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclDenyAceDetails {
+function Test-MtAdDaclDenyAceDetails {
     <#
     .SYNOPSIS
     Returns a breakdown of deny authorization ACEs by object and identity.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

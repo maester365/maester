@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcAllFsmoRolesCount {
+function Test-MtAdDcAllFsmoRolesCount {
     <#
     .SYNOPSIS
     Counts domain controllers that hold all 5 FSMO roles.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

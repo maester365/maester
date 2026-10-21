@@ -1,4 +1,4 @@
-﻿function Test-MtAdOuOverlappingNameCount {
+function Test-MtAdOuOverlappingNameCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units with overlapping (duplicate) names in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:organizationalUnit:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

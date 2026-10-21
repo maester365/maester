@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserNonStandardPrimaryGroupCount {
+function Test-MtAdUserNonStandardPrimaryGroupCount {
     <#
     .SYNOPSIS
     Counts users with a non-standard primary group in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordReversibleEncryption {
+function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
     Checks that reversible encryption is disabled for passwords in the default domain password policy.
@@ -29,6 +29,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1556.005',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

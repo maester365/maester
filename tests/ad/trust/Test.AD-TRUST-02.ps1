@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustInterForestCount {
+function Test-MtAdTrustInterForestCount {
     <#
     .SYNOPSIS
     Counts the number of inter-forest trusts in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

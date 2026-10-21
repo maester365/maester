@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserNeverLoggedInCount {
+function Test-MtAdUserNeverLoggedInCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts that have never logged on.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

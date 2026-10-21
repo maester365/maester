@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDisabledCount {
+function Test-MtAdComputerDisabledCount {
     <#
     .SYNOPSIS
     Counts the number of disabled computer objects in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

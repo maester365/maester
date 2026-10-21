@@ -1,4 +1,4 @@
-﻿function Test-MtAdSchemaModificationYearDetails {
+function Test-MtAdSchemaModificationYearDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of Active Directory schema modifications by year.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Schema/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

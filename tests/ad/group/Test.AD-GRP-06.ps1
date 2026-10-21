@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupDistributionCount {
+function Test-MtAdGroupDistributionCount {
     <#
     .SYNOPSIS
     Counts the number of distribution groups in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

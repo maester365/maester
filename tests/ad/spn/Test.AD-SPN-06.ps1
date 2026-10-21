@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnTotalCount {
+function Test-MtAdUserSpnTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of SPNs configured on user accounts.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

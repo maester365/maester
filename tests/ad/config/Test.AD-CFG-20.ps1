@@ -1,4 +1,4 @@
-﻿function Test-MtAdCrlDistributionPointsCount {
+function Test-MtAdCrlDistributionPointsCount {
     <#
     .SYNOPSIS
     Counts the CRL distribution points configured in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

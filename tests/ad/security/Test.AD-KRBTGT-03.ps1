@@ -1,4 +1,4 @@
-﻿function Test-MtAdKrbtgtNonStandardUacCount {
+function Test-MtAdKrbtgtNonStandardUacCount {
     <#
     .SYNOPSIS
     Checks if the KRBTGT account has non-standard User Account Control (UAC) settings.
@@ -39,6 +39,7 @@
         Mitre = 'T1098',
         Control = 'nist-800-53-r5:CM-6',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsReverseZoneCount {
+function Test-MtAdDnsReverseZoneCount {
     <#
     .SYNOPSIS
     Counts reverse lookup DNS zones.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

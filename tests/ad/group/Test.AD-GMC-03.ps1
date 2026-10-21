@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberAccountTypeDetails {
+function Test-MtAdGroupMemberAccountTypeDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of member account types across Active Directory groups.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

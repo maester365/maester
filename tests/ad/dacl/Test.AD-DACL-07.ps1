@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclDistinctIdentityCount {
+function Test-MtAdDaclDistinctIdentityCount {
     <#
     .SYNOPSIS
     Counts distinct identities referenced by DACL ACEs.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

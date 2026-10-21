@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserPasswordNotRequiredCount {
+function Test-MtAdUserPasswordNotRequiredCount {
     <#
     .SYNOPSIS
     Counts user accounts where a password is not required.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

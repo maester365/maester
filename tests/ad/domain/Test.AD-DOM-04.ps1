@@ -1,4 +1,4 @@
-﻿function Test-MtAdRidsRemaining {
+function Test-MtAdRidsRemaining {
     <#
     .SYNOPSIS
     Retrieves the number of remaining RIDs (Relative Identifiers) in the domain.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.rIDAvailablePool:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

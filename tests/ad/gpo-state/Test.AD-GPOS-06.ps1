@@ -1,4 +1,4 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
+<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoUserSettingsDisabledDetails {
     <#
     .SYNOPSIS
@@ -34,6 +34,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

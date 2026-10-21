@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDormantCount {
+function Test-MtAdComputerDormantCount {
     <#
     .SYNOPSIS
     Counts the number of dormant computer objects in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

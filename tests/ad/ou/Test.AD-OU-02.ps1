@@ -1,4 +1,4 @@
-﻿function Test-MtAdOuAtDomainRootCount {
+function Test-MtAdOuAtDomainRootCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units at the domain root level in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.distinguishedName:ReadProperty', 'ActiveDirectory:Ldap:organizationalUnit:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

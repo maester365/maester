@@ -1,4 +1,4 @@
-﻿function Test-MtAdUpnSuffixesCount {
+function Test-MtAdUpnSuffixesCount {
     <#
     .SYNOPSIS
     Retrieves the count of UPN (User Principal Name) suffixes configured in the forest.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

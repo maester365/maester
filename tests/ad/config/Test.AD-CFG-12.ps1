@@ -1,4 +1,4 @@
-﻿function Test-MtAdEnterpriseCaCount {
+function Test-MtAdEnterpriseCaCount {
     <#
     .SYNOPSIS
     Counts the number of Enterprise certificate authorities configured in Active Directory.
@@ -23,6 +23,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

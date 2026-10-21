@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerSpnNonFqdnHosts {
+function Test-MtAdComputerSpnNonFqdnHosts {
     <#
     .SYNOPSIS
     Counts computer SPNs with hosts that do not use fully qualified domain names (FQDN).
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

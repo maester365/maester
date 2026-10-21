@@ -1,4 +1,4 @@
-﻿function Test-MtAdRecycleBinEnabledPaths {
+function Test-MtAdRecycleBinEnabledPaths {
     <#
     .SYNOPSIS
     Counts Active Directory paths where the Recycle Bin is enabled.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

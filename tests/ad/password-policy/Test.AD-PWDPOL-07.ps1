@@ -1,4 +1,4 @@
-﻿function Test-MtAdAccountLockoutThreshold {
+function Test-MtAdAccountLockoutThreshold {
     <#
     .SYNOPSIS
     Checks the account lockout threshold configured in the default domain password policy.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.lockoutThreshold:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

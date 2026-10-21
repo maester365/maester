@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsRootServerIncorrectCount {
+function Test-MtAdDnsRootServerIncorrectCount {
     <#
     .SYNOPSIS
     Counts root DNS servers with incorrect IP addresses.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

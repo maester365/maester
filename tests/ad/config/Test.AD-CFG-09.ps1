@@ -1,4 +1,4 @@
-﻿function Test-MtAdAdActivationObjectsCount {
+function Test-MtAdAdActivationObjectsCount {
     <#
     .SYNOPSIS
     Counts Active Directory activation objects from configuration.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

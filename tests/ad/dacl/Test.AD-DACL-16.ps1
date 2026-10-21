@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclUnresolvedSidDetails {
+function Test-MtAdDaclUnresolvedSidDetails {
     <#
     .SYNOPSIS
     Returns unresolved SID details from Active Directory DACL entries.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
