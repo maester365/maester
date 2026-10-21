@@ -20,7 +20,7 @@
         Title = 'Ensure DLP policies are published for Copilot users',
         Product = 'purview',
         Feature = 'data-loss-prevention',
-        Area = 'ai',
+        Area = 'data-protection',
         ResourceType = 'Tenant',
         Severity = 'Medium',
         UserImpact = 'Low',

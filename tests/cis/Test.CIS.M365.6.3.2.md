@@ -7,7 +7,7 @@ Disabling the setting prevents users from adding the accounts in Outlook on the 
 #### Remediation action
 
 1. Connect to Exchange Online with `Connect-ExchangeOnline`.
-2. Run `Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -PersonalAccountsEnabled $false -PersonalAccountCalendarsEnabled $false`. The test checks only the default policy, so also run the same command for each custom policy that users are assigned and that `Get-OwaMailboxPolicy` lists.
+2. Run `Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -PersonalAccountsEnabled $false -PersonalAccountCalendarsEnabled $false`. CIS requires this setting only on the default policy; this test does not evaluate custom policies. If you want the same protection for users assigned to a custom policy, configure that policy separately.
 3. Check the setting with `Get-OwaMailboxPolicy | Format-List Identity, IsDefault, PersonalAccountsEnabled, PersonalAccountCalendarsEnabled`.
 
 #### Related links
