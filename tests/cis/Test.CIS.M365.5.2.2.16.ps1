@@ -4,10 +4,10 @@
         Checks that a Conditional Access policy enforces token protection for Exchange, SharePoint and Teams on Windows.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy requires token protection (secure sign-in session) for Exchange Online, SharePoint Online and Microsoft Teams, on Windows desktop clients.
+        Checks that at least one enabled Conditional Access policy requires token protection (secure sign-in session) for Exchange Online, SharePoint Online and Microsoft Teams on Windows desktop clients, with a user scope other than None.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.16, L2)
 
-       Checks that at least one enabled Conditional Access policy has a user scope other than None and requires token protection (secure sign-in session) for Exchange Online, SharePoint Online and Microsoft Teams on Windows desktop clients.
+    .EXAMPLE
         Test-MtCisTokenProtection
 
         Returns true if an enabled policy enforces token protection for the required apps on Windows with a non-empty user scope.

@@ -4,10 +4,10 @@
         Checks that a Conditional Access policy blocks sign-ins from locations outside the trusted and country named locations.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy blocks access for all users and all cloud apps, where either all locations are included and every excluded location is a trusted or country named location, or only country named locations are included. Country named locations cannot be marked as trusted, so they are accepted as exclusions.
+        Checks that at least one enabled Conditional Access policy blocks access for all users and all cloud apps, includes either all locations or only country named locations, and excludes AllTrusted or at least one trusted IP named location. A country-only policy also needs this trusted-location exclusion.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.15, L2)
 
-       Checks that an enabled Conditional Access policy blocks access for all users and all cloud apps, includes all locations or only country named locations, and excludes AllTrusted or at least one trusted IP named location.
+    .EXAMPLE
         Test-MtCisGeographicAccessControls
 
         Returns true if an enabled policy blocks sign-ins from outside the trusted locations.

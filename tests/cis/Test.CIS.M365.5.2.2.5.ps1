@@ -4,10 +4,10 @@
         Checks that a Conditional Access policy requires the phishing-resistant authentication strength for the administrative roles.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy requires an authentication strength made of exactly the phishing-resistant methods (Windows Hello for Business, FIDO2 security key and certificate-based authentication) for the administrative roles in all cloud apps.
+        Checks that at least one enabled Conditional Access policy requires an authentication strength for the administrative roles in all cloud apps. Its allowed combinations must be a non-empty subset of Windows Hello for Business, FIDO2 security key and certificate-based authentication methods.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.5, L2)
 
-       Checks that at least one enabled Conditional Access policy requires an authentication strength whose allowed combinations contain one or more phishing-resistant methods and no other methods for the administrative roles in all cloud apps.
+    .EXAMPLE
         Test-MtCisPhishingResistantMfaForAdministrators
 
         Returns true if an enabled policy requires phishing-resistant MFA for the administrative roles.

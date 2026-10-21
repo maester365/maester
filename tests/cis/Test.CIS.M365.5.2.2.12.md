@@ -2,7 +2,7 @@
 
 In device code phishing, an attacker starts a device code sign-in and tricks the victim into entering the code on the genuine Microsoft sign-in page. The victim completes MFA and the attacker receives valid tokens. The flow exists for devices without a keyboard, which most organisations do not use.
 
-Blocking the flow removes the technique. A device filter or other narrowing condition is reported by this check. User and group exclusions are not evaluated, and application exclusions are not evaluated when the policy targets all apps; document and review such exclusions separately.
+Blocking the flow removes the technique. A device filter or an excluded role other than the two directory synchronization roles is reported by this check. User and group exclusions are not evaluated, and application exclusions are not evaluated when the policy targets all apps; document and review such exclusions separately.
 
 #### Remediation action
 
