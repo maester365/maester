@@ -39,7 +39,7 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
-        Mitre = ('T1110', 'T1111'),
+        Mitre = ('T1110.001'),
         Control = ('nist-800-53-r5:IA-5', 'nist-800-53-r5:AC-19'),
         Service = 'Graph',
         License = 'INTUNE_A',

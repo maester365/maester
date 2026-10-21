@@ -43,7 +43,7 @@
         Area = 'devices',
         ResourceType = 'Tenant',
         Severity = 'Low',
-        UserImpact = 'High',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Control = ('nist-800-53-r5:AC-19', 'nist-800-53-r5:CM-6'),

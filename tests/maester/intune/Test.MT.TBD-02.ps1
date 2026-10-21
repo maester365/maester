@@ -56,7 +56,7 @@
         Feature = 'device-compliance',
         Area = 'devices',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = ('T1110', 'T1111'),
