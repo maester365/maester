@@ -53,7 +53,21 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | (L1) Ensure the admin consent workflow is enabled | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | (L1) Ensure that guest user access is restricted | Medium | Entra ID | External identities |
+| [CIS.M365.5.2.3.1](./CIS.M365.5.2.3.1.md) | (L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue | Medium | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.2](./CIS.M365.5.2.3.2.md) | (L1) Ensure custom banned passwords lists are used | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.3](./CIS.M365.5.2.3.3.md) | (L1) Ensure password protection is enabled for on-prem Active Directory | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.4](./CIS.M365.5.2.3.4.md) | (L1) Ensure all member users are 'MFA capable' | High | Entra ID | Authentication methods |
 | [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5.md) | (L1) Ensure weak authentication methods are disabled | High | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.6](./CIS.M365.5.2.3.6.md) | (L1) Ensure system-preferred multifactor authentication is enabled | Low | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.7](./CIS.M365.5.2.3.7.md) | (L2) Ensure the email OTP authentication method is disabled | Medium | Entra ID | Authentication methods |
+| [CIS.M365.5.2.3.8](./CIS.M365.5.2.3.8.md) | (L1) Ensure that Account 'Lockout threshold' is '10' or less | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.9](./CIS.M365.5.2.3.9.md) | (L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds | Medium | Entra ID | Password protection |
+| [CIS.M365.5.2.3.10](./CIS.M365.5.2.3.10.md) | (L1) Ensure Microsoft Authenticator on companion applications is disabled | Low | Entra ID | Authentication methods |
+| [CIS.M365.5.3.1](./CIS.M365.5.3.1.md) | (L2) Ensure privileged role assignments are activated and not assigned | High | Entra ID | Privileged Identity Management |
+| [CIS.M365.5.3.2](./CIS.M365.5.3.2.md) | (L1) Ensure 'Access reviews' for guest users are configured | Medium | Entra ID | Identity Governance |
+| [CIS.M365.5.3.3](./CIS.M365.5.3.3.md) | (L1) Ensure 'Access reviews' for privileged roles are configured | Medium | Entra ID | Identity Governance |
+| [CIS.M365.5.3.4](./CIS.M365.5.3.4.md) | (L1) Ensure approval is required for Global Administrator role activation | Medium | Entra ID | Privileged Identity Management |
+| [CIS.M365.5.3.5](./CIS.M365.5.3.5.md) | (L1) Ensure approval is required for Privileged Role Administrator activation | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3.md) | (L2) Ensure additional storage providers are restricted in Outlook on the web | Medium | Exchange Online | Outlook |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2.md) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.5](./CIS.M365.7.2.5.md) | (L2) Ensure that SharePoint guest users cannot share items they don't own | Medium | SharePoint | External sharing |
