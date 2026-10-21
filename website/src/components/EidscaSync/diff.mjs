@@ -185,8 +185,11 @@ export function kindLabel(kind) {
   return KIND_LABEL[kind] ?? kind;
 }
 
+// A value as plain text in a Markdown table cell, with the backslash and the other Markdown characters escaped.
 function escapeCell(value) {
-  return formatValue(value).replace(/\|/g, "\\|").replace(/\n+/g, " ").slice(0, 300);
+  const text = formatValue(value).replace(/\s+/g, " ");
+  const short = text.length > 300 ? `${text.slice(0, 300)}…` : text;
+  return short.replace(/[\\`*_[\]<>|]/g, "\\$&");
 }
 
 // The Markdown body of the sync issue.
@@ -208,7 +211,7 @@ export function renderIssueMarkdown(differences, { checkedAt, workflowUrl } = {}
   ];
   for (const d of differences) {
     const details = d.changes
-      ? d.changes.map((c) => `**${c.field}**: \`${escapeCell(c.repo)}\` → \`${escapeCell(c.upstream)}\``).join("<br>")
+      ? d.changes.map((c) => `**${c.field}**: ${escapeCell(c.repo)} → ${escapeCell(c.upstream)}`).join("<br>")
       : escapeCell(d.title);
     lines.push(`| ${d.id} | ${kindLabel(d.kind)} | ${details} | ${d.action} |`);
   }
