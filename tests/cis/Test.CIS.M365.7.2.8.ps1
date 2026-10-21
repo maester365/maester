@@ -4,7 +4,7 @@
         Ensure external sharing is restricted by security group
 
     .DESCRIPTION
-        Checks that only members of specific security groups can share SharePoint and OneDrive content externally, or that external sharing is disabled. The test passes when SharingCapability is Disabled or either WhoCanShareAuthenticatedGuestAllowList or WhoCanShareAnonymousAllowList contains at least one group, because groups in the anonymous list can also share with authenticated guests. The legacy guest sharing group list is reported for information only.
+        Checks that only members of a security group can share SharePoint and OneDrive content with authenticated guests, or that external sharing is disabled. The test passes when SharingCapability is Disabled or WhoCanShareAuthenticatedGuestAllowList contains at least one group. A group in WhoCanShareAnonymousAllowList alone does not satisfy this control because that list permits anonymous sharing. The legacy guest sharing group list is reported for information only.
 
     .EXAMPLE
         Test-MtCisSpoSharingSecurityGroup
@@ -36,32 +36,36 @@
     Write-Verbose 'Test-MtCisSpoSharingSecurityGroup: Checking the sharing capability and the security groups that can share externally'
     $spoTenant = Get-MtSpo
     $sharingCapability = $spoTenant.SharingCapability
-    # The admin center stores the groups in the two WhoCanShare lists. Groups in the anonymous list can share with Anyone and with authenticated guests, so either list restricts external sharing.
+    # The authenticated-guest list restricts sharing to its groups. The anonymous list permits Anyone links and is informational for this control.
     # The older guest sharing group list is read for information only. An empty value counts as not set.
-    $allowListSettings = 'WhoCanShareAuthenticatedGuestAllowList', 'WhoCanShareAnonymousAllowList'
-    $groupSettings = $allowListSettings + 'GuestSharingGroupAllowListInTenantByPrincipalIdentity'
+    $authenticatedGuestAllowList = 'WhoCanShareAuthenticatedGuestAllowList'
+    $groupSettings = @(
+        $authenticatedGuestAllowList
+        'WhoCanShareAnonymousAllowList'
+        'GuestSharingGroupAllowListInTenantByPrincipalIdentity'
+    )
     $groups = [ordered]@{}
     foreach ($name in $groupSettings) {
         $value = if ($spoTenant.PSObject.Properties[$name]) { $spoTenant.$name } else { $null }
         $groups[$name] = @($value | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
     }
-    $hasAllowListGroup = @($allowListSettings | Where-Object { $groups[$_].Count -gt 0 }).Count -gt 0
+    $hasAuthenticatedGuestAllowListGroup = $groups[$authenticatedGuestAllowList].Count -gt 0
     $isDisabled = $sharingCapability -eq 'Disabled'
-    $testResult = $isDisabled -or $hasAllowListGroup
+    $testResult = $isDisabled -or $hasAuthenticatedGuestAllowListGroup
 
     $displayCapability = if ($null -eq $sharingCapability) { 'Not found' } else { $sharingCapability }
     $capabilityStatus = if ($isDisabled) { 'Pass' } else { 'Info' }
     $resultMarkdown = if ($testResult) {
         "Well done. Only members of a security group can share externally, or external sharing is disabled.`n`n"
     } else {
-        "External sharing in SharePoint Online is not limited to members of a security group. At least one security group must be set in WhoCanShareAuthenticatedGuestAllowList or WhoCanShareAnonymousAllowList, or SharingCapability must be set to Disabled.`n`n"
+        "External sharing in SharePoint Online is not restricted to members of a security group in WhoCanShareAuthenticatedGuestAllowList. Set at least one group there, or set SharingCapability to Disabled.`n`n"
     }
     $resultMarkdown += "| Setting | Value | Result |`n"
     $resultMarkdown += "| --- | --- | --- |`n"
     $rows = @("| SharingCapability | $displayCapability | $capabilityStatus |")
     foreach ($name in $groupSettings) {
         $displayGroups = if ($groups[$name].Count -eq 0) { 'Not set' } else { $groups[$name] -join ', ' }
-        $rowStatus = if ($name -notin $allowListSettings) {
+        $rowStatus = if ($name -ne $authenticatedGuestAllowList) {
             'Info'
         } elseif ($groups[$name].Count -gt 0) {
             'Pass'

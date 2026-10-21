@@ -22,7 +22,7 @@
         Feature = 'meetings',
         Area = 'data-protection',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',

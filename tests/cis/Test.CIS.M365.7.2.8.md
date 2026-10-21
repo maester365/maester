@@ -9,10 +9,10 @@ Limiting external sharing to members of specific security groups means only the 
 3. Go to **Policies** > **Sharing**.
 4. Expand **More external sharing settings**.
 5. Select **Allow only users in specific security groups to share externally**, then select **Manage security groups**.
-6. Add the group (up to 12 groups can be added). Under **Can share with**, choose **Authenticated guests only** (the default) or **Anyone**.
+6. Add the group (up to 12 groups can be added). Under **Can share with**, choose **Authenticated guests only**.
 7. Select **Save**.
 
-To apply the setting with PowerShell, connect with `Connect-PnPOnline -Url https://<tenant>-admin.sharepoint.com -Interactive` and run the following, replacing the placeholder with the object ID of your security group. The list you pass replaces the current one. If the group may also share Anyone links, use -WhoCanShareAnonymousAllowList instead. Groups in that list can share with both Anyone and authenticated guests, so either list satisfies this control.
+To apply the setting with PowerShell, connect with `Connect-PnPOnline -Url https://<tenant>-admin.sharepoint.com -Interactive` and run the following, replacing the placeholder with the object ID of your security group. The list you pass replaces the current one. A group configured only in `WhoCanShareAnonymousAllowList` does not satisfy this control because that list permits Anyone links.
 
 ```powershell
 Set-PnPTenant -WhoCanShareAuthenticatedGuestAllowList '<group object id>'
