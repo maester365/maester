@@ -8,7 +8,7 @@
     the tenant can let a privileged user transfer their resources to an external tenant.
     #>
     [MaesterTest(
-        Id                 = 'MT.1226',
+        Id                 = 'MT.1227',
         Title              = 'Subscriptions should be blocked from leaving the tenant',
         Product            = 'azure',
         Feature            = 'subscriptions',
