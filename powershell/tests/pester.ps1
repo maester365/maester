@@ -22,11 +22,16 @@
     [switch]
     $Coverage,
 
-    # How many test files run at the same time, each in its own pwsh process. The default is half the
-    # processor count, at most 4. Each process needs about 0.5 to 1 GB of memory, so lower this on a small VM.
+    # How many pwsh processes run test files at the same time. The default is half the processor count,
+    # at most 4. Each process needs up to about 1 GB of memory, so use 1 on a small VM.
     [ValidateRange(1, 64)]
     [int]
-    $ThrottleLimit = [Math]::Max(1, [Math]::Min(4, [int][Math]::Floor([Environment]::ProcessorCount / 2))),
+    $ThrottleLimit = [Math]::Max(1, [Math]::Min(4, [int][Math]::Ceiling([Environment]::ProcessorCount / 2))),
+
+    # How many test files each pwsh process runs before it exits and frees its memory.
+    [ValidateRange(1, 1000)]
+    [int]
+    $FilesPerProcess = 8,
 
     # Runs every test file in this process, as pester.ps1 used to. Useful when debugging a test,
     # but each file that re-imports the module keeps another copy of it in memory (about 60 MB each).
@@ -154,40 +159,51 @@ if ($testFiles.Count -eq 0) {
 } else {
     #region One Invoke-Pester per test file
     $runner = Join-Path $PSScriptRoot 'helpers/Invoke-PesterTestFile.ps1'
-    $runnerArguments = @{ Verbosity = $Output }
+    $runnerArguments = @{ ResultFolder = $resultRoot; Verbosity = $Output }
 
     if ($InProcess) {
         Write-PSFMessage -Level Important -Message "Running $($testFiles.Count) test files in this process"
         $runs = foreach ($file in $testFiles) {
             Write-PSFMessage -Level Significant -Message "  Executing <c='em'>$($file.Name)</c>"
             [pscustomobject]@{
-                File    = $file
-                Summary = & $runner -Path $file.FullName -ResultPath (Join-Path $resultRoot "TEST-$($file.BaseName).xml") @runnerArguments
-                Output  = @()
+                Files     = @($file)
+                Summaries = @(& $runner -Path $file.FullName @runnerArguments)
+                Output    = @()
             }
         }
     } else {
-        Write-PSFMessage -Level Important -Message "Running $($testFiles.Count) test files, $ThrottleLimit at a time, each in its own pwsh process"
+        # Starting pwsh and importing the module and Pester takes about four seconds, so each process runs a
+        # batch of files. A batch of eight re-imports the module at most eight times, which keeps a process
+        # under about 1 GB.
+        $batches = [System.Collections.Generic.List[object]]::new()
+        for ($i = 0; $i -lt $testFiles.Count; $i += $FilesPerProcess) {
+            $batches.Add(@($testFiles[$i..([Math]::Min($i + $FilesPerProcess, $testFiles.Count) - 1)]))
+        }
+        Write-PSFMessage -Level Important -Message "Running $($testFiles.Count) test files in $($batches.Count) pwsh processes, $ThrottleLimit at a time"
         $pwsh = (Get-Process -Id $PID).Path
-        $runs = $testFiles | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
-            $file = $_
+        $runs = $batches | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
+            $files = $_
             $summaryPath = Join-Path ([System.IO.Path]::GetTempPath()) "maester-unit-$([guid]::NewGuid().ToString('n')).json"
-            $resultPath = Join-Path $using:resultRoot "TEST-$($file.BaseName).xml"
             $runnerArguments = $using:runnerArguments
-            $output = @(& $using:pwsh -NoProfile -NonInteractive -File $using:runner -Path $file.FullName -ResultPath $resultPath -SummaryPath $summaryPath @runnerArguments 2>&1 | ForEach-Object { "$_" })
-            $summary = $null
+            $output = @(& $using:pwsh -NoProfile -NonInteractive -File $using:runner -Path ($files.FullName -join '|') -SummaryPath $summaryPath @runnerArguments 2>&1 | ForEach-Object { "$_" })
+            $summaries = @()
             if (Test-Path -LiteralPath $summaryPath) {
-                $summary = Get-Content -LiteralPath $summaryPath -Raw | ConvertFrom-Json
+                $summaries = @(Get-Content -LiteralPath $summaryPath -Raw | ConvertFrom-Json)
                 Remove-Item -LiteralPath $summaryPath -Force
             }
-            [pscustomobject]@{ File = $file; Summary = $summary; Output = $output }
+            [pscustomobject]@{ Files = $files; Summaries = $summaries; Output = $output }
         } | ForEach-Object {
-            # Reported as each file finishes, so the console shows progress while the others run.
+            # Reported as each batch finishes, so the console shows progress while the others run.
             $run = $_
-            $state = if (-not $run.Summary) { 'crashed' } elseif ($run.Summary.FailedCount) { "$($run.Summary.FailedCount) failed" } else { 'passed' }
-            $seconds = if ($run.Summary) { '{0:n1}s' -f $run.Summary.Duration } else { '' }
-            Write-PSFMessage -Level Significant -Message "  Executed <c='em'>$($run.File.Name)</c> $seconds $state"
-            if ($run.Output -and ($Output -ne 'None' -or -not $run.Summary)) {
+            foreach ($summary in $run.Summaries) {
+                $state = if ($summary.FailedCount) { "$($summary.FailedCount) failed" } else { 'passed' }
+                Write-PSFMessage -Level Significant -Message ("  Executed <c='em'>{0}</c> {1:n1}s {2}" -f (Split-Path -Leaf $summary.Path), $summary.Duration, $state)
+            }
+            $crashed = $run.Summaries.Count -lt $run.Files.Count
+            if ($crashed) {
+                Write-PSFMessage -Level Warning -Message "  The pwsh process running $($run.Files.Name -join ', ') ended before Pester finished"
+            }
+            if ($run.Output -and ($Output -ne 'None' -or $crashed)) {
                 $run.Output | Out-Host
             }
             $run
@@ -195,21 +211,23 @@ if ($testFiles.Count -eq 0) {
     }
 
     foreach ($run in $runs) {
-        if (-not $run.Summary) {
-            # The process ended without writing its summary, so the file did not finish.
+        if ($run.Summaries.Count -lt $run.Files.Count) {
+            # The process ended without writing its summaries, so the files of its batch did not finish.
             $totalFailed++
             $null = $testresults.Add([pscustomobject]@{
-                Block   = $run.File.Name
+                Block   = $run.Files.Name -join ', '
                 Name    = 'Test file run'
                 Result  = 'Failed'
-                Message = "The pwsh process running this file ended before Pester finished. Its output:`n$(($run.Output | Select-Object -Last 40) -join "`n")"
+                Message = "The pwsh process running these files ended before Pester finished. Its output:`n$(($run.Output | Select-Object -Last 40) -join "`n")"
             })
             continue
         }
-        $totalRun += $run.Summary.TotalCount
-        $totalFailed += $run.Summary.FailedCount
-        foreach ($failure in $run.Summary.Failures) { $null = $testresults.Add($failure) }
-        foreach ($text in $run.Summary.ScriptAnalyzerFailures) { $null = $scriptAnalyzerFailures.Add($text) }
+        foreach ($summary in $run.Summaries) {
+            $totalRun += $summary.TotalCount
+            $totalFailed += $summary.FailedCount
+            foreach ($failure in $summary.Failures) { $null = $testresults.Add($failure) }
+            foreach ($text in $summary.ScriptAnalyzerFailures) { $null = $scriptAnalyzerFailures.Add($text) }
+        }
     }
     #endregion One Invoke-Pester per test file
 }
