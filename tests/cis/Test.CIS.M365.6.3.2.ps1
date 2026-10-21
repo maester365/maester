@@ -20,7 +20,7 @@
         Title = 'Ensure the ability to add personal email accounts and calendars is disabled',
         Product = 'exchange',
         Feature = 'outlook',
-        Area = 'data-protection',
+        Area = 'external-access',
         ResourceType = 'Tenant',
         Severity = 'Low',
         UserImpact = 'Low',
