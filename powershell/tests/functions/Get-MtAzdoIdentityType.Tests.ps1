@@ -4,7 +4,7 @@
 
 Describe 'Get-MtAzdoIdentityType' {
     BeforeAll {
-        function New-TestJwt([hashtable] $Claims) {
+        function ConvertTo-TestJwt([hashtable] $Claims) {
             $json = $Claims | ConvertTo-Json -Compress
             $payload = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($json)).TrimEnd('=').Replace('+', '-').Replace('/', '_')
             "eyJhbGciOiJub25lIn0.$payload.signature"
@@ -14,10 +14,7 @@ Describe 'Get-MtAzdoIdentityType' {
             $script:Token = $null
             $script:Identity = $null
             function NewAzToken { @{ Token = $script:Token } }
-            function Set-FakeToken($Value) { $script:Token = $Value }
-            function Set-FakeIdentity($Value) { $script:Identity = $Value }
             function Get-ADOPSConnection { @{ Identity = $script:Identity } }
-            Export-ModuleMember -Function Set-FakeToken, Set-FakeIdentity, Get-ADOPSConnection
         } | Import-Module -PassThru -Force
     }
 
@@ -31,7 +28,7 @@ Describe 'Get-MtAzdoIdentityType' {
         @{ Name = 'scp without idtyp'; Claims = @{ scp = 'user_impersonation' }; Expected = 'User' }
         @{ Name = 'neither idtyp nor scp'; Claims = @{ oid = '00000000-0000-0000-0000-000000000000' }; Expected = 'ServicePrincipal' }
     ) {
-        Set-FakeToken (New-TestJwt $Claims)
+        & $script:FakeAdops { param($Value) $script:Token = $Value } (ConvertTo-TestJwt $Claims)
         InModuleScope Maester { Get-MtAzdoIdentityType } | Should -Be $Expected
     }
 
@@ -40,8 +37,7 @@ Describe 'Get-MtAzdoIdentityType' {
         @{ Identity = '00000000-0000-0000-0000-000000000000'; Expected = 'ServicePrincipal' }
         @{ Identity = $null; Expected = 'Unknown' }
     ) {
-        Set-FakeToken 'not-a-jwt'
-        Set-FakeIdentity $Identity
+        & $script:FakeAdops { param($Value) $script:Token = 'not-a-jwt'; $script:Identity = $Value } $Identity
         InModuleScope Maester { Get-MtAzdoIdentityType } | Should -Be $Expected
     }
 }
