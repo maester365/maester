@@ -42,7 +42,13 @@
     $passText = "Guest invitations are limited ($value)."
     $failText = "Guest invitations are not limited to administrators and Guest Inviters ($value)."
 
-    $checks = @([pscustomobject]@{ Setting = 'allowInvitesFrom'; Value = $(if ($value) { $value } else { 'Not found' }); Pass = $testResult })
+    $checks = @(
+        [pscustomobject]@{ 
+            Setting = 'allowInvitesFrom'
+            Value = $(if ($value) { $value } else { 'Not found' })
+            Pass = $testResult 
+        }
+    )
     $resultMd = "| Setting | Value | Result |`n"
     $resultMd += "| --- | --- | --- |`n"
     foreach ($check in $checks) {
