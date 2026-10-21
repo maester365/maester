@@ -1,4 +1,4 @@
-﻿function Test-MtCisUsersCannotCreateM365Groups {
+﻿function Test-MtCisUserCannotCreateM365Groups {
     <#
     .SYNOPSIS
         Checks that users cannot create Microsoft 365 groups.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.3.4, L2)
 
     .EXAMPLE
-        Test-MtCisUsersCannotCreateM365Groups
+        Test-MtCisUserCannotCreateM365Groups
 
         Returns true if users cannot create Microsoft 365 groups.
 

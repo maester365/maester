@@ -1,4 +1,4 @@
-﻿function Test-MtCisUsersCannotCreateSecurityGroups {
+﻿function Test-MtCisUserCannotCreateSecurityGroups {
     <#
     .SYNOPSIS
         Checks that non-admin users cannot create security groups.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.3.1, L1)
 
     .EXAMPLE
-        Test-MtCisUsersCannotCreateSecurityGroups
+        Test-MtCisUserCannotCreateSecurityGroups
 
         Returns true if default users cannot create security groups.
 
