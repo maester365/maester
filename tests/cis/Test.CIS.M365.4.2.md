@@ -1,17 +1,63 @@
-﻿The default Microsoft Intune enrollment restriction blocks personally owned devices, or blocks the whole platform, for every device platform.
+4.2 (L2) Ensure device enrollment for personally owned devices is blocked by default
 
-Personally owned devices are not under your control: they can carry malware, lack encryption or a screen lock and mix business and private data. When anyone can enrol one, it receives the same trust as a corporate device and can be used to reach company data.
+Device enrollment restrictions let you restrict devices from enrolling in Intune based on certain device attributes such as device limit, device platform, OS Version, manufacturer or device ownership (Personally owned devices).
 
-Blocking personal enrolment by default means only devices that IT has marked as corporate can enrol. Add exceptions through higher-priority restrictions assigned to specific groups, for example a bring-your-own-device pilot, rather than by opening the default.
+The recommended state is to **Block** personally owned devices from enrollment.
 
-#### Remediation action
+#### Rationale
 
-1. Sign in to the [Microsoft Intune admin center](https://intune.microsoft.com).
-2. Go to **Devices** > **Enrollment** > **Device platform restriction** and open the **Device type restrictions** tab.
-3. Select the **All Users** default restriction and then **Properties** > **Edit** next to **Platform settings**.
-4. For every platform, set **Personally owned** to **Block** (or block the platform if you do not support it).
-5. Select **Review + save**.
+Restricting the enrollment of personally owned devices prevents attackers who have bypassed other controls from registering a new device to gain an additional foothold, further hiding or obscuring their activities.
 
+An attack path could be:
+
+1. Account Compromise via Phishing and AiTM
+2. Conditional Access Bypass
+3. Reconnaissance using e.g. ROADrecon, GraphRunner or AADInternals
+4. Lateral Movement, Privilege Escalation or Persistence through a newly registered device enrolled in Intune
+
+#### Impact
+
+Per platform personally owned device enrollment impacts are listed below. It is important to test the changes to the defaults prior to moving into production and implementing this control.
+
+**Windows Devices**
+The following enrollment methods are authorized for corporate enrollment for Windows devices, any other enrollment method will be considered "Personal" and blocked:
+
+* The device enrolls through Windows Autopilot.
+* The device enrolls through GPO, or automatic enrollment from Configuration Manager for co-management.
+* The device enrolls through a bulk provisioning package.
+* The enrolling user is using a device enrollment manager account.
+
+**MacOS**
+By default, Intune classifies macOS devices as personally owned. To be classified as corporate-owned, a Mac must fulfill one of the following conditions:
+
+* Registered with a serial number.
+* Enrolled via Apple Automated Device Enrollment (ADE).
+
+**iOS/IPadOS devices**
+By default, Intune classifies iOS/iPadOS devices as personally owned. To be classified as corporate-owned, an iOS/iPadOS device must fulfill one of the following conditions:
+
+* Registered with a serial number or IMEI.
+* Enrolled by using Automated Device Enrollment (formerly Device Enrollment Program).
+
+**Android devices**
+By default, until you manually make changes in the admin center, your Android Enterprise work profile device settings and Android device administrator device settings are the same.
+
+If you block Android Enterprise work profile enrollment on personal devices, only corporate-owned devices can enroll with personally owned work profiles.
+
+#### Remediation
+
+1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com)
+2. Select **Devices** and then under **Device onboarding** click **Enrollment**
+3. Under Enrollment options select **Device platform restriction**.
+4. Inspect the policies listed under Device type restrictions
+
+* For the **Default** priority policy, click **All Users**.
+* Select **Properties**.
+
+5. Click **Edit** to change **Platform settings**.
+6. In the **Personally owned** column set each platform to **Block**.
+
+>Note: Blocking platforms that are not used in the organization is a more restrictive best practice and will also effectively block enrollment of personally owned devices for the selected platform, ensuring compliance for this recommendation.
 #### Related links
 
 * [Microsoft Intune admin center - Enrollment restrictions](https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/EnrollmentRestrictionsMenuBlade/~/overview)
