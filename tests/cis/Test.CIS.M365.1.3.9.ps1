@@ -20,7 +20,7 @@
         Title = 'Ensure shared bookings pages are restricted to select users',
         Product = 'microsoft-365',
         Feature = 'organization-settings',
-        Area = 'access-control',
+        Area = 'external-access',
         ResourceType = 'Tenant',
         Severity = 'Low',
         UserImpact = 'Low',
