@@ -69,6 +69,9 @@ function New-MtPack {
     if ((Test-Path -LiteralPath $Path) -and @(Get-ChildItem -LiteralPath $Path -Force).Count -gt 0) { throw "The folder '$Path' is not empty." }
 
     $service = "$Code.$pascal"
+    # The pack needs at least the Maester it was made with. A source checkout says 3.0.0 until a release sets the
+    # version, so a fixed '>=3.1' would make a new pack refuse to run on the build it was written against.
+    $moduleVersion = $ExecutionContext.SessionState.Module.Version
     $manifest = [ordered]@{
         Id              = $Id
         Name            = $Name
@@ -76,7 +79,7 @@ function New-MtPack {
         Version         = '0.1.0'
         Publisher       = $publisher
         License         = 'MIT'
-        RequiresMaester = '>=3.1'
+        RequiresMaester = ">=$($moduleVersion.Major).$($moduleVersion.Minor)"
         Code            = $Code
         Suites          = @('tests')
     }

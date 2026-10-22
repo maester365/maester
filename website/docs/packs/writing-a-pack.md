@@ -73,7 +73,7 @@ cooldown when it is published; any other release starts it when each user first 
 | --- | --- |
 | `Id` | `<publisher>.<name>` in lower case. The publisher is the GitHub user or organisation that owns the repository; a pack whose publisher is not the repository owner is refused. |
 | `Version` | A semantic version, such as `1.2.0`. |
-| `RequiresMaester` | The Maester versions the pack works with, such as `>=3.1 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. |
+| `RequiresMaester` | The Maester versions the pack works with, such as `>=3.1 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
 | `Code` | Two to five letters or digits, the start of every test ID of the publisher: `MP.CNT.1001`. Use one code for all your packs. Codes that look like Maester's suites, Microsoft products or well-known brands are reserved. |
 | `Suites` | Folders of native tests. Each needs a `suite.json` whose `Id` is the code or starts with it, such as `CNT.GoogleWorkspace`. |
 | `Helpers` | Folders of `.ps1` files that hold functions the tests call. |

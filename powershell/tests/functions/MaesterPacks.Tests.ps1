@@ -400,4 +400,15 @@ Describe 'New-MtPack' {
         $result.IsValid | Should -BeTrue -Because (@($result.Errors | ForEach-Object Message) -join ' ')
         $result.TestIds | Should -Be @('MP.FAB.1001')
     }
+
+    It 'asks for the Maester it was made with, so the new pack runs on that build' {
+        $path = Join-Path $TestDrive 'new-pack-version'
+        $null = New-MtPack -Path $path -Id fabrikam.version -Code FAB
+        $manifest = Get-Content -LiteralPath (Join-Path $path 'maester-pack.json') -Raw | ConvertFrom-Json
+        $version = (Get-Module Maester).Version
+        $manifest.RequiresMaester | Should -Be ">=$($version.Major).$($version.Minor)"
+        InModuleScope Maester -Parameters @{ Range = $manifest.RequiresMaester; Version = $version } {
+            Test-MtVersionRange -Range $Range -Version $Version | Should -BeTrue
+        }
+    }
 }
