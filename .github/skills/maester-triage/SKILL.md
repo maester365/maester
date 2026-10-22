@@ -7,6 +7,9 @@ description: >-
   maester365/maester, to re-check whether a PR is waiting on its author or a reviewer, or to
   find items that have no status. Covers the label families in .github/labels.json, how to
   choose each one from the diff, reviews and comments, and how to apply them with gh.
+metadata:
+  audience: "Maintainers and reviewers"
+  summary: "The label rubric for PRs, issues and discussions, and the steps for applying it."
 ---
 
 # Maester triage

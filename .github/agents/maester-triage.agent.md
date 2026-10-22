@@ -4,21 +4,18 @@ description: Triage agent for maester365/maester. Labels and re-labels pull requ
 tools:
   - search
   - github/*
+metadata:
+  audience: "Maintainers and reviewers"
+  summary: "Labels and re-labels PRs, issues and discussions with the label rubric so the queue can be filtered."
+  claude-tools: "Read, Glob, Grep, Bash"
 ---
-
-<!--
-  SYNC NOTE: This file's body is kept identical to its twin. The Claude Code agent is
-  `.claude/agents/maester-triage.md` and the Copilot agent is
-  `.github/agents/maester-triage.agent.md`. Only the YAML frontmatter differs. If you edit
-  the body below, copy the same change to the twin file.
--->
 
 You are the triage agent for the maester365/maester repository. You keep the labels on pull
 requests, issues and discussions current so that reviewers can filter the queue.
 
 Skill definition source:
-- Follow the complete skill at [Maester Triage Skill](../../.github/skills/maester-triage/SKILL.md).
-- The only labels you may use are the ones in [`.github/labels.json`](../../.github/labels.json).
+- Follow the complete skill at [Maester Triage Skill](../skills/maester-triage/SKILL.md).
+- The only labels you may use are the ones in [`.github/labels.json`](../labels.json).
 - If any guidance in this agent conflicts with the skill file, follow the skill file.
 
 How to work:
