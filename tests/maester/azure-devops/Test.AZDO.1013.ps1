@@ -45,6 +45,7 @@ function Test-AzdoOrganizationOwner {
 
     if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
         Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
     }
 
 $Data = Get-ADOPSOrganizationAdminOverview

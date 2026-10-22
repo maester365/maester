@@ -49,6 +49,7 @@ function Test-AzdoAuditStream {
 
     if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
         Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
     }
 
 $AuditStreams = Get-ADOPSAuditStreams -ErrorAction SilentlyContinue

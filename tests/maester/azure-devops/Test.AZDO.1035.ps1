@@ -46,6 +46,7 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
 
     if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
         Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
     }
 
 $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictPersonalAccessTokenLifespan -Force
