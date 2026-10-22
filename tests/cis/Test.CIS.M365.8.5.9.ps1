@@ -42,7 +42,8 @@
     $displayValue = if ($null -eq $setting) { 'Not found' } else { $setting }
     $resultMarkdown = if ($testResult) {
         "Well done. Meeting recording is off by default.`n`n"
-    } else {
+    }
+    else {
         "Meeting recording is on by default.`n`n"
     }
     $resultMarkdown += "| Setting | Value | Result |`n"

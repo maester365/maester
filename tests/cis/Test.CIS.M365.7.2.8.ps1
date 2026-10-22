@@ -57,7 +57,8 @@
     $capabilityStatus = if ($isDisabled) { 'Pass' } else { 'Info' }
     $resultMarkdown = if ($testResult) {
         "Well done. Only members of a security group can share externally, or external sharing is disabled.`n`n"
-    } else {
+    }
+    else {
         "External sharing in SharePoint Online is not restricted to members of a security group in WhoCanShareAuthenticatedGuestAllowList. Set at least one group there, or set SharingCapability to Disabled.`n`n"
     }
     $resultMarkdown += "| Setting | Value | Result |`n"
@@ -67,11 +68,14 @@
         $displayGroups = if ($groups[$name].Count -eq 0) { 'Not set' } else { $groups[$name] -join ', ' }
         $rowStatus = if ($name -ne $authenticatedGuestAllowList) {
             'Info'
-        } elseif ($groups[$name].Count -gt 0) {
+        }
+        elseif ($groups[$name].Count -gt 0) {
             'Pass'
-        } elseif ($testResult) {
+        }
+        elseif ($testResult) {
             'Not required'
-        } else {
+        }
+        else {
             'Fail'
         }
         $rows += "| $name | $displayGroups | $rowStatus |"

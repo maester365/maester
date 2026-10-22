@@ -26,6 +26,14 @@
 
     $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq 'Global' }
 
+    if (-not $TeamsMeetingPolicyGlobal) {
+        # Without this guard the negation below turns a missing policy into a pass, because
+        # -not $null is $true. MT.1045 makes the same call for the same source: "2.x failed
+        # this test when no Global Teams Meeting Policy exists."
+        Add-MtTestResultDetail -Result 'No Global Teams meeting policy was returned, so the participant give and request control setting could not be read.'
+        return $false
+    }
+
     $result = -not $TeamsMeetingPolicyGlobal.AllowParticipantGiveRequestControl
     Write-Verbose "Test-MtTeamsRestrictParticipantGiveRequestControl: $result"
     if ($result) {

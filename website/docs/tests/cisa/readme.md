@@ -25,7 +25,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.3.1](./CISA.MS.AAD.3.1.md) | Phishing-resistant MFA SHALL be enforced for all users. | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.3.2](./CISA.MS.AAD.3.2.md) | If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users. | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.3.3](./CISA.MS.AAD.3.3.md) | If Microsoft Authenticator is enabled, it SHALL be configured to show login context information. | Medium | Entra ID | Authentication methods |
-| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4.md) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | High | Entra ID | Authentication methods |
+| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4.md) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5.md) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6.md) | Phishing-resistant MFA SHALL be required for highly privileged roles. | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7.md) | Managed devices SHOULD be required for authentication. | High | Entra ID | Conditional Access |
@@ -41,7 +41,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3.md) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | High | Entra ID | Roles and administrators |
 | [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4.md) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | High | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5.md) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | High | Entra ID | Privileged Identity Management |
-| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | High | Entra ID | Privileged Identity Management |
+| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7.md) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8.md) | User activation of the Global Administrator role SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9.md) | User activation of other highly privileged roles SHOULD trigger an alert. | Medium | Entra ID | Privileged Identity Management |
