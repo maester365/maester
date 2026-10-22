@@ -68,4 +68,6 @@ function Disconnect-Maester {
       Write-Verbose -Message "Disconnecting from GitHub."
       Disconnect-MtGitHub
    }
+
+   $__MtSession.ConnectionSummary = @()
 }
