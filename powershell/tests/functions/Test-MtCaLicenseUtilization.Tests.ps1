@@ -5,6 +5,7 @@ Describe 'Test-MtCaLicenseUtilization' {
         Use-MtModuleFunction -Name Test-MtCaLicenseUtilization
 
         function New-LicenseInsight {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [int]$EntitledP1 = 0,
                 [int]$EntitledP2 = 0,
@@ -26,6 +27,7 @@ Describe 'Test-MtCaLicenseUtilization' {
         }
 
         function New-CaPolicy {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [string]$DisplayName,
                 [string]$State = 'enabled',
@@ -55,7 +57,7 @@ Describe 'Test-MtCaLicenseUtilization' {
         $script:GraphObjects = $null
         Mock -ModuleName Maester Get-MtTotalEntraIdUserCount { return 100 }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Description, $Result, $GraphObjects, $GraphObjectType)
+            param($Result, $GraphObjects)
             $script:Result = $Result
             $script:GraphObjects = $GraphObjects
         }
@@ -94,6 +96,7 @@ Describe 'Test-MtCaLicenseUtilization' {
             $script:Result | Should -BeLike '*12** more users are using Entra ID P2 features*'
             $script:Result | Should -BeLike '*LicenseUtilization*'
             $script:Result | Should -BeLike '*%TestResult%*'
+            $script:Result | Should -BeLike '*previous month*'
             @($script:GraphObjects).displayName | Should -Be @('Sign-in risk', 'User risk report-only')
         }
 
@@ -104,6 +107,17 @@ Describe 'Test-MtCaLicenseUtilization' {
             Test-MtCaLicenseUtilization -License P2 | Out-Null
 
             $script:Result | Should -BeLike '*more users are using*'
+            $script:Result | Should -Not -BeLike '*%TestResult%*'
+            $script:GraphObjects | Should -BeNullOrEmpty
+        }
+        It 'Still reports the gap when the policies cannot be read' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest { New-LicenseInsight -EntitledP2 10 -P2Users 22 }
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { throw 'Forbidden' }
+
+            $report = Test-MtCaLicenseUtilization -License P2
+
+            $report.TotalLicensesUtilized | Should -Be 22
+            $script:Result | Should -BeLike '*12** more users are using Entra ID P2 features*'
             $script:Result | Should -Not -BeLike '*%TestResult%*'
             $script:GraphObjects | Should -BeNullOrEmpty
         }

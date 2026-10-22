@@ -76,14 +76,21 @@
         if ($License -eq 'P2') {
             # Risk-based Conditional Access is the P2 feature the report counts.
             # Measure-Object counts a missing property as 0, where @($null).Count would be 1.
-            $riskPolicies = @(Get-MtConditionalAccessPolicy | Where-Object {
-                    $_.state -ne 'disabled' -and (
-                        ($_.conditions.signInRiskLevels | Measure-Object).Count -gt 0 -or
-                        ($_.conditions.userRiskLevels | Measure-Object).Count -gt 0
-                    )
-                })
+            # The policy list is extra detail, so a failure to read policies must not hide the overage.
+            try {
+                $riskPolicies = @(Get-MtConditionalAccessPolicy | Where-Object {
+                        $_.state -ne 'disabled' -and (
+                            ($_.conditions.signInRiskLevels | Measure-Object).Count -gt 0 -or
+                            ($_.conditions.userRiskLevels | Measure-Object).Count -gt 0
+                        )
+                    })
+            } catch {
+                Write-Verbose -Message "Could not read Conditional Access policies: $($_.Exception.Message)"
+                $riskPolicies = @()
+            }
             if ($riskPolicies.Count -gt 0) {
-                $testResult += "`n`nThese Conditional Access policies use sign-in risk or user risk. Every user they cover needs Entra ID P2:`n`n%TestResult%"
+                # The usage count covers the previous month; this list is the current policies.
+                $testResult += "`n`nThese Conditional Access policies currently use sign-in risk or user risk, so every user they cover needs Entra ID P2. The usage count is for the previous month, so a policy changed since then may not match it:`n`n%TestResult%"
             }
         }
     }
