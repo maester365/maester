@@ -40,13 +40,15 @@
 
     $report = foreach ($policy in $policies) {
         $isCopilot = @($policy.EnforcementPlanes) -contains 'CopilotExperiences'
-        $allUsers = @($policy.LocationInclusions.ImmutableIdentity) -contains 'All'
+        $locationExclusions = @($policy.LocationExclusions | Where-Object { $_ })
+        $allUsers = @($policy.LocationInclusions.ImmutableIdentity) -contains 'All' -and $locationExclusions.Count -eq 0
         $unitScoped = @($policy.PolicyRBACScopes | Where-Object { $_ }).Count -gt 0
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
             Copilot = $isCopilot
             AllUsers = $allUsers
+            Exclusions = $locationExclusions.Count
             Pass = $isCopilot -and $policy.Mode -eq 'Enable' -and $allUsers -and -not $unitScoped
         }
     }
@@ -55,10 +57,10 @@
     $passText = 'A data loss prevention policy for Microsoft 365 Copilot is enabled for all users.'
     $failText = 'No enabled data loss prevention policy applies to Microsoft 365 Copilot for all users.'
 
-    $resultMd = "| Policy | Mode | Copilot location | All users | Result |`n"
-    $resultMd += "| --- | --- | --- | --- | --- |`n"
+    $resultMd = "| Policy | Mode | Copilot location | All users | Exclusions | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.Mode) | $($row.Copilot) | $($row.AllUsers) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Name) | $($row.Mode) | $($row.Copilot) | $($row.AllUsers) | $($row.Exclusions) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {
