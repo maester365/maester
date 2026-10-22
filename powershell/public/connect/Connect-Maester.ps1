@@ -202,6 +202,7 @@
     )
 
    $__MtSession.Connections = $Service
+   $__MtSession.ConnectionSummary = @()
 
    # Record the outcome of each service so a single summary table can be shown at the end.
    # Step-by-step explanations go to the verbose stream; the table carries what the user needs to act on.
@@ -641,4 +642,5 @@
     }
 
    Write-MtConnectionSummary -Summary $connectionSummary
+   $__MtSession.ConnectionSummary = $connectionSummary
 } # end function Connect-Maester

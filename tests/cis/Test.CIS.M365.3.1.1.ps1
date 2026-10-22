@@ -38,7 +38,16 @@
     Write-Verbose 'Get audit log search status'
     $auditLogSearch = Get-AdminAuditLogConfig
 
-    if ($auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }) {
+    $usableConfig = @($auditLogSearch | Where-Object { $null -ne $_ -and $null -ne $_.UnifiedAuditLogIngestionEnabled })
+    if ($usableConfig.Count -eq 0) {
+        # An empty collection filters to nothing, the if below is false, and its else branch
+        # is the pass. Without this guard the check reports audit log search as enabled for a
+        # tenant that returned no configuration at all.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    }
+
+    if ($usableConfig | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }) {
         $testResult = $false
         $testResultMarkdown = "Your tenant does not have audit log search enabled:`n`n%TestResult%"
     } else {

@@ -48,12 +48,27 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4.md) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | Medium | Defender | Zero-hour auto purge |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1.md) | (L1) Ensure Microsoft 365 audit log search is Enabled | High | Purview | Audit |
 | [CIS.M365.4.1](./CIS.M365.4.1.md) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | Medium | Intune | Device compliance |
+| [CIS.M365.4.2](./CIS.M365.4.2.md) | (L1) Ensure device enrollment for personally owned devices is blocked by default | Medium | Intune | Device enrollment |
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | (L1) Ensure users cannot register applications | Medium | Entra ID | User and directory settings |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3.md) | (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | Medium | Entra ID | User and directory settings |
+| [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1.md) | (L1) Ensure users cannot create security groups | Low | Entra ID | Groups |
+| [CIS.M365.5.1.3.4](./CIS.M365.5.1.3.4.md) | (L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No' | Low | Entra ID | Groups |
+| [CIS.M365.5.1.4.1](./CIS.M365.5.1.4.1.md) | (L2) Ensure the ability to join devices to Entra is restricted | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.2](./CIS.M365.5.1.4.2.md) | (L1) Ensure the maximum number of devices per user is limited | Low | Entra ID | Device identity |
+| [CIS.M365.5.1.4.3](./CIS.M365.5.1.4.3.md) | (L1) Ensure the GA role is not added as a local administrator during Entra join | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.4](./CIS.M365.5.1.4.4.md) | (L1) Ensure local administrator assignment is limited during Entra join | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.5](./CIS.M365.5.1.4.5.md) | (L1) Ensure Local Administrator Password Solution is enabled | Medium | Entra ID | Device identity |
 | [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6.md) | (L2) Ensure users are restricted from recovering BitLocker keys | Medium | Entra ID | Device identity |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | (L1) Ensure the admin consent workflow is enabled | High | Entra ID | App consent and permissions |
+| [CIS.M365.5.1.5.3](./CIS.M365.5.1.5.3.md) | (L2) Ensure password addition is blocked for applications | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.4](./CIS.M365.5.1.5.4.md) | (L1) Ensure password lifetime for applications does not exceed 180 days | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.5](./CIS.M365.5.1.5.5.md) | (L1) Ensure new application passwords are system-generated | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.6](./CIS.M365.5.1.5.6.md) | (L1) Ensure maximum certificate lifetime for applications does not exceed 180 days | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.6.1](./CIS.M365.5.1.6.1.md) | (L2) Ensure that collaboration invitations are sent to allowed domains only | Medium | Entra ID | External identities |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | (L1) Ensure that guest user access is restricted | Medium | Entra ID | External identities |
+| [CIS.M365.5.1.6.3](./CIS.M365.5.1.6.3.md) | (L2) Ensure guest user invitations are limited | Medium | Entra ID | External identities |
+| [CIS.M365.5.1.8.1](./CIS.M365.5.1.8.1.md) | (L1) Ensure that password hash sync is enabled for hybrid deployments | Medium | Entra ID | Hybrid identity |
 | [CIS.M365.5.2.2.1](./CIS.M365.5.2.2.1.md) | (L1) Ensure multifactor authentication is enabled for all users in administrative roles | High | Entra ID | Conditional Access |
 | [CIS.M365.5.2.2.2](./CIS.M365.5.2.2.2.md) | (L1) Ensure multifactor authentication is enabled for all users | High | Entra ID | Conditional Access |
 | [CIS.M365.5.2.2.3](./CIS.M365.5.2.2.3.md) | (L1) Enable Conditional Access policies to block legacy authentication | High | Entra ID | Conditional Access |
