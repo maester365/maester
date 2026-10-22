@@ -11,7 +11,7 @@
     .EXAMPLE
         Test-MtCisSpoExternalContentSharing
 
-        Returns true if external content sharing is restricted to existing guests or disabled.
+        Returns true if external content sharing is restricted to authenticated guests or disabled.
 
     .LINK
         https://maester.dev/docs/commands/Test-MtCisSpoExternalContentSharing
@@ -42,7 +42,7 @@
 
     $displayValue = if ($null -eq $setting) { 'Not found' } else { $setting }
     $resultMarkdown = if ($testResult) {
-        "Well done. External sharing in SharePoint Online is restricted to existing guests or disabled.`n`n"
+        "Well done. External sharing in SharePoint Online is restricted to authenticated guests or disabled.`n`n"
     } else {
         "External sharing in SharePoint Online allows anyone to receive content, which is not restricted.`n`n"
     }
