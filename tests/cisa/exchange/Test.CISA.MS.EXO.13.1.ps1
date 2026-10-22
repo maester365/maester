@@ -36,6 +36,13 @@
 
     $config = Get-MtExo -Request OrganizationConfig
 
+    if ($null -eq $config -or $null -eq $config.AuditDisabled) {
+        # AuditDisabled is a negative flag, so -not $null below is $true and the check would
+        # report mailbox auditing as enabled for a tenant whose configuration was never read.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    }
+
     $testResult = (-not $config.AuditDisabled)
 
     if ($testResult) {
