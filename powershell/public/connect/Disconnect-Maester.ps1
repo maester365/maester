@@ -79,4 +79,6 @@ function Disconnect-Maester {
       }
       $__MtSession.PackConnections = @{}
    }
+
+   $__MtSession.ConnectionSummary = @()
 }

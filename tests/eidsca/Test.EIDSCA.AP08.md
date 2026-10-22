@@ -1,11 +1,11 @@
-Defines if user consent to apps is allowed, and if it is, which app consent policy (permissionGrantPolicy) governs the permissions.
+Counts user consent assignments outside microsoft-user-default-low and microsoft-user-default-recommended. Either accepted policy or both passes. An explicit empty assignment collection or only resource-specific consent assignments passes because no default ManagePermissionGrantsForSelf policy is assigned. Missing or null assignment data is skipped. The legacy unrestricted policy fails, including when mixed with other policies. Other user consent policies, including custom policies and mail-client exceptions, require manual review and are skipped unless the legacy policy is also assigned. A pass confirms assignment compliance only; this check does not evaluate policy conditions, other consent authorization mechanisms, or existing grants.
 
-Microsoft recommends to allow to user consent for apps from verified publisher for selected permissions. CISA SCuBA 2.7 defines that all Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications.
+Disable user consent or assign only microsoft-user-default-low, microsoft-user-default-recommended, or both for default user self-consent. Accepting microsoft-user-default-recommended trusts Microsoft's evolving recommendations and does not verify a fixed set of permission restrictions. Review other user consent policies, including custom policies and microsoft-user-default-allow-consent-apps mail-client exceptions, by retrieving their includes and excludes from policies/permissionGrantPolicies. Any assigned policy can authorize consent independently; a restrictive policy does not override a permissive one. Remove the legacy unrestricted self-consent assignment. Preserve and assess ManagePermissionGrantsForOwnedResource assignments separately. See https://learn.microsoft.com/entra/identity/enterprise-apps/manage-app-consent-policies.
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+.permissionGrantPolicyIdsAssignedToDefaultUserRole -eq '0'
 ```
 
 
@@ -13,7 +13,7 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [authorizationPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/authorizationpolicy)
+- [authorizationPolicy resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/authorizationpolicy?view=graph-rest-beta)
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings)
 
 ## MITRE ATT&CK

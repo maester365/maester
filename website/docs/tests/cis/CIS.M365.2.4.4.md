@@ -84,7 +84,7 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 | Benchmark profiles | E5 Level 1 |
 | Supports controls | cis-m365:2.4.4, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCisZAP](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.2.4.4.ps1) |
-| Services | Teams |
+| Services | ExchangeOnline |
 | Compatible licenses | THREAT_INTELLIGENCE |
 
 ## Source
