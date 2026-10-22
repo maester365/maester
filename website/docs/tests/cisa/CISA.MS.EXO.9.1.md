@@ -69,7 +69,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 | Upstream requirement | Moved to MS.SECURITYSUITE.1.1v1 (was MS.EXO.9.1v2) |
 | Supports controls | cisa-scuba:MS.EXO.9.1, nist-800-53-r5:SI-3 |
 | PowerShell test | [Test-MtCheckCISAMSEXO91](https://github.com/maester365/maester/blob/main/tests/cisa/exchange/Test.CISA.MS.EXO.9.1.ps1) |
-| Services | Graph |
+| Services | ExchangeOnline |
 
 ## Source
 

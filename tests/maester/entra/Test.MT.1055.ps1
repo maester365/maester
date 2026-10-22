@@ -24,7 +24,7 @@
         Feature = 'groups',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'None',
