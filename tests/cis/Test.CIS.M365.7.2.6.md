@@ -1,6 +1,6 @@
 ﻿The SharePoint allow list or block list decides which external domains can receive shared content. Without a domain list, a user can share SharePoint files and sites with any external domain, including domains that the organization does not trust or that an attacker controls, which makes it an easy route for sending data out of the tenant.
 
-Limiting external sharing to an allow list of approved domains keeps shared content with partners you have agreed to work with. Sharing with other domains is blocked until the domain is added to the list. Agree the list of partner domains with the teams that share content before you turn the restriction on.
+Limiting external sharing to an allow list of approved domains keeps shared content with partners you have agreed to work with. Sharing with other domains is blocked until the domain is added to the list. The domain list applies to sharing with named guests, not to Anyone links, so turn off Anyone links as well (CIS 7.2.3) if content must stay with approved partners. Agree the list of partner domains with the teams that share content before you turn the restriction on.
 
 #### Remediation action
 
