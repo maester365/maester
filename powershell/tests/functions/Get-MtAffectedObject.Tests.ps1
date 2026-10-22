@@ -720,6 +720,22 @@ Describe 'Affected objects' {
             $map['33333333-3333-3333-3333-333333333333'] | Should -Be 'object-user-002'
         }
 
+        It 'Should map the UPNs in the connection summary details' {
+            $map = InModuleScope Maester {
+                Get-MtUserIdentityReplacementMap -MaesterResults ([PSCustomObject]@{
+                        ConnectionSummary = @(
+                            [PSCustomObject]@{ Service = 'Security & Compliance'; Status = 'Connected'; Details = "Using UPN 'exo.admin@contoso.com' from Exchange Online" }
+                            [PSCustomObject]@{ Service = 'Microsoft Teams'; Status = 'Connected'; Details = 'a~b!c^d@contoso.com.' }
+                            [PSCustomObject]@{ Service = 'SharePoint Online'; Status = 'Skipped'; Details = 'No -SharePointClientId specified' }
+                        )
+                    })
+            }
+
+            $map['exo.admin@contoso.com'] | Should -Be (InModuleScope Maester { Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id 'exo.admin@contoso.com' })
+            $map.ContainsKey('a~b!c^d@contoso.com') | Should -BeTrue
+            $map.Keys | Should -Not -Contain "'exo.admin@contoso.com"
+        }
+
         Context 'Session cache' {
             BeforeAll {
                 # Shapes taken from a live run: Get-MtUser caches a list read as a Hashtable,
@@ -954,6 +970,14 @@ Describe 'Affected objects' {
             }
 
             $redacted | Should -Be "upn = 'object-user-001'; owner object-user-002."
+        }
+
+        It 'Should redact a quoted UPN with ~, ! or ^ in the local part' {
+            $redacted = InModuleScope Maester {
+                ConvertTo-MtRedactedReportContent -Content "owner 'a~b!c^d@contoso.com'" -ReplacementMap @{ 'a~b!c^d@contoso.com' = 'object-user-001' }
+            }
+
+            $redacted | Should -Be "owner 'object-user-001'"
         }
 
         It 'Should replace a UPN whole when its local part is also a display name' {

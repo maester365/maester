@@ -189,6 +189,22 @@ The publishable Maester module is produced by a build script that consolidates t
 
 - QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
 - When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
+- `pester.ps1` runs the test files in batches of eight, each batch in its own pwsh process, two processes at a time. Each process needs up to about 1.3 GB of memory. On a small VM use `-ThrottleLimit 1`; on a machine with memory to spare, `-ThrottleLimit 4` runs the suite in about half the time.
+- While you work, run only the files that cover your change. `-Include` and `-Exclude` take file name patterns:
+
+  ```powershell
+  # The unit tests of the commands you changed
+  ./powershell/tests/pester.ps1 -TestGeneral $false -Include 'Get-MtUser*', 'Test-MtCa*'
+
+  # The checks that a new or changed native test must pass
+  ./powershell/tests/pester.ps1 -TestFunctions $false -Include 'NativeTest*', 'RepositoryLayout*', 'MaesterTestTags*', 'LegacyIds*'
+
+  # Everything except the slowest files, which regenerate the golden fixtures and the ORCA and EIDSCA tests
+  ./powershell/tests/pester.ps1 -Exclude 'Golden*', 'GeneratedFileFormatting*', 'OrcaGenerator*', 'EidscaGenerator*'
+  ```
+
+- Run the whole suite once before you push, or let the pull request's build run it.
+- On Windows, Microsoft Defender scans every script the module loads. If your policy allows it, excluding the folder of your clone from real-time scanning can make the run much faster.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
@@ -254,7 +270,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 ##### Test your code
 
 - We run a bunch of pester tests on your code when a PR is raised and will block merge until the issues are addressed.
-- Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
+- Before you submit the PR, run the tests locally by running `./powershell/tests/pester.ps1`. See [Pester Tests](#pester-tests) for running a subset while you work.
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
@@ -264,7 +280,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 A pull request that adds a test, or changes `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost` or `Mitre` on an existing test, has those values checked against the [attribute rubric](./writing-tests/attribute-rubric.md) in two ways:
 
 - The unit tests in [`NativeTestAttributes.Tests.ps1`](https://github.com/maester365/maester/blob/main/powershell/tests/general/NativeTestAttributes.Tests.ps1) fail when a built-in test misses a required attribute, uses a key that is not in the [taxonomy](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterTaxonomy.psd1), lists a retired or unknown ATT&CK technique, or carries a tag for something an attribute already says.
-- The [attribute-review](https://github.com/maester365/maester/blob/main/.github/workflows/attribute-review.yaml) check has a reviewer model read the test, its Markdown file and the rubric. It fails when a value does not fit the rubric, and comments on the pull request with the value it expected and the reason. Change the value, or explain in the pull request why the declared value fits the rubric. A maintainer can overrule the check.
+- The [attribute-review](https://github.com/maester365/maester/blob/main/.github/workflows/attribute-review.yaml) check has a reviewer model read the test, its Markdown file and the rubric, together with the attributes of the other tests with the same product and feature. It fails when a value does not fit the rubric or differs from the same check in another suite in area, resource type or severity (user impact and implementation cost only when both plainly recommend the same fix; MITRE techniques and related products are not compared), and comments on the pull request with the value it expected and the reason. Change the value, or explain in the pull request why the declared value fits the rubric. A maintainer can overrule the check.
 
 The maintainer or agent who reviews the pull request applies the same rubric; [AGENTS.md](https://github.com/maester365/maester/blob/main/AGENTS.md) describes that step.
 
