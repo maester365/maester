@@ -59,11 +59,24 @@
             return $true
         }
 
-        Write-Verbose 'Reading service principal sign-in activities from Graph beta.'
-        $SignInActivities = @(
-            Invoke-MtGraphRequest -ApiVersion 'beta' `
-                -RelativeUri 'reports/servicePrincipalSignInActivities'
-        )
+        # Query sign-in activity per agent with a server-side appId filter instead of pulling the
+        # tenant-wide report. The report covers every service principal, so on large tenants the
+        # unfiltered read transfers far more data than the handful of agents needs. The endpoint
+        # supports 'appId eq', but 'appId in (...)' returns HTTP 500, so each agent is queried individually.
+        Write-Verbose "Reading sign-in activity for $($EnabledAgents.Count) enabled Agent Identities from Graph beta."
+        $SignInActivities = [System.Collections.Generic.List[object]]::new()
+        foreach ($Agent in $EnabledAgents) {
+            $AgentAppId = [string]$Agent.appId
+            if ([string]::IsNullOrWhiteSpace($AgentAppId)) { continue }
+            $AgentActivities = @(
+                Invoke-MtGraphRequest -ApiVersion 'beta' `
+                    -RelativeUri 'reports/servicePrincipalSignInActivities' `
+                    -Filter "appId eq '$AgentAppId'"
+            )
+            foreach ($AgentActivity in $AgentActivities) {
+                if ($null -ne $AgentActivity) { $SignInActivities.Add($AgentActivity) }
+            }
+        }
 
         $ActivitiesByAppId = @{}
         foreach ($Activity in $SignInActivities) {

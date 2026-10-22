@@ -3,7 +3,7 @@
 #### Remediation action
 
 Within the [Entra Portal - Device Settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview) set _'Registering user is added as local administrator on the device during Microsoft Entra join'_ to *None*.
-To remediate existing devices, you need to create an Intune account policy, overriding the built-in Windows Administrators group.
+This one setting is the fix for this test. It applies to devices joined from then on. Devices that were joined earlier keep the users who are already local administrators; to remove them, you can use an Intune account protection policy that manages the built-in Administrators group (see the links below).
 
 #### Related links
 
