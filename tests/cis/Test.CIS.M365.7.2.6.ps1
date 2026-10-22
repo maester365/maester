@@ -53,8 +53,9 @@
     $resultMarkdown += "| Setting | Value | Result |`n"
     $resultMarkdown += "| --- | --- | --- |`n"
     $resultMarkdown += "| SharingCapability | $displayCapability | $(if ($testResult) { 'Pass' } else { 'Fail' }) |`n"
-    $resultMarkdown += "| SharingDomainRestrictionMode | $displayMode | $(if ($testResult) { 'Pass' } else { 'Fail' }) |`n"
-    $resultMarkdown += "| SharingAllowedDomainList | $displayDomains | $(if ($testResult) { 'Pass' } else { 'Fail' }) |"
+    $domainStatus = if ($sharingCapability -eq 'Disabled') { 'Not applicable' } elseif ($testResult) { 'Pass' } else { 'Fail' }
+    $resultMarkdown += "| SharingDomainRestrictionMode | $displayMode | $domainStatus |`n"
+    $resultMarkdown += "| SharingAllowedDomainList | $displayDomains | $domainStatus |"
 
     Add-MtTestResultDetail -Result $resultMarkdown
     return $testResult
