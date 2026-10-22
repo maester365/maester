@@ -20,8 +20,8 @@ For each reported credential:
 
 #### Related links
 
-- [Mutable subjects in federated identity credentials](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-federated-credential-mutable-subjects)
-- [Migrate GitHub Actions federated credentials to immutable subjects](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-github-immutable-subjects)
+- [Mutable subjects in federated identity credentials](https://learn.microsoft.com/entra/workload-id/workload-identities-federated-credential-mutable-subjects)
+- [Migrate GitHub Actions federated credentials to immutable subjects](https://learn.microsoft.com/entra/workload-id/workload-identities-github-immutable-subjects)
 
 <!--- Results --->
 %TestResult%
