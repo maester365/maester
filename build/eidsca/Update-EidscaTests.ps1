@@ -454,8 +454,9 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%ValueType%', $compareOperator.valuetype
         $output = $output -replace '%RecommendedValue%', $recommendedValue
         $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
-        $output = $output -replace '%CurrentValueProperty%', $currentValueProperty
-        $output = $output -replace '%CurrentValue%', $CurrentValue
+        # Insert expressions literally: -replace treats $_ as the entire input string.
+        $output = $output.Replace('%CurrentValueProperty%', $currentValueProperty)
+        $output = $output.Replace('%CurrentValue%', $currentValue)
         $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
         $output = $output.Replace('%RemediationAction%', $remediationAction)
@@ -520,9 +521,9 @@ function GetSkipCheck($controlItem, $discoveryLines, $controlLookup) {
     }
 
     $variables = [regex]::Matches("$($controlItem.SkipCondition)", '\$(?<name>[A-Za-z_][A-Za-z0-9_]*)') |
-        ForEach-Object { $_.Groups['name'].Value } |
-        Where-Object { $_ -notin 'null', 'true', 'false' } |
-        Select-Object -Unique
+    ForEach-Object { $_.Groups['name'].Value } |
+    Where-Object { $_ -notin 'null', 'true', 'false' } |
+    Select-Object -Unique
     $discoveryCode = foreach ($variable in $variables) {
         $line = $discoveryLines | Where-Object { $_ -match "^\s*\`$$([regex]::Escape($variable))\s*=" } | Select-Object -First 1
         if (-not $line) {

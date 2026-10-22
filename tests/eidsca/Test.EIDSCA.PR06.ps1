@@ -18,7 +18,7 @@ function Test-MtCheckEidscaPR06 {
         Feature = 'password-protection',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1110',
