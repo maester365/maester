@@ -41,6 +41,15 @@ function $name {
         $file = New-AttributeTestFile -Folder $folder -Id 'READ.1' -Attribute $Attribute
         InModuleScope Maester -Parameters @{ F = $file; B = $BuiltIn.IsPresent } { Read-MtNativeTest -Path $F -BuiltIn:$B }
     }
+
+    # Reads one test shipped with Maester whose attribute text sets Service itself.
+    function Read-BuiltInWithService {
+        param([string] $Attribute)
+        $folder = Join-Path $TestDrive ('read' + [guid]::NewGuid().ToString('n'))
+        $file = New-AttributeTestFile -Folder $folder -Id 'READ.1' -Attribute "Severity = 'High', Author = 'someone', $Attribute"
+        (Get-Content $file -Raw).Replace("Service = 'None', ", '') | Set-Content $file
+        InModuleScope Maester -Parameters @{ F = $file } { Read-MtNativeTest -Path $F -BuiltIn }
+    }
 }
 
 Describe 'Taxonomy registry' {
@@ -279,17 +288,100 @@ Describe 'Reader: Mitre, Control and Permission' {
         (Read-Attribute "Control = '$Value'").Errors.Code | Should -Contain 'InvalidMetadata'
     }
 
-    It 'Reads Permission as one permission per element' {
-        $t = Read-Attribute "Permission = ('Policy.Read.All', 'View-Only Configuration')"
+    It 'Reads Permission as Service:Kind:Name, one permission per element' {
+        $t = Read-Attribute "Permission = ('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration')"
         $t.Errors | Should -HaveCount 0
-        $t.Permission | Should -Be @('Policy.Read.All', 'View-Only Configuration')
+        $t.Permission | Should -BeExactly @('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration')
+    }
+
+    It 'Keeps the colons of a permission name: <Value>' -ForEach @(
+        @{ Value = 'GitHub:Permission:administration:read' }
+        @{ Value = 'ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read' }
+        @{ Value = 'CNT.GoogleWorkspace:Scope:https://www.googleapis.com/auth/admin.directory.user.readonly' }
+    ) {
+        $t = Read-Attribute "Permission = '$Value'"
+        $t.Errors | Should -HaveCount 0
+        $t.Permission | Should -BeExactly @($Value)
+    }
+
+    It 'Reads alternatives joined with | and writes them with one space around each |' {
+        $t = Read-Attribute "Permission = ('Graph:Scope:Policy.Read.All|Graph:Scope:Directory.Read.All', 'Graph:Scope:AuditLog.Read.All')"
+        $t.Errors | Should -HaveCount 0
+        $t.Permission | Should -BeExactly @('Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All', 'Graph:Scope:AuditLog.Read.All')
+    }
+
+    It 'Writes a registered service and kind in their registry spelling' {
+        $t = Read-Attribute "Permission = 'exchange:role:View-Only Configuration | AD:ldap:user:ReadProperty'"
+        $t.Permission | Should -BeExactly @('ExchangeOnline:Role:View-Only Configuration | ActiveDirectory:Ldap:user:ReadProperty')
+    }
+
+    It 'Splits an element into its alternatives' {
+        $parts = @(InModuleScope Maester { ConvertFrom-MtPermission 'Graph:Scope:Policy.Read.All | GitHub:Permission:administration:read' })
+        $parts | Should -HaveCount 2
+        $parts[0].Service | Should -Be 'Graph'
+        $parts[0].Kind | Should -Be 'Scope'
+        $parts[0].Name | Should -Be 'Policy.Read.All'
+        $parts[1].Name | Should -Be 'administration:read'
     }
 
     It 'Rejects <Case> as a Permission value' -ForEach @(
-        @{ Case = 'two permissions in one element'; Value = 'Policy.Read.All, User.Read.All' }
+        @{ Case = 'a name without a service and a kind'; Value = 'Policy.Read.All' }
+        @{ Case = 'a name without a kind'; Value = 'Graph:Policy.Read.All' }
+        @{ Case = 'two permissions in one element'; Value = 'Graph:Scope:Policy.Read.All, Graph:Scope:User.Read.All' }
+        @{ Case = 'an empty alternative'; Value = 'Graph:Scope:Policy.Read.All |' }
+        @{ Case = 'an alternative without a service'; Value = 'Graph:Scope:Policy.Read.All | Directory.Read.All' }
         @{ Case = 'a blank'; Value = ' ' }
     ) {
-        (Read-Attribute "Permission = '$Value'").Errors.Code | Should -Contain 'InvalidMetadata'
+        $t = Read-Attribute "Permission = '$Value'"
+        $t.Errors.Code | Should -Contain 'InvalidMetadata'
+        ($t.Errors.Message -join "`n") | Should -BeLike '*<Service>:<Kind>:<Name>*'
+    }
+
+    It 'Rejects the same alternative twice in an element, and the same element twice' {
+        (Read-Attribute "Permission = 'Graph:Scope:Policy.Read.All | Graph:Scope:Policy.Read.All'").Errors.Message | Should -BeLike "*lists 'Graph:Scope:Policy.Read.All' twice*"
+        (Read-Attribute "Permission = ('Graph:Scope:Policy.Read.All', 'graph:scope:Policy.Read.All')").Errors.Message | Should -BeLike '*is listed twice*'
+    }
+
+    It 'Rejects <Case> in a test shipped with Maester' -ForEach @(
+        @{ Case = 'a service that is not in the registry'; Attribute = "Service = 'Graph', Permission = 'Okta:Scope:okta.users.read'"; Message = "*'Okta' is not in the service registry*" }
+        @{ Case = 'a kind the registry does not list for the service'; Attribute = "Service = 'Graph', Permission = 'Graph:Cmdlet:Get-MgUser'"; Message = "*'Cmdlet' is not a kind of permission of Graph (Scope, DelegatedScope, ApplicationScope, Role)*" }
+        @{ Case = 'a service the test does not list'; Attribute = "Service = 'Graph', Permission = 'Graph:Scope:Policy.Read.All | ExchangeOnline:Role:View-Only Configuration'"; Message = '*ExchangeOnline is not one of the services of the test*' }
+    ) {
+        $t = Read-BuiltInWithService -Attribute $Attribute
+        ($t.Errors.Message -join "`n") | Should -BeLike $Message
+    }
+
+    It 'Accepts the permissions of the services a test shipped with Maester lists' {
+        $t = Read-BuiltInWithService -Attribute "Service = ('Graph', 'ExchangeOnline'), Permission = ('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration | Graph:Role:Global Reader')"
+        @($t.Errors | Where-Object { $_.Message -like '*Permission*' }) | Should -HaveCount 0
+        $t.Permission | Should -BeExactly @('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration | Graph:Role:Global Reader')
+    }
+
+    It 'Keeps a service and a kind the registry does not know in a custom test' {
+        $t = Read-Attribute "Permission = ('CNT.Okta:Scope:okta.users.read', 'Graph:Cmdlet:Get-MgUser')"
+        $t.Errors | Should -HaveCount 0
+        $t.Permission | Should -BeExactly @('CNT.Okta:Scope:okta.users.read', 'Graph:Cmdlet:Get-MgUser')
+    }
+}
+
+Describe 'Service registry: permission kinds' {
+    BeforeDiscovery {
+        $registryServices = @((Import-PowerShellDataFile -Path "$PSScriptRoot/../../../assets/MaesterServiceRegistry.psd1").Services.Keys | Sort-Object)
+    }
+    BeforeAll {
+        $script:registryFile = Import-PowerShellDataFile -Path (Join-Path $script:repoRoot 'powershell/assets/MaesterServiceRegistry.psd1')
+        $script:permissionPattern = (Import-PowerShellDataFile -Path (Join-Path $script:repoRoot 'powershell/assets/MaesterTestSchema.psd1')).Properties.Permission.Pattern
+    }
+
+    It 'Lists the permission kinds of <_>, each with an example that is a valid value and a description' -ForEach $registryServices {
+        $kinds = @($script:registryFile.Services[$_].PermissionKinds)
+        $kinds.Count | Should -BeGreaterThan 0
+        foreach ($k in $kinds) {
+            $k.Kind | Should -Match '^[A-Z][A-Za-z]+$'
+            $k.Description | Should -Not -BeNullOrEmpty
+            "${_}:$($k.Kind):$($k.Example)" | Should -Match $script:permissionPattern -Because "the example of $($k.Kind) must be a valid value"
+        }
+        @($kinds.Kind | Select-Object -Unique).Count | Should -Be $kinds.Count
     }
 }
 
@@ -407,7 +499,7 @@ Describe "Contoso baseline" -Tag "Contoso", "Preview" {
 Describe 'Typed selectors and default exclusions' {
     BeforeAll {
         $script:selectFolder = Join-Path $TestDrive 'select'
-        $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Policy.Read.All', Tag = 'baseline'"
+        $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Graph:Scope:Policy.Read.All', Tag = 'baseline'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.2' -Attribute "Product = 'exchange', RelatedProduct = 'entra', Feature = 'mail-flow', Area = 'email-protection', Severity = 'Low'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.3' -Attribute "Product = 'Contoso CRM', Feature = 'Billing', Severity = 'Medium', Tag = 'finance'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.4' -Attribute "Severity = 'High', Lifecycle = 'Preview', Tag = 'finance'"
@@ -634,7 +726,7 @@ Describe 'Selecting with Maester 2.x tags' {
 Describe 'Rows, Taxonomy and warnings of a run' {
     BeforeAll {
         $script:runFolder = Join-Path $TestDrive 'run/Custom'
-        $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.1' -Attribute "Product = 'Entra ID', RelatedProduct = 'EXO', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Policy.Read.All', Lifecycle = 'Deprecated', ReplacedBy = 'ROW.2', Tag = ('baseline', 'ROW.1')"
+        $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.1' -Attribute "Product = 'Entra ID', RelatedProduct = 'EXO', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Graph:Scope:Policy.Read.All', Lifecycle = 'Deprecated', ReplacedBy = 'ROW.2', Tag = ('baseline', 'ROW.1')"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.2' -Attribute "Product = 'Contoso CRM', Feature = 'Billing', Area = 'finance', ResourceType = 'Invoice', Severity = 'Low', Mitre = 'None'"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.3' -Attribute "Severity = 'Low', Lifecycle = 'Preview'"
         @{ Id = 'CONTOSO'; Name = 'Contoso checks'; Source = 'Custom'; Tags = @('contoso-suite') } | ConvertTo-Json | Set-Content (Join-Path $script:runFolder 'suite.json')
@@ -692,7 +784,7 @@ Describe 'Rows, Taxonomy and warnings of a run' {
         $row.Control | Should -Be @('nist-800-53-r5:IA-2')
         $row.Lifecycle | Should -Be 'Deprecated'
         $row.ReplacedBy | Should -Be 'ROW.2'
-        $row.Permission | Should -Be @('Policy.Read.All')
+        $row.Permission | Should -Be @('Graph:Scope:Policy.Read.All')
         $row.Block | Should -Be 'Entra ID'
         $row.Suite | Should -Be 'CONTOSO'
     }
