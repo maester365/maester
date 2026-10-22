@@ -1,4 +1,4 @@
-﻿function Test-MtCisAntiSpamAllowedDomains {
+﻿function Test-MtCisAntiSpamAllowedDomain {
     <#
     .SYNOPSIS
         Checks that no inbound anti-spam policy has allowed sender domains.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.14, L1)
 
     .EXAMPLE
-        Test-MtCisAntiSpamAllowedDomains
+        Test-MtCisAntiSpamAllowedDomain
 
         Returns true if no inbound anti-spam policy has allowed sender domains.
 

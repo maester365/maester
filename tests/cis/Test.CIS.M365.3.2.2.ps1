@@ -1,4 +1,4 @@
-﻿function Test-MtCisDlpPoliciesTeams {
+﻿function Test-MtCisDlpPolicyTeams {
     <#
     .SYNOPSIS
         Checks that at least one data loss prevention policy that covers Microsoft Teams is enabled.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (3.2.2, L1)
 
     .EXAMPLE
-        Test-MtCisDlpPoliciesTeams
+        Test-MtCisDlpPolicyTeams
 
         Returns true if an enabled DLP policy covers Microsoft Teams.
 

@@ -1,4 +1,4 @@
-﻿function Test-MtCisUsersCannotInstallOutlookAddIns {
+﻿function Test-MtCisUserCannotInstallOutlookAddIn {
     <#
     .SYNOPSIS
         Checks that the role assignment policies that users receive do not let them install add-ins.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.3.1, L2)
 
     .EXAMPLE
-        Test-MtCisUsersCannotInstallOutlookAddIns
+        Test-MtCisUserCannotInstallOutlookAddIn
 
         Returns true if users cannot install Outlook add-ins with the role assignment policies they receive.
 

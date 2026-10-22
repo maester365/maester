@@ -1,4 +1,4 @@
-﻿function Test-MtCisOutboundSpamLimits {
+﻿function Test-MtCisOutboundSpamLimit {
     <#
     .SYNOPSIS
         Checks that the default outbound spam policy sets recipient limits and blocks the user when they are reached.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.15, L1)
 
     .EXAMPLE
-        Test-MtCisOutboundSpamLimits
+        Test-MtCisOutboundSpamLimit
 
         Returns true if the default outbound spam policy has limits and blocks the user when they are exceeded.
 

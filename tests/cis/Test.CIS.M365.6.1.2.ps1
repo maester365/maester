@@ -1,4 +1,4 @@
-﻿function Test-MtCisMailboxAuditActions {
+﻿function Test-MtCisMailboxAuditAction {
     <#
     .SYNOPSIS
         Checks that user mailboxes audit the recommended admin, delegate and owner actions.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.1.2, L1)
 
     .EXAMPLE
-        Test-MtCisMailboxAuditActions
+        Test-MtCisMailboxAuditAction
 
         Returns true if all user mailboxes audit the recommended actions.
 

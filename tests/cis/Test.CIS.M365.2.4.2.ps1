@@ -1,4 +1,4 @@
-﻿function Test-MtCisStrictPresetForPriorityAccounts {
+﻿function Test-MtCisStrictPresetForPriorityAccount {
     <#
     .SYNOPSIS
         Checks that the Strict preset security policy is enabled and has recipients.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.4.2, L1)
 
     .EXAMPLE
-        Test-MtCisStrictPresetForPriorityAccounts
+        Test-MtCisStrictPresetForPriorityAccount
 
         Returns true if the Strict preset security policy is enabled and has recipients.
 
