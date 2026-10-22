@@ -37,60 +37,66 @@
     param()
 
     $findings = [System.Collections.Generic.List[object]]::new()
-    $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications' -Select 'id', 'displayName' -ApiVersion beta -ErrorAction Stop)
+    $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta -ErrorAction Stop)
+    $appsWithFic = $apps | Where-Object { $null -ne $_.federatedIdentityCredentials -and $_.federatedIdentityCredentials.Count -gt 0 }
 
-    foreach ($app in $apps) {
-        Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
-        $federatedCredentials = @(Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/federatedIdentityCredentials" -ApiVersion beta -ErrorAction Stop)
+    if ($appsWithFic.Count -gt 0) {
+        foreach ($app in $appsWithFic) {
+            Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
+            $federatedCredentials = @(Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/federatedIdentityCredentials" -ApiVersion beta -ErrorAction Stop)
 
-        foreach ($cred in ($federatedCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
-            $hasMutableSubject = $false
-            switch -Regex ($cred.issuer) {
-                'token.actions.githubusercontent.com' {
-                    Write-Verbose "Found federated credential with GitHub Actions issuer: $($cred.name)"
-                    $hasMutableSubject = $cred.subject -cnotmatch '^repo:[^@/:\s]+@[0-9]+/[^@/:\s]+@[0-9]+:'
-                    break
+            foreach ($cred in ($federatedCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
+                $hasMutableSubject = $false
+                switch -Regex ($cred.issuer) {
+                    'token.actions.githubusercontent.com' {
+                        # Match against immutable identifiers in the subject
+                        # e.g.: repository_id:123456, repo:name@123456
+                        $hasMutableSubject = $cred.subject -notmatch 'repository_id:\d+' -or $cred.subject -notmatch 'repo:\w+@\d+'
+                        break
+                    }
+                    'gitlab' {
+                        Write-Verbose "Found federated credential with GitLab issuer: $($cred.name)"
+                        $hasMutableSubject = $cred.subject -notmatch 'project_id:'
+                        break
+                    }
+                    default {
+                        Write-Verbose "Skipping unsupported issuer: $($cred.issuer)"
+                        break
+                    }
                 }
-                'gitlab' {
-                    Write-Verbose "Found federated credential with GitLab issuer: $($cred.name)"
-                    $hasMutableSubject = $cred.subject -notmatch 'project_id:'
-                    break
+                if ($hasMutableSubject) {
+                    $finding = [pscustomobject]@{
+                        Application   = $app.displayName
+                        ApplicationId = $app.id
+                        Credential    = $cred.name
+                        Issuer        = $cred.issuer
+                        Subject       = $cred.subject
+                    }
+                    $findings.Add($finding)
                 }
-                default {
-                    Write-Verbose "Skipping unsupported issuer: $($cred.issuer)"
-                    break
-                }
-            }
-
-            if ($hasMutableSubject) {
-                $finding = [pscustomobject]@{
-                    Application   = $app.displayName
-                    ApplicationId = $app.id
-                    Credential    = $cred.name
-                    Issuer        = $cred.issuer
-                    Subject       = $cred.subject
-                }
-                $findings.Add($finding)
             }
         }
-    }
 
-    $passed = $findings.Count -eq 0
-    $resultMarkdown = "Scanned $($apps.Count) applications. "
-    if ($passed) {
-        $resultMarkdown += 'No GitHub or GitLab federated identity credentials were found with subjects missing the checked immutable identifier markers.'
+        $passed = $findings.Count -eq 0
+        $resultMarkdown = "Scanned $($apps.Count) applications. "
+        if ($passed) {
+            $resultMarkdown += 'No GitHub or GitLab federated identity credentials were found with subjects missing the checked immutable identifier markers.'
+        } else {
+            $resultMarkdown += "Found $($findings.Count) GitHub or GitLab federated identity credentials with subjects missing immutable identifier markers."
+            $rows = foreach ($finding in $findings) {
+                $cells = @($finding.Application, $finding.ApplicationId, $finding.Credential, $finding.Issuer, $finding.Subject) | ForEach-Object {
+                    [System.Net.WebUtility]::HtmlEncode([string]$_).Replace('|', '\|') -replace '[\r\n]+', ' '
+                }
+                '| {0} | {1} | {2} | {3} | {4} |' -f $cells
+            }
+            $resultMarkdown += "`n`n| Application | Application object ID | Credential | Issuer | Subject |`n| --- | --- | --- | --- | --- |`n"
+            $resultMarkdown += $rows -join "`n"
+        }
+
+        $null = Add-MtTestResultDetail -Result $resultMarkdown
+        return $passed
     } else {
-        $resultMarkdown += "Found $($findings.Count) GitHub or GitLab federated identity credentials with subjects missing immutable identifier markers."
-        $rows = foreach ($finding in $findings) {
-            $cells = @($finding.Application, $finding.ApplicationId, $finding.Credential, $finding.Issuer, $finding.Subject) | ForEach-Object {
-                [System.Net.WebUtility]::HtmlEncode([string]$_).Replace('|', '\|') -replace '[\r\n]+', ' '
-            }
-            '| {0} | {1} | {2} | {3} | {4} |' -f $cells
-        }
-        $resultMarkdown += "`n`n| Application | Application object ID | Credential | Issuer | Subject |`n| --- | --- | --- | --- | --- |`n"
-        $resultMarkdown += $rows -join "`n"
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No applications with federated credentials were found.'
+        return $null
     }
-
-    $null = Add-MtTestResultDetail -Result $resultMarkdown
-    return $passed
 }
