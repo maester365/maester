@@ -2736,17 +2736,21 @@ Describe 'MtConsoleRenderer keys, and the game behind the dashboard' {
         $r.Start(5)
         Complete-GameTest $r 'F.1'
         Send-GameText $r 'dead'
-        Start-Sleep -Milliseconds 300
-        $where = { $line = @($r.GetPlainScreen(120, 40)[2..37] | Where-Object { $_ -match 'F\.1' })[0]; "$($line.IndexOf('F.1'))" }
-        $start = & $where
-        $start | Should -Not -Be '-1'
-        Start-Sleep -Milliseconds 500
+        # The timer paints on its own thread, so each step waits for what it expects (up to 10 seconds) rather
+        # than for a fixed time: a busy machine, such as pester.ps1 running test files in parallel, can be slower.
+        $where = { $line = @($r.GetPlainScreen(120, 40)[2..37] | Where-Object { $_ -match 'F\.1' })[0]; if ($line) { $line.IndexOf('F.1') } else { -1 } }
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $start = & $where } until ($start -ge 0 -or [DateTime]::UtcNow -gt $deadline)
+        $start | Should -Not -Be -1
         # Nobody moved the time on: the timer did, and the creature came nearer.
-        [int](& $where) | Should -BeLessThan ([int]$start)
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $now = & $where } until (($now -ge 0 -and $now -lt $start) -or [DateTime]::UtcNow -gt $deadline)
+        $now | Should -Not -Be -1
+        $now | Should -BeLessThan $start
         Send-GameKey $r Escape
         $mark = $t.Writer.ToString().Length
-        Start-Sleep -Milliseconds 300
-        $after = $t.Writer.ToString().Substring($mark)
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $after = $t.Writer.ToString().Substring($mark) } until ($after -match [regex]::Escape("$esc[?2026h") -or [DateTime]::UtcNow -gt $deadline)
         $after | Should -Match ([regex]::Escape("$esc[?2026h"))
         $after | Should -Not -Match 'MAESTER RUN'
         $r.KeyPollCount | Should -Be 0
