@@ -515,6 +515,74 @@
       "recentCommits": 1
     },
     {
+      "id": "JeremyFinney-lgtm",
+      "github": "JeremyFinney-lgtm",
+      "name": "jeremy finney",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/JeremyFinney-lgtm.png",
+      "firstContribution": "2026-10-18",
+      "testsAuthored": [
+        "CIS.M365.1.3.2",
+        "CIS.M365.4.2",
+        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.3.4",
+        "CIS.M365.5.1.4.1",
+        "CIS.M365.5.1.4.2",
+        "CIS.M365.5.1.4.3",
+        "CIS.M365.5.1.4.4",
+        "CIS.M365.5.1.4.5",
+        "CIS.M365.5.1.5.3",
+        "CIS.M365.5.1.5.4",
+        "CIS.M365.5.1.5.5",
+        "CIS.M365.5.1.5.6",
+        "CIS.M365.5.1.6.1",
+        "CIS.M365.5.1.6.3",
+        "CIS.M365.5.1.8.1",
+        "CIS.M365.5.2.2.1",
+        "CIS.M365.5.2.2.2",
+        "CIS.M365.5.2.2.3",
+        "CIS.M365.5.2.2.4",
+        "CIS.M365.5.2.2.5",
+        "CIS.M365.5.2.2.6",
+        "CIS.M365.5.2.2.7",
+        "CIS.M365.5.2.2.8",
+        "CIS.M365.5.2.2.9",
+        "CIS.M365.5.2.2.10",
+        "CIS.M365.5.2.2.11",
+        "CIS.M365.5.2.2.12",
+        "CIS.M365.5.2.2.13",
+        "CIS.M365.5.2.2.14",
+        "CIS.M365.5.2.2.15",
+        "CIS.M365.5.2.2.16",
+        "CIS.M365.5.2.2.17",
+        "CIS.M365.5.2.3.1",
+        "CIS.M365.5.2.3.2",
+        "CIS.M365.5.2.3.3",
+        "CIS.M365.5.2.3.4",
+        "CIS.M365.5.2.3.6",
+        "CIS.M365.5.2.3.7",
+        "CIS.M365.5.2.3.8",
+        "CIS.M365.5.2.3.9",
+        "CIS.M365.5.2.3.10",
+        "CIS.M365.5.3.1",
+        "CIS.M365.5.3.2",
+        "CIS.M365.5.3.3",
+        "CIS.M365.5.3.4",
+        "CIS.M365.5.3.5"
+      ],
+      "testsContributed": [],
+      "initials": "JF",
+      "recentCommits": 36
+    },
+    {
       "id": "SebastianClaesson",
       "github": "SebastianClaesson",
       "name": "Sebastian Claesson",
@@ -580,59 +648,6 @@
       "testsContributed": [],
       "initials": "SC",
       "recentCommits": 2
-    },
-    {
-      "id": "JeremyFinney-lgtm",
-      "github": "JeremyFinney-lgtm",
-      "name": "JeremyFinney-lgtm",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/JeremyFinney-lgtm.png",
-      "firstContribution": "",
-      "testsAuthored": [
-        "CIS.M365.1.3.2",
-        "CIS.M365.5.2.2.1",
-        "CIS.M365.5.2.2.2",
-        "CIS.M365.5.2.2.3",
-        "CIS.M365.5.2.2.4",
-        "CIS.M365.5.2.2.5",
-        "CIS.M365.5.2.2.6",
-        "CIS.M365.5.2.2.7",
-        "CIS.M365.5.2.2.8",
-        "CIS.M365.5.2.2.9",
-        "CIS.M365.5.2.2.10",
-        "CIS.M365.5.2.2.11",
-        "CIS.M365.5.2.2.12",
-        "CIS.M365.5.2.2.13",
-        "CIS.M365.5.2.2.14",
-        "CIS.M365.5.2.2.15",
-        "CIS.M365.5.2.2.16",
-        "CIS.M365.5.2.2.17",
-        "CIS.M365.5.2.3.1",
-        "CIS.M365.5.2.3.2",
-        "CIS.M365.5.2.3.3",
-        "CIS.M365.5.2.3.4",
-        "CIS.M365.5.2.3.6",
-        "CIS.M365.5.2.3.7",
-        "CIS.M365.5.2.3.8",
-        "CIS.M365.5.2.3.9",
-        "CIS.M365.5.2.3.10",
-        "CIS.M365.5.3.1",
-        "CIS.M365.5.3.2",
-        "CIS.M365.5.3.3",
-        "CIS.M365.5.3.4",
-        "CIS.M365.5.3.5"
-      ],
-      "testsContributed": [],
-      "initials": "JL",
-      "recentCommits": 0
     },
     {
       "id": "f-bader",
@@ -1790,7 +1805,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 5
+      "recentCommits": 6
     },
     {
       "id": "Oppedijk",
@@ -1934,7 +1949,7 @@
         "MT.1024"
       ],
       "initials": "EA",
-      "recentCommits": 4
+      "recentCommits": 9
     },
     {
       "id": "amlhive-tech",
@@ -4113,6 +4128,10 @@
         "Korthal-Maiyn"
       ]
     },
+    "CIS.M365.4.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.1.2.2": {
       "author": "oed-metzb",
       "contributors": [
@@ -4124,6 +4143,34 @@
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.1.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.5.1.4.6": {
       "author": "BakkerJan",
@@ -4141,11 +4188,39 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.5.1.5.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.6.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.1.6.2": {
       "author": "oed-metzb",
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.1.6.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.8.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.5.2.2.1": {
       "author": "JeremyFinney-lgtm",
@@ -7600,6 +7675,10 @@
       "title": "(L1) Ensure devices without a compliance policy are marked 'not compliant'",
       "path": "/docs/tests/CIS.M365.4.1"
     },
+    "CIS.M365.4.2": {
+      "title": "(L1) Ensure device enrollment for personally owned devices is blocked by default",
+      "path": "/docs/next/tests/CIS.M365.4.2"
+    },
     "CIS.M365.5.1.2.2": {
       "title": "(L1) Ensure users cannot register applications",
       "path": "/docs/tests/CIS.M365.5.1.2.2"
@@ -7607,6 +7686,34 @@
     "CIS.M365.5.1.2.3": {
       "title": "(L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'",
       "path": "/docs/tests/CIS.M365.5.1.2.3"
+    },
+    "CIS.M365.5.1.3.1": {
+      "title": "(L1) Ensure users cannot create security groups",
+      "path": "/docs/next/tests/CIS.M365.5.1.3.1"
+    },
+    "CIS.M365.5.1.3.4": {
+      "title": "(L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'",
+      "path": "/docs/next/tests/CIS.M365.5.1.3.4"
+    },
+    "CIS.M365.5.1.4.1": {
+      "title": "(L2) Ensure the ability to join devices to Entra is restricted",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.1"
+    },
+    "CIS.M365.5.1.4.2": {
+      "title": "(L1) Ensure the maximum number of devices per user is limited",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.2"
+    },
+    "CIS.M365.5.1.4.3": {
+      "title": "(L1) Ensure the GA role is not added as a local administrator during Entra join",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.3"
+    },
+    "CIS.M365.5.1.4.4": {
+      "title": "(L1) Ensure local administrator assignment is limited during Entra join",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.4"
+    },
+    "CIS.M365.5.1.4.5": {
+      "title": "(L1) Ensure Local Administrator Password Solution is enabled",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.5"
     },
     "CIS.M365.5.1.4.6": {
       "title": "(L2) Ensure users are restricted from recovering BitLocker keys",
@@ -7620,9 +7727,37 @@
       "title": "(L1) Ensure the admin consent workflow is enabled",
       "path": "/docs/tests/CIS.M365.5.1.5.2"
     },
+    "CIS.M365.5.1.5.3": {
+      "title": "(L2) Ensure password addition is blocked for applications",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.3"
+    },
+    "CIS.M365.5.1.5.4": {
+      "title": "(L1) Ensure password lifetime for applications does not exceed 180 days",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.4"
+    },
+    "CIS.M365.5.1.5.5": {
+      "title": "(L1) Ensure new application passwords are system-generated",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.5"
+    },
+    "CIS.M365.5.1.5.6": {
+      "title": "(L1) Ensure maximum certificate lifetime for applications does not exceed 180 days",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.6"
+    },
+    "CIS.M365.5.1.6.1": {
+      "title": "(L2) Ensure that collaboration invitations are sent to allowed domains only",
+      "path": "/docs/next/tests/CIS.M365.5.1.6.1"
+    },
     "CIS.M365.5.1.6.2": {
       "title": "(L1) Ensure that guest user access is restricted",
       "path": "/docs/tests/CIS.M365.5.1.6.2"
+    },
+    "CIS.M365.5.1.6.3": {
+      "title": "(L2) Ensure guest user invitations are limited",
+      "path": "/docs/next/tests/CIS.M365.5.1.6.3"
+    },
+    "CIS.M365.5.1.8.1": {
+      "title": "(L1) Ensure that password hash sync is enabled for hybrid deployments",
+      "path": "/docs/next/tests/CIS.M365.5.1.8.1"
     },
     "CIS.M365.5.2.2.1": {
       "title": "(L1) Ensure multifactor authentication is enabled for all users in administrative roles",

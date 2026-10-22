@@ -23,7 +23,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 81 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 96 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -377,12 +377,27 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | CIS | Medium | Defender | Zero-hour auto purge |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | Purview | Audit |
 | [CIS.M365.4.1](./CIS.M365.4.1) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | CIS | Medium | Intune | Device compliance |
+| [CIS.M365.4.2](./CIS.M365.4.2) | (L1) Ensure device enrollment for personally owned devices is blocked by default | CIS | Medium | Intune | Device enrollment |
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | (L1) Ensure users cannot register applications | CIS | Medium | Entra ID | User and directory settings |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | CIS | Medium | Entra ID | User and directory settings |
+| [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1) | (L1) Ensure users cannot create security groups | CIS | Low | Entra ID | Groups |
+| [CIS.M365.5.1.3.4](./CIS.M365.5.1.3.4) | (L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No' | CIS | Low | Entra ID | Groups |
+| [CIS.M365.5.1.4.1](./CIS.M365.5.1.4.1) | (L2) Ensure the ability to join devices to Entra is restricted | CIS | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.2](./CIS.M365.5.1.4.2) | (L1) Ensure the maximum number of devices per user is limited | CIS | Low | Entra ID | Device identity |
+| [CIS.M365.5.1.4.3](./CIS.M365.5.1.4.3) | (L1) Ensure the GA role is not added as a local administrator during Entra join | CIS | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.4](./CIS.M365.5.1.4.4) | (L1) Ensure local administrator assignment is limited during Entra join | CIS | Medium | Entra ID | Device identity |
+| [CIS.M365.5.1.4.5](./CIS.M365.5.1.4.5) | (L1) Ensure Local Administrator Password Solution is enabled | CIS | Medium | Entra ID | Device identity |
 | [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | (L2) Ensure users are restricted from recovering BitLocker keys | CIS | Medium | Entra ID | Device identity |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | (L1) Ensure the admin consent workflow is enabled | CIS | High | Entra ID | App consent and permissions |
+| [CIS.M365.5.1.5.3](./CIS.M365.5.1.5.3) | (L2) Ensure password addition is blocked for applications | CIS | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.4](./CIS.M365.5.1.5.4) | (L1) Ensure password lifetime for applications does not exceed 180 days | CIS | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.5](./CIS.M365.5.1.5.5) | (L1) Ensure new application passwords are system-generated | CIS | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.5.6](./CIS.M365.5.1.5.6) | (L1) Ensure maximum certificate lifetime for applications does not exceed 180 days | CIS | Medium | Entra ID | Applications |
+| [CIS.M365.5.1.6.1](./CIS.M365.5.1.6.1) | (L2) Ensure that collaboration invitations are sent to allowed domains only | CIS | Medium | Entra ID | External identities |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | (L1) Ensure that guest user access is restricted | CIS | Medium | Entra ID | External identities |
+| [CIS.M365.5.1.6.3](./CIS.M365.5.1.6.3) | (L2) Ensure guest user invitations are limited | CIS | Medium | Entra ID | External identities |
+| [CIS.M365.5.1.8.1](./CIS.M365.5.1.8.1) | (L1) Ensure that password hash sync is enabled for hybrid deployments | CIS | Medium | Entra ID | Hybrid identity |
 | [CIS.M365.5.2.2.1](./CIS.M365.5.2.2.1) | (L1) Ensure multifactor authentication is enabled for all users in administrative roles | CIS | High | Entra ID | Conditional Access |
 | [CIS.M365.5.2.2.10](./CIS.M365.5.2.2.10) | (L1) Ensure a managed device is required to register security information | CIS | Medium | Entra ID | Conditional Access |
 | [CIS.M365.5.2.2.11](./CIS.M365.5.2.2.11) | (L1) Ensure sign-in frequency for Intune Enrollment is set to 'Every time' | CIS | Medium | Entra ID | Conditional Access |
@@ -451,7 +466,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | CISA | High | Entra ID | Roles and administrators |
 | [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | CISA | High | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | CISA | High | Entra ID | Privileged Identity Management |
-| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6) | Activation of the Global Administrator role SHALL require approval. | CISA | High | Entra ID | Privileged Identity Management |
+| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6) | Activation of the Global Administrator role SHALL require approval. | CISA | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | CISA | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8) | User activation of the Global Administrator role SHALL trigger an alert. | CISA | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9) | User activation of other highly privileged roles SHOULD trigger an alert. | CISA | Medium | Entra ID | Privileged Identity Management |
@@ -604,7 +619,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1052](./MT.1052) | At least one Conditional Access policy is targeting the Device Code authentication flow. | Maester | High | Entra ID | Conditional Access |
 | [MT.1053](./MT.1053) | Ensure intune device clean-up rule is configured | Maester | Low | Intune | Tenant administration |
 | [MT.1054](./MT.1054) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Maester | Medium | Intune | Device compliance |
-| [MT.1055](./MT.1055) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Maester | Medium | Entra ID | Groups |
+| [MT.1055](./MT.1055) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Maester | Low | Entra ID | Groups |
 | [MT.1056](./MT.1056) | Ensure that no person has permanent access to all Azure subscriptions at the root scope | Maester | High | Azure | Access management |
 | [MT.1057](./MT.1057) | App registrations should no longer use secrets. | Maester | Medium | Entra ID | Applications |
 | [MT.1058](./MT.1058) | Exchange application access policies must be configured. | Maester | Medium | Entra ID | App consent and permissions |

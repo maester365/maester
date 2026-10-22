@@ -41,7 +41,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3.md) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | High | Entra ID | Roles and administrators |
 | [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4.md) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | High | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5.md) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | High | Entra ID | Privileged Identity Management |
-| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | High | Entra ID | Privileged Identity Management |
+| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7.md) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8.md) | User activation of the Global Administrator role SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9.md) | User activation of other highly privileged roles SHOULD trigger an alert. | Medium | Entra ID | Privileged Identity Management |
