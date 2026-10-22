@@ -24,7 +24,7 @@
         Area = 'external-access',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1566',
         Control = ('cis-m365:8.1.2', 'nist-800-53-r5:AC-20'),
