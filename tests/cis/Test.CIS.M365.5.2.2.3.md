@@ -1,0 +1,27 @@
+﻿An enabled Conditional Access policy blocks sign-ins from legacy authentication clients for all users.
+
+Legacy authentication protocols such as POP, IMAP, SMTP AUTH and older Office clients do not support multifactor authentication. An attacker who has a password can use them to sign in without the MFA prompt, and password spray tools target them first.
+
+The policy must apply to all users and all cloud apps, select both **Exchange ActiveSync clients** and **Other clients**, block access and be enabled. Check the sign-in logs for legacy usage first, because blocking breaks applications that still depend on these protocols.
+
+User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
+
+#### Remediation action
+
+1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Go to **Entra ID** > **Conditional Access** > [**Policies**](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) and select **New policy**.
+3. Under **Users**, include **All users**. Exclude your emergency access accounts.
+4. Under **Target resources**, select **All resources (formerly All cloud apps)**.
+5. Under **Conditions** > **Client apps**, set **Configure** to **Yes** and select **Exchange ActiveSync clients** and **Other clients** only.
+6. Under **Grant**, select **Block access**.
+7. Set **Enable policy** to **On** (use **Report-only** first to measure the impact) and select **Create**.
+
+#### Related links
+
+* [Microsoft Entra admin center - Conditional Access policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies)
+* [Block legacy authentication with Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/policy-block-legacy-authentication)
+* [Block legacy authentication to Microsoft Entra ID](https://learn.microsoft.com/entra/identity/conditional-access/block-legacy-authentication)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.2.2.3](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%

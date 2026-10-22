@@ -752,11 +752,12 @@ Describe 'Dashboard panels' {
             Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck
             Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph', 'Teams', 'ExchangeOnline', 'ActiveDirectory'
         }
-        # At once: the panels of the results at zero, the tenant being read, the services with what is known.
+        # At once: the panels of the results at zero, the services with what is known. No Tenant panel yet:
+        # without a Graph session there may be no tenant to read, so it waits for the account.
         $screen = & $right
         $screen | Should -Match '╭─ Results ─+ starting… ─╮'
         $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
-        $screen | Should -Match '│ Reading the tenant… +│'
+        $screen | Should -Not -Match 'Tenant'
         $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
         # Graph first, the others by name; a service that is only listed when connected is not here yet.
         $screen | Should -Match '│ ○ Graph +○ Exchange Online +│\n│ [⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Teams +│'
@@ -921,18 +922,62 @@ Describe 'Dashboard panels' {
         $people[1].Since | Should -Be 0
     }
 
-    It 'Says so in the Tenant panel when Graph is not connected' {
+    It 'Leaves the Tenant panel out when Graph is not connected' {
         $renderer = New-PanelRenderer
         $context = [pscustomobject]@{ TenantName = $null; Services = [pscustomobject]@{ Graph = $false; ExchangeOnline = $true } }
-        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
-            param($r, $c, $t)
-            $r.SetPanels([string[]]@('Tenant'))
+        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } {
+            param($r, $c)
+            Mock Get-MgContext { $null }
+            $r.SetPanels([string[]]@('Tenant', 'Totals'))
             $r.Open()
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
+            $r.Start(1)
+            # Not even "Reading the tenant" while the context is read: there is no tenant to read.
+            $null = Start-MtDashboardTenant -Renderer $r -Console $c
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match 'Not connected to Microsoft Graph'
-        $screen | Should -Not -Match 'Exchange Online'
+        $screen | Should -Not -Match 'Tenant|Reading the tenant'
+        $screen | Should -Match 'Results'
+        InModuleScope Maester -Parameters @{ r = $renderer; t = $context } {
+            param($r, $t)
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Not -Match 'Tenant|Not connected to Microsoft Graph|Exchange Online'
+        $renderer.Close()
+    }
+
+    It 'Shows the Active Directory domain, domain controller and credential account in its panel' {
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer } {
+            param($r)
+            $r.SetPanels([string[]]@('ActiveDirectory'))
+            $r.Open()
+            $savedConnection = $__MtSession.ADConnection
+            $savedCredential = $__MtSession.ADCredential
+            $__MtSession.ADConnection = [pscustomobject]@{ Connected = $true; ResolvedDomain = 'north.sevenkingdoms.local'; ResolvedServer = 'winterfell.north.sevenkingdoms.local'; AuthenticationMode = 'Ntlm' }
+            $__MtSession.ADCredential = [pscredential]::new('NORTH\eddard.stark', [securestring]::new())
+            try { Set-MtDashboardDirectory -Renderer $r } finally { $__MtSession.ADConnection = $savedConnection; $__MtSession.ADCredential = $savedCredential }
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Match '│ north\.sevenkingdoms\.local +winterfell │'
+        $screen | Should -Match 'NORTH\\eddard\.stark · Ntlm'
+        $renderer.Close()
+    }
+
+    It 'Leaves the Active Directory panel out when it is not connected' {
+        $renderer = New-PanelRenderer
+        InModuleScope Maester -Parameters @{ r = $renderer } {
+            param($r)
+            $r.SetPanels([string[]]@('ActiveDirectory'))
+            $r.Open()
+            $r.Start(1)
+            $saved = $__MtSession.ADConnection
+            $__MtSession.ADConnection = [pscustomobject]@{ Connected = $false; ResolvedDomain = 'stale.local' }
+            try { Set-MtDashboardDirectory -Renderer $r } finally { $__MtSession.ADConnection = $saved }
+        }
+        $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
+        $screen | Should -Not -BeNullOrEmpty
+        $screen | Should -Not -Match 'Active Directory|stale\.local'
         $renderer.Close()
     }
 
@@ -942,13 +987,13 @@ Describe 'Dashboard panels' {
             TenantName = 'Contoso'; PrimaryDomain = 'contoso.com'; TenantId = '0817c655'; Account = 'merill@contoso.com'; AuthType = 'Delegated'; Cloud = 'Commercial'; TenantType = 'Workforce'
             Services   = [pscustomobject]@{ Graph = $true; Teams = $false }
         }
-        InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide; t = $context } {
-            param($r, $c, $t)
+        InModuleScope Maester -Parameters @{ r = $renderer; t = $context } {
+            param($r, $t)
             $r.SetPanels([string[]]@('Tenant'))
             $r.Open()
             Mock Invoke-MgGraphRequest { throw 'The Tenant panel must not request anything' }
             Mock Invoke-MtGraphRequest { throw 'The Tenant panel must not request anything' }
-            Set-MtDashboardTenant -Renderer $r -TenantContext $t -Console $c
+            Set-MtDashboardTenant -Renderer $r -TenantContext $t
         }
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
         $screen | Should -Match '│ Contoso +contoso\.com │'
