@@ -36,11 +36,11 @@ To remediate using the on-premises Microsoft Entra Connect tool:
 #### Related links
 
 * [Microsoft Entra admin center](https://entra.microsoft.com)
-* [What is password hash synchronization with Microsoft Entra ID?](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-phs)
-* [Implement password hash synchronization with Microsoft Entra Connect Sync](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-password-hash-synchronization)
-* [Microsoft Entra Connect Sync: Staging server and disaster recovery](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-sync-staging-server)
-* [onPremisesDirectorySynchronizationFeature resource type](https://learn.microsoft.com/en-us/graph/api/resources/onpremisesdirectorysynchronizationfeature?view=graph-rest-1.0)
-* [Download Microsoft Entra Connect](https://www.microsoft.com/en-us/download/details.aspx?id=47594)
+* [What is password hash synchronization with Microsoft Entra ID?](https://learn.microsoft.com/entra/identity/hybrid/connect/whatis-phs)
+* [Implement password hash synchronization with Microsoft Entra Connect Sync](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-password-hash-synchronization)
+* [Microsoft Entra Connect Sync: Staging server and disaster recovery](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-sync-staging-server)
+* [onPremisesDirectorySynchronizationFeature resource type](https://learn.microsoft.com/graph/api/resources/onpremisesdirectorysynchronizationfeature?view=graph-rest-1.0)
+* [Download Microsoft Entra Connect](https://www.microsoft.com/download/details.aspx?id=47594)
 * [CIS Microsoft 365 Foundations Benchmark - Page 278](https://www.cisecurity.org/benchmark/microsoft_365)
 
 
