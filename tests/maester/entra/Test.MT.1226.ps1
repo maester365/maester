@@ -1,4 +1,4 @@
-﻿function Test-MT1226 {
+﻿function Test-ImmutableFederatedCredentialSubjects {
     <#
     .SYNOPSIS
     GitHub and GitLab federated identity credentials should use immutable subject identifiers.
@@ -11,10 +11,8 @@
     These marker checks identify potentially mutable subjects, not full subject validity.
 
     .LINK
-    https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-github-immutable-subjects
+    https://maester.dev/docs/commands/Test-ImmutableFederatedCredentialSubjects
 
-    .LINK
-    https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-federated-credential-mutable-subjects
     #>
     [MaesterTest(
         Id = 'MT.1226',
@@ -28,6 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1199',
+        Control = 'nist-800-53-r5:IA-4',
         Service = 'Graph',
         Lifecycle = 'Preview',
         LongRunning = $true,
