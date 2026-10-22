@@ -6,8 +6,11 @@ This test uses the Entra ID premium licence utilization insights in Microsoft Gr
 
 Assign Entra ID P2 licences to every user who is in scope of risk-based Conditional Access policies, or reduce the scope of those policies to licensed users.
 
+To see licence counts and feature usage, open **Billing** > **Licenses** > **License usage** in the Microsoft Entra admin center. When more users use P2 features than are licensed, the result also lists the risk-based Conditional Access policies (sign-in risk or user risk) that put users in scope.
+
 #### Related links
 
+* [Microsoft Entra license usage insights - Microsoft Learn](https://learn.microsoft.com/entra/fundamentals/concept-license-usage-insights)
 * [Introducing Microsoft Entra license utilization insights - Microsoft Community Hub](https://techcommunity.microsoft.com/t5/microsoft-entra-blog/introducing-microsoft-entra-license-utilization-insights/ba-p/3796393)
 * [Microsoft Entra licensing - Microsoft Learn](https://learn.microsoft.com/entra/fundamentals/licensing)
 
