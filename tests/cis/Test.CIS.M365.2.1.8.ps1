@@ -48,7 +48,8 @@
         $effective = $record
         $detail = ''
         # RFC 7208 section 5.1: a redirect is ignored when the record has an all mechanism.
-        $localAll = [regex]::Match([string]$record, '(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        $localAll = [regex]::Match([string]$record, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
+
         if (-not $localAll.Success -and $record -match 'redirect=(?<target>\S+)') {
             $target = $Matches['target']
             $redirected = ConvertFrom-MailAuthenticationRecordSpf -DomainName $target
@@ -59,21 +60,24 @@
             $effective = if ($redirected.GetType().Name -eq 'SPFRecord') { $redirected.record } else { $null }
             $detail = "Redirects to $target"
         }
-        $effectiveAll = [regex]::Match([string]$effective, '(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
         $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
         if (-not $record) {
             $detail = 'No SPF record found'
-        } elseif (-not $pass) {
+        }
+        elseif (-not $pass) {
             $detail = 'The record does not end with -all or ~all'
         }
         [pscustomobject]@{ Domain = $name; Record = $record; Pass = $pass; Detail = $detail }
     }
+
     $checked = @($report | Where-Object { $null -ne $_.Pass })
-    if ($domains.Count -gt 0 -and $checked.Count -eq 0) {
+    $unchecked = @($report | Where-Object { $null -eq $_.Pass })
+    $failed = @($checked | Where-Object { -not $_.Pass })
+    if ($failed.Count -eq 0 -and $unchecked.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }
-    $failed = @($checked | Where-Object { -not $_.Pass })
     $testResult = $failed.Count -eq 0
 
     $passText = if ($domains.Count -eq 0) { 'There are no custom domains, so no SPF records are required.' } else { 'All custom domains publish an SPF record that ends in -all or ~all.' }
@@ -87,7 +91,8 @@
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
