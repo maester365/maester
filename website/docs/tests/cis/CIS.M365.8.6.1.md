@@ -121,7 +121,7 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 | Benchmark profiles | E5 Level 1 |
 | Supports controls | cis-m365:8.6.1 |
 | PowerShell test | [Test-MtCisTeamsReportSecurityConcerns](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.8.6.1.ps1) |
-| Services | Teams |
+| Services | Teams, ExchangeOnline |
 
 ## Source
 
