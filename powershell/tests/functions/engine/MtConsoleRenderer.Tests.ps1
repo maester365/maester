@@ -701,6 +701,34 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Close()
     }
 
+    It 'Lays out the Active Directory panel like the Tenant panel, and removes it without a domain' {
+        $t = New-TestPanelDashboard -Panels 'ActiveDirectory'
+        $t.Renderer.SetDirectory('north.sevenkingdoms.local', 'winterfell', 'NORTH\eddard.stark · Negotiate')
+        $t.Renderer.Start(1)
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
+        $box.Count | Should -Be 4
+        $box[0] | Should -Match '^╭─ Active Directory ─+╮$'
+        $box[1] | Should -Match '^│ north\.sevenkingdoms\.local +winterfell │$'
+        $box[2] | Should -Match '^│ NORTH\\eddard\.stark · Negotiate +│$'
+
+        $t.Renderer.SetDirectory($null, $null, $null)
+        @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match 'Active Directory' }).Count | Should -Be 0
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps the Active Directory panel inside its box at narrow widths and short heights' {
+        foreach ($size in @(@{ W = 142; H = 44 }, @{ W = 120; H = 30 }, @{ W = 100; H = 24 }, @{ W = 80; H = 20 })) {
+            $t = New-TestPanelDashboard -Width $size.W -Panels 'Tenant', 'ActiveDirectory'
+            $t.Renderer.SetTenant('Contoso', 'contoso.com', 'merill@contoso.com · Delegated')
+            $t.Renderer.SetDirectory('a-very-long-child.division.corp.contoso.example', 'domain-controller-with-a-long-name.corp.contoso.example', 'CONTOSO\a.very.long.administrator.name · Negotiate')
+            $t.Renderer.Start(1)
+            $screen = @($t.Renderer.GetPlainScreen($size.W, $size.H))
+            $screen.Count | Should -BeLessOrEqual $size.H
+            @($screen | Where-Object { $_.Length -gt $size.W }).Count | Should -Be 0
+            $t.Renderer.Close()
+        }
+    }
+
     It 'Draws the results so far as one bar split by result, with the count and the share of each under it' {
         $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Start(100)
@@ -2739,17 +2767,21 @@ Describe 'MtConsoleRenderer keys, and the game behind the dashboard' {
         $r.Start(5)
         Complete-GameTest $r 'F.1'
         Send-GameText $r 'dead'
-        Start-Sleep -Milliseconds 300
-        $where = { $line = @($r.GetPlainScreen(120, 40)[2..37] | Where-Object { $_ -match 'F\.1' })[0]; "$($line.IndexOf('F.1'))" }
-        $start = & $where
-        $start | Should -Not -Be '-1'
-        Start-Sleep -Milliseconds 500
+        # The timer paints on its own thread, so each step waits for what it expects (up to 10 seconds) rather
+        # than for a fixed time: a busy machine, such as pester.ps1 running test files in parallel, can be slower.
+        $where = { $line = @($r.GetPlainScreen(120, 40)[2..37] | Where-Object { $_ -match 'F\.1' })[0]; if ($line) { $line.IndexOf('F.1') } else { -1 } }
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $start = & $where } until ($start -ge 0 -or [DateTime]::UtcNow -gt $deadline)
+        $start | Should -Not -Be -1
         # Nobody moved the time on: the timer did, and the creature came nearer.
-        [int](& $where) | Should -BeLessThan ([int]$start)
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $now = & $where } until (($now -ge 0 -and $now -lt $start) -or [DateTime]::UtcNow -gt $deadline)
+        $now | Should -Not -Be -1
+        $now | Should -BeLessThan $start
         Send-GameKey $r Escape
         $mark = $t.Writer.ToString().Length
-        Start-Sleep -Milliseconds 300
-        $after = $t.Writer.ToString().Substring($mark)
+        $deadline = [DateTime]::UtcNow.AddSeconds(10)
+        do { Start-Sleep -Milliseconds 50; $after = $t.Writer.ToString().Substring($mark) } until ($after -match [regex]::Escape("$esc[?2026h") -or [DateTime]::UtcNow -gt $deadline)
         $after | Should -Match ([regex]::Escape("$esc[?2026h"))
         $after | Should -Not -Match 'MAESTER RUN'
         $r.KeyPollCount | Should -Be 0

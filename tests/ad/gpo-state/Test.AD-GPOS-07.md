@@ -19,7 +19,7 @@
 - `Test-MtAdGpoAllSettingsDisabledDetails` is the current test; other related tests include state-wide counts.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/group-policy/) 
+- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
 - ANSSI checkpoint: https://www.anssi.gouv.fr/
 
 <!--- Results --->

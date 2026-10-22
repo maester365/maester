@@ -12,7 +12,7 @@ description: "Entra ID Security Config Analyzer tests mapped to Microsoft Entra 
 
 # Entra ID Security Config Analyzer Tests
 
-These tests are based on the Entra ID Security Config Analyzer and verify Microsoft Entra mitigations for common identity attack scenarios.
+These tests are based on the Entra ID Security Config Analyzer and verify Microsoft Entra mitigations for common identity attack scenarios. They are generated from the EIDSCA config; the [EIDSCA sync page](/eidsca-sync) shows how and compares Maester with it.
 
 ## Tests
 
@@ -21,10 +21,10 @@ These tests are based on the Entra ID Security Config Analyzer and verify Micros
 | [EIDSCA.AF01](./EIDSCA.AF01.md) | Authentication Method - FIDO2 security key - State. | High | Entra ID | Authentication methods |
 | [EIDSCA.AF02](./EIDSCA.AF02.md) | Authentication Method - FIDO2 security key - Allow self-service set up. | High | Entra ID | Authentication methods |
 | [EIDSCA.AF03](./EIDSCA.AF03.md) | Authentication Method - FIDO2 security key - Enforce attestation. | High | Entra ID | Authentication methods |
-| [EIDSCA.AF04](./EIDSCA.AF04.md) | Authentication Method - FIDO2 security key - Enforce key restrictions. | Medium | Entra ID | Authentication methods |
-| [EIDSCA.AF05](./EIDSCA.AF05.md) | Authentication Method - FIDO2 security key - Restricted. | Medium | Entra ID | Authentication methods |
+| [EIDSCA.AF04](./EIDSCA.AF04.md) | Authentication Method - FIDO2 security key - Enforce key restrictions. | Low | Entra ID | Authentication methods |
+| [EIDSCA.AF05](./EIDSCA.AF05.md) | Authentication Method - FIDO2 security key - Restricted. | Low | Entra ID | Authentication methods |
 | [EIDSCA.AF06](./EIDSCA.AF06.md) | Authentication Method - FIDO2 security key - Restrict specific keys. | Medium | Entra ID | Authentication methods |
-| [EIDSCA.AG01](./EIDSCA.AG01.md) | Authentication Method - General Settings - Manage migration. | High | Entra ID | Authentication methods |
+| [EIDSCA.AG01](./EIDSCA.AG01.md) | Authentication Method - General Settings - Manage migration. | Low | Entra ID | Authentication methods |
 | [EIDSCA.AG02](./EIDSCA.AG02.md) | Authentication Method - General Settings - Report suspicious activity - State. | Medium | Entra ID | Authentication methods |
 | [EIDSCA.AG03](./EIDSCA.AG03.md) | Authentication Method - General Settings - Report suspicious activity - Included users/groups. | Medium | Entra ID | Authentication methods |
 | [EIDSCA.AM01](./EIDSCA.AM01.md) | Authentication Method - Microsoft Authenticator - State. | High | Entra ID | Authentication methods |
@@ -40,10 +40,12 @@ These tests are based on the Entra ID Security Config Analyzer and verify Micros
 | [EIDSCA.AP05](./EIDSCA.AP05.md) | Default Authorization Settings - Sign-up for email based subscription. | Medium | Entra ID | User and directory settings |
 | [EIDSCA.AP06](./EIDSCA.AP06.md) | Default Authorization Settings - User can join the tenant by email validation. | Medium | Entra ID | User and directory settings |
 | [EIDSCA.AP07](./EIDSCA.AP07.md) | Default Authorization Settings - Guest user access. | Medium | Entra ID | External identities |
-| [EIDSCA.AP08](./EIDSCA.AP08.md) | Default Authorization Settings - User consent policy assigned for applications. | High | Entra ID | App consent and permissions |
+| [EIDSCA.AP08](./EIDSCA.AP08.md) | Default Authorization Settings - User consent assignments match the restricted or Microsoft recommended baseline. | High | Entra ID | App consent and permissions |
 | [EIDSCA.AP09](./EIDSCA.AP09.md) | Default Authorization Settings - Allow user consent on risk-based apps. | High | Entra ID | App consent and permissions |
 | [EIDSCA.AP10](./EIDSCA.AP10.md) | Default Authorization Settings - Default User Role Permissions - Allowed to create Apps. | Medium | Entra ID | User and directory settings |
-| [EIDSCA.AP14](./EIDSCA.AP14.md) | Default Authorization Settings - Default User Role Permissions - Allowed to read other users. | Low | Entra ID | User and directory settings |
+| [EIDSCA.AP12](./EIDSCA.AP12.md) | Default Authorization Settings - Default User Role Permissions - Allowed to create Tenants. | Medium | Entra ID | User and directory settings |
+| [EIDSCA.AP14](./EIDSCA.AP14.md) | Default Authorization Settings - Default User Role Permissions - Allowed to read other users. | Info | Entra ID | User and directory settings |
+| [EIDSCA.AP15](./EIDSCA.AP15.md) | Default Authorization Settings - Default User Role Permissions - Allowed to create agent identity blueprints. | Medium | Entra ID | Agent identities |
 | [EIDSCA.AS04](./EIDSCA.AS04.md) | Authentication Method - SMS - Use for sign-in. | High | Entra ID | Authentication methods |
 | [EIDSCA.AT01](./EIDSCA.AT01.md) | Authentication Method - Temporary Access Pass - State. | Medium | Entra ID | Authentication methods |
 | [EIDSCA.AT02](./EIDSCA.AT02.md) | Authentication Method - Temporary Access Pass - One-time. | Medium | Entra ID | Authentication methods |
@@ -55,6 +57,7 @@ These tests are based on the Entra ID Security Config Analyzer and verify Micros
 | [EIDSCA.CR02](./EIDSCA.CR02.md) | Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. | Low | Entra ID | App consent and permissions |
 | [EIDSCA.CR03](./EIDSCA.CR03.md) | Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. | Low | Entra ID | App consent and permissions |
 | [EIDSCA.CR04](./EIDSCA.CR04.md) | Consent Framework - Admin Consent Request - Consent request duration (days). | Low | Entra ID | App consent and permissions |
+| [EIDSCA.CR05](./EIDSCA.CR05.md) | Consent Framework - Admin Consent Request - Admin consent reviewers have valid query scopes. | Low | Entra ID | App consent and permissions |
 | [EIDSCA.PR01](./EIDSCA.PR01.md) | Default Settings - Password Rule Settings - Password Protection - Mode. | High | Entra ID | Password protection |
 | [EIDSCA.PR02](./EIDSCA.PR02.md) | Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory. | High | Entra ID | Password protection |
 | [EIDSCA.PR03](./EIDSCA.PR03.md) | Default Settings - Password Rule Settings - Enforce custom list. | Medium | Entra ID | Password protection |

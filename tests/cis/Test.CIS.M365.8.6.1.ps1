@@ -28,7 +28,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1566',
         Control = 'cis-m365:8.6.1',
-        Service = 'Teams',
+        Service = ('Teams', 'ExchangeOnline'),
         Author = 'HenrikPiecha',
         Contributor = 'merill'
     )]

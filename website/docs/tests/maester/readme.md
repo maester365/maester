@@ -117,7 +117,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1052](./MT.1052.md) | At least one Conditional Access policy is targeting the Device Code authentication flow. | High | Entra ID | Conditional Access |
 | [MT.1053](./MT.1053.md) | Ensure intune device clean-up rule is configured | Low | Intune | Tenant administration |
 | [MT.1054](./MT.1054.md) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Medium | Intune | Device compliance |
-| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Medium | Entra ID | Groups |
+| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Low | Entra ID | Groups |
 | [MT.1056](./MT.1056.md) | Ensure that no person has permanent access to all Azure subscriptions at the root scope | High | Azure | Access management |
 | [MT.1057](./MT.1057.md) | App registrations should no longer use secrets. | Medium | Entra ID | Applications |
 | [MT.1058](./MT.1058.md) | Exchange application access policies must be configured. | Medium | Entra ID | App consent and permissions |
