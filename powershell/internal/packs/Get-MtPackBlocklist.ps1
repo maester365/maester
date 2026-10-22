@@ -11,7 +11,7 @@ function Get-MtPackBlocklist {
 
     When the list cannot be fetched, the newest cached list is used with a warning (fail open), unless
     PackPolicy.RequireFreshBlocklist is set, which makes it an error. While no blocklist key is configured in
-    the trust file, there is no list to check and nothing is fetched.
+    the trust file, nothing is fetched; RequireFresh still refuses to proceed without a list.
 
     Returns Available, Serial, Entries and Warning.
     #>
@@ -23,12 +23,23 @@ function Get-MtPackBlocklist {
         [Parameter()] [switch] $Refresh
     )
 
-    $result = { param($available, $serial, $entries, $warning) [pscustomobject]@{ Available = $available; Serial = $serial; Entries = @($entries); Warning = $warning; ReadAt = [datetime]::UtcNow } }
-    if ($script:__MtPackBlocklist -and -not $Refresh -and ([datetime]::UtcNow - $script:__MtPackBlocklist.ReadAt).TotalMinutes -lt 60) { return $script:__MtPackBlocklist }
+    $result = { param($available, $serial, $entries, $warning, $expires) [pscustomobject]@{ Available = $available; Serial = $serial; Entries = @($entries); Warning = $warning; Expires = $expires; ReadAt = [datetime]::UtcNow } }
+    if ($script:__MtPackBlocklist -and -not $Refresh -and ([datetime]::UtcNow - $script:__MtPackBlocklist.ReadAt).TotalMinutes -lt 60) {
+        $cached = $script:__MtPackBlocklist
+        if (-not $cached.Available -or ($cached.Expires -and ([datetime]$cached.Expires).ToUniversalTime() -gt [datetime]::UtcNow)) {
+            if ($RequireFresh -and (-not $cached.Available -or $cached.Warning)) {
+                throw 'A fresh pack blocklist is not available. PackPolicy.RequireFreshBlocklist is set, so no pack runs.'
+            }
+            return $cached
+        }
+        # Expiry is signed content; the one-hour session cache must not extend it.
+        $Refresh = $true
+    }
 
     $trust = Get-MtPackTrust
     $keys = @($trust.Blocklist.Keys | Where-Object { $_.KeyId -and $_.PublicKey })
     if ($keys.Count -eq 0) {
+        if ($RequireFresh) { throw 'No pack blocklist key is configured. PackPolicy.RequireFreshBlocklist is set, so no pack runs.' }
         Write-Verbose 'No pack blocklist key is configured yet, so there is no blocklist to check.'
         $script:__MtPackBlocklist = & $result $false 0 @() $null
         return $script:__MtPackBlocklist
@@ -47,6 +58,7 @@ function Get-MtPackBlocklist {
     if (-not $fresh -or $Refresh) {
         try {
             $envelope = Invoke-RestMethod -Uri $trust.Blocklist.Url -TimeoutSec 5 -Headers @{ 'User-Agent' = 'Maester' } -ErrorAction Stop
+            if (-not $envelope) { $fetchError = 'the blocklist response was empty' }
         } catch { $fetchError = $_.Exception.Message }
     }
     $list = $null
@@ -67,7 +79,7 @@ function Get-MtPackBlocklist {
         if ($list.Error) { $list = $null }
         elseif ($fetchError) { $warning = "The pack blocklist could not be refreshed ($fetchError); the cached list from $($cache.FetchedAt) is used." }
     }
-    if ($list -and $list.Payload.Expires -and ([datetime]$list.Payload.Expires).ToUniversalTime() -lt [datetime]::UtcNow) {
+    if ($list -and (-not $list.Payload.Expires -or ([datetime]$list.Payload.Expires).ToUniversalTime() -le [datetime]::UtcNow)) {
         $warning = "The pack blocklist expired on $($list.Payload.Expires), so it was not used."
         $list = $null
     }
@@ -78,7 +90,7 @@ function Get-MtPackBlocklist {
         return $script:__MtPackBlocklist
     }
     if ($RequireFresh -and $warning) { throw "$warning PackPolicy.RequireFreshBlocklist is set, so no pack runs." }
-    $script:__MtPackBlocklist = & $result $true ([long]$list.Payload.Serial) @($list.Payload.Entries) $warning
+    $script:__MtPackBlocklist = & $result $true ([long]$list.Payload.Serial) @($list.Payload.Entries) $warning $list.Payload.Expires
     $script:__MtPackBlocklist
 }
 
@@ -135,7 +147,7 @@ function Find-MtPackBlock {
 
     .DESCRIPTION
     An entry matches by Digest, by RepositoryId or OwnerId, or by PackId with an optional Versions range.
-    Severity Block stops the pack; Warn lets it run with the advisory shown.
+    Any matching entry other than Warn stops the pack, regardless of order; otherwise the first Warn is returned.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -148,14 +160,19 @@ function Find-MtPackBlock {
         [Parameter()] [long] $OwnerId
     )
 
+    $advisory = $null
     foreach ($e in $Entry) {
         $has = { param($name) $e.PSObject.Properties[$name] -and $null -ne $e.$name -and "$($e.$name)" -ne '' }
-        if ((& $has 'Digest') -and $Digest -and $e.Digest -eq $Digest) { return $e }
-        if ((& $has 'RepositoryId') -and $RepositoryId -and [long]$e.RepositoryId -eq $RepositoryId) { return $e }
-        if ((& $has 'OwnerId') -and $OwnerId -and [long]$e.OwnerId -eq $OwnerId) { return $e }
+        $entryMatches = ((& $has 'Digest') -and $Digest -and $e.Digest -eq $Digest) -or
+            ((& $has 'RepositoryId') -and $RepositoryId -and [long]$e.RepositoryId -eq $RepositoryId) -or
+            ((& $has 'OwnerId') -and $OwnerId -and [long]$e.OwnerId -eq $OwnerId)
         if ((& $has 'PackId') -and $PackId -and $e.PackId -eq $PackId) {
-            if (-not (& $has 'Versions') -or ($Version -and (Test-MtVersionRange -Range ([string]$e.Versions) -Version $Version))) { return $e }
+            if (-not (& $has 'Versions') -or ($Version -and (Test-MtVersionRange -Range ([string]$e.Versions) -Version $Version))) { $entryMatches = $true }
+        }
+        if ($entryMatches) {
+            if ($e.Severity -ne 'Warn') { return $e }
+            if (-not $advisory) { $advisory = $e }
         }
     }
-    $null
+    $advisory
 }

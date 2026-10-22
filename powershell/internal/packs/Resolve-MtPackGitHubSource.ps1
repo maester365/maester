@@ -65,19 +65,35 @@ function Resolve-MtPackGitHubSource {
     $requested = if ($Source.Ref) { $Source.Ref } elseif ($Version) { $Version } else { $null }
     $release = $null
     $newer = $null
-    if ($requested -and $requested -match '^[0-9a-f]{7,40}$') {
-        $commit = & $commitOf $requested
-        $refs = @($repository.default_branch) + @($releases | ForEach-Object { $_.tag_name })
-        if (-not (Test-MtPackCommitReachable -RepositoryPath $repoPath -Commit $commit -Ref $refs)) {
-            throw "The commit $commit is not on the default branch or a release of $owner/$repo. GitHub serves commits from forks under the original repository's name, so Maester installs only commits that belong to the repository itself."
-        }
-        $release = $releases | Where-Object { $_.target_commitish -eq $commit } | Select-Object -First 1
-        $ref = $commit
-    } elseif ($requested) {
+    if ($requested) {
         $release = $releases | Where-Object { $_.tag_name -eq $requested -or $_.tag_name -eq "v$requested" -or "v$($_.tag_name)" -eq $requested } | Select-Object -First 1
         if (-not $release) { $release = Invoke-MtPackGitHubRequest -Path "$repoPath/releases/tags/$([uri]::EscapeDataString($requested))" -AllowNotFound }
         $ref = if ($release) { [string]$release.tag_name } else { $requested }
-        $commit = & $commitOf $ref
+        if ($release) { $commit = & $commitOf "refs/tags/$ref" }
+        else {
+            # The commits API also accepts SHA aliases and expressions. Only real repository refs
+            # may bypass the default-branch/release reachability rule for explicit commits.
+            $names = if ($requested.StartsWith('refs/heads/') -or $requested.StartsWith('refs/tags/')) {
+                @($requested.Substring(5))
+            } else { @("heads/$requested", "tags/$requested") }
+            $namedRef = $null
+            foreach ($name in $names) {
+                $candidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($name))" -AllowNotFound
+                if ($candidateRef -and $candidateRef.ref -ceq "refs/$name") { $namedRef = $candidateRef; break }
+            }
+            if ($namedRef) { $commit = & $commitOf ([string]$namedRef.ref) }
+            elseif ($requested -match '^[0-9a-f]{1,40}$') {
+                # Hexadecimal branch/tag names are legitimate; only an input without a real ref is a SHA alias.
+                $commit = & $commitOf $requested
+                $refs = @($repository.default_branch) + @($releases | ForEach-Object { "refs/tags/$($_.tag_name)" })
+                if (-not (Test-MtPackCommitReachable -RepositoryPath $repoPath -Commit $commit -Ref $refs)) {
+                    throw "The commit $commit is not on the default branch or a release of $owner/$repo. GitHub serves commits from forks under the original repository's name, so Maester installs only commits that belong to the repository itself."
+                }
+                $release = $releases | Where-Object { $_.target_commitish -eq $commit } | Select-Object -First 1
+                $ref = $commit
+            }
+            else { throw "'$requested' is not a branch or tag of $owner/$repo. Use a reachable commit ID instead." }
+        }
     } elseif ($releases.Count -gt 0) {
         $chosen = $null
         foreach ($candidate in $releases) {

@@ -62,10 +62,11 @@ function Get-MtPackPolicy {
             if ($risk -notin $riskOrder) { throw "PackPolicy.MaximumRisk in $($layer.Name) must be Low, Medium or High, not '$risk'." }
             if ($riskOrder.IndexOf([string]$risk) -lt $riskOrder.IndexOf($policy.MaximumRisk)) { $policy.MaximumRisk = [string]$risk }
         }
-        $publishers = & $value 'AllowedPublishers'
-        if ($null -ne $publishers) {
-            $list = @($publishers | ForEach-Object { ([string]$_).ToLowerInvariant() })
-            $policy.AllowedPublishers = if ($null -eq $policy.AllowedPublishers) { $list } else { @($policy.AllowedPublishers | Where-Object { $_ -in $list }) }
+        # Read and assign arrays directly: pipeline enumeration turns an empty set into $null (unrestricted).
+        if ($p.PSObject.Properties['AllowedPublishers'] -and $null -ne $p.AllowedPublishers) {
+            $list = @($p.AllowedPublishers | ForEach-Object { ([string]$_).ToLowerInvariant() })
+            if ($null -eq $policy.AllowedPublishers) { $policy.AllowedPublishers = $list }
+            else { $policy.AllowedPublishers = @($policy.AllowedPublishers | Where-Object { $_ -in $list }) }
         }
         $badges = & $value 'RequireBadge'
         if ($badges) { $policy.RequireBadge = @(@($policy.RequireBadge) + @($badges) | Select-Object -Unique) }
@@ -98,7 +99,8 @@ function Test-MtPackPolicy {
     Maester is always allowed. Every other pack is unlisted until Maester Packs exists, so with
     AllowUnlisted turned off only the packs in TrustedSources (repositories such as
     github.com/contoso/maester-checks, or digests) are allowed. The accepted risk level must not be above
-    MaximumRisk, and the publisher must be in AllowedPublishers when the policy names any.
+    MaximumRisk, and the publisher must be in AllowedPublishers when that restriction is present.
+    An empty allowlist denies every non-built-in pack; null or an absent property is unrestricted.
     #>
     [CmdletBinding()]
     [OutputType([string])]
@@ -117,7 +119,7 @@ function Test-MtPackPolicy {
     if ($riskOrder.IndexOf($Risk) -gt $riskOrder.IndexOf($Policy.MaximumRisk)) {
         return "The pack policy allows packs up to $($Policy.MaximumRisk) risk, and $PackId is $Risk risk."
     }
-    if ($null -ne $Policy.AllowedPublishers -and $Publisher -and $Publisher.ToLowerInvariant() -notin $Policy.AllowedPublishers) {
+    if ($null -ne $Policy.AllowedPublishers -and (-not $Publisher -or $Publisher.ToLowerInvariant() -notin $Policy.AllowedPublishers)) {
         return "The pack policy does not allow packs from the publisher '$Publisher'."
     }
     if (-not $Policy.AllowUnlisted) {

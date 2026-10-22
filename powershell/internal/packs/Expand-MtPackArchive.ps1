@@ -7,7 +7,7 @@ function Expand-MtPackArchive {
     GitHub's archives hold one top folder (owner-repo-commit). Its content, or only -Folder within it, is
     written to -Destination. Nothing in the archive runs, and it is never handed to an external tool:
 
-    - An entry whose path is absolute or contains '..' stops the extraction.
+    - An entry whose path is absolute or contains '..' or ':' stops the extraction (including Windows data streams).
     - A symbolic link stops it (Maester Packs design, section 4.3): links unpack differently on each
       platform and could point outside the pack.
     - At most 50 MB in total, 20 MB per file and 10,000 entries, counted from the sizes the archive
@@ -35,7 +35,7 @@ function Expand-MtPackArchive {
         $total = 0L
         foreach ($entry in $entries) {
             $name = $entry.FullName.Replace('\', '/')
-            if ($name.StartsWith('/') -or $name -match '^[A-Za-z]:' -or @($name.Split('/')) -contains '..') { throw "The archive has an unsafe path: $name." }
+            if ($name.StartsWith('/') -or $name.Contains(':') -or @($name.Split('/')) -contains '..') { throw "The archive has an unsafe path: $name." }
             if (-not $name.StartsWith($prefix, [System.StringComparison]::Ordinal)) { continue }
             $relative = $name.Substring($prefix.Length)
             if (-not $relative) { continue }

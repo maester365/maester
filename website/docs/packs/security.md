@@ -31,6 +31,11 @@ path and SHA-256, with Authenticode signature blocks left out so that signing a 
 store keeps the files read-only under that digest. A changed file stops the pack with `PackUnavailable` until
 you run `Restore-MtPack` (to get the approved files back) or `Install-MtPack` again (to review the change).
 
+Only a complete terminal signature block made of PowerShell comments is excluded. Marker text inside strings
+and malformed trailers remain part of the digest. Pack archives reject paths containing `:` on every platform.
+On Windows, digest validation also rejects named data streams on the pack folder, subfolders and files,
+including `Zone.Identifier`; these streams contain bytes outside the portable file digest.
+
 A module that the pack runs in a separate process from your own install (`"Install": "User"`) cannot be pinned:
 it is shown as High risk, and `AllowExternalEnvironments: false` refuses the pack.
 
@@ -60,7 +65,7 @@ combined, and the strictest value of each setting wins:
 | Setting | Effect |
 | --- | --- |
 | `MaximumRisk` | `Low`, `Medium` or `High`: the highest risk a pack may have. |
-| `AllowedPublishers` | Only packs from these GitHub owners. |
+| `AllowedPublishers` | Only packs from these GitHub owners. An empty list denies all non-built-in packs; an omitted or `null` value adds no restriction. |
 | `TrustedSources` | Only packs from these sources (`owner/repo`). |
 | `AllowUnlisted` | `false`: only packs listed in the Maester Packs index. |
 | `RequireBadge` | Only packs with this index badge. |
@@ -77,6 +82,9 @@ Maester fetches a list of blocked packs, signed with an ECDSA P-256 key that shi
 for an hour. Only a list with a valid signature, a serial at least as high as the last one seen, and an unexpired
 date is used. A blocked pack does not install and, when already installed, does not run (`PackBlocked`). When
 the list cannot be fetched, the cached list is used with a warning, unless `RequireFreshBlocklist` is set.
+Strict freshness also rejects missing trust keys and cached failures. A verified, unexpired list fetched
+within the cache interval can be reused, but its signed expiry is checked on every call. When several entries
+match a pack, any blocking entry takes precedence over a warning regardless of their order in the list.
 
 ## Reporting a pack
 
