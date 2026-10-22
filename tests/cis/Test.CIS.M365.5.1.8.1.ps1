@@ -4,13 +4,13 @@
         Checks that password hash synchronization is enabled when directory synchronization is configured.
 
     .DESCRIPTION
-        Checks the on-premises directory synchronization settings and passes when password hash synchronization is enabled. The test is skipped as not applicable in a cloud-only tenant, and with an app-only connection because Microsoft Graph does not support application permissions for the synchronization endpoint. Tenants that only synchronise with a different method can treat a failure as an exception.
+        Checks the on-premises directory synchronization settings and passes when password hash synchronization is enabled. The test is skipped as not applicable in a cloud-only tenant, when password hash synchronization is off and the tenant has a federated domain, and with an app-only connection because Microsoft Graph does not support application permissions for the synchronization endpoint. Tenants that only synchronise with a different method can treat a failure as an exception.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.1.8.1, L1)
 
     .EXAMPLE
         Test-MtCisPasswordHashSyncEnabled
 
-        Returns true if password hash synchronization is enabled. Returns nothing when the test is skipped in a cloud-only tenant or with an app-only connection.
+        Returns true if password hash synchronization is enabled. Returns nothing when the test is skipped in a cloud-only or federated tenant, or with an app-only connection.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.5.1.8.1
@@ -51,6 +51,15 @@
     $syncConfigs = @($sync) | Where-Object { $_ }
     $value = $syncConfigs[0].features.passwordSyncEnabled
     $testResult = $value -eq $true
+
+    if (-not $testResult) {
+        # CIS scopes this recommendation to Entra Connect hybrid tenants, not federated ones.
+        $federatedDomains = @(Invoke-MtGraphRequest -RelativeUri 'domains' | Where-Object { $_.authenticationType -eq 'Federated' })
+        if ($federatedDomains.Count -gt 0) {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Password hash synchronization is not enabled, but the tenant uses federated authentication ($($federatedDomains.id -join ', ')). CIS 5.1.8.1 does not apply to federated deployments. Password hash synchronization is still recommended as a backup sign-in method."
+            return $null
+        }
+    }
 
     $passText = 'Password hash synchronization is enabled.'
     $failText = 'Password hash synchronization is not enabled.'

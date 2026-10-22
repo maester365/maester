@@ -7,8 +7,8 @@ The restriction applies to certificates added after it takes effect, on applicat
 #### Remediation action
 
 1. Connect to Microsoft Graph with an account that has the Global Administrator role, or with the Security Administrator and Application Administrator roles.
-2. Retrieve the current default app management policy before sending an update. Preserve all existing `keyCredentials` entries under both `applicationRestrictions` and `servicePrincipalRestrictions` in the update. Sending only the new restriction can disable other active restrictions.
-3. Set `isEnabled` to `true` and, under both `applicationRestrictions` and `servicePrincipalRestrictions`, add a `keyCredentials` restriction of type `asymmetricKeyLifetime` with `maxLifetime` set to `P180D` or shorter, `state` set to `enabled` and `restrictForAppsCreatedAfterDateTime` set to a date before the oldest application in the tenant, such as the date the tenant was created. Applications created before that date are exempt, so a later date leaves existing applications out.
+2. Retrieve the current default app management policy before sending an update. In each of `applicationRestrictions` and `servicePrincipalRestrictions`, find the `keyCredentials` entry whose `restrictionType` is `asymmetricKeyLifetime`. Modify that entry in place when it exists; add one only when no matching entry exists. Preserve every other `keyCredentials` entry in both collections in the update. Sending only the target restriction can disable other active restrictions.
+3. Set `isEnabled` to `true`. For each matching `asymmetricKeyLifetime` entry, set `maxLifetime` to `P180D` or shorter and `state` to `enabled`, and keep its existing `restrictForAppsCreatedAfterDateTime` only if it is earlier than the oldest object in that collection; otherwise, use a date before that oldest object. When choosing the oldest service principal, treat a null `createdDateTime` as January 1, 2019, as Microsoft Graph does. Apply the same cutoff rule to a new entry. If a collection is empty, use the tenant creation date or an earlier date as its cutoff. Objects created before their collection's cutoff date are exempt.
 
 #### Related links
 

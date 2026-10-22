@@ -1,4 +1,4 @@
-4.2 (L2) Ensure device enrollment for personally owned devices is blocked by default
+﻿4.2 (L1) Ensure device enrollment for personally owned devices is blocked by default
 
 Device enrollment restrictions let you restrict devices from enrolling in Intune based on certain device attributes such as device limit, device platform, OS Version, manufacturer or device ownership (Personally owned devices).
 
