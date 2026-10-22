@@ -22,7 +22,7 @@
         Feature = 'client-access',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Low',
+        Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

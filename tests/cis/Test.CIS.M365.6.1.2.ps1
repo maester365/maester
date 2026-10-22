@@ -28,6 +28,7 @@
         Mitre = 'T1685.002',
         Control = ('cis-m365:6.1.2', 'nist-800-53-r5:AU-12'),
         Service = 'ExchangeOnline',
+        LongRunning,
         Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
@@ -39,6 +40,10 @@
     $delegateActions = @('ApplyRecord', 'Create', 'FolderBind', 'HardDelete', 'Move', 'MailItemsAccessed', 'MoveToDeletedItems', 'SendAs', 'SendOnBehalf', 'SoftDelete', 'Update', 'UpdateFolderPermissions', 'UpdateInboxRules')
     $ownerActions = @('ApplyRecord', 'Create', 'HardDelete', 'MailboxLogin', 'Move', 'MailItemsAccessed', 'MoveToDeletedItems', 'Send', 'SoftDelete', 'Update', 'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules')
     $mailboxes = @(Get-MtExo -Request EXOMailboxAudit)
+    if ($mailboxes.Count -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
 
     $report = foreach ($mailbox in $mailboxes) {
         $missingAdmin = @($adminActions | Where-Object { @($mailbox.AuditAdmin) -notcontains $_ })

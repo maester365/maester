@@ -21,7 +21,7 @@
         Product = 'exchange',
         Feature = 'outlook',
         Area = 'applications',
-        ResourceType = 'Policy',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',

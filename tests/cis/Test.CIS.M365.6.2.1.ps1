@@ -4,7 +4,7 @@
         Checks that mail flow rules and outbound spam policies do not forward mail to external recipients.
 
     .DESCRIPTION
-        Checks that no enabled transport rule that is not in audit mode redirects, copies or adds recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal, and that no outbound spam policy allows automatic forwarding to external recipients.
+        Checks that no enabled transport rule that is not in audit mode redirects mail outside the accepted domains, and that no outbound spam policy users receive allows automatic forwarding to external recipients.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.2.1, L1)
 
     .EXAMPLE
@@ -36,27 +36,65 @@
     param()
 
     Write-Verbose 'Getting mail flow rules and outbound spam policies...'
-    $acceptedDomains = @(Get-MtExo -Request AcceptedDomain | ForEach-Object { "$($_.DomainName)".Trim().TrimEnd('.') })
+    $acceptedDomains = @(Get-MtExo -Request AcceptedDomain | ForEach-Object { "$($_.DomainName)".Trim().TrimEnd('.') } | Where-Object { $_ })
     $transportRules = @(Get-MtExo -Request TransportRule)
     $outboundPolicies = @(Get-MtExo -Request HostedOutboundSpamFilterPolicy)
+    $enabledRules = @(Get-MtExo -Request HostedOutboundSpamFilterRule | Where-Object { $_.State -eq 'Enabled' })
+    $rulePolicyNames = @($enabledRules | ForEach-Object { $_.HostedOutboundSpamFilterPolicy })
+    $activeOutboundPolicies = @($outboundPolicies | Where-Object { $_.IsDefault -eq $true -or $rulePolicyNames -contains $_.Name })
 
     $findings = [System.Collections.Generic.List[object]]::new()
+    $recipientCache = @{}
     foreach ($rule in $transportRules) {
         # Disabled and audit-mode rules do not perform the recipient actions.
         if ($rule.State -eq 'Disabled' -or $rule.Mode -in 'Audit', 'AuditAndNotify') { continue }
-        foreach ($action in 'RedirectMessageTo', 'BlindCopyTo', 'CopyTo', 'AddToRecipients') {
-            foreach ($address in @($rule.$action | Where-Object { $_ })) {
-                $text = "$address".Trim()
-                $at = $text.LastIndexOf('@')
-                if ($at -lt 0) {
-                    $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in $action (target cannot be verified as internal)" })
-                } elseif ($acceptedDomains -notcontains $text.Substring($at + 1).TrimEnd('.')) {
-                    $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in $action (external)" })
+        foreach ($address in @($rule.RedirectMessageTo | Where-Object { $_ })) {
+            $text = "$address".Trim()
+            $recipientAddress = if ($address.ExternalEmailAddress) {
+                "$($address.ExternalEmailAddress)"
+            } elseif ($address.PrimarySmtpAddress) {
+                "$($address.PrimarySmtpAddress)"
+            } else {
+                $text
+            }
+            $recipientAddress = $recipientAddress -replace '(?i)^smtp:', ''
+
+            if ($recipientAddress -notmatch '@') {
+                if ($recipientCache.ContainsKey($recipientAddress)) {
+                    $recipient = $recipientCache[$recipientAddress]
+                } else {
+                    $recipient = Get-Recipient -Identity $recipientAddress -ErrorAction SilentlyContinue | Select-Object -First 1
+                    $recipientCache[$recipientAddress] = $recipient
                 }
+                $recipientAddress = if ($recipient.ExternalEmailAddress) {
+                    "$($recipient.ExternalEmailAddress)" -replace '(?i)^smtp:', ''
+                } elseif ($recipient.PrimarySmtpAddress) {
+                    "$($recipient.PrimarySmtpAddress)"
+                } else {
+                    $null
+                }
+            }
+
+            if (-not $recipientAddress -or $recipientAddress -notmatch '@') {
+                $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in RedirectMessageTo (target could not be resolved)" })
+                continue
+            }
+
+            $at = $recipientAddress.LastIndexOf('@')
+            $targetDomain = $recipientAddress.Substring($at + 1).Trim().TrimEnd('.')
+            $isAcceptedDomain = $false
+            foreach ($acceptedDomain in $acceptedDomains) {
+                if ([string]::Equals($targetDomain, $acceptedDomain, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    $isAcceptedDomain = $true
+                    break
+                }
+            }
+            if (-not $isAcceptedDomain) {
+                $findings.Add([pscustomobject]@{ Source = "Transport rule: $($rule.Name)"; Detail = "$text in RedirectMessageTo (external)" })
             }
         }
     }
-    foreach ($policy in $outboundPolicies) {
+    foreach ($policy in $activeOutboundPolicies) {
         if ($policy.AutoForwardingMode -ne 'Off') {
             $findings.Add([pscustomobject]@{ Source = "Outbound spam policy: $($policy.Name)"; Detail = "Automatic forwarding is $($policy.AutoForwardingMode)" })
         }

@@ -2,7 +2,7 @@
 
 Auto-forwarding is a favourite way to take mail from a compromised mailbox: the attacker adds a rule that copies every message to an outside address and then keeps receiving mail after the password is reset. It is also an easy way for a user to move company data to a personal account.
 
-The test lists transport rules that redirect, blind copy, copy or add recipients for mail to an address outside the accepted domains, or to a target that cannot be shown to be internal. Disabled rules and rules in audit mode are not listed, because they do not forward mail. It also lists outbound spam policies whose automatic forwarding is not **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
+The test lists enabled transport rules outside audit mode that redirect mail to an address outside the accepted domains. It resolves a recipient stored by alias or name before checking its address. Domain matching is exact: a subdomain is external unless it is itself an accepted domain. The test also checks the default outbound spam policy and custom policies that an enabled rule applies to; unused custom policies are not evaluated. Automatic forwarding must be **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
 
 #### Remediation action
 
@@ -10,7 +10,7 @@ The test lists transport rules that redirect, blind copy, copy or add recipients
 2. Go to **Email & collaboration** > **Policies & rules** > **Threat policies** > [**Anti-spam**](https://security.microsoft.com/antispam) and open each outbound policy.
 3. Set **Automatic forwarding rules** to **Off - Forwarding is disabled**. Do not use **Automatic - System-controlled**, because its effect depends on how Microsoft applies it in your organisation.
 4. Sign in to the [Exchange admin center](https://admin.exchange.microsoft.com).
-5. Go to **Mail flow** > [**Rules**](https://admin.exchange.microsoft.com/#/transportrules) and delete or change each rule that redirects, copies or adds recipients for mail to an external address.
+5. Go to **Mail flow** > [**Rules**](https://admin.exchange.microsoft.com/#/transportrules) and delete or change each rule that redirects mail to an external address.
 
 #### Related links
 

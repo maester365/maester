@@ -77,7 +77,8 @@
         }
     }
     $checked = @($report | Where-Object { $null -ne $_.Pass })
-    if ($domains.Count -gt 0 -and $checked.Count -eq 0) {
+    $unchecked = @($report | Where-Object { $null -eq $_.Pass })
+    if ($unchecked.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }

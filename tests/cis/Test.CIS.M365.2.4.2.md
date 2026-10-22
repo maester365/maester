@@ -2,7 +2,7 @@
 
 Microsoft maintains the Standard and Strict preset security policies and updates them as threats change. Strict has the most aggressive settings for spam, phishing, malware, Safe Links and Safe Attachments, which suits the accounts that are most likely to be targeted and most valuable to compromise.
 
-The test checks that the Strict rules are enabled and have at least one recipient condition: users, groups or domains. It does not check that the recipients are your priority accounts, so make sure the group you pick contains them. Microsoft Defender for Office 365 licences are required.
+This is a policy-presence check, not a priority-account coverage check. It verifies that the Strict rules are enabled and each has at least one recipient condition: users, groups or domains. It does not verify that any selected recipient is a priority account; make sure the assigned users, groups or domains cover those accounts. Microsoft Defender for Office 365 licences are required.
 
 #### Remediation action
 

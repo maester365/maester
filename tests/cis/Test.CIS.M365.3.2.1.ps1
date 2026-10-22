@@ -1,16 +1,16 @@
 ﻿function Test-MtCisDlpPoliciesEnabled {
     <#
     .SYNOPSIS
-        Checks that at least one data loss prevention policy is on and covers a Microsoft 365 workload.
+        Checks that at least one data loss prevention policy is enabled.
 
     .DESCRIPTION
-        Checks that at least one data loss prevention policy that is not a Copilot policy is turned on and applies to all locations in Exchange, SharePoint, OneDrive or Teams.
+        Checks that at least one data loss prevention policy that is not a Copilot policy is enabled.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (3.2.1, L1)
 
     .EXAMPLE
         Test-MtCisDlpPoliciesEnabled
 
-        Returns true if an enabled DLP policy covers a Microsoft 365 location.
+        Returns true if a non-Copilot DLP policy is enabled.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.3.2.1
@@ -28,6 +28,7 @@
         Mitre = ('T1213', 'T1530', 'T1567'),
         Control = ('cis-m365:3.2.1', 'nist-800-53-r5:AC-4'),
         Service = 'SecurityCompliance',
+        License = 'EXCHANGE_DLP',
         Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
@@ -38,32 +39,21 @@
     $policies = @(Get-MtExo -Request DlpCompliancePolicy | Where-Object { $_.EnforcementPlanes -notcontains 'CopilotExperiences' })
 
     $report = foreach ($policy in $policies) {
-        # A policy assigned to administrative units applies only to the members of those units, so it covers no location tenant-wide.
-        $unitScoped = @($policy.PolicyRBACScopes | Where-Object { $_ }).Count -gt 0
-        # An All inclusion covers a location only when it has no exclusions or inclusion restrictions.
-        $locations = [ordered]@{
-            Exchange = (@($policy.ExchangeLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.ExchangeSenderMemberOf) + @($policy.ExchangeSenderMemberOfException) | Where-Object { $_ }).Count -eq 0
-            SharePoint = (@($policy.SharePointLocation.ImmutableIdentity) -contains 'All') -and @($policy.SharePointLocationException | Where-Object { $_ }).Count -eq 0
-            OneDrive = (@($policy.OneDriveLocation.ImmutableIdentity) -contains 'All') -and @(@($policy.OneDriveSharedBy) + @($policy.OneDriveSharedByMemberOf) + @($policy.ExceptIfOneDriveSharedBy) + @($policy.ExceptIfOneDriveSharedByMemberOf) | Where-Object { $_ }).Count -eq 0
-            Teams = (@($policy.TeamsLocation.ImmutableIdentity) -contains 'All') -and @($policy.TeamsLocationException | Where-Object { $_ }).Count -eq 0
-        }
-        $covered = if ($unitScoped) { @() } else { @($locations.GetEnumerator() | Where-Object { $_.Value } | ForEach-Object { $_.Key }) }
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
-            Locations = if ($unitScoped) { 'Limited to administrative units' } elseif ($covered.Count -gt 0) { $covered -join ', ' } else { 'None' }
-            Pass = $policy.Mode -eq 'Enable' -and $covered.Count -gt 0
+            Pass = $policy.Mode -eq 'Enable'
         }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -ge 1
 
-    $passText = 'At least one data loss prevention policy is enabled and covers a Microsoft 365 location.'
-    $failText = if ($policies.Count -eq 0) { 'No data loss prevention policy was found.' } else { 'No data loss prevention policy is both enabled and applied to all of a Microsoft 365 location.' }
+    $passText = 'At least one non-Copilot data loss prevention policy is enabled.'
+    $failText = if ($policies.Count -eq 0) { 'No non-Copilot data loss prevention policy was found.' } else { 'No non-Copilot data loss prevention policy is enabled.' }
 
-    $resultMd = "| Policy | Mode | Locations covered | Result |`n"
-    $resultMd += "| --- | --- | --- | --- |`n"
+    $resultMd = "| Policy | Mode | Result |`n"
+    $resultMd += "| --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.Mode) | $($row.Locations) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Name) | $($row.Mode) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

@@ -2,7 +2,7 @@
 
 Exchange Online audits a default set of actions. Some actions that matter in an investigation, such as MailItemsAccessed, which shows which messages an attacker read, and the actions that change inbox rules and folder permissions, are not part of every default set, or an administrator may have reduced the list.
 
-The test looks at all user mailboxes and lists those that have auditing disabled or miss one of the recommended actions. A listed mailbox needs the recommended actions added to its own audit settings. Microsoft Purview Audit (Standard) is enough for the default set, and MailItemsAccessed needs a licence that includes Audit (Premium) for some users.
+The test looks at all user mailboxes and lists those that have auditing disabled or miss one of the recommended actions. A listed mailbox needs the recommended actions added to its own audit settings. If the tenant has no user mailboxes, the check is not applicable and is skipped. Microsoft Purview Audit (Standard) is enough for the default set, and MailItemsAccessed needs a licence that includes Audit (Premium) for some users.
 
 #### Remediation action
 
