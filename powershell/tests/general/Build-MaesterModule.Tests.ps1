@@ -1,6 +1,9 @@
 BeforeAll {
     $script:BuildScriptPath = Resolve-Path "$PSScriptRoot/../../../build/Build-MaesterModule.ps1"
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
+    # The fixtures this file created. Other test files use the same folder prefix and can run at the same time
+    # (pester.ps1 runs batches in parallel), so AfterAll removes only these.
+    $script:CreatedFixtureRoots = [System.Collections.Generic.List[string]]::new()
 
     function Write-TestFileContent {
         param (
@@ -22,6 +25,7 @@ BeforeAll {
         )
 
         $FixtureRoot = Join-Path $script:RepoRoot ".tmp-maester-build-tests-$([guid]::NewGuid())"
+        $script:CreatedFixtureRoots.Add($FixtureRoot)
         $SourceRoot = Join-Path $FixtureRoot 'powershell'
         $TestsRoot = Join-Path $FixtureRoot 'tests'
         $OutputRoot = Join-Path $FixtureRoot 'module'
@@ -126,8 +130,9 @@ Describe 'Sample' {
 }
 
 AfterAll {
-    Get-ChildItem -Path $script:RepoRoot -Directory -Filter '.tmp-maester-build-tests-*' |
-        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    foreach ($fixtureRoot in $script:CreatedFixtureRoots) {
+        Remove-Item -LiteralPath $fixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 Describe 'Build-MaesterModule' {
