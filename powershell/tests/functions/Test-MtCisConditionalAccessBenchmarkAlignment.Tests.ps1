@@ -2,10 +2,11 @@
     BeforeAll {
         Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
-        Use-MtModuleFunction -Name Test-MtCisGeographicAccessControls, Test-MtCisTokenProtection, Test-MtCisPhishingResistantMfaForAdministrators, Test-MtCisMfaForAllUsers, Test-MtCisManagedDeviceForAuthentication
+        Use-MtModuleFunction -Name Test-MtCisGeographicAccessControl, Test-MtCisTokenProtection, Test-MtCisPhishingResistantMfaForAdmin, Test-MtCisMfaForEveryUser, Test-MtCisManagedDeviceForAuthentication
         $script:adminRoleIds = @(InModuleScope Maester { Get-MtCisAdministratorRole | ForEach-Object { $_.Id } })
 
         function New-TestPolicy {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param(
                 [string[]] $IncludeUsers = @('All'),
                 [string[]] $IncludeRoles = @(),
@@ -89,39 +90,39 @@
         It 'fails an all-location block policy without an exclusion' {
             $script:policy = New-TestPolicy -IncludeLocations @('All') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeFalse
+            Test-MtCisGeographicAccessControl | Should -BeFalse
         }
 
         It 'passes an all-location block policy that excludes AllTrusted' {
             $script:policy = New-TestPolicy -IncludeLocations @('All') -ExcludeLocations @('AllTrusted') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeTrue
+            Test-MtCisGeographicAccessControl | Should -BeTrue
         }
 
         It 'fails a country-only block policy without a trusted-location exclusion' {
             $script:policy = New-TestPolicy -IncludeLocations @('country-location') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeFalse
+            Test-MtCisGeographicAccessControl | Should -BeFalse
         }
 
         It 'passes a country-only block policy with a trusted-location exclusion' {
             $script:policy = New-TestPolicy -IncludeLocations @('country-location') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeTrue
+            Test-MtCisGeographicAccessControl | Should -BeTrue
         }
 
         It 'passes a block policy for an untrusted IP location with a trusted-location exclusion' {
             $script:namedLocations += [PSCustomObject]@{ '@odata.type' = '#microsoft.graph.ipNamedLocation'; id = 'untrusted-ip'; isTrusted = $false }
             $script:policy = New-TestPolicy -IncludeLocations @('untrusted-ip') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeTrue
+            Test-MtCisGeographicAccessControl | Should -BeTrue
         }
 
         It 'fails a block policy that includes a trusted IP location' {
             $script:namedLocations += [PSCustomObject]@{ '@odata.type' = '#microsoft.graph.ipNamedLocation'; id = 'trusted-ip'; isTrusted = $true }
             $script:policy = New-TestPolicy -IncludeLocations @('trusted-ip') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
 
-            Test-MtCisGeographicAccessControls | Should -BeFalse
+            Test-MtCisGeographicAccessControl | Should -BeFalse
         }
     }
 
@@ -129,13 +130,13 @@
         It 'passes an MFA policy for all users and all apps' {
             $script:policy = New-TestPolicy -BuiltInControls @('mfa')
 
-            Test-MtCisMfaForAllUsers | Should -BeTrue
+            Test-MtCisMfaForEveryUser | Should -BeTrue
         }
 
         It 'fails when the policy excludes an application' {
             $script:policy = New-TestPolicy -BuiltInControls @('mfa') -ExcludeApplications @('00000002-0000-0ff1-ce00-000000000000')
 
-            Test-MtCisMfaForAllUsers | Should -BeFalse
+            Test-MtCisMfaForEveryUser | Should -BeFalse
         }
     }
 
@@ -179,19 +180,19 @@
         It 'passes when the allowed combinations contain an approved subset' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -AllowedCombinations @('fido2')
 
-            Test-MtCisPhishingResistantMfaForAdministrators | Should -BeTrue
+            Test-MtCisPhishingResistantMfaForAdmin | Should -BeTrue
         }
 
         It 'fails when the allowed combinations contain another method' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -AllowedCombinations @('fido2', 'passwordlessMfa')
 
-            Test-MtCisPhishingResistantMfaForAdministrators | Should -BeFalse
+            Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
         }
 
         It 'fails when no allowed combinations are configured' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -IncludeAuthenticationStrength
 
-            Test-MtCisPhishingResistantMfaForAdministrators | Should -BeFalse
+            Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
         }
     }
 }

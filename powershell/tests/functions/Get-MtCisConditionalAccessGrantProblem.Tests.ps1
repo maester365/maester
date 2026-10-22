@@ -6,6 +6,7 @@
 
         # Builds a policy from a grant hashtable and returns the object that Graph returns.
         function New-GrantPolicy {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param([hashtable] $Grant)
             @{ displayName = 'Test policy'; state = 'enabled'; grantControls = $Grant } | ConvertTo-Json -Depth 10 | ConvertFrom-Json
         }

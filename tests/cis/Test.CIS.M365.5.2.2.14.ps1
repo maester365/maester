@@ -1,4 +1,4 @@
-﻿function Test-MtCisTrustedNamedLocations {
+﻿function Test-MtCisTrustedNamedLocation {
     <#
     .SYNOPSIS
         Checks that at least one trusted IP named location with ranges is defined.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.14, L2)
 
     .EXAMPLE
-        Test-MtCisTrustedNamedLocations
+        Test-MtCisTrustedNamedLocation
 
         Returns true if at least one trusted IP named location with ranges exists.
 

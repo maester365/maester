@@ -1,4 +1,4 @@
-﻿function Test-MtCisMfaForAllUsers {
+﻿function Test-MtCisMfaForEveryUser {
     <#
     .SYNOPSIS
         Checks that a Conditional Access policy requires MFA for all users in all cloud apps.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.2, L1)
 
     .EXAMPLE
-        Test-MtCisMfaForAllUsers
+        Test-MtCisMfaForEveryUser
 
         Returns true if an enabled policy requires MFA for all users and all cloud apps.
 

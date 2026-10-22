@@ -1,4 +1,4 @@
-﻿function Test-MtCisGeographicAccessControls {
+﻿function Test-MtCisGeographicAccessControl {
     <#
     .SYNOPSIS
         Checks that a Conditional Access policy blocks sign-ins from locations from untrusted locations.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.15, L2)
 
     .EXAMPLE
-        Test-MtCisGeographicAccessControls
+        Test-MtCisGeographicAccessControl
 
         Returns true if an enabled policy blocks sign-ins from outside the trusted locations.
 

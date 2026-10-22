@@ -1,4 +1,4 @@
-﻿function Test-MtCisPhishingResistantMfaForAdministrators {
+﻿function Test-MtCisPhishingResistantMfaForAdmin {
     <#
     .SYNOPSIS
         Checks that a Conditional Access policy requires the phishing-resistant authentication strength for the administrative roles.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.5, L2)
 
     .EXAMPLE
-        Test-MtCisPhishingResistantMfaForAdministrators
+        Test-MtCisPhishingResistantMfaForAdmin
 
         Returns true if an enabled policy requires phishing-resistant MFA for the administrative roles.
 

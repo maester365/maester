@@ -1,4 +1,4 @@
-﻿function Test-MtCisMfaForAdministrativeRoles {
+﻿function Test-MtCisMfaForAdminRole {
     <#
     .SYNOPSIS
         Checks that a Conditional Access policy requires MFA for the administrative roles in all cloud apps.
@@ -8,7 +8,7 @@
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.1, L1)
 
     .EXAMPLE
-        Test-MtCisMfaForAdministrativeRoles
+        Test-MtCisMfaForAdminRole
 
         Returns true if an enabled policy requires MFA for all the listed administrative roles.
 

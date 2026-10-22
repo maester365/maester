@@ -12,6 +12,7 @@
 
         # Builds a policy from nested hashtables and returns the objects that Graph returns.
         function New-TestPolicy {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
             param([hashtable] $Conditions)
             @{ displayName = 'Test policy'; state = 'enabled'; conditions = $Conditions } | ConvertTo-Json -Depth 10 | ConvertFrom-Json
         }
