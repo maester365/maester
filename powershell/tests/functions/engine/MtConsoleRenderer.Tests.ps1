@@ -701,6 +701,34 @@ Describe 'MtConsoleRenderer panels' {
         $narrow.Renderer.Close()
     }
 
+    It 'Lays out the Active Directory panel like the Tenant panel, and removes it without a domain' {
+        $t = New-TestPanelDashboard -Panels 'ActiveDirectory'
+        $t.Renderer.SetDirectory('north.sevenkingdoms.local', 'winterfell', 'NORTH\eddard.stark · Negotiate')
+        $t.Renderer.Start(1)
+        $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
+        $box.Count | Should -Be 4
+        $box[0] | Should -Match '^╭─ Active Directory ─+╮$'
+        $box[1] | Should -Match '^│ north\.sevenkingdoms\.local +winterfell │$'
+        $box[2] | Should -Match '^│ NORTH\\eddard\.stark · Negotiate +│$'
+
+        $t.Renderer.SetDirectory($null, $null, $null)
+        @($t.Renderer.GetPlainScreen(160, 44) | Where-Object { $_ -match 'Active Directory' }).Count | Should -Be 0
+        $t.Renderer.Close()
+    }
+
+    It 'Keeps the Active Directory panel inside its box at narrow widths and short heights' {
+        foreach ($size in @(@{ W = 142; H = 44 }, @{ W = 120; H = 30 }, @{ W = 100; H = 24 }, @{ W = 80; H = 20 })) {
+            $t = New-TestPanelDashboard -Width $size.W -Panels 'Tenant', 'ActiveDirectory'
+            $t.Renderer.SetTenant('Contoso', 'contoso.com', 'merill@contoso.com · Delegated')
+            $t.Renderer.SetDirectory('a-very-long-child.division.corp.contoso.example', 'domain-controller-with-a-long-name.corp.contoso.example', 'CONTOSO\a.very.long.administrator.name · Negotiate')
+            $t.Renderer.Start(1)
+            $screen = @($t.Renderer.GetPlainScreen($size.W, $size.H))
+            $screen.Count | Should -BeLessOrEqual $size.H
+            @($screen | Where-Object { $_.Length -gt $size.W }).Count | Should -Be 0
+            $t.Renderer.Close()
+        }
+    }
+
     It 'Draws the results so far as one bar split by result, with the count and the share of each under it' {
         $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Start(100)
