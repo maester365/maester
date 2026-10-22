@@ -1075,14 +1075,6 @@
       "LastSeenFile": "tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1"
     },
     {
-      "LegacyId": "CIS.M365.5.1.3.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "ab7c8014a1d4aa6627d4f020ac3cde5e8d47b76a",
-      "LastSeenCommit": "ecf6d709d0af85540c4b89591fdce49ff361eb83",
-      "LastSeenFile": "tests/cis/Test-MtCisEnsureGuestUserDynamicGroup.Tests.ps1"
-    },
-    {
       "LegacyId": "CIS.M365.8.2.4",
       "CurrentId": "retired",
       "Rule": "retired",
