@@ -105,6 +105,22 @@ function Get-MtUserIdentityReplacementMap {
             if (-not $userPrincipalName.Contains('@') -or $replacements.ContainsKey($userPrincipalName)) { continue }
             $replacements[$userPrincipalName] = Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id $userPrincipalName
         }
+
+        # ConnectionSummary.Details may carry service-specific UPNs (Exchange, Teams, Azure)
+        # that differ from the Graph account. Extract any UPN-shaped value and map it.
+        foreach ($entry in @($tenant.ConnectionSummary | Where-Object { $_.Details })) {
+            $detail = [string]$entry.Details
+            # Match UPN-shaped tokens inside the detail text. Word boundaries (\b) do not
+            # recognize !, ^ or ~ as part of a token, so a UPN containing them would be
+            # split and only a suffix captured. Use negative lookarounds with the same
+            # character class instead.
+            $upnMatches = [regex]::Matches($detail, '(?<![\w.''+#~!^-])[\w.''+#~!^-]+@[\w-]+(?:\.[\w-]+)*(?![\w-])')
+            foreach ($match in $upnMatches) {
+                $upn = $match.Value
+                if ($replacements.ContainsKey($upn)) { continue }
+                $replacements[$upn] = Get-MtAffectedObjectUniqueId -System 'EntraID' -Type 'User' -Id $upn
+            }
+        }
     }
 
     return $replacements

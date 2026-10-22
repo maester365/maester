@@ -172,6 +172,19 @@
         return $null
     }
 
+    function GetConnectionSummary() {
+        if ($__MtSession -and $__MtSession.ConnectionSummary) {
+            return @($__MtSession.ConnectionSummary | ForEach-Object {
+                [PSCustomObject]@{
+                    Service = $_.Service
+                    Status  = $_.Status
+                    Details = $_.Details
+                }
+            })
+        }
+        return @()
+    }
+
     function GetLogoAsBase64DataUri($uri) {
         try {
             $response = Invoke-MgGraphRequest -Uri $uri -OutputType HttpResponseMessage
@@ -593,6 +606,7 @@
         LoadedModules     = GetLoadedModules
         InvokeCommand     = $InvokeMaesterCommand
         MgContext         = GetMgContextInfo
+        ConnectionSummary = @(GetConnectionSummary)
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
         MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
         # Additive in result schema 2.1.
