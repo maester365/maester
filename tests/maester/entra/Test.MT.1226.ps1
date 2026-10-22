@@ -48,8 +48,8 @@
                 switch -Regex ($cred.issuer) {
                     'token.actions.githubusercontent.com' {
                         # Match against immutable identifiers in the subject
-                        # e.g.: repository_id:123456, repo:name@123456
-                        $hasMutableSubject = $cred.subject -notmatch 'repository_id:\d+' -or $cred.subject -notmatch 'repo:\w+@\d+'
+                        # e.g.: repository_id:123456, repo:octo-org@123456/octo-repo@456789:ref:refs/heads/main
+                        $hasMutableSubject = $cred.subject -notmatch 'repository_id:\d+' -or $cred.subject -notmatch 'repo:.+@\d+\/.+@\d+:.+$'
                         break
                     }
                     'gitlab' {
