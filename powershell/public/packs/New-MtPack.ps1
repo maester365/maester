@@ -73,6 +73,7 @@ function New-MtPack {
     # version, so a fixed '>=3.1' would make a new pack refuse to run on the build it was written against.
     $moduleVersion = $ExecutionContext.SessionState.Module.Version
     $manifest = [ordered]@{
+        '$schema'       = 'https://maester.dev/schemas/maester-pack-1.0.json'
         Id              = $Id
         Name            = $Name
         Description     = "Checks for $Name."

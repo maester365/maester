@@ -39,6 +39,7 @@ cooldown when it is published; any other release starts it when each user first 
 
 ```json
 {
+  "$schema": "https://maester.dev/schemas/maester-pack-1.0.json",
   "Id": "contoso.google-workspace",
   "Name": "Google Workspace checks",
   "Description": "Checks the security settings of a Google Workspace tenant.",
@@ -71,6 +72,7 @@ cooldown when it is published; any other release starts it when each user first 
 
 | Key | Content |
 | --- | --- |
+| `$schema` | `https://maester.dev/schemas/maester-pack-1.0.json`, so editors such as VS Code check the manifest as you type. Maester checks it again when the pack is installed and loaded. |
 | `Id` | `<publisher>.<name>` in lower case. The publisher is the GitHub user or organisation that owns the repository; a pack whose publisher is not the repository owner is refused. |
 | `Version` | A semantic version, such as `1.2.0`. |
 | `RequiresMaester` | The Maester versions the pack works with, such as `>=3.1 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
