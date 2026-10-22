@@ -28,6 +28,7 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.1.2.1](./CIS.M365.1.2.1.md) | (L2) Ensure that only organizationally managed/approved public groups exist | Medium | Microsoft 365 | Teams and groups |
 | [CIS.M365.1.2.2](./CIS.M365.1.2.2.md) | (L1) Ensure sign-in to shared mailboxes is blocked | Medium | Microsoft 365 | Teams and groups |
 | [CIS.M365.1.3.1](./CIS.M365.1.3.1.md) | (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' | Medium | Microsoft 365 | Organization settings |
+| [CIS.M365.1.3.2](./CIS.M365.1.3.2.md) | (L2) Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.3](./CIS.M365.1.3.3.md) | (L2) Ensure 'External sharing' of calendars is not available | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.4](./CIS.M365.1.3.4.md) | (L1) Ensure 'User owned apps and services' is restricted | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.5](./CIS.M365.1.3.5.md) | (L1) Ensure internal phishing protection for Forms is enabled | Medium | Microsoft 365 | Organization settings |
@@ -53,6 +54,23 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | (L2) Ensure user consent to apps accessing company data on their behalf is not allowed | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | (L1) Ensure the admin consent workflow is enabled | High | Entra ID | App consent and permissions |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | (L1) Ensure that guest user access is restricted | Medium | Entra ID | External identities |
+| [CIS.M365.5.2.2.1](./CIS.M365.5.2.2.1.md) | (L1) Ensure multifactor authentication is enabled for all users in administrative roles | High | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.2](./CIS.M365.5.2.2.2.md) | (L1) Ensure multifactor authentication is enabled for all users | High | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.3](./CIS.M365.5.2.2.3.md) | (L1) Enable Conditional Access policies to block legacy authentication | High | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.4](./CIS.M365.5.2.2.4.md) | (L1) Ensure Sign-in frequency is enabled and browser sessions are not persistent for Administrative users | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.5](./CIS.M365.5.2.2.5.md) | (L2) Ensure 'Phishing-resistant MFA strength' is required for Administrators | High | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.6](./CIS.M365.5.2.2.6.md) | (L1) Enable Identity Protection user risk policies | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.7](./CIS.M365.5.2.2.7.md) | (L1) Enable Identity Protection sign-in risk policies | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.8](./CIS.M365.5.2.2.8.md) | (L2) Ensure 'sign-in risk' is blocked for medium and high risk | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.9](./CIS.M365.5.2.2.9.md) | (L1) Ensure a managed device is required for authentication | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.10](./CIS.M365.5.2.2.10.md) | (L1) Ensure a managed device is required to register security information | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.11](./CIS.M365.5.2.2.11.md) | (L1) Ensure sign-in frequency for Intune Enrollment is set to 'Every time' | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.12](./CIS.M365.5.2.2.12.md) | (L1) Ensure the device code sign-in flow is blocked | High | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.13](./CIS.M365.5.2.2.13.md) | (L1) Ensure that periodic reauthentication is required for all users | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.14](./CIS.M365.5.2.2.14.md) | (L2) Ensure trusted 'named locations' are defined | Low | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.15](./CIS.M365.5.2.2.15.md) | (L2) Ensure exclusionary geographic access controls are utilized | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.16](./CIS.M365.5.2.2.16.md) | (L2) Ensure Token Protection is enforced for session tokens | Medium | Entra ID | Conditional Access |
+| [CIS.M365.5.2.2.17](./CIS.M365.5.2.2.17.md) | (L1) Ensure authentication transfer is blocked | Medium | Entra ID | Conditional Access |
 | [CIS.M365.5.2.3.1](./CIS.M365.5.2.3.1.md) | (L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue | Medium | Entra ID | Authentication methods |
 | [CIS.M365.5.2.3.2](./CIS.M365.5.2.3.2.md) | (L1) Ensure custom banned passwords lists are used | Medium | Entra ID | Password protection |
 | [CIS.M365.5.2.3.3](./CIS.M365.5.2.3.3.md) | (L1) Ensure password protection is enabled for on-prem Active Directory | Medium | Entra ID | Password protection |
