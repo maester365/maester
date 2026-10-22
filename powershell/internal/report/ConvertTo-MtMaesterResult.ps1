@@ -174,11 +174,16 @@
 
     function GetConnectionSummary() {
         if ($__MtSession -and $__MtSession.ConnectionSummary) {
-            return @($__MtSession.ConnectionSummary | ForEach-Object {
+            return @(foreach ($entry in $__MtSession.ConnectionSummary) {
+                # A failed connection carries the whole module error. Keep its first line, as the
+                # console summary does; the full message is in the verbose stream of Connect-Maester.
+                $detail = "$($entry.Details)" -split "`r?`n" | Where-Object { $_.Trim() } | Select-Object -First 1
+                $detail = ("$detail" -replace '\s+', ' ').Trim()
+                if ($detail.Length -gt 200) { $detail = $detail.Substring(0, 197).TrimEnd() + '...' }
                 [PSCustomObject]@{
-                    Service = $_.Service
-                    Status  = $_.Status
-                    Details = $_.Details
+                    Service = "$($entry.Service)"
+                    Status  = "$($entry.Status)"
+                    Details = $detail
                 }
             })
         }

@@ -54,7 +54,8 @@ function ConvertTo-MtRedactedReportContent {
         # does not affect the speed: a single alternation of every user read from a large tenant
         # took about a minute per output. Only the remaining values (display names and escaped
         # forms, which come from the much smaller affected objects) are listed in the pattern.
-        $tokenPattern = '[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|(?<![\w.''+#~!^-])[\w.''+#~!^-]+@[\w-]+(?:\.[\w-]+)*(?![\w-])'
+        # A UPN starts on a word character, so a quote or dash before it is not taken into the match.
+        $tokenPattern = '[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}|\w[\w.''+#~!^-]*@[\w-]+(?:\.[\w-]+)*'
         $tokenRegex = [regex]::new("^(?:$tokenPattern)$", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
         $phrases = @($lookup.Keys | Where-Object { -not $tokenRegex.IsMatch($_) })
 
