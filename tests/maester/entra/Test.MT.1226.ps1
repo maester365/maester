@@ -1,7 +1,7 @@
-﻿function Test-ImmutableFederatedCredentialSubjects {
+﻿function Test-ImmutableFederatedCredentialSubject {
     <#
     .SYNOPSIS
-    GitHub and GitLab federated identity credentials should use immutable subject identifiers.
+    GitHub and GitLab federated identity credentials should use immutable subject identifiers for their subjects.
 
     .DESCRIPTION
     Examines application federated identity credentials for GitHub Actions and GitLab.
@@ -11,7 +11,7 @@
     These marker checks identify potentially mutable subjects, not full subject validity.
 
     .LINK
-    https://maester.dev/docs/commands/Test-ImmutableFederatedCredentialSubjects
+    https://maester.dev/docs/commands/Test-ImmutableFederatedCredentialSubject
 
     #>
     [MaesterTest(
