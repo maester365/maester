@@ -48,6 +48,7 @@
         $otherMethods = @($allowed | Where-Object { $phishingResistantMethods -notcontains $_ })
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
+            'No excluded applications' = @($policy.conditions.applications.excludeApplications | Where-Object { $_ }).Count -eq 0
             'Phishing-resistant strength only' = $allowed.Count -gt 0 -and $otherMethods.Count -eq 0
             'Grant controls combine as required' = $grantProblems.Count -eq 0
             'Enabled' = $policy.state -eq 'enabled'

@@ -45,6 +45,7 @@
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
+            'No excluded applications' = @($policy.conditions.applications.excludeApplications | Where-Object { $_ }).Count -eq 0
             'MFA required' = [bool](@($policy.grantControls.builtInControls) -contains 'mfa' -or $policy.grantControls.authenticationStrength.id)
             'Grant controls combine as required' = $grantProblems.Count -eq 0
             'Enabled' = $policy.state -eq 'enabled'

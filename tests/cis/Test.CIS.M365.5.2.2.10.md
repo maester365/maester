@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires a compliant or hybrid joined device when users register or change their security information.
+﻿An enabled Conditional Access policy requires a compliant device (or, as an alternative, a hybrid joined device) when users register or change their security information.
 
 An attacker who has a password and can register their own authentication method controls the account from then on. Limiting registration to managed devices stops that persistence step from an unmanaged machine.
 

@@ -2,7 +2,7 @@
     BeforeAll {
         Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
-        Use-MtModuleFunction -Name Test-MtCisGeographicAccessControls, Test-MtCisTokenProtection, Test-MtCisPhishingResistantMfaForAdministrators
+        Use-MtModuleFunction -Name Test-MtCisGeographicAccessControls, Test-MtCisTokenProtection, Test-MtCisPhishingResistantMfaForAdministrators, Test-MtCisMfaForAllUsers, Test-MtCisManagedDeviceForAuthentication
         $script:adminRoleIds = @(InModuleScope Maester { Get-MtCisAdministratorRole | ForEach-Object { $_.Id } })
 
         function New-TestPolicy {
@@ -108,6 +108,48 @@
             $script:policy = New-TestPolicy -IncludeLocations @('country-location') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
 
             Test-MtCisGeographicAccessControls | Should -BeTrue
+        }
+
+        It 'passes a block policy for an untrusted IP location with a trusted-location exclusion' {
+            $script:namedLocations += [PSCustomObject]@{ '@odata.type' = '#microsoft.graph.ipNamedLocation'; id = 'untrusted-ip'; isTrusted = $false }
+            $script:policy = New-TestPolicy -IncludeLocations @('untrusted-ip') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
+
+            Test-MtCisGeographicAccessControls | Should -BeTrue
+        }
+
+        It 'fails a block policy that includes a trusted IP location' {
+            $script:namedLocations += [PSCustomObject]@{ '@odata.type' = '#microsoft.graph.ipNamedLocation'; id = 'trusted-ip'; isTrusted = $true }
+            $script:policy = New-TestPolicy -IncludeLocations @('trusted-ip') -ExcludeLocations @('trusted-location') -BuiltInControls @('block')
+
+            Test-MtCisGeographicAccessControls | Should -BeFalse
+        }
+    }
+
+    Context 'CIS.M365.5.2.2.2 application exclusions' {
+        It 'passes an MFA policy for all users and all apps' {
+            $script:policy = New-TestPolicy -BuiltInControls @('mfa')
+
+            Test-MtCisMfaForAllUsers | Should -BeTrue
+        }
+
+        It 'fails when the policy excludes an application' {
+            $script:policy = New-TestPolicy -BuiltInControls @('mfa') -ExcludeApplications @('00000002-0000-0ff1-ce00-000000000000')
+
+            Test-MtCisMfaForAllUsers | Should -BeFalse
+        }
+    }
+
+    Context 'CIS.M365.5.2.2.9 managed device' {
+        It 'passes when a compliant device is required' {
+            $script:policy = New-TestPolicy -BuiltInControls @('compliantDevice', 'domainJoinedDevice')
+
+            Test-MtCisManagedDeviceForAuthentication | Should -BeTrue
+        }
+
+        It 'fails when only a hybrid joined device is required' {
+            $script:policy = New-TestPolicy -BuiltInControls @('domainJoinedDevice')
+
+            Test-MtCisManagedDeviceForAuthentication | Should -BeFalse
         }
     }
 

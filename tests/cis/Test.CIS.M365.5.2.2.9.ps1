@@ -1,10 +1,10 @@
 ﻿function Test-MtCisManagedDeviceForAuthentication {
     <#
     .SYNOPSIS
-        Checks that a Conditional Access policy requires a compliant or hybrid joined device for all users and apps.
+        Checks that a Conditional Access policy requires a compliant device for all users and apps.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy requires a compliant or hybrid joined device, for all users in all cloud apps, using the OR operator.
+        Checks that at least one enabled Conditional Access policy requires a compliant device (a hybrid joined device may be allowed as an alternative), for all users in all cloud apps, using the OR operator.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.9, L1)
 
     .EXAMPLE
@@ -46,7 +46,7 @@
         $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AllUsers)
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
-            'Compliant or hybrid joined device required' = ($grants -contains 'compliantDevice' -or $grants -contains 'domainJoinedDevice') -and $otherGrants.Count -eq 0
+            'Compliant device required' = $grants -contains 'compliantDevice' -and $otherGrants.Count -eq 0
             'Operator is OR' = $policy.grantControls.operator -eq 'OR'
             'Enabled' = $policy.state -eq 'enabled'
         }
