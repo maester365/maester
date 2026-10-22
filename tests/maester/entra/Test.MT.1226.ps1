@@ -37,15 +37,13 @@
     param()
 
     $findings = [System.Collections.Generic.List[object]]::new()
-    $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta -ErrorAction Stop)
+    $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta)
     $appsWithFic = $apps | Where-Object { $null -ne $_.federatedIdentityCredentials -and $_.federatedIdentityCredentials.Count -gt 0 }
 
     if ($appsWithFic.Count -gt 0) {
         foreach ($app in $appsWithFic) {
             Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
-            $federatedCredentials = @(Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/federatedIdentityCredentials" -ApiVersion beta -ErrorAction Stop)
-
-            foreach ($cred in ($federatedCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
+            foreach ($cred in ($app.federatedIdentityCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
                 $hasMutableSubject = $false
                 switch -Regex ($cred.issuer) {
                     'token.actions.githubusercontent.com' {
@@ -76,7 +74,6 @@
                 }
             }
         }
-
         $passed = $findings.Count -eq 0
         $resultMarkdown = "Scanned $($apps.Count) applications. "
         if ($passed) {
@@ -96,7 +93,7 @@
         $null = Add-MtTestResultDetail -Result $resultMarkdown
         return $passed
     } else {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No applications with federated credentials were found.'
+        Add-MtTestResultDetail -SkippedBecause NotApplicable -Description 'No applications with federated credentials were found.'
         return $null
     }
 }
