@@ -79,7 +79,21 @@ jobs:
           $notes = if ($warnings.Count -gt 0) {
               "### Needs attention before merging`n`n" + (($warnings | ForEach-Object { "- $_" }) -join "`n")
           } else { '' }
-          "notes<<EIDSCA_NOTES`n$notes`nEIDSCA_NOTES" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          # A random delimiter, so that no text from the EIDSCA config can end the output early.
+          $delimiter = "EIDSCA_NOTES_$([guid]::NewGuid().ToString('N'))"
+          "notes<<$delimiter`n$notes`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      # A check added or removed upstream changes the default selections, which the golden test compares with
+      # selection.json. Only selection.json is refreshed; the other golden files are the frozen 2.x snapshot.
+      - name: Update the golden selection fixture
+        shell: pwsh
+        run: |
+          Install-Module Pester -RequiredVersion 5.7.1 -Force -Scope CurrentUser -SkipPublisherCheck
+          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Force -Scope CurrentUser
+          $golden = Join-Path $env:RUNNER_TEMP 'golden'
+          pwsh -NoProfile -File ./build/golden/Export-MtGoldenFixture.ps1 -OutputPath $golden
+          if ($LASTEXITCODE -ne 0) { throw "Export-MtGoldenFixture.ps1 failed with exit code $LASTEXITCODE." }
+          Copy-Item -LiteralPath (Join-Path $golden 'selection.json') -Destination ./powershell/tests/fixtures/golden/selection.json -Force
 
       - name: Generate maester-bot app token
         id: app-token
@@ -109,7 +123,7 @@ jobs:
             The EIDSCA config is the source of each check's severity, title, description, recommended value and remediation. The Maester classification it does not carry (`Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control`, `RelatedProduct`) is in `build/eidsca/eidsca-test-metadata.json`.
 
             Reviewer checklist:
-            - A new check needs a row in `build/eidsca/eidsca-test-metadata.json`, chosen with the [attribute rubric](https://maester.dev/docs/next/writing-tests/attribute-rubric); the unit tests fail until it has one.
+            - A new check needs a row in `build/eidsca/eidsca-test-metadata.json`, chosen with the [attribute rubric](https://maester.dev/docs/next/writing-tests/attribute-rubric); the unit tests fail until it has one. Add the row in a separate pull request to `main`, not to this branch: each weekly run rebuilds this branch from `main` and drops commits made to it. Then run the `eidsca-sync` workflow to regenerate this pull request with the row.
             - Check changed query logic and skip conditions in `powershell/internal/generated/eidsca/` against a tenant.
 
             ${{ steps.update.outputs.notes }}

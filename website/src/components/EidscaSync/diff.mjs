@@ -120,7 +120,9 @@ export function diffEidsca({ upstream, repo, metadata }) {
         id,
         kind: "new",
         title: `${up.area.ControlName} - ${up.item.DisplayName}`,
-        action: "Merge the EIDSCA sync pull request to add the test" + (rows.has(id) ? "." : ", and add its row to eidsca-test-metadata.json."),
+        action: rows.has(id)
+          ? "Merge the EIDSCA sync pull request to add the test."
+          : "Add its row to eidsca-test-metadata.json in a pull request to main, then merge the EIDSCA sync pull request to add the test.",
       });
     } else if (!upGenerated && localGenerated) {
       differences.push({
@@ -151,7 +153,7 @@ export function diffEidsca({ upstream, repo, metadata }) {
         id,
         kind: "metadata",
         title: `${up.area.ControlName} - ${up.item.DisplayName}`,
-        action: "Add a row to build/eidsca/eidsca-test-metadata.json with the Maester classification, chosen with the attribute rubric.",
+        action: "Add a row to build/eidsca/eidsca-test-metadata.json with the Maester classification, chosen with the attribute rubric, in a pull request to main.",
       });
     }
   }
