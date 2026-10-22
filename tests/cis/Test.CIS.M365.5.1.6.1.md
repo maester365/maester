@@ -16,7 +16,7 @@ By specifying allowed domains for collaborations, external user's companies are 
 
 This could make collaboration more difficult if the setting is not quickly updated when a new domain is identified as "allowed".
 
-#### Remediation action:
+#### Remediation action
 
 To remediate using the UI:
 

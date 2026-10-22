@@ -16,7 +16,7 @@ Restrictions may introduce some operational friction, particularly in fast-paced
 
 This can increase reliance on IT teams for routine tasks, potentially causing delays. However, these impacts can be minimized through automated approval workflows and clear governance processes.
 
-#### Remediation
+#### Remediation action
 
 1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com/).
 2. Click to expand **Entra ID** > **Groups** select **General**.

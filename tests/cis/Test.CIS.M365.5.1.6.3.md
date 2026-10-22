@@ -12,7 +12,7 @@ Restricting who can invite guests limits the exposure the organization might fac
 
 This introduces an obstacle to collaboration by restricting who can invite guest users to the organization. Designated Guest Inviters must be assigned, and an approval process established and clearly communicated to all users.
 
-#### Remediation action:
+#### Remediation action
 
 To remediate using the UI:
 

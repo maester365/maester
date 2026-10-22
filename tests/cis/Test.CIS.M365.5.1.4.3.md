@@ -1,15 +1,22 @@
-﻿Members of the Global Administrator role are not made local administrators of every device that joins Microsoft Entra ID.
+﻿5.1.4.3 (L1) Ensure the GA role is not added as a local administrator during Entra join
 
-When this setting is on, a single cloud admin account has administrative rights on every joined endpoint. Anyone who compromises that account, or one device where the admin signs in, can move to all the others, and tenant-wide admin credentials end up cached on workstations.
+This setting controls whether the Global Administrator role is automatically added to the local administrators group on a device during the Microsoft Entra join process.
 
-Use a dedicated, limited role such as Microsoft Entra Joined Device Local Administrator, or Intune-managed local administrator assignments and LAPS, for support tasks.
+The recommended state is **No**.
+
+#### Rationale
+
+System administrators may be inclined to use over-privileged accounts for convenience when managing devices. Enforcing this control helps discourage that behavior by requiring administrative actions to be performed using accounts specifically designated for local administration. This promotes adherence to the principle of least privilege and reduces the risk associated with using high-level roles for routine tasks. For example, using a Global Administrator account to authenticate to a compromised endpoint and continue performing tasks significantly increases the risk of broader organizational compromise.
+
+#### Impact
+
+Restricting the default behavior and requiring manual assignment to least privilege roles introduces minor administrative overhead. During the Microsoft Entra join process, the Microsoft Entra Joined Device Local Administrator role is automatically added to the device's local administrators group and should be used instead.
 
 #### Remediation action
 
-1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
-2. Go to **Entra ID** > **Devices** > [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Expand **Entra ID** > **Devices** and select [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
 3. Set **Global administrator role is added as local administrator on the device during Microsoft Entra join (Preview)** to **No**.
-4. Select **Save**.
 
 #### Related links
 

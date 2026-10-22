@@ -44,20 +44,19 @@ By default, until you manually make changes in the admin center, your Android En
 
 If you block Android Enterprise work profile enrollment on personal devices, only corporate-owned devices can enroll with personally owned work profiles.
 
-#### Remediation
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com)
 2. Select **Devices** and then under **Device onboarding** click **Enrollment**
 3. Under Enrollment options select **Device platform restriction**.
-4. Inspect the policies listed under Device type restrictions
-
-* For the **Default** priority policy, click **All Users**.
-* Select **Properties**.
-
+4. Inspect the policies listed under **Device type restrictions**:
+    * For the **Default** priority policy, click **All Users**.
+    * Select **Properties**.
 5. Click **Edit** to change **Platform settings**.
 6. In the **Personally owned** column set each platform to **Block**.
 
 >Note: Blocking platforms that are not used in the organization is a more restrictive best practice and will also effectively block enrollment of personally owned devices for the selected platform, ensuring compliance for this recommendation.
+
 #### Related links
 
 * [Microsoft Intune admin center - Enrollment restrictions](https://intune.microsoft.com/#view/Microsoft_Intune_Enrollment/EnrollmentRestrictionsMenuBlade/~/overview)

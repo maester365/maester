@@ -1,14 +1,53 @@
-﻿The default app management policy limits how long a client secret can be valid, to 180 days or less.
+﻿5.1.5.4 (L1) Ensure password lifetime for applications does not exceed 180 days
 
-A client secret that never expires stays useful to an attacker for as long as nobody notices that it leaked. A short maximum lifetime forces rotation, which limits the window in which a leaked secret can be used and removes forgotten secrets. The same limit also caps how long a secret that an attacker adds to an application stays usable.
+In Microsoft Entra ID, applications and service principals can authenticate using password credentials (also referred to as client secrets). This setting enforces a tenant-wide maximum lifetime for new password credentials added to any application registration or service principal. When enabled, any client secret created must have an expiration date that falls within the configured maximum, which for this recommendation is 180 days or less. The policy is implemented through the default app management policy and applies to all applications unless scoped exceptions are configured.
 
-The restriction applies to new secrets added after it takes effect, on applications and service principals created after the date set in the restriction. Make sure rotation is automated or monitored before enforcing, because a secret that expires unexpectedly breaks the application that uses it.
+The setting does not retroactively shorten or invalidate existing password credentials; secrets created before the policy was enabled remain valid until they expire or are explicitly removed.
+
+The recommended state is **Restrict max password lifetime** set to **On: 180 days or less**.
+
+#### Rationale
+
+Long-lived client secrets extend the window of exploitation if a credential is compromised. A secret valid for multiple years that is never rotated remains usable even if it was leaked in source code, a build log, or a security breach long after the initial exposure. Enforcing a maximum lifetime of 180 days ensures that client secrets expire on a regular basis, limiting the period during which a stolen credential remains valid and reducing the blast radius of a compromise. This control also encourages teams to establish automated rotation practices, which further reduces reliance on static, long-lived credentials.
+
+#### Impact
+
+Any automated process, pipeline, or script that creates client secrets with a lifetime exceeding the configured maximum will fail once the policy is enabled, unless an exception is configured. Organizations will need to update secret creation workflows to specify expiration dates within the allowed range and establish rotation processes for secrets approaching expiry.
 
 #### Remediation action
 
-1. Connect to Microsoft Graph with an account that has the Global Administrator role, or with the Security Administrator and Application Administrator roles.
-2. Retrieve the current default app management policy before sending an update. In each of `applicationRestrictions` and `servicePrincipalRestrictions`, find the `passwordCredentials` entry whose `restrictionType` is `passwordLifetime`. Modify that entry in place when it exists; add one only when no matching entry exists. Preserve every other `passwordCredentials` entry in both collections in the update. Sending only the target restriction can disable other active restrictions.
-3. Set `isEnabled` to `true`. For each matching `passwordLifetime` entry, set `maxLifetime` to `P180D` or shorter and `state` to `enabled`, and keep its existing `restrictForAppsCreatedAfterDateTime` only if it is earlier than the oldest object in that collection; otherwise, use a date before that oldest object. When choosing the oldest service principal, treat a null `createdDateTime` as January 1, 2019, as Microsoft Graph does. Apply the same cutoff rule to a new entry. If a collection is empty, use the tenant creation date or an earlier date as its cutoff. Objects created before their collection's cutoff date are exempt.
+To remediate using the UI:
+
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Expand **Entra ID** and select **Enterprise apps**.
+3. Under **Security** select [**Application policies**](https://aka.ms/app-mgmt-policy-ux).
+4. Select **Restrict max password lifetime**.
+5. Set **Status** to **On**.
+6. Set the maximum lifetime to **180** days or less.
+7. Set **Applies to** to one of the following:
+    * **All applications**
+    * **All applications with exclusions** (if using exclusions, ensure they are reviewed annually).
+8. Set **Only apply to apps created after** to a desired date or leave it unconfigured.
+9. Select **Save and close** to apply the changes.
+
+To remediate using the Microsoft Graph API:
+
+> **Important:** The PATCH request replaces the `passwordCredentials` array in full. Retrieve the current policy first and include all existing entries in the request body to avoid overwriting other configured restrictions or exclusions.
+
+1. Execute a **GET** request to retrieve the current policy: `v1.0/policies/defaultAppManagementPolicy`
+2. Modify the returned JSON to reflect the following changes:
+   * Set `isEnabled` to `true`.
+   * Under `applicationRestrictions.passwordCredentials`, locate the entry where `restrictionType` is `passwordLifetime` and set the following:
+      * `state` to `enabled`
+      * `maxLifetime` to `P180D` or a shorter duration.
+      * `restrictForAppsCreatedAfterDateTime` to `0001-01-01T00:00:00Z` or a desired date.
+   * Under `servicePrincipalRestrictions.passwordCredentials`, locate the entry where `restrictionType` is `passwordLifetime` and set the following:
+      * `state` to `enabled`
+      * `maxLifetime` to `P180D` or a shorter duration.
+      * `restrictForAppsCreatedAfterDateTime` to `0001-01-01T00:00:00Z` or a desired date.
+3. Execute a **PATCH** request to the same URI with the modified JSON in the request body to apply the changes.
+
+> **Note:** Maester also checks that the restriction covers every existing application and service principal. Objects created before the **Only apply to apps created after** date (`restrictForAppsCreatedAfterDateTime`) are exempt from the restriction, so the check fails while any exist. Leave the date unconfigured or set it to `0001-01-01T00:00:00Z`, or to a date before your oldest application and service principal.
 
 #### Related links
 

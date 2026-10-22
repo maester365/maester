@@ -1,16 +1,28 @@
-﻿Windows Local Administrator Password Solution (LAPS) is turned on for the tenant, so that the password of the built-in local administrator can be managed and backed up in Microsoft Entra ID.
+﻿5.1.4.5 (L1) Ensure Local Administrator Password Solution is enabled
 
-When every device in a fleet has the same local administrator password, an attacker who gets it from one machine can use it on all the others. LAPS gives each device a unique, regularly rotated password and stores it centrally so that authorised support staff can retrieve it when they need to.
+Local Administrator Password Solution (LAPS) is the management of local account passwords on Windows devices. LAPS provides a solution to securely manage and retrieve the built-in local admin password. With cloud version of LAPS, customers can enable storing and rotation of local admin passwords for both Microsoft Entra and Microsoft Entra hybrid join devices.
 
-This setting turns the capability on in the tenant. You also need to configure the LAPS policy on the devices, for example with Microsoft Intune.
+The recommended state is **Yes**.
+
+#### Rationale
+
+Managing local Administrator passwords across multiple systems can be challenging. As a result, many organizations opt to configure the same password on all workstations and/or member servers during deployment. However, this practice introduces a significant security risk: if an attacker compromises one system and obtains the local Administrator password, they can potentially gain administrative access to every other system using that same password.
+
+Additionally, enabling LAPS at the tenant level is a prerequisite for implementing LAPS-related recommendations outlined in the CIS Microsoft Intune for Windows Workstation Benchmarks.
+
+> **Note:** Enabling LAPS at the tenant level does not automatically enforce password rotation for built-in Administrator accounts. To activate LAPS functionality, appropriate policies must be configured in Intune Settings Catalog or under the **Endpoint security** > **Account protection** blade. The CIS Microsoft 365 Foundations Benchmark focuses on hardening at the tenant level, while the CIS Intune Benchmarks focus on endpoint-specific configurations.
+
+#### Impact
+
+Enabling LAPS requires some additional operational overhead.
+
+Although unlikely if a password is rotated and not retrieved or backed up before the device becomes unreachable (e.g., due to hardware failure, network isolation, or being decommissioned), administrators may be locked out.
 
 #### Remediation action
 
-1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
-2. Go to **Entra ID** > **Devices** > [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Expand **Entra ID** > **Devices** and select [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
 3. Set **Enable Microsoft Entra Local Administrator Password Solution (LAPS)** to **Yes**.
-4. Select **Save**.
-5. Create a LAPS policy in Microsoft Intune under **Endpoint security** > **Account protection** to make devices back up their password.
 
 #### Related links
 

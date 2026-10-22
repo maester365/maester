@@ -16,7 +16,7 @@ Using other options for your directory synchronization may be less resilient as 
 
 Compliance or regulatory restrictions may exist, depending on the organization's business sector, that preclude hashed versions of passwords from being securely transmitted to cloud data centers.
 
-#### Remediation action:
+#### Remediation action
 
 To remediate using the on-premises Microsoft Entra Connect tool:
 

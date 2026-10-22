@@ -1,15 +1,22 @@
-﻿Users who join a device to Microsoft Entra ID do not automatically become local administrators; this is limited to selected users or groups, or to nobody.
+﻿5.1.4.4 (L1) Ensure local administrator assignment is limited during Entra join
 
-Local administrators can disable security tools, install software, dump credentials and change the device configuration. Making everyone who joins a device an administrator removes the barrier that endpoint protection relies on.
+This setting determines if the Microsoft Entra user registering their device as Microsoft Entra join will be added to the local administrators group. This setting applies only once during the actual registration of the device as Microsoft Entra join.
 
-Grant local administrator rights only to the people who need them, through a group or an Intune policy, and prefer time-limited elevation.
+The recommended state is **Selected** or **None**.
+
+#### Rationale
+
+To uphold the principle of least privilege, the assignment of local administrator rights during Microsoft Entra join should be centrally managed using appropriate built-in roles through Intune. This approach minimizes the number of disparate users with elevated privileges, reducing the attack surface and potential for misuse. Centralized management also streamlines the deprovisioning process, ensuring that administrative access can be revoked efficiently and consistently across all devices, rather than requiring manual intervention on each individual endpoint.
+
+#### Impact
+
+Restricting the default behavior and requiring manual assignment to built-in roles introduces minor administrative overhead. During the Microsoft Entra join process, the Microsoft Entra Joined Device Local Administrator role is automatically added to the device's local administrators group and should be used instead.
 
 #### Remediation action
 
-1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
-2. Go to **Entra ID** > **Devices** > [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
-3. Set **Registering user is added as local administrator on the device during Microsoft Entra join (Preview)** to **Selected** and choose the group, or to **None**.
-4. Select **Save**.
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Expand **Entra ID** > **Devices** and select [**Device settings**](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices).
+3. Set **Registering user is added as local administrator on the device during Microsoft Entra join (Preview)** to **Selected** (and add members) or **None**.
 
 #### Related links
 
