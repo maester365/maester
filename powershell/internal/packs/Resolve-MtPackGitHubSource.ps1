@@ -73,15 +73,15 @@ function Resolve-MtPackGitHubSource {
         else {
             # The commits API also accepts SHA aliases and expressions. Only real repository refs
             # may bypass the default-branch/release reachability rule for explicit commits.
-            $names = if ($requested.StartsWith('refs/heads/') -or $requested.StartsWith('refs/tags/')) {
+            $Names = if ($requested.StartsWith('refs/heads/') -or $requested.StartsWith('refs/tags/')) {
                 @($requested.Substring(5))
             } else { @("heads/$requested", "tags/$requested") }
-            $namedRef = $null
-            foreach ($name in $names) {
-                $candidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($name))" -AllowNotFound
-                if ($candidateRef -and $candidateRef.ref -ceq "refs/$name") { $namedRef = $candidateRef; break }
+            $NamedRef = $null
+            foreach ($Name in $Names) {
+                $CandidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($Name))" -AllowNotFound
+                if ($CandidateRef -and $CandidateRef.ref -ceq "refs/$Name") { $NamedRef = $CandidateRef; break }
             }
-            if ($namedRef) { $commit = & $commitOf ([string]$namedRef.ref) }
+            if ($NamedRef) { $commit = & $commitOf ([string]$NamedRef.ref) }
             elseif ($requested -match '^[0-9a-f]{1,40}$') {
                 # Hexadecimal branch/tag names are legitimate; only an input without a real ref is a SHA alias.
                 $commit = & $commitOf $requested

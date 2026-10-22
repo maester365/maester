@@ -28,40 +28,43 @@ function Get-MtPackDigest {
     $signed = @('.ps1', '.psm1', '.psd1', '.ps1xml')
     $latin1 = [System.Text.Encoding]::Latin1
 
-    $items = @((Get-Item -LiteralPath $root -Force -ErrorAction Stop)) + @(Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction Stop)
-    $files = foreach ($item in $items) {
-        $relative = [System.IO.Path]::GetRelativePath($root, $item.FullName).Replace('\', '/')
-        if ($relative -eq '.git' -or $relative.StartsWith('.git/', [System.StringComparison]::Ordinal)) { continue }
-        if ($item.Name.Contains(':')) { throw "The pack contains an unsafe path: $($item.FullName)." }
+    $Items = @((Get-Item -LiteralPath $root -Force -ErrorAction Stop)) + @(Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction Stop)
+    $files = foreach ($Item in $Items) {
+        $Relative = [System.IO.Path]::GetRelativePath($root, $Item.FullName).Replace('\', '/')
+        if ($Relative -eq '.git' -or $Relative.StartsWith('.git/', [System.StringComparison]::Ordinal)) { continue }
+        if ($Item.Name.Contains(':')) { throw "The pack contains an unsafe path: $($Item.FullName)." }
         if ($IsWindows) {
-            $streams = @(Get-Item -LiteralPath $item.FullName -Stream '*' -ErrorAction Stop | Where-Object Stream -NE ':$DATA')
-            if ($streams.Count -gt 0) { throw "The pack contains an alternate data stream: $($item.FullName):$($streams[0].Stream)." }
+            $Streams = @(Get-Item -LiteralPath $Item.FullName -Stream '*' -ErrorAction Stop | Where-Object Stream -NE ':$DATA')
+            if ($Streams.Count -gt 0) {
+                $Exception = [System.IO.InvalidDataException]::new("The pack contains an alternate data stream: $($Item.FullName):$($Streams[0].Stream).")
+                $PSCmdlet.ThrowTerminatingError([System.Management.Automation.ErrorRecord]::new($Exception, 'MtPackAlternateDataStream', [System.Management.Automation.ErrorCategory]::InvalidData, $Item.FullName))
+            }
         }
-        if ($item.PSIsContainer) { continue }
-        $bytes = [System.IO.File]::ReadAllBytes($item.FullName)
-        if ($item.Extension.ToLowerInvariant() -in $signed) {
+        if ($Item.PSIsContainer) { continue }
+        $bytes = [System.IO.File]::ReadAllBytes($Item.FullName)
+        if ($Item.Extension.ToLowerInvariant() -in $signed) {
             # Latin-1 maps every byte to one character, so the cut lands on the same byte offset.
-            $text = $latin1.GetString($bytes)
-            $marker = [regex]::Match($text, '(?m)^# SIG # Begin signature block\r?\n(?:# [A-Za-z0-9+/=]+\r?\n)+# SIG # End signature block(?:\r?\n)?\z')
-            if ($marker.Success) {
+            $Text = $latin1.GetString($bytes)
+            $Marker = [regex]::Match($Text, '(?m)^# SIG # Begin signature block\r?\n(?:# [A-Za-z0-9+/=]+\r?\n)+# SIG # End signature block(?:\r?\n)?\z')
+            if ($Marker.Success) {
                 # A line-shaped marker can still be inside a here-string or block comment.
-                $tokens = $null
-                $parseErrors = $null
-                $null = [System.Management.Automation.Language.Parser]::ParseInput($text, [ref]$tokens, [ref]$parseErrors)
-                $comment = $tokens | Where-Object { $_.Kind -eq 'Comment' -and $_.Extent.StartOffset -eq $marker.Index } | Select-Object -First 1
-                if ($comment) {
-                    $cut = $marker.Index
-                    if ($cut -gt 0 -and $text[$cut - 1] -eq "`n") {
-                        $cut--
-                        if ($cut -gt 0 -and $text[$cut - 1] -eq "`r") { $cut-- }
+                $Tokens = $null
+                $ParseErrors = $null
+                $null = [System.Management.Automation.Language.Parser]::ParseInput($Text, [ref]$Tokens, [ref]$ParseErrors)
+                $Comment = $Tokens | Where-Object { $_.Kind -eq 'Comment' -and $_.Extent.StartOffset -eq $Marker.Index } | Select-Object -First 1
+                if ($Comment) {
+                    $Cut = $Marker.Index
+                    if ($Cut -gt 0 -and $Text[$Cut - 1] -eq "`n") {
+                        $Cut--
+                        if ($Cut -gt 0 -and $Text[$Cut - 1] -eq "`r") { $Cut-- }
                     }
-                    $bytes = $latin1.GetBytes($text.Substring(0, $cut))
+                    $bytes = $latin1.GetBytes($Text.Substring(0, $Cut))
                 }
             }
         }
         [pscustomobject]@{
-            Path   = $relative
-            Size   = $item.Length
+            Path   = $Relative
+            Size   = $Item.Length
             Sha256 = [System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
         }
     }

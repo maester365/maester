@@ -23,74 +23,85 @@ function Get-MtPackBlocklist {
         [Parameter()] [switch] $Refresh
     )
 
-    $result = { param($available, $serial, $entries, $warning, $expires) [pscustomobject]@{ Available = $available; Serial = $serial; Entries = @($entries); Warning = $warning; Expires = $expires; ReadAt = [datetime]::UtcNow } }
-    if ($script:__MtPackBlocklist -and -not $Refresh -and ([datetime]::UtcNow - $script:__MtPackBlocklist.ReadAt).TotalMinutes -lt 60) {
-        $cached = $script:__MtPackBlocklist
-        if (-not $cached.Available -or ($cached.Expires -and ([datetime]$cached.Expires).ToUniversalTime() -gt [datetime]::UtcNow)) {
-            if ($RequireFresh -and (-not $cached.Available -or $cached.Warning)) {
+    $Now = Get-Date -AsUTC
+    $Result = { param($Available, $Serial, $Entries, $Warning, $Expires, $FetchedAt) [pscustomobject]@{ Available = $Available; Serial = $Serial; Entries = @($Entries); Warning = $Warning; Expires = $Expires; FetchedAt = $FetchedAt; ReadAt = $Now } }
+    $CachedAt = if ($script:__MtPackBlocklist.Available) { $script:__MtPackBlocklist.FetchedAt } else { $script:__MtPackBlocklist.ReadAt }
+    if ($CachedAt -and -not $Refresh -and ($Now - ([datetime]$CachedAt).ToUniversalTime()).TotalMinutes -ge 0 -and ($Now - ([datetime]$CachedAt).ToUniversalTime()).TotalMinutes -lt 60) {
+        $Cached = $script:__MtPackBlocklist
+        if (-not $Cached.Available -or ($Cached.Expires -and ([datetime]$Cached.Expires).ToUniversalTime() -gt $Now)) {
+            if ($RequireFresh -and (-not $Cached.Available -or $Cached.Warning)) {
                 throw 'A fresh pack blocklist is not available. PackPolicy.RequireFreshBlocklist is set, so no pack runs.'
             }
-            return $cached
+            return $Cached
         }
         # Expiry is signed content; the one-hour session cache must not extend it.
         $Refresh = $true
     }
 
-    $trust = Get-MtPackTrust
-    $keys = @($trust.Blocklist.Keys | Where-Object { $_.KeyId -and $_.PublicKey })
-    if ($keys.Count -eq 0) {
+    $Trust = Get-MtPackTrust
+    $Keys = @($Trust.Blocklist.Keys | Where-Object { $_.KeyId -and $_.PublicKey })
+    if ($Keys.Count -eq 0) {
         if ($RequireFresh) { throw 'No pack blocklist key is configured. PackPolicy.RequireFreshBlocklist is set, so no pack runs.' }
         Write-Verbose 'No pack blocklist key is configured yet, so there is no blocklist to check.'
-        $script:__MtPackBlocklist = & $result $false 0 @() $null
+        $script:__MtPackBlocklist = & $Result $false 0 @() $null
         return $script:__MtPackBlocklist
     }
 
-    $cacheFile = (Get-MtPackHome).Blocklist
-    $cache = $null
-    if (Test-Path -LiteralPath $cacheFile -PathType Leaf) {
-        try { $cache = Get-Content -LiteralPath $cacheFile -Raw | ConvertFrom-Json -ErrorAction Stop } catch { $cache = $null }
+    $CacheFile = (Get-MtPackHome).Blocklist
+    $Cache = $null
+    if (Test-Path -LiteralPath $CacheFile -PathType Leaf) {
+        try { $Cache = Get-Content -LiteralPath $CacheFile -Raw | ConvertFrom-Json -ErrorAction Stop } catch { $Cache = $null }
     }
-    $highest = if ($cache -and $cache.PSObject.Properties['HighestSerial']) { [long]$cache.HighestSerial } else { 0 }
-    $fresh = $cache -and $cache.PSObject.Properties['FetchedAt'] -and ([datetime]::UtcNow - ([datetime]$cache.FetchedAt).ToUniversalTime()).TotalMinutes -lt 60
+    $Highest = if ($Cache -and $Cache.PSObject.Properties['HighestSerial']) { [long]$Cache.HighestSerial } else { 0 }
+    $FetchedAt = if ($Cache -and $Cache.PSObject.Properties['FetchedAt']) { ([datetime]$Cache.FetchedAt).ToUniversalTime() } else { $null }
+    $CachedList = $null
+    if ($Cache -and $Cache.PSObject.Properties['Envelope']) {
+        $CachedList = ConvertFrom-MtPackSignedList -Envelope $Cache.Envelope -Key $Keys
+        if ($CachedList.Error) { $CachedList = $null }
+    }
+    $Now = Get-Date -AsUTC
+    $Fresh = $FetchedAt -and ($Now - $FetchedAt).TotalMinutes -ge 0 -and ($Now - $FetchedAt).TotalMinutes -lt 60 -and
+        $CachedList -and $CachedList.Payload.Expires -and ([datetime]$CachedList.Payload.Expires).ToUniversalTime() -gt $Now
 
-    $envelope = $null
-    $fetchError = $null
-    if (-not $fresh -or $Refresh) {
+    $Envelope = $null
+    $FetchError = $null
+    if (-not $Fresh -or $Refresh) {
         try {
-            $envelope = Invoke-RestMethod -Uri $trust.Blocklist.Url -TimeoutSec 5 -Headers @{ 'User-Agent' = 'Maester' } -ErrorAction Stop
-            if (-not $envelope) { $fetchError = 'the blocklist response was empty' }
-        } catch { $fetchError = $_.Exception.Message }
+            $Envelope = Invoke-RestMethod -Uri $Trust.Blocklist.Url -TimeoutSec 5 -Headers @{ 'User-Agent' = 'Maester' } -ErrorAction Stop
+            if (-not $Envelope) { $FetchError = 'the blocklist response was empty' }
+        } catch { $FetchError = $_.Exception.Message }
     }
-    $list = $null
-    if ($envelope) {
-        $list = ConvertFrom-MtPackSignedList -Envelope $envelope -Key $keys
-        if ($list.Error) { $fetchError = $list.Error; $list = $null }
-        elseif ([long]$list.Payload.Serial -lt $highest) { $fetchError = "the blocklist has serial $($list.Payload.Serial), lower than $highest seen before"; $list = $null }
+    $List = $null
+    if ($Envelope) {
+        $List = ConvertFrom-MtPackSignedList -Envelope $Envelope -Key $Keys
+        if ($List.Error) { $FetchError = $List.Error; $List = $null }
+        elseif ([long]$List.Payload.Serial -lt $Highest) { $FetchError = "the blocklist has serial $($List.Payload.Serial), lower than $Highest seen before"; $List = $null }
+        elseif (-not $List.Payload.Expires -or ([datetime]$List.Payload.Expires).ToUniversalTime() -le (Get-Date -AsUTC)) { $FetchError = 'the blocklist is expired'; $List = $null }
         else {
-            $highest = [long]$list.Payload.Serial
-            $folder = Split-Path -Path $cacheFile -Parent
-            if (-not (Test-Path -LiteralPath $folder)) { $null = New-Item -Path $folder -ItemType Directory -Force }
-            [System.IO.File]::WriteAllText($cacheFile, ([ordered]@{ FetchedAt = [datetime]::UtcNow.ToString('o'); HighestSerial = $highest; Envelope = $envelope } | ConvertTo-Json -Depth 10))
+            $FetchedAt = Get-Date -AsUTC
+            $Highest = [long]$List.Payload.Serial
+            $Folder = Split-Path -Path $CacheFile -Parent
+            if (-not (Test-Path -LiteralPath $Folder)) { $null = New-Item -Path $Folder -ItemType Directory -Force }
+            [System.IO.File]::WriteAllText($CacheFile, ([ordered]@{ FetchedAt = $FetchedAt.ToString('o'); HighestSerial = $Highest; Envelope = $Envelope } | ConvertTo-Json -Depth 10))
         }
     }
-    $warning = $null
-    if (-not $list -and $cache -and $cache.PSObject.Properties['Envelope']) {
-        $list = ConvertFrom-MtPackSignedList -Envelope $cache.Envelope -Key $keys
-        if ($list.Error) { $list = $null }
-        elseif ($fetchError) { $warning = "The pack blocklist could not be refreshed ($fetchError); the cached list from $($cache.FetchedAt) is used." }
+    $Warning = $null
+    if (-not $List -and $CachedList) {
+        $List = $CachedList
+        if ($FetchError) { $Warning = "The pack blocklist could not be refreshed ($FetchError); the cached list from $($Cache.FetchedAt) is used." }
     }
-    if ($list -and (-not $list.Payload.Expires -or ([datetime]$list.Payload.Expires).ToUniversalTime() -le [datetime]::UtcNow)) {
-        $warning = "The pack blocklist expired on $($list.Payload.Expires), so it was not used."
-        $list = $null
+    if ($List -and (-not $List.Payload.Expires -or ([datetime]$List.Payload.Expires).ToUniversalTime() -le (Get-Date -AsUTC))) {
+        $Warning = "The pack blocklist expired on $($List.Payload.Expires), so it was not used."
+        $List = $null
     }
-    if (-not $list) {
-        $warning = if ($fetchError) { "The pack blocklist could not be fetched ($fetchError), so installed packs were not checked against it." } elseif (-not $warning) { 'No pack blocklist is available.' } else { $warning }
-        if ($RequireFresh) { throw "$warning PackPolicy.RequireFreshBlocklist is set, so no pack runs." }
-        $script:__MtPackBlocklist = & $result $false 0 @() $warning
+    if (-not $List) {
+        $Warning = if ($FetchError) { "The pack blocklist could not be fetched ($FetchError), so installed packs were not checked against it." } elseif (-not $Warning) { 'No pack blocklist is available.' } else { $Warning }
+        if ($RequireFresh) { throw "$Warning PackPolicy.RequireFreshBlocklist is set, so no pack runs." }
+        $script:__MtPackBlocklist = & $Result $false 0 @() $Warning
         return $script:__MtPackBlocklist
     }
-    if ($RequireFresh -and $warning) { throw "$warning PackPolicy.RequireFreshBlocklist is set, so no pack runs." }
-    $script:__MtPackBlocklist = & $result $true ([long]$list.Payload.Serial) @($list.Payload.Entries) $warning $list.Payload.Expires
+    if ($RequireFresh -and $Warning) { throw "$Warning PackPolicy.RequireFreshBlocklist is set, so no pack runs." }
+    $script:__MtPackBlocklist = & $Result $true ([long]$List.Payload.Serial) @($List.Payload.Entries) $Warning $List.Payload.Expires $FetchedAt
     $script:__MtPackBlocklist
 }
 
@@ -160,19 +171,19 @@ function Find-MtPackBlock {
         [Parameter()] [long] $OwnerId
     )
 
-    $advisory = $null
-    foreach ($e in $Entry) {
-        $has = { param($name) $e.PSObject.Properties[$name] -and $null -ne $e.$name -and "$($e.$name)" -ne '' }
-        $entryMatches = ((& $has 'Digest') -and $Digest -and $e.Digest -eq $Digest) -or
-            ((& $has 'RepositoryId') -and $RepositoryId -and [long]$e.RepositoryId -eq $RepositoryId) -or
-            ((& $has 'OwnerId') -and $OwnerId -and [long]$e.OwnerId -eq $OwnerId)
-        if ((& $has 'PackId') -and $PackId -and $e.PackId -eq $PackId) {
-            if (-not (& $has 'Versions') -or ($Version -and (Test-MtVersionRange -Range ([string]$e.Versions) -Version $Version))) { $entryMatches = $true }
+    $Advisory = $null
+    foreach ($E in $Entry) {
+        $Has = { param($Name) $E.PSObject.Properties[$Name] -and $null -ne $E.$Name -and "$($E.$Name)" -ne '' }
+        $EntryMatches = ((& $Has 'Digest') -and $Digest -and $E.Digest -eq $Digest) -or
+            ((& $Has 'RepositoryId') -and $RepositoryId -and [long]$E.RepositoryId -eq $RepositoryId) -or
+            ((& $Has 'OwnerId') -and $OwnerId -and [long]$E.OwnerId -eq $OwnerId)
+        if ((& $Has 'PackId') -and $PackId -and $E.PackId -eq $PackId) {
+            if (-not (& $Has 'Versions') -or ($Version -and (Test-MtVersionRange -Range ([string]$E.Versions) -Version $Version))) { $EntryMatches = $true }
         }
-        if ($entryMatches) {
-            if ($e.Severity -ne 'Warn') { return $e }
-            if (-not $advisory) { $advisory = $e }
+        if ($EntryMatches) {
+            if ($E.Severity -ne 'Warn') { return $E }
+            if (-not $Advisory) { $Advisory = $E }
         }
     }
-    $advisory
+    $Advisory
 }

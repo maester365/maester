@@ -39,6 +39,8 @@ function Get-MtPackCandidate {
     switch ($parsed.Kind) {
         'BuiltIn' { $root = $parsed.Path; $official = $true }
         'Local' {
+            # Copying the children would drop any named streams on the source root.
+            $null = Get-MtPackDigest -Path $parsed.Path
             $staging = Join-Path ([System.IO.Path]::GetTempPath()) "maester-pack-$([guid]::NewGuid().ToString('n'))"
             $candidate.Staging = $staging
             $null = New-Item -Path $staging -ItemType Directory -Force

@@ -83,8 +83,18 @@ for an hour. Only a list with a valid signature, a serial at least as high as th
 date is used. A blocked pack does not install and, when already installed, does not run (`PackBlocked`). When
 the list cannot be fetched, the cached list is used with a warning, unless `RequireFreshBlocklist` is set.
 Strict freshness also rejects missing trust keys and cached failures. A verified, unexpired list fetched
-within the cache interval can be reused, but its signed expiry is checked on every call. When several entries
+within the cache interval can be reused, but reading it from disk or memory does not restart that interval.
+Both its original fetch time and signed expiry are checked on every call. After an hour, a refresh is attempted;
+if that fails, only permissive mode can use an unexpired cached list, with a warning. When several entries
 match a pack, any blocking entry takes precedence over a warning regardless of their order in the list.
+
+## Repairing stored packs
+
+Named streams on a stored pack's files, directories or root make that copy invalid, including `Zone.Identifier`.
+`Restore-MtPack` and reinstalling can replace it with independently verified approved content. The replacement
+source and staged copy must match the approved digest and contain no named streams before the old store is
+removed. Recovery does not strip streams from existing content and treat it as trusted. A failed download or
+replacement validation leaves the existing store intact; restore reports a failure for that pack.
 
 ## Reporting a pack
 

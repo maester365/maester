@@ -233,6 +233,88 @@ Describe 'Pack security: blocklist freshness' {
         Mock Invoke-RestMethod { throw 'offline' }
         { Get-MtPackBlocklist -RequireFresh } | Should -Throw '*RequireFreshBlocklist*'
     }
+
+    It 'preserves disk fetch age across memory reads and refreshes at the boundary in <Mode> mode' -ForEach @(
+        @{ Mode = 'strict' }
+        @{ Mode = 'permissive' }
+        @{ Mode = 'successful refresh' }
+    ) {
+        $script:Clock = [datetime]::UtcNow
+        $Fetched = $Clock.AddSeconds(-3599)
+        $SignedResponse = New-SecuritySignedList
+        @{ FetchedAt = $Fetched.ToString('o'); HighestSerial = 1; Envelope = $SignedResponse } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $CacheFile
+        Mock Get-Date { $script:Clock }
+        $First = Get-MtPackBlocklist -RequireFresh
+        $First.Available | Should -BeTrue
+        $First.FetchedAt | Should -Be $Fetched
+        (Get-MtPackBlocklist -RequireFresh).FetchedAt | Should -Be $Fetched
+        Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+        $script:Clock = $Clock.AddSeconds(2)
+        switch ($Mode) {
+            'strict' { { Get-MtPackBlocklist -RequireFresh } | Should -Throw '*RequireFreshBlocklist*' }
+            'permissive' {
+                $Fallback = Get-MtPackBlocklist
+                $Fallback.Available | Should -BeTrue
+                $Fallback.Warning | Should -Match 'could not be refreshed'
+                $Fallback.FetchedAt | Should -Be $Fetched
+            }
+            'successful refresh' {
+                Mock Invoke-RestMethod { $SignedResponse }
+                $Refreshed = Get-MtPackBlocklist -RequireFresh
+                $Refreshed.Available | Should -BeTrue
+                $Refreshed.Warning | Should -BeNullOrEmpty
+                $Refreshed.FetchedAt | Should -Be $Clock
+                ([datetime](Get-Content -LiteralPath $CacheFile -Raw | ConvertFrom-Json).FetchedAt).ToUniversalTime() | Should -Be $Clock
+                (Get-MtPackBlocklist -RequireFresh).FetchedAt | Should -Be $Clock
+            }
+        }
+        Should -Invoke Invoke-RestMethod -Times 1 -Exactly
+    }
+
+    It 'refreshes when signed expiry passes even within the original fetch interval' {
+        $script:Clock = [datetime]::UtcNow
+        $Fetched = $Clock.AddMinutes(-1)
+        @{ FetchedAt = $Fetched.ToString('o'); HighestSerial = 1; Envelope = (New-SecuritySignedList -Expires $Clock.AddSeconds(1)) } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $CacheFile
+        Mock Get-Date { $script:Clock }
+        (Get-MtPackBlocklist -RequireFresh).Available | Should -BeTrue
+        $script:Clock = $Clock.AddSeconds(2)
+        { Get-MtPackBlocklist -RequireFresh } | Should -Throw '*RequireFreshBlocklist*'
+        (Get-MtPackBlocklist).Available | Should -BeFalse
+        Should -Invoke Invoke-RestMethod -Times 2 -Exactly
+    }
+
+    It 'refreshes an expired disk list in a new session despite its recent fetch timestamp' {
+        $script:Clock = [datetime]::UtcNow
+        @{ FetchedAt = $Clock.AddMinutes(-1).ToString('o'); HighestSerial = 1; Envelope = (New-SecuritySignedList -Expires $Clock.AddSeconds(-1)) } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $CacheFile
+        $SignedResponse = New-SecuritySignedList
+        Mock Get-Date { $script:Clock }
+        Mock Invoke-RestMethod { $SignedResponse }
+        $Result = Get-MtPackBlocklist -RequireFresh
+        $Result.Available | Should -BeTrue
+        $Result.FetchedAt | Should -Be $Clock
+        $Result.Warning | Should -BeNullOrEmpty
+        Should -Invoke Invoke-RestMethod -Times 1 -Exactly
+    }
+
+    It 'rejects signed content that expires during <Operation>' -ForEach @(
+        @{ Operation = 'network fetch' }
+        @{ Operation = 'fallback after a failed refresh' }
+    ) {
+        $script:Clock = [datetime]::UtcNow
+        $SignedResponse = New-SecuritySignedList -Expires $Clock.AddSeconds(1)
+        if ($Operation -eq 'fallback after a failed refresh') {
+            @{ FetchedAt = $Clock.AddHours(-2).ToString('o'); HighestSerial = 1; Envelope = $SignedResponse } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $CacheFile
+        }
+        Mock Get-Date { $script:Clock }
+        Mock Invoke-RestMethod {
+            $script:Clock = $Clock.AddSeconds(2)
+            if ($Operation -eq 'fallback after a failed refresh') { throw 'offline' }
+            $SignedResponse
+        }
+        { Get-MtPackBlocklist -RequireFresh } | Should -Throw '*RequireFreshBlocklist*'
+        Should -Invoke Invoke-RestMethod -Times 1 -Exactly
+        if ($Operation -eq 'network fetch') { Test-Path -LiteralPath $CacheFile | Should -BeFalse }
+    }
 }
 
 Describe 'Pack security: strongest blocklist match' {

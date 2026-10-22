@@ -173,24 +173,35 @@ function Save-MtPackToStore {
         [Parameter(Mandatory)] [string] $Digest
     )
 
-    $target = Get-MtPackStorePath -Digest $Digest
-    if (Test-Path -LiteralPath $target) {
-        if ((Get-MtPackDigest -Path $target).Digest -eq $Digest) { return $target }
-        Write-Warning "The stored copy of the pack in '$target' was changed; it is replaced with the approved files."
-        Get-ChildItem -LiteralPath $target -Recurse -File -Force | ForEach-Object { if ($IsWindows) { $_.IsReadOnly = $false } }
-        Remove-Item -LiteralPath $target -Recurse -Force
+    $Target = Get-MtPackStorePath -Digest $Digest
+    $Exists = Test-Path -LiteralPath $Target
+    if ($Exists) {
+        try {
+            if ((Get-MtPackDigest -Path $Target).Digest -eq $Digest) { return $Target }
+        } catch {
+            if ($_.FullyQualifiedErrorId -notlike 'MtPackAlternateDataStream,*') { throw }
+            # Rejected stored content needs replacement, never in-place stream removal.
+        }
     }
-    $staging = "$target.$([guid]::NewGuid().ToString('n')).tmp"
-    $null = New-Item -Path $staging -ItemType Directory -Force
-    Get-ChildItem -LiteralPath $Path -Force | Copy-Item -Destination $staging -Recurse -Force
-    $copied = (Get-MtPackDigest -Path $staging).Digest
-    if ($copied -ne $Digest) {
-        Remove-Item -LiteralPath $staging -Recurse -Force
-        throw "The pack's files changed while they were copied into the store (digest $copied, expected $Digest)."
+    # Copying children can omit streams on the source root. Verify the source as well as the copy.
+    if ((Get-MtPackDigest -Path $Path).Digest -ne $Digest) { throw 'The replacement pack does not match the approved digest.' }
+    $Staging = "$Target.$([guid]::NewGuid().ToString('n')).tmp"
+    try {
+        $null = New-Item -Path $Staging -ItemType Directory -ErrorAction Stop
+        Get-ChildItem -LiteralPath $Path -Force -ErrorAction Stop | Copy-Item -Destination $Staging -Recurse -Force -ErrorAction Stop
+        $Copied = (Get-MtPackDigest -Path $Staging).Digest
+        if ($Copied -ne $Digest) { throw "The pack's files changed while they were copied into the store (digest $Copied, expected $Digest)." }
+        if ($Exists) {
+            Write-Warning "The stored copy of the pack in '$Target' was changed; it is replaced with the approved files."
+            Get-ChildItem -LiteralPath $Target -Recurse -File -Force -ErrorAction Stop | ForEach-Object { if ($IsWindows) { $_.IsReadOnly = $false } }
+            Remove-Item -LiteralPath $Target -Recurse -Force -ErrorAction Stop
+        }
+        Move-Item -LiteralPath $Staging -Destination $Target -ErrorAction Stop
+        Protect-MtPackFolder -Path $Target
+        $Target
+    } finally {
+        if (Test-Path -LiteralPath $Staging) { Remove-Item -LiteralPath $Staging -Recurse -Force -ErrorAction Stop }
     }
-    Move-Item -LiteralPath $staging -Destination $target
-    Protect-MtPackFolder -Path $target
-    $target
 }
 
 function Get-MtPackStorePath {
