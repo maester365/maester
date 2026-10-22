@@ -204,7 +204,7 @@ The publishable Maester module is produced by a build script that consolidates t
   ```
 
 - Run the whole suite once before you push, or let the pull request's build run it.
-- On Windows, Microsoft Defender scans every script the module loads. If your policy allows it, excluding the folder of your clone from real-time scanning makes the run several times faster.
+- On Windows, Microsoft Defender scans every script the module loads. If your policy allows it, excluding the folder of your clone from real-time scanning can make the run much faster.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
