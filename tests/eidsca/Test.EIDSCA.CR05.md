@@ -1,0 +1,47 @@
+Checks that the enabled admin consent workflow has at least one reviewer scope and that every scope has a MicrosoftGraph query with a structurally valid absolute or rooted relative path. A null queryRoot is valid for absolute paths. This structural check does not execute queries, resolve membership, or establish reviewer availability or approval permissions.
+
+Configure at least one reviewer scope with a nonempty MicrosoftGraph query. Absolute Graph-relative queries do not require queryRoot; relative queries require the supported queryRoot. Separately resolve group membership and role assignments to verify that usable reviewers and an appropriate approval path exist. Being designated a reviewer does not grant consent permissions.
+
+#### Test script
+```
+https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
+.reviewers.Count -gt 0 -and @($result.reviewers -eq 'true'
+```
+
+#### Remediation action
+
+In Enterprise apps > Consent and permissions > Admin consent settings, configure the users, groups, or roles that can review requests. See [Microsoft Learn - Configure the admin consent workflow](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-admin-consent-workflow).
+
+#### Related links
+
+- [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/adminConsentRequestPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
+- [adminConsentRequestPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/adminconsentrequestpolicy)
+- [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/AdminConsentSettings)
+
+## MITRE ATT&CK
+
+```mermaid
+mindmap
+  root{{MITRE ATT&CK}}
+    (Tactic)
+      TA0001 - Initial Access - Initial Access
+      TA0005 - Defense Evasion - Stealth
+      TA0006 - Credential Access - Credential Access
+      TA0008 - Lateral Movement - Lateral Movement
+    (Mitigation)
+      M1018 - User Account Management
+      M1017 - User Training
+    (Technique)
+      T1078 - Valid Accounts
+      T1528 - Steal Application Access Token
+      T1550 - Use Alternate Authentication Material
+      T1550.001 - Use Alternate Authentication Material: Application Access Token
+      T1566.002 - Phishing: Spearphishing Link
+```
+|Tactic|Technique|Mitigation|
+|---|---|---|
+|[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)<br/>[TA0005 - Defense Evasion - Stealth](https://attack.mitre.org/tactics/TA0005)<br/>[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)<br/>[TA0008 - Lateral Movement - Lateral Movement](https://attack.mitre.org/tactics/TA0008)|[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)<br/>[T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528)<br/>[T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550)<br/>[T1550.001 - Use Alternate Authentication Material: Application Access Token](https://attack.mitre.org/techniques/T1550/001)<br/>[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)|
+
+
+<!--- Results --->
+%TestResult%

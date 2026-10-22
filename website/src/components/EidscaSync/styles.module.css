@@ -1,0 +1,58 @@
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.panel {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  padding: 1.25rem;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.table {
+  display: table;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.table td {
+  vertical-align: top;
+}
+
+.muted {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.8rem;
+}
+
+.inline {
+  margin-right: 0.35rem;
+}
+
+.value {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.change {
+  margin-bottom: 0.6rem;
+}
+
+.change:last-child {
+  margin-bottom: 0;
+}
+
+.ok {
+  margin-top: 1rem;
+  color: var(--ifm-color-success-darkest);
+  font-weight: 600;
+}
+
+.warn {
+  margin-top: 1rem;
+  color: var(--ifm-color-danger-dark);
+}
