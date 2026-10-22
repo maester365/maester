@@ -471,7 +471,9 @@
         "EIDSCA.AP08",
         "EIDSCA.AP09",
         "EIDSCA.AP10",
+        "EIDSCA.AP12",
         "EIDSCA.AP14",
+        "EIDSCA.AP15",
         "EIDSCA.AS04",
         "EIDSCA.AT01",
         "EIDSCA.AT02",
@@ -483,6 +485,7 @@
         "EIDSCA.CR02",
         "EIDSCA.CR03",
         "EIDSCA.CR04",
+        "EIDSCA.CR05",
         "EIDSCA.PR01",
         "EIDSCA.PR02",
         "EIDSCA.PR03",
@@ -4977,7 +4980,15 @@
       "author": "Cloud-Architekt",
       "contributors": []
     },
+    "EIDSCA.AP12": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
     "EIDSCA.AP14": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
+    "EIDSCA.AP15": {
       "author": "Cloud-Architekt",
       "contributors": []
     },
@@ -5022,6 +5033,10 @@
       "contributors": []
     },
     "EIDSCA.CR04": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
+    "EIDSCA.CR05": {
       "author": "Cloud-Architekt",
       "contributors": []
     },
@@ -8344,7 +8359,7 @@
       "path": "/docs/tests/EIDSCA.AP07"
     },
     "EIDSCA.AP08": {
-      "title": "Default Authorization Settings - User consent policy assigned for applications.",
+      "title": "Default Authorization Settings - User consent assignments match the restricted or Microsoft recommended baseline.",
       "path": "/docs/tests/EIDSCA.AP08"
     },
     "EIDSCA.AP09": {
@@ -8355,9 +8370,17 @@
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.",
       "path": "/docs/tests/EIDSCA.AP10"
     },
+    "EIDSCA.AP12": {
+      "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Tenants.",
+      "path": "/docs/next/tests/EIDSCA.AP12"
+    },
     "EIDSCA.AP14": {
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users.",
       "path": "/docs/tests/EIDSCA.AP14"
+    },
+    "EIDSCA.AP15": {
+      "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create agent identity blueprints.",
+      "path": "/docs/next/tests/EIDSCA.AP15"
     },
     "EIDSCA.AS04": {
       "title": "Authentication Method - SMS - Use for sign-in.",
@@ -8402,6 +8425,10 @@
     "EIDSCA.CR04": {
       "title": "Consent Framework - Admin Consent Request - Consent request duration (days).",
       "path": "/docs/tests/EIDSCA.CR04"
+    },
+    "EIDSCA.CR05": {
+      "title": "Consent Framework - Admin Consent Request - Admin consent reviewers have valid query scopes.",
+      "path": "/docs/next/tests/EIDSCA.CR05"
     },
     "EIDSCA.PR01": {
       "title": "Default Settings - Password Rule Settings - Password Protection - Mode.",
