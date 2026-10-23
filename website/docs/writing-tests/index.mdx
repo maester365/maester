@@ -308,6 +308,21 @@ native test:
 attribute and the config. In a family, `-TestTitle` sets the instance's title when the instance object has no
 `Title`. `-Severity` is used only when neither the config nor the attribute sets one.
 
+### Embedding another tool's report
+
+A test or a family's instance source that runs another tool can embed that tool's own single-file HTML report in
+the Maester report with [`Add-MtReportAttachment`](../commands/Add-MtReportAttachment.mdx):
+
+```powershell
+Add-MtReportAttachment -Name 'Zero Trust Assessment report' -Path "$outputPath/ZeroTrustAssessmentReport.html"
+```
+
+The report shows a button with that name on its overview page and on the test's result (on every instance of a
+family). The button opens the embedded report in a new browser tab, offline, so the Maester report stays one file
+to share. The file is read and compressed at once, so you can delete the tool's output folder afterwards. The JSON
+results file lists the attachment's name and size, not its content, and the HTML report leaves attachments out
+when `-RedactUserIdentity` is used.
+
 ### Errors and skips
 
 Do not wrap the body in `try`/`catch` only to report `-SkippedBecause Error`. The engine runs every test inside
