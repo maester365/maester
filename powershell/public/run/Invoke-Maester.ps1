@@ -623,6 +623,9 @@
             $renderer.StartPhase('Prepare')
             # The tenant panel and the account, while the tests are discovered; the rest follows as it is read.
             $null = Start-MtDashboardTenant -Renderer $renderer -Console $console
+            # The directory is read from the session, not requested, so its panel is there from the start. It is
+            # set whatever the width: the right column may only be on screen after the window is made wider.
+            if ($renderer.IsFullScreen) { Set-MtDashboardDirectory -Renderer $renderer }
         }
         # While the full-screen dashboard owns the screen, a warning or error this command writes is drawn over
         # and lost when the screen is restored. Collect what Write-Warning and Write-Error write where it would
@@ -783,7 +786,7 @@
         if ($console.Mode -eq 'Interactive') {
             # The tenant in its panel on a wide console, and the services as one line under the banner.
             $tenantPanel = $renderer.IsFullScreen -and $renderer.HasPanel('Tenant')
-            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext -Console $console
+            Set-MtDashboardTenant -Renderer $renderer -TenantContext $tenantContext
             if ($connections.Count -gt 0 -and $renderer.IsFullScreen -and $renderer.HasPanel('Connections')) {
                 # The services in their panel: which are connected, and which are not.
                 $renderer.SetConnections([string[]]@($connections.Name), [bool[]]@($connections.Connected))

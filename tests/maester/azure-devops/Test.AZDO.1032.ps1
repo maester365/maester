@@ -8,6 +8,9 @@
     Requires Azure DevOps organization backed by a Microsoft Entra tenant and
     Azure DevOps Administrator permissions.
 
+    Requires Azure DevOps to be connected with a user account. The test is skipped when connected
+    as a service principal or managed identity.
+
     https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy
 
 .EXAMPLE
@@ -43,6 +46,11 @@ function Test-AzdoDisableGlobalPATCreation {
     param()
 
     Write-Verbose "Running Test-AzdoDisableGlobalPATCreation"
+
+    if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
+    }
 
 $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictGlobalPersonalAccessToken -Force
 

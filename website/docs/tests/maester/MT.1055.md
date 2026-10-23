@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1055"
-  - "Medium"
+  - "Low"
   - "Entra ID"
   - "Groups"
   - "Access control"
@@ -45,7 +45,7 @@ Follow the link below to restrict Microsoft 365 Group creation to approved users
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1055 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
 | Product | Entra ID |
 | Related products | Teams |

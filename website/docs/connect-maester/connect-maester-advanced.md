@@ -244,6 +244,8 @@ $DevOpsToken = ConvertFrom-SecureString `
 Connect-ADOPS -Organization $devOpsOrganization -OAuthToken $DevOpsToken
 ```
 
+> AZDO.1010, AZDO.1013, AZDO.1032, AZDO.1033, AZDO.1035 and AZDO.1036 use Azure DevOps APIs that only work for a signed-in user. When Maester is connected as a service principal or managed identity these tests are skipped. Use interactive authentication to run them.
+
 #### Interactive authentication
 
 For interactive sessions (e.g., local runs), use the standard sign-in flow:

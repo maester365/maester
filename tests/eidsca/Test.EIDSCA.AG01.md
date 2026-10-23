@@ -1,6 +1,6 @@
-The state of migration of the authentication methods policy from the legacy multifactor authentication and self-service password reset (SSPR) policies. In January 2024, the legacy multifactor authentication and self-service password reset policies will be deprecated and you'll manage all authentication methods here in the authentication methods policy. Use this control to manage your migration from the legacy policies to the new unified policy.
+The state of migration from the legacy multifactor authentication and self-service password reset (SSPR) policies to the Authentication methods policy. Legacy policies are respected in the premigration and migrationInProgress states and ignored in the migrationComplete state.
 
-On September 30th, 2025, the legacy multifactor authentication and self-service password reset policies will be deprecated and you'll manage all authentication methods here in the authentication methods policy. Use this control to manage your migration from the legacy policies to the new unified policy.
+Complete the migration from the legacy multifactor authentication and self-service password reset policies to the unified Authentication methods policy. Review the enabled methods and their user scopes before marking migration complete.
 
 #### Test script
 ```
@@ -10,7 +10,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 
 #### Remediation action
 
-[Microsoft Learn - How to manage authentication methodes](https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-methods-manage#start-the-migration)
+[Microsoft Learn - How to migrate to the Authentication methods policy](https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-methods-manage#start-the-migration)
 
 #### Related links
 

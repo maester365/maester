@@ -252,6 +252,24 @@ Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
             $script:TestResult | Should -Match 'id-1'
             $script:TestResult | Should -Not -Match 'fully dormant fleet'
         }
+
+        It 'filters sign-in activity by agent appId instead of reading the tenant-wide report' {
+            $RecentDate = (Get-Date).AddDays(-10).ToString('o')
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($RelativeUri -like 'reports/*') {
+                    return @([pscustomobject]@{ appId = 'app-1'; lastSignInDateTime = $RecentDate })
+                }
+                return @([pscustomobject]@{ id = 'id-1'; appId = 'app-1'; displayName = 'Agent 1'; accountEnabled = $true })
+            }
+
+            Test-MtEntraAgentInactive | Should -BeTrue
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly 1 -ParameterFilter {
+                $RelativeUri -eq 'reports/servicePrincipalSignInActivities' -and $Filter -eq "appId eq 'app-1'"
+            }
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Exactly 0 -ParameterFilter {
+                $RelativeUri -like 'reports/*' -and [string]::IsNullOrEmpty($Filter)
+            }
+        }
     }
 
     Context 'MT.1207: Test-MtEntraAgentForeignPrivileged' {

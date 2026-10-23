@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.7.6"
-  - "High"
+  - "Medium"
   - "CISA"
   - "Entra ID"
   - "Privileged Identity Management"
@@ -54,7 +54,7 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.7.6 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
 | Product | Entra ID |
 | Feature | Privileged Identity Management |

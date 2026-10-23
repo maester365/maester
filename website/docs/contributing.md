@@ -189,6 +189,22 @@ The publishable Maester module is produced by a build script that consolidates t
 
 - QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
 - When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
+- `pester.ps1` runs the test files in batches of eight, each batch in its own pwsh process, two processes at a time. Each process needs up to about 1.3 GB of memory. On a small VM use `-ThrottleLimit 1`; on a machine with memory to spare, `-ThrottleLimit 4` runs the suite in about half the time.
+- While you work, run only the files that cover your change. `-Include` and `-Exclude` take file name patterns:
+
+  ```powershell
+  # The unit tests of the commands you changed
+  ./powershell/tests/pester.ps1 -TestGeneral $false -Include 'Get-MtUser*', 'Test-MtCa*'
+
+  # The checks that a new or changed native test must pass
+  ./powershell/tests/pester.ps1 -TestFunctions $false -Include 'NativeTest*', 'RepositoryLayout*', 'MaesterTestTags*', 'LegacyIds*'
+
+  # Everything except the slowest files, which regenerate the golden fixtures and the ORCA and EIDSCA tests
+  ./powershell/tests/pester.ps1 -Exclude 'Golden*', 'GeneratedFileFormatting*', 'OrcaGenerator*', 'EidscaGenerator*'
+  ```
+
+- Run the whole suite once before you push, or let the pull request's build run it.
+- On Windows, Microsoft Defender scans every script the module loads. If your policy allows it, excluding the folder of your clone from real-time scanning can make the run much faster.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
@@ -254,7 +270,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 ##### Test your code
 
 - We run a bunch of pester tests on your code when a PR is raised and will block merge until the issues are addressed.
-- Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
+- Before you submit the PR, run the tests locally by running `./powershell/tests/pester.ps1`. See [Pester Tests](#pester-tests) for running a subset while you work.
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
@@ -274,7 +290,9 @@ The EIDSCA tests and documentation are maintained in the [EIDSCA repository → 
 
 The [/build/eidsca/Update-EidscaTests.ps1](https://github.com/maester365/maester/blob/main/build/eidsca/Update-EidscaTests.ps1) script is used to generate the EIDSCA commands in the Maester module along with the EIDSCA tests and documentation.
 
-The script is currently run manually and is not automated as part of the build process as we need to verify the changes before they are committed.
+The [EIDSCA sync page](/eidsca-sync) shows which values come from the EIDSCA config and which Maester adds, and compares the two live. The weekly `eidsca-sync` workflow makes the same comparison. While they differ, it keeps one open issue and one pull request that runs the script with `-Download`, both assigned to the EIDSCA maintainer, and updates them every week. Merging the pull request closes the issue; the next difference starts a new issue and pull request. To run the script yourself, use `./build/eidsca/Update-EidscaTests.ps1 -Download`.
+
+The EIDSCA config is the source of every value of a check except the Maester classification, which it does not carry. Severity, title, description, the recommended value and the remediation come from the EIDSCA repository; change them there. The Maester classification of each check (`Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control` and `RelatedProduct`) is in [/build/eidsca/eidsca-test-metadata.json](https://github.com/maester365/maester/blob/main/build/eidsca/eidsca-test-metadata.json), chosen with the [attribute rubric](./writing-tests/attribute-rubric.md). When the EIDSCA repository adds a check, the generator warns that it has no row in that file and the unit tests fail until the row is added. Add the row in a separate pull request to `main`, not on the sync pull request's branch, which each weekly run rebuilds from `main`.
 
 The illustration below shows the workflow for integrating EIDSCA tests and documentation into Maester.
 

@@ -8,6 +8,9 @@
     anomaly detection. Setting up a stream also allows you to store more than 90-days of auditing data,
     which is the maximum amount of data that Azure DevOps keeps for your organizations.
 
+    Requires Azure DevOps to be connected with a user account. The test is skipped when connected
+    as a service principal or managed identity.
+
     https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops
 
 .EXAMPLE
@@ -43,6 +46,11 @@ function Test-AzdoAuditStream {
     param()
 
     Write-Verbose "Running Test-AzdoAuditStream"
+
+    if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
+    }
 
 $AuditStreams = Get-ADOPSAuditStreams -ErrorAction SilentlyContinue
 
