@@ -141,3 +141,40 @@ Describe 'Get-MtSession — GitHubAuthHeader redaction' {
         }
     }
 }
+
+Describe 'Get-MtSession — ADCredential redaction' {
+    BeforeEach {
+        InModuleScope Maester {
+            $password = [System.Security.SecureString]::new()
+            foreach ($character in 'not-a-real-password'.ToCharArray()) { $password.AppendChar($character) }
+            $__MtSession.ADCredential = [pscredential]::new('CONTOSO\svc-maester', $password)
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.ADCredential = $null
+        }
+    }
+
+    It 'Does not return the credential or its user name' {
+        $result = Get-MtSession
+
+        $result.ADCredential | Should -Be '<redacted>'
+        ($result | ConvertTo-Json -Depth 4 -WarningAction SilentlyContinue) | Should -Not -Match 'svc-maester'
+    }
+
+    It 'Leaves the live session credential in place for internal callers' {
+        Get-MtSession | Out-Null
+
+        InModuleScope Maester {
+            $__MtSession.ADCredential.UserName | Should -Be 'CONTOSO\svc-maester'
+        }
+    }
+
+    It 'Returns null when no credential is set' {
+        InModuleScope Maester { $__MtSession.ADCredential = $null }
+
+        (Get-MtSession).ADCredential | Should -BeNullOrEmpty
+    }
+}
