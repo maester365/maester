@@ -5,7 +5,7 @@ BeforeAll {
     . "$PSScriptRoot/../../public/packs/Restore-MtPack.ps1"
 
     # The store is read-only (Protect-MtPackFolder); a test that tampers with it has to undo that first.
-    function Set-TestFileWritable {
+    function Unlock-TestFile {
         param([string] $Path)
         if ($IsWindows) { (Get-Item -LiteralPath $Path).IsReadOnly = $false }
         else { [System.IO.File]::SetUnixFileMode($Path, [System.IO.File]::GetUnixFileMode($Path) -bor [System.IO.UnixFileMode]::UserWrite) }
@@ -30,7 +30,7 @@ Describe 'Pack security: approved store recovery' {
 
     It '<Operation> replaces a stored pack whose files were changed' -ForEach @(@{ Operation = 'Restore' }, @{ Operation = 'Reinstall' }) {
         $Changed = "$Target/nested/helper.ps1"
-        Set-TestFileWritable -Path $Changed
+        Unlock-TestFile -Path $Changed
         [System.IO.File]::WriteAllText($Changed, "'tampered'")
         if ($Operation -eq 'Restore') {
             $Result = Restore-MtPack -PackLock $LockPath -Confirm:$false
@@ -46,7 +46,7 @@ Describe 'Pack security: approved store recovery' {
 
     It '<Operation> keeps the existing store when the candidate is not the approved files' -ForEach @(@{ Operation = 'Restore' }, @{ Operation = 'Reinstall' }) {
         $Changed = "$Target/nested/helper.ps1"
-        Set-TestFileWritable -Path $Changed
+        Unlock-TestFile -Path $Changed
         [System.IO.File]::WriteAllText($Changed, "'kept until a verified copy replaces it'")
         [System.IO.File]::WriteAllText("$CandidateRoot/nested/helper.ps1", "'unapproved'")
         if ($Operation -eq 'Restore') {
@@ -63,7 +63,7 @@ Describe 'Pack security: approved store recovery' {
 
     It 'reports a failed download per pack and keeps the changed store' {
         $Changed = "$Target/nested/helper.ps1"
-        Set-TestFileWritable -Path $Changed
+        Unlock-TestFile -Path $Changed
         [System.IO.File]::WriteAllText($Changed, "'kept'")
         Mock Get-MtPackCandidate { throw 'download unavailable' }
         $Result = Restore-MtPack -PackLock $LockPath -Confirm:$false -ErrorAction SilentlyContinue
@@ -88,7 +88,7 @@ Describe 'Pack security: approved store recovery' {
         @{ Problem = 'an I/O error' }
     ) {
         $Changed = "$Target/nested/helper.ps1"
-        Set-TestFileWritable -Path $Changed
+        Unlock-TestFile -Path $Changed
         [System.IO.File]::WriteAllText($Changed, "'kept'")
         Mock Copy-Item {
             $null = New-Item -Path "$Destination/nested" -ItemType Directory -Force

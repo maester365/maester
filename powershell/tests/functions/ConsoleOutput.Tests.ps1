@@ -1008,7 +1008,7 @@ Describe 'Dashboard panels' {
 
 Describe 'Output box' {
     BeforeAll {
-        function New-OutputRenderer {
+        function Get-OutputRenderer {
             $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
             $renderer.Unicode = $true; $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
             $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
@@ -1018,7 +1018,7 @@ Describe 'Output box' {
     }
 
     It 'Shows the newest lines under the phases before the tests start, wrapped, with progress pinned at the bottom' {
-        $renderer = New-OutputRenderer
+        $renderer = Get-OutputRenderer
         $renderer.StartOutput('Zero Trust Assessment')
         foreach ($n in 1..60) { $renderer.WriteOutput("line $n") }
         $renderer.WriteOutput(('word ' * 40).Trim())
@@ -1041,7 +1041,7 @@ Describe 'Output box' {
     }
 
     It 'Sits between the result blocks and the running tests while tests run, and goes when it is stopped' {
-        $renderer = New-OutputRenderer
+        $renderer = Get-OutputRenderer
         $renderer.Start(2, [string[]]@('Entra'), [int[]]@(2), [string[]]@($null))
         $renderer.ItemStarting('MT.1', 'A long test', 'Entra')
         $renderer.WriteOutput('from the tool')
