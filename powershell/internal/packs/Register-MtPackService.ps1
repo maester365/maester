@@ -61,13 +61,15 @@ function Initialize-MtPackSet {
         [Parameter()] [string] $Path,
         [Parameter()] [AllowNull()] [object] $RunConfig,
         # Pack IDs or codes: run only these packs (Invoke-Maester -Pack).
-        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @()
+        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @(),
+        # A run: installed packs run only when named (Resolve-MtPackSet -NamedOnly).
+        [Parameter()] [switch] $NamedOnly
     )
 
     if (-not $Path) { $Path = (Get-Location).Path }
     try {
         if (-not $RunConfig) { $RunConfig = Resolve-MtRunConfig -Path $Path -WarningAction SilentlyContinue }
-        $set = @(Resolve-MtPackSet -RunConfig $RunConfig -LockPath (Resolve-MtPackLockPath -PackLock $PackLock -Path $Path).LockPath -Select $Select)
+        $set = @(Resolve-MtPackSet -RunConfig $RunConfig -LockPath (Resolve-MtPackLockPath -PackLock $PackLock -Path $Path).LockPath -Select $Select -NamedOnly:$NamedOnly)
         $null = Register-MtPackService -PackSet $set
         $script:__MtPackSet = $set
         $set

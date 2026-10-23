@@ -8,13 +8,13 @@ description: Add tests, helpers and connectors that someone else publishes to Ma
 
 A Maester Pack is a folder of native tests, the helpers they call and, optionally, connectors to services
 Maester does not know, that someone else publishes, usually as a GitHub repository. Installing a pack adds its
-tests to every `Invoke-Maester` run in your project. Its results appear in the report like your own custom tests,
-never as Maester's own checks.
+tests to your project, and a run includes them when you name the pack with `-Pack` (or every installed pack
+with `-AllPacks`). Its results appear in the report like your own custom tests, never as Maester's own checks.
 
 ```powershell
 Install-MtPack contoso/maester-google-workspace
 Connect-Maester -Service Graph, CNT.GoogleWorkspace
-Invoke-Maester
+Invoke-Maester -Pack CNT
 ```
 
 Some packs ship with Maester. They need no install and run as soon as they are turned on (see
@@ -66,17 +66,24 @@ Commit `maester-config.json` and `maester-packs.lock.json`, then restore before 
 
 ```powershell
 Restore-MtPack
-Invoke-Maester -NonInteractive
+Invoke-Maester -AllPacks -NonInteractive
 ```
 
 To install without a prompt, say which risk you accept: `Install-MtPack contoso/pack -NonInteractive -AcceptRisk Medium`.
 
 ## Running pack tests
 
-`Invoke-Maester` runs every pack in the lock file whose files still match it. A pack's tests have IDs
-`MP.<code>.<n>`, so `-TestId 'MP.CNT.*'` runs one pack's tests, and `-Suite` with a pack's suite ID runs
-that pack's tests, including its long-running and preview ones. `-SkipPack` runs no pack, and
-`-PackLock` names another lock file.
+Installing a pack does not add its tests to every run. `Invoke-Maester` runs an installed pack when you name it
+with `-Pack` (by its code or ID), when `-TestId` names one of its tests, when you pass `-AllPacks`, or when the
+config turns it on with `"Enabled": true`. A pack's tests have IDs `MP.<code>.<n>`, so `-TestId 'MP.CNT.*'`
+runs one pack's tests. In every case only packs whose files still match the lock file run. `-SkipPack` runs no
+pack, and `-PackLock` names another lock file.
+
+```json
+{
+  "Packs": [ { "Id": "contoso.google-workspace", "Enabled": true } ]
+}
+```
 
 A pack that cannot run never stops the run. Its tests are reported as not run, with the reason:
 `PackUnavailable` (not on this computer, or its files changed), `PackNotAllowed`, `PackBlocked` or
@@ -101,9 +108,11 @@ To turn a pack off without uninstalling it:
 Invoke-Maester -Pack ZTA                 # Maester's tests and the Zero Trust Assessment pack
 Invoke-Maester -Pack ZTA -SkipBuiltIn    # the Zero Trust Assessment pack only
 Invoke-Maester -Pack CNT, maester.*      # two codes or IDs
+Invoke-Maester -AllPacks                 # every installed pack
 ```
 
-A pack you name runs even if it is off by default or turned off in the config, and its long-running and
+A pack you name runs even if it is off by default or turned off in the config (`-AllPacks` still leaves out the
+packs the config turns off), and its long-running and
 preview tests run without `-IncludeLongRunning` or `-IncludePreview`. Packs you do not name don't run in that
 run. The other tests are not affected: select them with `-TestId`, `-Suite` or the other selectors as usual, or
 leave them out with `-SkipBuiltIn`. The config equivalent is `Selection.Pack`:

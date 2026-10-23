@@ -360,7 +360,7 @@ Describe 'Installing and loading a pack' {
         (InModuleScope Maester { $script:packWarning }) -join ' ' | Should -Match "-Pack 'FAB' matches no pack"
     }
 
-    It 'runs the long-running tests of a pack named with -Pack' {
+    It 'runs an installed pack only when named or with -AllPacks, and its long-running tests when named with -Pack' {
         $pack = Copy-SamplePack -Destination (Join-Path $script:root 'long') -Edit {
             param($p)
             $file = Join-Path $p 'tests/Test.MP.CNT.1002.ps1'
@@ -369,9 +369,15 @@ Describe 'Installing and loading a pack' {
         $null = Install-MtPack $pack -NonInteractive 6>$null
         # -SkipBuiltIn runs the custom tests under -Path, so give it one.
         Set-Content -LiteralPath 'Test.CONTOSO.1.ps1' -Value "function Test-ContosoOne { [MaesterTest(Id = 'CONTOSO.1', Title = 'One', Severity = 'Info')] param() `$true }"
+        # Installing a pack does not add it to every run: it runs when named, or with -AllPacks.
         $rows = @(Invoke-Maester -SkipBuiltIn -Path . -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
+        @($rows | Where-Object Id -Like 'MP.CNT.*') | Should -BeNullOrEmpty
+        $rows = @(Invoke-Maester -SkipBuiltIn -Path . -AllPacks -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
         ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'LongRunning'
         $rows = @(Invoke-Maester -SkipBuiltIn -Path . -Pack CNT -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
+        ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'DryRun'
+        # A pack's test ID names its pack.
+        $rows = @(Invoke-Maester -Path . -TestId 'MP.CNT.1002' -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
         ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'DryRun'
     }
 

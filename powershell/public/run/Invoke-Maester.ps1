@@ -131,6 +131,11 @@
     Runs only the Zero Trust Assessment pack.
 
     .EXAMPLE
+    Invoke-Maester -AllPacks
+
+    Runs the tests that ship with Maester and every installed pack. Without -Pack or -AllPacks, installed packs do not run.
+
+    .EXAMPLE
     Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 
     Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. A test named by its exact ID runs even if it is a preview or long-running test.
@@ -182,10 +187,15 @@
         # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
 
-        # Run only these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
-        # '*' wildcards are allowed. A pack named here runs even if it is off by default or in the config, and
-        # its long-running and preview tests run too. Other packs do not run; the other tests are not affected.
+        # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
+        # '*' wildcards are allowed. An installed pack runs only when it is named here (or turned on with
+        # "Enabled": true in the config), so installing a pack never adds its tests to every run. A pack named
+        # here runs even if it is off by default or in the config, and its long-running and preview tests run
+        # too. Other packs do not run; the other tests are not affected.
         [string[]] $Pack,
+
+        # Run every installed pack, as if each were named with -Pack, except those the config turns off.
+        [switch] $AllPacks,
 
         # Include long running tests.
         [switch] $IncludeLongRunning,
@@ -707,7 +717,12 @@
         $packSet = @()
         if (-not $SkipPack) {
             Write-MtProgress -Activity 'Starting Maester' -Status 'Checking Maester Packs...' -Force
-            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig -Select $selection.Pack)
+            # A test ID of a pack (MP.<code>.<n> or MP.<code>.*) names its pack too.
+            $packSelect = @($selection.Pack | Where-Object { $_ })
+            if ($packSelect.Count -eq 0 -and $TestId) {
+                $packSelect = @($TestId | Where-Object { $_ -match '^MP\.[^.]+\.' } | ForEach-Object { ($_ -replace '^MP\.', '') -replace '\.[^.]*$', '' } | Select-Object -Unique)
+            }
+            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig -Select $packSelect -NamedOnly:(-not $AllPacks))
             if ($SkipBuiltIn) { $packSet = @($packSet | Where-Object { -not $_.BuiltIn -or $_.Selected }) }
             $nativePack = @(Get-MtPackTestInventory -PackSet $packSet)
             # A pack test never replaces a built-in or custom test with the same ID.
