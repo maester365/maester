@@ -311,7 +311,7 @@ attribute and the config. In a family, `-TestTitle` sets the instance's title wh
 ### Embedding another tool's report
 
 A test or a family's instance source that runs another tool can embed that tool's own single-file HTML report in
-the Maester report with [`Add-MtReportAttachment`](../commands/Add-MtReportAttachment.mdx):
+the Maester report with `Add-MtReportAttachment`:
 
 ```powershell
 Add-MtReportAttachment -Name 'Zero Trust Assessment report' -Path "$outputPath/ZeroTrustAssessmentReport.html"
