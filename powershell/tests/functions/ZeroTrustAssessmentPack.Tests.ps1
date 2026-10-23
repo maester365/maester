@@ -208,11 +208,13 @@ function Invoke-ZtAssessment {
             Mock -ModuleName Maester Write-MtHostLine { $script:Shown.Add($Text) }
             $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
             $rows.Count | Should -Be 12
-            $script:Shown | Should -Contain '  Microsoft Zero Trust Assessment 9.9.9'
-            $script:Shown | Should -Contain '    Running test 21828'
-            $script:Shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
-            $script:Shown | Should -Contain '    a line on stderr'
-            @($script:Shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
+            # A console that shows colour, such as GitHub Actions, gets the lines styled.
+            $shown = @($script:Shown -replace "`e\[[0-9;]*m", '')
+            $shown | Should -Contain '  Microsoft Zero Trust Assessment 9.9.9'
+            $shown | Should -Contain '    Running test 21828'
+            $shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
+            $shown | Should -Contain '    a line on stderr'
+            @($shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
         }
 
         It 'signs the child in with the app and certificate Maester uses' {
