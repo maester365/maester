@@ -54,7 +54,7 @@ function Read-MtPackManifest {
         return & $result $null
     }
 
-    $topLevel = @('$schema', 'Id', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
+    $topLevel = @('$schema', 'Id', 'Guid', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
         'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner')
     $strictKeys = @{
@@ -108,6 +108,11 @@ function Read-MtPackManifest {
     }
     if ($id -and $id.Split('.')[0] -in 'maester', 'maester365' -and -not $Official) {
         & $fail "The publisher '$($id.Split('.')[0])' is reserved for packs from the maester365 organisation."
+    }
+    # The pack's GUID ties it to its entry in the pack registry (pack-registry/publishers/<publisher>.json).
+    $guid = $manifest.PSObject.Properties['Guid']
+    if ($guid -and $null -ne $guid.Value -and -not ($guid.Value -is [string] -and $guid.Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')) {
+        & $fail "Guid must be a GUID such as 'd1e2db80-6c27-4cb6-9389-2edf0a898d23'; it is '$($guid.Value)'."
     }
     foreach ($name in 'Name', 'Version') {
         if (-not (& $text $name)) { & $fail "$name is required." }

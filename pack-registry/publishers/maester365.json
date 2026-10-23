@@ -1,0 +1,17 @@
+{
+  "$schema": "https://maester.dev/schemas/maester-pack-registry-1.0.json",
+  "Guid": "ee36a2a1-401d-490e-a369-3b0d9e2e5241",
+  "Publisher": "maester365",
+  "Name": "Maester",
+  "Owners": [
+    { "Login": "merill", "Id": 1288081 }
+  ],
+  "Packs": [
+    {
+      "Guid": "d1e2db80-6c27-4cb6-9389-2edf0a898d23",
+      "Id": "maester.zero-trust-assessment",
+      "Code": "ZTA",
+      "Repository": "https://github.com/maester365/maester"
+    }
+  ]
+}

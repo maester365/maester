@@ -68,6 +68,7 @@ Describe 'Maester Pack manifest' {
         @{ Case = 'a price that is not Free or Paid'; Change = { param($m) $m | Add-Member Pricing 'Premium' }; Code = 'InvalidManifest' }
         @{ Case = 'a banner outside the pack'; Change = { param($m) $m | Add-Member Banner '../banner.png' }; Code = 'InvalidManifest' }
         @{ Case = 'a banner that is not an image'; Change = { param($m) $m | Add-Member Banner 'banner.svg' }; Code = 'InvalidManifest' }
+        @{ Case = 'a Guid that is not a GUID'; Change = { param($m) $m | Add-Member Guid 'contoso-sample' -Force }; Code = 'InvalidManifest' }
     ) {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "pack-$([guid]::NewGuid().ToString('n'))") -Edit { param($p) Set-Manifest -Pack $p -Change $Change }
         $result = Test-MtPack $pack
@@ -454,6 +455,7 @@ Describe 'New-MtPack' {
         $version = (Get-Module Maester).Version
         $manifest.RequiresMaester | Should -Be ">=$($version.Major).$($version.Minor)"
         $manifest.'$schema' | Should -Be 'https://maester.dev/schemas/maester-pack-1.0.json'
+        [guid]::TryParse($manifest.Guid, [ref][guid]::Empty) | Should -BeTrue
         InModuleScope Maester -Parameters @{ Range = $manifest.RequiresMaester; Version = $version } {
             Test-MtVersionRange -Range $Range -Version $Version | Should -BeTrue
         }

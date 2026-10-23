@@ -78,6 +78,7 @@ function New-MtPack {
     $manifest = [ordered]@{
         '$schema'       = 'https://maester.dev/schemas/maester-pack-1.0.json'
         Id              = $Id
+        Guid            = [guid]::NewGuid().ToString()
         Name            = $Name
         Description     = "Checks for $Name."
         Version         = '0.1.0'

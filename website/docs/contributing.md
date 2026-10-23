@@ -46,6 +46,7 @@ tests/                              The security checks: Test.<ID>.ps1 + Test.<I
   custom/                           Reserved for users' own tests; nothing is committed here
 
 packs/<name>/                       Maester Packs that ship with Maester: maester-pack.json, suites, helpers, connectors
+pack-registry/publishers/           The pack registry: one <publisher>.json per publisher, with its packs' GUIDs and codes
 
 powershell/
   public/                           Exported commands, grouped by what the user is doing

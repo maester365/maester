@@ -74,9 +74,10 @@ cooldown when it is published; any other release starts it when each user first 
 | --- | --- |
 | `$schema` | `https://maester.dev/schemas/maester-pack-1.0.json`, so editors such as VS Code check the manifest as you type. Maester checks it again when the pack is installed and loaded. |
 | `Id` | `<publisher>.<name>` in lower case. The publisher is the GitHub user or organisation that owns the repository; a pack whose publisher is not the repository owner is refused. |
+| `Guid` | The pack's GUID. `New-MtPack` writes one. Keep it when you rename or move the pack: it is how the [pack registry](./registry.md) knows the pack. |
 | `Version` | A semantic version, such as `1.2.0`. |
 | `RequiresMaester` | The Maester versions the pack works with, such as `>=3.1 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
-| `Code` | The start of every test ID of the pack: `CNT` gives `MP.CNT.1001`. Two to ten letters or digits, starting with a letter. A publisher with several packs can group them with up to three parts separated by dots, such as `CNT.GWS` for `MP.CNT.GWS.1001`. No two installed packs may share a code, or have one code that starts with the other (`CNT` and `CNT.GWS`), so `Install-MtPack` refuses the second one; the pack index gives each code to the first pack that claims it. A first part that looks like Maester's suites, Microsoft products or well-known brands is reserved. |
+| `Code` | The start of every test ID of the pack: `CNT` gives `MP.CNT.1001`. Two to ten letters or digits, starting with a letter. A publisher with several packs can group them with up to three parts separated by dots, such as `CNT.GWS` for `MP.CNT.GWS.1001`. No two installed packs may share a code, or have one code that starts with the other (`CNT` and `CNT.GWS`), so `Install-MtPack` refuses the second one. To own a code for good, [register it](./registry.md). A first part that looks like Maester's suites, Microsoft products or well-known brands is reserved. |
 | `Suites` | Folders of native tests. Each needs a `suite.json` whose `Id` is the code or starts with it, such as `CNT.GoogleWorkspace`. |
 | `Helpers` | Folders of `.ps1` files that hold functions the tests call. |
 | `Connectors` | Services the pack connects to (below). |

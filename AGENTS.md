@@ -79,6 +79,10 @@ enforces them. When writing or reviewing a change, check every added, moved or r
 - `packs/<name>/` at the repository root holds the Maester Packs that ship with Maester (ID `maester.<name>`,
   a code of the pack's own such as `ZTA`, test IDs `MP.<Code>.<n>`). They are not under `tests/`: a pack loads into its own private
   module, and its rows carry `Source = Custom` and `Package`. See `packs/README.md`.
+- `pack-registry/publishers/<publisher>.json` is the pack registry: a publisher's GUID, the GitHub accounts
+  (login and numeric ID) that own it, and each pack's GUID, ID and code. `build/packs/Test-MtPackRegistry.ps1`
+  (run by `PackRegistry.Tests.ps1`) fails on a GUID, pack ID, code or publisher that is not unique. A pack in
+  `packs/` must be registered under `maester365.json` with the `Code` and `Guid` of its manifest.
 - Put a function by its job, not by the check that first needed it: reusable data access
   for a service goes in `internal/services/<service>/`; logic only one suite's checks use
   goes in `internal/checks/<suite>/<service>/`; a helper users call from custom tests goes
