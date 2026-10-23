@@ -17,6 +17,8 @@ function Invoke-MtPackInstall {
     7. Write its entry, and its modules, into -Lock.
 
     A required pack that the lock already has at a version in range is kept as it is. Cycles are refused.
+    With -SkipUnchanged (Update-MtPack), a pack whose files have the digest of -Previous is not approved or
+    installed again: -Previous is returned as it is.
     Returns the lock entry of the pack that was asked for.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Install progress is written for a person at the console.')]
@@ -34,7 +36,9 @@ function Invoke-MtPackInstall {
         # The entry this install replaces (Update-MtPack).
         [Parameter()] [AllowNull()] [object] $Previous,
         # The pack IDs being installed above this one, to refuse cycles.
-        [Parameter()] [string[]] $Stack = @()
+        [Parameter()] [string[]] $Stack = @(),
+        # Return -Previous when the fetched files have its digest, without asking again.
+        [Parameter()] [switch] $SkipUnchanged
     )
 
     $candidate = Get-MtPackCandidate -Source $Source -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $Policy.CooldownHours
@@ -46,6 +50,12 @@ function Invoke-MtPackInstall {
         }
         foreach ($w in $candidate.Warnings) { Write-Warning (ConvertTo-MtPackSafeText $w -MaxLength 300) }
         $id = $candidate.Id
+        if ($SkipUnchanged -and $Previous -and $Previous.Digest -and $Previous.Id -eq $id -and $candidate.Digest -eq $Previous.Digest) {
+            # The files are the ones approved before; only make sure the store still has them.
+            Write-Host "The pack $id $($Previous.Version) is up to date."
+            $null = Save-MtPackToStore -Path $candidate.Root -Digest $candidate.Digest
+            return $Previous
+        }
         if ($id -in $Stack) { throw "The packs $(@($Stack + $id) -join ' -> ') require each other in a cycle, which is not allowed." }
         $manifest = $candidate.Manifest
 
@@ -164,7 +174,7 @@ function Invoke-MtPackInstall {
         $Lock.Modules = $modules.ToArray()
         $entry
     } finally {
-        if ($candidate.Staging) { Remove-Item -LiteralPath $candidate.Staging -Recurse -Force -ErrorAction SilentlyContinue }
+        if ($candidate.Staging) { Remove-Item -LiteralPath $candidate.Staging -Recurse -Force -ErrorAction SilentlyContinue -WhatIf:$false }
     }
 }
 

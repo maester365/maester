@@ -28,9 +28,15 @@ function Get-MtZtaInstance {
         }
 
         $maxAgeDays = [int](Get-MtSetting -Name 'ZeroTrustAssessment.MaxReportAgeDays' -Default 7)
+        # ConvertFrom-Json reads the ISO date as a DateTime already; text is parsed invariantly, never in the current culture.
         $executedAt = [datetime]::MinValue
-        if ($maxAgeDays -gt 0 -and [datetime]::TryParse([string]$report.ExecutedAt, [ref]$executedAt) -and
-            $executedAt.ToUniversalTime() -lt [datetime]::UtcNow.AddDays(-$maxAgeDays)) {
+        $hasDate = if ($report.ExecutedAt -is [datetime]) { $executedAt = $report.ExecutedAt; $true }
+        elseif ($report.ExecutedAt -is [datetimeoffset]) { $executedAt = $report.ExecutedAt.UtcDateTime; $true }
+        else {
+            [datetime]::TryParse([string]$report.ExecutedAt, [cultureinfo]::InvariantCulture,
+                [System.Globalization.DateTimeStyles]::AdjustToUniversal -bor [System.Globalization.DateTimeStyles]::AssumeUniversal, [ref]$executedAt)
+        }
+        if ($maxAgeDays -gt 0 -and $hasDate -and $executedAt.ToUniversalTime() -lt [datetime]::UtcNow.AddDays(-$maxAgeDays)) {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "The Zero Trust Assessment report at $reportPath was written on $($executedAt.ToString('yyyy-MM-dd')), more than $maxAgeDays days ago. Run Invoke-ZtAssessment again, or raise the ZeroTrustAssessment.MaxReportAgeDays setting."
         }
 
@@ -226,11 +232,12 @@ function Invoke-MtZtaCollection {
 
     # The assessment reads emergency access accounts from its own configuration file, in the same shape as
     # Maester's GlobalSettings.EmergencyAccessAccounts.
-    $emergencyAccounts = @(Get-MtSetting -Name 'EmergencyAccessAccounts' -Default @()) | Where-Object { $_ }
+    $emergencyAccounts = @(@(Get-MtSetting -Name 'EmergencyAccessAccounts' -Default @()) | Where-Object { $_ })
     $configurationFile = $null
     if ($emergencyAccounts.Count -gt 0) {
         $configurationFile = Join-Path ([System.IO.Path]::GetTempPath()) ("maester-zta-config-{0}.json" -f [guid]::NewGuid().ToString('n'))
-        @{ GlobalSettings = @{ EmergencyAccessAccounts = $emergencyAccounts } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $configurationFile -Encoding utf8
+        # @() keeps one account a JSON array.
+        @{ GlobalSettings = @{ EmergencyAccessAccounts = @($emergencyAccounts) } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $configurationFile -Encoding utf8
         $assessment.ConfigurationFile = $configurationFile
     }
 
@@ -458,6 +465,7 @@ try {
         Write-MtTestOutput -InputObject $Line -Progress:$progress
     }
     $process = $null
+    $completed = $false
     try {
         Write-MtTestOutput -Title "Microsoft Zero Trust Assessment $($module.Version)" -InputObject 'Running the assessment in a separate PowerShell process. This can take an hour or more on a large tenant.'
         $process = [System.Diagnostics.Process]::Start($startInfo)
@@ -486,12 +494,15 @@ try {
             $last = if ($tail.Count -gt 0) { " Its last lines:`n" + ($tail.ToArray() -join "`n") } else { '' }
             throw "The Zero Trust Assessment ended with exit code $($process.ExitCode).$where$last"
         }
+        $completed = $true
     } finally {
         # Stopping the Maester run (a timeout or Ctrl+C) stops the assessment too.
-        if ($process -and -not $process.HasExited) { $process.Kill($true) }
+        if ($process -and -not $process.HasExited) { $process.Kill($true); $null = $process.WaitForExit(5000) }
         Write-MtTestOutput -Complete
         Remove-Item -LiteralPath $request, $scriptPath -Force -ErrorAction SilentlyContinue
         if ($configurationFile) { Remove-Item -LiteralPath $configurationFile -Force -ErrorAction SilentlyContinue }
+        # The export holds tenant data. Get-MtZtaInstance removes it after a run that completed; this removes what a failed or stopped run left.
+        if ($temporary -and -not $completed) { Remove-Item -LiteralPath $outputPath -Recurse -Force -ErrorAction SilentlyContinue }
     }
 
     [pscustomobject]@{

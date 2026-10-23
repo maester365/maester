@@ -142,6 +142,23 @@ Describe 'Zero Trust Assessment pack' {
             $rows[0].ReasonDetail | Should -BeLike '*more than 7 days ago*'
         }
 
+        It 'reads the report date the same way in any culture' {
+            # A day above 12 cannot be read as a month, so a culture-dependent parse would miss the age check.
+            $report = Get-Content -LiteralPath (Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json') -Raw | ConvertFrom-Json
+            $report.ExecutedAt = '2026-01-13T00:00:00Z'
+            $file = Join-Path $TestDrive 'old-report.json'
+            $report | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $file -Encoding utf8
+            $culture = [cultureinfo]::CurrentCulture
+            try {
+                [cultureinfo]::CurrentCulture = [cultureinfo]::GetCultureInfo('en-GB')
+                $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = $file; 'ZeroTrustAssessment.MaxReportAgeDays' = 7 }
+            } finally {
+                [cultureinfo]::CurrentCulture = $culture
+            }
+            $rows.Count | Should -Be 1
+            $rows[0].ReasonDetail | Should -BeLike '*written on 2026-01-13, more than 7 days ago*'
+        }
+
         It 'skips the family when the report is for another tenant' {
             function global:Get-MgContext { [pscustomobject]@{ TenantId = '00000000-0000-0000-0000-000000000001' } }
             $rows = Invoke-ZtaPack
@@ -217,6 +234,8 @@ function Invoke-ZtAssessment {
             $call.Assessment.NoBrowser | Should -BeTrue
             $call.Assessment.DisableTelemetry | Should -BeTrue
             $call.Assessment.ShowLog | Should -BeTrue
+            # One account is still a list in the assessment's configuration file.
+            $call.Config.GlobalSettings.EmergencyAccessAccounts -is [array] | Should -BeTrue
             $call.Config.GlobalSettings.EmergencyAccessAccounts[0].UserPrincipalName | Should -Be 'breakglass@contoso.com'
         }
 

@@ -61,7 +61,7 @@ function Restore-MtPack {
                 $Present = $false
                 if (Test-Path -LiteralPath $Target -PathType Container) { $Present = (Get-MtPackDigest -Path $Target).Digest -eq $Entry.Digest }
                 if (-not $Present -and $PSCmdlet.ShouldProcess("$($Entry.Id) $($Entry.Version)", 'Restore the pack')) {
-                    $Candidate = Get-MtPackCandidate -Source $Entry.Source -Commit $Entry.Commit -IncludeRecent
+                    $Candidate = Get-MtPackCandidate -Source $Entry.Source -Commit $Entry.Commit -CommitRef $(if ($Entry.PSObject.Properties['Ref']) { [string]$Entry.Ref }) -IncludeRecent
                     if ($Candidate.Digest -ne $Entry.Digest) { throw "its files are not the approved files (digest $($Candidate.Digest), the lock file has $($Entry.Digest))." }
                     $null = Save-MtPackToStore -Path $Candidate.Root -Digest $Entry.Digest
                     $Status = 'Restored'

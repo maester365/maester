@@ -8,8 +8,9 @@ function Resolve-MtPackGitHubSource {
     the commit:
 
     - @<commit>: that commit, which must be reachable from the default branch or a release tag of the
-      repository itself. GitHub serves any commit of a fork under the original's name, so this stops a
-      fork's commit from installing with the original's name and badges.
+      repository itself, or from a ReachableFrom branch or tag that exists in the repository (Restore-MtPack
+      passes the ref the lock file recorded). GitHub serves any commit of a fork under the original's name,
+      so this stops a fork's commit from installing with the original's name and badges.
     - @<tag or branch>, or -Version (a release tag, with or without a leading v): that ref.
     - Otherwise the newest release, not a draft or prerelease, that is older than the cooldown; a newer
       one is returned in Newer and needs -IncludeRecent. Without any release, the default branch.
@@ -31,7 +32,10 @@ function Resolve-MtPackGitHubSource {
         # A release version, such as 1.2.0 or v1.2.0.
         [Parameter()] [string] $Version,
         [Parameter()] [switch] $IncludeRecent,
-        [Parameter()] [int] $CooldownHours = 72
+        [Parameter()] [int] $CooldownHours = 72,
+        # More branches or tags a requested commit may be reachable from, such as the ref in the lock file.
+        # Each must be a real branch or tag of the repository; a commit ID is ignored.
+        [Parameter()] [string[]] $ReachableFrom = @()
     )
 
     $usedToken = $false
@@ -62,6 +66,20 @@ function Resolve-MtPackGitHubSource {
         [pscustomobject]@{ Hours = ([datetime]::UtcNow - $seen).TotalHours; Source = 'FirstSeen' }
     }
 
+    # A branch or tag of the repository itself (refs/heads or refs/tags), or $null. The commits API also
+    # accepts SHA aliases and expressions, so a name is only a ref when the git refs API returns it exactly.
+    $findRef = {
+        param($name)
+        $names = if ($name.StartsWith('refs/heads/') -or $name.StartsWith('refs/tags/')) {
+            @($name.Substring(5))
+        } else { @("heads/$name", "tags/$name") }
+        foreach ($n in $names) {
+            $candidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($n))" -AllowNotFound
+            if ($candidateRef -and $candidateRef.ref -ceq "refs/$n") { return $candidateRef }
+        }
+        $null
+    }
+
     $requested = if ($Source.Ref) { $Source.Ref } elseif ($Version) { $Version } else { $null }
     $release = $null
     $newer = $null
@@ -71,23 +89,22 @@ function Resolve-MtPackGitHubSource {
         $ref = if ($release) { [string]$release.tag_name } else { $requested }
         if ($release) { $commit = & $commitOf "refs/tags/$ref" }
         else {
-            # The commits API also accepts SHA aliases and expressions. Only real repository refs
-            # may bypass the default-branch/release reachability rule for explicit commits.
-            $Names = if ($requested.StartsWith('refs/heads/') -or $requested.StartsWith('refs/tags/')) {
-                @($requested.Substring(5))
-            } else { @("heads/$requested", "tags/$requested") }
-            $NamedRef = $null
-            foreach ($Name in $Names) {
-                $CandidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($Name))" -AllowNotFound
-                if ($CandidateRef -and $CandidateRef.ref -ceq "refs/$Name") { $NamedRef = $CandidateRef; break }
-            }
+            # Only real repository refs may bypass the default-branch/release reachability rule for explicit commits.
+            $NamedRef = & $findRef $requested
             if ($NamedRef) { $commit = & $commitOf ([string]$NamedRef.ref) }
             elseif ($requested -match '^[0-9a-f]{1,40}$') {
                 # Hexadecimal branch/tag names are legitimate; only an input without a real ref is a SHA alias.
                 $commit = & $commitOf $requested
-                $refs = @($repository.default_branch) + @($releases | ForEach-Object { "refs/tags/$($_.tag_name)" })
+                # ReachableFrom refs come right after the default branch, as only the first ten refs are compared.
+                # A commit ID never counts as a ref here: comparing a commit with itself is always 'identical'.
+                $refs = @($repository.default_branch)
+                foreach ($extra in @($ReachableFrom | Where-Object { $_ -and $_ -notmatch '^[0-9a-fA-F]{7,40}$' })) {
+                    $extraRef = & $findRef ([string]$extra)
+                    if ($extraRef) { $refs += [string]$extraRef.ref }
+                }
+                $refs += @($releases | ForEach-Object { "refs/tags/$($_.tag_name)" })
                 if (-not (Test-MtPackCommitReachable -RepositoryPath $repoPath -Commit $commit -Ref $refs)) {
-                    throw "The commit $commit is not on the default branch or a release of $owner/$repo. GitHub serves commits from forks under the original repository's name, so Maester installs only commits that belong to the repository itself."
+                    throw "The commit $commit is not on the default branch, a release$(if (@($ReachableFrom | Where-Object { $_ }).Count -gt 0) { ' or the branch or tag it was installed from' }) of $owner/$repo. GitHub serves commits from forks under the original repository's name, so Maester installs only commits that belong to the repository itself."
                 }
                 $release = $releases | Where-Object { $_.target_commitish -eq $commit } | Select-Object -First 1
                 $ref = $commit
@@ -97,7 +114,7 @@ function Resolve-MtPackGitHubSource {
     } elseif ($releases.Count -gt 0) {
         $chosen = $null
         foreach ($candidate in $releases) {
-            $candidateCommit = & $commitOf $candidate.tag_name
+            $candidateCommit = & $commitOf "refs/tags/$($candidate.tag_name)"
             $age = & $ageOf $candidate $candidateCommit
             if ($IncludeRecent -or $age.Hours -ge $CooldownHours) { $chosen = [pscustomobject]@{ Release = $candidate; Commit = $candidateCommit }; break }
             if (-not $newer) { $newer = [pscustomobject]@{ TagName = [string]$candidate.tag_name; Commit = $candidateCommit; AgeHours = [math]::Round($age.Hours, 1); AgeSource = $age.Source } }

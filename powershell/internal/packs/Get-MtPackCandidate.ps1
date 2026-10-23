@@ -26,9 +26,13 @@ function Get-MtPackCandidate {
         [Parameter()] [int] $CooldownHours = 72,
         [Parameter()] [string[]] $RequiredService = @(),
         # Fetch exactly this commit (Restore-MtPack), skipping release selection.
-        [Parameter()] [string] $Commit
+        [Parameter()] [string] $Commit,
+        # The branch or tag the commit was installed from (the lock file's Ref), which it may be reachable from.
+        [Parameter()] [string] $CommitRef
     )
 
+    # Staging is only a temporary copy to read, so it happens under -WhatIf too.
+    $WhatIfPreference = $false
     $parsed = ConvertFrom-MtPackSource -Source $Source
     $candidate = [ordered]@{
         Kind = $parsed.Kind; Source = $parsed.Display; Owner = $parsed.Owner; Repo = $parsed.Repo; Folder = $parsed.Folder; Path = $parsed.Path
@@ -48,7 +52,7 @@ function Get-MtPackCandidate {
         }
         'GitHub' {
             if ($Commit) { $parsed.Ref = $Commit }
-            $resolved = Resolve-MtPackGitHubSource -Source $parsed -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $CooldownHours
+            $resolved = Resolve-MtPackGitHubSource -Source $parsed -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $CooldownHours -ReachableFrom @($CommitRef | Where-Object { $_ })
             foreach ($p in $resolved.PSObject.Properties) { if ($candidate.Contains($p.Name)) { $candidate[$p.Name] = $p.Value } }
             $candidate.Source = "github.com/$($resolved.Owner)/$($resolved.Repo)$(if ($resolved.Folder) { "/$($resolved.Folder)" })"
             $staging = Join-Path ([System.IO.Path]::GetTempPath()) "maester-pack-$([guid]::NewGuid().ToString('n'))"

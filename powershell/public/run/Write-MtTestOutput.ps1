@@ -111,6 +111,9 @@ function Write-MtTestOutput {
                 $state.LastProgress = [System.Diagnostics.Stopwatch]::StartNew()
             }
             foreach ($line in ($text -split '\r?\n')) {
+                # A carriage return goes back to the start of the line, as in the dashboard: keep what comes after it.
+                $back = $line.LastIndexOf([char]13)
+                if ($back -ge 0) { $line = $line.Substring($back + 1) }
                 $plain = [Maester.Engine.MtConsoleRenderer]::OutputText($line)
                 if (-not $plain.Trim()) { continue }
                 Write-MtHostLine (Format-MtConsoleText "    $(ConvertTo-MtConsoleSafeText $plain -Console $console)" -Style Dim -Console $console)

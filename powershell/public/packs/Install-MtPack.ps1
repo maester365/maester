@@ -22,7 +22,7 @@ function Install-MtPack {
     of maester-config.json. Commit both files: Restore-MtPack installs the same files on another computer
     or in a pipeline, and Invoke-Maester runs a pack only while its files still match the lock file.
 
-    A pack that ships with Maester (by ID, such as maester.zero-trust) needs no approval. Installing it only
+    A pack that ships with Maester (by ID, such as maester.zero-trust-assessment) needs no approval. Installing it only
     saves and pins the modules it declares.
 
     .PARAMETER Source
@@ -64,7 +64,7 @@ function Install-MtPack {
     Installs a given release in a pipeline.
 
     .EXAMPLE
-    Install-MtPack maester.zero-trust
+    Install-MtPack maester.zero-trust-assessment
 
     Saves and pins the modules of the Zero Trust Assessment pack, which ships with Maester.
 
