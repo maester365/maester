@@ -1116,7 +1116,9 @@ namespace Maester.Engine
                 if (listed >= shown) break;
                 listed++;
                 string time = Short(s.Duration).PadLeft(7);
-                var left = Truncate(new LineBuilder(ansi).Add(FitId(s.Id) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
+                // An item without a title (such as a table an assessment exported) shows its whole name.
+                var row = string.IsNullOrEmpty(s.Title) ? new LineBuilder(ansi).Add(s.Id ?? string.Empty) : new LineBuilder(ansi).Add(FitId(s.Id) + " ").Add(s.Title, "2");
+                var left = Truncate(row.Build(), width - time.Length - 1, ansi);
                 string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
                 panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
             }

@@ -464,7 +464,7 @@ $null = $reporter.AddScript({
                 }
                 $all.total = if ($kind -eq 'tests' -and $value -and [int]$value['_totalItems'] -gt 0) { [int]$value['_totalItems'] } else { 0 }
                 $snapshot.results = $all
-                $snapshot.groupLabel = 'Pillars'
+                $snapshot.groupLabel = 'Zero Trust Pillars'
                 $snapshot.groups = @($groups.Values | Where-Object { $_.total -gt 0 -or ($_.passed + $_.failed + $_.error + $_.investigate + $_.skipped + $_.running) -gt 0 })
             }
             $json = $snapshot | ConvertTo-Json -Compress -Depth 4
