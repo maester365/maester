@@ -80,19 +80,40 @@
         # An explicit -GraphBaseUri is an intentional absolute endpoint override. Without one the
         # endpoint is read from the active Graph context on every invocation, so a context switch
         # inside a single session is picked up instead of reusing a stale session value.
-        [bool] $isEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
-        if (!$isEndpointOverride) {
-            Write-Verbose -Message "Resolving Graph endpoint from the active MgContext."
-            $mgContext = Get-MgContext
-            if (-not $mgContext -or [string]::IsNullOrEmpty($mgContext.Environment)) {
+        [bool] $IsEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
+        if (!$IsEndpointOverride) {
+            $MgContext = Get-MgContext
+            if (-not $MgContext -or [string]::IsNullOrEmpty($MgContext.Environment)) {
                 throw "No active Microsoft Graph context. Ensure you are connected via 'Connect-Maester', or pass -GraphBaseUri to target an endpoint explicitly."
             }
-            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name $mgContext.Environment).GraphEndpoint)
+            # The context is read on every call, the endpoint lookup is memoised per environment
+            # name: a context switch still resolves a new endpoint, while repeated calls in the
+            # same environment do not pay for Get-MgEnvironment again.
+            [string] $EnvironmentName = $MgContext.Environment
+            if (!$__MtSession.GraphEndpointCache.ContainsKey($EnvironmentName)) {
+                Write-Verbose -Message ("Resolving the Graph endpoint for environment '{0}'." -f $EnvironmentName)
+                $__MtSession.GraphEndpointCache[$EnvironmentName] = [uri] $((Get-MgEnvironment -Name $EnvironmentName).GraphEndpoint)
+            }
+            $GraphBaseUri = $__MtSession.GraphEndpointCache[$EnvironmentName]
         }
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri
 
+        # Versioned root that every uri in this invocation is built from. Batch subrequest urls are
+        # relative to it, so the base and the api version come off together and a base uri that
+        # carries a path of its own does not leak into the subrequest. Built through UriBuilder so
+        # it is normalised exactly like the request uris it is compared against.
+        [string] $VersionedBaseUri = (New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($GraphBaseUri.AbsoluteUri, $ApiVersion))).Uri.AbsoluteUri.TrimEnd('/') + '/'
+
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
+
+        # The override-versus-relative decision lives here only, so the single-request path and the
+        # batch path cannot drift apart. Relative by default is what lets Microsoft Graph PowerShell
+        # route to the connected environment; absolute only when the caller overrode the endpoint.
+        function Resolve-TransportUri ([uri] $RequestUri) {
+            if ($IsEndpointOverride) { return $RequestUri.AbsoluteUri }
+            return $RequestUri.PathAndQuery.TrimStart('/')
+        }
 
         function Format-Result ($results, $RawOutput) {
             # Check if 'value' property exists (not just truthy) to handle empty arrays
@@ -170,16 +191,14 @@
                     $request = New-Object PSObject -Property @{
                         id      = $listRequests.Count #(New-Guid).ToString()
                         method  = $($Method)
-                        url     = $uriQueryEndpointFinal.Uri.PathAndQuery.TrimStart('/') -replace ('^{0}/' -f [regex]::Escape($ApiVersion)), ''
+                        url     = $uriQueryEndpointFinal.Uri.AbsoluteUri -replace ('^{0}' -f [regex]::Escape($VersionedBaseUri)), ''
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
                 } else {
-                    # Transport uri: relative by default so Microsoft Graph PowerShell routes it to
-                    # the connected environment. Cache key stays absolute, which is what keeps
-                    # entries from one environment from being served to another.
-                    $transportUri = if ($isEndpointOverride) { $uriQueryEndpointFinal.Uri.AbsoluteUri } else { $uriQueryEndpointFinal.Uri.PathAndQuery.TrimStart('/') }
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $transportUri -CacheKey $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
+                    # The cache key stays absolute, which is what keeps entries from one
+                    # environment from being served to another.
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
                     Complete-Result $results $DisablePaging
                 }
             }
@@ -194,8 +213,7 @@
                 $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
                 Write-Debug $jsonRequests
 
-                $batchTransportUri = if ($isEndpointOverride) { $uriQueryEndpoint.Uri.AbsoluteUri } else { $uriQueryEndpoint.Uri.PathAndQuery.TrimStart('/') }
-                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $batchTransportUri -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
+                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri (Resolve-TransportUri $uriQueryEndpoint.Uri) -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
                 $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
 
                 foreach ($results in ($resultsBatch.body)) {

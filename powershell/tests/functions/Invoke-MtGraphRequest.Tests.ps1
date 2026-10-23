@@ -7,6 +7,7 @@ Describe 'Invoke-MtGraphRequest' {
         InModuleScope Maester {
             $__MtSession.GraphCache = @{}
             $__MtSession.GraphBaseUri = $null
+            $__MtSession.GraphEndpointCache = @{}
         }
         # The environment the mocked Graph context reports. Tests reassign it to simulate a
         # context switch inside one PowerShell session.
@@ -186,6 +187,99 @@ Describe 'Invoke-MtGraphRequest' {
             $requests.url | Should -Be @('users', 'groups')
             # No request url may carry an absolute endpoint, or batching would pin a cloud.
             foreach ($url in $requests.url) { $url | Should -Not -Match '^https?://' }
+        }
+    }
+
+    Context 'Endpoint resolution cost' {
+        It 'Reads the context on every call but looks the endpoint up once per environment' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'groups' -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'applications' -DisablePaging
+            }
+            # The context is what makes a mid-session switch visible, so it is still read per call.
+            Should -Invoke Get-MgContext -ModuleName Maester -Times 3 -Exactly
+            # The endpoint for that environment is resolved once, not three times.
+            Should -Invoke Get-MgEnvironment -ModuleName Maester -Times 1 -Exactly
+        }
+
+        It 'Looks the endpoint up again when the context moves to another environment' {
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            $script:MtTestEnvironment = 'USGov'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            Should -Invoke Get-MgEnvironment -ModuleName Maester -Times 2 -Exactly
+            InModuleScope Maester {
+                $__MtSession.GraphBaseUri.AbsoluteUri | Should -Be 'https://graph.microsoft.us/'
+            }
+        }
+
+        It 'Does not memoise the endpoint when the caller overrides it' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -GraphBaseUri 'https://graph.microsoft.us/' -DisablePaging
+            }
+            Should -Not -Invoke Get-MgEnvironment -ModuleName Maester
+            InModuleScope Maester { $__MtSession.GraphEndpointCache.Count | Should -Be 0 }
+        }
+    }
+
+    Context 'Base uri with a path of its own' {
+        # A -GraphBaseUri can carry a path, for example a reverse proxy in front of Graph. The base
+        # and the api version then have to come off the subrequest urls together.
+        It 'Keeps the path in the absolute transport uri of a single request' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -GraphBaseUri 'https://proxy.contoso.com/graph/' -DisablePaging
+            }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'https://proxy.contoso.com/graph/v1.0/users'
+            }
+        }
+
+        It 'Strips the base path and the api version from batch subrequest urls' {
+            $script:MtBatchBody = $null
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBody = $Body
+                @{ responses = @(
+                        @{ id = 0; body = @{ value = @(@{ id = 'a' }) } }
+                        @{ id = 1; body = @{ value = @(@{ id = 'b' }) } }
+                    )
+                }
+            }
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -GraphBaseUri 'https://proxy.contoso.com/graph/' -DisablePaging
+            }
+
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Method -eq 'POST' -and $Uri -eq 'https://proxy.contoso.com/graph/v1.0/$batch'
+            }
+            $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
+            # Not 'graph/v1.0/users': the batch itself already posts to the versioned base.
+            $requests.url | Should -Be @('users', 'groups')
+        }
+
+        It 'Strips the base path when the base uri has no trailing slash' {
+            $script:MtBatchBody = $null
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBody = $Body
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
+            }
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -GraphBaseUri 'https://proxy.contoso.com/graph' -DisablePaging
+            }
+            $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
+            $requests.url | Should -Be @('users', 'groups')
+        }
+
+        It 'Keeps unique ids and query parameters in the subrequest url' {
+            $script:MtBatchBody = $null
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBody = $Body
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
+            }
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a@contoso.com', 'b@contoso.com' -Select 'displayName' -GraphBaseUri 'https://proxy.contoso.com/graph/' -DisablePaging
+            }
+            $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
+            $requests.url | Should -Be @('users/a@contoso.com?$select=displayName', 'users/b@contoso.com?$select=displayName')
         }
     }
 }

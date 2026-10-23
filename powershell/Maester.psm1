@@ -16,6 +16,7 @@
 $__MtSession = @{
 	GraphCache             = @{}
 	GraphBaseUri           = $null
+	GraphEndpointCache     = @{}                 # Environment name -> Graph endpoint, so Get-MgEnvironment is not called on every request
 	TestResultDetail       = @{}
 	NativeTestInfo         = @{}                 # Native tests of the current run: ID -> function name and Markdown
 	NativeReturnValue      = @{}                 # Native tests of the current run: ID -> what the test returned
