@@ -84,6 +84,33 @@ Describe 'Maester Pack manifest' {
         $result.Findings.Code | Should -Contain 'UserModules'
     }
 
+    It 'accepts a code of up to three parts, and refuses <Code>' -ForEach @(
+        @{ Code = 'CNT.GWS.ADMIN.X' }, @{ Code = 'CNT..GWS' }, @{ Code = 'CNT.1GWS' }, @{ Code = 'C' }
+    ) {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "code-$([guid]::NewGuid().ToString('n'))")
+        Set-Manifest -Pack $pack -Change { param($m) $m.Code = 'CNT.GWS' }
+        $ok = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        @($ok.Errors.Message) -match '^Code must' | Should -BeNullOrEmpty
+        $ok.Manifest.Code | Should -Be 'CNT.GWS'
+
+        Set-Manifest -Pack $pack -Change { param($m) $m.Code = $Code }
+        $bad = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        @($bad.Errors.Message) -match '^Code must' | Should -Not -BeNullOrEmpty
+    }
+
+    It 'treats codes as overlapping when one is the other with more parts' {
+        InModuleScope Maester {
+            Test-MtPackCodeOverlap -Code 'CNT' -Other 'cnt' | Should -BeTrue
+            Test-MtPackCodeOverlap -Code 'CNT' -Other 'CNT.GWS' | Should -BeTrue
+            Test-MtPackCodeOverlap -Code 'CNT.GWS' -Other 'CNT' | Should -BeTrue
+            Test-MtPackCodeOverlap -Code 'CNT.GWS' -Other 'CNT.OKTA' | Should -BeFalse
+            Test-MtPackCodeOverlap -Code 'CNT' -Other 'CNTX' | Should -BeFalse
+            Test-MtPackTestId -Id 'MP.ZTA' -Code 'ZTA' | Should -BeTrue
+            Test-MtPackTestId -Id 'MP.ZTA.21770' -Code 'ZTA' | Should -BeTrue
+            Test-MtPackTestId -Id 'MP.ZTAX.1' -Code 'ZTA' | Should -BeFalse
+        }
+    }
+
     It 'allows maester365 to publish packs with the maester prefix' {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'official') -Edit {
             param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'maester.sample'; $m.Publisher = 'maester365' }
@@ -214,6 +241,25 @@ Describe 'Installing and loading a pack' {
         $pack = Get-MtPack contoso.sample -WarningAction SilentlyContinue
         $pack.Status | Should -Be 'Failed'
         $pack.Reason | Should -Match 'changed after it was approved'
+    }
+
+    It 'refuses to install a second pack whose code overlaps an installed one' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $other = Copy-SamplePack -Destination (Join-Path $script:root 'other') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'contoso.other' } }
+        { Install-MtPack $other -NonInteractive 6>$null } | Should -Throw '*overlaps the code CNT of the installed pack contoso.sample*'
+    }
+
+    It 'runs only the first of two packs in the lock file whose codes overlap' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $lock = Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json
+        $copy = $lock.Packs[0] | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+        $copy.Id = 'contoso.copy'
+        $lock.Packs = @($lock.Packs[0], $copy)
+        $lock | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath 'maester-packs.lock.json'
+        (Get-MtPack contoso.sample).Status | Should -Be 'Ready'
+        $second = Get-MtPack contoso.copy -WarningAction SilentlyContinue
+        $second.Status | Should -Be 'Failed'
+        $second.Reason | Should -Match 'overlaps the code CNT of contoso.sample'
     }
 
     It 'turns a pack off from the config' {

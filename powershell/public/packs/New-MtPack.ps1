@@ -19,8 +19,10 @@ function New-MtPack {
     is the GitHub user or organisation that will own the pack's repository.
 
     .PARAMETER Code
-    Two to five letters or digits that start every test ID of the publisher, for example CNT for
-    MP.CNT.1001. Use the same code in all your packs.
+    The pack's code, which starts every test ID of the pack: ZTA for MP.ZTA.1001. Two to ten letters or
+    digits, starting with a letter. A publisher with several packs can group them with up to three parts
+    separated by dots, such as CNT.GWS for MP.CNT.GWS.1001. No two installed packs may share a code, or have
+    one code that starts with the other.
 
     .PARAMETER Name
     The pack's display name. By default made from its ID.
@@ -47,7 +49,7 @@ function New-MtPack {
         [string] $Id,
 
         [Parameter(Mandatory)]
-        [ValidatePattern('^[A-Za-z][A-Za-z0-9]{1,4}$')]
+        [ValidatePattern('^[A-Za-z][A-Za-z0-9]{1,9}(\.[A-Za-z][A-Za-z0-9]{1,9}){0,2}$')]
         [string] $Code,
 
         [Parameter()]
@@ -62,7 +64,8 @@ function New-MtPack {
     $Code = $Code.ToUpperInvariant()
     $publisher, $short = $Id.Split('.', 2)
     $pascal = ($short -split '-' | Where-Object { $_ } | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join ''
-    $prefix = $Code.Substring(0, 1) + $Code.Substring(1).ToLowerInvariant()
+    # Function names take the code without its dots: CNT.GWS gives Connect-CntGws<Name>.
+    $prefix = ($Code.Split('.') | ForEach-Object { $_.Substring(0, 1) + $_.Substring(1).ToLowerInvariant() }) -join ''
     if (-not $Name) { $Name = ($short -split '-' | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join ' ' }
     $reserved = Test-MtPackReservedName -Code $Code
     if ($reserved) { throw $reserved }

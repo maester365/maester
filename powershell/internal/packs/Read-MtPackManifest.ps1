@@ -17,8 +17,9 @@ function Read-MtPackManifest {
     - A module in Uses.Modules is pinned to one exact Version and saved by Maester (Install Maester, the
       default), or is the user's own install (Install User) that the pack runs in a child process (Process
       Child), never in Maester's: Maester then neither saves nor imports it, and it may name a MinimumVersion.
-    - The publisher's code and the connector service names are checked against the reserved list
-      (section 4.6). -Official allows the names reserved for packs from the maester365 organisation.
+    - The pack's code and the connector service names are checked against the reserved list (section 4.6).
+      -Official allows the names reserved for packs from the maester365 organisation. That two installed
+      packs have different codes is checked by Test-MtPackCodeOverlap, at install and when packs load.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -116,10 +117,10 @@ function Read-MtPackManifest {
     $requires = & $text 'RequiresMaester'
     if ($requires -and -not (Test-MtVersionRange -Range $requires -Validate)) { & $fail "RequiresMaester '$requires' is not a version range such as '>=3.1 <4.0'." }
 
-    # The publisher's code (section 4.5).
+    # The pack's code (section 4.5): one to three dot-separated parts, so a publisher can group packs (CNT.GWS).
     $code = & $text 'Code'
-    if (-not $code -or $code -notmatch '^[A-Za-z][A-Za-z0-9]{1,4}$') {
-        & $fail "Code must be two to five letters or digits starting with a letter, for example 'CNT'; it is '$code'."
+    if (-not $code -or $code -notmatch '^[A-Za-z][A-Za-z0-9]{1,9}(\.[A-Za-z][A-Za-z0-9]{1,9}){0,2}$') {
+        & $fail "Code must be one to three parts separated by dots, each two to ten letters or digits starting with a letter, for example 'ZTA' or 'CNT.GWS'; it is '$code'."
     } else {
         $code = $code.ToUpperInvariant()
         $manifest.Code = $code
@@ -247,13 +248,13 @@ function Test-MtPackRelativePath {
 function Test-MtPackReservedName {
     <#
     .SYNOPSIS
-    Returns why a publisher code or a connector service name is reserved (Maester Packs design, section 4.6), or $null.
+    Returns why a pack code or a connector service name is reserved (Maester Packs design, section 4.6), or $null.
 
     .DESCRIPTION
-    Codes: built-in suite names, names that look official, maester365's own MAES, product acronyms and a
-    snapshot of well-known brands. A code is reserved when it equals an entry, or an entry followed by one
-    digit. The index keeps the full list (Simple Icons and the S&P 500 tickers); this snapshot only keeps
-    publishers away from the obvious ones before it exists.
+    Codes: the first part of a code may not be a built-in suite name, a name that looks official, a product
+    acronym or a well-known brand. It is reserved when it equals an entry, or an entry followed by one digit.
+    The index keeps the full list (Simple Icons and the S&P 500 tickers); this snapshot only keeps publishers
+    away from the obvious ones before it exists.
 
     Service names: a community connector's service is '<Code>.<Name>', 3 to 40 letters and digits after the
     code. Bare platform names are for official connectors, and Maester's own names are never available.
@@ -273,29 +274,30 @@ function Test-MtPackReservedName {
         'GITLAB', 'DOCU', 'DBX', 'WDAY', 'NOW', 'TWLO', 'AKAM', 'CHKP', 'JAMF', 'SAP')
 
     if ($Service) {
-        if ($Service -notmatch '^(?:[A-Za-z][A-Za-z0-9]{1,4}\.)?[A-Za-z][A-Za-z0-9]{2,39}$') {
+        if ($Service -notmatch '^(?:[A-Za-z][A-Za-z0-9]{1,9}\.){0,3}[A-Za-z][A-Za-z0-9]{2,39}$') {
             return "The service name '$Service' must be '<code>.<Name>', with 3 to 40 letters and digits after the code, for example 'CNT.GoogleWorkspace'."
         }
         $registry = Get-MtServiceRegistry -BuiltInOnly
         $ownNames = @('All', 'None', 'EOP', 'Pack', 'Packs', 'Telemetry', 'Maester') + @($registry.Services.Keys) + @($registry.Services.Values | ForEach-Object { $_.Aliases } | Where-Object { $_ })
-        $name = if ($Service.Contains('.')) { $Service.Split('.')[1] } else { $Service }
+        $name = $Service.Split('.')[-1]
         if ($ownNames | Where-Object { $_ -eq $Service -or $_ -eq $name }) { return "The service name '$Service' is reserved by Maester." }
         if (-not $Service.Contains('.')) {
-            if (-not $Official) { return "The service name '$Service' is a bare platform name, which is reserved for official connectors. Use '<code>.$Service' with your publisher code." }
-        } elseif ($Code -and $Service.Split('.')[0] -ne $Code) {
+            if (-not $Official) { return "The service name '$Service' is a bare platform name, which is reserved for official connectors. Use '<code>.$Service' with your pack's code." }
+        } elseif ($Code -and $Service.Substring(0, $Service.LastIndexOf('.')) -ne $Code) {
             return "The service name '$Service' must start with the pack's code: '$Code.$name'."
         }
         return $null
     }
 
     if (-not $Code) { return $null }
-    $value = $Code.ToUpperInvariant()
+    $value = $Code.Split('.')[0].ToUpperInvariant()
     $stem = if ($value -match '^(.*[A-Z])\d$') { $Matches[1] } else { $value }
     if ($Official -and $value -eq 'MAES') { return $null }
     foreach ($entry in ($builtInSuites + $officialNames + $brands)) {
         if ($value -eq $entry -or $stem -eq $entry) {
             $why = if ($entry -in $builtInSuites) { 'a built-in suite' } elseif ($entry -eq 'MAES') { 'the maester365 organisation' } elseif ($entry -in $officialNames) { 'names that look official' } else { 'a well-known brand' }
-            return "The code '$value' is reserved for $why. Pick another code for your packs."
+            $what = if ($Code.Contains('.')) { "The code '$($Code.ToUpperInvariant())' starts with '$value', which" } else { "The code '$value'" }
+            return "$what is reserved for $why. Pick another code for your pack."
         }
     }
     $null
@@ -351,4 +353,38 @@ function Test-MtVersionRange {
         if (-not $ok) { return $false }
     }
     $true
+}
+
+function Test-MtPackCodeOverlap {
+    <#
+    .SYNOPSIS
+    True when two pack codes would give tests with the same ID prefix: the codes are equal, or one is the other
+    followed by more parts (CNT and CNT.GWS), so MP.CNT.GWS.1001 could belong to either pack.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory)] [AllowEmptyString()] [string] $Code,
+        [Parameter(Mandatory)] [AllowEmptyString()] [string] $Other
+    )
+
+    if (-not $Code -or -not $Other) { return $false }
+    $a = $Code.ToUpperInvariant(); $b = $Other.ToUpperInvariant()
+    $a -eq $b -or $a.StartsWith("$b.") -or $b.StartsWith("$a.")
+}
+
+function Test-MtPackTestId {
+    <#
+    .SYNOPSIS
+    True when a test ID belongs to a pack with this code: MP.<Code> itself (a family, whose instances add a
+    part) or MP.<Code>.<anything>.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory)] [string] $Id,
+        [Parameter(Mandatory)] [string] $Code
+    )
+
+    $Id.Equals("MP.$Code", [System.StringComparison]::OrdinalIgnoreCase) -or $Id.StartsWith("MP.$Code.", [System.StringComparison]::OrdinalIgnoreCase)
 }

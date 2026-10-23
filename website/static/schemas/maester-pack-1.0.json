@@ -30,9 +30,9 @@
       "pattern": "^\\s*((>=|<=|>|<|=|\\^|~)?v?\\d+(\\.\\d+){0,2}(-[0-9A-Za-z.-]+)?\\s*)+$"
     },
     "Code": {
-      "description": "Two to five letters or digits starting with a letter; every test ID of the publisher starts with MP.<Code>.",
+      "description": "The pack's code: every test ID of the pack starts with MP.<Code>. One to three parts separated by dots, each two to ten letters or digits starting with a letter, such as ZTA or CNT.GWS.",
       "type": "string",
-      "pattern": "^[A-Za-z][A-Za-z0-9]{1,4}$"
+      "pattern": "^[A-Za-z][A-Za-z0-9]{1,9}(\\.[A-Za-z][A-Za-z0-9]{1,9}){0,2}$"
     },
     "Suites": { "description": "Folders of native tests inside the pack.", "$ref": "#/$defs/relativePaths" },
     "Helpers": { "description": "Folders of .ps1 files with functions the tests call.", "$ref": "#/$defs/relativePaths" },
@@ -91,7 +91,7 @@
       "additionalProperties": false,
       "required": ["Service", "File", "Connect", "Test"],
       "properties": {
-        "Service": { "description": "<Code>.<Name>, for example CNT.GoogleWorkspace.", "type": "string" },
+        "Service": { "description": "<Code>.<Name>, for example CNT.GoogleWorkspace or CNT.GWS.Admin.", "type": "string" },
         "Platform": { "type": "string" },
         "DisplayName": { "type": "string" },
         "File": { "$ref": "#/$defs/relativePath" },

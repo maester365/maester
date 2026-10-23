@@ -113,6 +113,16 @@ function Resolve-MtPackSet {
         }
     }
 
+    # Two packs whose codes overlap (Test-MtPackCodeOverlap) would write rows with the same IDs. Install-MtPack
+    # refuses the second one, so this only happens with a lock file edited by hand or restored from elsewhere:
+    # the packs that ship with Maester win, then the one earlier in the lock file.
+    $claimed = [System.Collections.Generic.List[object]]::new()
+    foreach ($row in ($rows.Values | Where-Object { $_.Status -eq 'Ready' -and $_.Manifest -and $_.Manifest.Code })) {
+        $owner = $claimed | Where-Object { Test-MtPackCodeOverlap -Code ([string]$row.Manifest.Code) -Other ([string]$_.Manifest.Code) } | Select-Object -First 1
+        if ($owner) { & $stop $row 'Failed' 'PackLoadFailed' "The pack $($row.Id) has the code $($row.Manifest.Code), which overlaps the code $($owner.Manifest.Code) of $($owner.Id), so it was not run. Uninstall one of them."; continue }
+        $claimed.Add($row)
+    }
+
     # RequiresMaester and modules, for every pack still in the running.
     $moduleVersion = $ExecutionContext.SessionState.Module.Version
     foreach ($row in ($rows.Values | Where-Object Status -EQ 'Ready')) {

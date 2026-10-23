@@ -74,7 +74,7 @@ To install without a prompt, say which risk you accept: `Install-MtPack contoso/
 ## Running pack tests
 
 `Invoke-Maester` runs every pack in the lock file whose files still match it. A pack's tests have IDs
-`MP.<code>.<n>`, so `-TestId 'MP.CNT.*'` runs one publisher's tests, and `-Suite` with a pack's suite ID runs
+`MP.<code>.<n>`, so `-TestId 'MP.CNT.*'` runs one pack's tests, and `-Suite` with a pack's suite ID runs
 that pack's tests, including its long-running and preview ones. `-SkipPack` runs no pack, and
 `-PackLock` names another lock file.
 

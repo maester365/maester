@@ -76,7 +76,7 @@ cooldown when it is published; any other release starts it when each user first 
 | `Id` | `<publisher>.<name>` in lower case. The publisher is the GitHub user or organisation that owns the repository; a pack whose publisher is not the repository owner is refused. |
 | `Version` | A semantic version, such as `1.2.0`. |
 | `RequiresMaester` | The Maester versions the pack works with, such as `>=3.1 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
-| `Code` | Two to five letters or digits, the start of every test ID of the publisher: `MP.CNT.1001`. Use one code for all your packs. Codes that look like Maester's suites, Microsoft products or well-known brands are reserved. |
+| `Code` | The start of every test ID of the pack: `CNT` gives `MP.CNT.1001`. Two to ten letters or digits, starting with a letter. A publisher with several packs can group them with up to three parts separated by dots, such as `CNT.GWS` for `MP.CNT.GWS.1001`. No two installed packs may share a code, or have one code that starts with the other (`CNT` and `CNT.GWS`), so `Install-MtPack` refuses the second one; the pack index gives each code to the first pack that claims it. A first part that looks like Maester's suites, Microsoft products or well-known brands is reserved. |
 | `Suites` | Folders of native tests. Each needs a `suite.json` whose `Id` is the code or starts with it, such as `CNT.GoogleWorkspace`. |
 | `Helpers` | Folders of `.ps1` files that hold functions the tests call. |
 | `Connectors` | Services the pack connects to (below). |
@@ -125,7 +125,7 @@ For an image without text, replace the `Text:` line with `No text at all; leave 
 
 ## Tests and helpers
 
-A pack's tests are [native tests](../writing-tests/index.mdx) with IDs `MP.<Code>.<n>`. Every `.ps1` in a suite
+A pack's tests are [native tests](../writing-tests/index.mdx) with IDs `MP.<Code>.<n>`, or `MP.<Code>` for a family whose instances add their own part. Every `.ps1` in a suite
 or helper folder holds only functions: code outside a function is refused, because it would run while the pack
 loads. A pack loads into a private module of its own, so its tests can call its helpers and Maester's exported
 commands. One pack does not see another pack's functions unless it requires that pack and the pack lists them in

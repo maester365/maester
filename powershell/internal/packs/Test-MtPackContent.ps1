@@ -9,9 +9,10 @@ function Test-MtPackContent {
     - Errors: what stops the pack from being installed or loaded. The manifest rules; no symbolic links,
       no paths that differ only in case, at most 50 MB per pack and 20 MB per file; PowerShell files that
       hold only function definitions; function names unique within the pack (DuplicateFunctionName); test
-      IDs 'MP.<Code>.<number>' and suite IDs that start with the code; no reserved tags; services that are
-      built in, declared by the pack's connectors or listed in Uses.Services; and reach that the code shows
-      but Uses does not declare (a literal web host, a module it imports, a tenant write).
+      IDs 'MP.<Code>.<number>' (or 'MP.<Code>' for a family) and suite IDs that start with the code; no
+      reserved tags; services that are built in, declared by the pack's connectors or listed in
+      Uses.Services; and reach that the code shows but Uses does not declare (a literal web host, a module
+      it imports, a tenant write).
     - Findings: what a person should read before installing (Severity Medium or High, Code, Message, File, Line).
     - Risk: Low (text only and nothing to read), Medium (findings, or Gallery modules), or High (compiled or
       encoded content, archives, tenant writes, write scopes, or modules from outside the store).
@@ -144,7 +145,7 @@ function Test-MtPackContent {
         foreach ($t in $suiteTests) {
             $file = [System.IO.Path]::GetRelativePath($root, $t.File)
             foreach ($e in $t.Errors) { & $fail $e.Code "$file, line $($e.Line): $($e.Message)" }
-            if ($t.Id -and $manifest.Code -and -not $t.Id.StartsWith("MP.$($manifest.Code).", [System.StringComparison]::OrdinalIgnoreCase)) {
+            if ($t.Id -and $manifest.Code -and -not (Test-MtPackTestId -Id $t.Id -Code $manifest.Code)) {
                 & $fail 'InvalidTestId' "$file has the ID $($t.Id); every test in this pack must have an ID that starts with MP.$($manifest.Code)., such as MP.$($manifest.Code).0001."
             }
             foreach ($tag in @($t.Tag)) {

@@ -78,6 +78,16 @@ function Invoke-MtPackInstall {
             if ($content.Errors.Count -gt 0) { throw "The pack $id was not installed: $(@($content.Errors | Select-Object -First 5 | ForEach-Object { $_.Message }) -join ' ')" }
         }
 
+        # A code that another pack has, or that is part of its code (CNT and CNT.GWS): their test IDs could clash.
+        # The packs that ship with Maester keep theirs.
+        $others = @(@(Get-MtBuiltInPack | Where-Object { $_.Manifest } | ForEach-Object { [pscustomobject]@{ Id = $_.Id; Code = [string]$_.Manifest.Code } }) +
+            @($Lock.Packs | Where-Object { $_.PSObject.Properties['Code'] } | ForEach-Object { [pscustomobject]@{ Id = [string]$_.Id; Code = [string]$_.Code } }))
+        foreach ($other in ($others | Where-Object { $_.Id -ne $id })) {
+            if (Test-MtPackCodeOverlap -Code ([string]$manifest.Code) -Other $other.Code) {
+                throw "The pack $id has the code $($manifest.Code), which overlaps the code $($other.Code) of the installed pack $($other.Id), so their test IDs could clash. Uninstall $($other.Id), or ask the publisher of $id to pick another code."
+            }
+        }
+
         # Test IDs that another installed pack provides.
         foreach ($other in ($Lock.Packs | Where-Object { $_.Id -ne $id })) {
             $clash = @($candidate.TestIds | Where-Object { $_ -in @($other.Tests) })
@@ -117,6 +127,7 @@ function Invoke-MtPackInstall {
         $entry = [pscustomobject][ordered]@{
             Id                 = $id
             Version            = [string]$manifest.Version
+            Code               = [string]$manifest.Code
             Source             = if ($candidate.Kind -eq 'BuiltIn') { 'builtin' } else { $candidate.Source }
             Ref                = $candidate.Ref
             Commit             = $candidate.Commit

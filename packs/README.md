@@ -8,8 +8,8 @@ a `maester-pack.json`, its suites of native tests, and its helpers and connector
 - A pack here is trusted as the module is: it needs no lock entry and no approval. It runs when its
   manifest says `"EnabledByDefault": true` unless the Maester config turns it off with
   `Packs: [{ "Id": "<id>", "Enabled": false }]`, and the other way round.
-- Its ID is `maester.<name>`, its `Code` is `MAES`, its test IDs are `MP.MAES.<n>` and its suite IDs start
-  with `MAES`. Its rows in the results have `Source = Custom` and a `Package`, so they never count as
+- Its ID is `maester.<name>`. Its `Code` is its own, such as `ZTA`, so its test IDs are `MP.ZTA.<n>` and its
+  suite IDs start with `ZTA`. A pack installed later may not take a code that overlaps it. Its rows in the results have `Source = Custom` and a `Package`, so they never count as
   Maester's own checks.
 - PowerShell Gallery modules it declares in `Uses.Modules` are pinned to one version. Users save them with
   `Install-MtPack <id>`, which records each module's digest in `maester-packs.lock.json`.
