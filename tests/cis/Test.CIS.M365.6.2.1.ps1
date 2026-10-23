@@ -23,7 +23,7 @@
         Feature = 'mail-flow',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'High',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
         Mitre = 'T1114.003',
