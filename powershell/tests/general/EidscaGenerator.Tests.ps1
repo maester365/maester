@@ -109,14 +109,14 @@ Describe 'EIDSCA generator' {
         $seedPath = Join-Path $TestDrive 'seed.csv'
         "test_id,author,contributors_recommended`nEIDSCA.ZZ99,fixture-author,fixture-contributor;fixture-author" | Set-Content -Path $seedPath
         $maesterConfigPath = Join-Path $TestDrive 'maester-config.json'
-        '{ "TestSettings": [ { "Id": "EIDSCA.ZZ99", "Severity": "Critical", "RelatedProduct": ["exchange"], "Feature": "authentication-methods", "Area": "authentication", "ResourceType": "Tenant", "UserImpact": "Medium", "ImplementationCost": "Low", "Mitre": ["T1110", "T1078.004"] } ] }' | Set-Content -Path $maesterConfigPath
+        '{ "TestSettings": [ { "Id": "EIDSCA.ZZ99", "Severity": "Critical", "RelatedProduct": ["exchange"], "Feature": "authentication-methods", "Area": "authentication", "ResourceType": "Tenant", "UserImpact": "Medium", "ImplementationCost": "Low", "Mitre": ["T1110", "T1078.004"] }, { "Id": "EIDSCA.ZZ97", "Feature": "authentication-methods", "Area": "authentication", "ResourceType": "Tenant", "UserImpact": "Low", "ImplementationCost": "Low", "Mitre": ["None"] } ] }' | Set-Content -Path $maesterConfigPath
         Mock Invoke-WebRequest { throw 'The generator must not use the network without -Download.' }
 
-        & $script:EidscaBuildScript @paths `
+        $warnings = & $script:EidscaBuildScript @paths `
             -ConfigPath $configPath `
             -PageTitleCachePath (Join-Path $TestDrive 'PageTitles.json') `
             -MaesterConfigPath $maesterConfigPath `
-            -AuthorshipPath $seedPath
+            -AuthorshipPath $seedPath 3>&1
 
         Join-Path $paths.PowerShellFunctionsPath 'Test-MtEidscaZZ99.ps1' | Should -Exist
         Join-Path $paths.PowerShellFunctionsPath 'Test-MtEidscaZZ99.md' | Should -Not -Exist
@@ -143,7 +143,8 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $native = Get-Content -Path $nativePath -Raw
         $native | Should -Match "Id = 'EIDSCA.ZZ99'"
         $native | Should -Match "Title = 'Fixture control - Fixture setting.'"
-        $native | Should -Match "Severity = 'Critical'"
+        # Severity comes from the EIDSCA config, not from the metadata row.
+        $native | Should -Match "Severity = 'Medium'"
         $native | Should -Match "Product = 'entra'"
         $native | Should -Not -Match '(?m)^\s+(Category|Tag|Preview) = '
         $native | Should -Match "Service = 'Graph'"
@@ -163,11 +164,13 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $native | Should -Not -Match 'HelpUrl'
         $native | Should -Match "return \(\`$tenantValue -eq 'true'\)"
 
-        # A licence skip becomes License; the severity falls back to the EIDSCA config.
+        # A licence skip becomes License.
         $licensed = Get-Content -Path (Join-Path $paths.TestPath 'Test.EIDSCA.ZZ98.ps1') -Raw
         $licensed | Should -Match "License = 'AAD_PREMIUM'"
         $licensed | Should -Match "Severity = 'Medium'"
-        # A control without a metadata row gets no classification value beyond the product.
+        # A control without a metadata row gets no classification value beyond the product, and a warning.
+        @($warnings | Where-Object { "$_" -like '*EIDSCA.ZZ98 has no row*' }).Count | Should -Be 1
+        @($warnings | Where-Object { "$_" -like '*EIDSCA.ZZ9[79] has no row*' }) | Should -BeNullOrEmpty
         $licensed | Should -Not -Match '(?m)^\s+(RelatedProduct|Feature|Area|ResourceType|UserImpact|ImplementationCost|Mitre) = '
         $licensed | Should -Match "Author = 'Cloud-Architekt'"
         $licensed | Should -Not -Match 'EntraIDPlan'
@@ -176,6 +179,8 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         # Other skips stay in the test, read their discovery variable, and never call another test.
         $skipped = Get-Content -Path (Join-Path $paths.TestPath 'Test.EIDSCA.ZZ97.ps1') -Raw
         $skipped | Should -Match "Severity = 'Info'"
+        # An Info test has no UserImpact or ImplementationCost, even when its metadata row has them.
+        $skipped | Should -Not -Match '(?m)^\s+(UserImpact|ImplementationCost) = '
         $skipped | Should -Match '\$FixtureDiscovery = \$true'
         $skipped | Should -Not -Match '\(Test-MtEidscaZZ99\)'
         $skipped | Should -Match 'Invoke-MtGraphRequest -RelativeUri "fixture/settings" -ApiVersion v1.0'
@@ -227,7 +232,8 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
             ($problems -join '; '))
     }
 
-    It 'keeps the 2.x title and selection tags of every EIDSCA check, as an Entra ID test without tags' {
+    # The title is not compared: it comes from the EIDSCA config, which may rename a check.
+    It 'keeps the 2.x selection tags of every EIDSCA check, as an Entra ID test without tags' {
         $module = Import-Module (Join-Path $script:RepoRoot 'powershell/Maester.psd1') -Force -PassThru -WarningAction SilentlyContinue |
             Where-Object Name -EQ 'Maester' | Select-Object -First 1
         # The catalog, so that the tests are read as built-in tests (a custom test has no 2.x tags).
@@ -235,7 +241,8 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
         $golden = @((Get-Content -Path (Join-Path $script:RepoRoot 'powershell/tests/fixtures/golden/tags-and-blocks.json') -Raw |
                     ConvertFrom-Json).Entries | Where-Object { $_.Id -like 'EIDSCA.*' })
         $golden.Count | Should -BeGreaterThan 0
-        $tests.Count | Should -Be $golden.Count
+        # Checks added upstream after 2.x are not in the snapshot; every 2.x check must still be there.
+        $tests.Count | Should -BeGreaterOrEqual $golden.Count
 
         $problems = foreach ($entry in $golden) {
             $test = $tests | Where-Object Id -EQ $entry.Id
@@ -250,8 +257,6 @@ Use [the portal](https://example.invalid) or run: ```$literal $$ $& $1```
             $was = @($entry.SelectionTags | Sort-Object -Unique) -join ','
             $is = @(@($selection.Own) + @($selection.Legacy) | Sort-Object -Unique) -join ','
             if ($was -ne $is) { "$($entry.Id): the selection tags '$is' are not the 2.x selection tags '$was'" }
-            $title = (($entry.Name -split ': ', 2)[1]) -replace ' See https://\S+$', ''
-            if ($test.Title -ne $title) { "$($entry.Id): title '$($test.Title)' is not '$title'" }
             if (-not $test.Author) { "$($entry.Id): no Author" }
         }
         $problems | Should -BeNullOrEmpty -Because ($problems -join '; ')

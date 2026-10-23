@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AF05 - Authentication Method - FIDO2 security key - Restricted."
-description: "You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage. Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestrictions.aaGuids -notcontains $null -eq 't…"
+description: "You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage. Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestrictions.aaGuids.Count -gt 0 -and $result.…"
 slug: /tests/EIDSCA.AF05
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AF05"
-  - "Medium"
+  - "Low"
   - "Entra ID SCA"
   - "Entra ID"
   - "Authentication methods"
@@ -32,7 +32,7 @@ You can work with your Security key provider to determine the AAGuids of their d
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.aaGuids -notcontains $null -eq 'true'
+.keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains '' -eq 'true'
 ```
 
 #### Remediation action
@@ -49,7 +49,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AF05 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Entra ID SCA |
 | Product | Entra ID |
 | Feature | Authentication methods |

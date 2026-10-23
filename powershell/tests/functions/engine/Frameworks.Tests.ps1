@@ -327,7 +327,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     }
 
     It 'Gives every <Prefix> test a Benchmark of <Framework>, from the first Control of the test' -ForEach @(
-        @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 44 }
+        @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 108 }
         @{ Prefix = 'CIS.GH.'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
         @{ Prefix = 'CISA.'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
     ) {
@@ -379,12 +379,14 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $legacy = InModuleScope Maester { (Get-MtLegacyTagTable).ByTest }
         $versionTag = @{ 'cis-m365' = 'CIS M365 v7.0.0'; 'cis-github' = 'CIS GitHub v1.2.0' }
         $offenders = foreach ($test in ($script:builtIn | Where-Object { $_.Id -like 'CIS.*' })) {
+            if (@($test.Benchmark.Profile | Where-Object { $_ -notlike "* Level $($test.Benchmark.Level.Substring(1))" }).Count -gt 0) { "$($test.Id): level $($test.Benchmark.Level) with profiles $($test.Benchmark.Profile -join ', ')" }
+            # A test that is new in 3.0 has no 2.x tags to compare with.
+            if (-not $legacy.ContainsKey($test.Id)) { continue }
             $tags = @($legacy[$test.Id])
             $level = @($tags | Where-Object { $_ -in 'L1', 'L2' })
             $profiles = @($tags | Where-Object { $_ -match '^CIS .+ Level \d$' } | ForEach-Object { $_ -replace '^CIS ', '' } | Sort-Object)
             if ($level.Count -gt 0 -and $level[0] -ne $test.Benchmark.Level) { "$($test.Id): level $($test.Benchmark.Level), tag $($level[0])" }
             if (($profiles -join '|') -ne (@($test.Benchmark.Profile | Sort-Object) -join '|')) { "$($test.Id): profiles $($test.Benchmark.Profile -join ', '), tags $($profiles -join ', ')" }
-            if (@($test.Benchmark.Profile | Where-Object { $_ -notlike "* Level $($test.Benchmark.Level.Substring(1))" }).Count -gt 0) { "$($test.Id): level $($test.Benchmark.Level) with profiles $($test.Benchmark.Profile -join ', ')" }
             if ($tags -notcontains $versionTag[$test.Benchmark.Framework]) { "$($test.Id): $($test.Benchmark.Framework) $($test.Benchmark.Version) without the tag $($versionTag[$test.Benchmark.Framework])" }
         }
         $offenders | Should -BeNullOrEmpty
@@ -479,7 +481,7 @@ Describe 'Benchmark and Control on result rows' {
 
     It 'Gives the rows of the CIS suite their Benchmark without a tenant' {
         $rows = @((Get-Run 'Cis').Tests | Where-Object Suite -EQ 'CIS')
-        $rows.Count | Should -Be 49
+        $rows.Count | Should -Be 113
         @($rows | Where-Object { $_.Result -notin 'NotRun', 'Skipped' -or $_.ReasonCode -eq 'NotSelected' } | ForEach-Object Id) | Should -BeNullOrEmpty -Because 'the suite is selected and nothing runs'
         @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'cis-m365', 'cis-github' -or $_.Benchmark.Level -cnotin 'L1', 'L2' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
         $row = $rows | Where-Object Id -EQ 'CIS.M365.1.1.1'
@@ -722,7 +724,7 @@ Describe 'Docs export' {
 
     It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {
         $cis = @($script:export.Tests | Where-Object { $_.Id -like 'CIS.*' })
-        $cis.Count | Should -Be 49
+        $cis.Count | Should -Be 113
         @($cis | Where-Object { $_.Benchmark.Level -cnotmatch '^L[12]$' } | ForEach-Object Id) | Should -BeNullOrEmpty
         $generator = Get-Content -LiteralPath (Join-Path $script:repoRoot 'website/scripts/generate-test-docs.mjs') -Raw
         $generator | Should -Match 'test\.Benchmark\?\.Level' -Because 'the title prefix comes from Benchmark'

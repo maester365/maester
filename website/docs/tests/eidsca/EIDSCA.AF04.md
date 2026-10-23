@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AF04"
-  - "Medium"
+  - "Low"
   - "Entra ID SCA"
   - "Entra ID"
   - "Authentication methods"
@@ -49,7 +49,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AF04 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Entra ID SCA |
 | Product | Entra ID |
 | Feature | Authentication methods |

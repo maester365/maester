@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AF06 - Authentication Method - FIDO2 security key - Restrict specific keys."
-description: "Defines if list of AADGUID will be used to allow or block registration. You should use Block or Allow as value to allow- or blocklisting of AAGuids. Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestrictions.aaG…"
+description: "Defines whether the configured AAGUID list is used to allow or block registration. You should use Block or Allow as value to allow- or blocklisting of AAGuids. Test script ``` https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2') .keyRestr…"
 slug: /tests/EIDSCA.AF06
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,14 +25,14 @@ keywords:
 
 ## Overview
 
-Defines if list of AADGUID will be used to allow or block registration.
+Defines whether the configured AAGUID list is used to allow or block registration.
 
 You should use Block or Allow as value to allow- or blocklisting of AAGuids.
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
+.keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains '' -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
 ```
 
 #### Remediation action

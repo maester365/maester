@@ -5,6 +5,9 @@
 .DESCRIPTION
     Checks if Personal Access Token full scope restrictions are configured.
 
+    Requires Azure DevOps to be connected with a user account. The test is skipped when connected
+    as a service principal or managed identity.
+
     https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens
 
 .EXAMPLE
@@ -40,6 +43,11 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
     param()
 
     Write-Verbose "Running Test-AzdoRestrictFullScopePersonalAccessToken"
+
+    if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
+    }
 
 $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictFullScopePersonalAccessToken -Force
     if ($null -eq $Policy) {

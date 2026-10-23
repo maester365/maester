@@ -1,0 +1,52 @@
+5.1.6.3 (L2) Ensure guest user invitations are limited
+
+By default, all users in the organization, including B2B collaboration guest users, can invite external users to B2B collaboration. The ability to send invitations can be limited by turning it on or off for everyone, or by restricting invitations to certain roles.
+
+The recommended state is **Only users assigned to specific admin roles can invite guest users** or **No one in the organization can invite guest users including admins (most restrictive)**.
+
+#### Rationale
+
+Restricting who can invite guests limits the exposure the organization might face from unauthorized accounts. The default behavior allows anyone within the organization to invite guests and non-admins to the tenant, posing a security risk.
+
+#### Impact
+
+This introduces an obstacle to collaboration by restricting who can invite guest users to the organization. Designated Guest Inviters must be assigned, and an approval process established and clearly communicated to all users.
+
+#### Remediation action
+
+To remediate using the UI:
+
+1. Navigate to Microsoft Entra admin center [https://entra.microsoft.com](https://entra.microsoft.com).
+2. Expand **Entra ID** > **External Identities** and select **External collaboration settings**.
+3. Under **Guest invite settings** set **Guest invite restrictions** to one of the following:
+   - **Only users assigned to specific admin roles can invite guest users**
+   - **No one in the organization can invite guest users including admins (most restrictive)**
+4. Select **Save**.
+
+##### PowerShell
+
+1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes 'Policy.ReadWrite.Authorization'`.
+2. Run one of the following PowerShell commands depending on the desired state:
+
+To set **Only users assigned to specific admin roles can invite guest users**:
+
+```powershell
+Update-MgPolicyAuthorizationPolicy -AllowInvitesFrom 'adminsAndGuestInviters'
+```
+
+To set **No one in the organization can invite guest users including admins (most restrictive)**:
+
+```powershell
+Update-MgPolicyAuthorizationPolicy -AllowInvitesFrom 'none'
+```
+
+> **Note:** The default value is **Anyone in the organization can invite guest users including guests and non-admins (most inclusive)**, shown as `everyone` in PowerShell.
+
+#### Related links
+
+* [Microsoft Entra admin center - External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings)
+* [Configure external collaboration settings](https://learn.microsoft.com/entra/external-id/external-collaboration-settings-configure)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.1.6.3](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%
