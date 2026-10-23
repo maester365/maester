@@ -45,7 +45,7 @@
     # Identify OIDC tokens from GitLab
     $gitLabOidcIdentifiers = 'project_id|project_path|ref_type'
     # GitLab immutable OIDC claims pattern
-    $gitLabImmutableOidcClaims = 'project_id:'
+    $gitLabImmutableOidcClaims = 'project_id'
     # Matches GitHub Actions immutable OIDC claims
     $gitHubImmutableOidcClaims = 'repo:.+@\d+\/.+@\d+:|repository_id'
 
