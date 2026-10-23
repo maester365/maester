@@ -28,7 +28,10 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
                 $using:chunk | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess }
             }
         }
+        # A job that fails only writes an error, which would leave its files unanalysed and the tests passing.
+        $failedJobs = @($jobs | Wait-Job | Where-Object State -ne 'Completed')
         $script:analysis = $jobs | Receive-Job -Wait -AutoRemoveJob
+        if ($failedJobs) { throw "ScriptAnalyzer job(s) did not complete: $($failedJobs.Name -join ', ')" }
     }
 
     # The next Context blocks are kinda duplicate, but helps us document both
