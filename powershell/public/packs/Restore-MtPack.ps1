@@ -45,34 +45,35 @@ function Restore-MtPack {
 
     Write-Verbose "Restore-MtPack: Id=$($Id -join ', ') PackLock=$PackLock"
 
-    $where = Resolve-MtPackLockPath -PackLock $PackLock -Path (Get-Location).Path
-    if (-not (Test-Path -LiteralPath $where.LockPath -PathType Leaf)) { throw "There is no pack lock file at '$($where.LockPath)'." }
-    $lock = Read-MtPackLock -Path $where.LockPath
-    $packs = @($lock.Packs | Where-Object { -not $Id -or $_.Id -in $Id })
-    $failed = 0
+    $Where = Resolve-MtPackLockPath -PackLock $PackLock -Path (Get-Location).Path
+    if (-not (Test-Path -LiteralPath $Where.LockPath -PathType Leaf)) { throw "There is no pack lock file at '$($Where.LockPath)'." }
+    $Lock = Read-MtPackLock -Path $Where.LockPath
+    $Packs = @($Lock.Packs | Where-Object { -not $Id -or $_.Id -in $Id })
+    $Failed = 0
 
-    foreach ($entry in $packs) {
-        $status = 'Present'
-        $reason = $null
-        if ($entry.Source -ne 'builtin') {
-            $target = Get-MtPackStorePath -Digest $entry.Digest
-            $present = (Test-Path -LiteralPath $target -PathType Container) -and (Get-MtPackDigest -Path $target).Digest -eq $entry.Digest
-            if (-not $present -and $PSCmdlet.ShouldProcess("$($entry.Id) $($entry.Version)", 'Restore the pack')) {
-                $candidate = $null
-                try {
-                    $candidate = Get-MtPackCandidate -Source $entry.Source -Commit $entry.Commit -IncludeRecent
-                    if ($candidate.Digest -ne $entry.Digest) { throw "its files are not the approved files (digest $($candidate.Digest), the lock file has $($entry.Digest))." }
-                    $null = Save-MtPackToStore -Path $candidate.Root -Digest $entry.Digest
-                    $status = 'Restored'
-                } catch {
-                    $status = 'Failed'; $reason = $_.Exception.Message; $failed++
-                    Write-Error "The pack $($entry.Id) $($entry.Version) was not restored: $reason"
-                } finally {
-                    if ($candidate -and $candidate.Staging) { Remove-Item -LiteralPath $candidate.Staging -Recurse -Force -ErrorAction SilentlyContinue }
+    foreach ($Entry in $Packs) {
+        $Status = 'Present'
+        $Reason = $null
+        if ($Entry.Source -ne 'builtin') {
+            $Target = Get-MtPackStorePath -Digest $Entry.Digest
+            $Candidate = $null
+            try {
+                $Present = $false
+                if (Test-Path -LiteralPath $Target -PathType Container) { $Present = (Get-MtPackDigest -Path $Target).Digest -eq $Entry.Digest }
+                if (-not $Present -and $PSCmdlet.ShouldProcess("$($Entry.Id) $($Entry.Version)", 'Restore the pack')) {
+                    $Candidate = Get-MtPackCandidate -Source $Entry.Source -Commit $Entry.Commit -IncludeRecent
+                    if ($Candidate.Digest -ne $Entry.Digest) { throw "its files are not the approved files (digest $($Candidate.Digest), the lock file has $($Entry.Digest))." }
+                    $null = Save-MtPackToStore -Path $Candidate.Root -Digest $Entry.Digest
+                    $Status = 'Restored'
                 }
+            } catch {
+                $Status = 'Failed'; $Reason = $_.Exception.Message; $Failed++
+                Write-Error "The pack $($Entry.Id) $($Entry.Version) was not restored: $Reason"
+            } finally {
+                if ($Candidate -and $Candidate.Staging) { Remove-Item -LiteralPath $Candidate.Staging -Recurse -Force -ErrorAction SilentlyContinue }
             }
         }
-        [pscustomobject]@{ Kind = 'Pack'; Name = $entry.Id; Version = $entry.Version; Status = $status; Reason = $reason }
+        [pscustomobject]@{ Kind = 'Pack'; Name = $Entry.Id; Version = $Entry.Version; Status = $Status; Reason = $Reason }
     }
 
     $modules = @($lock.Modules | Where-Object { -not $Id -or (@($_.RequiredBy) | Where-Object { $_ -in $Id }) })

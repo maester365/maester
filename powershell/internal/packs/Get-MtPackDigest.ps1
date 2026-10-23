@@ -9,8 +9,9 @@ function Get-MtPackDigest {
     so the digest is the same on every platform. A .git folder is left out.
 
     The Authenticode signature block of a PowerShell file (.ps1, .psm1, .psd1, .ps1xml), from the line
-    '# SIG # Begin signature block' to the end of the file, is left out of its hash, so an organisation can
+    '# SIG # Begin signature block' through a terminal, comment-only end marker, is left out of its hash, so an organisation can
     sign a pack it reviewed (section 9.11) without changing the digest in the lock file.
+    Marker text in strings or malformed trailers is hashed normally.
 
     Returns Digest ('sha256:<hex>') and Files (Path, Size, Sha256), in digest order.
     #>
@@ -26,19 +27,36 @@ function Get-MtPackDigest {
     $signed = @('.ps1', '.psm1', '.psd1', '.ps1xml')
     $latin1 = [System.Text.Encoding]::Latin1
 
-    $files = foreach ($item in (Get-ChildItem -LiteralPath $root -Recurse -File -Force -ErrorAction Stop)) {
-        $relative = [System.IO.Path]::GetRelativePath($root, $item.FullName).Replace('\', '/')
-        if ($relative -eq '.git' -or $relative.StartsWith('.git/', [System.StringComparison]::Ordinal)) { continue }
-        $bytes = [System.IO.File]::ReadAllBytes($item.FullName)
-        if ($item.Extension.ToLowerInvariant() -in $signed) {
+    $Items = @((Get-Item -LiteralPath $root -Force -ErrorAction Stop)) + @(Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction Stop)
+    $files = foreach ($Item in $Items) {
+        $Relative = [System.IO.Path]::GetRelativePath($root, $Item.FullName).Replace('\', '/')
+        if ($Relative -eq '.git' -or $Relative.StartsWith('.git/', [System.StringComparison]::Ordinal)) { continue }
+        if ($Item.Name.Contains(':')) { throw "The pack contains an unsafe path: $($Item.FullName)." }
+        if ($Item.PSIsContainer) { continue }
+        $bytes = [System.IO.File]::ReadAllBytes($Item.FullName)
+        if ($Item.Extension.ToLowerInvariant() -in $signed) {
             # Latin-1 maps every byte to one character, so the cut lands on the same byte offset.
-            $text = $latin1.GetString($bytes)
-            $marker = [regex]::Match($text, '(\r?\n)?# SIG # Begin signature block')
-            if ($marker.Success) { $bytes = $latin1.GetBytes($text.Substring(0, $marker.Index)) }
+            $Text = $latin1.GetString($bytes)
+            $Marker = [regex]::Match($Text, '(?m)^# SIG # Begin signature block\r?\n(?:# [A-Za-z0-9+/=]+\r?\n)+# SIG # End signature block(?:\r?\n)?\z')
+            if ($Marker.Success) {
+                # A line-shaped marker can still be inside a here-string or block comment.
+                $Tokens = $null
+                $ParseErrors = $null
+                $null = [System.Management.Automation.Language.Parser]::ParseInput($Text, [ref]$Tokens, [ref]$ParseErrors)
+                $Comment = $Tokens | Where-Object { $_.Kind -eq 'Comment' -and $_.Extent.StartOffset -eq $Marker.Index } | Select-Object -First 1
+                if ($Comment) {
+                    $Cut = $Marker.Index
+                    if ($Cut -gt 0 -and $Text[$Cut - 1] -eq "`n") {
+                        $Cut--
+                        if ($Cut -gt 0 -and $Text[$Cut - 1] -eq "`r") { $Cut-- }
+                    }
+                    $bytes = $latin1.GetBytes($Text.Substring(0, $Cut))
+                }
+            }
         }
         [pscustomobject]@{
-            Path   = $relative
-            Size   = $item.Length
+            Path   = $Relative
+            Size   = $Item.Length
             Sha256 = [System.Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
         }
     }
