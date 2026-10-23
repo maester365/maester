@@ -218,6 +218,13 @@ export function validate(state, data) {
     .flat()
     .filter((l) => !licensePattern.test(l))
     .forEach((l) => add("license", "error", l + " is not a service plan name. Use letters, digits, _ and -."));
+  // The engine rejects the same element twice, compared without case, as it does an alternative listed twice.
+  const seenPermissions = new Set();
+  permissionElements(state).forEach((element) => {
+    const key = element.toLowerCase();
+    if (seenPermissions.has(key)) add("permission", "error", element + " is listed in two requirements. Remove one of them.");
+    seenPermissions.add(key);
+  });
   state.permission.flat().forEach((p) => {
     const parsed = parsePermission(p);
     if (!parsed) {
