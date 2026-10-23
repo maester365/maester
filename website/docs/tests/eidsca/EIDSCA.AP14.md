@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "EIDSCA.AP14"
-  - "Low"
+  - "Info"
   - "Entra ID SCA"
   - "Entra ID"
   - "User and directory settings"
@@ -42,7 +42,7 @@ Microsoft Graph PowerShell: ```PolicyAuthorizationPolicy -BodyParameter @{Defaul
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [authorizationPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/authorizationpolicy)
+- [authorizationPolicy resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/authorizationpolicy?view=graph-rest-beta)
 
 
 ## MITRE ATT&CK
@@ -66,14 +66,12 @@ mindmap
 | Field | Value |
 | --- | --- |
 | Test ID | EIDSCA.AP14 |
-| Severity | Low |
+| Severity | Info |
 | Suite | Entra ID SCA |
 | Product | Entra ID |
 | Feature | User and directory settings |
 | Area | Access control |
 | Resource type | Tenant |
-| User impact | Low |
-| Implementation cost | Low |
 | MITRE ATT&CK | None |
 | Supports controls | nist-800-53-r5:AC-3 |
 | PowerShell test | [Test-MtCheckEidscaAP14](https://github.com/maester365/maester/blob/main/tests/eidsca/Test.EIDSCA.AP14.ps1) |

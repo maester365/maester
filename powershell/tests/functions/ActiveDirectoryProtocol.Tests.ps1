@@ -858,7 +858,7 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
         It 'Passing conflicting selectors should throw' {
             InModuleScope Maester {
                 { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryDomain 'contoso.com' } |
-                    Should -Throw '*Explicit selector values must resolve to the same forest/domain/server.*'
+                    Should -Throw '*The resolved domain*does not match the requested domain*'
             }
         }
 
@@ -871,10 +871,79 @@ Describe 'Active Directory Protocol Contracts' -Skip:(-not $script:HasDirectoryS
                 }
 
                 { Connect-MtAdTarget -ActiveDirectoryServer 'dc01.contoso.com' -ActiveDirectoryDomain 'contoso.com' -PassThru } |
-                    Should -Throw '*Explicit selector values must resolve to the same forest/domain/server.*'
+                    Should -Throw '*The resolved domain*does not match the requested domain*'
                 $__MtSession.ADConnection.Connected | Should -BeTrue
                 $__MtSession.ADConnection.ProtocolValidated | Should -BeTrue
                 $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc02.contoso.com'
+            }
+        }
+    }
+
+    Describe 'Domain name as server selector' {
+        BeforeEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+
+            Mock Test-MtAdProtocolPrerequisites -ModuleName Maester {
+                return [PSCustomObject]@{
+                    IsReady              = $true
+                    AuthModes            = @('Negotiate', 'Kerberos', 'Ntlm', 'Basic')
+                    TlsModes             = @('Ldaps', 'StartTls')
+                    PlatformProfile      = 'WindowsPS7'
+                    MissingPrerequisites = @()
+                }
+            }
+            Mock New-MtLdapConnection -ModuleName Maester {
+                $id = New-Object System.DirectoryServices.Protocols.LdapDirectoryIdentifier @('localhost', 636, $false, $false)
+                return New-Object System.DirectoryServices.Protocols.LdapConnection @($id)
+            }
+            Mock Get-MtLdapRootDse -ModuleName Maester {
+                return [PSCustomObject]@{
+                    DistinguishedName          = ''
+                    DefaultNamingContext       = 'DC=contoso,DC=com'
+                    ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                    SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                    DnsHostName                = 'dc01.contoso.com'
+                    ForestFunctionality        = 7
+                    DomainFunctionality        = 7
+                    NamingContexts             = @('DC=contoso,DC=com', 'CN=Configuration,DC=contoso,DC=com', 'CN=Schema,CN=Configuration,DC=contoso,DC=com')
+                    SupportedLdapVersion       = @(3)
+                    SupportedSaslMechanisms    = @('GSSAPI', 'GSS-SPNEGO')
+                }
+            }
+            Mock Invoke-MtLdapSearch -ModuleName Maester {
+                return @(
+                    [PSCustomObject]@{
+                        dnsRoot     = 'contoso.com'
+                        nCName      = 'DC=contoso,DC=com'
+                        trustParent = $null
+                    }
+                )
+            }
+        }
+
+        AfterEach {
+            InModuleScope Maester {
+                $__MtSession.ADConnection = $null
+            }
+        }
+
+        It 'Passing a domain name as -ActiveDirectoryServer should succeed when the resolved DC is within that domain' {
+            InModuleScope Maester {
+                Connect-MtAdTarget -ActiveDirectoryServer 'contoso.com'
+                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc01.contoso.com'
+                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'contoso.com'
+                $__MtSession.ADConnection.Connected | Should -BeTrue
+            }
+        }
+
+        It 'Passing a CNAME alias in the same domain as -ActiveDirectoryServer should succeed' {
+            InModuleScope Maester {
+                Connect-MtAdTarget -ActiveDirectoryServer 'ad-test.contoso.com'
+                $__MtSession.ADConnection.ResolvedServer | Should -Be 'dc01.contoso.com'
+                $__MtSession.ADConnection.ResolvedDomain | Should -Be 'contoso.com'
+                $__MtSession.ADConnection.Connected | Should -BeTrue
             }
         }
     }

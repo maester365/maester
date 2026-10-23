@@ -28,7 +28,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1566',
         Control = ('cis-m365:2.4.4', 'nist-800-53-r5:SI-3'),
-        Service = 'Teams',
+        Service = 'ExchangeOnline',
         License = 'THREAT_INTELLIGENCE',
         Author = 'NZLostboy',
         Contributor = 'Korthal-Maiyn'
