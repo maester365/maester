@@ -257,10 +257,12 @@ function Test-MtPackScriptFile {
     block, no using statements, no class or enum definitions and no #Requires -Modules other than Maester.
 
     The scan reads the AST (section 9.6): dynamic code (Invoke-Expression, [scriptblock]::Create,
-    Add-Type), process start and web requests to an address built at run time are Medium findings. A web
-    request to a literal host that Uses.Network does not list, a module import or install that Uses.Modules
-    does not list, and a write through Invoke-MtGraphRequest or Invoke-MtAzureRequest when Uses.TenantWrites
-    is empty are errors: undeclared reach.
+    Add-Type), process start and web requests to an address built at run time are Medium findings; .NET network
+    classes (HttpClient, WebClient, WebRequest, sockets) are a High finding. A web request to a literal host that
+    Uses.Network does not list (or with a user name before the host), a module import or install that
+    Uses.Modules does not list, and, when Uses.TenantWrites is empty, a write through Invoke-MtGraphRequest or
+    Invoke-MtAzureRequest (a write method, or one set at run time) or a Microsoft Graph command that changes
+    the tenant (New-Mg*, Set-Mg*, Remove-Mg* and the like) are errors: undeclared reach.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -325,8 +327,13 @@ function Test-MtPackScriptFile {
             '^(Invoke-RestMethod|irm|Invoke-WebRequest|iwr|curl|wget)$' {
                 $uri = if ($arguments.Named.ContainsKey('Uri')) { $arguments.Named['Uri'] } elseif ($arguments.Positional.Count -gt 0) { $arguments.Positional[0] } else { $null }
                 $literal = Get-MtPackLiteralString -Ast $uri
-                if ($literal -and $literal -match '^https?://([^/:?#]+)') {
-                    if (-not (& $hostAllowed $Matches[1] $DeclaredHost)) { & $fail 'UndeclaredNetwork' "Sends a web request to $($Matches[1]), which Uses.Network does not list." $line }
+                # Read the host the way .NET does when it sends the request, not with a pattern.
+                $parsed = $null
+                if ($literal -and [uri]::TryCreate($literal, [System.UriKind]::Absolute, [ref] $parsed) -and $parsed.Scheme -in 'http', 'https') {
+                    # A user name or password before the host ('https://good.example:443@other.example') hides where the request goes.
+                    $authority = ($literal -replace '^[A-Za-z][A-Za-z0-9+.-]*://', '') -replace '[/?#\\].*$', ''
+                    if ($parsed.UserInfo -or $authority.Contains('@')) { & $fail 'UndeclaredNetwork' "Sends a web request to an address with a user name or password before the host ($($parsed.Host)); Uses.Network cannot declare it." $line }
+                    elseif (-not (& $hostAllowed $parsed.Host $DeclaredHost)) { & $fail 'UndeclaredNetwork' "Sends a web request to $($parsed.Host), which Uses.Network does not list." $line }
                 } else { & $find 'Medium' 'DynamicUrl' 'Sends a web request to an address built at run time.' $line }
             }
             '^(Import-Module|ipmo|Install-Module|Install-PSResource|Save-Module|Save-PSResource|Install-Package)$' {
@@ -339,10 +346,25 @@ function Test-MtPackScriptFile {
                 }
             }
             '^(Invoke-MtGraphRequest|Invoke-MgGraphRequest|Invoke-MtAzureRequest|Invoke-AzRestMethod)$' {
+                if ($DeclaredWrites) { break }
                 $method = Get-MtPackLiteralString -Ast $(if ($arguments.Named.ContainsKey('Method')) { $arguments.Named['Method'] } else { $null })
-                if ($method -and $method -match '^(POST|PATCH|PUT|DELETE)$' -and -not $DeclaredWrites) {
+                # Invoke-MgGraphRequest also takes the method by position.
+                $verb = @($arguments.Positional | ForEach-Object { Get-MtPackLiteralString -Ast $_ } | Where-Object { $_ -match '^(POST|PATCH|PUT|DELETE)$' })
+                if ($method -and $method -match '^(POST|PATCH|PUT|DELETE)$') {
                     & $fail 'UndeclaredTenantWrite' "Sends a $($method.ToUpperInvariant()) request through $name, a change to your tenant that Uses.TenantWrites does not declare." $line
+                } elseif (-not $arguments.Named.ContainsKey('Method') -and $verb) {
+                    & $fail 'UndeclaredTenantWrite' "Sends a $($verb[0].ToUpperInvariant()) request through $name, a change to your tenant that Uses.TenantWrites does not declare." $line
+                } elseif (($arguments.Named.ContainsKey('Method') -and -not $method) -or @($command.CommandElements | Where-Object { $_ -is [System.Management.Automation.Language.VariableExpressionAst] -and $_.Splatted })) {
+                    # A method built at run time, or passed in a splat, can be a write.
+                    & $fail 'UndeclaredTenantWrite' "Sends a request through $name with a method that is set at run time, so it can change your tenant, and Uses.TenantWrites does not declare that." $line
                 }
+            }
+            '^(?!Invoke-MgGraphRequest$)(New|Set|Update|Remove|Add|Invoke|Clear|Reset|Revoke|Restore|Confirm|Stop|Start)-Mg' {
+                if (-not $DeclaredWrites) { & $fail 'UndeclaredTenantWrite' "Runs $name, a Microsoft Graph command that can change your tenant, which Uses.TenantWrites does not declare." $line }
+            }
+            '^New-Object$' {
+                $type = if ($arguments.Named.ContainsKey('TypeName')) { $arguments.Named['TypeName'] } elseif ($arguments.Positional.Count -gt 0) { $arguments.Positional[0] } else { $null }
+                if ($type -and -not (Get-MtPackLiteralString -Ast $type)) { & $find 'Medium' 'DynamicCode' 'Creates an object whose type is computed at run time (New-Object).' $line }
             }
         }
     }
@@ -352,6 +374,14 @@ function Test-MtPackScriptFile {
         if ($target -match '^\[(System\.Management\.Automation\.)?scriptblock\]$' -and $method -eq 'Create') { & $find 'Medium' 'DynamicCode' 'Creates code from a string ([scriptblock]::Create).' $member.Extent.StartLineNumber }
         elseif ($target -match '^\[(System\.)?Diagnostics\.Process\]$' -and $method -eq 'Start') { & $find 'Medium' 'ProcessStart' 'Starts another process ([Diagnostics.Process]::Start).' $member.Extent.StartLineNumber }
         elseif ($target -match '^\[(System\.)?Reflection\.Assembly\]$' -and $method -match '^Load') { & $find 'Medium' 'DynamicCode' 'Loads an assembly at run time.' $member.Extent.StartLineNumber }
+    }
+    # .NET network classes send to any host without Invoke-RestMethod, so Uses.Network cannot be checked: a type
+    # in code ([Net.WebClient]::new()) or named in a string (New-Object Net.WebClient, [type]'Net.WebClient').
+    $netType = '(^|[\[,\s])(System\.)?Net\.((Http|Sockets|WebSockets)\.[A-Za-z]|(WebClient|WebRequest|HttpWebRequest|FtpWebRequest)\b)'
+    $netNodes = $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.TypeExpressionAst] -or $n -is [System.Management.Automation.Language.TypeConstraintAst] -or $n -is [System.Management.Automation.Language.StringConstantExpressionAst] }, $true)
+    foreach ($node in $netNodes) {
+        $typeName = if ($node -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $node.Value.Trim() } else { $node.TypeName.FullName }
+        if ($typeName -match $netType) { & $find 'High' 'DirectNetwork' "Uses the .NET network class $typeName, which can send to hosts that Uses.Network does not list." $node.Extent.StartLineNumber }
     }
 
     [pscustomobject]@{ Functions = [string[]]$functions; Errors = $errors.ToArray(); Findings = $findings.ToArray() }
@@ -377,7 +407,7 @@ function Get-MtPackCommandArgument {
             # An abbreviation is the start of the name it stands for, as PowerShell reads it: -U is -Uri,
             # -UserAgent is not.
             $key = $element.ParameterName
-            foreach ($full in 'Uri', 'Method', 'Name') {
+            foreach ($full in 'Uri', 'Method', 'Name', 'TypeName') {
                 if ($key -and $full.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase)) { $key = $full; break }
             }
             # A parameter named twice keeps its first value, so a later one cannot hide it.

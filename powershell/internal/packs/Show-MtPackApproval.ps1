@@ -78,7 +78,7 @@
         if ($Candidate.Newer) { $lines.Add("              A newer release, $(& $safe $Candidate.Newer.TagName 40), is $($Candidate.Newer.AgeHours) hours old. Use -Version $(& $safe $Candidate.Newer.TagName 40) -IncludeRecent to install it.") }
     }
     $riskText = switch ($Candidate.Risk) {
-        'Low' { 'LOW: text files only; every scan passed' }
+        'Low' { 'LOW: text files only; no findings from the content checks' }
         'Medium' { 'MEDIUM: findings to read' }
         'High' { 'HIGH: install only if you trust the publisher' }
     }

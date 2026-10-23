@@ -60,7 +60,9 @@ function Get-MtPackPolicy {
         $risk = & $value 'MaximumRisk'
         if ($risk) {
             if ($risk -notin $riskOrder) { throw "PackPolicy.MaximumRisk in $($layer.Name) must be Low, Medium or High, not '$risk'." }
-            if ($riskOrder.IndexOf([string]$risk) -lt $riskOrder.IndexOf($policy.MaximumRisk)) { $policy.MaximumRisk = [string]$risk }
+            # JSON may say 'low': use the canonical spelling, as IndexOf is case-sensitive.
+            $risk = $riskOrder | Where-Object { $_ -eq [string]$risk } | Select-Object -First 1
+            if ($riskOrder.IndexOf($risk) -lt $riskOrder.IndexOf($policy.MaximumRisk)) { $policy.MaximumRisk = $risk }
         }
         # Read and assign arrays directly: pipeline enumeration turns an empty set into $null (unrestricted).
         if ($p.PSObject.Properties['AllowedPublishers'] -and $null -ne $p.AllowedPublishers) {
@@ -116,7 +118,11 @@ function Test-MtPackPolicy {
 
     if ($BuiltIn) { return $null }
     $riskOrder = @('Low', 'Medium', 'High')
-    if ($riskOrder.IndexOf($Risk) -gt $riskOrder.IndexOf($Policy.MaximumRisk)) {
+    $rank = { param($r) $riskOrder.IndexOf(($riskOrder | Where-Object { $_ -eq [string]$r } | Select-Object -First 1)) }
+    # An unknown risk ranks above High, so it is refused.
+    $riskRank = & $rank $Risk
+    if ($riskRank -lt 0) { $riskRank = $riskOrder.Count }
+    if ($riskRank -gt (& $rank $Policy.MaximumRisk)) {
         return "The pack policy allows packs up to $($Policy.MaximumRisk) risk, and $PackId is $Risk risk."
     }
     if ($null -ne $Policy.AllowedPublishers -and (-not $Publisher -or $Publisher.ToLowerInvariant() -notin $Policy.AllowedPublishers)) {

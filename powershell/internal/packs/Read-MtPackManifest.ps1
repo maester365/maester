@@ -54,7 +54,7 @@ function Read-MtPackManifest {
         return & $result $null
     }
 
-    $topLevel = @('$schema', 'Id', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
+    $topLevel = @('$schema', 'Id', 'Guid', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
         'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner')
     $strictKeys = @{
@@ -111,6 +111,11 @@ function Read-MtPackManifest {
     }
     foreach ($name in 'Name', 'Version') {
         if (-not (& $text $name)) { & $fail "$name is required." }
+    }
+    # Guid is optional; the pack index identifies a pack by it.
+    $guidValue = $manifest.PSObject.Properties['Guid']
+    if ($guidValue -and $null -ne $guidValue.Value -and -not ($guidValue.Value -is [string] -and $guidValue.Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')) {
+        & $fail "Guid must be a GUID such as 'd1e2db80-6c27-4cb6-9389-2edf0a898d23'; it is '$($guidValue.Value)'."
     }
     $version = & $text 'Version'
     if ($version -and $version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { & $fail "Version must be a semantic version such as 1.2.0; it is '$version'." }

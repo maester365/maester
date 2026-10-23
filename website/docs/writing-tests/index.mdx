@@ -319,7 +319,8 @@ Add-MtReportAttachment -Name 'Zero Trust Assessment' -Path "$outputPath/ZeroTrus
 
 The report lists it under **Reports** in the left menu, and shows a button with that name on its overview page and
 on the test's result (on every instance of a family). Each opens the embedded report in the main panel, beside the
-Maester navigation, with a link to open it in a new browser tab. It works offline, so the Maester report stays one
+Maester navigation, with a link to open it in a new browser tab. The attached report runs in a sandboxed frame
+without access to the Maester report or its data. It works offline, so the Maester report stays one
 file to share. The file is read and compressed at once, so you can delete the tool's output folder afterwards. The JSON
 results file lists the attachment's name and size, not its content, and the HTML report leaves attachments out
 when `-RedactUserIdentity` is used.

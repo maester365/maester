@@ -16,9 +16,9 @@ function Add-MtReportAttachment {
     JSON results file lists each attachment's name and size without its content. The HTML report leaves
     attachments out when -RedactUserIdentity is used, because Maester cannot redact another tool's report.
 
-    The attached page runs in the browser with the same access as the Maester report, so only attach reports
-    written by tools you trust. Adding a second attachment with the same name from the same test replaces the
-    first.
+    The attached page runs in a sandboxed frame, with its scripts in an origin of their own, so it cannot read or
+    change the Maester report or its data. Adding a second attachment with the same name from the same test
+    replaces the first.
 
     .EXAMPLE
     Add-MtReportAttachment -Name 'Zero Trust Assessment' -Path ./zt/ZeroTrustAssessmentReport.html

@@ -26,13 +26,20 @@ function Update-MtPackConfig {
         }
     }
     $packs = [System.Collections.Generic.List[object]]::new()
+    $existing = $null
     foreach ($p in @($(if ($config.Contains('Packs')) { $config['Packs'] }) | Where-Object { $_ })) {
         $same = ($p -is [System.Collections.IDictionary]) -and $p.Contains('Id') -and [string]$p['Id'] -eq $Id
-        if (-not $same) { $packs.Add($p) }
+        if ($same) { $existing = $p } else { $packs.Add($p) }
     }
     if (-not $Remove -and $Entry) {
         $row = [ordered]@{ Id = $Id }
-        foreach ($k in $Entry.Keys) { if ($k -ne 'Id' -and $null -ne $Entry[$k]) { $row[$k] = $Entry[$k] } }
+        # Keep what the user set on an existing entry: Enabled, the Version range and any other keys.
+        if ($existing) { foreach ($k in $existing.Keys) { if ($k -ne 'Id') { $row[$k] = $existing[$k] } } }
+        foreach ($k in $Entry.Keys) {
+            if ($k -eq 'Id' -or $null -eq $Entry[$k]) { continue }
+            if ($k -in 'Version', 'Enabled' -and $row.Contains($k) -and $null -ne $row[$k] -and "$($row[$k])" -ne '') { continue }
+            $row[$k] = $Entry[$k]
+        }
         $packs.Add($row)
     }
     $config['Packs'] = @($packs | Sort-Object { if ($_ -is [System.Collections.IDictionary]) { [string]$_['Id'] } else { '' } })

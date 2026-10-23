@@ -3,7 +3,7 @@ import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { Button } from "@/components/ui/report"
 import { useTenant } from "@/context/TenantContext"
 import { useLocation } from "@/lib/router"
-import { findReportAttachment, openReportAttachment, writeAttachmentToFrame } from "@/lib/reportAttachments"
+import { attachmentSandbox, findReportAttachment, openReportAttachment, writeAttachmentToFrame } from "@/lib/reportAttachments"
 
 /** A report embedded with Add-MtReportAttachment, shown in the main panel beside the navigation. */
 export default function ReportAttachmentPage() {
@@ -42,7 +42,7 @@ export default function ReportAttachmentPage() {
       {error ? (
         <p className="p-6 text-sm text-red-600 dark:text-red-400">{attachment.Name} could not be shown: {error}</p>
       ) : (
-        <iframe key={attachment.Id} ref={frameRef} title={attachment.Name} className="w-full flex-1 border-0 bg-white" />
+        <iframe key={attachment.Id} ref={frameRef} title={attachment.Name} sandbox={attachmentSandbox} className="w-full flex-1 border-0 bg-white" />
       )}
     </div>
   )

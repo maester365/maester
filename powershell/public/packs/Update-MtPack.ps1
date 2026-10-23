@@ -6,8 +6,8 @@ function Update-MtPack {
     .DESCRIPTION
     Each pack is installed again from its source with the same checks as Install-MtPack: the cooldown, the
     pack policy, the blocklist and the scan. The approval shows what changed since the version you
-    approved: new services, scopes, network hosts, modules and a higher risk. A pack that has no newer
-    release is left as it is.
+    approved: new services, scopes, network hosts, modules and a higher risk. A pack whose newest release
+    has the files you approved is left as it is, without asking again, and reported as UpToDate.
 
     .PARAMETER Id
     The packs to update. By default every pack installed from GitHub.
@@ -77,7 +77,7 @@ function Update-MtPack {
     $lock = Read-MtPackLock -Path $where.LockPath
     $policy = Get-MtPackPolicy -RunConfig (Get-MtPackRunConfig -ConfigPath $where.ConfigPath)
     $quiet = $NonInteractive -or (Test-MtPackNonInteractive)
-    foreach ($missing in @($Id | Where-Object { $i = $_; -not ($lock.Packs | Where-Object Id -EQ $i) })) { Write-Error "The pack $missing is not installed." }
+    foreach ($missing in @($Id | Where-Object { $_ } | Where-Object { $i = $_; -not ($lock.Packs | Where-Object Id -EQ $i) })) { Write-Error "The pack $missing is not installed." }
     $targets = @($lock.Packs | Where-Object { $_.Source -ne 'builtin' -and (-not $Id -or $_.Id -in $Id) })
 
     $changed = $false
@@ -86,14 +86,14 @@ function Update-MtPack {
         $source = ($previous.Source -replace '@[^/@]+$', '')
         if (-not $PSCmdlet.ShouldProcess($previous.Id, 'Update the pack')) { continue }
         try {
-            $entry = Invoke-MtPackInstall -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous -Confirm:$false
+            $entry = Invoke-MtPackInstall -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous -SkipUnchanged -Confirm:$false
         } catch {
             Write-Error "The pack $($previous.Id) was not updated: $($_.Exception.Message)"
             continue
         }
         if (-not $entry) { continue }
-        $changed = $true
         $state = if ($entry.Digest -eq $previous.Digest) { 'UpToDate' } else { 'Updated' }
+        if ($state -eq 'Updated') { $changed = $true }
         [pscustomobject]@{ Id = $entry.Id; PreviousVersion = $previous.Version; Version = $entry.Version; Status = $state }
     }
     if ($changed) {

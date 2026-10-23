@@ -73,8 +73,14 @@ function Invoke-MtTest {
         try { $developmentPack = Get-MtPackDevelopmentSet -Path $Path } catch { Write-Error $_.Exception.Message; return }
         if ($developmentPack) {
             $fullPath = (Resolve-Path -LiteralPath $Path).Path
+            # A folder matches the files under it, never a sibling that starts with its name (tests vs tests-extra).
+            $isFolder = Test-Path -LiteralPath $fullPath -PathType Container
+            $prefix = $fullPath.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+            $comparison = if ($IsWindows) { [System.StringComparison]::OrdinalIgnoreCase } else { [System.StringComparison]::Ordinal }
             foreach ($t in @(Get-MtPackTestInventory -PackSet @($developmentPack))) {
-                if ($t.File -and $t.File.StartsWith($fullPath, [System.StringComparison]::Ordinal)) { $tests.Add($t) }
+                if (-not $t.File) { continue }
+                $inPath = if ($isFolder) { $t.File.StartsWith($prefix, $comparison) } else { [string]::Equals($t.File, $fullPath, $comparison) }
+                if ($inPath) { $tests.Add($t) }
             }
         } else {
             foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root)) { $tests.Add($t) }

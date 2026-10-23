@@ -375,4 +375,114 @@ Describe 'Pack security: GitHub commit provenance' {
         (Resolve-MtPackGitHubSource -Source $Source).Commit | Should -Be $Commit
         Should -Invoke Invoke-MtPackGitHubRequest -ParameterFilter { $Path -like '*/compare/*' } -Times 0
     }
+
+    It 'accepts a locked commit reachable from the branch the lock file recorded' {
+        Mock Invoke-MtPackGitHubRequest { [pscustomobject]@{ ref = 'refs/heads/feature/security' } } -ParameterFilter { $Path -like '*/git/ref/heads%2Ffeature%2Fsecurity' }
+        Mock Invoke-MtPackGitHubRequest { [pscustomobject]@{ status = 'behind' } } -ParameterFilter { $Path -like '*/compare/refs%2Fheads%2Ffeature%2Fsecurity...*' }
+        $Source.Ref = $Commit
+        (Resolve-MtPackGitHubSource -Source $Source -ReachableFrom 'feature/security').Commit | Should -Be $Commit
+    }
+
+    It 'does not count a ReachableFrom that is <Kind>' -ForEach @(
+        @{ Kind = 'not a ref of the repository'; Extra = 'feature/gone' }
+        @{ Kind = 'the commit itself'; Extra = ('abcdef' + ('0' * 34)) }
+    ) {
+        # Comparing the commit with itself would report 'identical'.
+        Mock Invoke-MtPackGitHubRequest { [pscustomobject]@{ status = 'identical' } } -ParameterFilter { $Path -like "*/compare/$Extra...*" }
+        $Source.Ref = $Commit
+        { Resolve-MtPackGitHubSource -Source $Source -ReachableFrom $Extra } | Should -Throw '*not on the default branch*'
+    }
+}
+
+Describe 'Pack security: pinned module versions' {
+    BeforeAll {
+        foreach ($SourceFile in @('Save-MtPackModule', 'Import-MtPackModule')) {
+            . "$PSScriptRoot/../../internal/packs/$SourceFile.ps1"
+        }
+        $script:OldPackHome = $env:MAESTER_PACK_HOME
+        $script:OldModulePath = $env:PSModulePath
+
+        # A module folder <Root>/<Name>/<Version>, optionally requiring another module.
+        function script:New-FakeModule {
+            param([string] $Root, [string] $Name, [string] $Version, [string] $Requires)
+            $folder = Join-Path (Join-Path $Root $Name) $Version
+            $null = New-Item -Path $folder -ItemType Directory -Force
+            $required = if ($Requires) { "RequiredModules = @($Requires); " } else { '' }
+            Set-Content -LiteralPath (Join-Path $folder "$Name.psd1") -Value "@{ ModuleVersion = '$Version'; RootModule = '$Name.psm1'; $($required)FunctionsToExport = @('Get-$($Name)Version') }"
+            Set-Content -LiteralPath (Join-Path $folder "$Name.psm1") -Value "function Get-$($Name)Version { '$Version' }"
+            $folder
+        }
+    }
+
+    BeforeEach {
+        $env:MAESTER_PACK_HOME = Join-Path $TestDrive ([guid]::NewGuid().ToString('n'))
+        $script:Store = (Get-MtPackHome).Modules
+        $script:__MtPackModules = $null
+        $script:__MtPackModuleOwner = $null
+        $suffix = [guid]::NewGuid().ToString('n').Substring(0, 8)
+        $script:Dep = "PinDep$suffix"
+        $script:Main = "PinMain$suffix"
+    }
+
+    AfterEach {
+        Get-Module -Name $script:Dep, $script:Main -All | Remove-Module -Force -ErrorAction SilentlyContinue
+        $env:PSModulePath = $script:OldModulePath
+    }
+
+    AfterAll {
+        $env:MAESTER_PACK_HOME = $script:OldPackHome
+        $env:PSModulePath = $script:OldModulePath
+    }
+
+    It 'saves each module without the modules it requires and pins the version it saved' {
+        if (-not (Get-Command -Name Save-PSResource -ErrorAction SilentlyContinue)) { function script:Save-PSResource { param($Name, $Version, $Repository, $Path, [switch] $TrustRepository, [switch] $SkipDependencyCheck, [switch] $Quiet) } }
+        $dep = $script:Dep; $main = $script:Main
+        # A save that pulls dependencies would also bring Dep 2.0.0; the mock writes it to show that it is not moved into the store.
+        Mock Save-PSResource {
+            $v = $Version.Trim('[', ']')
+            if ($Name -eq $main) {
+                $null = New-FakeModule -Root $Path -Name $main -Version $v -Requires "@{ ModuleName = '$dep'; ModuleVersion = '1.0' }"
+                $null = New-FakeModule -Root $Path -Name $dep -Version '2.0.0'
+            } else {
+                $null = New-FakeModule -Root $Path -Name $dep -Version '1.0.0'
+            }
+        }
+        $closure = @(Save-MtPackModule -Module @([pscustomobject]@{ Name = $main; Version = '1.0.0' }) -Confirm:$false)
+        Should -Invoke Save-PSResource -Times 2 -Exactly -ParameterFilter { $SkipDependencyCheck }
+        ($closure | Where-Object Name -EQ $dep).Version | Should -Be '1.0.0'
+        @(Get-ChildItem -LiteralPath (Join-Path $script:Store $dep) -Directory).Name | Should -Be @('1.0.0')
+        ($closure | Where-Object Name -EQ $dep).Digest | Should -Be (Get-MtPackDigest -Path (Join-Path $script:Store "$dep/1.0.0")).Digest
+    }
+
+    It 'loads the pinned version of a dependency when the store also holds a newer one' {
+        $depPath = New-FakeModule -Root $script:Store -Name $script:Dep -Version '1.0.0'
+        $null = New-FakeModule -Root $script:Store -Name $script:Dep -Version '2.0.0'
+        $mainPath = New-FakeModule -Root $script:Store -Name $script:Main -Version '1.0.0' -Requires "@{ ModuleName = '$($script:Dep)'; ModuleVersion = '1.0.0' }"
+        $pack = [pscustomobject]@{
+            Id = "contoso.pin$($script:Dep)"; Status = 'Ready'; Root = $TestDrive; Entry = $null; Reason = $null
+            Manifest = [pscustomobject]@{ Helpers = @(); Connectors = @(); Suites = @(); RequiredPacks = @(); Uses = [pscustomobject]@{ Modules = @([pscustomobject]@{ Name = $script:Main; Version = '1.0.0' }) } }
+            Modules = @(
+                [pscustomobject]@{ Name = $script:Main; Version = '1.0.0'; Source = 'PSGallery'; Path = $mainPath }
+                [pscustomobject]@{ Name = $script:Dep; Version = '1.0.0'; Source = 'PSGallery'; Path = $depPath }
+            )
+        }
+        $module = Import-MtPackModule -Pack $pack
+        & $module ([scriptblock]::Create("Get-$($script:Dep)Version")) | Should -Be '1.0.0'
+        @(Get-Module -Name $script:Dep | ForEach-Object { [string]$_.Version }) | Should -Not -Contain '2.0.0'
+    }
+
+    It 'refuses to load when a module resolves a dependency to a version the lock file does not pin' {
+        $depPath = New-FakeModule -Root $script:Store -Name $script:Dep -Version '1.0.0'
+        $null = New-FakeModule -Root $script:Store -Name $script:Dep -Version '2.0.0'
+        $mainPath = New-FakeModule -Root $script:Store -Name $script:Main -Version '1.0.0' -Requires "@{ ModuleName = '$($script:Dep)'; RequiredVersion = '2.0.0' }"
+        $pack = [pscustomobject]@{
+            Id = "contoso.pin$($script:Dep)"; Status = 'Ready'; Root = $TestDrive; Entry = $null; Reason = $null
+            Manifest = [pscustomobject]@{ Helpers = @(); Connectors = @(); Suites = @(); RequiredPacks = @(); Uses = [pscustomobject]@{ Modules = @([pscustomobject]@{ Name = $script:Main; Version = '1.0.0' }) } }
+            Modules = @(
+                [pscustomobject]@{ Name = $script:Main; Version = '1.0.0'; Source = 'PSGallery'; Path = $mainPath }
+                [pscustomobject]@{ Name = $script:Dep; Version = '1.0.0'; Source = 'PSGallery'; Path = $depPath }
+            )
+        }
+        { Import-MtPackModule -Pack $pack } | Should -Throw '*not the version the lock file pins*'
+    }
 }

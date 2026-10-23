@@ -39,7 +39,7 @@ github.com URL) or a local folder. Before anything is saved, Maester:
   Adds        14 tests (MP.CNT.*) and the "Google Workspace" connector
   Reaches     CNT.GoogleWorkspace, admin.googleapis.com
   Microsoft   no extra Graph scopes
-  Risk        LOW: text files only; every scan passed
+  Risk        LOW: text files only; no findings from the content checks
 ```
 
 The approved files go into a read-only store under `~/.maester/packs` (or `MAESTER_PACK_HOME`), named by their

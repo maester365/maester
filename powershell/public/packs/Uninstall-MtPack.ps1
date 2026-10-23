@@ -9,7 +9,7 @@ function Uninstall-MtPack {
     requires is not removed. The files stay in the local pack store, which other projects may share.
 
     A pack that ships with Maester cannot be uninstalled; turn it off in the config instead, with
-    Packs: [{ "Id": "maester.zero-trust", "Enabled": false }].
+    Packs: [{ "Id": "maester.zero-trust-assessment", "Enabled": false }].
 
     .PARAMETER Id
     The packs to remove.
