@@ -40,6 +40,7 @@
     <Compile Include="MtConsoleRenderer.Hud.cs" />
     <Compile Include="MtConsoleRenderer.Input.cs" />
     <Compile Include="MtConsoleRenderer.Insights.cs" />
+    <Compile Include="MtConsoleRenderer.Output.cs" />
     <Compile Include="MtConsoleRenderer.Panels.cs" />
     <Compile Include="MtConsoleRenderer.Sections.cs" />
     <Compile Include="MtConsoleRenderer.Sound.cs" />
