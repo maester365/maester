@@ -34,12 +34,46 @@ function Get-MtZtaInstance {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "The Zero Trust Assessment report at $reportPath was written on $($executedAt.ToString('yyyy-MM-dd')), more than $maxAgeDays days ago. Run Invoke-ZtAssessment again, or raise the ZeroTrustAssessment.MaxReportAgeDays setting."
         }
 
+        Add-MtZtaReportAttachment -ReportPath $reportPath
         ConvertTo-MtZtaInstance -Report $report
     } finally {
         # A collection into a temporary folder leaves nothing behind: the export holds raw tenant data.
         if ($collected -and $collected.Temporary -and (Test-Path -LiteralPath $collected.OutputPath)) {
             Remove-Item -LiteralPath $collected.OutputPath -Recurse -Force -ErrorAction SilentlyContinue
         }
+    }
+}
+
+function Add-MtZtaReportAttachment {
+    <#
+    .SYNOPSIS
+    Embeds the assessment's own HTML report in the Maester report, opened with one click.
+
+    .DESCRIPTION
+    The assessment writes ZeroTrustAssessmentReport.html in the folder given to Invoke-ZtAssessment -Path, beside
+    its zt-export folder. It is read before a temporary output folder is deleted. Nothing is attached when the
+    report is not there (an imported report file copied on its own), when the ZeroTrustAssessment.EmbedReport
+    setting is false, or on a Maester version without Add-MtReportAttachment.
+    #>
+    [CmdletBinding()]
+    param(
+        # The report file, the assessment's output folder, or its zt-export folder.
+        [Parameter(Mandatory)] [string] $ReportPath
+    )
+
+    if (-not [bool](Get-MtSetting -Name 'ZeroTrustAssessment.EmbedReport' -Default $true)) { return }
+    if (-not (Get-Command -Name Add-MtReportAttachment -ErrorAction Ignore)) { return }
+
+    $folder = if (Test-Path -LiteralPath $ReportPath -PathType Container) { $ReportPath } else { Split-Path -Path $ReportPath -Parent }
+    if (-not $folder) { return }
+    $html = @(
+        (Join-Path $folder 'ZeroTrustAssessmentReport.html'),
+        (Join-Path (Split-Path -Path $folder -Parent) 'ZeroTrustAssessmentReport.html')
+    ) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1
+    if ($html) {
+        Add-MtReportAttachment -Name 'Zero Trust Assessment' -Path $html
+    } else {
+        Write-Verbose "No ZeroTrustAssessmentReport.html next to $ReportPath, so the assessment's own report is not embedded."
     }
 }
 

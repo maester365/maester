@@ -19,6 +19,15 @@ Describe 'Zero Trust Assessment pack' {
         }
 
         $script:Rows = Invoke-ZtaPack
+
+        # The attachments the last run added, or nothing on a Maester version without Add-MtReportAttachment.
+        function Get-ZtaAttachment {
+            InModuleScope Maester { @($__MtSession.ReportAttachments | Where-Object { $_ }) }
+        }
+        function Clear-ZtaAttachment {
+            InModuleScope Maester { $__MtSession.ReportAttachments = $null }
+        }
+        $script:CanAttach = [bool](Get-Command -Name Add-MtReportAttachment -ErrorAction Ignore)
     }
 
     AfterEach {
@@ -93,6 +102,32 @@ Describe 'Zero Trust Assessment pack' {
             $script:Rows.Id | Should -Contain 'MP.ZTA.77777777-7777-7777-7777-777777777777'
         }
 
+        It 'embeds the assessment HTML report written beside the export' {
+            if (-not $script:CanAttach) { Set-ItResult -Skipped -Because 'this Maester has no Add-MtReportAttachment' }
+            $folder = New-Item -ItemType Directory -Path (Join-Path -Path $TestDrive -ChildPath 'zt' -AdditionalChildPath 'zt-export') -Force
+            Copy-Item -LiteralPath (Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json') -Destination $folder
+            Set-Content -LiteralPath (Join-Path $TestDrive 'zt/ZeroTrustAssessmentReport.html') -Value '<html>zta</html>'
+            Clear-ZtaAttachment
+
+            $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = (Join-Path $folder 'ZeroTrustAssessmentReport.json') }
+
+            $attachment = @(Get-ZtaAttachment)
+            $attachment.Count | Should -Be 1
+            $attachment[0].Name | Should -Be 'Zero Trust Assessment'
+            $attachment[0].TestId | Should -Be 'MP.ZTA'
+            $attachment[0].FileName | Should -Be 'ZeroTrustAssessmentReport.html'
+        }
+
+        It 'embeds nothing when the report has no HTML beside it, or when EmbedReport is false' {
+            if (-not $script:CanAttach) { Set-ItResult -Skipped -Because 'this Maester has no Add-MtReportAttachment' }
+            Clear-ZtaAttachment
+            $null = Invoke-ZtaPack
+            Get-ZtaAttachment | Should -BeNullOrEmpty
+
+            $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = (Join-Path $TestDrive 'zt'); 'ZeroTrustAssessment.EmbedReport' = $false }
+            Get-ZtaAttachment | Should -BeNullOrEmpty
+        }
+
         It 'skips the family when the report is missing' {
             $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = (Join-Path $TestDrive 'none') }
             $rows.Count | Should -Be 1
@@ -133,6 +168,7 @@ function Invoke-ZtAssessment {
     [Console]::Error.WriteLine('a line on stderr')
     `$export = New-Item -ItemType Directory -Path (Join-Path `$Path 'zt-export') -Force
     Copy-Item -LiteralPath '$(Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json')' -Destination `$export
+    Set-Content -LiteralPath (Join-Path `$Path 'ZeroTrustAssessmentReport.html') -Value '<html>zta</html>'
     `$config = if (`$ConfigurationFile) { Get-Content -LiteralPath `$ConfigurationFile -Raw | ConvertFrom-Json } else { `$null }
     @{ Connect = `$script:Connect; Assessment = `$PSBoundParameters; Config = `$config } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath '$($script:CallLog)'
 }
@@ -172,11 +208,13 @@ function Invoke-ZtAssessment {
             Mock -ModuleName Maester Write-MtHostLine { $script:Shown.Add($Text) }
             $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
             $rows.Count | Should -Be 12
-            $script:Shown | Should -Contain '  Microsoft Zero Trust Assessment 9.9.9'
-            $script:Shown | Should -Contain '    Running test 21828'
-            $script:Shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
-            $script:Shown | Should -Contain '    a line on stderr'
-            @($script:Shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
+            # A console that shows colour, such as GitHub Actions, gets the lines styled.
+            $shown = @($script:Shown -replace "`e\[[0-9;]*m", '')
+            $shown | Should -Contain '  Microsoft Zero Trust Assessment 9.9.9'
+            $shown | Should -Contain '    Running test 21828'
+            $shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
+            $shown | Should -Contain '    a line on stderr'
+            @($shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
         }
 
         It 'signs the child in with the app and certificate Maester uses' {
@@ -195,6 +233,13 @@ function Invoke-ZtAssessment {
             $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
             $rows.Count | Should -Be 12
             @(Get-ChildItem -LiteralPath ([System.IO.Path]::GetTempPath()) -Filter 'maester-zta-*' -ErrorAction SilentlyContinue).Count | Should -Be $before
+        }
+
+        It 'embeds the assessment HTML report before deleting the temporary output folder' {
+            if (-not $script:CanAttach) { Set-ItResult -Skipped -Because 'this Maester has no Add-MtReportAttachment' }
+            Clear-ZtaAttachment
+            $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
+            @(Get-ZtaAttachment).Name | Should -Be 'Zero Trust Assessment'
         }
 
         It 'skips the family when the module is not installed' {

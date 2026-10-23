@@ -641,6 +641,11 @@
         $mtTestResults | Add-Member -MemberType NoteProperty -Name 'AffectedObjects' -Value $affectedObjects
     }
 
+    # Reports of other tools added with Add-MtReportAttachment. Only present when there are some, so other results are unchanged.
+    if ($__MtSession.ReportAttachments -and $__MtSession.ReportAttachments.Count -gt 0) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($__MtSession.ReportAttachments)
+    }
+
     # Add output files information if provided
     if ($OutputFiles) {
         $mtTestResults | Add-Member -MemberType NoteProperty -Name 'OutputFiles' -Value $OutputFiles

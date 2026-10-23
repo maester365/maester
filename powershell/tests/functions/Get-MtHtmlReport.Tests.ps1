@@ -354,6 +354,65 @@ Describe 'Get-MtHtmlReport' {
         }
     }
 
+    Context 'Report attachments' {
+        BeforeAll {
+            $attachment = [PSCustomObject]@{
+                Id = '0123456789abcdef0123456789abcdef'; Name = 'Zero Trust Assessment report'; TestId = 'MP.ZTA'
+                ContentType = 'text/html'; FileName = 'ZeroTrustAssessmentReport.html'; Size = 16; Encoding = 'gzip+base64'
+                Content = 'H4sIAAAAAAACA7PJKMnNsasqSbTRB7MAq6YLFhAAAAA='
+            }
+            function Get-ResultWithAttachment([string] $TenantName = 'Single Tenant') {
+                [PSCustomObject]@{
+                    TenantName  = $TenantName
+                    Tests       = @([PSCustomObject]@{ Id = 'MP.ZTA.21770'; ParentId = 'MP.ZTA'; Result = 'Passed' })
+                    Attachments = @($attachment)
+                    EndOfJson   = 'EndOfJson'
+                }
+            }
+        }
+
+        BeforeEach {
+            if (-not $templateAvailable) {
+                Set-ItResult -Skipped -Because 'ReportTemplate.html not found'
+            }
+        }
+
+        It 'Writes each attachment into its own element and lists it without its content' {
+            $html = Get-MtHtmlReport -MaesterResults (Get-ResultWithAttachment)
+
+            $html | Should -BeLike ('*<script type="application/octet-stream" id="maester-attachment-{0}" data-encoding="gzip+base64">{1}</script>*' -f $attachment.Id, $attachment.Content)
+            $html.IndexOf("maester-attachment-$($attachment.Id)") | Should -BeLessThan $html.LastIndexOf('</body>')
+            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value | ConvertFrom-Json
+            $json.Attachments[0].Name | Should -Be 'Zero Trust Assessment report'
+            $json.Attachments[0].TestId | Should -Be 'MP.ZTA'
+            $json.Attachments[0].PSObject.Properties.Name | Should -Not -Contain 'Content'
+        }
+
+        It 'Writes the attachments of every tenant' {
+            $merged = Merge-MtMaesterResult -MaesterResults @((Get-ResultWithAttachment 'Tenant One'), $tenant2)
+
+            $html = Get-MtHtmlReport -MaesterResults $merged
+
+            ([regex]::Matches($html, 'id="maester-attachment-')).Count | Should -Be 1
+        }
+
+        It 'Leaves attachments out and warns when user identities are redacted (<_>)' -ForEach @('HtmlOnly', 'AllOutputs') {
+            $html = Get-MtHtmlReport -MaesterResults (Get-ResultWithAttachment) -RedactUserIdentity $_ -UserIdentityReplacementMap @{} -WarningVariable warnings -WarningAction SilentlyContinue
+
+            $html | Should -Not -BeLike '*id="maester-attachment-*'
+            $html | Should -Not -BeLike '*"Attachments"*'
+            $warnings | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Leaves the MaesterResults passed in unchanged' {
+            $results = Get-ResultWithAttachment
+
+            $null = Get-MtHtmlReport -MaesterResults $results
+
+            $results.Attachments[0].Content | Should -Be $attachment.Content
+        }
+    }
+
     Context 'Multi-tenant report' {
         BeforeAll {
             $merged = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
