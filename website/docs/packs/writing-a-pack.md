@@ -156,6 +156,11 @@ column; in the compact layout, CI and redirected output they are written to the 
   the way the dashboard lists Maester's own tests; outside the dashboard each finished item is written once. Each
   call replaces the progress before it, so pass everything you know each time; a call with only `-ErrorMessage`
   keeps the progress.
+- When the tool runs tests of its own, `-Results` (`Passed`, `Failed`, `Error`, `Investigate`, `Skipped`,
+  `Running`, `Total` and optionally `Name`) and `-Groups` (the same counts with a `Name` each, such as the pillars
+  of an assessment, with `-GroupLabel 'Pillars'`) show them in the dashboard in place of Maester's own while the
+  box is open: in the Results panel and the result blocks, and where the products are listed. The times of the
+  items that finished go into the Pace graph next to the logo and the Slowest panel.
 
 ```powershell
 Write-MtTestOutput -Title 'Collecting the tenant data'
@@ -168,6 +173,7 @@ A tool in another process does not need to call Maester to report its progress. 
 
 ```text
 ##maester[progress] {"stages":["Export","Tests","Report"],"stageNumber":1,"stage":"Exporting","completed":12,"total":40,"failed":1,"items":[{"id":"Users","detail":"page 3","seconds":12},{"id":"Groups","status":"Passed","seconds":4.2}]}
+##maester[progress] {"stage":"Running tests","results":{"passed":80,"failed":12,"running":4,"total":300},"groupLabel":"Pillars","groups":[{"name":"Identity","passed":50,"failed":8,"total":120}]}
 ##maester[error] The export of Devices failed: Forbidden
 ```
 

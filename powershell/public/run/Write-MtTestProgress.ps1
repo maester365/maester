@@ -69,6 +69,20 @@
     (what it is doing, or why it failed) and Seconds. Outside the dashboard each item that finished is written
     once, with its result and time.
 
+    .PARAMETER Results
+    The results of the work so far, when it is a tool that runs tests of its own: a hashtable or object with
+    Passed, Failed, Error, Investigate, Skipped, Running and Total, and optionally Name. While the box is open the
+    dashboard shows them in place of Maester's own: in its Results panel, under Name (or the title of the box),
+    and, before Maester's tests start, as a block for each item over the box.
+
+    .PARAMETER Groups
+    The results by group, such as the pillars of an assessment: each a hashtable or object with Name and the
+    counts of -Results. While the box is open the dashboard lists them where it lists the products, with a bar
+    and the counts of each.
+
+    .PARAMETER GroupLabel
+    What the groups are called, such as "Pillars": the title of the box that lists them.
+
     .PARAMETER ErrorMessage
     Errors the work reported. They are listed under the progress, newest last, and counted on the box.
 
@@ -79,6 +93,15 @@
     Write-MtTestProgress -Stage 'Exporting tenant data' -StageNumber 1 -StageCount 3 -Completed 12 -Total 40 -Running 2 -Current 'Users', 'Groups'
 
     Shows that the work is in the first of three stages, with 12 of its 40 items done and two running.
+
+    .EXAMPLE
+    Write-MtTestProgress -Stage 'Running tests' -Results @{ Passed = 80; Failed = 12; Total = 300; Running = 4 } -GroupLabel 'Pillars' -Groups @{ Name = 'Identity'; Passed = 50; Failed = 8; Total = 120 }, @{ Name = 'Devices'; Passed = 30; Failed = 4; Total = 90 }
+
+    Shows the results of the tool's own tests in the dashboard's Results panel and result blocks, and its
+    pillars where the products are listed.
+
+    Each item that finishes with a time (in -Items, in any stage) is also kept: while the box is open the Pace
+    graph next to the logo draws how long each took, and the Slowest panel lists the slowest.
 
     .EXAMPLE
     Write-MtTestProgress -ErrorMessage 'The export of Devices failed: Forbidden'
@@ -135,6 +158,17 @@
         [object[]] $Items,
 
         [Parameter(ParameterSetName = 'Progress')]
+        [object] $Results,
+
+        [Parameter(ParameterSetName = 'Progress')]
+        [AllowEmptyCollection()]
+        [object[]] $Groups,
+
+        [Parameter(ParameterSetName = 'Progress')]
+        [AllowEmptyString()]
+        [string] $GroupLabel,
+
+        [Parameter(ParameterSetName = 'Progress')]
         [string[]] $ErrorMessage,
 
         [Parameter(Mandatory, ParameterSetName = 'Clear')]
@@ -154,15 +188,35 @@
             $state.LastCounts = $null
             return
         }
-        $parts = 'Stage', 'StageNumber', 'StageCount', 'Completed', 'Total', 'Failed', 'Running', 'Current', 'Status', 'Stages', 'Items'
+        $parts = 'Stage', 'StageNumber', 'StageCount', 'Completed', 'Total', 'Failed', 'Running', 'Current', 'Status', 'Stages', 'Items', 'Results', 'Groups', 'GroupLabel'
         $hasProgress = [bool]($parts | Where-Object { $PSBoundParameters.ContainsKey($_) })
         $progress = $null
+        # The keys of a hashtable from ConvertFrom-Json -AsHashtable keep their case: find them in any case.
+        $read = {
+            param($object, $name)
+            if ($object -isnot [System.Collections.IDictionary]) { return $object.$name }
+            foreach ($key in $object.Keys) { if ([string]$key -eq $name) { return $object[$key] } }
+        }
+        $toGroup = {
+            param($object)
+            if ($null -eq $object) { return $null }
+            $group = [Maester.Engine.MtOutputGroup]::new()
+            $group.Name = [string](& $read $object 'Name')
+            foreach ($count in 'Total', 'Passed', 'Failed', 'Error', 'Investigate', 'Skipped', 'Running') {
+                $value = & $read $object $count
+                if ($null -ne $value -and "$value" -ne '') { $group.$count = [int]$value }
+            }
+            $group
+        }
         if ($hasProgress) {
             $progress = [Maester.Engine.MtOutputProgress]@{
                 Stage = $Stage; StageNumber = $StageNumber; StageCount = $StageCount
                 Completed = $Completed; Total = $Total; Failed = $Failed; Running = $Running
                 Current = [string[]]@($Current | Where-Object { $_ }); Status = $Status
                 Stages = [string[]]@($Stages | Where-Object { $_ })
+                Results = & $toGroup $Results
+                Groups = [Maester.Engine.MtOutputGroup[]]@(foreach ($g in @($Groups | Where-Object { $_ })) { & $toGroup $g })
+                GroupLabel = $GroupLabel
                 Items = [Maester.Engine.MtOutputItem[]]@(foreach ($item in @($Items | Where-Object { $_ })) {
                         # The keys of a hashtable from ConvertFrom-Json -AsHashtable keep their case: find them in any case.
                         $get = {

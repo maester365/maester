@@ -242,13 +242,24 @@ function Invoke-MtZtaCollection {
     }
 
     $request = Join-Path ([System.IO.Path]::GetTempPath()) ("maester-zta-request-{0}.json" -f [guid]::NewGuid().ToString('n'))
-    # The titles of the assessment's tests, from the pack's catalog, for the tests the progress lists by ID.
+    # The titles and pillars of the assessment's tests, from the pack's catalog, for the tests the progress lists
+    # by ID, and how many tests each pillar has, for the dashboard's list of pillars. A test in two pillars counts
+    # in its first.
     $titles = @{}
+    $pillars = @{}
+    $pillarTotals = [ordered]@{}
     $catalogPath = Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath 'catalog.json'
     if (Test-Path -LiteralPath $catalogPath) {
-        foreach ($entry in @((Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json).Tests)) { $titles[[string]$entry.TestId] = [string]$entry.Title }
+        foreach ($entry in @((Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json).Tests)) {
+            $titles[[string]$entry.TestId] = [string]$entry.Title
+            $pillar = @($entry.Pillar | Where-Object { $_ }) | Select-Object -First 1
+            if (-not $pillar -or ($assessment.Pillar -and $assessment.Pillar -ne 'All' -and $pillar -ne $assessment.Pillar)) { continue }
+            $pillars[[string]$entry.TestId] = [string]$pillar
+            $pillarTotals[[string]$pillar] = 1 + [int]$pillarTotals[[string]$pillar]
+        }
     }
-    [ordered]@{ ModulePath = $module.Path; Connect = $connect; Assessment = $assessment; Titles = $titles } |
+    $pillarList = @(foreach ($name in $pillarTotals.Keys) { [ordered]@{ Name = $name; Total = $pillarTotals[$name] } })
+    [ordered]@{ ModulePath = $module.Path; Connect = $connect; Assessment = $assessment; Titles = $titles; Pillars = $pillars; PillarTotals = $pillarList } |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $request -Encoding utf8
 
     # The child reads its parameters from the request file, so nothing from the config is put on a command line.
@@ -288,9 +299,13 @@ Import-Module -Name $request.ModulePath
 # Another version of the module that keeps neither reports nothing.
 $progressState = $null
 try { $progressState = Get-PSFDynamicContentObject -Name 'ZtAssessment.ProgressState' -ErrorAction Stop } catch { $progressState = $null }
+# The result of each test, as the tests finish: the dashboard shows the counts in its Results panel and blocks,
+# and by pillar where it lists the products.
+$resultState = $null
+try { $resultState = Get-PSFDynamicContentObject -Name 'ZtAssessment.TestResultDetails' -ErrorAction Stop } catch { $resultState = $null }
 $reporter = [powershell]::Create()
 $null = $reporter.AddScript({
-    param($State, [string] $OutputPath, $Titles)
+    param($State, [string] $OutputPath, $Titles, $ResultState, $Pillars, $PillarTotals)
     $culture = [System.Globalization.CultureInfo]::InvariantCulture
     # The stages of the assessment, short enough to draw all six on one line.
     $stages = @('Export', 'Tests', 'Tenant info', 'Results', 'Report data', 'HTML report')
@@ -416,6 +431,42 @@ $null = $reporter.AddScript({
                 items       = @($list)
             }
             if ($stage -eq 'done') { $snapshot.stageNumber = $stages.Count + 1; $snapshot.items = @(); $snapshot.running = 0 }
+
+            # The results of the tests that finished, in all and by pillar, from the stage of the tests on.
+            $details = if ($ResultState) { $ResultState.Value } else { $null }
+            if ($details -and ($kind -eq 'tests' -or $details.Count -gt 0)) {
+                $groups = [ordered]@{}
+                foreach ($entry in @($PillarTotals)) {
+                    if ($entry -and $entry.Name) { $groups[[string]$entry.Name] = [ordered]@{ name = [string]$entry.Name; total = [int]$entry.Total; passed = 0; failed = 0; error = 0; investigate = 0; skipped = 0; running = 0 } }
+                }
+                $all = [ordered]@{ name = 'Zero Trust Assessment'; total = 0; passed = 0; failed = 0; error = 0; investigate = 0; skipped = 0; running = 0 }
+                $pillarOf = {
+                    param([string] $id, $detail)
+                    if ($Pillars -and $Pillars[$id]) { return [string]$Pillars[$id] }
+                    $own = @($detail.TestPillar | Where-Object { $_ }) | Select-Object -First 1
+                    if ($own) { [string]$own } else { 'Other' }
+                }
+                foreach ($id in @($details.Keys)) {
+                    $detail = $null
+                    if (-not $details.TryGetValue($id, [ref]$detail) -or -not $detail) { continue }
+                    $result = switch ([string]$detail.TestStatus) { 'Passed' { 'passed' } 'Failed' { 'failed' } 'Investigate' { 'investigate' } 'Skipped' { 'skipped' } default { 'error' } }
+                    $all[$result]++
+                    $pillar = & $pillarOf ([string]$id) $detail
+                    if (-not $groups.Contains($pillar)) { $groups[$pillar] = [ordered]@{ name = $pillar; total = 0; passed = 0; failed = 0; error = 0; investigate = 0; skipped = 0; running = 0 } }
+                    $groups[$pillar][$result]++
+                }
+                if ($kind -eq 'tests') {
+                    foreach ($item in $running) {
+                        $all.running++
+                        $pillar = & $pillarOf ([string]$item.Name) $null
+                        if ($groups.Contains($pillar)) { $groups[$pillar].running++ }
+                    }
+                }
+                $all.total = if ($kind -eq 'tests' -and $value -and [int]$value['_totalItems'] -gt 0) { [int]$value['_totalItems'] } else { 0 }
+                $snapshot.results = $all
+                $snapshot.groupLabel = 'Pillars'
+                $snapshot.groups = @($groups.Values | Where-Object { $_.total -gt 0 -or ($_.passed + $_.failed + $_.error + $_.investigate + $_.skipped + $_.running) -gt 0 })
+            }
             $json = $snapshot | ConvertTo-Json -Compress -Depth 4
             if ($json -ne $last) {
                 $last = $json
@@ -427,7 +478,7 @@ $null = $reporter.AddScript({
         }
         Start-Sleep -Milliseconds 1000
     }
-}).AddArgument($progressState).AddArgument([string]$request.Assessment.Path).AddArgument($request.Titles)
+}).AddArgument($progressState).AddArgument([string]$request.Assessment.Path).AddArgument($request.Titles).AddArgument($resultState).AddArgument($request.Pillars).AddArgument(@($request.PillarTotals))
 $reporting = $reporter.BeginInvoke()
 try {
     $connect = $request.Connect

@@ -1188,6 +1188,40 @@ Describe 'Write-MtTestProgress' {
         $result.Screen | Should -Not -Match '##maester'
     }
 
+    It 'Shows the results, the groups and the times of the work in the box in place of the run''s, before its tests start' {
+        $screen = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 165; $renderer.Height = 50; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Unicode = $true; $renderer.Ansi = $false
+            $renderer.SetPanels([string[]]@('Totals', 'Slowest', 'Pace', 'Results'))
+            $renderer.SetRunLogo([string[]]@(' __  __ ', '|  \/  |', '| |\/| |', '|_|  |_|', ''), 9, 4, '', 'v3')
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The assessment' -InputObject 'a line of the log'
+            @(
+                '##maester[progress] {"stage":"Running tests","stageNumber":2,"stageCount":3,"total":20,"completed":6,'
+                '"items":[{"id":"T.1","status":"Passed","seconds":2},{"id":"T.2","title":"The slow one","status":"Passed","seconds":40},{"id":"T.3","seconds":1}],'
+                '"results":{"name":"Zero Trust","passed":4,"failed":2,"running":1,"total":20},"groupLabel":"Pillars",'
+                '"groups":[{"name":"Identity","passed":3,"failed":1,"total":12,"running":1},{"name":"Devices","passed":1,"failed":1,"total":8}]}'
+            ) -join '' | Write-MtTestOutput
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        # The groups where the products are listed, with their counts.
+        $screen | Should -Match '╭─ Pillars ─'
+        $screen | Should -Match '│ Identity +━+─+ +4/12  ✓ 3 +✗ 1 .* 1 running'
+        $screen | Should -Match '│ Devices +━+─+ +2/8  ✓ 1 +✗ 1 '
+        # The results in the Results panel and the result blocks, under the work's name.
+        $screen | Should -Match '╭─ Zero Trust ─+ 6 of 20 ─╮'
+        $screen | Should -Match '✓ 4 passed 67% +✗ 2 failed 33%'
+        $screen | Should -Match '│ ■{6}⠲□{13} '
+        # The times of the items that finished: the Pace graph by the logo, and the Slowest panel.
+        $screen | Should -Match 'how long each item took'
+        $screen | Should -Match 'longest 40\.0s'
+        $screen | Should -Match '│ T\.2 +The slow one +40\.0s │'
+        $screen | Should -Not -Match '╭─ Products'
+    }
+
     It 'Writes the stage when it changes, the counts at most every ten seconds and each error, without the dashboard' {
         $ci = $script:stream.PSObject.Copy()
         $ci.CI = 'GitHubActions'

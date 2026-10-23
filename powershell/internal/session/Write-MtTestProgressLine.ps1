@@ -8,6 +8,7 @@ function Write-MtTestProgressLine {
     writing one of these lines to its output:
 
         ##maester[progress] {"stage":"Exporting","stageNumber":1,"stageCount":3,"completed":4,"total":9}
+        ##maester[progress] {"results":{"passed":80,"failed":12,"total":300},"groupLabel":"Pillars","groups":[{"name":"Identity","passed":50,"failed":8,"total":120}]}
         ##maester[error] The export of Users failed
 
     The JSON object takes the names of the parameters of Write-MtTestProgress in any case, and "error" for
@@ -35,16 +36,19 @@ function Write-MtTestProgressLine {
             stage = 'Stage'; stagenumber = 'StageNumber'; stagecount = 'StageCount'; completed = 'Completed'
             total = 'Total'; failed = 'Failed'; running = 'Running'; current = 'Current'; status = 'Status'
             error = 'ErrorMessage'; errormessage = 'ErrorMessage'; stages = 'Stages'; items = 'Items'
+            results = 'Results'; groups = 'Groups'; grouplabel = 'GroupLabel'
         }
         $splat = @{}
         foreach ($key in $data.Keys) {
             $name = $names[([string]$key).ToLowerInvariant()]
             if (-not $name -or $null -eq $data[$key]) { continue }
             $value = $data[$key]
+            if ($name -eq 'Results' -and $value -isnot [System.Collections.IDictionary]) { continue }
             $splat[$name] = switch ($name) {
                 { $_ -in 'Current', 'ErrorMessage', 'Stages' } { [string[]]@($value | ForEach-Object { [string]$_ }) }
-                'Items' { [object[]]@($value | Where-Object { $_ -is [System.Collections.IDictionary] }) }
-                { $_ -in 'Stage', 'Status' } { [string]$value }
+                { $_ -in 'Items', 'Groups' } { [object[]]@($value | Where-Object { $_ -is [System.Collections.IDictionary] }) }
+                'Results' { $value }
+                { $_ -in 'Stage', 'Status', 'GroupLabel' } { [string]$value }
                 default { [int]$value }
             }
         }
