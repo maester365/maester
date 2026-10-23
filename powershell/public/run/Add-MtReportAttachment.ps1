@@ -21,7 +21,7 @@ function Add-MtReportAttachment {
     first.
 
     .EXAMPLE
-    Add-MtReportAttachment -Name 'Zero Trust Assessment report' -Path ./zt/ZeroTrustAssessmentReport.html
+    Add-MtReportAttachment -Name 'Zero Trust Assessment' -Path ./zt/ZeroTrustAssessmentReport.html
 
     Embeds the Zero Trust Assessment report in the Maester report of this run.
 
@@ -36,7 +36,7 @@ function Add-MtReportAttachment {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     [OutputType([void])]
     param(
-        # The label of the button that opens the attachment, for example 'Zero Trust Assessment report'.
+        # The label of the button that opens the attachment, for example 'Zero Trust Assessment'.
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string] $Name,
