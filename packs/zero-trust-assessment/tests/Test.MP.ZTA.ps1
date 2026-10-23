@@ -131,6 +131,11 @@ function Invoke-MtZtaCollection {
     MSAL, which cannot share a process with the versions Maester has already loaded. So it runs in its own
     pwsh process, signs in there with Connect-ZtAssessment, and Maester reads the report it writes.
 
+    The child's output is read line by line and shown with Write-MtTestOutput: in the dashboard of an
+    interactive run it scrolls in a box in the main column, elsewhere it is written to the host. The
+    assessment runs with -ShowLog (the ZeroTrustAssessment.ShowLog setting, on by default), so the box shows
+    the tests it runs, and its progress bars become one line at the bottom of the box that updates in place.
+
     The child signs in to the tenant Maester is connected to. When Maester is connected to Graph app-only with a
     certificate, the child uses the same app and certificate; otherwise it signs in interactively. The
     ZeroTrustAssessment.Connect setting passes any other Connect-ZtAssessment parameters.
@@ -173,6 +178,7 @@ function Invoke-MtZtaCollection {
         Pillar           = [string](Get-MtSetting -Name 'ZeroTrustAssessment.Pillar' -Default 'All')
         NoBrowser        = $true
         DisableTelemetry = [bool](Get-MtSetting -Name 'ZeroTrustAssessment.DisableTelemetry' -Default $true)
+        ShowLog          = [bool](Get-MtSetting -Name 'ZeroTrustAssessment.ShowLog' -Default $true)
     }
     $days = Get-MtSetting -Name 'ZeroTrustAssessment.Days' -Default $null
     if ($days) { $assessment.Days = [int]$days }
@@ -194,9 +200,32 @@ function Invoke-MtZtaCollection {
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $request -Encoding utf8
 
     # The child reads its parameters from the request file, so nothing from the config is put on a command line.
+    # Its output is read by Maester as lines of plain text. Its progress bars cannot be drawn there, so each
+    # change of one is written as a line that starts with a marker (the module's own Write-Progress calls find
+    # this function before the cmdlet), which Maester shows as one line that updates in place.
+    $progressMarker = "[maester-progress-$([guid]::NewGuid().ToString('n').Substring(0, 8))] "
     $script = @'
-param([string] $RequestPath)
+param([string] $RequestPath, [string] $ProgressMarker)
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$PSStyle.OutputRendering = 'PlainText'
+function global:Write-Progress {
+    # Not an advanced function: a parameter it does not declare goes to $args instead of failing the call.
+    param([string] $Activity, [string] $Status, [int] $Id, [int] $PercentComplete = -1, [string] $CurrentOperation, [switch] $Completed)
+    if ($Completed) {
+        # An empty line of progress takes the line away.
+        if ($global:__MtZtaProgress) { [Console]::Out.WriteLine($ProgressMarker) }
+        $global:__MtZtaProgress = $null
+        return
+    }
+    $text = @($Activity, $Status, $CurrentOperation) | Where-Object { $_ }
+    $text = $text -join ': '
+    if ($PercentComplete -ge 0) { $text += " ($PercentComplete%)" }
+    if ($text -and $text -ne $global:__MtZtaProgress) {
+        $global:__MtZtaProgress = $text
+        [Console]::Out.WriteLine($ProgressMarker + $text)
+    }
+}
 $request = Get-Content -LiteralPath $RequestPath -Raw | ConvertFrom-Json -AsHashtable
 Import-Module -Name $request.ModulePath
 $connect = $request.Connect
@@ -208,20 +237,60 @@ Invoke-ZtAssessment @assessment
     Set-Content -LiteralPath $scriptPath -Value $script -Encoding utf8
 
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new((Get-Process -Id $PID).Path)
-    foreach ($argument in '-NoProfile', '-File', $scriptPath, '-RequestPath', $request) { $startInfo.ArgumentList.Add($argument) }
+    foreach ($argument in '-NoProfile', '-File', $scriptPath, '-RequestPath', $request, '-ProgressMarker', $progressMarker) { $startInfo.ArgumentList.Add($argument) }
     $startInfo.UseShellExecute = $false
+    # The child must not write to the console itself: while Maester's dashboard has the screen, that would
+    # draw over it. Maester shows what it writes instead.
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    $startInfo.StandardOutputEncoding = [System.Text.UTF8Encoding]::new($false)
+    $startInfo.StandardErrorEncoding = [System.Text.UTF8Encoding]::new($false)
+    # The last lines it wrote, for the error when it fails.
+    $tail = [System.Collections.Generic.Queue[string]]::new()
+    $show = {
+        param([string] $Line)
+        $progress = $Line.StartsWith($progressMarker)
+        if ($progress) {
+            $Line = $Line.Substring($progressMarker.Length)
+        } elseif ($Line.Trim()) {
+            $tail.Enqueue([Maester.Engine.MtConsoleRenderer]::OutputText($Line))
+            if ($tail.Count -gt 15) { $null = $tail.Dequeue() }
+        }
+        Write-MtTestOutput -InputObject $Line -Progress:$progress
+    }
     $process = $null
     try {
-        Write-Information -InformationAction Continue -MessageData "Running the Microsoft Zero Trust Assessment $($module.Version) in a separate PowerShell process. This can take an hour or more on a large tenant."
+        Write-MtTestOutput -Title "Microsoft Zero Trust Assessment $($module.Version)" -InputObject 'Running the assessment in a separate PowerShell process. This can take an hour or more on a large tenant.'
         $process = [System.Diagnostics.Process]::Start($startInfo)
-        # Wait in short steps so a stop request (a timeout or Ctrl+C) is seen between them.
-        while (-not $process.WaitForExit(1000)) { }
+        $readers = @($process.StandardOutput, $process.StandardError)
+        $reads = [System.Threading.Tasks.Task[]]@($readers[0].ReadLineAsync(), $readers[1].ReadLineAsync())
+        $exited = $null
+        while ($reads[0] -or $reads[1]) {
+            # Wait in short steps so a stop request (a timeout or Ctrl+C) is seen between them.
+            $null = [System.Threading.Tasks.Task]::WaitAny([System.Threading.Tasks.Task[]]@($reads | Where-Object { $_ }), 1000)
+            for ($i = 0; $i -lt 2; $i++) {
+                if (-not $reads[$i] -or -not $reads[$i].IsCompleted) { continue }
+                $line = $reads[$i].GetAwaiter().GetResult()
+                if ($null -eq $line) { $reads[$i] = $null; continue }
+                $reads[$i] = $readers[$i].ReadLineAsync()
+                & $show $line
+            }
+            # A process the child started can keep its output open after it ends: give it a few seconds.
+            if ($process.HasExited) {
+                if (-not $exited) { $exited = [System.Diagnostics.Stopwatch]::StartNew() }
+                elseif ($exited.Elapsed.TotalSeconds -gt 5) { break }
+            }
+        }
+        $process.WaitForExit()
         if ($process.ExitCode -ne 0) {
-            throw "The Zero Trust Assessment ended with exit code $($process.ExitCode). Its log is in $outputPath."
+            $where = if ($temporary) { '' } else { " Its log is in $outputPath." }
+            $last = if ($tail.Count -gt 0) { " Its last lines:`n" + ($tail.ToArray() -join "`n") } else { '' }
+            throw "The Zero Trust Assessment ended with exit code $($process.ExitCode).$where$last"
         }
     } finally {
         # Stopping the Maester run (a timeout or Ctrl+C) stops the assessment too.
         if ($process -and -not $process.HasExited) { $process.Kill($true) }
+        Write-MtTestOutput -Complete
         Remove-Item -LiteralPath $request, $scriptPath -Force -ErrorAction SilentlyContinue
         if ($configurationFile) { Remove-Item -LiteralPath $configurationFile -Force -ErrorAction SilentlyContinue }
     }

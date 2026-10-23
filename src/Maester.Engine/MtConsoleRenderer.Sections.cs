@@ -94,11 +94,12 @@ namespace Maester.Engine
             int inner = boxWidth - 4;
             bool band = tests && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
             var track = _phases.Count > 0 || tests ? BuildTrack(max - 1, ansi) : new List<Line>();
+            bool output = _outputTitle != null;
 
             var screen = new List<Line>();
             if (band) screen.AddRange(BuildRunBand(max, ansi));
             else if (tests) screen.AddRange(BuildRunHeader(max, null, ansi));
-            else screen.AddRange(BuildOpeningHeader(max, rows, track.Count + 3, ansi));
+            else screen.AddRange(BuildOpeningHeader(max, rows, track.Count + 3 + (output ? OutputOpeningRows : 0), ansi));
             if (_info != null) screen.Add(BuildInfoLine(max, ansi));
             screen.Add(Blank());
             if (track.Count > 0)
@@ -106,7 +107,12 @@ namespace Maester.Engine
                 screen.AddRange(track);
                 screen.Add(Blank());
             }
-            if (!tests) return Fit(screen, rows);
+            // Before the tests start, the output of the work that runs (an instance source) has the rows under the phases.
+            if (!tests)
+            {
+                if (output) screen.AddRange(BuildOutputBox(boxWidth, rows - screen.Count, ansi));
+                return Fit(screen, rows);
+            }
 
             var skippedLanes = SkippedLanes();
             int lanesWanted = _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0);
@@ -114,6 +120,9 @@ namespace Maester.Engine
             var tail = _running ? BuildWorkerLines(inner, string.Empty, ansi) : new List<Line>();
             int runChrome = _running ? 3 : 2;
             bool chart = PanelShown(ResultsPanel);
+            // The output box of a test that writes one has its rows set aside, as the running tests have.
+            int outputRows = output ? OutputTestRows : 0;
+            runChrome += outputRows;
             int top = screen.Count;
             // The boxes cost rows. When they would leave no room for what the plain lines have room for (a
             // row of insight panels and two running tests, or one running test), the plain lines are drawn.
@@ -162,6 +171,9 @@ namespace Maester.Engine
             {
                 screen.AddRange(Indent(Box(new PanelContent { Title = "Tests", Badge = N(FinishedCount()) + " of " + N(_total), Lines = blocks }, boxWidth, ansi)));
             }
+
+            if (output && rows - screen.Count >= runChrome + 1) screen.AddRange(BuildOutputBox(boxWidth, outputRows, ansi));
+            runChrome -= outputRows;
 
             // The running tests and the finished ones take the rows down to the insight panels.
             int left = rows - screen.Count;
