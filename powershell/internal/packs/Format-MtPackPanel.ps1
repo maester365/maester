@@ -1,4 +1,4 @@
-function Format-MtPackPanel {
+﻿function Format-MtPackPanel {
     <#
     .SYNOPSIS
     Returns the console lines of a pack's card: its code, name and version, its ID and publisher, and its description, in an outlined box.

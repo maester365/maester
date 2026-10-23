@@ -1,4 +1,4 @@
-function Show-MtPackInstalled {
+﻿function Show-MtPackInstalled {
     <#
     .SYNOPSIS
     Writes what Install-MtPack installed, where it was recorded and the commands to run it.
