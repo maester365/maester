@@ -1,7 +1,9 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
-    function New-TestRow ([string]$Id, [string]$Detail) {
+    function New-TestRow {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+        param([string]$Id, [string]$Detail)
         [pscustomobject]@{
             ID = $Id; Title = "Title $Id"; Result = 'Passed'; Severity = 'High'; Tag = @('t'); Block = 'b'; Duration = '00:00:01'
             Name = "Name $Id"; HelpUrl = ''; ScriptBlockFile = "/tests/Test.$Id.ps1"
