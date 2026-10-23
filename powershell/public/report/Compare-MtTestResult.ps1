@@ -37,9 +37,12 @@
         Write-Verbose "Found $($files.Count) TestResults-*.json files in $BaseDir"
         foreach ($file in $files) {
             $report = Get-Content $file | ConvertFrom-Json
-            if (-not (Compare-Object $reportProperties $report.PSObject.Properties.Name)) {
-                Write-Verbose "Report properties match, adding to collection"
+            $missingProperties = @($reportProperties | Where-Object { $_ -notin $report.PSObject.Properties.Name })
+            if ($missingProperties.Count -eq 0) {
+                Write-Verbose "Report has all required properties, adding to collection"
                 $reports += $report
+            } else {
+                Write-Warning "Skipping $($file.Name): missing properties $($missingProperties -join ', ')."
             }
         }
         $reports = $reports | Sort-Object ExecutedAt -Descending
