@@ -56,12 +56,10 @@
     if ($appsWithFic.Count -gt 0) {
         foreach ($app in $appsWithFic) {
             Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
-            $hasMutableSubject = $false
             foreach ($cred in $app.federatedIdentityCredentials) {
-
+                $hasMutableSubject = $false
                 # check if its a subject or a claimsMatchingExpression
                 $subject = $cred.subject ?? $cred.claimsMatchingExpression.value
-
                 # GitHub
                 if ($cred.issuer -eq 'https://token.actions.githubusercontent.com') {
                     $hasMutableSubject = $subject -notmatch $gitHubImmutableOidcClaims
