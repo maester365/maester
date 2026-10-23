@@ -23,6 +23,20 @@ export function getReportAttachments(testResults: any): ReportAttachment[] {
   return attachments.filter((attachment) => attachment?.Id && attachment.Name && attachmentElement(attachment))
 }
 
+/** The report route that shows an attachment in the main panel. */
+export function getAttachmentPath(attachment: ReportAttachment) {
+  return `/reports/${encodeURIComponent(attachment.Id)}`
+}
+
+/** The attachment a /reports/<id> route names, or undefined. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function findReportAttachment(testResults: any, pathname: string): ReportAttachment | undefined {
+  const match = /^\/reports\/([^/]+)$/.exec(pathname)
+  if (!match) return undefined
+  const id = decodeURIComponent(match[1])
+  return getReportAttachments(testResults).find((attachment) => attachment.Id === id)
+}
+
 /** The attachments a test added, shown on that test's result and on each instance of a family. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getTestAttachments(testResults: any, test: { Id?: string; ParentId?: string | null }): ReportAttachment[] {
@@ -33,7 +47,7 @@ export function getTestAttachments(testResults: any, test: { Id?: string; Parent
 
 const decoded = new Map<string, Promise<string>>()
 
-function decodeAttachment(attachment: ReportAttachment): Promise<string> {
+export function decodeAttachment(attachment: ReportAttachment): Promise<string> {
   let html = decoded.get(attachment.Id)
   if (!html) {
     html = (async () => {
@@ -46,6 +60,21 @@ function decodeAttachment(attachment: ReportAttachment): Promise<string> {
     html.catch(() => decoded.delete(attachment.Id))
   }
   return html
+}
+
+/**
+ * Writes an attachment into an iframe of the report. Written this way the frame shares the report's origin, so a
+ * page that uses localStorage works from disk too (a blob: or srcdoc frame of a file:// page does not). The frame
+ * takes the report's address, so its hash is reset first: the attached page's own router reads it.
+ */
+export async function writeAttachmentToFrame(attachment: ReportAttachment, frame: HTMLIFrameElement) {
+  const html = await decodeAttachment(attachment)
+  const frameDocument = frame.contentDocument
+  if (!frameDocument) return
+  frameDocument.open()
+  frame.contentWindow?.history.replaceState(null, "", "#/")
+  frameDocument.write(html)
+  frameDocument.close()
 }
 
 /**

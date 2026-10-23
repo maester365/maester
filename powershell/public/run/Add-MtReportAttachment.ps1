@@ -9,7 +9,7 @@ function Add-MtReportAttachment {
     output folder can be deleted afterwards.
 
     The HTML report shows a button for each attachment on the overview page, and on the result of the test
-    that added it. The button opens the attached report in a new browser tab. The report is stored compressed
+    that added it. The button shows the attached report inside the Maester report, beside its navigation, with an option to open it in a new browser tab. The report is stored compressed
     (gzip, then Base64), so a 10 MB report adds about 2 MB to the Maester report.
 
     Attachments are kept only in the HTML report and the results that Invoke-Maester -PassThru returns. The

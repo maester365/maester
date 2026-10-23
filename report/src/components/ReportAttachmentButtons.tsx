@@ -1,9 +1,11 @@
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { DocumentChartBarIcon } from "@heroicons/react/24/outline"
 import { Button } from "@/components/ui/report"
-import { openReportAttachment, type ReportAttachment } from "@/lib/reportAttachments"
+import { useNavigate } from "@/lib/router"
+import { getAttachmentPath, type ReportAttachment } from "@/lib/reportAttachments"
 
-/** One button per embedded report; each opens its report in a new tab. */
+/** One button per embedded report; each shows its report in the main panel. */
 export default function ReportAttachmentButtons({ attachments, className }: { attachments: ReportAttachment[]; className?: string }) {
+  const navigate = useNavigate()
   if (attachments.length === 0) return null
   return (
     <div className={className ?? "flex flex-wrap gap-2"}>
@@ -11,10 +13,9 @@ export default function ReportAttachmentButtons({ attachments, className }: { at
         <Button
           key={attachment.Id}
           variant="secondary"
-          icon={ArrowTopRightOnSquareIcon}
-          iconPosition="right"
-          tooltip={`Open ${attachment.Name} in a new tab`}
-          onClick={() => openReportAttachment(attachment)}
+          icon={DocumentChartBarIcon}
+          tooltip={`Show ${attachment.Name}`}
+          onClick={() => navigate(getAttachmentPath(attachment))}
         >
           {attachment.Name}
         </Button>
