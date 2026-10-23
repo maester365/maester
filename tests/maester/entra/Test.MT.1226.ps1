@@ -5,9 +5,13 @@
 
     .DESCRIPTION
     Examines application federated identity credentials for GitHub Actions and GitLab.
-    Reports subjects without the provider-specific immutable identifier markers:
+    Evaluates each credential's subject rule, or its claimsMatchingExpression value when configured.
+    Identifies GitLab OIDC credentials by common GitLab claims, including 'project_id',
+    'project_path' and 'ref_type'. Reports rules without the provider-specific immutable
+    identifier markers:
     'repo:<username>@<userid>/<repo>@<repoid>:' for GitHub Actions, with numeric IDs,
-    and 'project_id:' for GitLab. Other issuers are not evaluated.
+    and 'project_id:' for GitLab. GitHub credentials are identified by issuer; GitLab
+    credentials are identified by their claims.
     These marker checks identify potentially mutable subjects, not full subject validity.
 
     .LINK
@@ -36,6 +40,15 @@
     [OutputType([bool])]
     param()
 
+
+
+    # Identify OIDC tokens from GitLab
+    $gitLabOidcIdentifiers = 'project_id|project_path|ref_type'
+    # GitLab immutable OIDC claims pattern
+    $gitLabImmutableOidcClaims = 'project_id'
+    # Matches GitHub Actions immutable OIDC claims
+    $gitHubImmutableOidcClaims = 'repo:.+@\d+\/.+@\d+:|repository_id'
+
     $findings = [System.Collections.Generic.List[object]]::new()
     $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta)
     $appsWithFic = $apps | Where-Object { $null -ne $_.federatedIdentityCredentials -and $_.federatedIdentityCredentials.Count -gt 0 }
@@ -43,24 +56,19 @@
     if ($appsWithFic.Count -gt 0) {
         foreach ($app in $appsWithFic) {
             Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
-            foreach ($cred in ($app.federatedIdentityCredentials | Where-Object { $null -eq $_.claimsMatchingExpression })) {
-                $hasMutableSubject = $false
-                switch -Regex ($cred.issuer) {
-                    'token.actions.githubusercontent.com' {
-                        # Match against immutable identifiers in the subject
-                        # e.g.: repository_id:123456, repo:octo-org@123456/octo-repo@456789:ref:refs/heads/main
-                        $hasMutableSubject = $cred.subject -notmatch 'repository_id:\d+' -or $cred.subject -notmatch 'repo:.+@\d+\/.+@\d+:.+$'
-                        break
-                    }
-                    'gitlab' {
-                        Write-Verbose "Found federated credential with GitLab issuer: $($cred.name)"
-                        $hasMutableSubject = $cred.subject -notmatch 'project_id:'
-                        break
-                    }
-                    default {
-                        Write-Verbose "Skipping unsupported issuer: $($cred.issuer)"
-                        break
-                    }
+            $hasMutableSubject = $false
+            foreach ($cred in $app.federatedIdentityCredentials) {
+
+                # check if its a subject or a claimsMatchingExpression
+                $subject = $cred.subject ?? $cred.claimsMatchingExpression.value
+
+                # GitHub
+                if ($cred.issuer -eq 'https://token.actions.githubusercontent.com') {
+                    $hasMutableSubject = $subject -notmatch $gitHubImmutableOidcClaims
+                } elseif ($subject -match $gitLabOidcIdentifiers) {
+                    $hasMutableSubject = $subject -notmatch $gitLabImmutableOidcClaims
+                } else {
+                    Write-Verbose "Found federated credential with non GitHub or GitLab claims $subject (issuer: $($cred.issuer))"
                 }
                 if ($hasMutableSubject) {
                     $finding = [pscustomobject]@{
@@ -68,7 +76,7 @@
                         ApplicationId = $app.id
                         Credential    = $cred.name
                         Issuer        = $cred.issuer
-                        Subject       = $cred.subject
+                        Subject       = $subject
                     }
                     $findings.Add($finding)
                 }
