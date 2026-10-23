@@ -1,7 +1,7 @@
 ﻿function Test-MtAdKdsRootKeysCount {
     <#
     .SYNOPSIS
-    Verifies that exactly one KDS root key exists in Active Directory.
+    Verifies that an acceptable number of KDS root keys exists in Active Directory.
 
     .DESCRIPTION
     KDS root keys are required for Group Managed Service Accounts (gMSA). This test
@@ -9,19 +9,22 @@
 
     - Zero keys indicates gMSAs are not in use, so the test is skipped.
     - Exactly one key is the recommended configuration; the test passes.
-    - More than one key can cause gMSA authentication failures and the test fails.
+    - Exactly two keys can cause gMSA authentication failures in some scenarios;
+      the test returns Investigate per Microsoft guidance.
+    - Three or more keys is also acceptable (Microsoft's recommended workaround
+      for the two-key sorting issue is to create a third key); the test passes.
 
     .EXAMPLE
     Test-MtAdKdsRootKeysCount
 
-    Returns $true if exactly one KDS root key exists.
+    Returns $true when the KDS root key count is acceptable (1 or 3+).
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdKdsRootKeysCount
     #>
     [MaesterTest(
         Id = 'AD-CFG-22',
-        Title = 'Exactly one KDS root key should exist',
+        Title = 'KDS root key count should be acceptable',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'infrastructure',
@@ -48,10 +51,14 @@
 
     $config = $adState.Configuration
 
-    # If the KDS query failed, we cannot determine the count
-    if ($null -eq $config -or $null -eq $config.KdsRootKeys) {
-        Add-MtTestResultDetail -Result "Unable to retrieve KDS root key information. Ensure you have appropriate permissions and the Active Directory module is installed."
-        return $false
+    # If the KDS query failed or the entire Configuration category is unavailable, skip
+    if ($null -eq $config) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Unable to retrieve Active Directory configuration. The query may have failed or returned no data.'
+        return $null
+    }
+    if ($null -eq $config.KdsRootKeys) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Unable to retrieve KDS root key information. Ensure you have appropriate permissions.'
+        return $null
     }
 
     # Count valid KDS root keys (those with a creation timestamp)

@@ -79,7 +79,9 @@
 
     $directoryService = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Directory Service,CN=Windows NT,CN=Services' -Scope Base -Filter '(objectClass=nTDSService)' -Attributes @('tombstoneLifetime', 'dSHeuristics', 'sPNMappings') | Select-Object -First 1
 
-    $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
+    # Use safe search so a NoSuchObject error (common when KDS has never been used) returns @()
+    # rather than throwing and nulling the entire Configuration category
+    $kds = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
 
     $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Microsoft SPP,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
 
@@ -92,6 +94,6 @@
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
-        KdsRootKeys = $kds; ActivationObjects = @($activation)
+        KdsRootKeys = @($kds); ActivationObjects = @($activation)
     }
 }
