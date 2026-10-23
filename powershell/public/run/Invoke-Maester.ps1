@@ -292,8 +292,9 @@
         # This is used for running tests that does not require a Graph connection.
         [switch] $SkipGraphConnect,
 
-        # Do not send the anonymous run event to packs.maester.cloud: a random installation ID, a hash of the
-        # tenant ID, the Maester version, the platform, the number of tests and the public packs that ran.
+        # Do not send the anonymous run events to packs.maester.cloud: a random installation ID, a hash of the
+        # tenant ID, the versions and platform, when the run started and how long it took, its outcome, the result
+        # counts and the public packs installed and run.
         # Setting the environment variable MAESTER_DISABLE_TELEMETRY to 1 does the same for every command.
         [switch] $DisableTelemetry,
 
@@ -438,6 +439,14 @@
         # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
         # in the results and output files when -IncludeAffectedObjects was actually requested.
         $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
+
+        # Anonymous run events: one now and one when the run ends, so a run that never ends shows up
+        # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
+        $telemetryRun = $null
+        if (-not $DisableTelemetry -and -not $DryRun) {
+            $telemetryRun = [pscustomobject]@{ RunId = [guid]::NewGuid().ToString(); StartedAt = [datetime]::UtcNow; Stage = 'Setup'; ErrorCount = $Error.Count; Sent = $false }
+            Write-Telemetry -EventName InvokeMaesterStart -Run $telemetryRun
+        }
 
         Write-MtOlderVersionWarning
 
@@ -915,6 +924,7 @@
         $nativeRows = @()
         $nativeTimer = [System.Diagnostics.Stopwatch]::StartNew()
         $pesterResults = $null
+        if ($telemetryRun) { $telemetryRun.Stage = 'Tests' }
         try {
             # Stage 7: native tests first, then one Invoke-Pester call if the plan has Pester files.
             if ($nativePlan.Count -gt 0) {
@@ -959,6 +969,7 @@
             $__MtSession.IncludeAffectedObjects = $false
         }
         $null = Remove-MtForeignModule
+        if ($telemetryRun) { $telemetryRun.Stage = 'Report' }
 
         if ($pesterResults -or $nativeRows.Count -gt 0) {
 
@@ -1131,17 +1142,16 @@
                 Write-Warning "The run summary could not be written: $($_.Exception.Message)"
             }
 
-            # One anonymous event for the run and the public packs it ran (Write-Telemetry says what is sent).
-            if (-not $DisableTelemetry -and -not $DryRun) {
-                Write-Telemetry -EventName InvokeMaester -MaesterResults $maesterResults -PackSet $packSet
-            }
-
             if (-not $SkipVersionCheck -and 'Next' -ne $version -and -not $NonInteractive.IsPresent) {
                 # Don't check version if skipped specified or running in dev or non-interactive.
                 Get-IsNewMaesterVersionAvailable | Out-Null
             }
 
             Write-MtProgress -Activity '🔥 Completed tests' -Status "Total $($maesterResults.TotalCount) " -Completed -Force # Clear progress bar.
+        }
+        if ($telemetryRun) {
+            $telemetryRun.Sent = $true
+            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -MaesterResults $maesterResults -PackSet $packSet
         }
         Reset-MtProgressView
         if ($PassThru) {
@@ -1150,6 +1160,12 @@
     }
 
     clean {
+        # A run that returned early, failed or was stopped still sends its end event, as Incomplete.
+        if ($telemetryRun -and -not $telemetryRun.Sent) {
+            $telemetryRun.Sent = $true
+            $errorType = if ($Error.Count -gt $telemetryRun.ErrorCount -and $Error[0].Exception) { $Error[0].Exception.GetType().FullName }
+            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -Outcome Incomplete -ErrorType $errorType -PackSet $packSet
+        }
         # Always restore the console: the status line or live region of an interactive run must not
         # outlive the command, whether it returned early, failed or was stopped with Ctrl+C.
         Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))

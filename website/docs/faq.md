@@ -55,21 +55,31 @@ See [Approval required when connecting](connect-maester/readme.md#approval-requi
 
 ## What telemetry does Maester send?
 
-At the end of each run, `Invoke-Maester` sends one anonymous event to `packs.maester.cloud`, a service run by the
-Maester maintainers on Cloudflare. It holds:
+`Invoke-Maester` sends two anonymous events to `packs.maester.cloud`, a service run by the Maester maintainers on
+Cloudflare: one when the run starts and one when it ends, even when it stops early, fails or is cancelled. Together
+they show the maintainers when a new release starts to fail. They hold:
 
-- a random installation ID, kept in `~/.maester/installation-id` (delete the file to get a new one);
+- a random run ID, and a random installation ID kept in `~/.maester/installation-id` (delete the file to get a new
+  one);
 - a SHA-256 hash of the tenant ID, never the tenant ID itself;
-- the Maester version, the operating system, and the CI system if the run is in one;
-- the number of tests that ran;
-- each [Maester Pack](./packs/index.md) that ran, with its version and test count, but only packs from public
-  repositories and packs that ship with Maester. A pack from a private repository or a local folder is never sent.
+- the Maester and PowerShell versions, the operating system and its version, and the CI system if the run is in one;
+- when the run started, how long it took, and whether it completed. For a run that did not, how far it got and the
+  type of the error, never the error message;
+- how many tests passed, failed, errored, were skipped or did not run, never which tests or what they found;
+- the [Maester Packs](./packs/index.md) installed and the packs that ran, with their versions and test counts, but
+  only packs from public repositories and packs that ship with Maester. A pack from a private repository or a local
+  folder is never sent.
+
+The service looks up the country and region the request came from, and does not store the IP address.
 
 `Install-MtPack` sends a similar event when it installs a pack from a public repository. That's how the
 [packs site](https://packs.maester.cloud) counts installs and finds new packs.
 
-No test results, names, email addresses or tenant data are sent. Maintainers see totals for each day, and a pack's
-page shows its own usage counts. Rows that hold an installation ID or a tenant hash are deleted after 400 days.
+No test names, results of a check, email addresses or tenant data are sent. A pack's page shows its own usage
+counts. Daily totals that hold an installation ID or a tenant hash are deleted after 400 days.
+
+While the new service is being proven, `Invoke-Maester` also sends the single event it has always sent to PostHog
+when a run starts, which holds the tenant ID. That event will be removed.
 
 To turn telemetry off, use `Invoke-Maester -DisableTelemetry`, or set the environment variable
 `MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command.

@@ -15,6 +15,7 @@ Describe 'Write-Telemetry' {
         Mock Get-MtInstallationId { '11111111-2222-3333-4444-555555555555' }
         $script:sent = $null
         Mock Invoke-RestMethod { $script:sent = [pscustomobject]@{ Uri = $Uri; Body = $Body | ConvertFrom-Json } }
+        $script:run = [pscustomobject]@{ RunId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'; StartedAt = [datetime]::UtcNow.AddSeconds(-90); Stage = 'Tests' }
     }
 
     AfterAll {
@@ -23,7 +24,7 @@ Describe 'Write-Telemetry' {
     }
 
     It 'uses a bounded timeout for the telemetry request' {
-        Write-Telemetry -EventName InvokeMaester
+        Write-Telemetry -EventName InvokeMaester -Run $script:run
 
         Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter {
             $TimeoutSec -eq 3 -and $ErrorAction -eq 'Stop'
@@ -73,6 +74,53 @@ Describe 'Write-Telemetry' {
         ($script:sent.Body | ConvertTo-Json -Compress -Depth 4) | Should -Not -Match 'secret'
     }
 
+    It 'sends a start event with the run ID, and the PostHog event until PostHog is retired' {
+        Write-Telemetry -EventName InvokeMaesterStart -Run $script:run
+
+        Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter { $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).Type -eq 'start' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter { $Uri -eq 'https://us.i.posthog.com/capture/' }
+    }
+
+    It 'sends when the run started, how long it took and the result counts' {
+        $results = [pscustomobject]@{ Tests = @(
+                [pscustomobject]@{ Id = 'MT.1001'; Result = 'Passed' }
+                [pscustomobject]@{ Id = 'MT.1002'; Result = 'Failed' }
+                [pscustomobject]@{ Id = 'MT.1003'; Result = 'Skipped' }
+            )
+        }
+        Write-Telemetry -EventName InvokeMaester -Run $script:run -MaesterResults $results
+
+        $script:sent.Body.RunId | Should -Be 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+        $script:sent.Body.Outcome | Should -Be 'Completed'
+        $script:sent.Body.Stage | Should -BeNullOrEmpty
+        $script:sent.Body.DurationMs | Should -BeGreaterOrEqual 90000
+        $script:sent.Body.Results.Passed | Should -Be 1
+        $script:sent.Body.Results.Failed | Should -Be 1
+        $script:sent.Body.Results.Skipped | Should -Be 1
+        $script:sent.Body.Tests | Should -Be 2
+    }
+
+    It 'sends an incomplete run with its stage and the error type, never the message' {
+        Write-Telemetry -EventName InvokeMaester -Run $script:run -Outcome Incomplete -ErrorType 'System.Management.Automation.PipelineStoppedException'
+
+        $script:sent.Body.Outcome | Should -Be 'Incomplete'
+        $script:sent.Body.Stage | Should -Be 'Tests'
+        $script:sent.Body.ErrorType | Should -Be 'System.Management.Automation.PipelineStoppedException'
+    }
+
+    It 'lists the public packs installed, and never a private one' {
+        $packSet = @(
+            [pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Version = '1.0.0'; BuiltIn = $true; Root = '/m/packs/zero-trust-assessment'; Entry = $null }
+            [pscustomobject]@{ Id = 'contoso.public'; Version = '0.2.0'; BuiltIn = $false; Root = '/s'; Entry = [pscustomobject]@{ Source = 'github.com/contoso/maester-sample'; Public = $true } }
+            [pscustomobject]@{ Id = 'contoso.private'; Version = '1.0.0'; BuiltIn = $false; Root = '/s'; Entry = [pscustomobject]@{ Source = 'github.com/contoso/secret'; Public = $false } }
+        )
+        Write-Telemetry -EventName InvokeMaester -Run $script:run -PackSet $packSet
+
+        @($script:sent.Body.Installed).Source | Should -Be @('github.com/contoso/maester-sample')
+        @($script:sent.Body.Packs).Count | Should -Be 0
+        ($script:sent.Body | ConvertTo-Json -Compress -Depth 4) | Should -Not -Match 'secret'
+    }
+
     It 'sends an install event only for a public pack' {
         $entry = [pscustomobject]@{ Id = 'contoso.public'; Source = 'github.com/contoso/maester-sample'; Commit = ('a' * 40); Public = $true }
         Write-Telemetry -EventName PackInstall -Pack $entry
@@ -87,7 +135,8 @@ Describe 'Write-Telemetry' {
 
     It 'sends nothing when MAESTER_DISABLE_TELEMETRY is set' {
         $env:MAESTER_DISABLE_TELEMETRY = '1'
-        Write-Telemetry -EventName InvokeMaester
+        Write-Telemetry -EventName InvokeMaesterStart -Run $script:run
+        Write-Telemetry -EventName InvokeMaester -Run $script:run
         Should -Invoke Invoke-RestMethod -Exactly 0
     }
 }
