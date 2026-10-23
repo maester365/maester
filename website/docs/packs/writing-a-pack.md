@@ -125,7 +125,8 @@ For an image without text, replace the `Text:` line with `No text at all; leave 
 
 ## Tests and helpers
 
-A pack's tests are [native tests](../writing-tests/index.mdx) with IDs `MP.<Code>.<n>`, or `MP.<Code>` for a family whose instances add their own part. Every `.ps1` in a suite
+A pack's tests are [native tests](../writing-tests/index.mdx) with IDs `MP.<Code>.<n>`, or `MP.<Code>` for a family whose instances add their own part. (Packs that ship with
+Maester are part of it and drop the `MP.`: the Zero Trust Assessment pack's tests are `ZTA.<n>`.) Every `.ps1` in a suite
 or helper folder holds only functions: code outside a function is refused, because it would run while the pack
 loads. A pack loads into a private module of its own, so its tests can call its helpers and Maester's exported
 commands. One pack does not see another pack's functions unless it requires that pack and the pack lists them in

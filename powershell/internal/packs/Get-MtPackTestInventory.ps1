@@ -59,8 +59,8 @@ function Get-MtPackTestInventory {
         foreach ($test in $tests) {
             $test | Add-Member -NotePropertyMembers ([ordered]@{ Source = 'Custom'; PackId = $pack.Id; Package = $package; PackStatus = $null; PackSelected = [bool]$pack.Selected }) -Force
             # Defence in depth for a pack that never went through Install-MtPack (one that ships with Maester).
-            if ($test.Id -and $pack.Manifest.Code -and -not (Test-MtPackTestId -Id $test.Id -Code $pack.Manifest.Code)) {
-                $test.Errors.Add([pscustomobject]@{ Code = 'InvalidMetadata'; Message = "A test in the pack $($pack.Id) must have an ID that starts with MP.$($pack.Manifest.Code)."; Line = $test.Line })
+            if ($test.Id -and $pack.Manifest.Code -and -not (Test-MtPackTestId -Id $test.Id -Code $pack.Manifest.Code -BuiltIn:([bool]$pack.BuiltIn))) {
+                $test.Errors.Add([pscustomobject]@{ Code = 'InvalidMetadata'; Message = "A test in the pack $($pack.Id) must have an ID that starts with $(Get-MtPackTestIdPrefix -Code $pack.Manifest.Code -BuiltIn:([bool]$pack.BuiltIn))."; Line = $test.Line })
             }
             $test
         }

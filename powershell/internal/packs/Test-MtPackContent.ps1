@@ -9,7 +9,7 @@ function Test-MtPackContent {
     - Errors: what stops the pack from being installed or loaded. The manifest rules; no symbolic links,
       no paths that differ only in case, at most 50 MB per pack and 20 MB per file; PowerShell files that
       hold only function definitions; function names unique within the pack (DuplicateFunctionName); test
-      IDs 'MP.<Code>.<number>' (or 'MP.<Code>' for a family) and suite IDs that start with the code; no
+      IDs 'MP.<Code>.<number>' (or 'MP.<Code>' for a family; '<Code>.<number>' for a pack that ships with Maester) and suite IDs that start with the code; no
       reserved tags; services that are built in, declared by the pack's connectors or listed in
       Uses.Services; and reach that the code shows but Uses does not declare (a literal web host, a module
       it imports, a tenant write).
@@ -48,6 +48,8 @@ function Test-MtPackContent {
     $fail = { param($code, $message) $errors.Add([pscustomobject]@{ Code = $code; Message = $message }) }
     $find = { param($severity, $code, $message, $file, $line) $findings.Add([pscustomobject]@{ Severity = $severity; Code = $code; Message = $message; File = $file; Line = $line }) }
     $manifest = $read.Manifest
+    # A pack that ships with Maester (in its packs folder) uses test IDs without the MP prefix.
+    $builtIn = [bool](@(Get-MtBuiltInPack) | Where-Object { [System.IO.Path]::GetFullPath($_.Root).TrimEnd('/', '\') -eq $root.TrimEnd('/', '\') })
 
     # Files: links, case, size, and what is not text.
     $all = @(Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '[\\/]\.git([\\/]|$)' })
@@ -145,8 +147,9 @@ function Test-MtPackContent {
         foreach ($t in $suiteTests) {
             $file = [System.IO.Path]::GetRelativePath($root, $t.File)
             foreach ($e in $t.Errors) { & $fail $e.Code "$file, line $($e.Line): $($e.Message)" }
-            if ($t.Id -and $manifest.Code -and -not (Test-MtPackTestId -Id $t.Id -Code $manifest.Code)) {
-                & $fail 'InvalidTestId' "$file has the ID $($t.Id); every test in this pack must have an ID that starts with MP.$($manifest.Code)., such as MP.$($manifest.Code).0001."
+            if ($t.Id -and $manifest.Code -and -not (Test-MtPackTestId -Id $t.Id -Code $manifest.Code -BuiltIn:$builtIn)) {
+                $prefix = Get-MtPackTestIdPrefix -Code $manifest.Code -BuiltIn:$builtIn
+                & $fail 'InvalidTestId' "$file has the ID $($t.Id); every test in this pack must have an ID that starts with $prefix., such as $prefix.0001."
             }
             foreach ($tag in @($t.Tag)) {
                 if ($reservedTags -contains [string]$tag) { & $fail 'ReservedTag' "$file sets the tag '$tag', which is reserved for the checks that ship with Maester." }

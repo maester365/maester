@@ -108,6 +108,28 @@ Describe 'Maester Pack manifest' {
             Test-MtPackTestId -Id 'MP.ZTA' -Code 'ZTA' | Should -BeTrue
             Test-MtPackTestId -Id 'MP.ZTA.21770' -Code 'ZTA' | Should -BeTrue
             Test-MtPackTestId -Id 'MP.ZTAX.1' -Code 'ZTA' | Should -BeFalse
+            # A pack that ships with Maester drops the MP prefix.
+            Test-MtPackTestId -Id 'ZTA' -Code 'ZTA' -BuiltIn | Should -BeTrue
+            Test-MtPackTestId -Id 'ZTA.21770' -Code 'ZTA' -BuiltIn | Should -BeTrue
+            Test-MtPackTestId -Id 'MP.ZTA.21770' -Code 'ZTA' -BuiltIn | Should -BeFalse
+            Test-MtPackTestId -Id 'ZTA.21770' -Code 'ZTA' | Should -BeFalse
+        }
+    }
+
+    It 'lets a pack that ships with Maester name its family by its bare code, and nothing else' {
+        $root = Join-Path $TestDrive 'builtin-zta'
+        $other = Join-Path $TestDrive 'custom-zta'
+        $null = New-Item -ItemType Directory -Path $root, $other -Force
+        $body = "function Test-ZTA {`n    [CmdletBinding()]`n    [MaesterTest(Id = 'ZTA', Title = 'Zero Trust', Service = 'Graph')]`n    param()`n    `$true`n}`n"
+        foreach ($dir in $root, $other) {
+            Set-Content -LiteralPath (Join-Path $dir 'Test.ZTA.ps1') -Value $body
+            Set-Content -LiteralPath (Join-Path $dir 'Test.ZTA.md') -Value 'Zero Trust'
+        }
+        InModuleScope Maester -Parameters @{ Root = $root; Other = $other } {
+            param($Root, $Other)
+            Mock Get-MtBuiltInPack { [pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Root = $Root; Manifest = [pscustomobject]@{ Code = 'ZTA' }; Errors = @() } }
+            (Read-MtNativeTest -Path (Join-Path $Root 'Test.ZTA.ps1')).Errors.Message | Should -Not -Match "value 'ZTA' is not valid"
+            (Read-MtNativeTest -Path (Join-Path $Other 'Test.ZTA.ps1')).Errors.Message | Should -Match "value 'ZTA' is not valid"
         }
     }
 

@@ -77,7 +77,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   `report/`, `app/`, `packs/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
   `utility/`. Nothing sits directly in `public/` or `internal/`.
 - `packs/<name>/` at the repository root holds the Maester Packs that ship with Maester (ID `maester.<name>`,
-  a code of the pack's own such as `ZTA`, test IDs `MP.<Code>.<n>`). They are not under `tests/`: a pack loads into its own private
+  a code of the pack's own such as `ZTA`, test IDs `<Code>.<n>` without the `MP.` that installed packs use). They are not under `tests/`: a pack loads into its own private
   module, and its rows carry `Source = Custom` and `Package`. See `packs/README.md`.
 - Put a function by its job, not by the check that first needed it: reusable data access
   for a service goes in `internal/services/<service>/`; logic only one suite's checks use
