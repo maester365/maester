@@ -435,7 +435,7 @@ Describe 'Pack security: pinned module versions' {
     }
 
     It 'saves each module without the modules it requires and pins the version it saved' {
-        if (-not (Get-Command -Name Save-PSResource -ErrorAction SilentlyContinue)) { function script:Save-PSResource { param($Name, $Version, $Repository, $Path, [switch] $TrustRepository, [switch] $SkipDependencyCheck, [switch] $Quiet) } }
+        if (-not (Get-Command -Name Save-PSResource -ErrorAction SilentlyContinue)) { function script:Save-PSResource { param($Name, $Version, $Repository, $Path, [switch] $TrustRepository, [switch] $SkipDependencyCheck, [switch] $Quiet) $null = $PSBoundParameters } }
         $dep = $script:Dep; $main = $script:Main
         # A save that pulls dependencies would also bring Dep 2.0.0; the mock writes it to show that it is not moved into the store.
         Mock Save-PSResource {

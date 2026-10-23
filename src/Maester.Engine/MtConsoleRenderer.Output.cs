@@ -44,6 +44,15 @@ namespace Maester.Engine
         private Stopwatch _outputStageClock;
         private readonly List<string> _outputErrors = new List<string>();
         private int _outputErrorCount;
+        // The lanes that the groups of the progress give (such as the pillars of an assessment): the dashboard
+        // shows them in place of the products while the box has them.
+        private List<Lane> _outputLanes;
+        // How long each item took that finished, in the order they finished, and the slowest of them: the Pace
+        // graph and the Slowest panel show them while the box is open. They are kept across the stages, so the
+        // graph draws an assessment's data collection and then its tests.
+        private readonly List<double> _outputDurations = new List<double>();
+        private readonly List<Slow> _outputSlowest = new List<Slow>();
+        private readonly HashSet<string> _outputFinished = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Whether the output box is open.</summary>
         public bool HasOutput { get { lock (_gate) return _outputTitle != null; } }
@@ -107,6 +116,8 @@ namespace Maester.Engine
                     // Clearing removes the progress and the errors, and opens no box.
                     if (_outputTitle == null) return;
                     _outputProgress = null;
+                    _outputLanes = null;
+                    ClearOutputTimes();
                     _outputStageClock = null;
                     _outputErrors.Clear();
                     _outputErrorCount = 0;
@@ -121,6 +132,8 @@ namespace Maester.Engine
                     _outputStageClock = Stopwatch.StartNew();
                 }
                 _outputProgress = next;
+                _outputLanes = OutputLanes(next);
+                AddOutputTimes(next);
                 Redraw();
             }
         }
@@ -168,9 +181,111 @@ namespace Maester.Engine
             _outputCount = 0;
             _outputClock = Stopwatch.StartNew();
             _outputProgress = null;
+            _outputLanes = null;
+            ClearOutputTimes();
             _outputStageClock = null;
             _outputErrors.Clear();
             _outputErrorCount = 0;
+        }
+
+        private void ClearOutputTimes()
+        {
+            _outputDurations.Clear();
+            _outputSlowest.Clear();
+            _outputFinished.Clear();
+        }
+
+        /// <summary>Keeps the time of each item of the progress that finished and was not seen before.</summary>
+        private void AddOutputTimes(MtOutputProgress p)
+        {
+            foreach (var item in p.Items)
+            {
+                if (item.IsRunning || item.Seconds < 0 || !_outputFinished.Add(p.StageNumber + "|" + item.Id + "|" + item.Title)) continue;
+                _outputDurations.Add(item.Seconds);
+                if (_outputSlowest.Count < SlowestKept || item.Seconds > _outputSlowest[_outputSlowest.Count - 1].Duration.TotalSeconds)
+                {
+                    _outputSlowest.Add(new Slow { Id = item.Id, Title = item.Title, Duration = TimeSpan.FromSeconds(item.Seconds) });
+                    _outputSlowest.Sort((a, b) => b.Duration.CompareTo(a.Duration));
+                    if (_outputSlowest.Count > SlowestKept) _outputSlowest.RemoveAt(SlowestKept);
+                }
+            }
+        }
+
+        /// <summary>Whether the Pace graph and the Slowest panel show the times of the work in the output box.</summary>
+        private bool OutputTimed { get { return _outputTitle != null && _outputDurations.Count > 0; } }
+
+        /// <summary>The times the Pace graph draws: those of the work in the output box while it has some, else the run's.</summary>
+        private List<double> PaceDurations { get { return OutputTimed ? _outputDurations : _durations; } }
+
+        /// <summary>The items the Slowest panel lists: the work's in the output box while it has some, else the run's tests.</summary>
+        private List<Slow> SlowestShown { get { return OutputTimed ? _outputSlowest : _slowest; } }
+
+        /// <summary>
+        /// The results of the work in the output box, when its progress counts them (such as the tests of an
+        /// assessment that runs in another process). While the box is open the Results panel, the result blocks
+        /// and the Slowest panel show the work's own in place of Maester's.
+        /// </summary>
+        private MtOutputGroup OutputResults { get { return _outputTitle != null && _outputProgress != null ? _outputProgress.Results : null; } }
+
+        /// <summary>The name of the work whose results are shown: the name of its results, else the title of the box.</summary>
+        private string OutputResultsName
+        {
+            get
+            {
+                var r = OutputResults;
+                return r != null && r.Name.Length > 0 ? r.Name : _outputTitle;
+            }
+        }
+
+        /// <summary>The lanes to show: the groups of the work in the output box while it has them, else the products of the run.</summary>
+        private List<Lane> Lanes { get { return _outputLanes ?? _lanes; } }
+
+        /// <summary>The title of the box of lanes: what the groups of the work are called, else Products.</summary>
+        private string LanesTitle
+        {
+            get
+            {
+                if (_outputLanes == null) return "Products";
+                return _outputProgress != null && _outputProgress.GroupLabel.Length > 0 ? _outputProgress.GroupLabel : "Groups";
+            }
+        }
+
+        private static List<Lane> OutputLanes(MtOutputProgress p)
+        {
+            if (p == null || p.Groups.Length == 0) return null;
+            var lanes = new List<Lane>();
+            foreach (var g in p.Groups)
+            {
+                lanes.Add(new Lane { Name = g.Name, Total = g.Total, Passed = g.Passed, Failed = g.Failed, Error = g.Error, Investigate = g.Investigate, Skipped = g.Skipped, Running = g.Running });
+            }
+            return lanes;
+        }
+
+        /// <summary>
+        /// Before the tests start, the boxes of the work in the output box over it: its groups where the products
+        /// are shown, and a block for each of its results, in the rows that <paramref name="rows"/> leaves over
+        /// the box's own.
+        /// </summary>
+        private List<Line> BuildOutputView(int boxWidth, int rows, bool ansi)
+        {
+            var view = new List<Line>();
+            var r = OutputResults;
+            if (_outputLanes == null && r == null) return view;
+            int inner = boxWidth - 4;
+            int spare = rows - OutputTestRows;
+            if (_outputLanes != null && spare >= 4)
+            {
+                var lanes = BuildLaneRows(inner, Math.Min(_outputLanes.Count, spare - 2), string.Empty, new List<Lane>(), ansi);
+                var box = new PanelContent { Title = LanesTitle, Badge = N(_outputLanes.Count), Colour = ProductsBorder, TitleColour = ProductsBorder, Lines = lanes };
+                view.AddRange(Indent(Box(box, boxWidth, ansi)));
+                spare -= lanes.Count + 2;
+            }
+            if (r != null && spare >= 3)
+            {
+                var blocks = BuildResultsChart(inner, spare - 2, string.Empty, ansi);
+                if (blocks.Count > 0) view.AddRange(Indent(Box(new PanelContent { Title = OutputResultsName, Badge = N(r.Done) + " of " + N(r.Total), Lines = blocks }, boxWidth, ansi)));
+            }
+            return view;
         }
 
         /// <summary>
@@ -469,6 +584,11 @@ namespace Maester.Engine
         public string[] Stages { get; set; }
         /// <summary>The items running and the ones that finished last, each with its status and time.</summary>
         public MtOutputItem[] Items { get; set; }
+        /// <summary>The results of the work so far, such as the tests of an assessment that passed and failed.</summary>
+        public MtOutputGroup Results { get; set; }
+        /// <summary>The results by group, such as the pillars of an assessment, and what the groups are called.</summary>
+        public MtOutputGroup[] Groups { get; set; }
+        public string GroupLabel { get; set; }
 
         private static string Text(string s)
         {
@@ -503,6 +623,15 @@ namespace Maester.Engine
                     items.Add(clean);
                 }
             }
+            var groups = new List<MtOutputGroup>();
+            if (Groups != null)
+            {
+                foreach (var g in Groups)
+                {
+                    var clean = g == null ? null : g.Clean();
+                    if (clean != null && clean.Name.Length > 0) groups.Add(clean);
+                }
+            }
             return new MtOutputProgress
             {
                 Stage = Text(Stage),
@@ -516,6 +645,9 @@ namespace Maester.Engine
                 Status = Text(Status),
                 Stages = stages.ToArray(),
                 Items = items.ToArray(),
+                Results = Results == null ? null : Results.Clean(),
+                Groups = groups.ToArray(),
+                GroupLabel = Text(GroupLabel),
             };
         }
     }
@@ -534,5 +666,44 @@ namespace Maester.Engine
         public double Seconds { get; set; } = -1;
 
         internal bool IsRunning { get { return string.Equals(Status, "Running", StringComparison.OrdinalIgnoreCase) || string.Equals(Status, "Waiting", StringComparison.OrdinalIgnoreCase); } }
+    }
+
+    /// <summary>
+    /// Results of the work in the output box, all of it or one group of it (such as a pillar of an assessment):
+    /// how many items it has and how many of them passed, failed and so on.
+    /// </summary>
+    public sealed class MtOutputGroup
+    {
+        /// <summary>The name of the group, or of the work.</summary>
+        public string Name { get; set; }
+        /// <summary>The items, finished or not. A total smaller than the items counted is raised to it.</summary>
+        public int Total { get; set; }
+        public int Passed { get; set; }
+        public int Failed { get; set; }
+        public int Error { get; set; }
+        public int Investigate { get; set; }
+        public int Skipped { get; set; }
+        /// <summary>The items running now.</summary>
+        public int Running { get; set; }
+
+        /// <summary>The items that have a result.</summary>
+        public int Done { get { return Passed + Failed + Error + Investigate + Skipped; } }
+
+        /// <summary>A copy made safe to draw: the name cleaned, no negative counts, a total that holds the counts.</summary>
+        public MtOutputGroup Clean()
+        {
+            var c = new MtOutputGroup
+            {
+                Name = MtConsoleRenderer.OutputText((Name ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim(),
+                Passed = Math.Max(0, Passed),
+                Failed = Math.Max(0, Failed),
+                Error = Math.Max(0, Error),
+                Investigate = Math.Max(0, Investigate),
+                Skipped = Math.Max(0, Skipped),
+                Running = Math.Max(0, Running),
+            };
+            c.Total = Math.Max(Math.Max(0, Total), c.Done);
+            return c;
+        }
     }
 }

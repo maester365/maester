@@ -90,6 +90,14 @@ its own progress page and from the progress logs it writes in its output folder:
   their `ZTA.` ID and title);
 - each export, database import or test that fails or times out, with its error. The box counts them.
 
+The rest of the dashboard follows the assessment while it runs:
+
+- the Results panel and the result blocks over the box count the assessment's results (passed, failed,
+  investigate, skipped) as its tests finish;
+- the assessment's pillars are listed where Maester's products usually are, each with a bar and its counts;
+- the Pace graph next to the logo draws how long each export and test took, and the Slowest panel lists the
+  slowest of them.
+
 Outside the dashboard the stage is written when it changes, each export and test as it finishes with its result
 and time, the counts at most every ten seconds, and each failure as it happens. This needs version 3.1 or later of the ZeroTrustAssessment module; with an earlier version the
 box shows the log only.
