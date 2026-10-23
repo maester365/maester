@@ -93,7 +93,7 @@
     Write-Verbose "Invoking REST method: $Method $($params['Uri'] -or $params['Path'])"
     Write-Verbose ($params | ConvertTo-Json -Depth 3)
     $result = Invoke-AzRest @params
-    if (-not $Graph -and $result.StatusCode -in 401, 403) {
+    if (-not $Graph -and $Method -eq 'GET' -and $result.StatusCode -in 401, 403) {
         Write-Verbose "Azure Resource Manager answered $($result.StatusCode) for $Method $RelativeUri; returning `$null."
         return $null
     }

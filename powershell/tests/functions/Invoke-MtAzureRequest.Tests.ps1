@@ -38,6 +38,23 @@ Describe 'Invoke-MtAzureRequest' -Tag 'Unit' {
         }
     }
 
+    Context 'Azure Resource Manager writes' {
+        It 'does not hide a denied <Method> behind a $null result' -ForEach @(
+            @{ Method = 'POST' }
+            @{ Method = 'PATCH' }
+            @{ Method = 'PUT' }
+            @{ Method = 'DELETE' }
+        ) {
+            Mock -ModuleName Maester Invoke-AzRest {
+                [pscustomobject]@{ StatusCode = 403; Content = '{"error":{"code":"AuthorizationFailed"}}' }
+            }
+
+            $result = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Method $Method
+
+            $result.error.code | Should -Be 'AuthorizationFailed'
+        }
+    }
+
     Context 'Microsoft Graph requests through Azure' {
         It 'still returns the error body for a 403 so the app commands can read it' {
             Mock -ModuleName Maester Get-AzContext { [pscustomobject]@{ Environment = [pscustomobject]@{ ExtendedProperties = @{ MicrosoftGraphUrl = 'https://graph.microsoft.com' } } } }
