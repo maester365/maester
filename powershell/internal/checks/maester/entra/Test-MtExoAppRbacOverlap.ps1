@@ -148,7 +148,13 @@ function Test-MtExoAppRbacOverlap {
     }
 
     if ($findings.Count -eq 0) {
-        Add-MtTestResultDetail -Result ("Well done. None of the **$(@($assignments.App | Select-Object -Unique).Count)** apps with Exchange RBAC for Applications assignments also hold the same or a broader permission tenant-wide in Microsoft Entra ID." + $restrictedResult)
+        $appCount = @($assignments.App | Select-Object -Unique).Count
+        if ($restrictedFindings.Count -gt 0) {
+            # Overlaps exist, but every one is limited by an Application Access Policy, so say so instead of reporting no overlap.
+            Add-MtTestResultDetail -Result ("None of the **$appCount** apps with Exchange RBAC for Applications assignments hold an unrestricted tenant-wide grant that undoes the Exchange scope. Some overlaps are limited by an Application Access Policy and need review." + $restrictedResult)
+        } else {
+            Add-MtTestResultDetail -Result "Well done. None of the **$appCount** apps with Exchange RBAC for Applications assignments also hold the same or a broader permission tenant-wide in Microsoft Entra ID."
+        }
         return $true
     }
 

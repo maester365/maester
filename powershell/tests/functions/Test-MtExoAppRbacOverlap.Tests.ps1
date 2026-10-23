@@ -197,6 +197,7 @@ Describe 'Test-MtExoAppRbacOverlap' {
         Test-MtExoAppRbacOverlap | Should -BeTrue
         $script:Result | Should -BeLike '*Application Access Policy limits that grant*'
         $script:Result | Should -BeLike '*| app-link | appid-1 | Mail.Read | Mail.Read | Sales mailboxes |*'
+        $script:Result | Should -Not -BeLike '*Well done*'
     }
 
     It 'Still fails when the policy cannot restrict the tenant-wide permission' {
