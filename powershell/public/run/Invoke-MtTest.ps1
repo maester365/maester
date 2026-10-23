@@ -82,8 +82,9 @@ function Invoke-MtTest {
     }
     if ($Id) {
         $pool = if ($Path) { @($tests) } else { @(Get-MtTestCatalog) }
-        # The tests of installed packs run by ID too.
-        if (-not $Path -and ($Id | Where-Object { 'MP.' -like $_ -or $_ -like 'MP.*' })) {
+        # The tests of packs run by ID too: MP.<Code>, or the code of a pack that ships with Maester.
+        $builtInCodes = @(Get-MtBuiltInPack | Where-Object { $_.Manifest -and $_.Manifest.Code } | ForEach-Object { [string]$_.Manifest.Code })
+        if (-not $Path -and ($Id | Where-Object { $i = $_; 'MP.' -like $i -or $i -like 'MP.*' -or ($builtInCodes | Where-Object { $_ -like $i -or $i -like "$_*" }) })) {
             $pool = @($pool) + @(Get-MtPackTestInventory -PackSet @(Initialize-MtPackSet) | Where-Object { -not $_.PackStatus })
         }
         $selected = @($pool | Where-Object {

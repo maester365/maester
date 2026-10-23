@@ -382,14 +382,33 @@ function Test-MtPackTestId {
     <#
     .SYNOPSIS
     True when a test ID belongs to a pack with this code: MP.<Code> itself (a family, whose instances add a
-    part) or MP.<Code>.<anything>.
+    part) or MP.<Code>.<anything>. A pack that ships with Maester is part of Maester, so its IDs drop the MP
+    prefix: <Code> or <Code>.<anything>, such as ZTA.21770.
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
         [Parameter(Mandatory)] [string] $Id,
-        [Parameter(Mandatory)] [string] $Code
+        [Parameter(Mandatory)] [string] $Code,
+        # The pack ships with Maester.
+        [Parameter()] [switch] $BuiltIn
     )
 
-    $Id.Equals("MP.$Code", [System.StringComparison]::OrdinalIgnoreCase) -or $Id.StartsWith("MP.$Code.", [System.StringComparison]::OrdinalIgnoreCase)
+    $prefix = if ($BuiltIn) { $Code } else { "MP.$Code" }
+    $Id.Equals($prefix, [System.StringComparison]::OrdinalIgnoreCase) -or $Id.StartsWith("$prefix.", [System.StringComparison]::OrdinalIgnoreCase)
+}
+
+function Get-MtPackTestIdPrefix {
+    <#
+    .SYNOPSIS
+    The prefix of a pack's test IDs: MP.<Code>, or <Code> for a pack that ships with Maester.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)] [string] $Code,
+        [Parameter()] [switch] $BuiltIn
+    )
+
+    if ($BuiltIn) { $Code } else { "MP.$Code" }
 }

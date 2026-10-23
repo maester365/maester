@@ -109,6 +109,28 @@ Describe 'Maester Pack manifest' {
             Test-MtPackTestId -Id 'MP.ZTA' -Code 'ZTA' | Should -BeTrue
             Test-MtPackTestId -Id 'MP.ZTA.21770' -Code 'ZTA' | Should -BeTrue
             Test-MtPackTestId -Id 'MP.ZTAX.1' -Code 'ZTA' | Should -BeFalse
+            # A pack that ships with Maester drops the MP prefix.
+            Test-MtPackTestId -Id 'ZTA' -Code 'ZTA' -BuiltIn | Should -BeTrue
+            Test-MtPackTestId -Id 'ZTA.21770' -Code 'ZTA' -BuiltIn | Should -BeTrue
+            Test-MtPackTestId -Id 'MP.ZTA.21770' -Code 'ZTA' -BuiltIn | Should -BeFalse
+            Test-MtPackTestId -Id 'ZTA.21770' -Code 'ZTA' | Should -BeFalse
+        }
+    }
+
+    It 'lets a pack that ships with Maester name its family by its bare code, and nothing else' {
+        $root = Join-Path $TestDrive 'builtin-zta'
+        $other = Join-Path $TestDrive 'custom-zta'
+        $null = New-Item -ItemType Directory -Path $root, $other -Force
+        $body = "function Test-ZTA {`n    [CmdletBinding()]`n    [MaesterTest(Id = 'ZTA', Title = 'Zero Trust', Service = 'Graph')]`n    param()`n    `$true`n}`n"
+        foreach ($dir in $root, $other) {
+            Set-Content -LiteralPath (Join-Path $dir 'Test.ZTA.ps1') -Value $body
+            Set-Content -LiteralPath (Join-Path $dir 'Test.ZTA.md') -Value 'Zero Trust'
+        }
+        InModuleScope Maester -Parameters @{ Root = $root; Other = $other } {
+            param($Root, $Other)
+            Mock Get-MtBuiltInPack { [pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Root = $Root; Manifest = [pscustomobject]@{ Code = 'ZTA' }; Errors = @() } }
+            (Read-MtNativeTest -Path (Join-Path $Root 'Test.ZTA.ps1')).Errors.Message | Should -Not -Match "value 'ZTA' is not valid"
+            (Read-MtNativeTest -Path (Join-Path $Other 'Test.ZTA.ps1')).Errors.Message | Should -Match "value 'ZTA' is not valid"
         }
     }
 
@@ -267,6 +289,36 @@ Describe 'Installing and loading a pack' {
         $null = Install-MtPack $script:fixture -NonInteractive 6>$null
         Set-Content -LiteralPath 'maester-config.json' -Value '{ "Packs": [ { "Id": "contoso.sample", "Enabled": false } ] }'
         (Get-MtPack contoso.sample).Status | Should -Be 'Disabled'
+    }
+
+    It 'runs only the packs named with -Pack, by ID or code, whatever the config says' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        Set-Content -LiteralPath 'maester-config.json' -Value '{ "Packs": [ { "Id": "contoso.sample", "Enabled": false } ] }'
+        $lock = (Resolve-Path 'maester-packs.lock.json').Path
+        foreach ($name in 'CNT', 'contoso.sample', 'contoso.*') {
+            $set = InModuleScope Maester -Parameters @{ Lock = $lock; Name = $name } { param($Lock, $Name) Resolve-MtPackSet -RunConfig (Resolve-MtRunConfig -Path . -WarningAction SilentlyContinue) -LockPath $Lock -Select $Name }
+            $row = $set | Where-Object Id -EQ 'contoso.sample'
+            $row.Status | Should -Be 'Ready' -Because "-Pack $name names it"
+            $row.Selected | Should -BeTrue
+        }
+        $set = InModuleScope Maester -Parameters @{ Lock = $lock } { param($Lock) Resolve-MtPackSet -LockPath $Lock -Select 'FAB' -WarningVariable warned -WarningAction SilentlyContinue; $script:packWarning = $warned }
+        ($set | Where-Object Id -EQ 'contoso.sample').ReasonCode | Should -Be 'NotSelected'
+        (InModuleScope Maester { $script:packWarning }) -join ' ' | Should -Match "-Pack 'FAB' matches no pack"
+    }
+
+    It 'runs the long-running tests of a pack named with -Pack' {
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'long') -Edit {
+            param($p)
+            $file = Join-Path $p 'tests/Test.MP.CNT.1002.ps1'
+            (Get-Content -LiteralPath $file -Raw).Replace("Severity = 'Info'", "Severity = 'Info',`n        LongRunning") | Set-Content -LiteralPath $file
+        }
+        $null = Install-MtPack $pack -NonInteractive 6>$null
+        # -SkipBuiltIn runs the custom tests under -Path, so give it one.
+        Set-Content -LiteralPath 'Test.CONTOSO.1.ps1' -Value "function Test-ContosoOne { [MaesterTest(Id = 'CONTOSO.1', Title = 'One', Severity = 'Info')] param() `$true }"
+        $rows = @(Invoke-Maester -SkipBuiltIn -Path . -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
+        ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'LongRunning'
+        $rows = @(Invoke-Maester -SkipBuiltIn -Path . -Pack CNT -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
+        ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'DryRun'
     }
 
     It 'removes the pack with Uninstall-MtPack' {

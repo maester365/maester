@@ -1075,14 +1075,6 @@
       "LastSeenFile": "tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1"
     },
     {
-      "LegacyId": "CIS.M365.8.2.4",
-      "CurrentId": "retired",
-      "Rule": "retired",
-      "FirstSeenCommit": "39b3d7dababf31a0a1e5ad4a60952dfa0519a387",
-      "LastSeenCommit": "31471d908ad58cc3b43e917ed05444f8308859bb",
-      "LastSeenFile": "tests/cis/Test-MtCisCommunicateWithSkypeUsers.Tests.ps1"
-    },
-    {
       "LegacyId": "CISA.MS.EXO.03.1",
       "CurrentId": "CISA.MS.EXO.3.1",
       "Rule": "title",

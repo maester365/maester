@@ -37,6 +37,7 @@ $__MtSession = @{
 	IncludeAffectedObjects  = $false              # Set by Invoke-Maester -IncludeAffectedObjects; gates per-test object capture
 	Console                = $null               # Get-MtConsoleMode result for the current Invoke-Maester run
 	PackConnections        = @{}                 # Maester Packs: service -> connection state a pack connector set with Set-MtConnectionState
+	ReportAttachments      = $null               # Add-MtReportAttachment: reports of other tools embedded in the HTML report
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

@@ -124,6 +124,8 @@
         }
         $finished = {
             param($result)
+            # The box of what the test wrote with Write-MtTestOutput closes with it.
+            if ($script:__MtTestOutput) { Write-MtTestOutput -Complete }
             $foreignWarning = $null
             $foreign = Remove-MtForeignModule -WarningAction SilentlyContinue -WarningVariable foreignWarning
             if ($foreignWarning) {
@@ -303,6 +305,8 @@ function Expand-MtTestFamily {
     $sourceItem.Lane = 'Main'
     if ($PlanRow.TimeoutSeconds -gt 0) { $sourceItem.TimeoutSeconds = $PlanRow.TimeoutSeconds }
     $source = @(Invoke-MtEngineRun -WorkItem $sourceItem -Module $ExecutionContext.SessionState.Module) | Select-Object -First 1
+    # The box of what the source wrote with Write-MtTestOutput closes with it.
+    Write-MtTestOutput -Complete
     $empty = @{ Instances = @(); PlanRows = @{} }
     switch ([string]$source.Status) {
         'Completed' { $instances = @($source.Output | Where-Object { $null -ne $_ }) }

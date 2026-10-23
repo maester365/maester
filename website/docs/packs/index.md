@@ -93,6 +93,27 @@ To turn a pack off without uninstalling it:
 }
 ```
 
+### Choosing which packs run
+
+`-Pack` runs only the packs you name, by pack ID or code, with `*` wildcards:
+
+```powershell
+Invoke-Maester -Pack ZTA                 # Maester's tests and the Zero Trust Assessment pack
+Invoke-Maester -Pack ZTA -SkipBuiltIn    # the Zero Trust Assessment pack only
+Invoke-Maester -Pack CNT, maester.*      # two codes or IDs
+```
+
+A pack you name runs even if it is off by default or turned off in the config, and its long-running and
+preview tests run without `-IncludeLongRunning` or `-IncludePreview`. Packs you do not name don't run in that
+run. The other tests are not affected: select them with `-TestId`, `-Suite` or the other selectors as usual, or
+leave them out with `-SkipBuiltIn`. The config equivalent is `Selection.Pack`:
+
+```json
+{
+  "Selection": { "Pack": [ "ZTA" ] }
+}
+```
+
 ## Connecting to a pack's service
 
 A pack with a connector adds a service, such as `CNT.GoogleWorkspace`. Tests that need it are skipped while it
@@ -121,7 +142,8 @@ part of `-Service All`. `Disconnect-Maester` disconnects them too.
 Packs that ship with Maester are part of the module, in its `packs` folder. They are trusted as the module is:
 they need no lock entry and no approval. Each one says whether it is on by default; turn one on or off with its
 `Packs` entry in the config. If a pack that ships with Maester uses PowerShell Gallery modules, run
-`Install-MtPack <id>` once to save them and pin their digests.
+`Install-MtPack <id>` once to save them and pin their digests. Their test IDs have no `MP.` prefix: the Zero
+Trust Assessment pack's tests are `ZTA.<n>`.
 
 ## Writing a pack
 

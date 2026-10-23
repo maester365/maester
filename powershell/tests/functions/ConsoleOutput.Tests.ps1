@@ -1005,3 +1005,111 @@ Describe 'Dashboard panels' {
         $renderer.Close()
     }
 }
+
+Describe 'Output box' {
+    BeforeAll {
+        function New-OutputRenderer {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Unicode = $true; $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
+            $renderer.StartPhase('Run tests')
+            $renderer
+        }
+    }
+
+    It 'Shows the newest lines under the phases before the tests start, wrapped, with progress pinned at the bottom' {
+        $renderer = New-OutputRenderer
+        $renderer.StartOutput('Zero Trust Assessment')
+        foreach ($n in 1..60) { $renderer.WriteOutput("line $n") }
+        $renderer.WriteOutput(('word ' * 40).Trim())
+        $renderer.WriteOutput('Completed: 1 / 5', $true)
+        $renderer.WriteOutput('Completed: 2 / 5', $true)
+        $screen = $renderer.GetPlainScreen(100, 40)
+        $top = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Zero Trust Assessment ' })
+        $top | Should -BeGreaterThan 0
+        $screen[$top] | Should -Match '61 lines ─╮$'
+        $screen[-1] | Should -Match '^ ╰─+╯$'
+        $screen[-2] | Should -Match '^ │ . Completed: 2 / 5 +│$'
+        $screen[-3] | Should -Match '^ ├╌ Progress ╌+┤$'
+        ($screen -join "`n") | Should -Not -Match 'Completed: 1 / 5'
+        # The long line wraps at a space, and the oldest lines have scrolled out.
+        $screen[-5] | Should -Match '^ │ word( word)+ +│$'
+        $screen[-6] | Should -Match '^ │ word( word)+ +│$'
+        $screen[-7] | Should -Match '^ │ line 60 +│$'
+        ($screen -join "`n") | Should -Not -Match 'line 1 '
+        @($screen | ForEach-Object { $_.Length } | Sort-Object -Unique) | Should -Not -Contain 101
+    }
+
+    It 'Sits between the result blocks and the running tests while tests run, and goes when it is stopped' {
+        $renderer = New-OutputRenderer
+        $renderer.Start(2, [string[]]@('Entra'), [int[]]@(2), [string[]]@($null))
+        $renderer.ItemStarting('MT.1', 'A long test', 'Entra')
+        $renderer.WriteOutput('from the tool')
+        $screen = $renderer.GetPlainScreen(100, 40)
+        $box = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Output ' })
+        $running = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Running ' })
+        $box | Should -BeGreaterThan 0
+        $running | Should -Be ($box + 10)
+        $screen[$box + 1] | Should -Match '│ from the tool +│'
+        $renderer.HasOutput | Should -BeTrue
+        $renderer.StopOutput()
+        $renderer.HasOutput | Should -BeFalse
+        ($renderer.GetPlainScreen(100, 40) -join "`n") | Should -Not -Match 'from the tool'
+    }
+
+    It 'Removes escape sequences, control characters and emoji from what other programs write' {
+        [Maester.Engine.MtConsoleRenderer]::OutputText("$([char]27)[32m🚀 Started$([char]27)[0m") | Should -Be 'Started'
+        [Maester.Engine.MtConsoleRenderer]::OutputText("`tindented$([char]7) ✅ done") | Should -Be '    indented done'
+        [Maester.Engine.MtConsoleRenderer]::OutputText("a$([char]0x202E)b") | Should -Be 'ab'
+    }
+}
+
+Describe 'Write-MtTestOutput' {
+    AfterEach {
+        InModuleScope Maester { $script:__MtConsoleRenderer = $null; $script:__MtTestOutput = $null }
+    }
+
+    It 'Hands the lines to the dashboard while it owns the screen, and closes the box with -Complete' {
+        $result = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            $written = @("first`nsecond", [System.Management.Automation.ErrorRecord]::new([System.Exception]::new('from stderr'), 'E', 'NotSpecified', $null) |
+                    Write-MtTestOutput -Title 'The tool' 6>&1)
+            $screen = $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+            [pscustomobject]@{ Written = $written.Count; Screen = $screen; Open = $renderer.HasOutput }
+        }
+        $result.Written | Should -Be 0
+        $result.Screen | Should -Match '╭─ The tool .*3 lines'
+        $result.Screen | Should -Match '│ first '
+        $result.Screen | Should -Match '│ second '
+        $result.Screen | Should -Match '│ from stderr '
+        $result.Open | Should -BeFalse
+    }
+
+    It 'Writes the lines to the host, indented, without the dashboard, and progress at most every ten seconds' {
+        # In CI, so that a line from the tool cannot issue a workflow command.
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                $streamed = @(
+                    Write-MtTestOutput -Title 'The tool' -InputObject "one$([char]27)[31m" 6>&1
+                    Write-MtTestOutput 'Completed: 1 / 5' -Progress 6>&1
+                    Write-MtTestOutput 'Completed: 2 / 5' -Progress 6>&1
+                    Write-MtTestOutput '::error::not a command' 6>&1
+                )
+                # Nothing goes to a stream, which the engine would hold until the test has finished.
+                if ($streamed.Count -gt 0) { throw "Wrote $($streamed.Count) records to a stream." }
+                $script:hostLines
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('  The tool', '    one', '    Completed: 1 / 5', '    : :error::not a command')
+    }
+}

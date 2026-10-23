@@ -7,7 +7,8 @@ function Get-MtPackTestInventory {
     A Ready pack's suites are read statically, like custom tests (Get-MtNativeTestInventory). Every row then
     gets what keeps a pack from passing as a built-in check: Source is Custom whatever its suite.json says,
     PackId names the pack, and Package carries Id, Version, Commit, Publisher, BuiltIn and Runtime (Script),
-    the reserved row field of the 3.0 result schema.
+    the reserved row field of the 3.0 result schema. PackSelected is true for a pack named with -Pack, whose
+    preview and long-running tests the plan runs as if their IDs were named.
 
     A pack that is not Ready gives one row per test ID it is known to provide (the lock file's Tests, or a
     static read of a built-in pack), with PackStatus set so the plan reports it without running anything:
@@ -56,10 +57,10 @@ function Get-MtPackTestInventory {
             continue
         }
         foreach ($test in $tests) {
-            $test | Add-Member -NotePropertyMembers ([ordered]@{ Source = 'Custom'; PackId = $pack.Id; Package = $package; PackStatus = $null }) -Force
+            $test | Add-Member -NotePropertyMembers ([ordered]@{ Source = 'Custom'; PackId = $pack.Id; Package = $package; PackStatus = $null; PackSelected = [bool]$pack.Selected }) -Force
             # Defence in depth for a pack that never went through Install-MtPack (one that ships with Maester).
-            if ($test.Id -and $pack.Manifest.Code -and -not (Test-MtPackTestId -Id $test.Id -Code $pack.Manifest.Code)) {
-                $test.Errors.Add([pscustomobject]@{ Code = 'InvalidMetadata'; Message = "A test in the pack $($pack.Id) must have an ID that starts with MP.$($pack.Manifest.Code)."; Line = $test.Line })
+            if ($test.Id -and $pack.Manifest.Code -and -not (Test-MtPackTestId -Id $test.Id -Code $pack.Manifest.Code -BuiltIn:([bool]$pack.BuiltIn))) {
+                $test.Errors.Add([pscustomobject]@{ Code = 'InvalidMetadata'; Message = "A test in the pack $($pack.Id) must have an ID that starts with $(Get-MtPackTestIdPrefix -Code $pack.Manifest.Code -BuiltIn:([bool]$pack.BuiltIn))."; Line = $test.Line })
             }
             $test
         }

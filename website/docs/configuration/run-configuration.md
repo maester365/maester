@@ -89,6 +89,7 @@ Keys Maester does not know are kept and passed through, so they do no harm. The 
     "Area": [],
     "Severity": [],
     "Suite": [],
+    "Pack": [],
     "Tag": [],
     "ExcludeTag": [],
     "TestId": [],
@@ -153,6 +154,7 @@ Which tests run. Every key has a command-line equivalent.
 | `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
 | `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
 | `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `AD`. |
+| `Pack` | array | `[]` | Run only these [Maester Packs](../packs/index.md#choosing-which-packs-run), by pack ID or code (like `-Pack`). A pack named here runs even if it is off, with its long-running and preview tests. Other packs do not run. |
 | `Tag` | array | `[]` | Run only tests that any of these tags selects (like `-Tag`). |
 | `ExcludeTag` | array | `[]` | Do not run tests that any of these tags selects (like `-ExcludeTag`). |
 | `TestId` | array | `[]` | Run only these IDs (like `-TestId`). |

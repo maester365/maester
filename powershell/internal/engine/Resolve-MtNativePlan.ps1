@@ -140,6 +140,10 @@ function Resolve-MtNativePlan {
             if ($t.PSObject.Properties['PackId'] -and $t.PackId -and ($Selection.Suite | Where-Object { -not $_.Contains('*') -and $_ -eq $t.Suite })) { $row.ExactlyNamed = $true }
         }
 
+        # A pack named with -Pack (or Selection.Pack) runs whole, as an exact ID does: its preview and
+        # long-running tests run too.
+        if ($t.PSObject.Properties['PackSelected'] -and $t.PackSelected) { $row.ExactlyNamed = $true }
+
         # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its
         # Maester 2.x tags (section 5.1). A pattern that only a 2.x tag answers is noted for the warning below.
         $tags = if ($IncludeTag.Count -gt 0 -or $userExcludeTag.Count -gt 0) { Get-MtSelectionTag -Test $t } else { $null }
