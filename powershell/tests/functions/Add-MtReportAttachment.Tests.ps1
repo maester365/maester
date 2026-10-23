@@ -60,14 +60,14 @@ Describe 'Add-MtReportAttachment' {
     }
 
     It 'Records the native test that added it' {
-        $previous = [Maester.Engine.MtSession]::EnterTest('MP.ZTA')
+        $previous = [Maester.Engine.MtSession]::EnterTest('ZTA')
         try {
             Add-MtReportAttachment -Name 'Report' -Content '<html></html>'
         } finally {
             [Maester.Engine.MtSession]::ExitTest($previous)
         }
 
-        InModuleScope Maester { @($__MtSession.ReportAttachments)[0].TestId } | Should -Be 'MP.ZTA'
+        InModuleScope Maester { @($__MtSession.ReportAttachments)[0].TestId } | Should -Be 'ZTA'
     }
 
     It 'Is cleared at the start of each run' {

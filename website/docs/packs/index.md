@@ -142,7 +142,8 @@ part of `-Service All`. `Disconnect-Maester` disconnects them too.
 Packs that ship with Maester are part of the module, in its `packs` folder. They are trusted as the module is:
 they need no lock entry and no approval. Each one says whether it is on by default; turn one on or off with its
 `Packs` entry in the config. If a pack that ships with Maester uses PowerShell Gallery modules, run
-`Install-MtPack <id>` once to save them and pin their digests.
+`Install-MtPack <id>` once to save them and pin their digests. Their test IDs have no `MP.` prefix: the Zero
+Trust Assessment pack's tests are `ZTA.<n>`.
 
 ## Writing a pack
 

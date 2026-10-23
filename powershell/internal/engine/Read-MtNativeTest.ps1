@@ -163,7 +163,7 @@ function Read-MtNativeTest {
         if ($definition.Type -eq 'bool') { continue }
 
         foreach ($v in @($test[$name])) {
-            if ($definition.Pattern -and $v -notmatch $definition.Pattern) {
+            if ($definition.Pattern -and $v -notmatch $definition.Pattern -and -not ($name -eq 'Id' -and (Test-MtBuiltInPackCode -Code $v -Path $file))) {
                 & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid." $line
             }
             if ($definition.MaxLength -and $v.Length -gt $definition.MaxLength) {

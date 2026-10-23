@@ -8,16 +8,16 @@
 ## 1. Summary
 
 Maester ships an official pack, `maester.zero-trust-assessment`, that runs Microsoft's Zero Trust Assessment
-(ZTA) and shows each of its results as a Maester result row, `MP.ZTA.<ZTA test ID>`. It lives in
+(ZTA) and shows each of its results as a Maester result row, `ZTA.<ZTA test ID>`. It lives in
 `packs/zero-trust-assessment/`. It does not copy ZTA's code: it runs the `ZeroTrustAssessment` module the user
 installs, or reads a report ZTA already wrote.
 
-- **One family test.** The pack is a single 3.0 native test, `MP.ZTA`, whose instance source gets ZTA's
+- **One family test.** The pack is a single 3.0 native test, `ZTA`, whose instance source gets ZTA's
   report and returns one instance per result. Families already exist in 3.0, so the pack runs on today's engine
   as a custom test (`Invoke-MtTest -Path packs/zero-trust-assessment/tests`) and needs nothing from the pack
   loader beyond loading its one file.
 - **Opt-in through `LongRunning`.** The family is `LongRunning`, so `Invoke-Maester` leaves it out unless the
-  run names `MP.ZTA`, sets `-IncludeLongRunning`, or turns either on in config. Its timeout is
+  run names `ZTA`, sets `-IncludeLongRunning`, or turns either on in config. Its timeout is
   `Execution.LongRunningTimeoutSeconds`.
 - **Import or collect.** With `GlobalSettings."ZeroTrustAssessment.ReportPath"` set, the pack reads that report
   (the recommendation for CI). Without it, the pack runs ZTA in a child `pwsh` process and reads the report it
@@ -50,7 +50,7 @@ Online and Az modules, which it downloads into its own cache and loads in a fixe
 | Option | What it means | Verdict |
 | --- | --- | --- |
 | Port the tests to Maester | Rewrite 336 tests against `Invoke-MtGraphRequest` | No: they query ZTA's database, and two copies would drift |
-| One Maester test per ZTA test, calling ZTA in-process | Generated `Test.MP.ZTA.<id>.ps1` files that call ZTA's private test functions | No: needs ZTA's private functions and database, and ZTA's pinned modules cannot share a process with Maester's |
+| One Maester test per ZTA test, calling ZTA in-process | Generated `Test.ZTA.<id>.ps1` files that call ZTA's private test functions | No: needs ZTA's private functions and database, and ZTA's pinned modules cannot share a process with Maester's |
 | **Run ZTA, map its report** | Run `Invoke-ZtAssessment` (or read its output) and turn each report row into a Maester row | **Chosen**: uses only ZTA's public commands and its report, which is versioned data |
 
 Within the chosen option, the report is mapped by a family test rather than 336 generated test files. A
@@ -96,7 +96,7 @@ own scopes. It also means an interactive user signs in twice; CI should use Impo
 
 | ZTA | Maester |
 | --- | --- |
-| `TestId` | Instance suffix: `MP.ZTA.<TestId>`. A repeated ID (the Defender for Cloud rows) gets `.<first 10 hex of SHA-256 of the title>`; exact repeats get `.2`, `.3` |
+| `TestId` | Instance suffix: `ZTA.<TestId>`. A repeated ID (the Defender for Cloud rows) gets `.<first 10 hex of SHA-256 of the title>`; exact repeats get `.2`, `.3` |
 | `TestTitle` | Instance `Title` |
 | `TestRisk` High, Medium, Low | Instance `Severity`; `Unranked` leaves it to config |
 | `TestPillar` | Tags `ZeroTrust` and `ZeroTrust.<pillar>` |

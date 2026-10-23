@@ -19,7 +19,7 @@ function New-MtPack {
     is the GitHub user or organisation that will own the pack's repository.
 
     .PARAMETER Code
-    The pack's code, which starts every test ID of the pack: ZTA for MP.ZTA.1001. Two to ten letters or
+    The pack's code, which starts every test ID of the pack: CONTOSO for MP.CONTOSO.1001. Two to ten letters or
     digits, starting with a letter. A publisher with several packs can group them with up to three parts
     separated by dots, such as CNT.GWS for MP.CNT.GWS.1001. No two installed packs may share a code, or have
     one code that starts with the other.

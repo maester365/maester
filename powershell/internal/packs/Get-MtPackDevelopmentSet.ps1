@@ -27,7 +27,8 @@ function Get-MtPackDevelopmentSet {
     }
     if (-not $root) { return $null }
 
-    $read = Read-MtPackManifest -Path $root -Official:([bool](Get-MtBuiltInPack | Where-Object { $_.Root -eq $root }))
+    $builtIn = [bool](Get-MtBuiltInPack | Where-Object { $_.Root -eq $root })
+    $read = Read-MtPackManifest -Path $root -Official:$builtIn
     if ($read.Errors.Count -gt 0) { throw "The pack in '$root' has a problem: $(@($read.Errors | ForEach-Object { $_.Message }) -join ' ') Run Test-MtPack for the full list." }
     $m = $read.Manifest
     $modules = foreach ($d in @($m.Uses.Modules)) {
@@ -37,7 +38,7 @@ function Get-MtPackDevelopmentSet {
         [pscustomobject]@{ Name = [string]$d.Name; Version = [string]$d.Version; Source = 'External'; Path = $found }
     }
     $pack = [pscustomobject][ordered]@{
-        Id = [string]$m.Id; Version = [string]$m.Version; BuiltIn = $false; Root = $root; Manifest = $m; Entry = $null; Modules = @($modules)
+        Id = [string]$m.Id; Version = [string]$m.Version; BuiltIn = $builtIn; Root = $root; Manifest = $m; Entry = $null; Modules = @($modules)
         Status = 'Ready'; ReasonCode = $null; Reason = $null; TestIds = @()
     }
 
