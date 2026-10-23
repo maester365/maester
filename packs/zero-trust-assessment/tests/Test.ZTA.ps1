@@ -170,6 +170,11 @@ function Invoke-MtZtaCollection {
     assessment runs with -ShowLog (the ZeroTrustAssessment.ShowLog setting, on by default), so the box shows
     the tests it runs, and its progress bars become one line at the bottom of the box that updates in place.
 
+    The child also reports where the assessment is, read from the progress the module keeps for its own
+    progress page and from the progress logs it writes: the stage, the exports or tests done of how many,
+    the ones running, and each one that fails. It writes these as ##maester[progress] and ##maester[error]
+    lines, which Write-MtTestOutput shows at the top of the box (see Write-MtTestProgress).
+
     The child signs in to the tenant Maester is connected to. When Maester is connected to Graph app-only with a
     certificate, the child uses the same app and certificate; otherwise it signs in interactively. The
     ZeroTrustAssessment.Connect setting passes any other Connect-ZtAssessment parameters.
@@ -262,10 +267,93 @@ function global:Write-Progress {
 }
 $request = Get-Content -LiteralPath $RequestPath -Raw | ConvertFrom-Json -AsHashtable
 Import-Module -Name $request.ModulePath
-$connect = $request.Connect
-Connect-ZtAssessment @connect
-$assessment = $request.Assessment
-Invoke-ZtAssessment @assessment
+# The assessment keeps where it is (its stage, the items done, the exports or tests running) in a dictionary
+# that its own progress page reads, and writes a line to a progress log for each item that starts, ends or
+# fails. A second runspace reads both every second and reports them to Maester as ##maester lines, which
+# Maester shows at the top of its output box. Another version of the module that keeps neither reports nothing.
+$progressState = $null
+try { $progressState = Get-PSFDynamicContentObject -Name 'ZtAssessment.ProgressState' -ErrorAction Stop } catch { $progressState = $null }
+$reporter = [powershell]::Create()
+$null = $reporter.AddScript({
+    param($State, [string] $OutputPath)
+    $last = $null
+    $offsets = @{}
+    $kinds = [ordered]@{ '1-export_progress.log' = 'Export'; '2-database_progress.log' = 'Import'; '3-test_progress.log' = 'Test' }
+    while ($true) {
+        try {
+            $value = if ($State) { $State.Value } else { $null }
+            if ($value -and $value.ContainsKey('_stage')) {
+                $running = foreach ($key in @($value.Keys)) {
+                    $worker = $null
+                    if ($key -like 'worker_*' -and $value.TryGetValue($key, [ref]$worker) -and $worker -and [string]$worker.Status -eq 'Running') { $worker }
+                }
+                $running = @($running | Sort-Object -Property { [string]$_.StartedAt })
+                $latest = $running | Sort-Object -Property { [string]$_.UpdatedAt } | Select-Object -Last 1
+                $snapshot = [ordered]@{
+                    stage       = [string]$value['_stageName']
+                    stageNumber = [int]$value['_stageNumber']
+                    stageCount  = [int]$value['_totalStages']
+                    completed   = [int]$value['_completedItems']
+                    total       = [int]$value['_totalItems']
+                    failed      = [int]$value['_failedItems']
+                    running     = [int]$value['_inProgressItems']
+                    current     = @($running | Select-Object -First 6 | ForEach-Object { if ($_.Name) { [string]$_.Name } else { [string]$_.Id } })
+                    status      = if ($latest -and $latest.Detail) { "$($latest.Name): $($latest.Detail)" } else { '' }
+                }
+                if ([string]$value['_stage'] -eq 'done') { $snapshot.current = @(); $snapshot.status = '' }
+                $json = $snapshot | ConvertTo-Json -Compress
+                if ($json -ne $last) {
+                    $last = $json
+                    [Console]::Out.WriteLine('##maester[progress] ' + $json)
+                }
+            }
+            # The newest folder of logs is this run's. Each error line in its progress logs is reported once.
+            $logs = Get-ChildItem -LiteralPath (Join-Path $OutputPath 'zt-export' -AdditionalChildPath 'logs') -Directory -ErrorAction SilentlyContinue |
+                Sort-Object -Property Name | Select-Object -Last 1
+            if ($logs) {
+                foreach ($file in $kinds.Keys) {
+                    $path = Join-Path $logs.FullName $file
+                    if (-not [System.IO.File]::Exists($path)) { continue }
+                    $stream = [System.IO.FileStream]::new($path, 'Open', 'Read', 'ReadWrite, Delete')
+                    try {
+                        $at = [long]$offsets[$path]
+                        if ($stream.Length -le $at) { continue }
+                        $null = $stream.Seek($at, 'Begin')
+                        $bytes = [byte[]]::new($stream.Length - $at)
+                        $read = $stream.Read($bytes, 0, $bytes.Length)
+                        $text = [System.Text.Encoding]::UTF8.GetString($bytes, 0, $read)
+                        # Only whole lines: the rest is read again when it has ended.
+                        $end = $text.LastIndexOf("`n")
+                        if ($end -lt 0) { continue }
+                        $offsets[$path] = $at + [System.Text.Encoding]::UTF8.GetByteCount($text.Substring(0, $end + 1))
+                        foreach ($line in $text.Substring(0, $end).Split("`n")) {
+                            if ($line -match '^\S+ \S+\s+(FAILED|ERROR|TIMEDOUT)\s+(\S+)(?:\s+\d\d:\d\d:\d\d\.\d+)?\s*(.*)$') {
+                                $what = switch ($Matches[1]) { 'TIMEDOUT' { 'timed out' } default { 'failed' } }
+                                $why = $Matches[3].Trim()
+                                $message = "$($kinds[$file]) $($Matches[2]) $what" + $(if ($why) { ": $why" } else { '' })
+                                [Console]::Out.WriteLine('##maester[error] ' + $message)
+                            }
+                        }
+                    } finally { $stream.Dispose() }
+                }
+            }
+        } catch {
+            # Reporting progress must never stop the assessment.
+            $null = $_
+        }
+        Start-Sleep -Milliseconds 1000
+    }
+}).AddArgument($progressState).AddArgument([string]$request.Assessment.Path)
+$reporting = $reporter.BeginInvoke()
+try {
+    $connect = $request.Connect
+    Connect-ZtAssessment @connect
+    $assessment = $request.Assessment
+    Invoke-ZtAssessment @assessment
+} finally {
+    $reporter.Stop()
+    $reporter.Dispose()
+}
 '@
     $scriptPath = Join-Path ([System.IO.Path]::GetTempPath()) ("maester-zta-run-{0}.ps1" -f [guid]::NewGuid().ToString('n'))
     Set-Content -LiteralPath $scriptPath -Value $script -Encoding utf8
@@ -286,7 +374,7 @@ Invoke-ZtAssessment @assessment
         $progress = $Line.StartsWith($progressMarker)
         if ($progress) {
             $Line = $Line.Substring($progressMarker.Length)
-        } elseif ($Line.Trim()) {
+        } elseif ($Line.Trim() -and -not $Line.StartsWith('##maester[progress]')) {
             $tail.Enqueue([Maester.Engine.MtConsoleRenderer]::OutputText($Line))
             if ($tail.Count -gt 15) { $null = $tail.Dequeue() }
         }

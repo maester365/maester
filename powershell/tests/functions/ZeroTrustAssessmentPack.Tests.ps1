@@ -158,14 +158,31 @@ Describe 'Zero Trust Assessment pack' {
             $script:FakeModules = Join-Path $TestDrive 'modules'
             $moduleFolder = New-Item -ItemType Directory -Path (Join-Path -Path $script:FakeModules -ChildPath 'ZeroTrustAssessment' -AdditionalChildPath '9.9.9') -Force
             $script:CallLog = Join-Path $TestDrive 'calls.json'
-            Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psd1') -Value "@{ RootModule = 'ZeroTrustAssessment.psm1'; ModuleVersion = '9.9.9'; FunctionsToExport = 'Connect-ZtAssessment', 'Invoke-ZtAssessment' }"
+            Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psd1') -Value "@{ RootModule = 'ZeroTrustAssessment.psm1'; ModuleVersion = '9.9.9'; FunctionsToExport = 'Connect-ZtAssessment', 'Invoke-ZtAssessment', 'Get-PSFDynamicContentObject' }"
             Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psm1') -Value @"
+# The dictionary the real module keeps its progress in, which PSFramework hands out by name.
+`$script:State = [pscustomobject]@{ Value = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new() }
+function Get-PSFDynamicContentObject { [CmdletBinding()] param([string] `$Name) if (`$Name -eq 'ZtAssessment.ProgressState') { `$script:State } }
 function Connect-ZtAssessment { param([string] `$TenantId, [string] `$ClientId, `$Certificate, [string[]] `$Service) `$script:Connect = `$PSBoundParameters }
 function Invoke-ZtAssessment {
     param([string] `$Path, [string] `$Pillar, [switch] `$NoBrowser, [switch] `$DisableTelemetry, [switch] `$ShowLog, [int] `$Days, [string[]] `$Tests, [string] `$ConfigurationFile)
     Write-Host "Running test 21828"
     Write-Progress -Activity 'Processing 1 Tests' -Status 'Completed: 1 / 1' -PercentComplete 100
     [Console]::Error.WriteLine('a line on stderr')
+    if (`$env:MT_ZTA_FAKE_PROGRESS) {
+        `$v = `$script:State.Value
+        `$v['_stage'] = 'export'; `$v['_stageNumber'] = 1; `$v['_stageName'] = 'Exporting Tenant Data'; `$v['_totalStages'] = 6
+        `$v['_totalItems'] = 40; `$v['_completedItems'] = 12; `$v['_failedItems'] = 1; `$v['_inProgressItems'] = 2
+        `$v['worker_User'] = [pscustomobject]@{ Id = 'User'; Name = 'User'; Status = 'Running'; Detail = 'Page 3'; StartedAt = '1'; UpdatedAt = '2' }
+        `$v['worker_Group'] = [pscustomobject]@{ Id = 'Group'; Name = 'Group'; Status = 'Running'; Detail = ''; StartedAt = '2'; UpdatedAt = '1' }
+        `$v['worker_Device'] = [pscustomobject]@{ Id = 'Device'; Name = 'Device'; Status = 'Failed'; Detail = ''; StartedAt = '0'; UpdatedAt = '0' }
+        `$logs = New-Item -ItemType Directory -Path (Join-Path `$Path 'zt-export' -AdditionalChildPath 'logs', '26-10-23-101500') -Force
+        Set-Content -LiteralPath (Join-Path `$logs '1-export_progress.log') -Value @(
+            '2026-10-23 10:15:01.000  STARTED     Device'
+            '2026-10-23 10:15:02.000  FAILED      Device  00:00:01.000  Forbidden'
+        )
+        Start-Sleep -Milliseconds 2500
+    }
     `$export = New-Item -ItemType Directory -Path (Join-Path `$Path 'zt-export') -Force
     Copy-Item -LiteralPath '$(Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json')' -Destination `$export
     Set-Content -LiteralPath (Join-Path `$Path 'ZeroTrustAssessmentReport.html') -Value '<html>zta</html>'
@@ -215,6 +232,21 @@ function Invoke-ZtAssessment {
             $shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
             $shown | Should -Contain '    a line on stderr'
             @($shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
+        }
+
+        It 'shows the stage, the counts, the items running and the failures the assessment reports' {
+            $script:Shown = [System.Collections.Generic.List[object]]::new()
+            Mock -ModuleName Maester Write-MtHostLine { $script:Shown.Add($Text) }
+            $env:MT_ZTA_FAKE_PROGRESS = '1'
+            try {
+                $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = ''; 'ZeroTrustAssessment.OutputPath' = (Join-Path $TestDrive 'zt-progress') }
+            } finally { $env:MT_ZTA_FAKE_PROGRESS = $null }
+            $rows.Count | Should -Be 12
+            $shown = @($script:Shown -replace "`e\[[0-9;]*m", '')
+            $shown | Should -Contain '    Stage 1 of 6 · Exporting Tenant Data'
+            $shown | Should -Contain '    12 / 40 · 1 failed · 2 running'
+            $shown | Should -Contain '    Error: Export Device failed: Forbidden'
+            @($shown | Where-Object { $_ -match '##maester' }) | Should -BeNullOrEmpty
         }
 
         It 'signs the child in with the app and certificate Maester uses' {

@@ -78,6 +78,18 @@ output, `-Verbosity Normal`) it is written to the console, indented. The assessm
 the tests it runs, and its progress bars become one line at the bottom of the box that updates in place. Set
 `ZeroTrustAssessment.ShowLog` to `false` for its shorter output.
 
+The top of the box shows where the assessment is, read once a second from the progress the assessment keeps for
+its own progress page and from the progress logs it writes in its output folder:
+
+- the stage, such as "Stage 1 of 6 · Exporting Tenant Data", then "Running Tests" and the report stages;
+- a bar of the exports or tests done of how many, with how many failed and how many are running;
+- the exports or tests running now, and what the newest one is doing;
+- each export, database import or test that fails or times out, with its error. The box counts them.
+
+Outside the dashboard the stage is written when it changes, the counts at most every ten seconds, and each failure
+as it happens. This needs version 3.1 or later of the ZeroTrustAssessment module; with an earlier version the
+box shows the log only.
+
 The assessment's own report and raw export go to a temporary folder that Maester deletes after reading it, because
 the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
 

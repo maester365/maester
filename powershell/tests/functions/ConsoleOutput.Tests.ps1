@@ -1113,3 +1113,72 @@ Describe 'Write-MtTestOutput' {
         $lines | Should -Be @('  The tool', '    one', '    Completed: 1 / 5', '    : :error::not a command')
     }
 }
+
+Describe 'Write-MtTestProgress' {
+    AfterEach {
+        InModuleScope Maester { $script:__MtConsoleRenderer = $null; $script:__MtTestOutput = $null }
+    }
+
+    It 'Shows the stage, a bar of the items done, the items running and the errors at the top of the box' {
+        $screen = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The tool' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stage 'Exporting data' -StageNumber 1 -StageCount 3 -Completed 12 -Total 40 -Failed 1 -Running 2 -Current 'Users', 'Groups'
+            Write-MtTestProgress -ErrorMessage 'The export of Devices failed'
+            $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screen | Should -Match '╭─ The tool .*1 line · 1 error'
+        $screen | Should -Match '│ Stage 1 of 3 · Exporting data '
+        $screen | Should -Match '│ ━+─+ 12 / 40 · 1 failed · 2 running '
+        $screen | Should -Match '│ . Users, Groups '
+        $screen | Should -Match '│ ✗ The export of Devices failed '
+        $screen | Should -Match '├╌ Log ╌'
+        $screen | Should -Match '│ a line of the log '
+    }
+
+    It 'Takes its progress and errors from ##maester lines of the output, which are not shown as lines' {
+        $result = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            @(
+                'before'
+                '##maester[progress] {"Stage":"Running tests","completed":3,"TOTAL":9,"current":"21828","unknown":true}'
+                "##maester[error] Test 21829 failed`nafter"
+                '##maester[progress] not json'
+            ) | Write-MtTestOutput -Title 'The tool'
+            [pscustomobject]@{ Screen = $renderer.GetPlainScreen(100, 40) -join "`n" }
+            Write-MtTestOutput -Complete
+        }
+        $result.Screen | Should -Match '│ Running tests '
+        $result.Screen | Should -Match ' 3 / 9 '
+        $result.Screen | Should -Match '│ . 21828 '
+        $result.Screen | Should -Match '│ ✗ Test 21829 failed '
+        $result.Screen | Should -Match '2 lines · 1 error'
+        $result.Screen | Should -Not -Match '##maester'
+    }
+
+    It 'Writes the stage when it changes, the counts at most every ten seconds and each error, without the dashboard' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 1 -Total 4
+                Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 2 -Total 4
+                Write-MtTestProgress -ErrorMessage 'Users failed'
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 0 -Total 9
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9')
+    }
+}

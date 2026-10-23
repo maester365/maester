@@ -16,6 +16,11 @@ function Write-MtTestOutput {
     The box opens with the first line, or with -Title, and closes with -Complete. Maester closes it when the
     test or the instance source finishes.
 
+    A line that starts with ##maester[progress] followed by a JSON object, or with ##maester[error] followed by
+    text, is not shown as a line: it sets the progress at the top of the box, or adds an error to it, as
+    Write-MtTestProgress does. A tool in another process, in any language, reports its progress that way by
+    writing those lines to its output.
+
     .PARAMETER InputObject
     A line to show. Line breaks start new lines. Escape sequences, emoji and other control characters are
     removed.
@@ -35,6 +40,11 @@ function Write-MtTestOutput {
     Write-MtTestOutput -Complete
 
     Shows the output of a script that runs in another PowerShell process in the console while it runs.
+
+    .EXAMPLE
+    '##maester[progress] {"stage":"Exporting","stageNumber":1,"stageCount":3,"completed":4,"total":9}' | Write-MtTestOutput
+
+    Sets the progress at the top of the box, as Write-MtTestProgress -Stage Exporting -StageNumber 1 -StageCount 3 -Completed 4 -Total 9 does.
 
     .LINK
     https://maester.dev/docs/commands/Write-MtTestOutput
@@ -84,6 +94,14 @@ function Write-MtTestOutput {
         $text = if ($InputObject -is [System.Management.Automation.ErrorRecord]) { [string]$InputObject.Exception.Message } else { [string]$InputObject }
         # Showing the output must never fail the test.
         try {
+            # The lines of progress and errors of the ##maester protocol set the header of the box, not the log.
+            if ($text.Contains('##maester[')) {
+                $kept = foreach ($line in ($text -split '\r?\n')) {
+                    if (-not (Write-MtTestProgressLine -Line $line)) { $line }
+                }
+                if ($null -eq $kept) { return }
+                $text = @($kept) -join "`n"
+            }
             if ($dashboard) {
                 $renderer.WriteOutput($text, [bool]$Progress)
                 return

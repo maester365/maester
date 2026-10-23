@@ -12,7 +12,9 @@ namespace Maester.Engine
     /// its lines to the renderer, which shows them in a box in the main column that scrolls as they come in.
     ///
     /// StartOutput opens the box with a title, WriteOutput adds lines, or sets the line of progress that is
-    /// pinned at the bottom of the box, StopOutput closes it. Before the tests start (a family's instance source runs then) the box
+    /// pinned at the bottom of the box, StopOutput closes it. SetOutputProgress gives the box a header with where
+    /// the work is (its stage, a bar of the items done, what it is working on) and AddOutputError lists the
+    /// errors the work reported under it, so the progress a tool keeps can be shown without parsing its log. Before the tests start (a family's instance source runs then) the box
     /// takes the rows under the phases; while tests run it sits between the result blocks and the running tests.
     /// Only the dashboard draws it: in the compact layout the caller writes the lines to the scrollback.
     /// </summary>
@@ -22,7 +24,10 @@ namespace Maester.Engine
         private const int OutputKept = 500;
         // The rows of the box with its border: at least three lines in it, and while tests run ten rows.
         private const int OutputLeastRows = 5;
-        private const int OutputTestRows = 10;
+        // With a header of progress the box has four more rows while tests run.
+        private int OutputTestRows { get { return _outputProgress != null || _outputErrors.Count > 0 ? 14 : 10; } }
+        // The errors kept for the header, of which it shows the newest two.
+        private const int OutputErrorsKept = 20;
         // The rows the banner leaves the box under it before the tests start, else the header is one line.
         private const int OutputOpeningRows = 12;
         private const string OutputBorder = "38;5;68";
@@ -33,6 +38,9 @@ namespace Maester.Engine
         private string _outputStatus;
         private int _outputCount;
         private Stopwatch _outputClock;
+        private MtOutputProgress _outputProgress;
+        private readonly List<string> _outputErrors = new List<string>();
+        private int _outputErrorCount;
 
         /// <summary>Whether the output box is open.</summary>
         public bool HasOutput { get { lock (_gate) return _outputTitle != null; } }
@@ -83,6 +91,35 @@ namespace Maester.Engine
             }
         }
 
+        /// <summary>
+        /// Sets where the work in the output box is, shown as a header at the top of the box, opening the box
+        /// when it is not open. Each call replaces the one before; null removes the header.
+        /// </summary>
+        public void SetOutputProgress(MtOutputProgress progress)
+        {
+            lock (_gate)
+            {
+                if (_outputTitle == null) OpenOutput(null);
+                _outputProgress = progress == null ? null : progress.Clean();
+                Redraw();
+            }
+        }
+
+        /// <summary>Adds an error the work reported to the header of the output box, opening the box when it is not open.</summary>
+        public void AddOutputError(string text)
+        {
+            lock (_gate)
+            {
+                if (_outputTitle == null) OpenOutput(null);
+                text = OutputText((text ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim();
+                if (text.Length == 0) return;
+                _outputErrors.Add(text);
+                _outputErrorCount++;
+                if (_outputErrors.Count > OutputErrorsKept) _outputErrors.RemoveAt(0);
+                Redraw();
+            }
+        }
+
         /// <summary>Closes the output box. Safe to call when it is not open.</summary>
         public void StopOutput()
         {
@@ -94,6 +131,9 @@ namespace Maester.Engine
                 _outputStatus = null;
                 _outputCount = 0;
                 _outputClock = null;
+                _outputProgress = null;
+                _outputErrors.Clear();
+                _outputErrorCount = 0;
                 Redraw();
             }
         }
@@ -106,6 +146,55 @@ namespace Maester.Engine
             _outputStatus = null;
             _outputCount = 0;
             _outputClock = Stopwatch.StartNew();
+            _outputProgress = null;
+            _outputErrors.Clear();
+            _outputErrorCount = 0;
+        }
+
+        /// <summary>
+        /// The header of the box: the stage, a bar of the items done with the counts, what the work is on now, a
+        /// line of status and the newest errors. Empty when there is no progress and no error.
+        /// </summary>
+        private List<Line> BuildOutputHeader(int inner, bool ansi)
+        {
+            var lines = new List<Line>();
+            var p = _outputProgress;
+            string dot = Unicode ? " · " : " - ";
+            if (p != null)
+            {
+                if (p.Stage.Length > 0 || p.StageNumber > 0)
+                {
+                    var b = new LineBuilder(ansi);
+                    if (p.StageNumber > 0) b.Add(p.StageCount >= p.StageNumber ? "Stage " + p.StageNumber + " of " + p.StageCount : "Stage " + p.StageNumber, "2");
+                    if (p.StageNumber > 0 && p.Stage.Length > 0) b.Add(dot, "2");
+                    b.Add(p.Stage, "1");
+                    lines.Add(Truncate(b.Build(), inner, ansi));
+                }
+                if (p.Total > 0 || p.Completed > 0 || p.Failed > 0 || p.Running > 0)
+                {
+                    var b = new LineBuilder(ansi);
+                    if (p.Total > 0)
+                    {
+                        AddBar(b, Math.Min(p.Completed, p.Total), p.Total, Math.Max(4, Math.Min(30, inner / 3)));
+                        b.Add(" " + N(p.Completed) + " / " + N(p.Total));
+                    }
+                    else b.Add(N(p.Completed) + " done");
+                    if (p.Failed > 0) b.Add(dot, "2").Add(N(p.Failed) + " failed", "31");
+                    if (p.Running > 0) b.Add(dot, "2").Add(N(p.Running) + " running", "2");
+                    lines.Add(Truncate(b.Build(), inner, ansi));
+                }
+                if (p.Current.Length > 0)
+                {
+                    var b = new LineBuilder(ansi).Add(Spinner() + " ", "36").Add(string.Join(", ", p.Current));
+                    lines.Add(Truncate(b.Build(), inner, ansi));
+                }
+                if (p.Status.Length > 0) lines.Add(Truncate(new LineBuilder(ansi).Add(p.Status, "2").Build(), inner, ansi));
+            }
+            for (int i = Math.Max(0, _outputErrors.Count - 2); i < _outputErrors.Count; i++)
+            {
+                lines.Add(Truncate(new LineBuilder(ansi).Add(Bad + " ", "31").Add(_outputErrors[i], "31").Build(), inner, ansi));
+            }
+            return lines;
         }
 
         /// <summary>
@@ -121,6 +210,12 @@ namespace Maester.Engine
             // The line of progress has the last row, under a dashed line when there are rows for one.
             int pinned = _outputStatus == null ? 0 : inside >= 4 ? 2 : inside >= 2 ? 1 : 0;
             inside -= pinned;
+            // The header has the top rows; the log has the rows under it, after a dashed line when there is room.
+            var head = BuildOutputHeader(inner, ansi);
+            if (head.Count > inside) head.RemoveRange(inside, head.Count - inside);
+            inside -= head.Count;
+            bool ruled = head.Count > 0 && inside >= 2;
+            if (ruled) inside--;
             var shown = new List<string>();
             for (int i = _output.Count - 1; i >= 0 && shown.Count < inside; i--)
             {
@@ -129,8 +224,9 @@ namespace Maester.Engine
             }
             shown.Reverse();
 
-            var lines = new List<Line>();
-            if (shown.Count == 0) lines.Add(new LineBuilder(ansi).Add(Spinner() + " Waiting for output" + Ellipsis(), "2").Build());
+            var lines = new List<Line>(head);
+            if (ruled) lines.Add(new Line { Text = string.Empty, Plain = string.Empty, Rule = "Log", Dashed = true });
+            if (shown.Count == 0 && (head.Count == 0 || ruled)) lines.Add(new LineBuilder(ansi).Add(Spinner() + " Waiting for output" + Ellipsis(), "2").Build());
             foreach (var s in shown) lines.Add(new Line { Text = s, Plain = s });
             while (lines.Count < inside) lines.Add(Blank());
             if (pinned == 2) lines.Add(new Line { Text = string.Empty, Plain = string.Empty, Rule = "Progress", Dashed = true });
@@ -138,6 +234,7 @@ namespace Maester.Engine
 
             string badge = _outputClock != null ? Short(_outputClock.Elapsed) : null;
             if (_outputCount > 0) badge = (badge != null ? badge + " · " : string.Empty) + Count(_outputCount, "line");
+            if (_outputErrorCount > 0) badge = (badge != null ? badge + " · " : string.Empty) + Count(_outputErrorCount, "error");
             var box = new PanelContent { Title = _outputTitle, Badge = badge, Colour = OutputBorder, TitleColour = OutputBorder, Lines = lines };
             return Indent(Box(box, boxWidth, ansi));
         }
@@ -206,6 +303,53 @@ namespace Maester.Engine
                 c == '\u270A' || c == '\u270B' || c == '\u2728' || c == '\u274C' || c == '\u274E' ||
                 (c >= '\u2753' && c <= '\u2755') || c == '\u2757' || (c >= '\u2795' && c <= '\u2797') || c == '\u27B0' ||
                 c == '\u27BF' || c == '\u2B1B' || c == '\u2B1C' || c == '\u2B50' || c == '\u2B55';
+        }
+    }
+
+    /// <summary>
+    /// Where the work in the output box is: what Write-MtTestProgress hands the renderer. Every part is optional.
+    /// </summary>
+    public sealed class MtOutputProgress
+    {
+        /// <summary>The name of the stage the work is in, such as "Exporting tenant data".</summary>
+        public string Stage { get; set; }
+        /// <summary>The number of the stage, from 1, and how many stages there are.</summary>
+        public int StageNumber { get; set; }
+        public int StageCount { get; set; }
+        /// <summary>The items of the stage done, failed and running, of how many.</summary>
+        public int Completed { get; set; }
+        public int Total { get; set; }
+        public int Failed { get; set; }
+        public int Running { get; set; }
+        /// <summary>What the work is on now, such as the names of the items running.</summary>
+        public string[] Current { get; set; }
+        /// <summary>A line of status that fits no other part.</summary>
+        public string Status { get; set; }
+
+        /// <summary>A copy made safe to draw: text from another program cleaned, no negative counts.</summary>
+        public MtOutputProgress Clean()
+        {
+            var current = new List<string>();
+            if (Current != null)
+            {
+                foreach (var c in Current)
+                {
+                    string t = MtConsoleRenderer.OutputText((c ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim();
+                    if (t.Length > 0) current.Add(t);
+                }
+            }
+            return new MtOutputProgress
+            {
+                Stage = MtConsoleRenderer.OutputText((Stage ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim(),
+                StageNumber = Math.Max(0, StageNumber),
+                StageCount = Math.Max(0, StageCount),
+                Completed = Math.Max(0, Completed),
+                Total = Math.Max(0, Total),
+                Failed = Math.Max(0, Failed),
+                Running = Math.Max(0, Running),
+                Current = current.ToArray(),
+                Status = MtConsoleRenderer.OutputText((Status ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim(),
+            };
         }
     }
 }
