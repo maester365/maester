@@ -66,5 +66,5 @@ function Format-MtPackPanel {
         $lines.Add('  ' + (& $style $v $Border) + ' ' + ($text -join '') + (' ' * ($inner - $plain)) + ' ' + (& $style $v $Border))
     }
     $lines.Add('  ' + (& $style "$bl$($h * ($inner + 2))$br" $Border))
-    , $lines.ToArray()
+    $lines.ToArray()
 }
