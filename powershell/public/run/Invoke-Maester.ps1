@@ -121,6 +121,16 @@
     Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
     .EXAMPLE
+    Invoke-Maester -Pack ZTA
+
+    Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default. Other installed packs do not run.
+
+    .EXAMPLE
+    Invoke-Maester -Pack ZTA -SkipBuiltIn
+
+    Runs only the Zero Trust Assessment pack.
+
+    .EXAMPLE
     Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 
     Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. A test named by its exact ID runs even if it is a preview or long-running test.
@@ -171,6 +181,11 @@
 
         # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
+
+        # Run only these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
+        # '*' wildcards are allowed. A pack named here runs even if it is off by default or in the config, and
+        # its long-running and preview tests run too. Other packs do not run; the other tests are not affected.
+        [string[]] $Pack,
 
         # Include long running tests.
         [switch] $IncludeLongRunning,
@@ -314,7 +329,7 @@
         [switch] $DryRun,
 
         # Run only the custom tests under -Path. The tests that ship with Maester always run otherwise.
-        # The packs that ship with Maester are left out too.
+        # The packs that ship with Maester are left out too, except those named in -Pack.
         [switch] $SkipBuiltIn,
 
         # The pack lock file to run the installed packs from. Defaults to the MAESTER_PACK_LOCK environment
@@ -480,12 +495,12 @@
         }
 
         $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
-            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite `
+            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Pack $Pack `
             -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
         # The selectors live in $selection from here on. A test runs in a child scope of this function, so a
         # test that reads a $Severity or $Product it never set would otherwise see the value of the parameter.
-        $Product = $Feature = $Area = $Severity = $Suite = $null
+        $Product = $Feature = $Area = $Severity = $Suite = $Pack = $null
         $Tag = $selection.Tag
         $ExcludeTag = $selection.ExcludeTag
         $IncludePreview = [switch]$selection.IncludePreview
@@ -692,8 +707,8 @@
         $packSet = @()
         if (-not $SkipPack) {
             Write-MtProgress -Activity 'Starting Maester' -Status 'Checking Maester Packs...' -Force
-            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig)
-            if ($SkipBuiltIn) { $packSet = @($packSet | Where-Object { -not $_.BuiltIn }) }
+            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig -Select $selection.Pack)
+            if ($SkipBuiltIn) { $packSet = @($packSet | Where-Object { -not $_.BuiltIn -or $_.Selected }) }
             $nativePack = @(Get-MtPackTestInventory -PackSet $packSet)
             # A pack test never replaces a built-in or custom test with the same ID.
             $takenIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)

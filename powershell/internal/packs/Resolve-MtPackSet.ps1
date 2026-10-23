@@ -8,7 +8,8 @@ function Resolve-MtPackSet {
     Disconnect-Maester, Test-MtConnection and Get-MtTenantContext. For each pack it checks, in order:
 
     1. Config: Packs[].Enabled = false turns a pack off (Disabled). A pack that ships with Maester follows
-       its EnabledByDefault unless the config names it.
+       its EnabledByDefault unless the config names it. With -Select (Invoke-Maester -Pack), only the packs it
+       names run, whatever the config and EnabledByDefault say; the others are Disabled (NotSelected).
     2. The store: an installed pack must be in the local store (else Unavailable, PackUnavailable) and its
        files must match the digest in the lock file (else Unavailable, with a warning that the files changed).
     3. Its manifest, read again from the checked files, and RequiresMaester.
@@ -19,7 +20,7 @@ function Resolve-MtPackSet {
 
     Returns one row per pack: Id, Version, BuiltIn, Root, Manifest, Entry (the lock entry), Modules (the
     lock's module rows for it, with Path), Status (Ready, Disabled, Unavailable, NotAllowed, Blocked or
-    Failed), ReasonCode, Reason and TestIds. Warnings are written once.
+    Failed), ReasonCode, Reason, TestIds and Selected (named by -Select). Warnings are written once.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject], [System.Array])]
@@ -27,7 +28,9 @@ function Resolve-MtPackSet {
         [Parameter()] [AllowNull()] [object] $RunConfig,
         # The lock file; by default the one Resolve-MtPackLockPath finds from the current folder.
         [Parameter()] [string] $LockPath,
-        [Parameter()] [AllowNull()] [pscustomobject] $Policy
+        [Parameter()] [AllowNull()] [pscustomobject] $Policy,
+        # Pack IDs or codes, with '*' wildcards: run only these packs (Invoke-Maester -Pack).
+        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @()
     )
 
     if (-not $LockPath) { $LockPath = (Resolve-MtPackLockPath).LockPath }
@@ -36,6 +39,20 @@ function Resolve-MtPackSet {
     $configPacks = @($(if ($RunConfig -and $RunConfig.PSObject.Properties['Packs']) { $RunConfig.Packs }) | Where-Object { $_ })
     $configFor = { param($id) $configPacks | Where-Object { $_.PSObject.Properties['Id'] -and $_.Id -eq $id } | Select-Object -First 1 }
     $enabledIn = { param($row) if ($row -and $row.PSObject.Properties['Enabled'] -and $null -ne $row.Enabled) { [bool]$row.Enabled } else { $null } }
+    # A name in -Select matches a pack's ID or its code. An installed pack's code is known before its manifest
+    # is read from the test IDs the lock file records, MP.<code>.<n>.
+    $Select = @($Select | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    $matched = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $selects = {
+        param($id, $code, $testIds)
+        $hit = $false
+        foreach ($name in $Select) {
+            $byCode = if ($code) { $code -like $name } else { [bool](@($testIds) | Where-Object { $_ -like "MP.$name.*" -or $_ -like "MP.$name" }) }
+            if ($id -like $name -or $byCode) { $null = $matched.Add($name); $hit = $true }
+        }
+        $hit
+    }
+    $notSelected = { param($row) & $stop $row 'Disabled' 'NotSelected' "The pack $($row.Id) was not named in -Pack." }
 
     # Fetched once, when the first installed pack needs it; its warning is written once.
     $state = @{ Blocklist = $null }
@@ -52,7 +69,7 @@ function Resolve-MtPackSet {
         param($id, $builtIn, $entry)
         [pscustomobject][ordered]@{
             Id = $id; Version = $null; BuiltIn = $builtIn; Root = $null; Manifest = $null; Entry = $entry; Modules = @()
-            Status = 'Ready'; ReasonCode = $null; Reason = $null; TestIds = @($(if ($entry) { $entry.Tests }))
+            Status = 'Ready'; ReasonCode = $null; Reason = $null; TestIds = @($(if ($entry) { $entry.Tests })); Selected = $false
         }
     }
     $stop = { param($row, $status, $code, $reason) $row.Status = $status; $row.ReasonCode = $code; $row.Reason = $reason }
@@ -64,7 +81,12 @@ function Resolve-MtPackSet {
         $row.Version = if ($pack.Manifest) { [string]$pack.Manifest.Version } else { $null }
         $enabled = & $enabledIn (& $configFor $pack.Id)
         if ($null -eq $enabled) { $enabled = -not $pack.Manifest -or $pack.Manifest.EnabledByDefault }
-        if (-not $enabled) { & $stop $row 'Disabled' 'DisabledByConfig' "The pack $($pack.Id) is turned off$(if ($pack.Manifest -and -not $pack.Manifest.EnabledByDefault) { ' by default. Set Packs: [{ "Id": "' + $pack.Id + '", "Enabled": true }] in the Maester config to run it' })." }
+        if ($Select.Count -gt 0) {
+            $row.Selected = & $selects $pack.Id $(if ($pack.Manifest) { [string]$pack.Manifest.Code }) @()
+            $enabled = $row.Selected
+        }
+        if (-not $enabled -and $Select.Count -gt 0) { & $notSelected $row }
+        elseif (-not $enabled) { & $stop $row 'Disabled' 'DisabledByConfig' "The pack $($pack.Id) is turned off$(if ($pack.Manifest -and -not $pack.Manifest.EnabledByDefault) { ' by default. Set Packs: [{ "Id": "' + $pack.Id + '", "Enabled": true }] in the Maester config to run it' })." }
         elseif ($pack.Errors.Count -gt 0) { & $stop $row 'Failed' 'PackLoadFailed' "The pack $($pack.Id) that ships with Maester has a problem: $($pack.Errors[0].Message)" }
         $rows[$pack.Id] = $row
     }
@@ -75,7 +97,10 @@ function Resolve-MtPackSet {
         $row.Version = [string]$entry.Version
         $rows[$row.Id] = $row
         $enabled = & $enabledIn (& $configFor $entry.Id)
-        if ($enabled -eq $false) { & $stop $row 'Disabled' 'DisabledByConfig' "The pack $($entry.Id) is turned off in the Maester config."; continue }
+        if ($Select.Count -gt 0) {
+            $row.Selected = & $selects $row.Id $null $row.TestIds
+            if (-not $row.Selected) { & $notSelected $row; continue }
+        } elseif ($enabled -eq $false) { & $stop $row 'Disabled' 'DisabledByConfig' "The pack $($entry.Id) is turned off in the Maester config."; continue }
         $root = if ($entry.Digest) { Get-MtPackStorePath -Digest $entry.Digest } else { $null }
         if (-not $root -or -not (Test-Path -LiteralPath $root -PathType Container)) {
             & $stop $row 'Unavailable' 'PackUnavailable' "The pack $($entry.Id) $($entry.Version) is in the lock file but not on this computer. Run Restore-MtPack."
@@ -104,6 +129,10 @@ function Resolve-MtPackSet {
             continue
         }
         if ($block) { Write-Warning "The pack $($entry.Id) has an advisory: $(ConvertTo-MtPackSafeText $block.Advisory -MaxLength 300)" }
+    }
+
+    foreach ($name in ($Select | Where-Object { -not $matched.Contains($_) })) {
+        Write-Warning "-Pack '$name' matches no pack that ships with Maester or is in the lock file. Get-MtPack lists them."
     }
 
     foreach ($configRow in $configPacks) {

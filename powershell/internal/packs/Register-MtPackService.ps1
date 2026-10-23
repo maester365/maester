@@ -59,13 +59,15 @@ function Initialize-MtPackSet {
         [Parameter()] [string] $PackLock,
         # The folder config discovery starts from; the current folder by default.
         [Parameter()] [string] $Path,
-        [Parameter()] [AllowNull()] [object] $RunConfig
+        [Parameter()] [AllowNull()] [object] $RunConfig,
+        # Pack IDs or codes: run only these packs (Invoke-Maester -Pack).
+        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @()
     )
 
     if (-not $Path) { $Path = (Get-Location).Path }
     try {
         if (-not $RunConfig) { $RunConfig = Resolve-MtRunConfig -Path $Path -WarningAction SilentlyContinue }
-        $set = @(Resolve-MtPackSet -RunConfig $RunConfig -LockPath (Resolve-MtPackLockPath -PackLock $PackLock -Path $Path).LockPath)
+        $set = @(Resolve-MtPackSet -RunConfig $RunConfig -LockPath (Resolve-MtPackLockPath -PackLock $PackLock -Path $Path).LockPath -Select $Select)
         $null = Register-MtPackService -PackSet $set
         $script:__MtPackSet = $set
         $set
