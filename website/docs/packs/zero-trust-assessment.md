@@ -81,6 +81,17 @@ the tests it runs, and its progress bars become one line at the bottom of the bo
 The assessment's own report and raw export go to a temporary folder that Maester deletes after reading it, because
 the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
 
+## The assessment's own report
+
+The Maester report embeds the HTML report the assessment wrote, with its pillar dashboards and charts. Open it
+with the **Zero Trust Assessment** button on the report's overview, under **Reports** in the left menu, or on any
+MP.ZTA result. It opens in a new browser tab and works offline, so the Maester report stays a single file to share.
+
+The embedded report is compressed: a 10 MB assessment report adds about 2 MB to the Maester report. It is left
+out when `ZeroTrustAssessment.EmbedReport` is `false`, when you read a report file that has no
+`ZeroTrustAssessmentReport.html` beside it or one folder up, and when `Invoke-Maester -RedactUserIdentity` is
+used, because Maester cannot redact the assessment's report.
+
 ## Settings
 
 All settings go in `GlobalSettings` of `maester-config.json`.
@@ -89,6 +100,7 @@ All settings go in `GlobalSettings` of `maester-config.json`.
 | --- | --- | --- |
 | `ZeroTrustAssessment.ReportPath` | empty | Read this report instead of running the assessment. |
 | `ZeroTrustAssessment.MaxReportAgeDays` | `7` | Refuse a report older than this. `0` turns the check off. |
+| `ZeroTrustAssessment.EmbedReport` | `true` | Embed the assessment's own HTML report in the Maester report. |
 | `ZeroTrustAssessment.OutputPath` | temporary | Where the assessment writes its report and export. Kept when set. |
 | `ZeroTrustAssessment.Pillar` | `All` | Run one pillar only: `Identity`, `Devices`, `Network`, `Data`, `Infrastructure`, `SecOps` or `AI`. |
 | `ZeroTrustAssessment.Tests` | all | Run only these assessment test IDs, for example `["21770", "21771"]`. |
