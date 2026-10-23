@@ -361,7 +361,7 @@ Describe 'Get-MtHtmlReport' {
                 ContentType = 'text/html'; FileName = 'ZeroTrustAssessmentReport.html'; Size = 16; Encoding = 'gzip+base64'
                 Content = 'H4sIAAAAAAACA7PJKMnNsasqSbTRB7MAq6YLFhAAAAA='
             }
-            function New-ResultWithAttachment([string] $TenantName = 'Single Tenant') {
+            function Get-ResultWithAttachment([string] $TenantName = 'Single Tenant') {
                 [PSCustomObject]@{
                     TenantName  = $TenantName
                     Tests       = @([PSCustomObject]@{ Id = 'MP.ZTA.21770'; ParentId = 'MP.ZTA'; Result = 'Passed' })
@@ -378,7 +378,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Writes each attachment into its own element and lists it without its content' {
-            $html = Get-MtHtmlReport -MaesterResults (New-ResultWithAttachment)
+            $html = Get-MtHtmlReport -MaesterResults (Get-ResultWithAttachment)
 
             $html | Should -BeLike ('*<script type="application/octet-stream" id="maester-attachment-{0}" data-encoding="gzip+base64">{1}</script>*' -f $attachment.Id, $attachment.Content)
             $html.IndexOf("maester-attachment-$($attachment.Id)") | Should -BeLessThan $html.LastIndexOf('</body>')
@@ -389,7 +389,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Writes the attachments of every tenant' {
-            $merged = Merge-MtMaesterResult -MaesterResults @((New-ResultWithAttachment 'Tenant One'), $tenant2)
+            $merged = Merge-MtMaesterResult -MaesterResults @((Get-ResultWithAttachment 'Tenant One'), $tenant2)
 
             $html = Get-MtHtmlReport -MaesterResults $merged
 
@@ -397,7 +397,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Leaves attachments out and warns when user identities are redacted (<_>)' -ForEach @('HtmlOnly', 'AllOutputs') {
-            $html = Get-MtHtmlReport -MaesterResults (New-ResultWithAttachment) -RedactUserIdentity $_ -UserIdentityReplacementMap @{} -WarningVariable warnings -WarningAction SilentlyContinue
+            $html = Get-MtHtmlReport -MaesterResults (Get-ResultWithAttachment) -RedactUserIdentity $_ -UserIdentityReplacementMap @{} -WarningVariable warnings -WarningAction SilentlyContinue
 
             $html | Should -Not -BeLike '*id="maester-attachment-*'
             $html | Should -Not -BeLike '*"Attachments"*'
@@ -405,7 +405,7 @@ Describe 'Get-MtHtmlReport' {
         }
 
         It 'Leaves the MaesterResults passed in unchanged' {
-            $results = New-ResultWithAttachment
+            $results = Get-ResultWithAttachment
 
             $null = Get-MtHtmlReport -MaesterResults $results
 
