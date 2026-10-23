@@ -31,6 +31,15 @@ path and SHA-256, with Authenticode signature blocks left out so that signing a 
 store keeps the files read-only under that digest. A changed file stops the pack with `PackUnavailable` until
 you run `Restore-MtPack` (to get the approved files back) or `Install-MtPack` again (to review the change).
 
+Only a complete signature block of PowerShell comments at the end of a file is left out. Marker text inside
+strings, and a trailer that is incomplete or followed by code, stay part of the digest. Pack archives refuse paths
+that contain `:` on every platform, so a pack from GitHub can't carry Windows alternate data streams.
+
+Windows alternate data streams on files already on your computer, such as the `Zone.Identifier` mark that
+downloads get or the stream Microsoft Defender Endpoint DLP adds, are not part of the digest and don't stop a
+pack. PowerShell never runs a stream's content, a pack's code can read one only with a call you can see when you
+review it, and only someone who can already change the stored files could add one.
+
 A module that the pack runs in a separate process from your own install (`"Install": "User"`) cannot be pinned:
 it is shown as High risk, and `AllowExternalEnvironments: false` refuses the pack.
 
@@ -60,7 +69,7 @@ combined, and the strictest value of each setting wins:
 | Setting | Effect |
 | --- | --- |
 | `MaximumRisk` | `Low`, `Medium` or `High`: the highest risk a pack may have. |
-| `AllowedPublishers` | Only packs from these GitHub owners. |
+| `AllowedPublishers` | Only packs from these GitHub owners. An empty list denies all non-built-in packs; an omitted or `null` value adds no restriction. |
 | `TrustedSources` | Only packs from these sources (`owner/repo`). |
 | `AllowUnlisted` | `false`: only packs listed in the Maester Packs index. |
 | `RequireBadge` | Only packs with this index badge. |
@@ -77,6 +86,17 @@ Maester fetches a list of blocked packs, signed with an ECDSA P-256 key that shi
 for an hour. Only a list with a valid signature, a serial at least as high as the last one seen, and an unexpired
 date is used. A blocked pack does not install and, when already installed, does not run (`PackBlocked`). When
 the list cannot be fetched, the cached list is used with a warning, unless `RequireFreshBlocklist` is set.
+Strict freshness also rejects missing trust keys and cached failures. A verified, unexpired list fetched
+within the cache interval can be reused, but reading it from disk or memory does not restart that interval.
+Both its original fetch time and signed expiry are checked on every call. After an hour, a refresh is attempted;
+if that fails, only permissive mode can use an unexpired cached list, with a warning. When several entries
+match a pack, any blocking entry takes precedence over a warning regardless of their order in the list.
+
+## Repairing stored packs
+
+`Restore-MtPack` and reinstalling replace a stored pack whose files changed. The new files and the copy made of
+them must both match the approved digest before the old copy is removed, so a failed download or a copy that
+doesn't match leaves the stored pack as it was, and `Restore-MtPack` reports that pack as failed.
 
 ## Reporting a pack
 
