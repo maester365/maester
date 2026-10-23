@@ -144,10 +144,10 @@ A test that runs a tool for a long time, such as an assessment in another PowerS
 running Maester what the tool is doing while it runs. In the full-screen dashboard both go into a box in the main
 column; in the compact layout, CI and redirected output they are written to the console, indented.
 
-- [`Write-MtTestOutput`](/docs/commands/Write-MtTestOutput) shows the tool's log. `-Title` opens the box, each line
+- `Write-MtTestOutput` shows the tool's log. `-Title` opens the box, each line
   scrolls into it, `-Progress` pins a changing line at the bottom, and `-Complete` closes it (Maester closes it when
   the test ends).
-- [`Write-MtTestProgress`](/docs/commands/Write-MtTestProgress) shows where the tool is, as a header at the top of
+- `Write-MtTestProgress` shows where the tool is, as a header at the top of
   the box: the stage (`-Stage`, `-StageNumber`, `-StageCount`), a bar of the items done (`-Completed`, `-Total`,
   `-Failed`, `-Running`), what it is working on (`-Current`, `-Status`), and the errors it reported
   (`-ErrorMessage`), which the box also counts. Each call replaces the progress before it, so pass everything you
