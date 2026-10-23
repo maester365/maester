@@ -3,9 +3,11 @@ BeforeAll {
     $script:Check = Join-Path $script:RepoRoot 'build/packs/Test-MtPackRegistry.ps1'
     Import-Module (Join-Path $script:RepoRoot 'powershell/Maester.psd1') -Force
 
-    # A registry of one or more publisher files under TestDrive, and the problems the check finds in it.
+    # A registry of one or more publisher files under TestDrive, and the problems the check finds in it. -Root is
+    # where packs/ is read; by default a folder without one, so the packs that ship with Maester don't count.
+    $script:EmptyRoot = (New-Item -Path (Join-Path $TestDrive 'empty-root') -ItemType Directory -Force).FullName
     function script:Test-Registry {
-        param([hashtable] $Publishers, [string] $Root = $script:RepoRoot)
+        param([hashtable] $Publishers, [string] $Root = $script:EmptyRoot)
         $path = Join-Path $TestDrive ([guid]::NewGuid().ToString('n'))
         $null = New-Item -Path (Join-Path $path 'publishers') -ItemType Directory -Force
         foreach ($name in $Publishers.Keys) {
