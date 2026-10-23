@@ -1,4 +1,4 @@
-function Write-MtTestProgress {
+﻿function Write-MtTestProgress {
     <#
     .SYNOPSIS
     Shows where a long-running test is (its stage, the items done, what it is working on and its errors) in the
@@ -39,10 +39,11 @@ function Write-MtTestProgress {
     How many stages there are.
 
     .PARAMETER Completed
-    The items of the stage that are done.
+    The items of the stage that are done and did not fail.
 
     .PARAMETER Total
-    The items of the stage. With a total the header shows a bar.
+    The items of the stage. With a total the header shows a bar of the items done (completed and failed), the
+    percentage, and the time left once there is something to go on.
 
     .PARAMETER Failed
     The items of the stage that failed.
@@ -55,6 +56,18 @@ function Write-MtTestProgress {
 
     .PARAMETER Status
     A line of status that fits no other part, such as "Waiting for the throttling limit".
+
+    .PARAMETER Stages
+    The names of all the stages, in order. The header draws them as a track, like the phases of a Maester run:
+    the stages before -StageNumber done, that one running, the others to come.
+
+    .PARAMETER Items
+    The items running and the ones that finished last (such as the exports or tests of a tool), shown the way
+    the dashboard shows Maester's own tests: the ones running with a spinner and the time they have run, the
+    ones that finished with their result and how long they took. Each is a hashtable or object with Id, and
+    optionally Title, Status (Running, Passed, Failed, TimedOut or Skipped; Running when left out), Detail
+    (what it is doing, or why it failed) and Seconds. Outside the dashboard each item that finished is written
+    once, with its result and time.
 
     .PARAMETER ErrorMessage
     Errors the work reported. They are listed under the progress, newest last, and counted on the box.
@@ -114,6 +127,14 @@ function Write-MtTestProgress {
         [string] $Status,
 
         [Parameter(ParameterSetName = 'Progress')]
+        [AllowEmptyCollection()]
+        [string[]] $Stages,
+
+        [Parameter(ParameterSetName = 'Progress')]
+        [AllowEmptyCollection()]
+        [object[]] $Items,
+
+        [Parameter(ParameterSetName = 'Progress')]
         [string[]] $ErrorMessage,
 
         [Parameter(Mandatory, ParameterSetName = 'Clear')]
@@ -133,7 +154,7 @@ function Write-MtTestProgress {
             $state.LastCounts = $null
             return
         }
-        $parts = 'Stage', 'StageNumber', 'StageCount', 'Completed', 'Total', 'Failed', 'Running', 'Current', 'Status'
+        $parts = 'Stage', 'StageNumber', 'StageCount', 'Completed', 'Total', 'Failed', 'Running', 'Current', 'Status', 'Stages', 'Items'
         $hasProgress = [bool]($parts | Where-Object { $PSBoundParameters.ContainsKey($_) })
         $progress = $null
         if ($hasProgress) {
@@ -141,6 +162,20 @@ function Write-MtTestProgress {
                 Stage = $Stage; StageNumber = $StageNumber; StageCount = $StageCount
                 Completed = $Completed; Total = $Total; Failed = $Failed; Running = $Running
                 Current = [string[]]@($Current | Where-Object { $_ }); Status = $Status
+                Stages = [string[]]@($Stages | Where-Object { $_ })
+                Items = [Maester.Engine.MtOutputItem[]]@(foreach ($item in @($Items | Where-Object { $_ })) {
+                        # The keys of a hashtable from ConvertFrom-Json -AsHashtable keep their case: find them in any case.
+                        $get = {
+                            param($name)
+                            if ($item -isnot [System.Collections.IDictionary]) { return $item.$name }
+                            foreach ($key in $item.Keys) { if ([string]$key -eq $name) { return $item[$key] } }
+                        }
+                        $seconds = & $get 'Seconds'
+                        [Maester.Engine.MtOutputItem]@{
+                            Id = [string](& $get 'Id'); Title = [string](& $get 'Title'); Detail = [string](& $get 'Detail')
+                            Status = [string](& $get 'Status'); Seconds = if ($null -ne $seconds -and "$seconds" -ne '') { [double]$seconds } else { -1 }
+                        }
+                    })
             }
         }
         $errors = @($ErrorMessage | Where-Object { $_ })
@@ -169,9 +204,25 @@ function Write-MtTestProgress {
                 & $write $stageText 'Bold'
             }
             $counts = @()
-            if ($clean.Total -gt 0) { $counts += "$($clean.Completed) / $($clean.Total)" } elseif ($clean.Completed -gt 0) { $counts += "$($clean.Completed) done" }
+            if ($clean.Total -gt 0) { $counts += "$([math]::Min($clean.Completed + $clean.Failed, $clean.Total)) / $($clean.Total)" } elseif ($clean.Completed -gt 0) { $counts += "$($clean.Completed) done" }
             if ($clean.Failed -gt 0) { $counts += "$($clean.Failed) failed" }
             if ($clean.Running -gt 0) { $counts += "$($clean.Running) running" }
+            # Each item that finished is written once, as the compact layout writes Maester's own tests.
+            if (-not $state.SeenItems) { $state.SeenItems = [System.Collections.Generic.HashSet[string]]::new() }
+            foreach ($item in $clean.Items) {
+                if ($item.Status -in 'Running', 'Waiting' -or -not $state.SeenItems.Add("$($item.Id)|$($item.Title)")) { continue }
+                $unicode = $console -and $console.Unicode
+                $mark, $style = switch ($item.Status) {
+                    'Failed' { $(if ($unicode) { '✗' } else { 'x' }), 'Failed' }
+                    'TimedOut' { '!', 'Error' }
+                    'Skipped' { $(if ($unicode) { '–' } else { '-' }), 'Dim' }
+                    default { $(if ($unicode) { '✓' } else { '+' }), 'Passed' }
+                }
+                $name = (@($item.Id, $item.Title) | Where-Object { $_ }) -join ' '
+                $time = if ($item.Seconds -ge 0) { '  ' + (Format-MtDuration ([timespan]::FromSeconds($item.Seconds))) } else { '' }
+                $why = if ($item.Status -in 'Failed', 'TimedOut' -and $item.Detail) { ": $($item.Detail)" } else { '' }
+                & $write "$mark $name$why$time" $style
+            }
             if ($counts -and (-not $state.LastCounts -or $state.LastCounts.Elapsed.TotalSeconds -ge 10)) {
                 $state.LastCounts = [System.Diagnostics.Stopwatch]::StartNew()
                 & $write ($counts -join ' · ') 'Dim'

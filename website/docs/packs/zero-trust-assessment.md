@@ -81,13 +81,17 @@ the tests it runs, and its progress bars become one line at the bottom of the bo
 The top of the box shows where the assessment is, read once a second from the progress the assessment keeps for
 its own progress page and from the progress logs it writes in its output folder:
 
-- the stage, such as "Stage 1 of 6 · Exporting Tenant Data", then "Running Tests" and the report stages;
-- a bar of the exports or tests done of how many, with how many failed and how many are running;
-- the exports or tests running now, and what the newest one is doing;
+- the six stages of the assessment as a track (Export, Tests, Tenant info, Results, Report data, HTML report),
+  with the step of the stage it is on, such as "Importing Data into Database";
+- a bar of the exports or tests done of how many, the percentage, how many failed and are running, and the time
+  left;
+- each export or test that is running, with what it is doing and how long it has run, and the ones that finished,
+  with their result and how long they took, listed the way the dashboard lists Maester's own tests (tests by
+  their `ZTA.` ID and title);
 - each export, database import or test that fails or times out, with its error. The box counts them.
 
-Outside the dashboard the stage is written when it changes, the counts at most every ten seconds, and each failure
-as it happens. This needs version 3.1 or later of the ZeroTrustAssessment module; with an earlier version the
+Outside the dashboard the stage is written when it changes, each export and test as it finishes with its result
+and time, the counts at most every ten seconds, and each failure as it happens. This needs version 3.1 or later of the ZeroTrustAssessment module; with an earlier version the
 box shows the log only.
 
 The assessment's own report and raw export go to a temporary folder that Maester deletes after reading it, because

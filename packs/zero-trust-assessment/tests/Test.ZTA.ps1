@@ -235,7 +235,13 @@ function Invoke-MtZtaCollection {
     }
 
     $request = Join-Path ([System.IO.Path]::GetTempPath()) ("maester-zta-request-{0}.json" -f [guid]::NewGuid().ToString('n'))
-    [ordered]@{ ModulePath = $module.Path; Connect = $connect; Assessment = $assessment } |
+    # The titles of the assessment's tests, from the pack's catalog, for the tests the progress lists by ID.
+    $titles = @{}
+    $catalogPath = Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath 'catalog.json'
+    if (Test-Path -LiteralPath $catalogPath) {
+        foreach ($entry in @((Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json).Tests)) { $titles[[string]$entry.TestId] = [string]$entry.Title }
+    }
+    [ordered]@{ ModulePath = $module.Path; Connect = $connect; Assessment = $assessment; Titles = $titles } |
         ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $request -Encoding utf8
 
     # The child reads its parameters from the request file, so nothing from the config is put on a command line.
@@ -267,47 +273,30 @@ function global:Write-Progress {
 }
 $request = Get-Content -LiteralPath $RequestPath -Raw | ConvertFrom-Json -AsHashtable
 Import-Module -Name $request.ModulePath
-# The assessment keeps where it is (its stage, the items done, the exports or tests running) in a dictionary
-# that its own progress page reads, and writes a line to a progress log for each item that starts, ends or
-# fails. A second runspace reads both every second and reports them to Maester as ##maester lines, which
-# Maester shows at the top of its output box. Another version of the module that keeps neither reports nothing.
+# The assessment keeps where it is (its stage, the items done, what each export or test is doing) in a
+# dictionary that its own progress page reads, and writes a line to a progress log for each export, database
+# table and test that starts, ends or fails, with its time. A second runspace reads both every second and
+# reports them to Maester as ##maester lines, which Maester shows at the top of its output box: the stages, the
+# counts, and each export or test with its status and time, the way the dashboard shows Maester's own tests.
+# Another version of the module that keeps neither reports nothing.
 $progressState = $null
 try { $progressState = Get-PSFDynamicContentObject -Name 'ZtAssessment.ProgressState' -ErrorAction Stop } catch { $progressState = $null }
 $reporter = [powershell]::Create()
 $null = $reporter.AddScript({
-    param($State, [string] $OutputPath)
-    $last = $null
+    param($State, [string] $OutputPath, $Titles)
+    $culture = [System.Globalization.CultureInfo]::InvariantCulture
+    # The stages of the assessment, short enough to draw all six on one line.
+    $stages = @('Export', 'Tests', 'Tenant info', 'Results', 'Report data', 'HTML report')
+    $kinds = [ordered]@{ '1-export_progress.log' = 'export'; '2-database_progress.log' = 'database'; '3-test_progress.log' = 'tests' }
     $offsets = @{}
-    $kinds = [ordered]@{ '1-export_progress.log' = 'Export'; '2-database_progress.log' = 'Import'; '3-test_progress.log' = 'Test' }
+    $items = @{}
+    $reported = [System.Collections.Generic.HashSet[string]]::new()
+    $lastKind = $null
+    $last = $null
     while ($true) {
         try {
-            $value = if ($State) { $State.Value } else { $null }
-            if ($value -and $value.ContainsKey('_stage')) {
-                $running = foreach ($key in @($value.Keys)) {
-                    $worker = $null
-                    if ($key -like 'worker_*' -and $value.TryGetValue($key, [ref]$worker) -and $worker -and [string]$worker.Status -eq 'Running') { $worker }
-                }
-                $running = @($running | Sort-Object -Property { [string]$_.StartedAt })
-                $latest = $running | Sort-Object -Property { [string]$_.UpdatedAt } | Select-Object -Last 1
-                $snapshot = [ordered]@{
-                    stage       = [string]$value['_stageName']
-                    stageNumber = [int]$value['_stageNumber']
-                    stageCount  = [int]$value['_totalStages']
-                    completed   = [int]$value['_completedItems']
-                    total       = [int]$value['_totalItems']
-                    failed      = [int]$value['_failedItems']
-                    running     = [int]$value['_inProgressItems']
-                    current     = @($running | Select-Object -First 6 | ForEach-Object { if ($_.Name) { [string]$_.Name } else { [string]$_.Id } })
-                    status      = if ($latest -and $latest.Detail) { "$($latest.Name): $($latest.Detail)" } else { '' }
-                }
-                if ([string]$value['_stage'] -eq 'done') { $snapshot.current = @(); $snapshot.status = '' }
-                $json = $snapshot | ConvertTo-Json -Compress
-                if ($json -ne $last) {
-                    $last = $json
-                    [Console]::Out.WriteLine('##maester[progress] ' + $json)
-                }
-            }
-            # The newest folder of logs is this run's. Each error line in its progress logs is reported once.
+            $now = Get-Date
+            # The newest folder of logs is this run's: read the lines added to its progress logs since the last time.
             $logs = Get-ChildItem -LiteralPath (Join-Path $OutputPath 'zt-export' -AdditionalChildPath 'logs') -Directory -ErrorAction SilentlyContinue |
                 Sort-Object -Property Name | Select-Object -Last 1
             if ($logs) {
@@ -326,16 +315,104 @@ $null = $reporter.AddScript({
                         $end = $text.LastIndexOf("`n")
                         if ($end -lt 0) { continue }
                         $offsets[$path] = $at + [System.Text.Encoding]::UTF8.GetByteCount($text.Substring(0, $end + 1))
+                        $kind = $kinds[$file]
                         foreach ($line in $text.Substring(0, $end).Split("`n")) {
-                            if ($line -match '^\S+ \S+\s+(FAILED|ERROR|TIMEDOUT)\s+(\S+)(?:\s+\d\d:\d\d:\d\d\.\d+)?\s*(.*)$') {
-                                $what = switch ($Matches[1]) { 'TIMEDOUT' { 'timed out' } default { 'failed' } }
-                                $why = $Matches[3].Trim()
-                                $message = "$($kinds[$file]) $($Matches[2]) $what" + $(if ($why) { ": $why" } else { '' })
-                                [Console]::Out.WriteLine('##maester[error] ' + $message)
+                            if ($line -notmatch '^(\S+ \S+)\s+(STARTED|WAITING|INPROGRESS|COMPLETED|FAILED|ERROR|TIMEDOUT)\s+(\S+)(?:\s+(\d\d:\d\d:\d\d\.\d+))?\s*(.*)$') { continue }
+                            $action = $Matches[2]
+                            $name = $Matches[3]
+                            $duration = $Matches[4]
+                            $message = $Matches[5].Trim() -replace '^Error:\s*', ''
+                            $time = [datetime]::MinValue
+                            $null = [datetime]::TryParseExact($Matches[1], 'yyyy-MM-dd HH:mm:ss.fff', $culture, 'None', [ref]$time)
+                            $lastKind = $kind
+                            $key = "$kind|$name"
+                            $item = $items[$key]
+                            if (-not $item -or $action -eq 'STARTED' -and $item.Status -notin 'Running', 'Waiting') {
+                                $item = @{ Kind = $kind; Name = $name; Start = $time; End = $null; Status = 'Running'; Detail = ''; Seconds = -1 }
+                                $items[$key] = $item
+                                $null = $reported.Remove($key)
+                            }
+                            switch ($action) {
+                                'WAITING' { $item.Status = 'Waiting'; $item.Detail = if ($message -like 'dependency:*') { "waiting for $($message.Substring(11))" } else { $message } }
+                                'INPROGRESS' { $item.Status = 'Running'; if ($message) { $item.Detail = $message } }
+                                default {
+                                    if ($action -eq 'STARTED') { break }
+                                    $item.End = $time
+                                    $item.Status = switch ($action) { 'COMPLETED' { 'Passed' } 'TIMEDOUT' { 'TimedOut' } default { 'Failed' } }
+                                    $item.Detail = if ($action -eq 'COMPLETED') { '' } else { $message }
+                                    $span = [timespan]::Zero
+                                    $item.Seconds = if ($duration -and [timespan]::TryParse($duration, $culture, [ref]$span)) { $span.TotalSeconds }
+                                    elseif ($item.Start -ne [datetime]::MinValue) { ($time - $item.Start).TotalSeconds } else { -1 }
+                                    if ($action -ne 'COMPLETED') {
+                                        $what = switch ($kind) { 'export' { 'Export' } 'database' { 'Import of' } default { 'Test' } }
+                                        $label = if ($kind -eq 'tests' -and $Titles -and $Titles[$name]) { "$name $($Titles[$name])" } else { $name }
+                                        $verb = if ($action -eq 'TIMEDOUT') { 'timed out' } else { 'failed' }
+                                        [Console]::Out.WriteLine('##maester[error] ' + "$what $label $verb" + $(if ($message) { ": $message" } else { '' }))
+                                    }
+                                }
                             }
                         }
                     } finally { $stream.Dispose() }
                 }
+            }
+
+            $value = if ($State) { $State.Value } else { $null }
+            $stage = if ($value -and $value.ContainsKey('_stage')) { [string]$value['_stage'] } else { $null }
+            $kind = switch ($stage) { 'export' { 'export' } 'database' { 'database' } 'tests' { 'tests' } $null { $lastKind } default { $null } }
+            if (-not $stage -and -not $kind) { Start-Sleep -Milliseconds 1000; continue }
+
+            # The exports or tests of the stage: those running, then those that finished, the newest last.
+            $mine = @($items.Values | Where-Object { $_.Kind -eq $kind })
+            $running = @($mine | Where-Object { $_.Status -in 'Running', 'Waiting' } | Sort-Object -Property { $_.Start })
+            $finished = @($mine | Where-Object { $_.Status -notin 'Running', 'Waiting' } | Sort-Object -Property { $_.End })
+            $shown = [System.Collections.Generic.List[object]]::new()
+            foreach ($item in $running) {
+                $detail = $item.Detail
+                $worker = $null
+                if ($value -and $item.Status -eq 'Running' -and $value.TryGetValue("worker_$($item.Name)", [ref]$worker) -and $worker -and $worker.Detail) { $detail = [string]$worker.Detail }
+                $shown.Add(@{ Item = $item; Detail = $detail; Seconds = if ($item.Start -ne [datetime]::MinValue) { [math]::Floor(($now - $item.Start).TotalSeconds) } else { -1 } })
+            }
+            # The last eight that finished, and every one that finished since the last report, so that none is missed.
+            $recent = @($finished | Select-Object -Last 8)
+            foreach ($item in $finished) {
+                $key = "$($item.Kind)|$($item.Name)"
+                if ($reported.Add($key) -or $recent -contains $item) { $shown.Add(@{ Item = $item; Detail = $item.Detail; Seconds = $item.Seconds }) }
+            }
+            # A step of the stage that writes no log, such as creating the database, is shown from the dictionary.
+            if ($running.Count -eq 0 -and $value) {
+                foreach ($key in @($value.Keys)) {
+                    $worker = $null
+                    if ($key -like 'worker_*' -and $value.TryGetValue($key, [ref]$worker) -and $worker -and [string]$worker.Status -eq 'Running') {
+                        $started = [datetime]::MinValue
+                        $seconds = if ([datetime]::TryParse([string]$worker.StartedAt, $culture, 'RoundtripKind', [ref]$started)) { [math]::Floor(($now - $started.ToLocalTime()).TotalSeconds) } else { -1 }
+                        $shown.Add(@{ Item = @{ Kind = ''; Name = [string]$worker.Name; Status = 'Running' }; Detail = [string]$worker.Detail; Seconds = $seconds })
+                    }
+                }
+            }
+            $list = foreach ($entry in $shown) {
+                $item = $entry.Item
+                if ($item.Kind -eq 'tests') { $id = "ZTA.$($item.Name)"; $title = if ($Titles) { [string]$Titles[$item.Name] } else { '' } }
+                else { $id = $item.Name; $title = '' }
+                [ordered]@{ id = $id; title = $title; status = $item.Status; detail = [string]$entry.Detail; seconds = $entry.Seconds }
+            }
+
+            $counted = $value -and $stage -in 'export', 'tests' -and [int]$value['_totalItems'] -gt 0
+            $snapshot = [ordered]@{
+                stages      = $stages
+                stage       = if ($value) { [string]$value['_stageName'] } else { switch ($kind) { 'export' { 'Exporting Tenant Data' } 'database' { 'Importing Data into Database' } default { 'Running Tests' } } }
+                stageNumber = if ($value) { [int]$value['_stageNumber'] } elseif ($kind -eq 'tests') { 2 } else { 1 }
+                stageCount  = $stages.Count
+                completed   = if ($counted) { [int]$value['_completedItems'] } else { @($finished | Where-Object { $_.Status -eq 'Passed' }).Count }
+                total       = if ($counted) { [int]$value['_totalItems'] } else { 0 }
+                failed      = if ($counted) { [int]$value['_failedItems'] } else { @($finished | Where-Object { $_.Status -ne 'Passed' }).Count }
+                running     = if ($counted) { [int]$value['_inProgressItems'] } else { $running.Count }
+                items       = @($list)
+            }
+            if ($stage -eq 'done') { $snapshot.stageNumber = $stages.Count + 1; $snapshot.items = @(); $snapshot.running = 0 }
+            $json = $snapshot | ConvertTo-Json -Compress -Depth 4
+            if ($json -ne $last) {
+                $last = $json
+                [Console]::Out.WriteLine('##maester[progress] ' + $json)
             }
         } catch {
             # Reporting progress must never stop the assessment.
@@ -343,7 +420,7 @@ $null = $reporter.AddScript({
         }
         Start-Sleep -Milliseconds 1000
     }
-}).AddArgument($progressState).AddArgument([string]$request.Assessment.Path)
+}).AddArgument($progressState).AddArgument([string]$request.Assessment.Path).AddArgument($request.Titles)
 $reporting = $reporter.BeginInvoke()
 try {
     $connect = $request.Connect

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace Maester.Engine
@@ -25,7 +26,7 @@ namespace Maester.Engine
         // The rows of the box with its border: at least three lines in it, and while tests run ten rows.
         private const int OutputLeastRows = 5;
         // With a header of progress the box has four more rows while tests run.
-        private int OutputTestRows { get { return _outputProgress != null || _outputErrors.Count > 0 ? 14 : 10; } }
+        private int OutputTestRows { get { return _outputProgress != null && _outputProgress.Items.Length > 0 ? 18 : _outputProgress != null || _outputErrors.Count > 0 ? 14 : 10; } }
         // The errors kept for the header, of which it shows the newest two.
         private const int OutputErrorsKept = 20;
         // The rows the banner leaves the box under it before the tests start, else the header is one line.
@@ -39,6 +40,8 @@ namespace Maester.Engine
         private int _outputCount;
         private Stopwatch _outputClock;
         private MtOutputProgress _outputProgress;
+        // How long the stage has run: it starts again when the stage changes.
+        private Stopwatch _outputStageClock;
         private readonly List<string> _outputErrors = new List<string>();
         private int _outputErrorCount;
 
@@ -100,7 +103,13 @@ namespace Maester.Engine
             lock (_gate)
             {
                 if (_outputTitle == null) OpenOutput(null);
-                _outputProgress = progress == null ? null : progress.Clean();
+                var next = progress == null ? null : progress.Clean();
+                if (next == null) _outputStageClock = null;
+                else if (_outputProgress == null || _outputStageClock == null || next.StageNumber != _outputProgress.StageNumber || next.Stage != _outputProgress.Stage)
+                {
+                    _outputStageClock = Stopwatch.StartNew();
+                }
+                _outputProgress = next;
                 Redraw();
             }
         }
@@ -132,6 +141,7 @@ namespace Maester.Engine
                 _outputCount = 0;
                 _outputClock = null;
                 _outputProgress = null;
+                _outputStageClock = null;
                 _outputErrors.Clear();
                 _outputErrorCount = 0;
                 Redraw();
@@ -147,54 +157,171 @@ namespace Maester.Engine
             _outputCount = 0;
             _outputClock = Stopwatch.StartNew();
             _outputProgress = null;
+            _outputStageClock = null;
             _outputErrors.Clear();
             _outputErrorCount = 0;
         }
 
         /// <summary>
-        /// The header of the box: the stage, a bar of the items done with the counts, what the work is on now, a
-        /// line of status and the newest errors. Empty when there is no progress and no error.
+        /// The header of the box in at most <paramref name="rows"/> rows: the stages as a track (done, the one
+        /// running, those to come), a bar of the items of the stage done with the counts and the time left, the
+        /// items running and the ones that finished last in the way the dashboard lists Maester's own tests, and
+        /// the newest errors. When the log has lines it keeps four rows. Empty when there is no progress and no error.
         /// </summary>
-        private List<Line> BuildOutputHeader(int inner, bool ansi)
+        private List<Line> BuildOutputHeader(int inner, int rows, bool ansi)
         {
-            var lines = new List<Line>();
+            var top = new List<Line>();
             var p = _outputProgress;
-            string dot = Unicode ? " · " : " - ";
+            string dot = Dot;
             if (p != null)
             {
-                if (p.Stage.Length > 0 || p.StageNumber > 0)
+                if (p.Stages.Length > 1) top.Add(BuildStageTrack(p, inner, ansi));
+                else if (p.Stage.Length > 0 || p.StageNumber > 0)
                 {
                     var b = new LineBuilder(ansi);
                     if (p.StageNumber > 0) b.Add(p.StageCount >= p.StageNumber ? "Stage " + p.StageNumber + " of " + p.StageCount : "Stage " + p.StageNumber, "2");
                     if (p.StageNumber > 0 && p.Stage.Length > 0) b.Add(dot, "2");
                     b.Add(p.Stage, "1");
-                    lines.Add(Truncate(b.Build(), inner, ansi));
+                    top.Add(Truncate(b.Build(), inner, ansi));
                 }
-                if (p.Total > 0 || p.Completed > 0 || p.Failed > 0 || p.Running > 0)
+                var counts = new LineBuilder(ansi);
+                // The name of the stage, when the track does not show it already (a stage can have steps of its own).
+                bool named = p.StageNumber >= 1 && p.StageNumber <= p.Stages.Length && string.Equals(p.Stages[p.StageNumber - 1], p.Stage, StringComparison.OrdinalIgnoreCase);
+                if (p.Stages.Length > 1 && p.Stage.Length > 0 && !named) counts.Add(p.Stage, "1").Add("  ");
+                if (p.Total > 0)
                 {
-                    var b = new LineBuilder(ansi);
-                    if (p.Total > 0)
+                    int done = Math.Min(p.Completed + p.Failed, p.Total);
+                    AddBar(counts, done, p.Total, Math.Max(4, Math.Min(30, inner / 4)));
+                    counts.Add(" " + N(done) + " / " + N(p.Total));
+                    counts.Add(" " + (100L * done / p.Total).ToString(CultureInfo.InvariantCulture) + "%", "2");
+                }
+                else if (p.Completed > 0) counts.Add(N(p.Completed) + " done");
+                if (p.Failed > 0) counts.Add(dot, "2").Add(N(p.Failed) + " failed", "31");
+                if (p.Running > 0) counts.Add(dot, "2").Add(N(p.Running) + " running", "2");
+                if (_outputStageClock != null && (p.Total > 0 || p.Stage.Length > 0))
+                {
+                    var elapsed = _outputStageClock.Elapsed;
+                    counts.Add(dot, "2").Add(Short(elapsed), "2");
+                    int finished = p.Completed + p.Failed;
+                    if (p.Total > finished && finished > 0 && elapsed.TotalSeconds >= 15)
                     {
-                        AddBar(b, Math.Min(p.Completed, p.Total), p.Total, Math.Max(4, Math.Min(30, inner / 3)));
-                        b.Add(" " + N(p.Completed) + " / " + N(p.Total));
+                        var left = TimeSpan.FromSeconds(elapsed.TotalSeconds / finished * (p.Total - finished));
+                        counts.Add(dot, "2").Add("about " + Short(left) + " left", "2");
                     }
-                    else b.Add(N(p.Completed) + " done");
-                    if (p.Failed > 0) b.Add(dot, "2").Add(N(p.Failed) + " failed", "31");
-                    if (p.Running > 0) b.Add(dot, "2").Add(N(p.Running) + " running", "2");
-                    lines.Add(Truncate(b.Build(), inner, ansi));
                 }
-                if (p.Current.Length > 0)
-                {
-                    var b = new LineBuilder(ansi).Add(Spinner() + " ", "36").Add(string.Join(", ", p.Current));
-                    lines.Add(Truncate(b.Build(), inner, ansi));
-                }
-                if (p.Status.Length > 0) lines.Add(Truncate(new LineBuilder(ansi).Add(p.Status, "2").Build(), inner, ansi));
+                if (counts.Length > 0) top.Add(Truncate(counts.Build(), inner, ansi));
             }
+            var errors = new List<Line>();
             for (int i = Math.Max(0, _outputErrors.Count - 2); i < _outputErrors.Count; i++)
             {
-                lines.Add(Truncate(new LineBuilder(ansi).Add(Bad + " ", "31").Add(_outputErrors[i], "31").Build(), inner, ansi));
+                errors.Add(Truncate(new LineBuilder(ansi).Add(Bad + " ", "31").Add(_outputErrors[i], "31").Build(), inner, ansi));
+            }
+
+            // The items have the rows the stages, the counts and the errors leave, and the log keeps four.
+            var items = new List<Line>();
+            if (p != null)
+            {
+                int room = rows - top.Count - errors.Count - (_output.Count > 0 ? 4 : 0);
+                if (p.Items.Length > 0) items = BuildOutputItems(p.Items, inner, Math.Max(0, room), ansi);
+                else
+                {
+                    if (p.Current.Length > 0) items.Add(Truncate(new LineBuilder(ansi).Add(Spinner() + " ", "36").Add(string.Join(", ", p.Current)).Build(), inner, ansi));
+                    if (p.Status.Length > 0) items.Add(Truncate(new LineBuilder(ansi).Add(p.Status, "2").Build(), inner, ansi));
+                    if (items.Count > Math.Max(0, room)) items.RemoveRange(Math.Max(0, room), items.Count - Math.Max(0, room));
+                }
+            }
+            var lines = new List<Line>(top);
+            lines.AddRange(items);
+            lines.AddRange(errors);
+            return lines;
+        }
+
+        /// <summary>
+        /// The stages as the dashboard draws its phases: a mark and a name for each, joined by a line that is solid
+        /// up to the stage running. Too long for the box, the stages other than the one running show their number only.
+        /// </summary>
+        private Line BuildStageTrack(MtOutputProgress p, int inner, bool ansi)
+        {
+            int current = p.StageNumber;
+            for (int form = 0; form < 2; form++)
+            {
+                var b = new LineBuilder(ansi);
+                for (int i = 0; i < p.Stages.Length; i++)
+                {
+                    int number = i + 1;
+                    var state = number < current ? SegmentState.Done : number == current ? SegmentState.Active : SegmentState.Waiting;
+                    string name = form == 0 || state == SegmentState.Active ? number + " " + p.Stages[i] : number.ToString(CultureInfo.InvariantCulture);
+                    if (i > 0)
+                    {
+                        b.Add(" ");
+                        if (state == SegmentState.Waiting) b.Add(new string(Unicode ? '┄' : '.', 2), WaitingCell);
+                        else b.Add(new string(Unicode ? '━' : '=', 2), "32");
+                        b.Add(" ");
+                    }
+                    b.AddLine(StopLabel(name, state, ansi));
+                }
+                if (b.Length <= inner || form == 1) return Truncate(b.Build(), inner, ansi);
+            }
+            return Blank();
+        }
+
+        /// <summary>
+        /// The items in at most <paramref name="rows"/> rows: the ones running first, oldest first, as the
+        /// dashboard shows the tests that run, then the ones that finished, newest first, as it shows the tests
+        /// that ran, each with its time at the right.
+        /// </summary>
+        private List<Line> BuildOutputItems(MtOutputItem[] items, int inner, int rows, bool ansi)
+        {
+            var lines = new List<Line>();
+            var running = new List<MtOutputItem>();
+            var finished = new List<MtOutputItem>();
+            foreach (var item in items) (item.IsRunning ? running : finished).Add(item);
+            int hidden = 0;
+            // Room for a line that counts the items running that do not fit.
+            int runningRows = running.Count > rows ? Math.Max(0, rows - 1) : running.Count;
+            hidden = running.Count - runningRows;
+            for (int i = 0; i < runningRows; i++)
+            {
+                var item = running[i];
+                var b = new LineBuilder(ansi).Add(Spinner() + " ", "36");
+                AddItemName(b, item, "1", null);
+                if (item.Detail.Length > 0) b.Add("  " + item.Detail, "2");
+                lines.Add(ItemLine(b, item.Seconds, inner, ansi));
+            }
+            if (hidden > 0) lines.Add(new LineBuilder(ansi).Add("  " + N(hidden) + " more running", "2").Build());
+            for (int i = finished.Count - 1; i >= 0 && lines.Count < rows; i--)
+            {
+                var item = finished[i];
+                string mark;
+                string colour;
+                switch (item.Status)
+                {
+                    case "Failed": mark = Bad; colour = "31"; break;
+                    case "TimedOut": mark = "!"; colour = "33"; break;
+                    case "Skipped": mark = Dash; colour = "2"; break;
+                    default: mark = Ok; colour = "32"; break;
+                }
+                var b = new LineBuilder(ansi).Add(mark + " ", colour);
+                AddItemName(b, item, "2", "2");
+                if (item.Status == "Failed" || item.Status == "TimedOut") { if (item.Detail.Length > 0) b.Add("  " + item.Detail, colour); }
+                lines.Add(ItemLine(b, item.Seconds, inner, ansi));
             }
             return lines;
+        }
+
+        private void AddItemName(LineBuilder b, MtOutputItem item, string idColour, string titleColour)
+        {
+            if (item.Title.Length == 0) b.Add(item.Id, idColour == "1" ? null : idColour);
+            else b.Add(FitId(item.Id) + " ", idColour).Add(item.Title, titleColour);
+        }
+
+        private Line ItemLine(LineBuilder b, double seconds, int inner, bool ansi)
+        {
+            if (seconds < 0) return Truncate(b.Build(), inner, ansi);
+            string time = Short(TimeSpan.FromSeconds(seconds)).PadLeft(7);
+            var cut = Truncate(b.Build(), inner - time.Length - 1, ansi);
+            string gap = new string(' ', Math.Max(1, inner - time.Length - cut.Plain.Length));
+            return new Line { Text = cut.Text + gap + (ansi ? Esc + "2m" + time + Esc + "0m" : time), Plain = cut.Plain + gap + time };
         }
 
         /// <summary>
@@ -211,7 +338,7 @@ namespace Maester.Engine
             int pinned = _outputStatus == null ? 0 : inside >= 4 ? 2 : inside >= 2 ? 1 : 0;
             inside -= pinned;
             // The header has the top rows; the log has the rows under it, after a dashed line when there is room.
-            var head = BuildOutputHeader(inner, ansi);
+            var head = BuildOutputHeader(inner, inside, ansi);
             if (head.Count > inside) head.RemoveRange(inside, head.Count - inside);
             inside -= head.Count;
             bool ruled = head.Count > 0 && inside >= 2;
@@ -325,6 +452,15 @@ namespace Maester.Engine
         public string[] Current { get; set; }
         /// <summary>A line of status that fits no other part.</summary>
         public string Status { get; set; }
+        /// <summary>The names of all the stages, in order: the header draws them as a track, StageNumber the one running.</summary>
+        public string[] Stages { get; set; }
+        /// <summary>The items running and the ones that finished last, each with its status and time.</summary>
+        public MtOutputItem[] Items { get; set; }
+
+        private static string Text(string s)
+        {
+            return MtConsoleRenderer.OutputText((s ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim();
+        }
 
         /// <summary>A copy made safe to draw: text from another program cleaned, no negative counts.</summary>
         public MtOutputProgress Clean()
@@ -334,13 +470,28 @@ namespace Maester.Engine
             {
                 foreach (var c in Current)
                 {
-                    string t = MtConsoleRenderer.OutputText((c ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim();
+                    string t = Text(c);
                     if (t.Length > 0) current.Add(t);
+                }
+            }
+            var stages = new List<string>();
+            if (Stages != null) foreach (var st in Stages) stages.Add(Text(st));
+            var items = new List<MtOutputItem>();
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    if (item == null) continue;
+                    var clean = new MtOutputItem { Id = Text(item.Id), Title = Text(item.Title), Detail = Text(item.Detail), Status = Text(item.Status), Seconds = item.Seconds };
+                    if (clean.Id.Length == 0 && clean.Title.Length == 0) continue;
+                    if (clean.Status.Length == 0) clean.Status = "Running";
+                    if (double.IsNaN(clean.Seconds) || double.IsInfinity(clean.Seconds)) clean.Seconds = -1;
+                    items.Add(clean);
                 }
             }
             return new MtOutputProgress
             {
-                Stage = MtConsoleRenderer.OutputText((Stage ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim(),
+                Stage = Text(Stage),
                 StageNumber = Math.Max(0, StageNumber),
                 StageCount = Math.Max(0, StageCount),
                 Completed = Math.Max(0, Completed),
@@ -348,8 +499,26 @@ namespace Maester.Engine
                 Failed = Math.Max(0, Failed),
                 Running = Math.Max(0, Running),
                 Current = current.ToArray(),
-                Status = MtConsoleRenderer.OutputText((Status ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ')).Trim(),
+                Status = Text(Status),
+                Stages = stages.ToArray(),
+                Items = items.ToArray(),
             };
         }
+    }
+
+    /// <summary>An item of the work in the output box, such as an export or a test of the tool, with its status and time.</summary>
+    public sealed class MtOutputItem
+    {
+        /// <summary>What names the item, such as a test ID, and its title.</summary>
+        public string Id { get; set; }
+        public string Title { get; set; }
+        /// <summary>What the item is doing while it runs, or why it failed.</summary>
+        public string Detail { get; set; }
+        /// <summary>Running (the default), Passed, Failed, TimedOut or Skipped.</summary>
+        public string Status { get; set; }
+        /// <summary>How long it has run, or ran; negative when not known.</summary>
+        public double Seconds { get; set; } = -1;
+
+        internal bool IsRunning { get { return string.Equals(Status, "Running", StringComparison.OrdinalIgnoreCase) || string.Equals(Status, "Waiting", StringComparison.OrdinalIgnoreCase); } }
     }
 }

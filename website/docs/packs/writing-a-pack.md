@@ -150,8 +150,12 @@ column; in the compact layout, CI and redirected output they are written to the 
 - `Write-MtTestProgress` shows where the tool is, as a header at the top of
   the box: the stage (`-Stage`, `-StageNumber`, `-StageCount`), a bar of the items done (`-Completed`, `-Total`,
   `-Failed`, `-Running`), what it is working on (`-Current`, `-Status`), and the errors it reported
-  (`-ErrorMessage`), which the box also counts. Each call replaces the progress before it, so pass everything you
-  know each time; a call with only `-ErrorMessage` keeps the progress.
+  (`-ErrorMessage`), which the box also counts. With `-Stages` (the names of all the stages) the stages are drawn
+  as a track, like the phases of a Maester run. With `-Items` (each with `Id`, and optionally `Title`, `Status`,
+  `Detail` and `Seconds`) the box lists the items running and those that finished, with their result and time,
+  the way the dashboard lists Maester's own tests; outside the dashboard each finished item is written once. Each
+  call replaces the progress before it, so pass everything you know each time; a call with only `-ErrorMessage`
+  keeps the progress.
 
 ```powershell
 Write-MtTestOutput -Title 'Collecting the tenant data'
@@ -163,13 +167,13 @@ A tool in another process does not need to call Maester to report its progress. 
 `Write-MtTestOutput`, and have it write lines of this form to standard output, from any language:
 
 ```text
-##maester[progress] {"stage":"Exporting","stageNumber":1,"stageCount":3,"completed":12,"total":40,"failed":1,"running":2,"current":["Users","Groups"],"status":"Users: page 3"}
+##maester[progress] {"stages":["Export","Tests","Report"],"stageNumber":1,"stage":"Exporting","completed":12,"total":40,"failed":1,"items":[{"id":"Users","detail":"page 3","seconds":12},{"id":"Groups","status":"Passed","seconds":4.2}]}
 ##maester[error] The export of Devices failed: Forbidden
 ```
 
 These lines set the header instead of showing in the log. The JSON object takes the names of the parameters of
 `Write-MtTestProgress` in any case (`error` for `-ErrorMessage`), and leaves out what it does not know. Write a
-`progress` line when something changes, not on a timer: each one is drawn. A line that cannot be read is dropped.
+`progress` line when something changes (at most a few times a second): each one is drawn. A line that cannot be read is dropped.
 
 The [Zero Trust Assessment pack](./zero-trust-assessment.md) is a worked example: its child process reads the
 progress the assessment keeps and the progress logs it writes, once a second, and writes these lines (see
