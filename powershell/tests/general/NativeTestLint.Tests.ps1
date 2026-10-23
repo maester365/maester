@@ -1,10 +1,3 @@
-BeforeDiscovery {
-    $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
-    $script:NativeFiles = @(Get-ChildItem -Path (Join-Path $repoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
-            Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' } |
-            ForEach-Object { @{ Name = $_.Name; Path = $_.FullName } })
-}
-
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force -WarningAction SilentlyContinue
 
@@ -19,69 +12,102 @@ BeforeAll {
 
 # Rules for built-in native tests (design section 6): the engine checks connections and licences and turns an
 # exception into an Error row, so the tests do not repeat that. Custom tests are not linted.
-Describe 'Native built-in test <Name>' -ForEach $NativeFiles {
+# One It per rule over every file, naming the files that break it: one Describe per file made 5,000+ tests.
+Describe 'Native built-in tests' {
     BeforeAll {
-        $script:function = Get-TestFunction -Path $Path
-        $script:test = InModuleScope Maester -Parameters @{ P = $Path } { Read-MtNativeTest -Path $P }
+        $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
+        $paths = @(Get-ChildItem -Path (Join-Path $repoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
+                Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' } | ForEach-Object { $_.FullName })
+        $tests = InModuleScope Maester -Parameters @{ Paths = $paths } {
+            param($Paths)
+            $byPath = @{}
+            foreach ($p in $Paths) { $byPath[$p] = Read-MtNativeTest -Path $p }
+            $byPath
+        }
+        $script:files = foreach ($p in $paths) {
+            [pscustomobject]@{ Name = Split-Path $p -Leaf; Function = Get-TestFunction -Path $p; Test = $tests[$p] }
+        }
     }
 
-    It 'Is a valid native test' {
-        $script:function | Should -Not -BeNullOrEmpty
-        $script:test.Errors | Should -HaveCount 0 -Because (($script:test.Errors | ForEach-Object { "$($_.Code): $($_.Message)" }) -join '; ')
+    It 'Finds the built-in tests' {
+        $script:files.Count | Should -BeGreaterThan 500
     }
 
-    It 'Describes every parameter' {
-        $missing = @($script:test.Parameters | Where-Object { -not $_.Description } | ForEach-Object { $_.Name })
-        $missing | Should -BeNullOrEmpty -Because 'the run config reference and Get-MtTest show the description'
+    It 'Are valid native tests' {
+        $problems = foreach ($f in $script:files) {
+            if (-not $f.Function) { "$($f.Name): no function with a [MaesterTest] attribute" }
+            foreach ($e in $f.Test.Errors) { "$($f.Name): $($e.Code): $($e.Message)" }
+        }
+        @($problems) | Should -BeNullOrEmpty
     }
 
-    It 'Does not check its own connection' {
-        $calls = @($script:function.Body.FindAll({
+    It 'Describe every parameter' {
+        $problems = foreach ($f in $script:files) {
+            $missing = @($f.Test.Parameters | Where-Object { -not $_.Description } | ForEach-Object { $_.Name })
+            if ($missing) { "$($f.Name): $($missing -join ', ')" }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'the run config reference and Get-MtTest show the description'
+    }
+
+    It 'Do not check their own connection' {
+        $problems = foreach ($f in $script:files | Where-Object Function) {
+            $f.Function.Body.FindAll({
                     param($n)
                     $n -is [System.Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'Test-MtConnection'
-                }, $true) | ForEach-Object { $_.Extent.Text })
-        $calls | Should -BeNullOrEmpty -Because 'the Service property makes the engine skip the test when the service is not connected'
+                }, $true) | ForEach-Object { "$($f.Name): $($_.Extent.Text)" }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'the Service property makes the engine skip the test when the service is not connected'
     }
 
-    It 'Does not check its own licence' {
+    It 'Do not check their own licence' {
         # Tests whose licence need is not one License list for every run (a family where only some
         # instances need a premium licence) keep their own check.
         $allowed = @(
             'MT.1024' # Entra recommendations: only the premium recommendation instances need Entra ID P2.
         )
-        if ($script:test.Id -in $allowed) { return }
-        $text = $script:function.Body.Extent.Text
-        $call = [regex]::Match($text, '\bGet-MtLicenseInformation\b')
-        $skip = if ($call.Success) { [regex]::Match($text.Substring($call.Index), '-SkippedBecause\s+[''"]?NotLicensed\w*') }
-        $skip.Success | Should -BeFalse -Because 'License makes the engine skip the test when the tenant is not licensed; add the ID to the allow-list only when the licence need varies by instance or the result branches on the plan'
+        $problems = foreach ($f in $script:files | Where-Object Function) {
+            if ($f.Test.Id -in $allowed) { continue }
+            $text = $f.Function.Body.Extent.Text
+            $call = [regex]::Match($text, '\bGet-MtLicenseInformation\b')
+            if ($call.Success -and [regex]::Match($text.Substring($call.Index), '-SkippedBecause\s+[''"]?NotLicensed\w*').Success) { $f.Name }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'License makes the engine skip the test when the tenant is not licensed; add the ID to the allow-list only when the licence need varies by instance or the result branches on the plan'
     }
 
-    It 'Does not catch every exception only to report -SkippedBecause Error' {
+    It 'Do not catch every exception only to report -SkippedBecause Error' {
         # A catch that handles a specific case (403 -> NotAuthorized, then Error otherwise) is fine.
-        $catches = @($script:function.Body.FindAll({
-                    param($n)
-                    $n -is [System.Management.Automation.Language.CatchClauseAst] -and $n.CatchTypes.Count -eq 0 -and
-                    $n.Body.Extent.Text -match '^\{\s*Add-MtTestResultDetail\s+-SkippedBecause\s+Error(\s+-SkippedError\s+\$_)?\s*;?\s*(return(\s+\$null)?)?\s*;?\s*\}$'
-                }, $true))
-        $catches | Should -BeNullOrEmpty -Because 'the engine reports an exception as an Error row'
+        $problems = foreach ($f in $script:files | Where-Object Function) {
+            $catches = @($f.Function.Body.FindAll({
+                        param($n)
+                        $n -is [System.Management.Automation.Language.CatchClauseAst] -and $n.CatchTypes.Count -eq 0 -and
+                        $n.Body.Extent.Text -match '^\{\s*Add-MtTestResultDetail\s+-SkippedBecause\s+Error(\s+-SkippedError\s+\$_)?\s*;?\s*(return(\s+\$null)?)?\s*;?\s*\}$'
+                    }, $true))
+            if ($catches) { $f.Name }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'the engine reports an exception as an Error row'
     }
 
-    It 'Does not write script or global variables' {
-        $writes = @($script:function.Body.FindAll({
+    It 'Do not write script or global variables' {
+        $problems = foreach ($f in $script:files | Where-Object Function) {
+            $f.Function.Body.FindAll({
                     param($n)
                     $n -is [System.Management.Automation.Language.AssignmentStatementAst] -and
                     $n.Left -is [System.Management.Automation.Language.VariableExpressionAst] -and
-                    $n.Left.VariablePath.DriveName -in 'script', 'global'
-                }, $true) | ForEach-Object { $_.Left.Extent.Text })
-        $writes | Should -BeNullOrEmpty -Because 'tests can run in parallel; keep state in the session cache helpers'
+                    ($n.Left.VariablePath.IsScript -or $n.Left.VariablePath.IsGlobal)
+                }, $true) | ForEach-Object { "$($f.Name): $($_.Left.Extent.Text)" }
+        }
+        @($problems) | Should -BeNullOrEmpty -Because 'tests can run in parallel; keep state in the session cache helpers'
     }
 
-    It 'Declares Platform when it uses Windows-only commands' {
-        # The ActiveDirectory service probe already skips these tests where the module is missing.
-        if (@($script:test.Service) -contains 'ActiveDirectory') { return }
-        $windowsOnly = @($script:function.Body.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] }, $true) |
-                Where-Object { $_.GetCommandName() -match '^(Get-AD(User|Group|GroupMember|Computer|Domain|DomainController|Forest|Object|OrganizationalUnit|Trust|RootDSE|ServiceAccount|DefaultDomainPasswordPolicy|FineGrainedPasswordPolicy)|Get-GPO\w*|Get-WmiObject|Get-CimInstance)$' })
-        if ($windowsOnly) { @($script:test.Platform) | Should -Contain 'Windows' }
+    It 'Declare Platform when they use Windows-only commands' {
+        $problems = foreach ($f in $script:files | Where-Object Function) {
+            # The ActiveDirectory service probe already skips these tests where the module is missing.
+            if (@($f.Test.Service) -contains 'ActiveDirectory') { continue }
+            $windowsOnly = @($f.Function.Body.FindAll({ param($n) $n -is [System.Management.Automation.Language.CommandAst] }, $true) |
+                    Where-Object { $_.GetCommandName() -match '^(Get-AD(User|Group|GroupMember|Computer|Domain|DomainController|Forest|Object|OrganizationalUnit|Trust|RootDSE|ServiceAccount|DefaultDomainPasswordPolicy|FineGrainedPasswordPolicy)|Get-GPO\w*|Get-WmiObject|Get-CimInstance)$' })
+            if ($windowsOnly -and @($f.Test.Platform) -notcontains 'Windows') { $f.Name }
+        }
+        @($problems) | Should -BeNullOrEmpty
     }
 }
 

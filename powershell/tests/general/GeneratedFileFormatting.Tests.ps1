@@ -63,9 +63,15 @@ Describe 'Generated PowerShell file formatting' {
     It 'keeps all tracked PowerShell files free of trailing whitespace with one final newline' {
         $powerShellFiles = & git -C $script:RepoRoot ls-files '*.ps1' '*.psd1' '*.psm1'
 
-        foreach ($file in $powerShellFiles) {
-            Assert-GeneratedPowerShellFileFormatting -Path (Join-Path $script:RepoRoot $file)
+        # One regex per file rather than one Should per line: the repository has over 150,000 lines.
+        $problems = foreach ($file in $powerShellFiles) {
+            $content = [System.IO.File]::ReadAllText((Join-Path $script:RepoRoot $file))
+            if ($content -notmatch "`n$") { "$($file): no final newline" }
+            elseif ($content -match "(\r?\n){2}$") { "$($file): more than one final newline" }
+            $line = [regex]::Match($content, '(?m)^.*[ \t]+\r?$')
+            if ($line.Success) { "$($file): trailing whitespace on line $(($content.Substring(0, $line.Index) -split "`n").Count)" }
         }
+        @($problems) | Should -BeNullOrEmpty
     }
 
     It 'normalizes ORCA generated PowerShell files to one final newline' {
