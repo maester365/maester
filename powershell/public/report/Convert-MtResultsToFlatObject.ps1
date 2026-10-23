@@ -148,6 +148,10 @@
             if ($_.ResultDetail.TestResult.Length -gt 30000) {
                 Write-Warning -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters."
                 $TestResultDetail = "$TruncationFYI`n`n$($_.ResultDetail.TestResult -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
+                # Removing the impacted resources section is not enough when the detail has no such section.
+                if ($TestResultDetail.Length -gt 30000) {
+                    $TestResultDetail = $TestResultDetail.Substring(0, 30000)
+                }
             } else {
                 $TestResultDetail = $_.ResultDetail.TestResult
             }

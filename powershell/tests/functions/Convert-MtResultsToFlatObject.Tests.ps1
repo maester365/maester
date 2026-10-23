@@ -41,4 +41,23 @@ Describe 'Convert-MtResultsToFlatObject' -Tag 'Unit' {
 
         $flat[0].ResultDetail | Should -BeLike '*START-OF-LONG*'
     }
+
+    It 'keeps a long detail without the section headings within 30000 characters' {
+        $long = "START-OF-LONG`n$('x' * 40000)"
+        $result = [pscustomobject]@{ Tests = @((New-TestRow 'A' $long)) }
+
+        $flat = Convert-MtResultsToFlatObject -InputObject $result -WarningAction SilentlyContinue
+
+        $flat[0].ResultDetail.Length | Should -BeLessOrEqual 30000
+        $flat[0].ResultDetail | Should -BeLike 'NOTE: DETAILS ARE TRUNCATED*START-OF-LONG*'
+    }
+
+    It 'leaves a detail of exactly 30000 characters unchanged' {
+        $detail = 'y' * 30000
+        $result = [pscustomobject]@{ Tests = @((New-TestRow 'A' $detail)) }
+
+        $flat = Convert-MtResultsToFlatObject -InputObject $result -WarningAction SilentlyContinue
+
+        $flat[0].ResultDetail | Should -BeExactly $detail
+    }
 }
