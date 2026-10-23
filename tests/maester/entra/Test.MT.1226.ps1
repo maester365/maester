@@ -24,7 +24,7 @@
         Product = 'entra',
         RelatedProduct = 'github',
         Feature = 'applications',
-        Area = 'authentication',
+        Area = 'applications',
         ResourceType = 'Application',
         Severity = 'Medium',
         UserImpact = 'Low',
