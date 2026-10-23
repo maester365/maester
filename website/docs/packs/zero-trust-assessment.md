@@ -72,6 +72,12 @@ signs in with `Connect-ZtAssessment`:
   needs the Graph application permissions that `Get-ZtGraphScope` lists.
 - Otherwise it signs in interactively, so you sign in a second time.
 
+While it runs, what the assessment writes is shown live: in the full-screen dashboard of an interactive run it
+scrolls in a box in the middle of the screen, under the phases of the run, and in other modes (CI, redirected
+output, `-Verbosity Normal`) it is written to the console, indented. The assessment runs with `-ShowLog`, so it lists
+the tests it runs, and its progress bars become one line at the bottom of the box that updates in place. Set
+`ZeroTrustAssessment.ShowLog` to `false` for its shorter output.
+
 The assessment's own report and raw export go to a temporary folder that Maester deletes after reading it, because
 the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
 
@@ -87,6 +93,7 @@ All settings go in `GlobalSettings` of `maester-config.json`.
 | `ZeroTrustAssessment.Pillar` | `All` | Run one pillar only: `Identity`, `Devices`, `Network`, `Data`, `Infrastructure`, `SecOps` or `AI`. |
 | `ZeroTrustAssessment.Tests` | all | Run only these assessment test IDs, for example `["21770", "21771"]`. |
 | `ZeroTrustAssessment.Days` | `30` | Days of sign-in logs the assessment reads (1 to 30). |
+| `ZeroTrustAssessment.ShowLog` | `true` | Run the assessment with `-ShowLog`, which lists the tests it runs in its live output. |
 | `ZeroTrustAssessment.DisableTelemetry` | `true` | The assessment sends the tenant ID to Microsoft unless this is `true`. |
 | `ZeroTrustAssessment.Connect` | none | Further `Connect-ZtAssessment` parameters, for example `{ "Service": ["Graph", "Azure"], "UseDeviceCode": true }`. |
 

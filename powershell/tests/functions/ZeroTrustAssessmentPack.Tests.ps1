@@ -127,7 +127,10 @@ Describe 'Zero Trust Assessment pack' {
             Set-Content -LiteralPath (Join-Path $moduleFolder 'ZeroTrustAssessment.psm1') -Value @"
 function Connect-ZtAssessment { param([string] `$TenantId, [string] `$ClientId, `$Certificate, [string[]] `$Service) `$script:Connect = `$PSBoundParameters }
 function Invoke-ZtAssessment {
-    param([string] `$Path, [string] `$Pillar, [switch] `$NoBrowser, [switch] `$DisableTelemetry, [int] `$Days, [string[]] `$Tests, [string] `$ConfigurationFile)
+    param([string] `$Path, [string] `$Pillar, [switch] `$NoBrowser, [switch] `$DisableTelemetry, [switch] `$ShowLog, [int] `$Days, [string[]] `$Tests, [string] `$ConfigurationFile)
+    Write-Host "Running test 21828"
+    Write-Progress -Activity 'Processing 1 Tests' -Status 'Completed: 1 / 1' -PercentComplete 100
+    [Console]::Error.WriteLine('a line on stderr')
     `$export = New-Item -ItemType Directory -Path (Join-Path `$Path 'zt-export') -Force
     Copy-Item -LiteralPath '$(Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json')' -Destination `$export
     `$config = if (`$ConfigurationFile) { Get-Content -LiteralPath `$ConfigurationFile -Raw | ConvertFrom-Json } else { `$null }
@@ -160,7 +163,20 @@ function Invoke-ZtAssessment {
             $call.Assessment.Tests | Should -Be @('21828')
             $call.Assessment.NoBrowser | Should -BeTrue
             $call.Assessment.DisableTelemetry | Should -BeTrue
+            $call.Assessment.ShowLog | Should -BeTrue
             $call.Config.GlobalSettings.EmergencyAccessAccounts[0].UserPrincipalName | Should -Be 'breakglass@contoso.com'
+        }
+
+        It 'shows what the child writes while it runs, its progress as a line of progress' {
+            $script:Shown = [System.Collections.Generic.List[object]]::new()
+            Mock -ModuleName Maester Write-MtHostLine { $script:Shown.Add($Text) }
+            $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
+            $rows.Count | Should -Be 12
+            $script:Shown | Should -Contain '  Microsoft Zero Trust Assessment 9.9.9'
+            $script:Shown | Should -Contain '    Running test 21828'
+            $script:Shown | Should -Contain '    Processing 1 Tests: Completed: 1 / 1 (100%)'
+            $script:Shown | Should -Contain '    a line on stderr'
+            @($script:Shown | Where-Object { $_ -match 'maester-progress' }) | Should -BeNullOrEmpty
         }
 
         It 'signs the child in with the app and certificate Maester uses' {
