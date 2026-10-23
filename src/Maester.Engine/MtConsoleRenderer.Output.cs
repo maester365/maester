@@ -96,14 +96,25 @@ namespace Maester.Engine
 
         /// <summary>
         /// Sets where the work in the output box is, shown as a header at the top of the box, opening the box
-        /// when it is not open. Each call replaces the one before; null removes the header.
+        /// when it is not open. Each call replaces the one before; null removes the header and the errors, and opens no box.
         /// </summary>
         public void SetOutputProgress(MtOutputProgress progress)
         {
             lock (_gate)
             {
+                if (progress == null)
+                {
+                    // Clearing removes the progress and the errors, and opens no box.
+                    if (_outputTitle == null) return;
+                    _outputProgress = null;
+                    _outputStageClock = null;
+                    _outputErrors.Clear();
+                    _outputErrorCount = 0;
+                    Redraw();
+                    return;
+                }
                 if (_outputTitle == null) OpenOutput(null);
-                var next = progress == null ? null : progress.Clean();
+                var next = progress.Clean();
                 if (next == null) _outputStageClock = null;
                 else if (_outputProgress == null || _outputStageClock == null || next.StageNumber != _outputProgress.StageNumber || next.Stage != _outputProgress.Stage)
                 {
@@ -337,6 +348,8 @@ namespace Maester.Engine
             // The line of progress has the last row, under a dashed line when there are rows for one.
             int pinned = _outputStatus == null ? 0 : inside >= 4 ? 2 : inside >= 2 ? 1 : 0;
             inside -= pinned;
+            // The rows above the progress line, which the header, the log and blank rows fill.
+            int body = inside;
             // The header has the top rows; the log has the rows under it, after a dashed line when there is room.
             var head = BuildOutputHeader(inner, inside, ansi);
             if (head.Count > inside) head.RemoveRange(inside, head.Count - inside);
@@ -355,7 +368,7 @@ namespace Maester.Engine
             if (ruled) lines.Add(new Line { Text = string.Empty, Plain = string.Empty, Rule = "Log", Dashed = true });
             if (shown.Count == 0 && (head.Count == 0 || ruled)) lines.Add(new LineBuilder(ansi).Add(Spinner() + " Waiting for output" + Ellipsis(), "2").Build());
             foreach (var s in shown) lines.Add(new Line { Text = s, Plain = s });
-            while (lines.Count < inside) lines.Add(Blank());
+            while (lines.Count < body) lines.Add(Blank());
             if (pinned == 2) lines.Add(new Line { Text = string.Empty, Plain = string.Empty, Rule = "Progress", Dashed = true });
             if (pinned > 0) lines.Add(new LineBuilder(ansi).Add(Spinner() + " ", "36").Add(_outputStatus).Build());
 
@@ -485,7 +498,8 @@ namespace Maester.Engine
                     var clean = new MtOutputItem { Id = Text(item.Id), Title = Text(item.Title), Detail = Text(item.Detail), Status = Text(item.Status), Seconds = item.Seconds };
                     if (clean.Id.Length == 0 && clean.Title.Length == 0) continue;
                     if (clean.Status.Length == 0) clean.Status = "Running";
-                    if (double.IsNaN(clean.Seconds) || double.IsInfinity(clean.Seconds)) clean.Seconds = -1;
+                    // A time TimeSpan cannot hold is unknown.
+                    if (double.IsNaN(clean.Seconds) || double.IsInfinity(clean.Seconds) || clean.Seconds >= TimeSpan.MaxValue.TotalSeconds) clean.Seconds = -1;
                     items.Add(clean);
                 }
             }

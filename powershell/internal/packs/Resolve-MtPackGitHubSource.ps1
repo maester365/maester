@@ -97,7 +97,7 @@ function Resolve-MtPackGitHubSource {
     } elseif ($releases.Count -gt 0) {
         $chosen = $null
         foreach ($candidate in $releases) {
-            $candidateCommit = & $commitOf $candidate.tag_name
+            $candidateCommit = & $commitOf "refs/tags/$($candidate.tag_name)"
             $age = & $ageOf $candidate $candidateCommit
             if ($IncludeRecent -or $age.Hours -ge $CooldownHours) { $chosen = [pscustomobject]@{ Release = $candidate; Commit = $candidateCommit }; break }
             if (-not $newer) { $newer = [pscustomobject]@{ TagName = [string]$candidate.tag_name; Commit = $candidateCommit; AgeHours = [math]::Round($age.Hours, 1); AgeSource = $age.Source } }

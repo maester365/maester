@@ -458,6 +458,7 @@ try {
         Write-MtTestOutput -InputObject $Line -Progress:$progress
     }
     $process = $null
+    $completed = $false
     try {
         Write-MtTestOutput -Title "Microsoft Zero Trust Assessment $($module.Version)" -InputObject 'Running the assessment in a separate PowerShell process. This can take an hour or more on a large tenant.'
         $process = [System.Diagnostics.Process]::Start($startInfo)
@@ -486,12 +487,15 @@ try {
             $last = if ($tail.Count -gt 0) { " Its last lines:`n" + ($tail.ToArray() -join "`n") } else { '' }
             throw "The Zero Trust Assessment ended with exit code $($process.ExitCode).$where$last"
         }
+        $completed = $true
     } finally {
         # Stopping the Maester run (a timeout or Ctrl+C) stops the assessment too.
-        if ($process -and -not $process.HasExited) { $process.Kill($true) }
+        if ($process -and -not $process.HasExited) { $process.Kill($true); $null = $process.WaitForExit(5000) }
         Write-MtTestOutput -Complete
         Remove-Item -LiteralPath $request, $scriptPath -Force -ErrorAction SilentlyContinue
         if ($configurationFile) { Remove-Item -LiteralPath $configurationFile -Force -ErrorAction SilentlyContinue }
+        # The export holds tenant data. Get-MtZtaInstance removes it after a run that completed; this removes what a failed or stopped run left.
+        if ($temporary -and -not $completed) { Remove-Item -LiteralPath $outputPath -Recurse -Force -ErrorAction SilentlyContinue }
     }
 
     [pscustomobject]@{

@@ -146,8 +146,10 @@ Describe 'Maester Pack content scan' {
         @{ Case = 'code that runs when the file loads'; Code = 'CodeOnLoad'; Text = "Write-Output 'loaded'`nfunction Get-CntExtra { 1 }" }
         @{ Case = 'dynamic code'; Code = 'DynamicCode'; Text = "function Get-CntExtra { Invoke-Expression 'Get-Date' }" }
         @{ Case = 'an undeclared network host'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' }" }
+        @{ Case = 'an undeclared host followed by -UserAgent'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' -UserAgent 'agent' }" }
+        @{ Case = 'an undeclared host followed by a switch'; Code = 'UndeclaredNetwork'; Text = "function Get-CntExtra { Invoke-RestMethod -Uri 'https://evil.example/x' -UseBasicParsing }" }
     ) {
-        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "scan-$Code") -Edit { param($p) Set-Content -LiteralPath (Join-Path $p 'helpers/Get-CntExtra.ps1') -Value $Text }
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "scan-$Code-$([math]::Abs($Case.GetHashCode()))") -Edit { param($p) Set-Content -LiteralPath (Join-Path $p 'helpers/Get-CntExtra.ps1') -Value $Text }
         $result = Test-MtPack $pack
         @($result.Errors.Code) + @($result.Findings.Code) | Should -Contain $Code
     }

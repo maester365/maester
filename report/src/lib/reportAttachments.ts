@@ -33,7 +33,13 @@ export function getAttachmentPath(attachment: ReportAttachment) {
 export function findReportAttachment(testResults: any, pathname: string): ReportAttachment | undefined {
   const match = /^\/reports\/([^/]+)$/.exec(pathname)
   if (!match) return undefined
-  const id = decodeURIComponent(match[1])
+  let id: string
+  try {
+    id = decodeURIComponent(match[1])
+  } catch {
+    // A mistyped or cut link names no attachment.
+    return undefined
+  }
   return getReportAttachments(testResults).find((attachment) => attachment.Id === id)
 }
 

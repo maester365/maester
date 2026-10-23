@@ -374,9 +374,14 @@ function Get-MtPackCommandArgument {
         if ($element -is [System.Management.Automation.Language.CommandParameterAst]) {
             $value = $element.Argument
             if (-not $value -and $i + 1 -lt $elements.Count -and $elements[$i + 1] -isnot [System.Management.Automation.Language.CommandParameterAst]) { $value = $elements[$i + 1]; $i++ }
-            # Abbreviations are matched by the start of the name, as PowerShell does.
-            $key = switch -Regex ($element.ParameterName) { '^u' { 'Uri' } '^me' { 'Method' } '^n' { 'Name' } default { $element.ParameterName } }
-            $named[$key] = $value
+            # An abbreviation is the start of the name it stands for, as PowerShell reads it: -U is -Uri,
+            # -UserAgent is not.
+            $key = $element.ParameterName
+            foreach ($full in 'Uri', 'Method', 'Name') {
+                if ($key -and $full.StartsWith($key, [System.StringComparison]::OrdinalIgnoreCase)) { $key = $full; break }
+            }
+            # A parameter named twice keeps its first value, so a later one cannot hide it.
+            if (-not $named.ContainsKey($key)) { $named[$key] = $value }
         } else { $positional.Add($element) }
     }
     [pscustomobject]@{ Named = $named; Positional = $positional }
