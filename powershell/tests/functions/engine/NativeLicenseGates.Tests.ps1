@@ -37,30 +37,46 @@ BeforeAll {
     }
 }
 
-Describe 'Licence gate of converted test <Id>' -ForEach $Cases {
-    BeforeEach {
+# One It per behaviour over every case, naming the tests that break it, rather than one Describe per test.
+Describe 'Licence gates of converted tests' {
+    BeforeAll {
         Mock -ModuleName Maester Test-MtConnection { $true }
         Mock -ModuleName Maester Get-MgContext { $null }
         Mock -ModuleName Maester Invoke-MtGraphRequest { @() }
         Mock -ModuleName Maester Get-MtExo { @() }
         # Answer as an unlicensed tenant would, so a guard left in the body would skip the test.
         Mock -ModuleName Maester Get-MtLicenseInformation { if ($Product -eq 'EntraID') { 'Free' } elseif ($Product -eq 'MdoV2') { 'EOP' } else { $null } }
+        $script:cases = $Cases
     }
 
-    It 'Declares the licence in License' {
-        @((Get-MtTest -Id $Id).License) | Should -Be $License
+    It 'Declare the licence in License' {
+        $byId = @{}
+        Get-MtTest -Id $script:cases.Id | ForEach-Object { $byId[$_.Id] = $_ }
+        $problems = foreach ($case in $script:cases) {
+            $declared = @($byId[$case.Id].License)
+            if (($declared -join ',') -ne ($case.License -join ',')) { "$($case.Id) declares '$($declared -join ',')', expected '$($case.License -join ',')'" }
+        }
+        @($problems) | Should -BeNullOrEmpty
     }
 
-    It 'Is skipped with LicenseNotFound on an unlicensed tenant' {
-        $row = Invoke-MtTest -Id $Id -Config (New-Config -Licenses 'UNRELATED_PLAN')
-        $row.Result | Should -Be 'Skipped'
-        $row.ReasonCode | Should -Be 'LicenseNotFound'
-        $row.ResultDetail.TestSkipped | Should -Be $Legacy
+    It 'Are skipped with LicenseNotFound on an unlicensed tenant' {
+        $problems = foreach ($case in $script:cases) {
+            $row = Invoke-MtTest -Id $case.Id -Config (New-Config -Licenses 'UNRELATED_PLAN')
+            if ($row.Result -ne 'Skipped' -or $row.ReasonCode -ne 'LicenseNotFound' -or $row.ResultDetail.TestSkipped -ne $case.Legacy) {
+                "$($case.Id): Result '$($row.Result)', ReasonCode '$($row.ReasonCode)', TestSkipped '$($row.ResultDetail.TestSkipped)', expected Skipped, LicenseNotFound, '$($case.Legacy)'"
+            }
+        }
+        @($problems) | Should -BeNullOrEmpty
     }
 
-    It 'Runs on a tenant licensed for <_>' -ForEach $License {
-        $row = Invoke-MtTest -Id $Id -Config (New-Config -Licenses $_)
-        $row.ReasonCode | Should -Not -Be 'LicenseNotFound'
-        "$($row.ResultDetail.TestSkipped)" | Should -Not -BeLike 'NotLicensed*' -Because 'the test must not check its own licence'
+    It 'Run on a tenant licensed for any one of their licences' {
+        $problems = foreach ($case in $script:cases) {
+            foreach ($license in $case.License) {
+                $row = Invoke-MtTest -Id $case.Id -Config (New-Config -Licenses $license)
+                if ($row.ReasonCode -eq 'LicenseNotFound') { "$($case.Id) with $($license): skipped with LicenseNotFound" }
+                elseif ("$($row.ResultDetail.TestSkipped)" -like 'NotLicensed*') { "$($case.Id) with $($license): checks its own licence ($($row.ResultDetail.TestSkipped))" }
+            }
+        }
+        @($problems) | Should -BeNullOrEmpty
     }
 }
