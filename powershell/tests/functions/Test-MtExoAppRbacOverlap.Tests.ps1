@@ -11,15 +11,24 @@ BeforeAll {
         }
         $script:removeExoStub = $true
     }
+    if (-not (Get-Command Get-ApplicationAccessPolicy -ErrorAction SilentlyContinue)) {
+        function global:Get-ApplicationAccessPolicy { param() }
+        $script:removeAapStub = $true
+    }
 
     $script:GraphSpId = 'graph-sp-id'
     $script:MailReadId = '810c84a8-4a9e-49e6-bf7d-12d183f40d01'
     $script:MailSendId = 'b633e1c5-b582-4048-a93e-9f11b44c7e96'
+    $script:MailReadWriteId = 'e2a3a72e-5f79-4c64-b1b1-878b674786c9'
+    $script:MailboxItemReadId = 'mailboxitem-read-all-id'
 }
 
 AfterAll {
     if ($script:removeExoStub) {
         Remove-Item -Path Function:\Get-ManagementRoleAssignment -ErrorAction SilentlyContinue
+    }
+    if ($script:removeAapStub) {
+        Remove-Item -Path Function:\Get-ApplicationAccessPolicy -ErrorAction SilentlyContinue
     }
 }
 
@@ -31,12 +40,15 @@ Describe 'Test-MtExoAppRbacOverlap' {
             $script:Result = $Result
         }
         Mock -ModuleName Maester Get-MtLinkServicePrincipal { 'app-link' }
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy { @() }
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } {
             [PSCustomObject]@{
                 id       = $script:GraphSpId
                 appRoles = @(
                     [PSCustomObject]@{ id = $script:MailReadId; value = 'Mail.Read' }
                     [PSCustomObject]@{ id = $script:MailSendId; value = 'Mail.Send' }
+                    [PSCustomObject]@{ id = $script:MailReadWriteId; value = 'Mail.ReadWrite' }
+                    [PSCustomObject]@{ id = $script:MailboxItemReadId; value = 'MailboxItem.Read.All' }
                 )
             }
         }
@@ -108,5 +120,59 @@ Describe 'Test-MtExoAppRbacOverlap' {
 
         Test-MtExoAppRbacOverlap | Should -BeFalse
         $script:Result | Should -BeLike '*| Mail.Send | Europe AU |*'
+    }
+
+    It 'Maps Application Exchange Full Access to the Graph permissions it covers' {
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Exchange Full Access'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadWriteId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeFalse
+        $script:Result | Should -BeLike '*| Mail.ReadWrite | Sales mailboxes |*'
+    }
+
+    It 'Maps roles whose Graph permission ends in .All' {
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application MailboxItem.Read'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailboxItemReadId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeFalse
+        $script:Result | Should -BeLike '*| MailboxItem.Read.All | Sales mailboxes |*'
+    }
+
+    It 'Lists an app restricted by an Application Access Policy for review instead of failing' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [PSCustomObject]@{ AppId = 'appid-1'; AccessRight = 'RestrictAccess' }
+        }
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Mail.Read'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeTrue
+        $script:Result | Should -BeLike '*Application Access Policy limits that grant*'
+        $script:Result | Should -BeLike '*| app-link | appid-1 | Mail.Read | Sales mailboxes |*'
+    }
+
+    It 'Still fails when the app only has a DenyAccess policy' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [PSCustomObject]@{ AppId = 'appid-1'; AccessRight = 'DenyAccess' }
+        }
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Mail.Read'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeFalse
     }
 }

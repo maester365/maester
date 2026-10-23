@@ -4,7 +4,9 @@ function Test-MtCheckMT1228 {
     Apps scoped with Exchange RBAC for Applications should not hold the same permission tenant-wide in Microsoft Entra ID.
 
     .DESCRIPTION
-    Runs the shared check Test-MtExoAppRbacOverlap.
+    Exchange RBAC for Applications can limit an app to a set of mailboxes, but grants in Exchange and Microsoft Entra ID
+    add together. If the app also holds the same Microsoft Graph permission tenant-wide in Entra ID, the Exchange scope
+    has no effect. Runs the shared check Test-MtExoAppRbacOverlap.
     #>
     [MaesterTest(
         Id = 'MT.1228',
