@@ -336,6 +336,14 @@ Describe 'Pack security: GitHub commit provenance' {
         }
     }
 
+    It 'installs from the default branch when the repository has no releases' {
+        # Invoke-RestMethod writes the empty list of releases as one empty array.
+        Mock Invoke-MtPackGitHubRequest { , @() } -ParameterFilter { $Path -like '*/releases?*' }
+        $resolved = Resolve-MtPackGitHubSource -Source $Source -IncludeRecent
+        $resolved.Commit | Should -Be $Commit
+        Should -Invoke Invoke-MtPackGitHubRequest -ParameterFilter { $Path -eq 'repos/contoso/pack/commits/main' } -Times 1 -Exactly
+    }
+
     It 'rejects an unreachable <Ref> even with IncludeRecent' -ForEach @(
         @{ Ref = 'a' }
         @{ Ref = 'abcdef' }

@@ -50,7 +50,10 @@ function Resolve-MtPackGitHubSource {
         $repoPath = "repos/$owner/$repo"
     }
 
-    $releases = @(Invoke-MtPackGitHubRequest -Path "$repoPath/releases?per_page=30" | Where-Object { -not $_.draft -and -not $_.prerelease } |
+    # Invoke-RestMethod writes an empty JSON array as one empty array, not as nothing: enumerate it, so that a
+    # repository without releases has none and installs from its default branch.
+    $releases = @(Invoke-MtPackGitHubRequest -Path "$repoPath/releases?per_page=30" | ForEach-Object { $_ } |
+            Where-Object { $_ -and $_.tag_name -and -not $_.draft -and -not $_.prerelease } |
             Sort-Object { [datetime]$_.published_at } -Descending)
     $commitOf = {
         param($ref)
