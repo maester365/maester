@@ -544,6 +544,16 @@ Describe 'Pack updates, config and policy' {
         ($rows | Where-Object ReasonCode -EQ 'PackLoadFailed') | Should -BeNullOrEmpty
     }
 
+    It 'runs a pack of the maester365 organisation from its folder, which may use the reserved names' {
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'official') -Edit {
+            param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'maester365.sample'; $m.Publisher = 'maester365' }
+        }
+        $rows = @(Invoke-MtTest -Path $pack)
+        ($rows | Where-Object Id -EQ 'MP.CNT.1002').Result | Should -Be 'Passed'
+        # Test-MtPack without -Official still reports the reserved name, as a publisher outside the organisation sees it.
+        @((Test-MtPack -Path $pack).Errors | Where-Object { $_.Message -match 'reserved' }).Count | Should -BeGreaterThan 0
+    }
+
     It 'runs only the tests under a folder, not those of a sibling folder that starts with its name' {
         $pack = Copy-SamplePack -Destination (Join-Path $script:root 'sibling') -Edit {
             param($p)
