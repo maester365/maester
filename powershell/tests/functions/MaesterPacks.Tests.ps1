@@ -226,13 +226,52 @@ Describe 'Installing and loading a pack' {
     AfterEach { Pop-Location }
 
     It 'writes the lock file and the config, and the gate says Ready' {
-        $entry = Install-MtPack $script:fixture -NonInteractive -AcceptRisk Low 6>$null
+        $entry = Install-MtPack $script:fixture -NonInteractive -PassThru -AcceptRisk Low 6>$null
         $entry.Id | Should -Be 'contoso.sample'
         $lock = Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json
         $lock.Packs[0].Digest | Should -Be $entry.Digest
         $lock.Packs[0].Tests | Should -Be @('MP.CNT.1001', 'MP.CNT.1002')
         (Get-Content -LiteralPath 'maester-config.json' -Raw | ConvertFrom-Json).Packs[0].Id | Should -Be 'contoso.sample'
         (Get-MtPack contoso.sample).Status | Should -Be 'Ready'
+    }
+
+    It 'returns nothing without -PassThru, and says how to run the pack by its code' {
+        $out = Install-MtPack $script:fixture -NonInteractive 6>&1
+        @($out | Where-Object { $_ -isnot [System.Management.Automation.InformationRecord] }) | Should -BeNullOrEmpty
+        $text = ($out | ForEach-Object { "$_" }) -join "`n" -replace "`e\[[0-9;]*m", ''
+        $text | Should -Match 'Installed CNT  contoso\.sample v1\.0\.0'
+        $text | Should -Match 'Run only this pack: +Invoke-Maester -Pack CNT -SkipBuiltIn'
+        $text | Should -Match 'Connect its service: +Connect-Maester -Service CNT\.Sample'
+        $pack = Get-MtPack contoso.sample
+        $pack.Code | Should -Be 'CNT'
+        $pack.PSObject.TypeNames | Should -Contain 'Maester.Pack'
+        ($pack | Format-Table | Out-String -Width 200) | Should -Match 'Code +Name'
+    }
+
+    It 'asks for the pack code, shown in a box with the pack''s name and ID, before content younger than the cooldown' {
+        $result = InModuleScope Maester {
+            $candidate = [pscustomobject]@{
+                Kind = 'GitHub'; Owner = 'contoso'; Repo = 'maester-sample'; Folder = $null; Commit = 'abcdef1234567'; Ref = 'main'
+                CooldownMet = $false; CooldownHours = 72; AgeHours = 0; AgeSource = 'FirstSeen'; Release = $null; Newer = $null; Archived = $false
+                Risk = 'Low'; Findings = @(); Binaries = @(); Modules = @(); TestIds = @('MP.CNT.1001')
+                Manifest = [pscustomobject]@{ Id = 'contoso.sample'; Name = 'Contoso sample'; Version = '1.0.0'; Code = 'CNT'; Publisher = 'contoso'; Description = 'A sample.'
+                    Connectors = @(); Uses = [pscustomobject]@{ Services = @(); GraphScopes = @(); Network = @(); TenantWrites = @() } }
+            }
+            $script:prompts = [System.Collections.Generic.List[string]]::new()
+            Mock Read-MtPackConfirmation { $script:prompts.Add($Prompt); 'contoso.sample' }
+            $wrong = Show-MtPackApproval -Candidate $candidate 6>&1 | Select-Object -Last 1
+            Mock Read-MtPackConfirmation { $script:prompts.Add($Prompt); 'CNT' }
+            $screen = @(Show-MtPackApproval -Candidate $candidate 6>&1)
+            [pscustomobject]@{ Wrong = $wrong; Right = $screen[-1]; Screen = (@($screen | Select-Object -SkipLast 1 | ForEach-Object { "$_" }) -join "`n") -replace "`e\[[0-9;]*m", ''; Prompts = $script:prompts }
+        }
+        $result.Wrong.Approved | Should -BeFalse
+        $result.Wrong.Reason | Should -Match "its code, CNT, not 'contoso\.sample'"
+        $result.Right.Approved | Should -BeTrue
+        $result.Prompts[0] -replace "`e\[[0-9;]*m", '' | Should -Match 'Type the pack code CNT to install it'
+        $result.Screen | Should -Match 'Install a Maester Pack'
+        $result.Screen | Should -Match 'CNT +Contoso sample +v1\.0\.0'
+        $result.Screen | Should -Match 'contoso\.sample . by contoso'
+        $result.Screen | Should -Match 'Cooldown +NOT MET \(72 hours\)'
     }
 
     It 'does not install a pack above -AcceptRisk without a console' {
@@ -242,7 +281,7 @@ Describe 'Installing and loading a pack' {
     }
 
     It 'stops running a pack whose stored files changed' {
-        $entry = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $entry = Install-MtPack $script:fixture -NonInteractive -PassThru 6>$null
         $stored = InModuleScope Maester -Parameters @{ Digest = $entry.Digest } { param($Digest) Get-MtPackStorePath -Digest $Digest }
         $file = Join-Path $stored 'helpers/Get-CntSampleSetting.ps1'
         if ($IsWindows) { (Get-Item -LiteralPath $file).IsReadOnly = $false } else { [System.IO.File]::SetUnixFileMode($file, [System.IO.UnixFileMode]'UserRead, UserWrite') }
@@ -253,7 +292,7 @@ Describe 'Installing and loading a pack' {
     }
 
     It 'stops running a pack whose module changed after approval' {
-        $entry = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $entry = Install-MtPack $script:fixture -NonInteractive -PassThru 6>$null
         $modules = Join-Path $env:MAESTER_PACK_HOME 'modules/CntHelper/1.0.0'
         $null = New-Item -Path $modules -ItemType Directory -Force
         Set-Content -LiteralPath (Join-Path $modules 'CntHelper.psd1') -Value "@{ ModuleVersion = '1.0.0'; RootModule = 'CntHelper.psm1' }"
@@ -343,7 +382,7 @@ Describe 'Installing and loading a pack' {
     }
 
     It 'restores a pack from the lock file and refuses files that differ' {
-        $entry = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $entry = Install-MtPack $script:fixture -NonInteractive -PassThru 6>$null
         $stored = InModuleScope Maester -Parameters @{ Digest = $entry.Digest } { param($Digest) Get-MtPackStorePath -Digest $Digest }
         InModuleScope Maester -Parameters @{ Path = $stored } { param($Path) Get-ChildItem -LiteralPath $Path -Recurse -Force | ForEach-Object { if ($IsWindows) { if (-not $_.PSIsContainer) { $_.IsReadOnly = $false } } else { [System.IO.File]::SetUnixFileMode($_.FullName, [System.IO.UnixFileMode]'UserRead, UserWrite, UserExecute') } } }
         Remove-Item -LiteralPath $stored -Recurse -Force

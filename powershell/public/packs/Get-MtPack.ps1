@@ -17,6 +17,11 @@ function Get-MtPack {
     else the user's.
 
     .EXAMPLE
+    Get-MtPack
+
+    Lists the packs by their code, the start of each of their test IDs: Invoke-Maester -Pack <code> runs one.
+
+    .EXAMPLE
     Get-MtPack | Format-Table Id, Version, Status, Reason
 
     Shows which packs the next Invoke-Maester in this folder runs.
@@ -40,6 +45,8 @@ function Get-MtPack {
         if ($Id -and -not ($Id | Where-Object { $pack.Id -like $_ })) { continue }
         $m = $pack.Manifest
         [pscustomobject][ordered]@{
+            PSTypeName  = 'Maester.Pack'
+            Code        = if ($m) { [string]$m.Code } elseif ($pack.Entry) { [string]$pack.Entry.Code } else { $null }
             Id          = $pack.Id
             Name        = if ($m) { ConvertTo-MtPackSafeText ([string]$m.Name) } else { $null }
             Version     = $pack.Version

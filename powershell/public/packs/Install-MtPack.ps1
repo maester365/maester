@@ -51,7 +51,11 @@ function Install-MtPack {
 
     .PARAMETER Force
     Answer yes to the approval question. A pack of High risk, or one newer than the cooldown, still needs
-    its ID typed unless -AcceptRisk and -IncludeRecent cover it.
+    its code typed unless -AcceptRisk and -IncludeRecent cover it.
+
+    .PARAMETER PassThru
+    Return the lock file entry of the pack. Without it, Install-MtPack writes what was installed and how to
+    run it, and returns nothing.
 
     .EXAMPLE
     Install-MtPack contoso/maester-google-workspace
@@ -67,6 +71,12 @@ function Install-MtPack {
     Install-MtPack maester.zero-trust-assessment
 
     Saves and pins the modules of the Zero Trust Assessment pack, which ships with Maester.
+
+    .EXAMPLE
+    Install-MtPack maester365/maester-pack-demo
+    Invoke-Maester -Pack DEMO -SkipBuiltIn
+
+    Installs the demo pack, then runs only its tests, by the pack's code.
 
     .LINK
     https://maester.dev/docs/commands/Install-MtPack
@@ -98,7 +108,10 @@ function Install-MtPack {
         [switch] $NonInteractive,
 
         [Parameter()]
-        [switch] $Force
+        [switch] $Force,
+
+        [Parameter()]
+        [switch] $PassThru
     )
 
     $where = Resolve-MtPackLockPath -PackLock $PackLock -Scope $Scope -Path (Get-Location).Path
@@ -118,5 +131,6 @@ function Install-MtPack {
         }
     }
     Write-Verbose "The pack $($entry.Id) $($entry.Version) is in $($where.LockPath)."
-    $entry
+    Show-MtPackInstalled -Entry $entry -LockPath $where.LockPath -ConfigPath $where.ConfigPath
+    if ($PassThru) { $entry }
 }
