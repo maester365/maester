@@ -52,3 +52,24 @@ When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is 
 Global Reader and other non-admin accounts can't consent to the Microsoft Graph permissions that Maester requests. An admin needs to grant consent first. Approving the request from **Admin consent requests** in the Entra admin center can fail with `AADSTS70011: ... openid scope is required`.
 
 See [Approval required when connecting](connect-maester/readme.md#approval-required-when-connecting) for how an admin can grant consent from PowerShell or set up a custom app registration.
+
+## What telemetry does Maester send?
+
+At the end of each run, `Invoke-Maester` sends one anonymous event to `packs.maester.cloud`, a service run by the
+Maester maintainers on Cloudflare. It holds:
+
+- a random installation ID, kept in `~/.maester/installation-id` (delete the file to get a new one);
+- a SHA-256 hash of the tenant ID, never the tenant ID itself;
+- the Maester version, the operating system, and the CI system if the run is in one;
+- the number of tests that ran;
+- each [Maester Pack](./packs/index.md) that ran, with its version and test count, but only packs from public
+  repositories and packs that ship with Maester. A pack from a private repository or a local folder is never sent.
+
+`Install-MtPack` sends a similar event when it installs a pack from a public repository. That's how the
+[packs site](https://packs.maester.cloud) counts installs and finds new packs.
+
+No test results, names, email addresses or tenant data are sent. Maintainers see totals for each day, and a pack's
+page shows its own usage counts. Rows that hold an installation ID or a tenant hash are deleted after 400 days.
+
+To turn telemetry off, use `Invoke-Maester -DisableTelemetry`, or set the environment variable
+`MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command.

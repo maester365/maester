@@ -1,0 +1,30 @@
+﻿function Get-MtInstallationId {
+    <#
+    .SYNOPSIS
+    Returns this machine's random Maester installation ID, creating it on first use.
+
+    .DESCRIPTION
+    Telemetry counts installations with a random GUID kept in ~/.maester/installation-id. It is made here, names
+    nothing about the machine or the user, and deleting the file gives a new one. Returns $null when the file
+    cannot be read or written, so telemetry is skipped rather than failing a run.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param()
+
+    try {
+        $folder = Split-Path -Path (Get-MtPackHome).UserConfig -Parent
+        $path = Join-Path $folder 'installation-id'
+        if (Test-Path -LiteralPath $path -PathType Leaf) {
+            $id = (Get-Content -LiteralPath $path -Raw -ErrorAction Stop).Trim()
+            if ($id -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$') { return $id }
+        }
+        $id = [guid]::NewGuid().ToString()
+        if (-not (Test-Path -LiteralPath $folder -PathType Container)) { $null = New-Item -Path $folder -ItemType Directory -Force -ErrorAction Stop }
+        Set-Content -LiteralPath $path -Value $id -NoNewline -Encoding utf8 -ErrorAction Stop
+        $id
+    } catch {
+        Write-Verbose "No installation ID: $($_.Exception.Message)"
+        $null
+    }
+}

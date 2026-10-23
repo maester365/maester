@@ -292,8 +292,9 @@
         # This is used for running tests that does not require a Graph connection.
         [switch] $SkipGraphConnect,
 
-        # Disable Telemetry
-        # If set, telemetry information will not be logged.
+        # Do not send the anonymous run event to packs.maester.cloud: a random installation ID, a hash of the
+        # tenant ID, the Maester version, the platform, the number of tests and the public packs that ran.
+        # Setting the environment variable MAESTER_DISABLE_TELEMETRY to 1 does the same for every command.
         [switch] $DisableTelemetry,
 
         # Skip the version check.
@@ -437,10 +438,6 @@
         # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
         # in the results and output files when -IncludeAffectedObjects was actually requested.
         $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
-
-        if (-not $DisableTelemetry) {
-            Write-Telemetry -EventName InvokeMaester
-        }
 
         Write-MtOlderVersionWarning
 
@@ -1132,6 +1129,11 @@
                 }
             } catch {
                 Write-Warning "The run summary could not be written: $($_.Exception.Message)"
+            }
+
+            # One anonymous event for the run and the public packs it ran (Write-Telemetry says what is sent).
+            if (-not $DisableTelemetry -and -not $DryRun) {
+                Write-Telemetry -EventName InvokeMaester -MaesterResults $maesterResults -PackSet $packSet
             }
 
             if (-not $SkipVersionCheck -and 'Next' -ne $version -and -not $NonInteractive.IsPresent) {
