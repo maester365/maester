@@ -38,7 +38,7 @@ const suiteConfig = {
     sidebarLabel: "🛡️ Entra ID SCA",
     description: "Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks.",
     overview:
-      "These tests are based on the Entra ID Security Config Analyzer and verify Microsoft Entra mitigations for common identity attack scenarios.",
+      "These tests are based on the Entra ID Security Config Analyzer and verify Microsoft Entra mitigations for common identity attack scenarios. They are generated from the EIDSCA config; the [EIDSCA sync page](/eidsca-sync) shows how and compares Maester with it.",
   },
   cisa: {
     label: "CISA",

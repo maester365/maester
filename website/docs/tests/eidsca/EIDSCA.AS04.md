@@ -42,7 +42,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [phoneAuthenticationMethod resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/phoneauthenticationmethod)
+- [smsAuthenticationMethodConfiguration resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/smsauthenticationmethodconfiguration?view=graph-rest-beta)
 
 ## Test Metadata
 

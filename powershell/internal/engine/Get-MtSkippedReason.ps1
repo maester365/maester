@@ -35,6 +35,7 @@ function Get-MtSkippedReason {
         "NotApplicable" { "This test does not apply to this tenant."; break }
         "NotSupported" { "This test relies on capabilities not currently available (e.g., cmdlets that are not available on all platforms, Resolve-DnsName)"; break }
         "NotSupportedAppPermission" { "This test relies on Graph APIs that don't support application permissions. Re-run Maester with a user signed in to view the results for this test."; break }
+        "NotSupportedAzureDevOpsAppPermission" { "This test relies on Azure DevOps APIs that only work for a signed-in user, not for service principals or managed identities. Re-run Maester after ``Connect-ADOPS`` with a user account to view the results for this test."; break }
         "LimitedPermissions" { "This test relies on privileged (i.e., ReadWrite) permissions."; break }
         "NotLicensedDefenderXDR" { "This test is for tenants that are licensed for Microsoft Defender XDR. See [Microsoft Defender XDR prerequisites](https://learn.microsoft.com/defender-xdr/prerequisites#licensing-requirements)"; break }
         "NotLicensedIntune" { "This test is for tenants that are licensed for Microsoft Intune. See [Intune licensing](https://learn.microsoft.com/intune/intune-service/fundamentals/licenses)"; break }

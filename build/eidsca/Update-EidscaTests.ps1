@@ -13,9 +13,11 @@
   The generator reads a local copy of the EIDSCA config (build/eidsca/EidscaConfig.json) and a cache of page
   titles (build/eidsca/PageTitles.json), so a run without -Download needs no network and reproduces the committed
   files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
-  Severity and the classification attributes (RelatedProduct, Feature, Area, ResourceType, UserImpact,
-  ImplementationCost, Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed
-  (design section 11), so regeneration keeps them. Edit the metadata file, never the generated tests.
+  Severity comes from the EIDSCA config, which is the source of truth for it. The Maester classification attributes
+  that the EIDSCA config does not carry (RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost,
+  Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design
+  section 11), so regeneration keeps them. Edit the metadata file, never the generated tests. A check without a
+  metadata row is generated with a warning and fails the attribute unit tests until the row is added.
 
   .EXAMPLE
     ./build/eidsca/Update-EidscaTests.ps1
@@ -48,8 +50,8 @@ param (
     # Cache of the web page titles used in the generated Markdown links. -Download adds missing titles.
     [string] $PageTitleCachePath = "$PSScriptRoot/PageTitles.json",
 
-    # Maester metadata of each check that the EIDSCA config does not carry: TestSettings rows with Id, Severity
-    # and the optional RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre. Read only.
+    # Maester classification of each check that the EIDSCA config does not carry: TestSettings rows with Id and the
+    # RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre and Control. Read only.
     [string] $MaesterConfigPath = "$PSScriptRoot/eidsca-test-metadata.json",
 
     # Authorship seed with the author and contributors of each check (design section 11).
@@ -346,12 +348,12 @@ mindmap
     $techniquesLinks = GetMitreMarkdownLinks($controlItem.MitreTechnique)
     $mitigationsLinks = GetMitreMarkdownLinks($controlItem.MitreMitigation)
 
-    $mermaid = $mermaid -replace '%Tactics%', $tactics
-    $mermaid = $mermaid -replace '%Mitigations%', $mitigations
-    $mermaid = $mermaid -replace '%Techniques%', $techniques
-    $mermaid = $mermaid -replace '%TacticUrls%', $tacticsLinks
-    $mermaid = $mermaid -replace '%MitigationUrls%', $mitigationsLinks
-    $mermaid = $mermaid -replace '%TechniqueUrls%', $techniquesLinks
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%Tactics%' -Value ($tactics)
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%Mitigations%' -Value ($mitigations)
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%Techniques%' -Value ($techniques)
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%TacticUrls%' -Value ($tacticsLinks)
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%MitigationUrls%' -Value ($mitigationsLinks)
+    $mermaid = ReplacePlaceholder -Text $mermaid -Placeholder '%TechniqueUrls%' -Value ($techniquesLinks)
     return $mermaid
 }
 
@@ -430,40 +432,40 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
             $controlItem.Severity = 'Info'
         }
 
-        $output = $output -replace '%DocName%', $docName
-        $output = $output -replace '%ControlName%', $control.ControlName
-        $output = $output -replace '%Description%', $control.Description
-        $output = $output -replace '%ControlItemDescription%', $controlItem.Description
-        $output = $output -replace '%Severity%', $controlItem.Severity
-        $output = $output -replace '%DisplayName%', $controlItem.DisplayName
-        $output = $output -replace '%Name%', $controlItem.Name
-        $output = $output -replace '%CheckId%', $controlItem.CheckId
-        $output = $output -replace '%CheckShortId%', ($controlItem.CheckId -replace '^EIDSCA\.')
-        $output = $output -replace '%Recommendation%', $recommendation
-        $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
-        $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
-        $output = $output -replace '%MitreMitigation%', $controlItem.MitreMitigation
-        $output = $output -replace '%PortalDeepLink%', $portalDeepLink
-        $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
-        $output = $output -replace '%RelativeUri%', $relativeUri
-        $output = $output -replace '%ApiVersion%', $apiVersion
-        $output = $output -replace '%ShouldOperator%', $compareOperator.pester.Replace("'", "")
-        $output = $output -replace '%CompareOperatorText%', $compareOperator.Text
-        $output = $output -replace '%CompareOperator%', $compareOperator.Name
-        $output = $output -replace '%PwshCompareOperator%', $compareOperator.powershell.Replace("'", "")
-        $output = $output -replace '%ValueType%', $compareOperator.valuetype
-        $output = $output -replace '%RecommendedValue%', $recommendedValue
-        $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
-        $output = $output -replace '%CurrentValueProperty%', $currentValueProperty
-        $output = $output -replace '%CurrentValue%', $CurrentValue
-        $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
-        $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
+        $output = ReplacePlaceholder -Text $output -Placeholder '%DocName%' -Value ($docName)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%ControlName%' -Value ($control.ControlName)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%Description%' -Value ($control.Description)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%ControlItemDescription%' -Value ($controlItem.Description)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%Severity%' -Value ($controlItem.Severity)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%DisplayName%' -Value ($controlItem.DisplayName)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%Name%' -Value ($controlItem.Name)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CheckId%' -Value ($controlItem.CheckId)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CheckShortId%' -Value (($controlItem.CheckId -replace '^EIDSCA\.'))
+        $output = ReplacePlaceholder -Text $output -Placeholder '%Recommendation%' -Value ($recommendation)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%MitreTactic%' -Value ($controlItem.MitreTactic)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%MitreTechnique%' -Value ($controlItem.MitreTechnique)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%MitreMitigation%' -Value ($controlItem.MitreMitigation)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%PortalDeepLink%' -Value ($portalDeepLink)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%DefaultValue%' -Value ($controlItem.DefaultValue)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%RelativeUri%' -Value ($relativeUri)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%ApiVersion%' -Value ($apiVersion)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%ShouldOperator%' -Value ($compareOperator.pester.Replace("'", ""))
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CompareOperatorText%' -Value ($compareOperator.Text)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CompareOperator%' -Value ($compareOperator.Name)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%PwshCompareOperator%' -Value ($compareOperator.powershell.Replace("'", ""))
+        $output = ReplacePlaceholder -Text $output -Placeholder '%ValueType%' -Value ($compareOperator.valuetype)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%RecommendedValue%' -Value ($recommendedValue)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%RecommendedValueMarkdown%' -Value ($recommendedValueMarkdown)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CurrentValueProperty%' -Value ($currentValueProperty)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%CurrentValue%' -Value ($CurrentValue)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%GraphEndPoint%' -Value ($control.GraphEndpoint)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%GraphDocsUrl%' -Value ($graphDocsUrl)
         $output = $output.Replace('%RemediationAction%', $remediationAction)
-        $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
-        $output = $output -replace '%MitreDiagram%', $mitreDiagram
-        $output = $output -replace '%PSFunctionName%', $psFunctionName
-        $output = $output -replace '%PortalDeepLinkMarkdown%', $portalDeepLinkMarkdown
-        $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
+        $output = ReplacePlaceholder -Text $output -Placeholder '%GraphExplorerUrl%' -Value ($graphExplorerUrl)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%MitreDiagram%' -Value ($mitreDiagram)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%PSFunctionName%' -Value ($psFunctionName)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%PortalDeepLinkMarkdown%' -Value ($portalDeepLinkMarkdown)
+        $output = ReplacePlaceholder -Text $output -Placeholder '%GraphDocsUrlMarkdown%' -Value ($graphDocsUrlMarkdown)
     }
 
     return ConvertTo-LanguageNeutralMicrosoftUrl -Content $output
@@ -539,6 +541,12 @@ function GetSkipCheck($controlItem, $discoveryLines, $controlLookup) {
     $lines.Add('    }')
     $result.Code = "`n" + ($lines -join "`n") + "`n"
     return $result
+}
+
+# Replaces a %Placeholder% of a template with a value taken literally. -replace would read $_, $& or $1 in
+# the value (an EIDSCA CurrentValue such as "... | Where-Object { $_ ... }") as a substitution.
+function ReplacePlaceholder([string] $Text, [string] $Placeholder, $Value) {
+    $Text.Replace($Placeholder, [string]$Value, [System.StringComparison]::OrdinalIgnoreCase)
 }
 
 function FormatAttributeString([string] $Value) { "'" + $Value.Replace("'", "''") + "'" }
@@ -632,7 +640,7 @@ if (Test-Path -LiteralPath $PageTitleCachePath) {
     }
 }
 
-# Severity and classification (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
+# Classification (eidsca-test-metadata.json) and authorship (design section 11), so regeneration keeps them.
 $metadataById = @{}
 if (Test-Path -LiteralPath $MaesterConfigPath) {
     foreach ($row in (Get-Content -LiteralPath $MaesterConfigPath -Raw | ConvertFrom-Json).TestSettings) {
@@ -688,9 +696,13 @@ foreach ($control in $aadsc) {
         # The native test: attribute, skip check and the comparison the 2.x Pester It made.
         $skipCheck = GetSkipCheck -controlItem $controlItem -discoveryLines $Discovery -controlLookup $controlLookup
         $metadata = $metadataById[$controlItem.CheckId]
+        if (-not $metadata) {
+            Write-Warning "$($controlItem.CheckId) has no row in $(Split-Path -Leaf $MaesterConfigPath). Add its Maester classification there."
+        }
         $metadataValue = { param($name) if ($metadata -and $metadata.PSObject.Properties[$name]) { $metadata.$name } }
-        $severity = & $metadataValue 'Severity'
-        if (-not $severity) { $severity = $controlItem.Severity }
+        # Severity is maintained in the EIDSCA config; an Info test has no UserImpact or ImplementationCost.
+        $severity = $controlItem.Severity
+        $isInfo = $severity -eq 'Info'
         $authorship = $authorshipById[$controlItem.CheckId]
         $authors = @(if ($authorship -and $authorship.author) { $authorship.author -split ';' } else { $DefaultAuthor }) | Where-Object { $_ }
         $contributors = @(if ($authorship) { $authorship.contributors_recommended -split ';' }) | Where-Object { $_ -and $_ -notin $authors }
@@ -703,8 +715,8 @@ foreach ($control in $aadsc) {
             Area               = & $metadataValue 'Area'
             ResourceType       = & $metadataValue 'ResourceType'
             Severity           = $severity
-            UserImpact         = & $metadataValue 'UserImpact'
-            ImplementationCost = & $metadataValue 'ImplementationCost'
+            UserImpact         = if (-not $isInfo) { & $metadataValue 'UserImpact' }
+            ImplementationCost = if (-not $isInfo) { & $metadataValue 'ImplementationCost' }
             Mitre              = @(& $metadataValue 'Mitre' | Where-Object { $_ })
             Control            = @(& $metadataValue 'Control' | Where-Object { $_ })
             Service            = @('Graph')

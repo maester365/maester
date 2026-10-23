@@ -1,0 +1,39 @@
+5.1.6.1 (L2) Ensure that collaboration invitations are sent to allowed domains only
+
+B2B collaboration is a feature within Microsoft Entra External ID that allows for guest invitations to an organization.
+
+Ensure users can only send invitations to **specified domains**.
+
+This check evaluates every B2B management policy returned by Microsoft Graph, not only the organization default. It does not inspect which applications or service principals are assigned each policy.
+
+> **Note:** This list works independently from OneDrive for Business and SharePoint Online allow/block lists. To restrict individual file sharing in SharePoint Online, set up an allow or blocklist for OneDrive for Business and SharePoint Online. For instance, in SharePoint or OneDrive users can still share with external users from prohibited domains by using Anyone links if they haven't been disabled.
+
+#### Rationale
+
+By specifying allowed domains for collaborations, external user's companies are explicitly identified. Also, this prevents internal users from inviting unknown external users such as personal accounts and granting them access to resources.
+
+#### Impact
+
+This could make collaboration more difficult if the setting is not quickly updated when a new domain is identified as "allowed".
+
+#### Remediation action
+
+To remediate using the UI:
+
+1. Navigate to Microsoft Entra admin center [https://entra.microsoft.com](https://entra.microsoft.com).
+2. Expand **Entra ID** > **External Identities** and select **External collaboration settings**.
+3. Under **Collaboration restrictions**, select **Allow invitations only to the specified domains (most restrictive)**.
+4. Specify the allowed domains under **Target domains**.
+5. Select **Save**.
+
+> **Note:** The default value is **Allow invitations to be sent to any domain (most inclusive)**. A configuration with a list of blocked domains (**Deny invitations to the specified domains**) is not compliant.
+
+
+#### Related links
+
+* [Microsoft Entra admin center - External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings)
+* [Allow or block invitations to B2B users from specific organizations](https://learn.microsoft.com/entra/external-id/allow-deny-list)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.1.6.1](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%

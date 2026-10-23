@@ -9,6 +9,8 @@
   "https://attack.mitre.org/tactics/TA0005": "Stealth, Tactic TA0005 - Enterprise | MITRE ATT&CK&reg;",
   "https://attack.mitre.org/tactics/TA0006": "Credential Access, Tactic TA0006 - Enterprise | MITRE ATT&CK&reg;",
   "https://attack.mitre.org/tactics/TA0008": "Lateral Movement, Tactic TA0008 - Enterprise | MITRE ATT&CK&reg;",
+  "https://attack.mitre.org/tactics/TA0010": "Exfiltration, Tactic TA0010 - Enterprise | MITRE ATT&CK&reg;",
+  "https://attack.mitre.org/tactics/TA0040": "Impact, Tactic TA0040 - Enterprise | MITRE ATT&CK&reg;",
   "https://attack.mitre.org/tactics/TA0043": "Reconnaissance, Tactic TA0043 - Enterprise | MITRE ATT&CK&reg;",
   "https://attack.mitre.org/techniques/T1078": "Valid Accounts, Technique T1078 - Enterprise | MITRE ATT&CK&reg;",
   "https://attack.mitre.org/techniques/T1110": "Brute Force, Technique T1110 - Enterprise | MITRE ATT&CK&reg;",
@@ -25,9 +27,11 @@
   "https://learn.microsoft.com/graph/api/authenticationmethodspolicy-get": "Get authenticationMethodsPolicy - Microsoft Graph v1.0 | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/adminconsentrequestpolicy": "adminConsentRequestPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/authorizationpolicy": "authorizationPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn",
+  "https://learn.microsoft.com/graph/api/resources/authorizationpolicy?view=graph-rest-beta": "authorizationPolicy resource type - Microsoft Graph beta | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/directorysetting": "directorySetting resource type - Microsoft Graph beta | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/fido2authenticationmethodconfiguration": "fido2AuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/microsoftauthenticatorauthenticationmethodconfiguration": "microsoftAuthenticatorAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/phoneauthenticationmethod": "phoneAuthenticationMethod resource type - Microsoft Graph v1.0 | Microsoft Learn",
+  "https://learn.microsoft.com/graph/api/resources/smsauthenticationmethodconfiguration?view=graph-rest-beta": "smsAuthenticationMethodConfiguration resource type - Microsoft Graph beta | Microsoft Learn",
   "https://learn.microsoft.com/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration": "temporaryAccessPassAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn"
 }
