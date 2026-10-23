@@ -1133,11 +1133,36 @@ Describe 'Write-MtTestProgress' {
         }
         $screen | Should -Match '╭─ The tool .*1 line · 1 error'
         $screen | Should -Match '│ Stage 1 of 3 · Exporting data '
-        $screen | Should -Match '│ ━+─+ 12 / 40 · 1 failed · 2 running '
+        $screen | Should -Match '│ ━+─+ 13 / 40 32% · 1 failed · 2 running '
         $screen | Should -Match '│ . Users, Groups '
         $screen | Should -Match '│ ✗ The export of Devices failed '
         $screen | Should -Match '├╌ Log ╌'
         $screen | Should -Match '│ a line of the log '
+    }
+
+    It 'Draws the stages as a track, and lists the items running and those that finished as it lists the tests' {
+        $screen = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The tool' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stages 'Export', 'Tests', 'Report' -StageNumber 2 -Stage 'Running tests' -Completed 1 -Failed 1 -Total 10 -Items @(
+                @{ Id = 'T.1'; Title = 'The first test'; Status = 'Passed'; Seconds = 2.5 }
+                @{ Id = 'T.2'; Title = 'The second test'; Status = 'Failed'; Detail = 'Forbidden'; Seconds = 0.5 }
+                @{ id = 'T.3'; title = 'The third test'; detail = 'Reading policies'; seconds = 12 }
+            )
+            $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screen | Should -Match '│ ✓ 1 Export ━━ ● 2 Tests ┄┄ ○ 3 Report '
+        $screen | Should -Match '│ Running tests  ━+─+ 2 / 10 20% · 1 failed'
+        $screen | Should -Match '│ . T\.3 +The third test  Reading policies +12\.0s │'
+        $screen | Should -Match '│ ✗ T\.2 +The second test  Forbidden +0\.5s │'
+        $screen | Should -Match '│ ✓ T\.1 +The first test +2\.5s │'
+        # The one running first, then those that finished, the newest first.
+        $screen.IndexOf('T.3') | Should -BeLessThan $screen.IndexOf('T.2')
+        $screen.IndexOf('T.2') | Should -BeLessThan $screen.IndexOf('T.1')
     }
 
     It 'Takes its progress and errors from ##maester lines of the output, which are not shown as lines' {
@@ -1176,9 +1201,11 @@ Describe 'Write-MtTestProgress' {
                 Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 2 -Total 4
                 Write-MtTestProgress -ErrorMessage 'Users failed'
                 Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 0 -Total 9
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }, @{ Id = 'T.2'; Seconds = 1 }
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }
                 $script:hostLines -replace "`e\[[0-9;]*m", ''
             } finally { $__MtSession.Console = $null }
         }
-        $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9')
+        $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9', "    $($ci.Unicode ? '✓' : '+') T.1 The first  2.0 s")
     }
 }

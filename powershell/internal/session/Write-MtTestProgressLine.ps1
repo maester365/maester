@@ -34,7 +34,7 @@ function Write-MtTestProgressLine {
         $names = @{
             stage = 'Stage'; stagenumber = 'StageNumber'; stagecount = 'StageCount'; completed = 'Completed'
             total = 'Total'; failed = 'Failed'; running = 'Running'; current = 'Current'; status = 'Status'
-            error = 'ErrorMessage'; errormessage = 'ErrorMessage'
+            error = 'ErrorMessage'; errormessage = 'ErrorMessage'; stages = 'Stages'; items = 'Items'
         }
         $splat = @{}
         foreach ($key in $data.Keys) {
@@ -42,7 +42,8 @@ function Write-MtTestProgressLine {
             if (-not $name -or $null -eq $data[$key]) { continue }
             $value = $data[$key]
             $splat[$name] = switch ($name) {
-                { $_ -in 'Current', 'ErrorMessage' } { [string[]]@($value | ForEach-Object { [string]$_ }) }
+                { $_ -in 'Current', 'ErrorMessage', 'Stages' } { [string[]]@($value | ForEach-Object { [string]$_ }) }
+                'Items' { [object[]]@($value | Where-Object { $_ -is [System.Collections.IDictionary] }) }
                 { $_ -in 'Stage', 'Status' } { [string]$value }
                 default { [int]$value }
             }

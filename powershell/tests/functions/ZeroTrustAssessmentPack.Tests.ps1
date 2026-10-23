@@ -244,8 +244,10 @@ function Invoke-ZtAssessment {
             $rows.Count | Should -Be 12
             $shown = @($script:Shown -replace "`e\[[0-9;]*m", '')
             $shown | Should -Contain '    Stage 1 of 6 · Exporting Tenant Data'
-            $shown | Should -Contain '    12 / 40 · 1 failed · 2 running'
+            $shown | Should -Contain '    13 / 40 · 1 failed · 2 running'
             $shown | Should -Contain '    Error: Export Device failed: Forbidden'
+            # Each export that finished is listed with its result and how long it took.
+            @($shown | Where-Object { $_ -match '^    \S Device: Forbidden  1\.0 s$' }).Count | Should -Be 1
             @($shown | Where-Object { $_ -match '##maester' }) | Should -BeNullOrEmpty
         }
 
