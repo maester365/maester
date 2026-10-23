@@ -1,6 +1,7 @@
 {
   "$schema": "https://maester.dev/schemas/maester-pack-1.0.json",
   "Id": "maester.zero-trust-assessment",
+  "Guid": "d1e2db80-6c27-4cb6-9389-2edf0a898d23",
   "Name": "Microsoft Zero Trust Assessment",
   "Description": "Runs Microsoft's Zero Trust Assessment and shows each of its results in the Maester report.",
   "Version": "0.1.0",
