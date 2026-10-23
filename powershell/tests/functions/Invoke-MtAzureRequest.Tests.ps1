@@ -47,5 +47,22 @@ Describe 'Invoke-MtAzureRequest' -Tag 'Unit' {
 
             $result.error.code | Should -Be 'Forbidden'
         }
+
+        # Azure reports the Graph address without a trailing slash (https://graph.microsoft.com).
+        It 'builds the request address from "<Base>" and "<Relative>"' -ForEach @(
+            @{ Base = 'https://graph.microsoft.com'; Relative = 'applications' }
+            @{ Base = 'https://graph.microsoft.com/'; Relative = 'applications' }
+            @{ Base = 'https://graph.microsoft.com'; Relative = '/applications' }
+            @{ Base = 'https://graph.microsoft.us'; Relative = 'servicePrincipals/abc/appRoleAssignments' }
+        ) {
+            $graphUrl = $Base
+            Mock -ModuleName Maester Get-AzContext { [pscustomobject]@{ Environment = [pscustomobject]@{ ExtendedProperties = @{ MicrosoftGraphUrl = $graphUrl } } } }.GetNewClosure()
+            Mock -ModuleName Maester Invoke-AzRest { [pscustomobject]@{ StatusCode = 200; Content = '{}' } }
+
+            $null = Invoke-MtAzureRequest -RelativeUri $Relative -Graph
+
+            $expected = '{0}/v1.0/{1}' -f $Base.TrimEnd('/'), $Relative.TrimStart('/')
+            Should -Invoke Invoke-AzRest -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Uri.AbsoluteUri -eq $expected }
+        }
     }
 }

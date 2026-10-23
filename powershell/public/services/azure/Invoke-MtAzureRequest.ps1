@@ -63,7 +63,8 @@
         if ( -not $baseUri) { $baseUri = 'https://graph.microsoft.com' }
         if ($ApiVersion -ne 'v1.0' -and $ApiVersion -ne 'beta') { $ApiVersion = 'v1.0' }
 
-        $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($baseUri, $ApiVersion, $RelativeUri))
+        # Joined with '/', not Path.Combine: that uses a backslash on Windows, and Azure reports the Graph address without a trailing slash.
+        $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ('{0}/{1}/{2}' -f $baseUri.TrimEnd('/'), $ApiVersion, $RelativeUri.TrimStart('/'))
 
         ## Combine query parameters from URI and cmdlet parameters
         if ($uriQueryEndpoint.Query) {
