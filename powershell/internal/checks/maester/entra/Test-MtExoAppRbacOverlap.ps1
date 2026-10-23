@@ -51,6 +51,7 @@ function Test-MtExoAppRbacOverlap {
     $graphPermissionCovers = @{
         'Mail.ReadWrite'              = @('Mail.Read', 'Mail.ReadBasic')
         'Mail.Read'                   = @('Mail.ReadBasic')
+        'Mail.ReadBasic.All'          = @('Mail.ReadBasic')
         'MailboxSettings.ReadWrite'   = @('MailboxSettings.Read')
         'Calendars.ReadWrite'         = @('Calendars.Read')
         'Contacts.ReadWrite'          = @('Contacts.Read')
@@ -106,7 +107,8 @@ function Test-MtExoAppRbacOverlap {
 
             $scope = @($assignment.CustomResourceScope, $assignment.RecipientAdministrativeUnitScope, $assignment.RecipientGroupScope) |
                 Where-Object { $_ } | Select-Object -First 1
-            if (-not $scope) { $scope = 'None (organization)' }
+            # An assignment with no resource scope already covers every mailbox in Exchange, so there is no scope to undo.
+            if (-not $scope) { continue }
 
             foreach ($permission in $rolePermissions) {
                 # Tenant-wide grants that give at least this access: the same permission, or a broader one that includes it.

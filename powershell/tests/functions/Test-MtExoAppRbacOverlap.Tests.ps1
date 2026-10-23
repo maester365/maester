@@ -21,6 +21,7 @@ BeforeAll {
     $script:MailSendId = 'b633e1c5-b582-4048-a93e-9f11b44c7e96'
     $script:MailReadWriteId = 'e2a3a72e-5f79-4c64-b1b1-878b674786c9'
     $script:MailboxItemReadId = 'mailboxitem-read-all-id'
+    $script:MailReadBasicAllId = '693c5e45-0940-467d-9b8a-1022fb9d42ef'
 }
 
 AfterAll {
@@ -49,6 +50,7 @@ Describe 'Test-MtExoAppRbacOverlap' {
                     [PSCustomObject]@{ id = $script:MailSendId; value = 'Mail.Send' }
                     [PSCustomObject]@{ id = $script:MailReadWriteId; value = 'Mail.ReadWrite' }
                     [PSCustomObject]@{ id = $script:MailboxItemReadId; value = 'MailboxItem.Read.All' }
+                    [PSCustomObject]@{ id = $script:MailReadBasicAllId; value = 'Mail.ReadBasic.All' }
                 )
             }
         }
@@ -86,6 +88,29 @@ Describe 'Test-MtExoAppRbacOverlap' {
 
         Test-MtExoAppRbacOverlap | Should -BeFalse
         $script:Result | Should -BeLike '*| app-link | appid-1 | Mail.Read | Mail.ReadWrite | Sales mailboxes |*'
+    }
+
+    It 'Fails when the tenant-wide grant is Mail.ReadBasic.All and the scoped role is Mail.ReadBasic' {
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Mail.ReadBasic'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadBasicAllId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeFalse
+        $script:Result | Should -BeLike '*| app-link | appid-1 | Mail.ReadBasic | Mail.ReadBasic.All | Sales mailboxes |*'
+    }
+
+    It 'Passes when the Exchange assignment has no resource scope' {
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Mail.Read'; Enabled = $true }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeTrue
     }
 
     It 'Passes when the tenant-wide grant is a different permission' {
