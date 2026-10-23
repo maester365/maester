@@ -100,8 +100,8 @@
         return [pscustomobject]@{ Approved = $true; Reason = $null }
     }
     if ($needsTypedConfirmation -and -not ($accepted -and ($cooldownMet -or $IncludeRecent) -and $Force)) {
-        $answer = Read-MtPackConfirmation -Prompt "  $(if ($Candidate.Risk -eq 'High') { 'Only install this if you trust the publisher. ' })Type the pack ID to confirm"
-        if ($answer -ne $m.Id) { return [pscustomobject]@{ Approved = $false; Reason = 'The pack ID was not typed, so the pack was not installed.' } }
+        $answer = Read-MtPackConfirmation -Prompt "  $(if ($Candidate.Risk -eq 'High') { 'Only install this if you trust the publisher. ' })Type $($m.Id) to install it"
+        if ($answer -ne $m.Id) { return [pscustomobject]@{ Approved = $false; Reason = "The pack was not installed: confirming takes its ID, $($m.Id)$(if ($answer) { ", not '$answer'" })." } }
         return [pscustomobject]@{ Approved = $true; Reason = $null }
     }
     if ($Force) { return [pscustomobject]@{ Approved = $true; Reason = $null } }
