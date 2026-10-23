@@ -365,15 +365,12 @@ Describe 'Reader: Mitre, Control and Permission' {
 }
 
 Describe 'Service registry: permission kinds' {
-    BeforeDiscovery {
-        $registryServices = @((Import-PowerShellDataFile -Path "$PSScriptRoot/../../../assets/MaesterServiceRegistry.psd1").Services.Keys | Sort-Object)
-    }
     BeforeAll {
         $script:registryFile = Import-PowerShellDataFile -Path (Join-Path $script:repoRoot 'powershell/assets/MaesterServiceRegistry.psd1')
         $script:permissionPattern = (Import-PowerShellDataFile -Path (Join-Path $script:repoRoot 'powershell/assets/MaesterTestSchema.psd1')).Properties.Permission.Pattern
     }
 
-    It 'Lists the permission kinds of <_>, each with an example that is a valid value and a description' -ForEach $registryServices {
+    It 'Lists the permission kinds of <_>, each with an example that is a valid value and a description' -ForEach @((Import-PowerShellDataFile -Path "$PSScriptRoot/../../../assets/MaesterServiceRegistry.psd1").Services.Keys | Sort-Object) {
         $kinds = @($script:registryFile.Services[$_].PermissionKinds)
         $kinds.Count | Should -BeGreaterThan 0
         foreach ($k in $kinds) {

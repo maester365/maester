@@ -232,7 +232,9 @@ export function validate(state, data) {
     if (!service.permissionKinds.some((k) => k.kind.toLowerCase() === parsed.kind.toLowerCase())) {
       add("permission", builtin ? "error" : "warn", parsed.kind + " is not a kind of permission of " + service.name + ". Use " + service.permissionKinds.map((k) => k.kind).join(", ") + ".");
     }
-    if (builtin && !state.services.includes(service.name)) add("permission", "error", p + " names " + service.name + ", which is not one of the services of the test. Add it under Services.");
+    // Service = 'None' is written when serviceNone is set, whatever services were ticked before.
+    const declared = state.serviceNone ? [] : state.services;
+    if (builtin && !declared.includes(service.name)) add("permission", "error", p + " names " + service.name + ", which is not one of the services of the test. Add it under Services.");
   });
 
   // Lifecycle
