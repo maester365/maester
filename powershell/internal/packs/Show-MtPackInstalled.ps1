@@ -28,7 +28,8 @@
     $next = [System.Collections.Generic.List[object]]::new()
     foreach ($service in @($Entry.Services | Where-Object { $_ })) { $next.Add(@("Connect its service", "Connect-Maester -Service $(ConvertTo-MtPackSafeText -Text $service -MaxLength 60)")) }
     $next.Add(@('Run only this pack', "Invoke-Maester -Pack $code -SkipBuiltIn"))
-    $next.Add(@('Run it with the rest', 'Invoke-Maester'))
+    $next.Add(@('Run it with the rest', "Invoke-Maester -Pack $code"))
+    $next.Add(@('Run every pack', 'Invoke-Maester -AllPacks'))
     $next.Add(@('See installed packs', 'Get-MtPack'))
     foreach ($n in $next) {
         $label = "$($n[0]):".PadRight(22)

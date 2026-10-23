@@ -10,6 +10,8 @@ function Resolve-MtPackSet {
     1. Config: Packs[].Enabled = false turns a pack off (Disabled). A pack that ships with Maester follows
        its EnabledByDefault unless the config names it. With -Select (Invoke-Maester -Pack), only the packs it
        names run, whatever the config and EnabledByDefault say; the others are Disabled (NotSelected).
+       With -NamedOnly (a run), an installed pack runs only when -Select names it or the config turns it on
+       with Packs[].Enabled = true; otherwise it is Disabled (NotSelected). Installing a pack does not run it.
     2. The store: an installed pack must be in the local store (else Unavailable, PackUnavailable) and its
        files must match the digest in the lock file (else Unavailable, with a warning that the files changed).
     3. Its manifest, read again from the checked files, and RequiresMaester.
@@ -30,7 +32,9 @@ function Resolve-MtPackSet {
         [Parameter()] [string] $LockPath,
         [Parameter()] [AllowNull()] [pscustomobject] $Policy,
         # Pack IDs or codes, with '*' wildcards: run only these packs (Invoke-Maester -Pack).
-        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @()
+        [Parameter()] [AllowEmptyCollection()] [string[]] $Select = @(),
+        # Run an installed pack only when -Select names it or the config sets Enabled to true.
+        [Parameter()] [switch] $NamedOnly
     )
 
     if (-not $LockPath) { $LockPath = (Resolve-MtPackLockPath).LockPath }
@@ -101,6 +105,11 @@ function Resolve-MtPackSet {
             $row.Selected = & $selects $row.Id $null $row.TestIds
             if (-not $row.Selected) { & $notSelected $row; continue }
         } elseif ($enabled -eq $false) { & $stop $row 'Disabled' 'DisabledByConfig' "The pack $($entry.Id) is turned off in the Maester config."; continue }
+        elseif ($NamedOnly -and $enabled -ne $true) {
+            $code = if ($entry.PSObject.Properties['Code'] -and $entry.Code) { [string]$entry.Code } else { [string]$entry.Id }
+            & $stop $row 'Disabled' 'NotSelected' "The pack $($entry.Id) is installed but was not named. Run it with Invoke-Maester -Pack $code, or every installed pack with -AllPacks."
+            continue
+        }
         $root = if ($entry.Digest) { Get-MtPackStorePath -Digest $entry.Digest } else { $null }
         if (-not $root -or -not (Test-Path -LiteralPath $root -PathType Container)) {
             & $stop $row 'Unavailable' 'PackUnavailable' "The pack $($entry.Id) $($entry.Version) is in the lock file but not on this computer. Run Restore-MtPack."
