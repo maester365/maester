@@ -5,7 +5,7 @@
   "Source": "https://github.com/microsoft/zerotrustassessment",
   "Tests": [
     {
-      "Id": "MP.ZTA.21770",
+      "Id": "ZTA.21770",
       "TestId": "21770",
       "Title": "Inactive applications don’t have highly privileged Microsoft Graph API permissions",
       "Pillar": [
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21771",
+      "Id": "ZTA.21771",
       "TestId": "21771",
       "Title": "Inactive applications don’t have highly privileged built-in roles",
       "Pillar": [
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21772",
+      "Id": "ZTA.21772",
       "TestId": "21772",
       "Title": "Applications don't have client secrets configured",
       "Pillar": [
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21773",
+      "Id": "ZTA.21773",
       "TestId": "21773",
       "Title": "Applications don't have certificates with expiration longer than 180 days",
       "Pillar": [
@@ -91,7 +91,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21774",
+      "Id": "ZTA.21774",
       "TestId": "21774",
       "Title": "Microsoft services applications don't have credentials configured",
       "Pillar": [
@@ -111,7 +111,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21775",
+      "Id": "ZTA.21775",
       "TestId": "21775",
       "Title": "Tenant app management policy is configured",
       "Pillar": [
@@ -131,7 +131,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21776",
+      "Id": "ZTA.21776",
       "TestId": "21776",
       "Title": "User consent settings are restricted",
       "Pillar": [
@@ -151,7 +151,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21777",
+      "Id": "ZTA.21777",
       "TestId": "21777",
       "Title": "App instance property lock is configured for all multitenant applications",
       "Pillar": [
@@ -171,7 +171,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21778",
+      "Id": "ZTA.21778",
       "TestId": "21778",
       "Title": "Line-of-business and partner apps use MSAL",
       "Pillar": [],
@@ -187,7 +187,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21779",
+      "Id": "ZTA.21779",
       "TestId": "21779",
       "Title": "Use recent versions of Microsoft Applications",
       "Pillar": [],
@@ -203,7 +203,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21780",
+      "Id": "ZTA.21780",
       "TestId": "21780",
       "Title": "No usage of ADAL in the tenant",
       "Pillar": [
@@ -223,7 +223,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21781",
+      "Id": "ZTA.21781",
       "TestId": "21781",
       "Title": "Privileged users sign in with phishing-resistant methods",
       "Pillar": [
@@ -242,7 +242,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21782",
+      "Id": "ZTA.21782",
       "TestId": "21782",
       "Title": "Privileged accounts have phishing-resistant methods registered",
       "Pillar": [
@@ -261,7 +261,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21783",
+      "Id": "ZTA.21783",
       "TestId": "21783",
       "Title": "Privileged Microsoft Entra built-in roles are targeted with Conditional Access policies to enforce phishing-resistant methods",
       "Pillar": [
@@ -280,7 +280,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21784",
+      "Id": "ZTA.21784",
       "TestId": "21784",
       "Title": "All user sign in activity uses phishing-resistant authentication methods",
       "Pillar": [
@@ -300,7 +300,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21786",
+      "Id": "ZTA.21786",
       "TestId": "21786",
       "Title": "User sign-in activity uses token protection",
       "Pillar": [
@@ -320,7 +320,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21787",
+      "Id": "ZTA.21787",
       "TestId": "21787",
       "Title": "Permissions to create new tenants are limited to the Tenant Creator role",
       "Pillar": [
@@ -339,7 +339,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21788",
+      "Id": "ZTA.21788",
       "TestId": "21788",
       "Title": "Global Administrators don't have standing access to Azure subscriptions",
       "Pillar": [
@@ -358,7 +358,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21789",
+      "Id": "ZTA.21789",
       "TestId": "21789",
       "Title": "Tenant creation events are triaged",
       "Pillar": [
@@ -375,7 +375,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21790",
+      "Id": "ZTA.21790",
       "TestId": "21790",
       "Title": "Outbound cross-tenant access settings are configured",
       "Pillar": [
@@ -395,7 +395,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21791",
+      "Id": "ZTA.21791",
       "TestId": "21791",
       "Title": "Guests can’t invite other guests",
       "Pillar": [
@@ -414,7 +414,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21792",
+      "Id": "ZTA.21792",
       "TestId": "21792",
       "Title": "Guests have restricted access to directory objects",
       "Pillar": [
@@ -433,7 +433,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21793",
+      "Id": "ZTA.21793",
       "TestId": "21793",
       "Title": "Tenant restrictions v2 policy is configured",
       "Pillar": [
@@ -453,7 +453,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21795",
+      "Id": "ZTA.21795",
       "TestId": "21795",
       "Title": "No legacy authentication sign-in activity",
       "Pillar": [
@@ -472,7 +472,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21796",
+      "Id": "ZTA.21796",
       "TestId": "21796",
       "Title": "Block legacy authentication policy is configured",
       "Pillar": [
@@ -491,7 +491,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21797",
+      "Id": "ZTA.21797",
       "TestId": "21797",
       "Title": "Restrict access to high risk users",
       "Pillar": [
@@ -511,7 +511,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21798",
+      "Id": "ZTA.21798",
       "TestId": "21798",
       "Title": "ID Protection notifications are enabled",
       "Pillar": [
@@ -531,7 +531,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21799",
+      "Id": "ZTA.21799",
       "TestId": "21799",
       "Title": "Restrict high risk sign-ins",
       "Pillar": [
@@ -551,7 +551,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21800",
+      "Id": "ZTA.21800",
       "TestId": "21800",
       "Title": "All user sign-in activity uses strong authentication methods",
       "Pillar": [
@@ -571,7 +571,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21801",
+      "Id": "ZTA.21801",
       "TestId": "21801",
       "Title": "Users have strong authentication methods configured",
       "Pillar": [
@@ -591,7 +591,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21802",
+      "Id": "ZTA.21802",
       "TestId": "21802",
       "Title": "Authenticator app shows sign-in context",
       "Pillar": [
@@ -611,7 +611,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21803",
+      "Id": "ZTA.21803",
       "TestId": "21803",
       "Title": "Migrate from legacy MFA and SSPR policies",
       "Pillar": [
@@ -631,7 +631,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21804",
+      "Id": "ZTA.21804",
       "TestId": "21804",
       "Title": "SMS and Voice Call authentication methods are disabled",
       "Pillar": [
@@ -651,7 +651,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21806",
+      "Id": "ZTA.21806",
       "TestId": "21806",
       "Title": "Secure the MFA registration (My Security Info) page",
       "Pillar": [
@@ -671,7 +671,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21807",
+      "Id": "ZTA.21807",
       "TestId": "21807",
       "Title": "Creating new applications and service principals is restricted to privileged users",
       "Pillar": [
@@ -690,7 +690,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21808",
+      "Id": "ZTA.21808",
       "TestId": "21808",
       "Title": "Restrict device code flow",
       "Pillar": [
@@ -710,7 +710,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21809",
+      "Id": "ZTA.21809",
       "TestId": "21809",
       "Title": "Admin consent workflow is enabled",
       "Pillar": [
@@ -730,7 +730,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21810",
+      "Id": "ZTA.21810",
       "TestId": "21810",
       "Title": "Resource-specific consent is restricted",
       "Pillar": [
@@ -750,7 +750,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21811",
+      "Id": "ZTA.21811",
       "TestId": "21811",
       "Title": "Password expiration is disabled",
       "Pillar": [
@@ -770,7 +770,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21812",
+      "Id": "ZTA.21812",
       "TestId": "21812",
       "Title": "Maximum number of Global Administrators doesn't exceed eight users",
       "Pillar": [
@@ -789,7 +789,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21813",
+      "Id": "ZTA.21813",
       "TestId": "21813",
       "Title": "High Global Administrator to privileged user ratio",
       "Pillar": [
@@ -808,7 +808,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21814",
+      "Id": "ZTA.21814",
       "TestId": "21814",
       "Title": "Privileged accounts are cloud native identities",
       "Pillar": [
@@ -827,7 +827,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21815",
+      "Id": "ZTA.21815",
       "TestId": "21815",
       "Title": "All privileged role assignments are activated just in time and not permanently active",
       "Pillar": [
@@ -846,7 +846,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21816",
+      "Id": "ZTA.21816",
       "TestId": "21816",
       "Title": "All privileged role assignments are managed with PIM",
       "Pillar": [
@@ -865,7 +865,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21817",
+      "Id": "ZTA.21817",
       "TestId": "21817",
       "Title": "Global Administrator role activation triggers an approval workflow",
       "Pillar": [
@@ -884,7 +884,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21818",
+      "Id": "ZTA.21818",
       "TestId": "21818",
       "Title": "Privileged role activations have monitoring and alerting configured",
       "Pillar": [
@@ -903,7 +903,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21819",
+      "Id": "ZTA.21819",
       "TestId": "21819",
       "Title": "Activation alert for Global Administrator role assignments",
       "Pillar": [
@@ -922,7 +922,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21820",
+      "Id": "ZTA.21820",
       "TestId": "21820",
       "Title": "Activation alert for all privileged role assignments",
       "Pillar": [
@@ -941,7 +941,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21821",
+      "Id": "ZTA.21821",
       "TestId": "21821",
       "Title": "Guest access is restricted",
       "Pillar": [
@@ -958,7 +958,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21822",
+      "Id": "ZTA.21822",
       "TestId": "21822",
       "Title": "Guest access is limited to approved tenants",
       "Pillar": [
@@ -977,7 +977,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21823",
+      "Id": "ZTA.21823",
       "TestId": "21823",
       "Title": "Guest self-service sign-up via user flow is disabled",
       "Pillar": [
@@ -996,7 +996,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21824",
+      "Id": "ZTA.21824",
       "TestId": "21824",
       "Title": "Guests don't have long lived sign-in sessions",
       "Pillar": [
@@ -1015,7 +1015,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21825",
+      "Id": "ZTA.21825",
       "TestId": "21825",
       "Title": "Privileged user sessions don't have long lived sign-in sessions",
       "Pillar": [
@@ -1034,7 +1034,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21828",
+      "Id": "ZTA.21828",
       "TestId": "21828",
       "Title": "Secure the MFA registration (My Security Info) page",
       "Pillar": [
@@ -1054,7 +1054,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21829",
+      "Id": "ZTA.21829",
       "TestId": "21829",
       "Title": "Use cloud authentication",
       "Pillar": [
@@ -1073,7 +1073,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21830",
+      "Id": "ZTA.21830",
       "TestId": "21830",
       "Title": "Conditional Access policies for Privileged Access Workstations are configured",
       "Pillar": [
@@ -1092,7 +1092,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21831",
+      "Id": "ZTA.21831",
       "TestId": "21831",
       "Title": "Conditional Access protected actions are enabled",
       "Pillar": [
@@ -1111,7 +1111,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21832",
+      "Id": "ZTA.21832",
       "TestId": "21832",
       "Title": "All groups in Conditional Access policies belong to a restricted management administrative unit",
       "Pillar": [
@@ -1130,7 +1130,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21833",
+      "Id": "ZTA.21833",
       "TestId": "21833",
       "Title": "Directory Sync account credentials haven't been rotated recently",
       "Pillar": [
@@ -1147,7 +1147,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21834",
+      "Id": "ZTA.21834",
       "TestId": "21834",
       "Title": "Directory sync account is locked down to specific named location",
       "Pillar": [
@@ -1164,7 +1164,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21835",
+      "Id": "ZTA.21835",
       "TestId": "21835",
       "Title": "Emergency account exists",
       "Pillar": [
@@ -1183,7 +1183,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21836",
+      "Id": "ZTA.21836",
       "TestId": "21836",
       "Title": "Workload Identities are not assigned privileged roles",
       "Pillar": [
@@ -1203,7 +1203,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21837",
+      "Id": "ZTA.21837",
       "TestId": "21837",
       "Title": "Limit the maximum number of devices per user to 10",
       "Pillar": [
@@ -1222,7 +1222,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21838",
+      "Id": "ZTA.21838",
       "TestId": "21838",
       "Title": "Security key authentication method enabled",
       "Pillar": [
@@ -1242,7 +1242,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21839",
+      "Id": "ZTA.21839",
       "TestId": "21839",
       "Title": "Passkey authentication method enabled",
       "Pillar": [
@@ -1262,7 +1262,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21840",
+      "Id": "ZTA.21840",
       "TestId": "21840",
       "Title": "Security key attestation is enforced",
       "Pillar": [
@@ -1282,7 +1282,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21841",
+      "Id": "ZTA.21841",
       "TestId": "21841",
       "Title": "Authenticator app report suspicious activity is enabled",
       "Pillar": [
@@ -1302,7 +1302,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21842",
+      "Id": "ZTA.21842",
       "TestId": "21842",
       "Title": "Block administrators from using SSPR",
       "Pillar": [
@@ -1321,7 +1321,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21843",
+      "Id": "ZTA.21843",
       "TestId": "21843",
       "Title": "Block legacy Microsoft Online PowerShell module",
       "Pillar": [
@@ -1338,7 +1338,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21844",
+      "Id": "ZTA.21844",
       "TestId": "21844",
       "Title": "Block legacy Azure AD PowerShell module",
       "Pillar": [
@@ -1357,7 +1357,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21845",
+      "Id": "ZTA.21845",
       "TestId": "21845",
       "Title": "Temporary access pass is enabled",
       "Pillar": [
@@ -1377,7 +1377,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21846",
+      "Id": "ZTA.21846",
       "TestId": "21846",
       "Title": "Temporary access pass restricted to one-time use",
       "Pillar": [
@@ -1397,7 +1397,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21847",
+      "Id": "ZTA.21847",
       "TestId": "21847",
       "Title": "Password protection for on-premises is enabled",
       "Pillar": [
@@ -1416,7 +1416,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21848",
+      "Id": "ZTA.21848",
       "TestId": "21848",
       "Title": "Enable custom banned passwords",
       "Pillar": [
@@ -1436,7 +1436,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21849",
+      "Id": "ZTA.21849",
       "TestId": "21849",
       "Title": "Smart lockout duration is set to a minimum of 60",
       "Pillar": [
@@ -1456,7 +1456,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21850",
+      "Id": "ZTA.21850",
       "TestId": "21850",
       "Title": "Smart lockout threshold isn't greater than 10",
       "Pillar": [
@@ -1476,7 +1476,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21851",
+      "Id": "ZTA.21851",
       "TestId": "21851",
       "Title": "Guest access is protected by strong authentication methods",
       "Pillar": [
@@ -1495,7 +1495,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21854",
+      "Id": "ZTA.21854",
       "TestId": "21854",
       "Title": "Privileged roles aren't assigned to stale identities",
       "Pillar": [
@@ -1513,7 +1513,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21855",
+      "Id": "ZTA.21855",
       "TestId": "21855",
       "Title": "Privileged roles have access reviews",
       "Pillar": [
@@ -1531,7 +1531,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21857",
+      "Id": "ZTA.21857",
       "TestId": "21857",
       "Title": "Guest identities are lifecycle managed with access reviews",
       "Pillar": [
@@ -1549,7 +1549,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21858",
+      "Id": "ZTA.21858",
       "TestId": "21858",
       "Title": "Inactive guest identities are disabled or removed from the tenant",
       "Pillar": [
@@ -1569,7 +1569,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21859",
+      "Id": "ZTA.21859",
       "TestId": "21859",
       "Title": "GDAP admin least privilege",
       "Pillar": [
@@ -1587,7 +1587,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21860",
+      "Id": "ZTA.21860",
       "TestId": "21860",
       "Title": "Diagnostic settings are configured for all Microsoft Entra logs",
       "Pillar": [
@@ -1607,7 +1607,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21861",
+      "Id": "ZTA.21861",
       "TestId": "21861",
       "Title": "All high-risk users are triaged",
       "Pillar": [
@@ -1627,7 +1627,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21862",
+      "Id": "ZTA.21862",
       "TestId": "21862",
       "Title": "All risky workload identities are triaged",
       "Pillar": [
@@ -1647,7 +1647,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21863",
+      "Id": "ZTA.21863",
       "TestId": "21863",
       "Title": "All high-risk sign-ins are triaged",
       "Pillar": [
@@ -1667,7 +1667,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21864",
+      "Id": "ZTA.21864",
       "TestId": "21864",
       "Title": "All risk detections are triaged",
       "Pillar": [
@@ -1685,7 +1685,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21865",
+      "Id": "ZTA.21865",
       "TestId": "21865",
       "Title": "Named locations are configured",
       "Pillar": [
@@ -1705,7 +1705,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21866",
+      "Id": "ZTA.21866",
       "TestId": "21866",
       "Title": "All Microsoft Entra recommendations are addressed",
       "Pillar": [
@@ -1725,7 +1725,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21867",
+      "Id": "ZTA.21867",
       "TestId": "21867",
       "Title": "All enterprise applications have owners",
       "Pillar": [
@@ -1745,7 +1745,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21868",
+      "Id": "ZTA.21868",
       "TestId": "21868",
       "Title": "Guests do not own apps in the tenant",
       "Pillar": [
@@ -1765,7 +1765,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21869",
+      "Id": "ZTA.21869",
       "TestId": "21869",
       "Title": "Enterprise applications must require explicit assignment or scoped provisioning",
       "Pillar": [
@@ -1785,7 +1785,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21870",
+      "Id": "ZTA.21870",
       "TestId": "21870",
       "Title": "Enable SSPR",
       "Pillar": [
@@ -1805,7 +1805,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21872",
+      "Id": "ZTA.21872",
       "TestId": "21872",
       "Title": "Require multifactor authentication for device join and device registration using user action",
       "Pillar": [
@@ -1824,7 +1824,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21874",
+      "Id": "ZTA.21874",
       "TestId": "21874",
       "Title": "Allow/Deny lists of domains to restrict external collaboration are configured",
       "Pillar": [
@@ -1844,7 +1844,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21875",
+      "Id": "ZTA.21875",
       "TestId": "21875",
       "Title": "Tenant has all External organizations allowed to collaborate as Connected Organization",
       "Pillar": [
@@ -1865,7 +1865,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21876",
+      "Id": "ZTA.21876",
       "TestId": "21876",
       "Title": "Use PIM for Microsoft Entra privileged roles",
       "Pillar": [
@@ -1883,7 +1883,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21877",
+      "Id": "ZTA.21877",
       "TestId": "21877",
       "Title": "All guests have a sponsor",
       "Pillar": [
@@ -1903,7 +1903,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21878",
+      "Id": "ZTA.21878",
       "TestId": "21878",
       "Title": "All entitlement management policies have an expiration date",
       "Pillar": [
@@ -1924,7 +1924,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21879",
+      "Id": "ZTA.21879",
       "TestId": "21879",
       "Title": "All entitlement management policies that apply to External users require approval",
       "Pillar": [
@@ -1944,7 +1944,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21881",
+      "Id": "ZTA.21881",
       "TestId": "21881",
       "Title": "Azure subscriptions used by Identity Governance are secured consistently with Identity Governance roles",
       "Pillar": [
@@ -1962,7 +1962,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21882",
+      "Id": "ZTA.21882",
       "TestId": "21882",
       "Title": "No nested groups in PIM for groups",
       "Pillar": [
@@ -1980,7 +1980,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21883",
+      "Id": "ZTA.21883",
       "TestId": "21883",
       "Title": "Workload Identities are configured with risk-based policies",
       "Pillar": [
@@ -2000,7 +2000,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21884",
+      "Id": "ZTA.21884",
       "TestId": "21884",
       "Title": "Workload identities based on known networks are configured",
       "Pillar": [
@@ -2020,7 +2020,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21885",
+      "Id": "ZTA.21885",
       "TestId": "21885",
       "Title": "App registrations use safe redirect URIs",
       "Pillar": [
@@ -2040,7 +2040,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21886",
+      "Id": "ZTA.21886",
       "TestId": "21886",
       "Title": "Applications that use Microsoft Entra for authentication and support provisioning are configured",
       "Pillar": [
@@ -2060,7 +2060,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21887",
+      "Id": "ZTA.21887",
       "TestId": "21887",
       "Title": "All registered redirect URIs must have proper DNS records and ownerships",
       "Pillar": [
@@ -2078,7 +2078,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21888",
+      "Id": "ZTA.21888",
       "TestId": "21888",
       "Title": "App registrations must not have dangling or abandoned domain redirect URIs",
       "Pillar": [
@@ -2098,7 +2098,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21889",
+      "Id": "ZTA.21889",
       "TestId": "21889",
       "Title": "Reduce the user-visible password surface area",
       "Pillar": [
@@ -2118,7 +2118,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21890",
+      "Id": "ZTA.21890",
       "TestId": "21890",
       "Title": "Require password reset notifications for user roles",
       "Pillar": [
@@ -2136,7 +2136,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21891",
+      "Id": "ZTA.21891",
       "TestId": "21891",
       "Title": "Require password reset notifications for administrator roles",
       "Pillar": [
@@ -2156,7 +2156,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21892",
+      "Id": "ZTA.21892",
       "TestId": "21892",
       "Title": "All sign-in activity comes from managed devices",
       "Pillar": [
@@ -2176,7 +2176,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21893",
+      "Id": "ZTA.21893",
       "TestId": "21893",
       "Title": "Enable Microsoft Entra ID Protection policy to enforce multifactor authentication registration",
       "Pillar": [
@@ -2196,7 +2196,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21894",
+      "Id": "ZTA.21894",
       "TestId": "21894",
       "Title": "All certificates Microsoft Entra Application Registrations and Service Principals must be issued by an approved certification authority",
       "Pillar": [
@@ -2214,7 +2214,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21895",
+      "Id": "ZTA.21895",
       "TestId": "21895",
       "Title": "Application Certificate Credentials are managed using HSM",
       "Pillar": [
@@ -2232,7 +2232,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21896",
+      "Id": "ZTA.21896",
       "TestId": "21896",
       "Title": "Service principals don't have certificates or credentials associated with them",
       "Pillar": [
@@ -2252,7 +2252,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21897",
+      "Id": "ZTA.21897",
       "TestId": "21897",
       "Title": "All app assignment and group membership is governed",
       "Pillar": [
@@ -2270,7 +2270,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21898",
+      "Id": "ZTA.21898",
       "TestId": "21898",
       "Title": "All supported access lifecycle resources are managed with entitlement management packages",
       "Pillar": [
@@ -2288,7 +2288,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21899",
+      "Id": "ZTA.21899",
       "TestId": "21899",
       "Title": "All privileged role assignments have a recipient that can receive notifications",
       "Pillar": [
@@ -2306,7 +2306,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21912",
+      "Id": "ZTA.21912",
       "TestId": "21912",
       "Title": "Azure resources used by Microsoft Entra only allow access from privileged roles",
       "Pillar": [
@@ -2324,7 +2324,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21929",
+      "Id": "ZTA.21929",
       "TestId": "21929",
       "Title": "All entitlement management packages that apply to guests have expirations or access reviews configured in their assignment policies",
       "Pillar": [
@@ -2345,7 +2345,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21941",
+      "Id": "ZTA.21941",
       "TestId": "21941",
       "Title": "Token protection policies are configured",
       "Pillar": [
@@ -2365,7 +2365,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21953",
+      "Id": "ZTA.21953",
       "TestId": "21953",
       "Title": "Local Admin Password Solution is deployed",
       "Pillar": [
@@ -2385,7 +2385,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21954",
+      "Id": "ZTA.21954",
       "TestId": "21954",
       "Title": "Restrict nonadministrator users from recovering the BitLocker keys for their owned devices",
       "Pillar": [
@@ -2405,7 +2405,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21955",
+      "Id": "ZTA.21955",
       "TestId": "21955",
       "Title": "Manage the local administrators on Microsoft Entra joined devices",
       "Pillar": [
@@ -2425,7 +2425,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21964",
+      "Id": "ZTA.21964",
       "TestId": "21964",
       "Title": "Enable protected actions to secure Conditional Access policy creation and changes",
       "Pillar": [
@@ -2445,7 +2445,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21983",
+      "Id": "ZTA.21983",
       "TestId": "21983",
       "Title": "No Active Medium priority Entra recommendations found",
       "Pillar": [
@@ -2463,7 +2463,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21984",
+      "Id": "ZTA.21984",
       "TestId": "21984",
       "Title": "No Active low priority Entra recommendations found",
       "Pillar": [
@@ -2481,7 +2481,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21985",
+      "Id": "ZTA.21985",
       "TestId": "21985",
       "Title": "Turn off Seamless SSO if there is no usage",
       "Pillar": [
@@ -2501,7 +2501,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.21992",
+      "Id": "ZTA.21992",
       "TestId": "21992",
       "Title": "Application certificates must be rotated on a regular basis",
       "Pillar": [
@@ -2521,7 +2521,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.22072",
+      "Id": "ZTA.22072",
       "TestId": "22072",
       "Title": "Self-Service Password Reset does not use Q & A",
       "Pillar": [
@@ -2541,7 +2541,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.22124",
+      "Id": "ZTA.22124",
       "TestId": "22124",
       "Title": "High priority Microsoft Entra recommendations are addressed",
       "Pillar": [
@@ -2561,7 +2561,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.22128",
+      "Id": "ZTA.22128",
       "TestId": "22128",
       "Title": "Guests are not assigned high privileged directory roles",
       "Pillar": [
@@ -2581,7 +2581,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.22659",
+      "Id": "ZTA.22659",
       "TestId": "22659",
       "Title": "All risky workload identity sign ins are triaged",
       "Pillar": [
@@ -2601,7 +2601,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.23183",
+      "Id": "ZTA.23183",
       "TestId": "23183",
       "Title": "Service principals use safe redirect URIs",
       "Pillar": [
@@ -2621,7 +2621,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24518",
+      "Id": "ZTA.24518",
       "TestId": "24518",
       "Title": "Enterprise applications have owners",
       "Pillar": [
@@ -2640,7 +2640,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24540",
+      "Id": "ZTA.24540",
       "TestId": "24540",
       "Title": "Windows Firewall policy is created and assigned",
       "Pillar": [
@@ -2659,7 +2659,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24541",
+      "Id": "ZTA.24541",
       "TestId": "24541",
       "Title": "A compliance policy for Windows devices exists",
       "Pillar": [
@@ -2678,7 +2678,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24542",
+      "Id": "ZTA.24542",
       "TestId": "24542",
       "Title": "macOS Compliance policy is created and assigned",
       "Pillar": [
@@ -2697,7 +2697,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24543",
+      "Id": "ZTA.24543",
       "TestId": "24543",
       "Title": "Compliance policy assignment for iOS/iPadOS devices",
       "Pillar": [
@@ -2716,7 +2716,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24545",
+      "Id": "ZTA.24545",
       "TestId": "24545",
       "Title": "Compliance policy assignment for Android Enterprise Fully managed device is configured and assigned",
       "Pillar": [
@@ -2735,7 +2735,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24546",
+      "Id": "ZTA.24546",
       "TestId": "24546",
       "Title": "Windows automatic device enrollment is enforced to eliminate risks from unmanaged endpoints",
       "Pillar": [
@@ -2754,7 +2754,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24547",
+      "Id": "ZTA.24547",
       "TestId": "24547",
       "Title": "Compliance Policy for Android Enterprise Personally-Owned Work Profile is configured and assigned",
       "Pillar": [
@@ -2773,7 +2773,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24548",
+      "Id": "ZTA.24548",
       "TestId": "24548",
       "Title": "App Protection Policy assigned on iOS/iPad devices",
       "Pillar": [
@@ -2792,7 +2792,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24549",
+      "Id": "ZTA.24549",
       "TestId": "24549",
       "Title": "An App protection policy for Android platform exists in Intune",
       "Pillar": [
@@ -2811,7 +2811,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24550",
+      "Id": "ZTA.24550",
       "TestId": "24550",
       "Title": "Windows - BitLocker Policy is created and assigned",
       "Pillar": [
@@ -2830,7 +2830,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24551",
+      "Id": "ZTA.24551",
       "TestId": "24551",
       "Title": "Windows Hello for Business Policy is Configured and Assigned",
       "Pillar": [
@@ -2849,7 +2849,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24552",
+      "Id": "ZTA.24552",
       "TestId": "24552",
       "Title": "macOS - Firewall policy is created and assigned",
       "Pillar": [
@@ -2868,7 +2868,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24553",
+      "Id": "ZTA.24553",
       "TestId": "24553",
       "Title": "Windows Update policy is assigned and enforced.",
       "Pillar": [
@@ -2887,7 +2887,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24554",
+      "Id": "ZTA.24554",
       "TestId": "24554",
       "Title": "iOS - Update policy is configured and assigned",
       "Pillar": [
@@ -2906,7 +2906,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24555",
+      "Id": "ZTA.24555",
       "TestId": "24555",
       "Title": "Intune Scope Tags are Configured for Delegated Administration",
       "Pillar": [
@@ -2925,7 +2925,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24560",
+      "Id": "ZTA.24560",
       "TestId": "24560",
       "Title": "Windows Cloud LAPS policy is created and assigned",
       "Pillar": [
@@ -2944,7 +2944,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24561",
+      "Id": "ZTA.24561",
       "TestId": "24561",
       "Title": "Local administrator credentials on macOS are protected during enrollment by macOS LAPS",
       "Pillar": [
@@ -2963,7 +2963,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24564",
+      "Id": "ZTA.24564",
       "TestId": "24564",
       "Title": "Windows - Local Account Protection policy is configured and assigned",
       "Pillar": [
@@ -2982,7 +2982,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24568",
+      "Id": "ZTA.24568",
       "TestId": "24568",
       "Title": "macOS - Platform SSO is configured and assigned",
       "Pillar": [
@@ -3001,7 +3001,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24569",
+      "Id": "ZTA.24569",
       "TestId": "24569",
       "Title": "Intune macOS FileVault policy is created and Assigned",
       "Pillar": [
@@ -3020,7 +3020,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24570",
+      "Id": "ZTA.24570",
       "TestId": "24570",
       "Title": "Entra Connect Sync is configured with Service Principal Credentials",
       "Pillar": [
@@ -3039,7 +3039,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24572",
+      "Id": "ZTA.24572",
       "TestId": "24572",
       "Title": "Device enrollment notification is configured and assigned",
       "Pillar": [
@@ -3058,7 +3058,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24573",
+      "Id": "ZTA.24573",
       "TestId": "24573",
       "Title": "Windows - A security baseline is configured and assigned",
       "Pillar": [
@@ -3077,7 +3077,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24574",
+      "Id": "ZTA.24574",
       "TestId": "24574",
       "Title": "Deploy Attack Surface Reduction Policies (ASR) policies for Windows devices",
       "Pillar": [
@@ -3096,7 +3096,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24575",
+      "Id": "ZTA.24575",
       "TestId": "24575",
       "Title": "A Windows Defender Antivirus policy is created and assigned",
       "Pillar": [
@@ -3115,7 +3115,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24576",
+      "Id": "ZTA.24576",
       "TestId": "24576",
       "Title": "Intune Endpoint Analytics policy is created and Assigned",
       "Pillar": [
@@ -3134,7 +3134,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24690",
+      "Id": "ZTA.24690",
       "TestId": "24690",
       "Title": "macOS - Update policy is configured and assigned",
       "Pillar": [
@@ -3153,7 +3153,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24784",
+      "Id": "ZTA.24784",
       "TestId": "24784",
       "Title": "A Microsoft Defender Antivirus policy is created and assigned in Intune for macOS",
       "Pillar": [
@@ -3172,7 +3172,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24794",
+      "Id": "ZTA.24794",
       "TestId": "24794",
       "Title": "Intune Terms and Conditions Policy is configured and assigned",
       "Pillar": [
@@ -3191,7 +3191,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24802",
+      "Id": "ZTA.24802",
       "TestId": "24802",
       "Title": "Device Clean-up Rule is Created",
       "Pillar": [
@@ -3210,7 +3210,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24823",
+      "Id": "ZTA.24823",
       "TestId": "24823",
       "Title": "Company Portal branding and support settings enhance user experience and trust",
       "Pillar": [
@@ -3229,7 +3229,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24824",
+      "Id": "ZTA.24824",
       "TestId": "24824",
       "Title": "Conditional Access policies block access from noncompliant devices",
       "Pillar": [
@@ -3248,7 +3248,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24827",
+      "Id": "ZTA.24827",
       "TestId": "24827",
       "Title": "Conditional Access policies block access from unmanaged apps",
       "Pillar": [
@@ -3267,7 +3267,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24839",
+      "Id": "ZTA.24839",
       "TestId": "24839",
       "Title": "Secure Wi-Fi profiles protect iOS devices from unauthorized network access",
       "Pillar": [
@@ -3286,7 +3286,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24840",
+      "Id": "ZTA.24840",
       "TestId": "24840",
       "Title": "Secure Wi-Fi profiles protect Android devices from unauthorized network access",
       "Pillar": [
@@ -3305,7 +3305,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24870",
+      "Id": "ZTA.24870",
       "TestId": "24870",
       "Title": "Secure Wi-Fi profiles protect macOS devices from unauthorized network access",
       "Pillar": [
@@ -3324,7 +3324,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.24871",
+      "Id": "ZTA.24871",
       "TestId": "24871",
       "Title": "Defender for Endpoint automatic enrollment is enforced to reduce risk from unmanaged Android threats",
       "Pillar": [
@@ -3343,7 +3343,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25370",
+      "Id": "ZTA.25370",
       "TestId": "25370",
       "Title": "Source IP restoration is enabled",
       "Pillar": [
@@ -3366,7 +3366,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25371",
+      "Id": "ZTA.25371",
       "TestId": "25371",
       "Title": "Network validation is configured through Universal Continuous Access Evaluation",
       "Pillar": [
@@ -3389,7 +3389,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25372",
+      "Id": "ZTA.25372",
       "TestId": "25372",
       "Title": "Global Secure Access client is deployed on all managed endpoints",
       "Pillar": [
@@ -3412,7 +3412,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25375",
+      "Id": "ZTA.25375",
       "TestId": "25375",
       "Title": "The tenant holds the licenses required to operate Global Secure Access",
       "Pillar": [
@@ -3434,7 +3434,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25376",
+      "Id": "ZTA.25376",
       "TestId": "25376",
       "Title": "Microsoft 365 traffic is actively flowing through Global Secure Access",
       "Pillar": [
@@ -3457,7 +3457,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25377",
+      "Id": "ZTA.25377",
       "TestId": "25377",
       "Title": "Universal tenant restrictions block unauthorized external tenant access",
       "Pillar": [
@@ -3480,7 +3480,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25379",
+      "Id": "ZTA.25379",
       "TestId": "25379",
       "Title": "Conditional Access policies use compliant network controls",
       "Pillar": [
@@ -3503,7 +3503,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25380",
+      "Id": "ZTA.25380",
       "TestId": "25380",
       "Title": "Global Secure Access signaling for Conditional Access is enabled",
       "Pillar": [
@@ -3525,7 +3525,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25381",
+      "Id": "ZTA.25381",
       "TestId": "25381",
       "Title": "Network traffic is routed through Global Secure Access for security policy enforcement",
       "Pillar": [
@@ -3549,7 +3549,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25382",
+      "Id": "ZTA.25382",
       "TestId": "25382",
       "Title": "Traffic forwarding profiles are scoped to appropriate users and groups for controlled deployment",
       "Pillar": [
@@ -3571,7 +3571,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25383",
+      "Id": "ZTA.25383",
       "TestId": "25383",
       "Title": "Administrative privileges are tightly limited to prevent compromise",
       "Pillar": [
@@ -3593,7 +3593,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25384",
+      "Id": "ZTA.25384",
       "TestId": "25384",
       "Title": "Application admin rights are constrained to specific Private Access apps",
       "Pillar": [
@@ -3616,7 +3616,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25391",
+      "Id": "ZTA.25391",
       "TestId": "25391",
       "Title": "Private network connectors are active and healthy to maintain Zero Trust access to internal resources",
       "Pillar": [
@@ -3637,7 +3637,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25392",
+      "Id": "ZTA.25392",
       "TestId": "25392",
       "Title": "Private network connectors are running the latest version",
       "Pillar": [
@@ -3658,7 +3658,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25393",
+      "Id": "ZTA.25393",
       "TestId": "25393",
       "Title": "Quick Access is enabled and bound to a connector",
       "Pillar": [
@@ -3680,7 +3680,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25394",
+      "Id": "ZTA.25394",
       "TestId": "25394",
       "Title": "Quick Access is bound to a Conditional Access policy",
       "Pillar": [
@@ -3703,7 +3703,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25395",
+      "Id": "ZTA.25395",
       "TestId": "25395",
       "Title": "Entra Private Access Application segments are defined to enforce least-privilege access",
       "Pillar": [
@@ -3724,7 +3724,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25396",
+      "Id": "ZTA.25396",
       "TestId": "25396",
       "Title": "Conditional Access policies enforce strong authentication for private apps",
       "Pillar": [
@@ -3746,7 +3746,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25398",
+      "Id": "ZTA.25398",
       "TestId": "25398",
       "Title": "Domain controller RDP access is protected by phishing-resistant authentication through Global Secure Access",
       "Pillar": [
@@ -3769,7 +3769,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25399",
+      "Id": "ZTA.25399",
       "TestId": "25399",
       "Title": "Private DNS is configured for internal name resolution",
       "Pillar": [
@@ -3791,7 +3791,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25400",
+      "Id": "ZTA.25400",
       "TestId": "25400",
       "Title": "DNS traffic for internal domains is routed through Private Access",
       "Pillar": [
@@ -3813,7 +3813,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25401",
+      "Id": "ZTA.25401",
       "TestId": "25401",
       "Title": "Application Proxy applications require preauthentication to block anonymous access",
       "Pillar": [
@@ -3835,7 +3835,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25403",
+      "Id": "ZTA.25403",
       "TestId": "25403",
       "Title": "Private Access sensors are enforcing strong authentication policies on domain controllers",
       "Pillar": [
@@ -3857,7 +3857,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25405",
+      "Id": "ZTA.25405",
       "TestId": "25405",
       "Title": "Intelligent Local Access is enabled and configured",
       "Pillar": [
@@ -3878,7 +3878,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25406",
+      "Id": "ZTA.25406",
       "TestId": "25406",
       "Title": "Internet access forwarding profile is enabled",
       "Pillar": [
@@ -3900,7 +3900,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25407",
+      "Id": "ZTA.25407",
       "TestId": "25407",
       "Title": "Web content filtering integrates with Conditional Access",
       "Pillar": [
@@ -3922,7 +3922,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25408",
+      "Id": "ZTA.25408",
       "TestId": "25408",
       "Title": "Web content filtering policies are configured",
       "Pillar": [
@@ -3944,7 +3944,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25409",
+      "Id": "ZTA.25409",
       "TestId": "25409",
       "Title": "Web content filtering uses category-based rules",
       "Pillar": [
@@ -3966,7 +3966,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25410",
+      "Id": "ZTA.25410",
       "TestId": "25410",
       "Title": "Web content filtering policies are linked to security profiles",
       "Pillar": [
@@ -3988,7 +3988,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25411",
+      "Id": "ZTA.25411",
       "TestId": "25411",
       "Title": "TLS inspection is enabled and correctly configured for outbound traffic",
       "Pillar": [
@@ -4009,7 +4009,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25413",
+      "Id": "ZTA.25413",
       "TestId": "25413",
       "Title": "File transfer policies are configured to prevent data exfiltration",
       "Pillar": [
@@ -4030,7 +4030,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25415",
+      "Id": "ZTA.25415",
       "TestId": "25415",
       "Title": "AI Gateway protects enterprise generative AI applications from prompt injection attacks",
       "Pillar": [
@@ -4052,7 +4052,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25416",
+      "Id": "ZTA.25416",
       "TestId": "25416",
       "Title": "Global Secure Access cloud firewall protects branch office internet traffic",
       "Pillar": [
@@ -4074,7 +4074,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25419",
+      "Id": "ZTA.25419",
       "TestId": "25419",
       "Title": "Network access activity is visible to security operations for threat detection and response",
       "Pillar": [
@@ -4097,7 +4097,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25420",
+      "Id": "ZTA.25420",
       "TestId": "25420",
       "Title": "Network access logs are retained for security analysis and compliance requirements",
       "Pillar": [
@@ -4120,7 +4120,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25422",
+      "Id": "ZTA.25422",
       "TestId": "25422",
       "Title": "Global Secure Access deployment logs are populated and reviewed",
       "Pillar": [
@@ -4143,7 +4143,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25466",
+      "Id": "ZTA.25466",
       "TestId": "25466",
       "Title": "At least two Private Access connectors are active and healthy per connector group",
       "Pillar": [
@@ -4164,7 +4164,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25480",
+      "Id": "ZTA.25480",
       "TestId": "25480",
       "Title": "Quick Access has user or group assignments",
       "Pillar": [
@@ -4187,7 +4187,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25481",
+      "Id": "ZTA.25481",
       "TestId": "25481",
       "Title": "All Private Access apps have user or group assignments",
       "Pillar": [
@@ -4210,7 +4210,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25533",
+      "Id": "ZTA.25533",
       "TestId": "25533",
       "Title": "DDoS Protection is enabled for all Public IP Addresses in VNETs",
       "Pillar": [
@@ -4233,7 +4233,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25535",
+      "Id": "ZTA.25535",
       "TestId": "25535",
       "Title": "Outbound traffic from VNET integrated workloads is routed through Azure Firewall",
       "Pillar": [
@@ -4257,7 +4257,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25537",
+      "Id": "ZTA.25537",
       "TestId": "25537",
       "Title": "Threat intelligence is Enabled in Deny Mode on Azure Firewall",
       "Pillar": [
@@ -4279,7 +4279,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25539",
+      "Id": "ZTA.25539",
       "TestId": "25539",
       "Title": "IDPS Inspection is Enabled in Deny Mode on Azure Firewall",
       "Pillar": [
@@ -4301,7 +4301,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25541",
+      "Id": "ZTA.25541",
       "TestId": "25541",
       "Title": "Application Gateway WAF is Enabled in Prevention mode",
       "Pillar": [
@@ -4323,7 +4323,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25543",
+      "Id": "ZTA.25543",
       "TestId": "25543",
       "Title": "Azure Front Door WAF is Enabled in Prevention Mode",
       "Pillar": [
@@ -4345,7 +4345,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.25550",
+      "Id": "ZTA.25550",
       "TestId": "25550",
       "Title": "Inspection of Outbound TLS Traffic is Enabled on Azure Firewall",
       "Pillar": [
@@ -4367,7 +4367,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26879",
+      "Id": "ZTA.26879",
       "TestId": "26879",
       "Title": "Request Body Inspection is enabled in Application Gateway WAF",
       "Pillar": [
@@ -4388,7 +4388,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26880",
+      "Id": "ZTA.26880",
       "TestId": "26880",
       "Title": "Request Body Inspection is enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4409,7 +4409,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26881",
+      "Id": "ZTA.26881",
       "TestId": "26881",
       "Title": "Default Ruleset is enabled in Application Gateway WAF",
       "Pillar": [
@@ -4430,7 +4430,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26882",
+      "Id": "ZTA.26882",
       "TestId": "26882",
       "Title": "Bot protection ruleset is enabled and assigned in Application Gateway WAF",
       "Pillar": [
@@ -4451,7 +4451,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26883",
+      "Id": "ZTA.26883",
       "TestId": "26883",
       "Title": "Default rule set is assigned in Azure Front Door WAF",
       "Pillar": [
@@ -4472,7 +4472,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26884",
+      "Id": "ZTA.26884",
       "TestId": "26884",
       "Title": "Bot protection rule set is enabled and assigned in Azure Front Door WAF",
       "Pillar": [
@@ -4493,7 +4493,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26885",
+      "Id": "ZTA.26885",
       "TestId": "26885",
       "Title": "Metrics are enabled for DDoS-protected public IPs",
       "Pillar": [
@@ -4515,7 +4515,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26886",
+      "Id": "ZTA.26886",
       "TestId": "26886",
       "Title": "Diagnostic logging is enabled for DDoS-protected public IPs",
       "Pillar": [
@@ -4537,7 +4537,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26887",
+      "Id": "ZTA.26887",
       "TestId": "26887",
       "Title": "Diagnostic logging is enabled in Azure Firewall",
       "Pillar": [
@@ -4559,7 +4559,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26888",
+      "Id": "ZTA.26888",
       "TestId": "26888",
       "Title": "Diagnostic logging is enabled in Application Gateway WAF",
       "Pillar": [
@@ -4580,7 +4580,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.26889",
+      "Id": "ZTA.26889",
       "TestId": "26889",
       "Title": "Diagnostic logging is enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4602,7 +4602,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27000",
+      "Id": "ZTA.27000",
       "TestId": "27000",
       "Title": "Web content filtering blocks high-risk categories",
       "Pillar": [
@@ -4623,7 +4623,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27001",
+      "Id": "ZTA.27001",
       "TestId": "27001",
       "Title": "TLS inspection bypass rules are regularly reviewed",
       "Pillar": [
@@ -4644,7 +4644,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27002",
+      "Id": "ZTA.27002",
       "TestId": "27002",
       "Title": "TLS inspection certificates have a sufficient validity period",
       "Pillar": [
@@ -4666,7 +4666,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27003",
+      "Id": "ZTA.27003",
       "TestId": "27003",
       "Title": "TLS inspection failure rate is below 1%",
       "Pillar": [
@@ -4688,7 +4688,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27004",
+      "Id": "ZTA.27004",
       "TestId": "27004",
       "Title": "TLS inspection custom bypass rules don't duplicate system bypass destinations",
       "Pillar": [
@@ -4709,7 +4709,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27015",
+      "Id": "ZTA.27015",
       "TestId": "27015",
       "Title": "HTTP DDoS Protection Ruleset is Enabled in Application Gateway WAF",
       "Pillar": [
@@ -4730,7 +4730,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27016",
+      "Id": "ZTA.27016",
       "TestId": "27016",
       "Title": "Rate Limiting is Enabled in Application Gateway WAF",
       "Pillar": [
@@ -4751,7 +4751,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27017",
+      "Id": "ZTA.27017",
       "TestId": "27017",
       "Title": "JavaScript Challenge is Enabled in Application Gateway WAF",
       "Pillar": [
@@ -4772,7 +4772,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27018",
+      "Id": "ZTA.27018",
       "TestId": "27018",
       "Title": "Rate Limiting is Enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4793,7 +4793,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27019",
+      "Id": "ZTA.27019",
       "TestId": "27019",
       "Title": "JavaScript Challenge is Enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4814,7 +4814,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27020",
+      "Id": "ZTA.27020",
       "TestId": "27020",
       "Title": "CAPTCHA challenge is enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4835,7 +4835,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.27024",
+      "Id": "ZTA.27024",
       "TestId": "27024",
       "Title": "HTTP DDoS protection rule set is enabled in Azure Front Door WAF",
       "Pillar": [
@@ -4856,7 +4856,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35001",
+      "Id": "ZTA.35001",
       "TestId": "35001",
       "Title": "Conditional Access policies don't exclude Rights Management workloads",
       "Pillar": [
@@ -4879,7 +4879,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35003",
+      "Id": "ZTA.35003",
       "TestId": "35003",
       "Title": "Sensitivity labels are configured",
       "Pillar": [
@@ -4902,7 +4902,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35004",
+      "Id": "ZTA.35004",
       "TestId": "35004",
       "Title": "Sensitivity label policies are published to users",
       "Pillar": [
@@ -4925,7 +4925,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35005",
+      "Id": "ZTA.35005",
       "TestId": "35005",
       "Title": "Sensitivity labels are enabled for SharePoint and OneDrive",
       "Pillar": [
@@ -4948,7 +4948,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35006",
+      "Id": "ZTA.35006",
       "TestId": "35006",
       "Title": "PDF labeling is enabled in SharePoint",
       "Pillar": [
@@ -4971,7 +4971,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35007",
+      "Id": "ZTA.35007",
       "TestId": "35007",
       "Title": "Information Rights Management is enabled in SharePoint Online",
       "Pillar": [
@@ -4994,7 +4994,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35008",
+      "Id": "ZTA.35008",
       "TestId": "35008",
       "Title": "Default sensitivity labels are configured for SharePoint document libraries",
       "Pillar": [
@@ -5017,7 +5017,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35009",
+      "Id": "ZTA.35009",
       "TestId": "35009",
       "Title": "Co-authoring is enabled for files encrypted with sensitivity labels",
       "Pillar": [
@@ -5039,7 +5039,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35010",
+      "Id": "ZTA.35010",
       "TestId": "35010",
       "Title": "Double Key Encryption labels are configured",
       "Pillar": [
@@ -5062,7 +5062,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35011",
+      "Id": "ZTA.35011",
       "TestId": "35011",
       "Title": "Super user membership is configured for Microsoft Purview Information Protection",
       "Pillar": [
@@ -5087,7 +5087,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35012",
+      "Id": "ZTA.35012",
       "TestId": "35012",
       "Title": "Container labels are configured for collaborative workspaces",
       "Pillar": [
@@ -5110,7 +5110,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35013",
+      "Id": "ZTA.35013",
       "TestId": "35013",
       "Title": "Sensitivity labels with encryption are configured",
       "Pillar": [
@@ -5134,7 +5134,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35014",
+      "Id": "ZTA.35014",
       "TestId": "35014",
       "Title": "Email label policies inherit sensitivity from attachments",
       "Pillar": [
@@ -5157,7 +5157,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35015",
+      "Id": "ZTA.35015",
       "TestId": "35015",
       "Title": "Globally published sensitivity labels don't exceed the recommended maximum",
       "Pillar": [
@@ -5180,7 +5180,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35016",
+      "Id": "ZTA.35016",
       "TestId": "35016",
       "Title": "Mandatory labeling is enabled in sensitivity label policies",
       "Pillar": [
@@ -5204,7 +5204,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35017",
+      "Id": "ZTA.35017",
       "TestId": "35017",
       "Title": "A default sensitivity label is configured in label policies",
       "Pillar": [
@@ -5227,7 +5227,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35018",
+      "Id": "ZTA.35018",
       "TestId": "35018",
       "Title": "Users must provide justification to downgrade sensitivity labels",
       "Pillar": [
@@ -5249,7 +5249,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35019",
+      "Id": "ZTA.35019",
       "TestId": "35019",
       "Title": "Auto-labeling policies are configured for all Microsoft 365 workloads",
       "Pillar": [
@@ -5271,7 +5271,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35020",
+      "Id": "ZTA.35020",
       "TestId": "35020",
       "Title": "Auto-labeling policies are in enforcement mode",
       "Pillar": [
@@ -5294,7 +5294,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35021",
+      "Id": "ZTA.35021",
       "TestId": "35021",
       "Title": "Auto-labeling policies are enabled for SharePoint and OneDrive",
       "Pillar": [
@@ -5316,7 +5316,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35022",
+      "Id": "ZTA.35022",
       "TestId": "35022",
       "Title": "On-demand scans are configured for sensitive information discovery",
       "Pillar": [
@@ -5338,7 +5338,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35023",
+      "Id": "ZTA.35023",
       "TestId": "35023",
       "Title": "OCR is enabled for sensitive information detection",
       "Pillar": [
@@ -5360,7 +5360,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35024",
+      "Id": "ZTA.35024",
       "TestId": "35024",
       "Title": "Azure Rights Management service is activated",
       "Pillar": [
@@ -5383,7 +5383,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35025",
+      "Id": "ZTA.35025",
       "TestId": "35025",
       "Title": "Internal Rights Management licensing is enabled",
       "Pillar": [
@@ -5406,7 +5406,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35026",
+      "Id": "ZTA.35026",
       "TestId": "35026",
       "Title": "Microsoft Purview Message Encryption is configured with simplified client access",
       "Pillar": [
@@ -5429,7 +5429,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35027",
+      "Id": "ZTA.35027",
       "TestId": "35027",
       "Title": "Custom branding templates are configured for Microsoft Purview Message Encryption",
       "Pillar": [
@@ -5453,7 +5453,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35028",
+      "Id": "ZTA.35028",
       "TestId": "35028",
       "Title": "Email retention policies are configured",
       "Pillar": [
@@ -5476,7 +5476,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35029",
+      "Id": "ZTA.35029",
       "TestId": "35029",
       "Title": "Mail flow rules apply rights protection to sensitive messages",
       "Pillar": [
@@ -5498,7 +5498,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35030",
+      "Id": "ZTA.35030",
       "TestId": "35030",
       "Title": "Data loss prevention policies are enabled",
       "Pillar": [
@@ -5520,7 +5520,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35032",
+      "Id": "ZTA.35032",
       "TestId": "35032",
       "Title": "Adaptive Protection is enabled in data loss prevention policies",
       "Pillar": [
@@ -5542,7 +5542,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35033",
+      "Id": "ZTA.35033",
       "TestId": "35033",
       "Title": "Custom sensitive information types are configured",
       "Pillar": [
@@ -5564,7 +5564,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35034",
+      "Id": "ZTA.35034",
       "TestId": "35034",
       "Title": "Exact Data Match is configured for sensitive information detection",
       "Pillar": [
@@ -5587,7 +5587,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35035",
+      "Id": "ZTA.35035",
       "TestId": "35035",
       "Title": "Named entity sensitive information types are used in auto-labeling and data loss prevention policies",
       "Pillar": [
@@ -5609,7 +5609,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35036",
+      "Id": "ZTA.35036",
       "TestId": "35036",
       "Title": "Trainable classifiers are used in data loss prevention and auto-labeling policies",
       "Pillar": [
@@ -5632,7 +5632,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35038",
+      "Id": "ZTA.35038",
       "TestId": "35038",
       "Title": "Insider Risk Management policies are enabled for risky AI usage",
       "Pillar": [
@@ -5654,7 +5654,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35039",
+      "Id": "ZTA.35039",
       "TestId": "35039",
       "Title": "Communication compliance monitoring is configured for Microsoft Copilot",
       "Pillar": [
@@ -5676,7 +5676,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35040",
+      "Id": "ZTA.35040",
       "TestId": "35040",
       "Title": "Communication compliance monitoring is configured for enterprise AI tools",
       "Pillar": [
@@ -5698,7 +5698,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.35041",
+      "Id": "ZTA.35041",
       "TestId": "35041",
       "Title": "Browser data loss prevention is enabled for AI apps via Edge for Business",
       "Pillar": [
@@ -5722,7 +5722,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41002",
+      "Id": "ZTA.41002",
       "TestId": "41002",
       "Title": "Microsoft Defender for Identity sensor is installed and healthy on every domain controller",
       "Pillar": [
@@ -5743,7 +5743,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41003",
+      "Id": "ZTA.41003",
       "TestId": "41003",
       "Title": "Microsoft Defender for Identity sensors are installed and healthy on AD FS, AD CS, and Microsoft Entra Connect servers",
       "Pillar": [
@@ -5764,7 +5764,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41009",
+      "Id": "ZTA.41009",
       "TestId": "41009",
       "Title": "Dormant accounts have been removed from sensitive Active Directory groups",
       "Pillar": [
@@ -5785,7 +5785,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41018",
+      "Id": "ZTA.41018",
       "TestId": "41018",
       "Title": "No open Microsoft Defender for Identity health issues are present in the tenant",
       "Pillar": [
@@ -5806,7 +5806,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41019",
+      "Id": "ZTA.41019",
       "TestId": "41019",
       "Title": "Compromised identities surfaced by Microsoft Defender for Identity have been remediated",
       "Pillar": [
@@ -5827,7 +5827,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41020",
+      "Id": "ZTA.41020",
       "TestId": "41020",
       "Title": "Microsoft Defender for Identity sensor deployment is validated by reviewing the Health Issues page",
       "Pillar": [
@@ -5848,7 +5848,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41022",
+      "Id": "ZTA.41022",
       "TestId": "41022",
       "Title": "Microsoft Defender for Identity security alerts have been triaged and tuned",
       "Pillar": [
@@ -5869,7 +5869,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41029",
+      "Id": "ZTA.41029",
       "TestId": "41029",
       "Title": "Anti-malware policies are configured according to recommended settings",
       "Pillar": [
@@ -5890,7 +5890,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41031",
+      "Id": "ZTA.41031",
       "TestId": "41031",
       "Title": "Safe Attachments policies in Microsoft Defender for Office 365 are configured to detonate and block",
       "Pillar": [
@@ -5911,7 +5911,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41032",
+      "Id": "ZTA.41032",
       "TestId": "41032",
       "Title": "Safe Links policies in Microsoft Defender for Office 365 are configured to scan and block malicious URLs",
       "Pillar": [
@@ -5932,7 +5932,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41033",
+      "Id": "ZTA.41033",
       "TestId": "41033",
       "Title": "Anti-phishing policies in Microsoft Defender for Office 365 are configured with impersonation and spoof protection",
       "Pillar": [
@@ -5953,7 +5953,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41034",
+      "Id": "ZTA.41034",
       "TestId": "41034",
       "Title": "Anti-spam (hosted content filter) policies are configured with recommended thresholds and actions",
       "Pillar": [
@@ -5974,7 +5974,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41041",
+      "Id": "ZTA.41041",
       "TestId": "41041",
       "Title": "Automated Investigation and Response (AIR) recommendations are reviewed and actioned",
       "Pillar": [
@@ -5995,7 +5995,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41045",
+      "Id": "ZTA.41045",
       "TestId": "41045",
       "Title": "All eligible endpoints are onboarded to Microsoft Defender for Endpoint",
       "Pillar": [
@@ -6017,7 +6017,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41052",
+      "Id": "ZTA.41052",
       "TestId": "41052",
       "Title": "Application control (WDAC / App Control for Business) is enforced via Intune",
       "Pillar": [
@@ -6038,7 +6038,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41053",
+      "Id": "ZTA.41053",
       "TestId": "41053",
       "Title": "Network protection is enabled in block mode",
       "Pillar": [
@@ -6059,7 +6059,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41059",
+      "Id": "ZTA.41059",
       "TestId": "41059",
       "Title": "EDR in block mode is enabled when Microsoft Defender Antivirus is not the primary antivirus",
       "Pillar": [
@@ -6080,7 +6080,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41060",
+      "Id": "ZTA.41060",
       "TestId": "41060",
       "Title": "Cloud-delivered protection is enabled in Microsoft Defender Antivirus",
       "Pillar": [
@@ -6101,7 +6101,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41061",
+      "Id": "ZTA.41061",
       "TestId": "41061",
       "Title": "All active Microsoft Defender XDR incidents are triaged and remediated",
       "Pillar": [
@@ -6128,7 +6128,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41062",
+      "Id": "ZTA.41062",
       "TestId": "41062",
       "Title": "Automated Investigation and Response (AIR) recommendations are reviewed and actioned",
       "Pillar": [
@@ -6149,7 +6149,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41081",
+      "Id": "ZTA.41081",
       "TestId": "41081",
       "Title": "At least one Microsoft Defender for Cloud Apps anomaly detection policy is generating alerts",
       "Pillar": [
@@ -6171,7 +6171,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41114",
+      "Id": "ZTA.41114",
       "TestId": "41114",
       "Title": "Microsoft Teams protection policies are configured to block malicious messages, links, and attachments",
       "Pillar": [
@@ -6193,7 +6193,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41116",
+      "Id": "ZTA.41116",
       "TestId": "41116",
       "Title": "Threat hunting against Email and Collaboration tables in Microsoft 365 Defender Advanced Hunting is operational",
       "Pillar": [
@@ -6214,7 +6214,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41121",
+      "Id": "ZTA.41121",
       "TestId": "41121",
       "Title": "Every open Microsoft Defender XDR alert is triaged across all Defender services, with no high-severity alert left unassigned or unworked past its triage window",
       "Pillar": [
@@ -6240,7 +6240,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41206",
+      "Id": "ZTA.41206",
       "TestId": "41206",
       "Title": "At least one workbook is deployed in every Microsoft Sentinel workspace for visualization and operational reporting",
       "Pillar": [
@@ -6261,7 +6261,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41207",
+      "Id": "ZTA.41207",
       "TestId": "41207",
       "Title": "Active analytics rules are configured in Microsoft Sentinel to detect threats",
       "Pillar": [
@@ -6282,7 +6282,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41208",
+      "Id": "ZTA.41208",
       "TestId": "41208",
       "Title": "At least one watchlist is configured in Microsoft Sentinel for correlation against high-value entities",
       "Pillar": [
@@ -6303,7 +6303,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41209",
+      "Id": "ZTA.41209",
       "TestId": "41209",
       "Title": "User and Entity Behavior Analytics (UEBA) is enabled in Microsoft Sentinel",
       "Pillar": [
@@ -6324,7 +6324,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41211",
+      "Id": "ZTA.41211",
       "TestId": "41211",
       "Title": "Auditing and health monitoring is enabled for Microsoft Sentinel",
       "Pillar": [
@@ -6345,7 +6345,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41213",
+      "Id": "ZTA.41213",
       "TestId": "41213",
       "Title": "At least one automation rule is configured in Microsoft Sentinel to manage incident response",
       "Pillar": [
@@ -6366,7 +6366,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.41215",
+      "Id": "ZTA.41215",
       "TestId": "41215",
       "Title": "Microsoft Security Copilot capacity (Security Compute Units) is provisioned in the tenant",
       "Pillar": [
@@ -6387,7 +6387,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.50001",
+      "Id": "ZTA.50001",
       "TestId": "50001",
       "Title": "Microsoft Defender for Cloud Recommendations",
       "Pillar": [
@@ -6408,7 +6408,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51001",
+      "Id": "ZTA.51001",
       "TestId": "51001",
       "Title": "Windows Endpoint Privilege Management is configured and assigned",
       "Pillar": [
@@ -6427,7 +6427,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51013",
+      "Id": "ZTA.51013",
       "TestId": "51013",
       "Title": "App Protection Policies block managed-app access when user re-authentication fails (disabled Entra ID accounts, blocked sign-ins, expired tokens)",
       "Pillar": [
@@ -6446,7 +6446,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51014",
+      "Id": "ZTA.51014",
       "TestId": "51014",
       "Title": "App Protection Policies block managed-app access on jailbroken or rooted mobile devices",
       "Pillar": [
@@ -6467,7 +6467,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51015",
+      "Id": "ZTA.51015",
       "TestId": "51015",
       "Title": "Multi Admin Approval is enabled in Intune to require a second admin to approve sensitive tenant changes",
       "Pillar": [
@@ -6486,7 +6486,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51016",
+      "Id": "ZTA.51016",
       "TestId": "51016",
       "Title": "Privileged Identity Management is enforced for Intune Administrator role assignments",
       "Pillar": [
@@ -6505,7 +6505,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51018",
+      "Id": "ZTA.51018",
       "TestId": "51018",
       "Title": "Windows App Control for Business (WDAC) is configured and assigned via Intune",
       "Pillar": [
@@ -6524,7 +6524,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.51019",
+      "Id": "ZTA.51019",
       "TestId": "51019",
       "Title": "MAM app access timeout and re-authentication are enforced after idle period",
       "Pillar": [
@@ -6543,7 +6543,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61002",
+      "Id": "ZTA.61002",
       "TestId": "61002",
       "Title": "Microsoft Sentinel is onboarded on at least one Log Analytics workspace",
       "Pillar": [
@@ -6565,7 +6565,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61004",
+      "Id": "ZTA.61004",
       "TestId": "61004",
       "Title": "Microsoft Defender for Cloud CSPM plan is enabled on all Azure subscriptions",
       "Pillar": [
@@ -6586,7 +6586,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61005",
+      "Id": "ZTA.61005",
       "TestId": "61005",
       "Title": "Agents deployed to Microsoft 365 Copilot are discoverable in the Agent Registry",
       "Pillar": [
@@ -6608,7 +6608,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61006",
+      "Id": "ZTA.61006",
       "TestId": "61006",
       "Title": "AI administrative roles have assigned principals",
       "Pillar": [
@@ -6630,7 +6630,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61008",
+      "Id": "ZTA.61008",
       "TestId": "61008",
       "Title": "Agent identity lifecycle tagging (customSecurityAttributes present)",
       "Pillar": [
@@ -6649,7 +6649,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61009",
+      "Id": "ZTA.61009",
       "TestId": "61009",
       "Title": "Conditional Access policies cover both agent identities and agent users",
       "Pillar": [
@@ -6673,7 +6673,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61011",
+      "Id": "ZTA.61011",
       "TestId": "61011",
       "Title": "Require users to use Microsoft Entra ID auth to interact with agents",
       "Pillar": [
@@ -6694,7 +6694,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61012",
+      "Id": "ZTA.61012",
       "TestId": "61012",
       "Title": "Risk-based Conditional Access blocks risky agent identities",
       "Pillar": [
@@ -6717,7 +6717,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61013",
+      "Id": "ZTA.61013",
       "TestId": "61013",
       "Title": "Identity governance for agents — sponsors assigned, entitlement-management channel exists, and lifecycle automation in place",
       "Pillar": [
@@ -6738,7 +6738,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61014",
+      "Id": "ZTA.61014",
       "TestId": "61014",
       "Title": "Agent identities and blueprint principals have assigned technical owners and no disabled agents remain in the directory",
       "Pillar": [
@@ -6759,7 +6759,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61016",
+      "Id": "ZTA.61016",
       "TestId": "61016",
       "Title": "Microsoft Entra ID Protection risk events are flowing to the Microsoft Sentinel workspace",
       "Pillar": [
@@ -6782,7 +6782,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61017",
+      "Id": "ZTA.61017",
       "TestId": "61017",
       "Title": "Microsoft Defender for AI Services alerts are flowing to the Microsoft Sentinel workspace via a single connector path",
       "Pillar": [
@@ -6804,7 +6804,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61018",
+      "Id": "ZTA.61018",
       "TestId": "61018",
       "Title": "Microsoft Purview Information Protection data connector is enabled on the Microsoft Sentinel workspace",
       "Pillar": [
@@ -6826,7 +6826,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61021",
+      "Id": "ZTA.61021",
       "TestId": "61021",
       "Title": "Microsoft 365 Copilot data connector is enabled on the Microsoft Sentinel workspace",
       "Pillar": [
@@ -6847,7 +6847,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61022",
+      "Id": "ZTA.61022",
       "TestId": "61022",
       "Title": "Microsoft Defender for AI Services is enabled on every Azure subscription that hosts Azure OpenAI or Azure AI Services accounts",
       "Pillar": [
@@ -6868,7 +6868,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61023",
+      "Id": "ZTA.61023",
       "TestId": "61023",
       "Title": "Agent 365 data connector is enabled on the Microsoft Sentinel workspace",
       "Pillar": [
@@ -6890,7 +6890,7 @@
       ]
     },
     {
-      "Id": "MP.ZTA.61024",
+      "Id": "ZTA.61024",
       "TestId": "61024",
       "Title": "Microsoft Defender XDR (unified) data connector is enabled on the Microsoft Sentinel workspace",
       "Pillar": [

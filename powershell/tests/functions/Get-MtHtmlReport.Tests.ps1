@@ -357,14 +357,14 @@ Describe 'Get-MtHtmlReport' {
     Context 'Report attachments' {
         BeforeAll {
             $attachment = [PSCustomObject]@{
-                Id = '0123456789abcdef0123456789abcdef'; Name = 'Zero Trust Assessment report'; TestId = 'MP.ZTA'
+                Id = '0123456789abcdef0123456789abcdef'; Name = 'Zero Trust Assessment report'; TestId = 'ZTA'
                 ContentType = 'text/html'; FileName = 'ZeroTrustAssessmentReport.html'; Size = 16; Encoding = 'gzip+base64'
                 Content = 'H4sIAAAAAAACA7PJKMnNsasqSbTRB7MAq6YLFhAAAAA='
             }
             function Get-ResultWithAttachment([string] $TenantName = 'Single Tenant') {
                 [PSCustomObject]@{
                     TenantName  = $TenantName
-                    Tests       = @([PSCustomObject]@{ Id = 'MP.ZTA.21770'; ParentId = 'MP.ZTA'; Result = 'Passed' })
+                    Tests       = @([PSCustomObject]@{ Id = 'ZTA.21770'; ParentId = 'ZTA'; Result = 'Passed' })
                     Attachments = @($attachment)
                     EndOfJson   = 'EndOfJson'
                 }
@@ -384,7 +384,7 @@ Describe 'Get-MtHtmlReport' {
             $html.IndexOf("maester-attachment-$($attachment.Id)") | Should -BeLessThan $html.LastIndexOf('</body>')
             $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value | ConvertFrom-Json
             $json.Attachments[0].Name | Should -Be 'Zero Trust Assessment report'
-            $json.Attachments[0].TestId | Should -Be 'MP.ZTA'
+            $json.Attachments[0].TestId | Should -Be 'ZTA'
             $json.Attachments[0].PSObject.Properties.Name | Should -Not -Contain 'Content'
         }
 

@@ -10,7 +10,7 @@ This pack runs Microsoft's [Zero Trust Assessment](https://aka.ms/zerotrust/asse
 results in the Maester report, next to Maester's own checks. It ships with Maester and does not run unless you
 ask for it.
 
-Each assessment result is one row, `MP.ZTA.<assessment test ID>` (for example `MP.ZTA.21770`), with the
+Each assessment result is one row, `ZTA.<assessment test ID>` (for example `ZTA.21770`), with the
 assessment's title, risk level (as the severity), description, remediation steps and findings. Results are tagged
 `ZeroTrust` and `ZeroTrust.<pillar>` (`ZeroTrust.Identity`, `ZeroTrust.Devices` and so on).
 
@@ -22,7 +22,7 @@ and `Get-MtPack` lists it.
 The pack is a long-running test, so `Invoke-Maester` leaves it out unless you name it:
 
 ```powershell
-Invoke-Maester -TestId MP.ZTA          # only the Zero Trust Assessment
+Invoke-Maester -TestId ZTA          # only the Zero Trust Assessment
 Invoke-Maester -Suite ZTA              # the same
 Invoke-Maester -IncludeLongRunning          # everything, including the assessment
 ```
@@ -85,7 +85,7 @@ the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
 
 The Maester report embeds the HTML report the assessment wrote, with its pillar dashboards and charts. Open it
 with the **Zero Trust Assessment** button on the report's overview, under **Reports** in the left menu, or on any
-MP.ZTA result. It opens inside the Maester report, with an option to open it in a new browser tab, and works
+ZTA result. It opens inside the Maester report, with an option to open it in a new browser tab, and works
 offline, so the Maester report stays a single file to share.
 
 The embedded report is compressed: a 10 MB assessment report adds about 2 MB to the Maester report. It is left
