@@ -28,7 +28,17 @@ function Get-MtPackDevelopmentSet {
     if (-not $root) { return $null }
 
     $builtIn = [bool](Get-MtBuiltInPack | Where-Object { $_.Root -eq $root })
-    $read = Read-MtPackManifest -Path $root -Official:$builtIn
+    # A pack of the maester365 organisation (such as the demo pack) may use the reserved names, as Test-MtPack
+    # -Official allows: run from a folder, its author is the person running it, as for a custom test. Installing
+    # it still needs the repository to belong to the organisation.
+    $official = $builtIn
+    if (-not $official) {
+        try {
+            $raw = Get-Content -LiteralPath (Join-Path $root 'maester-pack.json') -Raw | ConvertFrom-Json -ErrorAction Stop
+            $official = [string]$raw.Id -match '^(maester|maester365)\.' -or [string]$raw.Publisher -in 'maester', 'maester365'
+        } catch { $official = $false }
+    }
+    $read = Read-MtPackManifest -Path $root -Official:$official
     if ($read.Errors.Count -gt 0) { throw "The pack in '$root' has a problem: $(@($read.Errors | ForEach-Object { $_.Message }) -join ' ') Run Test-MtPack for the full list." }
     $m = $read.Manifest
     $modules = foreach ($d in @($m.Uses.Modules)) {
