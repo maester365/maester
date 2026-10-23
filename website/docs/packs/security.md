@@ -18,7 +18,7 @@ limit what a pack can change in your tenant; they do not stop it reading local f
 | Install | The pack is read without running any of it: manifest, every file, and an AST scan of every script. Errors stop the install. |
 | Install | The release is older than the cooldown, the pack policy allows it, and it is not on the blocklist. |
 | Install | Its modules are saved at their exact versions into the pack store, and the digest of each module folder is recorded. |
-| Install | You approve the prompt. A High risk pack, or one newer than the cooldown, needs its ID typed. |
+| Install | You approve the prompt. A High risk pack, or one newer than the cooldown, needs its code typed. |
 | Every load | The stored files match the digest in the lock file, the policy still allows the pack, it is not blocked, and every module still matches its digest. Only then is any file loaded. |
 
 Every path that loads pack code goes through that last check: `Invoke-Maester`, `Invoke-MtTest`,
@@ -57,7 +57,7 @@ blocked. The age comes from the content, never from a date a publisher can set:
 - anything else counts from when this computer first saw that commit of that repository, so a tag moved to
   new code starts a new cooldown.
 
-`-IncludeRecent` installs a newer release; at a console you also type the pack's ID. `PackPolicy.CooldownHours`
+`-IncludeRecent` installs a newer release; at a console you also type the pack's code. `PackPolicy.CooldownHours`
 changes the length.
 
 ## Pack policy
