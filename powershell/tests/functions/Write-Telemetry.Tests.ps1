@@ -68,7 +68,7 @@ Describe 'Write-Telemetry' {
         Write-Telemetry -EventName InvokeMaester -MaesterResults $results -PackSet $packSet
 
         $packs = @($script:sent.Body.Packs)
-        $packs.Source | Should -Be @('maester365/maester/packs/zero-trust-assessment', 'github.com/contoso/maester-sample')
+        $packs.Source | Sort-Object | Should -Be @('github.com/contoso/maester-sample', 'maester365/maester/packs/zero-trust-assessment')
         ($packs | Where-Object Source -Like '*zero-trust*').Tests | Should -Be 2
         ($script:sent.Body | ConvertTo-Json -Compress -Depth 4) | Should -Not -Match 'secret'
     }
