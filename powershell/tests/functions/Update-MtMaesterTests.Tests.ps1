@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     Use-MtModuleFunction -Name Update-MtMaesterTests
