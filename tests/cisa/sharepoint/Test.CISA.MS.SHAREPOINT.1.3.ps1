@@ -21,7 +21,7 @@
         Feature = 'external-sharing',
         Area = 'external-access',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1048', 'T1213.002', 'T1530'),
