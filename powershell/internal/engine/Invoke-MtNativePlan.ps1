@@ -27,9 +27,24 @@
     $rows = [System.Collections.Generic.List[object]]::new()
     $workItems = [System.Collections.Generic.List[object]]::new()
 
+    # Packs: one private module per pack, with its helpers, connectors and modules (Maester Packs design, section 4.4).
+    $packModules = @{}
+    foreach ($packGroup in ($Plan | Where-Object { $_.Disposition -eq 'Run' -and $_.Test.PSObject.Properties['PackId'] -and $_.Test.PackId } | Group-Object { $_.Test.PackId })) {
+        try {
+            $pack = @($script:__MtPackSet) | Where-Object { $_.Id -eq $packGroup.Name } | Select-Object -First 1
+            if (-not $pack) { throw "the pack $($packGroup.Name) did not pass the loader gate in this session." }
+            $packModules[$packGroup.Name] = Import-MtPackModule -Pack $pack -PackSet @($script:__MtPackSet)
+        } catch {
+            foreach ($p in $packGroup.Group) {
+                $p.Disposition = 'Error'; $p.ReasonCode = 'PackLoadFailed'
+                $p.ReasonDetail = "The pack $($packGroup.Name) could not be loaded: $($_.Exception.Message)"
+            }
+        }
+    }
+
     # Custom files: one private module per file.
     $modules = @{}
-    foreach ($fileGroup in ($Plan | Where-Object { $_.Disposition -eq 'Run' -and -not $_.Test.BuiltIn } | Group-Object { $_.Test.File })) {
+    foreach ($fileGroup in ($Plan | Where-Object { $_.Disposition -eq 'Run' -and -not $_.Test.BuiltIn -and -not ($_.Test.PSObject.Properties['PackId'] -and $_.Test.PackId) } | Group-Object { $_.Test.File })) {
         try {
             $modules[$fileGroup.Name] = Import-MtCustomTestFile -Path $fileGroup.Name
         } catch {
@@ -42,7 +57,7 @@
 
     foreach ($p in $Plan) {
         if ($p.Disposition -ne 'Run') { $rows.Add((ConvertTo-MtNativeRow -PlanRow $p)); continue }
-        $module = if ($p.Test.BuiltIn) { $maester } else { $modules[$p.Test.File] }
+        $module = if ($p.Test.BuiltIn) { $maester } elseif ($p.Test.PSObject.Properties['PackId'] -and $p.Test.PackId) { $packModules[$p.Test.PackId] } else { $modules[$p.Test.File] }
         $markdown = Get-MtNativeTestMarkdown -Test $p.Test
 
         if (-not $p.Test.InstanceSource) {
@@ -411,7 +426,7 @@ function ConvertTo-MtNativeRow {
     Applies the test contract (design section 5.2), in this order: -SkippedBecause Error; -Investigate;
     any other skip; an uncaught error; the returned value. The row has every 2.x field (Index is set
     later), the 3.0 fields Source, Suite, Format, ReasonCode, ReasonDetail, ParentId, InstanceId,
-    Parameters and Diagnostics, and the test's attributes (test attribute design, section 3): Product (the
+    Parameters, Diagnostics and Package, and the test's attributes (test attribute design, section 3): Product (the
     key), RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control,
     Lifecycle, ReplacedBy, Service, License and Permission. An attribute the test does not declare is null
     or an empty list, never left out. Tag holds the tags the author wrote, plus the instance's own.
@@ -550,6 +565,8 @@ function ConvertTo-MtNativeRow {
         InstanceId      = if ($isInstance) { $id } else { $null }
         Parameters      = @($PlanRow.EffectiveParameters)
         Diagnostics     = $diagnostics
+        # The pack a test comes from (Maester Packs design, section 5.5); null for every other test.
+        Package         = if ($test.PSObject.Properties['Package']) { $test.Package } else { $null }
     }
     $attributes = Get-MtRowAttribute -Test $test
     foreach ($name in $attributes.Keys) { $row[$name] = $attributes[$name] }

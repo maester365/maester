@@ -443,6 +443,7 @@
             InstanceId      = $annotation.InstanceId
             Parameters      = $null
             Diagnostics     = @()
+            Package         = $null
         }
         # A Pester-format row carries the attribute fields of a native row as null.
         foreach ($field in $pesterRowAttributes.Keys) { $mtTestInfo[$field] = $pesterRowAttributes[$field] }
@@ -546,7 +547,7 @@
     # Top-level Result (design section 5.3, item 7): Failed if any row failed, the Pester run failed, or
     # the engine itself raised an Error row. A test that threw fails the run only with ErrorsAsFailures.
     $engineErrorCodes = 'InvalidMetadata', 'InvalidConfiguration', 'InvalidInstanceId', 'DuplicateId', 'LoadFailed',
-    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable'
+    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable', 'PackLoadFailed'
     $errorsAsFailures = $false
     if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Output'] -and $__MtSession.MaesterConfig.Output -and
         $__MtSession.MaesterConfig.Output.PSObject.Properties['ErrorsAsFailures']) {
