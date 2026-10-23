@@ -90,6 +90,38 @@ export const testResults = {
     "Environment": "Global",
     "ManagedIdentityId": ""
   },
+  "ConnectionSummary": [
+    {
+      "Service": "Microsoft Graph",
+      "Status": "Connected",
+      "Details": "merill@elapora.com"
+    },
+    {
+      "Service": "Azure",
+      "Status": "Connected",
+      "Details": "merill@elapora.com"
+    },
+    {
+      "Service": "Exchange Online",
+      "Status": "Connected",
+      "Details": "merill@elapora.com"
+    },
+    {
+      "Service": "Security & Compliance",
+      "Status": "Connected",
+      "Details": "Using UPN merill@elapora.com from Exchange Online"
+    },
+    {
+      "Service": "Microsoft Teams",
+      "Status": "Not installed",
+      "Details": "Run: Install-Module MicrosoftTeams -Scope CurrentUser"
+    },
+    {
+      "Service": "SharePoint Online",
+      "Status": "Skipped",
+      "Details": "No -SharePointClientId specified"
+    }
+  ],
   "PesterConfig": {
     "Run": {
       "Path": [

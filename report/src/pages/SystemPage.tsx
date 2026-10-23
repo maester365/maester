@@ -72,6 +72,22 @@ export default function SystemPage() {
   const invokeCommand = testResults.InvokeCommand || "Not available"
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pesterConfig = (testResults as any).PesterConfig || null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const connectionSummary = (testResults as any).ConnectionSummary || []
+
+  const statusColorClass = (status: string) => {
+    switch (status) {
+      case "Connected":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "Skipped":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+      case "Failed":
+      case "Not installed":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+    }
+  }
 
   return (
     <div className="max-w-4xl">
@@ -201,6 +217,59 @@ export default function SystemPage() {
             ) : (
               <p className="text-gray-500 dark:text-gray-400">
                 Graph connection information is not available.
+              </p>
+            )}
+          </div>
+        </section>
+
+        <Divider />
+
+        {/* Service Connections */}
+        <section>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+            Service Connections
+          </h2>
+          <div className="rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+            {connectionSummary && connectionSummary.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        Service
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        Details
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+                    {connectionSummary.map((result: { Service: string; Status: string; Details: string }, index: number) => (
+                      <tr key={index}>
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {result.Service}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 text-sm">
+                          <span
+                            className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${statusColorClass(result.Status)}`}
+                          >
+                            {result.Status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                          {result.Details || "N/A"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="p-6 text-gray-500 dark:text-gray-400">
+                Connection summary is not available. Run Connect-Maester to see service connection details.
               </p>
             )}
           </div>

@@ -341,6 +341,8 @@ foreach ($suite in $generatedSuites) {
         }
         $rowChanged = $false
         foreach ($name in $values[$id].Keys) {
+            # The EIDSCA config upstream is the source of the severity of an EIDSCA check.
+            if ($suite.Name -eq 'EIDSCA' -and $name -eq 'Severity') { continue }
             $value = if ($name -in $listProperties) { , [string[]]$values[$id][$name] } else { $values[$id][$name][0] }
             $existing = $row.PSObject.Properties[$name]
             if ($existing -and ((@($existing.Value) -join '|') -ceq (@($value) -join '|'))) { continue }
