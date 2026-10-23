@@ -82,7 +82,7 @@
 
     $testResultMarkdown = "KRBTGT account password information retrieved. This account is used for Kerberos ticket encryption.`n`n%TestResult%"
     if ($testResult) {
-        $remainingDays = $maxAge - $passwordAgeDays
+        $remainingDays = [Math]::Round($maxAge - $passwordAgeDaysExact, 0)
         if ($remainingDays -le 0) {
             $analysisSummary = "The KRBTGT password was last set $passwordAgeDays days ago and reaches the maximum age threshold ($maxAge days) today."
         } else {
