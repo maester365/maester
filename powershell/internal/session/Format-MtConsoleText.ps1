@@ -264,17 +264,23 @@ function Write-MtRunSummary {
         if ($productNames.ContainsKey([string]$row.Product)) { return $productNames[[string]$row.Product] }
         Get-MtProductName -Product ([string]$row.Product)
     }
-    # The most passed tests first. A product with nothing but skipped tests has no result to rank by: those are
-    # last, by name. Products with the same number of passed tests are by name too.
-    $groups = @($MaesterResults.Tests | Where-Object { $_.Result -ne 'NotRun' } |
-            Group-Object { & $nameOf $_ } |
-            Sort-Object @{ Expression = { @($_.Group | Where-Object { $_.Result -ne 'Skipped' }).Count -eq 0 } },
-            @{ Expression = { @($_.Group | Where-Object { $_.Result -eq 'Passed' }).Count }; Descending = $true },
-            @{ Expression = { $_.Name } })
-    if ($groups.Count -gt 0) {
-        $nameWidth = [math]::Max(12, ($groups | ForEach-Object { $_.Name.Length } | Measure-Object -Maximum).Maximum)
+    $packOf = {
+        param($row)
+        if ($row.PSObject.Properties['Package'] -and $row.Package) { $row.Package } else { $null }
+    }
+    # A table of results, one row for each group: the most passed tests first. A group with nothing but skipped
+    # tests has no result to rank by: those are last, by name. Groups with the same number of passed tests are by
+    # name too.
+    $table = {
+        param($rows, [string] $heading, $groupOf)
+        $groups = @($rows | Group-Object { & $groupOf $_ } |
+                Sort-Object @{ Expression = { @($_.Group | Where-Object { $_.Result -ne 'Skipped' }).Count -eq 0 } },
+                @{ Expression = { @($_.Group | Where-Object { $_.Result -eq 'Passed' }).Count }; Descending = $true },
+                @{ Expression = { $_.Name } })
+        if ($groups.Count -eq 0) { return }
+        $nameWidth = [math]::Max(12, (@($groups | ForEach-Object { $_.Name.Length }) + $heading.Length | Measure-Object -Maximum).Maximum)
         $cell = { param($value, $width, $style) $value = [int]$value; $text = ([string]$value).PadLeft($width); if ($value -gt 0) { Format-MtConsoleText $text -Style $style -Console $Console } else { Format-MtConsoleText $text -Style Dim -Console $Console } }
-        Write-MtConsoleLine (Format-MtConsoleText " $('Product'.PadRight($nameWidth))  Passed  Failed  Errors  Investigate  Skipped   Worst failure" -Style Dim -Console $Console)
+        Write-MtConsoleLine (Format-MtConsoleText " $($heading.PadRight($nameWidth))  Passed  Failed  Errors  Investigate  Skipped   Worst failure" -Style Dim -Console $Console)
         foreach ($g in $groups) {
             $count = @{}
             foreach ($t in $g.Group) { $count[[string]$t.Result]++ }
@@ -288,6 +294,14 @@ function Write-MtRunSummary {
                 (& $cell $count['Investigate'] 13 'Investigate') + (& $cell $count['Skipped'] 9 'Dim') + "   $worstText").TrimEnd()
         }
         Write-MtConsoleLine (Format-MtConsoleText " $($(if ($Console.Unicode) { '─' } else { '-' }) * ($nameWidth + 62))" -Style Dim -Console $Console)
+    }
+    # Maester's own tests by product, then the tests of Maester Packs by pack: a pack is not a product.
+    $ran = @($MaesterResults.Tests | Where-Object { $_.Result -ne 'NotRun' })
+    & $table @($ran | Where-Object { -not (& $packOf $_) }) 'Product' $nameOf
+    $packRows = @($ran | Where-Object { & $packOf $_ })
+    if ($packRows.Count -gt 0) {
+        Write-MtConsoleLine ''
+        & $table $packRows 'Maester Pack' { param($row) $p = & $packOf $row; if ($p.PSObject.Properties['Name'] -and $p.Name) { [string]$p.Name } else { [string]$p.Id } }
     }
 
     # Totals.

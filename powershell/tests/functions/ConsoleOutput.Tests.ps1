@@ -281,6 +281,26 @@ Describe 'Write-MtRunSummary' {
         $names | Should -Be 'Exchange Online', 'Defender', 'Entra ID', 'Intune', 'Azure', 'Teams'
     }
 
+    It 'Lists the tests of Maester Packs by pack, after the products and apart from them' {
+        $pack = [pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Name = 'Microsoft Zero Trust Assessment' }
+        $results = [pscustomobject]@{
+            PassedCount = 2; FailedCount = 1; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 3; TotalDuration = '00:00:01'
+            Tests = @(
+                [pscustomobject]@{ Id = 'A.1'; Product = 'entra'; Result = 'Passed'; Severity = 'High'; Package = $null }
+                [pscustomobject]@{ Id = 'ZTA.1'; Product = 'entra'; Result = 'Passed'; Severity = 'High'; Package = $pack }
+                [pscustomobject]@{ Id = 'ZTA.2'; Product = 'entra'; Result = 'Failed'; Severity = 'High'; Package = $pack }
+            )
+        }
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:plain; r = $results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" })
+        $product = [array]::FindIndex([string[]]$lines, [Predicate[string]] { param($l) $l -match '^ Product ' })
+        $packs = [array]::FindIndex([string[]]$lines, [Predicate[string]] { param($l) $l -match '^ Maester Pack ' })
+        $product | Should -BeGreaterOrEqual 0
+        $packs | Should -BeGreaterThan $product
+        $lines[$product + 1] | Should -Match '^ Entra ID +1 +0 '
+        $lines[$packs + 1] | Should -Match '^ Microsoft Zero Trust Assessment +1 +1 +0 +0 +0 +High'
+        @($lines | Where-Object { $_ -match '^ Entra ID ' }).Count | Should -Be 1
+    }
+
     It 'Takes a product name from the result when it has one, and shows a product it cannot name as written' {
         $results = [pscustomobject]@{
             PassedCount = 2; FailedCount = 0; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 2; TotalDuration = '00:00:01'
@@ -1189,7 +1209,7 @@ Describe 'Write-MtTestProgress' {
     }
 
     It 'Shows the results, the groups and the times of the work in the box in place of the run''s, before its tests start' {
-        $screen = InModuleScope Maester {
+        $screens = InModuleScope Maester {
             $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
             $renderer.Width = 165; $renderer.Height = 50; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
             $renderer.Unicode = $true; $renderer.Ansi = $false
@@ -1201,14 +1221,16 @@ Describe 'Write-MtTestProgress' {
             @(
                 '##maester[progress] {"stage":"Running tests","stageNumber":2,"stageCount":3,"total":20,"completed":6,'
                 '"items":[{"id":"T.1","status":"Passed","seconds":2},{"id":"T.2","title":"The slow one","status":"Passed","seconds":40},{"id":"T.3","seconds":1}],'
-                '"results":{"name":"Zero Trust","passed":4,"failed":2,"running":1,"total":20},"groupLabel":"Pillars",'
+                '"results":{"name":"Zero Trust","passed":4,"failed":2,"running":1,"total":20},"groupLabel":"Zero Trust Pillars",'
                 '"groups":[{"name":"Identity","passed":3,"failed":1,"total":12,"running":1},{"name":"Devices","passed":1,"failed":1,"total":8}]}'
             ) -join '' | Write-MtTestOutput
             $renderer.GetPlainScreen(165, 50) -join "`n"
             Write-MtTestOutput -Complete
+            $renderer.GetPlainScreen(165, 50) -join "`n"
         }
+        $screen = $screens[0]
         # The groups where the products are listed, with their counts.
-        $screen | Should -Match '╭─ Pillars ─'
+        $screen | Should -Match '╭─ Zero Trust Pillars ─'
         $screen | Should -Match '│ Identity +━+─+ +4/12  ✓ 3 +✗ 1 .* 1 running'
         $screen | Should -Match '│ Devices +━+─+ +2/8  ✓ 1 +✗ 1 '
         # The results in the Results panel and the result blocks, under the work's name.
@@ -1220,6 +1242,35 @@ Describe 'Write-MtTestProgress' {
         $screen | Should -Match 'longest 40\.0s'
         $screen | Should -Match '│ T\.2 +The slow one +40\.0s │'
         $screen | Should -Not -Match '╭─ Products'
+        # Once the work is done, the run's own panels come back.
+        $screens[1] | Should -Not -Match 'Zero Trust Pillars|Identity|The slow one'
+    }
+
+    It 'Lists the whole name of an item without a title, and only the items of the newest stage, in the Slowest panel' {
+        $screens = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 165; $renderer.Height = 50; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Unicode = $true; $renderer.Ansi = $false
+            $renderer.SetPanels([string[]]@('Totals', 'Slowest', 'Pace', 'Results'))
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The assessment' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 1 -Total 4 -Items @{ Id = 'ConfigurationPolicy'; Status = 'Passed'; Seconds = 50 }
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 0 -Total 9
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Done' -StageNumber 3 -StageCount 2
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screens[0] | Should -Match '│ ConfigurationPolicy +50\.0s │'
+        # Until a test of the next stage finishes, the panel keeps the stage before it.
+        $screens[1] | Should -Match '│ ConfigurationPolicy +50\.0s │'
+        $screens[2] | Should -Match '│ T\.1 +The first +2\.0s │'
+        $screens[2] | Should -Not -Match '│ ConfigurationPolicy'
+        $screens[3] | Should -Match '│ T\.1 +The first +2\.0s │'
     }
 
     It 'Writes the stage when it changes, the counts at most every ten seconds and each error, without the dashboard' {

@@ -52,6 +52,9 @@ namespace Maester.Engine
         // graph draws an assessment's data collection and then its tests.
         private readonly List<double> _outputDurations = new List<double>();
         private readonly List<Slow> _outputSlowest = new List<Slow>();
+        // The stage the Slowest panel lists: an item of a later stage starts the list again, so once an
+        // assessment's tests run the panel lists only tests, not the data collection before them.
+        private int _outputSlowestStage = -1;
         private readonly HashSet<string> _outputFinished = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Whether the output box is open.</summary>
@@ -165,6 +168,9 @@ namespace Maester.Engine
                 _outputCount = 0;
                 _outputClock = null;
                 _outputProgress = null;
+                // The groups and the times were the work's: the run's products and tests show again.
+                _outputLanes = null;
+                ClearOutputTimes();
                 _outputStageClock = null;
                 _outputErrors.Clear();
                 _outputErrorCount = 0;
@@ -192,6 +198,7 @@ namespace Maester.Engine
         {
             _outputDurations.Clear();
             _outputSlowest.Clear();
+            _outputSlowestStage = -1;
             _outputFinished.Clear();
         }
 
@@ -202,6 +209,13 @@ namespace Maester.Engine
             {
                 if (item.IsRunning || item.Seconds < 0 || !_outputFinished.Add(p.StageNumber + "|" + item.Id + "|" + item.Title)) continue;
                 _outputDurations.Add(item.Seconds);
+                // The first item of a new stage to finish starts the list again; a stage with none (such as the
+                // end of the work) leaves the list of the stage before it.
+                if (p.StageNumber != _outputSlowestStage)
+                {
+                    _outputSlowest.Clear();
+                    _outputSlowestStage = p.StageNumber;
+                }
                 if (_outputSlowest.Count < SlowestKept || item.Seconds > _outputSlowest[_outputSlowest.Count - 1].Duration.TotalSeconds)
                 {
                     _outputSlowest.Add(new Slow { Id = item.Id, Title = item.Title, Duration = TimeSpan.FromSeconds(item.Seconds) });

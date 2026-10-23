@@ -25,6 +25,7 @@ function Get-MtPackTestInventory {
         if ($pack.Status -eq 'Disabled') { continue }
         $package = [pscustomobject][ordered]@{
             Id        = $pack.Id
+            Name      = if ($pack.Manifest -and $pack.Manifest.Name) { [string]$pack.Manifest.Name } else { [string]$pack.Id }
             Version   = $pack.Version
             Commit    = if ($pack.Entry) { $pack.Entry.Commit } else { $null }
             Publisher = if ($pack.Manifest) { [string]$pack.Manifest.Publisher } elseif ($pack.Entry) { $pack.Entry.Publisher } else { $null }
