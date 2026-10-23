@@ -46,6 +46,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$InformationPreference = 'Continue'
 
 function Invoke-Gh {
     param([Parameter(Mandatory)] [string[]] $Arguments)
@@ -91,11 +92,11 @@ foreach ($entry in $wanted) {
 
 $unmanaged = @($existing.Values | Where-Object { -not $claimed.Contains($_.name.ToLowerInvariant()) } | ForEach-Object name)
 
-$actions | Sort-Object Action, Label | Format-Table Action, Label, From -AutoSize | Out-String | Write-Host
-if ($unmanaged.Count -gt 0) { Write-Host "Not in $(Split-Path $Path -Leaf), left unchanged: $($unmanaged -join ', ')" }
+$actions | Sort-Object Action, Label | Format-Table Action, Label, From -AutoSize | Out-String | Write-Information
+if ($unmanaged.Count -gt 0) { Write-Information "Not in $(Split-Path $Path -Leaf), left unchanged: $($unmanaged -join ', ')" }
 
 if (-not $Apply) {
-    Write-Host 'Dry run. Run again with -Apply to make these changes.'
+    Write-Information 'Dry run. Run again with -Apply to make these changes.'
     return
 }
 
@@ -110,7 +111,7 @@ foreach ($action in ($actions | Where-Object Action -in 'Rename', 'Update', 'Cre
             Invoke-Gh @('api', "repos/$Repository/labels/$(Get-EncodedLabel $action.From)", '-X', 'PATCH', '-f', "new_name=$($e.name)", '-f', "color=$($e.color)", '-f', "description=$($e.description)") | Out-Null
         }
     }
-    Write-Host "$($action.Action): $($e.name)"
+    Write-Information "$($action.Action): $($e.name)"
 }
 
 foreach ($action in ($actions | Where-Object Action -EQ 'Merge')) {
@@ -119,17 +120,25 @@ foreach ($action in ($actions | Where-Object Action -EQ 'Merge')) {
     foreach ($number in $numbers) {
         Invoke-Gh @('api', "repos/$Repository/issues/$number/labels", '-X', 'POST', '-f', "labels[]=$($action.Label)") | Out-Null
     }
-    $owner, $name = $Repository -split '/', 2
-    $query = 'query($owner:String!,$name:String!,$label:String!){repository(owner:$owner,name:$name){label(name:$label){discussions(first:100){nodes{id}}} newLabel:label(name:"' + $action.Label.Replace('"', '\"') + '"){id}}}'
-    $result = Invoke-Gh @('api', 'graphql', '-f', "query=$query", '-f', "owner=$owner", '-f', "name=$name", '-f', "label=$($action.From)") | ConvertFrom-Json
-    $newLabelId = $result.data.repository.newLabel.id
-    foreach ($discussion in $result.data.repository.label.discussions.nodes) {
+    # Discussions carrying the old label, found through search (labels have no discussions connection).
+    $labelId = Invoke-Gh @('api', "repos/$Repository/labels/$(Get-EncodedLabel $action.Label)", '--jq', '.node_id')
+    $search = 'query($q:String!,$after:String){search(type:DISCUSSION,query:$q,first:100,after:$after){pageInfo{hasNextPage endCursor} nodes{... on Discussion{id}}}}'
+    $discussions = [System.Collections.Generic.List[string]]::new()
+    $after = $null
+    do {
+        $arguments = @('api', 'graphql', '-f', "query=$search", '-f', "q=repo:$Repository label:`"$($action.From)`"")
+        if ($after) { $arguments += @('-f', "after=$after") }
+        $page = (Invoke-Gh $arguments | ConvertFrom-Json).data.search
+        foreach ($node in $page.nodes) { if ($node.id) { $discussions.Add($node.id) } }
+        $after = $page.pageInfo.endCursor
+    } while ($page.pageInfo.hasNextPage)
+    foreach ($id in $discussions) {
         $mutation = 'mutation($id:ID!,$label:ID!){addLabelsToLabelable(input:{labelableId:$id,labelIds:[$label]}){clientMutationId}}'
-        Invoke-Gh @('api', 'graphql', '-f', "query=$mutation", '-f', "id=$($discussion.id)", '-f', "label=$newLabelId") | Out-Null
+        Invoke-Gh @('api', 'graphql', '-f', "query=$mutation", '-f', "id=$id", '-f', "label=$labelId") | Out-Null
     }
-    Write-Host "Merged $($action.From) into $($action.Label) ($(@($numbers).Count) PRs and issues, $(@($result.data.repository.label.discussions.nodes).Count) discussions)"
+    Write-Information "Merged $($action.From) into $($action.Label) ($(@($numbers).Count) PRs and issues, $($discussions.Count) discussions)"
     if ($DeleteMerged) {
         Invoke-Gh @('api', "repos/$Repository/labels/$(Get-EncodedLabel $action.From)", '-X', 'DELETE') | Out-Null
-        Write-Host "Deleted $($action.From)"
+        Write-Information "Deleted $($action.From)"
     }
 }

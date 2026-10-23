@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generates the Claude Code agent and skill files and the docs page from the Copilot files.
 
@@ -14,6 +14,8 @@
       from the agent's metadata.claude-tools; "all" leaves the tools line out)
     - .claude/skills/<name>/SKILL.md, a pointer to the canonical skill
     - website/docs/agents-and-skills.md, the list of agents and skills on maester.dev
+
+    A Claude Code copy whose source file is gone is deleted.
 
     Relative links in an agent's body are rewritten so they still resolve from .claude/agents/.
 
@@ -90,16 +92,17 @@ function Format-Folded {
     ">-`n" + ($out -join "`n")
 }
 
-function Convert-RelativeLinks {
+function Convert-RelativeLink {
     # Rewrites relative Markdown link targets written for one folder so they resolve from another.
     param([string] $Markdown, [string] $FromDir, [string] $ToDir)
+    $from = $FromDir; $to = $ToDir
     [regex]::Replace($Markdown, '\]\((?!https?:|mailto:|#|/)([^)\s]+)\)', {
             param($m)
             $target = $m.Groups[1].Value
             $anchor = ''
             if ($target -match '^(.*?)(#.*)$') { $target = $Matches[1]; $anchor = $Matches[2] }
-            $absolute = [System.IO.Path]::GetFullPath((Join-Path $FromDir $target))
-            $relative = [System.IO.Path]::GetRelativePath($ToDir, $absolute) -replace '\\', '/'
+            $absolute = [System.IO.Path]::GetFullPath((Join-Path $from $target))
+            $relative = [System.IO.Path]::GetRelativePath($to, $absolute) -replace '\\', '/'
             "]($relative$anchor)"
         })
 }
@@ -115,20 +118,20 @@ $generated = [ordered]@{}
 $agents = foreach ($file in (Get-ChildItem -Path (Join-Path $root '.github/agents') -Filter '*.agent.md' | Sort-Object Name)) {
     $relativeSource = ".github/agents/$($file.Name)"
     $item = Read-Frontmatter -Path $file.FullName
-    $name = Get-Required $item 'name' $relativeSource
-    $description = Get-Required $item 'description' $relativeSource
-    $tools = Get-Required $item 'metadata.claude-tools' $relativeSource
+    $name = Get-Required -Item $item -Key 'name' -Path $relativeSource
+    $description = Get-Required -Item $item -Key 'description' -Path $relativeSource
+    $tools = Get-Required -Item $item -Key 'metadata.claude-tools' -Path $relativeSource
     $frontmatter = "---`nname: $name`ndescription: $(Format-Folded $description)`n"
     if ($tools -ne 'all') { $frontmatter += "tools: $tools`n" }
     $frontmatter += "---`n"
-    $body = Convert-RelativeLinks -Markdown $item.Body -FromDir (Join-Path $root '.github/agents') -ToDir (Join-Path $root '.claude/agents')
+    $body = Convert-RelativeLink -Markdown $item.Body -FromDir (Join-Path $root '.github/agents') -ToDir (Join-Path $root '.claude/agents')
     $note = "<!-- Generated from $relativeSource by $generator. Edit that file, then run the script. -->"
     $generated[".claude/agents/$name.md"] = "$frontmatter`n$note`n`n$($body.TrimEnd())`n"
     [pscustomobject]@{
         Name          = $name
         Source        = $relativeSource
-        Audience      = Get-Required $item 'metadata.audience' $relativeSource
-        Summary       = Get-Required $item 'metadata.summary' $relativeSource
+        Audience      = Get-Required -Item $item -Key 'metadata.audience' -Path $relativeSource
+        Summary       = Get-Required -Item $item -Key 'metadata.summary' -Path $relativeSource
         UserInvocable = $item.Data['user-invocable'] -ne 'false'
     }
 }
@@ -136,8 +139,8 @@ $agents = foreach ($file in (Get-ChildItem -Path (Join-Path $root '.github/agent
 $skills = foreach ($dir in (Get-ChildItem -Path (Join-Path $root '.github/skills') -Directory | Sort-Object Name)) {
     $relativeSource = ".github/skills/$($dir.Name)/SKILL.md"
     $item = Read-Frontmatter -Path (Join-Path $dir.FullName 'SKILL.md')
-    $name = Get-Required $item 'name' $relativeSource
-    $description = Get-Required $item 'description' $relativeSource
+    $name = Get-Required -Item $item -Key 'name' -Path $relativeSource
+    $description = Get-Required -Item $item -Key 'description' -Path $relativeSource
     $title = (Get-Culture).TextInfo.ToTitleCase(($name -replace '-', ' '))
     $generated[".claude/skills/$name/SKILL.md"] = @"
 ---
@@ -157,8 +160,8 @@ The canonical skill content lives at [``$relativeSource``](../../../$relativeSou
     [pscustomobject]@{
         Name     = $name
         Source   = $relativeSource
-        Audience = Get-Required $item 'metadata.audience' $relativeSource
-        Summary  = Get-Required $item 'metadata.summary' $relativeSource
+        Audience = Get-Required -Item $item -Key 'metadata.audience' -Path $relativeSource
+        Summary  = Get-Required -Item $item -Key 'metadata.summary' -Path $relativeSource
     }
 }
 
@@ -256,6 +259,11 @@ foreach ($path in $stale) {
     Write-Verbose "Wrote $path"
 }
 foreach ($path in $orphans) {
-    Write-Warning "$path has no source file under .github/. Delete it, or add the source file and run this script again."
+    # A Claude Code copy whose source was removed or renamed.
+    $full = Join-Path $root $path
+    Remove-Item -LiteralPath $full -Force
+    $folder = Split-Path $full
+    if ($path -like '.claude/skills/*' -and -not (Get-ChildItem -LiteralPath $folder -Force)) { Remove-Item -LiteralPath $folder -Force }
+    Write-Verbose "Removed $path (no source file)"
 }
 [pscustomobject]@{ Written = $stale.Count; Orphans = $orphans.Count }

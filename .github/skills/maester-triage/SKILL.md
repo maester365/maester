@@ -74,7 +74,7 @@ Pull requests. Take the first rule that matches.
 | `status: blocked` | It cannot merge until another open PR or issue lands first, as the PR or a maintainer says. A PR stacked on another PR's branch is **not** blocked by that alone: it can be reviewed now. |
 | `status: changes requested` | A maintainer's latest review is "changes requested", or a maintainer's latest comment or review asks the author for changes, and the author has not pushed a commit since that addresses it. This wins over an open question in the same review. |
 | `status: needs decision` | A question only a maintainer can settle stops it from merging (a taxonomy key, a new attribute format, which of two overlapping PRs goes in, pass vs fail semantics), nobody has settled it, and no author fixes are outstanding. The question must be written on the PR, or named by the maintainer who asked for this triage run; name it in your report. |
-| `status: ready to merge` | A maintainer approved it, no maintainer asked for more after that approval, the required checks pass, and it has no conflicts. |
+| `status: ready to merge` | A maintainer approved the current head commit (the approval is not dismissed and no commit other than a merge from `main` came after it), no maintainer asked for more after that approval, the required checks pass, and it has no conflicts. A substantive push after the approval makes it `status: needs review` again. |
 | `status: needs review` | Anything else, including a PR whose author pushed fixes after changes were requested. That push hands it back to the reviewer. |
 
 "The author pushed" includes co-authors and agents committing for the author. When the PR's
