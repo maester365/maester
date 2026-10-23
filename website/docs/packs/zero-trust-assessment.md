@@ -85,7 +85,8 @@ the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
 
 The Maester report embeds the HTML report the assessment wrote, with its pillar dashboards and charts. Open it
 with the **Zero Trust Assessment** button on the report's overview, under **Reports** in the left menu, or on any
-MP.ZTA result. It opens in a new browser tab and works offline, so the Maester report stays a single file to share.
+MP.ZTA result. It opens inside the Maester report, with an option to open it in a new browser tab, and works
+offline, so the Maester report stays a single file to share.
 
 The embedded report is compressed: a 10 MB assessment report adds about 2 MB to the Maester report. It is left
 out when `ZeroTrustAssessment.EmbedReport` is `false`, when you read a report file that has no
