@@ -29,7 +29,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidUsbDebugging
     #>
     [MaesterTest(
-        Id = 'MT.TBD-09',
+        Id = 'MT.1236',
         Title = 'Ensure Android compliance policy blocks USB debugging.',
         Product = 'intune',
         Feature = 'device-compliance',

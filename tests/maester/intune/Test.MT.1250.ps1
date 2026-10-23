@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidAppProtectionScreenCapture
     #>
     [MaesterTest(
-        Id = 'MT.TBD-33',
+        Id = 'MT.1250',
         Title = 'Ensure Android app protection policy blocks screen capture of organization data.',
         Product = 'intune',
         Feature = 'app-protection',

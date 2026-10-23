@@ -41,7 +41,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidSecurityPatchLevel
     #>
     [MaesterTest(
-        Id = 'MT.TBD-07',
+        Id = 'MT.1234',
         Title = 'Ensure Android compliance policy requires a recent security patch level.',
         Product = 'intune',
         Feature = 'device-compliance',

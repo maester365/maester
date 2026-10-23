@@ -29,7 +29,7 @@
     https://maester.dev/docs/commands/Test-MtIosAppProtectionPinPolicy
     #>
     [MaesterTest(
-        Id = 'MT.TBD-21',
+        Id = 'MT.1238',
         Title = 'Ensure iOS app protection policy requires a strong app PIN.',
         Product = 'intune',
         Feature = 'app-protection',

@@ -27,7 +27,7 @@
     https://maester.dev/docs/commands/Test-MtIosJailbrokenDevices
     #>
     [MaesterTest(
-        Id = 'MT.TBD-01',
+        Id = 'MT.1228',
         Title = 'Ensure iOS compliance policy blocks jailbroken devices.',
         Product = 'intune',
         Feature = 'device-compliance',

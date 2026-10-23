@@ -26,7 +26,7 @@
     https://maester.dev/docs/commands/Test-MtIosAppProtectionEncryption
     #>
     [MaesterTest(
-        Id = 'MT.TBD-23',
+        Id = 'MT.1240',
         Title = 'Ensure iOS app protection policy encrypts organization data.',
         Product = 'intune',
         Feature = 'app-protection',

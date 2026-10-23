@@ -1,7 +1,7 @@
-﻿function Test-MtIosAppProtectionOfflineGracePeriod {
+﻿function Test-MtAndroidAppProtectionOfflineGracePeriod {
     <#
     .SYNOPSIS
-    Ensure at least one assigned iOS app protection policy limits offline access to organization data.
+    Ensure at least one assigned Android app protection policy limits offline access to organization data.
 
     .DESCRIPTION
     Every revocation an administrator can perform on an unenrolled phone travels through the app
@@ -14,21 +14,21 @@
     and the offline interval before wipe removes the organization's data from a device that never
     comes back.
 
-    This test passes if at least one iOS app protection policy that is assigned to a group sets an
+    This test passes if at least one Android app protection policy that is assigned to a group sets an
     offline grace period of at most 12 hours and wipes organization data after at most 90 days
     offline.
 
     .EXAMPLE
-    Test-MtIosAppProtectionOfflineGracePeriod
+    Test-MtAndroidAppProtectionOfflineGracePeriod
 
-    Returns true if at least one assigned iOS app protection policy limits offline access to organization data.
+    Returns true if at least one assigned Android app protection policy limits offline access to organization data.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtIosAppProtectionOfflineGracePeriod
+    https://maester.dev/docs/commands/Test-MtAndroidAppProtectionOfflineGracePeriod
     #>
     [MaesterTest(
-        Id = 'MT.TBD-25',
-        Title = 'Ensure iOS app protection policy limits offline access to organization data.',
+        Id = 'MT.1248',
+        Title = 'Ensure Android app protection policy limits offline access to organization data.',
         Product = 'intune',
         Feature = 'app-protection',
         Area = 'access-control',
@@ -47,8 +47,8 @@
     param()
 
     try {
-        Write-Verbose "Querying iOS app protection policies..."
-        $policies = Get-MtAppProtectionPolicy -Platform iOS
+        Write-Verbose "Querying Android app protection policies..."
+        $policies = Get-MtAppProtectionPolicy -Platform Android
         if ($null -eq $policies) {
             # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
             # scope is missing from the connection, or Intune RBAC returned a 403.
@@ -58,8 +58,8 @@
         }
 
         if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No iOS app protection policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an iOS app protection policy, a managed app on an offline phone never re-checks whether the user still has access. Create an iOS app protection policy, set the offline grace period under **Conditional launch** and assign it."
+            $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
+            $testResultMarkdown += "Without an Android app protection policy, a managed app on an offline phone never re-checks whether the user still has access. Create an Android app protection policy, set the offline grace period under **Conditional launch** and assign it."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }
@@ -83,7 +83,7 @@
             })
         $testResult = $compliant.Count -gt 0
 
-        $testResultMarkdown = "Found $($policies.Count) iOS app protection policy/policies in Intune.`n`n"
+        $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
         $testResultMarkdown += "| Policy | Offline grace period | Offline interval before wipe | Assignments |`n"
         $testResultMarkdown += "| --- | --- | --- | --- |`n"
         foreach ($policy in $policies) {
@@ -94,7 +94,7 @@
         }
 
         if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned iOS app protection policy limits offline access to organization data."
+            $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy limits offline access to organization data."
             $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($null -ne $_.OfflineBeforeAccessCheckHours -and $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and $null -ne $_.OfflineBeforeWipeDays -and $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90) })
             if ($gaps.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
@@ -106,7 +106,7 @@
                 $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
                 $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
             } else {
-                $testResultMarkdown += "`nNo iOS app protection policy bounds offline access. A phone that stays offline keeps opening organization data without ever receiving a revocation, an account disable or a selective wipe."
+                $testResultMarkdown += "`nNo Android app protection policy bounds offline access. A phone that stays offline keeps opening organization data without ever receiving a revocation, an account disable or a selective wipe."
             }
         }
 

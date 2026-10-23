@@ -36,7 +36,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidDeviceAdministratorBlocked
     #>
     [MaesterTest(
-        Id = 'MT.TBD-10',
+        Id = 'MT.1237',
         Title = 'Ensure Android compliance policy blocks devices managed with device administrator.',
         Product = 'intune',
         Feature = 'device-compliance',

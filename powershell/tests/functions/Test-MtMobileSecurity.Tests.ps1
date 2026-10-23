@@ -126,7 +126,7 @@
         }
     }
 
-    Context 'Test-MtIosJailbrokenDevices (MT.TBD-01)' {
+    Context 'Test-MtIosJailbrokenDevices (MT.1228)' {
         It 'passes when an assigned policy blocks jailbroken devices' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestIosPolicy -BlocksJailbrokenDevices $true -AssignmentCount 1)
@@ -181,7 +181,7 @@
         }
     }
 
-    Context 'Test-MtIosPasscodePolicy (MT.TBD-02)' {
+    Context 'Test-MtIosPasscodePolicy (MT.1229)' {
         It 'passes when an assigned policy meets every passcode requirement' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { return @(Get-TestIosPolicy) }
 
@@ -284,7 +284,7 @@
         }
     }
 
-    Context 'Test-MtIosMinimumOsVersion (MT.TBD-03)' {
+    Context 'Test-MtIosMinimumOsVersion (MT.1230)' {
         It 'passes when any minimum version is set' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestIosPolicy -MinimumOsVersion '17.5')
@@ -362,7 +362,7 @@
         }
     }
 
-    Context 'Test-MtIosDefenderRiskScore (MT.TBD-04)' {
+    Context 'Test-MtIosDefenderRiskScore (MT.1231)' {
         It 'passes for a configured threshold' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestIosPolicy -DefenderRiskScoreLevel 'medium')
@@ -433,7 +433,7 @@
         }
     }
 
-    Context 'Test-MtAndroidRootedDevices (MT.TBD-05)' {
+    Context 'Test-MtAndroidRootedDevices (MT.1232)' {
         It 'passes when an assigned policy blocks rooted devices' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -BlocksRootedDevices $true)
@@ -504,7 +504,7 @@
         }
     }
 
-    Context 'Test-MtAndroidPasswordPolicy (MT.TBD-06)' {
+    Context 'Test-MtAndroidPasswordPolicy (MT.1233)' {
         It 'passes when an assigned policy meets every password requirement' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { return @(Get-TestAndroidPolicy) }
 
@@ -596,7 +596,7 @@
         }
     }
 
-    Context 'Test-MtAndroidSecurityPatchLevel (MT.TBD-07)' {
+    Context 'Test-MtAndroidSecurityPatchLevel (MT.1234)' {
         It 'passes for a recent patch level' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -MinimumSecurityPatchLevel ([datetime]::UtcNow.AddDays(-60).ToString('yyyy-MM-dd')))
@@ -673,7 +673,7 @@
         }
     }
 
-    Context 'Test-MtAndroidThreatProtection (MT.TBD-08)' {
+    Context 'Test-MtAndroidThreatProtection (MT.1235)' {
         It 'passes when an assigned policy requires device threat protection' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -RequiresThreatProtection $true)
@@ -718,7 +718,7 @@
         }
     }
 
-    Context 'Test-MtAndroidUsbDebugging (MT.TBD-09)' {
+    Context 'Test-MtAndroidUsbDebugging (MT.1236)' {
         It 'passes when an assigned policy blocks USB debugging' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -UsbDebuggingDisabled $true)
@@ -763,7 +763,7 @@
         }
     }
 
-    Context 'Test-MtAndroidDeviceAdministratorBlocked (MT.TBD-10)' {
+    Context 'Test-MtAndroidDeviceAdministratorBlocked (MT.1237)' {
         It 'passes when an assigned policy blocks device administrator managed devices' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -BlocksDeviceAdministrator $true)
@@ -1005,7 +1005,7 @@
     Context 'Companion markdown' {
         It 'documents the Android scope limitation in every Android guide' {
             # Static explanation belongs in the description, not repeated in every result.
-            foreach ($id in @('MT.TBD-05', 'MT.TBD-06', 'MT.TBD-07', 'MT.TBD-08', 'MT.TBD-09', 'MT.TBD-10')) {
+            foreach ($id in @('MT.1232', 'MT.1233', 'MT.1234', 'MT.1235', 'MT.1236', 'MT.1237')) {
                 $md = Get-Content (Get-MtTest -Id $id).MarkdownPath -Raw
                 $md | Should -Match '(?i)Scope limitation'
                 $md | Should -Match 'device administrator'
@@ -1013,7 +1013,7 @@
         }
 
         It 'states in the iOS and Android guides that an unassigned policy is never evaluated' {
-            foreach ($id in @('MT.TBD-01', 'MT.TBD-02', 'MT.TBD-05', 'MT.TBD-06')) {
+            foreach ($id in @('MT.1228', 'MT.1229', 'MT.1232', 'MT.1233')) {
                 $md = Get-Content (Get-MtTest -Id $id).MarkdownPath -Raw
                 $md | Should -Match 'not assigned'
             }

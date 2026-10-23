@@ -31,7 +31,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidRootedDevices
     #>
     [MaesterTest(
-        Id = 'MT.TBD-05',
+        Id = 'MT.1232',
         Title = 'Ensure Android compliance policy blocks rooted devices.',
         Product = 'intune',
         Feature = 'device-compliance',

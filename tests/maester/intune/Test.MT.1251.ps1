@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidAppProtectionDeviceAttestation
     #>
     [MaesterTest(
-        Id = 'MT.TBD-34',
+        Id = 'MT.1251',
         Title = 'Ensure Android app protection policy requires Play Integrity device attestation.',
         Product = 'intune',
         Feature = 'app-protection',

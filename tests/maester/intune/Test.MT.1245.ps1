@@ -1,34 +1,34 @@
-﻿function Test-MtIosAppProtectionDataTransfer {
+﻿function Test-MtAndroidAppProtectionDataTransfer {
     <#
     .SYNOPSIS
-    Ensure at least one assigned iOS app protection policy keeps organization data inside managed apps.
+    Ensure at least one assigned Android app protection policy keeps organization data inside managed apps.
 
     .DESCRIPTION
     This is the control a device compliance policy cannot provide. A tenant can require a compliant,
-    passcode-protected, up-to-date iPhone and still let a user forward an attachment from Outlook into
-    a personal cloud drive, paste a customer list into a note-taking app, or let iCloud back the whole
-    mailbox up to a personal Apple account.
+    locked, up-to-date Android phone and still let a user share an attachment from Outlook into a
+    personal cloud drive, paste a customer list into a note-taking app, or let the Google backup copy
+    the app's data to a personal account.
 
     Four settings decide whether organization data can leave the managed boundary: where the app may
     send data, what the clipboard may carry out, whether "Save as" to a personal location is allowed,
     and whether the app's data is included in the device backup. Any one of them left open is a route
     out, so all four are read from the same policy.
 
-    This test passes if at least one iOS app protection policy that is assigned to a group restricts
-    data transfer and clipboard sharing to managed apps, blocks save-as to personal locations and
-    blocks the app data backup.
+    This test passes if at least one Android app protection policy that is assigned to a group
+    restricts data transfer and clipboard sharing to managed apps, blocks save-as to personal
+    locations and blocks the app data backup.
 
     .EXAMPLE
-    Test-MtIosAppProtectionDataTransfer
+    Test-MtAndroidAppProtectionDataTransfer
 
-    Returns true if at least one assigned iOS app protection policy blocks organization data from leaving managed apps.
+    Returns true if at least one assigned Android app protection policy blocks organization data from leaving managed apps.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtIosAppProtectionDataTransfer
+    https://maester.dev/docs/commands/Test-MtAndroidAppProtectionDataTransfer
     #>
     [MaesterTest(
-        Id = 'MT.TBD-22',
-        Title = 'Ensure iOS app protection policy keeps organization data inside managed apps.',
+        Id = 'MT.1245',
+        Title = 'Ensure Android app protection policy keeps organization data inside managed apps.',
         Product = 'intune',
         Feature = 'app-protection',
         Area = 'data-protection',
@@ -36,7 +36,7 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Low',
-        Mitre = ('T1567.002', 'T1115'),
+        Mitre = ('T1115', 'T1567.002'),
         Control = ('nist-800-53-r5:AC-4', 'nist-800-53-r5:AC-19'),
         Service = 'Graph',
         License = 'INTUNE_A',
@@ -47,8 +47,8 @@
     param()
 
     try {
-        Write-Verbose "Querying iOS app protection policies..."
-        $policies = Get-MtAppProtectionPolicy -Platform iOS
+        Write-Verbose "Querying Android app protection policies..."
+        $policies = Get-MtAppProtectionPolicy -Platform Android
         if ($null -eq $policies) {
             # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
             # scope is missing from the connection, or Intune RBAC returned a 403.
@@ -58,8 +58,8 @@
         }
 
         if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No iOS app protection policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an iOS app protection policy, organization data in Outlook, Teams and the Office apps can be copied or saved into any personal app on the device. Create an iOS app protection policy, restrict data transfer to managed apps and assign it."
+            $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
+            $testResultMarkdown += "Without an Android app protection policy, organization data in Outlook, Teams and the Office apps can be shared or saved into any personal app on the device. Create an Android app protection policy, restrict data transfer to managed apps and assign it."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }
@@ -76,7 +76,7 @@
             })
         $testResult = $compliant.Count -gt 0
 
-        $testResultMarkdown = "Found $($policies.Count) iOS app protection policy/policies in Intune.`n`n"
+        $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
         $testResultMarkdown += "| Policy | Send data to | Clipboard | Save as | App data backup | Assignments |`n"
         $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
         foreach ($policy in $policies) {
@@ -89,7 +89,7 @@
         }
 
         if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned iOS app protection policy keeps organization data inside managed apps."
+            $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy keeps organization data inside managed apps."
             $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($_.OutboundDataTransfer -in @('managedApps', 'none') -and $_.ClipboardSharingLevel -in @('managedApps', 'managedAppsWithPasteIn', 'blocked') -and $_.SaveAsBlocked -and $_.DataBackupBlocked) })
             if ($gaps.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
@@ -101,7 +101,7 @@
                 $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
                 $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
             } else {
-                $testResultMarkdown += "`nNo iOS app protection policy keeps organization data inside managed apps. Mail, files and chat content can be copied, saved or backed up into personal apps and personal cloud accounts, and the device can be fully compliant while that happens."
+                $testResultMarkdown += "`nNo Android app protection policy keeps organization data inside managed apps. Mail, files and chat content can be shared, saved or backed up into personal apps and personal cloud accounts, and the device can be fully compliant while that happens."
             }
         }
 

@@ -365,7 +365,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionPinPolicy (MT.TBD-21)' {
+    Context 'Test-MtIosAppProtectionPinPolicy (MT.1238)' {
         It 'passes when an assigned policy meets every PIN requirement' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -498,7 +498,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionDataTransfer (MT.TBD-22)' {
+    Context 'Test-MtIosAppProtectionDataTransfer (MT.1239)' {
         It 'passes when an assigned policy closes every egress path' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -591,7 +591,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionEncryption (MT.TBD-23)' {
+    Context 'Test-MtIosAppProtectionEncryption (MT.1240)' {
         It 'passes when an assigned policy encrypts org data' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -652,7 +652,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionMinimumVersions (MT.TBD-24)' {
+    Context 'Test-MtIosAppProtectionMinimumVersions (MT.1241)' {
         It 'passes when an assigned policy sets both floors' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -725,7 +725,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionOfflineGracePeriod (MT.TBD-25)' {
+    Context 'Test-MtIosAppProtectionOfflineGracePeriod (MT.1242)' {
         It 'passes when an assigned policy bounds both intervals' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -805,7 +805,7 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionDeviceThreatLevel (MT.TBD-26)' {
+    Context 'Test-MtIosAppProtectionDeviceThreatLevel (MT.1243)' {
         It 'passes when an assigned policy gates on the threat level and blocks' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
@@ -896,7 +896,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionPinPolicy (MT.TBD-27)' {
+    Context 'Test-MtAndroidAppProtectionPinPolicy (MT.1244)' {
         It 'passes when an assigned policy meets every PIN requirement' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -990,7 +990,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionDataTransfer (MT.TBD-28)' {
+    Context 'Test-MtAndroidAppProtectionDataTransfer (MT.1245)' {
         It 'passes when an assigned policy closes every egress path' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1063,7 +1063,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionEncryption (MT.TBD-29)' {
+    Context 'Test-MtAndroidAppProtectionEncryption (MT.1246)' {
         It 'passes when an assigned policy requires encryption and does not waive it' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1125,7 +1125,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionMinimumVersions (MT.TBD-30)' {
+    Context 'Test-MtAndroidAppProtectionMinimumVersions (MT.1247)' {
         It 'passes when an assigned policy sets both floors' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1191,7 +1191,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionOfflineGracePeriod (MT.TBD-31)' {
+    Context 'Test-MtAndroidAppProtectionOfflineGracePeriod (MT.1248)' {
         It 'passes when an assigned policy bounds both intervals' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1263,7 +1263,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionDeviceThreatLevel (MT.TBD-32)' {
+    Context 'Test-MtAndroidAppProtectionDeviceThreatLevel (MT.1249)' {
         It 'passes when an assigned policy gates on the threat level and blocks' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1331,7 +1331,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionScreenCapture (MT.TBD-33)' {
+    Context 'Test-MtAndroidAppProtectionScreenCapture (MT.1250)' {
         It 'passes when an assigned policy blocks screen capture' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
@@ -1383,7 +1383,7 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionDeviceAttestation (MT.TBD-34)' {
+    Context 'Test-MtAndroidAppProtectionDeviceAttestation (MT.1251)' {
         It 'passes when an assigned policy requires attestation and blocks on failure' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 

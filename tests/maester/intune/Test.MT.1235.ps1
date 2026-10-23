@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidThreatProtection
     #>
     [MaesterTest(
-        Id = 'MT.TBD-08',
+        Id = 'MT.1235',
         Title = 'Ensure Android compliance policy requires device threat protection.',
         Product = 'intune',
         RelatedProduct = 'defender',

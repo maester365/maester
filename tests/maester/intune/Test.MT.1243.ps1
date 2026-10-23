@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtIosAppProtectionDeviceThreatLevel
     #>
     [MaesterTest(
-        Id = 'MT.TBD-26',
+        Id = 'MT.1243',
         Title = 'Ensure iOS app protection policy acts on the device threat level.',
         Product = 'intune',
         Feature = 'app-protection',

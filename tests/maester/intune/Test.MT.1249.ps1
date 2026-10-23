@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidAppProtectionDeviceThreatLevel
     #>
     [MaesterTest(
-        Id = 'MT.TBD-32',
+        Id = 'MT.1249',
         Title = 'Ensure Android app protection policy acts on the device threat level.',
         Product = 'intune',
         Feature = 'app-protection',

@@ -26,7 +26,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidAppProtectionEncryption
     #>
     [MaesterTest(
-        Id = 'MT.TBD-29',
+        Id = 'MT.1246',
         Title = 'Ensure Android app protection policy encrypts organization data.',
         Product = 'intune',
         Feature = 'app-protection',

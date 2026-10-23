@@ -34,7 +34,7 @@
     https://maester.dev/docs/commands/Test-MtIosDefenderRiskScore
     #>
     [MaesterTest(
-        Id = 'MT.TBD-04',
+        Id = 'MT.1231',
         Title = 'Ensure iOS compliance policy requires a Defender machine risk score level.',
         Product = 'intune',
         RelatedProduct = 'defender',

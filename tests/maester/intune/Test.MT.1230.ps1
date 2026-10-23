@@ -41,7 +41,7 @@
     https://maester.dev/docs/commands/Test-MtIosMinimumOsVersion
     #>
     [MaesterTest(
-        Id = 'MT.TBD-03',
+        Id = 'MT.1230',
         Title = 'Ensure iOS compliance policy requires a minimum operating system version.',
         Product = 'intune',
         Feature = 'device-compliance',

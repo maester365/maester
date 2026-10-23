@@ -30,7 +30,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidAppProtectionPinPolicy
     #>
     [MaesterTest(
-        Id = 'MT.TBD-27',
+        Id = 'MT.1244',
         Title = 'Ensure Android app protection policy requires a strong app PIN.',
         Product = 'intune',
         Feature = 'app-protection',

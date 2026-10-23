@@ -50,7 +50,7 @@
     https://maester.dev/docs/commands/Test-MtIosPasscodePolicy
     #>
     [MaesterTest(
-        Id = 'MT.TBD-02',
+        Id = 'MT.1229',
         Title = 'Ensure iOS compliance policy requires a strong device passcode.',
         Product = 'intune',
         Feature = 'device-compliance',

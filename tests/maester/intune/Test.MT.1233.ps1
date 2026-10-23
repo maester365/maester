@@ -51,7 +51,7 @@
     https://maester.dev/docs/commands/Test-MtAndroidPasswordPolicy
     #>
     [MaesterTest(
-        Id = 'MT.TBD-06',
+        Id = 'MT.1233',
         Title = 'Ensure Android compliance policy requires a strong device password.',
         Product = 'intune',
         Feature = 'device-compliance',
