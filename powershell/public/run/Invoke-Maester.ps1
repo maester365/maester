@@ -1007,7 +1007,13 @@
             }
 
             if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-                $output = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
+                # Attachments keep their name and size: their content is another tool's report, embedded only in the HTML report.
+                $jsonResults = $maesterResults
+                if ($maesterResults.PSObject.Properties['Attachments']) {
+                    $jsonResults = $maesterResults | Select-Object -Property * -ExcludeProperty Attachments
+                    $jsonResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($maesterResults.Attachments | Select-Object -Property * -ExcludeProperty Content)
+                }
+                $output = $jsonResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
                 if ($redactNonHtml) {
                     $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
                 }
