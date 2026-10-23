@@ -273,7 +273,8 @@ function Write-MtRunSummary {
     # name too.
     $table = {
         param($rows, [string] $heading, $groupOf)
-        $groups = @($rows | Group-Object { & $groupOf $_ } |
+        $named = @(foreach ($row in $rows) { [pscustomobject]@{ Name = [string](& $groupOf $row); Row = $row } })
+        $groups = @($named | Group-Object Name | ForEach-Object { [pscustomobject]@{ Name = $_.Name; Group = @($_.Group.Row) } } |
                 Sort-Object @{ Expression = { @($_.Group | Where-Object { $_.Result -ne 'Skipped' }).Count -eq 0 } },
                 @{ Expression = { @($_.Group | Where-Object { $_.Result -eq 'Passed' }).Count }; Descending = $true },
                 @{ Expression = { $_.Name } })
