@@ -57,6 +57,7 @@ function Write-MtTestOutput {
     )
 
     begin {
+        Write-Verbose "Write-MtTestOutput: Title=$Title Progress=$Progress Complete=$Complete"
         $renderer = $script:__MtConsoleRenderer
         $dashboard = $renderer -and $renderer.IsFullScreen
         $console = if ($__MtSession -and $__MtSession.Console) { $__MtSession.Console } else { Get-MtConsoleMode }
