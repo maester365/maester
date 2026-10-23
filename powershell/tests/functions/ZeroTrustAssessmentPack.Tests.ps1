@@ -15,7 +15,7 @@ Describe 'Zero Trust Assessment pack' {
                 GlobalSettings = [pscustomobject]$globalSettings
                 Environment    = [pscustomobject]@{ Enforce = [pscustomobject]@{ Service = $false } }
             }
-            @(Invoke-MtTest -Path $script:TestsPath -Id MP.MAES.ZTA -Config $config)
+            @(Invoke-MtTest -Path $script:TestsPath -Id MP.ZTA -Config $config)
         }
 
         $script:Rows = Invoke-ZtaPack
@@ -28,26 +28,26 @@ Describe 'Zero Trust Assessment pack' {
 
     Context 'the pack files' {
         It 'has a valid native test' {
-            $test = Get-MtTest -Path (Join-Path $script:TestsPath 'Test.MP.MAES.ZTA.ps1')
+            $test = Get-MtTest -Path (Join-Path $script:TestsPath 'Test.MP.ZTA.ps1')
             $test.IsValid | Should -BeTrue
             $test.Errors | Should -BeNullOrEmpty
             $test.LongRunning | Should -BeTrue
             $test.InstanceSource | Should -Be 'Get-MtZtaInstance'
-            $test.Suite | Should -Be 'MAES.ZTA'
+            $test.Suite | Should -Be 'ZTA'
         }
 
-        It 'has a manifest with the official code' {
+        It 'has a manifest with the pack code' {
             $manifest = Get-Content (Join-Path $script:PackRoot 'maester-pack.json') -Raw | ConvertFrom-Json
             $manifest.Id | Should -Be 'maester.zero-trust-assessment'
-            $manifest.Code | Should -Be 'MAES'
+            $manifest.Code | Should -Be 'ZTA'
             $manifest.Uses.GraphScopes | Should -Be @($manifest.Uses.GraphScopes | Sort-Object -Unique)
         }
 
-        It 'has a catalog of unique MP.MAES.ZTA IDs' {
+        It 'has a catalog of unique MP.ZTA IDs' {
             $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
             $catalog.ModuleVersion | Should -Not -BeNullOrEmpty
             $catalog.Tests.Count | Should -BeGreaterThan 0
-            @($catalog.Tests.Id | Where-Object { $_ -notmatch '^MP\.MAES\.ZTA\.\d+$' }) | Should -BeNullOrEmpty
+            @($catalog.Tests.Id | Where-Object { $_ -notmatch '^MP\.ZTA\.\d+$' }) | Should -BeNullOrEmpty
             @($catalog.Tests.Id | Sort-Object -Unique).Count | Should -Be $catalog.Tests.Count
             @($catalog.Tests | Where-Object { [string]::IsNullOrWhiteSpace($_.Title) }) | Should -BeNullOrEmpty
         }
@@ -56,23 +56,23 @@ Describe 'Zero Trust Assessment pack' {
     Context 'reading a report' {
         It 'writes one row per assessment result and leaves out planned tests' {
             $script:Rows.Count | Should -Be 12
-            $script:Rows.Id | Should -Not -Contain 'MP.MAES.ZTA.21821'
-            $script:Rows.Id | Should -Not -Contain 'MP.MAES.ZTA.21894'
-            @($script:Rows | Where-Object ParentId -ne 'MP.MAES.ZTA') | Should -BeNullOrEmpty
+            $script:Rows.Id | Should -Not -Contain 'MP.ZTA.21821'
+            $script:Rows.Id | Should -Not -Contain 'MP.ZTA.21894'
+            @($script:Rows | Where-Object ParentId -ne 'MP.ZTA') | Should -BeNullOrEmpty
         }
 
         It 'maps <Id> to <Result>' -ForEach @(
-            @{ Id = 'MP.MAES.ZTA.24542'; Result = 'Passed' }
-            @{ Id = 'MP.MAES.ZTA.21828'; Result = 'Failed' }
-            @{ Id = 'MP.MAES.ZTA.25481'; Result = 'Investigate' }
-            @{ Id = 'MP.MAES.ZTA.21955'; Result = 'Skipped' }
-            @{ Id = 'MP.MAES.ZTA.24548'; Result = 'Error' }
+            @{ Id = 'MP.ZTA.24542'; Result = 'Passed' }
+            @{ Id = 'MP.ZTA.21828'; Result = 'Failed' }
+            @{ Id = 'MP.ZTA.25481'; Result = 'Investigate' }
+            @{ Id = 'MP.ZTA.21955'; Result = 'Skipped' }
+            @{ Id = 'MP.ZTA.24548'; Result = 'Error' }
         ) {
             ($script:Rows | Where-Object Id -eq $Id).Result | Should -Be $Result
         }
 
         It 'keeps the assessment title, risk level and pillar' {
-            $row = $script:Rows | Where-Object Id -eq 'MP.MAES.ZTA.21828'
+            $row = $script:Rows | Where-Object Id -eq 'MP.ZTA.21828'
             $row.Title | Should -Be 'Authentication transfer is blocked'
             $row.Severity | Should -Be 'High'
             $row.Tag | Should -Contain 'ZeroTrust.Identity'
@@ -81,16 +81,16 @@ Describe 'Zero Trust Assessment pack' {
         }
 
         It 'uses Maester wording for a skip reason both tools share' {
-            ($script:Rows | Where-Object Id -eq 'MP.MAES.ZTA.21955').ReasonCode | Should -Be 'NotApplicable'
+            ($script:Rows | Where-Object Id -eq 'MP.ZTA.21955').ReasonCode | Should -Be 'NotApplicable'
         }
 
         It 'gives rows that share an ID a stable suffix from their title' {
-            $guidRows = @($script:Rows | Where-Object Id -like 'MP.MAES.ZTA.55555555-5555-5555-5555-555555555555.*')
+            $guidRows = @($script:Rows | Where-Object Id -like 'MP.ZTA.55555555-5555-5555-5555-555555555555.*')
             $guidRows.Count | Should -Be 3
             @($guidRows.Id | Sort-Object -Unique).Count | Should -Be 3
-            $guidRows.Id | Should -Contain 'MP.MAES.ZTA.55555555-5555-5555-5555-555555555555.1b7e76ce09'
-            $guidRows.Id | Should -Contain 'MP.MAES.ZTA.55555555-5555-5555-5555-555555555555.1b7e76ce09.2'
-            $script:Rows.Id | Should -Contain 'MP.MAES.ZTA.77777777-7777-7777-7777-777777777777'
+            $guidRows.Id | Should -Contain 'MP.ZTA.55555555-5555-5555-5555-555555555555.1b7e76ce09'
+            $guidRows.Id | Should -Contain 'MP.ZTA.55555555-5555-5555-5555-555555555555.1b7e76ce09.2'
+            $script:Rows.Id | Should -Contain 'MP.ZTA.77777777-7777-7777-7777-777777777777'
         }
 
         It 'skips the family when the report is missing' {

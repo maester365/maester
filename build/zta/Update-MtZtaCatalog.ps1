@@ -87,7 +87,7 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
         if ($meta.ContainsKey($id) -and $meta[$id].ContainsKey($key) -and $meta[$id][$key]) { $values[$key] = $meta[$id][$key] }
     }
     [ordered]@{
-        Id                 = "MP.MAES.ZTA.$id"
+        Id                 = "MP.ZTA.$id"
         TestId             = $id
         Title              = (([string]$values.Title) -replace "''", "'" -replace '\s+', ' ').Trim()
         Pillar             = @($values.Pillar | Where-Object { $_ })

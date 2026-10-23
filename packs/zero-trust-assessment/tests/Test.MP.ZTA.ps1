@@ -1,10 +1,10 @@
 function Get-MtZtaInstance {
     <#
     .SYNOPSIS
-    Returns one MP.MAES.ZTA instance per result of the Microsoft Zero Trust Assessment.
+    Returns one MP.ZTA instance per result of the Microsoft Zero Trust Assessment.
 
     .DESCRIPTION
-    Instance source of the MP.MAES.ZTA family. Reads the assessment's ZeroTrustAssessmentReport.json from the
+    Instance source of the MP.ZTA family. Reads the assessment's ZeroTrustAssessmentReport.json from the
     ZeroTrustAssessment.ReportPath setting when one is set (import), otherwise runs the assessment in a child
     PowerShell process (collect), then returns one instance per test result. Skips the whole family, with the
     reason, when neither is possible.
@@ -76,7 +76,7 @@ function Read-MtZtaReport {
 function ConvertTo-MtZtaInstance {
     <#
     .SYNOPSIS
-    Turns the Tests of a Zero Trust Assessment report into MP.MAES.ZTA instances.
+    Turns the Tests of a Zero Trust Assessment report into MP.ZTA instances.
 
     .DESCRIPTION
     The instance suffix is the assessment's test ID. A test that writes several rows under one ID (the Defender
@@ -235,7 +235,7 @@ Invoke-ZtAssessment @assessment
 
 function Test-MtZeroTrustAssessment {
     [MaesterTest(
-        Id = 'MP.MAES.ZTA',
+        Id = 'MP.ZTA',
         Title = 'Microsoft Zero Trust Assessment',
         Product = 'Zero Trust Assessment',
         Service = 'Graph',

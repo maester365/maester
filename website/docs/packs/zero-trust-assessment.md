@@ -10,7 +10,7 @@ This pack runs Microsoft's [Zero Trust Assessment](https://aka.ms/zerotrust/asse
 results in the Maester report, next to Maester's own checks. It ships with Maester and does not run unless you
 ask for it.
 
-Each assessment result is one row, `MP.MAES.ZTA.<assessment test ID>` (for example `MP.MAES.ZTA.21770`), with the
+Each assessment result is one row, `MP.ZTA.<assessment test ID>` (for example `MP.ZTA.21770`), with the
 assessment's title, risk level (as the severity), description, remediation steps and findings. Results are tagged
 `ZeroTrust` and `ZeroTrust.<pillar>` (`ZeroTrust.Identity`, `ZeroTrust.Devices` and so on).
 
@@ -22,8 +22,8 @@ and `Get-MtPack` lists it.
 The pack is a long-running test, so `Invoke-Maester` leaves it out unless you name it:
 
 ```powershell
-Invoke-Maester -TestId MP.MAES.ZTA          # only the Zero Trust Assessment
-Invoke-Maester -Suite MAES.ZTA              # the same
+Invoke-Maester -TestId MP.ZTA          # only the Zero Trust Assessment
+Invoke-Maester -Suite ZTA              # the same
 Invoke-Maester -IncludeLongRunning          # everything, including the assessment
 ```
 
