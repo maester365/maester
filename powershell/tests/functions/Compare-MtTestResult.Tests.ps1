@@ -48,6 +48,10 @@ Describe 'Compare-MtTestResult' -Tag 'Unit' {
         $broken.PSObject.Properties.Remove('TenantId')
         $broken | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $script:folder 'TestResults-2.json')
 
-        @(Compare-MtTestResult -BaseDir $script:folder -WarningAction SilentlyContinue) | Should -BeNullOrEmpty
+        $warnings = @()
+        @(Compare-MtTestResult -BaseDir $script:folder -WarningAction SilentlyContinue -WarningVariable warnings) | Should -BeNullOrEmpty
+
+        ($warnings -join "`n") | Should -Match 'TenantId'
+        ($warnings -join "`n") | Should -Match 'TestResults-2\.json'
     }
 }
