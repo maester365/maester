@@ -256,7 +256,7 @@ body:has(.home-page) .navbar {
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 32px);
-  max-width: 1080px;
+  max-width: 1180px;
   height: 72px;
   padding: 0 22px;
   background: rgba(10, 12, 16, 0.78);
