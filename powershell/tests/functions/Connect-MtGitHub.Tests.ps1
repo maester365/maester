@@ -360,6 +360,15 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
+        It 'falls back to the code defaults when GitHubApiBaseUri and GitHubApiVersion are absent' {
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+        }
+
         It 'GHE.com data residency: all four endpoint paths target the configured base URI' {
             Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.octocorp.ghe.com' 3>$null
 
