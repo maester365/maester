@@ -176,8 +176,9 @@
 
 /* The card can be taller than the 1200x630 picture: show all of it on the card images' own canvas colour. */
 .featured .image {
-  height: auto;
+  height: 100%;
   object-fit: contain;
+  object-position: center;
 }
 
 .featured .body {
