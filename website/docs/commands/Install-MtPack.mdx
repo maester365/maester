@@ -1,0 +1,305 @@
+---
+sidebar_class_name: hidden
+description: "Installs a Maester Pack: tests, helpers and connectors that someone else publishes, checked and pinned before anything runs."
+id: Install-MtPack
+title: Install-MtPack
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/packs/Install-MtPack.ps1
+---
+
+## SYNOPSIS
+
+Installs a Maester Pack: tests, helpers and connectors that someone else publishes, checked and pinned before anything runs.
+
+## SYNTAX
+
+```powershell
+Install-MtPack [-Source] <String> [-Version <String>] [-Scope <String>] [-PackLock <String>]
+ [-AcceptRisk <String>] [-IncludeRecent] [-NonInteractive] [-Force] [-PassThru]
+ [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+A pack comes from a GitHub repository (owner/repo, owner/repo/folder, owner/repo@ref or a github.com
+URL), a local folder, or, by its ID, from the packs that ship with Maester.
+Before anything is saved:
+
+- the pack is fetched and read without running any of its code: its manifest, every file and what its
+  scripts call;
+- a GitHub release must be at least the cooldown old (72 hours by default; PackPolicy.CooldownHours).
+  Only an immutable release counts its publish date; otherwise the clock starts when this computer
+  first sees the commit, so a moved tag starts the clock again.
+-IncludeRecent installs a newer one;
+- the pack policy and the signed blocklist are checked;
+- the PowerShell Gallery modules it declares are saved at their exact versions into the pack store,
+  and the digest of each module folder is recorded;
+- you are shown what the pack can reach, its risk and anything the scan found, and asked to approve.
+
+The approved files are copied into the read-only pack store under their digest, and the pack is
+written to maester-packs.lock.json (commit, digest, test IDs, risk and modules) and to the Packs list
+of maester-config.json.
+Commit both files: Restore-MtPack installs the same files on another computer
+or in a pipeline, and Invoke-Maester runs a pack only while its files still match the lock file.
+
+A pack that ships with Maester (by ID, such as maester.zero-trust-assessment) needs no approval.
+Installing it only
+saves and pins the modules it declares.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Install-MtPack contoso/maester-google-workspace
+```
+
+Installs the newest release that has met the cooldown, after showing what it can reach.
+
+### EXAMPLE 2
+
+```powershell
+Install-MtPack contoso/maester-google-workspace -Version 1.2.0 -AcceptRisk Medium -NonInteractive
+```
+
+Installs a given release in a pipeline.
+
+### EXAMPLE 3
+
+```powershell
+Install-MtPack maester.zero-trust-assessment
+```
+
+Saves and pins the modules of the Zero Trust Assessment pack, which ships with Maester.
+
+### EXAMPLE 4
+
+```powershell
+Install-MtPack maester365/maester-pack-demo
+Invoke-Maester -Pack DEMO -SkipBuiltIn
+```
+
+Installs the demo pack, then runs only its tests, by the pack's code.
+
+## PARAMETERS
+
+### -Source
+
+Where the pack comes from: owner/repo, owner/repo/folder, owner/repo@ref, a github.com URL, a local
+folder, or the ID of a pack that ships with Maester.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Version
+
+The release to install, such as 1.2.0.
+By default the newest release that has met the cooldown.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Scope
+
+Project writes to the maester-config.json found from the current folder (created there if there is
+none); User writes to ~/.maester.
+By default the project when it has a config, else the user.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PackLock
+
+The lock file to write instead of the one Scope chooses.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AcceptRisk
+
+The highest risk a pack may have to be installed without asking: Low, Medium or High.
+Needed with
+-NonInteractive for a pack above Low.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Low
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeRecent
+
+Install a release or commit that is newer than the cooldown.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NonInteractive
+
+Never ask.
+Used automatically when the input is redirected; then -AcceptRisk must cover the pack's risk.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Answer yes to the approval question.
+A pack of High risk, or one newer than the cooldown, still needs
+its code typed unless -AcceptRisk and -IncludeRecent cover it.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PassThru
+
+Return the lock file entry of the pack.
+Without it, Install-MtPack writes what was installed and how to
+run it, and returns nothing.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs.
+The cmdlet is not run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+Determines how PowerShell responds to progress updates generated by a script, cmdlet, or provider, such as the progress bars generated by Write-Progress.
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Management.Automation.PSObject
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Install-MtPack](https://maester.dev/docs/commands/Install-MtPack)

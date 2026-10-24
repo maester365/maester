@@ -102,15 +102,32 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.5.3.4](./CIS.M365.5.3.4.md) | (L1) Ensure approval is required for Global Administrator role activation | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.5.3.5](./CIS.M365.5.3.5.md) | (L1) Ensure approval is required for Privileged Role Administrator activation | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3.md) | (L2) Ensure additional storage providers are restricted in Outlook on the web | Medium | Exchange Online | Outlook |
+| [CIS.M365.7.2.1](./CIS.M365.7.2.1.md) | (L1) Ensure modern authentication for SharePoint applications is required | Medium | SharePoint | Access control |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2.md) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.3](./CIS.M365.7.2.3.md) | (L1) Ensure external content sharing is restricted | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.4](./CIS.M365.7.2.4.md) | (L2) Ensure OneDrive content sharing is restricted | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.5](./CIS.M365.7.2.5.md) | (L2) Ensure that SharePoint guest users cannot share items they don't own | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.6](./CIS.M365.7.2.6.md) | (L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.7](./CIS.M365.7.2.7.md) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | Medium | SharePoint | Sharing links |
+| [CIS.M365.7.2.8](./CIS.M365.7.2.8.md) | (L2) Ensure external sharing is restricted by security group | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9.md) | (L1) Ensure guest access to a site or OneDrive will expire automatically | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.10](./CIS.M365.7.2.10.md) | (L1) Ensure reauthentication with verification code is restricted | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11.md) | (L1) Ensure the SharePoint default sharing link permission is set | Medium | SharePoint | Sharing links |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1.md) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | Medium | SharePoint | Access control |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1.md) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | Medium | Teams | File sharing |
+| [CIS.M365.8.1.2](./CIS.M365.8.1.2.md) | (L1) Ensure users can't send emails to a channel email address | Medium | Teams | Messaging |
+| [CIS.M365.8.2.1](./CIS.M365.8.2.1.md) | (L2) Ensure external domains are restricted in the Teams admin center | Medium | Teams | External access |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2.md) | (L1) Ensure communication with unmanaged Teams users is disabled | Medium | Teams | External access |
 | [CIS.M365.8.2.3](./CIS.M365.8.2.3.md) | (L1) Ensure external Teams users cannot initiate conversations | Medium | Teams | External access |
+| [CIS.M365.8.2.4](./CIS.M365.8.2.4.md) | (L1) Ensure the organization cannot communicate with accounts in trial Teams tenants | Medium | Teams | External access |
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1.md) | (L1) Ensure app permission policies are configured | Medium | Teams | Apps |
+| [CIS.M365.8.5.1](./CIS.M365.8.5.1.md) | (L2) Ensure anonymous users can't join a meeting | Medium | Teams | Meetings |
+| [CIS.M365.8.5.2](./CIS.M365.8.5.2.md) | (L1) Ensure anonymous users and dial-in callers can't start a meeting | Medium | Teams | Meetings |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3.md) | (L1) Ensure only people in my org can bypass the lobby | Medium | Teams | Meetings |
+| [CIS.M365.8.5.4](./CIS.M365.8.5.4.md) | (L1) Ensure users dialing in can't bypass the lobby | Medium | Teams | Meetings |
+| [CIS.M365.8.5.5](./CIS.M365.8.5.5.md) | (L2) Ensure meeting chat does not allow anonymous users | Medium | Teams | Meetings |
+| [CIS.M365.8.5.6](./CIS.M365.8.5.6.md) | (L2) Ensure only organizers and co-organizers can present | Low | Teams | Meetings |
+| [CIS.M365.8.5.7](./CIS.M365.8.5.7.md) | (L1) Ensure external participants can't give or request control | Medium | Teams | Meetings |
+| [CIS.M365.8.5.8](./CIS.M365.8.5.8.md) | (L2) Ensure external meeting chat is off | Medium | Teams | Meetings |
+| [CIS.M365.8.5.9](./CIS.M365.8.5.9.md) | (L2) Ensure meeting recording is off by default | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1.md) | (L1) Ensure users can report security concerns in Teams | Medium | Teams | Messaging |
