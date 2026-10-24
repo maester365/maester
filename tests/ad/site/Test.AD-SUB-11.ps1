@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetWithoutSiteCount {
+function Test-MtAdSubnetWithoutSiteCount {
     <#
     .SYNOPSIS
     Counts the number of subnets without site associations.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

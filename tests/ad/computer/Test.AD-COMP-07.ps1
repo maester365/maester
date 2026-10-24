@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerOUCount {
+function Test-MtAdComputerOUCount {
     <#
     .SYNOPSIS
     Counts the distinct organizational units (OUs) containing computer objects.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

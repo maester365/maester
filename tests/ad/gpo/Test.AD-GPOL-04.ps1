@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoEnforcedCount {
+function Test-MtAdGpoEnforcedCount {
     <#
     .SYNOPSIS
     Counts enforced GPO links (links that block inheritance).
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

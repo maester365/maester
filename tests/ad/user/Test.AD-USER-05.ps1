@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserDelegationAllowedCount {
+function Test-MtAdUserDelegationAllowedCount {
     <#
     .SYNOPSIS
     Counts user accounts that are trusted for Kerberos delegation.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

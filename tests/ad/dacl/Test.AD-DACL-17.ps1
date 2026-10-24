@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclInheritedObjectTypeCount {
+function Test-MtAdDaclInheritedObjectTypeCount {
     <#
     .SYNOPSIS
     Counts inherited object types referenced by Active Directory DACL entries.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

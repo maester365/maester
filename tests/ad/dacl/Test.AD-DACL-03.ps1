@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclConflictObjectCount {
+function Test-MtAdDaclConflictObjectCount {
     <#
     .SYNOPSIS
     Counts conflict objects represented in DACL data.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdOuEmptyCount {
+function Test-MtAdOuEmptyCount {
     <#
     .SYNOPSIS
     Counts the number of empty Organizational Units (OUs without users, groups, or computers) in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:organizationalUnit:ReadProperty', 'ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

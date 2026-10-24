@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetFirstTwoOctetsCount {
+function Test-MtAdSubnetFirstTwoOctetsCount {
     <#
     .SYNOPSIS
     Counts the distinct first two octets (/16 networks) used in IPv4 subnets.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

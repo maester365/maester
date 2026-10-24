@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerSidHistoryCount {
+function Test-MtAdComputerSidHistoryCount {
     <#
     .SYNOPSIS
     Counts computers with SID History set.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

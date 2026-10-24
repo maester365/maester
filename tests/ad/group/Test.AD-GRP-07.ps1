@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupSecurityCount {
+function Test-MtAdGroupSecurityCount {
     <#
     .SYNOPSIS
     Counts the number of security groups in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

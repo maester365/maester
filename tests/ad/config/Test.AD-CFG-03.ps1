@@ -1,4 +1,4 @@
-﻿function Test-MtAdSpnMappings {
+function Test-MtAdSpnMappings {
     <#
     .SYNOPSIS
     Returns Active Directory SPN mappings from configuration.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

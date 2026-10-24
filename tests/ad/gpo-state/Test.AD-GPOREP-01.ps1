@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoPermissionsCount {
+function Test-MtAdGpoNoPermissionsCount {
     <#
     .SYNOPSIS
     Counts Group Policy Objects (GPOs) with missing permissions.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

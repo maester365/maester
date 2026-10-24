@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetFirstThreeOctetsCount {
+function Test-MtAdSubnetFirstThreeOctetsCount {
     <#
     .SYNOPSIS
     Counts the distinct first three octets (/24 networks) used in IPv4 subnets.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

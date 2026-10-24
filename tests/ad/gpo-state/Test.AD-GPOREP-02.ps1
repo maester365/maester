@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoPermissionsDetails {
+function Test-MtAdGpoNoPermissionsDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports missing permissions.
@@ -29,6 +29,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

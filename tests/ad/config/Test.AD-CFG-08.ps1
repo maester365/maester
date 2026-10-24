@@ -1,4 +1,4 @@
-﻿function Test-MtAdAuthNPolicyConfigCount {
+function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
     Counts Active Directory AuthN policy containers.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

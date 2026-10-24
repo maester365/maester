@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsDnssecRecordCount {
+function Test-MtAdDnsDnssecRecordCount {
     <#
     .SYNOPSIS
     Counts DNSSEC (DNS Security Extensions) trust anchor records.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

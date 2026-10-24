@@ -1,4 +1,4 @@
-﻿function Test-MtAdForestFunctionalLevel {
+function Test-MtAdForestFunctionalLevel {
     <#
     .SYNOPSIS
     Retrieves the current forest functional level.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

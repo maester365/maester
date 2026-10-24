@@ -1,4 +1,4 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
+<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     <#
     .SYNOPSIS
@@ -29,6 +29,7 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

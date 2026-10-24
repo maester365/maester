@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcFsmoRoleHolderDetails {
+function Test-MtAdDcFsmoRoleHolderDetails {
     <#
     .SYNOPSIS
     Provides detailed information about FSMO role holders.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

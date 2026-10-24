@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupPrivilegedWithMembersDetails {
+function Test-MtAdGroupPrivilegedWithMembersDetails {
     <#
     .SYNOPSIS
     Details of privileged groups with their member counts in Active Directory.
@@ -36,6 +36,7 @@
         Severity = 'Info',
         Mitre = ('T1098.007', 'T1078.002'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

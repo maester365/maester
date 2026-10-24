@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoLinkedOUCount {
+function Test-MtAdGpoLinkedOUCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units with GPO links in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

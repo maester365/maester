@@ -1,4 +1,4 @@
-﻿function Test-MtAdSiteWithoutDcDetails {
+function Test-MtAdSiteWithoutDcDetails {
     <#
     .SYNOPSIS
     Lists the Active Directory sites without domain controllers.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:site:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

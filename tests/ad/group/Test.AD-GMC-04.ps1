@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberTrustCount {
+function Test-MtAdGroupMemberTrustCount {
     <#
     .SYNOPSIS
     Counts the trust members in Active Directory groups.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

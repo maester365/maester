@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserWorkstationRestrictionCount {
+function Test-MtAdUserWorkstationRestrictionCount {
     <#
     .SYNOPSIS
     Counts user accounts with logon workstation restrictions configured.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

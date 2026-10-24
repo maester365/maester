@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclPrivilegedExtendedRightDetails {
+function Test-MtAdDaclPrivilegedExtendedRightDetails {
     <#
     .SYNOPSIS
     Returns a breakdown of ExtendedRight allow ACEs by ObjectType.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

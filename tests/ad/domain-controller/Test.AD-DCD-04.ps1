@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcNonGlobalCatalogCount {
+function Test-MtAdDcNonGlobalCatalogCount {
     <#
     .SYNOPSIS
     Counts domain controllers that are not configured as Global Catalogs.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

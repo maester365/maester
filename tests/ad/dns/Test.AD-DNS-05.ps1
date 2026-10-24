@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsDynamicRecordCount {
+function Test-MtAdDnsDynamicRecordCount {
     <#
     .SYNOPSIS
     Counts the number of dynamic DNS records in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

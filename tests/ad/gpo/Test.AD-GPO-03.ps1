@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoChangedBefore2020Count {
+function Test-MtAdGpoChangedBefore2020Count {
     <#
     .SYNOPSIS
     Counts Group Policy Objects (GPOs) last changed before 2020.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

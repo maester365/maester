@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerSpnUnknownDetails {
+function Test-MtAdComputerSpnUnknownDetails {
     <#
     .SYNOPSIS
     Provides detailed information about unidentified SPN service classes on computer accounts.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

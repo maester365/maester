@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoUnlinkedTargetCount {
+function Test-MtAdGpoUnlinkedTargetCount {
     <#
     .SYNOPSIS
     Counts AD targets (OUs, domains, sites) that do not have any GPO links.
@@ -31,6 +31,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

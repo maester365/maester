@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserKnownServiceAccountCount {
+function Test-MtAdUserKnownServiceAccountCount {
     <#
     .SYNOPSIS
     Counts users that match known service account naming patterns.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

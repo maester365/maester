@@ -1,4 +1,4 @@
-﻿function Test-MtAdSpnSuffixesCount {
+function Test-MtAdSpnSuffixesCount {
     <#
     .SYNOPSIS
     Retrieves the count of SPN (Service Principal Name) suffixes configured in the forest.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

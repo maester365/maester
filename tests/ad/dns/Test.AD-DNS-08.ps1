@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsZoneDelegationCount {
+function Test-MtAdDnsZoneDelegationCount {
     <#
     .SYNOPSIS
     Counts the number of DNS zone delegations in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

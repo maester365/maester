@@ -1,4 +1,4 @@
-﻿function Test-MtAdDomainNameStandardCompliance {
+function Test-MtAdDomainNameStandardCompliance {
     <#
     .SYNOPSIS
     Checks if domain names comply with RFC standards.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

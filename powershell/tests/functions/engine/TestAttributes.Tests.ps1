@@ -280,13 +280,13 @@ Describe 'Reader: Mitre, Control and Permission' {
     }
 
     It 'Reads Permission as one permission per element' {
-        $t = Read-Attribute "Permission = ('Policy.Read.All', 'View-Only Configuration')"
+        $t = Read-Attribute "Permission = ('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration')"
         $t.Errors | Should -HaveCount 0
-        $t.Permission | Should -Be @('Policy.Read.All', 'View-Only Configuration')
+        $t.Permission | Should -Be @('Graph:Scope:Policy.Read.All', 'ExchangeOnline:Role:View-Only Configuration')
     }
 
     It 'Rejects <Case> as a Permission value' -ForEach @(
-        @{ Case = 'two permissions in one element'; Value = 'Policy.Read.All, User.Read.All' }
+        @{ Case = 'two permissions in one element'; Value = 'Graph:Scope:Policy.Read.All, Graph:Scope:User.Read.All' }
         @{ Case = 'a blank'; Value = ' ' }
     ) {
         (Read-Attribute "Permission = '$Value'").Errors.Code | Should -Contain 'InvalidMetadata'
@@ -407,7 +407,7 @@ Describe "Contoso baseline" -Tag "Contoso", "Preview" {
 Describe 'Typed selectors and default exclusions' {
     BeforeAll {
         $script:selectFolder = Join-Path $TestDrive 'select'
-        $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Policy.Read.All', Tag = 'baseline'"
+        $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.1' -Attribute "Product = 'entra', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Graph:Scope:Policy.Read.All', Tag = 'baseline'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.2' -Attribute "Product = 'exchange', RelatedProduct = 'entra', Feature = 'mail-flow', Area = 'email-protection', Severity = 'Low'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.3' -Attribute "Product = 'Contoso CRM', Feature = 'Billing', Severity = 'Medium', Tag = 'finance'"
         $null = New-AttributeTestFile -Folder $script:selectFolder -Id 'SEL.4' -Attribute "Severity = 'High', Lifecycle = 'Preview', Tag = 'finance'"
@@ -634,7 +634,7 @@ Describe 'Selecting with Maester 2.x tags' {
 Describe 'Rows, Taxonomy and warnings of a run' {
     BeforeAll {
         $script:runFolder = Join-Path $TestDrive 'run/Custom'
-        $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.1' -Attribute "Product = 'Entra ID', RelatedProduct = 'EXO', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Policy.Read.All', Lifecycle = 'Deprecated', ReplacedBy = 'ROW.2', Tag = ('baseline', 'ROW.1')"
+        $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.1' -Attribute "Product = 'Entra ID', RelatedProduct = 'EXO', Feature = 'conditional-access', Area = 'authentication', ResourceType = 'Tenant', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Low', Mitre = ('T1110', 'T1078.004'), Control = 'nist-800-53-r5:IA-2', Permission = 'Graph:Scope:Policy.Read.All', Lifecycle = 'Deprecated', ReplacedBy = 'ROW.2', Tag = ('baseline', 'ROW.1')"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.2' -Attribute "Product = 'Contoso CRM', Feature = 'Billing', Area = 'finance', ResourceType = 'Invoice', Severity = 'Low', Mitre = 'None'"
         $null = New-AttributeTestFile -Folder $script:runFolder -Id 'ROW.3' -Attribute "Severity = 'Low', Lifecycle = 'Preview'"
         @{ Id = 'CONTOSO'; Name = 'Contoso checks'; Source = 'Custom'; Tags = @('contoso-suite') } | ConvertTo-Json | Set-Content (Join-Path $script:runFolder 'suite.json')
@@ -692,7 +692,7 @@ Describe 'Rows, Taxonomy and warnings of a run' {
         $row.Control | Should -Be @('nist-800-53-r5:IA-2')
         $row.Lifecycle | Should -Be 'Deprecated'
         $row.ReplacedBy | Should -Be 'ROW.2'
-        $row.Permission | Should -Be @('Policy.Read.All')
+        $row.Permission | Should -Be @('Graph:Scope:Policy.Read.All')
         $row.Block | Should -Be 'Entra ID'
         $row.Suite | Should -Be 'CONTOSO'
     }

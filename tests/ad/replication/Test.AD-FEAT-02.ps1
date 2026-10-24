@@ -1,4 +1,4 @@
-﻿function Test-MtAdOptionalFeatureEnabledDetails {
+function Test-MtAdOptionalFeatureEnabledDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about enabled Active Directory optional features.
@@ -32,6 +32,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

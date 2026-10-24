@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserKerberosDesOnlyCount {
+function Test-MtAdUserKerberosDesOnlyCount {
     <#
     .SYNOPSIS
     Counts user accounts configured to use DES-only Kerberos encryption.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'T1558',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

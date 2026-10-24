@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclDistinctObjectCount {
+function Test-MtAdDaclDistinctObjectCount {
     <#
     .SYNOPSIS
     Counts distinct Active Directory objects that have DACL entries.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustStaleCount {
+function Test-MtAdTrustStaleCount {
     <#
     .SYNOPSIS
     Counts the number of stale trusts in Active Directory (trusts not validated for >60 days).
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

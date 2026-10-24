@@ -1,4 +1,4 @@
-﻿function Test-MtAdNonAutoReplicationConnectionCount {
+function Test-MtAdNonAutoReplicationConnectionCount {
     <#
     .SYNOPSIS
     Checks for non-auto-generated Active Directory replication connections.
@@ -34,6 +34,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSConnection:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

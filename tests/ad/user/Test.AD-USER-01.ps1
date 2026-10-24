@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserDisabledCount {
+function Test-MtAdUserDisabledCount {
     <#
     .SYNOPSIS
     Counts the number of disabled user objects in Active Directory.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

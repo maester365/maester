@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclPrivilegedExtendedRightCount {
+function Test-MtAdDaclPrivilegedExtendedRightCount {
     <#
     .SYNOPSIS
     Counts allow ACEs that grant the ExtendedRight permission.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

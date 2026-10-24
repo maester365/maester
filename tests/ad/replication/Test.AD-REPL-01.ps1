@@ -1,4 +1,4 @@
-﻿function Test-MtAdDisabledReplicationConnectionCount {
+function Test-MtAdDisabledReplicationConnectionCount {
     <#
     .SYNOPSIS
     Checks for disabled Active Directory replication connections.
@@ -34,6 +34,7 @@
         ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSConnection:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdRootDseSynchronizedStatus {
+function Test-MtAdRootDseSynchronizedStatus {
     <#
     .SYNOPSIS
     Checks the Root DSE synchronization status.
@@ -38,6 +38,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

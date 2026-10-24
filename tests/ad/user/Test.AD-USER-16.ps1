@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserHomeDirectoryCount {
+function Test-MtAdUserHomeDirectoryCount {
     <#
     .SYNOPSIS
     Counts users with a home directory configured in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

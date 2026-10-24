@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoDenyAceDetails {
+function Test-MtAdGpoDenyAceDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports that include a Deny ACE.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

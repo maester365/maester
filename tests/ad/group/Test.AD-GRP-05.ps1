@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupSidHistoryCount {
+function Test-MtAdGroupSidHistoryCount {
     <#
     .SYNOPSIS
     Counts groups with SID History set in Active Directory.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnServiceClassUsage {
+function Test-MtAdUserSpnServiceClassUsage {
     <#
     .SYNOPSIS
     Provides a breakdown of SPN service class usage across user accounts.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

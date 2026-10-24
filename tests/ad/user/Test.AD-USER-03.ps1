@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserPasswordNeverExpiresCount {
+function Test-MtAdUserPasswordNeverExpiresCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts with passwords set to never expire.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

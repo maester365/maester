@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclConflictObjectDetails {
+function Test-MtAdDaclConflictObjectDetails {
     <#
     .SYNOPSIS
     Returns detailed information for conflict objects represented in DACL data.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

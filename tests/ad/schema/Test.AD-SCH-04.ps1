@@ -1,4 +1,4 @@
-﻿function Test-MtAdSchemaVersionDetails {
+function Test-MtAdSchemaVersionDetails {
     <#
     .SYNOPSIS
     Provides detailed Active Directory schema version information.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Schema/*.objectVersion:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

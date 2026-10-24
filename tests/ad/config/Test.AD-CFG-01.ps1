@@ -1,4 +1,4 @@
-﻿function Test-MtAdTombstoneLifetimeConfig {
+function Test-MtAdTombstoneLifetimeConfig {
     <#
     .SYNOPSIS
     Returns the Active Directory tombstone lifetime configuration.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

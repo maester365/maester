@@ -1,4 +1,4 @@
-﻿function Test-MtAdManagedServiceAccountCount {
+function Test-MtAdManagedServiceAccountCount {
     <#
     .SYNOPSIS
     Counts managed service accounts (MSAs) in the domain.
@@ -34,6 +34,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

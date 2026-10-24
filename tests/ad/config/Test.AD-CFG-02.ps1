@@ -1,4 +1,4 @@
-﻿function Test-MtAdDsHeuristicsCount {
+function Test-MtAdDsHeuristicsCount {
     <#
     .SYNOPSIS
     Counts Active Directory dSHeuristics configuration settings.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

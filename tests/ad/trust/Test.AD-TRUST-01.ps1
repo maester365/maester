@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustTotalCount {
+function Test-MtAdTrustTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Active Directory trusts.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserScriptPathCount {
+function Test-MtAdUserScriptPathCount {
     <#
     .SYNOPSIS
     Counts users with a logon script configured in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1037.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

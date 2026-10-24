@@ -1,4 +1,4 @@
-﻿function Test-MtAdTrustQuarantinedCount {
+function Test-MtAdTrustQuarantinedCount {
     <#
     .SYNOPSIS
     Counts the number of trusts with strong SID filtering in Active Directory.
@@ -31,6 +31,7 @@
         Severity = 'Info',
         Mitre = 'T1134.005',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

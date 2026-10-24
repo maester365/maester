@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoAuthenticatedUsersDetails {
+function Test-MtAdGpoNoAuthenticatedUsersDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports without Authenticated Users.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

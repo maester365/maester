@@ -1,4 +1,4 @@
-﻿function Test-MtAdSchemaVersionEntryCount {
+function Test-MtAdSchemaVersionEntryCount {
     <#
     .SYNOPSIS
     Counts the number of schema version entries in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Schema/*.objectVersion:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

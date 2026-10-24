@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupMemberTrustDetails {
+function Test-MtAdGroupMemberTrustDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of trust members by group in Active Directory.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

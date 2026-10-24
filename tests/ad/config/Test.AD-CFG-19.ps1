@@ -1,4 +1,4 @@
-﻿function Test-MtAdIntermediateCaDetails {
+function Test-MtAdIntermediateCaDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about intermediate certificate authorities.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

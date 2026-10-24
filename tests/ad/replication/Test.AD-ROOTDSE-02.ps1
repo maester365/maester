@@ -1,4 +1,4 @@
-﻿function Test-MtAdSupportedSaslMechanismDetails {
+function Test-MtAdSupportedSaslMechanismDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about supported SASL mechanisms.
@@ -38,6 +38,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

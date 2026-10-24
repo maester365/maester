@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoTotalCount {
+function Test-MtAdGpoTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Group Policy Objects in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

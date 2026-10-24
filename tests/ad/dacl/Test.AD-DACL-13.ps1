@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclPrivilegedExtendedRightIdentity {
+function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     <#
     .SYNOPSIS
     Returns identities with privileged extended rights in Active Directory DACLs.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

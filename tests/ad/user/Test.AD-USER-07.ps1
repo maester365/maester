@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserNoPreAuthCount {
+function Test-MtAdUserNoPreAuthCount {
     <#
     .SYNOPSIS
     Counts user accounts that do not require Kerberos pre-authentication.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'T1558.004',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

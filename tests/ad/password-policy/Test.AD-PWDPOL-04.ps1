@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordComplexityRequired {
+function Test-MtAdPasswordComplexityRequired {
     <#
     .SYNOPSIS
     Checks that password complexity is enabled in the default domain password policy.
@@ -29,6 +29,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

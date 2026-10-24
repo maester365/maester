@@ -1,4 +1,4 @@
-﻿function Test-MtAdDomainControllerCount {
+function Test-MtAdDomainControllerCount {
     <#
     .SYNOPSIS
     Counts the number of domain controllers in the domain.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.name:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

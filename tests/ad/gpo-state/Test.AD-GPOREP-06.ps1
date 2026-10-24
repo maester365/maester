@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoDomainComputersCount {
+function Test-MtAdGpoNoDomainComputersCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Domain Computers.
@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupUniversalCount {
+function Test-MtAdGroupUniversalCount {
     <#
     .SYNOPSIS
     Counts the number of universal groups in Active Directory.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

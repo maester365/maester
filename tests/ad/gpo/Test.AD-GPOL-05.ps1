@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoBlockedInheritanceCount {
+function Test-MtAdGpoBlockedInheritanceCount {
     <#
     .SYNOPSIS
     Counts targets blocking GPO inheritance.
@@ -35,6 +35,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserKnownServiceAccountDetails {
+function Test-MtAdUserKnownServiceAccountDetails {
     <#
     .SYNOPSIS
     Returns details for users matching known service account naming patterns.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

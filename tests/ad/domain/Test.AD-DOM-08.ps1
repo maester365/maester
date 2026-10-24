@@ -1,4 +1,4 @@
-﻿function Test-MtAdNetbiosNameNonStandardDetails {
+function Test-MtAdNetbiosNameNonStandardDetails {
     <#
     .SYNOPSIS
     Lists details of NetBIOS names that don't comply with naming standards.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

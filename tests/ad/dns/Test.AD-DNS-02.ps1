@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsZonesWithOnlySoaNs {
+function Test-MtAdDnsZonesWithOnlySoaNs {
     <#
     .SYNOPSIS
     Counts DNS zones that contain only SOA and NS records.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

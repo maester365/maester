@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserBuiltInAdminEnabledDetails {
+function Test-MtAdUserBuiltInAdminEnabledDetails {
     <#
     .SYNOPSIS
     Returns enabled built-in administrator style user details.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

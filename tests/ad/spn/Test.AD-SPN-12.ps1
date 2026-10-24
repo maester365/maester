@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnDomainAdminCount {
+function Test-MtAdUserSpnDomainAdminCount {
     <#
     .SYNOPSIS
     Counts SPNs configured on domain administrator accounts.
@@ -30,6 +30,7 @@
         Mitre = 'T1558.003',
         Control = ('nist-800-53-r5:AC-6(5)', 'nist-800-53-r5:IA-5'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

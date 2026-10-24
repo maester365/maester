@@ -1,4 +1,4 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
+<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoWmiFilterDetails {
     <#
     .SYNOPSIS
@@ -28,6 +28,7 @@ function Test-MtAdGpoWmiFilterDetails {
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

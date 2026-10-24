@@ -1,4 +1,4 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
+<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoSettingsDisabledCount {
     <#
     .SYNOPSIS
@@ -33,6 +33,7 @@ function Test-MtAdGpoSettingsDisabledCount {
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

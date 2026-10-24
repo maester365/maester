@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerPerOUAverage {
+function Test-MtAdComputerPerOUAverage {
     <#
     .SYNOPSIS
     Calculates the average number of computers per organizational unit.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

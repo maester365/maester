@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserDormantEnabledCount {
+function Test-MtAdUserDormantEnabledCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts that have been dormant for more than 90 days.
@@ -25,6 +25,7 @@
         Mitre = 'T1078.002',
         Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdSchemaModificationYearCount {
+function Test-MtAdSchemaModificationYearCount {
     <#
     .SYNOPSIS
     Counts the number of years with Active Directory schema modifications.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Schema/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

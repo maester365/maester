@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerNonStandardGroup {
+function Test-MtAdComputerNonStandardGroup {
     <#
     .SYNOPSIS
     Counts computers with non-standard primary group IDs.
@@ -32,6 +32,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

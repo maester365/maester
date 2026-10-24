@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsZonesWithRecordsCount {
+function Test-MtAdDnsZonesWithRecordsCount {
     <#
     .SYNOPSIS
     Counts DNS zones that contain non-default records.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdNetbiosNameStandardCompliance {
+function Test-MtAdNetbiosNameStandardCompliance {
     <#
     .SYNOPSIS
     Checks if NetBIOS names comply with naming standards.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

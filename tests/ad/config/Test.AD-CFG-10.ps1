@@ -1,4 +1,4 @@
-﻿function Test-MtAdWellKnownSecurityPrincipalsCount {
+function Test-MtAdWellKnownSecurityPrincipalsCount {
     <#
     .SYNOPSIS
     Counts the number of well-known security principal objects in Active Directory.
@@ -24,6 +24,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

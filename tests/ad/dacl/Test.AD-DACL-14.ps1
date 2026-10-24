@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclNonInheritedAceCount {
+function Test-MtAdDaclNonInheritedAceCount {
     <#
     .SYNOPSIS
     Counts non-inherited ACEs in Active Directory DACLs.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

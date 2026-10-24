@@ -1,4 +1,4 @@
-﻿function Test-MtAdPasswordHistoryCount {
+function Test-MtAdPasswordHistoryCount {
     <#
     .SYNOPSIS
     Checks the password history count configured in the default domain password policy.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1110.004',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

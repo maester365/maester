@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsAdSrvRecordDetails {
+function Test-MtAdDnsAdSrvRecordDetails {
     <#
     .SYNOPSIS
     Provides detailed information about Active Directory Domain Services SRV records.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

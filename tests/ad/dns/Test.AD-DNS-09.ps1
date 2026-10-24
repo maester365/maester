@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsZoneDelegationDetails {
+function Test-MtAdDnsZoneDelegationDetails {
     <#
     .SYNOPSIS
     Provides detailed information about DNS zone delegations.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

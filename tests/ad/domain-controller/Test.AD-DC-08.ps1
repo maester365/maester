@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcOperatingSystemDetails {
+function Test-MtAdDcOperatingSystemDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of operating systems on domain controllers.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcNonStandardLdapsPortCount {
+function Test-MtAdDcNonStandardLdapsPortCount {
     <#
     .SYNOPSIS
     Counts domain controllers using non-standard LDAPS ports.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

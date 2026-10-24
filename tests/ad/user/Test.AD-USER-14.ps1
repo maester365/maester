@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnSetCount {
+function Test-MtAdUserSpnSetCount {
     <#
     .SYNOPSIS
     Counts users with SPNs configured in Active Directory.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

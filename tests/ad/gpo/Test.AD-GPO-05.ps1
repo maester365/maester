@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoUnlinkedDetails {
+function Test-MtAdGpoUnlinkedDetails {
     <#
     .SYNOPSIS
     Returns details of unlinked Group Policy Objects (GPOs) in Active Directory.
@@ -32,6 +32,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdOuEmptyDetails {
+function Test-MtAdOuEmptyDetails {
     <#
     .SYNOPSIS
     Provides detailed information about empty Organizational Units in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:organizationalUnit:ReadProperty', 'ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDcSiteCoverageCount {
+function Test-MtAdDcSiteCoverageCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory sites with domain controllers.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:site:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

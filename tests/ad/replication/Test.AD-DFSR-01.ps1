@@ -1,4 +1,4 @@
-﻿function Test-MtAdDfsrSubscriptionCount {
+function Test-MtAdDfsrSubscriptionCount {
     <#
     .SYNOPSIS
     Retrieves the count of DFS-R subscriptions for SYSVOL replication.
@@ -39,6 +39,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

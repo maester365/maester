@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsZoneRecordDetails {
+function Test-MtAdDnsZoneRecordDetails {
     <#
     .SYNOPSIS
     Provides detailed record count information for each DNS zone.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

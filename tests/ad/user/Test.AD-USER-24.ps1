@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserBuiltInAdminLastLogonDetails {
+function Test-MtAdUserBuiltInAdminLastLogonDetails {
     <#
     .SYNOPSIS
     Returns last logon details for built-in administrator style accounts.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

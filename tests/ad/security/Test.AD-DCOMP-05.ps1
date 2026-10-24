@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerOperatingSystemDetails {
+function Test-MtAdComputerOperatingSystemDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of computers by operating system and service pack.
@@ -34,6 +34,7 @@
         Mitre = 'None',
         Control = 'nist-800-53-r5:CM-8',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoAuthenticatedUsersCount {
+function Test-MtAdGpoNoAuthenticatedUsersCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Authenticated Users.
@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

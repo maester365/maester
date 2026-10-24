@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDnsZoneCount {
+function Test-MtAdComputerDnsZoneCount {
     <#
     .SYNOPSIS
     Counts unique DNS zones used by domain computers.
@@ -32,6 +32,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

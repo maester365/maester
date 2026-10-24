@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserHoneyPotDetails {
+function Test-MtAdUserHoneyPotDetails {
     <#
     .SYNOPSIS
     Returns details for potential honey pot style user accounts.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

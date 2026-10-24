@@ -1,4 +1,4 @@
-﻿function Test-MtAdKrbtgtLastLogon {
+function Test-MtAdKrbtgtLastLogon {
     <#
     .SYNOPSIS
     Checks the KRBTGT account last logon time.
@@ -31,6 +31,7 @@
         Severity = 'Info',
         Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

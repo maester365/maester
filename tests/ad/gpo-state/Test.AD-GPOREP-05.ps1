@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoNoEnterpriseDcCount {
+function Test-MtAdGpoNoEnterpriseDcCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Enterprise Domain Controllers.
@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdSubnetSiteAssociationCount {
+function Test-MtAdSubnetSiteAssociationCount {
     <#
     .SYNOPSIS
     Counts the number of sites that have subnet associations.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:site:ReadProperty', 'ActiveDirectory:Ldap:subnet:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

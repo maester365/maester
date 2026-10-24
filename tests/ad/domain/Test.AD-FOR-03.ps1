@@ -1,4 +1,4 @@
-﻿function Test-MtAdTombstoneLifetime {
+function Test-MtAdTombstoneLifetime {
     <#
     .SYNOPSIS
     Retrieves the tombstone lifetime in days.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty', 'ActiveDirectory:Ldap:crossRef:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclOuObjectCount {
+function Test-MtAdDaclOuObjectCount {
     <#
     .SYNOPSIS
     Counts DACL entries on Organizational Unit objects.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

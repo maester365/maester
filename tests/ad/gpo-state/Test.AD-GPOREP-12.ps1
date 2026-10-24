@@ -1,4 +1,4 @@
-﻿function Test-MtCheckADGPOREP12 {
+function Test-MtCheckADGPOREP12 {
     <#
     .SYNOPSIS
     GPO disabled link count should be retrievable
@@ -16,6 +16,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

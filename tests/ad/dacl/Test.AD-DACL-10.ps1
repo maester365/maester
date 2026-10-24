@@ -1,4 +1,4 @@
-﻿function Test-MtAdDaclPrivilegedAllowAceDetails {
+function Test-MtAdDaclPrivilegedAllowAceDetails {
     <#
     .SYNOPSIS
     Returns details for privileged allow ACEs in collected DACL data.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdDnsRootServerIncorrectDetails {
+function Test-MtAdDnsRootServerIncorrectDetails {
     <#
     .SYNOPSIS
     Provides detailed information about root DNS servers with incorrect IP addresses.
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\DNS:MicrosoftDNS_Zone:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

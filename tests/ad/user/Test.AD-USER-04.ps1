@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserReversibleEncryptionCount {
+function Test-MtAdUserReversibleEncryptionCount {
     <#
     .SYNOPSIS
     Counts user accounts configured to allow reversible password encryption.
@@ -25,6 +25,7 @@
         Severity = 'Info',
         Mitre = 'T1556.005',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

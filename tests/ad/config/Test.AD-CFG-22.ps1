@@ -1,4 +1,4 @@
-﻿function Test-MtAdKdsRootKeysCount {
+function Test-MtAdKdsRootKeysCount {
     <#
     .SYNOPSIS
     Verifies that exactly one KDS root key exists in Active Directory.
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

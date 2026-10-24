@@ -1,4 +1,4 @@
-﻿function Test-MtAdGpoCreatedBefore2020Count {
+function Test-MtAdGpoCreatedBefore2020Count {
     <#
     .SYNOPSIS
     Counts the number of Group Policy Objects (GPOs) created before 2020 in Active Directory.
@@ -30,6 +30,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

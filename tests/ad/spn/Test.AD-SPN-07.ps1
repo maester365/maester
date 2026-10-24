@@ -1,4 +1,4 @@
-﻿function Test-MtAdUserSpnServiceClassCount {
+function Test-MtAdUserSpnServiceClassCount {
     <#
     .SYNOPSIS
     Counts the distinct SPN service classes in use by user accounts.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1558.003',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

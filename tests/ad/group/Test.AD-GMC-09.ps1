@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupEmptyNonPrivilegedDetails {
+function Test-MtAdGroupEmptyNonPrivilegedDetails {
     <#
     .SYNOPSIS
     Details of empty non-privileged groups in Active Directory.
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

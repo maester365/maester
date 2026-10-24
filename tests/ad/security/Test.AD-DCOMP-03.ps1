@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerNonDcConstrainedDelegationCount {
+function Test-MtAdComputerNonDcConstrainedDelegationCount {
     <#
     .SYNOPSIS
     Counts non-domain controller computers with constrained delegation configured.
@@ -33,6 +33,7 @@
         Severity = 'Info',
         Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

@@ -1,4 +1,4 @@
-﻿function Test-MtAdGroupEmptyNonPrivilegedCount {
+function Test-MtAdGroupEmptyNonPrivilegedCount {
     <#
     .SYNOPSIS
     Counts empty non-privileged groups in Active Directory.
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

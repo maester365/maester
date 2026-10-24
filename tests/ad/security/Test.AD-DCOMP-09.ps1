@@ -1,4 +1,4 @@
-﻿function Test-MtAdComputerDnsZoneDetails {
+function Test-MtAdComputerDnsZoneDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of computers by DNS zone.
@@ -33,6 +33,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
