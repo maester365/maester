@@ -25,7 +25,7 @@ function Install-MtPack {
     A pack that ships with Maester (by ID, such as maester.zero-trust-assessment) needs no approval. Installing it only
     saves and pins the modules it declares.
 
-    For a pack from a public GitHub repository, Maester sends packs.maester.cloud one anonymous event: the
+    For a pack from a public GitHub repository, Maester sends api.maester.dev one anonymous event: the
     pack's source and commit, and a random installation ID. It counts the install and lists the pack. Nothing
     is sent for a private repository or a local folder, or when MAESTER_DISABLE_TELEMETRY is set to 1.
 
