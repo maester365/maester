@@ -61,7 +61,7 @@
     $daclEntries = @($adState.DaclEntries)
     $privilegedAllowEntries = @(
         foreach ($entry in $daclEntries) {
-            if ($entry.AccessControlType -notlike 'AccessAllowed*') {
+            if ($entry.AccessControlType -ne 'Allow') {
                 continue
             }
 
