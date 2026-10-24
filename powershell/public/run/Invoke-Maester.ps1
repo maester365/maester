@@ -484,7 +484,10 @@
             $SkipBuiltIn = [switch]$true
             $testSource = Resolve-MtTestSource -Path $Path -SkipBuiltIn
         }
-        if ($testSource.Error) {
+        # -SkipBuiltIn with no custom tests is fine when the run names packs: their tests are what it runs.
+        $packNamed = -not $SkipPack -and ($Pack -or $AllPacks -or @($runConfig.Selection.Pack | Where-Object { $_ }).Count -gt 0 -or
+            @($TestId | Where-Object { $_ -match '^MP\.[^.]+\.' }).Count -gt 0)
+        if ($testSource.Error -and -not ($testSource.NoCustomTests -and $packNamed)) {
             Write-Error -Message $testSource.Error
             return
         }

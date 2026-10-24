@@ -206,14 +206,24 @@ function Invoke-MtZtaCollection {
 
     $connect = [ordered]@{}
     $context = Get-MgContext
+    $connectSetting = Get-MtSetting -Name 'ZeroTrustAssessment.Connect' -Default $null
     if ($context) {
         if ($context.TenantId) { $connect.TenantId = $context.TenantId }
-        if ([string]$context.AuthType -eq 'AppOnly' -and $context.CertificateThumbprint) {
-            $connect.ClientId = $context.ClientId
-            $connect.Certificate = $context.CertificateThumbprint
+        if ([string]$context.AuthType -eq 'AppOnly') {
+            # Connected with a certificate object, the context names it in Certificate rather than CertificateThumbprint.
+            $thumbprint = [string]$context.CertificateThumbprint
+            if (-not $thumbprint -and $context.PSObject.Properties['Certificate'] -and $context.Certificate) { $thumbprint = [string]$context.Certificate.Thumbprint }
+            if ($thumbprint) {
+                $connect.ClientId = $context.ClientId
+                $connect.Certificate = $thumbprint
+            } elseif (-not $connectSetting) {
+                # Connect-ZtAssessment signs in app-only with a certificate only; without one the child would wait for a person to sign in.
+                Remove-Item -LiteralPath $outputPath -Recurse -Force -ErrorAction SilentlyContinue
+                Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Maester is connected app-only without a certificate (a client secret, a managed identity or workload identity federation), and the Zero Trust Assessment signs in app-only only with a certificate. Connect Maester with a certificate in the certificate store, set ZeroTrustAssessment.Connect, or run Invoke-ZtAssessment as its own step and set ZeroTrustAssessment.ReportPath.'
+                return
+            }
         }
     }
-    $connectSetting = Get-MtSetting -Name 'ZeroTrustAssessment.Connect' -Default $null
     if ($connectSetting) {
         foreach ($property in $connectSetting.PSObject.Properties) { $connect[$property.Name] = $property.Value }
     }

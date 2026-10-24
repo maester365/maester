@@ -281,6 +281,24 @@ function Invoke-ZtAssessment {
             $call.Connect.Certificate | Should -Be 'ABC123'
         }
 
+        It 'signs the child in with the thumbprint of a certificate object Maester was connected with' {
+            function global:Get-MgContext {
+                [pscustomobject]@{ TenantId = '22222222-2222-2222-2222-222222222222'; AuthType = 'AppOnly'; ClientId = 'app-id'; CertificateThumbprint = $null; Certificate = [pscustomobject]@{ Thumbprint = 'DEF456' } }
+            }
+            $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
+            (Get-Content -LiteralPath $script:CallLog -Raw | ConvertFrom-Json).Connect.Certificate | Should -Be 'DEF456'
+        }
+
+        It 'skips the family, rather than wait for a sign-in, when Maester is connected app-only without a certificate' {
+            function global:Get-MgContext {
+                [pscustomobject]@{ TenantId = '22222222-2222-2222-2222-222222222222'; AuthType = 'AppOnly'; ClientId = 'app-id'; CertificateThumbprint = $null }
+            }
+            $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
+            $rows.Count | Should -Be 1
+            $rows[0].Result | Should -Be 'Skipped'
+            $rows[0].ReasonDetail | Should -BeLike '*signs in app-only only with a certificate*'
+        }
+
         It 'deletes a temporary output folder after reading it' {
             $before = @(Get-ChildItem -LiteralPath ([System.IO.Path]::GetTempPath()) -Filter 'maester-zta-*' -ErrorAction SilentlyContinue).Count
             $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }

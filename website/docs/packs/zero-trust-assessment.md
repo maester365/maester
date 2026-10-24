@@ -19,7 +19,23 @@ and `Get-MtPack` lists it.
 
 ## Run it
 
-The pack is a long-running test, so `Invoke-Maester` leaves it out unless you name it:
+Install the assessment's module once, connect Maester to the tenant, then name the pack:
+
+```powershell
+Install-Module ZeroTrustAssessment -Scope CurrentUser
+Connect-Maester
+Invoke-Maester -Pack ZTA -SkipBuiltIn    # only the Zero Trust Assessment
+Invoke-Maester -Pack ZTA                 # Maester's tests and the assessment
+```
+
+You don't run `Connect-ZtAssessment` yourself. The assessment runs in a separate PowerShell process, which can't
+use the sign-ins of your session, so Maester signs in there for you (see
+[Let Maester run the assessment](#let-maester-run-the-assessment)). After an interactive `Connect-Maester` you
+sign in a second time, in the browser, for the assessment. `Connect-Maester` is still needed: it tells the
+assessment which tenant to sign in to, and the pack is skipped while Maester is not connected to Graph. If you
+read a report you already have (below), you run `Connect-ZtAssessment` and `Invoke-ZtAssessment` yourself first.
+
+The pack is a long-running test, so `Invoke-Maester` leaves it out unless you name it. These also run it:
 
 ```powershell
 Invoke-Maester -TestId ZTA          # only the Zero Trust Assessment
@@ -50,6 +66,14 @@ Invoke-ZtAssessment -Path ./zt -NoBrowser
 { "GlobalSettings": { "ZeroTrustAssessment.ReportPath": "./zt" } }
 ```
 
+Then, in a new PowerShell session (the assessment's modules can't share one with Maester's), connect Maester to
+the same tenant and run the pack:
+
+```powershell
+Connect-Maester
+Invoke-Maester -Pack ZTA
+```
+
 `ZeroTrustAssessment.ReportPath` takes the report file (`ZeroTrustAssessmentReport.json`), the folder given to
 `Invoke-ZtAssessment -Path`, or its `zt-export` folder. Maester refuses a report written for another tenant than the
 one it is connected to, and one older than `ZeroTrustAssessment.MaxReportAgeDays` (7 by default; 0 turns the check
@@ -70,7 +94,11 @@ signs in with `Connect-ZtAssessment`:
 - It signs in to the tenant Maester is connected to.
 - When Maester is connected to Graph app-only with a certificate, it uses the same app and certificate. The app
   needs the Graph application permissions that `Get-ZtGraphScope` lists.
-- Otherwise it signs in interactively, so you sign in a second time.
+- When Maester is connected app-only another way (a client secret, a managed identity or workload identity
+  federation), the pack is skipped with the reason: the assessment signs in app-only only with a certificate. See
+  [Run it in a pipeline](#run-it-in-a-pipeline).
+- Otherwise it signs in interactively, so you sign in a second time. Without a browser, for example over SSH, set
+  `ZeroTrustAssessment.Connect` to `{ "UseDeviceCode": true }`.
 
 While it runs, what the assessment writes is shown live: in the full-screen dashboard of an interactive run it
 scrolls in a box in the middle of the screen, under the phases of the run, and in other modes (CI, redirected
@@ -104,6 +132,80 @@ box shows the log only.
 
 The assessment's own report and raw export go to a temporary folder that Maester deletes after reading it, because
 the export holds tenant data. Set `ZeroTrustAssessment.OutputPath` to keep them.
+
+## Run it in a pipeline
+
+In GitHub Actions, Azure DevOps or any other pipeline, nobody is there to sign in, so the assessment signs in
+as a service principal. `Connect-ZtAssessment` signs in app-only only with a certificate, found by thumbprint in
+the certificate store of the computer it runs on. A client secret, a managed identity or workload identity
+federation (the OIDC sign-in in [Maester's GitHub guide](../monitoring/github.md)) is enough for Maester's own
+tests but not for the assessment.
+
+So the pipeline needs:
+
+1. An app registration with a certificate. Give the app the Graph application permissions that
+   `Get-ZtGraphScope` lists (run it after `Import-Module ZeroTrustAssessment`), plus Maester's own permissions if
+   the same run includes Maester's tests. The assessment's Azure, Exchange Online, Security & Compliance and
+   SharePoint tests need the app to have the roles the
+   [Zero Trust Assessment documentation](https://aka.ms/zerotrust/assessment) lists for app-only sign-in; to
+   leave those services out, set `ZeroTrustAssessment.Connect` to `{ "Service": ["Graph"] }`.
+2. The certificate as a PFX file, saved base64-encoded in a pipeline secret with its password.
+3. A step that adds the certificate to the current user's certificate store, connects Maester to Graph with it
+   by thumbprint, and runs the pack. The child process finds the same certificate by its thumbprint.
+
+A GitHub Actions workflow that does this on a schedule, with the secrets `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`,
+`ZTA_CERTIFICATE` (the base64 PFX) and `ZTA_CERTIFICATE_PASSWORD`:
+
+```yaml
+name: Zero Trust Assessment
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  zero-trust:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run the Zero Trust Assessment with Maester
+        shell: pwsh
+        env:
+          TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          CERTIFICATE: ${{ secrets.ZTA_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.ZTA_CERTIFICATE_PASSWORD }}
+        run: |
+          Install-Module Maester, ZeroTrustAssessment -Scope CurrentUser -Force
+
+          # Add the certificate to the current user's store, where the assessment looks for it.
+          $flags = 'PersistKeySet, Exportable'
+          $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
+              [Convert]::FromBase64String($env:CERTIFICATE), $env:CERTIFICATE_PASSWORD, $flags)
+          $store = [System.Security.Cryptography.X509Certificates.X509Store]::new('My', 'CurrentUser')
+          $store.Open('ReadWrite'); $store.Add($cert); $store.Close()
+
+          Connect-MgGraph -ClientId $env:CLIENT_ID -TenantId $env:TENANT_ID -CertificateThumbprint $cert.Thumbprint -NoWelcome
+          Invoke-Maester -Pack ZTA -NonInteractive -OutputFolder ./test-results
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maester-zero-trust
+          path: test-results
+```
+
+The assessment can take an hour or more on a large tenant: keep the job's `timeout-minutes` above that, and raise
+`Execution.LongRunningTimeoutSeconds` in `maester-config.json` if Maester stops it first. On Windows runners the
+same steps work in `pwsh`.
+
+If the assessment runs somewhere else, or you'd rather keep the certificate out of the Maester step, run
+`Connect-ZtAssessment -ClientId <app> -TenantId <tenant> -Certificate <thumbprint>` and
+`Invoke-ZtAssessment -Path ./zt -NoBrowser` as their own step, then let Maester read the report with
+`ZeroTrustAssessment.ReportPath` (see [Read a report you already have](#read-a-report-you-already-have-recommended-in-ci)).
+Maester's step can then connect any way it likes, including OIDC, as long as it is the same tenant.
 
 ## The assessment's own report
 
