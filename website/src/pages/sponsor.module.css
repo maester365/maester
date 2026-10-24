@@ -294,3 +294,130 @@
   margin: 0;
   color: var(--ifm-color-emphasis-700);
 }
+
+/* The page body: the people, and the thank-you to the sponsors in a column on the right. */
+.body {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.withThanks .gridAuthors { grid-template-columns: repeat(3, 1fr); }
+.withThanks .gridContributors { grid-template-columns: repeat(5, 1fr); }
+
+.thanks {
+  flex: 0 0 280px;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+  overflow-y: auto;
+  padding: 1.4rem 1.1rem 1.2rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, var(--sponsor-pink-soft), transparent 160px),
+    var(--ifm-background-surface-color);
+  text-align: center;
+}
+
+.thanks h2 {
+  font-size: 1.05rem;
+  white-space: nowrap;
+  margin-bottom: 0.4rem;
+}
+
+.thanks h2 svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 0.2rem;
+  vertical-align: -1px;
+  fill: var(--sponsor-pink);
+}
+
+.thanksSub {
+  font-size: 0.82rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 1rem;
+}
+
+.backers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.backers li {
+  min-width: 0;
+}
+
+.backers a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.backerAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--ifm-color-emphasis-200);
+  box-shadow: 0 0 0 3px var(--ifm-background-surface-color);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.backerOrg {
+  border-radius: 12px;
+}
+
+.backers a:hover .backerAvatar {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 0 3px var(--sponsor-pink);
+}
+
+.backerName {
+  max-width: 100%;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 996px) {
+  .body {
+    flex-direction: column;
+  }
+
+  .thanks {
+    position: static;
+    flex: none;
+    width: 100%;
+    max-height: none;
+  }
+
+  .backers {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .withThanks .gridAuthors { grid-template-columns: repeat(3, 1fr); }
+  .withThanks .gridContributors { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .withThanks .gridAuthors,
+  .withThanks .gridContributors { grid-template-columns: repeat(2, 1fr); }
+}

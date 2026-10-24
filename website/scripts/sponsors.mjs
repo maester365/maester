@@ -4,7 +4,7 @@
 // primary authors of tests (the Author of a test's [MaesterTest] attribute, from the contributor snapshot
 // at website/src/data/contributors.json) and everyone else who has committed to the repository (GitHub's
 // contributors API). Only people with a Sponsors listing are kept; `sponsorPage: false` in contributors.yml
-// leaves a person out.
+// leaves a person out. The public sponsors of the core maintainers are listed too, to thank them.
 //
 // Whether a person has a listing is only known to GitHub (GraphQL `hasSponsorsListing`), so this needs a
 // token in GH_TOKEN or GITHUB_TOKEN. The .github/workflows/update-sponsors.yaml workflow runs it weekly with
@@ -81,6 +81,47 @@ async function sponsorProfiles(logins) {
   return result;
 }
 
+// The public sponsors of a maintainer, current and past. Private sponsorships are never returned for another
+// account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty.
+async function backersOf(login) {
+  const query = `query ($login: String!, $after: String) {
+    user(login: $login) {
+      sponsorshipsAsMaintainer(first: 100, after: $after, activeOnly: false) {
+        pageInfo { hasNextPage endCursor }
+        nodes {
+          isActive
+          sponsorEntity {
+            __typename
+            ... on User { login name avatarUrl(size: 120) }
+            ... on Organization { login name avatarUrl(size: 120) }
+          }
+        }
+      }
+    }
+  }`;
+  const backers = [];
+  try {
+    for (let after = null; ; ) {
+      const response = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ query, variables: { login, after } }),
+      });
+      if (!response.ok) throw new Error(`${response.status} ${await response.text()}`);
+      const { data, errors } = await response.json();
+      if (errors?.length) throw new Error(errors.map((e) => e.message).join("; "));
+      const page = data?.user?.sponsorshipsAsMaintainer;
+      if (!page) break;
+      for (const node of page.nodes) if (node?.sponsorEntity) backers.push({ ...node.sponsorEntity, isActive: node.isActive });
+      if (!page.pageInfo.hasNextPage) break;
+      after = page.pageInfo.endCursor;
+    }
+  } catch (error) {
+    console.warn(`sponsors: could not read the sponsors of ${login}: ${error.message}`);
+  }
+  return backers;
+}
+
 const registry = existsSync(registryPath) ? loadYamlDocument(readFileSync(registryPath, "utf8")) ?? {} : {};
 const registryEntries = Object.entries(registry);
 const registryFor = (login) => registryEntries.find(([key]) => key.toLowerCase() === login.toLowerCase())?.[1] ?? {};
@@ -133,8 +174,32 @@ const snapshot = {
   contributors: groups.contributors.map(entry).filter(Boolean).sort((a, b) => b.commits - a.commits || byName(a, b)),
 };
 
+// The people and organisations who sponsor (or sponsored) a core maintainer: thanked on the page. One entry
+// each, with the maintainers they sponsor; current sponsors first, then those who sponsor more maintainers.
+const backers = new Map();
+for (const maintainer of snapshot.maintainers) {
+  for (const backer of await backersOf(maintainer.github)) {
+    const key = backer.login.toLowerCase();
+    const known = backers.get(key) ?? {
+      github: backer.login,
+      name: backer.name || backer.login,
+      avatar: backer.avatarUrl,
+      organization: backer.__typename === "Organization",
+      active: false,
+      sponsors: [],
+    };
+    known.active ||= backer.isActive;
+    if (!known.sponsors.includes(maintainer.github)) known.sponsors.push(maintainer.github);
+    backers.set(key, known);
+  }
+}
+snapshot.backers = [...backers.values()].sort(
+  (a, b) => Number(b.active) - Number(a.active) || b.sponsors.length - a.sponsors.length || byName(a, b)
+);
+
 writeFileSync(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
 console.log(
   `sponsors: ${snapshot.maintainers.length} maintainers, ${snapshot.testAuthors.length} test authors, ` +
-    `${snapshot.contributors.length} other contributors with a Sponsors listing (of ${seen.size} people).`
+    `${snapshot.contributors.length} other contributors with a Sponsors listing (of ${seen.size} people); ` +
+    `${snapshot.backers.length} public sponsors of the maintainers.`
 );

@@ -5,7 +5,8 @@ import sponsorData from "@site/src/data/sponsors.json";
 import styles from "./sponsor.module.css";
 
 // Written weekly by website/scripts/sponsors.mjs: only contributors with a GitHub Sponsors listing.
-const { maintainers, testAuthors, contributors } = sponsorData;
+const { maintainers, testAuthors, contributors, backers = [] } = sponsorData;
+const maintainerName = (login) => maintainers.find((m) => m.github === login)?.name.split(" ")[0] ?? login;
 
 const heart = (
   <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -84,6 +85,44 @@ function ContributorCard({ person }) {
   );
 }
 
+function listNames(names) {
+  if (names.length <= 1) return names.join("");
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+}
+
+function Backers() {
+  if (backers.length === 0) return null;
+  return (
+    <aside id="thank-you" className={styles.thanks}>
+      <h2>Thank you to our sponsors {heart}</h2>
+      <p className={styles.thanksSub}>
+        These people and organisations sponsor, or have sponsored, Maester's maintainers. Their support made Maester
+        possible.
+      </p>
+      <ul className={styles.backers}>
+        {backers.map((backer) => (
+          <li key={backer.github}>
+            <a
+              href={`https://github.com/${backer.github}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`${backer.name} sponsors ${listNames(backer.sponsors.map(maintainerName))}`}
+            >
+              <img
+                className={`${styles.backerAvatar} ${backer.organization ? styles.backerOrg : ""}`}
+                src={backer.avatar}
+                alt=""
+                loading="lazy"
+              />
+              <span className={styles.backerName}>{backer.name}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+}
+
 function Section({ id, title, subtitle, people, gridClass, Card }) {
   if (people.length === 0) return null;
   return (
@@ -112,8 +151,8 @@ export default function Sponsor() {
           <h1>Maester runs on sponsorships</h1>
           <p>
             Maester is free and open source. Every test, fix and feature is built by people in the community, most of
-            them in their own time. Sponsoring them is how you keep Maester going: it pays for the hours that go
-            into new tests, keeping up with Microsoft's changes, and answering issues.
+            them in their own time. Sponsoring them is how you keep Maester going: it pays for the hours that go into
+            new tests, keeping up with Microsoft's changes, and answering issues.
           </p>
           <p className={styles.heroNote}>
             Everyone below has GitHub Sponsors turned on. Pick the people whose work you rely on and sponsor them
@@ -121,39 +160,45 @@ export default function Sponsor() {
           </p>
         </header>
 
-        <Section
-          id="maintainers"
-          title="Core maintainers"
-          subtitle="The people who look after Maester day to day: reviews, releases, the engine and the roadmap."
-          people={maintainers}
-          gridClass={styles.gridMaintainers}
-          Card={MaintainerCard}
-        />
-        <Section
-          id="test-authors"
-          title="Test authors"
-          subtitle="The security experts who researched and wrote Maester's tests."
-          people={testAuthors}
-          gridClass={styles.gridAuthors}
-          Card={AuthorCard}
-        />
-        <Section
-          id="contributors"
-          title="Contributors"
-          subtitle="The people who improved the engine, the reports, the docs and everything else."
-          people={contributors}
-          gridClass={styles.gridContributors}
-          Card={ContributorCard}
-        />
+        <div className={`${styles.body} ${backers.length > 0 ? styles.withThanks : ""}`}>
+          <div className={styles.main}>
+            <Section
+              id="maintainers"
+              title="Core maintainers"
+              subtitle="The people who look after Maester day to day: reviews, releases, the engine and the roadmap."
+              people={maintainers}
+              gridClass={styles.gridMaintainers}
+              Card={MaintainerCard}
+            />
+            <Section
+              id="test-authors"
+              title="Test authors"
+              subtitle="The security experts who researched and wrote Maester's tests."
+              people={testAuthors}
+              gridClass={styles.gridAuthors}
+              Card={AuthorCard}
+            />
+            <Section
+              id="contributors"
+              title="Contributors"
+              subtitle="The people who improved the engine, the reports, the docs and everything else."
+              people={contributors}
+              gridClass={styles.gridContributors}
+              Card={ContributorCard}
+            />
+          </div>
+          <Backers />
+        </div>
 
-        {total === 0 && (
-          <p className={styles.empty}>The list of sponsors is refreshed every week. Check back soon.</p>
-        )}
+        {total === 0 && <p className={styles.empty}>The list of sponsors is refreshed every week. Check back soon.</p>}
 
         <section className={styles.cta}>
           <h2>Contributed and not listed?</h2>
           <p>
-            Turn on <a href="https://github.com/sponsors" target="_blank" rel="noopener noreferrer">GitHub Sponsors</a>{" "}
+            Turn on{" "}
+            <a href="https://github.com/sponsors" target="_blank" rel="noopener noreferrer">
+              GitHub Sponsors
+            </a>{" "}
             for your account and you'll show up here after the next weekly refresh. Want to be on this page?{" "}
             <Link to="/docs/contributing">Start contributing</Link>, or meet everyone who has on the{" "}
             <Link to="/contributors">contributors page</Link>.
