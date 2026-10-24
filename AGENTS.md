@@ -121,7 +121,7 @@ Three things enforce this, in order:
 
 ## Labelling pull requests, issues and discussions
 
-Labels follow one rubric so the queue can be filtered by status, area, product and size. The
+Labels follow one rubric so the queue can be filtered by status, type and product. The
 labels are defined in `.github/labels.json`; the rules for choosing them are in
 `.github/skills/maester-triage/SKILL.md`. To triage, use the `maester-triage` agent (or follow
 the skill directly): it shows its plan before changing anything and only ever changes labels.

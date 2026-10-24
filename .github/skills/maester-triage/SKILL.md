@@ -2,7 +2,7 @@
 name: maester-triage
 description: >-
   Label and re-label Maester pull requests, issues and discussions with the repository's
-  label rubric, so reviewers can filter the queue by status, area, product and size. Use when
+  label rubric, so reviewers can filter the queue by status, type and product. Use when
   asked to triage, label, tag or "update the status of" PRs, issues or discussions in
   maester365/maester, to re-check whether a PR is waiting on its author or a reviewer, or to
   find items that have no status. Covers the label families in .github/labels.json, how to
@@ -15,7 +15,7 @@ metadata:
 # Maester triage
 
 Labels on maester365/maester follow one rubric so that anyone can filter the queue, for
-example `is:pr is:open label:"status: needs review" label:"area: engine"`. This skill is that
+example `is:pr is:open label:"status: needs review" label:"product: entra"`. This skill is that
 rubric and the steps for applying it. The label list itself, with colours and descriptions, is
 [`.github/labels.json`](../../labels.json). Never invent a label that is not in that file.
 
@@ -58,11 +58,9 @@ item's text. If an item looks like it should be closed (superseded, duplicate, a
 
 ## The families
 
-Each open PR and issue gets **exactly one** `status:` label and **one type**, and every item
-gets **at least one `area:`** when an area applies. Announcements, Polls and Show and tell
+Each open PR and issue gets **exactly one** `status:` label and **one type**. Announcements, Polls and Show and tell
 discussions get no type, and a discussion's status follows its own table below. When an item
-carries a second type or an old label the rubric replaces, remove it. `product:`, `suite:` and flags are added only when they are true. Every
-open PR also gets exactly one `size:` label.
+carries a second type or an old label the rubric replaces, remove it. `product:`, `suite:` and flags are added only when they are true.
 
 ### Status (exactly one)
 
@@ -124,27 +122,6 @@ Conventional-commit prefixes in a PR title are a hint (`feat` → `enhancement` 
 `fix` → `bug`, `docs` → `documentation`, `chore`/`ci`/`build`/`refactor` → `maintenance`), but
 the diff decides.
 
-### Area (one to three)
-
-For a PR, choose by the changed paths, counting reviewable lines only (see "Size"). Give a PR
-its primary areas, at most three: an area counts when it is the purpose of the PR or holds at
-least a tenth of its reviewable lines. An incidental touch, such as the AD lab script or a
-one-line docs fix, adds no area. Unit tests under `powershell/tests/**` take the area of the
-code they test.
-
-For an issue or discussion, choose by what the report is about. A wrong check result is
-`area: tests` even when the cause is in a shared helper.
-
-| Label | Paths and topics |
-| --- | --- |
-| `area: tests` | `tests/**`; check helpers in `powershell/internal/checks/**`, `powershell/internal/services/<product>/**` and `powershell/public/services/<product>/**` (except the connection code listed under connections); `powershell/internal/generated/**`; the suite generators in `build/{cisa,eidsca,orca,nist,attack}/**`; `powershell/assets/MaesterTaxonomy.psd1`. |
-| `area: connections` | `powershell/{internal,public}/connect/**`, `powershell/{internal,public}/services/graph/**`, `powershell/internal/app/**`, the AD connection code (`services/ad/protocol/**`, `Connect-MtAdTarget`), authentication, tokens and permission scopes. Issues about signing in or connecting. |
-| `area: engine` | `powershell/internal/{engine,session,utility}/**`, `powershell/public/run/**`, other public cmdlets, `src/Maester.Engine/**`, `powershell/Maester.psd1`/`.psm1`, configuration and the console. |
-| `area: report` | `report/**`, `powershell/{internal,public}/report/**`, the HTML, Markdown and JSON outputs and the exports. |
-| `area: packs` | `packs/**`, `powershell/{internal,public}/packs/**` and pack connectors. Packs wins over engine for these paths. |
-| `area: build & ci` | `build/**` not listed above, `.github/workflows/**`, `.github/scripts/**`, `action.yml`, `action/**`, `.oss-scanner/**`, and repository guidance for people and agents (`AGENTS.md`, `CLAUDE.md`, `.github/agents/**`, `.github/skills/**`, `.claude/**`). |
-| `area: website` | `website/**` except generated test pages; the blog. Design proposals in `docs/proposals/**` take the area of what they propose. |
-
 ### Product (zero to three)
 
 Use the product keys from `powershell/assets/MaesterTaxonomy.psd1`: `product: entra`,
@@ -166,23 +143,12 @@ about that benchmark's mapping, content or permissions. A one-line attribute ali
 another suite's check does not add that suite. The MT checks under `tests/maester/**` and the AD
 checks under `tests/ad/**` have no suite label; `product:` already covers them.
 
-### Size (exactly one, PRs only)
-
-Count **reviewable lines**: additions plus deletions, leaving out generated files. Generated
-files are `website/docs/tests/**`, `website/versioned_docs/**`, `**/fixtures/golden/**`,
-`website/src/data/test-builder.json`, `packs/*/catalog.json`, the upstream-generated suites
-`tests/eidsca/**`, `tests/orca/**` and `powershell/internal/generated/**`, `*.dll`, lock files,
-and any other file whose first lines contain both "Generated by" and "Do not edit". The
-generators and their input files under `build/**` are reviewable. Then: `size: XS` under 10,
-`size: S` 10–99, `size: M` 100–499, `size: L` 500–1,499, `size: XL` 1,500 or more.
-
 ### Flags (add when true; remove only the ones you can compute)
 
 | Label | When | Who sets it |
 | --- | --- | --- |
 | `needs rebase` | `mergeable` is `CONFLICTING`. Remove it when the conflict is gone. | Triage |
-| `generated` | Every changed file is generated (see above), as in the bot PRs that regenerate test docs. | Triage |
-| `security-sensitive` | The diff changes how tokens or secrets are obtained, stored or sent (including sending them to a new or user-supplied host), the permission scopes Maester requests, certificate or TLS validation, `permissions:` or secrets in a workflow, or code that downloads, installs or runs content from outside the repository (modules, packs, scripts). A check that only reads a security setting is not security-sensitive. | Triage adds; only a maintainer removes |
+| `generated` | Every changed file is generated, as in the bot PRs that regenerate test docs. Generated files are `website/docs/tests/**`, `website/versioned_docs/**`, `**/fixtures/golden/**`, `website/src/data/test-builder.json`, `packs/*/catalog.json`, the upstream-generated suites `tests/eidsca/**`, `tests/orca/**` and `powershell/internal/generated/**`, `*.dll`, lock files, and any other file whose first lines contain both "Generated by" and "Do not edit". | Triage |
 | `breaking change` | It removes or renames a public cmdlet, parameter, output field or test ID, changes a default, removes a check from the default run, or changes what a check considers correct. Fixing a check so that it matches its documented behaviour is a `bug`, not a breaking change. | Triage adds; only a maintainer removes |
 | `attribute-review-override`, `good first issue`, `help wanted` | Maintainer judgement. | Never set or remove |
 
@@ -193,8 +159,7 @@ never sets or removes them; it suggests them in the report.
 
 ## Checks before you report
 
-- Every open PR and issue you touched has exactly one `status:` and one type label, and every
-  open PR has one `size:` label.
+- Every open PR and issue you touched has exactly one `status:` and one type label.
 - No label you added is missing from `.github/labels.json`.
 - For each `status: changes requested`, you can name the maintainer review or comment, and you
   checked that no author commit came after it.
