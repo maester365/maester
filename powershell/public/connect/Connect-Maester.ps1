@@ -148,7 +148,7 @@
 
       # The Teams environment to connect to. Default is O365Default.
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
-      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+      [string]$TeamsEnvironmentName = $null,
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
       # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
@@ -528,7 +528,8 @@
                $teamsParams = @{ ErrorAction = 'Stop' }
                if ($UseDeviceCode) {
                   $teamsParams['UseDeviceAuthentication'] = $true
-               } elseif ($TeamsEnvironmentName) {
+               }
+               if ($TeamsEnvironmentName) {
                   $teamsParams['TeamsEnvironmentName'] = $TeamsEnvironmentName
                }
                $teamsConnection = Connect-MicrosoftTeams @teamsParams

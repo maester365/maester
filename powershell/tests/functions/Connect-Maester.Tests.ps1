@@ -5,6 +5,11 @@
     $script:createdStubs = @()
     # Mocks with a -ParameterFilter only see parameters the command declares, so give those stubs the parameters the tests filter on.
     $stubBodies = @{
+        'Connect-MicrosoftTeams' = {
+            [CmdletBinding()]
+            param([string]$TeamsEnvironmentName, [switch]$UseDeviceAuthentication)
+            $null = $PSBoundParameters
+        }
         'Connect-IPPSSession' = {
             [CmdletBinding()]
             param([string]$ConnectionUri, [string]$AzureADAuthorizationEndpointUri, [string]$UserPrincipalName, [switch]$BypassMailboxAnchoring, [switch]$ShowBanner)
@@ -257,6 +262,14 @@ Describe 'Connect-Maester connection summary' {
         $exchange.Details | Should -Be 'macOS 27.0.1'
         Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly
         Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Passes the Teams environment together with -UseDeviceCode' {
+        Connect-Maester -Service Teams -UseDeviceCode -TeamsEnvironmentName TeamsGCCH 6>$null
+
+        Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $UseDeviceAuthentication -and $TeamsEnvironmentName -eq 'TeamsGCCH'
+        }
     }
 
     It 'Shows only the first line of a Teams sign-in error' {
