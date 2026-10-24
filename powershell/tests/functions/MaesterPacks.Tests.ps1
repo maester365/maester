@@ -68,6 +68,8 @@ Describe 'Maester Pack manifest' {
         @{ Case = 'a price that is not Free or Paid'; Change = { param($m) $m | Add-Member Pricing 'Premium' }; Code = 'InvalidManifest' }
         @{ Case = 'a banner outside the pack'; Change = { param($m) $m | Add-Member Banner '../banner.png' }; Code = 'InvalidManifest' }
         @{ Case = 'a banner that is not an image'; Change = { param($m) $m | Add-Member Banner 'banner.svg' }; Code = 'InvalidManifest' }
+        @{ Case = 'a Guide that is not a JSON file'; Change = { param($m) $m | Add-Member Guide 'guide.md' }; Code = 'InvalidManifest' }
+        @{ Case = 'a Guide file that does not exist'; Change = { param($m) $m | Add-Member Guide 'maester-pack.guide.json' }; Code = 'InvalidManifest' }
     ) {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "pack-$([guid]::NewGuid().ToString('n'))") -Edit { param($p) Set-Manifest -Pack $p -Change $Change }
         $result = Test-MtPack $pack
@@ -179,6 +181,28 @@ Describe 'Maester Pack content scan' {
         $result = Test-MtPack $pack
         $result.Risk | Should -Be 'Low'
         $result.Binaries | Should -BeNullOrEmpty
+    }
+
+    It 'reads the Guide and does not scan its screenshots as binary content' {
+        $png = [byte[]](0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0x0D, 0x49, 0x48, 0x44, 0x52)
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'guide') -Edit {
+            param($p)
+            [System.IO.File]::WriteAllBytes((Join-Path $p 'report.png'), $png)
+            '{ "Connect": { "Steps": [{ "Text": "Sign in", "Command": "Connect-Maester" }] }, "Screenshots": [{ "Path": "report.png", "Caption": "The report" }] }' | Set-Content -LiteralPath (Join-Path $p 'maester-pack.guide.json')
+        }
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member Guide 'maester-pack.guide.json' }
+        $result = Test-MtPack $pack
+        $result.IsValid | Should -BeTrue -Because (@($result.Errors | ForEach-Object Message) -join ' ')
+        $result.Risk | Should -Be 'Low'
+        $result.Binaries | Should -BeNullOrEmpty
+    }
+
+    It 'refuses a Guide screenshot outside the pack' {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'guide-outside') -Edit {
+            param($p) '{ "Screenshots": [{ "Path": "../report.png" }] }' | Set-Content -LiteralPath (Join-Path $p 'maester-pack.guide.json')
+        }
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member Guide 'maester-pack.guide.json' }
+        (Test-MtPack $pack).Errors.Code | Should -Contain 'InvalidManifest'
     }
 
     It 'rates a binary banner High when its bytes are not the image its name says' {
