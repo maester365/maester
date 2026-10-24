@@ -82,14 +82,12 @@ async function sponsorProfiles(logins) {
 }
 
 const registry = existsSync(registryPath) ? loadYamlDocument(readFileSync(registryPath, "utf8")) ?? {} : {};
-const registryFor = (login) => {
-  const key = Object.keys(registry).find((k) => k.toLowerCase() === login.toLowerCase());
-  return key ? registry[key] ?? {} : {};
-};
+const registryEntries = Object.entries(registry);
+const registryFor = (login) => registryEntries.find(([key]) => key.toLowerCase() === login.toLowerCase())?.[1] ?? {};
 const { profiles } = JSON.parse(readFileSync(contributorsPath, "utf8"));
 const profileFor = (login) => profiles.find((p) => p.github && p.github.toLowerCase() === login.toLowerCase());
 
-const maintainers = Object.keys(registry).filter((login) => registry[login]?.maintainer === true);
+const maintainers = registryEntries.filter(([, entry]) => entry?.maintainer === true).map(([login]) => login);
 const testAuthors = profiles.filter((p) => p.github && p.testsAuthored.length > 0).map((p) => p.github);
 const committers = await repositoryContributors();
 const commitsFor = (login) => committers.find((c) => c.login.toLowerCase() === login.toLowerCase())?.contributions ?? 0;
