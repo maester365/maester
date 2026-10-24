@@ -63,7 +63,6 @@ The test looks at all user mailboxes and lists those that have auditing disabled
 | Supports controls | cis-m365:6.1.2, nist-800-53-r5:AU-12 |
 | PowerShell test | [Test-MtCisMailboxAuditAction](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.6.1.2.ps1) |
 | Services | ExchangeOnline |
-| Long running | Yes |
 
 ## Source
 

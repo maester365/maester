@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.3.2.3"
-  - "High"
+  - "Medium"
   - "CIS"
   - "Purview"
   - "Data loss prevention"
@@ -52,7 +52,7 @@ Copilot DLP needs Microsoft 365 Copilot licences and the Microsoft Purview licen
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.3.2.3 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
 | Product | Purview |
 | Feature | Data loss prevention |

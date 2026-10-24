@@ -440,7 +440,7 @@
       "url": "",
       "socials": {},
       "avatar": "https://github.com/JeremyFinney-lgtm.png",
-      "firstContribution": "2026-10-18",
+      "firstContribution": "2026-10-17",
       "testsAuthored": [
         "CIS.M365.1.3.2",
         "CIS.M365.1.3.9",
@@ -532,7 +532,7 @@
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 39
+      "recentCommits": 73
     },
     {
       "id": "Cloud-Architekt",
@@ -886,7 +886,7 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 10
+      "recentCommits": 13
     },
     {
       "id": "Mynster9361",
@@ -946,7 +946,7 @@
         "MT.1098"
       ],
       "initials": "M",
-      "recentCommits": 1
+      "recentCommits": 3
     },
     {
       "id": "nicolonsky",
@@ -1279,7 +1279,7 @@
       ],
       "testsContributed": [],
       "initials": "CB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "BakkerJan",
@@ -1312,7 +1312,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "RobbeVandenDaele",
@@ -1848,7 +1848,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 5
+      "recentCommits": 7
     },
     {
       "id": "Oppedijk",
@@ -1992,7 +1992,7 @@
         "MT.1024"
       ],
       "initials": "EA",
-      "recentCommits": 4
+      "recentCommits": 12
     },
     {
       "id": "amlhive-tech",
@@ -2725,7 +2725,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 167
+      "recentCommits": 171
     }
   ],
   "attributions": {

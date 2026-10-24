@@ -55,7 +55,7 @@ The test checks the **My Custom Apps**, **My Marketplace Apps** and **My ReadWri
 | Product | Exchange Online |
 | Feature | Outlook |
 | Area | Applications and workload identities |
-| Resource type | Tenant |
+| Resource type | Policy |
 | User impact | Medium |
 | Implementation cost | Low |
 | MITRE ATT&CK | T1137.006 Add-ins, T1114.002 Remote Email Collection |

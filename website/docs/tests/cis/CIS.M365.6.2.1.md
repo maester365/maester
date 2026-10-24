@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.6.2.1"
-  - "Medium"
+  - "High"
   - "CIS"
   - "Exchange Online"
   - "Mail flow"
@@ -50,7 +50,7 @@ The test lists enabled transport rules outside audit mode that redirect mail to 
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.6.2.1 |
-| Severity | Medium |
+| Severity | High |
 | Suite | CIS |
 | Product | Exchange Online |
 | Related products | Defender |

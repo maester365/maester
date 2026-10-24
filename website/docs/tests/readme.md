@@ -369,7 +369,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11) | (L2) Ensure comprehensive attachment filtering is applied | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
-| [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | High | Defender | Anti-spam |
+| [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.15](./CIS.M365.2.1.15) | (L1) Ensure outbound anti-spam message limits are in place | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.3](./CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
@@ -385,7 +385,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | Purview | Audit |
 | [CIS.M365.3.2.1](./CIS.M365.3.2.1) | (L1) Ensure DLP policies are enabled | CIS | Medium | Purview | Data loss prevention |
 | [CIS.M365.3.2.2](./CIS.M365.3.2.2) | (L1) Ensure DLP policies are enabled for Microsoft Teams | CIS | Medium | Purview | Data loss prevention |
-| [CIS.M365.3.2.3](./CIS.M365.3.2.3) | (L1) Ensure DLP policies are published for Copilot users | CIS | High | Purview | Data loss prevention |
+| [CIS.M365.3.2.3](./CIS.M365.3.2.3) | (L1) Ensure DLP policies are published for Copilot users | CIS | Medium | Purview | Data loss prevention |
 | [CIS.M365.3.3.1](./CIS.M365.3.3.1) | (L1) Ensure Information Protection sensitivity label policies are published | CIS | Low | Purview | Information protection |
 | [CIS.M365.4.1](./CIS.M365.4.1) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | CIS | Medium | Intune | Device compliance |
 | [CIS.M365.4.2](./CIS.M365.4.2) | (L1) Ensure device enrollment for personally owned devices is blocked by default | CIS | Medium | Intune | Device enrollment |
@@ -444,12 +444,12 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.6.1.1](./CIS.M365.6.1.1) | (L1) Ensure 'AuditDisabled' organizationally is set to 'False' | CIS | High | Exchange Online | Mailbox auditing |
 | [CIS.M365.6.1.2](./CIS.M365.6.1.2) | (L1) Ensure mailbox audit actions are configured | CIS | Medium | Exchange Online | Mailbox auditing |
 | [CIS.M365.6.1.3](./CIS.M365.6.1.3) | (L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes | CIS | Medium | Exchange Online | Mailbox auditing |
-| [CIS.M365.6.2.1](./CIS.M365.6.2.1) | (L1) Ensure all forms of mail forwarding are blocked and/or disabled | CIS | Medium | Exchange Online | Mail flow |
+| [CIS.M365.6.2.1](./CIS.M365.6.2.1) | (L1) Ensure all forms of mail forwarding are blocked and/or disabled | CIS | High | Exchange Online | Mail flow |
 | [CIS.M365.6.2.2](./CIS.M365.6.2.2) | (L1) Ensure mail transport rules do not whitelist specific domains | CIS | Medium | Exchange Online | Mail flow |
 | [CIS.M365.6.2.3](./CIS.M365.6.2.3) | (L1) Ensure email from external senders is identified | CIS | Medium | Exchange Online | Outlook |
 | [CIS.M365.6.3.1](./CIS.M365.6.3.1) | (L2) Ensure users installing Outlook add-ins is not allowed | CIS | Medium | Exchange Online | Outlook |
 | [CIS.M365.6.3.2](./CIS.M365.6.3.2) | (L1) Ensure the ability to add personal email accounts and calendars is disabled | CIS | Low | Exchange Online | Outlook |
-| [CIS.M365.6.5.1](./CIS.M365.6.5.1) | (L1) Ensure modern authentication for Exchange Online is enabled | CIS | High | Exchange Online | Client access |
+| [CIS.M365.6.5.1](./CIS.M365.6.5.1) | (L1) Ensure modern authentication for Exchange Online is enabled | CIS | Low | Exchange Online | Client access |
 | [CIS.M365.6.5.2](./CIS.M365.6.5.2) | (L1) Ensure MailTips are enabled for end users | CIS | Low | Exchange Online | Outlook |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Medium | Exchange Online | Outlook |
 | [CIS.M365.6.5.4](./CIS.M365.6.5.4) | (L1) Ensure SMTP AUTH is disabled | CIS | High | Exchange Online | Client access |
@@ -651,7 +651,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1041](./MT.1041) | Ensure users installing Outlook add-ins is not allowed | Maester | Medium | Exchange Online | Outlook |
 | [MT.1042](./MT.1042) | Restrict dial-in users from bypassing a meeting lobby | Maester | Medium | Teams | Meetings |
 | [MT.1043](./MT.1043) | Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | Maester | Medium | Exchange Online | Mail flow |
-| [MT.1044](./MT.1044) | Ensure modern authentication for Exchange Online is enabled | Maester | High | Exchange Online | Client access |
+| [MT.1044](./MT.1044) | Ensure modern authentication for Exchange Online is enabled | Maester | Low | Exchange Online | Client access |
 | [MT.1045](./MT.1045) | Only invited users should be automatically admitted to Teams meetings | Maester | Medium | Teams | Meetings |
 | [MT.1046](./MT.1046) | Restrict anonymous users from joining meetings | Maester | Medium | Teams | Meetings |
 | [MT.1047](./MT.1047) | Restrict anonymous users from starting Teams meetings | Maester | Medium | Teams | Meetings |
@@ -757,7 +757,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1172](./MT.1172) | Unified audit log ingestion is enabled. | Maester | High | Purview | Audit |
 | [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Medium | Purview | Information protection |
 | [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled. | Maester | Medium | Purview | Insider risk management |
-| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | High | Purview | Data loss prevention |
+| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | Medium | Purview | Data loss prevention |
 | [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location. | Maester | Medium | Purview | Data lifecycle management |
 | [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set. | Maester | Medium | Intune | Endpoint security |
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly. | Maester | High | Intune | Endpoint security |
@@ -820,7 +820,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [ORCA.114](./ORCA.114) | No IP Allow Lists have been configured. | ORCA | Medium | Defender | Anti-spam |
 | [ORCA.115](./ORCA.115) | Mailbox intelligence based impersonation protection is enabled in anti-phishing policies. | ORCA | Medium | Defender | Anti-phishing |
 | [ORCA.116](./ORCA.116) | Mailbox intelligence based impersonation protection action set to move message to junk mail folder. | ORCA | Medium | Defender | Anti-phishing |
-| [ORCA.118.1](./ORCA.118.1) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | High | Defender | Anti-spam |
+| [ORCA.118.1](./ORCA.118.1) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | Medium | Defender | Anti-spam |
 | [ORCA.118.2](./ORCA.118.2) | Domains are not being allow listed in an unsafe manner in Transport Rules. | ORCA | High | Defender | Mail flow |
 | [ORCA.118.3](./ORCA.118.3) | Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | High | Defender | Anti-spam |
 | [ORCA.118.4](./ORCA.118.4) | Your own domains are not being allow listed in an unsafe manner in Transport Rules. | ORCA | High | Defender | Mail flow |

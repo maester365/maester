@@ -36,7 +36,7 @@ These tests validate Exchange Online security configuration checks from ORCA.
 | [ORCA.114](./ORCA.114.md) | No IP Allow Lists have been configured. | Medium | Defender | Anti-spam |
 | [ORCA.115](./ORCA.115.md) | Mailbox intelligence based impersonation protection is enabled in anti-phishing policies. | Medium | Defender | Anti-phishing |
 | [ORCA.116](./ORCA.116.md) | Mailbox intelligence based impersonation protection action set to move message to junk mail folder. | Medium | Defender | Anti-phishing |
-| [ORCA.118.1](./ORCA.118.1.md) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | High | Defender | Anti-spam |
+| [ORCA.118.1](./ORCA.118.1.md) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | Medium | Defender | Anti-spam |
 | [ORCA.118.2](./ORCA.118.2.md) | Domains are not being allow listed in an unsafe manner in Transport Rules. | High | Defender | Mail flow |
 | [ORCA.118.3](./ORCA.118.3.md) | Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | High | Defender | Anti-spam |
 | [ORCA.118.4](./ORCA.118.4.md) | Your own domains are not being allow listed in an unsafe manner in Transport Rules. | High | Defender | Mail flow |

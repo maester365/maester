@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.6.5.1"
-  - "High"
+  - "Low"
   - "CIS"
   - "Exchange Online"
   - "Client access"
@@ -56,7 +56,7 @@ To enable modern authentication with PowerShell:
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.6.5.1 |
-| Severity | High |
+| Severity | Low |
 | Suite | CIS |
 | Product | Exchange Online |
 | Feature | Client access |
