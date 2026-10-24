@@ -120,7 +120,7 @@ function Read-MtPackManifest {
     $version = & $text 'Version'
     if ($version -and $version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { & $fail "Version must be a semantic version such as 1.2.0; it is '$version'." }
     $requires = & $text 'RequiresMaester'
-    if ($requires -and -not (Test-MtVersionRange -Range $requires -Validate)) { & $fail "RequiresMaester '$requires' is not a version range such as '>=3.1 <4.0'." }
+    if ($requires -and -not (Test-MtVersionRange -Range $requires -Validate)) { & $fail "RequiresMaester '$requires' is not a version range such as '>=3.0 <4.0'." }
 
     # The pack's code (section 4.5): one to three dot-separated parts, so a publisher can group packs (CNT.GWS).
     $code = & $text 'Code'
@@ -311,7 +311,7 @@ function Test-MtPackReservedName {
 function Test-MtVersionRange {
     <#
     .SYNOPSIS
-    Checks a version against a range such as '>=3.1 <4.0', '3.1', '^1.2' or '~1.2.3'.
+    Checks a version against a range such as '>=3.0 <4.0', '3.1', '^1.2' or '~1.2.3'.
 
     .DESCRIPTION
     A range is one or more comparisons separated by spaces, all of which must hold: >=, >, <=, < or =
