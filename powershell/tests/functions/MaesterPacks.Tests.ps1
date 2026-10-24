@@ -59,7 +59,7 @@ Describe 'Maester Pack manifest' {
 
     It 'refuses <Case>' -ForEach @(
         @{ Case = 'an ID that does not start with the publisher'; Change = { param($m) $m.Id = 'fabrikam.sample' }; Code = 'InvalidManifest' }
-        @{ Case = 'a reserved code'; Change = { param($m) $m.Code = 'MT' }; Code = 'ReservedCode' }
+        @{ Case = 'a manifest without a Guid'; Change = { param($m) $m.PSObject.Properties.Remove('Guid') }; Code = 'InvalidManifest' }
         @{ Case = 'the maester publisher outside maester365'; Change = { param($m) $m.Id = 'maester.sample'; $m.Publisher = 'maester' }; Code = 'InvalidManifest' }
         @{ Case = 'another runtime'; Change = { param($m) $m | Add-Member Runtime @{ Kind = 'Python' } }; Code = 'RuntimeNotSupported' }
         @{ Case = 'an unknown key under Uses'; Change = { param($m) $m.Uses | Add-Member Secrets @('x') }; Code = 'InvalidManifest' }
@@ -322,8 +322,14 @@ Describe 'Installing and loading a pack' {
 
     It 'refuses to install a second pack whose code overlaps an installed one' {
         $null = Install-MtPack $script:fixture -NonInteractive 6>$null
-        $other = Copy-SamplePack -Destination (Join-Path $script:root 'other') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'contoso.other' } }
-        { Install-MtPack $other -NonInteractive 6>$null } | Should -Throw '*overlaps the code CNT of the installed pack contoso.sample*'
+        $other = Copy-SamplePack -Destination (Join-Path $script:root 'other') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'contoso.other'; $m.Guid = [guid]::NewGuid().ToString() } }
+        { Install-MtPack $other -NonInteractive 6>$null } | Should -Throw '*overlaps the code CNT of the installed pack contoso.sample (6f0f4a9e-3b1c-4d2a-9e7b-2c5d8a1f0b34)*'
+    }
+
+    It 'refuses to install a second pack with the Guid of an installed one' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $other = Copy-SamplePack -Destination (Join-Path $script:root 'twin') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Id = 'contoso.other' } }
+        { Install-MtPack $other -NonInteractive 6>$null } | Should -Throw '*which the installed pack contoso.sample already has*'
     }
 
     It 'runs only the first of two packs in the lock file whose codes overlap' {
@@ -635,6 +641,30 @@ Describe 'Pack updates, config and policy' {
         (Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json).Packs[0].ApprovedAt | Should -Be $before
     }
 
+    It 'refuses to replace an installed pack with one that has another Guid' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        $other = Copy-SamplePack -Destination (Join-Path $script:root 'other-guid') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Guid = [guid]::NewGuid().ToString() } }
+        { Install-MtPack $other -NonInteractive -Force 6>$null } | Should -Throw '*is a different pack*'
+        (Get-Content -LiteralPath 'maester-packs.lock.json' -Raw | ConvertFrom-Json).Packs[0].Guid | Should -Be '6f0f4a9e-3b1c-4d2a-9e7b-2c5d8a1f0b34'
+    }
+
+    It 'refuses a new code for the same Guid' {
+        $null = Install-MtPack $script:fixture -NonInteractive 6>$null
+        InModuleScope Maester -Parameters @{ Lock = (Resolve-Path 'maester-packs.lock.json').Path } {
+            param($Lock)
+            $data = Get-Content -LiteralPath $Lock -Raw | ConvertFrom-Json
+            $data.Packs[0].Code = 'OLD'
+            $data | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $Lock
+        }
+        { Install-MtPack $script:fixture -NonInteractive -Force 6>$null } | Should -Throw '*a new code needs a new Guid*'
+    }
+
+    It 'accepts any code in the right format, such as MT' {
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'any-code') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Code = 'OKTA' } }
+        $read = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        @($read.Errors | Where-Object { $_.Message -match 'reserved' }) | Should -BeNullOrEmpty
+    }
+
     It 'changes nothing with -WhatIf on <Name>' -ForEach @(
         @{ Name = 'Install-MtPack'; Command = { Install-MtPack $script:fixture -NonInteractive -WhatIf 6>$null } }
         @{ Name = 'Update-MtPack'; Command = { Update-MtPack -NonInteractive -WhatIf 6>$null } }
@@ -663,7 +693,7 @@ Describe 'Pack updates, config and policy' {
         $read = InModuleScope Maester -Parameters @{ Path = (Resolve-Path "$PSScriptRoot/../../../packs/zero-trust-assessment").Path } { param($Path) Read-MtPackManifest -Path $Path -Official }
         $read.Errors | Should -BeNullOrEmpty
         @($read.Warnings | Where-Object { $_ -match 'Guid' }) | Should -BeNullOrEmpty
-        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'guid') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m | Add-Member Guid 'not-a-guid' } }
+        $pack = Copy-SamplePack -Destination (Join-Path $script:root 'guid') -Edit { param($p) Set-Manifest -Pack $p -Change { param($m) $m.Guid = 'not-a-guid' } }
         $read = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
         ($read.Errors | ForEach-Object Message) -join ' ' | Should -Match 'Guid must be a GUID'
     }

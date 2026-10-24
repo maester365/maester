@@ -67,8 +67,6 @@ function New-MtPack {
     # Function names take the code without its dots: CNT.GWS gives Connect-CntGws<Name>.
     $prefix = ($Code.Split('.') | ForEach-Object { $_.Substring(0, 1) + $_.Substring(1).ToLowerInvariant() }) -join ''
     if (-not $Name) { $Name = ($short -split '-' | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join ' ' }
-    $reserved = Test-MtPackReservedName -Code $Code
-    if ($reserved) { throw $reserved }
     if ((Test-Path -LiteralPath $Path) -and @(Get-ChildItem -LiteralPath $Path -Force).Count -gt 0) { throw "The folder '$Path' is not empty." }
 
     $service = "$Code.$pascal"

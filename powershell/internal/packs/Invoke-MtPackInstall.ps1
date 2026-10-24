@@ -88,13 +88,30 @@ function Invoke-MtPackInstall {
             if ($content.Errors.Count -gt 0) { throw "The pack $id was not installed: $(@($content.Errors | Select-Object -First 5 | ForEach-Object { $_.Message }) -join ' ')" }
         }
 
+        # The Guid names the pack for good. An update must keep it, and keep the code it had with it; another
+        # installed pack may not have it.
+        $guid = [string]$manifest.Guid
+        $earlier = if ($Previous) { $Previous } else { $Lock.Packs | Where-Object { $_.Id -eq $id } | Select-Object -First 1 }
+        if ($earlier -and $earlier.PSObject.Properties['Guid'] -and $earlier.Guid) {
+            if ($guid -and [string]$earlier.Guid -ne $guid) {
+                throw "The pack $id now has the Guid $guid, but the installed pack has $($earlier.Guid), so it is a different pack. Uninstall-MtPack $id first if you want to replace it."
+            }
+            if ($earlier.PSObject.Properties['Code'] -and $earlier.Code -and [string]$earlier.Code -ne [string]$manifest.Code) {
+                throw "The pack $id ($guid) changed its code from $($earlier.Code) to $($manifest.Code). A pack keeps its code: a new code needs a new Guid. Uninstall-MtPack $id first if you want the new pack."
+            }
+        }
+        if ($guid) {
+            $twin = $Lock.Packs | Where-Object { $_.Id -ne $id -and $_.PSObject.Properties['Guid'] -and [string]$_.Guid -eq $guid } | Select-Object -First 1
+            if ($twin) { throw "The pack $id has the Guid $guid, which the installed pack $($twin.Id) already has." }
+        }
+
         # A code that another pack has, or that is part of its code (CNT and CNT.GWS): their test IDs could clash.
         # The packs that ship with Maester keep theirs.
-        $others = @(@(Get-MtBuiltInPack | Where-Object { $_.Manifest } | ForEach-Object { [pscustomobject]@{ Id = $_.Id; Code = [string]$_.Manifest.Code } }) +
-            @($Lock.Packs | Where-Object { $_.PSObject.Properties['Code'] } | ForEach-Object { [pscustomobject]@{ Id = [string]$_.Id; Code = [string]$_.Code } }))
+        $others = @(@(Get-MtBuiltInPack | Where-Object { $_.Manifest } | ForEach-Object { [pscustomobject]@{ Id = $_.Id; Guid = [string]$_.Manifest.Guid; Code = [string]$_.Manifest.Code } }) +
+            @($Lock.Packs | Where-Object { $_.PSObject.Properties['Code'] } | ForEach-Object { [pscustomobject]@{ Id = [string]$_.Id; Guid = $(if ($_.PSObject.Properties['Guid']) { [string]$_.Guid }); Code = [string]$_.Code } }))
         foreach ($other in ($others | Where-Object { $_.Id -ne $id })) {
             if (Test-MtPackCodeOverlap -Code ([string]$manifest.Code) -Other $other.Code) {
-                throw "The pack $id has the code $($manifest.Code), which overlaps the code $($other.Code) of the installed pack $($other.Id), so their test IDs could clash. Uninstall $($other.Id), or ask the publisher of $id to pick another code."
+                throw "The pack $id ($guid) has the code $($manifest.Code), which overlaps the code $($other.Code) of the installed pack $($other.Id)$(if ($other.Guid) { " ($($other.Guid))" }), so their test IDs could clash. Uninstall $($other.Id), or ask the publisher of $id to pick another code."
             }
         }
 
@@ -136,6 +153,7 @@ function Invoke-MtPackInstall {
 
         $entry = [pscustomobject][ordered]@{
             Id                 = $id
+            Guid               = $guid
             Version            = [string]$manifest.Version
             Code               = [string]$manifest.Code
             Source             = if ($candidate.Kind -eq 'BuiltIn') { 'builtin' } else { $candidate.Source }
