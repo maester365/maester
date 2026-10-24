@@ -434,7 +434,7 @@ Each permission is written `<Service>:<Kind>:<Name>`:
   It is everything after the second colon, so it may itself contain colons.
 
 The test needs **every** element of the list. Inside an element, `|` joins **alternatives**: any one of them is
-enough. Put the least privileged alternative first; the setup guidance uses the first one.
+enough. Put the least privileged alternative first.
 
 ```powershell
 Permission = 'Graph:Scope:Policy.Read.All'                                       # one permission
