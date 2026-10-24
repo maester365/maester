@@ -8,6 +8,11 @@ function Get-MtADGpoState {
     Results are cached for the session to avoid repeated queries.
     Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 
+    Each entry in GPOReports summarizes the GPO's DACL: PermissionsPresent (the DACL has at least one entry),
+    HasAuthenticatedUsers, HasEnterpriseDomainControllers and HasDomainComputers (an access-allowed entry for
+    that principal applies to the GPO) and HasInheritedPermissions (an entry is inherited from the parent
+    container). These are $null when the security descriptor of the GPO was not returned.
+
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
 
@@ -200,6 +205,34 @@ function Get-MtADGpoState {
                         } | Select-Object -First 1)
                 }
 
+                    # Permission summary of the DACL. $null means the security descriptor was not returned,
+                    # so the permissions are unknown rather than absent.
+                    $permissionsPresent = $null
+                    $hasAuthenticatedUsers = $null
+                    $hasEnterpriseDomainControllers = $null
+                    $hasDomainComputers = $null
+                    $hasInheritedPermissions = $null
+                    if ($null -ne $descriptor -and $descriptor.PSObject.Properties['Access']) {
+                        $aces = @($access | Where-Object { $null -ne $_ })
+                        # An inherit-only ACE grants nothing on the GPO itself.
+                        $allowedSids = @($aces | Where-Object { $_.AccessControlType -eq 'Allow' -and [string]$_.AceFlags -notmatch 'InheritOnly' } | ForEach-Object { [string]$_.Sid })
+                        # A deny for a principal that is also allowed takes precedence, but how much of the
+                        # allow it removes depends on the access masks of both entries, which this summary
+                        # does not compare. That principal's access is unknown rather than present.
+                        $deniedSids = @($aces | Where-Object { $_.AccessControlType -eq 'Deny' -and [string]$_.AceFlags -notmatch 'InheritOnly' } | ForEach-Object { [string]$_.Sid })
+                        $permissionsPresent = $aces.Count -gt 0
+                        $hasAuthenticatedUsers = if (($allowedSids -contains 'S-1-5-11') -and ($deniedSids -contains 'S-1-5-11')) { $null } else { $allowedSids -contains 'S-1-5-11' }
+                        $hasEnterpriseDomainControllers = if (($allowedSids -contains 'S-1-5-9') -and ($deniedSids -contains 'S-1-5-9')) { $null } else { $allowedSids -contains 'S-1-5-9' }
+                        # Domain Computers is RID 515 of a domain SID.
+                        $domainComputers = '^S-1-5-21-\d+-\d+-\d+-515$'
+                        $allowedComputers = @($allowedSids -match $domainComputers)
+                        $deniedComputers = @($deniedSids -match $domainComputers)
+                        # Only the same group being both allowed and denied is unknown: in a forest, one
+                        # domain's Domain Computers being denied says nothing about another domain's.
+                        $hasDomainComputers = if (@($allowedComputers | Where-Object { $deniedComputers -contains $_ }).Count -gt 0) { $null } else { $allowedComputers.Count -gt 0 }
+                        $hasInheritedPermissions = [bool]($aces | Where-Object { $_.IsInherited } | Select-Object -First 1)
+                    }
+
                     $hasVersionMismatch = $null
                     $cpasswordFound = $null
                     $defaultPasswordFound = $null
@@ -225,18 +258,23 @@ function Get-MtADGpoState {
                         [bool]($gpoLinks | Where-Object { $_.IsEnforced } | Select-Object -First 1)
                     } else { $null }
                     [PSCustomObject][ordered]@{
-                        GPOId                  = $gpo.Id
-                        GPOName                = $gpo.DisplayName
-                        Name                   = $gpo.DisplayName
-                        DisabledLinks          = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
-                        HasVersionMismatch     = $hasVersionMismatch
-                        CpasswordFound         = $cpasswordFound
-                        DefaultPasswordFound   = $defaultPasswordFound
-                        HasApplyGroupPolicyAce = $hasApplyGroupPolicyAce
-                        HasDenyAce             = $hasDenyAce
-                        EnforcementEnabled     = $enforcementEnabled
-                        Enforcement            = $enforcementEnabled
-                        Errors                 = @($errors)
+                        GPOId                          = $gpo.Id
+                        GPOName                        = $gpo.DisplayName
+                        Name                           = $gpo.DisplayName
+                        DisabledLinks                  = if ($null -ne $gpoLinks) { @($gpoLinks | Where-Object { $_.IsDisabled }).Count } else { $null }
+                        HasVersionMismatch             = $hasVersionMismatch
+                        CpasswordFound                 = $cpasswordFound
+                        DefaultPasswordFound           = $defaultPasswordFound
+                        HasApplyGroupPolicyAce         = $hasApplyGroupPolicyAce
+                        HasDenyAce                     = $hasDenyAce
+                        PermissionsPresent             = $permissionsPresent
+                        HasAuthenticatedUsers          = $hasAuthenticatedUsers
+                        HasEnterpriseDomainControllers = $hasEnterpriseDomainControllers
+                        HasDomainComputers             = $hasDomainComputers
+                        HasInheritedPermissions        = $hasInheritedPermissions
+                        EnforcementEnabled             = $enforcementEnabled
+                        Enforcement                    = $enforcementEnabled
+                        Errors                         = @($errors)
                     }
                 }
                 $gpoState['GPOReports'] = @($gpoReports)
