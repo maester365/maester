@@ -19,7 +19,8 @@
     )
 
     if (-not $script:MtTelemetryPending) { return }
-    $pending = @($script:MtTelemetryPending | Where-Object { -not $_.IsCompleted })
+    # Finished requests stay in, so WaitAll reports one that failed; it returns at once for them.
+    $pending = @($script:MtTelemetryPending)
     $script:MtTelemetryPending.Clear()
     if (-not $pending.Count) { return }
     try {
