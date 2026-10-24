@@ -30,12 +30,22 @@ Think of everything that sits around your Microsoft 365 tenant: a SaaS app your 
 
 That's the part we're most looking forward to: tests for products and policies we'd never have time to cover, from the people who know them best.
 
+## Try the Maester 3.0 preview
+
+Packs are in the Maester 3.0 preview. To try it, remove the Maester versions you have and install the newest preview:
+
+```powershell
+Uninstall-Module Maester -AllVersions
+Install-Module Maester -AllowPrerelease -Scope CurrentUser
+```
+
+To go back to 2.x later, uninstall the preview and run `Install-Module Maester` without `-AllowPrerelease`. See [Upgrading from 2.x](/docs/next/upgrading-from-2x) for what changes in 3.0.
+
 ## Install a pack with one command
 
 <video src={usingPack} poster={usingPackPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
 ```powershell
-Install-Module Maester -AllowPrerelease -Scope CurrentUser   # packs are in the 3.0 preview
 Install-MtPack maester365/maester-pack-demo
 Invoke-Maester -Pack DEMO -SkipBuiltIn
 ```
@@ -96,7 +106,11 @@ Test-MtPack .            # every check Install-MtPack runs, without installing
 Invoke-MtTest -Path .    # run the pack's tests from its folder
 ```
 
-Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies. The full guide is [Writing a pack](/docs/next/packs/writing-a-pack).
+Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies.
+
+### For pack builders
+
+[Writing a pack](/docs/next/packs/writing-a-pack) is the guide for pack builders, with the detail this post skips: the manifest and its code, tests and helpers, connectors, live output and progress, the banner image, checking a pack with `Test-MtPack` in its own CI, and publishing a release. [Pack security](/docs/next/packs/security) covers what `Install-MtPack` checks and what raises a pack's risk.
 
 <video src={buildingPack} poster={buildingPackPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
@@ -137,7 +151,7 @@ The [Zero Trust Assessment pack guide](/docs/next/packs/zero-trust-assessment) c
 
 ## Try it and tell us what you think
 
-Packs and the Zero Trust Assessment pack are in the Maester 3.0 preview. Install it with `Install-Module Maester -AllowPrerelease`, try the demo pack, and if you're thinking about writing a pack for your product or your team, we'd love to hear about it on [GitHub](https://github.com/maester365/maester/discussions) or [Discord](https://discord.maester.dev).
+Packs and the Zero Trust Assessment pack are in the Maester 3.0 preview. [Install the preview](#try-the-maester-30-preview), try the demo pack, and if you're thinking about writing a pack for your product or your team, we'd love to hear about it on [GitHub](https://github.com/maester365/maester/discussions) or [Discord](https://discord.maester.dev).
 
 - [Maester Packs](/docs/next/packs)
 - [Writing a pack](/docs/next/packs/writing-a-pack)
