@@ -70,6 +70,14 @@ The pack's files are then stored read-only, and it is recorded in `maester-packs
 | `Update-MtPack` | Moves to the newest release that has passed the cooldown, showing what changed |
 | `Restore-MtPack` | Installs exactly what the lock file records, on another computer or in a pipeline |
 
+### Start with the demo pack
+
+The [Maester demo pack](https://github.com/maester365/maester-pack-demo) is the quickest way to see what a pack can do. Its eight tests are made up and change nothing, and only one reads your tenant (its name, from Microsoft Graph). Between them they show every kind of result (passed, failed, investigate, skipped and error), a pack's own connector, a Microsoft Graph read, and a long-running test that streams live progress to the dashboard.
+
+That long-running test also adds a report of its own to the Maester report. It's a gallery of charts with made-up data: accounts by last sign-in, admin sign-ins by day and hour, device compliance by operating system, apps by permissions and users, and more. Each one comes with a note on why the chart works, as ideas for showing what a pass or fail can't. Open it under **Reports** in the left menu.
+
+![The demo pack's insights report inside the Maester report, with charts of accounts by last sign-in, admin sign-ins by day and hour, device compliance and app permissions](./img/demo-pack-insights.png)
+
 ## Results in the report you already use
 
 A pack's results land in the same Maester report as everything else, so you don't have a second report to read. Each row is marked as coming from a pack: in the results file it has `Source` `Custom` and a `Package` field with the pack's ID, version, commit and publisher, so a pack can never pass itself off as one of Maester's own checks.
@@ -148,12 +156,28 @@ This is how the Zero Trust Assessment pack works (more below). Next, we're worki
 
 The first pack that ships with Maester runs Microsoft's [Zero Trust Assessment](https://aka.ms/zerotrust/assessment). You don't install it: it is part of the module and only runs when you ask for it.
 
-```powershell
-Install-Module ZeroTrustAssessment -Scope CurrentUser
-Connect-Maester
-Invoke-Maester -Pack ZTA -SkipBuiltIn    # only the Zero Trust Assessment
-Invoke-Maester -Pack ZTA                 # Maester's tests and the assessment
-```
+### Run the Zero Trust Assessment
+
+1. Install the assessment's module once:
+
+   ```powershell
+   Install-Module ZeroTrustAssessment -Scope CurrentUser
+   ```
+
+2. Connect Maester to your tenant. You don't run `Connect-ZtAssessment` yourself: Maester uses this connection to know which tenant to assess.
+
+   ```powershell
+   Connect-Maester
+   ```
+
+3. Name the pack when you run Maester:
+
+   ```powershell
+   Invoke-Maester -Pack ZTA -SkipBuiltIn    # only the Zero Trust Assessment
+   Invoke-Maester -Pack ZTA                 # Maester's tests and the assessment
+   ```
+
+   After an interactive `Connect-Maester`, a browser opens once more so you can sign in for the assessment.
 
 The assessment loads its own versions of the Microsoft Graph, Exchange Online and Az modules, so Maester runs it in a separate PowerShell process and signs in there for you. While it runs, the full-screen dashboard follows it live: the six stages of the assessment, the exports and tests running and finished, the results by Zero Trust pillar, and any errors as they happen. On a large tenant it can take an hour or more, so in a pipeline you can also run the assessment as its own step and point Maester at the report it wrote.
 
@@ -165,7 +189,7 @@ Maester also embeds the assessment's own HTML report, with its pillar dashboards
 
 ![The Maester report overview with the Zero Trust Assessment button and the Reports menu](./img/report-overview.png)
 
-![Microsoft's Zero Trust Assessment report shown inside the Maester report](./img/report-zta-embedded.png)
+![Microsoft's Zero Trust Assessment report, open on its Identity pillar, shown inside the Maester report](./img/report-zta-identity.png)
 
 The [Zero Trust Assessment pack guide](/docs/next/packs/zero-trust-assessment) covers running it in GitHub Actions and other pipelines, the settings, and how the assessment's statuses map to Maester's.
 
@@ -180,4 +204,4 @@ Packs and the Zero Trust Assessment pack are in the Maester 3.0 preview. [Instal
 - [Maester Packs site](https://packs.maester.cloud)
 - [Maester demo pack](https://github.com/maester365/maester-pack-demo)
 
-<small>The screenshots use made-up data: the Maester Packs site's own sample packs and a made-up Contoso publisher, the Contoso sample tenant from the report's own test data, the demo pack's made-up results, and Microsoft's Zero Trust Assessment demo report.</small>
+<small>The screenshots use made-up data: the Maester Packs site's own sample packs and a made-up Contoso publisher, the Contoso sample tenant from the report's own test data, the demo pack's made-up results and insights, and a test tenant for the Zero Trust Assessment.</small>
