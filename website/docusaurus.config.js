@@ -151,6 +151,7 @@ const config = {
           { to: 'manifesto', label: 'Manifesto', position: 'left' },
           { to: 'contributors', label: 'Contributors', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
+          { to: 'sponsor', label: 'Sponsor', position: 'right', className: 'navbar--sponsor-link' },
           {
             "aria-label": "GitHub Repository",
             className: "navbar--github-link",
@@ -184,6 +185,14 @@ const config = {
           {
             title: "Community",
             items: [
+              {
+                label: "Sponsor",
+                to: "/sponsor",
+              },
+              {
+                label: "Contributors",
+                to: "/contributors",
+              },
               {
                 label: "Discord",
                 href: "https://discord.maester.dev/",
