@@ -75,8 +75,9 @@ The service looks up the country and region the request came from, and does not 
 `Install-MtPack` sends a similar event when it installs a pack from a public repository. That's how the
 [packs site](https://packs.maester.cloud) counts installs and finds new packs.
 
-No test names, results of a check, email addresses or tenant data are sent. A pack's page shows its own usage
-counts. Daily totals that hold an installation ID or a tenant hash are deleted after 400 days.
+No test names, results of a check, email addresses or tenant content (users, policies, findings) are sent; the
+tenant is identified only by the hash of its ID described above. A pack's page shows its own usage counts. Daily
+totals that hold an installation ID or a tenant hash are deleted after 400 days.
 
 While the new service is being proven, `Invoke-Maester` also sends the single event it has always sent to PostHog
 when a run starts, which holds the tenant ID. That event will be removed.
