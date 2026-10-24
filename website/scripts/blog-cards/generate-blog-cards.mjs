@@ -36,7 +36,9 @@ function readPost(folder) {
   if (!match) return null;
   const frontMatter = loadYaml(match[1]);
   const date = frontMatter.date ? new Date(frontMatter.date).toISOString().slice(0, 10) : folder.slice(0, 10);
-  return { dir, file, text, frontMatter, date };
+  // Docusaurus also takes a post's title from its first Markdown heading.
+  const title = frontMatter.title ?? text.slice(match[0].length).match(/^#\s+(.+)$/m)?.[1] ?? folder.slice(11);
+  return { dir, file, text, frontMatter, date, title: String(title) };
 }
 
 function labelFor(tags = []) {
@@ -49,13 +51,14 @@ function labelFor(tags = []) {
 function cardData(post) {
   const fm = post.frontMatter;
   return {
-    headline: fm.card_headline ?? fm.title.replace(emoji, "").replace(/\s+/g, " ").trim(),
+    headline: fm.card_headline ?? post.title.replace(emoji, "").replace(/\s+/g, " ").trim(),
     label: fm.card_label ?? labelFor(fm.tags),
     date: `${Number(post.date.slice(8, 10))} ${months[Number(post.date.slice(5, 7)) - 1]} ${post.date.slice(0, 4)}`,
   };
 }
 
-// Point `image` at the card, replacing an existing `image` line or adding one after `tags` (or at the end).
+// Point `image` at the card, replacing an existing `image` line or adding one before `tags` (whose value can be a
+// block list on the following lines) or at the end.
 function setImage(post) {
   const [, head] = post.text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const lines = head.split(/\r?\n/);
@@ -66,7 +69,7 @@ function setImage(post) {
     lines[i] = line;
   } else {
     const tags = lines.findIndex((l) => /^tags:/.test(l));
-    lines.splice(tags >= 0 ? tags + 1 : lines.length, 0, line);
+    lines.splice(tags >= 0 ? tags : lines.length, 0, line);
   }
   writeFileSync(post.file, post.text.replace(head, lines.join("\n")));
 }
