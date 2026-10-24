@@ -9,8 +9,10 @@ date: 2026-10-24
 draft: true
 ---
 
-import packFlow from "./img/pack-flow.mp4";
-import packFlowPoster from "./img/pack-flow-poster.jpg";
+import usingPack from "./img/using-a-pack.mp4";
+import usingPackPoster from "./img/using-a-pack-poster.jpg";
+import buildingPack from "./img/building-a-pack.mp4";
+import buildingPackPoster from "./img/building-a-pack-poster.jpg";
 import installPack from "./img/install-pack.mp4";
 import installPackPoster from "./img/install-pack-poster.jpg";
 
@@ -19,8 +21,6 @@ The Maester 3.0 preview has two new things we're really excited about: **Maester
 Until now, a test came to Maester one of two ways: we shipped it in the module, or you wrote it yourself in your custom tests folder. Packs open a third way, and we think it will bring a much wider variety of tests to Maester than we could ever write on our own.
 
 {/* truncate */}
-
-<video src={packFlow} poster={packFlowPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
 ## What is a Maester Pack?
 
@@ -31,6 +31,8 @@ Think of everything that sits around your Microsoft 365 tenant: a SaaS app your 
 That's the part we're most looking forward to: tests for products and policies we'd never have time to cover, from the people who know them best.
 
 ## Install a pack with one command
+
+<video src={usingPack} poster={usingPackPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
 ```powershell
 Install-Module Maester -AllowPrerelease -Scope CurrentUser   # packs are in the 3.0 preview
@@ -95,6 +97,8 @@ Invoke-MtTest -Path .    # run the pack's tests from its folder
 ```
 
 Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies. The full guide is [Writing a pack](/docs/next/packs/writing-a-pack).
+
+<video src={buildingPack} poster={buildingPackPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
 ### Tools in any language
 
