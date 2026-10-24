@@ -12,7 +12,7 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $script:repoBody = '[{"id":101,"name":"repo","full_name":"fixture-org/repo","owner":{"login":"fixture-org"},"visibility":"private","archived":false,"disabled":false}]'
         $script:branchBody = '[{"name":"main","protected":true}]'
         $script:policyBody = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection","required_pull_request_reviews":{"dismiss_stale_reviews":true,"require_code_owner_reviews":true},"required_conversation_resolution":{"enabled":true},"enforce_admins":{"enabled":true},"allow_force_pushes":{"enabled":false},"allow_deletions":{"enabled":false}}'
-        $script:statusBody = '{"strict":true,"contexts":["ci"],"checks":[{"context":"ci","app_id":null}]}'
+        $script:statusBody = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection/required_status_checks","strict":true,"contexts":["ci"],"contexts_url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection/required_status_checks/contexts","checks":[{"context":"ci","app_id":null}]}'
         $script:signatureBody = '{"enabled":true}'
         $script:rulesBody = '[]'
         $script:defaultBody = '{"id":101,"default_branch":"main"}'
@@ -100,9 +100,39 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $script:policyBody = '{"' + $Parent + '":[{' + $Fields + '}]}'
         (Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Skipped'
     }
-    It 'Fails <Id> for a complete policy requiring no status checks' -ForEach @(@{Id='CIS.GH.1.1.9'},@{Id='CIS.GH.1.1.10'}) {
-        $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
-        (Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Failed'
+    It 'Keeps the predefined-check requirement distinct from unresolved empty-set freshness' {
+        $policy = $script:statusBody | ConvertFrom-Json
+        $policy.contexts = @()
+        $policy.checks = @()
+        $script:statusBody = $policy | ConvertTo-Json -Depth 8 -Compress
+        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Failed'
+        $row = Invoke-MtTest -Id CIS.GH.1.1.10 -Config (Get-CisBranchFixtureConfig)
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'TestSkipped'
+        $row.ReasonDetail | Should -Match 'strict=True.*empty.*freshness enforcement.*not established'
+        $row.ResultDetail.TestResult | Should -Match 'Indeterminate findings: 1'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -match '/protection/required_status_checks$' -and $Headers['X-GitHub-Api-Version'] -eq '2026-03-10' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/repos/fixture-org/repo/rules/branches/main' }
+    }
+    It 'Preserves <Expected> precedence over an indeterminate empty-set freshness branch' -ForEach @(
+        @{ Expected = 'Failed'; RequestError = $false }
+        @{ Expected = 'Error'; RequestError = $true }
+    ) {
+        $policy = $script:statusBody | ConvertFrom-Json
+        $policy.contexts = @()
+        $policy.checks = @()
+        $script:statusBody = $policy | ConvertTo-Json -Depth 8 -Compress
+        $script:otherStatusBody = $script:statusBody.Replace('/main/', '/other/').Replace('"strict":true', '"strict":false')
+        $script:statusRequestError = $RequestError
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/branches/other/protection/required_status_checks$' } {
+            if ($script:statusRequestError) { throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic forbidden policy', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]403)) }
+            [pscustomobject]@{ Content = $script:otherStatusBody; Headers = @{} }
+        }
+        $row = Invoke-MtTest -Id CIS.GH.1.1.10 -Config (Get-CisBranchFixtureConfig -Main @('main', 'other'))
+        $row.Result | Should -Be $Expected
+        $row.ResultDetail.TestResult | Should -Match 'Indeterminate findings: 1'
+        $row.ResultDetail.TestResult | Should -Match ($Expected + ' findings: 1')
+        $row.ResultDetail.TestResult | Should -Match 'freshness enforcement.*not established'
     }
     It 'Requires strict freshness only for 1.1.10' {
         $script:statusBody = '{"strict":false,"contexts":["ci"],"checks":[]}'

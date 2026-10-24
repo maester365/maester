@@ -261,7 +261,8 @@ Describe 'GraphQL and bootstrap rate-limit boundaries' {
             throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic rate limit', $response)
         }
         InModuleScope Maester -Parameters @{ Early = $Early } {
-            $token = ConvertTo-SecureString 'synthetic-no-network' -AsPlainText -Force
+            $token = [System.Security.SecureString]::new()
+            $token.AppendChar('x')
             Connect-MtGitHub -Organization fixture-org -Token $token -ApiBaseUri https://api.github.com -ApiVersion '2022-11-28' -WarningAction SilentlyContinue
             if ($Early) { $__MtSession.GitHubConnection.FailureReason | Should -Be 'RateLimited' }
             else {

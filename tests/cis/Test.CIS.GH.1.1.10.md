@@ -11,7 +11,9 @@ Requiring current branch contents before merging reduces the chance that an outd
 
 This native check assesses explicitly identified main branches. Configure the authoritative repository inventory and applicable branch declarations in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A successful connection or visible repository list does not establish complete scope.
 
-Read-only evidence comes from `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks`, explicitly using REST version `2026-03-10`. The decisive evidence is `strict with contexts and checks`, expected to be **true with a valid nonempty required-check set**. Required values must have their documented types. Both status-check representations (`contexts` and `checks`) are validated where used; null application IDs are allowed by the schema.
+Read-only evidence comes from `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks`, explicitly using REST version `2026-03-10`. The decisive evidence is the status-check policy and its Boolean `strict` setting. Required values must have their documented types. Both status-check representations (`contexts` and `checks`) are validated where used; null application IDs are allowed by the schema. With a valid nonempty check set, `strict=true` satisfies this configuration audit. `strict=false` is nonconforming, subject to unresolved alternative-ruleset enforcement.
+
+CIS 1.1.10 requires the status-check and up-to-date settings but specifies no minimum selected-check count. When `strict=true` and both valid arrays are empty, freshness enforcement is not established for that combination: the branch is explicitly indeterminate (`Skipped` / `TestSkipped`) with a custom explanation. Empty arrays alone establish neither compliance nor a violation. CIS 1.1.9 separately assesses predefined required checks.
 
 A merge queue is not automatically treated as equivalent to the strict-update checkbox. This check does not invent an organization freshness policy.
 
@@ -27,7 +29,7 @@ Developers may need to update a pull-request branch and rerun its checks before 
 
 1. Identify every in-use repository and the branches covered by this recommendation. Reconcile public, internal, private, archived, and disabled repositories; do not exclude a repository just because it is archived.
 2. On [GitHub](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule), open the repository, then **Settings** > **Branches**. Use your deployment's host when working on GHE.com.
-3. Edit the applicable classic branch protection rule, or add one covering the required branch. Select **Require status checks to pass before merging**, configure required checks, then select **Require branches to be up to date before merging**.
+3. Edit the applicable classic branch protection rule, or add one covering the required branch. Select **Require status checks to pass before merging** and **Require branches to be up to date before merging**.
 4. Save the rule. Coordinate developer rollout and repeat the read-only assessment with the complete scope.
 
 #### Result interpretation and limitations

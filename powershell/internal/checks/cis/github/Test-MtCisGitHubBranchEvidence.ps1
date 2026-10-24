@@ -73,7 +73,13 @@
                                 $conforming = ($policy.contexts.Count + $policy.checks.Count) -gt 0
                                 if ($Control -eq '1.1.10') { $conforming = $conforming -and $policy.strict }
                                 $reason = "Required contexts=$($policy.contexts.Count); checks=$($policy.checks.Count)"
-                                if ($Control -eq '1.1.10') { $reason += "; strict=$($policy.strict)" }
+                                if ($Control -eq '1.1.10') {
+                                    $reason += "; strict=$($policy.strict)"
+                                    if ($policy.strict -and $policy.contexts.Count -eq 0 -and $policy.checks.Count -eq 0) {
+                                        $conforming = $null
+                                        $reason += '; the required-check set is empty and freshness enforcement is not established.'
+                                    }
+                                }
                             }
                         }
                         '1.1.11' { if ($null -ne $policy.required_conversation_resolution -and $policy.required_conversation_resolution.GetType() -eq [System.Management.Automation.PSCustomObject] -and $policy.required_conversation_resolution.enabled -is [bool]) { $conforming = $policy.required_conversation_resolution.enabled; $reason = "required_conversation_resolution.enabled=$conforming" } }
