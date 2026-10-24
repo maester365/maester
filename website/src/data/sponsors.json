@@ -1,6 +1,190 @@
 {
-  "maintainers": [],
-  "testAuthors": [],
-  "contributors": [],
-  "backers": []
+  "maintainers": [
+    {
+      "github": "merill",
+      "name": "Merill Fernando",
+      "title": "Archmaester",
+      "avatar": "https://avatars.githubusercontent.com/u/1288081?s=240&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
+      "contributorPage": "/contributors/merill",
+      "tests": 5,
+      "commits": 1705,
+      "sponsorUrl": "https://github.com/sponsors/merill"
+    },
+    {
+      "github": "soulemike",
+      "name": "Michael Soule",
+      "title": "Co-creator of Maester",
+      "avatar": "https://avatars.githubusercontent.com/u/431932?s=240&u=976e4c5ae4ee3d853e555e1342229f09f1afa1c5&v=4",
+      "contributorPage": "/contributors/soulemike",
+      "tests": 403,
+      "commits": 313,
+      "sponsorUrl": "https://github.com/sponsors/soulemike"
+    },
+    {
+      "github": "SamErde",
+      "name": "Sam Erde",
+      "title": "Microsoft MVP",
+      "avatar": "https://avatars.githubusercontent.com/u/20478745?s=240&u=329db460b9b806d59b0431da8a9fa6bf03e5a96a&v=4",
+      "contributorPage": "/contributors/samerde",
+      "tests": 2,
+      "commits": 622,
+      "sponsorUrl": "https://github.com/sponsors/SamErde"
+    }
+  ],
+  "testAuthors": [
+    {
+      "github": "svrooij",
+      "name": "Stephan van Rooij",
+      "title": "Microsoft MVP",
+      "avatar": "https://avatars.githubusercontent.com/u/1292510?s=240&u=fa6ea526472f4e47a1e4730ed8a299ce6ada86dc&v=4",
+      "contributorPage": "/contributors/svrooij",
+      "tests": 2,
+      "commits": 24,
+      "sponsorUrl": "https://github.com/sponsors/svrooij"
+    },
+    {
+      "github": "bastienperez",
+      "name": "Bastien Perez",
+      "title": "Consultant Microsoft 365 - Active Directory - Modern Workplace",
+      "avatar": "https://avatars.githubusercontent.com/u/104252785?s=240&u=697c59b067ecb97079489d2a84ad3113f887f162&v=4",
+      "contributorPage": "/contributors/bastienperez",
+      "tests": 1,
+      "commits": 4,
+      "sponsorUrl": "https://github.com/sponsors/bastienperez"
+    },
+    {
+      "github": "jflieben",
+      "name": "Jos Lieben",
+      "title": "Microsoft MVP",
+      "avatar": "https://avatars.githubusercontent.com/u/1587420?s=240&u=8d5d7206bf18a55f0d232c5c59ef42d4bda5b756&v=4",
+      "contributorPage": "/contributors/jflieben",
+      "tests": 1,
+      "commits": 1,
+      "sponsorUrl": "https://github.com/sponsors/jflieben"
+    }
+  ],
+  "contributors": [
+    {
+      "github": "fflaten",
+      "name": "Frode Flaten",
+      "title": "Pester maintainer",
+      "avatar": "https://avatars.githubusercontent.com/u/3436158?s=240&v=4",
+      "contributorPage": "/contributors/fflaten",
+      "tests": 0,
+      "commits": 55,
+      "sponsorUrl": "https://github.com/sponsors/fflaten"
+    },
+    {
+      "github": "michaelmsonne",
+      "name": "Michael Morten Sonne",
+      "title": "Microsoft MVP",
+      "avatar": "https://avatars.githubusercontent.com/u/49366751?s=240&u=c5efbda0d6337c0bb2f02af806f4a8c47ab60b82&v=4",
+      "contributorPage": "/contributors/michaelmsonne",
+      "tests": 0,
+      "commits": 28,
+      "sponsorUrl": "https://github.com/sponsors/michaelmsonne"
+    },
+    {
+      "github": "ChrFrohn",
+      "name": "Christian Frohn",
+      "title": "",
+      "avatar": "https://avatars.githubusercontent.com/u/50671696?s=240&u=3ef5f9a70203a5580cc037829fba1c060005c885&v=4",
+      "contributorPage": "",
+      "tests": 0,
+      "commits": 16,
+      "sponsorUrl": "https://github.com/sponsors/ChrFrohn"
+    },
+    {
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "avatar": "https://avatars.githubusercontent.com/u/175124143?s=240&u=140e6b5b05ab343c256339cec6f6738121666bb8&v=4",
+      "contributorPage": "/contributors/earbona23",
+      "tests": 0,
+      "commits": 16,
+      "sponsorUrl": "https://github.com/sponsors/earbona23"
+    },
+    {
+      "github": "DanielBradley1",
+      "name": "Daniel Bradley",
+      "title": "Microsoft Security MVP and Blogger @ ourcloudnetwork.com",
+      "avatar": "https://avatars.githubusercontent.com/u/96792909?s=240&u=736d2671948b8af6c4fb7b9d71b331531b1caa75&v=4",
+      "contributorPage": "/contributors/danielbradley1",
+      "tests": 0,
+      "commits": 15,
+      "sponsorUrl": "https://github.com/sponsors/DanielBradley1"
+    },
+    {
+      "github": "maikvandergaag",
+      "name": "Maik van der Gaag",
+      "title": "",
+      "avatar": "https://avatars.githubusercontent.com/u/9531411?s=240&u=e26d57367ed831ff24bc379bd2639c3eb5803ec2&v=4",
+      "contributorPage": "",
+      "tests": 0,
+      "commits": 11,
+      "sponsorUrl": "https://github.com/sponsors/maikvandergaag"
+    },
+    {
+      "github": "thomasvochten",
+      "name": "Thomas Vochten",
+      "title": "Microsoft MVP",
+      "avatar": "https://avatars.githubusercontent.com/u/135686?s=240&u=9fa89c07181512140f618d345ad025dc19692589&v=4",
+      "contributorPage": "",
+      "tests": 0,
+      "commits": 2,
+      "sponsorUrl": "https://github.com/sponsors/thomasvochten"
+    },
+    {
+      "github": "mangeshraut712",
+      "name": "Mangesh Raut",
+      "title": "",
+      "avatar": "https://avatars.githubusercontent.com/u/95149253?s=240&u=23f866d791d0ea6e6c76c5ad747c7c822fa2c04c&v=4",
+      "contributorPage": "",
+      "tests": 0,
+      "commits": 1,
+      "sponsorUrl": "https://github.com/sponsors/mangeshraut712"
+    }
+  ],
+  "backers": [
+    {
+      "github": "merill",
+      "name": "Merill Fernando",
+      "avatar": "https://avatars.githubusercontent.com/u/1288081?s=120&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
+      "organization": false,
+      "active": true,
+      "sponsors": [
+        "SamErde"
+      ]
+    },
+    {
+      "github": "RobinpZA",
+      "name": "Robin Pieterse",
+      "avatar": "https://avatars.githubusercontent.com/u/165141638?s=120&u=44e0f1186bb519fbcef14e33fd2b5838e2f3a830&v=4",
+      "organization": false,
+      "active": true,
+      "sponsors": [
+        "SamErde"
+      ]
+    },
+    {
+      "github": "brianveldman",
+      "name": "Brian Veldman",
+      "avatar": "https://avatars.githubusercontent.com/u/147204186?s=120&u=38d64f50eec2d6854fe8f42508a68260066ce675&v=4",
+      "organization": false,
+      "active": false,
+      "sponsors": [
+        "merill"
+      ]
+    },
+    {
+      "github": "KirillOsenkov",
+      "name": "Kirill Osenkov",
+      "avatar": "https://avatars.githubusercontent.com/u/679326?s=120&u=5fcf0c6c2004b2cbbeb156c146df63c31633f477&v=4",
+      "organization": false,
+      "active": false,
+      "sponsors": [
+        "merill"
+      ]
+    }
+  ]
 }
