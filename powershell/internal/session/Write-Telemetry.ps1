@@ -22,7 +22,7 @@
 
     Nothing is sent when Invoke-Maester -DisableTelemetry is used or MAESTER_DISABLE_TELEMETRY is set to anything
     but 0 or false. MAESTER_TELEMETRY_URL sends events to another Worker, for testing. A failure is written to the
-    verbose stream and never stops the command.
+    verbose stream and never stops the command. Events are sent in the background, so they never slow a run down.
     #>
     [CmdletBinding()]
     param (
@@ -64,11 +64,13 @@
     elseif ($env:CI -and $env:CI -ne 'false') { 'Other' }
     else { $null }
     $baseUrl = if ($env:MAESTER_TELEMETRY_URL) { $env:MAESTER_TELEMETRY_URL.TrimEnd('/') } else { 'https://packs.maester.cloud' }
+    # Starts the request in the background and returns at once (Send-MtTelemetryRequest); the command that sent it
+    # calls Wait-MtTelemetry as it returns.
     $send = {
         param($uri, $body)
         try {
             $json = ConvertTo-Json -InputObject $body -Depth 4 -Compress
-            Invoke-RestMethod -Uri $uri -Method Post -ContentType 'application/json' -Body $json -TimeoutSec 3 -ErrorAction Stop | Out-Null
+            Send-MtTelemetryRequest -Uri $uri -Body $json
         } catch {
             Write-Verbose "Telemetry was not sent: $($_.Exception.Message)"
         }

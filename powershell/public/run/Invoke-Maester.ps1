@@ -1172,5 +1172,7 @@
         Restore-MtConsoleEncoding
         # The console mode is this run's: a later Invoke-MtTest works out its own.
         $__MtSession.Console = $null
+        # Telemetry is sent in the background; give the end event a moment in case PowerShell exits next.
+        Wait-MtTelemetry
     }
 }

@@ -133,6 +133,7 @@ function Install-MtPack {
     foreach ($e in ($lock.Packs | Where-Object { $_.Id -eq $entry.Id -or $_.Id -notin $before })) {
         Write-Telemetry -EventName PackInstall -Pack $e
     }
+    Wait-MtTelemetry
     if ($where.ConfigPath) {
         foreach ($e in ($lock.Packs | Where-Object { $_.Source -ne 'builtin' -and ($_.Id -eq $entry.Id -or $_.Id -notin $before) })) {
             Update-MtPackConfig -Path $where.ConfigPath -Id $e.Id -Entry ([ordered]@{ Id = $e.Id; Source = $e.Source; Version = $e.Version })

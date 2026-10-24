@@ -2,6 +2,7 @@ Describe 'Write-Telemetry' {
     BeforeAll {
         . "$PSScriptRoot/../../internal/session/Write-Telemetry.ps1"
         . "$PSScriptRoot/../../internal/session/Get-MtInstallationId.ps1"
+        . "$PSScriptRoot/../../internal/session/Send-MtTelemetryRequest.ps1"
         function Get-MtModuleVersion { '3.1.0' }
         $script:disabled = $env:MAESTER_DISABLE_TELEMETRY
     }
@@ -14,7 +15,7 @@ Describe 'Write-Telemetry' {
         }
         Mock Get-MtInstallationId { '11111111-2222-3333-4444-555555555555' }
         $script:sent = $null
-        Mock Invoke-RestMethod { $script:sent = [pscustomobject]@{ Uri = $Uri; Body = $Body | ConvertFrom-Json } }
+        Mock Send-MtTelemetryRequest { $script:sent = [pscustomobject]@{ Uri = $Uri; Body = $Body | ConvertFrom-Json } }
         $script:run = [pscustomobject]@{ RunId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'; StartedAt = [datetime]::UtcNow.AddSeconds(-90); Stage = 'Tests' }
     }
 
@@ -23,16 +24,16 @@ Describe 'Write-Telemetry' {
         $env:MAESTER_TELEMETRY_URL = $null
     }
 
-    It 'uses a bounded timeout for the telemetry request' {
+    It 'hands the event to the background sender as JSON' {
         Write-Telemetry -EventName InvokeMaester -Run $script:run
 
-        Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter {
-            $TimeoutSec -eq 3 -and $ErrorAction -eq 'Stop'
+        Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter {
+            $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
         }
     }
 
     It 'does not fail when the telemetry request throws' {
-        Mock Invoke-RestMethod { throw 'Network failure' }
+        Mock Send-MtTelemetryRequest { throw 'Network failure' }
 
         { Write-Telemetry -EventName InvokeMaester } | Should -Not -Throw
     }
@@ -77,8 +78,8 @@ Describe 'Write-Telemetry' {
     It 'sends a start event with the run ID, and the PostHog event until PostHog is retired' {
         Write-Telemetry -EventName InvokeMaesterStart -Run $script:run
 
-        Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter { $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).Type -eq 'start' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
-        Should -Invoke Invoke-RestMethod -Exactly 1 -ParameterFilter { $Uri -eq 'https://us.i.posthog.com/capture/' }
+        Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter { $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).Type -eq 'start' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter { $Uri -eq 'https://us.i.posthog.com/capture/' }
     }
 
     It 'sends when the run started, how long it took and the result counts' {
@@ -137,7 +138,36 @@ Describe 'Write-Telemetry' {
         $env:MAESTER_DISABLE_TELEMETRY = '1'
         Write-Telemetry -EventName InvokeMaesterStart -Run $script:run
         Write-Telemetry -EventName InvokeMaester -Run $script:run
-        Should -Invoke Invoke-RestMethod -Exactly 0
+        Should -Invoke Send-MtTelemetryRequest -Exactly 0
+    }
+}
+
+Describe 'Send-MtTelemetryRequest and Wait-MtTelemetry' {
+    BeforeAll {
+        . "$PSScriptRoot/../../internal/session/Send-MtTelemetryRequest.ps1"
+        . "$PSScriptRoot/../../internal/session/Wait-MtTelemetry.ps1"
+    }
+
+    It 'returns at once and waits at most the timeout for a request that does not answer' {
+        # A listener that accepts the connection and never answers stands in for a slow service.
+        $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0)
+        $listener.Start()
+        try {
+            $uri = "http://127.0.0.1:$($listener.LocalEndpoint.Port)/api/v1/telemetry"
+            $send = [System.Diagnostics.Stopwatch]::StartNew()
+            Send-MtTelemetryRequest -Uri $uri -Body '{}'
+            $send.Elapsed.TotalSeconds | Should -BeLessThan 1
+
+            $wait = [System.Diagnostics.Stopwatch]::StartNew()
+            { Wait-MtTelemetry -TimeoutSeconds 0.5 } | Should -Not -Throw
+            $wait.Elapsed.TotalSeconds | Should -BeLessThan 2
+        } finally {
+            $listener.Stop()
+        }
+    }
+
+    It 'does nothing when no request is pending' {
+        { Wait-MtTelemetry } | Should -Not -Throw
     }
 }
 
