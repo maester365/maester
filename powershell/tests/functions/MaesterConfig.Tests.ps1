@@ -87,4 +87,14 @@
             }
         }
     }
+
+    Context 'GlobalSettings carries overrides, not product defaults' {
+        It 'does not ship GitHub API defaults in GlobalSettings' {
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+            $configJson.GlobalSettings.PSObject.Properties.Name | Should -Not -Contain 'GitHubApiBaseUri'
+            $configJson.GlobalSettings.PSObject.Properties.Name | Should -Not -Contain 'GitHubApiVersion'
+        }
+    }
 }
