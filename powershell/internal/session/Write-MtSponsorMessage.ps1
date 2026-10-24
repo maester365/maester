@@ -59,7 +59,7 @@
     $link = $url
     if ($Console.Hyperlink) { $link = "$esc]8;;$url$esc\$url$esc]8;;$esc\" }
     Write-MtConsoleLine (& $line $full $pink $heading)
-    Write-MtConsoleLine "    It's free, and the people who build it rely on sponsors to keep it going."
+    Write-MtConsoleLine "    Built over many long nights. If it saves you time, shout us a coffee."
     Write-MtConsoleLine "    $(Format-MtConsoleText 'Sponsor the people who build it:' -Style Dim -Console $Console) $(& $paint $link $pink)"
     Write-MtConsoleLine ''
 }

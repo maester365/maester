@@ -96,8 +96,7 @@ function Backers() {
     <aside id="thank-you" className={styles.thanks}>
       <h2>Thank you to our sponsors {heart}</h2>
       <p className={styles.thanksSub}>
-        These people and organisations sponsor, or have sponsored, Maester's maintainers. Their support made Maester
-        possible.
+        These people and organisations sponsor Maester's maintainers. You make Maester possible.
       </p>
       <ul className={styles.backers}>
         {backers.map((backer) => (
@@ -143,20 +142,19 @@ export default function Sponsor() {
   return (
     <Layout
       title="Sponsor"
-      description="Maester is free and open source, and it runs on sponsorships. Sponsor the maintainers and contributors who build it."
+      description="Maester is free and open source, built over long nights and weekends. If it saves you time, shout one of the people who build it a coffee."
     >
       <main className={styles.page}>
         <header className={styles.hero}>
           <div className={styles.heroHeart}>{heart}</div>
-          <h1>Maester runs on sponsorships</h1>
+          <h1>Shout us a coffee ☕</h1>
           <p>
-            Maester is free and open source. Every test, fix and feature is built by people in the community, most of
-            them in their own time. Sponsoring them is how you keep Maester going: it pays for the hours that go into
-            new tests, keeping up with Microsoft's changes, and answering issues.
+            Maester is free, and it takes a lot of long nights and weekends to bring it to you. If it saves you time,
+            sponsoring one of the people below for the price of a coffee keeps them going.
           </p>
           <p className={styles.heroNote}>
-            Everyone below has GitHub Sponsors turned on. Pick the people whose work you rely on and sponsor them
-            directly on GitHub.
+            Using Maester at work? Ask your company to sponsor. Why we build it:{" "}
+            <Link to="/manifesto">the Maester Manifesto</Link>.
           </p>
         </header>
 

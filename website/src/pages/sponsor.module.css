@@ -312,6 +312,8 @@
 
 .thanks {
   flex: 0 0 280px;
+  /* Level with the top of the first row of cards: below the heading and line of the first section. */
+  margin-top: calc(1.5rem * var(--ifm-heading-line-height) + 0.25rem + 1rem * var(--ifm-line-height-base) + 1.25rem);
   position: sticky;
   top: calc(var(--ifm-navbar-height) + 1rem);
   max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
@@ -346,16 +348,17 @@
 }
 
 .backers {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem 0.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .backers li {
-  min-width: 0;
+  width: 72px;
 }
 
 .backers a {
@@ -363,7 +366,6 @@
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
-  min-width: 0;
   color: inherit;
   text-decoration: none !important;
 }
@@ -387,14 +389,17 @@
   box-shadow: 0 0 0 3px var(--sponsor-pink);
 }
 
+/* Full names, on up to two lines. */
 .backerName {
-  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   font-size: 0.72rem;
   font-weight: 600;
   line-height: 1.2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 996px) {
@@ -403,6 +408,7 @@
   }
 
   .thanks {
+    margin-top: 0;
     position: static;
     flex: none;
     width: 100%;
