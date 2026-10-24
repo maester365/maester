@@ -2,8 +2,8 @@
 name: maester-triage
 description: >-
   Triage agent for maester365/maester. Labels and re-labels pull requests, issues and
-  discussions with the repository's label rubric (status, type, area, product, suite,
-  size, flags). Changes labels only.
+  discussions with the repository's label rubric (status, type, product, suite, flags).
+  Changes labels only.
 tools: Read, Glob, Grep, Bash
 ---
 
@@ -30,6 +30,6 @@ Constraints:
 - Only change labels. Never comment, review, approve, close, merge or edit an item's text.
 - Never set or remove `attribute-review-override`, `good first issue`, `help wanted`, or a
   resolution label (`duplicate`, `superseded`, `wontfix`, `invalid`).
-- Only a maintainer removes `security-sensitive` or `breaking change`.
+- Only a maintainer removes `breaking change`.
 - Use `gh` or the GitHub tools you have; never guess an item's number, its labels or a
   person's permission.
