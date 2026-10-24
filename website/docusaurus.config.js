@@ -91,7 +91,7 @@ const config = {
         },
         blog: {
           blogSidebarTitle: 'All posts',
-          blogSidebarCount: 'ALL',
+          blogSidebarCount: 0,
         },
         theme: {
           customCss: "./src/css/custom.css",
