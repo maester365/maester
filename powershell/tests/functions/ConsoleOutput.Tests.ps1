@@ -281,6 +281,26 @@ Describe 'Write-MtRunSummary' {
         $names | Should -Be 'Exchange Online', 'Defender', 'Entra ID', 'Intune', 'Azure', 'Teams'
     }
 
+    It 'Lists the tests of Maester Packs by pack, after the products and apart from them' {
+        $pack = [pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Name = 'Microsoft Zero Trust Assessment' }
+        $results = [pscustomobject]@{
+            PassedCount = 2; FailedCount = 1; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 3; TotalDuration = '00:00:01'
+            Tests = @(
+                [pscustomobject]@{ Id = 'A.1'; Product = 'entra'; Result = 'Passed'; Severity = 'High'; Package = $null }
+                [pscustomobject]@{ Id = 'ZTA.1'; Product = 'entra'; Result = 'Passed'; Severity = 'High'; Package = $pack }
+                [pscustomobject]@{ Id = 'ZTA.2'; Product = 'entra'; Result = 'Failed'; Severity = 'High'; Package = $pack }
+            )
+        }
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:plain; r = $results } { param($c, $r) Write-MtRunSummary -MaesterResults $r -Console $c 6>&1 } | ForEach-Object { "$_" })
+        $product = [array]::FindIndex([string[]]$lines, [Predicate[string]] { param($l) $l -match '^ Product ' })
+        $packs = [array]::FindIndex([string[]]$lines, [Predicate[string]] { param($l) $l -match '^ Maester Pack ' })
+        $product | Should -BeGreaterOrEqual 0
+        $packs | Should -BeGreaterThan $product
+        $lines[$product + 1] | Should -Match '^ Entra ID +1 +0 '
+        $lines[$packs + 1] | Should -Match '^ Microsoft Zero Trust Assessment +1 +1 +0 +0 +0 +High'
+        @($lines | Where-Object { $_ -match '^ Entra ID ' }).Count | Should -Be 1
+    }
+
     It 'Takes a product name from the result when it has one, and shows a product it cannot name as written' {
         $results = [pscustomobject]@{
             PassedCount = 2; FailedCount = 0; ErrorCount = 0; InvestigateCount = 0; SkippedCount = 0; NotRunCount = 0; TotalCount = 2; TotalDuration = '00:00:01'
@@ -1003,5 +1023,274 @@ Describe 'Dashboard panels' {
         $screen | Should -Not -Match '0817c655|Commercial|Workforce'
         $screen | Should -Not -Match 'Teams'
         $renderer.Close()
+    }
+}
+
+Describe 'Output box' {
+    BeforeAll {
+        function Get-OutputRenderer {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Unicode = $true; $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.SetPhases([string[]]@('Prepare', 'Run tests', 'Results', 'Reports'))
+            $renderer.StartPhase('Run tests')
+            $renderer
+        }
+    }
+
+    It 'Shows the newest lines under the phases before the tests start, wrapped, with progress pinned at the bottom' {
+        $renderer = Get-OutputRenderer
+        $renderer.StartOutput('Zero Trust Assessment')
+        foreach ($n in 1..60) { $renderer.WriteOutput("line $n") }
+        $renderer.WriteOutput(('word ' * 40).Trim())
+        $renderer.WriteOutput('Completed: 1 / 5', $true)
+        $renderer.WriteOutput('Completed: 2 / 5', $true)
+        $screen = $renderer.GetPlainScreen(100, 40)
+        $top = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Zero Trust Assessment ' })
+        $top | Should -BeGreaterThan 0
+        $screen[$top] | Should -Match '61 lines ─╮$'
+        $screen[-1] | Should -Match '^ ╰─+╯$'
+        $screen[-2] | Should -Match '^ │ . Completed: 2 / 5 +│$'
+        $screen[-3] | Should -Match '^ ├╌ Progress ╌+┤$'
+        ($screen -join "`n") | Should -Not -Match 'Completed: 1 / 5'
+        # The long line wraps at a space, and the oldest lines have scrolled out.
+        $screen[-5] | Should -Match '^ │ word( word)+ +│$'
+        $screen[-6] | Should -Match '^ │ word( word)+ +│$'
+        $screen[-7] | Should -Match '^ │ line 60 +│$'
+        ($screen -join "`n") | Should -Not -Match 'line 1 '
+        @($screen | ForEach-Object { $_.Length } | Sort-Object -Unique) | Should -Not -Contain 101
+    }
+
+    It 'Sits between the result blocks and the running tests while tests run, and goes when it is stopped' {
+        $renderer = Get-OutputRenderer
+        $renderer.Start(2, [string[]]@('Entra'), [int[]]@(2), [string[]]@($null))
+        $renderer.ItemStarting('MT.1', 'A long test', 'Entra')
+        $renderer.WriteOutput('from the tool')
+        $screen = $renderer.GetPlainScreen(100, 40)
+        $box = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Output ' })
+        $running = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Running ' })
+        $box | Should -BeGreaterThan 0
+        $running | Should -Be ($box + 10)
+        $screen[$box + 1] | Should -Match '│ from the tool +│'
+        $renderer.HasOutput | Should -BeTrue
+        $renderer.StopOutput()
+        $renderer.HasOutput | Should -BeFalse
+        ($renderer.GetPlainScreen(100, 40) -join "`n") | Should -Not -Match 'from the tool'
+    }
+
+    It 'Removes escape sequences, control characters and emoji from what other programs write' {
+        [Maester.Engine.MtConsoleRenderer]::OutputText("$([char]27)[32m🚀 Started$([char]27)[0m") | Should -Be 'Started'
+        [Maester.Engine.MtConsoleRenderer]::OutputText("`tindented$([char]7) ✅ done") | Should -Be '    indented done'
+        [Maester.Engine.MtConsoleRenderer]::OutputText("a$([char]0x202E)b") | Should -Be 'ab'
+    }
+}
+
+Describe 'Write-MtTestOutput' {
+    AfterEach {
+        InModuleScope Maester { $script:__MtConsoleRenderer = $null; $script:__MtTestOutput = $null }
+    }
+
+    It 'Hands the lines to the dashboard while it owns the screen, and closes the box with -Complete' {
+        $result = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            $written = @("first`nsecond", [System.Management.Automation.ErrorRecord]::new([System.Exception]::new('from stderr'), 'E', 'NotSpecified', $null) |
+                    Write-MtTestOutput -Title 'The tool' 6>&1)
+            $screen = $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+            [pscustomobject]@{ Written = $written.Count; Screen = $screen; Open = $renderer.HasOutput }
+        }
+        $result.Written | Should -Be 0
+        $result.Screen | Should -Match '╭─ The tool .*3 lines'
+        $result.Screen | Should -Match '│ first '
+        $result.Screen | Should -Match '│ second '
+        $result.Screen | Should -Match '│ from stderr '
+        $result.Open | Should -BeFalse
+    }
+
+    It 'Writes the lines to the host, indented, without the dashboard, and progress at most every ten seconds' {
+        # In CI, so that a line from the tool cannot issue a workflow command.
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                $streamed = @(
+                    Write-MtTestOutput -Title 'The tool' -InputObject "one$([char]27)[31m" 6>&1
+                    Write-MtTestOutput 'Completed: 1 / 5' -Progress 6>&1
+                    Write-MtTestOutput 'Completed: 2 / 5' -Progress 6>&1
+                    Write-MtTestOutput '::error::not a command' 6>&1
+                )
+                # Nothing goes to a stream, which the engine would hold until the test has finished.
+                if ($streamed.Count -gt 0) { throw "Wrote $($streamed.Count) records to a stream." }
+                $script:hostLines
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('  The tool', '    one', '    Completed: 1 / 5', '    : :error::not a command')
+    }
+}
+
+Describe 'Write-MtTestProgress' {
+    AfterEach {
+        InModuleScope Maester { $script:__MtConsoleRenderer = $null; $script:__MtTestOutput = $null }
+    }
+
+    It 'Shows the stage, a bar of the items done, the items running and the errors at the top of the box' {
+        $screen = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The tool' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stage 'Exporting data' -StageNumber 1 -StageCount 3 -Completed 12 -Total 40 -Failed 1 -Running 2 -Current 'Users', 'Groups'
+            Write-MtTestProgress -ErrorMessage 'The export of Devices failed'
+            $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screen | Should -Match '╭─ The tool .*1 line · 1 error'
+        $screen | Should -Match '│ Stage 1 of 3 · Exporting data '
+        $screen | Should -Match '│ ━+─+ 13 / 40 32% · 1 failed · 2 running '
+        $screen | Should -Match '│ . Users, Groups '
+        $screen | Should -Match '│ ✗ The export of Devices failed '
+        $screen | Should -Match '├╌ Log ╌'
+        $screen | Should -Match '│ a line of the log '
+    }
+
+    It 'Draws the stages as a track, and lists the items running and those that finished as it lists the tests' {
+        $screen = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The tool' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stages 'Export', 'Tests', 'Report' -StageNumber 2 -Stage 'Running tests' -Completed 1 -Failed 1 -Total 10 -Items @(
+                @{ Id = 'T.1'; Title = 'The first test'; Status = 'Passed'; Seconds = 2.5 }
+                @{ Id = 'T.2'; Title = 'The second test'; Status = 'Failed'; Detail = 'Forbidden'; Seconds = 0.5 }
+                @{ id = 'T.3'; title = 'The third test'; detail = 'Reading policies'; seconds = 12 }
+            )
+            $renderer.GetPlainScreen(100, 40) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screen | Should -Match '│ ✓ 1 Export ━━ ● 2 Tests ┄┄ ○ 3 Report '
+        $screen | Should -Match '│ Running tests  ━+─+ 2 / 10 20% · 1 failed'
+        $screen | Should -Match '│ . T\.3 +The third test  Reading policies +12\.0s │'
+        $screen | Should -Match '│ ✗ T\.2 +The second test  Forbidden +0\.5s │'
+        $screen | Should -Match '│ ✓ T\.1 +The first test +2\.5s │'
+        # The one running first, then those that finished, the newest first.
+        $screen.IndexOf('T.3') | Should -BeLessThan $screen.IndexOf('T.2')
+        $screen.IndexOf('T.2') | Should -BeLessThan $screen.IndexOf('T.1')
+    }
+
+    It 'Takes its progress and errors from ##maester lines of the output, which are not shown as lines' {
+        $result = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 100; $renderer.Height = 40; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            @(
+                'before'
+                '##maester[progress] {"Stage":"Running tests","completed":3,"TOTAL":9,"current":"21828","unknown":true}'
+                "##maester[error] Test 21829 failed`nafter"
+                '##maester[progress] not json'
+            ) | Write-MtTestOutput -Title 'The tool'
+            [pscustomobject]@{ Screen = $renderer.GetPlainScreen(100, 40) -join "`n" }
+            Write-MtTestOutput -Complete
+        }
+        $result.Screen | Should -Match '│ Running tests '
+        $result.Screen | Should -Match ' 3 / 9 '
+        $result.Screen | Should -Match '│ . 21828 '
+        $result.Screen | Should -Match '│ ✗ Test 21829 failed '
+        $result.Screen | Should -Match '2 lines · 1 error'
+        $result.Screen | Should -Not -Match '##maester'
+    }
+
+    It 'Shows the results, the groups and the times of the work in the box in place of the run''s, before its tests start' {
+        $screens = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 165; $renderer.Height = 50; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Unicode = $true; $renderer.Ansi = $false
+            $renderer.SetPanels([string[]]@('Totals', 'Slowest', 'Pace', 'Results'))
+            $renderer.SetRunLogo([string[]]@(' __  __ ', '|  \/  |', '| |\/| |', '|_|  |_|', ''), 9, 4, '', 'v3')
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The assessment' -InputObject 'a line of the log'
+            @(
+                '##maester[progress] {"stage":"Running tests","stageNumber":2,"stageCount":3,"total":20,"completed":6,'
+                '"items":[{"id":"T.1","status":"Passed","seconds":2},{"id":"T.2","title":"The slow one","status":"Passed","seconds":40},{"id":"T.3","seconds":1}],'
+                '"results":{"name":"Zero Trust","passed":4,"failed":2,"running":1,"total":20},"groupLabel":"Zero Trust Pillars",'
+                '"groups":[{"name":"Identity","passed":3,"failed":1,"total":12,"running":1},{"name":"Devices","passed":1,"failed":1,"total":8}]}'
+            ) -join '' | Write-MtTestOutput
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestOutput -Complete
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+        }
+        $screen = $screens[0]
+        # The groups where the products are listed, with their counts.
+        $screen | Should -Match '╭─ Zero Trust Pillars ─'
+        $screen | Should -Match '│ Identity +━+─+ +4/12  ✓ 3 +✗ 1 .* 1 running'
+        $screen | Should -Match '│ Devices +━+─+ +2/8  ✓ 1 +✗ 1 '
+        # The results in the Results panel and the result blocks, under the work's name.
+        $screen | Should -Match '╭─ Zero Trust ─+ 6 of 20 ─╮'
+        $screen | Should -Match '✓ 4 passed 67% +✗ 2 failed 33%'
+        $screen | Should -Match '│ ■{6}⠲□{13} '
+        # The times of the items that finished: the Pace graph by the logo, and the Slowest panel.
+        $screen | Should -Match 'how long each item took'
+        $screen | Should -Match 'longest 40\.0s'
+        $screen | Should -Match '│ T\.2 +The slow one +40\.0s │'
+        $screen | Should -Not -Match '╭─ Products'
+        # Once the work is done, the run's own panels come back.
+        $screens[1] | Should -Not -Match 'Zero Trust Pillars|Identity|The slow one'
+    }
+
+    It 'Lists the whole name of an item without a title, and only the items of the newest stage, in the Slowest panel' {
+        $screens = InModuleScope Maester {
+            $renderer = [Maester.Engine.MtConsoleRenderer]::new([System.IO.StringWriter]::new())
+            $renderer.Width = 165; $renderer.Height = 50; $renderer.RefreshIntervalMs = 0; $renderer.FullScreen = $true
+            $renderer.Unicode = $true; $renderer.Ansi = $false
+            $renderer.SetPanels([string[]]@('Totals', 'Slowest', 'Pace', 'Results'))
+            $renderer.Open()
+            $script:__MtConsoleRenderer = $renderer
+            Write-MtTestOutput -Title 'The assessment' -InputObject 'a line of the log'
+            Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 1 -Total 4 -Items @{ Id = 'ConfigurationPolicy'; Status = 'Passed'; Seconds = 50 }
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 0 -Total 9
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestProgress -Stage 'Done' -StageNumber 3 -StageCount 2
+            $renderer.GetPlainScreen(165, 50) -join "`n"
+            Write-MtTestOutput -Complete
+        }
+        $screens[0] | Should -Match '│ ConfigurationPolicy +50\.0s │'
+        # Until a test of the next stage finishes, the panel keeps the stage before it.
+        $screens[1] | Should -Match '│ ConfigurationPolicy +50\.0s │'
+        $screens[2] | Should -Match '│ T\.1 +The first +2\.0s │'
+        $screens[2] | Should -Not -Match '│ ConfigurationPolicy'
+        $screens[3] | Should -Match '│ T\.1 +The first +2\.0s │'
+    }
+
+    It 'Writes the stage when it changes, the counts at most every ten seconds and each error, without the dashboard' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 1 -Total 4
+                Write-MtTestProgress -Stage 'Exporting' -StageNumber 1 -StageCount 2 -Completed 2 -Total 4
+                Write-MtTestProgress -ErrorMessage 'Users failed'
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 0 -Total 9
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }, @{ Id = 'T.2'; Seconds = 1 }
+                Write-MtTestProgress -Stage 'Testing' -StageNumber 2 -StageCount 2 -Completed 1 -Total 9 -Items @{ Id = 'T.1'; Title = 'The first'; Status = 'Passed'; Seconds = 2 }
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9', "    $($ci.Unicode ? '✓' : '+') T.1 The first  2.0 s")
     }
 }

@@ -184,6 +184,33 @@ on), after a reference animation with boxed panels in their own colours and dots
 cursor position (`ESC[6n`). A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top
 of the screen. This happened in the Claude desktop app's embedded terminal. The renderer never reads the cursor position.
 
+### The output box
+
+A test that runs a tool for a long time in another process (the Zero Trust Assessment pack runs Microsoft's
+assessment in a child `pwsh`, for up to an hour) cannot let that process write to the console while the dashboard
+has the screen: its lines would be drawn over the dashboard and wiped by the next frame. The process's output is
+redirected and read line by line, and each line is handed to `Write-MtTestOutput` (exported, so packs and custom
+tests can use it).
+
+- **In the dashboard** the lines go into a box in the main column, with the title the test gave it and, in the
+  border, how long it has been open and how many lines it has had. It shows the newest lines that fit, wrapped to
+  its width, so it scrolls as they come in. Before the tests start (a family's instance source runs then) it
+  takes the rows under the track of the phases, down to the bottom; the banner gives way to the one-line header
+  when it leaves the box fewer than twelve rows. While tests run it has ten rows between the result blocks and the
+  running tests, which give up the rows.
+- **Progress.** A line written with `-Progress` is a status that changes: it is pinned at the bottom of the box,
+  under a dashed line, and the next one replaces it, so a count that changes every second takes one row. The ZTA child turns its progress bars into such lines: a `Write-Progress`
+  function in its global scope, which the module's calls find before the cmdlet, writes each change as a line with a
+  marker.
+- **Elsewhere** (compact layout, Stream, Plain) each line is written to the host, indented and dim, through
+  `Write-MtConsoleLine`; a progress line at most every ten seconds. In CI the lines go through the same escaping as
+  test titles, so a line cannot issue a workflow command.
+- **Safe text.** Escape sequences are removed, tabs become spaces, and control characters, characters that hide or
+  reorder text, and emoji (whose width terminals do not agree on) are dropped
+  (`MtConsoleRenderer.OutputText`).
+- **Closing.** `Write-MtTestOutput -Complete` closes the box; the engine closes it as well when the instance source
+  or the test finishes, so a test that fails half-way leaves no box behind.
+
 ### Dashboard panels
 
 On a console of about 140 columns or more the dashboard has a second column on the right. The dashboard fills the
