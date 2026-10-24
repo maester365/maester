@@ -172,6 +172,8 @@
             Aliases  = @('GitHub')
             Features = @(
                 @{ Key = 'organization-settings'; Name = 'Organization settings' }
+                @{ Key = 'branch-protection'; Name = 'Branch protection' }
+                @{ Key = 'enterprise-settings'; Name = 'Enterprise settings' }
             )
         }
         @{

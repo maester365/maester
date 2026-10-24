@@ -1,4 +1,4 @@
-<#
+﻿<#
 .DISCLAIMER
 	THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 	ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
@@ -29,6 +29,7 @@ $__MtSession = @{
 	DataverseResourceUrl   = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
 	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
 	SpoCache               = @{}                 # Cache for SharePoint Online tenant settings retrieved via PnP
+	GitHubRateLimits       = $null               # Connection/host cooldowns; preserved across Invoke-Maester runs
 	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
 	ADCache                = @{}                 # Active Directory data cache
 	ADConnection           = $null               # Active Directory connection state

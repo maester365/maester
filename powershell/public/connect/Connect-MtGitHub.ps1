@@ -6,9 +6,13 @@
     .DESCRIPTION
     Establishes a GitHub Enterprise Cloud organization REST API session for Maester CIS
     benchmark tests. This is an organization-scoped session, not a full enterprise-admin
-    session: enterprise-admin endpoints under /enterprises/{enterprise} are not verified
-    by this command and would require a future enterprise-access probe if CIS controls
-    need them.
+    session. Connection success does not establish complete repository visibility or
+    enterprise access. New GitHub CIS assessments use explicit GitHubAccountModel,
+    GitHubEnterprise and GitHubCisRepositoryScope run settings where relevant. Enterprise
+    checks validate their own required readable evidence without changing this command's
+    authentication flow; notification results identify the independently selected enterprise.
+    New collectors explicitly request REST 2026-03-10 while this connection's default
+    remains 2022-11-28. See the GitHub CIS configuration guide on maester.dev.
 
     If no explicit token is provided, Maester signs in with the Maester CLI GitHub App
     using GitHub device flow. If the app is not installed or approved for the requested
@@ -257,9 +261,24 @@
     }
     Remove-Variable -Name plainToken -ErrorAction SilentlyContinue
 
+    # Bootstrap probes use the same guard as assessment requests. Carry this connection's cooldown
+    # into the final session, including a non-blocking administration-probe limit.
+    $rateLimitConnection = [pscustomobject]@{ ApiBaseUri = $ApiBaseUri }
+    function Invoke-ConnectionProbe ([string] $Uri) {
+        Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection
+        try {
+            $response = Invoke-WebRequest -Uri $Uri -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection -Headers $response.Headers
+            return $response
+        } catch {
+            Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection -ErrorRecord $_
+            throw
+        }
+    }
+
     # Probe 1: token identity
     try {
-        $userResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+        $userResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/user"
         $user = $userResponse.Content | ConvertFrom-Json
         Write-Verbose "GitHub token identity: $($user.login)"
     } catch {
@@ -327,7 +346,7 @@
         $roleWarning = $null
 
         try {
-            $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            $orgResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg"
             try {
                 $orgData = $orgResponse.Content | ConvertFrom-Json -ErrorAction Stop
             } catch {
@@ -386,7 +405,7 @@
         # Use /user/memberships/orgs/{org} so the token only has to prove its own membership,
         # not read an arbitrary /orgs/{org}/memberships/{username} record.
         try {
-            $membershipResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            $membershipResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg"
 
             $membershipData = $null
             try {
@@ -471,7 +490,7 @@
     $adminAcceptedPermissions = $null
     $adminWarning            = $null
     try {
-        $adminResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+        $adminResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions"
         $adminVerified   = $true
         $adminStatusCode = 200
         if ($adminResponse.PSObject.Properties.Name -contains 'StatusCode' -and $null -ne $adminResponse.StatusCode) {
@@ -518,6 +537,10 @@
         AdministrationPermissionStatusCode          = $adminStatusCode
         AdministrationPermissionAcceptedPermissions = $adminAcceptedPermissions
         FailureReason                               = $null
+    }
+
+    if ([object]::ReferenceEquals($__MtSession.GitHubRateLimits.Connection, $rateLimitConnection)) {
+        $__MtSession.GitHubRateLimits.Connection = $__MtSession.GitHubConnection
     }
 
     $orgCacheKey = Get-MtGitHubCacheKey -ApiVersion $ApiVersion -AbsoluteUri "$ApiBaseUri/orgs/$encodedOrg"

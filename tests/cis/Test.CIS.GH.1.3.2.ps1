@@ -40,12 +40,24 @@
     $org = Get-MtGitHubOrganization
     $field = 'members_can_create_teams'
     if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.3.2 and may be missing because of permissions, plan, API version, or organization type."
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.3.2 and may be missing because of permissions, plan, API version, or organization type."
+        return $null
+    }
+
+    if ($org.$field -isnot [bool]) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field '$field' must be a Boolean to evaluate CIS.GH.1.3.2. No configuration verdict was produced."
         return $null
     }
 
     $result = $org.$field -eq $false
+    $resultSummary = if ($result) {
+        'Well done. Members cannot create teams.'
+    } else {
+        'Members can create teams. Disable Allow members to create teams in organization Member privileges.'
+    }
     $resultMarkdown = @"
+$resultSummary
+
 CIS.GH.1.3.2 automated evidence from ``GET /orgs/{org}``.
 
 | Field | Actual | Expected |
