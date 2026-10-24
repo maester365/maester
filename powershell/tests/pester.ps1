@@ -37,7 +37,18 @@
     # Runs every test file in this process, as pester.ps1 used to. Useful when debugging a test,
     # but each file that re-imports the module keeps another copy of it in memory (about 60 MB each).
     [switch]
-    $InProcess
+    $InProcess,
+
+    # When set (or when $env:PESTER_SKIP_OS_INDEPENDENT equals 'true'), skips the tests whose result does not depend
+    # on the operating system: the general tests that only read files (lint, formatting, ScriptAnalyzer, help,
+    # generator drift) and the golden fixtures. CI runs them on the Linux leg only.
+    [switch]
+    $SkipOsIndependent,
+
+    # When set (or when $env:PESTER_SKIP_GOLDEN equals 'true'), skips the Maester 2.x golden fixtures. CI sets it on
+    # a pull request that changes none of their inputs.
+    [switch]
+    $SkipGolden
 )
 
 Write-Host "Starting Tests"
@@ -60,6 +71,11 @@ $scriptAnalyzerFailures = [System.Collections.Generic.List[object]]::new()
 
 # Detect coverage mode: -Coverage switch or PESTER_COVERAGE=true environment variable.
 $enableCoverage = $Coverage.IsPresent -or ($env:PESTER_COVERAGE -eq 'true')
+
+$skipOsIndependent = $SkipOsIndependent.IsPresent -or ($env:PESTER_SKIP_OS_INDEPENDENT -eq 'true')
+$skipGolden = $SkipGolden.IsPresent -or ($env:PESTER_SKIP_GOLDEN -eq 'true')
+if ($skipOsIndependent) { Write-PSFMessage -Level Important -Message "Skipping the tests that do not depend on the operating system" }
+if ($skipGolden) { Write-PSFMessage -Level Important -Message "Skipping the golden fixtures" }
 
 function Test-ContainsFailureRule {
     [CmdletBinding()]
@@ -95,6 +111,11 @@ function Test-FileSelected {
     param([System.IO.FileInfo] $File)
     if (-not ($Include | Where-Object { $File.Name -like $_ })) { return $false }
     if ($Exclude | Where-Object { $_ -and $File.Name -like $_ }) { return $false }
+    $isGolden = $File.Name -eq 'Golden.Tests.ps1'
+    if ($isGolden -and ($skipGolden -or $skipOsIndependent)) { return $false }
+    # The general tests that build the module run on every operating system: the build writes files and paths.
+    if ($skipOsIndependent -and $File.Directory.Name -eq 'general' -and
+        $File.Name -notin 'Build-MaesterModule.Tests.ps1', 'PublishedModuleResultDetail.Tests.ps1') { return $false }
     return $true
 }
 
