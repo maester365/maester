@@ -28,6 +28,7 @@
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--ifm-color-emphasis-200);
@@ -35,6 +36,12 @@
   overflow: hidden;
   background: var(--ifm-background-surface-color);
   transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Keyboard focus on the title link outlines the whole card. */
+.card:has(.title a:focus-visible) {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
 }
 
 .card:hover {
@@ -100,7 +107,20 @@
   color: var(--ifm-heading-color);
 }
 
-.title a:hover {
+/* Stretch the title link over the whole card. */
+.title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.title a:focus-visible {
+  outline: none;
+}
+
+.title a:hover,
+.card:hover .title a {
   color: var(--ifm-color-primary);
   text-decoration: none;
 }
