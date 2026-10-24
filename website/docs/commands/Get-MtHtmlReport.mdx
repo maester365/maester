@@ -31,6 +31,11 @@ The report omits each test's ErrorRecord, which the report doesn't display.
 The
 MaesterResults object passed in and the JSON results file keep it.
 
+Reports added with Add-MtReportAttachment are embedded in the page, each in its own element, and
+opened from a button.
+They are left out when RedactUserIdentity is HtmlOnly or AllOutputs, because
+Maester cannot redact another tool's report.
+
 ## EXAMPLES
 
 ### EXAMPLE 1
