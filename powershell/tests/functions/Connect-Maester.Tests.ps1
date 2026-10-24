@@ -5,6 +5,11 @@
     $script:createdStubs = @()
     # Mocks with a -ParameterFilter only see parameters the command declares, so give those stubs the parameters the tests filter on.
     $stubBodies = @{
+        'Connect-AzAccount' = {
+            [CmdletBinding()]
+            param([switch]$SkipContextPopulation, [switch]$UseDeviceAuthentication, [string]$Environment, [string]$Tenant)
+            $null = $PSBoundParameters
+        }
         'Connect-MicrosoftTeams' = {
             [CmdletBinding()]
             param([string]$TeamsEnvironmentName, [switch]$UseDeviceAuthentication)
@@ -269,6 +274,45 @@ Describe 'Connect-Maester connection summary' {
 
         Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $UseDeviceAuthentication -and $TeamsEnvironmentName -eq 'TeamsGCCH'
+        }
+    }
+
+    Context 'When an Az context from another tenant already exists' {
+        BeforeEach {
+            Mock Get-AzContext -ModuleName Maester {
+                [pscustomobject]@{
+                    Account = [pscustomobject]@{ Id = 'admin@contoso.com' }
+                    Tenant  = [pscustomobject]@{ Id = '11111111-1111-1111-1111-111111111111' }
+                }
+            }
+            Mock Connect-AzAccount -ModuleName Maester {}
+        }
+
+        It 'Signs in to the requested tenant instead of reusing the context' {
+            Connect-Maester -Service Azure -TenantId '22222222-2222-2222-2222-222222222222' 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Tenant -eq '22222222-2222-2222-2222-222222222222'
+            }
+        }
+
+        It 'Reuses the context when its tenant is the requested one, whatever the letter case' {
+            Connect-Maester -Service Azure -TenantId '11111111-1111-1111-1111-111111111111'.ToUpper() 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when no tenant is requested' {
+            Connect-Maester -Service Azure 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when the tenant is given as a domain name, which cannot be compared with its ID' {
+            $verboseOutput = Connect-Maester -Service Azure -TenantId 'contoso.onmicrosoft.com' -Verbose 4>&1 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+            "$verboseOutput" | Should -BeLike "*cannot be compared*11111111-1111-1111-1111-111111111111*"
         }
     }
 
