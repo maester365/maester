@@ -17,8 +17,9 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ```powershell
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-IncludePreview] [-UseDeviceCode]
  [[-Environment] <String>] [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>]
- [[-TeamsEnvironmentName] <String>] [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>]
- [[-ClientTimeout] <Double>] [[-SharePointClientId] <String>] [[-SharePointAdminUrl] <String>]
+ [[-TeamsEnvironmentName] <String>] [[-Service] <String[]>] [[-ServiceSetting] <Hashtable>]
+ [[-TenantId] <String>] [[-GraphClientId] <String>] [[-ClientTimeout] <Double>]
+ [[-SharePointClientId] <String>] [[-SharePointAdminUrl] <String>]
  [[-SharePointCertificateThumbprint] <String>] [[-GitHubOrganization] <String>]
  [[-ActiveDirectoryForest] <Object>] [[-ActiveDirectoryDomain] <Object>] [[-ActiveDirectoryServer] <Object>]
  [[-ActiveDirectoryCredential] <PSCredential>] [[-ActiveDirectoryAuthMode] <String>]
@@ -199,6 +200,15 @@ Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c0
 
 Connects to SharePoint Online using the specified client ID and admin URL.
 
+### EXAMPLE 19
+
+```powershell
+Connect-Maester -Service Graph,CNT.GoogleWorkspace -ServiceSetting @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }
+```
+
+Connects to Microsoft Graph and to the service of an installed Maester Pack, through the pack's connector.
+Get-MtConnector lists the services of the installed packs.
+
 ## PARAMETERS
 
 ### -SendMail
@@ -359,6 +369,8 @@ Accept wildcard characters: False
 The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online.
 Default is Graph.
 Active Directory and GitHub are not included in All and must be explicitly specified.
+The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
+$args: command name, parameter name, word to complete.
 
 ```yaml
 Type: String[]
@@ -368,6 +380,25 @@ Aliases:
 Required: False
 Position: 5
 Default value: Graph
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ServiceSetting
+
+Settings for the connectors of Maester Packs, by service: @\{ 'CNT.GoogleWorkspace' = @\{ Domain = 'contoso.com' \} \}.
+With one pack service in -Service, the settings can be given directly: @\{ Domain = 'contoso.com' \}.
+They win over
+Connections.&lt;Service&gt; in maester-config.json and over MAESTER_&lt;SERVICE&gt;_&lt;SETTING&gt; environment variables.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: @{}
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -382,7 +413,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -400,7 +431,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -417,7 +448,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 9
 Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -436,7 +467,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -454,7 +485,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -472,7 +503,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -488,7 +519,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -504,7 +535,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -520,7 +551,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -536,7 +567,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -552,7 +583,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -568,7 +599,7 @@ Parameter Sets: (All)
 Aliases: AuthMode
 
 Required: False
-Position: 17
+Position: 18
 Default value: Negotiate
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -585,7 +616,7 @@ Parameter Sets: (All)
 Aliases: TlsMode
 
 Required: False
-Position: 18
+Position: 19
 Default value: Auto
 Accept pipeline input: False
 Accept wildcard characters: False
