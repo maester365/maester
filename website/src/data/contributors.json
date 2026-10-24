@@ -531,7 +531,7 @@
       "url": "",
       "socials": {},
       "avatar": "https://github.com/JeremyFinney-lgtm.png",
-      "firstContribution": "2026-10-18",
+      "firstContribution": "2026-10-17",
       "testsAuthored": [
         "CIS.M365.1.3.2",
         "CIS.M365.4.2",
@@ -579,11 +579,28 @@
         "CIS.M365.5.3.2",
         "CIS.M365.5.3.3",
         "CIS.M365.5.3.4",
-        "CIS.M365.5.3.5"
+        "CIS.M365.5.3.5",
+        "CIS.M365.7.2.1",
+        "CIS.M365.7.2.3",
+        "CIS.M365.7.2.4",
+        "CIS.M365.7.2.6",
+        "CIS.M365.7.2.8",
+        "CIS.M365.7.2.10",
+        "CIS.M365.8.1.2",
+        "CIS.M365.8.2.1",
+        "CIS.M365.8.2.4",
+        "CIS.M365.8.5.1",
+        "CIS.M365.8.5.2",
+        "CIS.M365.8.5.4",
+        "CIS.M365.8.5.5",
+        "CIS.M365.8.5.6",
+        "CIS.M365.8.5.7",
+        "CIS.M365.8.5.8",
+        "CIS.M365.8.5.9"
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 36
+      "recentCommits": 40
     },
     {
       "id": "SebastianClaesson",
@@ -1239,7 +1256,7 @@
       ],
       "testsContributed": [],
       "initials": "CB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "BakkerJan",
@@ -1272,7 +1289,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "RobbeVandenDaele",
@@ -1407,7 +1424,7 @@
         "MT.1100"
       ],
       "initials": "SE",
-      "recentCommits": 3
+      "recentCommits": 5
     },
     {
       "id": "DanielLystad",
@@ -2685,7 +2702,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 170
+      "recentCommits": 171
     }
   ],
   "attributions": {
@@ -4362,20 +4379,44 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.7.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.2": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.7.2.4": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.5": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.7": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.9": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.10": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.11": {
@@ -4393,6 +4434,14 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.1.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.2.2": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4406,6 +4455,10 @@
         "merill"
       ]
     },
+    "CIS.M365.8.2.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.4.1": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4414,11 +4467,43 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.5.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.5.3": {
       "author": "HenrikPiecha",
       "contributors": [
         "merill"
       ]
+    },
+    "CIS.M365.8.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.8.6.1": {
       "author": "HenrikPiecha",
@@ -7906,21 +7991,45 @@
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
       "path": "/docs/tests/CIS.M365.6.5.3"
     },
+    "CIS.M365.7.2.1": {
+      "title": "(L1) Ensure modern authentication for SharePoint applications is required",
+      "path": "/docs/next/tests/CIS.M365.7.2.1"
+    },
     "CIS.M365.7.2.2": {
       "title": "(L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
       "path": "/docs/tests/CIS.M365.7.2.2"
+    },
+    "CIS.M365.7.2.3": {
+      "title": "(L1) Ensure external content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.3"
+    },
+    "CIS.M365.7.2.4": {
+      "title": "(L2) Ensure OneDrive content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.4"
     },
     "CIS.M365.7.2.5": {
       "title": "(L2) Ensure that SharePoint guest users cannot share items they don't own",
       "path": "/docs/tests/CIS.M365.7.2.5"
     },
+    "CIS.M365.7.2.6": {
+      "title": "(L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists",
+      "path": "/docs/next/tests/CIS.M365.7.2.6"
+    },
     "CIS.M365.7.2.7": {
       "title": "(L1) Ensure link sharing is restricted in SharePoint and OneDrive",
       "path": "/docs/tests/CIS.M365.7.2.7"
     },
+    "CIS.M365.7.2.8": {
+      "title": "(L2) Ensure external sharing is restricted by security group",
+      "path": "/docs/next/tests/CIS.M365.7.2.8"
+    },
     "CIS.M365.7.2.9": {
       "title": "(L1) Ensure guest access to a site or OneDrive will expire automatically",
       "path": "/docs/tests/CIS.M365.7.2.9"
+    },
+    "CIS.M365.7.2.10": {
+      "title": "(L1) Ensure reauthentication with verification code is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.10"
     },
     "CIS.M365.7.2.11": {
       "title": "(L1) Ensure the SharePoint default sharing link permission is set",
@@ -7934,6 +8043,14 @@
       "title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
       "path": "/docs/tests/CIS.M365.8.1.1"
     },
+    "CIS.M365.8.1.2": {
+      "title": "(L1) Ensure users can't send emails to a channel email address",
+      "path": "/docs/next/tests/CIS.M365.8.1.2"
+    },
+    "CIS.M365.8.2.1": {
+      "title": "(L2) Ensure external domains are restricted in the Teams admin center",
+      "path": "/docs/next/tests/CIS.M365.8.2.1"
+    },
     "CIS.M365.8.2.2": {
       "title": "(L1) Ensure communication with unmanaged Teams users is disabled",
       "path": "/docs/tests/CIS.M365.8.2.2"
@@ -7942,13 +8059,49 @@
       "title": "(L1) Ensure external Teams users cannot initiate conversations",
       "path": "/docs/tests/CIS.M365.8.2.3"
     },
+    "CIS.M365.8.2.4": {
+      "title": "(L1) Ensure the organization cannot communicate with accounts in trial Teams tenants",
+      "path": "/docs/next/tests/CIS.M365.8.2.4"
+    },
     "CIS.M365.8.4.1": {
       "title": "(L1) Ensure app permission policies are configured",
       "path": "/docs/tests/CIS.M365.8.4.1"
     },
+    "CIS.M365.8.5.1": {
+      "title": "(L2) Ensure anonymous users can't join a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.1"
+    },
+    "CIS.M365.8.5.2": {
+      "title": "(L1) Ensure anonymous users and dial-in callers can't start a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.2"
+    },
     "CIS.M365.8.5.3": {
       "title": "(L1) Ensure only people in my org can bypass the lobby",
       "path": "/docs/tests/CIS.M365.8.5.3"
+    },
+    "CIS.M365.8.5.4": {
+      "title": "(L1) Ensure users dialing in can't bypass the lobby",
+      "path": "/docs/next/tests/CIS.M365.8.5.4"
+    },
+    "CIS.M365.8.5.5": {
+      "title": "(L2) Ensure meeting chat does not allow anonymous users",
+      "path": "/docs/next/tests/CIS.M365.8.5.5"
+    },
+    "CIS.M365.8.5.6": {
+      "title": "(L2) Ensure only organizers and co-organizers can present",
+      "path": "/docs/next/tests/CIS.M365.8.5.6"
+    },
+    "CIS.M365.8.5.7": {
+      "title": "(L1) Ensure external participants can't give or request control",
+      "path": "/docs/next/tests/CIS.M365.8.5.7"
+    },
+    "CIS.M365.8.5.8": {
+      "title": "(L2) Ensure external meeting chat is off",
+      "path": "/docs/next/tests/CIS.M365.8.5.8"
+    },
+    "CIS.M365.8.5.9": {
+      "title": "(L2) Ensure meeting recording is off by default",
+      "path": "/docs/next/tests/CIS.M365.8.5.9"
     },
     "CIS.M365.8.6.1": {
       "title": "(L1) Ensure users can report security concerns in Teams",

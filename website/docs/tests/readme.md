@@ -23,7 +23,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 96 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -431,17 +431,34 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.5.3.4](./CIS.M365.5.3.4) | (L1) Ensure approval is required for Global Administrator role activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.5.3.5](./CIS.M365.5.3.5) | (L1) Ensure approval is required for Privileged Role Administrator activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Medium | Exchange Online | Outlook |
+| [CIS.M365.7.2.1](./CIS.M365.7.2.1) | (L1) Ensure modern authentication for SharePoint applications is required | CIS | Medium | SharePoint | Access control |
+| [CIS.M365.7.2.10](./CIS.M365.7.2.10) | (L1) Ensure reauthentication with verification code is restricted | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11) | (L1) Ensure the SharePoint default sharing link permission is set | CIS | Medium | SharePoint | Sharing links |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.3](./CIS.M365.7.2.3) | (L1) Ensure external content sharing is restricted | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.4](./CIS.M365.7.2.4) | (L2) Ensure OneDrive content sharing is restricted | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.5](./CIS.M365.7.2.5) | (L2) Ensure that SharePoint guest users cannot share items they don't own | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.6](./CIS.M365.7.2.6) | (L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.7](./CIS.M365.7.2.7) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Medium | SharePoint | Sharing links |
+| [CIS.M365.7.2.8](./CIS.M365.7.2.8) | (L2) Ensure external sharing is restricted by security group | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9) | (L1) Ensure guest access to a site or OneDrive will expire automatically | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Medium | SharePoint | Access control |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | Teams | File sharing |
+| [CIS.M365.8.1.2](./CIS.M365.8.1.2) | (L1) Ensure users can't send emails to a channel email address | CIS | Medium | Teams | Messaging |
+| [CIS.M365.8.2.1](./CIS.M365.8.2.1) | (L2) Ensure external domains are restricted in the Teams admin center | CIS | Medium | Teams | External access |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | Teams | External access |
 | [CIS.M365.8.2.3](./CIS.M365.8.2.3) | (L1) Ensure external Teams users cannot initiate conversations | CIS | Medium | Teams | External access |
+| [CIS.M365.8.2.4](./CIS.M365.8.2.4) | (L1) Ensure the organization cannot communicate with accounts in trial Teams tenants | CIS | Medium | Teams | External access |
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | Medium | Teams | Apps |
+| [CIS.M365.8.5.1](./CIS.M365.8.5.1) | (L2) Ensure anonymous users can't join a meeting | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.2](./CIS.M365.8.5.2) | (L1) Ensure anonymous users and dial-in callers can't start a meeting | CIS | Medium | Teams | Meetings |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.4](./CIS.M365.8.5.4) | (L1) Ensure users dialing in can't bypass the lobby | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.5](./CIS.M365.8.5.5) | (L2) Ensure meeting chat does not allow anonymous users | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.6](./CIS.M365.8.5.6) | (L2) Ensure only organizers and co-organizers can present | CIS | Low | Teams | Meetings |
+| [CIS.M365.8.5.7](./CIS.M365.8.5.7) | (L1) Ensure external participants can't give or request control | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.8](./CIS.M365.8.5.8) | (L2) Ensure external meeting chat is off | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.9](./CIS.M365.8.5.9) | (L2) Ensure meeting recording is off by default | CIS | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | Teams | Messaging |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
@@ -516,7 +533,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.EXO.9.5](./CISA.MS.EXO.9.5) | At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe). | CISA | High | Exchange Online | Anti-malware |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | SharePoint | External sharing |
-| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | High | SharePoint | External sharing |
+| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1) | File and folder default sharing scope SHALL be set to Specific People. | CISA | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2) | File and folder default sharing permissions SHALL be set to View only. | CISA | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1) | Expiration days for Anyone links SHALL be set to 30 days or less. | CISA | Medium | SharePoint | Sharing links |
