@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -18,6 +18,10 @@ Describe 'Invoke-MtGraphRequest' {
             switch ($Name) {
                 'China' { @{ GraphEndpoint = 'https://microsoftgraph.chinacloudapi.cn/' } }
                 'USGov' { @{ GraphEndpoint = 'https://graph.microsoft.us/' } }
+                # A custom environment whose endpoint carries a path of its own, as a reverse proxy
+                # in front of Graph does. Registered with and without a trailing slash.
+                'Proxy' { @{ GraphEndpoint = 'https://proxy.contoso.com/graph/' } }
+                'ProxyNoSlash' { @{ GraphEndpoint = 'https://proxy.contoso.com/graph' } }
                 default { @{ GraphEndpoint = 'https://graph.microsoft.com/' } }
             }
         }
@@ -264,6 +268,35 @@ Describe 'Invoke-MtGraphRequest' {
             }
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -GraphBaseUri 'https://proxy.contoso.com/graph' -DisablePaging
+            }
+            $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
+            $requests.url | Should -Be @('users', 'groups')
+        }
+
+        It 'Does not repeat the endpoint path when the environment carries one and nothing is overridden' -ForEach @(
+            @{ Environment = 'Proxy' }
+            @{ Environment = 'ProxyNoSlash' }
+        ) {
+            # The relative uri is resolved by the SDK against this same endpoint. Sending the path
+            # and query would send 'graph/v1.0/users' and ask the proxy for /graph/graph/v1.0/users.
+            $script:MtTestEnvironment = $Environment
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'v1.0/users'
+            }
+        }
+
+        It 'Posts a batch relative to the versioned root when the environment endpoint has a path' {
+            $script:MtBatchBody = $null
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBody = $Body
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
+            }
+            $script:MtTestEnvironment = 'Proxy'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -DisablePaging }
+
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Method -eq 'POST' -and $Uri -eq 'v1.0/$batch'
             }
             $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
             $requests.url | Should -Be @('users', 'groups')

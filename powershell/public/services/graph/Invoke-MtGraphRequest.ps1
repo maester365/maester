@@ -99,11 +99,17 @@
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri
 
+        # The endpoint itself can carry a path, for example a reverse proxy in front of Graph. A base
+        # that does not end in a slash makes its last segment look like a document, which would put
+        # that segment back into any uri made relative to it. Normalising the base once, here, is what
+        # keeps the rest of this function from having to care whether the endpoint has a path.
+        [uri] $TransportBaseUri = [uri] ($GraphBaseUri.AbsoluteUri.TrimEnd('/') + '/')
+
         # Versioned root that every uri in this invocation is built from. Batch subrequest urls are
         # relative to it, so the base and the api version come off together and a base uri that
         # carries a path of its own does not leak into the subrequest. Built through UriBuilder so
         # it is normalised exactly like the request uris it is compared against.
-        [string] $VersionedBaseUri = (New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($GraphBaseUri.AbsoluteUri, $ApiVersion))).Uri.AbsoluteUri.TrimEnd('/') + '/'
+        [string] $VersionedBaseUri = (New-Object System.UriBuilder -ArgumentList ($TransportBaseUri.AbsoluteUri + $ApiVersion)).Uri.AbsoluteUri.TrimEnd('/') + '/'
 
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
@@ -112,7 +118,10 @@
         # route to the connected environment; absolute only when the caller overrode the endpoint.
         function Resolve-TransportUri ([uri] $RequestUri) {
             if ($IsEndpointOverride) { return $RequestUri.AbsoluteUri }
-            return $RequestUri.PathAndQuery.TrimStart('/')
+            # Relative to the whole base and not just to its host: the path and query of an endpoint
+            # such as https://proxy.contoso.com/graph/ already contains 'graph', and the SDK resolves
+            # what it is given against that same endpoint, so sending it would ask for /graph/graph/.
+            return $TransportBaseUri.MakeRelativeUri($RequestUri).ToString()
         }
 
         function Format-Result ($results, $RawOutput) {
