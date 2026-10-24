@@ -95,6 +95,26 @@ Packs don't have to be public. A lot of the most useful checks are the ones that
 
 So a security team can keep one pack of company checks, and every consultant, admin and pipeline that runs Maester gets the same tests at the same pinned version.
 
+## Browse packs on the Maester Packs site
+
+[packs.maester.cloud](https://packs.maester.cloud) is where you find packs. It lists the public packs their publishers have published there, and you can search them by name, publisher or service.
+
+![The Maester Packs site, with the Zero Trust Assessment pack featured and a searchable list of every pack](./img/packs-site-home.png)
+
+Each pack has its own page with everything you'd want to know before you install it: the command to install it, its risk, price and licence, the tests it adds, the connector it brings, what the security scan found, and its entry for `maester-packs.lock.json`. A pack is listed only after the site has read it and run the same checks and security scan that `Install-MtPack` runs.
+
+![A pack's page on the Maester Packs site, with its install command, details, tests and security tabs](./img/packs-site-pack.png)
+
+### For publishers
+
+Publishers sign in with GitHub. Pick one of the public repositories you administer, press **Check** to see whether its latest release is ready, and **Publish** to list it. Publishing registers the pack's Guid and code to you, so nobody else can publish a pack under them, even if your repository later goes private.
+
+Once you're signed in, **Your packs** shows each pack you've published with its active installations, tenants and runs over the last 30 days. You see totals only, never who ran a pack.
+
+![The publisher page on the Maester Packs site: listed packs with their usage over the last 30 days, and the repositories you can publish](./img/packs-site-publisher.png)
+
+Packs you keep private, in a private repository or a local folder, never appear on the site and don't need to be published there.
+
 ## Write your own pack
 
 The quickest way to start is the [Maester demo pack](https://github.com/maester365/maester-pack-demo). It is a template repository with one test for each kind of result, a test setting, a family of results, its own connector, a Microsoft Graph read and a long-running test with live progress. Press **Use this template**, run its setup function with your pack's ID and code, and replace the made-up tests with your own:
@@ -106,7 +126,7 @@ Test-MtPack .            # every check Install-MtPack runs, without installing
 Invoke-MtTest -Path .    # run the pack's tests from its folder
 ```
 
-Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies.
+Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. Publish it on [packs.maester.cloud](https://packs.maester.cloud) so people can find it. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies.
 
 ### For pack builders
 
@@ -157,6 +177,7 @@ Packs and the Zero Trust Assessment pack are in the Maester 3.0 preview. [Instal
 - [Writing a pack](/docs/next/packs/writing-a-pack)
 - [Pack security](/docs/next/packs/security)
 - [Zero Trust Assessment pack](/docs/next/packs/zero-trust-assessment)
+- [Maester Packs site](https://packs.maester.cloud)
 - [Maester demo pack](https://github.com/maester365/maester-pack-demo)
 
-<small>The report screenshots use made-up data: the Contoso sample tenant from the report's own test data, the demo pack's made-up results, and Microsoft's Zero Trust Assessment demo report.</small>
+<small>The screenshots use made-up data: the Maester Packs site's own sample packs and a made-up Contoso publisher, the Contoso sample tenant from the report's own test data, the demo pack's made-up results, and Microsoft's Zero Trust Assessment demo report.</small>
