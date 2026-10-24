@@ -22,9 +22,13 @@
 
     Assignment state is included because an app protection policy that is not assigned to any group
     is never applied to a user, so it cannot satisfy a security control. Two independent signals are
-    read: the count of expanded assignments and the server-computed isAssigned property. A policy
-    counts as assigned when either says so, and AssignmentSignalsDisagree records the disagreement so
-    a caller can surface it instead of silently choosing one.
+    read: the number of expanded INCLUSION assignments and the server-computed isAssigned property.
+    Both measure the same thing, because Graph documents assignments as the "list of inclusion and
+    exclusion groups" while isAssigned reports whether the policy "is deployed to any inclusion
+    groups". Counting the raw collection would therefore read a policy targeted only as an exclusion
+    as assigned, when it covers nobody. A policy counts as assigned when either signal says so, and
+    AssignmentSignalsDisagree records a genuine disagreement so a caller can surface it instead of
+    silently choosing one.
 
     Returns $null when the policies could not be read at all, so that callers can report a skip
     rather than a failure. The populated result is emitted with -NoEnumerate because PowerShell
@@ -97,11 +101,20 @@
 
     $result = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($policy in $usable) {
-        $assignmentCount = @($policy.assignments).Count
+        # The expanded collection holds inclusion AND exclusion targets, so it is filtered before
+        # it is counted. Without this, a policy whose only assignment excludes a group counts as
+        # assigned while covering no one. Today the only exclusion target is
+        # exclusionGroupAssignmentTarget; the pattern also catches any future microsoft.graph
+        # exclusion* type rather than silently counting it as coverage. An assignment with no target
+        # type cannot be shown to include anyone, so it is not counted either.
+        $assignmentCount = @($policy.assignments | Where-Object {
+                $targetType = [string] $_.target.'@odata.type'
+                $targetType -and $targetType -notmatch '(^|\.)exclusion'
+            }).Count
         $isAssignedFlag = ($policy.isAssigned -eq $true)
-        # Either signal is enough. A policy is reported as assigned when the expanded collection or
-        # the server-computed property says so, so that a disagreement never produces a finding
-        # against a tenant that did assign the policy.
+        # Either signal is enough. Both now report inclusion, so this is the union of two
+        # measurements of the same thing rather than a disagreement resolved toward the permissive
+        # side, and it still holds when the expand is unavailable but the server property is not.
         $isAssigned = ($assignmentCount -gt 0 -or $isAssignedFlag)
 
         # Graph serializes Edm.Duration as an ISO 8601 string. Parse to a TimeSpan so that callers

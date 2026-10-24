@@ -880,7 +880,13 @@
                         passcodeBlockSimple            = $true
                         passcodeMinimumLength          = 6
                         osMinimumVersion               = '18.0'
-                        assignments                    = @([pscustomobject]@{ id = 'a1' })
+                        assignments                    = @([pscustomobject]@{
+                            id     = 'a1'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                groupId       = '11111111-1111-1111-1111-111111111111'
+                            }
+                        })
                     },
                     [pscustomobject]@{
                         id            = 'droid-1'
@@ -927,7 +933,21 @@
                         passwordMinimumLength                         = 6
                         passwordMinutesOfInactivityBeforeLock         = 15
                         deviceThreatProtectionEnabled                 = $true
-                        assignments                                   = @([pscustomobject]@{ id = 'a1' }, [pscustomobject]@{ id = 'a2' })
+                        assignments                                   = @(
+                            [pscustomobject]@{
+                            id     = 'a1'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                groupId       = '22222222-2222-2222-2222-222222222222'
+                            }
+                        },
+                            [pscustomobject]@{
+                            id     = 'a2'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                groupId       = '33333333-3333-3333-3333-333333333333'
+                            }
+                        })
                     }
                 )
             }
@@ -956,7 +976,13 @@
                         displayName   = 'Work profile'
                         # Present on the real object, deliberately not read by this helper.
                         passwordMinimumLength = 4
-                        assignments   = @([pscustomobject]@{ id = 'a1' })
+                        assignments   = @([pscustomobject]@{
+                            id     = 'a1'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                groupId       = '44444444-4444-4444-4444-444444444444'
+                            }
+                        })
                     },
                     [pscustomobject]@{
                         id            = 'do-1'
@@ -976,6 +1002,62 @@
                 $null -eq $result[0].PasswordMinimumLength | Should -BeTrue
                 $result[0].IsAssigned | Should -BeTrue
                 $result[1].IsAssigned | Should -BeFalse
+            }
+        }
+
+        It 'does not count an exclusion group as coverage' {
+            # Graph returns inclusion and exclusion targets in the same collection, and
+            # deviceCompliancePolicy has no server-computed isAssigned property to fall back on, so
+            # the filtered count is the only signal. A policy that only excludes a group is
+            # evaluated against no device and must not be reported as assigned.
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(
+                    [pscustomobject]@{
+                        id                             = 'ios-excl'
+                        '@odata.type'                  = '#microsoft.graph.iosCompliancePolicy'
+                        displayName                    = 'Excluded only'
+                        securityBlockJailbrokenDevices = $true
+                        assignments                    = @(
+                            [pscustomobject]@{
+                                id     = 'excluded'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                    groupId       = '55555555-5555-5555-5555-555555555555'
+                                }
+                            })
+                    },
+                    [pscustomobject]@{
+                        id                             = 'ios-mixed'
+                        '@odata.type'                  = '#microsoft.graph.iosCompliancePolicy'
+                        displayName                    = 'Included and excluded'
+                        securityBlockJailbrokenDevices = $true
+                        assignments                    = @(
+                            [pscustomobject]@{
+                                id     = 'included'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                    groupId       = '66666666-6666-6666-6666-666666666666'
+                                }
+                            },
+                            [pscustomobject]@{
+                                id     = 'excluded'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                    groupId       = '77777777-7777-7777-7777-777777777777'
+                                }
+                            })
+                    }
+                )
+            }
+
+            InModuleScope Maester {
+                $result = Get-MtMobileCompliancePolicy -Platform iOS
+
+                $result.Count | Should -Be 2
+                $result[0].AssignmentCount | Should -Be 0
+                $result[0].IsAssigned | Should -BeFalse
+                $result[1].AssignmentCount | Should -Be 1
+                $result[1].IsAssigned | Should -BeTrue
             }
         }
 

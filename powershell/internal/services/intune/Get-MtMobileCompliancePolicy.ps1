@@ -15,7 +15,11 @@
     therefore depends on -Platform, and each call returns a homogeneous set.
 
     Assignment state is included because a compliance policy that is not assigned to any group is never
-    evaluated against a device, so it cannot satisfy a security control.
+    evaluated against a device, so it cannot satisfy a security control. Only inclusion assignments
+    are counted: Graph returns inclusion and exclusion targets in the same collection, so counting it
+    raw would read a policy targeted only as an exclusion as assigned, when it is evaluated against
+    no device. Unlike app protection, deviceCompliancePolicy exposes no server-computed isAssigned
+    property, so the filtered count is the only signal there is.
 
     Returns $null when the compliance policies could not be read at all, so that callers can report a
     skip rather than a failure. The populated result is emitted with -NoEnumerate because PowerShell
@@ -90,7 +94,13 @@
 
     $result = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($policy in $platformPolicies) {
-        $assignmentCount = @($policy.assignments).Count
+        # Inclusion targets only. The collection also carries exclusions, and counting those as
+        # coverage reports a policy that reaches nobody as assigned. An assignment with no target
+        # type cannot be shown to include anyone, so it is not counted either.
+        $assignmentCount = @($policy.assignments | Where-Object {
+                $targetType = [string] $_.target.'@odata.type'
+                $targetType -and $targetType -notmatch '(^|\.)exclusion'
+            }).Count
         $isEvaluated = ($policy.'@odata.type' -eq $evaluatedType)
         # The short form of the @odata.type, for the policy tables in the results.
         $policyType = ($policy.'@odata.type' -replace '^#microsoft\.graph\.', '')

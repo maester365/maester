@@ -160,7 +160,16 @@
                 $Id = ([guid]::NewGuid().ToString()),
                 $DisplayName = 'Graph policy',
                 $OdataType = '#microsoft.graph.iosManagedAppProtection',
-                $Assignments = @([pscustomobject]@{ id = 'assignment-1' }),
+                # A real assignment always carries a target, and the target's type is what says
+                # whether the group is included or excluded. Graph returns both kinds in this one
+                # collection, so a fixture without a target cannot exercise that distinction.
+                $Assignments = @([pscustomobject]@{
+                        id     = 'assignment-1'
+                        target = [pscustomobject]@{
+                            '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                            groupId       = '11111111-1111-1111-1111-111111111111'
+                        }
+                    }),
                 $IsAssigned = $true,
                 $PeriodOfflineBeforeAccessCheck = 'PT12H',
                 $PeriodOfflineBeforeWipeIsEnforced = 'P90D',
@@ -340,6 +349,90 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @(New-GraphAppProtectionPolicy) }
 
             (Get-MtAppProtectionPolicy -Platform iOS)[0].AssignmentSignalsDisagree | Should -BeFalse
+        }
+
+        It 'does not count an exclusion group as coverage' {
+            # Graph documents assignments as the list of inclusion AND exclusion groups, while
+            # isAssigned reports deployment to inclusion groups only. A policy whose single
+            # assignment excludes a group reaches no one, so counting the raw collection would
+            # report it as assigned while it protects nobody.
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(New-GraphAppProtectionPolicy -IsAssigned $false -Assignments @(
+                        [pscustomobject]@{
+                            id     = 'exclusion-only'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                groupId       = '22222222-2222-2222-2222-222222222222'
+                            }
+                        }))
+            }
+
+            $policy = (Get-MtAppProtectionPolicy -Platform iOS)[0]
+
+            $policy.AssignmentCount | Should -Be 0
+            $policy.IsAssigned | Should -BeFalse
+            $policy.AssignmentSignalsDisagree | Should -BeFalse
+        }
+
+        It 'counts the inclusion groups only when a policy has both kinds' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(New-GraphAppProtectionPolicy -Assignments @(
+                        [pscustomobject]@{
+                            id     = 'included'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                groupId       = '33333333-3333-3333-3333-333333333333'
+                            }
+                        },
+                        [pscustomobject]@{
+                            id     = 'excluded'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                groupId       = '44444444-4444-4444-4444-444444444444'
+                            }
+                        }))
+            }
+
+            $policy = (Get-MtAppProtectionPolicy -Platform iOS)[0]
+
+            $policy.AssignmentCount | Should -Be 1
+            $policy.IsAssigned | Should -BeTrue
+        }
+
+        It 'still trusts the server property when the only assignment is an exclusion' {
+            # The expand and the server-computed property can disagree. Both now report inclusion,
+            # so the union still reports the policy as assigned and the disagreement is recorded
+            # rather than silently resolved.
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(New-GraphAppProtectionPolicy -IsAssigned $true -Assignments @(
+                        [pscustomobject]@{
+                            id     = 'exclusion-only'
+                            target = [pscustomobject]@{
+                                '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                groupId       = '55555555-5555-5555-5555-555555555555'
+                            }
+                        }))
+            }
+
+            $policy = (Get-MtAppProtectionPolicy -Platform iOS)[0]
+
+            $policy.AssignmentCount | Should -Be 0
+            $policy.IsAssigned | Should -BeTrue
+            $policy.AssignmentSignalsDisagree | Should -BeTrue
+        }
+
+        It 'does not count an assignment whose target type is absent' {
+            # Not a shape Graph returns. It cannot be shown to include anyone, so it is not
+            # counted as coverage; the server property remains the signal that can rescue it.
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(New-GraphAppProtectionPolicy -IsAssigned $false -Assignments @(
+                        [pscustomobject]@{ id = 'no-target' }))
+            }
+
+            $policy = (Get-MtAppProtectionPolicy -Platform iOS)[0]
+
+            $policy.AssignmentCount | Should -Be 0
+            $policy.IsAssigned | Should -BeFalse
         }
 
         It 'projects the Android encryption waiver as its own field' {
