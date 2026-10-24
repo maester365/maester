@@ -1131,6 +1131,10 @@
             try {
                 if (-not $NonInteractive.IsPresent) {
                     Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console -Renderer $renderer
+                    # Maester runs on sponsorships: say so, with a link to maester.dev/sponsor (Output.SponsorMessage).
+                    if (-not ($outputSection -and $outputSection.PSObject.Properties['SponsorMessage'] -and $outputSection.SponsorMessage -eq $false)) {
+                        Write-MtSponsorMessage -Console $console
+                    }
                 }
 
                 # GitHub Actions and Azure Pipelines annotations for the first Failed and Error rows (Output.CIAnnotations).
