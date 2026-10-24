@@ -573,6 +573,7 @@ Describe 'New-MtPack' {
         $manifest = Get-Content -LiteralPath (Join-Path $path 'maester-pack.json') -Raw | ConvertFrom-Json
         $version = (Get-Module Maester).Version
         $manifest.RequiresMaester | Should -Be ">=$($version.Major).$($version.Minor)"
+        [guid]::TryParse($manifest.Guid, [ref][guid]::Empty) | Should -BeTrue
         $manifest.'$schema' | Should -Be 'https://maester.dev/schemas/maester-pack-1.0.json'
         InModuleScope Maester -Parameters @{ Range = $manifest.RequiresMaester; Version = $version } {
             Test-MtVersionRange -Range $Range -Version $Version | Should -BeTrue
