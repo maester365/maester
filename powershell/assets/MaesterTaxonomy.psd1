@@ -150,6 +150,7 @@
                 @{ Key = 'access-management'; Name = 'Access management' }
                 @{ Key = 'management-groups'; Name = 'Management groups' }
                 @{ Key = 'backup'; Name = 'Backup' }
+                @{ Key = 'subscriptions'; Name = 'Subscriptions' }
             )
         }
         @{
