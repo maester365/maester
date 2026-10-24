@@ -14,7 +14,6 @@ function Clear-ModuleVariable {
 
     Clear-MtGraphCache
     $__MtSession.GraphBaseUri = $null
-    $__MtSession.GraphEndpointCache = @{}
     $__MtSession.TestResultDetail = @{}
     $__MtSession.NativeTestInfo = @{}
     $__MtSession.NativeReturnValue = @{}

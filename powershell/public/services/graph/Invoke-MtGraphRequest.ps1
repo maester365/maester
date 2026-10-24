@@ -86,15 +86,15 @@
             if (-not $MgContext -or [string]::IsNullOrEmpty($MgContext.Environment)) {
                 throw "No active Microsoft Graph context. Ensure you are connected via 'Connect-Maester', or pass -GraphBaseUri to target an endpoint explicitly."
             }
-            # The context is read on every call, the endpoint lookup is memoised per environment
-            # name: a context switch still resolves a new endpoint, while repeated calls in the
-            # same environment do not pay for Get-MgEnvironment again.
+            # Resolved on every invocation, not memoised. Memoising by environment name misses
+            # an endpoint changed under that same name by Add-MgEnvironment or
+            # Set-MgEnvironment, and the stale endpoint would then also produce the absolute
+            # cache key, so a request could be answered from the previous endpoint's entry.
+            # Measured cost of not caching it: Get-MgEnvironment is 0.031 ms per call against
+            # a Graph round trip of tens of milliseconds.
             [string] $EnvironmentName = $MgContext.Environment
-            if (!$__MtSession.GraphEndpointCache.ContainsKey($EnvironmentName)) {
-                Write-Verbose -Message ("Resolving the Graph endpoint for environment '{0}'." -f $EnvironmentName)
-                $__MtSession.GraphEndpointCache[$EnvironmentName] = [uri] $((Get-MgEnvironment -Name $EnvironmentName).GraphEndpoint)
-            }
-            $GraphBaseUri = $__MtSession.GraphEndpointCache[$EnvironmentName]
+            Write-Verbose -Message ("Resolving the Graph endpoint for environment '{0}'." -f $EnvironmentName)
+            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name $EnvironmentName).GraphEndpoint)
         }
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri
@@ -104,6 +104,20 @@
         # that segment back into any uri made relative to it. Normalising the base once, here, is what
         # keeps the rest of this function from having to care whether the endpoint has a path.
         [uri] $TransportBaseUri = [uri] ($GraphBaseUri.AbsoluteUri.TrimEnd('/') + '/')
+
+        # Whether a relative transport uri is safe for THIS endpoint. Measured against
+        # Microsoft.Graph.Authentication 2.41.2 by calling InvokeMgGraphRequest.PrepareUri
+        # directly: it builds a relative request from the base address's scheme and host only,
+        # so both the endpoint's own path and an explicit port are dropped.
+        #
+        #   base https://graph.microsoft.com/          + v1.0/users -> https://graph.microsoft.com/v1.0/users
+        #   base https://proxy.contoso.com/graph/      + v1.0/users -> https://proxy.contoso.com/v1.0/users
+        #   base https://proxy.contoso.com:8443/graph/ + v1.0/users -> https://proxy.contoso.com/v1.0/users
+        #
+        # A relative uri is therefore only equivalent when the endpoint is a bare host on the
+        # default port, which every published Microsoft cloud is. Anything else -- a reverse
+        # proxy with a path, a non-default port -- goes out absolute, where nothing is dropped.
+        [bool] $RelativeIsSafe = ($TransportBaseUri.AbsolutePath -eq '/') -and $TransportBaseUri.IsDefaultPort
 
         # Versioned root that every uri in this invocation is built from. Batch subrequest urls are
         # relative to it, so the base and the api version come off together and a base uri that
@@ -117,10 +131,7 @@
         # batch path cannot drift apart. Relative by default is what lets Microsoft Graph PowerShell
         # route to the connected environment; absolute only when the caller overrode the endpoint.
         function Resolve-TransportUri ([uri] $RequestUri) {
-            if ($IsEndpointOverride) { return $RequestUri.AbsoluteUri }
-            # Relative to the whole base and not just to its host: the path and query of an endpoint
-            # such as https://proxy.contoso.com/graph/ already contains 'graph', and the SDK resolves
-            # what it is given against that same endpoint, so sending it would ask for /graph/graph/.
+            if ($IsEndpointOverride -or -not $RelativeIsSafe) { return $RequestUri.AbsoluteUri }
             return $TransportBaseUri.MakeRelativeUri($RequestUri).ToString()
         }
 

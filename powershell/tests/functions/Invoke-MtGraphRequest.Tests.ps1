@@ -7,7 +7,6 @@ Describe 'Invoke-MtGraphRequest' {
         InModuleScope Maester {
             $__MtSession.GraphCache = @{}
             $__MtSession.GraphBaseUri = $null
-            $__MtSession.GraphEndpointCache = @{}
         }
         # The environment the mocked Graph context reports. Tests reassign it to simulate a
         # context switch inside one PowerShell session.
@@ -22,6 +21,7 @@ Describe 'Invoke-MtGraphRequest' {
                 # in front of Graph does. Registered with and without a trailing slash.
                 'Proxy' { @{ GraphEndpoint = 'https://proxy.contoso.com/graph/' } }
                 'ProxyNoSlash' { @{ GraphEndpoint = 'https://proxy.contoso.com/graph' } }
+                'ProxyPort' { @{ GraphEndpoint = 'https://proxy.contoso.com:8443/graph/' } }
                 default { @{ GraphEndpoint = 'https://graph.microsoft.com/' } }
             }
         }
@@ -194,17 +194,37 @@ Describe 'Invoke-MtGraphRequest' {
         }
     }
 
-    Context 'Endpoint resolution cost' {
-        It 'Reads the context on every call but looks the endpoint up once per environment' {
+    Context 'Endpoint resolution' {
+        It 'Resolves the context and the endpoint on every call, so neither can go stale' {
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging
                 $null = Invoke-MtGraphRequest -RelativeUri 'groups' -DisablePaging
                 $null = Invoke-MtGraphRequest -RelativeUri 'applications' -DisablePaging
             }
-            # The context is what makes a mid-session switch visible, so it is still read per call.
+            # Both are read per call. The context is what makes a mid-session switch visible,
+            # and the endpoint is what makes a change to an existing environment visible.
             Should -Invoke Get-MgContext -ModuleName Maester -Times 3 -Exactly
-            # The endpoint for that environment is resolved once, not three times.
-            Should -Invoke Get-MgEnvironment -ModuleName Maester -Times 1 -Exactly
+            Should -Invoke Get-MgEnvironment -ModuleName Maester -Times 3 -Exactly
+        }
+
+        It 'Picks up an endpoint changed under the same environment name' {
+            # Add-MgEnvironment and Set-MgEnvironment can change the endpoint of an existing
+            # name. Resolving per call is what keeps the next request, and the absolute cache
+            # key it is stored under, on the new endpoint instead of the previous one.
+            $script:MtTestEndpoint = 'https://graph.microsoft.com/'
+            Mock Get-MgEnvironment -ModuleName Maester { @{ GraphEndpoint = $script:MtTestEndpoint } }
+
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            InModuleScope Maester { $__MtSession.GraphBaseUri.AbsoluteUri | Should -Be 'https://graph.microsoft.com/' }
+
+            $script:MtTestEndpoint = 'https://graph.microsoft.us/'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            InModuleScope Maester {
+                $__MtSession.GraphBaseUri.AbsoluteUri | Should -Be 'https://graph.microsoft.us/'
+                # The response is keyed per endpoint, so the second request is not answered
+                # from the first endpoint's entry.
+                @($__MtSession.GraphCache.Keys) | Should -Contain 'https://graph.microsoft.us/v1.0/users'
+            }
         }
 
         It 'Looks the endpoint up again when the context moves to another environment' {
@@ -217,12 +237,11 @@ Describe 'Invoke-MtGraphRequest' {
             }
         }
 
-        It 'Does not memoise the endpoint when the caller overrides it' {
+        It 'Does not look the endpoint up at all when the caller overrides it' {
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequest -RelativeUri 'users' -GraphBaseUri 'https://graph.microsoft.us/' -DisablePaging
             }
             Should -Not -Invoke Get-MgEnvironment -ModuleName Maester
-            InModuleScope Maester { $__MtSession.GraphEndpointCache.Count | Should -Be 0 }
         }
     }
 
@@ -273,20 +292,42 @@ Describe 'Invoke-MtGraphRequest' {
             $requests.url | Should -Be @('users', 'groups')
         }
 
-        It 'Does not repeat the endpoint path when the environment carries one and nothing is overridden' -ForEach @(
+        It 'Sends an absolute uri when the environment endpoint carries a path, because a relative one loses it' -ForEach @(
             @{ Environment = 'Proxy' }
             @{ Environment = 'ProxyNoSlash' }
         ) {
-            # The relative uri is resolved by the SDK against this same endpoint. Sending the path
-            # and query would send 'graph/v1.0/users' and ask the proxy for /graph/graph/v1.0/users.
+            # Measured against Microsoft.Graph.Authentication 2.41.2 by calling
+            # InvokeMgGraphRequest.PrepareUri directly: a relative uri is rebuilt from the base
+            # address's scheme and host only, so 'v1.0/users' against an endpoint of
+            # https://proxy.contoso.com/graph/ is sent to /v1.0/users and the proxy path is gone.
+            # Absolute is the only form that survives, and the endpoint it names is the one just
+            # resolved from the live context, so nothing is pinned that the context did not say.
             $script:MtTestEnvironment = $Environment
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
-                $Uri -eq 'v1.0/users'
+                $Uri -eq 'https://proxy.contoso.com/graph/v1.0/users'
             }
         }
 
-        It 'Posts a batch relative to the versioned root when the environment endpoint has a path' {
+        It 'Keeps an explicit port, which a relative uri also drops' {
+            $script:MtTestEnvironment = 'ProxyPort'
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'https://proxy.contoso.com:8443/graph/v1.0/users'
+            }
+        }
+
+        It 'Still sends a relative uri for a bare host on the default port, which every Microsoft cloud is' {
+            # The property this change exists for: no published endpoint is written into the
+            # request, so the SDK routes it to whatever environment is connected.
+            foreach ($env in @('Global', 'China', 'USGov')) {
+                $script:MtTestEnvironment = $env
+                InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'v1.0/users' } -Times 3 -Exactly
+        }
+
+        It 'Posts a batch to the absolute versioned root when the environment endpoint has a path' {
             $script:MtBatchBody = $null
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
@@ -296,8 +337,10 @@ Describe 'Invoke-MtGraphRequest' {
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -DisablePaging }
 
             Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
-                $Method -eq 'POST' -and $Uri -eq 'v1.0/$batch'
+                $Method -eq 'POST' -and $Uri -eq 'https://proxy.contoso.com/graph/v1.0/$batch'
             }
+            # The subrequest urls stay relative to the versioned root, which is what the batch
+            # endpoint expects, and carry neither the host nor the proxy path.
             $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
             $requests.url | Should -Be @('users', 'groups')
         }
