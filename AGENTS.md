@@ -121,3 +121,21 @@ Three things enforce this, in order:
 - The person or agent reviewing the pull request applies the same rubric and is the last word. A
   maintainer who disagrees with the workflow can apply the `attribute-review-override` label and
   should say why in the pull request.
+
+## Labelling pull requests, issues and discussions
+
+Labels follow one rubric so the queue can be filtered by status, type and product. The
+labels are defined in `.github/labels.json`; the rules for choosing them are in
+`.github/skills/maester-triage/SKILL.md`. To triage, use the `maester-triage` agent (or follow
+the skill directly): it shows its plan before changing anything and only ever changes labels.
+After editing `.github/labels.json`, run `./build/github/Sync-GitHubLabels.ps1` to see the
+changes and `-Apply` to make them.
+
+## Agents and skills
+
+The agents and skills in this repository are listed in `website/docs/agents-and-skills.md`. Each
+has one source file: `.github/agents/<name>.agent.md` or `.github/skills/<name>/SKILL.md`. The
+Claude Code copies under `.claude/agents/` and `.claude/skills/`, and that docs page, are generated
+from them by `./build/github/Update-AgentFiles.ps1`. Edit the source file, run the script, and
+commit both; never edit a generated copy. `powershell/tests/general/AgentFiles.Tests.ps1` fails
+when they drift.

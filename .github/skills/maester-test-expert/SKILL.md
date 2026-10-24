@@ -11,6 +11,9 @@ description: >-
   formatting, the MT, CIS, CISA, EIDSCA and ORCA suites, remediation guidance, Entra ID,
   Exchange, SharePoint, Teams, Defender, Conditional Access, and the validation checklist
   for new checks.
+metadata:
+  audience: "Contributors writing or reviewing checks"
+  summary: "The full guide to writing a check: layout, templates, attributes, rubric, validation and remediation."
 ---
 
 # Maester Test Expert

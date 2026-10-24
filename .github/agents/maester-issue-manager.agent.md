@@ -8,14 +8,11 @@ user-invocable: false
 tools:
   - search
   - github/*
+metadata:
+  audience: "Contributors and maintainers"
+  summary: "Reserves MT test IDs on issue #697 and keeps tracking issues tidy for new checks."
+  claude-tools: "Read, Glob, Grep, Bash, WebFetch"
 ---
-
-<!--
-  SYNC NOTE: This file's body is kept identical to its Claude Code twin at
-  `.claude/agents/maester-issue-manager.md`. Only the YAML frontmatter differs
-  (each tool uses its own tool-name vocabulary). If you edit the body below,
-  copy the same change to the twin file.
--->
 
 You are an issue management agent for Maester test tracking.
 
