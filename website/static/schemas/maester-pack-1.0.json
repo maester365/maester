@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maester.dev/schemas/maester-pack-1.0.json",
+  "title": "Maester Pack manifest (maester-pack.json)",
+  "description": "Describes a Maester Pack: its identity, its tests, helpers and connectors, and what it reaches. See https://maester.dev/docs/packs/writing-a-pack. Maester checks the manifest itself when a pack is installed and loaded; this schema helps editors.",
+  "type": "object",
+  "required": ["Id", "Guid", "Name", "Version", "Publisher", "Code"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "Id": {
+      "description": "<publisher>.<name> in lower case, for example contoso.google-workspace.",
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9-]{0,38}[a-z0-9])?\\.[a-z0-9]([a-z0-9-]{0,62}[a-z0-9])?$"
+    },
+    "Guid": {
+      "description": "A GUID that identifies the pack for good, such as d1e2db80-6c27-4cb6-9389-2edf0a898d23. New-MtPack writes one. Keep it, and the code, for every version of the pack: a pack with a new code needs a new Guid.",
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "Name": { "description": "The pack's display name.", "type": "string", "minLength": 1 },
+    "Description": { "type": "string" },
+    "Version": {
+      "description": "A semantic version, such as 1.2.0.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$"
+    },
+    "Publisher": { "description": "The GitHub user or organisation that owns the pack's repository.", "type": "string", "minLength": 1 },
+    "License": { "description": "An SPDX licence identifier, such as MIT.", "type": "string" },
+    "Homepage": { "type": "string", "format": "uri" },
+    "Support": { "type": "string", "format": "uri" },
+    "SecurityContact": { "type": "string" },
+    "RequiresMaester": {
+      "description": "The Maester versions the pack works with, such as '>=3.1 <4.0', '^3.1' or '~3.1.2'.",
+      "type": "string",
+      "pattern": "^\\s*((>=|<=|>|<|=|\\^|~)?v?\\d+(\\.\\d+){0,2}(-[0-9A-Za-z.-]+)?\\s*)+$"
+    },
+    "Code": {
+      "description": "The pack's code: every test ID of the pack starts with MP.<Code>. One to three parts separated by dots, each two to ten letters or digits starting with a letter, such as ZTA or CNT.GWS.",
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9]{1,9}(\\.[A-Za-z][A-Za-z0-9]{1,9}){0,2}$"
+    },
+    "Suites": { "description": "Folders of native tests inside the pack.", "$ref": "#/$defs/relativePaths" },
+    "Helpers": { "description": "Folders of .ps1 files with functions the tests call.", "$ref": "#/$defs/relativePaths" },
+    "Connectors": { "type": "array", "items": { "$ref": "#/$defs/connector" } },
+    "Uses": { "$ref": "#/$defs/uses" },
+    "Requires": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Packs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["Id"],
+            "properties": {
+              "Id": { "type": "string" },
+              "Source": { "type": "string" },
+              "Version": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "Exports": { "description": "Functions that packs requiring this one may call.", "type": "array", "items": { "type": "string" } },
+    "Categories": { "type": "array", "items": { "type": "string" } },
+    "Listed": { "type": "boolean" },
+    "Deprecated": {},
+    "Yanked": {},
+    "Icon": { "type": "string" },
+    "EnabledByDefault": { "description": "For a pack that ships with Maester: false leaves it off until the config turns it on.", "type": "boolean" },
+    "Runtime": {
+      "description": "This version of Maester runs only PowerShell (Script) packs.",
+      "oneOf": [
+        { "const": "Script" },
+        { "type": "object", "additionalProperties": false, "properties": { "Kind": { "const": "Script" } } }
+      ]
+    },
+    "Catalog": { "description": "A JSON file in the pack that lists its tests, for listings.", "$ref": "#/$defs/relativePath" },
+    "Pricing": { "enum": ["Free", "Paid"] },
+    "Banner": {
+      "description": "A .png, .jpg or .webp image in the pack, 1200 x 630, at most 1 MB.",
+      "allOf": [{ "$ref": "#/$defs/relativePath" }, { "pattern": "\\.(png|jpe?g|webp)$" }]
+    }
+  },
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "anyOf": [{ "pattern": "^[\\\\/]" }, { "pattern": "^[A-Za-z]:" }, { "pattern": "(^|[\\\\/])\\.\\.([\\\\/]|$)" }] }
+    },
+    "relativePaths": { "type": "array", "items": { "$ref": "#/$defs/relativePath" } },
+    "functionName": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]*-[A-Za-z][A-Za-z0-9]*$" },
+    "connector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Service", "File", "Connect", "Test"],
+      "properties": {
+        "Service": { "description": "<Code>.<Name>, for example CNT.GoogleWorkspace or CNT.GWS.Admin.", "type": "string" },
+        "Platform": { "type": "string" },
+        "DisplayName": { "type": "string" },
+        "File": { "$ref": "#/$defs/relativePath" },
+        "Connect": { "$ref": "#/$defs/functionName" },
+        "Test": { "$ref": "#/$defs/functionName" },
+        "Disconnect": { "$ref": "#/$defs/functionName" },
+        "Describe": { "$ref": "#/$defs/functionName" },
+        "Renew": { "$ref": "#/$defs/functionName" },
+        "OptIn": { "type": "boolean" },
+        "Permissions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Role": {},
+            "Scopes": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "Environment": {}
+      }
+    },
+    "uses": {
+      "description": "What the pack reaches, shown when it is installed. Unknown keys are refused.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Services": { "type": "array", "items": { "type": "string" } },
+        "GraphScopes": { "type": "array", "items": { "type": "string" } },
+        "TenantWrites": { "type": "array", "items": { "type": "string" } },
+        "Network": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^(\\*\\.)?[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$" }
+        },
+        "Modules": { "type": "array", "items": { "$ref": "#/$defs/module" } }
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["Name"],
+      "properties": {
+        "Name": { "type": "string" },
+        "Version": { "type": "string", "pattern": "^\\d+(\\.\\d+){1,3}(-[0-9A-Za-z.-]+)?$" },
+        "MinimumVersion": { "type": "string", "pattern": "^\\d+(\\.\\d+){1,3}(-[0-9A-Za-z.-]+)?$" },
+        "Install": { "enum": ["Maester", "User"] },
+        "Process": { "enum": ["Maester", "Child"] }
+      },
+      "if": { "properties": { "Install": { "const": "User" } }, "required": ["Install"] },
+      "then": { "properties": { "Process": { "const": "Child" } }, "required": ["Process"] },
+      "else": { "required": ["Version"], "not": { "required": ["MinimumVersion"] } }
+    }
+  }
+}

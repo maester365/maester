@@ -1,0 +1,27 @@
+{
+  "Id": "contoso.sample",
+  "Guid": "6f0f4a9e-3b1c-4d2a-9e7b-2c5d8a1f0b34",
+  "Name": "Contoso sample pack",
+  "Description": "A unit-test fixture: one connector, one helper and two tests.",
+  "Version": "1.0.0",
+  "Publisher": "contoso",
+  "License": "MIT",
+  "RequiresMaester": ">=3.0",
+  "Code": "CNT",
+  "Suites": ["tests"],
+  "Helpers": ["helpers"],
+  "Connectors": [
+    {
+      "Service": "CNT.Sample",
+      "DisplayName": "Contoso Sample",
+      "File": "connector/Connect-CntSample.ps1",
+      "Connect": "Connect-CntSample",
+      "Test": "Test-CntSample",
+      "Disconnect": "Disconnect-CntSample"
+    }
+  ],
+  "Uses": {
+    "Services": ["CNT.Sample"],
+    "Network": []
+  }
+}

@@ -6,6 +6,8 @@ import StatusLabelSm from "./StatusLabelSm";
 import SeverityBadge from "./SeverityBadge";
 import { Markdown } from '@/components/Markdown'
 import { useTenant } from "@/context/TenantContext";
+import ReportAttachmentButtons from "@/components/ReportAttachmentButtons";
+import { getTestAttachments } from "@/lib/reportAttachments";
 import { attackTechniquesLabel, benchmarkLabel, controlsLabel, getAttackTechniques, getBenchmarkText, getControls, getTestAttributeFields, hasTestAttributes } from "@/lib/testAttributes";
 
 export default function ResultInfo({ Item, isPrintView }) {
@@ -140,6 +142,7 @@ export default function ResultInfo({ Item, isPrintView }) {
           </Button>
         </div>
       }
+      {!isPrintView && <ReportAttachmentButtons attachments={getTestAttachments(selectedTenant, Item)} className="mt-3 flex flex-wrap gap-2" />}
       <Divider></Divider>
 
       <Card className={"break-words " + getBgColor(Item.Result)}>
