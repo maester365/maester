@@ -73,9 +73,12 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
   (reserved for users; never commit tests there).
 - `powershell/public/` (exported) is grouped by job: `run/`, `connect/`, `report/`, `app/`,
-  `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
-  `report/`, `app/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
+  `packs/`, `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
+  `report/`, `app/`, `packs/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
   `utility/`. Nothing sits directly in `public/` or `internal/`.
+- `packs/<name>/` at the repository root holds the Maester Packs that ship with Maester (ID `maester.<name>`,
+  a code of the pack's own such as `ZTA`, test IDs `<Code>.<n>` without the `MP.` that installed packs use). They are not under `tests/`: a pack loads into its own private
+  module, and its rows carry `Source = Custom` and `Package`. See `packs/README.md`.
 - Put a function by its job, not by the check that first needed it: reusable data access
   for a service goes in `internal/services/<service>/`; logic only one suite's checks use
   goes in `internal/checks/<suite>/<service>/`; a helper users call from custom tests goes
