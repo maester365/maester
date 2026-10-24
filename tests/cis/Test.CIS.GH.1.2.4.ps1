@@ -13,7 +13,8 @@
     .EXAMPLE
     Test-MtCisGitHubIssueDeletionLimited
 
-    Returns Investigate when the GitHub organization setting is available.
+    Returns Investigate when the GitHub organization setting is a Boolean;
+    unusable evidence is indeterminate.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited
@@ -41,27 +42,34 @@
     $org = Get-MtGitHubOrganization
     $field = 'members_can_delete_issues'
     if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.2.4 and may be missing because of permissions, plan, API version, or organization type."
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.2.4 and may be missing because of permissions, plan, API version, or organization type."
+        return $null
+    }
+
+    if ($org.$field -isnot [bool]) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field '$field' must be a Boolean to evaluate CIS.GH.1.2.4. No configuration verdict was produced."
         return $null
     }
 
     $resultMarkdown = @"
 CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
 
-| Field | Actual | Expected |
-| --- | --- | --- |
-| ``$field`` | ``$($org.$field)`` | ``False`` |
+| Field | Actual |
+| --- | --- |
+| ``$field`` | ``$($org.$field)`` |
+
+Partial evidence only: this setting does not establish CIS compliance. The administrator/owner population and trust review below remains unassessed.
 "@
 
     if ($org.$field -eq $true) {
         $resultMarkdown += @"
 
-Manual review required - ``members_can_delete_issues`` is true. CIS GH 1.2.4 audit requires verifying repository admin members are trusted and qualified; document the review.
+Manual review required - ``members_can_delete_issues`` is true. For CIS GH 1.2.4, verify that every repository has exactly two repository administrators, both trusted and qualified; document the population and trust review.
 "@
     } else {
         $resultMarkdown += @"
 
-Manual review required - ``members_can_delete_issues`` is false. CIS GH 1.2.4 audit still requires verifying organization owners are trusted and qualified; document the review.
+Manual review required - ``members_can_delete_issues`` is false. For CIS GH 1.2.4, verify that there are only a few organization owners, all trusted and qualified; document the population and trust review. CIS does not specify a numeric owner limit.
 "@
     }
 
