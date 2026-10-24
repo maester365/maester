@@ -46,7 +46,7 @@ cooldown when it is published; any other release starts it when each user first 
   "Version": "1.2.0",
   "Publisher": "contoso",
   "License": "MIT",
-  "RequiresMaester": ">=3.0 <4.0",
+  "RequiresMaester": ">=3.0",
   "Code": "CNT",
   "Suites": ["tests"],
   "Helpers": ["helpers"],
@@ -76,7 +76,7 @@ cooldown when it is published; any other release starts it when each user first 
 | `Id` | `<publisher>.<name>` in lower case. The publisher is the GitHub user or organisation that owns the repository; a pack whose publisher is not the repository owner is refused. |
 | `Guid` | Required. A GUID that identifies the pack for good, such as `d1e2db80-6c27-4cb6-9389-2edf0a898d23`; `New-MtPack` makes one. Keep it, and the code, for every version of the pack: `Update-MtPack` refuses a release whose Guid or code changed. A pack with a new code is a new pack, with a new Guid. |
 | `Version` | A semantic version, such as `1.2.0`. |
-| `RequiresMaester` | The Maester versions the pack works with, such as `>=3.0 <4.0`. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
+| `RequiresMaester` | The Maester versions the pack works with, such as `>=3.0`. Add an upper bound, such as `>=3.0 <4.0`, only if you know a later version breaks the pack. A pack that needs a newer Maester reports `RequiresNewerMaester`. `New-MtPack` fills in the version you made the pack with. |
 | `Code` | The start of every test ID of the pack: `CNT` gives `MP.CNT.1001`. Two to ten letters or digits, starting with a letter. A publisher with several packs can group them with up to three parts separated by dots, such as `CNT.GWS` for `MP.CNT.GWS.1001`. No two installed packs may share a code, or have one code that starts with the other (`CNT` and `CNT.GWS`), so `Install-MtPack` refuses the second one. Any code is allowed, but pick one that the [Maester Packs site](https://packs.maester.cloud) does not list as claimed, so people can install your pack next to others. |
 | `Suites` | Folders of native tests. Each needs a `suite.json` whose `Id` is the code or starts with it, such as `CNT.GoogleWorkspace`. |
 | `Helpers` | Folders of `.ps1` files that hold functions the tests call. |
