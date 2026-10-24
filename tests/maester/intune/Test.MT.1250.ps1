@@ -49,75 +49,76 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Querying Android app protection policies..."
     try {
-        Write-Verbose "Querying Android app protection policies..."
         $policies = Get-MtAppProtectionPolicy -Platform Android
-        if ($null -eq $policies) {
-            # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
-            # scope is missing from the connection, or Intune RBAC returned a 403.
-            # Report a skip rather than a false security finding.
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an Android app protection policy, any screen of organization data can be captured into the device gallery. Create an Android app protection policy, set **Screen capture and Google Assistant** to **Block** and assign it."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        throw
+    }
 
-        # The setting and the assignment are one condition on one policy, so they are evaluated
-        # together. Two separate tests cannot express the conjunction: a policy that configures the
-        # setting but is not assigned, and a policy that is assigned but does not configure it, would
-        # both pass while no user is covered.
-        $compliant = @($policies | Where-Object {
-                $_.ScreenCaptureBlocked -and
-                $_.IsAssigned
-            })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Screen capture | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
-        foreach ($policy in $policies) {
-            $captureState = if ($policy.ScreenCaptureBlocked) { 'Blocked' } else { 'Allowed' }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $captureState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy blocks screen capture of organization data."
-            $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($_.ScreenCaptureBlocked) })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
-                $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
-            }
-        } else {
-            $unassigned = @($policies | Where-Object { ($_.ScreenCaptureBlocked) -and -not $_.IsAssigned })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
-            } else {
-                $testResultMarkdown += "`nNo Android app protection policy blocks screen capture. A screenshot copies organization data past every data transfer restriction the policy sets, into a gallery that on a personal phone is usually syncing to a personal cloud account."
-            }
-        }
-
-        $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
-        if ($disagreeing.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
-            $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
-        }
-
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    if ($null -eq $policies) {
+        # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
+        # scope is missing from the connection, or Intune RBAC returned a 403.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an Android app protection policy, any screen of organization data can be captured into the device gallery. Create an Android app protection policy, set **Screen capture and Google Assistant** to **Block** and assign it."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    # The setting and the assignment are one condition on one policy, so they are evaluated
+    # together. Two separate tests cannot express the conjunction: a policy that configures the
+    # setting but is not assigned, and a policy that is assigned but does not configure it, would
+    # both pass while no user is covered.
+    $compliant = @($policies | Where-Object {
+            $_.ScreenCaptureBlocked -and
+            $_.IsAssigned
+        })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
+    $testResultMarkdown += "| Policy | Screen capture | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $captureState = if ($policy.ScreenCaptureBlocked) { 'Blocked' } else { 'Allowed' }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $captureState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy blocks screen capture of organization data."
+        $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($_.ScreenCaptureBlocked) })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
+            $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
+        }
+    } else {
+        $unassigned = @($policies | Where-Object { ($_.ScreenCaptureBlocked) -and -not $_.IsAssigned })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
+        } else {
+            $testResultMarkdown += "`nNo Android app protection policy blocks screen capture. A screenshot copies organization data past every data transfer restriction the policy sets, into a gallery that on a personal phone is usually syncing to a personal cloud account."
+        }
+    }
+
+    $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
+    if ($disagreeing.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
+        $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
+    }
+
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

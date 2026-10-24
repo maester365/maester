@@ -54,85 +54,86 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Querying iOS compliance policies..."
     try {
-        Write-Verbose "Querying iOS compliance policies..."
         $policies = Get-MtMobileCompliancePolicy -Platform iOS
-        if ($null -eq $policies) {
-            # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
-            # Report a skip rather than a false security finding.
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No iOS compliance policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an iOS compliance policy, a Defender detection never affects device compliance. "
-            $testResultMarkdown += "Create an iOS/iPadOS compliance policy and set **Require the device to be at or under the machine risk score**."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        throw
+    }
 
-        # unavailable and notSet both mean the risk level is not evaluated.
-        $configuredLevels = @('secured', 'low', 'medium', 'high')
-        # unavailable and notSet are mapped explicitly so that a genuinely unset threshold reads as
-        # "Not evaluated", while an unrecognised future value falls through to its raw form rather than
-        # being mislabelled as unset.
-        $levelLabels = @{
-            'secured'     = 'Secured (strictest)'
-            'low'         = 'Low'
-            'medium'      = 'Medium'
-            'high'        = 'High (most permissive)'
-            'unavailable' = 'Not evaluated'
-            'notSet'      = 'Not evaluated'
-        }
-
-        $compliant = @($policies | Where-Object { $_.IsAssigned -and $configuredLevels -contains $_.DefenderRiskScoreLevel })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($policies.Count) iOS compliance policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Machine risk score | Threat protection required | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- |`n"
-        foreach ($policy in $policies) {
-            $level = $policy.DefenderRiskScoreLevel
-            $levelLabel = if ([string]::IsNullOrWhiteSpace($level)) {
-                'Not evaluated'
-            } elseif ($levelLabels.ContainsKey($level)) {
-                $levelLabels[$level]
-            } else {
-                $level
-            }
-            $threatState = if ($policy.RequiresThreatProtection) { 'Yes' } else { 'No' }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $levelLabel | $threatState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned iOS compliance policy requires a Microsoft Defender machine risk score level."
-            $missingConnector = @($compliant | Where-Object { -not $_.RequiresThreatProtection })
-            if ($missingConnector.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($missingConnector.Count) policy/policies set a risk level threshold but do not require "
-                $testResultMarkdown += "device threat protection. Confirm your iOS devices are onboarded to Microsoft Defender for Endpoint, "
-                $testResultMarkdown += "otherwise no risk level is ever reported and the threshold has no effect."
-            }
-        } else {
-            $unassigned = @($policies | Where-Object { -not $_.IsAssigned -and $configuredLevels -contains $_.DefenderRiskScoreLevel })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a risk level but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never evaluated. Assign the policy to your iOS device or user groups."
-            } else {
-                $testResultMarkdown += "`nNo assigned iOS compliance policy requires a Microsoft Defender machine risk score level. "
-                $testResultMarkdown += "A phone with an active high severity detection stays compliant and keeps access to corporate resources."
-            }
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    if ($null -eq $policies) {
+        # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No iOS compliance policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an iOS compliance policy, a Defender detection never affects device compliance. "
+        $testResultMarkdown += "Create an iOS/iPadOS compliance policy and set **Require the device to be at or under the machine risk score**."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    # unavailable and notSet both mean the risk level is not evaluated.
+    $configuredLevels = @('secured', 'low', 'medium', 'high')
+    # unavailable and notSet are mapped explicitly so that a genuinely unset threshold reads as
+    # "Not evaluated", while an unrecognised future value falls through to its raw form rather than
+    # being mislabelled as unset.
+    $levelLabels = @{
+        'secured'     = 'Secured (strictest)'
+        'low'         = 'Low'
+        'medium'      = 'Medium'
+        'high'        = 'High (most permissive)'
+        'unavailable' = 'Not evaluated'
+        'notSet'      = 'Not evaluated'
+    }
+
+    $compliant = @($policies | Where-Object { $_.IsAssigned -and $configuredLevels -contains $_.DefenderRiskScoreLevel })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($policies.Count) iOS compliance policy/policies in Intune.`n`n"
+    $testResultMarkdown += "| Policy | Machine risk score | Threat protection required | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $level = $policy.DefenderRiskScoreLevel
+        $levelLabel = if ([string]::IsNullOrWhiteSpace($level)) {
+            'Not evaluated'
+        } elseif ($levelLabels.ContainsKey($level)) {
+            $levelLabels[$level]
+        } else {
+            $level
+        }
+        $threatState = if ($policy.RequiresThreatProtection) { 'Yes' } else { 'No' }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $levelLabel | $threatState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned iOS compliance policy requires a Microsoft Defender machine risk score level."
+        $missingConnector = @($compliant | Where-Object { -not $_.RequiresThreatProtection })
+        if ($missingConnector.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($missingConnector.Count) policy/policies set a risk level threshold but do not require "
+            $testResultMarkdown += "device threat protection. Confirm your iOS devices are onboarded to Microsoft Defender for Endpoint, "
+            $testResultMarkdown += "otherwise no risk level is ever reported and the threshold has no effect."
+        }
+    } else {
+        $unassigned = @($policies | Where-Object { -not $_.IsAssigned -and $configuredLevels -contains $_.DefenderRiskScoreLevel })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a risk level but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never evaluated. Assign the policy to your iOS device or user groups."
+        } else {
+            $testResultMarkdown += "`nNo assigned iOS compliance policy requires a Microsoft Defender machine risk score level. "
+            $testResultMarkdown += "A phone with an active high severity detection stays compliant and keeps access to corporate resources."
+        }
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

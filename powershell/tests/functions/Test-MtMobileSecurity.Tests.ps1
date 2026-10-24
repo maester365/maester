@@ -3,8 +3,8 @@
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         # Check functions that became native tests are not exported.
-        Use-MtModuleFunction -Name Test-MtIosJailbrokenDevices, Test-MtIosPasscodePolicy, Test-MtIosMinimumOsVersion,
-        Test-MtIosDefenderRiskScore, Test-MtAndroidRootedDevices, Test-MtAndroidPasswordPolicy,
+        Use-MtModuleFunction -Name Test-MtIosJailbrokenDevice, Test-MtIosPasscodePolicy, Test-MtIosMinimumOsVersion,
+        Test-MtIosDefenderRiskScore, Test-MtAndroidRootedDevice, Test-MtAndroidPasswordPolicy,
         Test-MtAndroidSecurityPatchLevel, Test-MtAndroidThreatProtection, Test-MtAndroidUsbDebugging,
         Test-MtAndroidDeviceAdministratorBlocked
 
@@ -126,13 +126,13 @@
         }
     }
 
-    Context 'Test-MtIosJailbrokenDevices (MT.1228)' {
+    Context 'Test-MtIosJailbrokenDevice (MT.1228)' {
         It 'passes when an assigned policy blocks jailbroken devices' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestIosPolicy -BlocksJailbrokenDevices $true -AssignmentCount 1)
             }
 
-            Test-MtIosJailbrokenDevices | Should -BeTrue
+            Test-MtIosJailbrokenDevice | Should -BeTrue
             $script:TestResult | Should -Match 'Blocked'
         }
 
@@ -141,7 +141,7 @@
                 return @(Get-TestIosPolicy -BlocksJailbrokenDevices $false)
             }
 
-            Test-MtIosJailbrokenDevices | Should -BeFalse
+            Test-MtIosJailbrokenDevice | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
@@ -150,21 +150,21 @@
                 return @(Get-TestIosPolicy -BlocksJailbrokenDevices $true -AssignmentCount 0)
             }
 
-            Test-MtIosJailbrokenDevices | Should -BeFalse
+            Test-MtIosJailbrokenDevice | Should -BeFalse
             $script:TestResult | Should -Match 'not assigned'
         }
 
         It 'fails when the tenant has no iOS compliance policies' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { New-EmptyPolicyList }
 
-            Test-MtIosJailbrokenDevices | Should -BeFalse
+            Test-MtIosJailbrokenDevice | Should -BeFalse
             $script:TestResult | Should -Match 'No iOS compliance policies'
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { return $null }
 
-            $null -eq (Test-MtIosJailbrokenDevices) | Should -BeTrue
+            $null -eq (Test-MtIosJailbrokenDevice) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
 
@@ -176,7 +176,7 @@
                 )
             }
 
-            Test-MtIosJailbrokenDevices | Should -BeTrue
+            Test-MtIosJailbrokenDevice | Should -BeTrue
             $script:TestResult | Should -Match 'do not block jailbroken devices'
         }
     }
@@ -433,13 +433,13 @@
         }
     }
 
-    Context 'Test-MtAndroidRootedDevices (MT.1232)' {
+    Context 'Test-MtAndroidRootedDevice (MT.1232)' {
         It 'passes when an assigned policy blocks rooted devices' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestAndroidPolicy -BlocksRootedDevices $true)
             }
 
-            Test-MtAndroidRootedDevices | Should -BeTrue
+            Test-MtAndroidRootedDevice | Should -BeTrue
             $script:TestResult | Should -Match 'Blocked'
         }
 
@@ -448,7 +448,7 @@
                 return @(Get-TestAndroidPolicy -BlocksRootedDevices $false)
             }
 
-            Test-MtAndroidRootedDevices | Should -BeFalse
+            Test-MtAndroidRootedDevice | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
@@ -457,14 +457,14 @@
                 return @(Get-TestAndroidPolicy -BlocksRootedDevices $true -AssignmentCount 0)
             }
 
-            Test-MtAndroidRootedDevices | Should -BeFalse
+            Test-MtAndroidRootedDevice | Should -BeFalse
             $script:TestResult | Should -Match 'not assigned'
         }
 
         It 'fails when the tenant has no Android compliance policy of any kind' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { New-EmptyPolicyList }
 
-            Test-MtAndroidRootedDevices | Should -BeFalse
+            Test-MtAndroidRootedDevice | Should -BeFalse
             $script:TestResult | Should -Match 'No Android compliance policies'
         }
 
@@ -475,7 +475,7 @@
                 return @(Get-TestAndroidEnterprisePolicy)
             }
 
-            $null -eq (Test-MtAndroidRootedDevices) | Should -BeTrue
+            $null -eq (Test-MtAndroidRootedDevice) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotApplicable'
         }
 
@@ -488,7 +488,7 @@
                 )
             }
 
-            Test-MtAndroidRootedDevices | Should -BeTrue
+            Test-MtAndroidRootedDevice | Should -BeTrue
             $script:TestResult | Should -Match 'Found 1 Android device administrator compliance policy'
             $script:TestResult | Should -Match '2 Android Enterprise compliance policy/policies'
             # Counted in the note, never given a row of its own: no setting of it was read.
@@ -499,7 +499,7 @@
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy { return $null }
 
-            $null -eq (Test-MtAndroidRootedDevices) | Should -BeTrue
+            $null -eq (Test-MtAndroidRootedDevice) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -823,7 +823,7 @@
                 return @(Get-TestIosPolicy -Name '')
             }
 
-            { Test-MtIosJailbrokenDevices } | Should -Not -Throw
+            { Test-MtIosJailbrokenDevice } | Should -Not -Throw
         }
 
         It 'handles many iOS policies with mixed states' {
@@ -836,7 +836,7 @@
                 )
             }
 
-            Test-MtIosJailbrokenDevices | Should -BeTrue
+            Test-MtIosJailbrokenDevice | Should -BeTrue
             $script:TestResult | Should -Match 'Found 4 iOS compliance'
         }
 

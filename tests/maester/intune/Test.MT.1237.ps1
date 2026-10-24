@@ -55,68 +55,69 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Querying Android compliance policies..."
     try {
-        Write-Verbose "Querying Android compliance policies..."
         $policies = Get-MtMobileCompliancePolicy -Platform Android
-        if ($null -eq $policies) {
-            # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
-            # Report a skip rather than a false security finding.
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-            return $null
-        }
-
-        $evaluated = @($policies | Where-Object { $_.SettingsEvaluated })
-        $enterprise = @($policies | Where-Object { -not $_.SettingsEvaluated })
-        if ($evaluated.Count -eq 0) {
-            # No device administrator compliance policy exists, so the setting has nowhere to live and
-            # its absence is not a finding. MT.1054 covers devices with no policy assigned.
-            Add-MtTestResultDetail -SkippedBecause NotApplicable
-            return $null
-        }
-
-        $compliant = @($evaluated | Where-Object { $_.BlocksDeviceAdministrator -and $_.IsAssigned })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($evaluated.Count) Android device administrator compliance policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Device administrator managed devices | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
-        foreach ($policy in $evaluated) {
-            $daState = if ($policy.BlocksDeviceAdministrator) { 'Blocked' } else { 'Not configured' }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $daState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned Android compliance policy blocks devices managed with device administrator."
-            $gaps = @($evaluated | Where-Object { -not $_.BlocksDeviceAdministrator -and $_.IsAssigned })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies still accept device administrator enrollments. "
-                $testResultMarkdown += "Devices scoped only to those policies keep access in the legacy management mode."
-            }
-        } else {
-            $unassigned = @($evaluated | Where-Object { $_.BlocksDeviceAdministrator -and -not $_.IsAssigned })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies block device administrator managed devices but are **not assigned** to "
-                $testResultMarkdown += "any group, so they are never evaluated. Assign the policy to your Android device or user groups."
-            } else {
-                $testResultMarkdown += "`nNo Android compliance policy blocks devices managed with device administrator. "
-                $testResultMarkdown += "Those enrollments stay compliant while the policies an admin believes are applied are no longer enforced by Android."
-            }
-        }
-
-        if ($enterprise.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Scope:** $($enterprise.Count) Android Enterprise compliance policy/policies "
-            $testResultMarkdown += "(work profile or device owner) are configured in this tenant. They are the target of the migration this check drives."
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
         }
+
+        throw
+    }
+
+    if ($null -eq $policies) {
+        # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    $evaluated = @($policies | Where-Object { $_.SettingsEvaluated })
+    $enterprise = @($policies | Where-Object { -not $_.SettingsEvaluated })
+    if ($evaluated.Count -eq 0) {
+        # No device administrator compliance policy exists, so the setting has nowhere to live and
+        # its absence is not a finding. MT.1054 covers devices with no policy assigned.
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
+
+    $compliant = @($evaluated | Where-Object { $_.BlocksDeviceAdministrator -and $_.IsAssigned })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($evaluated.Count) Android device administrator compliance policy/policies in Intune.`n`n"
+    $testResultMarkdown += "| Policy | Device administrator managed devices | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- |`n"
+    foreach ($policy in $evaluated) {
+        $daState = if ($policy.BlocksDeviceAdministrator) { 'Blocked' } else { 'Not configured' }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $daState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned Android compliance policy blocks devices managed with device administrator."
+        $gaps = @($evaluated | Where-Object { -not $_.BlocksDeviceAdministrator -and $_.IsAssigned })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies still accept device administrator enrollments. "
+            $testResultMarkdown += "Devices scoped only to those policies keep access in the legacy management mode."
+        }
+    } else {
+        $unassigned = @($evaluated | Where-Object { $_.BlocksDeviceAdministrator -and -not $_.IsAssigned })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies block device administrator managed devices but are **not assigned** to "
+            $testResultMarkdown += "any group, so they are never evaluated. Assign the policy to your Android device or user groups."
+        } else {
+            $testResultMarkdown += "`nNo Android compliance policy blocks devices managed with device administrator. "
+            $testResultMarkdown += "Those enrollments stay compliant while the policies an admin believes are applied are no longer enforced by Android."
+        }
+    }
+
+    if ($enterprise.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Scope:** $($enterprise.Count) Android Enterprise compliance policy/policies "
+        $testResultMarkdown += "(work profile or device owner) are configured in this tenant. They are the target of the migration this check drives."
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

@@ -49,85 +49,86 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Querying iOS app protection policies..."
     try {
-        Write-Verbose "Querying iOS app protection policies..."
         $policies = Get-MtAppProtectionPolicy -Platform iOS
-        if ($null -eq $policies) {
-            # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
-            # scope is missing from the connection, or Intune RBAC returned a 403.
-            # Report a skip rather than a false security finding.
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No iOS app protection policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an iOS app protection policy, no mobile threat defense signal can reach a decision about organization data on an unenrolled iPhone. Create an iOS app protection policy, set **Max allowed device threat level** under **Conditional launch** and assign it."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        throw
+    }
 
-        # The setting and the assignment are one condition on one policy, so they are evaluated
-        # together. Two separate tests cannot express the conjunction: a policy that configures the
-        # setting but is not assigned, and a policy that is assigned but does not configure it, would
-        # both pass while no user is covered.
-        # Read the flag, not only the level: Intune keeps and returns the level whether or not the
-        # flag that activates it is on, so a policy can advertise a strong value that is never applied.
-        $compliant = @($policies | Where-Object {
-                $_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and
-                $_.ThreatRemediationAction -in @('block', 'wipe') -and
-                $_.IsAssigned
-            })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($policies.Count) iOS app protection policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Maximum device threat level | Action | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- |`n"
-        foreach ($policy in $policies) {
-            $threatState = if ($policy.MaximumDeviceThreatLevel) { $policy.MaximumDeviceThreatLevel } else { 'Not configured' }
-            $actionState = if ($policy.ThreatRemediationAction) { $policy.ThreatRemediationAction } else { 'Not configured' }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $threatState | $actionState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned iOS app protection policy blocks or wipes organization data on a device threat signal."
-            $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and $_.ThreatRemediationAction -in @('block', 'wipe')) })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
-                $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
-            }
-        } else {
-            $unassigned = @($policies | Where-Object { ($_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and $_.ThreatRemediationAction -in @('block', 'wipe')) -and -not $_.IsAssigned })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
-            } else {
-                $testResultMarkdown += "`nNo iOS app protection policy acts on the device threat level. On an unenrolled iPhone this is the only path by which a jailbreak or a malicious app detected by mobile threat defense can reach a decision about the organization data, and nothing is listening."
-            }
-        }
-
-        $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
-        if ($disagreeing.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
-            $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
-        }
-
-        $permissive = @($policies | Where-Object { $_.IsAssigned -and $_.MaximumDeviceThreatLevel -eq 'high' })
-        if ($permissive.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Note:** $($permissive.Count) assigned policy/policies set the maximum allowed device "
-            $testResultMarkdown += "threat level to **high**, which accepts every threat level the partner reports. The condition is "
-            $testResultMarkdown += "configured but admits a device reported as high risk."
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    if ($null -eq $policies) {
+        # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
+        # scope is missing from the connection, or Intune RBAC returned a 403.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No iOS app protection policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an iOS app protection policy, no mobile threat defense signal can reach a decision about organization data on an unenrolled iPhone. Create an iOS app protection policy, set **Max allowed device threat level** under **Conditional launch** and assign it."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    # The setting and the assignment are one condition on one policy, so they are evaluated
+    # together. Two separate tests cannot express the conjunction: a policy that configures the
+    # setting but is not assigned, and a policy that is assigned but does not configure it, would
+    # both pass while no user is covered.
+    # Read the flag, not only the level: Intune keeps and returns the level whether or not the
+    # flag that activates it is on, so a policy can advertise a strong value that is never applied.
+    $compliant = @($policies | Where-Object {
+            $_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and
+            $_.ThreatRemediationAction -in @('block', 'wipe') -and
+            $_.IsAssigned
+        })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($policies.Count) iOS app protection policy/policies in Intune.`n`n"
+    $testResultMarkdown += "| Policy | Maximum device threat level | Action | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $threatState = if ($policy.MaximumDeviceThreatLevel) { $policy.MaximumDeviceThreatLevel } else { 'Not configured' }
+        $actionState = if ($policy.ThreatRemediationAction) { $policy.ThreatRemediationAction } else { 'Not configured' }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $threatState | $actionState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned iOS app protection policy blocks or wipes organization data on a device threat signal."
+        $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and $_.ThreatRemediationAction -in @('block', 'wipe')) })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
+            $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
+        }
+    } else {
+        $unassigned = @($policies | Where-Object { ($_.MaximumDeviceThreatLevel -in @('secured', 'low', 'medium') -and $_.ThreatRemediationAction -in @('block', 'wipe')) -and -not $_.IsAssigned })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
+        } else {
+            $testResultMarkdown += "`nNo iOS app protection policy acts on the device threat level. On an unenrolled iPhone this is the only path by which a jailbreak or a malicious app detected by mobile threat defense can reach a decision about the organization data, and nothing is listening."
+        }
+    }
+
+    $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
+    if ($disagreeing.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
+        $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
+    }
+
+    $permissive = @($policies | Where-Object { $_.IsAssigned -and $_.MaximumDeviceThreatLevel -eq 'high' })
+    if ($permissive.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Note:** $($permissive.Count) assigned policy/policies set the maximum allowed device "
+        $testResultMarkdown += "threat level to **high**, which accepts every threat level the partner reports. The condition is "
+        $testResultMarkdown += "configured but admits a device reported as high risk."
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

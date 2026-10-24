@@ -5,10 +5,10 @@
         # The helper is internal and the check functions are native tests, so none of them is exported.
         Use-MtModuleFunction -Name Get-MtAppProtectionPolicy,
         Test-MtIosAppProtectionPinPolicy, Test-MtIosAppProtectionDataTransfer,
-        Test-MtIosAppProtectionEncryption, Test-MtIosAppProtectionMinimumVersions,
+        Test-MtIosAppProtectionEncryption, Test-MtIosAppProtectionMinimumVersion,
         Test-MtIosAppProtectionOfflineGracePeriod, Test-MtIosAppProtectionDeviceThreatLevel,
         Test-MtAndroidAppProtectionPinPolicy, Test-MtAndroidAppProtectionDataTransfer,
-        Test-MtAndroidAppProtectionEncryption, Test-MtAndroidAppProtectionMinimumVersions,
+        Test-MtAndroidAppProtectionEncryption, Test-MtAndroidAppProtectionMinimumVersion,
         Test-MtAndroidAppProtectionOfflineGracePeriod, Test-MtAndroidAppProtectionDeviceThreatLevel,
         Test-MtAndroidAppProtectionScreenCapture, Test-MtAndroidAppProtectionDeviceAttestation
 
@@ -652,11 +652,11 @@
         }
     }
 
-    Context 'Test-MtIosAppProtectionMinimumVersions (MT.1241)' {
+    Context 'Test-MtIosAppProtectionMinimumVersion (MT.1241)' {
         It 'passes when an assigned policy sets both floors' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestIosPolicy) }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeTrue
+            Test-MtIosAppProtectionMinimumVersion | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
         }
 
@@ -665,7 +665,7 @@
                 return @(Get-TestIosPolicy -MinimumRequiredOsVersion $null)
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
@@ -674,7 +674,7 @@
                 return @(Get-TestIosPolicy -MinimumRequiredOsVersion '')
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'fails when the minimum OS version is only whitespace' {
@@ -682,7 +682,7 @@
                 return @(Get-TestIosPolicy -MinimumRequiredOsVersion '   ')
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'fails when the minimum app version is absent' {
@@ -690,7 +690,7 @@
                 return @(Get-TestIosPolicy -MinimumRequiredAppVersion $null)
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'reports the SDK version without requiring it' {
@@ -698,7 +698,7 @@
                 return @(Get-TestIosPolicy -MinimumRequiredSdkVersion '19.7.0')
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeTrue
+            Test-MtIosAppProtectionMinimumVersion | Should -BeTrue
             $script:TestResult | Should -Match '19\.7\.0'
         }
 
@@ -707,20 +707,20 @@
                 return @(Get-TestIosPolicy -AssignmentCount 0 -IsAssignedFlag $false)
             }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
             $script:TestResult | Should -Match 'not assigned'
         }
 
         It 'fails when the tenant has no iOS app protection policies' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { New-EmptyPolicyList }
 
-            Test-MtIosAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtIosAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return $null }
 
-            $null -eq (Test-MtIosAppProtectionMinimumVersions) | Should -BeTrue
+            $null -eq (Test-MtIosAppProtectionMinimumVersion) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }
@@ -1125,11 +1125,11 @@
         }
     }
 
-    Context 'Test-MtAndroidAppProtectionMinimumVersions (MT.1247)' {
+    Context 'Test-MtAndroidAppProtectionMinimumVersion (MT.1247)' {
         It 'passes when an assigned policy sets both floors' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return @(Get-TestAndroidPolicy) }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeTrue
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
         }
 
@@ -1138,7 +1138,7 @@
                 return @(Get-TestAndroidPolicy -MinimumRequiredOsVersion $null)
             }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeFalse
             $script:TestResult | Should -Match 'Not configured'
         }
 
@@ -1147,7 +1147,7 @@
                 return @(Get-TestAndroidPolicy -MinimumRequiredAppVersion '')
             }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'reports the patch level without requiring it' {
@@ -1155,7 +1155,7 @@
                 return @(Get-TestAndroidPolicy -MinimumRequiredPatchVersion '2025-06-01')
             }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeTrue
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeTrue
             $script:TestResult | Should -Match '2025-06-01'
         }
 
@@ -1164,7 +1164,7 @@
                 return @(Get-TestAndroidPolicy -MinimumRequiredPatchVersion $null)
             }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeTrue
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeTrue
             $script:TestResult | Should -Match 'no minimum security patch'
         }
 
@@ -1173,20 +1173,20 @@
                 return @(Get-TestAndroidPolicy -AssignmentCount 0 -IsAssignedFlag $false)
             }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeFalse
             $script:TestResult | Should -Match 'not assigned'
         }
 
         It 'fails when the tenant has no Android app protection policies' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { New-EmptyPolicyList }
 
-            Test-MtAndroidAppProtectionMinimumVersions | Should -BeFalse
+            Test-MtAndroidAppProtectionMinimumVersion | Should -BeFalse
         }
 
         It 'skips as NotAuthorized when the policies cannot be read' {
             Mock -ModuleName Maester Get-MtAppProtectionPolicy { return $null }
 
-            $null -eq (Test-MtAndroidAppProtectionMinimumVersions) | Should -BeTrue
+            $null -eq (Test-MtAndroidAppProtectionMinimumVersion) | Should -BeTrue
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
     }

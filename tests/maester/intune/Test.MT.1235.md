@@ -1,6 +1,6 @@
 ﻿Ensure at least one **assigned** Android compliance policy requires device threat protection.
 
-Deploy Microsoft Defender for Endpoint on Android, and the other mobile threat defense connectors Intune supports, report what they find on a device: a malicious app, phishing web traffic, root, an unsafe network. Intune compliance policy consumes that verdict through **Require the device to be at or under the device threat level**, so a phone the service considers at risk is marked non-compliant and can then be blocked by Conditional Access.
+Microsoft Defender for Endpoint on Android, and the other mobile threat defense connectors Intune supports, report what they find on a device: a malicious app, phishing web traffic, root, an unsafe network. Intune compliance policy consumes that verdict through **Require the device to be at or under the device threat level**, so a phone the service considers at risk is marked non-compliant and can then be blocked by Conditional Access.
 
 Without this setting the detection never reaches the access decision. A phone with an active detection stays compliant and keeps its access to corporate resources, which removes exactly the automatic containment that a Zero Trust architecture assumes is present. Detection without enforcement leaves a compromised phone fully trusted.
 

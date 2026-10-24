@@ -46,85 +46,86 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Querying Android app protection policies..."
     try {
-        Write-Verbose "Querying Android app protection policies..."
         $policies = Get-MtAppProtectionPolicy -Platform Android
-        if ($null -eq $policies) {
-            # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
-            # scope is missing from the connection, or Intune RBAC returned a 403.
-            # Report a skip rather than a false security finding.
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an Android app protection policy, a managed app on an offline phone never re-checks whether the user still has access. Create an Android app protection policy, set the offline grace period under **Conditional launch** and assign it."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        throw
+    }
 
-        # The setting and the assignment are one condition on one policy, so they are evaluated
-        # together. Two separate tests cannot express the conjunction: a policy that configures the
-        # setting but is not assigned, and a policy that is assigned but does not configure it, would
-        # both pass while no user is covered.
-        # A threshold that was never configured comes back as $null, not 0, and in PowerShell
-        # $null -le <n> is $true. Each threshold is therefore checked for $null before it is compared,
-        # or an unconfigured policy would pass as if it were under the limit.
-        # Both values arrive as ISO 8601 durations ("PT12H", "P90D"), which the helper also returns
-        # parsed. Compare the parsed numbers: as strings, 'PT12H' -le 'PT2H' is $true, which would
-        # read twelve hours as inside a two-hour limit.
-        $compliant = @($policies | Where-Object {
-                $null -ne $_.OfflineBeforeAccessCheckHours -and
-                $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and
-                $null -ne $_.OfflineBeforeWipeDays -and
-                $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90 -and
-                $_.IsAssigned
-            })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Offline grace period | Offline interval before wipe | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- |`n"
-        foreach ($policy in $policies) {
-            $graceState = if ($null -eq $policy.OfflineBeforeAccessCheckHours) { 'Not configured' } else { "$($policy.OfflineBeforeAccessCheckHours) h" }
-            $wipeState = if ($null -eq $policy.OfflineBeforeWipeDays) { 'Not configured' } else { "$($policy.OfflineBeforeWipeDays) d" }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $graceState | $wipeState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy limits offline access to organization data."
-            $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($null -ne $_.OfflineBeforeAccessCheckHours -and $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and $null -ne $_.OfflineBeforeWipeDays -and $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90) })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
-                $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
-            }
-        } else {
-            $unassigned = @($policies | Where-Object { ($null -ne $_.OfflineBeforeAccessCheckHours -and $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and $null -ne $_.OfflineBeforeWipeDays -and $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90) -and -not $_.IsAssigned })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
-            } else {
-                $testResultMarkdown += "`nNo Android app protection policy bounds offline access. A phone that stays offline keeps opening organization data without ever receiving a revocation, an account disable or a selective wipe."
-            }
-        }
-
-        $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
-        if ($disagreeing.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
-            $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
-        }
-
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    if ($null -eq $policies) {
+        # The helper could not read the data at all: most commonly the DeviceManagementApps.Read.All
+        # scope is missing from the connection, or Intune RBAC returned a 403.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No Android app protection policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an Android app protection policy, a managed app on an offline phone never re-checks whether the user still has access. Create an Android app protection policy, set the offline grace period under **Conditional launch** and assign it."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    # The setting and the assignment are one condition on one policy, so they are evaluated
+    # together. Two separate tests cannot express the conjunction: a policy that configures the
+    # setting but is not assigned, and a policy that is assigned but does not configure it, would
+    # both pass while no user is covered.
+    # A threshold that was never configured comes back as $null, not 0, and in PowerShell
+    # $null -le <n> is $true. Each threshold is therefore checked for $null before it is compared,
+    # or an unconfigured policy would pass as if it were under the limit.
+    # Both values arrive as ISO 8601 durations ("PT12H", "P90D"), which the helper also returns
+    # parsed. Compare the parsed numbers: as strings, 'PT12H' -le 'PT2H' is $true, which would
+    # read twelve hours as inside a two-hour limit.
+    $compliant = @($policies | Where-Object {
+            $null -ne $_.OfflineBeforeAccessCheckHours -and
+            $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and
+            $null -ne $_.OfflineBeforeWipeDays -and
+            $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90 -and
+            $_.IsAssigned
+        })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($policies.Count) Android app protection policy/policies in Intune.`n`n"
+    $testResultMarkdown += "| Policy | Offline grace period | Offline interval before wipe | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $graceState = if ($null -eq $policy.OfflineBeforeAccessCheckHours) { 'Not configured' } else { "$($policy.OfflineBeforeAccessCheckHours) h" }
+        $wipeState = if ($null -eq $policy.OfflineBeforeWipeDays) { 'Not configured' } else { "$($policy.OfflineBeforeWipeDays) d" }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $graceState | $wipeState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned Android app protection policy limits offline access to organization data."
+        $gaps = @($policies | Where-Object { $_.IsAssigned -and -not ($null -ne $_.OfflineBeforeAccessCheckHours -and $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and $null -ne $_.OfflineBeforeWipeDays -and $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90) })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet this requirement. "
+            $testResultMarkdown += "Users whose apps are covered only by those policies are not protected by it."
+        }
+    } else {
+        $unassigned = @($policies | Where-Object { ($null -ne $_.OfflineBeforeAccessCheckHours -and $_.OfflineBeforeAccessCheckHours -gt 0 -and $_.OfflineBeforeAccessCheckHours -le 12 -and $null -ne $_.OfflineBeforeWipeDays -and $_.OfflineBeforeWipeDays -gt 0 -and $_.OfflineBeforeWipeDays -le 90) -and -not $_.IsAssigned })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies meet this requirement but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never applied to a user. Assign the policy to your user groups."
+        } else {
+            $testResultMarkdown += "`nNo Android app protection policy bounds offline access. A phone that stays offline keeps opening organization data without ever receiving a revocation, an account disable or a selective wipe."
+        }
+    }
+
+    $disagreeing = @($policies | Where-Object { $_.AssignmentSignalsDisagree })
+    if ($disagreeing.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Note:** on $($disagreeing.Count) policy/policies the expanded assignments and the "
+        $testResultMarkdown += "isAssigned property disagree. They are counted as assigned; review their assignments in Intune."
+    }
+
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

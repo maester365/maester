@@ -78,96 +78,97 @@
         [int] $MaximumInactivityMinutes = 15
     )
 
+    Write-Verbose "Querying Android compliance policies..."
     try {
-        Write-Verbose "Querying Android compliance policies..."
         $policies = Get-MtMobileCompliancePolicy -Platform Android
-        if ($null -eq $policies) {
-            # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
-            # Report a skip rather than a false security finding.
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-            return $null
-        }
-
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No Android compliance policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an Android compliance policy, a phone with no password is still reported as compliant. "
-            $testResultMarkdown += "Create an Android compliance policy and require a password of at least "
-            $testResultMarkdown += "$MinimumPasswordLength characters that locks the screen after $MaximumInactivityMinutes minutes."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
-
-        $evaluated = @($policies | Where-Object { $_.SettingsEvaluated })
-        $enterprise = @($policies | Where-Object { -not $_.SettingsEvaluated })
-        if ($evaluated.Count -eq 0) {
-            # The tenant manages Android through Android Enterprise only. These settings are read from
-            # the device administrator policy type, so there is nothing to evaluate here.
-            Add-MtTestResultDetail -SkippedBecause NotApplicable
-            return $null
-        }
-
-        # A missing inactivity value must not pass: $null -le a number is true in PowerShell, so the
-        # value is required to be a real, positive number before it is compared.
-        $compliant = @($evaluated | Where-Object {
-                $_.IsAssigned -and
-                $_.PasswordRequired -and
-                $_.PasswordMinimumLength -ge $MinimumPasswordLength -and
-                $_.PasswordInactivityMinutes -gt 0 -and
-                $_.PasswordInactivityMinutes -le $MaximumInactivityMinutes
-            })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($evaluated.Count) Android device administrator compliance policy/policies in Intune. "
-        $testResultMarkdown += "Required: a password of at least $MinimumPasswordLength characters "
-        $testResultMarkdown += "and the screen locked after at most $MaximumInactivityMinutes minutes.`n`n"
-        $testResultMarkdown += "| Policy | Password required | Minimum length | Locks after | Complexity | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
-        foreach ($policy in $evaluated) {
-            $requiredState = if ($policy.PasswordRequired) { 'Yes' } else { 'No' }
-            $lengthState = if ($policy.PasswordMinimumLength -gt 0) { $policy.PasswordMinimumLength } else { 'Not configured' }
-            $lockState = if ($policy.PasswordInactivityMinutes -gt 0) { "$($policy.PasswordInactivityMinutes) min" } else { 'Not configured' }
-            # Reported as returned: the values this property accepts are not verified here, so an
-            # unrecognised one must not be relabelled.
-            $complexityState = if ([string]::IsNullOrWhiteSpace($policy.PasswordComplexity)) { 'Not reported' } else { $policy.PasswordComplexity }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $requiredState | $lengthState | $lockState | $complexityState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned Android compliance policy requires a strong device password."
-            $gaps = @($evaluated | Where-Object { $_.IsAssigned -and $_.Id -notin $compliant.Id })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet every password requirement. "
-                $testResultMarkdown += "Devices scoped only to those policies are held to a weaker password."
-            }
-        } else {
-            $unassigned = @($evaluated | Where-Object {
-                    -not $_.IsAssigned -and $_.PasswordRequired -and
-                    $_.PasswordMinimumLength -ge $MinimumPasswordLength -and
-                    $_.PasswordInactivityMinutes -gt 0 -and $_.PasswordInactivityMinutes -le $MaximumInactivityMinutes
-                })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a strong password but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never evaluated. Assign the policy to your Android device or user groups."
-            } else {
-                $testResultMarkdown += "`nNo assigned Android compliance policy requires a strong device password. "
-                $testResultMarkdown += "Whoever holds the device reaches corporate mail and the Microsoft Authenticator app on it."
-            }
-        }
-
-        if ($enterprise.Count -gt 0) {
-            $testResultMarkdown += "`n`n> **Scope:** $($enterprise.Count) Android Enterprise compliance policy/policies "
-            $testResultMarkdown += "(work profile or device owner) are configured in this tenant and are **not evaluated** by this test."
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
         }
+
+        throw
+    }
+
+    if ($null -eq $policies) {
+        # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No Android compliance policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an Android compliance policy, a phone with no password is still reported as compliant. "
+        $testResultMarkdown += "Create an Android compliance policy and require a password of at least "
+        $testResultMarkdown += "$MinimumPasswordLength characters that locks the screen after $MaximumInactivityMinutes minutes."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    $evaluated = @($policies | Where-Object { $_.SettingsEvaluated })
+    $enterprise = @($policies | Where-Object { -not $_.SettingsEvaluated })
+    if ($evaluated.Count -eq 0) {
+        # The tenant manages Android through Android Enterprise only. These settings are read from
+        # the device administrator policy type, so there is nothing to evaluate here.
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
+
+    # A missing inactivity value must not pass: $null -le a number is true in PowerShell, so the
+    # value is required to be a real, positive number before it is compared.
+    $compliant = @($evaluated | Where-Object {
+            $_.IsAssigned -and
+            $_.PasswordRequired -and
+            $_.PasswordMinimumLength -ge $MinimumPasswordLength -and
+            $_.PasswordInactivityMinutes -gt 0 -and
+            $_.PasswordInactivityMinutes -le $MaximumInactivityMinutes
+        })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($evaluated.Count) Android device administrator compliance policy/policies in Intune. "
+    $testResultMarkdown += "Required: a password of at least $MinimumPasswordLength characters "
+    $testResultMarkdown += "and the screen locked after at most $MaximumInactivityMinutes minutes.`n`n"
+    $testResultMarkdown += "| Policy | Password required | Minimum length | Locks after | Complexity | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
+    foreach ($policy in $evaluated) {
+        $requiredState = if ($policy.PasswordRequired) { 'Yes' } else { 'No' }
+        $lengthState = if ($policy.PasswordMinimumLength -gt 0) { $policy.PasswordMinimumLength } else { 'Not configured' }
+        $lockState = if ($policy.PasswordInactivityMinutes -gt 0) { "$($policy.PasswordInactivityMinutes) min" } else { 'Not configured' }
+        # Reported as returned: the values this property accepts are not verified here, so an
+        # unrecognised one must not be relabelled.
+        $complexityState = if ([string]::IsNullOrWhiteSpace($policy.PasswordComplexity)) { 'Not reported' } else { $policy.PasswordComplexity }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $requiredState | $lengthState | $lockState | $complexityState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned Android compliance policy requires a strong device password."
+        $gaps = @($evaluated | Where-Object { $_.IsAssigned -and $_.Id -notin $compliant.Id })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet every password requirement. "
+            $testResultMarkdown += "Devices scoped only to those policies are held to a weaker password."
+        }
+    } else {
+        $unassigned = @($evaluated | Where-Object {
+                -not $_.IsAssigned -and $_.PasswordRequired -and
+                $_.PasswordMinimumLength -ge $MinimumPasswordLength -and
+                $_.PasswordInactivityMinutes -gt 0 -and $_.PasswordInactivityMinutes -le $MaximumInactivityMinutes
+            })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a strong password but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never evaluated. Assign the policy to your Android device or user groups."
+        } else {
+            $testResultMarkdown += "`nNo assigned Android compliance policy requires a strong device password. "
+            $testResultMarkdown += "Whoever holds the device reaches corporate mail and the Microsoft Authenticator app on it."
+        }
+    }
+
+    if ($enterprise.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Scope:** $($enterprise.Count) Android Enterprise compliance policy/policies "
+        $testResultMarkdown += "(work profile or device owner) are configured in this tenant and are **not evaluated** by this test."
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }

@@ -77,81 +77,82 @@
         [int] $MaximumInactivityMinutes = 15
     )
 
+    Write-Verbose "Querying iOS compliance policies..."
     try {
-        Write-Verbose "Querying iOS compliance policies..."
         $policies = Get-MtMobileCompliancePolicy -Platform iOS
-        if ($null -eq $policies) {
-            # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
-            # Report a skip rather than a false security finding.
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
             return $null
         }
 
-        if ($policies.Count -eq 0) {
-            $testResultMarkdown = "No iOS compliance policies were found in Intune.`n`n"
-            $testResultMarkdown += "Without an iOS compliance policy, an iPhone with no passcode is still reported as compliant. "
-            $testResultMarkdown += "Create an iOS/iPadOS compliance policy and require a password of at least "
-            $testResultMarkdown += "$MinimumPasscodeLength characters that locks the screen after $MaximumInactivityMinutes minutes."
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $false
-        }
+        throw
+    }
 
-        # A missing inactivity value must not pass: $null -le a number is true in PowerShell, so the
-        # value is required to be a real, positive number before it is compared.
-        $compliant = @($policies | Where-Object {
-                $_.IsAssigned -and
-                $_.PasscodeRequired -and
-                $_.PasscodeBlocksSimple -and
-                $_.PasscodeMinimumLength -ge $MinimumPasscodeLength -and
-                $_.PasscodeInactivityMinutes -gt 0 -and
-                $_.PasscodeInactivityMinutes -le $MaximumInactivityMinutes
-            })
-        $testResult = $compliant.Count -gt 0
-
-        $testResultMarkdown = "Found $($policies.Count) iOS compliance policy/policies in Intune. "
-        $testResultMarkdown += "Required: a passcode of at least $MinimumPasscodeLength characters, simple passcodes blocked, "
-        $testResultMarkdown += "and the screen locked after at most $MaximumInactivityMinutes minutes.`n`n"
-        $testResultMarkdown += "| Policy | Passcode required | Simple passcodes | Minimum length | Locks after | Assignments |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
-        foreach ($policy in $policies) {
-            $requiredState = if ($policy.PasscodeRequired) { 'Yes' } else { 'No' }
-            $simpleState = if ($policy.PasscodeBlocksSimple) { 'Blocked' } else { 'Allowed' }
-            $lengthState = if ($policy.PasscodeMinimumLength -gt 0) { $policy.PasscodeMinimumLength } else { 'Not configured' }
-            $lockState = if ($policy.PasscodeInactivityMinutes -gt 0) { "$($policy.PasscodeInactivityMinutes) min" } else { 'Not configured' }
-            $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
-            $testResultMarkdown += "| $($policy.Name) | $requiredState | $simpleState | $lengthState | $lockState | $assignmentState |`n"
-        }
-
-        if ($testResult) {
-            $testResultMarkdown += "`nWell done. At least one assigned iOS compliance policy requires a strong device passcode."
-            $gaps = @($policies | Where-Object { $_.IsAssigned -and $_.Id -notin $compliant.Id })
-            if ($gaps.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet every passcode requirement. "
-                $testResultMarkdown += "Devices scoped only to those policies are held to a weaker passcode."
-            }
-        } else {
-            $unassigned = @($policies | Where-Object {
-                    -not $_.IsAssigned -and $_.PasscodeRequired -and $_.PasscodeBlocksSimple -and
-                    $_.PasscodeMinimumLength -ge $MinimumPasscodeLength -and
-                    $_.PasscodeInactivityMinutes -gt 0 -and $_.PasscodeInactivityMinutes -le $MaximumInactivityMinutes
-                })
-            if ($unassigned.Count -gt 0) {
-                $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a strong passcode but are **not assigned** to any group, "
-                $testResultMarkdown += "so they are never evaluated. Assign the policy to your iOS device or user groups."
-            } else {
-                $testResultMarkdown += "`nNo assigned iOS compliance policy requires a strong device passcode. "
-                $testResultMarkdown += "Whoever holds the device reaches corporate mail and the Microsoft Authenticator app on it."
-            }
-        }
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $testResult
-    } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
-            Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        }
+    if ($null -eq $policies) {
+        # The helper could not read the data at all, most commonly a 403 from Intune RBAC.
+        # Report a skip rather than a false security finding.
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
+
+    if ($policies.Count -eq 0) {
+        $testResultMarkdown = "No iOS compliance policies were found in Intune.`n`n"
+        $testResultMarkdown += "Without an iOS compliance policy, an iPhone with no passcode is still reported as compliant. "
+        $testResultMarkdown += "Create an iOS/iPadOS compliance policy and require a password of at least "
+        $testResultMarkdown += "$MinimumPasscodeLength characters that locks the screen after $MaximumInactivityMinutes minutes."
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $false
+    }
+
+    # A missing inactivity value must not pass: $null -le a number is true in PowerShell, so the
+    # value is required to be a real, positive number before it is compared.
+    $compliant = @($policies | Where-Object {
+            $_.IsAssigned -and
+            $_.PasscodeRequired -and
+            $_.PasscodeBlocksSimple -and
+            $_.PasscodeMinimumLength -ge $MinimumPasscodeLength -and
+            $_.PasscodeInactivityMinutes -gt 0 -and
+            $_.PasscodeInactivityMinutes -le $MaximumInactivityMinutes
+        })
+    $testResult = $compliant.Count -gt 0
+
+    $testResultMarkdown = "Found $($policies.Count) iOS compliance policy/policies in Intune. "
+    $testResultMarkdown += "Required: a passcode of at least $MinimumPasscodeLength characters, simple passcodes blocked, "
+    $testResultMarkdown += "and the screen locked after at most $MaximumInactivityMinutes minutes.`n`n"
+    $testResultMarkdown += "| Policy | Passcode required | Simple passcodes | Minimum length | Locks after | Assignments |`n"
+    $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $requiredState = if ($policy.PasscodeRequired) { 'Yes' } else { 'No' }
+        $simpleState = if ($policy.PasscodeBlocksSimple) { 'Blocked' } else { 'Allowed' }
+        $lengthState = if ($policy.PasscodeMinimumLength -gt 0) { $policy.PasscodeMinimumLength } else { 'Not configured' }
+        $lockState = if ($policy.PasscodeInactivityMinutes -gt 0) { "$($policy.PasscodeInactivityMinutes) min" } else { 'Not configured' }
+        $assignmentState = if ($policy.IsAssigned) { $policy.AssignmentCount } else { 'None' }
+        $testResultMarkdown += "| $($policy.Name) | $requiredState | $simpleState | $lengthState | $lockState | $assignmentState |`n"
+    }
+
+    if ($testResult) {
+        $testResultMarkdown += "`nWell done. At least one assigned iOS compliance policy requires a strong device passcode."
+        $gaps = @($policies | Where-Object { $_.IsAssigned -and $_.Id -notin $compliant.Id })
+        if ($gaps.Count -gt 0) {
+            $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not meet every passcode requirement. "
+            $testResultMarkdown += "Devices scoped only to those policies are held to a weaker passcode."
+        }
+    } else {
+        $unassigned = @($policies | Where-Object {
+                -not $_.IsAssigned -and $_.PasscodeRequired -and $_.PasscodeBlocksSimple -and
+                $_.PasscodeMinimumLength -ge $MinimumPasscodeLength -and
+                $_.PasscodeInactivityMinutes -gt 0 -and $_.PasscodeInactivityMinutes -le $MaximumInactivityMinutes
+            })
+        if ($unassigned.Count -gt 0) {
+            $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a strong passcode but are **not assigned** to any group, "
+            $testResultMarkdown += "so they are never evaluated. Assign the policy to your iOS device or user groups."
+        } else {
+            $testResultMarkdown += "`nNo assigned iOS compliance policy requires a strong device passcode. "
+            $testResultMarkdown += "Whoever holds the device reaches corporate mail and the Microsoft Authenticator app on it."
+        }
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+    return $testResult
 }
