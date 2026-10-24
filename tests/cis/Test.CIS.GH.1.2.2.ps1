@@ -43,7 +43,13 @@
     $missingFields = @($requiredFields | Where-Object { -not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $_) })
 
     if ($missingFields.Count -gt 0) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GitHub organization response did not include required field(s): $($missingFields -join ', '). These fields are required to evaluate CIS.GH.1.2.2 and may be missing because of permissions, plan, API version, or organization type."
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field(s): $($missingFields -join ', '). These fields are required to evaluate CIS.GH.1.2.2 and may be missing because of permissions, plan, API version, or organization type."
+        return $null
+    }
+
+    $invalidFields = @($requiredFields | Where-Object { $org.$_ -isnot [bool] })
+    if ($invalidFields.Count -gt 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field(s) must be Boolean values to evaluate CIS.GH.1.2.2: $($invalidFields -join ', '). No configuration verdict was produced."
         return $null
     }
 
@@ -87,7 +93,14 @@
         "Deprecated umbrella field ``members_allowed_repository_creation_type`` was not returned. The granular fields above are the decisive checks."
     }
 
+    $resultSummary = if ($result) {
+        'Well done. Members cannot create public or private repositories.'
+    } else {
+        'Members can create public or private repositories. Disable both member repository-creation options in organization Member privileges.'
+    }
     $resultMarkdown = @"
+$resultSummary
+
 CIS.GH.1.2.2 automated evidence from ``GET /orgs/{org}``.
 
 | Field | Actual | Expected |

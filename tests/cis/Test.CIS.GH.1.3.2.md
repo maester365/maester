@@ -22,24 +22,31 @@ Endpoint: `GET /orgs/{org}`
 
 Evidence field: `members_can_create_teams`
 
-The test passes when `members_can_create_teams` is `false`.
+The field must be a Boolean value. The test passes when it is `false` and fails when it is `true`.
 
 #### Permissions required
 
-GitHub requires organization-owner visibility for full organization details. Use `Connect-MtGitHub` with a classic PAT that has `admin:org`, or a fine-grained PAT with organization Members read and Administration read permissions.
+For full organization settings, GitHub documents an organization owner using a classic PAT or OAuth token with `admin:org`. `Connect-MtGitHub` checks active organization membership; fine-grained PATs require organization Members read permission for that probe. Its separate Actions-permission probe uses organization Administration read permission, but neither that probe nor a successful connection guarantees that the required settings are returned.
 
-#### Remediation summary
+Use the API host and token appropriate to the deployment. GHE.com requires an authenticated request to `api.SUBDOMAIN.ghe.com`; use a host-appropriate manual token rather than assuming the github.com device flow applies. Missing required evidence remains indeterminate on standard GHEC, Enterprise Managed Users, and GHE.com.
 
-In the organization settings, open **Member privileges** and disable **Allow members to create teams**.
+#### Remediation action
+
+1. On github.com, open [your organizations](https://github.com/settings/organizations), select the organization, then open **Settings** > **Access** > **Member privileges**; see [GitHub's team-creation guidance](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/setting-team-creation-permissions-in-your-organization).
+2. Under **Team creation rules**, clear **Allow members to create teams**.
+3. Save the change and use the organization's approved process for new-team requests.
 
 #### Known limitations
+
+Only the connected organization's returned settings are assessed; this test does not enumerate every organization in an enterprise or reconstruct inherited policies. Required fields must be present and usable. Missing, null, or invalid evidence produces an explicit indeterminate Skipped result, while request and JSON parsing failures remain Error results. Missing data does not establish that a setting is disabled or that the recommendation is not applicable. Validation applies to fields available after shared JSON parsing; it is not complete raw-response schema validation.
 
 This test verifies the organization-level team creation setting. It does not review custom operational processes for who may request or approve new teams.
 
 #### Related links
 
 * [CIS GitHub Benchmark v1.2.0 - Section 1.3.2](https://www.cisecurity.org/benchmark/github)
-* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/enterprise-cloud@latest/rest/orgs/orgs?apiVersion=2026-03-10#get-an-organization)
+* [GitHub: Team creation permissions](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/setting-team-creation-permissions-in-your-organization)
 
 <!--- Results --->
 %TestResult%
