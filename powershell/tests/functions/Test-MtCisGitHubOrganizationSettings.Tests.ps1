@@ -437,10 +437,18 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         @{ Id = 'CIS.GH.1.3.8' }
     )
 
-    It 'Discovers exactly the five intended valid native checks' {
+    It 'Preserves the original five and discovers the fourteen approved additions' {
         $expected = @('CIS.GH.1.2.2', 'CIS.GH.1.2.3', 'CIS.GH.1.2.4', 'CIS.GH.1.3.2', 'CIS.GH.1.3.8')
+        $original = @(Get-MtTest -Id $expected)
+        $original.Count | Should -Be 5
+        Compare-Object ($expected | Sort-Object) ($original.Id | Sort-Object) | Should -BeNullOrEmpty
+        $newIds = @('1.1.4', '1.1.7', '1.1.9', '1.1.10', '1.1.11', '1.1.12', '1.1.14', '1.1.16', '1.1.17', '1.1.20', '1.3.4', '1.3.5', '1.3.9', '1.3.10') | ForEach-Object { "CIS.GH.$_" }
+        $newTests = @(Get-MtTest -Id $newIds)
+        $newTests.Count | Should -Be 14
+        Compare-Object ($newIds | Sort-Object) ($newTests.Id | Sort-Object) | Should -BeNullOrEmpty
+        $expected += $newIds
         $actual = @(Get-MtTest -Id 'CIS.GH.*')
-        $actual.Count | Should -Be 5
+        $actual.Count | Should -Be 19
         Compare-Object ($expected | Sort-Object) ($actual.Id | Sort-Object) | Should -BeNullOrEmpty
         foreach ($test in $actual) {
             $test.IsValid | Should -BeTrue

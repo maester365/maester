@@ -6,9 +6,13 @@
     .DESCRIPTION
     Establishes a GitHub Enterprise Cloud organization REST API session for Maester CIS
     benchmark tests. This is an organization-scoped session, not a full enterprise-admin
-    session: enterprise-admin endpoints under /enterprises/{enterprise} are not verified
-    by this command and would require a future enterprise-access probe if CIS controls
-    need them.
+    session. Connection success does not establish complete repository visibility or
+    enterprise access. New GitHub CIS assessments use explicit GitHubAccountModel,
+    GitHubEnterprise and GitHubCisRepositoryScope run settings where relevant. Enterprise
+    checks validate their own required readable evidence without changing this command's
+    authentication flow; notification results identify the independently selected enterprise.
+    New collectors explicitly request REST 2026-03-10 while this connection's default
+    remains 2022-11-28. See the GitHub CIS configuration guide on maester.dev.
 
     If no explicit token is provided, Maester signs in with the Maester CLI GitHub App
     using GitHub device flow. If the app is not installed or approved for the requested
