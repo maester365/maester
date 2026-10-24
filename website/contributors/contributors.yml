@@ -16,6 +16,11 @@
 #       x: yourhandle
 #       linkedin: yourhandle
 #       bluesky: yourhandle.com
+#     sponsorPage: false           # leave yourself off https://maester.dev/sponsor (optional)
+#
+# `maintainer: true` marks a core maintainer: they are listed first on https://maester.dev/sponsor.
+# The sponsor page lists only people with a GitHub Sponsors listing; turn yours on at
+# https://github.com/sponsors and you are added at the next weekly refresh.
 #
 # Commit matching is fully automatic — you never need to list emails here.
 # Commits are matched to your GitHub account via your noreply email, the
@@ -327,6 +332,7 @@ mattcave:
 
 merill:
   name: Merill Fernando
+  maintainer: true
   title: Archmaester
   company: Jozra
   location: Melbourne, Australia
@@ -468,6 +474,7 @@ RobbeVandenDaele:
 
 SamErde:
   name: Sam Erde
+  maintainer: true
   title: Microsoft MVP
   mvp: true
   mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/d6fd6168-805b-49c5-801b-fbe6d20db428
@@ -499,6 +506,7 @@ SoufiyanAk:
 
 soulemike:
   name: Michael Soule
+  maintainer: true
   title: Co-creator of Maester
 
 svrooij:
