@@ -28,7 +28,14 @@
     $headers = @{} + $__MtSession.GitHubAuthHeader
     $headers.Remove('X-GitHub-Api-Version')
     $started = [DateTimeOffset]::UtcNow
-    $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ErrorAction Stop
+    Invoke-MtGitHubRateLimitGuard -Api GraphQL
+    try {
+        $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ErrorAction Stop
+        Invoke-MtGitHubRateLimitGuard -Api GraphQL -Headers $response.Headers
+    } catch {
+        Invoke-MtGitHubRateLimitGuard -Api GraphQL -ErrorRecord $_
+        throw
+    }
     $parsed = ConvertFrom-Json -InputObject $response.Content -NoEnumerate -ErrorAction Stop
     $codes = [System.Collections.Generic.List[string]]::new()
     if (($null -ne $parsed -and $parsed.GetType() -eq [System.Management.Automation.PSCustomObject]) -and (Test-MtGitHubObjectProperty -InputObject $parsed -PropertyName errors)) {
@@ -36,6 +43,7 @@
         foreach ($errorItem in $parsed.errors) {
             if ($null -eq $errorItem -or $errorItem.GetType() -ne [System.Management.Automation.PSCustomObject]) { throw 'GitHub GraphQL error collection is unusable.' }
             $code = if ($errorItem.type) { $errorItem.type } elseif ($errorItem.extensions.code) { $errorItem.extensions.code } else { 'UNKNOWN' }
+            if ($code -ceq 'RATE_LIMITED') { Invoke-MtGitHubRateLimitGuard -Api GraphQL -Headers $response.Headers -GraphQLRateLimited -Message $errorItem.message }
             if ($code -cnotin 'FORBIDDEN', 'NOT_FOUND', 'INSUFFICIENT_SCOPES') { throw 'GitHub GraphQL execution failed; no configuration verdict was produced.' }
             $codes.Add($code)
         }

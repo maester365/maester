@@ -24,7 +24,7 @@
         return [pscustomobject]@{ Verdict = 'Error'; Detail = $message }
     }
     foreach ($issue in $scope.Issues) { $issues.Add($issue) }
-    foreach ($entry in $scope.Repositories) {
+    :repositories foreach ($entry in $scope.Repositories) {
         $repository = $entry.Repository
         $branches = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
         foreach ($branch in $entry.Branches) { $null = $branches.Add($branch) }
@@ -46,12 +46,14 @@
             }
         } catch {
             $rows.Add([pscustomobject]@{ Repository = $repository.full_name; Branch = '(population)'; Verdict = 'Error'; Reason = 'Required population request failed.'; StartedUtc = $null; CompletedUtc = $null })
+            if ($_.Exception.Data['GitHubRateLimit']) { $issues.Add('Collection stopped for rate limiting; remaining objects were not assessed.'); break repositories }
             continue
         }
         foreach ($branch in $branches) {
             $verdict = 'Indeterminate'
             $reason = 'Required policy evidence is absent or unusable.'
             $evidence = $null
+            $rateLimited = $false
             try {
                 $evidence = Get-MtCisGitHubBranchEvidence -Repository $repository -Branch $branch -Kind $kind
                 $policy = $evidence.Data
@@ -114,8 +116,10 @@
                 }
             } catch {
                 $verdict = 'Error'; $reason = 'A required GitHub evidence request or JSON parse failed.'
+                $rateLimited = $null -ne $_.Exception.Data['GitHubRateLimit']
             }
             $rows.Add([pscustomobject]@{ Repository = $repository.full_name; Branch = $branch; Verdict = $verdict; Reason = $reason; StartedUtc = $evidence.StartedUtc; CompletedUtc = $evidence.CompletedUtc })
+            if ($rateLimited) { $issues.Add('Collection stopped for rate limiting; remaining objects were not assessed.'); break repositories }
         }
     }
     $verdict = if (@($rows | Where-Object Verdict -EQ 'Error').Count) { 'Error' }

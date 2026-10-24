@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -296,10 +296,13 @@ Describe 'Invoke-MtGitHubRequest' {
                 }
             }
             InModuleScope Maester {
-                { Invoke-MtGitHubRequest '/orgs/myorg' } | Should -Not -Throw
-                $result = Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache
+                $result = Invoke-MtGitHubRequest '/orgs/myorg'
                 $result.login | Should -Be 'myorg'
+                # The valid response survives a malformed reset. A subsequent network request is
+                # blocked until a new connection because the primary reset deadline is unknown.
+                { Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache } | Should -Throw '*rate limit*'
             }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
         }
 
         It 'Does not throw on successful response when x-ratelimit-remaining is malformed' {

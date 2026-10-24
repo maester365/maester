@@ -668,10 +668,23 @@ function New-MtResultConfig {
     )
 
     if ($null -eq $RunConfig) { return $null }
-    if ($NativeRows.Count -eq 0) { return $RunConfig }
+    # Configuration is JSON-shaped, as normalized by Resolve-MtRunConfig. Detach every nested value
+    # before redaction so reporting cannot change caller input or settings still used by checks.
+    $detached = $RunConfig | ConvertTo-Json -Depth 100 | ConvertFrom-Json -NoEnumerate
+    if (-not $script:__MtSettingsRegistry) {
+        $script:__MtSettingsRegistry = Import-PowerShellDataFile -Path (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
+    }
+    if ($detached.PSObject.Properties['GlobalSettings'] -and $null -ne $detached.GlobalSettings) {
+        foreach ($key in $script:__MtSettingsRegistry.Settings.Keys) {
+            if ($script:__MtSettingsRegistry.Settings[$key].Sensitive -and $detached.GlobalSettings.PSObject.Properties[$key]) {
+                $detached.GlobalSettings.$key = '<redacted>'
+            }
+        }
+    }
+    if ($NativeRows.Count -eq 0) { return $detached }
 
     $copy = [pscustomobject]@{}
-    foreach ($p in $RunConfig.PSObject.Properties) {
+    foreach ($p in $detached.PSObject.Properties) {
         if ($p.Name -in 'TestSettings', 'TestSettingsHash') { continue }
         $copy | Add-Member -NotePropertyName $p.Name -NotePropertyValue $p.Value
     }
@@ -681,7 +694,7 @@ function New-MtResultConfig {
         $entry = [ordered]@{ Id = $row.Id; Title = $row.Title; Severity = $row.Severity }
         $default = if ($row.ParentId -and $catalog.ContainsKey($row.ParentId)) { $catalog[$row.ParentId].Severity } elseif ($catalog.ContainsKey($row.Id)) { $catalog[$row.Id].Severity } else { $null }
         if ($default) { $entry.DefaultSeverity = $default }
-        $user = if ($RunConfig.TestSettingsHash -and $RunConfig.TestSettingsHash.ContainsKey($row.Id)) { $RunConfig.TestSettingsHash[$row.Id] } else { $null }
+        $user = if ($detached.TestSettingsHash) { $detached.TestSettingsHash.PSObject.Properties[$row.Id].Value } else { $null }
         if ($user) {
             foreach ($p in $user.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title', 'Severity') { $entry[$p.Name] = $p.Value } }
         }

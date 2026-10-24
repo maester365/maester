@@ -1,4 +1,4 @@
-function Clear-ModuleVariable {
+﻿function Clear-ModuleVariable {
     <#
     .SYNOPSIS
     Resets all module variables to their default values.
@@ -27,6 +27,7 @@ function Clear-ModuleVariable {
     $__MtSession.AzureDevOpsConnectionCache = $null
     # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.
     # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.
+    # GitHubRateLimits belongs to the connection and must survive new runs and cache bypass.
     $__MtSession.GitHubCache = @{}
     $__MtSession.SpoCache = @{}
     $__MtSession.Console = $null

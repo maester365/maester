@@ -6,10 +6,10 @@
     .DESCRIPTION
     Uses Invoke-WebRequest for PowerShell 5.1 compatibility (Invoke-RestMethod
     -ResponseHeadersVariable is PowerShell 7+ only). Provides per-session caching,
-    explicit opt-in pagination, and rate-limit detection.
+    explicit opt-in pagination, and connection-scoped rate-limit protection.
 
     Cache key: ApiVersion|absoluteUri (cleared on reconnect and by Clear-ModuleVariable).
-    Rate-limit detection: checks x-ratelimit-remaining in both success and error responses.
+    Rate-limit protection: observes primary exhaustion and shared secondary limits on every page.
 
     .PARAMETER RelativeUri
     Path relative to ApiBaseUri. URL-encode path segments with [Uri]::EscapeDataString.
@@ -24,7 +24,7 @@
     Returns evidence timestamps and pre-aggregation collection integrity. Legacy body callers are unchanged.
 
     .PARAMETER DisableCache
-    Bypasses session cache; makes a live API call.
+    Bypasses session cache. Active rate-limit protection still applies.
     #>
     [CmdletBinding()]
     param(
@@ -71,8 +71,11 @@
     }
 
     function Invoke-Page ([string]$Uri) {
+        Invoke-MtGitHubRateLimitGuard -Api REST
         try {
             $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
+
+            Invoke-MtGitHubRateLimitGuard -Api REST -Headers $wr.Headers
 
             $kind = 'Empty'
             $limited = $false
@@ -102,33 +105,10 @@
                 $limited = $null -ne $sso -and $sso -match '(?i)partial-results|required'
             }
 
-            # Rate-limit warning on successful response — do NOT throw; the response body is valid.
-            # TryParse rather than [int] cast: a malformed header (e.g. an upstream proxy
-            # rewriting the value) must not raise a parse exception that masks a successful response.
-            $remaining = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-remaining'
-            $remainingValue = 0
-            if ($null -ne $remaining -and [int]::TryParse([string]$remaining, [ref]$remainingValue) -and $remainingValue -eq 0) {
-                $reset = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-reset'
-                $resetValue = 0L
-                $resetTime = 'unknown'
-                if ($reset -and [long]::TryParse([string]$reset, [ref]$resetValue)) {
-                    # FromUnixTimeSeconds throws ArgumentOutOfRangeException for values
-                    # outside [-62135596800, 253402300799]. A bogus reset epoch must not
-                    # mask the successful response — fall back to 'unknown' instead.
-                    try {
-                        $resetTime = [DateTimeOffset]::FromUnixTimeSeconds($resetValue).LocalDateTime
-                    } catch {
-                        $resetTime = 'unknown'
-                    }
-                }
-                Write-Verbose "GitHub API rate limit remaining is 0 after this successful response. Resets at: $resetTime"
-            }
-
             $linkHeader = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'Link'
             return [PSCustomObject]@{ Body = $body; Link = $linkHeader; ContentKind = $kind; AccessLimited = $limited }
         } catch {
-            $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
-            if ($rateLimitMessage) { throw $rateLimitMessage }
+            Invoke-MtGitHubRateLimitGuard -Api REST -ErrorRecord $_
             throw
         }
     }
@@ -196,7 +176,13 @@
             if (-not $Paginate -or $null -eq $next) { break }
             if (-not (Test-NextLinkSameOrigin -NextUri $next -BaseUri $baseUri)) { throw 'GitHub pagination refused a foreign next link.' }
             if (-not $visited.Add($next)) { throw 'GitHub pagination cycle detected.' }
-            $page = Invoke-Page $next
+            try { $page = Invoke-Page $next } catch {
+                $_.Exception.Data['GitHubPartialResponse'] = [pscustomobject]@{
+                    Data = $items.ToArray(); PageCount = $pageCount; PaginationComplete = $false
+                    StartedUtc = $started; CompletedUtc = [DateTimeOffset]::UtcNow
+                }
+                throw
+            }
         } while ($true)
         if ($accessLimited) { $issues.Add('GitHub reported limited authentication or partial SSO results.') }
         $result = [pscustomobject]@{
@@ -226,12 +212,20 @@
         foreach ($item in @($first.Body)) {
             if ($null -ne $item) { $all.Add($item) }
         }
+        $pageCount = 1
         $next = Get-NextLink $first.Link
         while ($null -ne $next) {
             if (-not (Test-NextLinkSameOrigin -NextUri $next -BaseUri $baseUri)) {
                 throw "GitHub pagination refused: next link '$next' is outside the configured ApiBaseUri '$baseUri'."
             }
-            $page = Invoke-Page $next
+            try { $page = Invoke-Page $next } catch {
+                $_.Exception.Data['GitHubPartialResponse'] = [pscustomobject]@{
+                    Data = $all.ToArray(); PageCount = $pageCount; PaginationComplete = $false
+                    StartedUtc = $started; CompletedUtc = [DateTimeOffset]::UtcNow
+                }
+                throw
+            }
+            $pageCount++
             foreach ($item in @($page.Body)) {
                 if ($null -ne $item) { $all.Add($item) }
             }

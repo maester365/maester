@@ -25,7 +25,7 @@
         Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
-        Mitre = 'T1036',
+        Mitre = 'T1684.001',
         Control = 'cis-github:1.3.9',
         Service = 'GitHub',
         Lifecycle = 'Stable',

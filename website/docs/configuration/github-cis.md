@@ -173,6 +173,18 @@ Keep actual assessment configuration, reports, tokens, and benchmark source inpu
 fixtures establish the exercised code behavior, not authenticated GHEC/EMU/GHE.com behavior. These checks do not
 write tenant settings or perform remediation.
 
+Explicit rate limiting pauses affected outbound requests for the authenticated connection and API host, including
+later pages and checks. Primary REST and GraphQL quotas stay separate; secondary limits stop both APIs. Maester
+honors `Retry-After` and primary reset times, retains completed findings, and reports incomplete collection as Error.
+There is no automatic retry or sleep. Cache reads remain available, but disabling the cache does not bypass the
+pause. Per-run cache clearing preserves the pause. If a primary response has no usable reset time, the connection
+remains blocked until it is replaced; reconnect only when GitHub permits requests again.
+
+`GitHubEnterprise` and the entire `GitHubCisRepositoryScope` value are registered as sensitive and appear as
+`<redacted>` in exported result configuration, including JSON and embedded HTML data. The input configuration and
+live settings remain usable. This redaction does not anonymize identifiers or applicability explanations that a
+check legitimately includes in assessment evidence.
+
 ## Official references
 
 - [Organization REST fields](https://docs.github.com/en/enterprise-cloud@latest/rest/orgs/orgs?apiVersion=2026-03-10#get-an-organization)
@@ -185,3 +197,4 @@ write tenant settings or perform remediation.
 - [Enterprise fields and owner access](https://docs.github.com/en/enterprise-cloud@latest/graphql/reference/enterprise-admin#enterprise)
 - [Enterprise notification restrictions](https://docs.github.com/en/enterprise-cloud@latest/admin/enforcing-policies/enforcing-policies-for-your-enterprise/restricting-email-notifications-for-your-enterprise)
 - [GHE.com feature and API differences](https://docs.github.com/en/enterprise-cloud@latest/admin/data-residency/feature-overview-for-github-enterprise-cloud-with-data-residency)
+- [GitHub rate-limit handling](https://docs.github.com/en/enterprise-cloud@latest/rest/using-the-rest-api/best-practices-for-using-the-rest-api#handle-rate-limit-errors-appropriately)
