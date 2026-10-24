@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.2.1.14"
-  - "Medium"
+  - "High"
   - "CIS"
   - "Defender"
   - "Anti-spam"
@@ -49,7 +49,7 @@ Use tenant allow/block list entries with an expiry, or fix the root cause of the
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.2.1.14 |
-| Severity | Medium |
+| Severity | High |
 | Suite | CIS |
 | Product | Defender |
 | Feature | Anti-spam |

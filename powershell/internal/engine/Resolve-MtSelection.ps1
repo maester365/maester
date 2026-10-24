@@ -5,7 +5,7 @@ function Resolve-MtSelection {
 
     .DESCRIPTION
     -Tag, -TestId and the typed selectors (-Product, -Feature, -Area, -Severity, -Suite) replace the config
-    lists; -ExcludeTag and -ExcludeTestId add to them; the include switches are true when either source
+    lists, and so does -Pack; -ExcludeTag and -ExcludeTestId add to them; the include switches are true when either source
     sets them. A product named by an alias, such as Entra ID, becomes its key.
 
     .EXAMPLE
@@ -26,6 +26,7 @@ function Resolve-MtSelection {
         [Parameter()] [string[]] $Area,
         [Parameter()] [string[]] $Severity,
         [Parameter()] [string[]] $Suite,
+        [Parameter()] [string[]] $Pack,
         [Parameter()] [switch] $IncludePreview,
         [Parameter()] [switch] $IncludeLongRunning
     )
@@ -51,6 +52,7 @@ function Resolve-MtSelection {
         Area               = [string[]]@(& $selector $Area 'Area')
         Severity           = [string[]]@(& $selector $Severity 'Severity')
         Suite              = [string[]]@(& $selector $Suite 'Suite')
+        Pack               = [string[]]@(& $selector $Pack 'Pack')
         IncludePreview     = $IncludePreview.IsPresent -or [bool]$s.IncludePreview
         IncludeLongRunning = $IncludeLongRunning.IsPresent -or [bool]$s.IncludeLongRunning
         DefaultAction      = $s.DefaultAction

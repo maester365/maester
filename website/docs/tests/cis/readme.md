@@ -48,7 +48,7 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11.md) | (L2) Ensure comprehensive attachment filtering is applied | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12.md) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13.md) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | Medium | Defender | Anti-spam |
-| [CIS.M365.2.1.14](./CIS.M365.2.1.14.md) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.14](./CIS.M365.2.1.14.md) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | High | Defender | Anti-spam |
 | [CIS.M365.2.1.15](./CIS.M365.2.1.15.md) | (L1) Ensure outbound anti-spam message limits are in place | Medium | Defender | Anti-spam |
 | [CIS.M365.2.4.1](./CIS.M365.2.4.1.md) | (L1) Ensure Priority account protection is enabled and configured | Medium | Defender | Tenant settings |
 | [CIS.M365.2.4.2](./CIS.M365.2.4.2.md) | (L1) Ensure Priority accounts have 'Strict protection' presets applied | Medium | Defender | Tenant settings |

@@ -41,8 +41,35 @@ Describe 'Get-MailAuthenticationRecord' {
 }
 
 Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
+    BeforeAll {
+        $script:DnsResolverCommand = if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') { 'Resolve-DnsName' } else { 'Resolve-Dns' }
+        $script:CreatedDnsResolverStub = & (Get-Module Maester) {
+            param($CommandName)
+            if (-not (Get-Command $CommandName -ErrorAction SilentlyContinue)) {
+                # DnsClient-PS is optional. Provide the command signature so Pester can mock it offline.
+                Set-Item -Path "Function:script:$CommandName" -Value {
+                    [CmdletBinding()]
+                    param($Query, $QueryType, $NameServer)
+                    throw 'The DNS resolver must be mocked in this test.'
+                }
+                $true
+            } else {
+                $false
+            }
+        } $script:DnsResolverCommand
+    }
+
+    AfterAll {
+        if ($script:CreatedDnsResolverStub) {
+            & (Get-Module Maester) {
+                param($CommandName)
+                Remove-Item -Path "Function:script:$CommandName"
+            } $script:DnsResolverCommand
+        }
+    }
+
     BeforeEach {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             throw [System.Management.Automation.ErrorRecord]::new(
                 [System.Exception]::new('No DNS records were returned.'),
                 'DNS_INFO_NO_RECORDS',
@@ -65,7 +92,7 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'keeps DNS resolver failures classified as unavailable' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             throw [System.Management.Automation.ErrorRecord]::new(
                 [System.Exception]::new('The DNS server returned a failure.'),
                 'DNS_ERROR_RCODE_SERVER_FAILURE',
@@ -78,7 +105,7 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'keeps DKIM resolver failures classified as unavailable' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             throw [System.Management.Automation.ErrorRecord]::new(
                 [System.Exception]::new('The DNS server returned a failure.'),
                 'DNS_ERROR_RCODE_SERVER_FAILURE',
@@ -91,7 +118,7 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'keeps DMARC resolver failures classified as unavailable' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             throw [System.Management.Automation.ErrorRecord]::new(
                 [System.Exception]::new('The DNS server returned a failure.'),
                 'DNS_ERROR_RCODE_SERVER_FAILURE',
@@ -104,10 +131,11 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'returns invalid DKIM records with a false Base64 result' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             [pscustomobject]@{
                 Type = 'TXT'
                 Strings = 'v=DKIM1; k=rsa; p=%%%'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DKIM1; k=rsa; p=%%%' })
             }
         }
 
@@ -118,10 +146,11 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'returns an invalid DMARC record without classifying it as DNS unavailability' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             [pscustomobject]@{
                 Type = 'TXT'
                 Strings = 'v=DMARC1; p=reject; pct=101'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DMARC1; p=reject; pct=101' })
             }
         }
 
@@ -129,10 +158,11 @@ Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
     }
 
     It 'returns a malformed DMARC URI as an invalid record' {
-        Mock Resolve-DnsName -ModuleName Maester {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
             [pscustomobject]@{
                 Type = 'TXT'
                 Strings = 'v=DMARC1; p=reject; rua=mailto:@@; ruf=mailto:forensic@contoso.com'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DMARC1; p=reject; rua=mailto:@@; ruf=mailto:forensic@contoso.com' })
             }
         }
 

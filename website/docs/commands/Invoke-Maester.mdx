@@ -16,15 +16,16 @@ This is the main Maester command that runs the tests and generates a report of t
 
 ```powershell
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-Product <String[]>]
- [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>] [-Suite <String[]>] [-IncludeLongRunning]
- [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
- [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
- [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <Object>]
- [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
- [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
- [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
- [-OutputMode <String>] [-DriftRoot <String>] [-TestId <String[]>] [-ExcludeTestId <String[]>]
- [-Config <Object>] [-DryRun] [-SkipBuiltIn] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>] [-Suite <String[]>] [-Pack <String[]>]
+ [-AllPacks] [-IncludeLongRunning] [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects]
+ [-RedactUserIdentity <String>] [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>]
+ [-OutputJsonFile <String>] [-OutputFolder <String>] [-OutputFolderFileName <String>]
+ [-PesterConfiguration <Object>] [-Verbosity <String>] [-NonInteractive] [-PassThru]
+ [-MailRecipient <String[]>] [-MailTestResultsUri <String>] [-MailUserId <String>] [-TeamId <String>]
+ [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>] [-SkipGraphConnect] [-DisableTelemetry]
+ [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo] [-OutputMode <String>] [-DriftRoot <String>]
+ [-TestId <String[]>] [-ExcludeTestId <String[]>] [-Config <Object>] [-DryRun] [-SkipBuiltIn]
+ [-PackLock <String>] [-SkipPack] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -188,13 +189,39 @@ Explicitly connect to Active Directory, then run the Active Directory tests with
 ### EXAMPLE 17
 
 ```powershell
+Invoke-Maester -Pack ZTA
+```
+
+Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default.
+Other installed packs do not run.
+
+### EXAMPLE 18
+
+```powershell
+Invoke-Maester -Pack ZTA -SkipBuiltIn
+```
+
+Runs only the Zero Trust Assessment pack.
+
+### EXAMPLE 19
+
+```powershell
+Invoke-Maester -AllPacks
+```
+
+Runs the tests that ship with Maester and every installed pack.
+Without -Pack or -AllPacks, installed packs do not run.
+
+### EXAMPLE 20
+
+```powershell
 Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 ```
 
 Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3.
 A test named by its exact ID runs even if it is a preview or long-running test.
 
-### EXAMPLE 18
+### EXAMPLE 21
 
 ```powershell
 Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
@@ -204,7 +231,7 @@ Shows what would run, and why every other test would not, without running any te
 Each test that would have run is reported as NotRun with reason DryRun.
 Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
 
-### EXAMPLE 19
+### EXAMPLE 22
 
 ```powershell
 Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
@@ -349,6 +376,45 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Pack
+
+Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
+'*' wildcards are allowed.
+An installed pack runs only when it is named here (or turned on with
+"Enabled": true in the config), so installing a pack never adds its tests to every run.
+A pack named
+here runs even if it is off by default or in the config, and its long-running and preview tests run
+too.
+Other packs do not run; the other tests are not affected.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AllPacks
+
+Run every installed pack, as if each were named with -Pack, except those the config turns off.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -936,6 +1002,41 @@ Accept wildcard characters: False
 
 Run only the custom tests under -Path.
 The tests that ship with Maester always run otherwise.
+The packs that ship with Maester are left out too, except those named in -Pack.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PackLock
+
+The pack lock file to run the installed packs from.
+Defaults to the MAESTER_PACK_LOCK environment
+variable, then to the maester-packs.lock.json beside the Maester config found from -Path.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipPack
+
+Do not run any Maester Pack, installed or shipped with Maester.
 
 ```yaml
 Type: SwitchParameter

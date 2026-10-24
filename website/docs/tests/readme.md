@@ -369,7 +369,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11) | (L2) Ensure comprehensive attachment filtering is applied | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
-| [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | High | Defender | Anti-spam |
 | [CIS.M365.2.1.15](./CIS.M365.2.1.15) | (L1) Ensure outbound anti-spam message limits are in place | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.3](./CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
@@ -820,7 +820,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [ORCA.114](./ORCA.114) | No IP Allow Lists have been configured. | ORCA | Medium | Defender | Anti-spam |
 | [ORCA.115](./ORCA.115) | Mailbox intelligence based impersonation protection is enabled in anti-phishing policies. | ORCA | Medium | Defender | Anti-phishing |
 | [ORCA.116](./ORCA.116) | Mailbox intelligence based impersonation protection action set to move message to junk mail folder. | ORCA | Medium | Defender | Anti-phishing |
-| [ORCA.118.1](./ORCA.118.1) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | Medium | Defender | Anti-spam |
+| [ORCA.118.1](./ORCA.118.1) | Domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | High | Defender | Anti-spam |
 | [ORCA.118.2](./ORCA.118.2) | Domains are not being allow listed in an unsafe manner in Transport Rules. | ORCA | High | Defender | Mail flow |
 | [ORCA.118.3](./ORCA.118.3) | Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies. | ORCA | High | Defender | Anti-spam |
 | [ORCA.118.4](./ORCA.118.4) | Your own domains are not being allow listed in an unsafe manner in Transport Rules. | ORCA | High | Defender | Mail flow |

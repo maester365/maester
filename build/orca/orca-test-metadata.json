@@ -365,7 +365,7 @@
       ]
     },
     "ORCA.118.1": {
-      "Severity": "Medium",
+      "Severity": "High",
       "Author": [
         "thomas-s-schmidt"
       ],

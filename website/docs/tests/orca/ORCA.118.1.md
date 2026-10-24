@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "ORCA.118.1"
-  - "Medium"
+  - "High"
   - "ORCA"
   - "Defender"
   - "Anti-spam"
@@ -41,7 +41,7 @@ Remove allow listing on domains.
 | Field | Value |
 | --- | --- |
 | Test ID | ORCA.118.1 |
-| Severity | Medium |
+| Severity | High |
 | Suite | ORCA |
 | Product | Defender |
 | Related products | Exchange Online |
