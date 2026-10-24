@@ -455,7 +455,7 @@ Describe 'Write-MtSponsorMessage' {
         $lines = @(InModuleScope Maester -Parameters @{ c = $script:stream } { param($c) Write-MtSponsorMessage -Console $c 6>&1 } | ForEach-Object { "$_" })
         $text = $lines -join "`n"
         $text | Should -Match '♥  Maester runs on sponsorships'
-        $text | Should -Match 'rely on sponsors to keep it going'
+        $text | Should -Match 'shout us a coffee'
         $text | Should -Match 'https://maester\.dev/sponsor'
     }
 
