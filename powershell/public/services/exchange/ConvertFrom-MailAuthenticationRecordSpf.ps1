@@ -132,11 +132,7 @@
         }
         try {
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
-                $spfTxt = Resolve-DnsName @spfSplat | `
-                            Where-Object { $_.Type -eq "TXT" } | `
-                            Where-Object { $_.Strings -imatch $matchRecord }
-                if (-not $spfTxt) { return "Failure to obtain record" }
-                $spfRecord = [SPFRecord]::new($spfTxt.Strings)
+                $spfAnswers = Resolve-DnsName @spfSplat
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
@@ -146,11 +142,7 @@
                         NameServer  = $spfSplat.Server
                         ErrorAction = $spfSplat.ErrorAction
                     }
-                    $spfTxt = (Resolve-Dns @spfSplatAlt).Answers | `
-                                Where-Object { $_.RecordType -eq "TXT" } | `
-                                Where-Object { $_.Text -imatch $matchRecord }
-                    if (-not $spfTxt) { return "Failure to obtain record" }
-                    $spfRecord = [SPFRecord]::new($spfTxt.Text)
+                    $spfAnswers = (Resolve-Dns @spfSplatAlt).Answers
                 } else {
                     Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -162,10 +154,19 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            # NXDOMAIN: the name has no records, so no SPF record exists.
-            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') { return "Failure to obtain record" }
+            if ($_.FullyQualifiedErrorId -match 'DNS_(ERROR_RCODE_NAME_ERROR|INFO_NO_RECORDS)') { return "Failure to obtain record" }
             return "DNS lookup unavailable"
         }
+
+        if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
+            $spfTxt = $spfAnswers | Where-Object { $_.Type -eq "TXT" } | Where-Object { $_.Strings -imatch $matchRecord }
+            $spfRecordText = $spfTxt.Strings
+        } else {
+            $spfTxt = $spfAnswers | Where-Object { $_.RecordType -eq "TXT" } | Where-Object { $_.Text -imatch $matchRecord }
+            $spfRecordText = $spfTxt.Text
+        }
+        if (-not $spfRecordText) { return "Failure to obtain record" }
+        $spfRecord = [SPFRecord]::new($spfRecordText)
 
         return $spfRecord
     }

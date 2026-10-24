@@ -52,9 +52,11 @@
             $text = "$address".Trim()
             $recipientAddress = if ($address.ExternalEmailAddress) {
                 "$($address.ExternalEmailAddress)"
-            } elseif ($address.PrimarySmtpAddress) {
+            }
+            elseif ($address.PrimarySmtpAddress) {
                 "$($address.PrimarySmtpAddress)"
-            } else {
+            }
+            else {
                 $text
             }
             $recipientAddress = $recipientAddress -replace '(?i)^smtp:', ''
@@ -62,15 +64,18 @@
             if ($recipientAddress -notmatch '@') {
                 if ($recipientCache.ContainsKey($recipientAddress)) {
                     $recipient = $recipientCache[$recipientAddress]
-                } else {
+                }
+                else {
                     $recipient = Get-Recipient -Identity $recipientAddress -ErrorAction SilentlyContinue | Select-Object -First 1
                     $recipientCache[$recipientAddress] = $recipient
                 }
                 $recipientAddress = if ($recipient.ExternalEmailAddress) {
                     "$($recipient.ExternalEmailAddress)" -replace '(?i)^smtp:', ''
-                } elseif ($recipient.PrimarySmtpAddress) {
+                }
+                elseif ($recipient.PrimarySmtpAddress) {
                     "$($recipient.PrimarySmtpAddress)"
-                } else {
+                }
+                else {
                     $null
                 }
             }
@@ -115,7 +120,8 @@
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd

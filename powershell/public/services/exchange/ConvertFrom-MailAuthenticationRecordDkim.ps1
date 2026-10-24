@@ -81,8 +81,18 @@
                 }
                 $p = [regex]::Match($record, $this.matchPublicKey, $this.option)
                 $this.publicKey = ($p.Groups | Where-Object { $_.Name -eq "p" }).Value
-                $bytes = [System.Convert]::FromBase64String(($p.Groups | Where-Object { $_.Name -eq "p" }).Value)
-                $this.validBase64 = $null -ne $bytes
+                if ([string]::IsNullOrWhiteSpace($this.publicKey)) {
+                    $this.validBase64 = $false
+                    $this.warnings += "p: No public key is set"
+                } else {
+                    try {
+                        $bytes = [System.Convert]::FromBase64String($this.publicKey)
+                        $this.validBase64 = $null -ne $bytes
+                    } catch [System.FormatException] {
+                        $this.validBase64 = $false
+                        $this.warnings += "p: Public key is not valid Base64"
+                    }
+                }
             }
         }
     }
@@ -102,12 +112,7 @@
             Write-Verbose "Domain: $DomainName. Finding DKIM information for $DkimDnsName"
 
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
-                $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
-                            Where-Object { $_.Type -eq "TXT" } | `
-                            Where-Object { $_.Strings -match $matchRecord }).Strings)
-                If (-not $dkimRecord) {
-                    return "Failure to obtain record"
-                }
+                $dkimAnswers = Resolve-DnsName @dkimSplat
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
@@ -117,14 +122,7 @@
                         NameServer  = $dkimSplat.Server
                         ErrorAction = $dkimSplat.ErrorAction
                     }
-                    $record = ((Resolve-Dns @dkimSplatAlt).Answers | `
-                            Where-Object { $_.RecordType -eq "TXT" } | `
-                            Where-Object { $_.Text -imatch $matchRecord }).Text
-                    if ($record) {
-                        $dkimRecord = [DKIMRecord]::new($record)
-                    } else {
-                        return "Record does not exist"
-                    }
+                    $dkimAnswers = (Resolve-Dns @dkimSplatAlt).Answers
                 } else {
                     Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -136,10 +134,17 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            # NXDOMAIN means the record name has no records; any other lookup failure is reported as unavailable.
-            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') { return "Failure to obtain record" }
+            if ($_.FullyQualifiedErrorId -match 'DNS_(ERROR_RCODE_NAME_ERROR|INFO_NO_RECORDS)') { return "Failure to obtain record" }
             return "DNS lookup unavailable"
         }
+
+        if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
+            $dkimRecordText = ($dkimAnswers | Where-Object { $_.Type -eq "TXT" } | Where-Object { $_.Strings -match $matchRecord }).Strings
+        } else {
+            $dkimRecordText = ($dkimAnswers | Where-Object { $_.RecordType -eq "TXT" } | Where-Object { $_.Text -imatch $matchRecord }).Text
+        }
+        if (-not $dkimRecordText) { return "Failure to obtain record" }
+        $dkimRecord = [DKIMRecord]::new($dkimRecordText)
 
         return $dkimRecord
     }

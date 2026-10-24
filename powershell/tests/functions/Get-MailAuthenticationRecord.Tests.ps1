@@ -39,3 +39,103 @@ Describe 'Get-MailAuthenticationRecord' {
         }
     }
 }
+
+Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
+    BeforeEach {
+        Mock Resolve-DnsName -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('No DNS records were returned.'),
+                'DNS_INFO_NO_RECORDS',
+                [System.Management.Automation.ErrorCategory]::ObjectNotFound,
+                $null
+            )
+        }
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing SPF record' {
+        ConvertFrom-MailAuthenticationRecordSpf -DomainName 'contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing DKIM record' {
+        ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing DMARC record' {
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'keeps DNS resolver failures classified as unavailable' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordSpf -DomainName 'contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'keeps DKIM resolver failures classified as unavailable' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'keeps DMARC resolver failures classified as unavailable' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'returns invalid DKIM records with a false Base64 result' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DKIM1; k=rsa; p=%%%'
+            }
+        }
+
+        $record = ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com'
+
+        $record.GetType().Name | Should -Be 'DKIMRecord'
+        $record.validBase64 | Should -BeFalse
+    }
+
+    It 'returns an invalid DMARC record without classifying it as DNS unavailability' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DMARC1; p=reject; pct=101'
+            }
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Invalid DMARC record'
+    }
+
+    It 'returns a malformed DMARC URI as an invalid record' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DMARC1; p=reject; rua=mailto:@@; ruf=mailto:forensic@contoso.com'
+            }
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Invalid DMARC record'
+    }
+}

@@ -1,15 +1,15 @@
-﻿The Strict preset security policy is turned on for both Exchange Online Protection and Defender for Office 365 and is assigned to recipients such as priority accounts.
+﻿The Strict preset security policy applies its strongest protections to the recipients selected for Exchange Online Protection and Defender for Office 365.
 
 Microsoft maintains the Standard and Strict preset security policies and updates them as threats change. Strict has the most aggressive settings for spam, phishing, malware, Safe Links and Safe Attachments, which suits the accounts that are most likely to be targeted and most valuable to compromise.
 
-This is a policy-presence check, not a priority-account coverage check. It verifies that the Strict rules are enabled and each has at least one recipient condition: users, groups or domains. It does not verify that any selected recipient is a priority account; make sure the assigned users, groups or domains cover those accounts. Microsoft Defender for Office 365 licences are required.
+When enabled, a rule with no recipient conditions applies to everyone, including priority accounts. This test follows the CIS PowerShell audit procedure literally: it requires at least one explicit recipient condition on each enabled rule to pass. It does not verify that the selected recipients actually include priority accounts. To meet the audit criterion while targeting those accounts, add a group containing priority accounts to the rule's `SentToMemberOf` condition. Microsoft Defender for Office 365 licences are required.
 
 #### Remediation action
 
 1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com).
 2. Go to **Email & collaboration** > **Policies & rules** > **Threat policies** > [**Preset security policies**](https://security.microsoft.com/presetSecurityPolicies).
 3. Under **Strict protection**, select **Manage protection settings**.
-4. Apply the policy to **Specific recipients** and add your priority accounts or a group that contains them, for both Exchange Online Protection and Defender for Office 365.
+4. Apply the policy to **Specific recipients** and add a group containing priority accounts so each rule has a `SentToMemberOf` condition.
 5. Finish the wizard and turn the policy on.
 
 #### Related links

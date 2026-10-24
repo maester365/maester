@@ -39,6 +39,7 @@
 
     $report = foreach ($domain in $domains) {
         $name = $domain.DomainName
+        $detail = ''
         $spf = ConvertFrom-MailAuthenticationRecordSpf -DomainName $name
         if ($spf -is [string] -and ($spf -like '*not available' -or $spf -eq 'DNS lookup unavailable')) {
             [pscustomobject]@{ Domain = $name; Record = $null; Pass = $null; Detail = 'DNS lookup not available' }
@@ -46,24 +47,58 @@
         }
         $record = if ($spf.GetType().Name -eq 'SPFRecord') { $spf.record } else { $null }
         $effective = $record
-        $detail = ''
-        # RFC 7208 section 5.1: a redirect is ignored when the record has an all mechanism.
-        $localAll = [regex]::Match([string]$record, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        $redirectTargets = @()
+        $redirectError = $null
+        $redirectUnavailable = $false
+        $visitedDomains = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        $null = $visitedDomains.Add($name)
 
-        if (-not $localAll.Success -and $record -match 'redirect=(?<target>\S+)') {
-            $target = $Matches['target']
+        while ($effective) {
+            # RFC 7208 section 5.1: a redirect is ignored when the record has an all mechanism.
+            $localAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
+            if ($localAll.Success) { break }
+
+            $redirect = [regex]::Match([string]$effective, '(?i)(?:^|\s)redirect=(?<target>[^\s;]+)')
+            if (-not $redirect.Success) { break }
+            $target = $redirect.Groups['target'].Value
+
+            if ($redirectTargets.Count -ge 9) {
+                $redirectError = 'The redirect chain exceeds the DNS lookup limit.'
+                break
+            }
+            if (-not $visitedDomains.Add($target)) {
+                $redirectError = "The redirect chain contains a cycle at $target."
+                break
+            }
+
+            $redirectTargets += $target
             $redirected = ConvertFrom-MailAuthenticationRecordSpf -DomainName $target
             if ($redirected -is [string] -and ($redirected -like '*not available' -or $redirected -eq 'DNS lookup unavailable')) {
-                [pscustomobject]@{ Domain = $name; Record = $record; Pass = $null; Detail = "DNS lookup not available for $target" }
-                continue
+                $redirectUnavailable = $true
+                break
             }
-            $effective = if ($redirected.GetType().Name -eq 'SPFRecord') { $redirected.record } else { $null }
-            $detail = "Redirects to $target"
+            $redirectedType = if ($null -ne $redirected) { $redirected.GetType().Name } else { $null }
+            $effective = if ($redirectedType -eq 'SPFRecord') { $redirected.record } else { $null }
+            if (-not $effective) {
+                $redirectError = "No SPF record was found at redirect target $target."
+                break
+            }
+        }
+
+        if ($redirectUnavailable) {
+            [pscustomobject]@{ Domain = $name; Record = $record; Pass = $null; Detail = "DNS lookup not available for $($redirectTargets[-1])" }
+            continue
         }
         $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
         $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
         if (-not $record) {
             $detail = 'No SPF record found'
+        } elseif ($redirectError) {
+            $detail = $redirectError
+        } elseif ($redirectTargets.Count -gt 0 -and -not $pass) {
+            $detail = "The effective record after redirecting to $($redirectTargets -join ' -> ') does not end with -all or ~all"
+        } elseif ($redirectTargets.Count -gt 0) {
+            $detail = "Redirects to $($redirectTargets -join ' -> ')"
         }
         elseif (-not $pass) {
             $detail = 'The record does not end with -all or ~all'
@@ -71,14 +106,16 @@
         [pscustomobject]@{ Domain = $name; Record = $record; Pass = $pass; Detail = $detail }
     }
 
-    $checked = @($report | Where-Object { $null -ne $_.Pass })
     $unchecked = @($report | Where-Object { $null -eq $_.Pass })
-    $failed = @($checked | Where-Object { -not $_.Pass })
-    if ($unchecked.Count -gt 0) {
+    $failed = @($report | Where-Object { $_.Pass -eq $false })
+    if ($failed.Count -gt 0) {
+        $testResult = $false
+    } elseif ($unchecked.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
+    } else {
+        $testResult = $true
     }
-    $testResult = $failed.Count -eq 0
 
     $passText = if ($domains.Count -eq 0) { 'There are no custom domains, so no SPF records are required.' } else { 'All custom domains publish an SPF record that ends in -all or ~all.' }
     $failText = "$($failed.Count) custom domain(s) do not publish a compliant SPF record."

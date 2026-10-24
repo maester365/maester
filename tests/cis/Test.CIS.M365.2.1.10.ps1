@@ -62,10 +62,11 @@
             $policy = if ($source -ne $name -and $dmarc.policySubdomain) { $dmarc.policySubdomain } else { $dmarc.policy }
         }
         $checks = [ordered]@{
+            'Record is valid' = $null -eq $dmarc -or $dmarc.valid
             'Policy is quarantine or reject' = $policy -in @('quarantine', 'reject')
             'Applies to 100 percent' = $null -eq $dmarc -or $dmarc.percentage -eq 100 -or $null -eq $dmarc.percentage
-            'Aggregate reports (rua)' = [bool]($dmarc.record -match '(^|;)\s*rua=mailto:')
-            'Forensic reports (ruf)' = [bool]($dmarc.record -match '(^|;)\s*ruf=mailto:')
+            'Aggregate reports (rua)' = @($dmarc.reportAggregate | Where-Object { $_.mailAddress }).Count -gt 0
+            'Forensic reports (ruf)' = @($dmarc.reportForensic | Where-Object { $_.mailAddress }).Count -gt 0
         }
         $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         [pscustomobject]@{

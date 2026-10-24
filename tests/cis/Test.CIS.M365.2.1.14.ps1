@@ -22,7 +22,7 @@
         Feature = 'anti-spam',
         Area = 'email-protection',
         ResourceType = 'Policy',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.002'),
