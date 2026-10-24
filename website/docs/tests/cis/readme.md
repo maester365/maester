@@ -34,6 +34,7 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.1.3.5](./CIS.M365.1.3.5.md) | (L1) Ensure internal phishing protection for Forms is enabled | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.6](./CIS.M365.1.3.6.md) | (L2) Ensure the customer lockbox feature is enabled | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.7](./CIS.M365.1.3.7.md) | (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' | Medium | Microsoft 365 | Organization settings |
+| [CIS.M365.1.3.9](./CIS.M365.1.3.9.md) | (L1) Ensure shared bookings pages are restricted to select users | Low | Microsoft 365 | Organization settings |
 | [CIS.M365.2.1.1](./CIS.M365.2.1.1.md) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy) | Medium | Defender | Safe Links |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2.md) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.3](./CIS.M365.2.1.3.md) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | Medium | Defender | Anti-malware |
@@ -41,12 +42,22 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.1.5](./CIS.M365.2.1.5.md) | (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled | Medium | Defender | Safe Attachments |
 | [CIS.M365.2.1.6](./CIS.M365.2.1.6.md) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.7](./CIS.M365.2.1.7.md) | (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | Medium | Defender | Anti-phishing |
+| [CIS.M365.2.1.8](./CIS.M365.2.1.8.md) | (L1) Ensure that SPF records are published for all Exchange Domains | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9.md) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | Medium | Defender | Email authentication |
+| [CIS.M365.2.1.10](./CIS.M365.2.1.10.md) | (L1) Ensure DMARC records for all Exchange Online domains are published | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11.md) | (L2) Ensure comprehensive attachment filtering is applied | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12.md) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13.md) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.14](./CIS.M365.2.1.14.md) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | High | Defender | Anti-spam |
+| [CIS.M365.2.1.15](./CIS.M365.2.1.15.md) | (L1) Ensure outbound anti-spam message limits are in place | Medium | Defender | Anti-spam |
+| [CIS.M365.2.4.1](./CIS.M365.2.4.1.md) | (L1) Ensure Priority account protection is enabled and configured | Medium | Defender | Tenant settings |
+| [CIS.M365.2.4.2](./CIS.M365.2.4.2.md) | (L1) Ensure Priority accounts have 'Strict protection' presets applied | Medium | Defender | Tenant settings |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4.md) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | Medium | Defender | Zero-hour auto purge |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1.md) | (L1) Ensure Microsoft 365 audit log search is Enabled | High | Purview | Audit |
+| [CIS.M365.3.2.1](./CIS.M365.3.2.1.md) | (L1) Ensure DLP policies are enabled | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.2.2](./CIS.M365.3.2.2.md) | (L1) Ensure DLP policies are enabled for Microsoft Teams | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.2.3](./CIS.M365.3.2.3.md) | (L1) Ensure DLP policies are published for Copilot users | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.3.1](./CIS.M365.3.3.1.md) | (L1) Ensure Information Protection sensitivity label policies are published | Low | Purview | Information protection |
 | [CIS.M365.4.1](./CIS.M365.4.1.md) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | Medium | Intune | Device compliance |
 | [CIS.M365.4.2](./CIS.M365.4.2.md) | (L1) Ensure device enrollment for personally owned devices is blocked by default | Medium | Intune | Device enrollment |
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | (L1) Ensure users cannot register applications | Medium | Entra ID | User and directory settings |
@@ -101,7 +112,19 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.5.3.3](./CIS.M365.5.3.3.md) | (L1) Ensure 'Access reviews' for privileged roles are configured | Medium | Entra ID | Identity Governance |
 | [CIS.M365.5.3.4](./CIS.M365.5.3.4.md) | (L1) Ensure approval is required for Global Administrator role activation | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.5.3.5](./CIS.M365.5.3.5.md) | (L1) Ensure approval is required for Privileged Role Administrator activation | Medium | Entra ID | Privileged Identity Management |
+| [CIS.M365.6.1.1](./CIS.M365.6.1.1.md) | (L1) Ensure 'AuditDisabled' organizationally is set to 'False' | High | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.1.2](./CIS.M365.6.1.2.md) | (L1) Ensure mailbox audit actions are configured | Medium | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.1.3](./CIS.M365.6.1.3.md) | (L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes | Medium | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.2.1](./CIS.M365.6.2.1.md) | (L1) Ensure all forms of mail forwarding are blocked and/or disabled | High | Exchange Online | Mail flow |
+| [CIS.M365.6.2.2](./CIS.M365.6.2.2.md) | (L1) Ensure mail transport rules do not whitelist specific domains | Medium | Exchange Online | Mail flow |
+| [CIS.M365.6.2.3](./CIS.M365.6.2.3.md) | (L1) Ensure email from external senders is identified | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.3.1](./CIS.M365.6.3.1.md) | (L2) Ensure users installing Outlook add-ins is not allowed | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.3.2](./CIS.M365.6.3.2.md) | (L1) Ensure the ability to add personal email accounts and calendars is disabled | Low | Exchange Online | Outlook |
+| [CIS.M365.6.5.1](./CIS.M365.6.5.1.md) | (L1) Ensure modern authentication for Exchange Online is enabled | Low | Exchange Online | Client access |
+| [CIS.M365.6.5.2](./CIS.M365.6.5.2.md) | (L1) Ensure MailTips are enabled for end users | Low | Exchange Online | Outlook |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3.md) | (L2) Ensure additional storage providers are restricted in Outlook on the web | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.5.4](./CIS.M365.6.5.4.md) | (L1) Ensure SMTP AUTH is disabled | High | Exchange Online | Client access |
+| [CIS.M365.6.5.5](./CIS.M365.6.5.5.md) | (L2) Ensure Direct Send submissions are rejected | Medium | Exchange Online | Mail flow |
 | [CIS.M365.7.2.1](./CIS.M365.7.2.1.md) | (L1) Ensure modern authentication for SharePoint applications is required | Medium | SharePoint | Access control |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2.md) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.3](./CIS.M365.7.2.3.md) | (L1) Ensure external content sharing is restricted | Medium | SharePoint | External sharing |

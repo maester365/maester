@@ -31,7 +31,7 @@
     .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 
-    Returns [DMARCRecord] or "Failure to obtain record"
+    Returns [DMARCRecord], "Failure to obtain record" when the record name does not exist (NXDOMAIN), or "DNS lookup unavailable" when the lookup fails for another reason
 
     .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDmarc
@@ -209,7 +209,13 @@
                 if (-not $pct) {
                     $this.warnings += "pct: No percentage of messages specified to apply policy to, defaults to 100"
                 } else {
-                    $this.percentage = $Matches["pct"]
+                    $parsedPercentage = [int]$Matches["pct"]
+                    if ($parsedPercentage -ge 0 -and $parsedPercentage -le 100) {
+                        $this.percentage = $parsedPercentage
+                    } else {
+                        $this.valid = $false
+                        $this.warnings += "pct: Value must be between 0 and 100"
+                    }
                 }
             }
         }
@@ -230,9 +236,7 @@
         }
         try {
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
-                $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
-                            Where-Object { $_.Type -eq "TXT" } | `
-                            Where-Object { [regex]::Match($_.Strings,$matchRecord,$regexOptions) }).Strings)
+                $dmarcAnswers = Resolve-DnsName @dmarcSplat
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
@@ -242,14 +246,7 @@
                         NameServer  = $dmarcSplat.Server
                         ErrorAction = $dmarcSplat.ErrorAction
                     }
-                    $record = ((Resolve-Dns @dmarcSplatAlt).Answers | `
-                            Where-Object { $_.RecordType -eq "TXT" } | `
-                            Where-Object { [regex]::Match($_.Text,$matchRecord,$regexOptions) }).Text
-                    if ($record) {
-                        $dmarcRecord = [DMARCRecord]::new($record)
-                    } else {
-                        return "Record does not exist"
-                    }
+                    $dmarcAnswers = (Resolve-Dns @dmarcSplatAlt).Answers
                 } else {
                     Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -261,8 +258,23 @@
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
             Write-Verbose $_
-            return "Failure to obtain record"
+            if ($_.FullyQualifiedErrorId -match 'DNS_(ERROR_RCODE_NAME_ERROR|INFO_NO_RECORDS)') { return "Failure to obtain record" }
+            return "DNS lookup unavailable"
         }
+
+        if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
+            $dmarcRecordText = ($dmarcAnswers | Where-Object { $_.Type -eq "TXT" } | Where-Object { [regex]::Match($_.Strings, $matchRecord, $regexOptions) }).Strings
+        } else {
+            $dmarcRecordText = ($dmarcAnswers | Where-Object { $_.RecordType -eq "TXT" } | Where-Object { [regex]::Match($_.Text, $matchRecord, $regexOptions) }).Text
+        }
+        if (-not $dmarcRecordText) { return "Failure to obtain record" }
+        try {
+            $dmarcRecord = [DMARCRecord]::new($dmarcRecordText)
+        } catch {
+            Write-Verbose $_
+            return "Invalid DMARC record"
+        }
+        if (-not $dmarcRecord.valid) { return "Invalid DMARC record" }
 
         return $dmarcRecord
     }
