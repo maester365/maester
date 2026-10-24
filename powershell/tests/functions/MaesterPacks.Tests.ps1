@@ -373,6 +373,8 @@ Describe 'Installing and loading a pack' {
         @($rows | Where-Object Id -Like 'MP.CNT.*') | Should -BeNullOrEmpty
         $rows = @(Invoke-Maester -SkipBuiltIn -Path . -AllPacks -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
         ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'LongRunning'
+        # Naming a pack is enough for -SkipBuiltIn: no custom tests are needed.
+        Remove-Item -LiteralPath 'Test.CONTOSO.1.ps1'
         $rows = @(Invoke-Maester -SkipBuiltIn -Path . -Pack CNT -DryRun -PassThru -NonInteractive -SkipGraphConnect -OutputFolder (Join-Path $script:root 'out') 6>$null).Tests
         ($rows | Where-Object Id -EQ 'MP.CNT.1002').ReasonCode | Should -Be 'DryRun'
         # A pack's test ID names its pack.
