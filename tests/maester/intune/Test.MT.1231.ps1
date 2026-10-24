@@ -18,8 +18,10 @@
     high severity detection stays compliant and keeps its access to corporate resources, which removes
     the automatic containment that Zero Trust assumes is present.
 
-    The property accepts secured, low, medium and high as thresholds. The values unavailable and notSet
-    mean the risk level is not evaluated at all, and neither counts as configured.
+    The property accepts secured, low, medium and high. A threshold of high admits every risk score
+    Defender reports, so it is treated here as configured but not protective, the same way MT.1243 and
+    MT.1249 treat the app protection threat level. The values unavailable and notSet mean the risk
+    level is not evaluated at all, and neither counts as configured.
 
     This test passes if at least one assigned iOS compliance policy sets a real threshold. It also
     reports whether the policy requires device threat protection, because a threshold on its own has no
@@ -81,8 +83,10 @@
         return $false
     }
 
-    # unavailable and notSet both mean the risk level is not evaluated.
-    $configuredLevels = @('secured', 'low', 'medium', 'high')
+    # A protective threshold is one that can mark a device non-compliant. high accepts every score
+    # Defender reports, so it is reported below rather than counted as a pass; unavailable and notSet
+    # both mean the risk level is not evaluated at all.
+    $configuredLevels = @('secured', 'low', 'medium')
     # unavailable and notSet are mapped explicitly so that a genuinely unset threshold reads as
     # "Not evaluated", while an unrecognised future value falls through to its raw form rather than
     # being mislabelled as unset.
@@ -129,9 +133,16 @@
             $testResultMarkdown += "`n$($unassigned.Count) policy/policies require a risk level but are **not assigned** to any group, "
             $testResultMarkdown += "so they are never evaluated. Assign the policy to your iOS device or user groups."
         } else {
-            $testResultMarkdown += "`nNo assigned iOS compliance policy requires a Microsoft Defender machine risk score level. "
+            $testResultMarkdown += "`nNo assigned iOS compliance policy requires a protective Microsoft Defender machine risk score level. "
             $testResultMarkdown += "A phone with an active high severity detection stays compliant and keeps access to corporate resources."
         }
+    }
+
+    $permissive = @($policies | Where-Object { $_.IsAssigned -and $_.DefenderRiskScoreLevel -eq 'high' })
+    if ($permissive.Count -gt 0) {
+        $testResultMarkdown += "`n`n> **Note:** $($permissive.Count) assigned policy/policies set the machine risk score "
+        $testResultMarkdown += "threshold to **high**, which admits every score Defender reports. The threshold is configured "
+        $testResultMarkdown += "but no detection makes the device non-compliant."
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown

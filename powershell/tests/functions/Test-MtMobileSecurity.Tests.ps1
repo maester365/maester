@@ -379,6 +379,23 @@
             Test-MtIosDefenderRiskScore | Should -BeTrue
         }
 
+        It 'fails for high, which admits every score Defender reports' {
+            Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
+                return @(Get-TestIosPolicy -DefenderRiskScoreLevel 'high')
+            }
+
+            Test-MtIosDefenderRiskScore | Should -BeFalse
+        }
+
+        It 'reports an assigned high threshold rather than passing silently' {
+            Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
+                return @(Get-TestIosPolicy -DefenderRiskScoreLevel 'high')
+            }
+
+            Test-MtIosDefenderRiskScore | Out-Null
+            $script:TestResult | Should -Match 'admits every score Defender reports'
+        }
+
         It 'fails for unavailable, which means the level is not evaluated' {
             Mock -ModuleName Maester Get-MtMobileCompliancePolicy {
                 return @(Get-TestIosPolicy -DefenderRiskScoreLevel 'unavailable')

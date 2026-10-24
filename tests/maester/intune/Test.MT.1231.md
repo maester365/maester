@@ -4,7 +4,7 @@ Microsoft Defender for Endpoint on iOS calculates a machine risk score for every
 
 Without this setting the detection never reaches the access decision. A phone with an active high severity detection stays compliant and keeps its access to corporate resources, which removes exactly the automatic containment that a Zero Trust architecture assumes is present. Detection without enforcement leaves a compromised phone fully trusted.
 
-The threshold accepts **Secured**, **Low**, **Medium** and **High**. The values *unavailable* and *notSet* mean the risk score is not evaluated at all, and neither counts as configured by this test.
+The threshold accepts **Secured**, **Low**, **Medium** and **High**. **High** admits every score Defender reports, so a policy set to High is reported by this test but does not count towards a pass: the threshold exists and no detection ever makes the device non-compliant. The values *unavailable* and *notSet* mean the risk score is not evaluated at all, and neither counts as configured either. A pass needs **Secured**, **Low** or **Medium**.
 
 A threshold has no effect until the devices are actually onboarded to Defender for Endpoint and the Intune connector is enabled for iOS. This test reports whether the threshold is paired with **Require the device to be at or under the device threat level**, so a threshold that can never evaluate is visible. [MT.1098](https://maester.dev/docs/tests/MT.1098) checks the health of the connectors themselves.
 
