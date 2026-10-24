@@ -1,12 +1,13 @@
 ﻿function Write-Telemetry {
     <#
     .SYNOPSIS
-    Sends one anonymous telemetry event to packs.maester.cloud.
+    Sends one telemetry event to api.maester.dev.
 
     .DESCRIPTION
     Every event carries a random installation ID (Get-MtInstallationId), the Maester and PowerShell versions, the
     platform and the CI system if any. The service looks up the country and region of the request and does not
-    store the IP address.
+    store the IP address. The tenant is sent only as a hash, which the service re-keys with a secret before storing
+    it: tenant IDs are public, so a plain hash could be matched by hashing a guessed one.
 
     InvokeMaesterStart is sent when Invoke-Maester starts: the run's random ID and a SHA-256 hash of the tenant ID.
     It also sends the event PostHog has always received, until PostHog is retired.
@@ -21,7 +22,8 @@
     installation ID. It also tells the pack index that the pack exists.
 
     Nothing is sent when Invoke-Maester -DisableTelemetry is used or MAESTER_DISABLE_TELEMETRY is set to anything
-    but 0 or false. MAESTER_TELEMETRY_URL sends events to another Worker, for testing. A failure is written to the
+    but 0 or false. MAESTER_TELEMETRY_URL sends events to another Worker, for testing (wrangler dev --host
+    api.maester.dev serves the same paths). A failure is written to the
     verbose stream and never stops the command. Events are sent in the background, so they never slow a run down.
     #>
     [CmdletBinding()]
@@ -63,7 +65,7 @@
     elseif ($env:TF_BUILD -eq 'True') { 'AzureDevOps' }
     elseif ($env:CI -and $env:CI -ne 'false') { 'Other' }
     else { $null }
-    $baseUrl = if ($env:MAESTER_TELEMETRY_URL) { $env:MAESTER_TELEMETRY_URL.TrimEnd('/') } else { 'https://packs.maester.cloud' }
+    $baseUrl = if ($env:MAESTER_TELEMETRY_URL) { $env:MAESTER_TELEMETRY_URL.TrimEnd('/') } else { 'https://api.maester.dev' }
     # Starts the request in the background and returns at once (Send-MtTelemetryRequest); the command that sent it
     # calls Wait-MtTelemetry as it returns.
     $send = {
@@ -79,7 +81,7 @@
 
     if ($EventName -eq 'PackInstall') {
         if (-not $Pack -or -not $Pack.Commit -or -not ($Pack.PSObject.Properties['Public'] -and $Pack.Public) -or $Pack.Source -eq 'builtin') { return }
-        & $send "$baseUrl/api/v1/events" ([ordered]@{
+        & $send "$baseUrl/v1/events" ([ordered]@{
                 Type           = 'install'
                 Source         = [string]$Pack.Source
                 Commit         = [string]$Pack.Commit
@@ -114,7 +116,7 @@
     }
 
     if ($EventName -eq 'InvokeMaesterStart') {
-        & $send "$baseUrl/api/v1/telemetry" $body
+        & $send "$baseUrl/v1/telemetry" $body
         # The PostHog event Maester has always sent; it goes when the run's events are trusted on their own.
         & $send 'https://us.i.posthog.com/capture/' ([ordered]@{
                 api_key     = 'phc_VxA235FsdurMGycf9DHjlUeZeIhLuC7r11Ptum0WjRK'
@@ -162,5 +164,5 @@
     }
     $body.Installed = @($installed | Select-Object -First 50)
     $body.Packs = @($packs | Select-Object -First 50)
-    & $send "$baseUrl/api/v1/telemetry" $body
+    & $send "$baseUrl/v1/telemetry" $body
 }

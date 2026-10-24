@@ -5,8 +5,9 @@
 
     .DESCRIPTION
     Telemetry counts installations with a random GUID kept in ~/.maester/installation-id. It is made here, names
-    nothing about the machine or the user, and deleting the file gives a new one. Returns $null when the file
-    cannot be read or written, so telemetry is skipped rather than failing a run.
+    nothing about the machine or the user, and deleting the file gives a new one. When the file cannot be read or
+    written, as on a read-only container, it returns a random ID kept for this PowerShell session instead, so those
+    runs are still counted.
     #>
     [CmdletBinding()]
     [OutputType([string])]
@@ -24,7 +25,8 @@
         Set-Content -LiteralPath $path -Value $id -NoNewline -Encoding utf8 -ErrorAction Stop
         $id
     } catch {
-        Write-Verbose "No installation ID: $($_.Exception.Message)"
-        $null
+        Write-Verbose "No saved installation ID, using one for this session: $($_.Exception.Message)"
+        if (-not $script:MtSessionInstallationId) { $script:MtSessionInstallationId = [guid]::NewGuid().ToString() }
+        $script:MtSessionInstallationId
     }
 }

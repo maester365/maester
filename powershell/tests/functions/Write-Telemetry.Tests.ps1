@@ -1,4 +1,4 @@
-Describe 'Write-Telemetry' {
+﻿Describe 'Write-Telemetry' {
     BeforeAll {
         . "$PSScriptRoot/../../internal/session/Write-Telemetry.ps1"
         . "$PSScriptRoot/../../internal/session/Get-MtInstallationId.ps1"
@@ -28,7 +28,7 @@ Describe 'Write-Telemetry' {
         Write-Telemetry -EventName InvokeMaester -Run $script:run
 
         Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter {
-            $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+            $Uri -eq 'https://api.maester.dev/v1/telemetry' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
         }
     }
 
@@ -46,7 +46,7 @@ Describe 'Write-Telemetry' {
         }
         Write-Telemetry -EventName InvokeMaester -MaesterResults $results
 
-        $script:sent.Uri | Should -Be 'https://packs.maester.cloud/api/v1/telemetry'
+        $script:sent.Uri | Should -Be 'https://api.maester.dev/v1/telemetry'
         $script:sent.Body.Type | Should -Be 'run'
         $script:sent.Body.Tests | Should -Be 1
         $script:sent.Body.Tenant | Should -Match '^[0-9a-f]{64}$'
@@ -78,7 +78,7 @@ Describe 'Write-Telemetry' {
     It 'sends a start event with the run ID, and the PostHog event until PostHog is retired' {
         Write-Telemetry -EventName InvokeMaesterStart -Run $script:run
 
-        Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter { $Uri -eq 'https://packs.maester.cloud/api/v1/telemetry' -and ($Body | ConvertFrom-Json).Type -eq 'start' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
+        Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter { $Uri -eq 'https://api.maester.dev/v1/telemetry' -and ($Body | ConvertFrom-Json).Type -eq 'start' -and ($Body | ConvertFrom-Json).RunId -eq 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }
         Should -Invoke Send-MtTelemetryRequest -Exactly 1 -ParameterFilter { $Uri -eq 'https://us.i.posthog.com/capture/' }
     }
 
@@ -125,7 +125,7 @@ Describe 'Write-Telemetry' {
     It 'sends an install event only for a public pack' {
         $entry = [pscustomobject]@{ Id = 'contoso.public'; Source = 'github.com/contoso/maester-sample'; Commit = ('a' * 40); Public = $true }
         Write-Telemetry -EventName PackInstall -Pack $entry
-        $script:sent.Uri | Should -Be 'https://packs.maester.cloud/api/v1/events'
+        $script:sent.Uri | Should -Be 'https://api.maester.dev/v1/events'
         $script:sent.Body.Source | Should -Be 'github.com/contoso/maester-sample'
 
         $script:sent = $null
@@ -153,7 +153,7 @@ Describe 'Send-MtTelemetryRequest and Wait-MtTelemetry' {
         $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0)
         $listener.Start()
         try {
-            $uri = "http://127.0.0.1:$($listener.LocalEndpoint.Port)/api/v1/telemetry"
+            $uri = "http://127.0.0.1:$($listener.LocalEndpoint.Port)/v1/telemetry"
             $send = [System.Diagnostics.Stopwatch]::StartNew()
             Send-MtTelemetryRequest -Uri $uri -Body '{}'
             $send.Elapsed.TotalSeconds | Should -BeLessThan 1
@@ -184,5 +184,13 @@ Describe 'Get-MtInstallationId' {
         $first | Should -Match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
         Get-MtInstallationId | Should -Be $first
         (Get-Content (Join-Path $userHome 'installation-id') -Raw) | Should -Be $first
+    }
+
+    It 'uses one ID for the session when the file cannot be written' {
+        Mock Get-MtPackHome { throw 'read-only home' }
+        $script:MtSessionInstallationId = $null
+        $first = Get-MtInstallationId
+        $first | Should -Match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+        Get-MtInstallationId | Should -Be $first
     }
 }

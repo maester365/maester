@@ -292,7 +292,7 @@
         # This is used for running tests that does not require a Graph connection.
         [switch] $SkipGraphConnect,
 
-        # Do not send the anonymous run events to packs.maester.cloud: a random installation ID, a hash of the
+        # Do not send the run events to api.maester.dev: a random installation ID, a hash of the
         # tenant ID, the versions and platform, when the run started and how long it took, its outcome, the result
         # counts and the public packs installed and run.
         # Setting the environment variable MAESTER_DISABLE_TELEMETRY to 1 does the same for every command.

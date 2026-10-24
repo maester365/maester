@@ -55,13 +55,14 @@ See [Approval required when connecting](connect-maester/readme.md#approval-requi
 
 ## What telemetry does Maester send?
 
-`Invoke-Maester` sends two anonymous events to `packs.maester.cloud`, a service run by the Maester maintainers on
+`Invoke-Maester` sends two events to `api.maester.dev`, a service run by the Maester maintainers on
 Cloudflare: one when the run starts and one when it ends, even when it stops early, fails or is cancelled. Together
 they show the maintainers when a new release starts to fail. They hold:
 
 - a random run ID, and a random installation ID kept in `~/.maester/installation-id` (delete the file to get a new
   one);
-- a SHA-256 hash of the tenant ID, never the tenant ID itself;
+- a SHA-256 hash of the tenant ID, never the tenant ID itself. Tenant IDs are public, so anyone could hash a guessed
+  one; the service re-keys the hash with a secret before storing it. The data is pseudonymous rather than anonymous;
 - the Maester and PowerShell versions, the operating system and its version, and the CI system if the run is in one;
 - when the run started, how long it took, and whether it completed. For a run that did not, how far it got and the
   type of the error, never the error message;
@@ -77,10 +78,13 @@ The service looks up the country and region the request came from, and does not 
 
 No test names, results of a check, email addresses or tenant content (users, policies, findings) are sent; the
 tenant is identified only by the hash of its ID described above. A pack's page shows its own usage counts. Daily
-totals that hold an installation ID or a tenant hash are deleted after 400 days.
+totals that hold an installation ID or a tenant hash are deleted after 400 days. Daily counts that hold neither, such as
+runs per Maester version or per country, are kept so the maintainers can see trends over years.
 
 While the new service is being proven, `Invoke-Maester` also sends the single event it has always sent to PostHog
 when a run starts, which holds the tenant ID. That event will be removed.
 
 To turn telemetry off, use `Invoke-Maester -DisableTelemetry`, or set the environment variable
-`MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command.
+`MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command. Network admins can also block `api.maester.dev`:
+it is used only for telemetry, so blocking it doesn't affect anything else in Maester. Maester waits at most two
+seconds for it before a command returns.
