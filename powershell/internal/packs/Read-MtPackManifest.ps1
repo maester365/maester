@@ -112,9 +112,11 @@ function Read-MtPackManifest {
     foreach ($name in 'Name', 'Version') {
         if (-not (& $text $name)) { & $fail "$name is required." }
     }
-    # Guid is optional; the pack index identifies a pack by it.
+    # The Guid identifies the pack for good: codes can be reused by private packs, the Guid cannot.
     $guidValue = $manifest.PSObject.Properties['Guid']
-    if ($guidValue -and $null -ne $guidValue.Value -and -not ($guidValue.Value -is [string] -and $guidValue.Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')) {
+    if (-not $guidValue -or [string]::IsNullOrWhiteSpace([string]$guidValue.Value)) {
+        & $fail "Guid is required. Generate one with [guid]::NewGuid() and keep it for every version of the pack."
+    } elseif (-not ($guidValue.Value -is [string] -and $guidValue.Value -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')) {
         & $fail "Guid must be a GUID such as 'd1e2db80-6c27-4cb6-9389-2edf0a898d23'; it is '$($guidValue.Value)'."
     }
     $version = & $text 'Version'
@@ -129,8 +131,6 @@ function Read-MtPackManifest {
     } else {
         $code = $code.ToUpperInvariant()
         $manifest.Code = $code
-        $reserved = Test-MtPackReservedName -Code $code -Official:$Official
-        if ($reserved) { & $fail $reserved 'ReservedCode' }
     }
 
     # Folders: relative paths inside the pack.
@@ -253,57 +253,34 @@ function Test-MtPackRelativePath {
 function Test-MtPackReservedName {
     <#
     .SYNOPSIS
-    Returns why a pack code or a connector service name is reserved (Maester Packs design, section 4.6), or $null.
+    Returns why a connector service name is reserved (Maester Packs design, section 4.6), or $null.
 
     .DESCRIPTION
-    Codes: the first part of a code may not be a built-in suite name, a name that looks official, a product
-    acronym or a well-known brand. It is reserved when it equals an entry, or an entry followed by one digit.
-    The index keeps the full list (Simple Icons and the S&P 500 tickers); this snapshot only keeps publishers
-    away from the obvious ones before it exists.
+    A community connector's service is '<Code>.<Name>', 3 to 40 letters and digits after the code. Bare
+    platform names are for official connectors, and Maester's own names are never available.
 
-    Service names: a community connector's service is '<Code>.<Name>', 3 to 40 letters and digits after the
-    code. Bare platform names are for official connectors, and Maester's own names are never available.
+    Pack codes are not reserved: any code in the right format is accepted. Two installed packs may not share
+    or overlap a code (Test-MtPackCodeOverlap), and packs.maester.cloud lists the codes in use.
     #>
     [CmdletBinding()]
     [OutputType([string])]
     param(
+        [Parameter(Mandatory)] [string] $Service,
         [Parameter()] [AllowEmptyString()] [AllowNull()] [string] $Code,
-        [Parameter()] [string] $Service,
         [Parameter()] [switch] $Official
     )
 
-    $builtInSuites = @('MT', 'CIS', 'CISA', 'AD', 'AZDO', 'ORCA', 'EIDSCA', 'XSPM', 'MP')
-    $officialNames = @('MS', 'MSFT', 'MAESTER', 'MAES', 'M365', 'O365', 'AAD', 'GWS', 'ENTRA', 'AZURE', 'INTUNE', 'TEAMS', 'OFFICE', 'WIN', 'WINDOWS')
-    $brands = @('GOOG', 'GOOGL', 'GCP', 'AMZN', 'AWS', 'META', 'FB', 'APPLE', 'AAPL', 'OKTA', 'ZOOM', 'SLACK', 'CISCO', 'CSCO', 'BOX', 'CRM',
-        'SFDC', 'PANW', 'CRWD', 'ZS', 'FTNT', 'NET', 'DDOG', 'SNOW', 'ADBE', 'ORCL', 'IBM', 'VMW', 'ATLASSIAN', 'TEAM', 'GH', 'GITHUB',
-        'GITLAB', 'DOCU', 'DBX', 'WDAY', 'NOW', 'TWLO', 'AKAM', 'CHKP', 'JAMF', 'SAP')
-
-    if ($Service) {
-        if ($Service -notmatch '^(?:[A-Za-z][A-Za-z0-9]{1,9}\.){0,3}[A-Za-z][A-Za-z0-9]{2,39}$') {
-            return "The service name '$Service' must be '<code>.<Name>', with 3 to 40 letters and digits after the code, for example 'CNT.GoogleWorkspace'."
-        }
-        $registry = Get-MtServiceRegistry -BuiltInOnly
-        $ownNames = @('All', 'None', 'EOP', 'Pack', 'Packs', 'Telemetry', 'Maester') + @($registry.Services.Keys) + @($registry.Services.Values | ForEach-Object { $_.Aliases } | Where-Object { $_ })
-        $name = $Service.Split('.')[-1]
-        if ($ownNames | Where-Object { $_ -eq $Service -or $_ -eq $name }) { return "The service name '$Service' is reserved by Maester." }
-        if (-not $Service.Contains('.')) {
-            if (-not $Official) { return "The service name '$Service' is a bare platform name, which is reserved for official connectors. Use '<code>.$Service' with your pack's code." }
-        } elseif ($Code -and $Service.Substring(0, $Service.LastIndexOf('.')) -ne $Code) {
-            return "The service name '$Service' must start with the pack's code: '$Code.$name'."
-        }
-        return $null
+    if ($Service -notmatch '^(?:[A-Za-z][A-Za-z0-9]{1,9}\.){0,3}[A-Za-z][A-Za-z0-9]{2,39}$') {
+        return "The service name '$Service' must be '<code>.<Name>', with 3 to 40 letters and digits after the code, for example 'CNT.GoogleWorkspace'."
     }
-
-    if (-not $Code) { return $null }
-    $value = $Code.Split('.')[0].ToUpperInvariant()
-    $stem = if ($value -match '^(.*[A-Z])\d$') { $Matches[1] } else { $value }
-    if ($Official -and $value -eq 'MAES') { return $null }
-    foreach ($entry in ($builtInSuites + $officialNames + $brands)) {
-        if ($value -eq $entry -or $stem -eq $entry) {
-            $why = if ($entry -in $builtInSuites) { 'a built-in suite' } elseif ($entry -eq 'MAES') { 'the maester365 organisation' } elseif ($entry -in $officialNames) { 'names that look official' } else { 'a well-known brand' }
-            $what = if ($Code.Contains('.')) { "The code '$($Code.ToUpperInvariant())' starts with '$value', which" } else { "The code '$value'" }
-            return "$what is reserved for $why. Pick another code for your pack."
-        }
+    $registry = Get-MtServiceRegistry -BuiltInOnly
+    $ownNames = @('All', 'None', 'EOP', 'Pack', 'Packs', 'Telemetry', 'Maester') + @($registry.Services.Keys) + @($registry.Services.Values | ForEach-Object { $_.Aliases } | Where-Object { $_ })
+    $name = $Service.Split('.')[-1]
+    if ($ownNames | Where-Object { $_ -eq $Service -or $_ -eq $name }) { return "The service name '$Service' is reserved by Maester." }
+    if (-not $Service.Contains('.')) {
+        if (-not $Official) { return "The service name '$Service' is a bare platform name, which is reserved for official connectors. Use '<code>.$Service' with your pack's code." }
+    } elseif ($Code -and $Service.Substring(0, $Service.LastIndexOf('.')) -ne $Code) {
+        return "The service name '$Service' must start with the pack's code: '$Code.$name'."
     }
     $null
 }

@@ -4,7 +4,7 @@
   "title": "Maester Pack manifest (maester-pack.json)",
   "description": "Describes a Maester Pack: its identity, its tests, helpers and connectors, and what it reaches. See https://maester.dev/docs/packs/writing-a-pack. Maester checks the manifest itself when a pack is installed and loaded; this schema helps editors.",
   "type": "object",
-  "required": ["Id", "Name", "Version", "Publisher", "Code"],
+  "required": ["Id", "Guid", "Name", "Version", "Publisher", "Code"],
   "properties": {
     "$schema": { "type": "string" },
     "Id": {
