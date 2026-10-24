@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
