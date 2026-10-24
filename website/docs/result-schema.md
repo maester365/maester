@@ -161,6 +161,7 @@ Added in 2.1:
 | `InstanceId` | string | For an instance row, its full ID (the same as `Id`). |
 | `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind }`, where `Source` is `Default`, `Config` or `Parameter`. Empty for Pester rows. |
 | `Diagnostics` | array of strings | Warnings (`WARNING: ...`) and non-terminating errors (`ERROR: ...`) the test wrote. |
+| `Package` | object | For a test from a [Maester Pack](./packs/index.md): `Id`, `Name`, `Version`, `Commit`, `Publisher`, `BuiltIn` and `Runtime` of the pack. `null` for every other test. A pack's rows always have `Source` `Custom`. |
 
 The fields from `Product` to `Permission` are the test's attributes; see
 [the `[MaesterTest]` attribute](./writing-tests/index.mdx#the-maestertest-attribute). A native row always has

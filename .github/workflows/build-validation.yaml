@@ -42,6 +42,22 @@ jobs:
               - 'src/**'
               - 'tests/**'
               - '.github/workflows/build-validation.yaml'
+            # What build/golden/Export-MtGoldenFixture.ps1 reads: the built-in tests, the module that
+            # selects them and resolves the config, and the golden scripts and fixtures themselves.
+            golden:
+              - 'tests/**'
+              - 'src/**'
+              - 'build/golden/**'
+              - 'powershell/Maester.psd1'
+              - 'powershell/Maester.psm1'
+              - 'powershell/assets/**'
+              - 'powershell/internal/**'
+              - 'powershell/lib/**'
+              - 'powershell/public/**'
+              - 'powershell/tests/fixtures/golden/**'
+              - 'powershell/tests/functions/golden/**'
+              - 'powershell/tests/pester.ps1'
+              - '.github/workflows/build-validation.yaml'
 
       - name: Install PowerShell dependencies
         if: steps.filter.outputs.pwshmodule == 'true'
@@ -89,6 +105,12 @@ jobs:
           # separate dedicated coverage job. Other matrix legs still run the
           # original per-file Pester loop unchanged.
           PESTER_COVERAGE: "${{ runner.os == 'Linux' && 'true' || 'false' }}"
+          # The tests that only read files (lint, formatting, ScriptAnalyzer, help, generator drift, golden
+          # fixtures) give the same result on every OS, so only the Linux leg runs them.
+          PESTER_SKIP_OS_INDEPENDENT: "${{ runner.os != 'Linux' && 'true' || 'false' }}"
+          # The golden fixtures take about two minutes; a pull request that changes none of their inputs skips
+          # them. Every other run (publish, manual) runs them.
+          PESTER_SKIP_GOLDEN: "${{ github.event_name == 'pull_request' && steps.filter.outputs.golden != 'true' && 'true' || 'false' }}"
         run: |
           ./powershell/tests/pester.ps1
 

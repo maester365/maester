@@ -163,7 +163,7 @@ function Read-MtNativeTest {
         if ($definition.Type -eq 'bool') { continue }
 
         foreach ($v in @($test[$name])) {
-            if ($definition.Pattern -and $v -notmatch $definition.Pattern) {
+            if ($definition.Pattern -and $v -notmatch $definition.Pattern -and -not ($name -eq 'Id' -and (Test-MtBuiltInPackCode -Code $v -Path $file))) {
                 $hint = if ($name -eq 'Permission') { " Write <Service>:<Kind>:<Name>, for example 'Graph:Scope:Policy.Read.All', one permission per element; join alternatives with |." } else { '' }
                 & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid.$hint" $line
             }
@@ -499,15 +499,29 @@ function Get-MtTestSchema {
 function Get-MtServiceRegistry {
     <#
     .SYNOPSIS
-    Returns the service registry (assets/MaesterServiceRegistry.psd1). Cached for the session.
+    Returns the service registry (assets/MaesterServiceRegistry.psd1), layered with the services of pack connectors. Cached for the session.
+
+    .DESCRIPTION
+    The registry is layered (Maester Packs design, section 6.3): the built-in entries, then one entry per
+    connector of a pack that passed the loader gate (Register-MtPackService), with Probe set to the
+    connector's service name and Pack to the pack's ID. -BuiltInOnly returns the built-in entries alone.
     #>
     [CmdletBinding()]
     [OutputType([hashtable])]
-    param()
+    param(
+        [Parameter()] [switch] $BuiltInOnly
+    )
     if (-not $script:__MtServiceRegistry) {
         $script:__MtServiceRegistry = Import-PowerShellDataFile -Path (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterServiceRegistry.psd1')
     }
-    $script:__MtServiceRegistry
+    if ($BuiltInOnly -or -not $script:__MtPackServices -or $script:__MtPackServices.Count -eq 0) { return $script:__MtServiceRegistry }
+    if (-not $script:__MtLayeredServiceRegistry) {
+        $services = @{}
+        foreach ($k in $script:__MtServiceRegistry.Services.Keys) { $services[$k] = $script:__MtServiceRegistry.Services[$k] }
+        foreach ($k in $script:__MtPackServices.Keys) { if (-not $services.ContainsKey($k)) { $services[$k] = $script:__MtPackServices[$k] } }
+        $script:__MtLayeredServiceRegistry = @{ SchemaVersion = $script:__MtServiceRegistry.SchemaVersion; Services = $services }
+    }
+    $script:__MtLayeredServiceRegistry
 }
 
 function Get-MtParameterKindRegistry {
