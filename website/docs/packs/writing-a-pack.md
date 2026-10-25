@@ -6,6 +6,14 @@ description: Create, check and publish a Maester Pack, with its manifest, tests,
 
 # Writing a pack
 
+:::tip Guided setup
+To make a pack without writing the files by hand, use the guided setup at
+[packs.maester.cloud/publish](https://packs.maester.cloud/publish). It copies the
+[demo pack](https://github.com/maester365/maester-pack-demo) into a repository of yours, or starts from an empty one,
+and fills in the manifest, the pack's Guide, its tests and its banner from a form. Then it releases the pack and
+publishes it. It writes the same files this page describes, so you can change any of them later by hand.
+:::
+
 A pack is a folder with a `maester-pack.json`. Create one with `New-MtPack`:
 
 ```powershell
@@ -31,9 +39,10 @@ maester-google-workspace/
     Connect-CntGoogleWorkspace.ps1
 ```
 
-To publish, push the folder to a GitHub repository owned by the publisher and create a release. A release made
+To share the pack, push the folder to a GitHub repository owned by the publisher and create a release. A release made
 [immutable](https://docs.github.com/repositories/releasing-projects-on-github/about-releases) starts its
-cooldown when it is published; any other release starts it when each user first sees it.
+cooldown when it is published; any other release starts it when each user first sees it. To have it listed where
+people look for packs, see [Publishing your pack](#publishing-your-pack).
 
 ## The manifest
 
@@ -253,3 +262,28 @@ function Test-CntGoogleWorkspace {
   shortly before it expires.
 - The service name is `<Code>.<Name>`. Tests declare it like any service: `Service = 'CNT.GoogleWorkspace'`.
   `"OptIn": true` makes its tests not run, rather than skipped, while it is not connected.
+
+## Publishing your pack
+
+Once the pack has a release, anyone can install it from its repository with `Install-MtPack <owner>/<repo>`. To
+help people find it, list it on a pack index: a site that collects packs, checks them and shows each one's page.
+An index only lists a pack. People still install it straight from your repository, and Maester runs the same checks
+at install whichever site they found it on.
+
+### Maester Packs
+
+[packs.maester.cloud](https://packs.maester.cloud/) is the index the Maester team runs. To list a pack there:
+
+1. Go to [packs.maester.cloud/publish](https://packs.maester.cloud/publish) and choose
+   **Yes, I have a pack repository**.
+2. Sign in with GitHub as an admin of the repository. The repository must be public; private and internal
+   repositories are never listed.
+3. Pick the repository, and the folder if the pack is not at its root, then press **Check**. It reads the latest
+   release and its `maester-pack.json`, and says what to fix.
+4. Press **Publish**. The site registers the pack's `Guid` and `Code` to the repository's owner, so nobody else can
+   publish a pack with them, and queues the pack.
+
+Within about ten minutes the index runs `Test-MtPack`'s checks and its security scan on the release and lists the
+pack, with its page at `/p/<code>`. If the pack is not listed, its status page at `/status/<owner>/<repo>` says why
+and what to fix. Every later release is picked up on its own, so you publish only once. **My Packs** on the site
+shows your packs and how many tenants run them, and lets you hide one from the site for a while.
