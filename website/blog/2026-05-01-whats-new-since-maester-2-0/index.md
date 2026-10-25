@@ -4,6 +4,9 @@ description: Azure DevOps tests, Copilot Studio agent checks, Defender for Endpo
 slug: whats-new-since-maester-2-0
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365, azuredevops, defender]
+image: ./img/card.png
+card_headline: "What's new in *Maester 2.1*"
+card_label: Release
 hide_table_of_contents: false
 date: 2026-05-01
 ---

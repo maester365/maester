@@ -1,0 +1,164 @@
+<!doctype html>
+<!-- Blog card template (1200x630), rendered to img/card.png for each post by generate-blog-cards.mjs.
+     It follows the maester.dev homepage: near-black canvas, blue and violet glow, Inter Tight headline with the
+     blue-to-violet gradient on the highlighted words. After a change, run: npm run blog-cards -- --all -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@500&display=block" rel="stylesheet" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 64px 72px;
+        background: #050608;
+        color: #fff;
+        font-family: Inter, sans-serif;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(55% 70% at 88% 10%, rgb(58 130 255 / 38%), transparent 70%),
+          radial-gradient(45% 60% at 70% 95%, rgb(170 110 255 / 30%), transparent 72%);
+      }
+
+      /* Faint grid under the top-right glow. */
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(70% 80% at 85% 30%, #000, transparent 75%);
+      }
+
+      .card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .mark {
+        width: 72px;
+        height: 72px;
+        border-radius: 16px;
+        background: #10131a;
+        border: 1px solid rgb(255 255 255 / 10%);
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0 40px rgb(58 130 255 / 35%);
+      }
+
+      .mark img {
+        width: 44px;
+      }
+
+      .brand {
+        font: 600 30px "Inter Tight";
+        letter-spacing: -0.01em;
+      }
+
+      .brand span {
+        color: #8a8d96;
+        font-weight: 500;
+      }
+
+      .label {
+        margin-left: auto;
+        font: 500 24px Inter;
+        color: #b6b9c2;
+        padding: 8px 18px;
+        border: 1px solid rgb(255 255 255 / 16%);
+        border-radius: 999px;
+        background: rgb(16 19 26 / 80%);
+      }
+
+      /* The script picks the font size so the headline fills up to three lines. */
+      .title {
+        margin-top: auto;
+        width: 960px;
+        font: 600 78px/1.04 "Inter Tight";
+        letter-spacing: -0.03em;
+        overflow-wrap: break-word;
+      }
+
+      .title em {
+        font-style: normal;
+        background: linear-gradient(135deg, #56c2ff, #7a5cff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .foot {
+        margin-top: 36px;
+        display: flex;
+        justify-content: space-between;
+        font: 500 26px Inter;
+        color: #8a8d96;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="top">
+        <div class="mark"><img id="logo" alt="" /></div>
+        <div class="brand">Maester <span>Blog</span></div>
+        <div class="label" id="label"></div>
+      </div>
+      <h1 class="title" id="headline"></h1>
+      <div class="foot"><span>maester.dev</span><span id="date"></span></div>
+    </div>
+    <script>
+      // window.CARD is set by generate-blog-cards.mjs: { headline, label, date, logo }.
+      const card = window.CARD;
+      const escape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      document.getElementById("logo").src = card.logo;
+      document.getElementById("label").textContent = card.label;
+      document.getElementById("date").textContent = card.date;
+      const headline = document.getElementById("headline");
+      headline.innerHTML = escape(card.headline).replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+      // Start large and shrink until the headline fits in three lines and the space above the footer.
+      document.fonts.ready.then(() => {
+        let size = 120;
+        const fits = () => {
+          const height = headline.getBoundingClientRect().height;
+          return headline.scrollWidth <= headline.clientWidth && height <= size * 1.04 * 3 + 1 && height <= 330;
+        };
+        do {
+          headline.style.fontSize = `${size}px`;
+        } while (!fits() && (size -= 2) > 40);
+        document.body.dataset.ready = "true";
+      });
+    </script>
+  </body>
+</html>

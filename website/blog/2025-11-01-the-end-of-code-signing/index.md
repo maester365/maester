@@ -4,6 +4,9 @@ description: An announcement that the Maester module code will no longer be sign
 slug: the-end-of-code-signing
 authors: [fabian]
 tags: [code-signing]
+image: ./img/card.png
+card_headline: "The end of *code signing*"
+card_label: News
 hide_table_of_contents: false
 date: 2025-11-01
 ---

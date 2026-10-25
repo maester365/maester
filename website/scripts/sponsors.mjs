@@ -81,8 +81,10 @@ async function sponsorProfiles(logins) {
   return result;
 }
 
-// The public sponsors of a maintainer, current and past. Private sponsorships are never returned for another
-// account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty.
+// The public sponsors of a maintainer: everyone with a monthly sponsorship that is still running, and anyone
+// whose one-time sponsorship was made in the last RECENT_DAYS days. Private sponsorships are never returned for
+// another account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty.
+const RECENT_DAYS = 90;
 async function backersOf(login) {
   const query = `query ($login: String!, $after: String) {
     user(login: $login) {
@@ -90,6 +92,8 @@ async function backersOf(login) {
         pageInfo { hasNextPage endCursor }
         nodes {
           isActive
+          isOneTimePayment
+          createdAt
           sponsorEntity {
             __typename
             ... on User { login name avatarUrl(size: 120) }
@@ -112,7 +116,13 @@ async function backersOf(login) {
       if (errors?.length) throw new Error(errors.map((e) => e.message).join("; "));
       const page = data?.user?.sponsorshipsAsMaintainer;
       if (!page) break;
-      for (const node of page.nodes) if (node?.sponsorEntity) backers.push({ ...node.sponsorEntity, isActive: node.isActive });
+      const since = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
+      for (const node of page.nodes) {
+        if (!node?.sponsorEntity) continue;
+        // A monthly sponsorship that ended has no end date to go by, so it is left out with old one-time ones.
+        const current = node.isOneTimePayment ? Date.parse(node.createdAt) >= since : node.isActive;
+        if (current) backers.push({ ...node.sponsorEntity, monthly: !node.isOneTimePayment });
+      }
       if (!page.pageInfo.hasNextPage) break;
       after = page.pageInfo.endCursor;
     }
@@ -174,8 +184,8 @@ const snapshot = {
   contributors: groups.contributors.map(entry).filter(Boolean).sort((a, b) => b.commits - a.commits || byName(a, b)),
 };
 
-// The people and organisations who sponsor (or sponsored) a core maintainer: thanked on the page. One entry
-// each, with the maintainers they sponsor; current sponsors first, then those who sponsor more maintainers.
+// The people and organisations who sponsor a core maintainer: thanked on the page. One entry each, with the
+// maintainers they sponsor; monthly sponsors first, then those who sponsor more maintainers.
 const backers = new Map();
 for (const maintainer of snapshot.maintainers) {
   for (const backer of await backersOf(maintainer.github)) {
@@ -185,21 +195,21 @@ for (const maintainer of snapshot.maintainers) {
       name: backer.name || backer.login,
       avatar: backer.avatarUrl,
       organization: backer.__typename === "Organization",
-      active: false,
+      monthly: false,
       sponsors: [],
     };
-    known.active ||= backer.isActive;
+    known.monthly ||= backer.monthly;
     if (!known.sponsors.includes(maintainer.github)) known.sponsors.push(maintainer.github);
     backers.set(key, known);
   }
 }
 snapshot.backers = [...backers.values()].sort(
-  (a, b) => Number(b.active) - Number(a.active) || b.sponsors.length - a.sponsors.length || byName(a, b)
+  (a, b) => Number(b.monthly) - Number(a.monthly) || b.sponsors.length - a.sponsors.length || byName(a, b)
 );
 
 writeFileSync(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
 console.log(
   `sponsors: ${snapshot.maintainers.length} maintainers, ${snapshot.testAuthors.length} test authors, ` +
     `${snapshot.contributors.length} other contributors with a Sponsors listing (of ${seen.size} people); ` +
-    `${snapshot.backers.length} public sponsors of the maintainers.`
+    `${snapshot.backers.length} current public sponsors of the maintainers.`
 );
