@@ -19,7 +19,10 @@
         [string] $Filter = '(|(objectClass=organizationalUnit)(objectClass=container)(objectClass=groupPolicyContainer)(objectClass=domainDNS)(objectClass=computer)(objectClass=user)(objectClass=group))',
 
         [ValidateScript({ $_ -ge [timespan]::Zero })]
-        [timespan] $ProgressInterval = [timespan]::FromSeconds(1)
+        [timespan] $ProgressInterval = [timespan]::FromSeconds(1),
+
+        [ValidateRange(1, 10000)]
+        [int] $PageSize = 1000
     )
 
     $attributes = @('distinguishedName', 'objectClass', 'name', 'objectSid', 'ntSecurityDescriptor')
@@ -81,20 +84,22 @@
                 $state.Aces++
                 $pageAces++
             }
-        }
-        $now = [DateTime]::UtcNow
-        $shouldEmit = ($state.LastEmit -eq [DateTime]::MinValue) -or
-                      ($now - $state.LastEmit -ge $state.Interval)
-        if ($shouldEmit) {
-            $state.LastEmit = $now
-            & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
+
+            # Check interval after every object so progress updates during long pages
+            $now = [DateTime]::UtcNow
+            $shouldEmit = ($state.LastEmit -eq [DateTime]::MinValue) -or
+                          ($now - $state.LastEmit -ge $state.Interval)
+            if ($shouldEmit) {
+                $state.LastEmit = $now
+                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
+            }
         }
     }
 
     try {
         $pageState.LastEmit = [DateTime]::UtcNow
         & $emit 0 0 0 $true 0 $SearchBase $false
-        $null = Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter $Filter -Attributes $attributes -SecurityDescriptorFlags $securityDescriptorFlags -ProcessPage $processPage -PageState $pageState
+        $null = Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter $Filter -Attributes $attributes -SecurityDescriptorFlags $securityDescriptorFlags -PageSize $PageSize -ProcessPage $processPage -PageState $pageState
         & $emit $pageState.Objects $pageState.Aces 0 $false 0 $SearchBase $true
     }
     finally {
