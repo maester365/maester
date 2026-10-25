@@ -9,7 +9,10 @@
     settings evaluated by the macOS compliance checks.
 
     Assignment state is included because a compliance policy that is not assigned to any
-    group is never evaluated against a device, so it cannot satisfy a security control.
+    group is never evaluated against a device, so it cannot satisfy a security control. Only
+    inclusion assignments are counted: Graph documents assignments as the list of inclusion and
+    exclusion groups, so counting the collection raw reports a policy that is assigned solely as
+    an exclusion as assigned, when it is evaluated against no device.
 
     Returns $null when the compliance policies could not be read at all, so that callers can
     report a skip rather than a failure. The populated result is emitted with -NoEnumerate
@@ -51,7 +54,15 @@
 
     $result = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($policy in $macOsPolicies) {
-        $assignmentCount = @($policy.assignments).Count
+        # Inclusion targets only. The collection also carries exclusion targets, and an
+        # exclusion is the opposite of coverage. Today exclusionGroupAssignmentTarget is the only
+        # exclusion type; the pattern also catches any future microsoft.graph.exclusion* target
+        # rather than silently counting it. An assignment with no target type cannot be shown to
+        # include anyone, so it is not counted either.
+        $assignmentCount = @($policy.assignments | Where-Object {
+                $targetType = [string] $_.target.'@odata.type'
+                $targetType -and $targetType -notmatch '(^|\.)exclusion'
+            }).Count
         $result.Add([pscustomobject]@{
                 Id                       = $policy.id
                 Name                     = $policy.displayName

@@ -81,6 +81,10 @@
     "Banner": {
       "description": "A .png, .jpg or .webp image in the pack, 1200 x 630, at most 1 MB.",
       "allOf": [{ "$ref": "#/$defs/relativePath" }, { "pattern": "\\.(png|jpe?g|webp)$" }]
+    },
+    "Guide": {
+      "description": "A JSON file in the pack that says how to install, connect and run it, for its page on packs.maester.cloud. See https://maester.dev/schemas/maester-pack-guide-1.0.json.",
+      "allOf": [{ "$ref": "#/$defs/relativePath" }, { "pattern": "\\.json$" }]
     }
   },
   "$defs": {

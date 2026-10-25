@@ -6,6 +6,14 @@ description: Create, check and publish a Maester Pack, with its manifest, tests,
 
 # Writing a pack
 
+:::tip Guided setup
+To make a pack without writing the files by hand, use the guided setup at
+[packs.maester.cloud/publish](https://packs.maester.cloud/publish). It copies the
+[demo pack](https://github.com/maester365/maester-pack-demo) into a repository of yours, or starts from an empty one,
+and fills in the manifest, the pack's Guide, its tests and its banner from a form. Then it releases the pack and
+publishes it. It writes the same files this page describes, so you can change any of them later by hand.
+:::
+
 A pack is a folder with a `maester-pack.json`. Create one with `New-MtPack`:
 
 ```powershell
@@ -31,9 +39,10 @@ maester-google-workspace/
     Connect-CntGoogleWorkspace.ps1
 ```
 
-To publish, push the folder to a GitHub repository owned by the publisher and create a release. A release made
+To share the pack, push the folder to a GitHub repository owned by the publisher and create a release. A release made
 [immutable](https://docs.github.com/repositories/releasing-projects-on-github/about-releases) starts its
-cooldown when it is published; any other release starts it when each user first sees it.
+cooldown when it is published; any other release starts it when each user first sees it. To have it listed where
+people look for packs, see [Publishing your pack](#publishing-your-pack).
 
 ## The manifest
 
@@ -87,6 +96,7 @@ cooldown when it is published; any other release starts it when each user first 
 | `Exports` | Functions of this pack that packs requiring it may call. |
 | `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
 | `Banner` | An image in the pack that the pack index shows when it features the pack. See [Banner image](#banner-image). |
+| `Guide` | A JSON file in the pack that says how to install, connect and run it, for its page on the pack index. See [The pack page](#the-pack-page). |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
 
 ## Banner image
@@ -123,6 +133,42 @@ no photos of screens, no badges or seals.
 ```
 
 For an image without text, replace the `Text:` line with `No text at all; leave the left half plain for a title.`
+
+## The pack page
+
+Every pack's page on [packs.maester.cloud](https://packs.maester.cloud) has the same sections: Install, Connect,
+Run, App-only, Tests, Security and Support. The index fills what it can from the manifest:
+
+- the modules in `Uses.Modules`, with the line that installs each one;
+- the Graph permissions in `Uses.GraphScopes`, which an app needs to run the pack app-only;
+- the tests, with their products, from `Suites` (and `Catalog` for a family test that expands when it runs).
+
+The rest comes from the Guide, a JSON file in the pack named by the manifest's `Guide` key, such as
+`"Guide": "maester-pack.guide.json"`. Its schema is
+[maester-pack-guide-1.0.json](https://maester.dev/schemas/maester-pack-guide-1.0.json); add it as `$schema` so
+editors check the file as you type. Commands in it are shown as text and never run. A short example:
+
+```json
+{
+  "$schema": "https://maester.dev/schemas/maester-pack-guide-1.0.json",
+  "Summary": "Checks the security settings of Google Workspace.",
+  "Prerequisites": [{ "Text": "A Google Workspace super admin account." }],
+  "Connect": { "Steps": [{ "Text": "Connect Maester, then sign in to Google when asked", "Command": "Connect-Maester" }] },
+  "Run": {
+    "Commands": [{ "Text": "Only this pack", "Command": "Invoke-Maester -Pack CNT -SkipBuiltIn" }],
+    "Options": [{ "Name": "GoogleWorkspace.Customer", "Default": "my_customer", "Text": "The customer ID to read." }]
+  },
+  "AppOnly": { "Supported": true, "Methods": { "Certificate": true, "ClientSecret": true }, "Text": "Use a service account key." },
+  "Screenshots": [{ "Path": "assets/report.png", "Caption": "The pack's results in the Maester report" }],
+  "Support": { "Pack": "https://github.com/contoso/maester-google-workspace/issues" }
+}
+```
+
+Maester checks that the Guide is a JSON object and that its screenshots (at most six) are `.png`, `.jpg` or `.webp`
+paths inside the pack. Like the banner, a screenshot that really is an image of at most 1 MB is not counted as
+binary content. Any section can end with `"More": "<https link>"` to your own documentation. The
+[Zero Trust Assessment pack's guide](https://github.com/maester365/maester/blob/main/packs/zero-trust-assessment/maester-pack.guide.json)
+is a full example.
 
 ## Tests and helpers
 
@@ -216,3 +262,28 @@ function Test-CntGoogleWorkspace {
   shortly before it expires.
 - The service name is `<Code>.<Name>`. Tests declare it like any service: `Service = 'CNT.GoogleWorkspace'`.
   `"OptIn": true` makes its tests not run, rather than skipped, while it is not connected.
+
+## Publishing your pack
+
+Once the pack has a release, anyone can install it from its repository with `Install-MtPack <owner>/<repo>`. To
+help people find it, list it on a pack index: a site that collects packs, checks them and shows each one's page.
+An index only lists a pack. People still install it straight from your repository, and Maester runs the same checks
+at install whichever site they found it on.
+
+### Maester Packs
+
+[packs.maester.cloud](https://packs.maester.cloud/) is the index the Maester team runs. To list a pack there:
+
+1. Go to [packs.maester.cloud/publish](https://packs.maester.cloud/publish) and choose
+   **Yes, I have a pack repository**.
+2. Sign in with GitHub as an admin of the repository. The repository must be public; private and internal
+   repositories are never listed.
+3. Pick the repository, and the folder if the pack is not at its root, then press **Check**. It reads the latest
+   release and its `maester-pack.json`, and says what to fix.
+4. Press **Publish**. The site registers the pack's `Guid` and `Code` to the repository's owner, so nobody else can
+   publish a pack with them, and queues the pack.
+
+Within about ten minutes the index runs `Test-MtPack`'s checks and its security scan on the release and lists the
+pack, with its page at `/p/<code>`. If the pack is not listed, its status page at `/status/<owner>/<repo>` says why
+and what to fix. Every later release is picked up on its own, so you publish only once. **My Packs** on the site
+shows your packs and how many tenants run them, and lets you hide one from the site for a while.
