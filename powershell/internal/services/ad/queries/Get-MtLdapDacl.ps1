@@ -45,7 +45,7 @@
         else {
             if ($hasMore -and $estimate -gt $objects) {
                 $pct = [int][Math]::Floor([Math]::Min(99.0, 100.0 * [double]$objects / [double]$estimate))
-                $statusParts.Add("~$pct% (approximate); ")
+                $statusParts.Add("~$pct% (approximate)")
             }
             $statusParts.Add("$objects objects processed; $aces ACEs collected")
             if ($pageNumber -gt 0) { $statusParts.Add("page $pageNumber complete") }
