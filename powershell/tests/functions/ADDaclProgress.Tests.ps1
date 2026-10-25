@@ -141,7 +141,7 @@ Describe 'Get-MtLdapDacl progress' {
             $initial = $output | Where-Object { $_.Status -like '*0 objects processed*' } | Select-Object -First 1
             $page1 = $output | Where-Object { $_.Status -like '*~20%*' } | Select-Object -First 1
             $terminal = $output | Where-Object { $_.Stage -like '*Collected AD DACLs*' } | Select-Object -First 1
-            $clear = $output | Where-Object { $_.Clear } | Select-Object -First 1
+            $clear = $output | Where-Object { $_.ContainsKey('Clear') -and $_['Clear'] } | Select-Object -First 1
 
             $initial | Should -Not -BeNullOrEmpty
             $page1 | Should -Not -BeNullOrEmpty
