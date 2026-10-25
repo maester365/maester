@@ -94,7 +94,18 @@
             # a Graph round trip of tens of milliseconds.
             [string] $EnvironmentName = $MgContext.Environment
             Write-Verbose -Message ("Resolving the Graph endpoint for environment '{0}'." -f $EnvironmentName)
-            $GraphBaseUri = [uri] $((Get-MgEnvironment -Name $EnvironmentName).GraphEndpoint)
+            # Get-MgEnvironment answers an unknown name with $null and writes no error
+            # (measured against Microsoft.Graph.Authentication 2.41.2), so an environment the
+            # SDK does not know leaves $GraphBaseUri null and surfaces four lines later as
+            # "You cannot call a method on a null-valued expression" -- a message that names
+            # neither the environment nor the cause. Refuse here, where the name is still in
+            # hand. An environment registered with Add-MgEnvironment but given no
+            # GraphEndpoint fails the same way and is caught by the same check.
+            $ResolvedEndpoint = (Get-MgEnvironment -Name $EnvironmentName -ErrorAction SilentlyContinue).GraphEndpoint
+            if ([string]::IsNullOrEmpty($ResolvedEndpoint)) {
+                throw "The Microsoft Graph environment '$EnvironmentName' has no known Graph endpoint. Check the environment name with 'Get-MgEnvironment', or pass -GraphBaseUri to target an endpoint explicitly."
+            }
+            $GraphBaseUri = [uri] $ResolvedEndpoint
         }
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri

@@ -88,6 +88,32 @@ Describe 'Invoke-MtGraphRequest' {
             }
         }
 
+        It 'Fails with a clear message when the environment is unknown to the SDK' {
+            # Get-MgEnvironment answers an unknown name with $null and writes no error
+            # (measured against Microsoft.Graph.Authentication 2.41.2). Without the check this
+            # surfaced as "You cannot call a method on a null-valued expression" from the base
+            # uri normalisation, which names neither the environment nor the cause.
+            Mock Get-MgEnvironment -ModuleName Maester { $null }
+            $script:MtTestEnvironment = 'NoSuchEnvironment'
+            InModuleScope Maester {
+                { Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging } |
+                    Should -Throw "*environment 'NoSuchEnvironment' has no known Graph endpoint*"
+            }
+            Should -Not -Invoke Invoke-MgGraphRequest -ModuleName Maester
+        }
+
+        It 'Fails the same way when the environment is known but carries no endpoint' {
+            # Add-MgEnvironment can register a name whose GraphEndpoint is empty. The object is
+            # not null, so a null check on the object alone would let this through.
+            Mock Get-MgEnvironment -ModuleName Maester { @{ GraphEndpoint = '' } }
+            $script:MtTestEnvironment = 'EndpointlessEnvironment'
+            InModuleScope Maester {
+                { Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging } |
+                    Should -Throw '*has no known Graph endpoint*'
+            }
+            Should -Not -Invoke Invoke-MgGraphRequest -ModuleName Maester
+        }
+
         It 'Still works without a Graph context when -GraphBaseUri is supplied' {
             Mock Get-MgContext -ModuleName Maester { $null }
             InModuleScope Maester {
