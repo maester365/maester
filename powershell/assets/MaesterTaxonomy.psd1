@@ -132,6 +132,17 @@
             )
         }
         @{
+            Key      = 'fabric'
+            Name     = 'Microsoft Fabric'
+            Aliases  = @('Fabric', 'Microsoft Fabric', 'Power BI')
+            Features = @(
+                @{ Key = 'export-and-sharing'; Name = 'Export and sharing settings' }
+                @{ Key = 'developer-settings'; Name = 'Developer settings' }
+                @{ Key = 'information-protection'; Name = 'Information protection' }
+                @{ Key = 'tenant-settings'; Name = 'Tenant settings' }
+            )
+        }
+        @{
             Key      = 'microsoft-365'
             Name     = 'Microsoft 365'
             Aliases  = @('Microsoft 365', 'M365')
