@@ -234,34 +234,37 @@ Describe 'Get-MtLdapDacl progress' {
         }
 
         It 'does not abort collection when progress emission throws' {
-            $output = InModuleScope Maester -Parameters @{ u1 = $script:u1; u2 = $script:u2; u3 = $script:u3; u4 = $script:u4; u5 = $script:u5; base = $script:testBase } {
-                param($u1, $u2, $u3, $u4, $u5, $base)
-                $conn = [System.DirectoryServices.Protocols.LdapConnection]::new('ldap.mock')
-                $conn | Add-Member -MemberType NoteProperty -Name PageNumber -Value 0 -Force
-                $conn | Add-Member -MemberType NoteProperty -Name MtSendRequestOverride -Value {
-                    param($req, $to)
-                    $conn.PageNumber++
-                    $cookie = if ($conn.PageNumber -lt 3) { [byte[]]@($conn.PageNumber) } else { [byte[]]@() }
-                    $entries = switch ($conn.PageNumber) {
-                        1 { @($u1, $u2) }
-                        2 { @($u3, $u4) }
-                        3 { @($u5) }
-                        default { @() }
+            $errorThrown = $false
+            try {
+                $output = InModuleScope Maester -Parameters @{ u1 = $script:u1; u2 = $script:u2; u3 = $script:u3; u4 = $script:u4; u5 = $script:u5; base = $script:testBase } {
+                    param($u1, $u2, $u3, $u4, $u5, $base)
+                    $conn = [System.DirectoryServices.Protocols.LdapConnection]::new('ldap.mock')
+                    $conn | Add-Member -MemberType NoteProperty -Name PageNumber -Value 0 -Force
+                    $conn | Add-Member -MemberType NoteProperty -Name MtSendRequestOverride -Value {
+                        param($req, $to)
+                        $conn.PageNumber++
+                        $cookie = if ($conn.PageNumber -lt 3) { [byte[]]@($conn.PageNumber) } else { [byte[]]@() }
+                        $entries = switch ($conn.PageNumber) {
+                            1 { @($u1, $u2) }
+                            2 { @($u3, $u4) }
+                            3 { @($u5) }
+                            default { @() }
+                        }
+                        $pageCtrl = [pscustomobject]@{ Cookie = $cookie; TotalCount = 0 }
+                        return [pscustomobject]@{ Entries = $entries; Controls = @($pageCtrl) }
+                    } -Force
+
+                    Mock Write-MtTestProgress -ModuleName Maester {
+                        param($Stage, $Completed, $Status, $Clear)
+                        if (-not $Clear) { throw 'progress fail' }
                     }
-                    $pageCtrl = [pscustomobject]@{ Cookie = $cookie; TotalCount = 0 }
-                    return [pscustomobject]@{ Entries = $entries; Controls = @($pageCtrl) }
-                } -Force
-
-                Mock Write-MtTestProgress -ModuleName Maester {
-                    param($Stage, $Completed, $Status, $Clear)
-                    if (-not $Clear) { throw 'progress fail' }
+                    Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::Zero)
                 }
-                Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::Zero)
             }
-
-            # On Linux: 0 rows because ConvertFrom-MtLdapValue returns $null for ntSecurityDescriptor
-            # On Windows: 6 rows if the mock entries are processed
-            $output.Count | Should -BeGreaterOrEqual 0
+            catch {
+                $errorThrown = $true
+            }
+            $errorThrown | Should -BeFalse
         }
     }
 }
