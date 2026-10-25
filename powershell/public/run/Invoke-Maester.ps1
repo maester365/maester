@@ -184,7 +184,7 @@
         # A severity set for a test in the run configuration is the one that counts.
         [string[]] $Severity,
 
-        # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
+        # Only run the tests of these suites, for example Maester, CISA, CIS, ASD, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
 
         # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.

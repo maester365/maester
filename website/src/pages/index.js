@@ -93,7 +93,7 @@ const features = [
   {
     icon: "🦅",
     title: "Compliance baselines",
-    body: "EIDSCA, CISA SCuBA, CIS Microsoft 365 and ORCA — all wired into a single test framework.",
+    body: "EIDSCA, CISA SCuBA, CIS Microsoft 365, ASD Essential Eight and ORCA — all wired into a single test framework.",
   },
 ];
 
@@ -125,6 +125,13 @@ const suites = [
     desc: "Entra ID Security Config Analyzer baseline.",
     count: "60+ tests",
     href: "/docs/tests/eidsca",
+  },
+  {
+    emoji: "🦘",
+    title: "ASD Essential Eight",
+    desc: "Australian Signals Directorate Essential Eight and ISM controls.",
+    count: "15 tests",
+    href: "/docs/tests/asd",
   },
   {
     emoji: "📨",

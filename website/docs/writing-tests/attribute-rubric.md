@@ -223,13 +223,14 @@ example `cis-m365:5.1.5.1`, `cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`.
 it: one shipped with Maester or one of your own.
 
 - `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and
-  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'`. Every test in `tests/cis` and `tests/cisa` must name a
-  requirement of its suite's framework. The unit tests check this.
+  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'` and an ASD test `Control = 'essential-eight:ISM-1504'`.
+  Every test in `tests/cis`, `tests/cisa` and `tests/asd` must name a requirement of its suite's framework. The unit
+  tests check this.
 - The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the
   requirement the test is written for first, and any other requirement it supports after it.
 - Use the same attribute for a test that exists for its own reasons and also supports a requirement: a Maester
   test that checks the setting a CISA policy asks for, or a CIS test that also supports a NIST control.
-- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`), the requirement must
+- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`), the requirement must
   exist in that framework's file. If it is new, add it to the file with its facts. The module build and the unit
   tests fail otherwise.
 - Do not repeat the `Related` controls of a requirement. The framework file lists them and Maester adds them to

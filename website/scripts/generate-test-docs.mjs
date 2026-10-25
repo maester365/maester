@@ -48,6 +48,14 @@ const suiteConfig = {
     overview:
       "These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud Business Applications baseline guidance.",
   },
+  asd: {
+    label: "ASD",
+    title: "ASD Essential Eight and ISM Tests",
+    sidebarLabel: "🦘 ASD",
+    description: "ASD Essential Eight Maturity Model and Information Security Manual (ISM) controls implemented as Maester tests.",
+    overview:
+      "These tests verify Microsoft 365 tenant configuration against the Australian Signals Directorate's Essential Eight Maturity Model and the Information Security Manual (ISM) controls it is built from.",
+  },
   cis: {
     label: "CIS",
     title: "CIS Benchmark Tests",
@@ -511,6 +519,10 @@ function renderTestPage(test, contributorData) {
     if (test.benchmark.Level) body.push(`| Benchmark level | ${escapeTable(test.benchmark.Level)} |`);
     if (profiles.length > 0) body.push(`| Benchmark profiles | ${escapeTable(profiles.join(", "))} |`);
     if (test.benchmark.Criticality) body.push(`| Criticality | ${escapeTable(test.benchmark.Criticality)} |`);
+    const strategies = [test.benchmark.Strategy ?? []].flat();
+    if (strategies.length > 0) body.push(`| Essential Eight strategy | ${escapeTable(strategies.join(", "))} |`);
+    if (test.benchmark.Guideline) body.push(`| ISM guideline | ${escapeTable(test.benchmark.Guideline)} |`);
+    if (test.benchmark.Section) body.push(`| ISM section | ${escapeTable(test.benchmark.Section)} |`);
     if (upstream) body.push(`| Upstream requirement | ${escapeTable(upstream)} |`);
   }
   if (test.controls.length > 0) body.push(`| Supports controls | ${escapeTable(test.controls.join(", "))} |`);

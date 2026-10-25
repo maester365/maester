@@ -565,7 +565,7 @@ export default function TestBuilder() {
             id="control"
             name="Control"
             label="Framework requirements"
-            hint="Requirements of CIS, CISA, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
+            hint="Requirements of CIS, CISA, ASD Essential Eight, the ISM, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
             rubric={R.Control}
             problems={problems}
             notInList={
@@ -587,10 +587,10 @@ export default function TestBuilder() {
           >
             <ol className={styles.steps}>
               <li>
-                <strong>The requirement the test is written for.</strong> A CIS or CISA test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code>.
+                <strong>The requirement the test is written for.</strong> A CIS, CISA or ASD test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code> or <code>essential-eight:ISM-1504</code>.
               </li>
               <li>
-                <strong>A CIS or CISA requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
+                <strong>A CIS, CISA or ASD requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
               </li>
               <li>
                 <strong>NIST SP 800-53 controls</strong>, at most three, when a passing result is direct evidence for them. Skip this when you already listed a <code>cisa-scuba</code> requirement: CISA publishes its NIST mapping and the result gets it from there.

@@ -9,7 +9,7 @@ description: >-
   ImplementationCost, Mitre and Control (CIS, CISA and NIST SP 800-53 mappings)
   with the attribute rubric and the taxonomy, the Markdown guide,
   Service/License gates, test parameters, Graph API data retrieval,
-  Add-MtTestResultDetail formatting, the MT, CIS, CISA, EIDSCA and ORCA suites,
+  Add-MtTestResultDetail formatting, the MT, CIS, CISA, ASD, EIDSCA and ORCA suites,
   remediation guidance, Entra ID, Exchange, SharePoint, Teams, Defender,
   Conditional Access, and the validation checklist for new checks.
 ---

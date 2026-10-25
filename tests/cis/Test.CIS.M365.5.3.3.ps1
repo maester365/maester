@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
-        Control = ('cis-m365:5.3.3', 'nist-800-53-r5:AC-6(7)'),
+        Control = ('cis-m365:5.3.3', 'essential-eight:ISM-1647', 'nist-800-53-r5:AC-6(7)'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'JeremyFinney-lgtm'

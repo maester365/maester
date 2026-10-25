@@ -90,7 +90,7 @@ with a letter, contains at least one digit or separator, and is at most 64 chara
 `CONTOSO-ID-07` and `CT0001` are all valid. IDs are compared case-insensitively.
 
 Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `ASD.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
 planned for a later release. A custom test with one of these prefixes still runs, with a
 warning. A custom test that uses the exact ID of a built-in test is not run at all, and the built-in runs
 instead. To change how a built-in test behaves, set its parameters or severity in the
@@ -653,8 +653,8 @@ A test says which requirement of a framework it implements in its own attribute,
 ```
 
 A `Control` value is `<framework-key>:<requirement-id>`. This is the only way a test is mapped to a framework. It
-is the same for the CIS and CISA tests that ship with Maester (`Control = 'cis-m365:5.1.5.1'`,
-`Control = 'cisa-scuba:MS.AAD.3.1'`) and for a test of your own.
+is the same for the CIS, CISA and ASD tests that ship with Maester (`Control = 'cis-m365:5.1.5.1'`,
+`Control = 'cisa-scuba:MS.AAD.3.1'`, `Control = 'essential-eight:ISM-1504'`) and for a test of your own.
 
 The frameworks that ship with Maester, with the key to use in `Control`:
 
@@ -663,6 +663,8 @@ The frameworks that ship with Maester, with the key to use in `Control`:
 | `cis-m365` | CIS Microsoft 365 Foundations Benchmark | [tests/cis/frameworks/cis-m365.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-m365.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cis-github` | CIS GitHub Benchmark | [tests/cis/frameworks/cis-github.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-github.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cisa-scuba` | CISA SCuBA Secure Configuration Baselines for Microsoft 365 | [tests/cisa/frameworks/cisa-scuba.json](https://github.com/maester365/maester/blob/main/tests/cisa/frameworks/cisa-scuba.json) | [tests/cisa/suite.json](https://github.com/maester365/maester/blob/main/tests/cisa/suite.json) |
+| `essential-eight` | ASD Essential Eight Maturity Model (each requirement is an ISM control; `Level` ML1 to ML3, `Strategy`) | [tests/asd/frameworks/essential-eight.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/essential-eight.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
+| `ism` | ASD Information Security Manual (`Guideline`, `Section`, `Applicability`) | [tests/asd/frameworks/ism.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/ism.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
 
 Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
 no framework file; its control IDs are in
@@ -727,7 +729,7 @@ a framework that has a file and its ID is a requirement in that file.
 `Get-MtTest` shows both. See [the result schema](../result-schema.md#benchmark).
 
 A framework is found by its key, whatever suite declares it. A custom test can name a framework that ships with
-Maester (`cis-m365`, `cis-github`, `cisa-scuba`) or one that a suite in your own test folder declares. Two suites
+Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`) or one that a suite in your own test folder declares. Two suites
 must not declare the same key: Maester warns, names both `suite.json` files and uses the first, and a framework
 that ships with Maester comes before one of yours.
 

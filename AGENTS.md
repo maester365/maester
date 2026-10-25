@@ -41,14 +41,18 @@ maester.dev), `report/` (React app that builds the HTML report template).
   the website's contributor data.
 - A test is mapped to a framework in one place: the `Control` attribute, `<framework-key>:<requirement-id>`. A
   CIS test carries `Control = 'cis-m365:5.1.5.1'`, a CISA test `Control = 'cisa-scuba:MS.AAD.3.1'`, and any other
-  test may name the same requirements. Every test in `tests/cis` and `tests/cisa` must name a requirement of its
+  test may name the same requirements. An ASD test carries `Control = 'essential-eight:ISM-1504'` (or `ism:<id>` for a
+  control outside the maturity model). Every test in `tests/cis`, `tests/cisa` and `tests/asd` must name a requirement of its
   suite's framework. The engine builds `Benchmark` from the first `Control` that a framework file knows and adds
   that requirement's `Related` references to `Control`; do not repeat those, and do not add benchmark tags.
 - A framework file is a catalogue, not a list of tests: `tests/<suite>/frameworks/<key>.json`
   (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json`,
-  `tests/cisa/frameworks/cisa-scuba.json`), declared in the suite's `suite.json` (`Frameworks`: `Key`,
+  `tests/cisa/frameworks/cisa-scuba.json`, and the generated `tests/asd/frameworks/essential-eight.json` and
+  `tests/asd/frameworks/ism.json`, written by `build/asd/Update-AsdFramework.ps1` from the ISM OSCAL release),
+  declared in the suite's `suite.json` (`Frameworks`: `Key`,
   `Version`). It holds the framework's name and version and each requirement's `Id` and facts (CIS `Level` and
-  `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references), never the text of a benchmark and
+  `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references; Essential Eight `Level` and `Strategy`;
+  ISM `Guideline`, `Section` and `Applicability`), never the text of a benchmark and
   never a `Tests` list. When a new test implements a requirement the file does not have, add the requirement in
   the same commit, or `./build/Build-MaesterModule.ps1` and the unit tests fail.
 
@@ -70,7 +74,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   framework files, `frameworks/<key>.json` beside its `suite.json` (lowercase key; nothing else goes in a
   `frameworks/` folder).
   Suites: `maester/<service>/` (plus `drift/`; `maester/xspm/` has its own suite.json),
-  `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
+  `cis/`, `cisa/<service>/`, `asd/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
   (reserved for users; never commit tests there).
 - `powershell/public/` (exported) is grouped by job: `run/`, `connect/`, `report/`, `app/`,
   `packs/`, `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
