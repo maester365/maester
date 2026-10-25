@@ -87,6 +87,7 @@ cooldown when it is published; any other release starts it when each user first 
 | `Exports` | Functions of this pack that packs requiring it may call. |
 | `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
 | `Banner` | An image in the pack that the pack index shows when it features the pack. See [Banner image](#banner-image). |
+| `Guide` | A JSON file in the pack that says how to install, connect and run it, for its page on the pack index. See [The pack page](#the-pack-page). |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
 
 ## Banner image
@@ -123,6 +124,42 @@ no photos of screens, no badges or seals.
 ```
 
 For an image without text, replace the `Text:` line with `No text at all; leave the left half plain for a title.`
+
+## The pack page
+
+Every pack's page on [packs.maester.cloud](https://packs.maester.cloud) has the same sections: Install, Connect,
+Run, App-only, Tests, Security and Support. The index fills what it can from the manifest:
+
+- the modules in `Uses.Modules`, with the line that installs each one;
+- the Graph permissions in `Uses.GraphScopes`, which an app needs to run the pack app-only;
+- the tests, with their products, from `Suites` (and `Catalog` for a family test that expands when it runs).
+
+The rest comes from the Guide, a JSON file in the pack named by the manifest's `Guide` key, such as
+`"Guide": "maester-pack.guide.json"`. Its schema is
+[maester-pack-guide-1.0.json](https://maester.dev/schemas/maester-pack-guide-1.0.json); add it as `$schema` so
+editors check the file as you type. Commands in it are shown as text and never run. A short example:
+
+```json
+{
+  "$schema": "https://maester.dev/schemas/maester-pack-guide-1.0.json",
+  "Summary": "Checks the security settings of Google Workspace.",
+  "Prerequisites": [{ "Text": "A Google Workspace super admin account." }],
+  "Connect": { "Steps": [{ "Text": "Connect Maester, then sign in to Google when asked", "Command": "Connect-Maester" }] },
+  "Run": {
+    "Commands": [{ "Text": "Only this pack", "Command": "Invoke-Maester -Pack CNT -SkipBuiltIn" }],
+    "Options": [{ "Name": "GoogleWorkspace.Customer", "Default": "my_customer", "Text": "The customer ID to read." }]
+  },
+  "AppOnly": { "Supported": true, "Methods": { "Certificate": true, "ClientSecret": true }, "Text": "Use a service account key." },
+  "Screenshots": [{ "Path": "assets/report.png", "Caption": "The pack's results in the Maester report" }],
+  "Support": { "Pack": "https://github.com/contoso/maester-google-workspace/issues" }
+}
+```
+
+Maester checks that the Guide is a JSON object and that its screenshots (at most six) are `.png`, `.jpg` or `.webp`
+paths inside the pack. Like the banner, a screenshot that really is an image of at most 1 MB is not counted as
+binary content. Any section can end with `"More": "<https link>"` to your own documentation. The
+[Zero Trust Assessment pack's guide](https://github.com/maester365/maester/blob/main/packs/zero-trust-assessment/maester-pack.guide.json)
+is a full example.
 
 ## Tests and helpers
 
