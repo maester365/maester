@@ -38,7 +38,7 @@
     }
 
     $emit = {
-        param($objects, $aces, $pageNumber, $hasMore, $estimate, $baseDN, $isTerminal)
+        param($objects, $aces, $pageNumber, $hasMore, $estimate, $baseDN, $isTerminal, $showPageStatus = $true)
         $stage = if ($isTerminal) { "Collected AD DACLs: $objects objects, $aces ACEs" } else { 'Collecting AD DACLs' }
         $completed = if ($objects -gt [int]::MaxValue) { [int]::MaxValue } else { [int]$objects }
         $statusParts = [System.Collections.Generic.List[string]]::new()
@@ -51,8 +51,8 @@
                 $statusParts.Add("~$pct% (approximate)")
             }
             $statusParts.Add("$objects objects processed; $aces ACEs collected")
-            if ($pageNumber -gt 0) { $statusParts.Add("page $pageNumber complete") }
-            if ($hasMore) { $statusParts.Add("reading page $($pageNumber + 1)") }
+            if ($showPageStatus -and $pageNumber -gt 0) { $statusParts.Add("page $pageNumber complete") }
+            if ($showPageStatus -and $hasMore) { $statusParts.Add("reading page $($pageNumber + 1)") }
             $statusParts.Add("base $baseDN")
         }
         $status = $statusParts -join '; '
@@ -91,28 +91,33 @@
                           ($now - $state.LastEmit -ge $state.Interval)
             if ($shouldEmit) {
                 $state.LastEmit = $now
-                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
+                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false $false
             }
         }
 
-        # Empty intermediate pages with HasMore still report progress,
-        # while nonempty pages already emitted inside the loop above.
+        # After each nonempty page, emit one page-status update
+        if ($page.Entries.Count -gt 0) {
+            $state.LastEmit = [DateTime]::UtcNow
+            & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false $true
+        }
+
+        # Empty intermediate pages with HasMore still report progress
         if ($page.Entries.Count -eq 0) {
             $now = [DateTime]::UtcNow
             $shouldEmit = ($state.LastEmit -eq [DateTime]::MinValue) -or
                           ($now - $state.LastEmit -ge $state.Interval)
             if ($shouldEmit) {
                 $state.LastEmit = $now
-                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
+                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false $true
             }
         }
     }
 
     try {
         $pageState.LastEmit = [DateTime]::UtcNow
-        & $emit 0 0 0 $true 0 $SearchBase $false
+        & $emit 0 0 0 $true 0 $SearchBase $false $true
         $null = Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter $Filter -Attributes $attributes -SecurityDescriptorFlags $securityDescriptorFlags -PageSize $PageSize -ProcessPage $processPage -PageState $pageState
-        & $emit $pageState.Objects $pageState.Aces 0 $false 0 $SearchBase $true
+        & $emit $pageState.Objects $pageState.Aces 0 $false 0 $SearchBase $true $true
     }
     finally {
         try { Write-MtTestProgress -Clear } catch { Write-Debug "DACL progress clear failed: $_" }
