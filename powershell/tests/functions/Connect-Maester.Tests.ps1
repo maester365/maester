@@ -293,6 +293,40 @@ Describe 'Connect-Maester connection summary' {
         $scc.Details | Should -Be 'Using UPN admin@contoso.com from Exchange Online'
     }
 
+    It 'Connects Security & Compliance when Exchange Online is already connected but not in -Service (#2467)' {
+        # Two-step connect: an earlier call connected Exchange Online, so its session is live even though this
+        # call asks only for Security & Compliance. The decision must follow the live session, not -Service.
+        Mock Test-MtConnection -ModuleName Maester { $true } -ParameterFilter { $Service -contains 'ExchangeOnline' }
+
+        Connect-Maester -Service SecurityCompliance 6>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Connected'
+        $scc.Details | Should -Be 'compliance@contoso.com'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Skips Security & Compliance when Exchange Online is neither requested nor connected (#2467)' {
+        Mock Test-MtConnection -ModuleName Maester { $false } -ParameterFilter { $Service -contains 'ExchangeOnline' }
+
+        Connect-Maester -Service SecurityCompliance 6>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Skipped'
+        $scc.Details | Should -Be 'Requires an Exchange Online connection'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 0 -Exactly
+    }
+
+    It 'Warns rather than silently skips Security & Compliance under -Service All -UseDeviceCode (#2467)' {
+        Connect-Maester -Service All -UseDeviceCode -WarningVariable deviceCodeWarnings 6>$null 3>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Skipped'
+        $scc.Details | Should -Be 'Device code sign-in is not supported for Security & Compliance'
+        ($deviceCodeWarnings -join "`n") | Should -Match 'device code'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'Separates a failed Dataverse discovery from a tenant without environments' {
         Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { throw 'Could not get a Global Discovery Service token: AADSTS50076' }
 
