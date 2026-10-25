@@ -92,6 +92,7 @@
     }
 
     try {
+        $pageState.LastEmit = [DateTime]::UtcNow
         & $emit 0 0 0 $true 0 $SearchBase $false
         $null = Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter $Filter -Attributes $attributes -SecurityDescriptorFlags $securityDescriptorFlags -ProcessPage $processPage -PageState $pageState
         & $emit $pageState.Objects $pageState.Aces 0 $false 0 $SearchBase $true

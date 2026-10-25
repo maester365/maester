@@ -179,12 +179,11 @@ Describe 'Get-MtLdapDacl progress' {
                 $script:captures
             }
 
-            $output | Should -HaveCount 4
+            $output | Should -HaveCount 3
             $output[0].Stage | Should -Be 'Collecting AD DACLs'
             $output[0].Status | Should -BeLike '*0 objects processed*0 ACEs collected*reading page 1*'
-            $output[1].Stage | Should -Be 'Collecting AD DACLs'
-            $output[2].Stage | Should -BeLike '*Collected AD DACLs*'
-            $output[3].Clear | Should -BeTrue
+            $output[1].Stage | Should -BeLike '*Collected AD DACLs*'
+            $output[2].Clear | Should -BeTrue
         }
     }
 
