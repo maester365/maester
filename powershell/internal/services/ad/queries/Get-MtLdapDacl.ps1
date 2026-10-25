@@ -94,6 +94,18 @@
                 & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
             }
         }
+
+        # Empty intermediate pages with HasMore still report progress,
+        # while nonempty pages already emitted inside the loop above.
+        if ($page.Entries.Count -eq 0) {
+            $now = [DateTime]::UtcNow
+            $shouldEmit = ($state.LastEmit -eq [DateTime]::MinValue) -or
+                          ($now - $state.LastEmit -ge $state.Interval)
+            if ($shouldEmit) {
+                $state.LastEmit = $now
+                & $emit $state.Objects $state.Aces $page.PageNumber $page.HasMore $page.EstimatedTotal $state.BaseDN $false
+            }
+        }
     }
 
     try {
