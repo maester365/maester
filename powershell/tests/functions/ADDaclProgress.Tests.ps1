@@ -7,7 +7,7 @@ Describe 'Get-MtLdapDacl progress' {
         $script:testBase = 'DC=contoso,DC=test'
         $script:u1 = [pscustomobject]@{
             DistinguishedName = "CN=U1,$script:testBase"
-            Attributes = [pscustomobject]@{
+            Attributes = @{
                 distinguishedName = "CN=U1,$script:testBase"
                 objectClass = @('top','person','user')
                 name = 'U1'
@@ -20,7 +20,7 @@ Describe 'Get-MtLdapDacl progress' {
         }
         $script:u2 = [pscustomobject]@{
             DistinguishedName = "CN=U2,$script:testBase"
-            Attributes = [pscustomobject]@{
+            Attributes = @{
                 distinguishedName = "CN=U2,$script:testBase"
                 objectClass = @('top','person','user')
                 name = 'U2'
@@ -32,7 +32,7 @@ Describe 'Get-MtLdapDacl progress' {
         }
         $script:u3 = [pscustomobject]@{
             DistinguishedName = "CN=U3,$script:testBase"
-            Attributes = [pscustomobject]@{
+            Attributes = @{
                 distinguishedName = "CN=U3,$script:testBase"
                 objectClass = @('top','person','user')
                 name = 'U3'
@@ -42,7 +42,7 @@ Describe 'Get-MtLdapDacl progress' {
         }
         $script:u4 = [pscustomobject]@{
             DistinguishedName = "CN=U4,$script:testBase"
-            Attributes = [pscustomobject]@{
+            Attributes = @{
                 distinguishedName = "CN=U4,$script:testBase"
                 objectClass = @('top','person','user')
                 name = 'U4'
@@ -52,7 +52,7 @@ Describe 'Get-MtLdapDacl progress' {
         }
         $script:u5 = [pscustomobject]@{
             DistinguishedName = "CN=U5,$script:testBase"
-            Attributes = [pscustomobject]@{
+            Attributes = @{
                 distinguishedName = "CN=U5,$script:testBase"
                 objectClass = @('top','person','user')
                 name = 'U5'
@@ -67,7 +67,7 @@ Describe 'Get-MtLdapDacl progress' {
     }
 
     Context 'characterization and row parity' {
-        It 'returns six ordered rows from the three-page fixture' -Skip:(-not $IsWindows) {
+        It 'returns six ordered rows from the three-page fixture' {
             $output = InModuleScope Maester -Parameters @{ u1 = $script:u1; u2 = $script:u2; u3 = $script:u3; u4 = $script:u4; u5 = $script:u5; base = $script:testBase } {
                 param($u1, $u2, $u3, $u4, $u5, $base)
                 $conn = [System.DirectoryServices.Protocols.LdapConnection]::new('ldap.mock')
@@ -134,7 +134,7 @@ Describe 'Get-MtLdapDacl progress' {
                     if ($Clear) { $script:captures.Add(@{ Clear = $true }) }
                     else { $script:captures.Add(@{ Stage = $Stage; Completed = $Completed; Status = $Status }) }
                 }
-                Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::Zero)
+                $null = Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::Zero)
                 $script:captures
             }
 
@@ -175,7 +175,7 @@ Describe 'Get-MtLdapDacl progress' {
                     if ($Clear) { $script:captures.Add(@{ Clear = $true }) }
                     else { $script:captures.Add(@{ Stage = $Stage; Completed = $Completed; Status = $Status }) }
                 }
-                Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::FromHours(1))
+                $null = Get-MtLdapDacl -Connection $conn -SearchBase $base -ProgressInterval ([timespan]::FromHours(1))
                 $script:captures
             }
 
