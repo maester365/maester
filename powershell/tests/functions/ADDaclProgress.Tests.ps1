@@ -265,6 +265,7 @@ Describe 'Get-MtLdapDacl progress' {
                 $errorThrown = $true
             }
             $errorThrown | Should -BeFalse
+            $output | Should -HaveCount 6
         }
     }
 }

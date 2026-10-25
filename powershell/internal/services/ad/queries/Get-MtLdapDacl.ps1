@@ -71,8 +71,8 @@
             $state.Objects++
             $descriptor = $entry.ntSecurityDescriptor
             if ($descriptor -is [byte[]]) { $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor }
-            if ($null -eq $descriptor) { continue }
-            foreach ($ace in @($descriptor.Access)) {
+            $aces = if ($null -eq $descriptor) { @() } else { @($descriptor.Access) }
+            foreach ($ace in $aces) {
                 $properties = [ordered]@{
                     ObjectDN = [string]$entry.DistinguishedName
                     ObjectClass = @($entry.objectClass)[-1]

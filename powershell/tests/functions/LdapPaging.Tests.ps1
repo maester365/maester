@@ -129,15 +129,16 @@ Describe 'Invoke-MtLdapSearch paging callback' {
                 param($p, $s)
                 throw 'callback error'
             }
-            $errorThrown = $false
+            $caught = $null
             try {
                 $script:MaesterModule.Invoke({ param($c, $p) Invoke-MtLdapSearch -Connection $c -SearchBase 'DC=contoso,DC=com' -PageSize 0 -ProcessPage $p -PageState $null }, $conn, $cb)
             }
             catch {
-                $errorThrown = $true
-                $_.Exception.Message | Should -BeLike '*callback error*'
+                $caught = $_
             }
-            $errorThrown | Should -BeTrue
+            $caught | Should -Not -BeNullOrEmpty
+            $caught.Exception.Message | Should -BeLike '*callback error*'
+            $caught.Exception.Message | Should -Not -BeLike '*LDAP search failed*'
         }
     }
 }
