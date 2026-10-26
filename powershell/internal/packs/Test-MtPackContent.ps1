@@ -16,8 +16,8 @@ function Test-MtPackContent {
     - Findings: what a person should read before installing (Severity Medium or High, Code, Message, File, Line).
     - Risk: Low (text only and nothing to read), Medium (findings, or Gallery modules), or High (compiled or
       encoded content, archives, tenant writes, write scopes, or modules from outside the store).
-    - Binaries: every file whose bytes are not text, with its size and SHA-256. The manifest's Banner is not one
-      when it really is a PNG, JPEG or WebP image of at most 1 MB.
+    - Binaries: every file whose bytes are not text, with its size and SHA-256. The manifest's Banner and the
+      Guide's screenshots are not, when they really are PNG, JPEG or WebP images of at most 1 MB.
     - Tests: the pack's tests as the engine reads them, and TestIds.
     - Digest and Files: as Get-MtPackDigest returns them.
     #>
@@ -64,14 +64,15 @@ function Test-MtPackContent {
     if ($total -gt 50MB) { & $fail 'TooLarge' "The pack is $([math]::Round($total / 1MB, 1)) MB; at most 50 MB is allowed." }
     $archive = @('.zip', '.nupkg', '.7z', '.tar', '.gz', '.tgz', '.rar', '.cab', '.msi', '.jar', '.whl')
     $compiled = @('.dll', '.exe', '.so', '.dylib', '.pyc', '.pyo', '.wasm', '.class', '.node')
-    # The manifest's Banner is an image no code can load, so it is not scanned as binary content once its bytes
-    # show it really is the PNG, JPEG or WebP its name says, at most 1 MB.
+    # The manifest's Banner and the Guide's screenshots are images no code can load, so they are not scanned as
+    # binary content once their bytes show they really are the PNG, JPEG or WebP their names say, at most 1 MB.
     $banner = if ($manifest -and $manifest.PSObject.Properties['Banner'] -and $manifest.Banner) { ([string]$manifest.Banner).Replace('\', '/') -replace '^\./', '' }
+    $images = @(@($banner) + @(Get-MtPackGuideScreenshot -Root $root -Manifest $manifest) | Where-Object { $_ })
     foreach ($f in $digest.Files) {
         if ($f.Size -gt 20MB) { & $fail 'TooLarge' "$($f.Path) is $([math]::Round($f.Size / 1MB, 1)) MB; at most 20 MB is allowed per file." }
         $full = Join-Path $root $f.Path
         $extension = [System.IO.Path]::GetExtension($f.Path).ToLowerInvariant()
-        if ($banner -and $f.Path -ceq $banner -and $f.Size -le 1MB -and (Test-MtPackImageFile -Path $full)) { continue }
+        if ($f.Path -cin $images -and $f.Size -le 1MB -and (Test-MtPackImageFile -Path $full)) { continue }
         if ($extension -in $archive -or $extension -in $compiled -or (Test-MtPackBinaryFile -Path $full)) {
             $kind = if ($extension -in $archive) { 'archive' } elseif ($extension -in $compiled) { 'compiled code' } else { 'binary content' }
             $signer = $null
@@ -231,6 +232,29 @@ function Test-MtPackImageFile {
         '^\.webp$' { return [System.Text.Encoding]::ASCII.GetString($head, 0, 4) -eq 'RIFF' -and [System.Text.Encoding]::ASCII.GetString($head, 8, 4) -eq 'WEBP' }
     }
     $false
+}
+
+function Get-MtPackGuideScreenshot {
+    <#
+    .SYNOPSIS
+    The pack-relative paths of the screenshots the manifest's Guide file lists, or nothing.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)] [string] $Root,
+        [Parameter()] $Manifest
+    )
+
+    if (-not $Manifest -or -not $Manifest.PSObject.Properties['Guide'] -or $Manifest.Guide -isnot [string]) { return }
+    if (-not (Test-MtPackRelativePath -Path $Manifest.Guide)) { return }
+    $file = Join-Path $Root $Manifest.Guide
+    if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { return }
+    $guide = try { Get-Content -LiteralPath $file -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop } catch { $null }
+    if ($guide -isnot [pscustomobject] -or -not $guide.PSObject.Properties['Screenshots']) { return }
+    foreach ($shot in @($guide.Screenshots | Select-Object -First 6)) {
+        if ($shot -is [pscustomobject] -and $shot.Path -is [string] -and (Test-MtPackRelativePath -Path $shot.Path)) { $shot.Path.Replace('\', '/') -replace '^\./', '' }
+    }
 }
 
 function Get-MtPackReservedTag {

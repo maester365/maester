@@ -35,6 +35,16 @@ Describe 'Skipped reason metadata' {
         $validateSet | Should -Contain 'NotConnectedGitHub'
     }
 
+    It 'Tells how to check non-.gov domains with a setting that exists, not with a command that does not' {
+        $reason = InModuleScope Maester {
+            Get-MtSkippedReason -SkippedBecause 'NotDotGovDomain'
+        }
+
+        $reason | Should -Match 'federal, executive branch, departments and agencies'
+        $reason | Should -Match '"Id": "CISA\.MS\.EXO\.4\.3", "Parameters": \{ "Force": true \}'
+        $reason | Should -Not -Match 'Test-MtCisaDmarcAggregateCisa'
+    }
+
     It 'Returns the combined Entra licensing guidance text' {
         $reason = InModuleScope Maester {
             Get-MtSkippedReason -SkippedBecause 'NotLicensedEntraIDP2OrGovernance'

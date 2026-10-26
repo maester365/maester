@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.SHAREPOINT.1.3"
-  - "High"
+  - "Medium"
   - "CISA"
   - "SharePoint"
   - "External sharing"
@@ -53,7 +53,7 @@ This policy is only applicable if the external sharing slider on the admin page 
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.SHAREPOINT.1.3 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
 | Product | SharePoint |
 | Feature | External sharing |

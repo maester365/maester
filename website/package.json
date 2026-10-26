@@ -7,6 +7,7 @@
     "generate-test-docs": "node scripts/generate-test-docs.mjs",
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
     "update-license-plans": "node scripts/update-license-service-plans.mjs",
+    "blog-cards": "node scripts/blog-cards/generate-blog-cards.mjs",
     "prebuild": "npm run generate-test-docs",
     "prestart": "npm run generate-test-docs",
     "start": "docusaurus start",
@@ -43,7 +44,8 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.1",
     "@docusaurus/types": "^3.10.1",
-    "js-yaml": "^5.5.0"
+    "js-yaml": "^5.5.0",
+    "playwright": "^1.63.0"
   },
   "browserslist": {
     "production": [
