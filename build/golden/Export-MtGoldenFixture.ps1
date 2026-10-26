@@ -539,6 +539,8 @@ try {
         $selectedIds = @(); $selectedFamilies = @()
         foreach ($row in @($run.Tests)) {
             if ($row.Result -eq 'NotRun' -and $row.ReasonCode -in $NotSelectedReasons) { continue }
+            # Maester Packs are new in 3.x, so their rows (a built-in pack's too) have no 2.x counterpart.
+            if ($row.PSObject.Properties['Package'] -and $row.Package) { continue }
             $id = if ($row.ParentId) { $row.ParentId } else { $row.Id }
             if ($familyIds -contains $id) { $selectedFamilies += $familyAlias[$id] } else { $selectedIds += $id }
         }

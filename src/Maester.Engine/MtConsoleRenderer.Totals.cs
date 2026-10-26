@@ -131,11 +131,17 @@ namespace Maester.Engine
         private PanelContent BuildTotalsPanel(int width, bool ansi)
         {
             if (!ResultPanelsShown()) return null;
-            int[] counts = { _passed, _failed, _error, _investigate, _skipped + _other };
+            // While the work in the output box counts its results, the panel shows those, under its name.
+            var output = OutputResults;
+            int[] counts = output != null
+                ? new[] { output.Passed, output.Failed, output.Error, output.Investigate, output.Skipped }
+                : new[] { _passed, _failed, _error, _investigate, _skipped + _other };
             int total = 0;
             foreach (int count in counts) total += count;
             // Before the tests start the number of tests is not known yet.
-            var panel = new PanelContent { Title = "Results", Badge = _started ? N(total) + " of " + N(_total) : "starting" + Ellipsis() };
+            var panel = output != null
+                ? new PanelContent { Title = OutputResultsName, Badge = N(total) + " of " + N(output.Total) }
+                : new PanelContent { Title = "Results", Badge = _started ? N(total) + " of " + N(_total) : "starting" + Ellipsis() };
             panel.Lines.Add(TotalsBar(counts, total, Math.Max(1, width), ansi));
             panel.Lines.Add(TotalsLegend(counts, total, width, ansi));
             return panel;

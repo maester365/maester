@@ -6,17 +6,25 @@ import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTenant } from "@/context/TenantContext"
 import { scrollReportToTop } from "@/lib/reportLinks"
+import { findReportAttachment } from "@/lib/reportAttachments"
 
 interface BreadcrumbItem {
   label: string
   href?: string
 }
 
-function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getBreadcrumbs(pathname: string, testResults: any): BreadcrumbItem[] {
   const segments = pathname.split("/").filter(Boolean)
   const breadcrumbs: BreadcrumbItem[] = [{ label: "Home", href: "/" }]
 
   if (segments.length === 0) {
+    return breadcrumbs
+  }
+
+  // An embedded report: Home > Reports > its name.
+  if (segments[0] === "reports") {
+    breadcrumbs.push({ label: "Reports" }, { label: findReportAttachment(testResults, pathname)?.Name ?? "Report" })
     return breadcrumbs
   }
 
@@ -34,8 +42,8 @@ export function Breadcrumb() {
   const location = useLocation()
   const pathname = location.pathname
   const { isCollapsed, setIsCollapsed } = useSidebar()
-  const breadcrumbs = getBreadcrumbs(pathname)
   const { selectedTenant } = useTenant()
+  const breadcrumbs = getBreadcrumbs(pathname, selectedTenant)
   // Maester embeds tenant logos as data URIs. Ignore anything else so the report never loads a remote image.
   const tenantBanner: unknown = selectedTenant?.TenantLogos?.Banner
   const bannerLogo = typeof tenantBanner === "string" && /^data:image\/[\w.+*-]+;base64,/i.test(tenantBanner) ? tenantBanner : undefined

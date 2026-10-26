@@ -4,6 +4,9 @@ description: Deep Active Directory coverage, AI data security checks with Micros
 slug: maester-2-2
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365, activedirectory, purview, github]
+image: ./img/card.png
+card_headline: "Maester *2.2*"
+card_label: Release
 hide_table_of_contents: false
 date: 2026-07-26
 ---
