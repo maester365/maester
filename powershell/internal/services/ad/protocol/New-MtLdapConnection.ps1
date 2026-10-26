@@ -1,4 +1,4 @@
-function New-MtLdapConnection {
+﻿function New-MtLdapConnection {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Internal connection factory that only creates an in-memory LDAP client object.')]
     [CmdletBinding()]
     [OutputType([System.DirectoryServices.Protocols.LdapConnection])]
@@ -53,41 +53,34 @@ function New-MtLdapConnection {
             $connection.SessionOptions.ReferralChasing = [System.DirectoryServices.Protocols.ReferralChasingOptions]::None
             $connection.SessionOptions.SecureSocketLayer = ($effectivePort -eq 636 -and -not $UseStartTls.IsPresent)
 
-            # Set a callback that logs certificate details and validates the chain.
-            # When SkipCertificateCheck is present we still log but return $true.
-            # Wrap in try/catch because test mocks may not expose this property.
-            try {
-                $skipCertCheck = $SkipCertificateCheck.IsPresent
-                $callback = {
-                    param($ldapConnection, $certificate)
+            # When SkipCertificateCheck is present, install a callback that logs
+            # certificate details and bypasses validation. When it is not present,
+            # do not install a callback at all — the platform's TLS stack
+            # (Schannel on Windows, OpenSSL on Linux) already performs chain
+            # validation, hostname verification, expiry checking, and revocation
+            # checking automatically.
+            if ($SkipCertificateCheck.IsPresent) {
+                try {
+                    $callback = {
+                        param($ldapConnection, $certificate)
 
-                    [void]$ldapConnection
-                    $script:__MtLastLdapCertificateDetail = Get-MtLdapCertificateDetail -Certificate $certificate
-
-                    if ($skipCertCheck) {
+                        [void]$ldapConnection
+                        $script:__MtLastLdapCertificateDetail = Get-MtLdapCertificateDetail -Certificate $certificate
                         return $true
+                    }.GetNewClosure()
+
+                    # Bind the callback to the Maester module so internal functions like
+                    # Get-MtLdapCertificateDetail are resolvable when .NET invokes it.
+                    $maesterModule = Get-Module Maester
+                    if ($null -ne $maesterModule) {
+                        $callback = $maesterModule.NewBoundScriptBlock($callback)
                     }
 
-                    $chain = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Chain
-                    try {
-                        return $chain.Build($certificate)
-                    }
-                    finally {
-                        $chain.Dispose()
-                    }
-                }.GetNewClosure()
-
-                # Bind the callback to the Maester module so internal functions like
-                # Get-MtLdapCertificateDetail are resolvable when .NET invokes it.
-                $maesterModule = Get-Module Maester
-                if ($null -ne $maesterModule) {
-                    $callback = $maesterModule.NewBoundScriptBlock($callback)
+                    $connection.SessionOptions.VerifyServerCertificate = $callback
                 }
-
-                $connection.SessionOptions.VerifyServerCertificate = $callback
-            }
-            catch {
-                Write-Verbose "Unable to set VerifyServerCertificate callback: $_."
+                catch {
+                    Write-Verbose "Unable to set VerifyServerCertificate callback: $_."
+                }
             }
         }
 

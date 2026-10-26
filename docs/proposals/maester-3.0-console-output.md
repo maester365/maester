@@ -184,6 +184,33 @@ on), after a reference animation with boxed panels in their own colours and dots
 cursor position (`ESC[6n`). A terminal that doesn't answer in time gets the pane, and anything drawn after it, at the top
 of the screen. This happened in the Claude desktop app's embedded terminal. The renderer never reads the cursor position.
 
+### The output box
+
+A test that runs a tool for a long time in another process (the Zero Trust Assessment pack runs Microsoft's
+assessment in a child `pwsh`, for up to an hour) cannot let that process write to the console while the dashboard
+has the screen: its lines would be drawn over the dashboard and wiped by the next frame. The process's output is
+redirected and read line by line, and each line is handed to `Write-MtTestOutput` (exported, so packs and custom
+tests can use it).
+
+- **In the dashboard** the lines go into a box in the main column, with the title the test gave it and, in the
+  border, how long it has been open and how many lines it has had. It shows the newest lines that fit, wrapped to
+  its width, so it scrolls as they come in. Before the tests start (a family's instance source runs then) it
+  takes the rows under the track of the phases, down to the bottom; the banner gives way to the one-line header
+  when it leaves the box fewer than twelve rows. While tests run it has ten rows between the result blocks and the
+  running tests, which give up the rows.
+- **Progress.** A line written with `-Progress` is a status that changes: it is pinned at the bottom of the box,
+  under a dashed line, and the next one replaces it, so a count that changes every second takes one row. The ZTA child turns its progress bars into such lines: a `Write-Progress`
+  function in its global scope, which the module's calls find before the cmdlet, writes each change as a line with a
+  marker.
+- **Elsewhere** (compact layout, Stream, Plain) each line is written to the host, indented and dim, through
+  `Write-MtConsoleLine`; a progress line at most every ten seconds. In CI the lines go through the same escaping as
+  test titles, so a line cannot issue a workflow command.
+- **Safe text.** Escape sequences are removed, tabs become spaces, and control characters, characters that hide or
+  reorder text, and emoji (whose width terminals do not agree on) are dropped
+  (`MtConsoleRenderer.OutputText`).
+- **Closing.** `Write-MtTestOutput -Complete` closes the box; the engine closes it as well when the instance source
+  or the test finishes, so a test that fails half-way leaves no box behind.
+
 ### Dashboard panels
 
 On a console of about 140 columns or more the dashboard has a second column on the right. The dashboard fills the
@@ -193,8 +220,8 @@ extra width is shared, two parts to the main content (longer bars, more squares 
 result and its duration. The last row of the window is a status bar across the whole width, on the gradient of the wordmark (Maester red to
 amber; one orange without true colour), with a group of links at each edge and, between them, which click opens a link ("⌘-click to open" on macOS, "Ctrl-click to open" elsewhere): maester.dev,
 Docs (maester.dev/docs), Contributors (maester.dev/contributors), Our Manifesto (maester.cloud/manifesto), Star on GitHub (the repository),
-Discord (discord.maester.dev) and Issues, each a hyperlink. The sponsor page (the Sponsor dialog of the repository, fed by
-`.github/FUNDING.yml`) has the Sponsor panel, so it is not in the bar as well. With the bar on screen the tagline under the logo
+Discord (discord.maester.dev), Issues and Sponsor ♥ (maester.dev/sponsor), each a hyperlink. The sponsor page is in the bar as
+well as in the Sponsor panel, so it is on screen at any width. With the bar on screen the tagline under the logo
 has the version only. Rows that are free go to the results chart (up to 16 rows, one square per test while they fit).
 
 Every panel of the right column is shown whenever the column has the rows for it. The Blog, Tips, Contributor and Sponsor
@@ -217,7 +244,7 @@ default is all of them, and an empty list turns them off.
 | `FixFirst` | The quick wins: failed tests of severity Critical or High whose fix has a low user impact and a low implementation cost, Critical first, then by ID; six at most, with the number of them in the border. Not in a run of fewer than 25 tests. | The attributes of the tests, handed over once before the tests start | none |
 | `Pace` | At the top of the main column, to the right of the wordmark and in its rows: a graph of how long each test took (six rows), and a line under it with the tests per second and the longest test. On a console that is too small for that band the graph is between the product lanes and the result blocks, two to five rows tall as the console has room. The graph has one bar for each test that ran and moves from right to left, like a ticker: the bar of the test that just finished comes in at the right edge and the others move one place to the left (a quick test is a low green bar), so it fills up from the right and then shows the latest tests. Its height is on a logarithmic scale against the longest test of the whole run, exact to an eighth of a row, and each row has its colour, green at the bottom to red at the top. It is left out on a console that is too short for it. | The time each test took, kept as it finishes | none |
 | `Contributor` | Featured contributor, with an accent border: one of the people who built Maester, a different one every minute, starting with a different one each run. The name and the GitHub handle (in the same colour, both a hyperlink to the person's page on maester.dev/contributors), how many tests they wrote and how many they improved (a count of nothing is left out), and the year of their first contribution. | `assets/ConsoleContributors.json`, which ships with the module. `build/Update-ConsoleContributors.ps1` writes it from the contributor data of the website, and the module build runs it. People who are pinned last on the contributors page are left out. | none |
-| `Sponsor` | The last panel of the column, under the Contributor panel: one line, "Sponsor us to keep building Maester", a hyperlink to the sponsor page. The status bar has no Sponsor link of its own. |
+| `Sponsor` | The last panel of the column, under the Contributor panel: one line, "Sponsor us to keep building Maester", a hyperlink to the sponsor page (maester.dev/sponsor). The status bar links to it too. |
 | `Blog` | The newest post on maester.dev: its title, a hyperlink (OSC 8) to the post, over two lines at most, and its date in the border. Emoji are left out of the title, because terminals do not agree on their width. | `maester.dev/blog/rss.xml`, on a background thread, cached for a day in the user's local application data folder | one web request |
 | `Version` | Not a panel: when a newer stable Maester is on the PowerShell Gallery, the tagline under the logo says so ("v3.0.0 · ↑ v3.1.0 available · maester.dev"), in bold amber, as a hyperlink to that version in the gallery. | The gallery, on a background thread | one web request |
 | `Tips` | One tip at a time, changing every twelve seconds | `assets/ConsoleTips.txt` in the module | none |

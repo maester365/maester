@@ -4,6 +4,9 @@ description: A major release with 400+ commits, 15+ new security tests, XSPM int
 slug: maester-2-0
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365]
+image: ./img/card.png
+card_headline: "Maester *2.0*"
+card_label: Release
 hide_table_of_contents: false
 date: 2026-02-11
 ---

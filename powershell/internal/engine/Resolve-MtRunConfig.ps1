@@ -252,6 +252,7 @@ function Complete-MtRunConfig {
         Area               = @()
         Severity           = @()
         Suite              = @()
+        Pack               = @()
         IncludePreview     = $false
         IncludeLongRunning = $false
         OnUnknownId        = 'Warn'
@@ -261,7 +262,7 @@ function Complete-MtRunConfig {
             $Config.Selection | Add-Member -MemberType NoteProperty -Name $key -Value $selectionDefaults[$key] -Force
         }
     }
-    foreach ($key in 'Tag', 'ExcludeTag', 'TestId', 'ExcludeTestId', 'Product', 'Feature', 'Area', 'Severity', 'Suite') {
+    foreach ($key in 'Tag', 'ExcludeTag', 'TestId', 'ExcludeTestId', 'Product', 'Feature', 'Area', 'Severity', 'Suite', 'Pack') {
         $Config.Selection.$key = @($Config.Selection.$key | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
     }
     if ($Config.Selection.DefaultAction -notin 'Run', 'Skip') {

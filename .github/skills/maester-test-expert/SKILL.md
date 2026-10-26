@@ -375,7 +375,8 @@ values of a neighbouring check without checking them against it.
 
 The rubric rates a check by the fix its own `.md` recommends, so write the `.md` before you choose the values.
 The values of the generated EIDSCA and ORCA checks are in `build/eidsca/eidsca-test-metadata.json` and
-`build/orca/orca-test-metadata.json`: change a value there and regenerate.
+`build/orca/orca-test-metadata.json`: change a value there and regenerate. The severity of an EIDSCA check is the
+exception: it comes from the EIDSCA config upstream, so a change to it goes to the EIDSCA repository.
 
 ### Framework requirements and NIST controls (`Control`)
 

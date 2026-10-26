@@ -4,6 +4,9 @@ description: Maester now supports comprehensive Active Directory security testin
 slug: active-directory-security-testing
 authors: [maesterteam]
 tags: [maester, activedirectory, security, ad, release]
+image: ./img/card.png
+card_headline: "*Active Directory* security testing"
+card_label: New tests
 hide_table_of_contents: false
 date: 2026-04-25
 ---

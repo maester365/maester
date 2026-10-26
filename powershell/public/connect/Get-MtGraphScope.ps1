@@ -59,6 +59,7 @@
 
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
+        'AccessReview.Read.All'
         'AuditLog.Read.All'
         'DeviceManagementConfiguration.Read.All'
         'DeviceManagementManagedDevices.Read.All'

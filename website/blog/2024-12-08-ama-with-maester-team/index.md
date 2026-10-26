@@ -4,7 +4,9 @@ description: Join us on Discord for an AMA with the Maester team.
 slug: ama-with-maester-team
 authors: [fabian, thomas, mike, merill]
 tags: [ama]
-image: ./img/ama-with-maester-team.png
+card_headline: "AMA with the *Maester team*"
+card_label: Event
+image: ./img/card.png
 hide_table_of_contents: false
 date: 2024-12-08
 ---

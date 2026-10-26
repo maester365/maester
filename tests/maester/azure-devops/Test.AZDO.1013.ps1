@@ -6,6 +6,9 @@
     Checks if the Azure DevOps Organization owner is a individual or a service/admin account.
     Returns a true boolean if the users matches adm|admin|btg|svc|service.
 
+    Requires Azure DevOps to be connected with a user account. The test is skipped when connected
+    as a service principal or managed identity.
+
     https://learn.microsoft.com/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops
 
 .EXAMPLE
@@ -39,6 +42,11 @@ function Test-AzdoOrganizationOwner {
     param()
 
     Write-Verbose "Running Test-AzdoOrganizationOwner"
+
+    if ((Get-MtAzdoIdentityType) -eq 'ServicePrincipal') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAzureDevOpsAppPermission
+        return $null
+    }
 
 $Data = Get-ADOPSOrganizationAdminOverview
     if ($data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.exceptionType -eq 'AadGraphException') {
