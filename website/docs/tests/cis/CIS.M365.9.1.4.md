@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.4 - (L1) Restrict public publishing of Fabric reports"
-description: "Publish to web is disabled or configured so only approved users can use existing public embed codes. Public embed codes expose report content without sign-in. This check covers the tenant setting for creating codes; it does not inventory or revoke codes that already exist. Remediation action 1. Ope…"
+description: "Publish to web is disabled, or scoped to one or more security groups with new embed-code creation disabled. The check verifies that the setting has at least one security group and that new embed-code creation is disabled. It does not inventory or revoke existing codes. Remediation action 1. Sign in…"
 slug: /tests/CIS.M365.9.1.4
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -9,10 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.9.1.4"
-  - "High"
+  - "Medium"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Export and sharing settings"
   - "External access and sharing"
 ---
 
@@ -20,20 +20,21 @@ keywords:
 
 # CIS.M365.9.1.4 - (L1) Restrict public publishing of Fabric reports
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Publish to web is disabled or configured so only approved users can use existing public embed codes.
+Publish to web is disabled, or scoped to one or more security groups with new embed-code creation disabled.
 
-Public embed codes expose report content without sign-in. This check covers the tenant setting for creating codes; it does not inventory or revoke codes that already exist.
+The check verifies that the setting has at least one security group and that new embed-code creation is disabled. It does not inventory or revoke existing codes.
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Export and sharing settings**.
-2. Find **Publish to web**.
-3. Choose **Disabled**, or allow only existing embed codes and scope the setting to **Specific security groups**.
-4. Select **Apply**. Review existing embed codes separately and remove any that expose sensitive reports.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Export and sharing settings**, find **Publish to web**.
+4. Choose **Disabled**, or choose **Enabled**, allow only existing embed codes, and scope the setting to **Specific security groups** with at least one group selected.
+5. Select **Apply**. Review existing embed codes separately and remove any that expose sensitive reports.
 
 #### Related links
 
@@ -45,19 +46,19 @@ Public embed codes expose report content without sign-in. This check covers the 
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.9.1.4 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Export and sharing settings |
 | Area | External access and sharing |
 | Resource type | Tenant |
 | User impact | Medium |
-| Implementation cost | Medium |
-| MITRE ATT&CK | T1530 Data from Cloud Storage |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1567 Exfiltration Over Web Service |
 | Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 9.1.4 |
 | Benchmark level | L1 |
 | Benchmark profiles | E3 Level 1 |
-| Supports controls | cis-m365:9.1.4, nist-800-53-r5:AC-3 |
+| Supports controls | cis-m365:9.1.4, nist-800-53-r5:AC-22 |
 | PowerShell test | [Test-MtCisFabricPublishToWebRestricted](https://github.com/maester365/maester/blob/main/tests/cis/Test.CIS.M365.9.1.4.ps1) |
 | Services | Azure |
 

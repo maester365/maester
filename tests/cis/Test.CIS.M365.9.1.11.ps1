@@ -14,7 +14,7 @@
         Area               = 'applications',
         ResourceType       = 'Tenant',
         Severity           = 'Medium',
-        UserImpact         = 'Medium',
+        UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'T1078.004',
         Control            = ('cis-m365:9.1.11', 'nist-800-53-r5:AC-3'),

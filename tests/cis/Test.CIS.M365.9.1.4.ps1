@@ -15,7 +15,7 @@
         ResourceType       = 'Tenant',
         Severity           = 'Medium',
         UserImpact         = 'Medium',
-        ImplementationCost = 'Medium',
+        ImplementationCost = 'Low',
         Mitre              = 'T1567',
         Control            = ('cis-m365:9.1.4', 'nist-800-53-r5:AC-22'),
         Service            = 'Azure',

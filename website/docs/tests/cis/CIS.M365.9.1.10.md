@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.10 - (L1) Restrict service principal access to Fabric public APIs"
-description: "Service-principal access to Fabric public APIs is disabled or limited to an approved security group. This setting governs APIs protected by the Fabric permission model. Restricting the allowed service principals reduces the impact of a compromised application identity. Remediation action 1. Open th…"
+description: "Service-principal access to Fabric public APIs is disabled or limited to one or more security groups. This setting governs APIs protected by the Fabric permission model. Restricting the allowed service principals reduces the impact of a compromised application identity. Remediation action 1. Sign i…"
 slug: /tests/CIS.M365.9.1.10
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -12,7 +12,7 @@ keywords:
   - "Medium"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Developer settings"
   - "Applications and workload identities"
 ---
 
@@ -20,20 +20,21 @@ keywords:
 
 # CIS.M365.9.1.10 - (L1) Restrict service principal access to Fabric public APIs
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Service-principal access to Fabric public APIs is disabled or limited to an approved security group.
+Service-principal access to Fabric public APIs is disabled or limited to one or more security groups.
 
 This setting governs APIs protected by the Fabric permission model. Restricting the allowed service principals reduces the impact of a compromised application identity.
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Developer settings**.
-2. Find **Service principals can call Fabric public APIs**.
-3. Choose **Disabled**, or choose **Enabled** and scope access to **Specific security groups** containing only approved applications.
-4. Select **Apply**.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Developer settings**, find **Service principals can call Fabric public APIs**.
+4. Choose **Disabled**, or choose **Enabled** and scope access to **Specific security groups** containing the applications that need this access.
+5. Select **Apply**.
 
 #### Related links
 
@@ -48,11 +49,11 @@ This setting governs APIs protected by the Fabric permission model. Restricting 
 | Severity | Medium |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Developer settings |
 | Area | Applications and workload identities |
 | Resource type | Tenant |
-| User impact | Medium |
-| Implementation cost | Medium |
+| User impact | Low |
+| Implementation cost | Low |
 | MITRE ATT&CK | T1078.004 Cloud Accounts |
 | Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 9.1.10 |
 | Benchmark level | L1 |

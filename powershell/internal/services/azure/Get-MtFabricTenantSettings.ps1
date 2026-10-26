@@ -8,7 +8,7 @@
     #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Returns the full collection of Fabric tenant settings.')]
-    [OutputType([psobject[]])]
+    [OutputType([object[]])]
     param()
 
     if ($__MtSession.FabricCache.ContainsKey('TenantSettings')) {
@@ -20,13 +20,25 @@
         throw 'The connected Azure context did not return a Microsoft Fabric access token.'
     }
 
-    $response = Invoke-RestMethod -Method Get `
-        -Uri 'https://api.fabric.microsoft.com/v1/admin/tenantsettings' `
-        -Authentication Bearer `
-        -Token $accessToken.Token `
-        -ErrorAction Stop
+    $requestUri = 'https://api.fabric.microsoft.com/v1/admin/tenantsettings'
+    $settings = [System.Collections.Generic.List[object]]::new()
+    while (-not [string]::IsNullOrEmpty($requestUri)) {
+        $response = Invoke-RestMethod -Method Get `
+            -Uri $requestUri `
+            -Authentication Bearer `
+            -Token $accessToken.Token `
+            -ErrorAction Stop
 
-    $settings = if ($null -eq $response.tenantSettings) { @() } else { @($response.tenantSettings) }
+        foreach ($setting in @($response.value)) {
+            if ($null -ne $setting) {
+                $settings.Add($setting)
+            }
+        }
+
+        $requestUri = $response.continuationUri
+    }
+
+    $settings = $settings.ToArray()
     $__MtSession.FabricCache['TenantSettings'] = $settings
     return $settings
 }

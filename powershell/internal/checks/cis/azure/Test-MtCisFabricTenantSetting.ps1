@@ -49,14 +49,16 @@
 
     if ($Rule -eq 'PublishToWeb' -and $isEnabled) {
         $propertiesProperty = $setting.PSObject.Properties['properties']
-        $createP2wProperty = if ($null -eq $propertiesProperty -or $null -eq $propertiesProperty.Value) {
-            $null
+        $createP2wProperties = if ($null -eq $propertiesProperty -or $null -eq $propertiesProperty.Value) {
+            @()
         } else {
-            $propertiesProperty.Value.PSObject.Properties['createP2w']
+            @($propertiesProperty.Value | Where-Object { $_.name -eq 'CreateP2w' })
         }
 
-        $createP2wIsBoolean = $null -ne $createP2wProperty -and $createP2wProperty.Value -is [bool]
-        $createP2wIsDisabled = $createP2wIsBoolean -and -not $createP2wProperty.Value
+        $createP2wValue = if ($createP2wProperties.Count -eq 1) { $createP2wProperties[0].value } else { $null }
+        $parsedCreateP2wValue = $false
+        $createP2wIsBoolean = $createP2wValue -is [string] -and [bool]::TryParse($createP2wValue, [ref] $parsedCreateP2wValue)
+        $createP2wIsDisabled = $createP2wIsBoolean -and -not $parsedCreateP2wValue
         $additionalCondition = if (-not $createP2wIsBoolean) {
             'Not found or invalid'
         } elseif ($createP2wIsDisabled) {

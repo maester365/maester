@@ -1,5 +1,7 @@
 ﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    $script:fabricTestTokenKey = [byte[]](0..15)
+    $script:encryptedFabricTestToken = '76492d1116743f0423413b16050a5345MgB8ADgAbwBvADMAWgBoAGcAYQBPAEYAMwBhAHQARgBCAEYAeQA3AHgAbQBlAFEAPQA9AHwAYwAwAGYANwBlADUAMAA1ADcANwBmAGUANABmAGMAMQAxAGIAMgAyADMANAA4ADcANQA5AGMAZAA5ADQAMwAyADEAOABjADQAOQBjAGYAOAA4ADMAZAA2AGEAZgA1ADcAMAA1ADEANABkADIANABlAGEANABhADgAOABkAGUAZQBhADAAYwAwADIAYgBiADgAMQBkAGQAMAA1AGEAMgAzAGIAYQA3ADQAMgBlAGUAMAA3AGMANQA1AGMAMwA2ADIANwA1ADgAZgBiAGUAOQBlADcAYgBlAGYAOQA2ADAAMAA4AGYAZgBkADQANAA5AGMAOQA2AGQAMQAyAGEANgA1ADQANQAwADcAMABhADkAYQAxADIAMwBhADMAMQAxAGIAZQBjADgAYgA4ADYAMgBkADIANABlAGMANgBlADcAMQA='
 
     if (-not (Get-Command Get-AzAccessToken -ErrorAction SilentlyContinue)) {
         function global:Get-AzAccessToken {
@@ -27,14 +29,15 @@ Describe 'Get-MtFabricTenantSettings' {
 
     It 'requests a secure Fabric token and returns the tenant settings' {
         Mock -ModuleName Maester Get-AzAccessToken {
-            [pscustomobject]@{ Token = ConvertTo-SecureString 'not-a-real-token' -AsPlainText -Force }
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
         }
         Mock -ModuleName Maester Invoke-RestMethod {
             [pscustomobject]@{
-                tenantSettings = @(
+                value = @(
                     [pscustomobject]@{ settingName = 'FirstSetting' }
                     [pscustomobject]@{ settingName = 'SecondSetting' }
                 )
+                continuationUri = $null
             }
         }
 
@@ -53,9 +56,40 @@ Describe 'Get-MtFabricTenantSettings' {
         }
     }
 
-    It 'returns no settings when the response has no tenantSettings property' {
+    It 'follows continuationUri and combines settings from every page' {
         Mock -ModuleName Maester Get-AzAccessToken {
-            [pscustomobject]@{ Token = ConvertTo-SecureString 'not-a-real-token' -AsPlainText -Force }
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
+        }
+        Mock -ModuleName Maester Invoke-RestMethod {
+            if ($Uri -eq 'https://api.fabric.microsoft.com/v1/admin/tenantsettings') {
+                [pscustomobject]@{
+                    value = @([pscustomobject]@{ settingName = 'FirstSetting' })
+                    continuationUri = 'https://api.fabric.microsoft.com/v1/admin/tenantsettings?continuationToken=page2'
+                }
+            } else {
+                [pscustomobject]@{
+                    value = @([pscustomobject]@{ settingName = 'SecondSetting' })
+                    continuationUri = $null
+                }
+            }
+        }
+
+        $settings = @(InModuleScope Maester { Get-MtFabricTenantSettings })
+
+        $settings | Should -HaveCount 2
+        $settings[0].settingName | Should -Be 'FirstSetting'
+        $settings[1].settingName | Should -Be 'SecondSetting'
+        Should -Invoke Invoke-RestMethod -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Uri -eq 'https://api.fabric.microsoft.com/v1/admin/tenantsettings'
+        }
+        Should -Invoke Invoke-RestMethod -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Uri -eq 'https://api.fabric.microsoft.com/v1/admin/tenantsettings?continuationToken=page2'
+        }
+    }
+
+    It 'returns no settings when the response has no value property' {
+        Mock -ModuleName Maester Get-AzAccessToken {
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
         }
         Mock -ModuleName Maester Invoke-RestMethod { [pscustomobject]@{} }
 
@@ -64,10 +98,10 @@ Describe 'Get-MtFabricTenantSettings' {
 
     It 'caches tenant settings for the current Maester run' {
         Mock -ModuleName Maester Get-AzAccessToken {
-            [pscustomobject]@{ Token = ConvertTo-SecureString 'not-a-real-token' -AsPlainText -Force }
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
         }
         Mock -ModuleName Maester Invoke-RestMethod {
-            [pscustomobject]@{ tenantSettings = @([pscustomobject]@{ settingName = 'FirstSetting'; enabled = $true }) }
+            [pscustomobject]@{ value = @([pscustomobject]@{ settingName = 'FirstSetting'; enabled = $true }); continuationUri = $null }
         }
 
         InModuleScope Maester {
@@ -81,7 +115,7 @@ Describe 'Get-MtFabricTenantSettings' {
 
     It 'propagates errors from the Fabric admin API' {
         Mock -ModuleName Maester Get-AzAccessToken {
-            [pscustomobject]@{ Token = ConvertTo-SecureString 'not-a-real-token' -AsPlainText -Force }
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
         }
         Mock -ModuleName Maester Invoke-RestMethod { throw 'Fabric settings request failed.' }
 
@@ -169,7 +203,10 @@ Describe 'Test-MtCisFabricTenantSetting' {
                 settingName = 'PublishToWeb'
                 enabled = $true
                 enabledSecurityGroups = @('group-id')
-                properties = [pscustomobject]@{ createP2w = $false }
+                properties = @(
+                    [pscustomobject]@{ name = 'AnotherSetting'; value = 'true' }
+                    [pscustomobject]@{ name = 'CreateP2w'; value = 'false' }
+                )
             })
         }
 
@@ -184,7 +221,7 @@ Describe 'Test-MtCisFabricTenantSetting' {
                 settingName = 'PublishToWeb'
                 enabled = $true
                 enabledSecurityGroups = @('group-id')
-                properties = [pscustomobject]@{ createP2w = $true }
+                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'true' })
             })
         }
 
@@ -199,7 +236,7 @@ Describe 'Test-MtCisFabricTenantSetting' {
                 settingName = 'PublishToWeb'
                 enabled = $true
                 enabledSecurityGroups = @('group-id')
-                properties = [pscustomobject]@{ createP2w = 'false' }
+                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'not-a-boolean' })
             })
         }
 
@@ -276,7 +313,7 @@ Describe 'Test-MtCisFabricTenantSetting' {
                 settingName = 'PublishToWeb'
                 enabled = $true
                 enabledSecurityGroups = @()
-                properties = [pscustomobject]@{ createP2w = $false }
+                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'false' })
             })
         }
 

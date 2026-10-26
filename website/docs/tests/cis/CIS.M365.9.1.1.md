@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.1 - (L1) Restrict guest access to Fabric"
-description: "Guest access to Microsoft Fabric is disabled or limited to an approved security group. Limiting which guest accounts can enter Fabric reduces exposure from external identities. Item and workspace permissions still determine which content a guest can access. Remediation action 1. Open the Fabric adm…"
+description: "Guest access to Microsoft Fabric is disabled or limited to one or more security groups. Limiting which guest accounts can enter Fabric reduces exposure from external identities. Item and workspace permissions still determine which content a guest can access. Remediation action 1. Sign in to Microso…"
 slug: /tests/CIS.M365.9.1.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -12,7 +12,7 @@ keywords:
   - "Medium"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Export and sharing settings"
   - "External access and sharing"
 ---
 
@@ -20,20 +20,21 @@ keywords:
 
 # CIS.M365.9.1.1 - (L1) Restrict guest access to Fabric
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Guest access to Microsoft Fabric is disabled or limited to an approved security group.
+Guest access to Microsoft Fabric is disabled or limited to one or more security groups.
 
 Limiting which guest accounts can enter Fabric reduces exposure from external identities. Item and workspace permissions still determine which content a guest can access.
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Export and sharing settings**.
-2. Find **Guest users can access Microsoft Fabric**.
-3. Choose **Disabled**, or choose **Enabled** and scope access to **Specific security groups** with an approved group.
-4. Select **Apply**.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Export and sharing settings**, find **Guest users can access Microsoft Fabric**.
+4. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups** with at least one group selected.
+5. Select **Apply**.
 
 #### Related links
 
@@ -48,11 +49,11 @@ Limiting which guest accounts can enter Fabric reduces exposure from external id
 | Severity | Medium |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Export and sharing settings |
 | Area | External access and sharing |
 | Resource type | Tenant |
 | User impact | Medium |
-| Implementation cost | Medium |
+| Implementation cost | Low |
 | MITRE ATT&CK | T1078.004 Cloud Accounts |
 | Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 9.1.1 |
 | Benchmark level | L1 |
