@@ -200,6 +200,22 @@ Describe 'Test-MtExoAppRbacOverlap' {
         $script:Result | Should -Not -BeLike '*Well done*'
     }
 
+    It 'Lists an app for review when a RestrictAccess policy applies to all applications' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [PSCustomObject]@{ AppId = '*'; AccessRight = 'RestrictAccess' }
+        }
+        Mock -ModuleName Maester Get-ManagementRoleAssignment {
+            [PSCustomObject]@{ App = 'app-1'; Role = 'Application Mail.Read'; Enabled = $true; CustomResourceScope = 'Sales mailboxes' }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals/app-1/appRoleAssignments' } {
+            [PSCustomObject]@{ resourceId = $script:GraphSpId; appRoleId = $script:MailReadId }
+        }
+
+        Test-MtExoAppRbacOverlap | Should -BeTrue
+        $script:Result | Should -BeLike '*Application Access Policy limits that grant*'
+        $script:Result | Should -BeLike '*| app-link | appid-1 | Mail.Read | Mail.Read | Sales mailboxes |*'
+    }
+
     It 'Still fails when the policy cannot restrict the tenant-wide permission' {
         Mock -ModuleName Maester Get-ApplicationAccessPolicy {
             [PSCustomObject]@{ AppId = 'appid-1'; AccessRight = 'RestrictAccess' }

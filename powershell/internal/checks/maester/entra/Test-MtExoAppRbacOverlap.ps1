@@ -71,11 +71,12 @@ function Test-MtExoAppRbacOverlap {
 
     # An Application Access Policy with RestrictAccess limits an app's Entra grant to a set of mailboxes,
     # so for those apps a policy-supported Entra grant does not cover every mailbox. They are listed for review, not failed.
+    # A policy created with -AppId '*' applies to all applications.
     $restrictedAppIds = @()
     try {
         $restrictedAppIds = @(Get-ApplicationAccessPolicy -ErrorAction Stop |
             Where-Object { $_.AccessRight -eq 'RestrictAccess' } |
-            ForEach-Object { [string]$_.AppId })
+            ForEach-Object { @($_.AppId) } | ForEach-Object { [string]$_ })
     } catch {
         if ($_.Exception.Message -notlike "*couldn't be found*") { throw }
     }
@@ -125,7 +126,8 @@ function Test-MtExoAppRbacOverlap {
                         Scope       = [string]$scope
                     }
                     # A policy only limits the Entra grant if it supports that permission.
-                    if ([string]$servicePrincipal.appId -in $restrictedAppIds -and $grant -in $policySupportedPermissions) {
+                    $isRestricted = '*' -in $restrictedAppIds -or [string]$servicePrincipal.appId -in $restrictedAppIds
+                    if ($isRestricted -and $grant -in $policySupportedPermissions) {
                         $restrictedFindings += $finding
                     } else {
                         $findings += $finding
