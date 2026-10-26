@@ -1,4 +1,4 @@
-<#
+﻿<#
 .DISCLAIMER
 	THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 	ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
@@ -36,6 +36,8 @@ $__MtSession = @{
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
 	IncludeAffectedObjects  = $false              # Set by Invoke-Maester -IncludeAffectedObjects; gates per-test object capture
 	Console                = $null               # Get-MtConsoleMode result for the current Invoke-Maester run
+	PackConnections        = @{}                 # Maester Packs: service -> connection state a pack connector set with Set-MtConnectionState
+	ReportAttachments      = $null               # Add-MtReportAttachment: reports of other tools embedded in the HTML report
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

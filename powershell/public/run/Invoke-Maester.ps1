@@ -121,6 +121,21 @@
     Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
     .EXAMPLE
+    Invoke-Maester -Pack ZTA
+
+    Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default. Other installed packs do not run.
+
+    .EXAMPLE
+    Invoke-Maester -Pack ZTA -SkipBuiltIn
+
+    Runs only the Zero Trust Assessment pack.
+
+    .EXAMPLE
+    Invoke-Maester -AllPacks
+
+    Runs the tests that ship with Maester and every installed pack. Without -Pack or -AllPacks, installed packs do not run.
+
+    .EXAMPLE
     Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 
     Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. A test named by its exact ID runs even if it is a preview or long-running test.
@@ -171,6 +186,16 @@
 
         # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
+
+        # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
+        # '*' wildcards are allowed. An installed pack runs only when it is named here (or turned on with
+        # "Enabled": true in the config), so installing a pack never adds its tests to every run. A pack named
+        # here runs even if it is off by default or in the config, and its long-running and preview tests run
+        # too. Other packs do not run; the other tests are not affected.
+        [string[]] $Pack,
+
+        # Run every installed pack, as if each were named with -Pack, except those the config turns off.
+        [switch] $AllPacks,
 
         # Include long running tests.
         [switch] $IncludeLongRunning,
@@ -314,7 +339,15 @@
         [switch] $DryRun,
 
         # Run only the custom tests under -Path. The tests that ship with Maester always run otherwise.
-        [switch] $SkipBuiltIn
+        # The packs that ship with Maester are left out too, except those named in -Pack.
+        [switch] $SkipBuiltIn,
+
+        # The pack lock file to run the installed packs from. Defaults to the MAESTER_PACK_LOCK environment
+        # variable, then to the maester-packs.lock.json beside the Maester config found from -Path.
+        [string] $PackLock,
+
+        # Do not run any Maester Pack, installed or shipped with Maester.
+        [switch] $SkipPack
     )
 
     end {
@@ -451,7 +484,10 @@
             $SkipBuiltIn = [switch]$true
             $testSource = Resolve-MtTestSource -Path $Path -SkipBuiltIn
         }
-        if ($testSource.Error) {
+        # -SkipBuiltIn with no custom tests is fine when the run names packs: their tests are what it runs.
+        $packNamed = -not $SkipPack -and ($Pack -or $AllPacks -or @($runConfig.Selection.Pack | Where-Object { $_ }).Count -gt 0 -or
+            @($TestId | Where-Object { $_ -match '^MP\.[^.]+\.' }).Count -gt 0)
+        if ($testSource.Error -and -not ($testSource.NoCustomTests -and $packNamed)) {
             Write-Error -Message $testSource.Error
             return
         }
@@ -472,12 +508,12 @@
         }
 
         $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
-            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite `
+            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Pack $Pack `
             -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
         # The selectors live in $selection from here on. A test runs in a child scope of this function, so a
         # test that reads a $Severity or $Product it never set would otherwise see the value of the parameter.
-        $Product = $Feature = $Area = $Severity = $Suite = $null
+        $Product = $Feature = $Area = $Severity = $Suite = $Pack = $null
         $Tag = $selection.Tag
         $ExcludeTag = $selection.ExcludeTag
         $IncludePreview = [switch]$selection.IncludePreview
@@ -677,6 +713,34 @@
             }
         }
 
+        # Maester Packs: the loader gate decides which packs may load before any of their code runs, then
+        # their connectors join the service registry and their tests join the custom tests (Maester Packs
+        # design, sections 4.4 and 6.3). A pack test is always Source = Custom and carries Package.
+        $nativePack = @()
+        $packSet = @()
+        if (-not $SkipPack) {
+            Write-MtProgress -Activity 'Starting Maester' -Status 'Checking Maester Packs...' -Force
+            # A test ID of a pack (MP.<code>.<n> or MP.<code>.*) names its pack too.
+            $packSelect = @($selection.Pack | Where-Object { $_ })
+            if ($packSelect.Count -eq 0 -and $TestId) {
+                $packSelect = @($TestId | Where-Object { $_ -match '^MP\.[^.]+\.' } | ForEach-Object { ($_ -replace '^MP\.', '') -replace '\.[^.]*$', '' } | Select-Object -Unique)
+            }
+            $packSet = @(Initialize-MtPackSet -PackLock $PackLock -Path $testSource.ConfigSearchPath -RunConfig $runConfig -Select $packSelect -NamedOnly:(-not $AllPacks))
+            if ($SkipBuiltIn) { $packSet = @($packSet | Where-Object { -not $_.BuiltIn -or $_.Selected }) }
+            $nativePack = @(Get-MtPackTestInventory -PackSet $packSet)
+            # A pack test never replaces a built-in or custom test with the same ID.
+            $takenIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            foreach ($t in @($nativeCustom) + @(Get-MtTestCatalog)) { if ($t.Id) { $null = $takenIds.Add($t.Id) } }
+            $clashing = @($nativePack | Where-Object { $_.Id -and $takenIds.Contains($_.Id) })
+            if ($clashing.Count -gt 0) {
+                Write-Warning "These pack tests have the ID of another test and were not run: $(($clashing | ForEach-Object { "$($_.Id) ($($_.PackId))" }) -join ', ')."
+                $nativePack = @($nativePack | Where-Object { -not ($_.Id -and $takenIds.Contains($_.Id)) })
+            }
+        } else {
+            $null = Register-MtPackService -PackSet @()
+            $script:__MtPackSet = @()
+        }
+
         # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
         $builtInInventory = $null
         $customInventory = @()
@@ -745,7 +809,7 @@
         # IDs named in the selection or the config that match no test, Pester or native (never wildcards or
         # instances of a declared family).
         if ($needsIdSelection) {
-            $nativeAll = @($nativeBuiltIn) + @($nativeCustom)
+            $nativeAll = @($nativeBuiltIn) + @($nativeCustom) + @($nativePack)
             $plan.UnknownIds = @($plan.UnknownIds | Where-Object {
                     $id = $_
                     -not ($nativeAll | Where-Object { $_.Id -eq $id -or ($_.InstanceSource -and $id -like "$($_.Id).*") })
@@ -768,7 +832,7 @@
         }
 
         # Stages 2, 5 and 6 for native tests: the tenant context, then selection and applicability.
-        $nativeTests = @($nativeBuiltIn) + @($nativeCustom)
+        $nativeTests = @($nativeBuiltIn) + @($nativeCustom) + @($nativePack)
         $neededServices = @($nativeTests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading the tenant context...' -Force
         # The dashboard shows the tenant and the services while they are read, and fills in each answer as it comes.
@@ -961,7 +1025,13 @@
             }
 
             if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-                $output = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
+                # Attachments keep their name and size: their content is another tool's report, embedded only in the HTML report.
+                $jsonResults = $maesterResults
+                if ($maesterResults.PSObject.Properties['Attachments']) {
+                    $jsonResults = $maesterResults | Select-Object -Property * -ExcludeProperty Attachments
+                    $jsonResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($maesterResults.Attachments | Select-Object -Property * -ExcludeProperty Content)
+                }
+                $output = $jsonResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
                 if ($redactNonHtml) {
                     $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
                 }
@@ -1023,8 +1093,13 @@
                 $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
                 if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
-                    # Open test results in the default browser.
-                    Invoke-Item $out.OutputHtmlFile | Out-Null
+                    # Open test results in the default browser. A headless machine can report itself as interactive
+                    # but have no program to open the file, which must not fail a run whose report is already written.
+                    try {
+                        Invoke-Item $out.OutputHtmlFile -ErrorAction Stop | Out-Null
+                    } catch {
+                        Write-Warning "Could not open the report '$($out.OutputHtmlFile)': $($_.Exception.Message) Use -NonInteractive to skip opening it."
+                    }
                 }
             }
 
@@ -1053,6 +1128,10 @@
             try {
                 if (-not $NonInteractive.IsPresent) {
                     Write-MtRunSummary -MaesterResults $maesterResults -ReportPath $out.OutputHtmlFile -Console $console -Renderer $renderer
+                    # Maester runs on sponsorships: say so, with a link to maester.dev/sponsor (Output.SponsorMessage).
+                    if (-not ($outputSection -and $outputSection.PSObject.Properties['SponsorMessage'] -and $outputSection.SponsorMessage -eq $false)) {
+                        Write-MtSponsorMessage -Console $console
+                    }
                 }
 
                 # GitHub Actions and Azure Pipelines annotations for the first Failed and Error rows (Output.CIAnnotations).

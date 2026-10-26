@@ -14,6 +14,7 @@ import ConfigPage from "@/pages/ConfigPage"
 import ExcelPage from "@/pages/ExcelPage"
 import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
+import ReportAttachmentPage from "@/pages/ReportAttachmentPage"
 import { reportMainElementId } from "@/lib/reportLinks"
 
 // Component to scroll to top on route change.
@@ -36,6 +37,8 @@ function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null>
 function App({ testResults }: { testResults: unknown }) {
   const mainRef = useRef<HTMLElement>(null)
   const { pathname } = useLocation()
+  // An embedded report fills the panel, without the page padding.
+  const isAttachment = pathname.startsWith("/reports/")
   const page = pathname === "/affected-objects" ? <AffectedObjectsPage />
     : pathname === "/settings" ? <SettingsPage />
       : pathname === "/system" ? <SystemPage />
@@ -55,9 +58,11 @@ function App({ testResults }: { testResults: unknown }) {
               <Breadcrumb />
               <main id={reportMainElementId} ref={mainRef} className="flex-1 overflow-auto">
                 <ScrollToTop mainRef={mainRef} />
-                <div className="p-6">
-                  {page}
-                </div>
+                {isAttachment ? <ReportAttachmentPage /> : (
+                  <div className="p-6">
+                    {page}
+                  </div>
+                )}
               </main>
             </div>
           </div>

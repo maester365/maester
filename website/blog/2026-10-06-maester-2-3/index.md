@@ -4,6 +4,9 @@ description: A new Affected objects report, security checks for Microsoft Entra 
 slug: maester-2-3
 authors: [maesterteam]
 tags: [maester, release, security, entra, m365, agents, azuredevops, activedirectory]
+image: ./img/card.png
+card_headline: "Maester *2.3*"
+card_label: Release
 hide_table_of_contents: false
 date: 2026-10-06
 ---

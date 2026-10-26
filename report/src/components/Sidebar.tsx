@@ -17,6 +17,7 @@ import {
   BookOpen,
   MessageCircle,
   Building2,
+  Package,
 } from "lucide-react"
 import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "@/lib/router"
@@ -24,6 +25,7 @@ import React, { useState, createContext, useContext, useRef, useEffect } from "r
 import maesterLogo from "@/assets/maester-64.png"
 import { useTenant } from "@/context/TenantContext"
 import { scrollReportToTop } from "@/lib/reportLinks"
+import { getAttachmentPath, getReportAttachments, type ReportAttachment } from "@/lib/reportAttachments"
 
 interface SidebarContextType {
   isCollapsed: boolean
@@ -148,6 +150,24 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
   )
 }
 
+// An embedded report (Add-MtReportAttachment), shown in the main panel.
+function ReportNavItem({ attachment, isCollapsed, isActive }: { attachment: ReportAttachment; isCollapsed: boolean; isActive: boolean }) {
+  return (
+    <Link
+      to={getAttachmentPath(attachment)}
+      title={attachment.Name}
+      className={cx(
+        "group relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
+        isActive
+          ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+      )}
+    >
+      <Package className={cx("size-[18px] shrink-0", isCollapsed && "mx-auto")} />
+      {!isCollapsed && <span className="flex-1 truncate">{attachment.Name}</span>}
+    </Link>
+  )
+}
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -175,6 +195,9 @@ export function Sidebar() {
   // page when the report actually carries one.
   const hasAffectedObjects =
     tenants.some((tenant) => Array.isArray(tenant?.AffectedObjects) && tenant.AffectedObjects.length > 0)
+
+  // Reports that packs and tests embedded in this report, for the selected tenant.
+  const reportAttachments = getReportAttachments(selectedTenant)
 
 
   return (
@@ -305,6 +328,21 @@ export function Sidebar() {
             isActive={currentView === "print"}
           />
         </NavGroup>
+
+        {reportAttachments.length > 0 && (
+          <div className="pt-3">
+            {!isCollapsed && (
+              <div className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                Reports
+              </div>
+            )}
+            <div className="space-y-0.5">
+              {reportAttachments.map((attachment) => (
+                <ReportNavItem key={attachment.Id} attachment={attachment} isCollapsed={isCollapsed} isActive={pathname === getAttachmentPath(attachment)} />
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Settings / Tenant info at bottom */}

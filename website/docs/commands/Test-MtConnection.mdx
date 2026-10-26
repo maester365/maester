@@ -73,7 +73,7 @@ Returns $false if Connect-MtGitHub has not been called in this session.
 ### -Service
 
 The service to check the connection for.
-Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'.
+Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams', and the service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace (Get-MtConnector lists them).
 The default Boolean check is for Microsoft Graph.
 When -Details is used without -Service, all services are checked and summarized.
 
