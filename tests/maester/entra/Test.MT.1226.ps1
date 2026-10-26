@@ -99,7 +99,8 @@
         if ($result) {
             $resultMarkdown += 'No GitHub or GitLab federated identity credentials were found with subjects missing the checked immutable identifier markers.'
         } elseif ($applicableCount -eq 0) {
-            Add-MtTestResultDetail -SkippedBecause NotApplicable -Description 'No applications with GitHub or GitLab federated credentials were found.'
+            Write-Verbose "No applications with GitHub or GitLab federated credentials were found."
+            Add-MtTestResultDetail -SkippedBecause NotApplicable
             return $null
         } else {
             $resultMarkdown += "Found $($findings.Count) GitHub or GitLab federated identity credentials with subjects missing immutable identifier markers."
@@ -116,7 +117,8 @@
         $null = Add-MtTestResultDetail -Result $resultMarkdown
         return $result
     } else {
-        Add-MtTestResultDetail -SkippedBecause NotApplicable -Description 'No applications with federated credentials were found.'
+        Write-Verbose "No applications with federated credentials were found."
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }
 }
