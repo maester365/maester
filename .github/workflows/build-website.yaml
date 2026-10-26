@@ -21,6 +21,7 @@ on:
     branches: ["main"]
     paths:
       - "build/Update-CommandReference.ps1"
+      - "build/eidsca/*.json"
       - "powershell/**"
       - "tests/**"
       - "website/**"

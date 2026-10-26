@@ -97,8 +97,11 @@ The test was not run because of what you asked for.
 | `ExcludedByTag` | A tag in `-ExcludeTag`, `Selection.ExcludeTag` or `PesterConfiguration.Filter.ExcludeTag` selects the test. | Remove the tag from the exclusions. |
 | `Preview` | A test with `Lifecycle = 'Preview'` (in a Pester-format test, the `Preview` tag), excluded by default. | `-IncludePreview`, any `-Tag`, `Selection.IncludePreview`, or name its exact ID in `-TestId`. |
 | `LongRunning` | A test with `LongRunning` (in a Pester-format test, the `LongRunning` tag), excluded by default. | `-IncludeLongRunning`, `-Tag LongRunning` or `-Tag CAWhatIf`, `Selection.IncludeLongRunning`, or name its exact ID in `-TestId`. |
-| `OptInServiceNotConnected` | A test that needs Active Directory, and Active Directory is not connected. These tests are opt-in. | `Connect-Maester -Service ActiveDirectory`. |
+| `OptInServiceNotConnected` | A test that needs an opt-in service (Active Directory, or a pack connector marked `OptIn`) that is not connected. | `Connect-Maester -Service ActiveDirectory`, or the service `ReasonDetail` names. |
 | `DryRun` | `-DryRun`: the test would have run. | Run without `-DryRun`. |
+| `PackUnavailable` | A test of a [Maester Pack](../packs/index.md) that cannot run on this computer: the pack or a module it needs is not in the local pack store, or its files changed after it was approved. | `Restore-MtPack`, or `Install-MtPack` again to review the change. |
+| `PackNotAllowed` | The pack policy (`PackPolicy`, `MAESTER_PACK_POLICY` or the machine policy file) does not allow the pack. `ReasonDetail` names the rule. | Ask whoever sets the policy, or remove the pack. |
+| `PackBlocked` | The pack is on the signed Maester Packs blocklist. `ReasonDetail` is the advisory. | Uninstall the pack. |
 | `DeselectedAtRuntime` | Pester-format tests only: an instance of a test whose name is built at run time ran although the run selected other instances or excluded this one. Its result is not reported. | Nothing; select the instances you want by ID. |
 
 A wildcard in `-TestId` does not lift the Preview and long-running exclusions; an exact ID does.
@@ -110,7 +113,7 @@ The test applies to some tenants but not, or not now, to this one.
 | Reason code | Meaning | What you can do |
 | --- | --- | --- |
 | `ServiceNotConnected` | A service in the test's `Service` list is not connected. `ReasonDetail` names it. | Connect it, for example `Connect-Maester -Service ExchangeOnline`. |
-| `ServiceNotRegistered` | A custom test names a service this Maester version does not know. | Fix the name (see the [service list](../writing-tests/index.mdx#service)) or update Maester. |
+| `ServiceNotRegistered` | A custom test names a service this Maester version does not know, or the service of a pack connector that is not installed. | Fix the name (see the [service list](../writing-tests/index.mdx#service)), install the pack, or update Maester. |
 | `LicenseNotFound` | The tenant has none of the licences in `License`. | Nothing, if the licence is not in use. To force the decision, set `Environment.Licenses`, or turn the check off with `Environment.Enforce.License = false`. |
 | `TenantTypeMismatch` | Tenant type is enforced and the test does not apply to this type of tenant. | Turn off `Environment.Enforce.TenantType`, or correct `Environment.TenantType`. |
 | `CloudMismatch` | Cloud is enforced and the test does not apply to this cloud. | Turn off `Environment.Enforce.Cloud`, or correct `Environment.Cloud`. |
@@ -139,6 +142,7 @@ the run and the CI test results; errors raised by the test itself do not, unless
 | `InstanceSourceFailed` | Maester | A family's instance source threw. One row on the parent ID. | Read the message; often a permission or connection problem. |
 | `InvalidInstanceId` | Maester | A family's instance source returned an instance whose `Id` is missing, invalid or repeated. One row on the parent ID. | For a custom test: return unique IDs that match `^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`. |
 | `ForeignModuleLoaded` | Maester | Another Maester version was loaded into the session while the test ran (usually because something called a 2.x function), so the result cannot be trusted. Maester removes it and carries on. | Uninstall Maester 2.x: `Uninstall-Module Maester -MaximumVersion 2.99.99 -AllVersions`. |
+| `PackLoadFailed` | Maester | A Maester Pack could not be loaded: its manifest has a problem, a pack it requires did not load, or a module it uses changed after approval. Every test of the pack has this row. | Read `ReasonDetail`; `Get-MtPack` shows the same reason. |
 | `PesterNotAvailable` | Maester | The run has Pester-format tests and Pester 5.7.1 or later is not installed. | `Install-Module Pester -MinimumVersion 5.7.1 -Scope CurrentUser`. |
 
 ## Not in the result at all

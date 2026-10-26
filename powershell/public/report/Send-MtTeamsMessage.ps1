@@ -6,18 +6,18 @@
     .DESCRIPTION
     Uses Graph API to send an adaptive card in a teams channel with the summary of the Maester test results.
 
-    This command requires the ChannelMessage.Send delegate permission in the Microsoft Graph API.
+    The Graph API parameter set requires the delegated ChannelMessage.Send permission in Microsoft Graph and sends
+    the message on behalf of a signed-in work or school account.
 
-    Note: Teamwork.Migrate.All application permission is required if running in a non-interactive environment (Azure DevOps, GitHub) to send messages to a channel.
+    Teamwork.Migrate.All is an application permission for importing messages during a migration. It is not supported
+    for sending routine Teams alerts. Use the webhook parameter set in non-interactive environments such as Azure
+    DevOps and GitHub Actions.
 
     When running interactively this can be done by running the following command:
 
     ```
     Connect-MtGraph -SendTeamsMessage
     ```
-
-    When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
-    must be granted to the application in the Microsoft Entra portal.
 
     .EXAMPLE
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"

@@ -1,0 +1,7 @@
+{
+  "Comment": "Where Maester Packs publishes the signed pack blocklist, and the ECDSA P-256 public keys (SubjectPublicKeyInfo, base64) that may sign it. See docs/proposals/maester-packs-design.md, section 9.8. No key is configured until the signing keys exist; until then there is no blocklist to check.",
+  "Blocklist": {
+    "Url": "https://packs.maester.cloud/blocklist.json",
+    "Keys": []
+  }
+}

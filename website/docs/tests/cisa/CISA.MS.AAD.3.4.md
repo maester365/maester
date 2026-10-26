@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.3.4"
-  - "High"
+  - "Low"
   - "CISA"
   - "Entra ID"
   - "Authentication methods"
@@ -48,7 +48,7 @@ If phishing-resistant MFA has not been enforced for all users yet, create a Cond
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.3.4 |
-| Severity | High |
+| Severity | Low |
 | Suite | CISA |
 | Product | Entra ID |
 | Feature | Authentication methods |

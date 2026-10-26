@@ -142,7 +142,7 @@ older `psnext` branch):
   IDs in the run config are free text.
 - **Reserved prefixes.** `MT.`, `CISA.`, `CIS.`, `EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and
   `MT1060.` belong to built-ins, and `MP.` is reserved for Maester Packs, whose test IDs
-  are `MP.<publisher code>.<number>` (section 12.2). A custom test whose ID uses one of
+  are `MP.<pack code>.<number>` (section 12.2). A custom test whose ID uses one of
   these prefixes but is not a built-in ID still runs, with one warning listing those IDs. An ID that
   equals a built-in ID follows the collision rules in section 8. Custom tests should
   use their own prefix (`CONTOSO.1001`).
@@ -1372,7 +1372,7 @@ additive:
 - `RequiresMaester`;
 - the reserved `Package` field, with `Source = Custom` on pack rows (appendix A.6);
 - the service registry and the parameter-kind registry as the extension points;
-- the reserved `MP.` test ID prefix: every pack test ID is `MP.<publisher code>.<number>`
+- the reserved `MP.` test ID prefix: every pack test ID is `MP.<pack code>.<number>`
   (section 3.1).
 
 ## 13. Parallel-readiness rules adopted now
