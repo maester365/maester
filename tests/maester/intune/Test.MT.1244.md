@@ -1,0 +1,31 @@
+﻿Ensure at least one **assigned** Android app protection policy requires a strong app PIN.
+
+An app protection policy applies to a phone the organization never enrolled. On such a phone the app PIN is the only gate between whoever is holding the device and the organization's mail, files and chats inside Outlook, Teams and the Office apps: there is no device lock the organization can require, and no remote lock it can trigger.
+
+A PIN that is required but four digits long and retried without limit is a lock with the key left beside it. Three settings together make it a control: the PIN itself, a length that resists guessing, and a retry limit that wipes the organization's data before the guessing succeeds.
+
+**All three are read from the same policy.** Intune keeps and returns the minimum PIN length and the retry limit whether or not a PIN is required, so a policy can carry a six-character minimum while the PIN itself is switched off. A pass needs the whole set on one policy, assigned to users.
+
+Policies that are **not assigned** to any group are reported by this test but do not count towards a pass, because an app protection policy with no assignment is never applied to a user.
+
+#### Remediation action
+
+1. Navigate to the [Microsoft Intune admin center](https://intune.microsoft.com).
+2. Go to **Apps** > **App protection policies**.
+3. Select an existing **Android** policy, or select **+ Create policy** and choose **Android**.
+4. Under **Access requirements**, set **PIN for access** to **Require**.
+5. Set **Simple PIN** to **Block** and **Select minimum PIN length** to **6** or more.
+6. Under **Conditional launch** > **App conditions**, set **Max PIN attempts** to **5** or fewer and the action to **Reset PIN** or **Wipe data**.
+7. On the **Assignments** tab, assign the policy to the user groups whose apps hold organization data.
+8. Select **Next** and then **Create** or **Save**.
+
+Android also offers **Device lock required** (`deviceLockRequired`) with an action when it is not set. That is a separate condition from the app PIN and is not evaluated by this test.
+
+#### Related links
+
+- [Microsoft Learn - Android app protection policy settings](https://learn.microsoft.com/intune/app-management/protection/ref-settings-android)
+- [Microsoft Learn - Data protection framework using app protection policies](https://learn.microsoft.com/intune/app-management/protection/data-protection-framework)
+- [Microsoft Learn - Create and assign app protection policies](https://learn.microsoft.com/intune/app-management/protection/create-policy)
+
+<!--- Results --->
+%TestResult%
