@@ -58,8 +58,10 @@
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
         'Add-MtMaesterAppFederatedCredential',
+        'Add-MtReportAttachment',
         'Add-MtTestResultDetail',
         'Clear-MtADCache',
+        'Clear-MtConnectionState',
         'Clear-MtDnsCache',
         'Clear-MtExoCache',
         'Clear-MtGraphCache',
@@ -83,6 +85,8 @@
         'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup',
         'Get-MtConditionalAccessPolicy',
+        'Get-MtConnectionState',
+        'Get-MtConnector',
         'Get-MtExo',
         'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope',
@@ -90,6 +94,7 @@
         'Get-MtHtmlReport',
         'Get-MtLicenseInformation',
         'Get-MtMaesterApp',
+        'Get-MtPack',
         'Get-MtRegistrableDomain',
         'Get-MtRole',
         'Get-MtRoleMember',
@@ -105,6 +110,7 @@
         'Get-MtUserAuthenticationMethodInfoByType',
         'Import-MtMaesterResult',
         'Install-MaesterTests',
+        'Install-MtPack',
         'Invoke-Maester',
         'Invoke-MtAzureRequest',
         'Invoke-MtAzureResourceGraphRequest',
@@ -113,14 +119,22 @@
         'Invoke-MtTest',
         'Merge-MtMaesterResult',
         'New-MtMaesterApp',
+        'New-MtPack',
         'New-MtTest',
         'Resolve-SPFRecord',
+        'Restore-MtPack',
         'Send-MtMail',
         'Send-MtTeamsMessage',
+        'Set-MtConnectionState',
         'Test-MtConditionalAccessWhatIf',
         'Test-MtConnection',
+        'Test-MtPack',
+        'Uninstall-MtPack',
         'Update-MaesterTests',
-        'Update-MtMaesterApp'
+        'Update-MtMaesterApp',
+        'Update-MtPack',
+        'Write-MtTestOutput',
+        'Write-MtTestProgress'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

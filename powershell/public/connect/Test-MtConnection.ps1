@@ -7,7 +7,7 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. The default Boolean check is for Microsoft Graph. When -Details is used without -Service, all services are checked and summarized.
+    The service to check the connection for. Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams', and the service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace (Get-MtConnector lists them). The default Boolean check is for Microsoft Graph. When -Details is used without -Service, all services are checked and summarized.
 
     Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection. Active Directory is not included in -Service All. GitHub is not included in -Service All. Their current session state is included in the default -Details summary.
 
@@ -48,7 +48,9 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
+        # Maester's own services, or the service of an installed Maester Pack's connector.
+        [ArgumentCompleter({ # $args: command name, parameter name, word to complete.
+            & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams') $args[2] })]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -58,10 +60,17 @@
     )
 
     begin {
+        $requested = Resolve-MtRequestedService -Service $Service -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams'
+        $packServices = @($requested.Pack)
         $ServicesToCheck = if ($Details.IsPresent -and -not $PSBoundParameters.ContainsKey('Service')) {
             @('All', 'ActiveDirectory', 'GitHub')
         } else {
-            @($Service)
+            @($requested.BuiltIn)
+        }
+        # The summary also lists the services of the installed packs.
+        if ($Details.IsPresent -and -not $PSBoundParameters.ContainsKey('Service')) {
+            $registry = (Get-MtServiceRegistry).Services
+            $packServices = @($registry.Keys | Where-Object { $registry[$_].ContainsKey('Pack') } | Sort-Object)
         }
 
         $MtConnections = [PSCustomObject]@{
@@ -77,6 +86,8 @@
             ExchangeOnlineProtection = $null
             SharePointOnline         = $null
             Teams                    = $null
+            # Maester Packs: service -> the connection state its connector kept, or $null.
+            Packs                    = [ordered]@{}
             AllConnected             = $false
         }
 
@@ -299,6 +310,15 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion GitHub
+
+        #region Maester Packs
+        foreach ($packService in $packServices) {
+            $IsConnected = Test-MtPackConnection -Service $packService
+            $MtConnections.Packs[$packService] = if ($IsConnected -and $__MtSession.PackConnections) { $__MtSession.PackConnections[$packService] } else { $null }
+            Write-Verbose "${packService}: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion Maester Packs
 
         $MtConnections.AllConnected = $ConnectionState
 
