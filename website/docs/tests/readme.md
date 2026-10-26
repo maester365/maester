@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 263 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
@@ -779,6 +779,30 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
+| [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
+| [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
+| [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |
+| [MT.1231](./MT.1231) | Ensure iOS compliance policy requires a Defender machine risk score level. | Maester | Medium | Intune | Device compliance |
+| [MT.1232](./MT.1232) | Ensure Android compliance policy blocks rooted devices. | Maester | Medium | Intune | Device compliance |
+| [MT.1233](./MT.1233) | Ensure Android compliance policy requires a strong device password. | Maester | Medium | Intune | Device compliance |
+| [MT.1234](./MT.1234) | Ensure Android compliance policy requires a recent security patch level. | Maester | Medium | Intune | Device compliance |
+| [MT.1235](./MT.1235) | Ensure Android compliance policy requires device threat protection. | Maester | Medium | Intune | Device compliance |
+| [MT.1236](./MT.1236) | Ensure Android compliance policy blocks USB debugging. | Maester | Low | Intune | Device compliance |
+| [MT.1237](./MT.1237) | Ensure Android compliance policy blocks devices managed with device administrator. | Maester | Low | Intune | Device compliance |
+| [MT.1238](./MT.1238) | Ensure iOS app protection policy requires a strong app PIN. | Maester | Medium | Intune | App protection |
+| [MT.1239](./MT.1239) | Ensure iOS app protection policy keeps organization data inside managed apps. | Maester | Medium | Intune | App protection |
+| [MT.1240](./MT.1240) | Ensure iOS app protection policy encrypts organization data. | Maester | Medium | Intune | App protection |
+| [MT.1241](./MT.1241) | Ensure iOS app protection policy requires a minimum OS and app version. | Maester | Low | Intune | App protection |
+| [MT.1242](./MT.1242) | Ensure iOS app protection policy limits offline access to organization data. | Maester | Low | Intune | App protection |
+| [MT.1243](./MT.1243) | Ensure iOS app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
+| [MT.1244](./MT.1244) | Ensure Android app protection policy requires a strong app PIN. | Maester | Medium | Intune | App protection |
+| [MT.1245](./MT.1245) | Ensure Android app protection policy keeps organization data inside managed apps. | Maester | Medium | Intune | App protection |
+| [MT.1246](./MT.1246) | Ensure Android app protection policy encrypts organization data. | Maester | Medium | Intune | App protection |
+| [MT.1247](./MT.1247) | Ensure Android app protection policy requires a minimum OS and app version. | Maester | Low | Intune | App protection |
+| [MT.1248](./MT.1248) | Ensure Android app protection policy limits offline access to organization data. | Maester | Low | Intune | App protection |
+| [MT.1249](./MT.1249) | Ensure Android app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
+| [MT.1250](./MT.1250) | Ensure Android app protection policy blocks screen capture of organization data. | Maester | Low | Intune | App protection |
+| [MT.1251](./MT.1251) | Ensure Android app protection policy requires Play Integrity device attestation. | Maester | Medium | Intune | App protection |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |
