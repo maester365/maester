@@ -1,0 +1,35 @@
+﻿Ensure at least one **assigned** Android compliance policy blocks USB debugging.
+
+USB debugging exposes the Android Debug Bridge over the device's cable. On a device where it is enabled, a host the user has authorised can install and launch applications, read the data of any app built as debuggable, and drive the user interface. It is a developer feature that stays on long after whatever needed it, and the user has no reason to notice.
+
+Intune compliance policy can evaluate it, so a device with USB debugging enabled is marked non-compliant and can then be blocked by Conditional Access.
+
+This is hardening rather than a primary control, and the severity says so: using it takes physical access to the device, an unlocked screen and the user accepting the host key. What it removes is the quiet path by which a phone left on a desk, or handed to a repair shop, gives up its app data.
+
+Policies that are **not assigned** to any group are reported by this test but do not count towards a pass, because an unassigned compliance policy is never evaluated against any device.
+
+#### Scope limitation
+
+This test evaluates the **Android device administrator** compliance policy type (`androidCompliancePolicy`). Android Enterprise policies, for work profile and device owner enrollments, are counted and reported but their settings are not read, because their property names are not verified here.
+
+A tenant that has Android Enterprise policies and no device administrator policy is reported as **not applicable** rather than as a failure. A tenant with no Android compliance policy of any kind does fail, because then nothing evaluates Android devices at all.
+
+#### Remediation action
+
+1. Navigate to the [Microsoft Intune admin center](https://intune.microsoft.com).
+2. Go to **Devices** > **Manage devices** > **[Compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)**.
+3. Select an existing Android policy, or select **+ Create policy** with **Platform** set to **Android device administrator**.
+4. Under **Compliance settings** > **System Security**, set **USB debugging** to **Block**.
+5. On the **Assignments** tab, assign the policy to your Android device or user groups.
+6. Select **Next** and then **Create** or **Save**.
+
+If part of your fleet belongs to developers who need the setting, exclude that group from the policy rather than leaving the setting unconfigured for everyone.
+
+#### Related links
+
+- [Microsoft Intune admin center - Device compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
+- [Microsoft Learn - Android device administrator compliance settings in Intune](https://learn.microsoft.com/intune/device-security/compliance/ref-android-administrator-settings)
+- [Android Developers - Android Debug Bridge (adb)](https://developer.android.com/tools/adb)
+
+<!--- Results --->
+%TestResult%
