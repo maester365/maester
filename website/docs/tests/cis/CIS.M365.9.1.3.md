@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.3 - (L1) Restrict guest browsing of Fabric content"
-description: "Guest browsing of Fabric content is disabled or limited to an approved security group. Scoping this setting reduces broad guest access to the Fabric browsing experience. It does not revoke workspace roles or direct item permissions already granted to guests. Remediation action 1. Open the Fabric ad…"
+description: "Guest browsing of Fabric content is disabled or limited to one or more security groups. Scoping this setting limits the Fabric content that an external identity can discover through browsing. It does not revoke workspace roles or direct item permissions already granted to guests. Remediation action…"
 slug: /tests/CIS.M365.9.1.3
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -9,10 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.9.1.3"
-  - "Medium"
+  - "Low"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Export and sharing settings"
   - "External access and sharing"
 ---
 
@@ -20,20 +20,21 @@ keywords:
 
 # CIS.M365.9.1.3 - (L1) Restrict guest browsing of Fabric content
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Guest browsing of Fabric content is disabled or limited to an approved security group.
+Guest browsing of Fabric content is disabled or limited to one or more security groups.
 
-Scoping this setting reduces broad guest access to the Fabric browsing experience. It does not revoke workspace roles or direct item permissions already granted to guests.
+Scoping this setting limits the Fabric content that an external identity can discover through browsing. It does not revoke workspace roles or direct item permissions already granted to guests.
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Export and sharing settings**.
-2. Find **Guest users can browse and access Fabric content**.
-3. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups**.
-4. Select **Apply**. Review existing guest workspace and item permissions separately.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Export and sharing settings**, find **Guest users can browse and access Fabric content**.
+4. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups** with at least one group selected.
+5. Select **Apply**. Review existing guest workspace and item permissions separately.
 
 #### Related links
 
@@ -45,15 +46,15 @@ Scoping this setting reduces broad guest access to the Fabric browsing experienc
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.9.1.3 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Export and sharing settings |
 | Area | External access and sharing |
 | Resource type | Tenant |
 | User impact | Medium |
-| Implementation cost | Medium |
-| MITRE ATT&CK | T1078.004 Cloud Accounts |
+| Implementation cost | Low |
+| MITRE ATT&CK | T1213 Data from Information Repositories |
 | Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 9.1.3 |
 | Benchmark level | L1 |
 | Benchmark profiles | E3 Level 1 |

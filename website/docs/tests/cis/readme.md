@@ -132,14 +132,14 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.8.5.9](./CIS.M365.8.5.9.md) | (L2) Ensure meeting recording is off by default | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1.md) | (L1) Ensure users can report security concerns in Teams | Medium | Teams | Messaging |
 | [CIS.M365.9.1.1](./CIS.M365.9.1.1.md) | (L1) Restrict guest access to Fabric | Medium | Microsoft Fabric | Export and sharing settings |
-| [CIS.M365.9.1.2](./CIS.M365.9.1.2.md) | (L1) Restrict external guest invitations through Fabric | Medium | Microsoft Fabric | Tenant settings |
-| [CIS.M365.9.1.3](./CIS.M365.9.1.3.md) | (L1) Restrict guest browsing of Fabric content | Medium | Microsoft Fabric | Tenant settings |
+| [CIS.M365.9.1.2](./CIS.M365.9.1.2.md) | (L1) Restrict external guest invitations through Fabric | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.3](./CIS.M365.9.1.3.md) | (L1) Restrict guest browsing of Fabric content | Low | Microsoft Fabric | Export and sharing settings |
 | [CIS.M365.9.1.4](./CIS.M365.9.1.4.md) | (L1) Restrict public publishing of Fabric reports | Medium | Microsoft Fabric | Export and sharing settings |
 | [CIS.M365.9.1.5](./CIS.M365.9.1.5.md) | (L2) Disable R and Python visuals in Fabric | Medium | Microsoft Fabric | Tenant settings |
-| [CIS.M365.9.1.6](./CIS.M365.9.1.6.md) | (L1) Enable sensitivity labels for Fabric content | Medium | Microsoft Fabric | Tenant settings |
-| [CIS.M365.9.1.7](./CIS.M365.9.1.7.md) | (L1) Restrict organization-wide Fabric links | Medium | Microsoft Fabric | Tenant settings |
-| [CIS.M365.9.1.8](./CIS.M365.9.1.8.md) | (L1) Restrict external sharing of semantic models | Medium | Microsoft Fabric | Tenant settings |
-| [CIS.M365.9.1.9](./CIS.M365.9.1.9.md) | (L1) Block resource-key authentication for Fabric datasets | Medium | Microsoft Fabric | Tenant settings |
+| [CIS.M365.9.1.6](./CIS.M365.9.1.6.md) | (L1) Enable sensitivity labels for Fabric content | Medium | Microsoft Fabric | Information protection |
+| [CIS.M365.9.1.7](./CIS.M365.9.1.7.md) | (L1) Restrict organization-wide Fabric links | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.8](./CIS.M365.9.1.8.md) | (L1) Restrict external sharing of semantic models | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.9](./CIS.M365.9.1.9.md) | (L1) Block resource-key authentication for Fabric datasets | Medium | Microsoft Fabric | Developer settings |
 | [CIS.M365.9.1.10](./CIS.M365.9.1.10.md) | (L1) Restrict service principal access to Fabric public APIs | Medium | Microsoft Fabric | Developer settings |
 | [CIS.M365.9.1.11](./CIS.M365.9.1.11.md) | (L1) Restrict service principal profiles in Fabric | Medium | Microsoft Fabric | Developer settings |
 | [CIS.M365.9.1.12](./CIS.M365.9.1.12.md) | (L1) Restrict service principal access to Fabric global APIs | Medium | Microsoft Fabric | Developer settings |

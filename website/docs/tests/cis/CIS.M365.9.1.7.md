@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.7 - (L1) Restrict organization-wide Fabric links"
-description: "Organization-wide Fabric sharing links are disabled or limited to an approved security group. An organization-wide link can grant access to tenant users who were not individually granted access. Restricting who can create these links reduces accidental internal disclosure; it does not govern extern…"
+description: "Organization-wide Fabric sharing links are disabled or limited to one or more security groups. An organization-wide link can grant access to tenant users who were not individually granted access. Restricting who can create these links reduces accidental internal disclosure; it does not govern exter…"
 slug: /tests/CIS.M365.9.1.7
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -9,10 +9,10 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CIS.M365.9.1.7"
-  - "Medium"
+  - "Low"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Export and sharing settings"
   - "Access control"
 ---
 
@@ -20,20 +20,21 @@ keywords:
 
 # CIS.M365.9.1.7 - (L1) Restrict organization-wide Fabric links
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
-Organization-wide Fabric sharing links are disabled or limited to an approved security group.
+Organization-wide Fabric sharing links are disabled or limited to one or more security groups.
 
 An organization-wide link can grant access to tenant users who were not individually granted access. Restricting who can create these links reduces accidental internal disclosure; it does not govern external guests.
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Export and sharing settings**.
-2. Find **Allow shareable links to grant access to everyone in your organization**.
-3. Choose **Disabled**, or choose **Enabled** and scope link creation to **Specific security groups**.
-4. Select **Apply**.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Export and sharing settings**, find **Allow shareable links to grant access to everyone in your organization**.
+4. Choose **Disabled**, or choose **Enabled** and scope link creation to **Specific security groups** with at least one group selected.
+5. Select **Apply**.
 
 #### Related links
 
@@ -45,14 +46,14 @@ An organization-wide link can grant access to tenant users who were not individu
 | Field | Value |
 | --- | --- |
 | Test ID | CIS.M365.9.1.7 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Export and sharing settings |
 | Area | Access control |
 | Resource type | Tenant |
 | User impact | Medium |
-| Implementation cost | Medium |
+| Implementation cost | Low |
 | MITRE ATT&CK | None |
 | Supports benchmark | CIS Microsoft 365 Foundations Benchmark (version 7.0.0), requirement 9.1.7 |
 | Benchmark level | L1 |

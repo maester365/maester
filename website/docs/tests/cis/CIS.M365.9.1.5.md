@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.5 - (L2) Disable R and Python visuals in Fabric"
-description: "R and Python visuals are disabled for the Fabric tenant. These visuals execute scripts when reports render. Turning off the tenant setting reduces the code-execution surface in reports; Microsoft does not provide a security-group scope for this setting. Remediation action 1. Open the Fabric admin p…"
+description: "R and Python visuals are disabled for the Fabric tenant. These visuals execute scripts when reports render. Turning off the tenant setting reduces the code-execution surface in reports; Microsoft does not provide a security-group scope for this setting. Remediation action 1. Sign in to Microsoft Fa…"
 slug: /tests/CIS.M365.9.1.5
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -20,7 +20,7 @@ keywords:
 
 # CIS.M365.9.1.5 - (L2) Disable R and Python visuals in Fabric
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -30,10 +30,11 @@ These visuals execute scripts when reports render. Turning off the tenant settin
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **R and Python visuals settings**.
-2. Find **Interact with and share R and Python visuals**.
-3. Set the control to **Disabled**, then select **Apply**.
-4. Identify reports that depend on these visuals and move them to an approved alternative.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **R and Python visuals settings**, find **Interact with and share R and Python visuals**.
+4. Set the control to **Disabled**, then select **Apply**. This setting applies to the entire organization and can't be limited to groups.
+5. Identify reports that depend on these visuals and move them to an approved alternative.
 
 #### Related links
 

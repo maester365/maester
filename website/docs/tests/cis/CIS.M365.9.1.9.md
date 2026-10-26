@@ -1,6 +1,6 @@
 ---
 title: "CIS.M365.9.1.9 - (L1) Block resource-key authentication for Fabric datasets"
-description: "Resource-key authentication is blocked for Fabric streaming and push datasets. Resource keys are shared credentials rather than individual identities. Blocking them reduces reliance on reusable keys and improves attribution for API access. Remediation action 1. Open the Fabric admin portal and go t…"
+description: "Resource-key authentication is blocked for Fabric streaming and push datasets. Resource keys are shared credentials rather than individual identities. Blocking them reduces reliance on reusable keys and improves attribution for API access. Remediation action 1. Sign in to Microsoft Fabric with a Fa…"
 slug: /tests/CIS.M365.9.1.9
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -12,7 +12,7 @@ keywords:
   - "Medium"
   - "CIS"
   - "Microsoft Fabric"
-  - "Tenant settings"
+  - "Developer settings"
   - "Authentication"
 ---
 
@@ -20,7 +20,7 @@ keywords:
 
 # CIS.M365.9.1.9 - (L1) Block resource-key authentication for Fabric datasets
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -30,9 +30,10 @@ Resource keys are shared credentials rather than individual identities. Blocking
 
 #### Remediation action
 
-1. Open the [Fabric admin portal](https://app.powerbi.com/admin-portal) and go to **Tenant settings** > **Developer settings**.
-2. Find **Block ResourceKey Authentication** and set it to **Enabled**.
-3. Select **Apply** and update any clients that still send data with resource keys to use identity-based authentication.
+1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
+2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
+3. Under **Developer settings**, find **Block ResourceKey Authentication** and set it to **Enabled**.
+4. Select **Apply** and update any clients that still send data with resource keys to use identity-based authentication.
 
 #### Related links
 
@@ -47,7 +48,7 @@ Resource keys are shared credentials rather than individual identities. Blocking
 | Severity | Medium |
 | Suite | CIS |
 | Product | Microsoft Fabric |
-| Feature | Tenant settings |
+| Feature | Developer settings |
 | Area | Authentication |
 | Resource type | Tenant |
 | User impact | Medium |
