@@ -4,6 +4,9 @@ description: Launch announcement of the Maester blog
 slug: hello-maester-blog
 authors: merill
 tags: [hello, blog]
+image: ./img/card.png
+card_headline: "Welcome to the *Maester blog*"
+card_label: News
 hide_table_of_contents: false
 date: 2024-12-07
 ---
