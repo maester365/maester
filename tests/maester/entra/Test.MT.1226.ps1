@@ -51,15 +51,13 @@
 
     try {
         $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta -ErrorAction Stop)
-    } catch [System.UnauthorizedAccessException] {
-        Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        return $null
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
         } else {
             Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         }
+        return $null
     }
 
     $appsWithFic = $apps | Where-Object { $null -ne $_.federatedIdentityCredentials -and $_.federatedIdentityCredentials.Count -gt 0 }
