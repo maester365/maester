@@ -10,7 +10,7 @@ includes it, the Exchange scope has no effect. Runs the shared check Test-MtExoA
 #>
 [MaesterTest(
 Id = 'MT.1228',
-Title = 'Apps scoped with Exchange RBAC for Applications should not hold the same permission tenant-wide in Microsoft Entra ID.',
+Title = 'Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.',
 Product = 'entra',
 RelatedProduct = 'exchange',
 Feature = 'app-consent',
