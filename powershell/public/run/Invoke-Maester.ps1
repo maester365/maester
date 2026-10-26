@@ -444,7 +444,7 @@
         # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
         $telemetryRun = $null
         if (-not $DisableTelemetry -and -not $DryRun) {
-            $telemetryRun = [pscustomobject]@{ RunId = [guid]::NewGuid().ToString(); StartedAt = [datetime]::UtcNow; Stage = 'Setup'; ErrorCount = $Error.Count; Sent = $false }
+            $telemetryRun = [pscustomobject]@{ RunId = [guid]::NewGuid().ToString(); StartedAt = [datetime]::UtcNow; Stage = 'Setup'; LastError = $(if ($Error.Count) { $Error[0] }); Sent = $false }
             Write-Telemetry -EventName InvokeMaesterStart -Run $telemetryRun
         }
 
@@ -1172,8 +1172,9 @@
         # A run that returned early, failed or was stopped still sends its end event, as Incomplete.
         if ($telemetryRun -and -not $telemetryRun.Sent) {
             $telemetryRun.Sent = $true
-            $errorType = if ($Error.Count -gt $telemetryRun.ErrorCount -and $Error[0].Exception) { $Error[0].Exception.GetType().FullName }
-            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -Outcome Incomplete -ErrorType $errorType -PackSet $packSet
+            # The newest error is compared with the one before the run, not counted: $Error stops growing once it is full.
+            $errorType = if ($Error.Count -and -not [object]::ReferenceEquals($Error[0], $telemetryRun.LastError) -and $Error[0].Exception) { $Error[0].Exception.GetType().FullName }
+            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -Outcome Incomplete -ErrorType $errorType -MaesterResults $maesterResults -PackSet $packSet
         }
         # Always restore the console: the status line or live region of an interactive run must not
         # outlive the command, whether it returned early, failed or was stopped with Ctrl+C.
