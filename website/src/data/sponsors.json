@@ -7,7 +7,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/1288081?s=240&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
       "contributorPage": "/contributors/merill",
       "tests": 5,
-      "commits": 1705,
+      "commits": 1709,
       "sponsorUrl": "https://github.com/sponsors/merill"
     },
     {
@@ -151,7 +151,7 @@
       "name": "Merill Fernando",
       "avatar": "https://avatars.githubusercontent.com/u/1288081?s=120&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
       "organization": false,
-      "active": true,
+      "monthly": true,
       "sponsors": [
         "SamErde"
       ]
@@ -161,29 +161,9 @@
       "name": "Robin Pieterse",
       "avatar": "https://avatars.githubusercontent.com/u/165141638?s=120&u=44e0f1186bb519fbcef14e33fd2b5838e2f3a830&v=4",
       "organization": false,
-      "active": true,
+      "monthly": true,
       "sponsors": [
         "SamErde"
-      ]
-    },
-    {
-      "github": "brianveldman",
-      "name": "Brian Veldman",
-      "avatar": "https://avatars.githubusercontent.com/u/147204186?s=120&u=38d64f50eec2d6854fe8f42508a68260066ce675&v=4",
-      "organization": false,
-      "active": false,
-      "sponsors": [
-        "merill"
-      ]
-    },
-    {
-      "github": "KirillOsenkov",
-      "name": "Kirill Osenkov",
-      "avatar": "https://avatars.githubusercontent.com/u/679326?s=120&u=5fcf0c6c2004b2cbbeb156c146df63c31633f477&v=4",
-      "organization": false,
-      "active": false,
-      "sponsors": [
-        "merill"
       ]
     }
   ]

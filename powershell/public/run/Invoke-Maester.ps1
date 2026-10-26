@@ -1101,8 +1101,13 @@
                 $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
                 if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
-                    # Open test results in the default browser.
-                    Invoke-Item $out.OutputHtmlFile | Out-Null
+                    # Open test results in the default browser. A headless machine can report itself as interactive
+                    # but have no program to open the file, which must not fail a run whose report is already written.
+                    try {
+                        Invoke-Item $out.OutputHtmlFile -ErrorAction Stop | Out-Null
+                    } catch {
+                        Write-Warning "Could not open the report '$($out.OutputHtmlFile)': $($_.Exception.Message) Use -NonInteractive to skip opening it."
+                    }
                 }
             }
 

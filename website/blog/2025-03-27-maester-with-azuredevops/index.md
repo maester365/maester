@@ -4,9 +4,11 @@ description: Maester deployed to a Azure WebApp using Azure DevOps
 slug: maester-with-azdo-webapp
 authors: sebastian
 tags: [AzureDevOps,WebApp,Bicep]
+card_headline: "Maester results on *Azure Web App*"
+card_label: Guide
 hide_table_of_contents: false
 date: 2025-03-27
-image: ./img/azure-devops-webapp-diagram.png
+image: ./img/card.png
 #draft: true # Draft
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---

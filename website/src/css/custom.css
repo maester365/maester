@@ -256,7 +256,7 @@ body:has(.home-page) .navbar {
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 32px);
-  max-width: 1080px;
+  max-width: 1180px;
   height: 72px;
   padding: 0 22px;
   background: rgba(10, 12, 16, 0.78);
@@ -700,4 +700,20 @@ html[data-theme="dark"] .Section p a {
 
 .navbar--sponsor-link:hover::before {
   transform: scale(1.2);
+}
+
+/* Blog posts: no left nav (blogSidebarCount: 0), so the article column is wide. Keep text at a readable
+   line length and centred; screenshots and videos use the full column. */
+.blog-post-page article header,
+.blog-post-page article .markdown > :is(ul, ol, h2, h3, h4, blockquote, table, details, hr, small, .theme-code-block, .theme-admonition),
+.blog-post-page article .markdown > p:not(:has(> img:only-child)),
+.blog-post-page article footer {
+  max-width: 46rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-post-page article .markdown {
+  font-size: 1.0625rem;
+  line-height: 1.75;
 }
