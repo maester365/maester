@@ -6,11 +6,11 @@
     .DESCRIPTION
     Every event carries a random installation ID (Get-MtInstallationId), the Maester and PowerShell versions, the
     platform and the CI system if any. The service looks up the country and region of the request and does not
-    store the IP address. The tenant is sent only as a hash, which the service re-keys with a secret before storing
+    store the IP address. The tenant is sent to api.maester.dev only as a hash, which the service re-keys with a secret before storing
     it: tenant IDs are public, so a plain hash could be matched by hashing a guessed one.
 
     InvokeMaesterStart is sent when Invoke-Maester starts: the run's random ID and a SHA-256 hash of the tenant ID.
-    It also sends the event PostHog has always received, until PostHog is retired.
+    It also sends the event PostHog has always received, which holds the raw tenant ID, until PostHog is retired.
 
     InvokeMaester is sent when the run ends, whether it completed or not: the run ID, when it started and how long
     it took, its outcome (Completed, or Incomplete with the stage it reached and the type of the last error), the
