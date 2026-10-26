@@ -1,4 +1,4 @@
-﻿function Test-ImmutableFederatedCredentialSubject {
+﻿function Test-MtImmutableFederatedCredentialSubject {
     <#
     .SYNOPSIS
     GitHub and GitLab federated identity credentials should use immutable subject identifiers for their subjects.
@@ -15,7 +15,7 @@
     These marker checks identify potentially mutable subjects, not full subject validity.
 
     .LINK
-    https://maester.dev/docs/commands/Test-ImmutableFederatedCredentialSubject
+    https://maester.dev/docs/commands/Test-MtImmutableFederatedCredentialSubject
 
     #>
     [MaesterTest(
@@ -42,18 +42,31 @@
 
 
 
-    # Identify OIDC tokens from GitLab
-    $gitLabOidcIdentifiers = "(?=.*(?:^|[':])project_(?:id|path):)(?=.*(?:^|[':])ref_type:)"
+    # Identify OIDC tokens from GitLab either via project_id, project_path or ref_type claims
+    $gitLabOidcIdentifiers = '(?:^|[''"])project_(?:id|path):|(?:^|[:''"])ref_type:'
     # GitLab immutable OIDC claims pattern
     $gitLabImmutableOidcClaims = 'project_id'
     # Matches GitHub Actions immutable OIDC claims
     $gitHubImmutableOidcClaims = 'repo:.+@\d+\/.+@\d+:|repository_id'
 
-    $findings = [System.Collections.Generic.List[object]]::new()
-    $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta)
+    try {
+        $apps = @(Invoke-MtGraphRequest -RelativeUri 'applications?$expand=federatedIdentityCredentials' -Select 'id', 'displayName', 'federatedIdentityCredentials' -ApiVersion beta -ErrorAction Stop)
+    } catch [System.UnauthorizedAccessException] {
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
+    }
+
     $appsWithFic = $apps | Where-Object { $null -ne $_.federatedIdentityCredentials -and $_.federatedIdentityCredentials.Count -gt 0 }
+    $findings = [System.Collections.Generic.List[object]]::new()
 
     if ($appsWithFic.Count -gt 0) {
+        $applicableCount = 0
         foreach ($app in $appsWithFic) {
             Write-Verbose "Checking federated credentials for application: $($app.displayName) ($($app.id))"
             foreach ($cred in $app.federatedIdentityCredentials) {
@@ -62,8 +75,10 @@
                 $subject = $cred.subject ?? $cred.claimsMatchingExpression.value
                 # GitHub
                 if ($cred.issuer -eq 'https://token.actions.githubusercontent.com') {
+                    $applicableCount++
                     $hasMutableSubject = $subject -notmatch $gitHubImmutableOidcClaims
                 } elseif ($subject -match $gitLabOidcIdentifiers) {
+                    $applicableCount++
                     $hasMutableSubject = $subject -notmatch $gitLabImmutableOidcClaims
                 } else {
                     Write-Verbose "Found federated credential with non GitHub or GitLab claims $subject (issuer: $($cred.issuer))"
@@ -80,10 +95,14 @@
                 }
             }
         }
-        $passed = $findings.Count -eq 0
         $resultMarkdown = "Scanned $($apps.Count) applications. "
-        if ($passed) {
+        $result = $findings.Count -eq 0 -and $applicableCount -gt 0
+
+        if ($result) {
             $resultMarkdown += 'No GitHub or GitLab federated identity credentials were found with subjects missing the checked immutable identifier markers.'
+        } elseif ($applicableCount -eq 0) {
+            Add-MtTestResultDetail -SkippedBecause NotApplicable -Description 'No applications with GitHub or GitLab federated credentials were found.'
+            return $null
         } else {
             $resultMarkdown += "Found $($findings.Count) GitHub or GitLab federated identity credentials with subjects missing immutable identifier markers."
             $rows = foreach ($finding in $findings) {
@@ -97,7 +116,7 @@
         }
 
         $null = Add-MtTestResultDetail -Result $resultMarkdown
-        return $passed
+        return $result
     } else {
         Add-MtTestResultDetail -SkippedBecause NotApplicable -Description 'No applications with federated credentials were found.'
         return $null
