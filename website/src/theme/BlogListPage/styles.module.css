@@ -1,0 +1,238 @@
+.page {
+  max-width: 1200px;
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.header h1 {
+  font-size: 2.75rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 3rem;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Keyboard focus on the title link outlines the whole card. */
+.card:has(.title a:focus-visible) {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-emphasis-400);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
+}
+
+.media {
+  display: block;
+  aspect-ratio: 1200 / 630;
+  overflow: hidden;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 85% 15%, rgb(255 92 58 / 35%), transparent 45%),
+    radial-gradient(circle at 10% 100%, rgb(88 70 200 / 35%), transparent 55%),
+    #0b0d12;
+}
+
+.tileLogo {
+  width: 22%;
+  max-width: 72px;
+  filter: drop-shadow(0 6px 18px rgb(255 92 58 / 35%));
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+  margin-bottom: 0.4rem;
+}
+
+.title {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+
+.title a {
+  color: var(--ifm-heading-color);
+}
+
+/* Stretch the title link over the whole card. */
+.title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.title a:focus-visible {
+  outline: none;
+}
+
+.title a:hover,
+.card:hover .title a {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.description {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.authors {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.author {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--ifm-color-emphasis-100);
+  box-shadow: 0 0 0 2px var(--ifm-background-surface-color), 0 0 0 3px var(--ifm-color-emphasis-300);
+}
+
+/* The newest post on the first page: picture on the left, text on the right. */
+.featured {
+  flex-direction: row;
+  margin-bottom: 2.25rem;
+}
+
+.featured .media {
+  flex: 0 0 58%;
+  display: flex;
+  align-items: center;
+  background: #050608;
+}
+
+/* The card can be taller than the 1200x630 picture: show all of it on the card images' own canvas colour. */
+.featured .image {
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.featured .body {
+  justify-content: center;
+  padding: 2rem 2.25rem;
+}
+
+.featured .title {
+  font-size: 1.9rem;
+  letter-spacing: -0.01em;
+}
+
+.featured .avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.featured .description {
+  font-size: 1.05rem;
+  -webkit-line-clamp: 5;
+}
+
+@media (max-width: 996px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .featured {
+    flex-direction: column;
+  }
+
+  .featured .media {
+    flex: none;
+  }
+
+  .featured .body {
+    padding: 1.25rem;
+  }
+
+  .featured .title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-top: 2rem;
+  }
+
+  .header h1 {
+    font-size: 2.1rem;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

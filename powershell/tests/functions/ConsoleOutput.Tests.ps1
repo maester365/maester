@@ -450,6 +450,31 @@ Describe 'Write-MtRunSummary' {
 
 }
 
+Describe 'Write-MtSponsorMessage' {
+    It 'Says that Maester runs on sponsorships, with a link to the sponsor page' {
+        $lines = @(InModuleScope Maester -Parameters @{ c = $script:stream } { param($c) Write-MtSponsorMessage -Console $c 6>&1 } | ForEach-Object { "$_" })
+        $text = $lines -join "`n"
+        $text | Should -Match '♥  Maester runs on sponsorships'
+        $text | Should -Match 'shout us a coffee'
+        $text | Should -Match 'https://maester\.dev/sponsor'
+    }
+
+    It 'Writes each line once, with no animation and no colour, outside an interactive console' {
+        $plain = $script:stream.PSObject.Copy(); $plain.Mode = 'Plain'; $plain.Unicode = $false
+        $lines = @(InModuleScope Maester -Parameters @{ c = $plain } { param($c) Write-MtSponsorMessage -Console $c 6>&1 } | ForEach-Object { "$_" })
+        @($lines | Where-Object { $_ -match 'runs on sponsorships' }).Count | Should -Be 1
+        $lines[0] | Should -Be ' <3  Maester runs on sponsorships'
+        ($lines -join '') | Should -Not -Match "$([char]27)"
+    }
+
+    It 'Is a hyperlink where the console shows them' {
+        $linked = $script:stream.PSObject.Copy(); $linked.Hyperlink = $true
+        $text = @(InModuleScope Maester -Parameters @{ c = $linked } { param($c) Write-MtSponsorMessage -Console $c 6>&1 } | ForEach-Object { "$_" }) -join "`n"
+        $esc = [char]27
+        $text | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/sponsor$esc\https://maester.dev/sponsor$esc]8;;$esc\"))
+    }
+}
+
 Describe 'Read-MtTenantContext' {
     It 'Says what it found after each step: the account, the organization, then each service' {
         $steps = [System.Collections.Generic.List[string]]::new()
@@ -853,8 +878,8 @@ Describe 'Dashboard panels' {
         $renderer = New-PanelRenderer
         InModuleScope Maester -Parameters @{ r = $renderer; c = $script:wide } { param($r, $c) Initialize-MtDashboard -Renderer $r -Console $c -SkipVersionCheck }
         $screen = $renderer.GetPlainScreen(160, 44)
-        # Four at the left, four at the right edge, and the bar spans the window.
-        $screen[-1] | Should -Match '^ maester\.dev  Docs │ Contributors │ Our Manifesto  +(⌘|Ctrl)-click to open  +Star on GitHub │ Discord │ Issues $'
+        # Four at the left, four at the right edge (the last the sponsor page), and the bar spans the window.
+        $screen[-1] | Should -Match '^ maester\.dev  Docs │ Contributors │ Our Manifesto  +(⌘|Ctrl)-click to open  +Star on GitHub │ Discord │ Issues │ Sponsor ♥ $'
         $screen[-1].Length | Should -Be 159
         $renderer.Close()
     }
