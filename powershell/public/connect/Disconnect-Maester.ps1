@@ -5,7 +5,7 @@ function Disconnect-Maester {
 
     .Description
     Use this cmdlet to sign out of the services connected through Connect-Maester.
-    It also clears Maester Active Directory and GitHub session state. Use
+    It also clears Maester Active Directory and GitHub session state, and disconnects the services of Maester Pack connectors. Use
     Disconnect-MtGraph when you only want to disconnect Microsoft Graph.
 
     .Example
@@ -67,5 +67,18 @@ function Disconnect-Maester {
 
       Write-Verbose -Message "Disconnecting from GitHub."
       Disconnect-MtGitHub
+
+      # Maester Pack connectors: their Disconnect function, then the state Maester kept for them.
+      foreach ($packService in @($(if ($__MtSession.PackConnections) { $__MtSession.PackConnections.Keys }))) {
+         Write-Verbose -Message "Disconnecting from $packService."
+         try {
+            $null = Invoke-MtPackConnector -Service $packService -Function Disconnect
+         } catch {
+            Write-Verbose "The connector of $packService failed to disconnect: $($_.Exception.Message)"
+         }
+      }
+      $__MtSession.PackConnections = @{}
    }
+
+   $__MtSession.ConnectionSummary = @()
 }

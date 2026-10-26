@@ -8,7 +8,7 @@ function Test-MtCheckEidscaAF05 {
 
     Reads the tenant value of
     https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-    .keyRestrictions.aaGuids -notcontains $null with Test-MtEidscaAF05
+    .keyRestrictions.aaGuids.Count -gt 0 -and $result.keyRestrictions.aaGuids -notcontains $null -and $result.keyRestrictions.aaGuids -notcontains '' with Test-MtEidscaAF05
     and passes when it -eq 'true'.
     #>
     [MaesterTest(
@@ -18,7 +18,7 @@ function Test-MtCheckEidscaAF05 {
         Feature = 'authentication-methods',
         Area = 'authentication',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1098.005',
@@ -35,7 +35,7 @@ function Test-MtCheckEidscaAF05 {
     $eidscaAF04Result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
     [string]$eidscaAF04Value = $eidscaAF04Result.keyRestrictions.isEnforced
     if ( $EnabledAuthMethods -notcontains 'Fido2' -or $eidscaAF04Value -eq $false ) {
-        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled and key restriction not enforced.'
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled or key restrictions are not enforced.'
         return $null
     }
 

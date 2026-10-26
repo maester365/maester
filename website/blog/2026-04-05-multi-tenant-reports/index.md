@@ -4,8 +4,10 @@ description: Monitor multiple Microsoft 365 tenants in a single Maester report w
 slug: multi-tenant-reports
 authors: sebastian
 tags: [feature, multi-tenant]
+card_headline: "*Multi-tenant* reports are here"
+card_label: Feature
 hide_table_of_contents: false
-image: ./img/multi-tenant-header.png
+image: ./img/card.png
 date: 2026-04-05
 ---
 

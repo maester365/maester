@@ -4,9 +4,11 @@ description: Maester is now available for BitBucket
 slug: maester-with-BitBucket
 authors: suryendu
 tags: [BitBucket]
+card_headline: "Maester on *Bitbucket*"
+card_label: Integration
 hide_table_of_contents: false
 date: 2025-03-20
-image: ./img/maester-bitbucket.png
+image: ./img/card.png
 #draft: true # Draft
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---

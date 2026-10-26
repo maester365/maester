@@ -1,0 +1,61 @@
+﻿5.1.5.3 (L2) Ensure password addition is blocked for applications
+
+In Microsoft Entra ID, applications and service principals can authenticate using either certificate credentials or password credentials (also referred to as client secrets). This setting enforces a tenant-wide restriction that prevents new password credentials from being added to any application registration or service principal. The policy is implemented through the default app management policy and applies to all applications unless scoped exceptions are configured.
+
+The setting does not revoke or invalidate existing password credentials; credentials created before the policy was enabled remain valid until they expire or are explicitly removed.
+
+The recommended state is **Block password addition** set to **On**.
+
+#### Rationale
+
+Password credentials (client secrets) used for application authentication are static string values that offer weaker security guarantees than certificate or federated credentials. Unlike certificates, client secrets carry no built-in proof of possession and are frequently stored in plaintext in source code, configuration files, CI/CD pipelines, and shell history. A leaked client secret grants any holder the ability to authenticate as the application to Microsoft Entra ID, potentially accessing any resource or permission scope assigned to that application.
+
+Blocking the addition of new password credentials eliminates this attack surface for applications created going forward and forces adoption of stronger credential types such as certificates.
+
+#### Impact
+
+This policy applies to new password credential additions only. Existing client secrets remain valid until they expire or are explicitly revoked; this recommendation does not retroactively invalidate credentials created before the policy was enabled.
+
+Any automated process, pipeline, or script that programmatically adds client secrets to application registrations or service principals will be blocked once the policy is enabled, unless an exception is configured. Applications that have not yet migrated to certificate-based authentication or workload identity federation will require changes before new credentials can be added.
+
+#### Remediation action
+
+To remediate using the UI:
+
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Expand **Entra ID** and select **Enterprise apps**.
+3. Under **Security** select [**Application policies**](https://aka.ms/app-mgmt-policy-ux).
+4. Select **Block password addition**.
+5. Set **Status** to **On**.
+6. Set **Applies to** to one of the following:
+    * **All applications**
+    * **All applications with exclusions** (if using exclusions, ensure they are reviewed annually).
+7. Set **Only apply to apps created after** to a desired date or leave it unconfigured.
+8. Select **Save and close** to apply the changes.
+
+To remediate using the Microsoft Graph API:
+
+> **Important:** The PATCH request replaces the `passwordCredentials` array in full. Retrieve the current policy first and include all existing entries in the request body to avoid overwriting other configured restrictions or exclusions.
+
+1. Execute a **GET** request to retrieve the current policy: `v1.0/policies/defaultAppManagementPolicy`
+2. Modify the returned JSON to reflect the following changes:
+   * Set `isEnabled` to `true`.
+   * Under `applicationRestrictions.passwordCredentials`, locate the entry where `restrictionType` is `passwordAddition` and set the following:
+      * `state` to `enabled`
+      * `restrictForAppsCreatedAfterDateTime` to `0001-01-01T00:00:00Z` or a desired date.
+   * Under `servicePrincipalRestrictions.passwordCredentials`, locate the entry where `restrictionType` is `passwordAddition` and set the following:
+      * `state` to `enabled`
+      * `restrictForAppsCreatedAfterDateTime` to `0001-01-01T00:00:00Z` or a desired date.
+3. Execute a **PATCH** request to the same URI with the modified JSON in the request body to apply the changes.
+
+> **Note:** Maester also checks that the restriction covers every existing application and service principal. Objects created before the **Only apply to apps created after** date (`restrictForAppsCreatedAfterDateTime`) are exempt from the restriction, so the check fails while any exist. Leave the date unconfigured or set it to `0001-01-01T00:00:00Z`, or to a date before your oldest application and service principal.
+
+#### Related links
+
+* [Microsoft Entra admin center - Application policies](https://aka.ms/app-mgmt-policy-ux)
+* [Enforce app management policies in Microsoft Entra ID](https://learn.microsoft.com/graph/api/resources/appmanagementpolicy)
+* [Update tenantAppManagementPolicy](https://learn.microsoft.com/graph/api/tenantappmanagementpolicy-update)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 5.1.5.3](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%

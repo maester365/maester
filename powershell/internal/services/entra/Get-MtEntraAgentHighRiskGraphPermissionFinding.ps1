@@ -5,6 +5,7 @@
 
     $RiskPaths = @{
         'AdministrativeUnit.ReadWrite.All'                      = 'Indirect'
+        'Application.ReadUpdate.All'                            = 'Indirect'
         'DeviceManagementConfiguration.ReadWrite.All'          = 'Indirect'
         'DeviceManagementRBAC.ReadWrite.All'                   = 'Indirect'
         'Policy.ReadWrite.ConditionalAccess'                   = 'Direct'
