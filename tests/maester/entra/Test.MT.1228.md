@@ -4,6 +4,8 @@ Permissions granted in Exchange Online and in Microsoft Entra ID add together. I
 
 This test fails when an app holds a permission through a scoped Exchange RBAC for Applications assignment and the same or a broader permission through a tenant-wide Microsoft Graph grant.
 
+If an Application Access Policy with `RestrictAccess` limits the app's Entra grant, and the policy supports that permission, the Entra grant no longer covers every mailbox. Those apps are listed for review instead of failed. The remediation below applies to failed apps.
+
 #### Remediation action
 
 For each app listed below, keep the scoped Exchange assignment and remove the tenant-wide grant in Microsoft Entra ID.
