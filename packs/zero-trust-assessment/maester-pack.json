@@ -1,0 +1,41 @@
+{
+  "$schema": "https://maester.dev/schemas/maester-pack-1.0.json",
+  "Id": "maester.zero-trust-assessment",
+  "Guid": "d1e2db80-6c27-4cb6-9389-2edf0a898d23",
+  "Name": "Microsoft Zero Trust Assessment",
+  "Description": "Runs Microsoft's Zero Trust Assessment and shows each of its results in the Maester report.",
+  "Version": "0.1.0",
+  "Publisher": "maester365",
+  "License": "MIT",
+  "Banner": "assets/banner.png",
+  "Guide": "maester-pack.guide.json",
+  "Homepage": "https://maester.dev/docs/packs/zero-trust-assessment",
+  "Support": "https://github.com/maester365/maester/issues",
+  "SecurityContact": "https://github.com/maester365/maester/security/policy",
+  "RequiresMaester": ">=3.0",
+  "Code": "ZTA",
+  "Suites": ["tests"],
+  "Catalog": "catalog.json",
+  "Uses": {
+    "Services": ["Graph"],
+    "GraphScopes": [
+      "Application.Read.All", "AuditLog.Read.All", "CopilotPackages.Read.All", "CrossTenantInformation.ReadBasic.All",
+      "CustomSecAttributeAssignment.Read.All", "DeviceManagementApps.Read.All", "DeviceManagementConfiguration.Read.All",
+      "DeviceManagementManagedDevices.Read.All", "DeviceManagementRBAC.Read.All", "DeviceManagementServiceConfig.Read.All",
+      "Directory.Read.All", "DirectoryRecommendations.Read.All", "EntitlementManagement.Read.All", "IdentityRiskEvent.Read.All",
+      "IdentityRiskyServicePrincipal.Read.All", "IdentityRiskyUser.Read.All", "LifecycleWorkflows-Workflow.Read.All",
+      "NetworkAccess.Read.All", "Policy.Read.All", "Policy.Read.ConditionalAccess", "Policy.Read.PermissionGrant",
+      "PrivilegedAccess.Read.AzureAD", "PrivilegedAssignmentSchedule.Read.AzureADGroup",
+      "PrivilegedEligibilitySchedule.Read.AzureADGroup", "Reports.Read.All", "RoleManagement.Read.All",
+      "SecurityAlert.Read.All", "SecurityEvents.Read.All", "SecurityIdentitiesHealth.Read.All",
+      "SecurityIdentitiesSensors.Read.All", "SecurityIncident.Read.All", "ThreatHunting.Read.All",
+      "UserAuthenticationMethod.Read.All"
+    ],
+    "TenantWrites": [],
+    "Network": [],
+    "Modules": [
+      { "Name": "ZeroTrustAssessment", "MinimumVersion": "2.6.0", "Install": "User", "Process": "Child" }
+    ]
+  },
+  "Categories": ["Microsoft 365", "Zero Trust", "Identity", "Devices", "Network", "Data"]
+}

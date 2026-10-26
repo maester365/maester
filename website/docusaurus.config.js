@@ -91,7 +91,8 @@ const config = {
         },
         blog: {
           blogSidebarTitle: 'All posts',
-          blogSidebarCount: 'ALL',
+          blogSidebarCount: 0,
+          postsPerPage: 13,
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -112,12 +113,6 @@ const config = {
     ({
       // Replace with your project's social card
       image: "img/maester-social-card.jpg",
-      announcementBar: {
-        id: "maester-3-preview-live",
-        content:
-          '⚠️ Maester 3.0 is now the preview build. Running automation on the preview that isn\'t ready for 3.0? Switch to the release build. <a href="/blog/maester-3-0">Read more</a>',
-        isCloseable: true,
-      },
       navbar: {
         title: "Maester",
         logo: {
@@ -151,6 +146,8 @@ const config = {
           { to: 'manifesto', label: 'Manifesto', position: 'left' },
           { to: 'contributors', label: 'Contributors', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
+          { href: 'https://packs.maester.cloud', label: 'Packs', position: 'left' },
+          { to: 'sponsor', label: 'Sponsor', position: 'right', className: 'navbar--sponsor-link' },
           {
             "aria-label": "GitHub Repository",
             className: "navbar--github-link",
@@ -184,6 +181,14 @@ const config = {
           {
             title: "Community",
             items: [
+              {
+                label: "Sponsor",
+                to: "/sponsor",
+              },
+              {
+                label: "Contributors",
+                to: "/contributors",
+              },
               {
                 label: "Discord",
                 href: "https://discord.maester.dev/",

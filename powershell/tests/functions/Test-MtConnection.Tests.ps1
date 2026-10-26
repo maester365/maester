@@ -37,12 +37,10 @@ Describe 'Test-MtConnection — Active Directory service' {
     }
 
     It 'Offers ActiveDirectory as a -Service option' {
-        $serviceParameter = (Get-Command Test-MtConnection).Parameters['Service']
-        $validateSet = $serviceParameter.Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
-            Select-Object -First 1
-
-        $validateSet.ValidValues | Should -Contain 'ActiveDirectory'
+        # -Service is completed rather than validated by a set, so pack connectors can add services.
+        $line = 'Test-MtConnection -Service Act'
+        $completion = [System.Management.Automation.CommandCompletion]::CompleteInput($line, $line.Length, $null)
+        $completion.CompletionMatches.CompletionText | Should -Contain 'ActiveDirectory'
     }
 
     It 'Documents that Active Directory requires an explicit connection and is not included in All' {

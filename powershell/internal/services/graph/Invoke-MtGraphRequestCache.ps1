@@ -5,8 +5,13 @@
     #>
     [CmdletBinding()]
     param(
+        # Uri passed to Microsoft Graph. Relative uris are routed by the active Graph environment.
         [Parameter(Mandatory = $true)]
         [Uri] $Uri,
+        # Cache key for this request. Defaults to the uri. Supply an endpoint qualified key when
+        # $Uri is relative, so that cached entries cannot be shared across Graph environments.
+        [Parameter(Mandatory = $false)]
+        [string] $CacheKey,
         [Parameter(Mandatory = $false)]
         [string] $Method = 'GET',
         [Parameter(Mandatory = $false)]
@@ -20,18 +25,23 @@
     )
 
     $results = $null
+    # $Uri may be relative, and AbsoluteUri throws on a relative uri, so use the original string
+    # for every comparison and fall back to it when no explicit cache key was supplied.
+    $uriString = $Uri.OriginalString
+    if ([string]::IsNullOrEmpty($CacheKey)) { $CacheKey = $uriString }
+
     if ($Method -eq 'GET') {
-        $cacheKey = $Uri.AbsoluteUri
+        $cacheKey = $CacheKey
         $isMethodGet = $true
-    } elseif ($Method -eq 'POST' -and $Uri.AbsoluteUri.EndsWith('security/runHuntingQuery')) {
-        $cacheKey = $Uri.AbsoluteUri + "_" + ($Body -replace '\s', '')
+    } elseif ($Method -eq 'POST' -and $uriString.EndsWith('security/runHuntingQuery')) {
+        $cacheKey = $CacheKey + "_" + ($Body -replace '\s', '')
         $isXdrQuery = $true
     } else {
-        $cacheKey = $Uri.AbsoluteUri + "_" + ($Body -replace '\s', '')
+        $cacheKey = $CacheKey + "_" + ($Body -replace '\s', '')
         $isMethodGet = $false
    }
 
-    $isBatch = $uri.AbsoluteUri.EndsWith('$batch')
+    $isBatch = $uriString.EndsWith('$batch')
     $isInCache = $__MtSession.GraphCache.ContainsKey($cacheKey)
 
 
@@ -42,7 +52,7 @@
     }
 
     if (!$results) {
-        Write-Verbose ("Invoking Graph: $($Uri.AbsoluteUri)")
+        Write-Verbose ("Invoking Graph: $($uriString)")
         Write-Verbose ([string]::IsNullOrEmpty($Body))
 
         # The Graph SDK already retries 429, 503 and 504. Retry 500 and 502 for requests that are safe to repeat.
@@ -67,7 +77,7 @@
                 if ($response.Headers.RetryAfter.Delta) {
                     $delay = [Math]::Min($response.Headers.RetryAfter.Delta.TotalSeconds, 30)
                 }
-                Write-Verbose ("Graph returned $statusCode, retrying in $delay seconds ($attempt of $maxRetries): $($Uri.AbsoluteUri)")
+                Write-Verbose ("Graph returned $statusCode, retrying in $delay seconds ($attempt of $maxRetries): $($uriString)")
                 Start-Sleep -Seconds $delay
             }
         }

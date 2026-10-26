@@ -45,6 +45,14 @@ Invoke-MtTest -Path ./custom/Test.CONTOSO.1001.ps1 -Parameter @{ MaximumDays = 3
 
 Runs a custom test with a parameter value, as while writing it.
 
+### EXAMPLE 3
+
+```powershell
+Invoke-MtTest -Path ./my-pack
+```
+
+Runs every test of a Maester Pack from its folder, as while writing the pack.
+
 ## PARAMETERS
 
 ### -Id
@@ -68,6 +76,9 @@ Accept wildcard characters: False
 
 A Test.&lt;ID&gt;.ps1 file or a folder of them.
 Without -Id every native test in it runs.
+A path inside a
+Maester Pack (a folder with maester-pack.json, or under one) runs as that pack, with its helpers and
+connectors, as while writing the pack.
 
 ```yaml
 Type: String

@@ -18,10 +18,20 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
         # Invoke-ScriptAnalyzer leaves a RunspacePool open for the life of the process. If pwsh exits just as
         # that pool's 15-minute idle-cleanup timer fires, PowerShell crashes with a NullReferenceException in
         # RunspacePoolInternal.DestroyRunspace. Analysing in a job keeps the pool out of the test process.
+        # The files are split over a few jobs, as each job is its own process: Invoke-ScriptAnalyzer is not
+        # thread-safe, so ForEach-Object -Parallel in one process fails.
         $files = [string[]]$commandFiles.FullName
-        $script:analysis = Start-Job -ScriptBlock {
-            $using:files | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess }
-        } | Receive-Job -Wait -AutoRemoveJob
+        $jobCount = [Math]::Max(1, [Math]::Min(4, [Environment]::ProcessorCount))
+        $jobs = for ($j = 0; $j -lt $jobCount; $j++) {
+            $chunk = [string[]]@(for ($i = $j; $i -lt $files.Count; $i += $jobCount) { $files[$i] })
+            Start-Job -ScriptBlock {
+                $using:chunk | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess }
+            }
+        }
+        # A job that fails only writes an error, which would leave its files unanalysed and the tests passing.
+        $failedJobs = @($jobs | Wait-Job | Where-Object State -ne 'Completed')
+        $script:analysis = $jobs | Receive-Job -Wait -AutoRemoveJob
+        if ($failedJobs) { throw "ScriptAnalyzer job(s) did not complete: $($failedJobs.Name -join ', ')" }
     }
 
     # The next Context blocks are kinda duplicate, but helps us document both

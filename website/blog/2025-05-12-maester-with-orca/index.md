@@ -4,9 +4,11 @@ description: Maester now includes the valuable tests from the ORCA project
 slug: maester-with-orca
 authors: [mike, thomasschmidt]
 tags: [release,ORCA,Tests]
+card_headline: "Maester adds *ORCA* tests"
+card_label: Release
 hide_table_of_contents: false
 date: 2025-05-12
-image: ./img/orca.png
+image: ./img/card.png
 #draft: true # Draft
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---
