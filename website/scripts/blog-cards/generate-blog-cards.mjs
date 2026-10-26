@@ -9,11 +9,14 @@
 //   npm run blog-cards                          # posts that don't have a card yet
 //   npm run blog-cards -- 2026-10-24-maester-packs   # named posts (folder names), regenerated
 //   npm run blog-cards -- --all                 # every post, regenerated
+//   npm run blog-cards -- --suggest             # also asks Claude for card_headline/card_label where a post has
+//                                               # none (needs ANTHROPIC_API_KEY); the blog-cards workflow does this
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { load as loadYaml } from "js-yaml";
+import { suggestCardText } from "./suggest-card-text.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..", "..");
@@ -22,6 +25,7 @@ const cardPath = "./img/card.png";
 
 const args = process.argv.slice(2);
 const all = args.includes("--all");
+const suggest = args.includes("--suggest");
 const named = args.filter((a) => !a.startsWith("--"));
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -57,13 +61,13 @@ function cardData(post) {
   };
 }
 
-// Point `image` at the card, replacing an existing `image` line or adding one before `tags` (whose value can be a
-// block list on the following lines) or at the end.
-function setImage(post) {
+// Sets a one-line front matter key, replacing its line or adding one before `tags` (whose value can be a block list
+// on the following lines) or at the end.
+function setFrontMatter(post, key, value) {
   const [, head] = post.text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   const lines = head.split(/\r?\n/);
-  const line = `image: ${cardPath}`;
-  const i = lines.findIndex((l) => /^image:/.test(l));
+  const line = `${key}: ${value}`;
+  const i = lines.findIndex((l) => l.startsWith(`${key}:`));
   if (i >= 0) {
     if (lines[i] === line) return;
     lines[i] = line;
@@ -71,7 +75,18 @@ function setImage(post) {
     const tags = lines.findIndex((l) => /^tags:/.test(l));
     lines.splice(tags >= 0 ? tags : lines.length, 0, line);
   }
-  writeFileSync(post.file, post.text.replace(head, lines.join("\n")));
+  post.text = post.text.replace(head, lines.join("\n"));
+  writeFileSync(post.file, post.text);
+}
+
+// Card text of posts that have it, as examples for suggestCardText.
+function cardExamples() {
+  return readdirSync(blogRoot)
+    .filter((name) => /^\d{4}-\d{2}-\d{2}-/.test(name))
+    .map(readPost)
+    .filter((p) => p?.frontMatter.card_headline)
+    .slice(-12)
+    .map((p) => ({ title: p.title, headline: p.frontMatter.card_headline, label: p.frontMatter.card_label }));
 }
 
 const folders = readdirSync(blogRoot, { withFileTypes: true })
@@ -88,11 +103,23 @@ if (folders.length === 0) {
 const { chromium } = await import("playwright");
 const template = readFileSync(join(scriptDir, "template.html"), "utf8");
 const logo = "data:image/svg+xml;base64," + readFileSync(join(websiteRoot, "static", "img", "logo.svg")).toString("base64");
+const examples = suggest ? cardExamples() : [];
 const browser = await chromium.launch();
 try {
   for (const folder of folders) {
     const post = readPost(folder);
     if (!post) continue;
+    if (suggest && !post.frontMatter.card_headline) {
+      const text = await suggestCardText(post, examples);
+      if (text) {
+        setFrontMatter(post, "card_headline", JSON.stringify(text.headline));
+        setFrontMatter(post, "card_label", text.label);
+        post.frontMatter.card_headline = text.headline;
+        post.frontMatter.card_label = text.label;
+      } else {
+        console.warn("ANTHROPIC_API_KEY is not set, so the card uses the post title.");
+      }
+    }
     const card = { ...cardData(post), logo };
     const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
     page.on("pageerror", (e) => console.error(`${folder}: ${e.message}`));
@@ -102,7 +129,7 @@ try {
     mkdirSync(join(post.dir, "img"), { recursive: true });
     await page.screenshot({ path: join(post.dir, "img", "card.png") });
     await page.close();
-    setImage(post);
+    setFrontMatter(post, "image", cardPath);
     console.log(`${folder}: ${card.headline}`);
   }
 } finally {

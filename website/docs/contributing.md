@@ -359,14 +359,18 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 
 #### Blog post images
 
-Every blog post has a card image (`img/card.png` in the post's folder) that is shown on the [blog](https://maester.dev/blog) and in link previews on social media. The images all use one template, so don't make one by hand. Add a short headline and a label to the post's front matter instead:
+Every blog post has a card image (`img/card.png` in the post's folder) that is shown on the [blog](https://maester.dev/blog) and in link previews on social media. The images all use one template, so don't make one by hand.
+
+You don't have to do anything: after a new post is merged, the `Blog card images` workflow makes its card and opens a pull request with it. If the post has no headline and label, Claude suggests them, and the maintainer checks them in that pull request.
+
+To choose the text yourself, add a short headline and a label to the post's front matter:
 
 ```yaml
 card_headline: "Maester *3.0*: a new test engine" # *words* are highlighted
 card_label: Release # Release, Guide, Feature, New tests, Integration, Event, Video, News, ...
 ```
 
-Then generate the image from the ./website folder. The first time, install the browser that renders it with `npx playwright install chromium`.
+To see the card before you open your pull request, generate it from the ./website folder. The first time, install the browser that renders it with `npx playwright install chromium`.
 
 ```shell
 npm run blog-cards                                # posts that don't have a card yet

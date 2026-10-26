@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maester.dev/schemas/maester-pack-guide-1.0.json",
+  "title": "Maester pack guide",
+  "description": "How to install, connect and run a Maester pack, for its page on packs.maester.cloud. Named by the manifest's Guide key. Commands are shown as text and never run.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "Summary": {
+      "description": "One or two sentences that open the pack's page.",
+      "type": "string",
+      "maxLength": 300
+    },
+    "Prerequisites": {
+      "description": "What to install or have before installing the pack. The modules in the manifest's Uses.Modules are listed already.",
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "Connect": {
+      "description": "How to sign in before running the pack, in order.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Steps": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        },
+        "Notes": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "More": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    },
+    "Run": {
+      "description": "How to run the pack, and its settings.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Commands": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        },
+        "Options": {
+          "description": "The pack's settings, such as the GlobalSettings keys it reads.",
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "Name",
+              "Text"
+            ],
+            "properties": {
+              "Name": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "Default": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "Text": {
+                "type": "string",
+                "maxLength": 300
+              }
+            }
+          }
+        },
+        "Notes": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "More": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    },
+    "AppOnly": {
+      "description": "Whether the pack works when Maester is signed in as an app (a service principal), and how.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Supported"
+      ],
+      "properties": {
+        "Supported": {
+          "type": "boolean"
+        },
+        "Methods": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Certificate": {
+              "type": "boolean"
+            },
+            "ClientSecret": {
+              "type": "boolean"
+            },
+            "ManagedIdentity": {
+              "type": "boolean"
+            },
+            "WorkloadIdentity": {
+              "type": "boolean"
+            }
+          }
+        },
+        "Text": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "OtherRoles": {
+          "description": "Roles beyond the Graph permissions in Uses.GraphScopes.",
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "Command": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "More": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    },
+    "Screenshots": {
+      "description": "Up to six PNG, JPEG or WebP images in the pack, at most 1 MB each.",
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "Path"
+        ],
+        "properties": {
+          "Path": {
+            "type": "string",
+            "pattern": "^(?![\\\\/])(?![A-Za-z]:)(?!.*(^|[\\\\/])\\.\\.([\\\\/]|$)).+\\.(png|jpe?g|webp)$"
+          },
+          "Caption": {
+            "type": "string",
+            "maxLength": 120
+          }
+        }
+      }
+    },
+    "Links": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "Text",
+          "Url"
+        ],
+        "properties": {
+          "Text": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "Url": {
+            "$ref": "#/$defs/url"
+          }
+        }
+      }
+    },
+    "Support": {
+      "description": "Where to report problems: with the tests themselves, and with the pack.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Tests": {
+          "$ref": "#/$defs/url"
+        },
+        "Pack": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "url": {
+      "type": "string",
+      "pattern": "^https://",
+      "maxLength": 500
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Text"
+      ],
+      "properties": {
+        "Text": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "Command": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "Url": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    }
+  }
+}
