@@ -106,6 +106,11 @@
 
    Connects to SharePoint Online using the specified client ID and admin URL.
 
+.EXAMPLE
+   Connect-Maester -Service Graph,CNT.GoogleWorkspace -ServiceSetting @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }
+
+   Connects to Microsoft Graph and to the service of an installed Maester Pack, through the pack's connector. Get-MtConnector lists the services of the installed packs.
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -146,8 +151,15 @@
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
-      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
+      # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
+      [ArgumentCompleter({ # $args: command name, parameter name, word to complete.
+            & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline') $args[2] })]
       [string[]]$Service = 'Graph',
+
+      # Settings for the connectors of Maester Packs, by service: @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }.
+      # With one pack service in -Service, the settings can be given directly: @{ Domain = 'contoso.com' }. They win over
+      # Connections.<Service> in maester-config.json and over MAESTER_<SERVICE>_<SETTING> environment variables.
+      [hashtable]$ServiceSetting = @{},
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
@@ -201,7 +213,15 @@
       [switch]$ActiveDirectorySkipCertificateCheck
     )
 
-   $__MtSession.Connections = $Service
+   try {
+      $requestedServices = Resolve-MtRequestedService -Service $Service -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline'
+   } catch {
+      Write-Error -Message $_.Exception.Message -Category InvalidArgument
+      return
+   }
+   $packServices = @($requestedServices.Pack)
+   $Service = @($requestedServices.BuiltIn)
+   $__MtSession.Connections = @($Service) + @($packServices)
    $__MtSession.ConnectionSummary = @()
 
    # Record the outcome of each service so a single summary table can be shown at the end.
@@ -638,6 +658,30 @@
        } catch {
           Write-Verbose "Failed to connect to Active Directory: $($_.Exception.Message)"
           Add-ConnectionResult -Name 'Active Directory' -Status 'Failed' -Details (Get-ErrorSummary $_)
+       }
+    }
+
+    # Maester Pack connectors (Maester Packs design, section 6.2), after Maester's own services so a connector can use them.
+    if ($packServices.Count -gt 0) {
+       $packConfig = Resolve-MtRunConfig -Path (Get-Location).Path -WarningAction SilentlyContinue
+       foreach ($packService in $packServices) {
+          $entry = (Get-MtServiceRegistry).Services[$packService]
+          $displayName = ConvertTo-MtPackSafeText $entry.DisplayName
+          try {
+             $explicit = if ($ServiceSetting.ContainsKey($packService)) { $ServiceSetting[$packService] } elseif ($packServices.Count -eq 1 -and -not ($ServiceSetting.Values | Where-Object { $_ -is [System.Collections.IDictionary] })) { $ServiceSetting } else { @{} }
+             $settings = Get-MtPackConnectorSetting -Service $packService -RunConfig $packConfig -Explicit $explicit
+             Write-Verbose "Connecting to $displayName through the pack $($entry.Pack.Id)"
+             $null = Invoke-MtPackConnector -Service $packService -Function Connect -Setting $settings
+             if (Test-MtPackConnection -Service $packService) {
+                $state = $__MtSession.PackConnections[$packService]
+                Add-ConnectionResult -Name $displayName -Status 'Connected' -Details $(if ($state) { @($state.Account, $state.Tenant | Where-Object { $_ }) -join ', ' } else { '' })
+             } else {
+                Add-ConnectionResult -Name $displayName -Status 'Failed' -Details "The connector of $($entry.Pack.Id) did not connect"
+             }
+          } catch {
+             Write-Verbose "Failed to connect to ${displayName}: $($_.Exception.Message)"
+             Add-ConnectionResult -Name $displayName -Status 'Failed' -Details (Get-ErrorSummary $_)
+          }
        }
     }
 

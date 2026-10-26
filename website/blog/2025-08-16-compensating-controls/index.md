@@ -4,6 +4,9 @@ description: Review controls, the need for compensating controls, and how the co
 slug: compensating-controls
 authors: mike
 tags: [blog]
+image: ./img/card.png
+card_headline: "Introduction to *compensating controls*"
+card_label: Guide
 hide_table_of_contents: false
 date: 2025-08-16
 ---

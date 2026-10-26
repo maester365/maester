@@ -92,13 +92,14 @@ namespace Maester.Engine
             bool tests = _running || _total > 0;
             int boxWidth = max - 1;
             int inner = boxWidth - 4;
-            bool band = tests && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
+            bool band = (tests || OutputTimed) && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
             var track = _phases.Count > 0 || tests ? BuildTrack(max - 1, ansi) : new List<Line>();
+            bool output = _outputTitle != null;
 
             var screen = new List<Line>();
             if (band) screen.AddRange(BuildRunBand(max, ansi));
             else if (tests) screen.AddRange(BuildRunHeader(max, null, ansi));
-            else screen.AddRange(BuildOpeningHeader(max, rows, track.Count + 3, ansi));
+            else screen.AddRange(BuildOpeningHeader(max, rows, track.Count + 3 + (output ? OutputOpeningRows : 0), ansi));
             if (_info != null) screen.Add(BuildInfoLine(max, ansi));
             screen.Add(Blank());
             if (track.Count > 0)
@@ -106,14 +107,27 @@ namespace Maester.Engine
                 screen.AddRange(track);
                 screen.Add(Blank());
             }
-            if (!tests) return Fit(screen, rows);
+            // Before the tests start, the output of the work that runs (an instance source) has the rows under the phases.
+            if (!tests)
+            {
+                if (output)
+                {
+                    // The work's groups and result blocks, when its progress has them, over its box.
+                    screen.AddRange(BuildOutputView(boxWidth, rows - screen.Count, ansi));
+                    screen.AddRange(BuildOutputBox(boxWidth, rows - screen.Count, ansi));
+                }
+                return Fit(screen, rows);
+            }
 
             var skippedLanes = SkippedLanes();
-            int lanesWanted = _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0);
+            int lanesWanted = Lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0);
             // While tests run: one line per running test, and a dashed line over the finished ones.
             var tail = _running ? BuildWorkerLines(inner, string.Empty, ansi) : new List<Line>();
             int runChrome = _running ? 3 : 2;
             bool chart = PanelShown(ResultsPanel);
+            // The output box of a test that writes one has its rows set aside, as the running tests have.
+            int outputRows = output ? OutputTestRows : 0;
+            runChrome += outputRows;
             int top = screen.Count;
             // The boxes cost rows. When they would leave no room for what the plain lines have room for (a
             // row of insight panels and two running tests, or one running test), the plain lines are drawn.
@@ -144,7 +158,7 @@ namespace Maester.Engine
             if (lanesWanted > 0 && room >= 2)
             {
                 var lanes = BuildLaneRows(inner, room, string.Empty, skippedLanes, ansi);
-                var products = new PanelContent { Title = "Products", Badge = Count(_lanes.Count, "product"), Colour = ProductsBorder, TitleColour = ProductsBorder, Lines = lanes };
+                var products = new PanelContent { Title = LanesTitle, Badge = _outputLanes != null ? N(_outputLanes.Count) : Count(_lanes.Count, "product"), Colour = ProductsBorder, TitleColour = ProductsBorder, Lines = lanes };
                 screen.AddRange(Indent(Box(products, boxWidth, ansi)));
             }
 
@@ -162,6 +176,9 @@ namespace Maester.Engine
             {
                 screen.AddRange(Indent(Box(new PanelContent { Title = "Tests", Badge = N(FinishedCount()) + " of " + N(_total), Lines = blocks }, boxWidth, ansi)));
             }
+
+            if (output && rows - screen.Count >= runChrome + 1) screen.AddRange(BuildOutputBox(boxWidth, outputRows, ansi));
+            runChrome -= outputRows;
 
             // The running tests and the finished ones take the rows down to the insight panels.
             int left = rows - screen.Count;
@@ -442,7 +459,7 @@ namespace Maester.Engine
         private List<Lane> SkippedLanes()
         {
             var skipped = new List<Lane>();
-            foreach (var l in _lanes)
+            foreach (var l in Lanes)
             {
                 if (SkippedCount(l) > 0) skipped.Add(l);
             }
@@ -457,7 +474,8 @@ namespace Maester.Engine
         private List<Line> BuildLaneRows(int max, int room, string lead, List<Lane> skippedLanes, bool ansi)
         {
             var lines = new List<Line>();
-            var shown = new List<Lane>(_lanes);
+            var all = Lanes;
+            var shown = new List<Lane>(all);
             shown.RemoveAll(l => skippedLanes.Contains(l));
             int skippedLine = skippedLanes.Count > 0 ? 1 : 0;
             room -= skippedLine;
@@ -471,7 +489,7 @@ namespace Maester.Engine
                 });
                 hidden = shown.Count - (room - 1);
                 shown.RemoveRange(room - 1, hidden);
-                shown.Sort((a, b) => _lanes.IndexOf(a).CompareTo(_lanes.IndexOf(b)));
+                shown.Sort((a, b) => all.IndexOf(a).CompareTo(all.IndexOf(b)));
             }
             int nameWidth = 8;
             foreach (var l in shown) nameWidth = Math.Max(nameWidth, Math.Min(18, l.Name.Length));
@@ -481,7 +499,7 @@ namespace Maester.Engine
             {
                 bool active = l.Done > 0 || l.Running > 0;
                 var b = new LineBuilder(ansi).Add(lead).Add(Fit(l.Name, nameWidth).PadRight(nameWidth + 1), active ? "1" : "2");
-                AddBar(b, l.Done, l.Total, barWidth, l.Running > 0 ? _lanes.IndexOf(l) : -1);
+                AddBar(b, l.Done, l.Total, barWidth, l.Running > 0 ? all.IndexOf(l) : -1);
                 b.Add((" " + N(l.Done) + "/" + N(l.Total)).PadLeft(9) + "  ", "2");
                 if (l.Done > 0)
                 {

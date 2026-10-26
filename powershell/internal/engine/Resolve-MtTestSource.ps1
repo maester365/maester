@@ -18,7 +18,7 @@ function Resolve-MtTestSource {
       unrelated content, such as a repository, is not walked to the bottom.
 
     Returns BuiltInRoot, CustomRoot, ConfigSearchPath, BuiltInFiles, CustomFiles (Pester-format),
-    CustomNativeFiles, Error and Messages.
+    CustomNativeFiles, Error, NoCustomTests (the Error is only that -SkipBuiltIn found no custom tests) and Messages.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -100,7 +100,10 @@ function Resolve-MtTestSource {
         }
     }
 
+    # With -SkipBuiltIn and no custom tests there is nothing to run, unless the caller runs packs (NoCustomTests).
+    $noCustomTests = $false
     if ($SkipBuiltIn -and -not $errorMessage -and $customFiles.Count -eq 0 -and $customNativeFiles.Count -eq 0) {
+        $noCustomTests = $true
         $errorMessage = if ($customRoot) { "No test files found in '$customRoot'." } else { 'No custom tests to run. Put them in a Custom folder here or pass the folder that holds them with -Path.' }
     }
 
@@ -112,6 +115,7 @@ function Resolve-MtTestSource {
         CustomFiles       = $customFiles
         CustomNativeFiles = $customNativeFiles
         Error             = $errorMessage
+        NoCustomTests     = $noCustomTests
         Messages          = $messages.ToArray()
     }
 }

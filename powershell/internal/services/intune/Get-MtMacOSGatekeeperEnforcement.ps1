@@ -99,7 +99,17 @@
             Write-Verbose "Assignments for policy '$($policy.name)' could not be read; returning null so the caller reports a skip."
             return $null
         }
-        $assignmentCount = $usableAssignments.Count
+
+        # The filter above is about usability, not about direction: an assignment that excludes a
+        # group has an id and passes it. Graph returns inclusion and exclusion targets in the same
+        # collection, so counting them together reports a policy that enforces nothing on any
+        # device as assigned. Count inclusion targets only. The pattern also catches any future
+        # microsoft.graph.exclusion* target, and an assignment with no target type is not counted
+        # because it cannot be shown to include anyone.
+        $assignmentCount = @($usableAssignments | Where-Object {
+                $targetType = [string] $_.target.'@odata.type'
+                $targetType -and $targetType -notmatch '(^|\.)exclusion'
+            }).Count
 
         $result.Add([pscustomobject]@{
                 Id                        = $policy.id
