@@ -85,7 +85,7 @@ function Read-MtTenantContext {
         if (-not $canonical) { continue }
         $probe = $registry.Services[$canonical].Probe
         if (-not $probed.ContainsKey($probe)) {
-            $probed[$probe] = if ($probe -eq 'Graph') { [bool]$graphConnected } else {
+            $probed[$probe] = if ($probe -eq 'Graph') { [bool]$graphConnected } elseif ($registry.Services[$canonical].ContainsKey('Pack')) { Test-MtPackConnection -Service $canonical } else {
                 try { [bool](Test-MtConnection -Service $probe -ErrorAction SilentlyContinue -WarningAction SilentlyContinue) } catch { $false }
             }
         }

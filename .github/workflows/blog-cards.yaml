@@ -1,0 +1,78 @@
+# Makes the card image for new blog posts on maester.dev (website/blog/<post>/img/card.png) and opens a pull request
+# with it. Posts without card_headline/card_label get them from Claude first, so a new post needs nothing extra.
+#
+# It runs on main only, after a post is merged, so it never runs code or content from an unmerged pull request.
+# Setup: the maester-bot app secrets (MAESTER_BOT_APP_ID, MAESTER_BOT_PRIVATE_KEY) and ANTHROPIC_API_KEY. Without
+# ANTHROPIC_API_KEY the cards use the post titles.
+name: Blog card images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "website/blog/**"
+      - "website/scripts/blog-cards/**"
+      - ".github/workflows/blog-cards.yaml"
+
+permissions: {}
+
+concurrency:
+  group: blog-cards
+  cancel-in-progress: false
+
+jobs:
+  blog-cards:
+    name: Make blog card images
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      # The maester-bot app, not GITHUB_TOKEN, so that the pull request it opens runs the checks of the repository.
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        working-directory: website
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Make cards for posts that don't have one
+        working-directory: website
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/blog-cards/generate-blog-cards.mjs --suggest
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: automation/blog-cards
+          delete-branch: true
+          commit-message: Add blog card images
+          title: Add card images for new blog posts
+          body: |
+            Card images for blog posts that didn't have one, made by `website/scripts/blog-cards/generate-blog-cards.mjs`.
+            Where a post had no `card_headline` or `card_label`, Claude suggested them: check the headline reads well, edit the front matter if not, and run `npm run blog-cards -- <post folder>` to redo the image.
+          add-paths: |
+            website/blog/**

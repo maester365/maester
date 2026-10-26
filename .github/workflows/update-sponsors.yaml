@@ -1,0 +1,74 @@
+# Refreshes the people on maester.dev/sponsor: the contributors who have a GitHub Sponsors listing.
+name: Update sponsor page
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1" # Mondays 03:17 UTC
+  push:
+    branches: ["main"]
+    paths:
+      - "website/contributors/contributors.yml"
+      - "website/scripts/sponsors.mjs"
+      - ".github/workflows/update-sponsors.yaml"
+
+permissions: {}
+
+concurrency:
+  group: update-sponsors
+  cancel-in-progress: false
+
+jobs:
+  update-sponsors:
+    name: Update sponsor page
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # The maester-bot app, not GITHUB_TOKEN: it looks up the Sponsors listing of each contributor over
+      # GraphQL and opens the pull request, which then runs the checks of the repository.
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        working-directory: website
+        run: npm ci
+
+      - name: Look up Sponsors listings
+        working-directory: website
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: node scripts/sponsors.mjs
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: automation/update-sponsors
+          delete-branch: true
+          commit-message: Update sponsor page
+          title: Update the sponsor page
+          body: |
+            Automated refresh of the people on [maester.dev/sponsor](https://maester.dev/sponsor): the contributors with a GitHub Sponsors listing.
+
+            Written by `website/scripts/sponsors.mjs`.
+          add-paths: |
+            website/src/data/sponsors.json

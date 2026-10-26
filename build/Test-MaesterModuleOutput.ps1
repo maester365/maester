@@ -71,6 +71,7 @@ $ExpectedItems = @(
     'builtin-pester'
     'builtin-pester/maester-config.json'
     'assets/templates/custom/README.md'
+    'packs'
 )
 
 foreach ($Item in $ExpectedItems) {
