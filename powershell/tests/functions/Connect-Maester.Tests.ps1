@@ -33,21 +33,17 @@ Describe 'Connect-Maester' {
     }
 
     It 'Offers GitHub as a -Service option' {
-        $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
-        $validateSet = $serviceParameter.Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
-            Select-Object -First 1
-
-        $validateSet.ValidValues | Should -Contain 'GitHub'
+        # -Service is completed rather than validated by a set, so pack connectors can add services.
+        $line = 'Connect-Maester -Service Git'
+        $completion = [System.Management.Automation.CommandCompletion]::CompleteInput($line, $line.Length, $null)
+        $completion.CompletionMatches.CompletionText | Should -Contain 'GitHub'
     }
 
     It 'Offers ActiveDirectory as a -Service option' {
-        $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
-        $validateSet = $serviceParameter.Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
-            Select-Object -First 1
-
-        $validateSet.ValidValues | Should -Contain 'ActiveDirectory'
+        # -Service is completed rather than validated by a set, so pack connectors can add services.
+        $line = 'Connect-Maester -Service Act'
+        $completion = [System.Management.Automation.CommandCompletion]::CompleteInput($line, $line.Length, $null)
+        $completion.CompletionMatches.CompletionText | Should -Contain 'ActiveDirectory'
     }
 
     It 'Offers GitHubOrganization as a parameter' {

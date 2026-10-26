@@ -131,6 +131,34 @@
         $summaryContent | Should -Match '\|\s*Total\b[^|]*\|'
     }
 
+    It 'Warns instead of failing when the HTML report cannot be opened' {
+        if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
+
+        $outputRoot = Join-Path -Path $TestDrive -ChildPath 'open-report'
+        # A headless Linux agent without xdg-open: Invoke-Item throws a Win32Exception there.
+        Mock -ModuleName Maester Get-MtUserInteractive { $true }
+        Mock -ModuleName Maester Invoke-Item { throw 'An error occurred trying to start process' }
+
+        $maesterParams = @{
+            Path                 = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath 'smoketests'))
+            OutputFolder         = $outputRoot
+            PassThru             = $true
+            SkipGraphConnect     = $true
+            OutputFolderFileName = 'TestResults'
+            ExcludeTag           = 'testtag'
+            NoLogo               = $true
+            DisableTelemetry     = $true
+            SkipBuiltIn          = $true
+        }
+
+        $result = Invoke-Maester @maesterParams -ErrorAction Stop -WarningVariable openWarnings -WarningAction SilentlyContinue
+
+        $result | Should -Not -BeNullOrEmpty -Because 'the run itself succeeded'
+        Test-Path (Join-Path $outputRoot 'TestResults.html') | Should -BeTrue -Because 'the report was written before the open failed'
+        Should -Invoke -ModuleName Maester Invoke-Item -Times 1 -Exactly
+        "$openWarnings" | Should -BeLike '*Could not open the report*'
+    }
+
     Context 'Affected objects and PII redaction' {
         BeforeAll {
             if (Get-MgContext) { Disconnect-Graph }

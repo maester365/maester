@@ -203,5 +203,45 @@
         </ListEntries>
       </ListControl>
     </View>
+    <!-- Get-MtPack: one row for each pack, by the code its test IDs start with. -->
+    <View>
+      <Name>Maester.Pack.Table</Name>
+      <ViewSelectedBy>
+        <TypeName>Maester.Pack</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader><Label>Code</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Version</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Status</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Tests</Label><Alignment>Right</Alignment></TableColumnHeader>
+          <TableColumnHeader><Label>Id</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Source</Label></TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>if ($PSStyle -and $Host.UI.SupportsVirtualTerminal) { "$($PSStyle.Bold)$($PSStyle.Foreground.Cyan)$($_.Code)$($PSStyle.Reset)" } else { $_.Code }</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>Version</PropertyName></TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                  $colour = switch ($_.Status) { 'Ready' { 'Green' } 'Disabled' { 'BrightBlack' } { $_ -in 'Blocked', 'Failed' } { 'Red' } default { 'Yellow' } }
+                  if ($PSStyle -and $Host.UI.SupportsVirtualTerminal) { "$($PSStyle.Foreground.$colour)$($_.Status)$($PSStyle.Reset)" } else { $_.Status }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem><PropertyName>Tests</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>Id</PropertyName></TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>if ($_.Source -eq 'builtin') { 'ships with Maester' } else { $_.Source }</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>
