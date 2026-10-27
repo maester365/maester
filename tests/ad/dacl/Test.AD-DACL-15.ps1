@@ -28,6 +28,7 @@ function Test-MtAdDaclUnresolvedSidCount {
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -36,13 +37,17 @@ function Test-MtAdDaclUnresolvedSidCount {
 
     Write-Verbose "Starting Test-MtAdDaclUnresolvedSidCount"
 
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
     if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
 

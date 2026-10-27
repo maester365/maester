@@ -28,6 +28,7 @@ function Test-MtAdDaclDistinctObjectCount {
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -35,6 +36,10 @@ function Test-MtAdDaclDistinctObjectCount {
     param()
 
     Write-Verbose "Starting Test-MtAdDaclDistinctObjectCount"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {

@@ -37,7 +37,10 @@ function Test-MtAdGroupChangeAveragePerYear {
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Number of days in which a group modification is considered recent.
+        [ValidateRange(1, 3650)] [int] $RecentModificationDays = 90
+    )
 
     Write-Verbose "Starting Test-MtAdGroupChangeAveragePerYear"
 
@@ -66,6 +69,15 @@ function Test-MtAdGroupChangeAveragePerYear {
 
     # Analyze group modifications
     $recentlyModified = @()
+    $mostRecentModification = $groups |
+        Where-Object { $null -ne $_.modifyTimeStamp } |
+        Sort-Object modifyTimeStamp -Descending |
+        Select-Object -First 1 -ExpandProperty modifyTimeStamp
+    if ($null -eq $mostRecentModification) {
+        $mostRecentModification = 'unknown'
+    } else {
+        $mostRecentModification = $mostRecentModification.ToString('yyyy-MM-dd')
+    }
     $thisYear = $now.Year
 
     $modificationsByYear = @{}
@@ -92,13 +104,13 @@ function Test-MtAdGroupChangeAveragePerYear {
                 $modificationsByYear[$modificationYear]++
             }
 
-            # Track recently modified groups (within last 90 days)
-            $daysSinceModified = ($now - $group.modifyTimeStamp).Days
-            if ($daysSinceModified -le 90) {
+            # Track recently modified groups
+            $daysSinceModified = ($now - $group.modifyTimeStamp).TotalDays
+            if ($daysSinceModified -le $RecentModificationDays) {
                 $recentlyModified += [PSCustomObject]@{
                     Name = $group.Name
                     LastModified = $group.modifyTimeStamp
-                    DaysAgo = $daysSinceModified
+                    DaysAgo = [Math]::Floor($daysSinceModified)
                 }
             }
         }
@@ -120,7 +132,7 @@ function Test-MtAdGroupChangeAveragePerYear {
     $result += "| Oldest Group Created | $($oldestDate.ToString('yyyy-MM-dd')) |" + "`n"
     $result += "| Total Modifications | $totalModifications |" + "`n"
     $result += "| Average Changes Per Year | $averageChangesPerYear |" + "`n"
-    $result += "| Recently Modified (90 days) | $($recentlyModified.Count) |" + "`n"
+    $result += "| Recently Modified ($RecentModificationDays days) | $($recentlyModified.Count) |" + "`n"
 
     $result += "`n### Changes by Year" + "`n" + "`n"
     $result += "| Year | Groups Created | Groups Modified |" + "`n"
@@ -134,7 +146,7 @@ function Test-MtAdGroupChangeAveragePerYear {
     }
 
     if ($recentlyModified.Count -gt 0) {
-        $result += "`n### Recently Modified Groups (Last 90 Days)" + "`n" + "`n"
+        $result += "`n### Recently Modified Groups (Last $RecentModificationDays Days)" + "`n" + "`n"
         $result += "| Group Name | Last Modified | Days Ago |" + "`n"
         $result += "| --- | --- | --- |" + "`n"
 
@@ -146,6 +158,10 @@ function Test-MtAdGroupChangeAveragePerYear {
         if ($recentlyModified.Count -gt 20) {
             $result += "`n> *... and $($recentlyModified.Count - 20) more groups*" + "`n"
         }
+    }
+
+    if ($recentlyModified.Count -eq 0) {
+        $result += "`nNo groups have been modified within the last $RecentModificationDays days. The most recent group modification was on $mostRecentModification. The analysis would change when a group is modified." + "`n"
     }
 
     $testResultMarkdown = $result

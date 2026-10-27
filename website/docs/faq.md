@@ -52,3 +52,43 @@ When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is 
 Global Reader and other non-admin accounts can't consent to the Microsoft Graph permissions that Maester requests. An admin needs to grant consent first. Approving the request from **Admin consent requests** in the Entra admin center can fail with `AADSTS70011: ... openid scope is required`.
 
 See [Approval required when connecting](connect-maester/readme.md#approval-required-when-connecting) for how an admin can grant consent from PowerShell or set up a custom app registration.
+
+## What telemetry does Maester send?
+
+`Invoke-Maester` sends two events to `api.maester.dev`, a service run by the Maester maintainers on
+Cloudflare: one when the run starts and one when it ends, even when it stops early, fails or is cancelled. Together
+they show the maintainers when a new release starts to fail. They hold:
+
+- a random run ID, and a random installation ID kept in `~/.maester/installation-id` (delete the file to get a new
+  one);
+- a SHA-256 hash of the tenant ID, never the tenant ID itself. Tenant IDs are public, so anyone could hash a guessed
+  one; the service re-keys the hash with a secret before storing it. The data is pseudonymous rather than anonymous;
+- the Maester and PowerShell versions, the operating system and its version, and the CI system if the run is in one;
+- when the run started, how long it took, and whether it completed. For a run that did not, how far it got and the
+  type of the error, never the error message;
+- how many tests passed, failed, errored, were skipped or did not run, never which tests or what they found;
+- the [Maester Packs](./packs/index.md) installed and the packs that ran, with their versions and test counts, but
+  only packs from public repositories and packs that ship with Maester. A pack from a private repository or a local
+  folder is never sent.
+
+The service looks up the country and region the request came from, and does not store the IP address.
+
+`Install-MtPack` sends a similar event when it installs a pack from a public repository. That's how the
+[packs site](https://packs.maester.cloud) counts installs and finds new packs.
+
+No test names, results of a check, email addresses or tenant content (users, policies, findings) are sent; the
+tenant is identified only by the hash of its ID described above. A pack's page shows its own usage counts. Daily
+totals that hold an installation ID or a tenant hash are deleted after 400 days. Daily counts that hold neither, such as
+runs per Maester version or per country, are kept so the maintainers can see trends over years.
+
+While the new service is being proven, `Invoke-Maester` also sends the single event it has always sent to PostHog
+when a run starts, which holds the tenant ID. That event will be removed.
+
+To turn telemetry off, use `Invoke-Maester -DisableTelemetry`, or set the environment variable
+`MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command. Network admins can also block `api.maester.dev`:
+it is used only for telemetry, so blocking it doesn't affect anything else in Maester. Maester waits at most two
+seconds for it before a command returns.
+
+## Connect-ExchangeOnline fails with "The role assigned to application ... isn't supported in this scenario"
+
+The application signs in with certificate-based (app-only) authentication but has no role that Exchange Online accepts. Assign it **Security Reader** or **Global Reader** in Microsoft Entra ID, or the **View-Only Configuration** role in Exchange Online. If the connection works but the ORCA tests error with `The term 'Get-ProtectionAlert' is not recognized`, the application has an Exchange Online role but no Microsoft Entra role for Security & Compliance. Assign Security Reader or Global Reader. See [Roles for app-only access to Exchange Online and Security & Compliance](connect-maester/connect-maester-advanced.md#roles-for-app-only-access-to-exchange-online-and-security--compliance).

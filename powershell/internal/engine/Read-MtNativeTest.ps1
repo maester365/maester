@@ -164,7 +164,8 @@ function Read-MtNativeTest {
 
         foreach ($v in @($test[$name])) {
             if ($definition.Pattern -and $v -notmatch $definition.Pattern -and -not ($name -eq 'Id' -and (Test-MtBuiltInPackCode -Code $v -Path $file))) {
-                & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid." $line
+                $hint = if ($name -eq 'Permission') { " Write <Service>:<Kind>:<Name>, for example 'Graph:Scope:Policy.Read.All', one permission per element; join alternatives with |." } else { '' }
+                & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid.$hint" $line
             }
             if ($definition.MaxLength -and $v.Length -gt $definition.MaxLength) {
                 & $addError 'InvalidMetadata' "Property '$name' value is longer than $($definition.MaxLength) characters." $line

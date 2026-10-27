@@ -1,12 +1,12 @@
 function Test-MtAdComputerStaleEnabledCount {
     <#
     .SYNOPSIS
-    Identifies enabled computers that have not logged on for 180 days or more.
+    Identifies enabled computers that have not logged on for the configured threshold or more.
 
     .DESCRIPTION
     Stale enabled computer accounts represent a security risk as they can be
     compromised and reactivated by attackers. This test identifies enabled
-    computers that have not authenticated to the domain for 180 days or more.
+    computers that have not authenticated to the domain for the configured threshold or more.
 
     Because nearly every domain has at least one stale enabled computer, this
     test returns an Investigate result (rather than Pass/Fail) so the count
@@ -28,7 +28,7 @@ function Test-MtAdComputerStaleEnabledCount {
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-06',
-        Title = 'No enabled computers should be stale for 180 days or more',
+        Title = 'No enabled computers should be stale beyond the configured threshold',
         Product = 'ad',
         Feature = 'computers',
         Area = 'identity-lifecycle',
@@ -44,7 +44,10 @@ function Test-MtAdComputerStaleEnabledCount {
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Number of days without a logon before an enabled computer is considered stale.
+        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 180
+    )
 
     Write-Verbose "Starting Test-MtAdComputerStaleEnabledCount"
     $adState = Get-MtADDomainState -Categories @('Computers')
@@ -61,26 +64,33 @@ function Test-MtAdComputerStaleEnabledCount {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
-    $staleThreshold = (Get-Date).AddDays(-180)
+    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
 
-    # Find enabled computers that haven't logged on in 180+ days
+    # Find enabled computers that haven't logged on for the configured threshold or more.
     $staleEnabledComputers = $computers | Where-Object {
         $_.Enabled -eq $true -and
         ($null -eq $_.lastLogonDate -or $_.lastLogonDate -lt $staleThreshold)
     }
 
     $staleCount = ($staleEnabledComputers | Measure-Object).Count
-    $totalEnabled = ($computers | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
+    $enabledComputers = @($computers | Where-Object { $_.Enabled -eq $true })
+    $totalEnabled = $enabledComputers.Count
     $neverLoggedOn = ($staleEnabledComputers | Where-Object { $null -eq $_.lastLogonDate } | Measure-Object).Count
-    $notLoggedIn180Days = $staleCount - $neverLoggedOn
+    $notLoggedInThresholdDays = $staleCount - $neverLoggedOn
+
+    $mostRecentLogon = 'No enabled computers have logged on'
+    $loggedOnEnabledComputers = @($enabledComputers | Where-Object { $null -ne $_.lastLogonDate })
+    if ($loggedOnEnabledComputers.Count -gt 0) {
+        $mostRecentLogon = ($loggedOnEnabledComputers | Sort-Object -Property lastLogonDate -Descending | Select-Object -First 1).lastLogonDate.ToString('yyyy-MM-dd')
+    }
 
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Enabled Computers | $totalEnabled |" + "`n"
-    $result += "| Stale Enabled Computers (180+ days) | $staleCount |" + "`n"
+    $result += "| Stale Enabled Computers ($StaleThresholdDays+ days) | $staleCount |" + "`n"
     $result += "| Never Logged On | $neverLoggedOn |" + "`n"
-    $result += "| Not Logged On in 180+ Days | $notLoggedIn180Days |" + "`n"
+    $result += "| Not Logged On in $StaleThresholdDays+ Days | $notLoggedInThresholdDays |" + "`n"
 
     if ($totalEnabled -gt 0) {
         $percentage = [Math]::Round(($staleCount / $totalEnabled) * 100, 2)
@@ -104,11 +114,18 @@ function Test-MtAdComputerStaleEnabledCount {
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
-
-    return $null
+    if ($staleCount -eq 0) {
+        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd'))."
+        $testResultMarkdown = "$analysisSummary`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
+        return $true
+    } else {
+        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+        Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
+        return $null
+    }
 }

@@ -5,7 +5,7 @@ function Test-MtAdTrustStaleDetails {
 
     .DESCRIPTION
     This test retrieves detailed information about trusts that have not been validated
-    for more than 60 days. Stale trusts may indicate connectivity issues, decommissioned
+    beyond the configured threshold (default 60 days). Stale trusts may indicate connectivity issues, decommissioned
     domains, or trusts that are no longer needed. This test helps identify specific
     trusts that should be reviewed and potentially removed to reduce the attack surface.
 
@@ -34,7 +34,10 @@ function Test-MtAdTrustStaleDetails {
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Age, in days, after which a trust is considered stale.
+        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 60
+    )
 
     Write-Verbose "Starting Test-MtAdTrustStaleDetails"
 
@@ -50,15 +53,24 @@ function Test-MtAdTrustStaleDetails {
     $trusts = $adState.Trusts
     $totalCount = ($trusts | Measure-Object).Count
 
-    # Define stale threshold (60 days)
-    $staleThreshold = (Get-Date).AddDays(-60)
+    # Define stale threshold
+    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
 
-    # Get stale trusts (those not validated in 60+ days)
+    # Get stale trusts (those not validated within the configured threshold)
     $staleTrusts = $trusts | Where-Object {
         $null -ne $_.LastValidated -and $_.LastValidated -lt $staleThreshold
     } | Sort-Object LastValidated
 
     $staleCount = ($staleTrusts | Measure-Object).Count
+    $mostRecentValidation = $trusts |
+        Where-Object { $null -ne $_.LastValidated } |
+        Sort-Object LastValidated -Descending |
+        Select-Object -First 1 -ExpandProperty LastValidated
+    if ($null -eq $mostRecentValidation) {
+        $mostRecentValidation = 'unknown'
+    } else {
+        $mostRecentValidation = $mostRecentValidation.ToString('yyyy-MM-dd')
+    }
 
     # Test passes if we successfully retrieved trust data
     $testResult = $true
@@ -67,7 +79,7 @@ function Test-MtAdTrustStaleDetails {
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Trusts | $totalCount |" + "`n"
-    $result += "| Stale Trusts (>60 days) | $staleCount |" + "`n" + "`n"
+    $result += "| Stale Trusts (>$StaleThresholdDays days) | $staleCount |" + "`n" + "`n"
 
     if ($staleCount -gt 0) {
         $result += "### Stale Trust Details" + "`n" + "`n"
@@ -90,11 +102,19 @@ function Test-MtAdTrustStaleDetails {
     }
 
     if ($totalCount -eq 0) {
-        $testResultMarkdown = "No trusts are configured in this domain.`n`n%TestResult%"
+        $testResultMarkdown = "No trusts are configured in this domain. The analysis would change if one or more trusts were created.`n`n%TestResult%"
     } elseif ($staleCount -eq 0) {
-        $testResultMarkdown = "No stale trusts detected. All configured trusts have been validated within the last 60 days.`n`n%TestResult%"
+        $knownValidationCount = ($trusts | Where-Object { $null -ne $_.LastValidated } | Measure-Object).Count
+        if ($knownValidationCount -eq 0) {
+            $testResultMarkdown = "No stale trusts detected. None of the $totalCount configured trusts has a recorded validation date, so staleness cannot be determined from available data.`n`n%TestResult%"
+        } elseif ($knownValidationCount -lt $totalCount) {
+            $unknownCount = $totalCount - $knownValidationCount
+            $testResultMarkdown = "No stale trusts detected. $unknownCount trust(s) have an unknown validation status. The remaining $knownValidationCount configured trust(s) have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "All $totalCount configured trusts have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        }
     } else {
-        $testResultMarkdown = "Found $staleCount stale trust(s). These trusts should be reviewed and removed if the target domain is no longer accessible or needed.`n`n%TestResult%"
+        $testResultMarkdown = "Found $staleCount stale trust(s) that have not been validated for more than $StaleThresholdDays days. These trusts should be reviewed and removed if the target domain is no longer accessible or needed.`n`n%TestResult%"
     }
 
     if ($totalCount -gt 0) {

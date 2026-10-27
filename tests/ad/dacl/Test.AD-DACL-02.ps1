@@ -28,6 +28,7 @@ function Test-MtAdDaclOuObjectCount {
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -35,6 +36,10 @@ function Test-MtAdDaclOuObjectCount {
     param()
 
     Write-Verbose "Starting Test-MtAdDaclOuObjectCount"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
@@ -42,7 +47,7 @@ function Test-MtAdDaclOuObjectCount {
         return $null
     }
     if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
     Write-Verbose "Filtering/counting dacl ou object count"

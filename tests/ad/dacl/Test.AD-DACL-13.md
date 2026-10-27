@@ -24,5 +24,7 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 - `Test-MtAdDaclPrivilegedExtendedRightDetails` - Breaks down privileged extended rights by type
 - `Test-MtAdDaclNonInheritedAceCount` - Counts explicit DACL entries that may represent custom delegations
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 <!--- Results --->
 %TestResult%
