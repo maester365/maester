@@ -1,0 +1,40 @@
+﻿Ensure at least one **assigned** iOS compliance policy requires a strong device passcode.
+
+The passcode is what stands between someone holding the device and everything on it. On a managed iPhone that is corporate mail, Teams conversations, and the Microsoft Authenticator app, which is the second factor for the signed-in user. A phone with no passcode, or with a four digit simple passcode, hands all of that to whoever picks it up, and a stolen phone is the most ordinary way a mobile device is lost to someone else.
+
+Four settings make up the control, and this check requires all four **on the same policy**, because a device is evaluated against each policy as a whole:
+
+- **Require a password to unlock mobile devices** - without it, nothing below applies.
+- **Simple passcodes** set to **Block** - a passcode of 1234 or 1111 is guessed, not broken.
+- **Minimum password length** - six characters by default in this check.
+- **Maximum minutes of inactivity until screen locks** - fifteen minutes by default. A passcode on a screen that never locks protects nothing.
+
+An inactivity timeout that is **not configured** does not count as a pass. Treating a missing value as "no limit, so under the limit" would report the weakest possible configuration as compliant.
+
+Both thresholds are parameters, so an organization that requires eight characters and a five minute lock can set `MinimumPasscodeLength` and `MaximumInactivityMinutes` in its Maester configuration.
+
+Policies that are **not assigned** to any group are reported by this test but do not count towards a pass, because an unassigned compliance policy is never evaluated against any device.
+
+#### Remediation action
+
+1. Navigate to the [Microsoft Intune admin center](https://intune.microsoft.com).
+2. Go to **Devices** > **Manage devices** > **[Compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)**.
+3. Select an existing iOS/iPadOS policy, or select **+ Create policy** with **Platform** set to **iOS/iPadOS**.
+4. Under **Compliance settings** > **System Security** > **Password**:
+   - Set **Require a password to unlock mobile devices** to **Require**.
+   - Set **Simple passcodes** to **Block**.
+   - Set **Minimum password length** to **6** or more.
+   - Set **Maximum minutes of inactivity until screen locks** to **15** or less.
+5. On the **Assignments** tab, assign the policy to your iOS device or user groups.
+6. Select **Next** and then **Create** or **Save**.
+
+Tell users before the policy applies: devices that do not meet the requirement prompt for a new passcode, and users with a four digit passcode have to choose a longer one.
+
+#### Related links
+
+- [Microsoft Intune admin center - Device compliance](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
+- [Microsoft Learn - iOS/iPadOS compliance settings in Intune](https://learn.microsoft.com/intune/device-security/compliance/ref-ios-ipados-settings)
+- [Microsoft Learn - Levels of protection and configuration in Intune](https://learn.microsoft.com/intune/fundamentals/protection-configuration-levels)
+
+<!--- Results --->
+%TestResult%
