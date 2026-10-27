@@ -192,6 +192,8 @@ Use either of these options:
   New-ManagementRoleAssignment -Role "View-Only Configuration" -App <Name>
   ```
 
+If Security & Compliance PowerShell connects but the application has no Microsoft Entra role that covers it, the session loads without cmdlets such as `Get-ProtectionAlert`. The ORCA tests then error with `The term 'Get-ProtectionAlert' is not recognized`. Assign Security Reader or Global Reader and connect again.
+
 See [App-only authentication for unattended scripts](https://learn.microsoft.com/powershell/exchange/app-only-auth-powershell-v2) on Microsoft Learn for the full list of supported roles.
 
 ### Microsoft Teams PowerShell Module
