@@ -23,7 +23,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 125 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -460,6 +460,18 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.8.5.8](./CIS.M365.8.5.8) | (L2) Ensure external meeting chat is off | CIS | Medium | Teams | Meetings |
 | [CIS.M365.8.5.9](./CIS.M365.8.5.9) | (L2) Ensure meeting recording is off by default | CIS | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | Teams | Messaging |
+| [CIS.M365.9.1.1](./CIS.M365.9.1.1) | (L1) Restrict guest access to Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.10](./CIS.M365.9.1.10) | (L1) Restrict service principal access to Fabric public APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.11](./CIS.M365.9.1.11) | (L1) Restrict service principal profiles in Fabric | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.12](./CIS.M365.9.1.12) | (L1) Restrict service principal access to Fabric global APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.2](./CIS.M365.9.1.2) | (L1) Restrict external guest invitations through Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.3](./CIS.M365.9.1.3) | (L1) Restrict guest browsing of Fabric content | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.4](./CIS.M365.9.1.4) | (L1) Restrict public publishing of Fabric reports | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.5](./CIS.M365.9.1.5) | (L2) Disable R and Python visuals in Fabric | CIS | Medium | Microsoft Fabric | Tenant settings |
+| [CIS.M365.9.1.6](./CIS.M365.9.1.6) | (L1) Enable sensitivity labels for Fabric content | CIS | Medium | Microsoft Fabric | Information protection |
+| [CIS.M365.9.1.7](./CIS.M365.9.1.7) | (L1) Restrict organization-wide Fabric links | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.8](./CIS.M365.9.1.8) | (L1) Restrict external sharing of semantic models | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.9](./CIS.M365.9.1.9) | (L1) Block resource-key authentication for Fabric datasets | CIS | Medium | Microsoft Fabric | Developer settings |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | Medium | Entra ID | Identity Protection |

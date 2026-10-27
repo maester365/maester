@@ -51,7 +51,8 @@
         $propertiesProperty = $setting.PSObject.Properties['properties']
         $createP2wProperties = if ($null -eq $propertiesProperty -or $null -eq $propertiesProperty.Value) {
             @()
-        } else {
+        }
+        else {
             @($propertiesProperty.Value | Where-Object { $_.name -eq 'CreateP2w' })
         }
 
@@ -61,9 +62,11 @@
         $createP2wIsDisabled = $createP2wIsBoolean -and -not $parsedCreateP2wValue
         $additionalCondition = if (-not $createP2wIsBoolean) {
             'Not found or invalid'
-        } elseif ($createP2wIsDisabled) {
+        }
+        elseif ($createP2wIsDisabled) {
             'Existing codes only'
-        } else {
+        }
+        else {
             'New codes allowed'
         }
     }
@@ -96,7 +99,8 @@
 
     if ($testResult) {
         $resultMessage = "Well done. $SettingTitle is $stateText."
-    } else {
+    }
+    else {
         $resultMessage = switch ($Rule) {
             'DisabledOrGroups' { "$SettingTitle is enabled for the entire organization. Disable it or restrict it to one or more security groups." }
             'PublishToWeb' {
@@ -104,7 +108,8 @@
                 if (-not $hasGroups) { $restrictionsToFix += 'restrict it to one or more security groups' }
                 if (-not $createP2wIsBoolean) {
                     $restrictionsToFix += 'confirm that new embed codes are disabled'
-                } elseif (-not $createP2wIsDisabled) {
+                }
+                elseif (-not $createP2wIsDisabled) {
                     $restrictionsToFix += 'allow only existing embed codes'
                 }
                 "$SettingTitle does not meet the required restrictions. Set it to " + ($restrictionsToFix -join ' and ') + '.'

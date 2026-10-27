@@ -33,7 +33,7 @@ Describe 'Get-MtFabricTenantSettings' {
         }
         Mock -ModuleName Maester Invoke-RestMethod {
             [pscustomobject]@{
-                value = @(
+                value           = @(
                     [pscustomobject]@{ settingName = 'FirstSetting' }
                     [pscustomobject]@{ settingName = 'SecondSetting' }
                 )
@@ -63,12 +63,13 @@ Describe 'Get-MtFabricTenantSettings' {
         Mock -ModuleName Maester Invoke-RestMethod {
             if ($Uri -eq 'https://api.fabric.microsoft.com/v1/admin/tenantsettings') {
                 [pscustomobject]@{
-                    value = @([pscustomobject]@{ settingName = 'FirstSetting' })
+                    value           = @([pscustomobject]@{ settingName = 'FirstSetting' })
                     continuationUri = 'https://api.fabric.microsoft.com/v1/admin/tenantsettings?continuationToken=page2'
                 }
-            } else {
+            }
+            else {
                 [pscustomobject]@{
-                    value = @([pscustomobject]@{ settingName = 'SecondSetting' })
+                    value           = @([pscustomobject]@{ settingName = 'SecondSetting' })
                     continuationUri = $null
                 }
             }
@@ -200,14 +201,14 @@ Describe 'Test-MtCisFabricTenantSetting' {
     It 'requires Publish to web to be group-scoped and allow only existing embed codes' {
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             @([pscustomobject]@{
-                settingName = 'PublishToWeb'
-                enabled = $true
-                enabledSecurityGroups = @('group-id')
-                properties = @(
-                    [pscustomobject]@{ name = 'AnotherSetting'; value = 'true' }
-                    [pscustomobject]@{ name = 'CreateP2w'; value = 'false' }
-                )
-            })
+                    settingName           = 'PublishToWeb'
+                    enabled               = $true
+                    enabledSecurityGroups = @('group-id')
+                    properties            = @(
+                        [pscustomobject]@{ name = 'AnotherSetting'; value = 'true' }
+                        [pscustomobject]@{ name = 'CreateP2w'; value = 'false' }
+                    )
+                })
         }
 
         $passingResult = InModuleScope Maester {
@@ -218,11 +219,11 @@ Describe 'Test-MtCisFabricTenantSetting' {
 
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             @([pscustomobject]@{
-                settingName = 'PublishToWeb'
-                enabled = $true
-                enabledSecurityGroups = @('group-id')
-                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'true' })
-            })
+                    settingName           = 'PublishToWeb'
+                    enabled               = $true
+                    enabledSecurityGroups = @('group-id')
+                    properties            = @([pscustomobject]@{ name = 'CreateP2w'; value = 'true' })
+                })
         }
 
         $newCodesResult = InModuleScope Maester {
@@ -233,11 +234,11 @@ Describe 'Test-MtCisFabricTenantSetting' {
 
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             @([pscustomobject]@{
-                settingName = 'PublishToWeb'
-                enabled = $true
-                enabledSecurityGroups = @('group-id')
-                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'not-a-boolean' })
-            })
+                    settingName           = 'PublishToWeb'
+                    enabled               = $true
+                    enabledSecurityGroups = @('group-id')
+                    properties            = @([pscustomobject]@{ name = 'CreateP2w'; value = 'not-a-boolean' })
+                })
         }
 
         $invalidPropertyResult = InModuleScope Maester {
@@ -310,11 +311,11 @@ Describe 'Test-MtCisFabricTenantSetting' {
     It 'fails Publish to web when existing-code mode is enabled without a security group' {
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             @([pscustomobject]@{
-                settingName = 'PublishToWeb'
-                enabled = $true
-                enabledSecurityGroups = @()
-                properties = @([pscustomobject]@{ name = 'CreateP2w'; value = 'false' })
-            })
+                    settingName           = 'PublishToWeb'
+                    enabled               = $true
+                    enabledSecurityGroups = @()
+                    properties            = @([pscustomobject]@{ name = 'CreateP2w'; value = 'false' })
+                })
         }
 
         $result = InModuleScope Maester {
@@ -327,10 +328,10 @@ Describe 'Test-MtCisFabricTenantSetting' {
     It 'fails Publish to web when the nested createP2w property is absent' {
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             @([pscustomobject]@{
-                settingName = 'PublishToWeb'
-                enabled = $true
-                enabledSecurityGroups = @('group-id')
-            })
+                    settingName           = 'PublishToWeb'
+                    enabled               = $true
+                    enabledSecurityGroups = @('group-id')
+                })
         }
 
         $result = InModuleScope Maester {
