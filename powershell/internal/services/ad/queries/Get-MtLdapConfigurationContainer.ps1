@@ -21,145 +21,71 @@
         )
 
         $base = if ([string]::IsNullOrEmpty($RelativeSearchBase)) { $ConfigurationNamingContext } else { "$RelativeSearchBase,$ConfigurationNamingContext" }
+        $searchParameters = @{ Connection = $Connection; SearchBase = $base; Scope = $Scope; Filter = $Filter; Attributes = $Attributes; PageSize = $(if ($Scope -eq 'Base') { 0 } else { 1000 }) }
+        if ($PSBoundParameters.ContainsKey('SecurityDescriptorFlags')) { $searchParameters['SecurityDescriptorFlags'] = $SecurityDescriptorFlags }
+        return @(Invoke-MtLdapSearch @searchParameters)
+    }
+
+    function Invoke-ConfigurationSearchSafe {
+        param(
+            [string] $RelativeSearchBase,
+            [string] $Scope,
+            [string] $Filter,
+            [string[]] $Attributes,
+            [System.DirectoryServices.SecurityMasks] $SecurityDescriptorFlags
+        )
         try {
-            $searchParameters = @{ Connection = $Connection; SearchBase = $base; Scope = $Scope; Filter = $Filter; Attributes = $Attributes; PageSize = $(if ($Scope -eq 'Base') { 0 } else { 1000 }) }
-            if ($PSBoundParameters.ContainsKey('SecurityDescriptorFlags')) { $searchParameters['SecurityDescriptorFlags'] = $SecurityDescriptorFlags }
-            return @(Invoke-MtLdapSearch @searchParameters)
-        }
-        catch {
-            Write-Verbose "Could not query LDAP configuration path '$base': $($_.Exception.Message)"
-            return @()
+            $params = @{ RelativeSearchBase = $RelativeSearchBase; Scope = $Scope; Filter = $Filter; Attributes = $Attributes }
+            if ($PSBoundParameters.ContainsKey('SecurityDescriptorFlags')) { $params['SecurityDescriptorFlags'] = $SecurityDescriptorFlags }
+            return @(Invoke-ConfigurationSearch @params)
+        } catch [System.DirectoryServices.Protocols.DirectoryOperationException] {
+            if ($_.Exception.Response.ResultCode -eq [System.DirectoryServices.Protocols.ResultCode]::NoSuchObject) {
+                return @()
+            }
+            throw  # Re-throw genuine LDAP failures so the category handler skips
         }
     }
 
     $commonAttributes = @('distinguishedName', 'name', 'objectClass', 'whenCreated', 'whenChanged')
     $pkiBase = 'CN=Public Key Services,CN=Services'
 
-    $wellKnown = @()
-    try {
-        $wellKnown = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=WellKnown Security Principals' -Scope OneLevel -Filter '(objectClass=*)' -Attributes ($commonAttributes + @('objectSid'))
-    }
-    catch {
-        Write-Verbose "Could not query WellKnown Security Principals: $($_.Exception.Message)"
-    }
+    $wellKnown = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=WellKnown Security Principals' -Scope OneLevel -Filter '(objectClass=*)' -Attributes ($commonAttributes + @('objectSid'))
 
-    $siteLinks = @()
-    try {
-        $rawSiteLinks = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
-        $siteLinks = @($rawSiteLinks | ForEach-Object {
-            $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
-            $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
-            $_
-        })
-    }
-    catch {
-        Write-Verbose "Could not query Site Links: $($_.Exception.Message)"
-    }
+    $rawSiteLinks = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Inter-Site Transports,CN=Sites' -Scope Subtree -Filter '(objectClass=siteLink)' -Attributes ($commonAttributes + @('cost', 'replInterval', 'siteList', 'options'))
+    $siteLinks = @($rawSiteLinks | ForEach-Object {
+        $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
+        $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
+        $_
+    })
 
-    $dhcp = @()
-    try {
-        $dhcp = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=NetServices,CN=Services' -Scope OneLevel -Filter '(|(objectClass=dhcpClass)(objectClass=dhcpServer)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('serviceBindingInformation', 'keywords'))
-    }
-    catch {
-        Write-Verbose "Could not query DHCP servers: $($_.Exception.Message)"
-    }
+    $dhcp = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=NetServices,CN=Services' -Scope OneLevel -Filter '(|(objectClass=dhcpClass)(objectClass=dhcpServer)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('serviceBindingInformation', 'keywords'))
 
-    $authN = @()
-    try {
-        $authN = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=AuthN Policy Configuration,CN=Services' -Scope Subtree -Filter '(objectClass=*)' -Attributes ($commonAttributes + @('msDS-ServiceAllowedToAuthenticateFrom', 'msDS-ServiceAllowedToAuthenticateTo'))
-    }
-    catch {
-        Write-Verbose "Could not query AuthN Policy Configuration: $($_.Exception.Message)"
-    }
+    $authN = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=AuthN Policy Configuration,CN=Services' -Scope Subtree -Filter '(objectClass=*)' -Attributes ($commonAttributes + @('msDS-ServiceAllowedToAuthenticateFrom', 'msDS-ServiceAllowedToAuthenticateTo'))
 
-    $trustedRoots = @()
-    try {
-        $trustedRoots = Invoke-ConfigurationSearch -RelativeSearchBase "CN=Certification Authorities,$pkiBase" -Scope OneLevel -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
-    }
-    catch {
-        Write-Verbose "Could not query Trusted Root CAs: $($_.Exception.Message)"
-    }
+    $trustedRoots = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Certification Authorities,$pkiBase" -Scope OneLevel -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
 
-    $intermediate = @()
-    try {
-        $intermediate = Invoke-ConfigurationSearch -RelativeSearchBase "CN=AIA,$pkiBase" -Scope OneLevel -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
-    }
-    catch {
-        Write-Verbose "Could not query Intermediate CAs: $($_.Exception.Message)"
-    }
+    $intermediate = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=AIA,$pkiBase" -Scope OneLevel -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
 
-    $enterprise = @()
-    try {
-        $enterprise = Invoke-ConfigurationSearch -RelativeSearchBase "CN=Enrollment Services,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKIEnrollmentService)' -Attributes ($commonAttributes + @('certificateTemplates', 'dNSHostName', 'cACertificate', 'flags'))
-    }
-    catch {
-        Write-Verbose "Could not query Enterprise CAs: $($_.Exception.Message)"
-    }
+    $enterprise = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Enrollment Services,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKIEnrollmentService)' -Attributes ($commonAttributes + @('certificateTemplates', 'dNSHostName', 'cACertificate', 'flags'))
 
-    $templates = @()
-    try {
-        $securityDescriptorFlags = [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Dacl
-        $templates = Invoke-ConfigurationSearch -RelativeSearchBase "CN=Certificate Templates,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKICertificateTemplate)' -Attributes ($commonAttributes + @('displayName', 'pKIExtendedKeyUsage', 'msPKI-Enrollment-Flag', 'msPKI-Certificate-Name-Flag', 'nTSecurityDescriptor')) -SecurityDescriptorFlags $securityDescriptorFlags
-    }
-    catch {
-        Write-Verbose "Could not query Certificate Templates: $($_.Exception.Message)"
-    }
+    $securityDescriptorFlags = [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Dacl
+    $templates = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Certificate Templates,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKICertificateTemplate)' -Attributes ($commonAttributes + @('displayName', 'pKIExtendedKeyUsage', 'msPKI-Enrollment-Flag', 'msPKI-Certificate-Name-Flag', 'nTSecurityDescriptor')) -SecurityDescriptorFlags $securityDescriptorFlags
 
-    $cdp = @()
-    try {
-        $cdp = Invoke-ConfigurationSearch -RelativeSearchBase "CN=CDP,$pkiBase" -Scope OneLevel -Filter '(|(objectClass=cRLDistributionPoint)(objectClass=certificationAuthority))' -Attributes ($commonAttributes + @('certificateRevocationList'))
-    }
-    catch {
-        Write-Verbose "Could not query CRL Distribution Points: $($_.Exception.Message)"
-    }
+    $cdp = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=CDP,$pkiBase" -Scope OneLevel -Filter '(|(objectClass=cRLDistributionPoint)(objectClass=certificationAuthority))' -Attributes ($commonAttributes + @('certificateRevocationList'))
 
-    $ntAuth = @()
-    try {
-        $ntAuth = Invoke-ConfigurationSearch -RelativeSearchBase "CN=NTAuthCertificates,$pkiBase" -Scope Base -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
-    }
-    catch {
-        Write-Verbose "Could not query NTAuth Certificates: $($_.Exception.Message)"
-    }
+    $ntAuth = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=NTAuthCertificates,$pkiBase" -Scope Base -Filter '(objectClass=certificationAuthority)' -Attributes ($commonAttributes + @('cACertificate'))
 
-    $policies = @()
-    try {
-        $policies = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services' -Scope OneLevel -Filter '(objectClass=queryPolicy)' -Attributes ($commonAttributes + @('lDAPAdminLimits'))
-    }
-    catch {
-        Write-Verbose "Could not query LDAP Query Policies: $($_.Exception.Message)"
-    }
+    $policies = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services' -Scope OneLevel -Filter '(objectClass=queryPolicy)' -Attributes ($commonAttributes + @('lDAPAdminLimits'))
 
-    $directoryService = $null
-    try {
-        $directoryService = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Directory Service,CN=Windows NT,CN=Services' -Scope Base -Filter '(objectClass=nTDSService)' -Attributes @('tombstoneLifetime', 'dSHeuristics', 'sPNMappings') | Select-Object -First 1
-    }
-    catch {
-        Write-Verbose "Could not query Directory Service: $($_.Exception.Message)"
-    }
+    $directoryService = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Directory Service,CN=Windows NT,CN=Services' -Scope Base -Filter '(objectClass=nTDSService)' -Attributes @('tombstoneLifetime', 'dSHeuristics', 'sPNMappings') | Select-Object -First 1
 
-    $kds = $null
-    try {
-        $kds = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
-    }
-    catch {
-        Write-Verbose "Could not query KDS Root Keys: $($_.Exception.Message)"
-    }
+    # Use safe search so a NoSuchObject error (common when KDS has never been used) returns @()
+    # rather than throwing and nulling the entire Configuration category
+    $kds = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
 
-    $activation = @()
-    try {
-        $activation = Invoke-ConfigurationSearch -RelativeSearchBase 'CN=Activation Objects,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
-    }
-    catch {
-        Write-Verbose "Could not query Activation Objects: $($_.Exception.Message)"
-    }
+    $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Microsoft SPP,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
 
-    $enrollmentTemplates = @()
-    try {
-        $enrollmentTemplates = [string[]]@($enterprise | ForEach-Object { @($_.certificateTemplates) } | Sort-Object -Unique)
-    }
-    catch {
-        Write-Verbose "Could not derive Enrollment Templates: $($_.Exception.Message)"
-    }
+    $enrollmentTemplates = [string[]]@($enterprise | ForEach-Object { @($_.certificateTemplates) } | Sort-Object -Unique)
 
     return [PSCustomObject]@{
         WellKnownSecurityPrincipals = @($wellKnown); SiteLinks = @($siteLinks); DhcpServers = @($dhcp); AuthNPolicyContainers = @($authN)
@@ -168,6 +94,6 @@
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
-        KdsRootKeys = $kds; ActivationObjects = @($activation)
+        KdsRootKeys = @($kds); ActivationObjects = @($activation)
     }
 }

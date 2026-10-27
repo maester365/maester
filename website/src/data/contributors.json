@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 5
+      "recentCommits": 8
     },
     {
       "id": "Cloud-Architekt",
@@ -600,7 +600,7 @@
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 40
+      "recentCommits": 41
     },
     {
       "id": "SebastianClaesson",
@@ -781,7 +781,7 @@
         "MT.1024"
       ],
       "initials": "EA",
-      "recentCommits": 15
+      "recentCommits": 17
     },
     {
       "id": "bdrogja",
@@ -914,7 +914,7 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 17
+      "recentCommits": 18
     },
     {
       "id": "Mynster9361",
@@ -1475,7 +1475,7 @@
         "MT.1100"
       ],
       "initials": "SE",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "DanielLystad",
@@ -1876,7 +1876,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 7
+      "recentCommits": 8
     },
     {
       "id": "Oppedijk",
@@ -2727,7 +2727,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 167
+      "recentCommits": 172
     }
   ],
   "attributions": {
@@ -6597,7 +6597,7 @@
       "path": "/docs/tests/AD-CFG-21"
     },
     "AD-CFG-22": {
-      "title": "Exactly one KDS root key should exist",
+      "title": "KDS root key count should be acceptable",
       "path": "/docs/tests/AD-CFG-22"
     },
     "AD-CFG-23": {
@@ -6789,7 +6789,7 @@
       "path": "/docs/tests/AD-DCOMP-05"
     },
     "AD-DCOMP-06": {
-      "title": "No enabled computers should be stale for 180 days or more",
+      "title": "No enabled computers should be stale beyond the configured threshold",
       "path": "/docs/tests/AD-DCOMP-06"
     },
     "AD-DCOMP-07": {
@@ -7225,7 +7225,7 @@
       "path": "/docs/tests/AD-GRP-10"
     },
     "AD-KRBTGT-01": {
-      "title": "KRBTGT password age should not exceed 180 days",
+      "title": "KRBTGT password age should not exceed the configured maximum",
       "path": "/docs/tests/AD-KRBTGT-01"
     },
     "AD-KRBTGT-02": {

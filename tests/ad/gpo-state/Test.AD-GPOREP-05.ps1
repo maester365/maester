@@ -44,48 +44,22 @@ if ($null -eq $gpoState) {
     }
     Write-Verbose "Filtering/counting gpo no enterprise dc count"
 
-    $gpoReports = $null
-    if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
-        $gpoReports = $gpoState.GPOReports
-    }
-    elseif ($gpoState.PSObject.Properties.Name -contains 'GpoReports') {
-        $gpoReports = $gpoState.GpoReports
-    }
-    else {
-        $gpoReports = @()
-        foreach ($gpo in @($gpoState.GPOs)) {
-            foreach ($prop in @('GpoReports', 'GPOReports', 'GpoReport', 'GPOReport')) {
-                if ($gpo.PSObject.Properties.Name -contains $prop -and $null -ne $gpo.$prop) {
-                    $value = $gpo.$prop
-                    if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string])) {
-                        $gpoReports += @($value)
-                    }
-                    else {
-                        $gpoReports += $value
-                    }
-                }
-            }
-        }
-    }
-
+    $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
         Add-MtTestResultDetail -Result 'Unable to retrieve GPO reports from Get-MtADGpoState.'
         return $false
     }
 
-    $gpoReports = @($gpoReports)
-    $reportsWithNoEnterpriseDc = @(
-        foreach ($report in $gpoReports) {
-            $hasEnterpriseDomainControllers = $null
-            if ($report.PSObject.Properties.Name -contains 'HasEnterpriseDomainControllers') {
-                $hasEnterpriseDomainControllers = $report.HasEnterpriseDomainControllers
-            }
+    $gpoReports = @($gpoReports | Where-Object { $null -ne $_ })
+    # HasEnterpriseDomainControllers is $null when the security descriptor of a GPO could not be read: unknown, not missing.
+    $reportsWithNoEnterpriseDc = @($gpoReports | Where-Object { $false -eq $_.HasEnterpriseDomainControllers })
+    $reportsNotEvaluated = @($gpoReports | Where-Object { $null -eq $_.HasEnterpriseDomainControllers })
+    $notEvaluatedCount = $reportsNotEvaluated.Count
 
-            if ($hasEnterpriseDomainControllers -eq $false -or $null -eq $hasEnterpriseDomainControllers) {
-                $report
-            }
-        }
-    )
+    if ($notEvaluatedCount -eq $gpoReports.Count) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GPO permissions could not be read from Active Directory (0 of $($gpoReports.Count) GPOs evaluated), so this test could not be evaluated."
+        return $null
+    }
 
     $noEnterpriseDcCount = ($reportsWithNoEnterpriseDc | Measure-Object).Count
     $testResult = $noEnterpriseDcCount -eq 0
@@ -110,8 +84,18 @@ if ($null -eq $gpoState) {
     if ($noEnterpriseDcCount -gt 0 -and $sampleNamesText) {
         $resultTable += "| Sample GPO Reports | $sampleNamesText |" + "`n"
     }
+    if ($notEvaluatedCount -gt 0) {
+        $notEvaluatedNames = @($reportsNotEvaluated | Select-Object -First $sampleLimit | ForEach-Object { [string]$_.Name }) -join ', '
+        $resultTable += "| GPO Reports Not Evaluated (permissions could not be read) | $notEvaluatedCount |" + "`n"
+        $resultTable += "| Sample GPO Reports Not Evaluated | $notEvaluatedNames |" + "`n"
+    }
 
-    if ($testResult) {
+    # Nothing was flagged, but a GPO whose permissions could not be read is not a pass.
+    $needsInvestigation = $testResult -and $notEvaluatedCount -gt 0
+    if ($needsInvestigation) {
+        $recommendation = "ℹ️ No GPO reports were found missing Enterprise Domain Controllers among the GPOs that could be evaluated, but the permissions of $notEvaluatedCount GPO(s) could not be read. Review those GPOs manually."
+    }
+    elseif ($testResult) {
         $recommendation = '✅ No GPO reports were found missing Enterprise Domain Controllers.'
     }
     else {
@@ -122,7 +106,7 @@ if ($null -eq $gpoState) {
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:$needsInvestigation
     Write-Verbose "Completed Test-MtAdGpoNoEnterpriseDcCount"
     return $testResult
 }

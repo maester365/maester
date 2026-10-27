@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1012"
-  - "High"
+  - "Medium"
   - "Entra ID"
   - "Conditional Access"
   - "Authentication"
@@ -33,7 +33,7 @@ See [Sign-in risk-based multifactor authentication - Microsoft Learn](https://le
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1012 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
 | Product | Entra ID |
 | Feature | Conditional Access |

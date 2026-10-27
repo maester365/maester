@@ -39,7 +39,7 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-CFG-19](./AD-CFG-19.md) | Intermediate CA details should be retrievable | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20.md) | CRL distribution points count should be retrievable | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21.md) | NTAuth certificates count should be retrievable | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22.md) | Exactly one KDS root key should exist | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22.md) | KDS root key count should be acceptable | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23.md) | SMTP site links count should be retrievable | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24.md) | IP site links count should be retrievable | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01.md) | Computer disabled count should be retrievable | Info | Active Directory | Computers |
@@ -87,7 +87,7 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-DCOMP-03](./AD-DCOMP-03.md) | Non-DC computers with constrained delegation count should be investigated | Info | Active Directory | Computers |
 | [AD-DCOMP-04](./AD-DCOMP-04.md) | Computer operating system count should be investigated | Info | Active Directory | Computers |
 | [AD-DCOMP-05](./AD-DCOMP-05.md) | Computer operating system details should be investigated | Info | Active Directory | Computers |
-| [AD-DCOMP-06](./AD-DCOMP-06.md) | No enabled computers should be stale for 180 days or more | Medium | Active Directory | Computers |
+| [AD-DCOMP-06](./AD-DCOMP-06.md) | No enabled computers should be stale beyond the configured threshold | Medium | Active Directory | Computers |
 | [AD-DCOMP-07](./AD-DCOMP-07.md) | Computer DNS host name count should be investigated | Info | Active Directory | Computers |
 | [AD-DCOMP-08](./AD-DCOMP-08.md) | Computer DNS zone count should be investigated | Info | Active Directory | Computers |
 | [AD-DCOMP-09](./AD-DCOMP-09.md) | Computer DNS zone details should be investigated | Info | Active Directory | Computers |
@@ -196,7 +196,7 @@ These tests collect and validate on-premises Active Directory configuration, inc
 | [AD-GRP-08](./AD-GRP-08.md) | Domain local group count should be retrievable | Info | Active Directory | Groups |
 | [AD-GRP-09](./AD-GRP-09.md) | Global group count should be retrievable | Info | Active Directory | Groups |
 | [AD-GRP-10](./AD-GRP-10.md) | Universal group count should be retrievable | Info | Active Directory | Groups |
-| [AD-KRBTGT-01](./AD-KRBTGT-01.md) | KRBTGT password age should not exceed 180 days | Medium | Active Directory | Account security |
+| [AD-KRBTGT-01](./AD-KRBTGT-01.md) | KRBTGT password age should not exceed the configured maximum | Medium | Active Directory | Account security |
 | [AD-KRBTGT-02](./AD-KRBTGT-02.md) | KRBTGT last logon should be investigated | Info | Active Directory | Account security |
 | [AD-KRBTGT-03](./AD-KRBTGT-03.md) | KRBTGT should have standard UAC settings (disabled account) | Medium | Active Directory | Account security |
 | [AD-MSA-01](./AD-MSA-01.md) | Managed service account count should be investigated | Info | Active Directory | Account security |

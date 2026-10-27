@@ -52,7 +52,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-CFG-19](./AD-CFG-19) | Intermediate CA details should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20) | CRL distribution points count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21) | NTAuth certificates count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22) | Exactly one KDS root key should exist | Active Directory | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22) | KDS root key count should be acceptable | Active Directory | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23) | SMTP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24) | IP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01) | Computer disabled count should be retrievable | Active Directory | Info | Active Directory | Computers |
@@ -100,7 +100,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-DCOMP-03](./AD-DCOMP-03) | Non-DC computers with constrained delegation count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-04](./AD-DCOMP-04) | Computer operating system count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-05](./AD-DCOMP-05) | Computer operating system details should be investigated | Active Directory | Info | Active Directory | Computers |
-| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale for 180 days or more | Active Directory | Medium | Active Directory | Computers |
+| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale beyond the configured threshold | Active Directory | Medium | Active Directory | Computers |
 | [AD-DCOMP-07](./AD-DCOMP-07) | Computer DNS host name count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-08](./AD-DCOMP-08) | Computer DNS zone count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-09](./AD-DCOMP-09) | Computer DNS zone details should be investigated | Active Directory | Info | Active Directory | Computers |
@@ -209,7 +209,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-GRP-08](./AD-GRP-08) | Domain local group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-09](./AD-GRP-09) | Global group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-10](./AD-GRP-10) | Universal group count should be retrievable | Active Directory | Info | Active Directory | Groups |
-| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed 180 days | Active Directory | Medium | Active Directory | Account security |
+| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed the configured maximum | Active Directory | Medium | Active Directory | Account security |
 | [AD-KRBTGT-02](./AD-KRBTGT-02) | KRBTGT last logon should be investigated | Active Directory | Info | Active Directory | Account security |
 | [AD-KRBTGT-03](./AD-KRBTGT-03) | KRBTGT should have standard UAC settings (disabled account) | Active Directory | Medium | Active Directory | Account security |
 | [AD-MSA-01](./AD-MSA-01) | Managed service account count should be investigated | Active Directory | Info | Active Directory | Account security |
@@ -470,8 +470,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | CISA | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | CISA | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6) | Phishing-resistant MFA SHALL be required for highly privileged roles. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | High | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | Medium | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | Medium | Entra ID | Conditional Access |
 | [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1) | Security logs SHALL be sent to the agency's security operations center for monitoring. | CISA | High | Entra ID | Logs and monitoring |
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1) | Only administrators SHALL be allowed to register applications. | CISA | Medium | Entra ID | User and directory settings |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2) | Only administrators SHALL be allowed to consent to applications. | CISA | High | Entra ID | App consent and permissions |
@@ -597,8 +597,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1009](./MT.1009) | At least one Conditional Access policy is configured to block other legacy authentication. | Maester | High | Entra ID | Conditional Access |
 | [MT.1010](./MT.1010) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | Maester | High | Entra ID | Conditional Access |
 | [MT.1011](./MT.1011) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | Maester | High | Entra ID | Conditional Access |
-| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | High | Entra ID | Conditional Access |
-| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | High | Entra ID | Conditional Access |
+| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | Medium | Entra ID | Conditional Access |
+| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1014](./MT.1014) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | Maester | High | Entra ID | Conditional Access |
 | [MT.1015](./MT.1015) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1016](./MT.1016) | At least one Conditional Access policy is configured to require MFA for guest access. | Maester | High | Entra ID | Conditional Access |
@@ -732,7 +732,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled. | Maester | Low | Defender | Endpoint antivirus |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically. | Maester | Medium | Defender | Endpoint antivirus |
 | [MT.1172](./MT.1172) | Unified audit log ingestion is enabled. | Maester | High | Purview | Audit |
-| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Medium | Purview | Information protection |
+| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Low | Purview | Information protection |
 | [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled. | Maester | Medium | Purview | Insider risk management |
 | [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location. | Maester | Medium | Purview | Data lifecycle management |

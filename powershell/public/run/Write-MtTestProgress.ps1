@@ -261,6 +261,7 @@
             if ($clean.Total -gt 0) { $counts += "$([math]::Min($clean.Completed + $clean.Failed, $clean.Total)) / $($clean.Total)" } elseif ($clean.Completed -gt 0) { $counts += "$($clean.Completed) done" }
             if ($clean.Failed -gt 0) { $counts += "$($clean.Failed) failed" }
             if ($clean.Running -gt 0) { $counts += "$($clean.Running) running" }
+            if (-not [string]::IsNullOrWhiteSpace($clean.Status)) { $counts += $clean.Status.Trim() }
             # Each item that finished is written once, as the compact layout writes Maester's own tests.
             if (-not $state.SeenItems) { $state.SeenItems = [System.Collections.Generic.HashSet[string]]::new() }
             foreach ($item in $clean.Items) {
