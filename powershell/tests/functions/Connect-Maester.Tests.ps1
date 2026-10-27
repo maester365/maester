@@ -309,15 +309,15 @@ Describe 'Connect-Maester connection summary' {
     It 'Reports Security & Compliance as connected right after a two-step connect (#2557)' {
         # Uses the real Test-MtConnection and Get-MtExo, so the session list the Exchange Online check caches
         # before Connect-IPPSSession must not hide the new Security & Compliance session afterwards.
-        $global:mtTestIppsConnected = $false
+        $script:mtTestIppsConnected = $false
         Mock Test-MtModuleImported -ModuleName Maester { $true } -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
         Mock Get-ConnectionInformation -ModuleName Maester {
             [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
-            if ($global:mtTestIppsConnected) {
+            if ($script:mtTestIppsConnected) {
                 [pscustomobject]@{ Name = 'ExchangeOnlineProtection_1'; IsEopSession = $true; State = 'Connected'; UserPrincipalName = 'compliance@contoso.com'; ModuleName = 'tmpEOP' }
             }
         }
-        Mock Connect-IPPSSession -ModuleName Maester { $global:mtTestIppsConnected = $true }
+        Mock Connect-IPPSSession -ModuleName Maester { $script:mtTestIppsConnected = $true }
         InModuleScope Maester { Clear-MtExoCache }
 
         try {
@@ -326,7 +326,7 @@ Describe 'Connect-Maester connection summary' {
             ($script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance').Status | Should -Be 'Connected'
             Test-MtConnection -Service SecurityCompliance | Should -BeTrue
         } finally {
-            Remove-Variable -Name mtTestIppsConnected -Scope Global -ErrorAction SilentlyContinue
+            $script:mtTestIppsConnected = $null
             InModuleScope Maester { Clear-MtExoCache }
         }
     }
