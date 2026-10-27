@@ -21,7 +21,7 @@
         Feature = 'conditional-access',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'High',
         ImplementationCost = 'High',
         Mitre = 'T1078.004',
