@@ -68,8 +68,6 @@
             "Id": "c0000000-0000-0000-0000-000000000001"
           }
         ],
-        "GitHubApiBaseUri": "https://api.github.com",
-        "GitHubApiVersion": "2022-11-28",
         "GitHubOrganization": "",
         "GoldenCustomOnly": "custom",
         "GoldenRootOnly": "root"
@@ -91,8 +89,6 @@
             "Id": "e0000000-0000-0000-0000-000000000001"
           }
         ],
-        "GitHubApiBaseUri": "https://api.github.com",
-        "GitHubApiVersion": "2022-11-28",
         "GitHubOrganization": "",
         "GoldenCustomOnly": "custom",
         "GoldenRootOnly": "root",
