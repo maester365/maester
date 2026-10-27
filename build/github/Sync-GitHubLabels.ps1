@@ -122,13 +122,15 @@ foreach ($action in ($actions | Where-Object Action -EQ 'Merge')) {
     }
     # Discussions carrying the old label, found through search (labels have no discussions connection).
     $labelId = Invoke-Gh @('api', "repos/$Repository/labels/$(Get-EncodedLabel $action.Label)", '--jq', '.node_id')
-    $search = 'query($q:String!,$after:String){search(type:DISCUSSION,query:$q,first:100,after:$after){pageInfo{hasNextPage endCursor} nodes{... on Discussion{id}}}}'
+    $search = 'query($q:String!,$after:String){search(type:DISCUSSION,query:$q,first:100,after:$after){discussionCount pageInfo{hasNextPage endCursor} nodes{... on Discussion{id}}}}'
     $discussions = [System.Collections.Generic.List[string]]::new()
+    $discussionCount = 0
     $after = $null
     do {
         $arguments = @('api', 'graphql', '-f', "query=$search", '-f', "q=repo:$Repository label:`"$($action.From)`"")
         if ($after) { $arguments += @('-f', "after=$after") }
         $page = (Invoke-Gh $arguments | ConvertFrom-Json).data.search
+        $discussionCount = [int]$page.discussionCount
         foreach ($node in $page.nodes) { if ($node.id) { $discussions.Add($node.id) } }
         $after = $page.pageInfo.endCursor
     } while ($page.pageInfo.hasNextPage)
@@ -137,7 +139,11 @@ foreach ($action in ($actions | Where-Object Action -EQ 'Merge')) {
         Invoke-Gh @('api', 'graphql', '-f', "query=$mutation", '-f', "id=$id", '-f', "label=$labelId") | Out-Null
     }
     Write-Information "Merged $($action.From) into $($action.Label) ($(@($numbers).Count) PRs and issues, $($discussions.Count) discussions)"
-    if ($DeleteMerged) {
+    # Search returns at most 1,000 results. If it found fewer discussions than it counted, some still
+    # carry only the old label, so deleting it would drop their label.
+    if ($DeleteMerged -and $discussions.Count -lt $discussionCount) {
+        Write-Warning "Kept $($action.From): search found $($discussions.Count) of $discussionCount discussions carrying it. Relabel the rest, then run again with -DeleteMerged."
+    } elseif ($DeleteMerged) {
         Invoke-Gh @('api', "repos/$Repository/labels/$(Get-EncodedLabel $action.From)", '-X', 'DELETE') | Out-Null
         Write-Information "Deleted $($action.From)"
     }

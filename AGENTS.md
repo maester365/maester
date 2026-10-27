@@ -129,7 +129,8 @@ labels are defined in `.github/labels.json`; the rules for choosing them are in
 `.github/skills/maester-triage/SKILL.md`. To triage, use the `maester-triage` agent (or follow
 the skill directly): it shows its plan before changing anything and only ever changes labels.
 After editing `.github/labels.json`, run `./build/github/Sync-GitHubLabels.ps1` to see the
-changes and `-Apply` to make them.
+changes and `-Apply` to make them. `-Apply` creates, renames and updates labels and copies a merged
+label onto the items that carry the old one; add `-DeleteMerged` to also delete the old labels.
 
 ## Agents and skills
 

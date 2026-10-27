@@ -47,6 +47,14 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $repoUrl = 'https://github.com/maester365/maester/blob/main'
 $generator = 'build/github/Update-AgentFiles.ps1'
 
+function ConvertFrom-Scalar {
+    # Removes one pair of matching single or double quotes around a YAML scalar.
+    param([AllowEmptyString()] [string] $Value)
+    $v = $Value.Trim()
+    if ($v.Length -ge 2 -and (($v[0] -eq '"' -and $v[-1] -eq '"') -or ($v[0] -eq "'" -and $v[-1] -eq "'"))) { $v = $v.Substring(1, $v.Length - 2) }
+    $v
+}
+
 function Read-Frontmatter {
     # Reads the small YAML subset these files use: scalars, folded scalars (>-), lists and one-level maps.
     param([Parameter(Mandatory)] [string] $Path)
@@ -69,12 +77,12 @@ function Read-Frontmatter {
             $items = @(); $map = [ordered]@{}
             while ($i -lt $lines.Count -and $lines[$i] -match '^\s+') {
                 if ($lines[$i] -match '^\s+-\s+(.*)$') { $items += $Matches[1].Trim() }
-                elseif ($lines[$i] -match '^\s+([A-Za-z0-9_-]+):\s*(.*)$') { $map[$Matches[1]] = $Matches[2].Trim().Trim('"') }
+                elseif ($lines[$i] -match '^\s+([A-Za-z0-9_-]+):\s*(.*)$') { $map[$Matches[1]] = ConvertFrom-Scalar $Matches[2] }
                 $i++
             }
             $data[$key] = if ($map.Count -gt 0) { $map } else { $items }
         } else {
-            $data[$key] = $value.Trim().Trim('"')
+            $data[$key] = ConvertFrom-Scalar $value
         }
     }
     [pscustomobject]@{ Data = $data; Body = $body }
