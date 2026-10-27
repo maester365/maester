@@ -11,6 +11,9 @@ description: >-
   formatting, the MT, CIS, CISA, EIDSCA and ORCA suites, remediation guidance, Entra ID,
   Exchange, SharePoint, Teams, Defender, Conditional Access, and the validation checklist
   for new checks.
+metadata:
+  audience: "Contributors writing or reviewing checks"
+  summary: "The full guide to writing a check: layout, templates, attributes, rubric, validation and remediation."
 ---
 
 # Maester Test Expert
@@ -181,7 +184,7 @@ in [Choosing the attribute values](#choosing-the-attribute-values).
 | `Control` | string[] | `<framework-key>:<requirement-id>` | CIS and CISA checks | The requirements the check implements or supports. A CIS check sets `Control = 'cis-m365:5.1.5.1'`, a CISA check `Control = 'cisa-scuba:MS.AAD.3.1'`; any other check may name the same requirements. The first one that a framework file knows becomes the `Benchmark` of the result. For a shipped framework the requirement must exist in its file. |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
 | `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
-| `Permission` | string[] | One permission per element, no commas | No | The permissions the check needs, for example `Policy.Read.All`. Recorded; not enforced in 3.0. |
+| `Permission` | string[] | `<Service>:<Kind>:<Name>`; `\|` joins alternatives | No | The permissions the check needs, for example `'Graph:Scope:Policy.Read.All'`. Every element is needed; inside an element any one alternative is enough, least privileged first. The service must be in `Service`, the kind one the service registry lists for it. Recorded; not enforced in 3.0. See "Permission" in `website/docs/writing-tests/index.mdx`. |
 | `TenantType` | string[] | `Workforce`, `External` | No | Default `Workforce`. Recorded; enforced only when a run turns it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | Default all. Recorded; enforced only when a run turns it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | Declare `Windows` for Windows-only commands (lint checks common ones). |

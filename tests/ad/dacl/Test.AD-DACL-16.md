@@ -24,5 +24,7 @@ This test reads `$adState.DaclEntries`, filters unresolved `IdentityReference` v
 - `Test-MtAdDaclNonInheritedAceCount` - Counts explicit ACEs that may require review
 - `Test-MtAdDaclInheritedObjectTypeDetails` - Shows inheritance targeting across ACEs
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 <!--- Results --->
 %TestResult%

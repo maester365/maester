@@ -30,7 +30,7 @@
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
-    "@iconify/react": "^6.0.2",
+    "@iconify/react": "^6.0.3",
     "@mdx-js/react": "^3.1.1",
     "@mermaid-js/layout-elk": "^0.1.9",
     "clsx": "^2.1.1",

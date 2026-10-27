@@ -172,6 +172,8 @@ function Invoke-MtPackInstall {
             ApprovedAt         = [datetime]::UtcNow.ToString('o', [cultureinfo]::InvariantCulture)
             ReleasePublishedAt = if ($candidate.Release) { $candidate.Release.PublishedAt } else { $null }
             Cooldown           = if ($candidate.Kind -ne 'GitHub') { 'NotApplicable' } elseif ($candidate.CooldownMet) { "Met ($($candidate.AgeSource))" } else { 'Accepted before it was met' }
+            # Telemetry names a pack only when it is public or built in.
+            Public             = $candidate.Kind -eq 'BuiltIn' -or ($candidate.Kind -eq 'GitHub' -and $candidate.Private -eq $false)
         }
         $Lock.Packs = @(@($Lock.Packs | Where-Object { $_.Id -ne $id }) + $entry)
         # Modules: this pack's closure replaces what it required before; others keep theirs.

@@ -219,7 +219,7 @@
             }
             return $ConditionalAccessWhatIfResult
         } catch {
-            Write-Error $_.Exception.Message
+            throw
         }
     }
 }

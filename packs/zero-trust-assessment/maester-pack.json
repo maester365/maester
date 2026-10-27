@@ -8,6 +8,7 @@
   "Publisher": "maester365",
   "License": "MIT",
   "Banner": "assets/banner.png",
+  "Guide": "maester-pack.guide.json",
   "Homepage": "https://maester.dev/docs/packs/zero-trust-assessment",
   "Support": "https://github.com/maester365/maester/issues",
   "SecurityContact": "https://github.com/maester365/maester/security/policy",

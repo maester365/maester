@@ -13,7 +13,9 @@ function Read-MtPackManifest {
       leaving one out would hide it from the install prompt.
     - Runtime other than Script is refused with RuntimeNotSupported: packs in other languages (section 4.8)
       need a newer Maester. Catalog, a JSON file in the pack that lists its tests, is read by listings only;
-      the tests always come from Suites.
+      the tests always come from Suites. Guide, a JSON file that says how to install, connect and run the
+      pack, is also for listings; Maester checks only that it is a JSON object and that its screenshots are
+      images inside the pack.
     - A module in Uses.Modules is pinned to one exact Version and saved by Maester (Install Maester, the
       default), or is the user's own install (Install User) that the pack runs in a child process (Process
       Child), never in Maester's: Maester then neither saves nor imports it, and it may name a MinimumVersion.
@@ -56,7 +58,7 @@ function Read-MtPackManifest {
 
     $topLevel = @('$schema', 'Id', 'Guid', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
-        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner')
+        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner', 'Guide')
     $strictKeys = @{
         Uses        = @('Services', 'GraphScopes', 'TenantWrites', 'Network', 'Modules')
         Connector   = @('Service', 'Platform', 'DisplayName', 'File', 'Connect', 'Test', 'Disconnect', 'Describe', 'Renew', 'OptIn', 'Permissions', 'Environment')
@@ -206,6 +208,24 @@ function Read-MtPackManifest {
     if ($manifest.PSObject.Properties['Banner']) {
         $banner = & $text 'Banner'
         if (-not $banner -or -not (Test-MtPackRelativePath -Path $banner) -or $banner -notmatch '\.(png|jpe?g|webp)$') { & $fail 'Banner must be the path of a .png, .jpg or .webp image inside the pack.' }
+    }
+    if ($manifest.PSObject.Properties['Guide']) {
+        $guide = & $text 'Guide'
+        $guideFile = if ($guide -and (Test-MtPackRelativePath -Path $guide) -and $guide -match '\.json$') { Join-Path (Split-Path -Parent $file) $guide }
+        if (-not $guideFile) { & $fail 'Guide must be the path of a .json file inside the pack.' }
+        elseif (-not (Test-Path -LiteralPath $guideFile -PathType Leaf)) { & $fail "The Guide file '$guide' does not exist." }
+        else {
+            $guideData = try { Get-Content -LiteralPath $guideFile -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop } catch { $null }
+            if ($guideData -isnot [pscustomobject]) { & $fail "The Guide file '$guide' must hold one JSON object." }
+            else {
+                $shots = @(if ($guideData.PSObject.Properties['Screenshots']) { $guideData.Screenshots })
+                if ($shots.Count -gt 6) { & $fail "The Guide lists $($shots.Count) screenshots; at most 6 are allowed." }
+                foreach ($shot in $shots) {
+                    $shotPath = if ($shot -is [pscustomobject] -and $shot.Path -is [string]) { $shot.Path }
+                    if (-not $shotPath -or -not (Test-MtPackRelativePath -Path $shotPath) -or $shotPath -notmatch '\.(png|jpe?g|webp)$') { & $fail 'Each Guide screenshot needs a Path to a .png, .jpg or .webp image inside the pack.' }
+                }
+            }
+        }
     }
 
     foreach ($name in 'Listed', 'EnabledByDefault') {

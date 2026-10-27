@@ -12,7 +12,7 @@ Maester 3.0 requires PowerShell 7.4 or later (the `Core` edition).
 Templates and data files used by the module, including the engine's data tables:
 
 - `MaesterTestSchema.psd1` - the properties of the `[MaesterTest]` attribute and their rules.
-- `MaesterServiceRegistry.psd1` - the services a test can declare in `Service`, and how each is probed.
+- `MaesterServiceRegistry.psd1` - the services a test can declare in `Service`, how each is probed, and the kinds of grant a `Permission` value can name for it.
 - `MaesterLicenseTable.psd1` - the licence tokens accepted in `License` and the plan and SKU IDs they match.
 - `MaesterParameterKinds.psd1` - the kinds a test parameter can declare with `[MaesterParameter(Kind = ...)]`.
 - `MaesterSettings.psd1` - the global settings Maester knows, with their defaults (read by `Get-MtSetting`).

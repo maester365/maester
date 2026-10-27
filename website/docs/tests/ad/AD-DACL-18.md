@@ -51,6 +51,8 @@ This test reads `$adState.DaclEntries`, filters out the all-zero `InheritedObjec
 - `Test-MtAdDaclPrivilegedExtendedRightIdentity` - Shows identities with privileged extended rights
 - `Test-MtAdDaclUnresolvedSidDetails` - Lists objects containing orphaned SID ACEs
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 ## Test Metadata
 
 | Field | Value |
@@ -65,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters out the all-zero `InheritedObjec
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclInheritedObjectTypeDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-18.ps1) |
 | Services | ActiveDirectory |
+| Long running | Yes |
 
 ## Source
 
