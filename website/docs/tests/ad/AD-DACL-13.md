@@ -51,6 +51,8 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 - `Test-MtAdDaclPrivilegedExtendedRightDetails` - Breaks down privileged extended rights by type
 - `Test-MtAdDaclNonInheritedAceCount` - Counts explicit DACL entries that may represent custom delegations
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 ## Test Metadata
 
 | Field | Value |
@@ -65,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 | MITRE ATT&CK | T1003.006 DCSync, T1098 Account Manipulation |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-13.ps1) |
 | Services | ActiveDirectory |
+| Long running | Yes |
 
 ## Source
 
