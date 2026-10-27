@@ -402,6 +402,8 @@
             # single-call path (Exchange Online was just attempted earlier in this same invocation); otherwise
             # Test-MtConnection reports the live session, so connecting in two steps (Exchange Online first,
             # Security & Compliance after) works too. #2467
+            # Drop any cached session list so the check sees sessions connected since it was cached.
+            $__MtSession.ExoCache.Remove('ConnectionInformation')
             $exchangeOnlineReady = $Service -contains 'ExchangeOnline' -or $Service -contains 'All' -or
                [bool](Test-MtConnection -Service ExchangeOnline -ErrorAction SilentlyContinue)
             if (-not $exchangeOnlineReady) {

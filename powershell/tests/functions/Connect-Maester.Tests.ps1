@@ -312,9 +312,9 @@ Describe 'Connect-Maester connection summary' {
         $global:mtTestIppsConnected = $false
         Mock Test-MtModuleImported -ModuleName Maester { $true } -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
         Mock Get-ConnectionInformation -ModuleName Maester {
-            [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com' }
+            [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
             if ($global:mtTestIppsConnected) {
-                [pscustomobject]@{ Name = 'ExchangeOnlineProtection_1'; IsEopSession = $true; State = 'Connected'; UserPrincipalName = 'compliance@contoso.com' }
+                [pscustomobject]@{ Name = 'ExchangeOnlineProtection_1'; IsEopSession = $true; State = 'Connected'; UserPrincipalName = 'compliance@contoso.com'; ModuleName = 'tmpEOP' }
             }
         }
         Mock Connect-IPPSSession -ModuleName Maester { $global:mtTestIppsConnected = $true }
@@ -327,6 +327,25 @@ Describe 'Connect-Maester connection summary' {
             Test-MtConnection -Service SecurityCompliance | Should -BeTrue
         } finally {
             Remove-Variable -Name mtTestIppsConnected -Scope Global -ErrorAction SilentlyContinue
+            InModuleScope Maester { Clear-MtExoCache }
+        }
+    }
+
+    It 'Ignores a session list cached before Exchange Online connected (#2557)' {
+        Mock Test-MtModuleImported -ModuleName Maester { $true } -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
+        Mock Get-ConnectionInformation -ModuleName Maester {
+            [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
+        }
+        Mock Connect-IPPSSession -ModuleName Maester {}
+        # An earlier check cached a list from before Exchange Online was connected.
+        InModuleScope Maester { $__MtSession.ExoCache['ConnectionInformation'] = @() }
+
+        try {
+            Connect-Maester -Service SecurityCompliance 6>$null
+
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance').Status | Should -Be 'Connected'
+            Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 1 -Exactly
+        } finally {
             InModuleScope Maester { Clear-MtExoCache }
         }
     }
