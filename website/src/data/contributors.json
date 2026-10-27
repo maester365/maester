@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 6
+      "recentCommits": 7
     },
     {
       "id": "Cloud-Architekt",
@@ -471,7 +471,9 @@
         "EIDSCA.AP08",
         "EIDSCA.AP09",
         "EIDSCA.AP10",
+        "EIDSCA.AP12",
         "EIDSCA.AP14",
+        "EIDSCA.AP15",
         "EIDSCA.AS04",
         "EIDSCA.AT01",
         "EIDSCA.AT02",
@@ -483,6 +485,7 @@
         "EIDSCA.CR02",
         "EIDSCA.CR03",
         "EIDSCA.CR04",
+        "EIDSCA.CR05",
         "EIDSCA.PR01",
         "EIDSCA.PR02",
         "EIDSCA.PR03",
@@ -513,6 +516,91 @@
       "testsContributed": [],
       "initials": "TN",
       "recentCommits": 1
+    },
+    {
+      "id": "JeremyFinney-lgtm",
+      "github": "JeremyFinney-lgtm",
+      "name": "jeremy finney",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/JeremyFinney-lgtm.png",
+      "firstContribution": "2026-10-17",
+      "testsAuthored": [
+        "CIS.M365.1.3.2",
+        "CIS.M365.4.2",
+        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.3.4",
+        "CIS.M365.5.1.4.1",
+        "CIS.M365.5.1.4.2",
+        "CIS.M365.5.1.4.3",
+        "CIS.M365.5.1.4.4",
+        "CIS.M365.5.1.4.5",
+        "CIS.M365.5.1.5.3",
+        "CIS.M365.5.1.5.4",
+        "CIS.M365.5.1.5.5",
+        "CIS.M365.5.1.5.6",
+        "CIS.M365.5.1.6.1",
+        "CIS.M365.5.1.6.3",
+        "CIS.M365.5.1.8.1",
+        "CIS.M365.5.2.2.1",
+        "CIS.M365.5.2.2.2",
+        "CIS.M365.5.2.2.3",
+        "CIS.M365.5.2.2.4",
+        "CIS.M365.5.2.2.5",
+        "CIS.M365.5.2.2.6",
+        "CIS.M365.5.2.2.7",
+        "CIS.M365.5.2.2.8",
+        "CIS.M365.5.2.2.9",
+        "CIS.M365.5.2.2.10",
+        "CIS.M365.5.2.2.11",
+        "CIS.M365.5.2.2.12",
+        "CIS.M365.5.2.2.13",
+        "CIS.M365.5.2.2.14",
+        "CIS.M365.5.2.2.15",
+        "CIS.M365.5.2.2.16",
+        "CIS.M365.5.2.2.17",
+        "CIS.M365.5.2.3.1",
+        "CIS.M365.5.2.3.2",
+        "CIS.M365.5.2.3.3",
+        "CIS.M365.5.2.3.4",
+        "CIS.M365.5.2.3.6",
+        "CIS.M365.5.2.3.7",
+        "CIS.M365.5.2.3.8",
+        "CIS.M365.5.2.3.9",
+        "CIS.M365.5.2.3.10",
+        "CIS.M365.5.3.1",
+        "CIS.M365.5.3.2",
+        "CIS.M365.5.3.3",
+        "CIS.M365.5.3.4",
+        "CIS.M365.5.3.5",
+        "CIS.M365.7.2.1",
+        "CIS.M365.7.2.3",
+        "CIS.M365.7.2.4",
+        "CIS.M365.7.2.6",
+        "CIS.M365.7.2.8",
+        "CIS.M365.7.2.10",
+        "CIS.M365.8.1.2",
+        "CIS.M365.8.2.1",
+        "CIS.M365.8.2.4",
+        "CIS.M365.8.5.1",
+        "CIS.M365.8.5.2",
+        "CIS.M365.8.5.4",
+        "CIS.M365.8.5.5",
+        "CIS.M365.8.5.6",
+        "CIS.M365.8.5.7",
+        "CIS.M365.8.5.8",
+        "CIS.M365.8.5.9"
+      ],
+      "testsContributed": [],
+      "initials": "JF",
+      "recentCommits": 41
     },
     {
       "id": "SebastianClaesson",
@@ -645,6 +733,57 @@
       "recentCommits": 1
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "ArrankaGo LLC",
+      "location": "Dominican Republic",
+      "locationFlag": "",
+      "url": "https://consulting.arrankago.com",
+      "socials": {
+        "linkedin": "eduard-arbona-99872b403",
+        "bluesky": "arbona.bsky.social"
+      },
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [
+        "MT.1228",
+        "MT.1229",
+        "MT.1230",
+        "MT.1231",
+        "MT.1232",
+        "MT.1233",
+        "MT.1234",
+        "MT.1235",
+        "MT.1236",
+        "MT.1237",
+        "MT.1238",
+        "MT.1239",
+        "MT.1240",
+        "MT.1241",
+        "MT.1242",
+        "MT.1243",
+        "MT.1244",
+        "MT.1245",
+        "MT.1246",
+        "MT.1247",
+        "MT.1248",
+        "MT.1249",
+        "MT.1250",
+        "MT.1251"
+      ],
+      "testsContributed": [
+        "MT.1011",
+        "MT.1024"
+      ],
+      "initials": "EA",
+      "recentCommits": 15
+    },
+    {
       "id": "bdrogja",
       "github": "bdrogja",
       "name": "Boris Drogja",
@@ -775,7 +914,7 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 10
+      "recentCommits": 18
     },
     {
       "id": "Mynster9361",
@@ -835,7 +974,7 @@
         "MT.1098"
       ],
       "initials": "M",
-      "recentCommits": 1
+      "recentCommits": 3
     },
     {
       "id": "nicolonsky",
@@ -1168,7 +1307,7 @@
       ],
       "testsContributed": [],
       "initials": "CB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "BakkerJan",
@@ -1201,7 +1340,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 5
+      "recentCommits": 0
     },
     {
       "id": "RobbeVandenDaele",
@@ -1336,7 +1475,7 @@
         "MT.1100"
       ],
       "initials": "SE",
-      "recentCommits": 3
+      "recentCommits": 4
     },
     {
       "id": "DanielLystad",
@@ -1491,7 +1630,7 @@
         "MT.1110"
       ],
       "initials": "JG",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "bastienperez",
@@ -1737,7 +1876,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 5
+      "recentCommits": 8
     },
     {
       "id": "Oppedijk",
@@ -1856,29 +1995,6 @@
       ],
       "initials": "CE",
       "recentCommits": 0
-    },
-    {
-      "id": "earbona23",
-      "github": "earbona23",
-      "name": "eduardarbona",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/earbona23.png",
-      "firstContribution": "2026-09-14",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1011",
-        "MT.1024"
-      ],
-      "initials": "E",
-      "recentCommits": 4
     },
     {
       "id": "amlhive-tech",
@@ -2180,7 +2296,7 @@
         "MT.1071"
       ],
       "initials": "MM",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "mattcave",
@@ -2611,7 +2727,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 166
+      "recentCommits": 167
     }
   ],
   "attributions": {
@@ -3935,6 +4051,10 @@
         "blindzero"
       ]
     },
+    "CIS.M365.1.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.1.3.3": {
       "author": "soulemike",
       "contributors": [
@@ -4053,6 +4173,10 @@
         "Korthal-Maiyn"
       ]
     },
+    "CIS.M365.4.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.1.2.2": {
       "author": "oed-metzb",
       "contributors": [
@@ -4064,6 +4188,34 @@
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.1.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.4.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.5.1.4.6": {
       "author": "BakkerJan",
@@ -4081,17 +4233,169 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.5.1.5.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.5.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.6.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.1.6.2": {
       "author": "oed-metzb",
       "contributors": [
         "Mynster9361"
       ]
     },
+    "CIS.M365.5.1.6.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.1.8.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.11": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.12": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.13": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.14": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.15": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.16": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.2.17": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.5.2.3.5": {
       "author": "oed-metzb",
       "contributors": [
         "Mynster9361"
       ]
+    },
+    "CIS.M365.5.2.3.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.2.3.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.5.3.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.6.5.3": {
       "author": "weyCC81",
@@ -4100,20 +4404,44 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.7.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.2": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.7.2.4": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.5": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.7": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.9": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.10": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.11": {
@@ -4131,6 +4459,14 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.1.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.2.2": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4144,6 +4480,10 @@
         "merill"
       ]
     },
+    "CIS.M365.8.2.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.4.1": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4152,11 +4492,43 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.5.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.5.3": {
       "author": "HenrikPiecha",
       "contributors": [
         "merill"
       ]
+    },
+    "CIS.M365.8.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.8.6.1": {
       "author": "HenrikPiecha",
@@ -4718,7 +5090,15 @@
       "author": "Cloud-Architekt",
       "contributors": []
     },
+    "EIDSCA.AP12": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
     "EIDSCA.AP14": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
+    "EIDSCA.AP15": {
       "author": "Cloud-Architekt",
       "contributors": []
     },
@@ -4763,6 +5143,10 @@
       "contributors": []
     },
     "EIDSCA.CR04": {
+      "author": "Cloud-Architekt",
+      "contributors": []
+    },
+    "EIDSCA.CR05": {
       "author": "Cloud-Architekt",
       "contributors": []
     },
@@ -5760,6 +6144,102 @@
     },
     "MT.1225": {
       "author": "agnivesh",
+      "contributors": []
+    },
+    "MT.1228": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1229": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1230": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1231": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1232": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1233": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1234": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1235": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1236": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1237": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1238": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1239": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1240": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1241": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1242": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1243": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1244": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1245": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1246": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1247": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1248": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1249": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1250": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1251": {
+      "author": "earbona23",
       "contributors": []
     },
     "ORCA.100": {
@@ -7336,6 +7816,10 @@
       "title": "(L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'",
       "path": "/docs/tests/CIS.M365.1.3.1"
     },
+    "CIS.M365.1.3.2": {
+      "title": "(L2) Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices",
+      "path": "/docs/next/tests/CIS.M365.1.3.2"
+    },
     "CIS.M365.1.3.3": {
       "title": "(L2) Ensure 'External sharing' of calendars is not available",
       "path": "/docs/tests/CIS.M365.1.3.3"
@@ -7412,6 +7896,10 @@
       "title": "(L1) Ensure devices without a compliance policy are marked 'not compliant'",
       "path": "/docs/tests/CIS.M365.4.1"
     },
+    "CIS.M365.4.2": {
+      "title": "(L1) Ensure device enrollment for personally owned devices is blocked by default",
+      "path": "/docs/next/tests/CIS.M365.4.2"
+    },
     "CIS.M365.5.1.2.2": {
       "title": "(L1) Ensure users cannot register applications",
       "path": "/docs/tests/CIS.M365.5.1.2.2"
@@ -7419,6 +7907,34 @@
     "CIS.M365.5.1.2.3": {
       "title": "(L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'",
       "path": "/docs/tests/CIS.M365.5.1.2.3"
+    },
+    "CIS.M365.5.1.3.1": {
+      "title": "(L1) Ensure users cannot create security groups",
+      "path": "/docs/next/tests/CIS.M365.5.1.3.1"
+    },
+    "CIS.M365.5.1.3.4": {
+      "title": "(L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'",
+      "path": "/docs/next/tests/CIS.M365.5.1.3.4"
+    },
+    "CIS.M365.5.1.4.1": {
+      "title": "(L2) Ensure the ability to join devices to Entra is restricted",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.1"
+    },
+    "CIS.M365.5.1.4.2": {
+      "title": "(L1) Ensure the maximum number of devices per user is limited",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.2"
+    },
+    "CIS.M365.5.1.4.3": {
+      "title": "(L1) Ensure the GA role is not added as a local administrator during Entra join",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.3"
+    },
+    "CIS.M365.5.1.4.4": {
+      "title": "(L1) Ensure local administrator assignment is limited during Entra join",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.4"
+    },
+    "CIS.M365.5.1.4.5": {
+      "title": "(L1) Ensure Local Administrator Password Solution is enabled",
+      "path": "/docs/next/tests/CIS.M365.5.1.4.5"
     },
     "CIS.M365.5.1.4.6": {
       "title": "(L2) Ensure users are restricted from recovering BitLocker keys",
@@ -7432,33 +7948,209 @@
       "title": "(L1) Ensure the admin consent workflow is enabled",
       "path": "/docs/tests/CIS.M365.5.1.5.2"
     },
+    "CIS.M365.5.1.5.3": {
+      "title": "(L2) Ensure password addition is blocked for applications",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.3"
+    },
+    "CIS.M365.5.1.5.4": {
+      "title": "(L1) Ensure password lifetime for applications does not exceed 180 days",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.4"
+    },
+    "CIS.M365.5.1.5.5": {
+      "title": "(L1) Ensure new application passwords are system-generated",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.5"
+    },
+    "CIS.M365.5.1.5.6": {
+      "title": "(L1) Ensure maximum certificate lifetime for applications does not exceed 180 days",
+      "path": "/docs/next/tests/CIS.M365.5.1.5.6"
+    },
+    "CIS.M365.5.1.6.1": {
+      "title": "(L2) Ensure that collaboration invitations are sent to allowed domains only",
+      "path": "/docs/next/tests/CIS.M365.5.1.6.1"
+    },
     "CIS.M365.5.1.6.2": {
       "title": "(L1) Ensure that guest user access is restricted",
       "path": "/docs/tests/CIS.M365.5.1.6.2"
+    },
+    "CIS.M365.5.1.6.3": {
+      "title": "(L2) Ensure guest user invitations are limited",
+      "path": "/docs/next/tests/CIS.M365.5.1.6.3"
+    },
+    "CIS.M365.5.1.8.1": {
+      "title": "(L1) Ensure that password hash sync is enabled for hybrid deployments",
+      "path": "/docs/next/tests/CIS.M365.5.1.8.1"
+    },
+    "CIS.M365.5.2.2.1": {
+      "title": "(L1) Ensure multifactor authentication is enabled for all users in administrative roles",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.1"
+    },
+    "CIS.M365.5.2.2.2": {
+      "title": "(L1) Ensure multifactor authentication is enabled for all users",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.2"
+    },
+    "CIS.M365.5.2.2.3": {
+      "title": "(L1) Enable Conditional Access policies to block legacy authentication",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.3"
+    },
+    "CIS.M365.5.2.2.4": {
+      "title": "(L1) Ensure Sign-in frequency is enabled and browser sessions are not persistent for Administrative users",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.4"
+    },
+    "CIS.M365.5.2.2.5": {
+      "title": "(L2) Ensure 'Phishing-resistant MFA strength' is required for Administrators",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.5"
+    },
+    "CIS.M365.5.2.2.6": {
+      "title": "(L1) Enable Identity Protection user risk policies",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.6"
+    },
+    "CIS.M365.5.2.2.7": {
+      "title": "(L1) Enable Identity Protection sign-in risk policies",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.7"
+    },
+    "CIS.M365.5.2.2.8": {
+      "title": "(L2) Ensure 'sign-in risk' is blocked for medium and high risk",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.8"
+    },
+    "CIS.M365.5.2.2.9": {
+      "title": "(L1) Ensure a managed device is required for authentication",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.9"
+    },
+    "CIS.M365.5.2.2.10": {
+      "title": "(L1) Ensure a managed device is required to register security information",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.10"
+    },
+    "CIS.M365.5.2.2.11": {
+      "title": "(L1) Ensure sign-in frequency for Intune Enrollment is set to 'Every time'",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.11"
+    },
+    "CIS.M365.5.2.2.12": {
+      "title": "(L1) Ensure the device code sign-in flow is blocked",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.12"
+    },
+    "CIS.M365.5.2.2.13": {
+      "title": "(L1) Ensure that periodic reauthentication is required for all users",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.13"
+    },
+    "CIS.M365.5.2.2.14": {
+      "title": "(L2) Ensure trusted 'named locations' are defined",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.14"
+    },
+    "CIS.M365.5.2.2.15": {
+      "title": "(L2) Ensure exclusionary geographic access controls are utilized",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.15"
+    },
+    "CIS.M365.5.2.2.16": {
+      "title": "(L2) Ensure Token Protection is enforced for session tokens",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.16"
+    },
+    "CIS.M365.5.2.2.17": {
+      "title": "(L1) Ensure authentication transfer is blocked",
+      "path": "/docs/next/tests/CIS.M365.5.2.2.17"
+    },
+    "CIS.M365.5.2.3.1": {
+      "title": "(L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.1"
+    },
+    "CIS.M365.5.2.3.2": {
+      "title": "(L1) Ensure custom banned passwords lists are used",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.2"
+    },
+    "CIS.M365.5.2.3.3": {
+      "title": "(L1) Ensure password protection is enabled for on-prem Active Directory",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.3"
+    },
+    "CIS.M365.5.2.3.4": {
+      "title": "(L1) Ensure all member users are 'MFA capable'",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.4"
     },
     "CIS.M365.5.2.3.5": {
       "title": "(L1) Ensure weak authentication methods are disabled",
       "path": "/docs/tests/CIS.M365.5.2.3.5"
     },
+    "CIS.M365.5.2.3.6": {
+      "title": "(L1) Ensure system-preferred multifactor authentication is enabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.6"
+    },
+    "CIS.M365.5.2.3.7": {
+      "title": "(L2) Ensure the email OTP authentication method is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.7"
+    },
+    "CIS.M365.5.2.3.8": {
+      "title": "(L1) Ensure that Account 'Lockout threshold' is '10' or less",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.8"
+    },
+    "CIS.M365.5.2.3.9": {
+      "title": "(L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.9"
+    },
+    "CIS.M365.5.2.3.10": {
+      "title": "(L1) Ensure Microsoft Authenticator on companion applications is disabled",
+      "path": "/docs/next/tests/CIS.M365.5.2.3.10"
+    },
+    "CIS.M365.5.3.1": {
+      "title": "(L2) Ensure privileged role assignments are activated and not assigned",
+      "path": "/docs/next/tests/CIS.M365.5.3.1"
+    },
+    "CIS.M365.5.3.2": {
+      "title": "(L1) Ensure 'Access reviews' for guest users are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.2"
+    },
+    "CIS.M365.5.3.3": {
+      "title": "(L1) Ensure 'Access reviews' for privileged roles are configured",
+      "path": "/docs/next/tests/CIS.M365.5.3.3"
+    },
+    "CIS.M365.5.3.4": {
+      "title": "(L1) Ensure approval is required for Global Administrator role activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.4"
+    },
+    "CIS.M365.5.3.5": {
+      "title": "(L1) Ensure approval is required for Privileged Role Administrator activation",
+      "path": "/docs/next/tests/CIS.M365.5.3.5"
+    },
     "CIS.M365.6.5.3": {
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
       "path": "/docs/tests/CIS.M365.6.5.3"
+    },
+    "CIS.M365.7.2.1": {
+      "title": "(L1) Ensure modern authentication for SharePoint applications is required",
+      "path": "/docs/next/tests/CIS.M365.7.2.1"
     },
     "CIS.M365.7.2.2": {
       "title": "(L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
       "path": "/docs/tests/CIS.M365.7.2.2"
     },
+    "CIS.M365.7.2.3": {
+      "title": "(L1) Ensure external content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.3"
+    },
+    "CIS.M365.7.2.4": {
+      "title": "(L2) Ensure OneDrive content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.4"
+    },
     "CIS.M365.7.2.5": {
       "title": "(L2) Ensure that SharePoint guest users cannot share items they don't own",
       "path": "/docs/tests/CIS.M365.7.2.5"
+    },
+    "CIS.M365.7.2.6": {
+      "title": "(L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists",
+      "path": "/docs/next/tests/CIS.M365.7.2.6"
     },
     "CIS.M365.7.2.7": {
       "title": "(L1) Ensure link sharing is restricted in SharePoint and OneDrive",
       "path": "/docs/tests/CIS.M365.7.2.7"
     },
+    "CIS.M365.7.2.8": {
+      "title": "(L2) Ensure external sharing is restricted by security group",
+      "path": "/docs/next/tests/CIS.M365.7.2.8"
+    },
     "CIS.M365.7.2.9": {
       "title": "(L1) Ensure guest access to a site or OneDrive will expire automatically",
       "path": "/docs/tests/CIS.M365.7.2.9"
+    },
+    "CIS.M365.7.2.10": {
+      "title": "(L1) Ensure reauthentication with verification code is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.10"
     },
     "CIS.M365.7.2.11": {
       "title": "(L1) Ensure the SharePoint default sharing link permission is set",
@@ -7472,6 +8164,14 @@
       "title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
       "path": "/docs/tests/CIS.M365.8.1.1"
     },
+    "CIS.M365.8.1.2": {
+      "title": "(L1) Ensure users can't send emails to a channel email address",
+      "path": "/docs/next/tests/CIS.M365.8.1.2"
+    },
+    "CIS.M365.8.2.1": {
+      "title": "(L2) Ensure external domains are restricted in the Teams admin center",
+      "path": "/docs/next/tests/CIS.M365.8.2.1"
+    },
     "CIS.M365.8.2.2": {
       "title": "(L1) Ensure communication with unmanaged Teams users is disabled",
       "path": "/docs/tests/CIS.M365.8.2.2"
@@ -7480,13 +8180,49 @@
       "title": "(L1) Ensure external Teams users cannot initiate conversations",
       "path": "/docs/tests/CIS.M365.8.2.3"
     },
+    "CIS.M365.8.2.4": {
+      "title": "(L1) Ensure the organization cannot communicate with accounts in trial Teams tenants",
+      "path": "/docs/next/tests/CIS.M365.8.2.4"
+    },
     "CIS.M365.8.4.1": {
       "title": "(L1) Ensure app permission policies are configured",
       "path": "/docs/tests/CIS.M365.8.4.1"
     },
+    "CIS.M365.8.5.1": {
+      "title": "(L2) Ensure anonymous users can't join a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.1"
+    },
+    "CIS.M365.8.5.2": {
+      "title": "(L1) Ensure anonymous users and dial-in callers can't start a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.2"
+    },
     "CIS.M365.8.5.3": {
       "title": "(L1) Ensure only people in my org can bypass the lobby",
       "path": "/docs/tests/CIS.M365.8.5.3"
+    },
+    "CIS.M365.8.5.4": {
+      "title": "(L1) Ensure users dialing in can't bypass the lobby",
+      "path": "/docs/next/tests/CIS.M365.8.5.4"
+    },
+    "CIS.M365.8.5.5": {
+      "title": "(L2) Ensure meeting chat does not allow anonymous users",
+      "path": "/docs/next/tests/CIS.M365.8.5.5"
+    },
+    "CIS.M365.8.5.6": {
+      "title": "(L2) Ensure only organizers and co-organizers can present",
+      "path": "/docs/next/tests/CIS.M365.8.5.6"
+    },
+    "CIS.M365.8.5.7": {
+      "title": "(L1) Ensure external participants can't give or request control",
+      "path": "/docs/next/tests/CIS.M365.8.5.7"
+    },
+    "CIS.M365.8.5.8": {
+      "title": "(L2) Ensure external meeting chat is off",
+      "path": "/docs/next/tests/CIS.M365.8.5.8"
+    },
+    "CIS.M365.8.5.9": {
+      "title": "(L2) Ensure meeting recording is off by default",
+      "path": "/docs/next/tests/CIS.M365.8.5.9"
     },
     "CIS.M365.8.6.1": {
       "title": "(L1) Ensure users can report security concerns in Teams",
@@ -7897,7 +8633,7 @@
       "path": "/docs/tests/EIDSCA.AP07"
     },
     "EIDSCA.AP08": {
-      "title": "Default Authorization Settings - User consent policy assigned for applications.",
+      "title": "Default Authorization Settings - User consent assignments match the restricted or Microsoft recommended baseline.",
       "path": "/docs/tests/EIDSCA.AP08"
     },
     "EIDSCA.AP09": {
@@ -7908,9 +8644,17 @@
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.",
       "path": "/docs/tests/EIDSCA.AP10"
     },
+    "EIDSCA.AP12": {
+      "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Tenants.",
+      "path": "/docs/next/tests/EIDSCA.AP12"
+    },
     "EIDSCA.AP14": {
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users.",
       "path": "/docs/tests/EIDSCA.AP14"
+    },
+    "EIDSCA.AP15": {
+      "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create agent identity blueprints.",
+      "path": "/docs/next/tests/EIDSCA.AP15"
     },
     "EIDSCA.AS04": {
       "title": "Authentication Method - SMS - Use for sign-in.",
@@ -7955,6 +8699,10 @@
     "EIDSCA.CR04": {
       "title": "Consent Framework - Admin Consent Request - Consent request duration (days).",
       "path": "/docs/tests/EIDSCA.CR04"
+    },
+    "EIDSCA.CR05": {
+      "title": "Consent Framework - Admin Consent Request - Admin consent reviewers have valid query scopes.",
+      "path": "/docs/next/tests/EIDSCA.CR05"
     },
     "EIDSCA.PR01": {
       "title": "Default Settings - Password Rule Settings - Password Protection - Mode.",
@@ -8755,6 +9503,102 @@
     "MT.1225": {
       "title": "Users should not be able to create Agent Identity Blueprints.",
       "path": "/docs/next/tests/MT.1225"
+    },
+    "MT.1228": {
+      "title": "Ensure iOS compliance policy blocks jailbroken devices.",
+      "path": "/docs/next/tests/MT.1228"
+    },
+    "MT.1229": {
+      "title": "Ensure iOS compliance policy requires a strong device passcode.",
+      "path": "/docs/next/tests/MT.1229"
+    },
+    "MT.1230": {
+      "title": "Ensure iOS compliance policy requires a minimum operating system version.",
+      "path": "/docs/next/tests/MT.1230"
+    },
+    "MT.1231": {
+      "title": "Ensure iOS compliance policy requires a Defender machine risk score level.",
+      "path": "/docs/next/tests/MT.1231"
+    },
+    "MT.1232": {
+      "title": "Ensure Android compliance policy blocks rooted devices.",
+      "path": "/docs/next/tests/MT.1232"
+    },
+    "MT.1233": {
+      "title": "Ensure Android compliance policy requires a strong device password.",
+      "path": "/docs/next/tests/MT.1233"
+    },
+    "MT.1234": {
+      "title": "Ensure Android compliance policy requires a recent security patch level.",
+      "path": "/docs/next/tests/MT.1234"
+    },
+    "MT.1235": {
+      "title": "Ensure Android compliance policy requires device threat protection.",
+      "path": "/docs/next/tests/MT.1235"
+    },
+    "MT.1236": {
+      "title": "Ensure Android compliance policy blocks USB debugging.",
+      "path": "/docs/next/tests/MT.1236"
+    },
+    "MT.1237": {
+      "title": "Ensure Android compliance policy blocks devices managed with device administrator.",
+      "path": "/docs/next/tests/MT.1237"
+    },
+    "MT.1238": {
+      "title": "Ensure iOS app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1238"
+    },
+    "MT.1239": {
+      "title": "Ensure iOS app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1239"
+    },
+    "MT.1240": {
+      "title": "Ensure iOS app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1240"
+    },
+    "MT.1241": {
+      "title": "Ensure iOS app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1241"
+    },
+    "MT.1242": {
+      "title": "Ensure iOS app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1242"
+    },
+    "MT.1243": {
+      "title": "Ensure iOS app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1243"
+    },
+    "MT.1244": {
+      "title": "Ensure Android app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1244"
+    },
+    "MT.1245": {
+      "title": "Ensure Android app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1245"
+    },
+    "MT.1246": {
+      "title": "Ensure Android app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1246"
+    },
+    "MT.1247": {
+      "title": "Ensure Android app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1247"
+    },
+    "MT.1248": {
+      "title": "Ensure Android app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1248"
+    },
+    "MT.1249": {
+      "title": "Ensure Android app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1249"
+    },
+    "MT.1250": {
+      "title": "Ensure Android app protection policy blocks screen capture of organization data.",
+      "path": "/docs/next/tests/MT.1250"
+    },
+    "MT.1251": {
+      "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
+      "path": "/docs/next/tests/MT.1251"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

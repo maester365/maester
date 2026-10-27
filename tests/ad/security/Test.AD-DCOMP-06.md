@@ -1,4 +1,4 @@
-﻿Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for an extended period (typically 180 days or more).
+﻿Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for `StaleThresholdDays` (default 180) or more.
 
 **Security Risks:**
 - **Attack Vector**: Stale accounts can be compromised and reactivated by attackers
@@ -38,7 +38,7 @@
 
 This test identifies enabled computers that:
 - Have never logged on, OR
-- Have not logged on for 180+ days
+- Have not logged on for `StaleThresholdDays` (default 180) or more
 
 Provides counts and lists affected computers.
 

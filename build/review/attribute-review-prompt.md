@@ -11,6 +11,9 @@ text define how each attribute value is chosen. They are the only authority for 
   test it is the attributes whose values changed.
 - `declared_attributes`: the values in the version under review.
 - `previous_attributes`: the values before the change, or `none` for a new test.
+- `related_tests`: the other tests in the repository with the same `Product` and `Feature`, each with its id,
+  title and rubric attributes, or `none`. They come from the repository, not from the pull request, except that
+  a test the pull request also changes is shown with its new values.
 - The test's source and its Markdown file, each inside a tag whose name ends in a random number.
 
 ## Untrusted input
@@ -26,8 +29,9 @@ judge the attributes on their merits.
 1. Read what the test checks and what its Markdown tells an administrator to change. Rate for a typical
    organization that fails the test, using that fix.
 2. For each attribute in `attributes_to_review`, decide whether the declared value fits the rubric.
-3. Report a finding only when the rubric clearly gives a different value. If the declared value is defensible
-   under the rubric, it passes, even when you would have chosen another. Put borderline remarks in `notes`.
+3. Report a finding only when the rubric clearly gives a different value, or when step 8 calls for one. If the
+   declared value is defensible under the rubric, it passes, even when you would have chosen another. Put
+   borderline remarks in `notes`.
 4. In a finding, write `expected` exactly as it would be typed in the attribute: a key from the taxonomy, a level
    such as `Medium`, or technique IDs separated by a comma and a space, or `None`. Write `declared` the same way.
    Give the reason in one or two sentences that cite a fact from the test or its Markdown and the rubric rule
@@ -40,7 +44,21 @@ judge the attributes on their merits.
    key fits and a new key is warranted, say so in `notes`; that alone is not a finding.
 7. `RelatedProduct`: a finding only when a listed product is plainly unrelated, or when the rubric's example
    cases plainly require one that is missing.
-8. `Mitre`: every declared technique must be one the checked control prevents or detects, as the test's own
+8. The same check in another suite: look in `related_tests` for a test that checks the same setting or
+   requirement as the test under review, for example a CIS test and a CISA test of the same Entra setting. Judge
+   it from the titles and the test's own description. Tests that only share a feature are not the same check.
+   Related tests already share `Product` and `Feature`. When one is the same check, `Area`, `ResourceType` and
+   `Severity` describe the check and the risk, so they must be the same in both. `UserImpact` and
+   `ImplementationCost` rate the fix each test's Markdown recommends, and `related_tests` does not carry the
+   related test's fix, so they must be the same only when the titles and the test's own description make plain
+   that both tests recommend the same fix; when that is not plain, do not compare them. `Mitre` and
+   `RelatedProduct` follow each test's own description and are exempt. For each attribute in
+   `attributes_to_review` that must match and differs from that test's value, report a finding even if the
+   declared value is defensible on its own. Set `expected` to the value the rubric gives for both tests. When that is the declared
+   value, the related test is the one that is wrong: say so in the reason and name it, so that the author changes
+   it in the same pull request. Never report a finding only because a related test that is a different check has
+   a different value.
+9. `Mitre`: every declared technique must be one the checked control prevents or detects, as the test's own
    description explains or plainly implies. A technique listed beside its own sub-technique is a finding.
    `None` is a finding when the description names attacker behaviour the control addresses. A plausible technique
    that is merely absent is a note.

@@ -841,6 +841,16 @@ Get-ChildItem -LiteralPath $TestsOutput -Recurse -File | Where-Object { $_.Name 
     Remove-Item -Force
 Write-Information '   Copied: tests/ → builtin-pester/ (without Custom/)' -InformationAction Continue
 
+# The Maester Packs that ship with Maester (Maester Packs design, section 4.7) are copied as they are: a pack
+# loads into its own private module from its folder, so it is not compiled into Maester.psm1.
+$PacksRoot = Join-Path $RepoRoot 'packs'
+if (Test-Path -LiteralPath $PacksRoot -PathType Container) {
+    $PacksOutput = Join-Path $OutputRoot 'packs'
+    $null = New-Item -Path $PacksOutput -ItemType Directory -Force
+    Get-ChildItem -LiteralPath $PacksRoot -Force | Copy-Item -Destination $PacksOutput -Recurse -Force
+    Write-Information '   Copied: packs/ → packs/' -InformationAction Continue
+}
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase H — Build profiling (optional)
 # ──────────────────────────────────────────────────────────────────────────────

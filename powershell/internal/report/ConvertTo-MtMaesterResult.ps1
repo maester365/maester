@@ -172,6 +172,24 @@
         return $null
     }
 
+    function GetConnectionSummary() {
+        if ($__MtSession -and $__MtSession.ConnectionSummary) {
+            return @(foreach ($entry in $__MtSession.ConnectionSummary) {
+                # A failed connection carries the whole module error. Keep its first line, as the
+                # console summary does; the full message is in the verbose stream of Connect-Maester.
+                $detail = "$($entry.Details)" -split "`r?`n" | Where-Object { $_.Trim() } | Select-Object -First 1
+                $detail = ("$detail" -replace '\s+', ' ').Trim()
+                if ($detail.Length -gt 200) { $detail = $detail.Substring(0, 197).TrimEnd() + '...' }
+                [PSCustomObject]@{
+                    Service = "$($entry.Service)"
+                    Status  = "$($entry.Status)"
+                    Details = $detail
+                }
+            })
+        }
+        return @()
+    }
+
     function GetLogoAsBase64DataUri($uri) {
         try {
             $response = Invoke-MgGraphRequest -Uri $uri -OutputType HttpResponseMessage
@@ -425,6 +443,7 @@
             InstanceId      = $annotation.InstanceId
             Parameters      = $null
             Diagnostics     = @()
+            Package         = $null
         }
         # A Pester-format row carries the attribute fields of a native row as null.
         foreach ($field in $pesterRowAttributes.Keys) { $mtTestInfo[$field] = $pesterRowAttributes[$field] }
@@ -528,7 +547,7 @@
     # Top-level Result (design section 5.3, item 7): Failed if any row failed, the Pester run failed, or
     # the engine itself raised an Error row. A test that threw fails the run only with ErrorsAsFailures.
     $engineErrorCodes = 'InvalidMetadata', 'InvalidConfiguration', 'InvalidInstanceId', 'DuplicateId', 'LoadFailed',
-    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable'
+    'InstanceSourceFailed', 'RequiresNewerMaester', 'ForeignModuleLoaded', 'PesterNotAvailable', 'PackLoadFailed'
     $errorsAsFailures = $false
     if ($__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.PSObject.Properties['Output'] -and $__MtSession.MaesterConfig.Output -and
         $__MtSession.MaesterConfig.Output.PSObject.Properties['ErrorsAsFailures']) {
@@ -593,6 +612,7 @@
         LoadedModules     = GetLoadedModules
         InvokeCommand     = $InvokeMaesterCommand
         MgContext         = GetMgContextInfo
+        ConnectionSummary = @(GetConnectionSummary)
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
         MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
         # Additive in result schema 2.1.
@@ -619,6 +639,11 @@
 
     if ($IncludeAffectedObjects.IsPresent) {
         $mtTestResults | Add-Member -MemberType NoteProperty -Name 'AffectedObjects' -Value $affectedObjects
+    }
+
+    # Reports of other tools added with Add-MtReportAttachment. Only present when there are some, so other results are unchanged.
+    if ($__MtSession.ReportAttachments -and $__MtSession.ReportAttachments.Count -gt 0) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($__MtSession.ReportAttachments)
     }
 
     # Add output files information if provided

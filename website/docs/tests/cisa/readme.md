@@ -25,11 +25,11 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.3.1](./CISA.MS.AAD.3.1.md) | Phishing-resistant MFA SHALL be enforced for all users. | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.3.2](./CISA.MS.AAD.3.2.md) | If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users. | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.3.3](./CISA.MS.AAD.3.3.md) | If Microsoft Authenticator is enabled, it SHALL be configured to show login context information. | Medium | Entra ID | Authentication methods |
-| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4.md) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | High | Entra ID | Authentication methods |
+| [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4.md) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5.md) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6.md) | Phishing-resistant MFA SHALL be required for highly privileged roles. | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7.md) | Managed devices SHOULD be required for authentication. | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8.md) | Managed Devices SHOULD be required to register MFA. | High | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7.md) | Managed devices SHOULD be required for authentication. | Medium | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8.md) | Managed Devices SHOULD be required to register MFA. | Medium | Entra ID | Conditional Access |
 | [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1.md) | Security logs SHALL be sent to the agency's security operations center for monitoring. | High | Entra ID | Logs and monitoring |
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1.md) | Only administrators SHALL be allowed to register applications. | Medium | Entra ID | User and directory settings |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2.md) | Only administrators SHALL be allowed to consent to applications. | High | Entra ID | App consent and permissions |
@@ -41,7 +41,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.7.3](./CISA.MS.AAD.7.3.md) | Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers. | High | Entra ID | Roles and administrators |
 | [CISA.MS.AAD.7.4](./CISA.MS.AAD.7.4.md) | Permanent active role assignments SHALL NOT be allowed for highly privileged roles. | High | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.5](./CISA.MS.AAD.7.5.md) | Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system. | High | Entra ID | Privileged Identity Management |
-| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | High | Entra ID | Privileged Identity Management |
+| [CISA.MS.AAD.7.6](./CISA.MS.AAD.7.6.md) | Activation of the Global Administrator role SHALL require approval. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.7](./CISA.MS.AAD.7.7.md) | Eligible and Active highly privileged role assignments SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.8](./CISA.MS.AAD.7.8.md) | User activation of the Global Administrator role SHALL trigger an alert. | Medium | Entra ID | Privileged Identity Management |
 | [CISA.MS.AAD.7.9](./CISA.MS.AAD.7.9.md) | User activation of other highly privileged roles SHOULD trigger an alert. | Medium | Entra ID | Privileged Identity Management |
@@ -91,7 +91,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.EXO.17.3](./CISA.MS.EXO.17.3.md) | Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C). | Medium | Exchange Online | Audit logging |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1.md) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2.md) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | Medium | SharePoint | External sharing |
-| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3.md) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | High | SharePoint | External sharing |
+| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3.md) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1.md) | File and folder default sharing scope SHALL be set to Specific People. | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2.md) | File and folder default sharing permissions SHALL be set to View only. | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1.md) | Expiration days for Anyone links SHALL be set to 30 days or less. | Medium | SharePoint | Sharing links |

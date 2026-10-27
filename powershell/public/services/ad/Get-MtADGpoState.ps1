@@ -187,23 +187,23 @@ function Get-MtADGpoState {
                     $gpoLinks = if ($null -ne $gpoState.GPOLinks) {
                         @($gpoState.GPOLinks | Where-Object { ([string]$_.GpoGuid).Trim('{}') -eq $gpoGuid })
                     } else { $null }
-                $descriptor = $gpo.ntSecurityDescriptor
-                if ($descriptor -is [byte[]]) {
-                    $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
-                }
+                    $descriptor = $gpo.ntSecurityDescriptor
+                    if ($descriptor -is [byte[]]) {
+                        $descriptor = ConvertFrom-MtLdapSecurityDescriptor -RawSecurityDescriptor $descriptor
+                    }
 
-                $hasDenyAce = $null
-                $hasApplyGroupPolicyAce = $null
-                if ($null -ne $descriptor) {
-                    $access = @($descriptor.Access)
-                    $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
-                    $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
-                            $_.AccessControlType -eq 'Allow' -and
-                            (([string]$_.ObjectType -eq $applyGroupPolicyGuid) -or
-                                ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
-                                (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
-                        } | Select-Object -First 1)
-                }
+                    $hasDenyAce = $null
+                    $hasApplyGroupPolicyAce = $null
+                    if ($null -ne $descriptor) {
+                        $access = @($descriptor.Access)
+                        $hasDenyAce = [bool]($access | Where-Object { $_.AccessControlType -eq 'Deny' } | Select-Object -First 1)
+                        $hasApplyGroupPolicyAce = [bool]($access | Where-Object {
+                                $_.AccessControlType -eq 'Allow' -and
+                                (([string]$_.ObjectType -eq $applyGroupPolicyGuid) -or
+                                    ([string]$_.ActiveDirectoryRights -match 'ApplyGroupPolicy') -or
+                                    (([string]$_.ActiveDirectoryRights -match 'ExtendedRight') -and ([string]$_.ObjectType -eq $applyGroupPolicyGuid)))
+                            } | Select-Object -First 1)
+                    }
 
                     # Permission summary of the DACL. $null means the security descriptor was not returned,
                     # so the permissions are unknown rather than absent.

@@ -75,8 +75,8 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1009](./MT.1009.md) | At least one Conditional Access policy is configured to block other legacy authentication. | High | Entra ID | Conditional Access |
 | [MT.1010](./MT.1010.md) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | High | Entra ID | Conditional Access |
 | [MT.1011](./MT.1011.md) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | High | Entra ID | Conditional Access |
-| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | High | Entra ID | Conditional Access |
-| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | High | Entra ID | Conditional Access |
+| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Medium | Entra ID | Conditional Access |
+| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | Medium | Entra ID | Conditional Access |
 | [MT.1014](./MT.1014.md) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | High | Entra ID | Conditional Access |
 | [MT.1015](./MT.1015.md) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Medium | Entra ID | Conditional Access |
 | [MT.1016](./MT.1016.md) | At least one Conditional Access policy is configured to require MFA for guest access. | High | Entra ID | Conditional Access |
@@ -117,7 +117,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1052](./MT.1052.md) | At least one Conditional Access policy is targeting the Device Code authentication flow. | High | Entra ID | Conditional Access |
 | [MT.1053](./MT.1053.md) | Ensure intune device clean-up rule is configured | Low | Intune | Tenant administration |
 | [MT.1054](./MT.1054.md) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Medium | Intune | Device compliance |
-| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Medium | Entra ID | Groups |
+| [MT.1055](./MT.1055.md) | Microsoft 365 Group (and Team) creation should be restricted to approved users. | Low | Entra ID | Groups |
 | [MT.1056](./MT.1056.md) | Ensure that no person has permanent access to all Azure subscriptions at the root scope | High | Azure | Access management |
 | [MT.1057](./MT.1057.md) | App registrations should no longer use secrets. | Medium | Entra ID | Applications |
 | [MT.1058](./MT.1058.md) | Exchange application access policies must be configured. | Medium | Entra ID | App consent and permissions |
@@ -210,7 +210,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1170](./MT.1170.md) | Catch-up Quick Scan should be disabled. | Low | Defender | Endpoint antivirus |
 | [MT.1171](./MT.1171.md) | Sample Submission should send safe samples automatically. | Medium | Defender | Endpoint antivirus |
 | [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled. | High | Purview | Audit |
-| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Medium | Purview | Information protection |
+| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Low | Purview | Information protection |
 | [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled. | Medium | Purview | Insider risk management |
 | [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location. | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location. | Medium | Purview | Data lifecycle management |
@@ -257,3 +257,27 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224.md) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225.md) | Users should not be able to create Agent Identity Blueprints. | Medium | Entra ID | Agent identities |
+| [MT.1228](./MT.1228.md) | Ensure iOS compliance policy blocks jailbroken devices. | Medium | Intune | Device compliance |
+| [MT.1229](./MT.1229.md) | Ensure iOS compliance policy requires a strong device passcode. | Medium | Intune | Device compliance |
+| [MT.1230](./MT.1230.md) | Ensure iOS compliance policy requires a minimum operating system version. | Medium | Intune | Device compliance |
+| [MT.1231](./MT.1231.md) | Ensure iOS compliance policy requires a Defender machine risk score level. | Medium | Intune | Device compliance |
+| [MT.1232](./MT.1232.md) | Ensure Android compliance policy blocks rooted devices. | Medium | Intune | Device compliance |
+| [MT.1233](./MT.1233.md) | Ensure Android compliance policy requires a strong device password. | Medium | Intune | Device compliance |
+| [MT.1234](./MT.1234.md) | Ensure Android compliance policy requires a recent security patch level. | Medium | Intune | Device compliance |
+| [MT.1235](./MT.1235.md) | Ensure Android compliance policy requires device threat protection. | Medium | Intune | Device compliance |
+| [MT.1236](./MT.1236.md) | Ensure Android compliance policy blocks USB debugging. | Low | Intune | Device compliance |
+| [MT.1237](./MT.1237.md) | Ensure Android compliance policy blocks devices managed with device administrator. | Low | Intune | Device compliance |
+| [MT.1238](./MT.1238.md) | Ensure iOS app protection policy requires a strong app PIN. | Medium | Intune | App protection |
+| [MT.1239](./MT.1239.md) | Ensure iOS app protection policy keeps organization data inside managed apps. | Medium | Intune | App protection |
+| [MT.1240](./MT.1240.md) | Ensure iOS app protection policy encrypts organization data. | Medium | Intune | App protection |
+| [MT.1241](./MT.1241.md) | Ensure iOS app protection policy requires a minimum OS and app version. | Low | Intune | App protection |
+| [MT.1242](./MT.1242.md) | Ensure iOS app protection policy limits offline access to organization data. | Low | Intune | App protection |
+| [MT.1243](./MT.1243.md) | Ensure iOS app protection policy acts on the device threat level. | Medium | Intune | App protection |
+| [MT.1244](./MT.1244.md) | Ensure Android app protection policy requires a strong app PIN. | Medium | Intune | App protection |
+| [MT.1245](./MT.1245.md) | Ensure Android app protection policy keeps organization data inside managed apps. | Medium | Intune | App protection |
+| [MT.1246](./MT.1246.md) | Ensure Android app protection policy encrypts organization data. | Medium | Intune | App protection |
+| [MT.1247](./MT.1247.md) | Ensure Android app protection policy requires a minimum OS and app version. | Low | Intune | App protection |
+| [MT.1248](./MT.1248.md) | Ensure Android app protection policy limits offline access to organization data. | Low | Intune | App protection |
+| [MT.1249](./MT.1249.md) | Ensure Android app protection policy acts on the device threat level. | Medium | Intune | App protection |
+| [MT.1250](./MT.1250.md) | Ensure Android app protection policy blocks screen capture of organization data. | Low | Intune | App protection |
+| [MT.1251](./MT.1251.md) | Ensure Android app protection policy requires Play Integrity device attestation. | Medium | Intune | App protection |

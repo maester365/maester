@@ -86,6 +86,7 @@ namespace Maester.Engine
         private readonly List<string> _newlyFailing = new List<string>();
         private readonly System.Diagnostics.Stopwatch _runClock = new System.Diagnostics.Stopwatch();
         private TenantInfo _tenant;
+        private TenantInfo _directory;
         private MtBlogPost _blogPost;
         private readonly List<Connection> _connections = new List<Connection>();
         private string[] _tips = new string[0];
@@ -151,6 +152,22 @@ namespace Maester.Engine
         }
 
         /// <summary>
+        /// The Active Directory panel, laid out like the Tenant panel: the domain on the left of the first line and
+        /// the domain controller on its right, and a line of detail (the account it is connected as). Null for
+        /// all three removes the panel.
+        /// </summary>
+        public void SetDirectory(string domain, string server, string detail)
+        {
+            lock (_gate)
+            {
+                // Read from the directory that is being assessed, not set by the person at this console.
+                if (string.IsNullOrEmpty(domain) && string.IsNullOrEmpty(server) && string.IsNullOrEmpty(detail)) _directory = null;
+                else _directory = new TenantInfo { Name = PlainText(domain), Domain = PlainText(server), Detail = PlainText(detail) };
+                Redraw();
+            }
+        }
+
+        /// <summary>
         /// The Connections panel: the services of the run in a grid, each with a green dot when it is connected.
         /// A name that is too long for its cell is cut at its end.
         /// </summary>
@@ -193,7 +210,7 @@ namespace Maester.Engine
         /// <summary>Whether the panels of the results are shown: once tests ran, or before the first start when asked for.</summary>
         private bool ResultPanelsShown()
         {
-            return _running || _sequence.Count > 0 || (PanelsBeforeStart && !_started);
+            return _running || _sequence.Count > 0 || (PanelsBeforeStart && !_started) || OutputResults != null;
         }
 
         /// <summary>
@@ -776,7 +793,7 @@ namespace Maester.Engine
                 _tight = true;
                 for (int i = 0; i < names.Count; i++) panels[i] = BuildPanel(names[i], inner, ansi);
             }
-            else if (total < rows && slowest >= 0 && panels[slowest] != null && _slowest.Count > _slowRows)
+            else if (total < rows && slowest >= 0 && panels[slowest] != null && SlowestShown.Count > _slowRows)
             {
                 _slowRows = Math.Min(SlowestKept, _slowRows + rows - total);
                 panels[slowest] = BuildPanel(names[slowest], inner, ansi);
@@ -881,6 +898,8 @@ namespace Maester.Engine
                     return BuildTipsPanel(width, ansi);
                 case "tenant":
                     return _tenant != null ? BuildTenantPanel(width, ansi) : BuildTextPanel(name, ansi);
+                case "activedirectory":
+                    return _directory != null ? BuildIdentityPanel("Active Directory", _directory, width, ansi) : BuildTextPanel(name, ansi);
                 case "connections":
                     return BuildConnectionsPanel(width, ansi);
                 case "totals":
@@ -911,10 +930,16 @@ namespace Maester.Engine
 
         private PanelContent BuildTenantPanel(int width, bool ansi)
         {
-            var panel = new PanelContent { Title = "Tenant" };
-            string name = _tenant.Name ?? string.Empty;
-            string domain = _tenant.Domain ?? string.Empty;
-            // The domain keeps its place on the right; the name is cut when the two do not fit.
+            return BuildIdentityPanel("Tenant", _tenant, width, ansi);
+        }
+
+        /// <summary>The Tenant and Active Directory panels: a name, what goes on its right, and a line of detail.</summary>
+        private PanelContent BuildIdentityPanel(string title, TenantInfo info, int width, bool ansi)
+        {
+            var panel = new PanelContent { Title = title };
+            string name = info.Name ?? string.Empty;
+            string domain = info.Domain ?? string.Empty;
+            // What is on the right keeps its place; the name is cut when the two do not fit.
             if (domain.Length > 0 && width - domain.Length - 2 < 8) domain = string.Empty;
             int nameRoom = domain.Length > 0 ? width - domain.Length - 2 : width;
             if (name.Length > nameRoom) name = name.Substring(0, Math.Max(0, nameRoom - 1)) + (Unicode ? "…" : ".");
@@ -922,7 +947,7 @@ namespace Maester.Engine
             {
                 panel.Lines.Add(new LineBuilder(ansi).Add(name, "1").Add(new string(' ', Math.Max(0, width - name.Length - domain.Length))).Add(domain).Build());
             }
-            if (!string.IsNullOrEmpty(_tenant.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(_tenant.Detail, "2").Build(), width, ansi));
+            if (!string.IsNullOrEmpty(info.Detail)) panel.Lines.Add(Truncate(new LineBuilder(ansi).Add(info.Detail, "2").Build(), width, ansi));
 
             return panel.Lines.Count > 0 ? panel : null;
         }
@@ -1038,23 +1063,26 @@ namespace Maester.Engine
         /// </summary>
         private List<Line> BuildPaceSection(int width, int graphRows, string indent, bool ansi)
         {
+            var durations = PaceDurations;
             double longest = 0;
-            foreach (double d in _durations) longest = Math.Max(longest, d);
+            foreach (double d in durations) longest = Math.Max(longest, d);
             var lines = new List<Line>();
             foreach (var row in PaceGraph(width, graphRows, longest, ansi))
             {
                 lines.Add(new Line { Text = indent + row.Text, Plain = indent + row.Plain });
             }
             string numbers = string.Empty;
-            if (_durations.Count > 0)
+            // The work in the output box counts its items, which are not Maester's tests.
+            string unit = OutputTimed ? "item" : "test";
+            if (durations.Count > 0)
             {
-                double elapsed = Math.Max(0.001, _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
-                numbers = (_durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " tests/s" + (Unicode ? " · " : ", ") + "longest " + Short(TimeSpan.FromSeconds(longest));
+                double elapsed = Math.Max(0.001, OutputTimed && _outputClock != null ? _outputClock.Elapsed.TotalSeconds : _running ? _runClock.Elapsed.TotalSeconds : _finishSeconds[_finishSeconds.Count - 1]);
+                numbers = (durations.Count / elapsed).ToString("0.0", CultureInfo.InvariantCulture) + " " + unit + "s/s" + (Unicode ? " · " : ", ") + "longest " + Short(TimeSpan.FromSeconds(longest));
             }
             // What the bars are, from the most words to the fewest: the first that fits next to the numbers.
-            string[] forms = _durations.Count <= width
-                ? new[] { "how long each test took, newest on the right", "how long each test took" }
-                : new[] { "how long the last " + N(width) + " tests took, newest on the right", "the last " + N(width) + " tests, newest on the right", "the last " + N(width) + " tests" };
+            string[] forms = durations.Count <= width
+                ? new[] { "how long each " + unit + " took, newest on the right", "how long each " + unit + " took" }
+                : new[] { "how long the last " + N(width) + " " + unit + "s took, newest on the right", "the last " + N(width) + " " + unit + "s, newest on the right", "the last " + N(width) + " " + unit + "s" };
             string what = null;
             foreach (string form in forms)
             {
@@ -1078,16 +1106,19 @@ namespace Maester.Engine
         /// </summary>
         private PanelContent BuildSlowestPanel(int width, bool ansi)
         {
-            if (_slowest.Count == 0) return null;
-            var panel = new PanelContent { Title = "Slowest so far" };
-            int shown = Math.Max(1, Math.Min(_slowest.Count, _slowRows));
+            var slowest = SlowestShown;
+            if (slowest.Count == 0) return null;
+            var panel = new PanelContent { Title = "Slowest so far", Badge = OutputTimed ? _outputTitle : null };
+            int shown = Math.Max(1, Math.Min(slowest.Count, _slowRows));
             int listed = 0;
-            foreach (var s in _slowest)
+            foreach (var s in slowest)
             {
                 if (listed >= shown) break;
                 listed++;
                 string time = Short(s.Duration).PadLeft(7);
-                var left = Truncate(new LineBuilder(ansi).Add(FitId(s.Id) + " ").Add(s.Title, "2").Build(), width - time.Length, ansi);
+                // An item without a title (such as a table an assessment exported) shows its whole name.
+                var row = string.IsNullOrEmpty(s.Title) ? new LineBuilder(ansi).Add(s.Id ?? string.Empty) : new LineBuilder(ansi).Add(FitId(s.Id) + " ").Add(s.Title, "2");
+                var left = Truncate(row.Build(), width - time.Length - 1, ansi);
                 string gap = new string(' ', Math.Max(0, width - time.Length - left.Plain.Length));
                 panel.Lines.Add(new Line { Text = left.Text + gap + time, Plain = left.Plain + gap + time });
             }
@@ -1107,13 +1138,14 @@ namespace Maester.Engine
         {
             const double floor = 0.05;
             double top = Math.Log(1 + Math.Max(1.0, longest) / floor);
-            int bars = Math.Min(width, _durations.Count);
-            int first = _durations.Count - bars;
+            var durations = PaceDurations;
+            int bars = Math.Min(width, durations.Count);
+            int first = durations.Count - bars;
             var levels = new int[bars];
             for (int b = 0; b < bars; b++)
             {
                 // A test that ran always shows, however fast it was.
-                levels[b] = Math.Max(1, (int)Math.Round(Math.Log(1 + _durations[first + b] / floor) / top * rows * 8));
+                levels[b] = Math.Max(1, (int)Math.Round(Math.Log(1 + durations[first + b] / floor) / top * rows * 8));
             }
             var lines = new List<Line>();
             for (int row = rows - 1; row >= 0; row--)
@@ -1254,6 +1286,8 @@ namespace Maester.Engine
         private List<Line> BuildResultsChart(int columns, int maxRows, string lead, bool ansi)
         {
             var lines = new List<Line>();
+            var output = OutputResults;
+            if (output != null) return BuildOutputResultsChart(output, columns, maxRows, lead, ansi);
             if (_total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
             // One square per test for as long as the rows that are free allow it: a cell each, edge to edge.
             columns = Math.Max(10, columns);
@@ -1295,6 +1329,60 @@ namespace Maester.Engine
             }
             if (row != null) lines.Add(row.Build());
             if (caption) lines.Add(new LineBuilder(ansi).Add(lead + "each square is " + N(perSquare) + " tests", "2").Build());
+            return lines;
+        }
+
+        /// <summary>
+        /// The result blocks of the work in the output box: one square per item, its results in the order of the
+        /// Results panel (passed, failed, errors, investigate, skipped), then those running, then those to come.
+        /// </summary>
+        private List<Line> BuildOutputResultsChart(MtOutputGroup r, int columns, int maxRows, string lead, bool ansi)
+        {
+            var lines = new List<Line>();
+            if (r.Total <= 0 || maxRows < 1 || !PanelShown(ResultsPanel)) return lines;
+            columns = Math.Max(10, columns);
+            int rows = Math.Min(16, maxRows);
+            int perSquare = Math.Max(1, (int)Math.Ceiling((double)r.Total / (columns * rows)));
+            int squares = (int)Math.Ceiling((double)r.Total / perSquare);
+            bool caption = perSquare > 1 && maxRows > (int)Math.Ceiling((double)squares / columns);
+            string mark = Unicode ? "■" : "#";
+            string waiting = ansi ? mark : (Unicode ? "□" : ".");
+            string spinning = Unicode ? SquareSpinner[_tick % SquareSpinner.Length] : Spinner();
+            int[] ends = new int[5];
+            int[] counts = { r.Passed, r.Failed, r.Error, r.Investigate, r.Skipped };
+            string[] colours = { "32", "31", "33", "35", "2" };
+            int at = 0;
+            for (int i = 0; i < counts.Length; i++) ends[i] = at += counts[i];
+            int done = at;
+            int active = Math.Min(r.Total, done + r.Running);
+
+            LineBuilder row = null;
+            for (int i = 0; i < squares; i++)
+            {
+                if (i % columns == 0)
+                {
+                    if (row != null) lines.Add(row.Build());
+                    row = new LineBuilder(ansi).Add(lead);
+                }
+                int first = i * perSquare;
+                if (first < done)
+                {
+                    // A square takes the colour of the result of its first item.
+                    int part = 0;
+                    while (part < ends.Length - 1 && ends[part] <= first) part++;
+                    row.Add(mark, colours[part]);
+                }
+                else if (first < active)
+                {
+                    row.Add(spinning, "36");
+                }
+                else
+                {
+                    row.Add(waiting, "38;5;238");
+                }
+            }
+            if (row != null) lines.Add(row.Build());
+            if (caption) lines.Add(new LineBuilder(ansi).Add(lead + "each square is " + N(perSquare) + " items", "2").Build());
             return lines;
         }
 

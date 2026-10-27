@@ -1,4 +1,6 @@
+- **AccessReview.Read.All**
 - **AuditLog.Read.All**
+- **DeviceManagementApps.Read.All**
 - **DeviceManagementConfiguration.Read.All**
 - **DeviceManagementManagedDevices.Read.All**
 - **DeviceManagementRBAC.Read.All**

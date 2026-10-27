@@ -11,7 +11,8 @@
     "AD-",
     "AZDO.",
     "MT1060.",
-    "MP."
+    "MP.",
+    "ZTA."
   ],
   "properties": {
     "Id": {
@@ -131,8 +132,8 @@
     "Permission": {
       "type": "string[]",
       "required": "No",
-      "description": "Permissions the test needs, one per element, no commas. Recorded; not enforced.",
-      "pattern": "^[^,\\r\\n]*[^,\\s][^,\\r\\n]*$"
+      "description": "Permissions the test needs, written <Service>:<Kind>:<Name>. The test needs every element; | inside an element joins alternatives, any one of which is enough, least privileged first. Recorded; not enforced.",
+      "pattern": "^\\s*[A-Za-z][A-Za-z0-9.\\-]*:[A-Za-z]+:[^,|\\r\\n]*[^,|\\s](\\s*\\|\\s*[A-Za-z][A-Za-z0-9.\\-]*:[A-Za-z]+:[^,|\\r\\n]*[^,|\\s])*\\s*$"
     },
     "TenantType": {
       "type": "string[]",
@@ -459,6 +460,10 @@
         {
           "key": "device-configuration",
           "name": "Device configuration"
+        },
+        {
+          "key": "app-protection",
+          "name": "App protection"
         },
         {
           "key": "endpoint-security",
@@ -936,58 +941,203 @@
       "aliases": [
         "AD"
       ],
-      "optIn": true
+      "optIn": true,
+      "permissionKinds": [
+        {
+          "kind": "Ldap",
+          "example": "user:ReadProperty",
+          "description": "An LDAP access right on an object class, written [<partition>/]<objectClass>[.<attribute>]:<right>. The partition is Configuration or Schema; without one it is the domain."
+        },
+        {
+          "kind": "Cim",
+          "example": "root\\MicrosoftDNS:MicrosoftDNS_Zone:Read",
+          "description": "Remote CIM (WMI) access, written <namespace>:<class>:<right>."
+        },
+        {
+          "kind": "File",
+          "example": "SYSVOL:Read",
+          "description": "Access to a share on the domain controllers, written <share>:<right>."
+        },
+        {
+          "kind": "Remoting",
+          "example": "Microsoft.PowerShell",
+          "description": "A PowerShell remoting endpoint on the domain controllers."
+        },
+        {
+          "kind": "Group",
+          "example": "Remote Management Users",
+          "description": "Membership of a built-in or delegated group."
+        }
+      ]
     },
     {
       "name": "Azure",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "Reader",
+          "description": "An Azure role (Azure RBAC), by its name. The scope it is assigned at is chosen when Maester is set up."
+        },
+        {
+          "kind": "Action",
+          "example": "Microsoft.Authorization/policyAssignments/read",
+          "description": "An Azure resource provider operation."
+        }
+      ]
     },
     {
       "name": "AzureDevOps",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "vso.project",
+          "description": "An Azure DevOps OAuth or personal access token scope."
+        },
+        {
+          "kind": "Role",
+          "example": "Project Collection Administrators",
+          "description": "An Azure DevOps security group or access level."
+        }
+      ]
     },
     {
       "name": "Dataverse",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "System Administrator",
+          "description": "A Dataverse security role of the environment."
+        }
+      ]
     },
     {
       "name": "ExchangeOnline",
       "aliases": [
         "Exchange"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "View-Only Configuration",
+          "description": "An Exchange Online management role or role group, or a Microsoft Entra role that grants one."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-OrganizationConfig",
+          "description": "An Exchange Online PowerShell cmdlet the test runs."
+        }
+      ]
     },
     {
       "name": "GitHub",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Permission",
+          "example": "administration:read",
+          "description": "A GitHub App or fine-grained token permission, written <permission>:<read|write>."
+        },
+        {
+          "kind": "Scope",
+          "example": "read:org",
+          "description": "A classic personal access token scope."
+        },
+        {
+          "kind": "Role",
+          "example": "Organization owner",
+          "description": "A GitHub organization or enterprise role."
+        }
+      ]
     },
     {
       "name": "Graph",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "Policy.Read.All",
+          "description": "A Microsoft Graph permission that works as a delegated or an application permission."
+        },
+        {
+          "kind": "DelegatedScope",
+          "example": "User.Read",
+          "description": "A Microsoft Graph permission the test can use only as a delegated permission, with a user signed in."
+        },
+        {
+          "kind": "ApplicationScope",
+          "example": "User.Read.All",
+          "description": "A Microsoft Graph permission the test can use only as an application permission."
+        },
+        {
+          "kind": "Role",
+          "example": "Global Reader",
+          "description": "A Microsoft Entra role, by its display name."
+        }
+      ]
     },
     {
       "name": "SecurityCompliance",
       "aliases": [
         "EOP"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "View-Only DLP Compliance Management",
+          "description": "A Microsoft Purview role or role group, or a Microsoft Entra role that grants one."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-DlpCompliancePolicy",
+          "description": "A Security & Compliance PowerShell cmdlet the test runs."
+        }
+      ]
     },
     {
       "name": "SharePointOnline",
       "aliases": [
         "SharePoint"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "Sites.FullControl.All",
+          "description": "A SharePoint permission (the SharePoint API, not Microsoft Graph)."
+        },
+        {
+          "kind": "Role",
+          "example": "SharePoint Administrator",
+          "description": "A Microsoft Entra role, by its display name."
+        }
+      ]
     },
     {
       "name": "Teams",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "Teams Administrator",
+          "description": "A Microsoft Entra role, by its display name."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-CsTeamsMeetingPolicy",
+          "description": "A Microsoft Teams PowerShell cmdlet the test runs."
+        }
+      ]
     }
   ],
   "licenses": [
@@ -1174,6 +1324,13 @@
           "level": "L1"
         },
         {
+          "id": "1.3.2",
+          "tests": [
+            "CIS.M365.1.3.2"
+          ],
+          "level": "L2"
+        },
+        {
           "id": "1.3.3",
           "tests": [
             "CIS.M365.1.3.3"
@@ -1307,6 +1464,13 @@
           "level": "L1"
         },
         {
+          "id": "4.2",
+          "tests": [
+            "CIS.M365.4.2"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "5.1.2.2",
           "tests": [
             "CIS.M365.5.1.2.2"
@@ -1317,6 +1481,55 @@
           "id": "5.1.2.3",
           "tests": [
             "CIS.M365.5.1.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.3.1",
+          "tests": [
+            "CIS.M365.5.1.3.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.3.4",
+          "tests": [
+            "CIS.M365.5.1.3.4"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.4.1",
+          "tests": [
+            "CIS.M365.5.1.4.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.4.2",
+          "tests": [
+            "CIS.M365.5.1.4.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.4.3",
+          "tests": [
+            "CIS.M365.5.1.4.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.4.4",
+          "tests": [
+            "CIS.M365.5.1.4.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.4.5",
+          "tests": [
+            "CIS.M365.5.1.4.5"
           ],
           "level": "L1"
         },
@@ -1342,9 +1555,205 @@
           "level": "L1"
         },
         {
+          "id": "5.1.5.3",
+          "tests": [
+            "CIS.M365.5.1.5.3"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.5.4",
+          "tests": [
+            "CIS.M365.5.1.5.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.5.5",
+          "tests": [
+            "CIS.M365.5.1.5.5"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.5.6",
+          "tests": [
+            "CIS.M365.5.1.5.6"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.6.1",
+          "tests": [
+            "CIS.M365.5.1.6.1"
+          ],
+          "level": "L2"
+        },
+        {
           "id": "5.1.6.2",
           "tests": [
             "CIS.M365.5.1.6.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.1.6.3",
+          "tests": [
+            "CIS.M365.5.1.6.3"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.1.8.1",
+          "tests": [
+            "CIS.M365.5.1.8.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.1",
+          "tests": [
+            "CIS.M365.5.2.2.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.2",
+          "tests": [
+            "CIS.M365.5.2.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.3",
+          "tests": [
+            "CIS.M365.5.2.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.4",
+          "tests": [
+            "CIS.M365.5.2.2.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.5",
+          "tests": [
+            "CIS.M365.5.2.2.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.2.6",
+          "tests": [
+            "CIS.M365.5.2.2.6"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.7",
+          "tests": [
+            "CIS.M365.5.2.2.7"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.8",
+          "tests": [
+            "CIS.M365.5.2.2.8"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.2.9",
+          "tests": [
+            "CIS.M365.5.2.2.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.10",
+          "tests": [
+            "CIS.M365.5.2.2.10"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.11",
+          "tests": [
+            "CIS.M365.5.2.2.11"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.12",
+          "tests": [
+            "CIS.M365.5.2.2.12"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.13",
+          "tests": [
+            "CIS.M365.5.2.2.13"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.2.14",
+          "tests": [
+            "CIS.M365.5.2.2.14"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.2.15",
+          "tests": [
+            "CIS.M365.5.2.2.15"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.2.16",
+          "tests": [
+            "CIS.M365.5.2.2.16"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.2.17",
+          "tests": [
+            "CIS.M365.5.2.2.17"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.1",
+          "tests": [
+            "CIS.M365.5.2.3.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.2",
+          "tests": [
+            "CIS.M365.5.2.3.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.3",
+          "tests": [
+            "CIS.M365.5.2.3.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.4",
+          "tests": [
+            "CIS.M365.5.2.3.4"
           ],
           "level": "L1"
         },
@@ -1356,11 +1765,88 @@
           "level": "L1"
         },
         {
+          "id": "5.2.3.6",
+          "tests": [
+            "CIS.M365.5.2.3.6"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.7",
+          "tests": [
+            "CIS.M365.5.2.3.7"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.2.3.8",
+          "tests": [
+            "CIS.M365.5.2.3.8"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.9",
+          "tests": [
+            "CIS.M365.5.2.3.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.2.3.10",
+          "tests": [
+            "CIS.M365.5.2.3.10"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.3.1",
+          "tests": [
+            "CIS.M365.5.3.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "5.3.2",
+          "tests": [
+            "CIS.M365.5.3.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.3.3",
+          "tests": [
+            "CIS.M365.5.3.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.3.4",
+          "tests": [
+            "CIS.M365.5.3.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "5.3.5",
+          "tests": [
+            "CIS.M365.5.3.5"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "6.5.3",
           "tests": [
             "CIS.M365.6.5.3"
           ],
           "level": "L2"
+        },
+        {
+          "id": "7.2.1",
+          "tests": [
+            "CIS.M365.7.2.1"
+          ],
+          "level": "L1"
         },
         {
           "id": "7.2.2",
@@ -1370,9 +1856,30 @@
           "level": "L1"
         },
         {
+          "id": "7.2.3",
+          "tests": [
+            "CIS.M365.7.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.2.4",
+          "tests": [
+            "CIS.M365.7.2.4"
+          ],
+          "level": "L2"
+        },
+        {
           "id": "7.2.5",
           "tests": [
             "CIS.M365.7.2.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "7.2.6",
+          "tests": [
+            "CIS.M365.7.2.6"
           ],
           "level": "L2"
         },
@@ -1384,9 +1891,23 @@
           "level": "L1"
         },
         {
+          "id": "7.2.8",
+          "tests": [
+            "CIS.M365.7.2.8"
+          ],
+          "level": "L2"
+        },
+        {
           "id": "7.2.9",
           "tests": [
             "CIS.M365.7.2.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "7.2.10",
+          "tests": [
+            "CIS.M365.7.2.10"
           ],
           "level": "L1"
         },
@@ -1412,6 +1933,20 @@
           "level": "L2"
         },
         {
+          "id": "8.1.2",
+          "tests": [
+            "CIS.M365.8.1.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.2.1",
+          "tests": [
+            "CIS.M365.8.2.1"
+          ],
+          "level": "L2"
+        },
+        {
           "id": "8.2.2",
           "tests": [
             "CIS.M365.8.2.2"
@@ -1426,9 +1961,30 @@
           "level": "L1"
         },
         {
+          "id": "8.2.4",
+          "tests": [
+            "CIS.M365.8.2.4"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "8.4.1",
           "tests": [
             "CIS.M365.8.4.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.5.1",
+          "tests": [
+            "CIS.M365.8.5.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.5.2",
+          "tests": [
+            "CIS.M365.8.5.2"
           ],
           "level": "L1"
         },
@@ -1438,6 +1994,48 @@
             "CIS.M365.8.5.3"
           ],
           "level": "L1"
+        },
+        {
+          "id": "8.5.4",
+          "tests": [
+            "CIS.M365.8.5.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.5.5",
+          "tests": [
+            "CIS.M365.8.5.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.5.6",
+          "tests": [
+            "CIS.M365.8.5.6"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.5.7",
+          "tests": [
+            "CIS.M365.8.5.7"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "8.5.8",
+          "tests": [
+            "CIS.M365.8.5.8"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "8.5.9",
+          "tests": [
+            "CIS.M365.8.5.9"
+          ],
+          "level": "L2"
         },
         {
           "id": "8.6.1",
@@ -11453,6 +12051,6 @@
     "Control": "Requirements of frameworks the test implements or supports, written `<framework-key>:<requirement-id>`, for\nexample `cis-m365:5.1.5.1`, `cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`. Optional list. Any test can use\nit: one shipped with Maester or one of your own.\n\n- `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and\n  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'`. Every test in `tests/cis` and `tests/cisa` must name a\n  requirement of its suite's framework. The unit tests check this.\n- The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the\n  requirement the test is written for first, and any other requirement it supports after it.\n- Use the same attribute for a test that exists for its own reasons and also supports a requirement: a Maester\n  test that checks the setting a CISA policy asks for, or a CIS test that also supports a NIST control.\n- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`), the requirement must\n  exist in that framework's file. If it is new, add it to the file with its facts. The module build and the unit\n  tests fail otherwise.\n- Do not repeat the `Related` controls of a requirement. The framework file lists them and Maester adds them to\n  the result.\n- List a requirement only when a passing result is evidence for it. A test that checks one part of a requirement\n  may list it; a test that is merely on the same topic may not.\n\nA reference says the test supports the requirement. It never says the organization complies with it.\n\n### NIST SP 800-53\n\nA test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `nist-800-53-r5:<control>`.\n\n- Use an ID from the pinned list, [`powershell/assets/MaesterNistControls.json`](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterNistControls.json):\n  a base control (`AC-2`) or an enhancement (`IA-2(1)`). The unit tests reject anything else.\n- List a control only when a passing result is direct evidence that it is implemented for what the test checks.\n- Prefer the enhancement when the test checks exactly what it says: MFA for privileged accounts is `IA-2(1)`.\n  Do not list a base control together with one of its own enhancements.\n- At most three, best fit first. Never the policy-and-procedures controls (`AC-1`, `IA-1` and so on).\n- A test that only reports a count, or checks health, licensing or tidiness, lists none, unless the count is\n  itself what a control asks to be tracked: dormant accounts for `AC-2(3)`.\n- A test that implements a CISA SCuBA policy does not list NIST controls. CISA publishes that mapping, the\n  framework file carries it as `Related`, and the result gets it from there.",
     "Lifecycle and ReplacedBy": "- `Preview`: new and still changing. Not run unless previews are included.\n- `Stable`: the default.\n- `Deprecated`: kept so history stays readable. Give `ReplacedBy` when another test took its place.",
     "Tag": "`Tag` holds labels the owner of a test folder finds useful. It is not part of Maester's taxonomy.\n\n- Built-in tests do not carry tags for product, feature, area, suite, benchmark, licence, severity or their own ID.\n  Each of those has an attribute or is derived.\n- A custom test may tag freely.",
-    "How the rubric is enforced": "1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a\n   required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a\n   retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not\n   have, or is a CIS or CISA test without a `Control` for its own framework.\n2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A\n   reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit\n   the rubric, with the value it expected and the reason. A maintainer can overrule it.\n3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`."
+    "How the rubric is enforced": "1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a\n   required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a\n   retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not\n   have, or is a CIS or CISA test without a `Control` for its own framework.\n2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A\n   reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit\n   the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the\n   same product and feature. It fails a test whose area, resource type or severity differs from the same check in\n   another suite, and whose user impact or implementation cost differs when both plainly recommend the same fix.\n   MITRE techniques and related products are not compared. A maintainer can overrule it.\n3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`."
   }
 }

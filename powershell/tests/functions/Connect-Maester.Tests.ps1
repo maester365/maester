@@ -5,6 +5,16 @@
     $script:createdStubs = @()
     # Mocks with a -ParameterFilter only see parameters the command declares, so give those stubs the parameters the tests filter on.
     $stubBodies = @{
+        'Connect-AzAccount' = {
+            [CmdletBinding()]
+            param([switch]$SkipContextPopulation, [switch]$UseDeviceAuthentication, [string]$Environment, [string]$Tenant)
+            $null = $PSBoundParameters
+        }
+        'Connect-MicrosoftTeams' = {
+            [CmdletBinding()]
+            param([string]$TeamsEnvironmentName, [switch]$UseDeviceAuthentication)
+            $null = $PSBoundParameters
+        }
         'Connect-IPPSSession' = {
             [CmdletBinding()]
             param([string]$ConnectionUri, [string]$AzureADAuthorizationEndpointUri, [string]$UserPrincipalName, [switch]$BypassMailboxAnchoring, [switch]$ShowBanner)
@@ -33,21 +43,17 @@ Describe 'Connect-Maester' {
     }
 
     It 'Offers GitHub as a -Service option' {
-        $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
-        $validateSet = $serviceParameter.Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
-            Select-Object -First 1
-
-        $validateSet.ValidValues | Should -Contain 'GitHub'
+        # -Service is completed rather than validated by a set, so pack connectors can add services.
+        $line = 'Connect-Maester -Service Git'
+        $completion = [System.Management.Automation.CommandCompletion]::CompleteInput($line, $line.Length, $null)
+        $completion.CompletionMatches.CompletionText | Should -Contain 'GitHub'
     }
 
     It 'Offers ActiveDirectory as a -Service option' {
-        $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
-        $validateSet = $serviceParameter.Attributes |
-            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
-            Select-Object -First 1
-
-        $validateSet.ValidValues | Should -Contain 'ActiveDirectory'
+        # -Service is completed rather than validated by a set, so pack connectors can add services.
+        $line = 'Connect-Maester -Service Act'
+        $completion = [System.Management.Automation.CommandCompletion]::CompleteInput($line, $line.Length, $null)
+        $completion.CompletionMatches.CompletionText | Should -Contain 'ActiveDirectory'
     }
 
     It 'Offers GitHubOrganization as a parameter' {
@@ -261,6 +267,53 @@ Describe 'Connect-Maester connection summary' {
         $exchange.Details | Should -Be 'macOS 27.0.1'
         Should -Invoke Connect-MgGraph -ModuleName Maester -Times 1 -Exactly
         Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Passes the Teams environment together with -UseDeviceCode' {
+        Connect-Maester -Service Teams -UseDeviceCode -TeamsEnvironmentName TeamsGCCH 6>$null
+
+        Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $UseDeviceAuthentication -and $TeamsEnvironmentName -eq 'TeamsGCCH'
+        }
+    }
+
+    Context 'When an Az context from another tenant already exists' {
+        BeforeEach {
+            Mock Get-AzContext -ModuleName Maester {
+                [pscustomobject]@{
+                    Account = [pscustomobject]@{ Id = 'admin@contoso.com' }
+                    Tenant  = [pscustomobject]@{ Id = '11111111-1111-1111-1111-111111111111' }
+                }
+            }
+            Mock Connect-AzAccount -ModuleName Maester {}
+        }
+
+        It 'Signs in to the requested tenant instead of reusing the context' {
+            Connect-Maester -Service Azure -TenantId '22222222-2222-2222-2222-222222222222' 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Tenant -eq '22222222-2222-2222-2222-222222222222'
+            }
+        }
+
+        It 'Reuses the context when its tenant is the requested one, whatever the letter case' {
+            Connect-Maester -Service Azure -TenantId '11111111-1111-1111-1111-111111111111'.ToUpper() 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when no tenant is requested' {
+            Connect-Maester -Service Azure 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when the tenant is given as a domain name, which cannot be compared with its ID' {
+            $verboseOutput = Connect-Maester -Service Azure -TenantId 'contoso.onmicrosoft.com' -Verbose 4>&1 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+            "$verboseOutput" | Should -BeLike "*cannot be compared*11111111-1111-1111-1111-111111111111*"
+        }
     }
 
     It 'Shows only the first line of a Teams sign-in error' {

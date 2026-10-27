@@ -152,7 +152,7 @@ Added in 2.1:
 | `ReplacedBy` | string | For a `Deprecated` test, the ID of the test that took its place. |
 | `Service` | array of strings | The services the test needs, by their names in the service registry. |
 | `License` | array of strings | The service plans the test needs; the tenant needs any one. |
-| `Permission` | array of strings | The permissions the test declares. Recorded; not enforced. |
+| `Permission` | array of strings | The permissions the test declares, each written `<Service>:<Kind>:<Name>`. The test needs every element; `\|` inside an element joins alternatives, any one of which is enough. Recorded; not enforced. |
 | `Benchmark` | object | The requirement of a published benchmark that the test implements: the first value of its `Control` attribute that a framework file knows. `null` when there is none. See [Benchmark](#benchmark). |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |
@@ -161,6 +161,7 @@ Added in 2.1:
 | `InstanceId` | string | For an instance row, its full ID (the same as `Id`). |
 | `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind }`, where `Source` is `Default`, `Config` or `Parameter`. Empty for Pester rows. |
 | `Diagnostics` | array of strings | Warnings (`WARNING: ...`) and non-terminating errors (`ERROR: ...`) the test wrote. |
+| `Package` | object | For a test from a [Maester Pack](./packs/index.md): `Id`, `Name`, `Version`, `Commit`, `Publisher`, `BuiltIn` and `Runtime` of the pack. `null` for every other test. A pack's rows always have `Source` `Custom`. |
 
 The fields from `Product` to `Permission` are the test's attributes; see
 [the `[MaesterTest]` attribute](./writing-tests/index.mdx#the-maestertest-attribute). A native row always has

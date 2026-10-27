@@ -27,8 +27,9 @@
     IdPattern        = '^(?=.*[0-9.\-])[A-Za-z][A-Za-z0-9]*([.\-][A-Za-z0-9_]+)*$'
     IdMaxLength      = 64
 
-    # ID prefixes that belong to tests shipped with Maester, and MP. for Maester Packs.
-    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.', 'MP.')
+    # ID prefixes that belong to tests shipped with Maester, MP. for Maester Packs, and the codes of the packs
+    # that ship with Maester, whose IDs have no MP. prefix (ZTA. for the Zero Trust Assessment pack).
+    ReservedPrefixes = @('MT.', 'CISA.', 'CIS.', 'EIDSCA.', 'ORCA.', 'AD-', 'AZDO.', 'MT1060.', 'MP.', 'ZTA.')
 
     # Names reserved for future properties. Adding one later does not break existing tests.
     ReservedNames    = @('OptionalService', 'TimeoutSeconds')
@@ -146,8 +147,9 @@
         Permission         = @{
             Type        = 'string[]'
             Required    = 'No'
-            Pattern     = '^[^,\r\n]*[^,\s][^,\r\n]*$'
-            Description = 'Permissions the test needs, one per element, no commas. Recorded; not enforced.'
+            # <Service>:<Kind>:<Name>, or several joined with |. The name may contain colons; no commas.
+            Pattern     = '^\s*[A-Za-z][A-Za-z0-9.\-]*:[A-Za-z]+:[^,|\r\n]*[^,|\s](\s*\|\s*[A-Za-z][A-Za-z0-9.\-]*:[A-Za-z]+:[^,|\r\n]*[^,|\s])*\s*$'
+            Description = 'Permissions the test needs, written <Service>:<Kind>:<Name>. The test needs every element; | inside an element joins alternatives, any one of which is enough, least privileged first. Recorded; not enforced.'
         }
         TenantType         = @{
             Type          = 'string[]'

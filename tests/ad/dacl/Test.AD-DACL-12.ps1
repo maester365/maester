@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = ('T1003.006', 'T1098'),
         Service = 'ActiveDirectory',
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -34,6 +35,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclPrivilegedExtendedRightDetails"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
@@ -41,7 +46,7 @@
         return $null
     }
     if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
     Write-Verbose "Filtering/counting dacl privileged extended right details"
@@ -49,7 +54,7 @@
     $daclEntries = @($adState.DaclEntries)
     $extendedRightEntries = @(
         foreach ($entry in $daclEntries) {
-            if ($entry.AccessControlType -like 'AccessAllowed*' -and [string]$entry.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)') {
+            if ($entry.AccessControlType -eq 'Allow' -and [string]$entry.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)') {
                 [PSCustomObject]@{
                     ObjectType        = if ([string]::IsNullOrWhiteSpace($entry.ObjectType) -or $entry.ObjectType -eq '00000000-0000-0000-0000-000000000000') {
                         'All / Not specified'

@@ -173,7 +173,11 @@ function Initialize-MtDashboard {
     fewer than 25 tests has none of them, and a panel with nothing to show is left out. The second row of
     them needs a console of about 64 rows.
 
-      Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant)
+      Tenant       the tenant, its primary domain and the account (set later, by Set-MtDashboardTenant); left
+                   out when Graph is not connected (Invoke-Maester -SkipGraphConnect)
+      ActiveDirectory
+                   the domain, its domain controller and the account it is connected as; only after
+                   Connect-Maester -Service ActiveDirectory (set later, by Set-MtDashboardDirectory)
       Totals       the results so far: a bar split by result, and the count of each
       Connections  the services of the run, and which of them are connected (set later, by Invoke-Maester)
       Failed       failed tests by severity
@@ -210,7 +214,7 @@ function Initialize-MtDashboard {
         [Parameter()] [switch] $SkipVersionCheck
     )
 
-    $known = 'Tenant', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
+    $known = 'Tenant', 'ActiveDirectory', 'Totals', 'Connections', 'Failed', 'Slowest', 'Drift', 'FixFirst', 'Blog', 'Version', 'Tips', 'Contributor', 'Sponsor', 'Pace', 'Results',
     'WeakestAreas', 'AttackTactics', 'FailedTests', 'NistFamilies', 'PassRate', 'EveryTest'
     $panels = $known
     $output = if ($RunConfig -and $RunConfig.PSObject.Properties['Output']) { $RunConfig.Output } else { $null }
@@ -235,8 +239,8 @@ function Initialize-MtDashboard {
     }
 
     # The status bar on the last row: where to read more about the project, each a hyperlink.
-    # The first four are at the left of the bar and the last three at its right edge. The sponsor page is
-    # not in the bar: it has the Sponsor panel.
+    # The first four are at the left of the bar and the last four at its right edge. The sponsor page is in
+    # the bar as well as in the Sponsor panel, so it is on screen at any width.
     $bar = [ordered]@{
         'maester.dev'           = 'https://maester.dev'
         'Docs'                  = 'https://maester.dev/docs'
@@ -246,8 +250,9 @@ function Initialize-MtDashboard {
         'Discord'               = 'https://discord.maester.dev'
         'Issues'                = 'https://github.com/maester365/maester/issues'
     }
-    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1') }
-    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 3)
+    $bar[$(if ($Console -and $Console.Unicode) { "Sponsor $([char]0x2665)" } else { 'Sponsor' })] = 'https://maester.dev/sponsor'
+    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://maester.dev/sponsor') }
+    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 4)
     # Terminals open a hyperlink on a click with a modifier key: say which.
     $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }
     $Renderer.SetStatusBarHint("$modifier-click to open")
@@ -399,7 +404,8 @@ function Start-MtDashboardTenant {
     if (Get-Module -Name Microsoft.Graph.Authentication) {
         try { $mg = Get-MgContext; if ($mg) { $graph = $true; $account = @($mg.Account, [string]$mg.AuthType | Where-Object { $_ }) -join ' · ' } } catch { Write-Debug "No Graph context: $_" }
     }
-    if ($showTenant) {
+    # Without Graph there is no tenant to read, and the panel is left out (Set-MtDashboardTenant).
+    if ($showTenant -and $graph) {
         $lines = @($reading); if ($account) { $lines += Format-MtConsoleText $account -Style Dim -Console $Console }
         $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]$lines)
     }
@@ -489,22 +495,52 @@ function Set-MtDashboardTenant {
 
     .DESCRIPTION
     Everything comes from the tenant context the run already has; nothing is requested for the panel.
-    Without a Graph connection (or with -SkipGraphConnect) there is no tenant to show, and the panel says so.
+    Without a Graph connection (a run with -SkipGraphConnect, such as one of Active Directory alone) there is
+    no tenant to show, and the panel is left out: the Connections panel already says that Graph is not connected.
     The connected services are not here: they are in the Connections panel.
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer,
-        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext,
-        [Parameter()] [AllowNull()] [pscustomobject] $Console
+        [Parameter()] [AllowNull()] [pscustomobject] $TenantContext
     )
     $graph = $TenantContext -and $TenantContext.Services -and $TenantContext.Services.PSObject.Properties['Graph'] -and $TenantContext.Services.Graph
     if (-not $graph) {
-        $Renderer.SetPanelText('Tenant', 'Tenant', [string[]]@(Format-MtConsoleText 'Not connected to Microsoft Graph' -Style Dim -Console $Console))
+        $Renderer.SetPanelText('Tenant', 'Tenant', $null)
         return
     }
     $domain = if ($TenantContext.PSObject.Properties['PrimaryDomain']) { [string]$TenantContext.PrimaryDomain } else { '' }
     $account = @($TenantContext.Account, $TenantContext.AuthType | Where-Object { $_ }) -join ' · '
     $Renderer.SetTenant([string]$TenantContext.TenantName, $domain, $account)
+}
+
+function Set-MtDashboardDirectory {
+    <#
+    .SYNOPSIS
+    Fills the Active Directory panel of the dashboard: the domain, its domain controller and the account.
+
+    .DESCRIPTION
+    Everything comes from the session that Connect-Maester -Service ActiveDirectory made; nothing is requested.
+    The account is the credential the connection was made with, or on Windows without one the signed-in user.
+    Without a connection the panel is removed.
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Updates the console display only.')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [Maester.Engine.MtConsoleRenderer] $Renderer
+    )
+    $connection = $__MtSession.ADConnection
+    if (-not $connection -or $connection.Connected -ne $true) {
+        $Renderer.SetDirectory($null, $null, $null)
+        return
+    }
+    $user = if ($__MtSession.ADCredential) { [string]$__MtSession.ADCredential.UserName }
+    elseif ($IsWindows) { [Security.Principal.WindowsIdentity]::GetCurrent().Name }
+    $detail = @($user, [string]$connection.AuthenticationMode | Where-Object { $_ }) -join ' · '
+    # The domain is on the left, so a domain controller of that domain is shown by its host name alone.
+    $domain = [string]$connection.ResolvedDomain
+    $server = [string]$connection.ResolvedServer
+    if ($domain -and $server.EndsWith(".$domain", [StringComparison]::OrdinalIgnoreCase)) { $server = $server.Substring(0, $server.Length - $domain.Length - 1) }
+    $Renderer.SetDirectory($domain, $server, $detail)
 }

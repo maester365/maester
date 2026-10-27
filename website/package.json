@@ -7,6 +7,7 @@
     "generate-test-docs": "node scripts/generate-test-docs.mjs",
     "check-test-docs": "node scripts/generate-test-docs.mjs --check",
     "update-license-plans": "node scripts/update-license-service-plans.mjs",
+    "blog-cards": "node scripts/blog-cards/generate-blog-cards.mjs",
     "prebuild": "npm run generate-test-docs",
     "prestart": "npm run generate-test-docs",
     "start": "docusaurus start",
@@ -29,21 +30,22 @@
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@fortawesome/react-fontawesome": "^3.5.0",
-    "@iconify/react": "^6.0.2",
+    "@iconify/react": "^6.0.3",
     "@mdx-js/react": "^3.1.1",
     "@mermaid-js/layout-elk": "^0.1.9",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "posthog-docusaurus": "^2.0.5",
     "prism-react-renderer": "^2.1.0",
-    "radix-ui": "^1.7.0",
-    "react": "^19.2.5",
-    "react-dom": "^19.3.0"
+    "radix-ui": "^1.8.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.1",
     "@docusaurus/types": "^3.10.1",
-    "js-yaml": "^5.4.3"
+    "js-yaml": "^5.5.0",
+    "playwright": "^1.63.0"
   },
   "browserslist": {
     "production": [
