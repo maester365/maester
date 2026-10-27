@@ -176,7 +176,7 @@ Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moer
 
 #### Roles for app-only access to Exchange Online and Security & Compliance
 
-The `Exchange.ManageAsApp` API permission lets the application sign in, but it doesn't say what the application may read. Give the application a role as well, or the connection fails with an error like this:
+The `Exchange.ManageAsApp` application permission lets the application sign in: under **Office 365 Exchange Online** for Exchange Online PowerShell, and under **Microsoft Exchange Online Protection** for Security & Compliance PowerShell (add both if you connect to both). The permission doesn't say what the application may read. Give the application a role as well, or the connection fails with an error like this:
 
 ```text
 The role assigned to application <application ID> isn't supported in this scenario. Please check online documentation for assigning correct Directory Roles to Azure AD Application for EXO App-Only Authentication.
@@ -184,7 +184,7 @@ The role assigned to application <application ID> isn't supported in this scenar
 
 Use either of these options:
 
-- **A Microsoft Entra role.** Assign the role to the application's enterprise application (service principal). **Security Reader** and **Global Reader** are read-only and work for both Exchange Online and Security & Compliance PowerShell, so either one covers the Exchange, ORCA and CISA tests. To assign one, go to **Microsoft Entra admin center** > **Identity** > **Roles & admins**, select the role, select **Add assignments**, and pick the enterprise application.
+- **A Microsoft Entra role.** Assign the role to the application's enterprise application (service principal). **Security Reader** and **Global Reader** are read-only and work for both Exchange Online and Security & Compliance PowerShell, so either one covers the Exchange Online and Security & Compliance connections that the Exchange, ORCA and CISA Exchange tests use. To assign one, go to **Microsoft Entra admin center** > **Identity** > **Roles & admins**, select the role, select **Add assignments**, and pick the enterprise application.
 - **An Exchange Online role.** Register the service principal in Exchange Online and assign it the **View-Only Configuration** role. This covers Exchange Online only; for Security & Compliance PowerShell, use a Microsoft Entra role.
 
   ```powershell
