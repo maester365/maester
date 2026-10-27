@@ -420,6 +420,8 @@
                try {
                   Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false -ErrorAction Stop
                   $securityComplianceConnected = $true
+                  # The Exchange Online check above may have cached the session list before this connection existed.
+                  $__MtSession.ExoCache.Remove('ConnectionInformation')
                   $securityComplianceUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
                      Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' } |
                      Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
@@ -436,6 +438,7 @@
                      try {
                         Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false -ErrorAction Stop
                         $securityComplianceConnected = $true
+                        $__MtSession.ExoCache.Remove('ConnectionInformation')
                         Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details "Using UPN $ExoUPN from Exchange Online"
                      } catch {
                         Write-Verbose "Failed to connect to the Security & Compliance PowerShell: $($_.Exception.Message)"
