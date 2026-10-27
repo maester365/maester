@@ -148,7 +148,7 @@
 
       # The Teams environment to connect to. Default is O365Default.
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
-      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+      [string]$TeamsEnvironmentName = $null,
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
       # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
@@ -248,6 +248,14 @@
                # Skip Connect-AzAccount if there is already an active Az context
                # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
                $existingContext = Get-AzContext -ErrorAction SilentlyContinue
+               # A tenant given as an ID can be compared with the context; a domain name cannot, so that context is kept.
+               if ($existingContext -and $TenantId -match '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$' -and
+                  $existingContext.Tenant.Id -and $existingContext.Tenant.Id -ne $TenantId) {
+                  Write-Verbose "The existing Az context is for tenant '$($existingContext.Tenant.Id)', not '$TenantId'. Signing in to '$TenantId'."
+                  $existingContext = $null
+               } elseif ($existingContext -and $TenantId -and $existingContext.Tenant.Id -and $TenantId -ne $existingContext.Tenant.Id) {
+                  Write-Verbose "-TenantId '$TenantId' cannot be compared with the existing Az context's tenant '$($existingContext.Tenant.Id)', so the context is kept."
+               }
                if ($existingContext) {
                   Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
                } else {
@@ -397,11 +405,24 @@
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
             $securityComplianceConnected = $false
-            if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
+            # Security & Compliance rides on the Exchange Online connection, so decide on whether Exchange
+            # Online is actually connected, not on the -Service argument. The -Service terms short-circuit the
+            # single-call path (Exchange Online was just attempted earlier in this same invocation); otherwise
+            # Test-MtConnection reports the live session, so connecting in two steps (Exchange Online first,
+            # Security & Compliance after) works too. #2467
+            # Drop any cached session list so the check sees sessions connected since it was cached.
+            $__MtSession.ExoCache.Remove('ConnectionInformation')
+            $exchangeOnlineReady = $Service -contains 'ExchangeOnline' -or $Service -contains 'All' -or
+               [bool](Test-MtConnection -Service ExchangeOnline -ErrorAction SilentlyContinue)
+            if (-not $exchangeOnlineReady) {
                Write-Verbose 'The Security & Compliance module is dependent on the Exchange Online module. For more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell'
-               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires ExchangeOnline in -Service'
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires an Exchange Online connection'
             } elseif ($UseDeviceCode) {
+               # Connect-IPPSSession has no device code flow, so skipping is unavoidable. When the caller asked
+               # for Security & Compliance (directly or through All) a warning makes the lost test coverage
+               # visible instead of a single Skipped row that reads like "not applicable to this tenant". #2467
                Write-Verbose 'The Security & Compliance module does not support device code flow authentication.'
+               Write-Warning 'Security & Compliance does not support device code sign-in (-UseDeviceCode); its tests will be skipped. Connect without -UseDeviceCode to include them.'
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Device code sign-in is not supported for Security & Compliance'
             } elseif (-not $exchangeModuleInstalled) {
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
@@ -409,6 +430,8 @@
                try {
                   Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false -ErrorAction Stop
                   $securityComplianceConnected = $true
+                  # The Exchange Online check above may have cached the session list before this connection existed.
+                  $__MtSession.ExoCache.Remove('ConnectionInformation')
                   $securityComplianceUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
                      Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' } |
                      Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
@@ -425,6 +448,7 @@
                      try {
                         Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false -ErrorAction Stop
                         $securityComplianceConnected = $true
+                        $__MtSession.ExoCache.Remove('ConnectionInformation')
                         Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details "Using UPN $ExoUPN from Exchange Online"
                      } catch {
                         Write-Verbose "Failed to connect to the Security & Compliance PowerShell: $($_.Exception.Message)"
@@ -528,7 +552,8 @@
                $teamsParams = @{ ErrorAction = 'Stop' }
                if ($UseDeviceCode) {
                   $teamsParams['UseDeviceAuthentication'] = $true
-               } elseif ($TeamsEnvironmentName) {
+               }
+               if ($TeamsEnvironmentName) {
                   $teamsParams['TeamsEnvironmentName'] = $TeamsEnvironmentName
                }
                $teamsConnection = Connect-MicrosoftTeams @teamsParams

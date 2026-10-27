@@ -25,6 +25,10 @@ function Install-MtPack {
     A pack that ships with Maester (by ID, such as maester.zero-trust-assessment) needs no approval. Installing it only
     saves and pins the modules it declares.
 
+    For a pack from a public GitHub repository, Maester sends api.maester.dev one anonymous event: the
+    pack's source and commit, and a random installation ID. It counts the install and lists the pack. Nothing
+    is sent for a private repository or a local folder, or when MAESTER_DISABLE_TELEMETRY is set to 1.
+
     .PARAMETER Source
     Where the pack comes from: owner/repo, owner/repo/folder, owner/repo@ref, a github.com URL, a local
     folder, or the ID of a pack that ships with Maester.
@@ -125,6 +129,11 @@ function Install-MtPack {
     if (-not $entry) { return }
 
     Write-MtPackLock -Path $where.LockPath -Lock $lock
+    # One install event for each public pack this call added or replaced (Write-Telemetry says what is sent).
+    foreach ($e in ($lock.Packs | Where-Object { $_.Id -eq $entry.Id -or $_.Id -notin $before })) {
+        Write-Telemetry -EventName PackInstall -Pack $e
+    }
+    Wait-MtTelemetry
     if ($where.ConfigPath) {
         foreach ($e in ($lock.Packs | Where-Object { $_.Source -ne 'builtin' -and ($_.Id -eq $entry.Id -or $_.Id -notin $before) })) {
             Update-MtPackConfig -Path $where.ConfigPath -Id $e.Id -Entry ([ordered]@{ Id = $e.Id; Source = $e.Source; Version = $e.Version })

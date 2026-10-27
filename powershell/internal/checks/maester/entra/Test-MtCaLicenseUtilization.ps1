@@ -64,7 +64,42 @@
 
     $testDescription = "This test checks the utilization of Entra ID $License licenses in the tenant."
     $testResult = "Total users entitled for Entra ID $($License): **$($Result.EntitledLicenseCount)**`n`nTotal $License licenses utilized: **$($Result.TotalLicensesUtilized)**"
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+
+    # When more users use the features than are licensed, say by how much and where to look.
+    # The license insight report only returns counts, so the affected users cannot be listed here.
+    $riskPolicies = @()
+    $overage = $Result.TotalLicensesUtilized - $Result.EntitledLicenseCount
+    if ($overage -gt 0) {
+        $testResult += "`n`n**$overage** more users are using Entra ID $License features than are licensed for Entra ID $License."
+        $testResult += "`n`nTo see license counts and feature usage, open [License usage](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/LicensesMenuBlade/~/LicenseUtilization) in the Microsoft Entra admin center (**Billing** > **Licenses**)."
+
+        if ($License -eq 'P2') {
+            # Risk-based Conditional Access is the P2 feature the report counts.
+            # Measure-Object counts a missing property as 0, where @($null).Count would be 1.
+            # The policy list is extra detail, so a failure to read policies must not hide the overage.
+            try {
+                $riskPolicies = @(Get-MtConditionalAccessPolicy | Where-Object {
+                        $_.state -ne 'disabled' -and (
+                            ($_.conditions.signInRiskLevels | Measure-Object).Count -gt 0 -or
+                            ($_.conditions.userRiskLevels | Measure-Object).Count -gt 0
+                        )
+                    })
+            } catch {
+                Write-Verbose -Message "Could not read Conditional Access policies: $($_.Exception.Message)"
+                $riskPolicies = @()
+            }
+            if ($riskPolicies.Count -gt 0) {
+                # The usage count covers the previous month; this list is the current policies.
+                $testResult += "`n`nThese Conditional Access policies currently use sign-in risk or user risk, so every user they cover needs Entra ID P2. The usage count is for the previous month, so a policy changed since then may not match it:`n`n%TestResult%"
+            }
+        }
+    }
+
+    if ($riskPolicies.Count -gt 0) {
+        Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $riskPolicies -GraphObjectType ConditionalAccess
+    } else {
+        Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    }
 
     return $Result
 }

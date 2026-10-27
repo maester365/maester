@@ -24,5 +24,7 @@ This test reads `$adState.DaclEntries` and counts entries where `IsInherited` is
 - `Test-MtAdDaclPrivilegedAllowAceCount` - Counts privileged allow authorizations
 - `Test-MtAdDaclUnresolvedSidCount` - Identifies stale SID references in ACEs
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 <!--- Results --->
 %TestResult%

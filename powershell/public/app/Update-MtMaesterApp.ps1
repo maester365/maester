@@ -58,19 +58,16 @@
         # Include Mail.Send permission scope
         [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
         [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
-        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $SendMail,
 
         # Include ChannelMessage.Send permission scope
         [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
         [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
-        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $SendTeamsMessage,
 
         # Include privileged permission scopes
         [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
         [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
-        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $Privileged,
 
         # Additional custom permission scopes

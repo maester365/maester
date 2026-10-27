@@ -4,9 +4,11 @@ description: Interested in presenting Maester at a conference or at your organiz
 slug: maester-presentation
 authors: merill
 tags: [presentation]
+card_headline: "Maester *slide decks* for your next talk"
+card_label: Community
 hide_table_of_contents: false
 date: 2024-12-12
-image: ./img/maester-presentation.png
+image: ./img/card.png
 ---
 
 Are you interested in presenting about Maester at a conference or at your organization?

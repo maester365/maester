@@ -1,6 +1,7 @@
 // Swizzled from @docusaurus/theme-classic (BlogListPage) to show the blog as a grid of cards: the newest post
 // as a wide card on the first page, then the rest in columns. Posts without an `image` in their front matter
-// get the Maester flame on a dark tile instead of a picture.
+// get the Maester flame on a dark tile instead of a picture. The title link stretches over the whole card, so the
+// card is one click target and screen readers still hear a single link per post.
 import React from "react";
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
@@ -33,9 +34,9 @@ function PostCard({ content, featured }) {
   const image = assets.image ?? frontMatter.image;
   return (
     <article className={clsx(styles.card, featured && styles.featured)}>
-      <Link to={permalink} className={styles.media} tabIndex={-1} aria-hidden="true">
+      <div className={styles.media}>
         <PostImage image={image} />
-      </Link>
+      </div>
       <div className={styles.body}>
         <p className={styles.meta}>
           <time dateTime={date}>{dateFormat.format(new Date(date))}</time>
