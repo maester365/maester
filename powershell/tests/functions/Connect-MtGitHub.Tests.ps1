@@ -372,6 +372,30 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
+        It 'uses the default GitHub endpoint and API version when settings are absent' {
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+        }
+
+        It 'falls back to the code defaults when the settings registry returns nothing' {
+            Mock Get-MtSetting -ModuleName Maester { $null } -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
+            }
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+            Should -Invoke Get-MtSetting -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
+            }
+        }
+
         It 'GHE.com data residency: all four endpoint paths target the configured base URI' {
             Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.octocorp.ghe.com' 3>$null
 
