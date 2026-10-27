@@ -146,3 +146,74 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
         }
     }
 }
+
+Describe 'Disconnect-Maester - service disconnects' {
+    BeforeAll {
+        # The Exchange Online and Teams modules are optional; stand in for their commands when they are not installed.
+        $script:createdStubs = @()
+        $stubBodies = @{
+            'Disconnect-ExchangeOnline' = {
+                [CmdletBinding()]
+                param([switch]$Confirm)
+                $null = $PSBoundParameters
+            }
+        }
+        foreach ($cmd in 'Disconnect-ExchangeOnline', 'Disconnect-MicrosoftTeams') {
+            if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
+                $stubBody = if ($stubBodies.ContainsKey($cmd)) { $stubBodies[$cmd] } else { { } }
+                New-Item -Path "function:global:$cmd" -Value $stubBody | Out-Null
+                $script:createdStubs += $cmd
+            }
+        }
+    }
+
+    AfterAll {
+        foreach ($cmd in $script:createdStubs) {
+            Remove-Item -Path "function:global:$cmd" -ErrorAction SilentlyContinue
+        }
+    }
+
+    BeforeEach {
+        Mock Disconnect-MgGraph -ModuleName Maester {}
+        Mock Disconnect-ExchangeOnline -ModuleName Maester {}
+        Mock Disconnect-MicrosoftTeams -ModuleName Maester {}
+
+        InModuleScope Maester {
+            $__MtSession.Connections = @('Graph', 'ExchangeOnline', 'Teams')
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.Connections = @()
+        }
+    }
+
+    It 'Disconnects from Exchange Online without asking for confirmation' {
+        # Pester hands -Confirm to a mock as extra arguments ('-Confirm:', False) instead of binding it.
+        $script:exchangeArguments = $null
+        Mock Disconnect-ExchangeOnline -ModuleName Maester { $script:exchangeArguments = @($args) }
+
+        Disconnect-Maester 6>$null
+
+        Should -Invoke Disconnect-ExchangeOnline -ModuleName Maester -Times 1 -Exactly
+        ($script:exchangeArguments -join ' ') | Should -Match '-Confirm:\s+False'
+    }
+
+    It 'Still disconnects the other services when <Failing> fails' -ForEach @(
+        @{ Failing = 'Microsoft Graph'; Command = 'Disconnect-MgGraph' }
+        @{ Failing = 'Exchange Online'; Command = 'Disconnect-ExchangeOnline' }
+        @{ Failing = 'Microsoft Teams'; Command = 'Disconnect-MicrosoftTeams' }
+    ) {
+        Mock $Command -ModuleName Maester { throw 'disconnect failed' }
+
+        # Called directly: a script block passed to Should would keep the warning variable in its own scope.
+        Disconnect-Maester -WarningVariable disconnectWarnings -WarningAction SilentlyContinue 6>$null
+
+        "$disconnectWarnings" | Should -BeLike "*$Command*disconnect failed*"
+
+        foreach ($other in 'Disconnect-MgGraph', 'Disconnect-ExchangeOnline', 'Disconnect-MicrosoftTeams') {
+            Should -Invoke $other -ModuleName Maester -Times 1 -Exactly
+        }
+    }
+}

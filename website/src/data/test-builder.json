@@ -462,6 +462,10 @@
           "name": "Device configuration"
         },
         {
+          "key": "app-protection",
+          "name": "App protection"
+        },
+        {
           "key": "endpoint-security",
           "name": "Endpoint security"
         },

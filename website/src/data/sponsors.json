@@ -7,14 +7,14 @@
       "avatar": "https://avatars.githubusercontent.com/u/1288081?s=240&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
       "contributorPage": "/contributors/merill",
       "tests": 5,
-      "commits": 1709,
+      "commits": 1723,
       "sponsorUrl": "https://github.com/sponsors/merill"
     },
     {
       "github": "soulemike",
       "name": "Michael Soule",
       "title": "Co-creator of Maester",
-      "avatar": "https://avatars.githubusercontent.com/u/431932?s=240&u=976e4c5ae4ee3d853e555e1342229f09f1afa1c5&v=4",
+      "avatar": "https://avatars.githubusercontent.com/u/431932?s=240&u=9f8cc720d34a1e58a1ba93a02ed50e0037286c84&v=4",
       "contributorPage": "/contributors/soulemike",
       "tests": 403,
       "commits": 313,
@@ -32,6 +32,16 @@
     }
   ],
   "testAuthors": [
+    {
+      "github": "JeremyFinney-lgtm",
+      "name": "jeremy finney",
+      "title": "",
+      "avatar": "https://avatars.githubusercontent.com/u/236941409?s=240&u=e487053416165ceb3c11aa7701adee81d5a1bd93&v=4",
+      "contributorPage": "/contributors/jeremyfinney-lgtm",
+      "tests": 64,
+      "commits": 8,
+      "sponsorUrl": "https://github.com/sponsors/JeremyFinney-lgtm"
+    },
     {
       "github": "svrooij",
       "name": "Stephan van Rooij",
@@ -85,6 +95,16 @@
       "sponsorUrl": "https://github.com/sponsors/michaelmsonne"
     },
     {
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "avatar": "https://avatars.githubusercontent.com/u/175124143?s=240&u=140e6b5b05ab343c256339cec6f6738121666bb8&v=4",
+      "contributorPage": "/contributors/earbona23",
+      "tests": 0,
+      "commits": 17,
+      "sponsorUrl": "https://github.com/sponsors/earbona23"
+    },
+    {
       "github": "ChrFrohn",
       "name": "Christian Frohn",
       "title": "",
@@ -93,16 +113,6 @@
       "tests": 0,
       "commits": 16,
       "sponsorUrl": "https://github.com/sponsors/ChrFrohn"
-    },
-    {
-      "github": "earbona23",
-      "name": "Eduard Arbona",
-      "title": "Security engineer, Microsoft Entra ID and cloud identity",
-      "avatar": "https://avatars.githubusercontent.com/u/175124143?s=240&u=140e6b5b05ab343c256339cec6f6738121666bb8&v=4",
-      "contributorPage": "/contributors/earbona23",
-      "tests": 0,
-      "commits": 16,
-      "sponsorUrl": "https://github.com/sponsors/earbona23"
     },
     {
       "github": "DanielBradley1",

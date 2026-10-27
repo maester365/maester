@@ -257,3 +257,27 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224.md) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225.md) | Users should not be able to create Agent Identity Blueprints. | Medium | Entra ID | Agent identities |
+| [MT.1228](./MT.1228.md) | Ensure iOS compliance policy blocks jailbroken devices. | Medium | Intune | Device compliance |
+| [MT.1229](./MT.1229.md) | Ensure iOS compliance policy requires a strong device passcode. | Medium | Intune | Device compliance |
+| [MT.1230](./MT.1230.md) | Ensure iOS compliance policy requires a minimum operating system version. | Medium | Intune | Device compliance |
+| [MT.1231](./MT.1231.md) | Ensure iOS compliance policy requires a Defender machine risk score level. | Medium | Intune | Device compliance |
+| [MT.1232](./MT.1232.md) | Ensure Android compliance policy blocks rooted devices. | Medium | Intune | Device compliance |
+| [MT.1233](./MT.1233.md) | Ensure Android compliance policy requires a strong device password. | Medium | Intune | Device compliance |
+| [MT.1234](./MT.1234.md) | Ensure Android compliance policy requires a recent security patch level. | Medium | Intune | Device compliance |
+| [MT.1235](./MT.1235.md) | Ensure Android compliance policy requires device threat protection. | Medium | Intune | Device compliance |
+| [MT.1236](./MT.1236.md) | Ensure Android compliance policy blocks USB debugging. | Low | Intune | Device compliance |
+| [MT.1237](./MT.1237.md) | Ensure Android compliance policy blocks devices managed with device administrator. | Low | Intune | Device compliance |
+| [MT.1238](./MT.1238.md) | Ensure iOS app protection policy requires a strong app PIN. | Medium | Intune | App protection |
+| [MT.1239](./MT.1239.md) | Ensure iOS app protection policy keeps organization data inside managed apps. | Medium | Intune | App protection |
+| [MT.1240](./MT.1240.md) | Ensure iOS app protection policy encrypts organization data. | Medium | Intune | App protection |
+| [MT.1241](./MT.1241.md) | Ensure iOS app protection policy requires a minimum OS and app version. | Low | Intune | App protection |
+| [MT.1242](./MT.1242.md) | Ensure iOS app protection policy limits offline access to organization data. | Low | Intune | App protection |
+| [MT.1243](./MT.1243.md) | Ensure iOS app protection policy acts on the device threat level. | Medium | Intune | App protection |
+| [MT.1244](./MT.1244.md) | Ensure Android app protection policy requires a strong app PIN. | Medium | Intune | App protection |
+| [MT.1245](./MT.1245.md) | Ensure Android app protection policy keeps organization data inside managed apps. | Medium | Intune | App protection |
+| [MT.1246](./MT.1246.md) | Ensure Android app protection policy encrypts organization data. | Medium | Intune | App protection |
+| [MT.1247](./MT.1247.md) | Ensure Android app protection policy requires a minimum OS and app version. | Low | Intune | App protection |
+| [MT.1248](./MT.1248.md) | Ensure Android app protection policy limits offline access to organization data. | Low | Intune | App protection |
+| [MT.1249](./MT.1249.md) | Ensure Android app protection policy acts on the device threat level. | Medium | Intune | App protection |
+| [MT.1250](./MT.1250.md) | Ensure Android app protection policy blocks screen capture of organization data. | Low | Intune | App protection |
+| [MT.1251](./MT.1251.md) | Ensure Android app protection policy requires Play Integrity device attestation. | Medium | Intune | App protection |
