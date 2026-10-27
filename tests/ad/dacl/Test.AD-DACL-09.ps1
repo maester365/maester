@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]

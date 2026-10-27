@@ -93,6 +93,7 @@
                 @{ Key = 'device-compliance'; Name = 'Device compliance' }
                 @{ Key = 'device-enrollment'; Name = 'Device enrollment' }
                 @{ Key = 'device-configuration'; Name = 'Device configuration' }
+                @{ Key = 'app-protection'; Name = 'App protection' }
                 @{ Key = 'endpoint-security'; Name = 'Endpoint security' }
                 @{ Key = 'tenant-administration'; Name = 'Tenant administration' }
             )

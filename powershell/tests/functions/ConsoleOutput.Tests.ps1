@@ -1318,4 +1318,38 @@ Describe 'Write-MtTestProgress' {
         }
         $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9', "    $($ci.Unicode ? '✓' : '+') T.1 The first  2.0 s")
     }
+
+    It 'Appends Status to compact counts line under the existing throttle' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Collecting AD DACLs' -Completed 2 -Status '2 objects processed; 3 ACEs collected'
+                Write-MtTestProgress -Stage 'Collecting AD DACLs' -Completed 2 -Status '2 objects processed; 3 ACEs collected'
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('    Collecting AD DACLs', '    2 done · 2 objects processed; 3 ACEs collected')
+    }
+
+    It 'Sanitizes Status text and preserves existing count formatting' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Testing' -Completed 1 -Total 4 -Status "1 done`n::set-env name=X::"
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines[0] | Should -Be '    Testing'
+        $lines[1] | Should -BeLike '*1 / 4*1 done ::set-env name=X::*'
+    }
 }
