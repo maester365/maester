@@ -164,7 +164,8 @@ function Read-MtNativeTest {
 
         foreach ($v in @($test[$name])) {
             if ($definition.Pattern -and $v -notmatch $definition.Pattern -and -not ($name -eq 'Id' -and (Test-MtBuiltInPackCode -Code $v -Path $file))) {
-                & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid." $line
+                $hint = if ($name -eq 'Permission') { " Write <Service>:<Kind>:<Name>, for example 'Graph:Scope:Policy.Read.All', one permission per element; join alternatives with |." } else { '' }
+                & $addError 'InvalidMetadata' "Property '$name' value '$v' is not valid.$hint" $line
             }
             if ($definition.MaxLength -and $v.Length -gt $definition.MaxLength) {
                 & $addError 'InvalidMetadata' "Property '$name' value is longer than $($definition.MaxLength) characters." $line
@@ -199,6 +200,36 @@ function Read-MtNativeTest {
     }
     $test.Service = @($services | Select-Object -Unique)
     $test.UnregisteredServices = $unregistered.ToArray()
+
+    # Permission: <Service>:<Kind>:<Name>, alternatives joined with |. A registered service and its kind are
+    # stored in their registry spelling, and an element with one space around each |. A test shipped with
+    # Maester must name one of its own services and a kind the registry lists for it; a custom test keeps a
+    # service or kind the registry does not know as written (a pack connector, say).
+    $permissions = [System.Collections.Generic.List[string]]::new()
+    foreach ($element in @($test.Permission)) {
+        if ($element -notmatch $schema.Properties.Permission.Pattern) { continue }
+        $alternatives = [System.Collections.Generic.List[string]]::new()
+        foreach ($p in (ConvertFrom-MtPermission -Value $element)) {
+            $service = Resolve-MtServiceName -Name $p.Service -Registry $registry
+            $kind = $p.Kind
+            if ($service) {
+                $known = @($registry.Services[$service].PermissionKinds | Where-Object { $_.Kind -eq $p.Kind } | Select-Object -First 1)
+                if ($known) { $kind = $known[0].Kind }
+                elseif ($BuiltIn) { & $addError 'InvalidMetadata' "Permission '$element': '$($p.Kind)' is not a kind of permission of $service ($(@($registry.Services[$service].PermissionKinds.Kind) -join ', '))." $attribute.Extent.StartLineNumber }
+                if ($BuiltIn -and $service -notin $test.Service) { & $addError 'InvalidMetadata' "Permission '$element': $service is not one of the services of the test. Add it to Service, or name a permission of a service the test lists." $attribute.Extent.StartLineNumber }
+            } else {
+                $service = $p.Service
+                if ($BuiltIn) { & $addError 'InvalidMetadata' "Permission '$element': '$service' is not in the service registry ($(@($registry.Services.Keys | Sort-Object) -join ', '))." $attribute.Extent.StartLineNumber }
+            }
+            $text = "${service}:${kind}:$($p.Name)"
+            if ($alternatives -contains $text) { & $addError 'InvalidMetadata' "Permission '$element' lists '$text' twice." $attribute.Extent.StartLineNumber; continue }
+            $alternatives.Add($text)
+        }
+        $joined = $alternatives -join ' | '
+        if ($permissions -contains $joined) { & $addError 'InvalidMetadata' "Permission '$joined' is listed twice." $attribute.Extent.StartLineNumber; continue }
+        $permissions.Add($joined)
+    }
+    if (@($test.Permission).Count -gt 0) { $test.Permission = $permissions.ToArray() }
 
     # Classification: a registry value is stored as its key. A built-in test must use registry values; a
     # custom test keeps any other value as written.

@@ -9,53 +9,47 @@
         [string] $ConfigurationNamingContext
     )
 
-    try {
-        $searchBase = "CN=Sites,$ConfigurationNamingContext"
-        $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $searchBase -Scope Subtree -Filter '(objectClass=nTDSDSA)' -Attributes @('distinguishedName', 'name', 'options', 'invocationId'))
-        return @($entries | ForEach-Object {
-            $serverDn = $_.DistinguishedName -replace '^[^,]+,', ''
+    $searchBase = "CN=Sites,$ConfigurationNamingContext"
+    $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $searchBase -Scope Subtree -Filter '(objectClass=nTDSDSA)' -Attributes @('distinguishedName', 'name', 'options', 'invocationId'))
+    return @($entries | ForEach-Object {
+        $serverDn = $_.DistinguishedName -replace '^[^,]+,', ''
 
-            # Extract site name from DN: CN=<Server>,CN=Servers,CN=<Site>,CN=Sites,...
-            $site = $null
-            $parts = $serverDn -split ',CN=Sites,', 2
-            if ($parts.Count -eq 2) {
-                $siteParts = $parts[0] -split ',CN=Servers,', 2
-                if ($siteParts.Count -eq 2) {
-                    $site = $siteParts[1] -replace '^CN=', ''
-                }
+        # Extract site name from DN: CN=<Server>,CN=Servers,CN=<Site>,CN=Sites,...
+        $site = $null
+        $parts = $serverDn -split ',CN=Sites,', 2
+        if ($parts.Count -eq 2) {
+            $siteParts = $parts[0] -split ',CN=Servers,', 2
+            if ($siteParts.Count -eq 2) {
+                $site = $siteParts[1] -replace '^CN=', ''
             }
+        }
 
-            $server = Invoke-MtLdapSearch -Connection $Connection -SearchBase $serverDn -Scope Base -Filter '(objectClass=server)' -Attributes @('name', 'dNSHostName', 'serverReference') -PageSize 0 | Select-Object -First 1
+        $server = Invoke-MtLdapSearch -Connection $Connection -SearchBase $serverDn -Scope Base -Filter '(objectClass=server)' -Attributes @('name', 'dNSHostName', 'serverReference') -PageSize 0 | Select-Object -First 1
 
-            # Query computer object for operatingSystem and RODC status
-            $operatingSystem = $null
-            $isReadOnly = $false
-            if (-not [string]::IsNullOrWhiteSpace($server.serverReference)) {
-                $computer = Invoke-MtLdapSearch -Connection $Connection -SearchBase $server.serverReference -Scope Base -Filter '(objectClass=computer)' -Attributes @('operatingSystem', 'msDS-IsRODC') -PageSize 0 | Select-Object -First 1
-                $operatingSystem = $computer.operatingSystem
-                $isReadOnly = if ($null -ne $computer.'msDS-IsRODC') { [bool]$computer.'msDS-IsRODC' } else { $false }
-            }
+        # Query computer object for operatingSystem and RODC status
+        $operatingSystem = $null
+        $isReadOnly = $false
+        if (-not [string]::IsNullOrWhiteSpace($server.serverReference)) {
+            $computer = Invoke-MtLdapSearch -Connection $Connection -SearchBase $server.serverReference -Scope Base -Filter '(objectClass=computer)' -Attributes @('operatingSystem', 'msDS-IsRODC') -PageSize 0 | Select-Object -First 1
+            $operatingSystem = $computer.operatingSystem
+            $isReadOnly = if ($null -ne $computer.'msDS-IsRODC') { [bool]$computer.'msDS-IsRODC' } else { $false }
+        }
 
-            $optionsValue = if ($null -ne $_.options) { [int]$_.options } else { 0 }
+        $optionsValue = if ($null -ne $_.options) { [int]$_.options } else { 0 }
 
-            [PSCustomObject]@{
-                Name = [string]$server.name
-                DistinguishedName = [string]$_.DistinguishedName
-                DnsHostName = [string]$server.dNSHostName
-                ServerReference = [string]$server.serverReference
-                Options = $_.options
-                InvocationId = $_.invocationId
-                Site = $site
-                OperatingSystem = [string]$operatingSystem
-                IsGlobalCatalog = [bool]($optionsValue -band 0x1)
-                IsReadOnly = $isReadOnly
-                LdapPort = 389
-                SslPort = 636
-            }
-        })
-    }
-    catch {
-        Write-Verbose "Could not query LDAP domain controllers: $($_.Exception.Message)"
-        return @()
-    }
+        [PSCustomObject]@{
+            Name = [string]$server.name
+            DistinguishedName = [string]$_.DistinguishedName
+            DnsHostName = [string]$server.dNSHostName
+            ServerReference = [string]$server.serverReference
+            Options = $_.options
+            InvocationId = $_.invocationId
+            Site = $site
+            OperatingSystem = [string]$operatingSystem
+            IsGlobalCatalog = [bool]($optionsValue -band 0x1)
+            IsReadOnly = $isReadOnly
+            LdapPort = 389
+            SslPort = 636
+        }
+    })
 }

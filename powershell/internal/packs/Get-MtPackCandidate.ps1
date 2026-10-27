@@ -37,7 +37,7 @@ function Get-MtPackCandidate {
     $candidate = [ordered]@{
         Kind = $parsed.Kind; Source = $parsed.Display; Owner = $parsed.Owner; Repo = $parsed.Repo; Folder = $parsed.Folder; Path = $parsed.Path
         RepositoryId = $null; OwnerId = $null; Ref = $null; Commit = $null; Release = $null; AgeHours = $null; AgeSource = $null
-        CooldownHours = $CooldownHours; CooldownMet = $true; Newer = $null; UsedToken = $false; Archived = $false; Staging = $null
+        CooldownHours = $CooldownHours; CooldownMet = $true; Newer = $null; UsedToken = $false; Archived = $false; Staging = $null; Private = $null
     }
 
     switch ($parsed.Kind) {

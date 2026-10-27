@@ -15,6 +15,8 @@ This guide is for anyone who wants to contribute to the Maester project. Whether
 
 Follow the guide below to set up Maester for development on your local machine, make changes, and submit a pull request.
 
+If you work with GitHub Copilot or Claude Code, the repository ships agents and skills that know these conventions, for example `maester-test-expert` for writing a check. [Agents and skills](./agents-and-skills.md) lists them, who each one is for, and how to change them.
+
 ## Repository layout
 
 Maester has a fixed folder layout so that anyone, person or AI agent, can tell where a file belongs from what it
