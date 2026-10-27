@@ -75,8 +75,8 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1009](./MT.1009.md) | At least one Conditional Access policy is configured to block other legacy authentication. | High | Entra ID | Conditional Access |
 | [MT.1010](./MT.1010.md) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | High | Entra ID | Conditional Access |
 | [MT.1011](./MT.1011.md) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | High | Entra ID | Conditional Access |
-| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | High | Entra ID | Conditional Access |
-| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | High | Entra ID | Conditional Access |
+| [MT.1012](./MT.1012.md) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Medium | Entra ID | Conditional Access |
+| [MT.1013](./MT.1013.md) | At least one Conditional Access policy is configured to require new password when user risk is high. | Medium | Entra ID | Conditional Access |
 | [MT.1014](./MT.1014.md) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | High | Entra ID | Conditional Access |
 | [MT.1015](./MT.1015.md) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Medium | Entra ID | Conditional Access |
 | [MT.1016](./MT.1016.md) | At least one Conditional Access policy is configured to require MFA for guest access. | High | Entra ID | Conditional Access |
@@ -210,7 +210,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1170](./MT.1170.md) | Catch-up Quick Scan should be disabled. | Low | Defender | Endpoint antivirus |
 | [MT.1171](./MT.1171.md) | Sample Submission should send safe samples automatically. | Medium | Defender | Endpoint antivirus |
 | [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled. | High | Purview | Audit |
-| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Medium | Purview | Information protection |
+| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Low | Purview | Information protection |
 | [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled. | Medium | Purview | Insider risk management |
 | [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location. | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location. | Medium | Purview | Data lifecycle management |

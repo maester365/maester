@@ -88,3 +88,7 @@ To turn telemetry off, use `Invoke-Maester -DisableTelemetry`, or set the enviro
 `MAESTER_DISABLE_TELEMETRY` to `1`, which covers every command. Network admins can also block `api.maester.dev`:
 it is used only for telemetry, so blocking it doesn't affect anything else in Maester. Maester waits at most two
 seconds for it before a command returns.
+
+## Connect-ExchangeOnline fails with "The role assigned to application ... isn't supported in this scenario"
+
+The application signs in with certificate-based (app-only) authentication but has no role that Exchange Online accepts. Assign it **Security Reader** or **Global Reader** in Microsoft Entra ID, or the **View-Only Configuration** role in Exchange Online. If the connection works but the ORCA tests error with `The term 'Get-ProtectionAlert' is not recognized`, the application has an Exchange Online role but no Microsoft Entra role for Security & Compliance. Assign Security Reader or Global Reader. See [Roles for app-only access to Exchange Online and Security & Compliance](connect-maester/connect-maester-advanced.md#roles-for-app-only-access-to-exchange-online-and-security--compliance).
