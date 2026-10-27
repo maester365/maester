@@ -174,6 +174,26 @@ Connect-ExchangeOnline -Certificate $cert -AppID $applicationId -Organization $m
 Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moera -ShowBanner:$false
 ```
 
+#### Roles for app-only access to Exchange Online and Security & Compliance
+
+The `Exchange.ManageAsApp` API permission lets the application sign in, but it doesn't say what the application may read. Give the application a role as well, or the connection fails with an error like this:
+
+```text
+The role assigned to application <application ID> isn't supported in this scenario. Please check online documentation for assigning correct Directory Roles to Azure AD Application for EXO App-Only Authentication.
+```
+
+Use either of these options:
+
+- **A Microsoft Entra role.** Assign the role to the application's enterprise application (service principal). **Security Reader** and **Global Reader** are read-only and work for both Exchange Online and Security & Compliance PowerShell, so either one covers the Exchange, ORCA and CISA tests. To assign one, go to **Microsoft Entra admin center** > **Identity** > **Roles & admins**, select the role, select **Add assignments**, and pick the enterprise application.
+- **An Exchange Online role.** Register the service principal in Exchange Online and assign it the **View-Only Configuration** role. This covers Exchange Online only; for Security & Compliance PowerShell, use a Microsoft Entra role.
+
+  ```powershell
+  New-ServicePrincipal -AppId <Application ID> -ObjectId <Enterprise application object ID> -DisplayName <Name>
+  New-ManagementRoleAssignment -Role "View-Only Configuration" -App <Name>
+  ```
+
+See [App-only authentication for unattended scripts](https://learn.microsoft.com/powershell/exchange/app-only-auth-powershell-v2) on Microsoft Learn for the full list of supported roles.
+
 ### Microsoft Teams PowerShell Module
 
 The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps).

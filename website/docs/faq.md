@@ -52,3 +52,7 @@ When `-ClientTimeout` is omitted, the Microsoft Graph PowerShell SDK default is 
 Global Reader and other non-admin accounts can't consent to the Microsoft Graph permissions that Maester requests. An admin needs to grant consent first. Approving the request from **Admin consent requests** in the Entra admin center can fail with `AADSTS70011: ... openid scope is required`.
 
 See [Approval required when connecting](connect-maester/readme.md#approval-required-when-connecting) for how an admin can grant consent from PowerShell or set up a custom app registration.
+
+## Connect-ExchangeOnline fails with "The role assigned to application ... isn't supported in this scenario"
+
+The application signs in with certificate-based (app-only) authentication but has no role that Exchange Online accepts. Assign it **Security Reader** or **Global Reader** in Microsoft Entra ID, or the **View-Only Configuration** role in Exchange Online. See [Roles for app-only access to Exchange Online and Security & Compliance](connect-maester/connect-maester-advanced.md#roles-for-app-only-access-to-exchange-online-and-security--compliance).
