@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1013"
-  - "High"
+  - "Medium"
   - "Entra ID"
   - "Conditional Access"
   - "Authentication"
@@ -33,7 +33,7 @@ See [User risk-based password change - Microsoft Learn](https://learn.microsoft.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1013 |
-| Severity | High |
+| Severity | Medium |
 | Suite | Maester |
 | Product | Entra ID |
 | Feature | Conditional Access |

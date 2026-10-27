@@ -3,6 +3,7 @@ description: Create a bug report to help us fix it.
 title: "🪲 "
 labels:
   - bug
+  - "status: needs triage"
 body:
   - type: markdown
     attributes:

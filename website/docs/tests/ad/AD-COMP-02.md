@@ -1,6 +1,6 @@
 ---
 title: "AD-COMP-02 - Computer dormant count should be retrievable"
-description: "Dormant (stale) computer accounts—enabled accounts that haven't authenticated in 90+ days—pose significant security risks: - **Attack vector**: Attackers can exploit dormant accounts that may have weak or unchanged passwords - **Shadow IT**: These may represent forgotten test systems, VMs, or decom…"
+description: "Dormant (stale) computer accounts—enabled accounts that haven't authenticated for more than the configured threshold (default 90 days)—pose significant security risks: - **Attack vector**: Attackers can exploit dormant accounts that may have weak or unchanged passwords - **Shadow IT**: These may re…"
 slug: /tests/AD-COMP-02
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,7 +25,7 @@ keywords:
 
 ## Overview
 
-Dormant (stale) computer accounts—enabled accounts that haven't authenticated in 90+ days—pose significant security risks:
+Dormant (stale) computer accounts—enabled accounts that haven't authenticated for more than the configured threshold (default 90 days)—pose significant security risks:
 
 - **Attack vector**: Attackers can exploit dormant accounts that may have weak or unchanged passwords
 - **Shadow IT**: These may represent forgotten test systems, VMs, or decommissioned hardware still in the directory
@@ -47,10 +47,10 @@ Establish a process to:
 #### How the Test Works
 
 This test examines all enabled computer accounts and identifies those where:
-- The `lastLogonDate` property is more than 90 days old
+- The `lastLogonDate` property is older than `DormantThresholdDays` (default 90 days)
 - The account remains enabled
 
-The 90-day threshold is a common security baseline, though your organization may adjust this based on your specific requirements (e.g., seasonal systems, remote workstations).
+The default 90-day threshold is a common security baseline. Set `DormantThresholdDays` to adjust it based on your organization's requirements (e.g., seasonal systems, remote workstations).
 
 #### Related Tests
 

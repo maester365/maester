@@ -35,6 +35,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclPrivilegedAllowAceDetails"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
@@ -42,7 +46,7 @@
         return $null
     }
     if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
     Write-Verbose "Filtering/counting dacl privileged allow ace details"
@@ -63,7 +67,7 @@
     $daclEntries = @($adState.DaclEntries)
     $privilegedAllowEntries = @(
         foreach ($entry in $daclEntries) {
-            if ($entry.AccessControlType -notlike 'AccessAllowed*') {
+            if ($entry.AccessControlType -ne 'Allow') {
                 continue
             }
 

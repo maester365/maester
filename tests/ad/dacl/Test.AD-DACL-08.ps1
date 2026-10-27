@@ -34,6 +34,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclIdentityAceDistribution"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
@@ -41,7 +45,7 @@
         return $null
     }
     if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
         return $null
     }
     Write-Verbose "Filtering/counting dacl identity ace distribution"
@@ -62,8 +66,8 @@
                             Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } |
                             Select-Object -ExpandProperty ObjectDN -Unique
                     ).Count
-                    AllowAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -like 'AccessAllowed*' }).Count
-                    DenyAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -like 'AccessDenied*' }).Count
+                    AllowAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -eq 'Allow' }).Count
+                    DenyAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -eq 'Deny' }).Count
                 }
             }
     )

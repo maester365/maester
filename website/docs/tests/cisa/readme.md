@@ -28,8 +28,8 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4.md) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5.md) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6.md) | Phishing-resistant MFA SHALL be required for highly privileged roles. | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7.md) | Managed devices SHOULD be required for authentication. | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8.md) | Managed Devices SHOULD be required to register MFA. | High | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7.md) | Managed devices SHOULD be required for authentication. | Medium | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8.md) | Managed Devices SHOULD be required to register MFA. | Medium | Entra ID | Conditional Access |
 | [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1.md) | Security logs SHALL be sent to the agency's security operations center for monitoring. | High | Entra ID | Logs and monitoring |
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1.md) | Only administrators SHALL be allowed to register applications. | Medium | Entra ID | User and directory settings |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2.md) | Only administrators SHALL be allowed to consent to applications. | High | Entra ID | App consent and permissions |

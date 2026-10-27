@@ -49,6 +49,8 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 - `Test-MtAdDaclPrivilegedAllowAceDetails`
 - `Test-MtAdDaclIdentityAceDistribution`
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 ## Test Metadata
 
 | Field | Value |
@@ -63,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 | MITRE ATT&CK | T1003.006 DCSync, T1098 Account Manipulation |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-12.ps1) |
 | Services | ActiveDirectory |
+| Long running | Yes |
 
 ## Source
 

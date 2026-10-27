@@ -89,6 +89,7 @@ const sidebars = {
     },
     "watch",
     "contributing",
+    "agents-and-skills",
     "faq"
   ],
   testsSidebar: [
