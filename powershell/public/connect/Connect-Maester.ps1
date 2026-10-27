@@ -148,7 +148,7 @@
 
       # The Teams environment to connect to. Default is O365Default.
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
-      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+      [string]$TeamsEnvironmentName = $null,
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
       # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
@@ -248,6 +248,14 @@
                # Skip Connect-AzAccount if there is already an active Az context
                # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
                $existingContext = Get-AzContext -ErrorAction SilentlyContinue
+               # A tenant given as an ID can be compared with the context; a domain name cannot, so that context is kept.
+               if ($existingContext -and $TenantId -match '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$' -and
+                  $existingContext.Tenant.Id -and $existingContext.Tenant.Id -ne $TenantId) {
+                  Write-Verbose "The existing Az context is for tenant '$($existingContext.Tenant.Id)', not '$TenantId'. Signing in to '$TenantId'."
+                  $existingContext = $null
+               } elseif ($existingContext -and $TenantId -and $existingContext.Tenant.Id -and $TenantId -ne $existingContext.Tenant.Id) {
+                  Write-Verbose "-TenantId '$TenantId' cannot be compared with the existing Az context's tenant '$($existingContext.Tenant.Id)', so the context is kept."
+               }
                if ($existingContext) {
                   Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
                } else {
@@ -544,7 +552,8 @@
                $teamsParams = @{ ErrorAction = 'Stop' }
                if ($UseDeviceCode) {
                   $teamsParams['UseDeviceAuthentication'] = $true
-               } elseif ($TeamsEnvironmentName) {
+               }
+               if ($TeamsEnvironmentName) {
                   $teamsParams['TeamsEnvironmentName'] = $TeamsEnvironmentName
                }
                $teamsConnection = Connect-MicrosoftTeams @teamsParams

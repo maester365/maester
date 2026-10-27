@@ -24,6 +24,12 @@ Collects GPO metadata, links, and permissions from Active Directory over LDAP.
 Results are cached for the session to avoid repeated queries.
 Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 
+Each entry in GPOReports summarizes the GPO's DACL: PermissionsPresent (the DACL has at least one entry),
+HasAuthenticatedUsers, HasEnterpriseDomainControllers and HasDomainComputers (an access-allowed entry for
+that principal applies to the GPO) and HasInheritedPermissions (an entry is inherited from the parent
+container).
+These are $null when the security descriptor of the GPO was not returned.
+
 ## EXAMPLES
 
 ### EXAMPLE 1

@@ -49,6 +49,8 @@ This test retrieves `$adState.DaclEntries`, filters entries where `AccessControl
 - `Test-MtAdDaclConflictObjectDetails`
 - `Test-MtAdDaclOuObjectCount`
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 ## Test Metadata
 
 | Field | Value |
@@ -63,6 +65,7 @@ This test retrieves `$adState.DaclEntries`, filters entries where `AccessControl
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclDenyAceDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-06.ps1) |
 | Services | ActiveDirectory |
+| Long running | Yes |
 
 ## Source
 

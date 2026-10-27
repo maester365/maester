@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1173"
-  - "Medium"
+  - "Low"
   - "Purview"
   - "Information protection"
   - "Data protection"
@@ -62,7 +62,7 @@ The test passes when **all** of the following are true:
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1173 |
-| Severity | Medium |
+| Severity | Low |
 | Suite | Maester |
 | Product | Purview |
 | Feature | Information protection |

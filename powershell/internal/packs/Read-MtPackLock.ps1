@@ -9,7 +9,8 @@ function Read-MtPackLock {
       Packs[]    Id, Version, Source, Ref, Commit, RepositoryId, OwnerId, Publisher, Digest, Tests (the IDs
                  the pack provides), Services (its connectors), Requires (the IDs of required packs), Risk
                  (the local scan at install), AcceptedRisk, Uses (the approved Uses block), ApprovedAt,
-                 ReleasePublishedAt and Cooldown (how the release cooldown was met).
+                 ReleasePublishedAt, Cooldown (how the release cooldown was met) and Public (whether the
+                 pack is public or built in, so telemetry may name it; missing means private).
       Modules[]  the whole PowerShell Gallery module closure: Name, Version, Digest, Source (PSGallery, or
                  External for a module the user installed) and RequiredBy (pack IDs).
 

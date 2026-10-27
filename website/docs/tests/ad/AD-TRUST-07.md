@@ -73,7 +73,7 @@ Get-ADTrust -Filter {Target -eq "<TrustName>"} -Properties *
 
 #### How the Test Works
 
-This test identifies trusts where `LastValidated` is more than 60 days old and displays:
+This test identifies trusts where `LastValidated` is older than `StaleThresholdDays` (default 60) and displays:
 
 - Target domain name
 - Trust direction

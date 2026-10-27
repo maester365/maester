@@ -132,8 +132,8 @@
     "Permission": {
       "type": "string[]",
       "required": "No",
-      "description": "Permissions the test needs, one per element, no commas. Recorded; not enforced.",
-      "pattern": "^[^,\\r\\n]*[^,\\s][^,\\r\\n]*$"
+      "description": "Permissions the test needs, written <Service>:<Kind>:<Name>. The test needs every element; | inside an element joins alternatives, any one of which is enough, least privileged first. Recorded; not enforced.",
+      "pattern": "^\\s*[A-Za-z][A-Za-z0-9.\\-]*:[A-Za-z]+:[^,|\\r\\n]*[^,|\\s](\\s*\\|\\s*[A-Za-z][A-Za-z0-9.\\-]*:[A-Za-z]+:[^,|\\r\\n]*[^,|\\s])*\\s*$"
     },
     "TenantType": {
       "type": "string[]",
@@ -460,6 +460,10 @@
         {
           "key": "device-configuration",
           "name": "Device configuration"
+        },
+        {
+          "key": "app-protection",
+          "name": "App protection"
         },
         {
           "key": "endpoint-security",
@@ -937,58 +941,203 @@
       "aliases": [
         "AD"
       ],
-      "optIn": true
+      "optIn": true,
+      "permissionKinds": [
+        {
+          "kind": "Ldap",
+          "example": "user:ReadProperty",
+          "description": "An LDAP access right on an object class, written [<partition>/]<objectClass>[.<attribute>]:<right>. The partition is Configuration or Schema; without one it is the domain."
+        },
+        {
+          "kind": "Cim",
+          "example": "root\\MicrosoftDNS:MicrosoftDNS_Zone:Read",
+          "description": "Remote CIM (WMI) access, written <namespace>:<class>:<right>."
+        },
+        {
+          "kind": "File",
+          "example": "SYSVOL:Read",
+          "description": "Access to a share on the domain controllers, written <share>:<right>."
+        },
+        {
+          "kind": "Remoting",
+          "example": "Microsoft.PowerShell",
+          "description": "A PowerShell remoting endpoint on the domain controllers."
+        },
+        {
+          "kind": "Group",
+          "example": "Remote Management Users",
+          "description": "Membership of a built-in or delegated group."
+        }
+      ]
     },
     {
       "name": "Azure",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "Reader",
+          "description": "An Azure role (Azure RBAC), by its name. The scope it is assigned at is chosen when Maester is set up."
+        },
+        {
+          "kind": "Action",
+          "example": "Microsoft.Authorization/policyAssignments/read",
+          "description": "An Azure resource provider operation."
+        }
+      ]
     },
     {
       "name": "AzureDevOps",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "vso.project",
+          "description": "An Azure DevOps OAuth or personal access token scope."
+        },
+        {
+          "kind": "Role",
+          "example": "Project Collection Administrators",
+          "description": "An Azure DevOps security group or access level."
+        }
+      ]
     },
     {
       "name": "Dataverse",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "System Administrator",
+          "description": "A Dataverse security role of the environment."
+        }
+      ]
     },
     {
       "name": "ExchangeOnline",
       "aliases": [
         "Exchange"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "View-Only Configuration",
+          "description": "An Exchange Online management role or role group, or a Microsoft Entra role that grants one."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-OrganizationConfig",
+          "description": "An Exchange Online PowerShell cmdlet the test runs."
+        }
+      ]
     },
     {
       "name": "GitHub",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Permission",
+          "example": "administration:read",
+          "description": "A GitHub App or fine-grained token permission, written <permission>:<read|write>."
+        },
+        {
+          "kind": "Scope",
+          "example": "read:org",
+          "description": "A classic personal access token scope."
+        },
+        {
+          "kind": "Role",
+          "example": "Organization owner",
+          "description": "A GitHub organization or enterprise role."
+        }
+      ]
     },
     {
       "name": "Graph",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "Policy.Read.All",
+          "description": "A Microsoft Graph permission that works as a delegated or an application permission."
+        },
+        {
+          "kind": "DelegatedScope",
+          "example": "User.Read",
+          "description": "A Microsoft Graph permission the test can use only as a delegated permission, with a user signed in."
+        },
+        {
+          "kind": "ApplicationScope",
+          "example": "User.Read.All",
+          "description": "A Microsoft Graph permission the test can use only as an application permission."
+        },
+        {
+          "kind": "Role",
+          "example": "Global Reader",
+          "description": "A Microsoft Entra role, by its display name."
+        }
+      ]
     },
     {
       "name": "SecurityCompliance",
       "aliases": [
         "EOP"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "View-Only DLP Compliance Management",
+          "description": "A Microsoft Purview role or role group, or a Microsoft Entra role that grants one."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-DlpCompliancePolicy",
+          "description": "A Security & Compliance PowerShell cmdlet the test runs."
+        }
+      ]
     },
     {
       "name": "SharePointOnline",
       "aliases": [
         "SharePoint"
       ],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Scope",
+          "example": "Sites.FullControl.All",
+          "description": "A SharePoint permission (the SharePoint API, not Microsoft Graph)."
+        },
+        {
+          "kind": "Role",
+          "example": "SharePoint Administrator",
+          "description": "A Microsoft Entra role, by its display name."
+        }
+      ]
     },
     {
       "name": "Teams",
       "aliases": [],
-      "optIn": false
+      "optIn": false,
+      "permissionKinds": [
+        {
+          "kind": "Role",
+          "example": "Teams Administrator",
+          "description": "A Microsoft Entra role, by its display name."
+        },
+        {
+          "kind": "Cmdlet",
+          "example": "Get-CsTeamsMeetingPolicy",
+          "description": "A Microsoft Teams PowerShell cmdlet the test runs."
+        }
+      ]
     }
   ],
   "licenses": [
