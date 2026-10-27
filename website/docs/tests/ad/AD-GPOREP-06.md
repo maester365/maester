@@ -40,7 +40,9 @@ keywords:
 - Verify whether Domain Computers should be included and adjust GpoReports as needed to reflect accurate targeting.
 
 #### How the Test Works
-- Reads GPO state, locates GpoReports, filters for reports with HasDomainComputers false or missing, and reports counts and samples.
+- Reads GPO state, counts the GPO reports without an access-allowed entry for Domain Computers (HasDomainComputers is false), and reports counts and samples.
+- The default GPO permissions have no Domain Computers entry, so the test only fails for GPOs that have no entry for Authenticated Users either: computer accounts may be unable to read those GPOs (MS16-072).
+- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
 
 #### Related Tests
 - `Test-MtAdGpoNoDomainComputersCount`.
