@@ -46,8 +46,9 @@ WORKDIR /src
 # The C# engine (src/Maester.Engine), rebuilt from source into powershell/lib/.
 RUN pwsh -NoProfile -File ./build/Build-MaesterEngine.ps1
 
-# The HTML report template (report/).
-RUN cd report && npm ci --no-audit --no-fund && npm run build
+# The HTML report template (report/), copied to the asset Get-MtHtmlReport reads, as build/Build-LocalMaester.ps1 does.
+RUN cd report && npm ci --no-audit --no-fund && npm run build \
+    && cp dist/index.html ../powershell/assets/ReportTemplate.html
 
 # The module as it ships to the PowerShell Gallery, in ./module/.
 RUN pwsh -NoProfile -Command "./build/Build-MaesterModule.ps1; ./build/Test-MaesterModuleOutput.ps1"
