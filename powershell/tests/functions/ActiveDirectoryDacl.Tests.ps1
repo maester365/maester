@@ -54,6 +54,8 @@ Describe 'Active Directory DACL tests read AccessControlType as the collector em
     BeforeEach {
         $script:Result = $null
 
+        # The checks skip off Windows, where the collector cannot run; these tests feed them collected data.
+        Mock -ModuleName Maester Test-MtAdDaclPlatformSupported { $true }
         Mock -ModuleName Maester Get-MtADDomainState { [PSCustomObject]@{ DaclEntries = $script:DaclEntries } }
         Mock -ModuleName Maester Add-MtTestResultDetail {
             param($Result)
