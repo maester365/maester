@@ -40,7 +40,8 @@ keywords:
 - Review missing Authenticated Users and adjust GPO ACLs as needed.
 
 #### How the Test Works
-- Uses Get-MtADGpoState, filters GPO reports for HasAuthenticatedUsers false or null, and reports totals.
+- Uses Get-MtADGpoState, counts the GPO reports without an access-allowed entry for Authenticated Users (HasAuthenticatedUsers is false), and reports totals.
+- A GPO whose permissions could not be read is reported as not evaluated instead of as a finding. The result is then Investigate, or Skipped when no GPO could be evaluated.
 
 #### Related Tests
 - `Test-MtAdGpoNoAuthenticatedUsersDetails`.

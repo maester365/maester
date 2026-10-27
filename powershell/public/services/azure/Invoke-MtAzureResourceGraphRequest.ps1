@@ -92,8 +92,7 @@
             $skipToken = $response.'$skipToken'
             $hasMoreResults = $null -ne $skipToken
         } else {
-            Write-Error "Error querying Azure Resource Graph. Status code: $($result.StatusCode). Content: $($result.Content)"
-            return $null
+            throw "Error querying Azure Resource Graph. Status code: $($result.StatusCode). Content: $($result.Content)"
         }
     } while ($hasMoreResults)  # Continue looping while there are more results to fetch
 
