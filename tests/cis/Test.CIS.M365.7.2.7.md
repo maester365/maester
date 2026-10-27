@@ -10,6 +10,8 @@ By defaulting to specific people, the user will first need to consider whether o
 
 Changing the default sharing link type influences the user experience when sharing files and folders in SharePoint and OneDrive. The configured default option will appear pre-selected in the sharing dialog, guiding users toward the organization's preferred sharing method.
 
+**October 2026 service change:** Microsoft is retiring SharePoint one-time passcode (OTP) authentication for commercial tenants. As retirement reaches a tenant, external users without a matching Microsoft Entra B2B guest account can lose access to previously shared **Specific people** links. Changing the default link type affects new links; it does not repair access to existing links. To restore access, create a matching guest account or share or reshare at least one item or site with that person. Microsoft Entra B2B email OTP remains supported.
+
 ## Remediation
 
 1. Navigate to [SharePoint admin center](https://admin.microsoft.com/sharepoint)
@@ -37,6 +39,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 ## Related Links
 
 * [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
+* [Microsoft Entra B2B integration and SharePoint OTP retirement](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 480](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

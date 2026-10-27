@@ -2,6 +2,8 @@
 
 Restricting sharing to new and existing guests, existing guests only, or turning external sharing off, means that only people who sign in with a guest account in your directory can receive shared content. Anyone links stop working, and users keep working with their guests.
 
+In commercial tenants, Microsoft Entra B2B integration is enabled by default for new external sharing. This changes how external users are invited, not the SharePoint sharing level checked here. This test does not verify the guest's authentication method or whether a matching guest account exists.
+
 #### Remediation action
 
 1. Sign in to the [SharePoint admin center](https://admin.microsoft.com/sharepoint).
@@ -20,6 +22,7 @@ Set-PnPTenant -SharingCapability ExternalUserSharingOnly
 * [SharePoint admin center](https://admin.microsoft.com/sharepoint)
 * [Turn external sharing on or off](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off)
 * [External sharing overview](https://learn.microsoft.com/sharepoint/external-sharing-overview)
+* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 7.2.3](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
