@@ -22,5 +22,7 @@ This test retrieves `$adState.DaclEntries`, filters for entries whose `ObjectDN`
 - `Test-MtAdDaclDenyAceDetails`
 - `Test-MtAdDaclOuObjectCount`
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 <!--- Results --->
 %TestResult%

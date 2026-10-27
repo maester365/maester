@@ -70,7 +70,7 @@ Types stay within what the AST reader accepts: `string`, `string[]` and `bool`.
 | `Control` | string[] | `<framework-key>:<requirement-id>` | optional; required for a test of a suite that declares `Frameworks` | Pattern `^[a-z0-9][a-z0-9.\-]*:[^\s,]+$`. The requirements of frameworks the test implements or supports. It is the only way a test is mapped to a framework (section 6). Any test may use it. For a framework shipped with Maester the requirement must exist in its file. |
 | `Service` | string[] | unchanged | required | |
 | `License` | string[] | unchanged | optional | |
-| `Permission` | string[] | one permission per element, no commas | optional | Replaces the reserved name `GraphScope`. Recorded; not enforced in 3.0. |
+| `Permission` | string[] | `<Service>:<Kind>:<Name>`; `\|` joins alternatives | optional | Replaces the reserved name `GraphScope`. See section 2.4. Recorded; not enforced in 3.0. |
 | `TenantType`, `Cloud`, `Platform` | string[] | unchanged | optional | |
 | `Lifecycle` | string | `Preview`, `Stable`, `Deprecated` | optional, default `Stable` | Replaces `Preview`. |
 | `ReplacedBy` | string | a test ID | optional | Only meaningful with `Lifecycle = 'Deprecated'`. |
@@ -124,6 +124,53 @@ Nothing in this list is typed in a test.
 
 `Convert-MtTest` writes the `Describe` name of a converted Pester test to `Feature`, so its `Block`, and with it
 its CI test-case name, does not change.
+
+### 2.4 Permission
+
+Added 2026-10-23, before any built-in test used the property. The first user is the Active Directory suite
+(maester365/maester#2483); Graph scopes follow in a scripted pass.
+
+**Grammar.** Each element is one permission, `<Service>:<Kind>:<Name>`, or several joined with `|`.
+
+- `Service` is a service-registry key or alias, stored as the key. For a built-in test it must be one of the
+  test's `Service` values. A custom test may name any service, for example a pack connector's.
+- `Kind` is one of the kinds the registry lists for the service (`PermissionKinds` in
+  `MaesterServiceRegistry.psd1`): `Scope`, `DelegatedScope`, `ApplicationScope` and `Role` for Graph; `Role` and
+  `Action` for Azure; `Role` and `Cmdlet` for Exchange Online, Security & Compliance and Teams; `Ldap`, `Cim`,
+  `File`, `Remoting` and `Group` for Active Directory; and so on. Each kind has an example and a description,
+  which the docs and the test builder show.
+- `Name` is the rest of the string after the second colon, as the product spells it. It may contain colons
+  (GitHub's `administration:read`, a Google scope URL). The engine does not parse it; a suite may document a
+  sub-grammar for its own kinds (Active Directory's `Ldap:[<partition>/]<objectClass>[.<attribute>]:<right>`).
+- No commas, as for every list property. `|` is reserved as the separator; no permission vocabulary uses it.
+
+**Meaning.** The identity needs every element (all-of, like `Service`). Inside an element any one alternative
+is enough, and the first is the least privileged. In logic terms the list is an AND of ORs, the form in which
+Microsoft documents each Graph API (one need, a least privileged permission and higher privileged ones). Any
+condition can be written this way: "(A and B) or C" is `('A | C', 'B | C')`.
+
+`License` is the other way round (the list is any-of and `&` is all-of) because a test usually needs one of
+several SKUs. A test usually needs several permissions at once, and an OR of ANDs would have to list every
+combination. The operator in the string always says what it means.
+
+**Why one string and not a structured value.** The reader accepts only string constants and a C# attribute
+property cannot be a hashtable. A string with a fixed prefix also matches `Control` (`<framework-key>:<id>`).
+
+**Why not a protocol-first format.** The five-segment `<protocol>:<category>:<objectClass>:<attribute>:<right>`
+form first proposed for Active Directory leaves out the service, embeds Maester's internal collector names, and
+has no place for Graph scopes, roles, Azure RBAC or connector scopes. Its detail survives as the name of the
+Active Directory kinds.
+
+**Normalisation and validation.** The reader writes a registered service and kind in their registry spelling and
+puts one space around each `|`. It rejects a value that does not fit the grammar, a duplicate alternative and a
+duplicate element. For a built-in test it also rejects an unregistered service, a service the test does not list
+and a kind the registry does not list for the service.
+
+**What uses it.** The result row and the catalog carry the list as written. Planned, not part of this change: a
+generated least-privilege page per service (the first alternative of every element of the selected tests), a
+"Requires" line in the report, and a `Skipped` / `MissingPermission` reason for services where the engine can see
+the identity's grants before a test runs (Graph token scopes and Entra roles, pack connector scopes; the packs
+design's `MissingScope` would become this reason).
 
 ## 3. Results and catalog
 

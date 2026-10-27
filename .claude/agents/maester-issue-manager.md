@@ -1,18 +1,13 @@
 ---
 name: maester-issue-manager
 description: >-
-  Use when the user wants to create, update, or coordinate GitHub issues for
-  Maester test tracking — especially when reserving an MT.XXXX sequence on
-  issue #697 before a new check is implemented. Does not modify source code.
+  Use when the user wants to create, update, or coordinate GitHub issues for Maester
+  test tracking — especially when reserving an MT.XXXX sequence on issue #697 before a
+  new check is implemented. Does not modify source code.
 tools: Read, Glob, Grep, Bash, WebFetch
 ---
 
-<!--
-  SYNC NOTE: This file's body is kept identical to its Copilot twin at
-  `.github/agents/maester-issue-manager.agent.md`. Only the YAML frontmatter
-  differs (each tool uses its own tool-name vocabulary). If you edit the
-  body below, copy the same change to the twin file.
--->
+<!-- Generated from .github/agents/maester-issue-manager.agent.md by build/github/Update-AgentFiles.ps1. Edit that file, then run the script. -->
 
 You are an issue management agent for Maester test tracking.
 

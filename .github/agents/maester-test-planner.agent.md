@@ -11,14 +11,11 @@ tools:
   - search
   - web
   - microsoft-learn/*
+metadata:
+  audience: "Contributors planning a new check"
+  summary: "Plans a new or changed check before any code is written: files, attributes, validation steps."
+  claude-tools: "Read, Glob, Grep, WebFetch, mcp__claude_ai_Microsoft_Learn__microsoft_docs_search, mcp__claude_ai_Microsoft_Learn__microsoft_docs_fetch, mcp__claude_ai_Microsoft_Learn__microsoft_code_sample_search"
 ---
-
-<!--
-  SYNC NOTE: This file's body is kept identical to its Claude Code twin at
-  `.claude/agents/maester-test-planner.md`. Only the YAML frontmatter differs
-  (each tool uses its own tool-name vocabulary). If you edit the body below,
-  copy the same change to the twin file.
--->
 
 You are a planning agent for Maester test work.
 
