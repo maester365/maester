@@ -22,5 +22,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `Ident
 - `Test-MtAdDaclPrivilegedAllowAceCount`
 - `Test-MtAdDaclPrivilegedExtendedRightCount`
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 <!--- Results --->
 %TestResult%
