@@ -2,7 +2,7 @@
 
 Restricting sharing to new and existing guests, existing guests only, or turning external sharing off, means that only people who sign in with a guest account in your directory can receive shared content. Anyone links stop working, and users keep working with their guests.
 
-In commercial tenants, Microsoft Entra B2B integration is enabled by default for new external sharing. This changes how external users are invited, not the SharePoint sharing level checked here. This test does not verify the guest's authentication method or whether a matching guest account exists.
+In commercial tenants, Microsoft Entra B2B integration is already enabled for new external sharing and cannot be disabled. This changes how external users are invited, not the SharePoint sharing level checked here. This test does not verify the guest's authentication method or whether a matching guest account exists.
 
 #### Remediation action
 
