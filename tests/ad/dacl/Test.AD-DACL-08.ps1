@@ -66,8 +66,8 @@
                             Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } |
                             Select-Object -ExpandProperty ObjectDN -Unique
                     ).Count
-                    AllowAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -like 'AccessAllowed*' }).Count
-                    DenyAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -like 'AccessDenied*' }).Count
+                    AllowAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -eq 'Allow' }).Count
+                    DenyAceCount = @($entriesForIdentity | Where-Object { $_.AccessControlType -eq 'Deny' }).Count
                 }
             }
     )

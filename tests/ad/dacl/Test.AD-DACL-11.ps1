@@ -53,7 +53,7 @@
     $daclEntries = @($adState.DaclEntries)
     $extendedRightEntries = @(
         $daclEntries | Where-Object {
-            $_.AccessControlType -like 'AccessAllowed*' -and
+            $_.AccessControlType -eq 'Allow' -and
             [string]$_.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)'
         }
     )
