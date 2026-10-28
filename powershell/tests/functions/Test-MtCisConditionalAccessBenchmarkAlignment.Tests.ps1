@@ -29,7 +29,9 @@
                 [switch] $IncludeAuthenticationStrength,
                 [string[]] $Platforms = @(),
                 [string[]] $ClientAppTypes = @(),
-                [string[]] $SignInRiskLevels = @()
+                [string[]] $SignInRiskLevels = @(),
+                [ValidateSet('AND', 'OR')]
+                [string] $GrantOperator = 'OR'
             )
 
             $authenticationStrength = if ($AllowedCombinations.Count -gt 0 -or $IncludeAuthenticationStrength) {
@@ -70,7 +72,7 @@
                     devices = [PSCustomObject]@{ deviceFilter = [PSCustomObject]@{ rule = $null } }
                 }
                 grantControls = [PSCustomObject]@{
-                    operator = 'OR'
+                    operator = $GrantOperator
                     builtInControls = $BuiltInControls
                     authenticationStrength = $authenticationStrength
                     termsOfUse = @()
@@ -182,6 +184,18 @@
 
         It 'fails when only a hybrid joined device is required' {
             $script:policy = New-TestPolicy -IncludeUserActions @('urn:user:registersecurityinfo') -BuiltInControls @('domainJoinedDevice')
+
+            Test-MtCisManagedDeviceForSecurityInfo | Should -BeFalse
+        }
+
+        It 'passes when compliant and hybrid joined devices are combined with OR' {
+            $script:policy = New-TestPolicy -IncludeUserActions @('urn:user:registersecurityinfo') -BuiltInControls @('compliantDevice', 'domainJoinedDevice') -GrantOperator 'OR'
+
+            Test-MtCisManagedDeviceForSecurityInfo | Should -BeTrue
+        }
+
+        It 'fails when compliant and hybrid joined devices are combined with AND' {
+            $script:policy = New-TestPolicy -IncludeUserActions @('urn:user:registersecurityinfo') -BuiltInControls @('compliantDevice', 'domainJoinedDevice') -GrantOperator 'AND'
 
             Test-MtCisManagedDeviceForSecurityInfo | Should -BeFalse
         }
