@@ -49,6 +49,8 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, groups entries by `Ide
 - `Test-MtAdDaclPrivilegedAllowAceDetails`
 - `Test-MtAdDaclPrivilegedExtendedRightDetails`
 
+> **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
+
 ## Test Metadata
 
 | Field | Value |
@@ -63,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, groups entries by `Ide
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclIdentityAceDistribution](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-08.ps1) |
 | Services | ActiveDirectory |
+| Long running | Yes |
 
 ## Source
 

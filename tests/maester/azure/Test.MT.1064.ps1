@@ -49,6 +49,11 @@
         -RelativeUri "/providers/Microsoft.Management/managementGroups/$($rootManagementGroup.name)/settings/default" `
         -ApiVersion "2020-05-01"
 
+    if ($null -eq $settingResponse) {
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    }
+
     # Extract the setting that controls write permissions for group creation
     $requireWritePermissions = $settingResponse.properties.requireAuthorizationForGroupCreation
     Write-Verbose "Require write permissions for creating management groups: $requireWritePermissions"

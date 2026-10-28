@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.3.7"
-  - "High"
+  - "Medium"
   - "CISA"
   - "Entra ID"
   - "Conditional Access"
@@ -54,7 +54,7 @@ Create a Conditional Access policy requiring a user's device to be either Micros
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.3.7 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
 | Product | Entra ID |
 | Feature | Conditional Access |

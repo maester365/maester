@@ -800,10 +800,10 @@ Describe 'Dashboard panels' {
         # At once: the panels of the results at zero, the services with what is known. No Tenant panel yet:
         # without a Graph session there may be no tenant to read, so it waits for the account.
         $screen = & $right
-        $screen | Should -Match '╭─ Results ─+ starting… ─╮'
-        $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
+        $screen | Should -Match '╭─ ◆ Results ─+ starting… ─╮'
+        $screen | Should -Match '╭─ ◆ Failed so far ─+ 0 ─╮'
         $screen | Should -Not -Match 'Tenant'
-        $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
+        $screen | Should -Match '╭─ ◆ Connections ─+ checking… ─╮'
         # Graph first, the others by name; a service that is only listed when connected is not here yet.
         $screen | Should -Match '│ ○ Graph +○ Exchange Online +│\n│ [⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Teams +│'
         $screen | Should -Not -Match 'Active Directory'
@@ -816,14 +816,14 @@ Describe 'Dashboard panels' {
         & $step 'Organization' @{ TenantName = 'Contoso'; PrimaryDomain = 'contoso.com' }
         $screen = & $right
         $screen | Should -Match '│ Contoso +contoso\.com │\n│ merill@contoso\.com · Delegated +│'
-        $screen | Should -Match '╭─ Connections ─+ checking… ─╮'
+        $screen | Should -Match '╭─ ◆ Connections ─+ checking… ─╮'
 
         & $step 'Service' @{ Name = 'Teams'; Connected = $false }
         $screen = & $right
         $screen | Should -Match '│ ○ Teams '
-        $screen | Should -Match '╭─ Connections ─+ 1 of 3 ─╮'
+        $screen | Should -Match '╭─ ◆ Connections ─+ 1 of 3 ─╮'
         & $step 'Service' @{ Name = 'ExchangeOnline'; Connected = $true }
-        (& $right) | Should -Match '╭─ Connections ─+ 2 of 3 ─╮'
+        (& $right) | Should -Match '╭─ ◆ Connections ─+ 2 of 3 ─╮'
         # A step for a service that is not in the panel changes nothing and does not fail.
         { & $step 'Service' @{ Name = 'ActiveDirectory'; Connected = $true } } | Should -Not -Throw
         $renderer.Close()
@@ -861,8 +861,8 @@ Describe 'Dashboard panels' {
             $null = Start-MtDashboardTenant -Renderer $r -Console $c -Service 'Graph', 'Azure', 'Teams'
         }
         $panel = ((& $right) -split "`n" | Where-Object { $_ -match '^[│╭╰]' }) -join "`n"
-        $panel = [regex]::Match($panel, '╭─ Connections[^\n]*(\n│[^\n]*)*').Value
-        $panel | Should -Match '╭─ Connections ─+ 2 of 3 ─╮'
+        $panel = [regex]::Match($panel, '╭─ ◆ Connections[^\n]*(\n│[^\n]*)*').Value
+        $panel | Should -Match '╭─ ◆ Connections ─+ 2 of 3 ─╮'
         $panel | Should -Match '│ ● Graph +● Azure +│'
         $panel | Should -Match '○ Teams'
         $panel | Should -Not -Match 'Exchange Online|Azure DevOps|GitHub'
@@ -937,13 +937,13 @@ Describe 'Dashboard panels' {
         # has taken longer than 2 s on a busy Windows CI runner. The loop ends as soon as the panel is drawn.
         $shown = $false
         foreach ($try in 1..400) {
-            if (($renderer.GetPlainScreen(160, 44) -join "`n") -match '╭─ Featured contributor ') { $shown = $true; break }
+            if (($renderer.GetPlainScreen(160, 44) -join "`n") -match '╭─ ◆ Featured contributor ') { $shown = $true; break }
             Start-Sleep -Milliseconds 50
         }
         $shown | Should -BeTrue
         # It is the last panel of the column, under the tip.
         $screen = $renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen.IndexOf('╭─ Featured contributor ') | Should -BeGreaterThan $screen.IndexOf('╭─ Tip ')
+        $screen.IndexOf('╭─ ◆ Featured contributor ') | Should -BeGreaterThan $screen.IndexOf('╭─ ◆ Tip ')
         $renderer.Close()
     }
 
@@ -1070,7 +1070,7 @@ Describe 'Output box' {
         $renderer.WriteOutput('Completed: 1 / 5', $true)
         $renderer.WriteOutput('Completed: 2 / 5', $true)
         $screen = $renderer.GetPlainScreen(100, 40)
-        $top = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Zero Trust Assessment ' })
+        $top = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ ◆ Zero Trust Assessment ' })
         $top | Should -BeGreaterThan 0
         $screen[$top] | Should -Match '61 lines ─╮$'
         $screen[-1] | Should -Match '^ ╰─+╯$'
@@ -1091,8 +1091,8 @@ Describe 'Output box' {
         $renderer.ItemStarting('MT.1', 'A long test', 'Entra')
         $renderer.WriteOutput('from the tool')
         $screen = $renderer.GetPlainScreen(100, 40)
-        $box = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Output ' })
-        $running = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ Running ' })
+        $box = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ ◆ Output ' })
+        $running = [array]::FindIndex($screen, [Predicate[string]] { param($l) $l -match '╭─ ◆ Running ' })
         $box | Should -BeGreaterThan 0
         $running | Should -Be ($box + 10)
         $screen[$box + 1] | Should -Match '│ from the tool +│'
@@ -1127,7 +1127,7 @@ Describe 'Write-MtTestOutput' {
             [pscustomobject]@{ Written = $written.Count; Screen = $screen; Open = $renderer.HasOutput }
         }
         $result.Written | Should -Be 0
-        $result.Screen | Should -Match '╭─ The tool .*3 lines'
+        $result.Screen | Should -Match '╭─ ◆ The tool .*3 lines'
         $result.Screen | Should -Match '│ first '
         $result.Screen | Should -Match '│ second '
         $result.Screen | Should -Match '│ from stderr '
@@ -1176,7 +1176,7 @@ Describe 'Write-MtTestProgress' {
             $renderer.GetPlainScreen(100, 40) -join "`n"
             Write-MtTestOutput -Complete
         }
-        $screen | Should -Match '╭─ The tool .*1 line · 1 error'
+        $screen | Should -Match '╭─ ◆ The tool .*1 line · 1 error'
         $screen | Should -Match '│ Stage 1 of 3 · Exporting data '
         $screen | Should -Match '│ ━+─+ 13 / 40 32% · 1 failed · 2 running '
         $screen | Should -Match '│ . Users, Groups '
@@ -1255,18 +1255,18 @@ Describe 'Write-MtTestProgress' {
         }
         $screen = $screens[0]
         # The groups where the products are listed, with their counts.
-        $screen | Should -Match '╭─ Zero Trust Pillars ─'
+        $screen | Should -Match '╭─ ◆ Zero Trust Pillars ─'
         $screen | Should -Match '│ Identity +━+─+ +4/12  ✓ 3 +✗ 1 .* 1 running'
         $screen | Should -Match '│ Devices +━+─+ +2/8  ✓ 1 +✗ 1 '
         # The results in the Results panel and the result blocks, under the work's name.
-        $screen | Should -Match '╭─ Zero Trust ─+ 6 of 20 ─╮'
+        $screen | Should -Match '╭─ ◆ Zero Trust ─+ 6 of 20 ─╮'
         $screen | Should -Match '✓ 4 passed 67% +✗ 2 failed 33%'
         $screen | Should -Match '│ ■{6}⠲□{13} '
         # The times of the items that finished: the Pace graph by the logo, and the Slowest panel.
         $screen | Should -Match 'how long each item took'
         $screen | Should -Match 'longest 40\.0s'
         $screen | Should -Match '│ T\.2 +The slow one +40\.0s │'
-        $screen | Should -Not -Match '╭─ Products'
+        $screen | Should -Not -Match '╭─ ◆ Products'
         # Once the work is done, the run's own panels come back.
         $screens[1] | Should -Not -Match 'Zero Trust Pillars|Identity|The slow one'
     }
@@ -1317,5 +1317,39 @@ Describe 'Write-MtTestProgress' {
             } finally { $__MtSession.Console = $null }
         }
         $lines | Should -Be @('    Stage 1 of 2 · Exporting', '    1 / 4', '    Error: Users failed', '    Stage 2 of 2 · Testing', '    0 / 9', "    $($ci.Unicode ? '✓' : '+') T.1 The first  2.0 s")
+    }
+
+    It 'Appends Status to compact counts line under the existing throttle' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Collecting AD DACLs' -Completed 2 -Status '2 objects processed; 3 ACEs collected'
+                Write-MtTestProgress -Stage 'Collecting AD DACLs' -Completed 2 -Status '2 objects processed; 3 ACEs collected'
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines | Should -Be @('    Collecting AD DACLs', '    2 done · 2 objects processed; 3 ACEs collected')
+    }
+
+    It 'Sanitizes Status text and preserves existing count formatting' {
+        $ci = $script:stream.PSObject.Copy()
+        $ci.CI = 'GitHubActions'
+        $lines = InModuleScope Maester -Parameters @{ c = $ci } {
+            param($c)
+            $__MtSession.Console = $c
+            $script:hostLines = [System.Collections.Generic.List[string]]::new()
+            Mock Write-MtHostLine { $script:hostLines.Add($Text) }
+            try {
+                Write-MtTestProgress -Stage 'Testing' -Completed 1 -Total 4 -Status "1 done`n::set-env name=X::"
+                $script:hostLines -replace "`e\[[0-9;]*m", ''
+            } finally { $__MtSession.Console = $null }
+        }
+        $lines[0] | Should -Be '    Testing'
+        $lines[1] | Should -BeLike '*1 / 4*1 done ::set-env name=X::*'
     }
 }

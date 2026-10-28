@@ -46,45 +46,22 @@ if ($null -eq $gpoState) {
     }
     Write-Verbose "Filtering/counting gpo no permissions details"
 
-    $gpoReports = $null
-    if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
-        $gpoReports = $gpoState.GPOReports
-    } elseif ($gpoState.PSObject.Properties.Name -contains 'GpoReports') {
-        $gpoReports = $gpoState.GpoReports
-    } else {
-        $gpoReports = @()
-        foreach ($gpo in @($gpoState.GPOs)) {
-            foreach ($prop in @('GpoReports', 'GPOReports', 'GpoReport', 'GPOReport')) {
-                if ($gpo.PSObject.Properties.Name -contains $prop -and $null -ne $gpo.$prop) {
-                    $value = $gpo.$prop
-                    if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string])) {
-                        $gpoReports += @($value)
-                    } else {
-                        $gpoReports += $value
-                    }
-                }
-            }
-        }
-    }
-
+    $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
         Add-MtTestResultDetail -Result 'Unable to retrieve GPO reports from Get-MtADGpoState.'
         return $false
     }
 
-    $gpoReports = @($gpoReports)
-    $reportsWithNoPermissions = @(
-        foreach ($report in $gpoReports) {
-            $permissionsPresent = $null
-            if ($report.PSObject.Properties.Name -contains 'PermissionsPresent') {
-                $permissionsPresent = $report.PermissionsPresent
-            }
+    $gpoReports = @($gpoReports | Where-Object { $null -ne $_ })
+    # PermissionsPresent is $null when the security descriptor of a GPO could not be read: unknown, not missing.
+    $reportsWithNoPermissions = @($gpoReports | Where-Object { $false -eq $_.PermissionsPresent })
+    $reportsNotEvaluated = @($gpoReports | Where-Object { $null -eq $_.PermissionsPresent })
+    $notEvaluatedCount = $reportsNotEvaluated.Count
 
-            if ($permissionsPresent -eq $false -or $null -eq $permissionsPresent) {
-                $report
-            }
-        }
-    )
+    if ($notEvaluatedCount -eq $gpoReports.Count) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GPO permissions could not be read from Active Directory (0 of $($gpoReports.Count) GPOs evaluated), so this test could not be evaluated."
+        return $null
+    }
 
     $noPermissionsCount = ($reportsWithNoPermissions | Measure-Object).Count
     $testResult = $noPermissionsCount -eq 0
@@ -92,16 +69,20 @@ if ($null -eq $gpoState) {
     $table = "| GPO Name | PermissionsPresent |" + "`n"
     $table += '| --- | --- |' + "`n"
 
-    foreach ($report in @($reportsWithNoPermissions | Sort-Object Name)) {
+    foreach ($report in @(@($reportsWithNoPermissions) + @($reportsNotEvaluated) | Sort-Object Name)) {
         $name = if ($null -ne $report.Name) { [string]$report.Name } else { '' }
         $name = $name -replace '\|', '\\&#124;'
 
         $permissionsPresent = $report.PermissionsPresent
-        if ($null -eq $permissionsPresent) { $permissionsPresent = '' }
+        if ($null -eq $permissionsPresent) { $permissionsPresent = 'Not evaluated (permissions could not be read)' }
         $table += "| $name | $permissionsPresent |" + "`n"
     }
 
-    $recommendation = if ($testResult) {
+    # Nothing was flagged, but a GPO whose permissions could not be read is not a pass.
+    $needsInvestigation = $testResult -and $notEvaluatedCount -gt 0
+    $recommendation = if ($needsInvestigation) {
+        "ℹ️ No GPO reports were found with missing permissions among the GPOs that could be evaluated, but the permissions of $notEvaluatedCount GPO(s) could not be read. Review those GPOs manually."
+    } elseif ($testResult) {
         '✅ No GPO reports were found with missing permissions.'
     } else {
         "⚠️ GPO reports were found with missing permissions ($noPermissionsCount)."
@@ -111,7 +92,7 @@ if ($null -eq $gpoState) {
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:$needsInvestigation
     Write-Verbose "Completed Test-MtAdGpoNoPermissionsDetails"
     return $testResult
 }

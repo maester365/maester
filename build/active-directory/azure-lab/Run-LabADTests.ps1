@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 #Requires -Version 7.0
 <#
 .SYNOPSIS
@@ -216,17 +216,14 @@ Import-Module C:\MaesterDev\Maester.psd1 -Force
 
 Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Connecting to $($dc.domain)..."
 `$cred = [PSCredential]::new('$($dc.domain)\$($lab.credentials.testUserName)', (ConvertTo-SecureString '$passwordToUse' -AsPlainText -Force))
-Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential `$cred `
-  -ActiveDirectoryServer '$($dc.fqdn)' -ActiveDirectoryDomain '$($dc.domain)' `
-  -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
+Connect-Maester -Service ActiveDirectory -ActiveDirectoryCredential `$cred -ActiveDirectoryServer '$($dc.fqdn)' -ActiveDirectoryDomain '$($dc.domain)' -ActiveDirectoryAuthMode Basic -ActiveDirectoryTlsMode Ldaps
 Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Connection established."
 
 `$reportDir = 'C:\MaesterReports\lab-run'
 New-Item -ItemType Directory -Force -Path `$reportDir | Out-Null
 
 Write-Output "[$(Get-Date -Format 'HH:mm:ss')] Starting test execution (270 tests, ~8-10 min)..."
-Invoke-Maester -Tag $Tag -NonInteractive -SkipGraphConnect `
-  -OutputFolder `$reportDir -OutputFolderFileName '$domainRole'
+Invoke-Maester -Tag $Tag -NonInteractive -SkipGraphConnect -OutputFolder `$reportDir -OutputFolderFileName '$domainRole'
 Write-Output "[$(Get-Date -Format 'HH:mm:ss')] TEST EXECUTION COMPLETE for $domainRole"
 "@
 
