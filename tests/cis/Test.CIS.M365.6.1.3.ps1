@@ -28,6 +28,7 @@
         Mitre = 'T1685.002',
         Control = ('cis-m365:6.1.3', 'nist-800-53-r5:AU-12'),
         Service = 'ExchangeOnline',
+        LongRunning,
         Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
