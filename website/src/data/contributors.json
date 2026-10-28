@@ -600,7 +600,7 @@
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 41
+      "recentCommits": 43
     },
     {
       "id": "SebastianClaesson",
@@ -781,7 +781,7 @@
         "MT.1024"
       ],
       "initials": "EA",
-      "recentCommits": 17
+      "recentCommits": 18
     },
     {
       "id": "bdrogja",
@@ -914,7 +914,47 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 18
+      "recentCommits": 19
+    },
+    {
+      "id": "nicolonsky",
+      "github": "nicolonsky",
+      "name": "Nicola Suter",
+      "title": "All things related to endpoints and security",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
+      "pinLast": false,
+      "company": "baseVISION",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://tech.nicolonsky.ch",
+      "socials": {
+        "linkedin": "nicolasuter",
+        "x": "nicolonsky"
+      },
+      "avatar": "https://github.com/nicolonsky.png",
+      "firstContribution": "2025-12-05",
+      "testsAuthored": [
+        "MT.1090",
+        "MT.1091",
+        "MT.1092",
+        "MT.1093",
+        "MT.1094",
+        "MT.1095",
+        "MT.1096",
+        "MT.1097",
+        "MT.1098",
+        "MT.1099",
+        "MT.1100",
+        "MT.1101",
+        "MT.1102",
+        "MT.1103",
+        "MT.1105",
+        "MT.1226"
+      ],
+      "testsContributed": [],
+      "initials": "NS",
+      "recentCommits": 21
     },
     {
       "id": "Mynster9361",
@@ -975,45 +1015,6 @@
       ],
       "initials": "M",
       "recentCommits": 3
-    },
-    {
-      "id": "nicolonsky",
-      "github": "nicolonsky",
-      "name": "Nicola Suter",
-      "title": "All things related to endpoints and security",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
-      "pinLast": false,
-      "company": "baseVISION",
-      "location": "Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://tech.nicolonsky.ch",
-      "socials": {
-        "linkedin": "nicolasuter",
-        "x": "nicolonsky"
-      },
-      "avatar": "https://github.com/nicolonsky.png",
-      "firstContribution": "2025-12-05",
-      "testsAuthored": [
-        "MT.1090",
-        "MT.1091",
-        "MT.1092",
-        "MT.1093",
-        "MT.1094",
-        "MT.1095",
-        "MT.1096",
-        "MT.1097",
-        "MT.1098",
-        "MT.1099",
-        "MT.1100",
-        "MT.1101",
-        "MT.1102",
-        "MT.1103",
-        "MT.1105"
-      ],
-      "testsContributed": [],
-      "initials": "NS",
-      "recentCommits": 0
     },
     {
       "id": "thomas-s-schmidt",
@@ -1751,6 +1752,29 @@
       "recentCommits": 1
     },
     {
+      "id": "Dfrank77",
+      "github": "Dfrank77",
+      "name": "Darius Frank",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Dfrank77.png",
+      "firstContribution": "2026-10-15",
+      "testsAuthored": [
+        "MT.1224",
+        "MT.1252"
+      ],
+      "testsContributed": [],
+      "initials": "DF",
+      "recentCommits": 17
+    },
+    {
       "id": "simon-vedder",
       "github": "simon-vedder",
       "name": "Simon Vedder",
@@ -1855,28 +1879,6 @@
       ],
       "initials": "A",
       "recentCommits": 0
-    },
-    {
-      "id": "Dfrank77",
-      "github": "Dfrank77",
-      "name": "Darius Frank",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/Dfrank77.png",
-      "firstContribution": "2026-10-15",
-      "testsAuthored": [
-        "MT.1224"
-      ],
-      "testsContributed": [],
-      "initials": "DF",
-      "recentCommits": 8
     },
     {
       "id": "Oppedijk",
@@ -2727,7 +2729,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 172
+      "recentCommits": 173
     }
   ],
   "attributions": {
@@ -6146,6 +6148,10 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1226": {
+      "author": "nicolonsky",
+      "contributors": []
+    },
     "MT.1228": {
       "author": "earbona23",
       "contributors": []
@@ -6240,6 +6246,10 @@
     },
     "MT.1251": {
       "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1252": {
+      "author": "Dfrank77",
       "contributors": []
     },
     "ORCA.100": {
@@ -9504,6 +9514,10 @@
       "title": "Users should not be able to create Agent Identity Blueprints.",
       "path": "/docs/next/tests/MT.1225"
     },
+    "MT.1226": {
+      "title": "GitHub and GitLab federated identity credentials should use immutable subject identifiers.",
+      "path": "/docs/next/tests/MT.1226"
+    },
     "MT.1228": {
       "title": "Ensure iOS compliance policy blocks jailbroken devices.",
       "path": "/docs/next/tests/MT.1228"
@@ -9599,6 +9613,10 @@
     "MT.1251": {
       "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
       "path": "/docs/next/tests/MT.1251"
+    },
+    "MT.1252": {
+      "title": "Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.",
+      "path": "/docs/next/tests/MT.1252"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

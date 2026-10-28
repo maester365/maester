@@ -47,7 +47,8 @@
     begin {
         if ($Records -contains "All") {
             $all = $dkim = $dmarc = $mx = $spf = $true
-        } else {
+        }
+        else {
             foreach ($record in $Records) {
                 Set-Variable -Name $record -Value $true
             }
@@ -67,7 +68,8 @@
         if (($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName } | Measure-Object).Count -eq 0) {
             $__MtSession.DnsCache += $recordSet
             $mtDnsCache = $recordSet
-        } else {
+        }
+        else {
             $mtDnsCache = $__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }
         }
 
@@ -85,7 +87,8 @@
             if ($null -ne $mtDnsCache.mxRecords) {
                 Write-Verbose "MX records exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.mxRecords = $mtDnsCache.mxRecords
-            } else {
+            }
+            else {
                 $recordSet.mxRecords = ConvertFrom-MailAuthenticationRecordMx @splat
                 ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).mxRecords = $recordSet.mxRecords
             }
@@ -97,26 +100,21 @@
                 $recordSet.spfRecord = $mtDnsCache.spfRecord
                 Write-Verbose "SPF record exist in cache - Skipping SPF Lookups"
                 $recordSet.spfLookups = $mtDnsCache.spfLookups
-            } else {
+            }
+            else {
                 $recordSet.spfRecord = ConvertFrom-MailAuthenticationRecordSpf @splat
                 if ($recordSet.spfRecord.GetType() -ne "SPFRecord") {
-                    if ($recordSet.spfRecord.terms.modifier -contains "redirect") {
-                        Write-Verbose "SPF redirect modifier found, recursing"
-                        $redirect = ($recordSet.spfRecord.terms | Where-Object {`
-                                    $_.modifier -eq "redirect"
-                            }).modifierTarget
-                        Get-MailAuthenticationRecord -DomainName $redirect
-                    }
-
                     Write-Verbose "SPF record resolved, checking lookups"
                     if ($null -ne $mtDnsCache.spfLookups) {
                         Write-Verbose "SPF Lookups records exist in cache - Use Clear-MtDnsCache to reset"
                         $recordSet.spfLookups = $mtDnsCache.spfLookups
-                    } else {
+                    }
+                    else {
                         Write-Verbose "SPF Lookups records not in cache, querying"
                         if ($DnsServerIpAddress) {
                             $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName -Server $DnsServerIpAddress
-                        } else {
+                        }
+                        else {
                             $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName
                         }
                         ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).spfLookups = $recordSet.spfLookups
@@ -130,7 +128,8 @@
             if ($null -ne $mtDnsCache.dkimRecord) {
                 Write-Verbose "DKIM record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.dkimRecord = $mtDnsCache.dkimRecord
-            } else {
+            }
+            else {
                 $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @splat -DkimDnsName $DkimDnsName
                 ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).dkimRecord = $recordSet.dkimRecord
             }
@@ -140,7 +139,8 @@
             if ($null -ne $mtDnsCache.dmarcRecord) {
                 Write-Verbose "DMARC record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.dmarcRecord = $mtDnsCache.dmarcRecord
-            } else {
+            }
+            else {
                 $recordSet.dmarcRecord = ConvertFrom-MailAuthenticationRecordDmarc @splat
                 ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).dmarcRecord = $recordSet.dmarcRecord
             }
