@@ -106,7 +106,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1041](./MT.1041.md) | Ensure users installing Outlook add-ins is not allowed | Medium | Exchange Online | Outlook |
 | [MT.1042](./MT.1042.md) | Restrict dial-in users from bypassing a meeting lobby | Medium | Teams | Meetings |
 | [MT.1043](./MT.1043.md) | Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | Medium | Exchange Online | Mail flow |
-| [MT.1044](./MT.1044.md) | Ensure modern authentication for Exchange Online is enabled | Low | Exchange Online | Client access |
+| [MT.1044](./MT.1044.md) | Ensure modern authentication for Exchange Online is enabled | High | Exchange Online | Client access |
 | [MT.1045](./MT.1045.md) | Only invited users should be automatically admitted to Teams meetings | Medium | Teams | Meetings |
 | [MT.1046](./MT.1046.md) | Restrict anonymous users from joining meetings | Medium | Teams | Meetings |
 | [MT.1047](./MT.1047.md) | Restrict anonymous users from starting Teams meetings | Medium | Teams | Meetings |
@@ -212,7 +212,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled. | High | Purview | Audit |
 | [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Low | Purview | Information protection |
 | [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled. | Medium | Purview | Insider risk management |
-| [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location. | Medium | Purview | Data loss prevention |
+| [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location. | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location. | Medium | Purview | Data lifecycle management |
 | [MT.1177](./MT.1177.md) | Ensure LAPS Configuration Policy is properly set. | Medium | Intune | Endpoint security |
 | [MT.1178](./MT.1178.md) | Ensure ASR Rules are configured correctly. | High | Intune | Endpoint security |

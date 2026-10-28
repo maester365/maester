@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1175"
-  - "Medium"
+  - "High"
   - "Purview"
   - "Data loss prevention"
   - "Data protection"
@@ -56,7 +56,7 @@ The test passes when at least one **enabled, non-simulation** DLP policy targets
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1175 |
-| Severity | Medium |
+| Severity | High |
 | Suite | Maester |
 | Product | Purview |
 | Feature | Data loss prevention |
