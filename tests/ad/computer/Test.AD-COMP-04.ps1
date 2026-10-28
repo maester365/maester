@@ -1,4 +1,4 @@
-function Test-MtAdComputerNonStandardGroup {
+﻿function Test-MtAdComputerNonStandardGroup {
     <#
     .SYNOPSIS
     Counts computers with non-standard primary group IDs.

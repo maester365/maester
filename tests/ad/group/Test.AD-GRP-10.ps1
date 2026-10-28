@@ -1,4 +1,4 @@
-function Test-MtAdGroupUniversalCount {
+﻿function Test-MtAdGroupUniversalCount {
     <#
     .SYNOPSIS
     Counts the number of universal groups in Active Directory.

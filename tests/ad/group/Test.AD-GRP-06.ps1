@@ -1,4 +1,4 @@
-function Test-MtAdGroupDistributionCount {
+﻿function Test-MtAdGroupDistributionCount {
     <#
     .SYNOPSIS
     Counts the number of distribution groups in Active Directory.

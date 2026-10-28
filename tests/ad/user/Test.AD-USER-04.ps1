@@ -1,4 +1,4 @@
-function Test-MtAdUserReversibleEncryptionCount {
+﻿function Test-MtAdUserReversibleEncryptionCount {
     <#
     .SYNOPSIS
     Counts user accounts configured to allow reversible password encryption.

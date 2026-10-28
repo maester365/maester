@@ -1,4 +1,4 @@
-function Test-MtAdGpoUnlinkedDetails {
+﻿function Test-MtAdGpoUnlinkedDetails {
     <#
     .SYNOPSIS
     Returns details of unlinked Group Policy Objects (GPOs) in Active Directory.

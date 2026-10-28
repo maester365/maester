@@ -1,4 +1,4 @@
-function Test-MtAdLdapQueryPolicyCount {
+﻿function Test-MtAdLdapQueryPolicyCount {
     <#
     .SYNOPSIS
     Counts Active Directory LDAP query policies.

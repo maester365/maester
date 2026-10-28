@@ -1,4 +1,4 @@
-function Test-MtAdSchemaModificationYearDetails {
+﻿function Test-MtAdSchemaModificationYearDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of Active Directory schema modifications by year.

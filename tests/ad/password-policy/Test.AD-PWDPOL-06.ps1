@@ -1,4 +1,4 @@
-function Test-MtAdAccountLockoutDuration {
+﻿function Test-MtAdAccountLockoutDuration {
     <#
     .SYNOPSIS
     Checks the account lockout duration configured in the default domain password policy.

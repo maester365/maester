@@ -1,4 +1,4 @@
-function Test-MtCheckADGPOL02 {
+﻿function Test-MtCheckADGPOL02 {
     <#
     .SYNOPSIS
     Disabled GPO link count should be retrievable

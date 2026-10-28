@@ -1,4 +1,4 @@
-function Test-MtAdTrustNonQuarantinedDetails {
+﻿function Test-MtAdTrustNonQuarantinedDetails {
     <#
     .SYNOPSIS
     Lists details of trusts with weak SID filtering in Active Directory.

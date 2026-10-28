@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnServiceClassUsage {
+﻿function Test-MtAdUserSpnServiceClassUsage {
     <#
     .SYNOPSIS
     Provides a breakdown of SPN service class usage across user accounts.

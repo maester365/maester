@@ -1,4 +1,4 @@
-function Test-MtAdComputerStaleEnabledCount {
+﻿function Test-MtAdComputerStaleEnabledCount {
     <#
     .SYNOPSIS
     Identifies enabled computers that have not logged on for the configured threshold or more.

@@ -1,4 +1,4 @@
-function Test-MtAdDcSmbv1EnabledCount {
+﻿function Test-MtAdDcSmbv1EnabledCount {
     <#
     .SYNOPSIS
     Counts domain controllers with SMBv1 protocol enabled.
@@ -29,7 +29,7 @@ function Test-MtAdDcSmbv1EnabledCount {
         Mitre = 'T1210',
         Control = 'nist-800-53-r5:CM-7',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\SmbConfigurations:MSFT_SmbServerConfiguration:Read'),
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

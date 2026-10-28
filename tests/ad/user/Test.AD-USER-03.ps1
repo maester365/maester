@@ -1,4 +1,4 @@
-function Test-MtAdUserPasswordNeverExpiresCount {
+﻿function Test-MtAdUserPasswordNeverExpiresCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts with passwords set to never expire.

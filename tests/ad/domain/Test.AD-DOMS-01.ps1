@@ -1,4 +1,4 @@
-function Test-MtAdAllowedDnsSuffixesCount {
+﻿function Test-MtAdAllowedDnsSuffixesCount {
     <#
     .SYNOPSIS
     Retrieves the count of allowed DNS suffixes configured for the domain.

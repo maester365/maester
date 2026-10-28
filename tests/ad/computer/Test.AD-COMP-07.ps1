@@ -1,4 +1,4 @@
-function Test-MtAdComputerOUCount {
+﻿function Test-MtAdComputerOUCount {
     <#
     .SYNOPSIS
     Counts the distinct organizational units (OUs) containing computer objects.

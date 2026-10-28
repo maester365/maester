@@ -1,4 +1,4 @@
-function Test-MtAdTrustQuarantinedCount {
+﻿function Test-MtAdTrustQuarantinedCount {
     <#
     .SYNOPSIS
     Counts the number of trusts with strong SID filtering in Active Directory.

@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnTotalCount {
+﻿function Test-MtAdUserSpnTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of SPNs configured on user accounts.

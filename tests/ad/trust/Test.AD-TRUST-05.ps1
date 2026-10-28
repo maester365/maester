@@ -1,4 +1,4 @@
-function Test-MtAdTrustDetails {
+﻿function Test-MtAdTrustDetails {
     <#
     .SYNOPSIS
     Lists detailed information about all Active Directory trusts.

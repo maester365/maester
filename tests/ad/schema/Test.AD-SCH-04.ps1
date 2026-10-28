@@ -1,4 +1,4 @@
-function Test-MtAdSchemaVersionDetails {
+﻿function Test-MtAdSchemaVersionDetails {
     <#
     .SYNOPSIS
     Provides detailed Active Directory schema version information.

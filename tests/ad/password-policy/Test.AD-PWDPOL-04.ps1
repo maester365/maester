@@ -1,4 +1,4 @@
-function Test-MtAdPasswordComplexityRequired {
+﻿function Test-MtAdPasswordComplexityRequired {
     <#
     .SYNOPSIS
     Checks that password complexity is enabled in the default domain password policy.

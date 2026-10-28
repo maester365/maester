@@ -1,4 +1,4 @@
-function Test-MtAdTrustedRootCaCount {
+﻿function Test-MtAdTrustedRootCaCount {
     <#
     .SYNOPSIS
     Counts the trusted root certificate authorities configured in Active Directory.

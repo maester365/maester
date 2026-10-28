@@ -1,4 +1,4 @@
-function Test-MtAdUserHoneyPotCount {
+﻿function Test-MtAdUserHoneyPotCount {
     <#
     .SYNOPSIS
     Counts potential honey pot style user accounts.

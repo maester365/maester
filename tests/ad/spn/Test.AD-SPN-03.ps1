@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnUnknownCount {
+﻿function Test-MtAdComputerSpnUnknownCount {
     <#
     .SYNOPSIS
     Counts unidentified SPN service classes on computer accounts.

@@ -1,4 +1,4 @@
-function Test-MtAdDaclUnresolvedSidCount {
+﻿function Test-MtAdDaclUnresolvedSidCount {
     <#
     .SYNOPSIS
     Counts unresolved SID references in Active Directory DACL entries.

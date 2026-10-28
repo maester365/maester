@@ -1,4 +1,4 @@
-function Test-MtAdUserHomeDirectoryCount {
+﻿function Test-MtAdUserHomeDirectoryCount {
     <#
     .SYNOPSIS
     Counts users with a home directory configured in Active Directory.

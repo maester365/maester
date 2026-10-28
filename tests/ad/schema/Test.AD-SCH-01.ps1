@@ -1,4 +1,4 @@
-function Test-MtAdSchemaModificationYearCount {
+﻿function Test-MtAdSchemaModificationYearCount {
     <#
     .SYNOPSIS
     Counts the number of years with Active Directory schema modifications.

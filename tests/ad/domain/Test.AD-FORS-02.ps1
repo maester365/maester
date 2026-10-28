@@ -1,4 +1,4 @@
-function Test-MtAdUpnSuffixesDetails {
+﻿function Test-MtAdUpnSuffixesDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about UPN (User Principal Name) suffixes configured in the forest.

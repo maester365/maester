@@ -1,4 +1,4 @@
-function Test-MtAdOuAtDomainRootCount {
+﻿function Test-MtAdOuAtDomainRootCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units at the domain root level in Active Directory.

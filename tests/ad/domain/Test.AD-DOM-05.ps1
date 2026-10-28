@@ -1,4 +1,4 @@
-function Test-MtAdDomainNameStandardCompliance {
+﻿function Test-MtAdDomainNameStandardCompliance {
     <#
     .SYNOPSIS
     Checks if domain names comply with RFC standards.

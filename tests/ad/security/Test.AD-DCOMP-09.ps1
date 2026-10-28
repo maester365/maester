@@ -1,4 +1,4 @@
-function Test-MtAdComputerDnsZoneDetails {
+﻿function Test-MtAdComputerDnsZoneDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of computers by DNS zone.

@@ -1,4 +1,4 @@
-function Test-MtAdUserDelegationConfiguredCount {
+﻿function Test-MtAdUserDelegationConfiguredCount {
     <#
     .SYNOPSIS
     Counts users with delegation configured.

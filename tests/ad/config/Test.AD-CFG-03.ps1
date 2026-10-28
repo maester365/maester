@@ -1,4 +1,4 @@
-function Test-MtAdSpnMappings {
+﻿function Test-MtAdSpnMappings {
     <#
     .SYNOPSIS
     Returns Active Directory SPN mappings from configuration.

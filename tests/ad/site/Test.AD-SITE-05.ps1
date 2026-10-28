@@ -1,4 +1,4 @@
-function Test-MtAdSiteWithoutSubnetDetails {
+﻿function Test-MtAdSiteWithoutSubnetDetails {
     <#
     .SYNOPSIS
     Lists the Active Directory sites without subnet associations.

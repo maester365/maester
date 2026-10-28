@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberForeignSidCount {
+﻿function Test-MtAdGroupMemberForeignSidCount {
     <#
     .SYNOPSIS
     Counts the foreign SID principals in Active Directory groups.

@@ -1,4 +1,4 @@
-function Test-MtAdDaclUnresolvedSidDetails {
+﻿function Test-MtAdDaclUnresolvedSidDetails {
     <#
     .SYNOPSIS
     Returns unresolved SID details from Active Directory DACL entries.

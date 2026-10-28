@@ -1,4 +1,4 @@
-function Test-MtAdRootDseSynchronizedStatus {
+﻿function Test-MtAdRootDseSynchronizedStatus {
     <#
     .SYNOPSIS
     Checks the Root DSE synchronization status.

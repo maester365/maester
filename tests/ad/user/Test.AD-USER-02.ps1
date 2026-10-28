@@ -1,4 +1,4 @@
-function Test-MtAdUserDormantEnabledCount {
+﻿function Test-MtAdUserDormantEnabledCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts that have been dormant beyond the configured threshold.

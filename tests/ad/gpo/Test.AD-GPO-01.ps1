@@ -1,4 +1,4 @@
-function Test-MtAdGpoTotalCount {
+﻿function Test-MtAdGpoTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Group Policy Objects in Active Directory.

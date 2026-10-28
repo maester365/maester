@@ -1,4 +1,4 @@
-function Test-MtCheckADGPOREP12 {
+﻿function Test-MtCheckADGPOREP12 {
     <#
     .SYNOPSIS
     GPO disabled link count should be retrievable

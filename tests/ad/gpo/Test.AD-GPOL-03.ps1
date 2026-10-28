@@ -1,4 +1,4 @@
-function Test-MtAdGpoUnlinkedTargetCount {
+﻿function Test-MtAdGpoUnlinkedTargetCount {
     <#
     .SYNOPSIS
     Counts AD targets (OUs, domains, sites) that do not have any GPO links.

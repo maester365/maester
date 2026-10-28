@@ -1,4 +1,4 @@
-function Test-MtAdDcFsmoRoleHolderDetails {
+﻿function Test-MtAdDcFsmoRoleHolderDetails {
     <#
     .SYNOPSIS
     Provides detailed information about FSMO role holders.

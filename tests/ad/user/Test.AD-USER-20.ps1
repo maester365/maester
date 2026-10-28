@@ -1,4 +1,4 @@
-function Test-MtAdUserKnownServiceAccountCount {
+﻿function Test-MtAdUserKnownServiceAccountCount {
     <#
     .SYNOPSIS
     Counts users that match known service account naming patterns.

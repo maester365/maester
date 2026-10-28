@@ -1,4 +1,4 @@
-function Test-MtAdTrustStaleDetails {
+﻿function Test-MtAdTrustStaleDetails {
     <#
     .SYNOPSIS
     Lists detailed information about stale trusts in Active Directory.

@@ -1,4 +1,4 @@
-function Test-MtAdOptionalFeaturesCount {
+﻿function Test-MtAdOptionalFeaturesCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory optional features.

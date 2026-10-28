@@ -1,4 +1,4 @@
-function Test-MtAdOptionalFeatureEnabledDetails {
+﻿function Test-MtAdOptionalFeatureEnabledDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about enabled Active Directory optional features.

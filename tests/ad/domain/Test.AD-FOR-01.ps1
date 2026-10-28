@@ -1,4 +1,4 @@
-function Test-MtAdForestFunctionalLevel {
+﻿function Test-MtAdForestFunctionalLevel {
     <#
     .SYNOPSIS
     Retrieves the current forest functional level.

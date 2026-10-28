@@ -1,4 +1,4 @@
-function Test-MtAdDaclPrivilegedAllowAceDetails {
+﻿function Test-MtAdDaclPrivilegedAllowAceDetails {
     <#
     .SYNOPSIS
     Returns details for privileged allow ACEs in collected DACL data.

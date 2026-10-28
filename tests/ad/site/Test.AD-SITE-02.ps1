@@ -1,4 +1,4 @@
-function Test-MtAdSiteWithoutDcCount {
+﻿function Test-MtAdSiteWithoutDcCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory sites without domain controllers.

@@ -1,4 +1,4 @@
-function Test-MtAdSupportedSaslMechanismCount {
+﻿function Test-MtAdSupportedSaslMechanismCount {
     <#
     .SYNOPSIS
     Retrieves the count of supported SASL mechanisms in Active Directory.

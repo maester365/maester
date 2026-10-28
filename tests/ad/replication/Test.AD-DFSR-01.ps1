@@ -1,4 +1,4 @@
-function Test-MtAdDfsrSubscriptionCount {
+﻿function Test-MtAdDfsrSubscriptionCount {
     <#
     .SYNOPSIS
     Retrieves the count of DFS-R subscriptions for SYSVOL replication.

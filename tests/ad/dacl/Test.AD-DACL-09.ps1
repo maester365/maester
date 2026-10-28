@@ -1,4 +1,4 @@
-function Test-MtAdDaclPrivilegedAllowAceCount {
+﻿function Test-MtAdDaclPrivilegedAllowAceCount {
     <#
     .SYNOPSIS
     Counts privileged allow ACEs in collected DACL data.

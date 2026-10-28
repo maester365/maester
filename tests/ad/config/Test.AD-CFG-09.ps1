@@ -1,4 +1,4 @@
-function Test-MtAdAdActivationObjectsCount {
+﻿function Test-MtAdAdActivationObjectsCount {
     <#
     .SYNOPSIS
     Counts Active Directory activation objects from configuration.

@@ -1,4 +1,4 @@
-function Test-MtAdSubnetFirstOctetCount {
+﻿function Test-MtAdSubnetFirstOctetCount {
     <#
     .SYNOPSIS
     Counts the distinct first octets used in IPv4 subnets.

@@ -1,4 +1,4 @@
-function Test-MtAdOuEmptyDetails {
+﻿function Test-MtAdOuEmptyDetails {
     <#
     .SYNOPSIS
     Provides detailed information about empty Organizational Units in Active Directory.

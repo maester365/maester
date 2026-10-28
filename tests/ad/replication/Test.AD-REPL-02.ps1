@@ -1,4 +1,4 @@
-function Test-MtAdNonAutoReplicationConnectionCount {
+﻿function Test-MtAdNonAutoReplicationConnectionCount {
     <#
     .SYNOPSIS
     Checks for non-auto-generated Active Directory replication connections.

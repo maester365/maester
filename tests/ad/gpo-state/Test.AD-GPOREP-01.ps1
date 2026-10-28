@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoPermissionsCount {
+﻿function Test-MtAdGpoNoPermissionsCount {
     <#
     .SYNOPSIS
     Counts Group Policy Objects (GPOs) with missing permissions.

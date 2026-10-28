@@ -1,4 +1,4 @@
-function Test-MtAdGpoUnlinkedCount {
+﻿function Test-MtAdGpoUnlinkedCount {
     <#
     .SYNOPSIS
     Counts Active Directory GPOs that are not linked to any OU, domain, or site.

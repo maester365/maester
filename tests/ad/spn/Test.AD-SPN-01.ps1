@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnServiceClassCount {
+﻿function Test-MtAdComputerSpnServiceClassCount {
     <#
     .SYNOPSIS
     Counts the distinct SPN service classes in use by computer accounts.

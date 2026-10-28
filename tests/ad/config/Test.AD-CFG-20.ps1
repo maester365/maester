@@ -1,4 +1,4 @@
-function Test-MtAdCrlDistributionPointsCount {
+﻿function Test-MtAdCrlDistributionPointsCount {
     <#
     .SYNOPSIS
     Counts the CRL distribution points configured in Active Directory.

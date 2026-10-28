@@ -1,4 +1,4 @@
-function Test-MtAdTrustedRootCaDetails {
+﻿function Test-MtAdTrustedRootCaDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about trusted root certificate authorities.

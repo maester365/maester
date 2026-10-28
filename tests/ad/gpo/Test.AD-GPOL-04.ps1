@@ -1,4 +1,4 @@
-function Test-MtAdGpoEnforcedCount {
+﻿function Test-MtAdGpoEnforcedCount {
     <#
     .SYNOPSIS
     Counts enforced GPO links (links that block inheritance).

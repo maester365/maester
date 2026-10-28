@@ -1,4 +1,4 @@
-function Test-MtAdAccountLockoutThreshold {
+﻿function Test-MtAdAccountLockoutThreshold {
     <#
     .SYNOPSIS
     Checks the account lockout threshold configured in the default domain password policy.

@@ -1,4 +1,4 @@
-function Test-MtAdGroupDomainLocalCount {
+﻿function Test-MtAdGroupDomainLocalCount {
     <#
     .SYNOPSIS
     Counts the number of domain local groups in Active Directory.

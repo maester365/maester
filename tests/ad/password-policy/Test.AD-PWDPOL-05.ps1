@@ -1,4 +1,4 @@
-function Test-MtAdPasswordReversibleEncryption {
+﻿function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
     Checks that reversible encryption is disabled for passwords in the default domain password policy.

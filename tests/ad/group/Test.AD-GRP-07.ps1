@@ -1,4 +1,4 @@
-function Test-MtAdGroupSecurityCount {
+﻿function Test-MtAdGroupSecurityCount {
     <#
     .SYNOPSIS
     Counts the number of security groups in Active Directory.

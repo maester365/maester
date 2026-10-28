@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnUnknownDetails {
+﻿function Test-MtAdComputerSpnUnknownDetails {
     <#
     .SYNOPSIS
     Provides detailed information about unidentified SPN service classes on computer accounts.

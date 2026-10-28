@@ -1,4 +1,4 @@
-function Test-MtAdDaclOuObjectCount {
+﻿function Test-MtAdDaclOuObjectCount {
     <#
     .SYNOPSIS
     Counts DACL entries on Organizational Unit objects.

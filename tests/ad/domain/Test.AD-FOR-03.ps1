@@ -1,4 +1,4 @@
-function Test-MtAdTombstoneLifetime {
+﻿function Test-MtAdTombstoneLifetime {
     <#
     .SYNOPSIS
     Retrieves the tombstone lifetime in days.

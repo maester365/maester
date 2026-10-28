@@ -1,4 +1,4 @@
-function Test-MtAdWellKnownSecurityPrincipalsCount {
+﻿function Test-MtAdWellKnownSecurityPrincipalsCount {
     <#
     .SYNOPSIS
     Counts the number of well-known security principal objects in Active Directory.

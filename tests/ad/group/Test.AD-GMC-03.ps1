@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberAccountTypeDetails {
+﻿function Test-MtAdGroupMemberAccountTypeDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of member account types across Active Directory groups.

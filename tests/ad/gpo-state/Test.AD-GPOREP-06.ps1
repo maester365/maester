@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoDomainComputersCount {
+﻿function Test-MtAdGpoNoDomainComputersCount {
     <#
     .SYNOPSIS
     Counts GPO reports that include neither Domain Computers nor Authenticated Users.

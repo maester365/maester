@@ -1,4 +1,4 @@
-function Test-MtAdComputerCreatorSidCount {
+﻿function Test-MtAdComputerCreatorSidCount {
     <#
     .SYNOPSIS
     Counts computers with the ms-ds-CreatorSid attribute set.

@@ -1,4 +1,4 @@
-function Test-MtAdGroupEmptyNonPrivilegedDetails {
+﻿function Test-MtAdGroupEmptyNonPrivilegedDetails {
     <#
     .SYNOPSIS
     Details of empty non-privileged groups in Active Directory.

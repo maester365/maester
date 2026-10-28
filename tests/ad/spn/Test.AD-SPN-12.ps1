@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnDomainAdminCount {
+﻿function Test-MtAdUserSpnDomainAdminCount {
     <#
     .SYNOPSIS
     Counts SPNs configured on domain administrator accounts.

@@ -1,4 +1,4 @@
-function Test-MtAdAuthNPolicyConfigCount {
+﻿function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
     Counts Active Directory AuthN policy containers.

@@ -1,4 +1,4 @@
-function Test-MtAdKdsRootKeysCount {
+﻿function Test-MtAdKdsRootKeysCount {
     <#
     .SYNOPSIS
     Verifies that an acceptable number of KDS root keys exists in Active Directory.

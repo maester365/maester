@@ -1,4 +1,4 @@
-function Test-MtAdGpoInheritedPermissionsCount {
+﻿function Test-MtAdGpoInheritedPermissionsCount {
     <#
     .SYNOPSIS
     Counts GPO reports with inherited permissions.

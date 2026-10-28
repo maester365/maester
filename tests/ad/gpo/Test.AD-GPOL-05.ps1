@@ -1,4 +1,4 @@
-function Test-MtAdGpoBlockedInheritanceCount {
+﻿function Test-MtAdGpoBlockedInheritanceCount {
     <#
     .SYNOPSIS
     Counts targets blocking GPO inheritance.

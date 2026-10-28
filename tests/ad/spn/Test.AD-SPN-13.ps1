@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnDomainAdminDetails {
+﻿function Test-MtAdUserSpnDomainAdminDetails {
     <#
     .SYNOPSIS
     Provides detailed information about SPNs configured on domain administrator accounts.

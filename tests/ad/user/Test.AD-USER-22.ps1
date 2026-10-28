@@ -1,4 +1,4 @@
-function Test-MtAdUserBuiltInAdminCount {
+﻿function Test-MtAdUserBuiltInAdminCount {
     <#
     .SYNOPSIS
     Counts built-in administrator style user accounts.

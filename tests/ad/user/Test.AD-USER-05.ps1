@@ -1,4 +1,4 @@
-function Test-MtAdUserDelegationAllowedCount {
+﻿function Test-MtAdUserDelegationAllowedCount {
     <#
     .SYNOPSIS
     Counts user accounts that are trusted for Kerberos delegation.

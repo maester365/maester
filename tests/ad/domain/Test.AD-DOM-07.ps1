@@ -1,4 +1,4 @@
-function Test-MtAdNetbiosNameStandardCompliance {
+﻿function Test-MtAdNetbiosNameStandardCompliance {
     <#
     .SYNOPSIS
     Checks if NetBIOS names comply with naming standards.

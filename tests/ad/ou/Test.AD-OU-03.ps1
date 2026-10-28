@@ -1,4 +1,4 @@
-function Test-MtAdOuStaleCount {
+﻿function Test-MtAdOuStaleCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units that have not been modified since before 2020.

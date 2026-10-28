@@ -1,4 +1,4 @@
-function Test-MtAdDaclPrivilegedExtendedRightIdentity {
+﻿function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     <#
     .SYNOPSIS
     Returns identities with privileged extended rights in Active Directory DACLs.

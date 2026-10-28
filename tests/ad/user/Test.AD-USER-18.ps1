@@ -1,4 +1,4 @@
-function Test-MtAdUserScriptPathCount {
+﻿function Test-MtAdUserScriptPathCount {
     <#
     .SYNOPSIS
     Counts users with a logon script configured in Active Directory.

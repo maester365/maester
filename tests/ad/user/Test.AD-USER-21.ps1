@@ -1,4 +1,4 @@
-function Test-MtAdUserKnownServiceAccountDetails {
+﻿function Test-MtAdUserKnownServiceAccountDetails {
     <#
     .SYNOPSIS
     Returns details for users matching known service account naming patterns.

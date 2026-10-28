@@ -1,4 +1,4 @@
-function Test-MtAdGroupSidHistoryCount {
+﻿function Test-MtAdGroupSidHistoryCount {
     <#
     .SYNOPSIS
     Counts groups with SID History set in Active Directory.

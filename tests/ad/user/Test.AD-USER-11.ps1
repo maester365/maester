@@ -1,4 +1,4 @@
-function Test-MtAdUserAdminCountCount {
+﻿function Test-MtAdUserAdminCountCount {
     <#
     .SYNOPSIS
     Counts users with AdminCount set in Active Directory.

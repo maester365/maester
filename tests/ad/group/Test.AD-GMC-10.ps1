@@ -1,4 +1,4 @@
-function Test-MtAdGroupPrivilegedWithMembersCount {
+﻿function Test-MtAdGroupPrivilegedWithMembersCount {
     <#
     .SYNOPSIS
     Counts privileged groups that have members in Active Directory.

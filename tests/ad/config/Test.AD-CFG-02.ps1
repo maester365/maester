@@ -1,4 +1,4 @@
-function Test-MtAdDsHeuristicsCount {
+﻿function Test-MtAdDsHeuristicsCount {
     <#
     .SYNOPSIS
     Counts Active Directory dSHeuristics configuration settings.

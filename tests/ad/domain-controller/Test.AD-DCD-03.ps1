@@ -1,4 +1,4 @@
-function Test-MtAdDcReadOnlyCount {
+﻿function Test-MtAdDcReadOnlyCount {
     <#
     .SYNOPSIS
     Counts read-only domain controllers (RODCs) in the domain.

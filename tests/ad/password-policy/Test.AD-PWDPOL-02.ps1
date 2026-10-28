@@ -1,4 +1,4 @@
-function Test-MtAdPasswordMaxAge {
+﻿function Test-MtAdPasswordMaxAge {
     <#
     .SYNOPSIS
     Checks the maximum password age configured in the default domain password policy.

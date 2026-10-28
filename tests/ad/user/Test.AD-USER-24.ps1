@@ -1,4 +1,4 @@
-function Test-MtAdUserBuiltInAdminLastLogonDetails {
+﻿function Test-MtAdUserBuiltInAdminLastLogonDetails {
     <#
     .SYNOPSIS
     Returns last logon details for built-in administrator style accounts.

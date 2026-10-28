@@ -1,4 +1,4 @@
-function Test-MtAdTrustStaleCount {
+﻿function Test-MtAdTrustStaleCount {
     <#
     .SYNOPSIS
     Counts the number of stale trusts in Active Directory (trusts not validated within the configured threshold).
