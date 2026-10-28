@@ -36,25 +36,7 @@
     param()
 
     Write-Verbose 'Get audit log search status'
-    $exchangeOnlineSessionModule = $null
-    $exchangeOnlineSessions = @(Get-ConnectionInformation -ErrorAction Stop |
-        Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' })
-    foreach ($session in $exchangeOnlineSessions) {
-        try {
-            $sessionModule = Import-Module -Name $session.ModuleName `
-                -Function 'Get-AdminAuditLogConfig' -PassThru -NoClobber -ErrorAction Stop
-        } catch {
-            continue
-        }
-        if ($sessionModule.ExportedCommands.ContainsKey('Get-AdminAuditLogConfig')) {
-            $exchangeOnlineSessionModule = $sessionModule
-            break
-        }
-    }
-    if (-not $exchangeOnlineSessionModule) {
-        throw 'No connected Exchange Online session exports Get-AdminAuditLogConfig.'
-    }
-    $auditLogSearch = & $exchangeOnlineSessionModule { Get-AdminAuditLogConfig }
+    $auditLogSearch = Get-MtExo -Request AdminAuditLogConfig
 
     $usableConfig = @($auditLogSearch | Where-Object { $null -ne $_ -and $null -ne $_.UnifiedAuditLogIngestionEnabled })
     if ($usableConfig.Count -eq 0) {

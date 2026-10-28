@@ -75,6 +75,7 @@
         "RoleAssignmentPolicy"           = "Get-RoleAssignmentPolicy"
         "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
         "ConnectionInformation"          = "Get-ConnectionInformation"
+        "AdminAuditLogConfig"            = "Get-AdminAuditLogConfig"
     }
 
 
@@ -89,6 +90,14 @@
 
     if ($null -eq $__MtSession.ExoCache.$Request) {
         Write-Verbose "$request not in cache, requesting."
+        if ($Request -eq "AdminAuditLogConfig") {
+            # Connect-IPPSSession also exports Get-AdminAuditLogConfig, and its copy reports
+            # UnifiedAuditLogIngestionEnabled as False (#1802). Call the Exchange Online session's copy.
+            $exoModule = Get-MtExo -Request ConnectionInformation |
+                Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                Select-Object -First 1 -ExpandProperty ModuleName
+            if ($exoModule) { $commands.$Request = "$exoModule\Get-AdminAuditLogConfig" }
+        }
         $response = Invoke-Expression $commands.$Request -ErrorAction Stop
         $__MtSession.ExoCache.$Request = $response
     }
