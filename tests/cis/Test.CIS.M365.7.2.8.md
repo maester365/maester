@@ -25,7 +25,7 @@ Set-PnPTenant -WhoCanShareAuthenticatedGuestAllowList '<group object id>'
 * [SharePoint admin center](https://admin.microsoft.com/sharepoint)
 * [External sharing overview](https://learn.microsoft.com/sharepoint/external-sharing-overview)
 * [Allow only members in specific security groups to share SharePoint and OneDrive files and folders externally](https://learn.microsoft.com/sharepoint/manage-security-groups)
-* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
+* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration)
 * [Set-PnPTenant](https://pnp.github.io/powershell/cmdlets/Set-PnPTenant.html)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 7.2.8](https://www.cisecurity.org/benchmark/microsoft_365)
 

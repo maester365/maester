@@ -23,7 +23,7 @@ Set-PnPTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15
 * [SharePoint admin center](https://admin.microsoft.com/sharepoint)
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off)
 * [Email one-time passcode authentication for B2B guest users](https://learn.microsoft.com/entra/external-id/one-time-passcode)
-* [Microsoft Entra B2B integration and SharePoint OTP retirement](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
+* [Microsoft Entra B2B integration and SharePoint OTP retirement](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration)
 * [Set-PnPTenant](https://pnp.github.io/powershell/cmdlets/Set-PnPTenant.html)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 7.2.10](https://www.cisecurity.org/benchmark/microsoft_365)
 

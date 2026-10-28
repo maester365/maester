@@ -22,7 +22,7 @@ Set-PnPTenant -SharingDomainRestrictionMode AllowList -SharingAllowedDomainList 
 
 * [SharePoint admin center](https://admin.microsoft.com/sharepoint)
 * [Restrict sharing of SharePoint and OneDrive content by domain](https://learn.microsoft.com/sharepoint/restricted-domains-sharing)
-* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
+* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration)
 * [Set-PnPTenant](https://pnp.github.io/powershell/cmdlets/Set-PnPTenant.html)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 7.2.6](https://www.cisecurity.org/benchmark/microsoft_365)
 

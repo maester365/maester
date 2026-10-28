@@ -39,7 +39,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 ## Related Links
 
 * [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
-* [Microsoft Entra B2B integration and SharePoint OTP retirement](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration)
+* [Microsoft Entra B2B integration and SharePoint OTP retirement](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 480](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
