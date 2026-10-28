@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +46,49 @@ namespace Maester.Engine
         /// </summary>
         public bool ReadKeys { get; set; }
 
+        /// <summary>
+        /// Open a hyperlink of the dashboard with a plain click, where terminals want a modifier key with it
+        /// (Cmd or Ctrl). While the tests run the dashboard asks the terminal for the clicks of the mouse
+        /// (SGR reports, modes 1000 and 1006) and opens the link that was clicked itself. Text is then selected
+        /// with Option (macOS) or Shift held. It needs ReadKeys and colour, and is off on Windows, whose
+        /// console reports the mouse another way.
+        /// </summary>
+        public bool ClickLinks { get; set; }
+
+        /// <summary>Opens a link that was clicked. Null for the browser of the system; tests set it.</summary>
+        public Action<string> OpenLink { get; set; }
+
+        private const string MouseOn = "\u001b[?1000h\u001b[?1006h";
+        private const string MouseOff = "\u001b[?1006l\u001b[?1000l";
+        // ESC [ < and "65;300;100" at most: a longer run of digits is not a report.
+        private const int MouseReportLongest = 20;
+        private readonly List<ConsoleKeyInfo> _input = new List<ConsoleKeyInfo>();
+        private volatile bool _mouseOn;
+        private volatile bool _mouseDrain;
+        private int _pressColumn = -1;
+        private int _pressRow = -1;
+
+        /// <summary>
+        /// Characters as if they were typed at the console, a report of the mouse among them as a terminal
+        /// sends it. An escape that is left at the end is the Escape key. For tests.
+        /// </summary>
+        public void SendInput(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+            foreach (char c in text)
+            {
+                var key = c == '\u001b' ? ConsoleKey.Escape : c == '\r' ? ConsoleKey.Enter : c == ' ' ? ConsoleKey.Spacebar : default(ConsoleKey);
+                TakeInput(key, c);
+            }
+            if (_input.Count > 0 && _input.Count < 3) FlushInput();
+        }
+
+        /// <summary>The address of the hyperlink at a cell (from zero) of the dashboard for a console size, or null. For tests.</summary>
+        public string GetLinkAt(int width, int height, int column, int row)
+        {
+            lock (_gate) return LinkAt(BuildScreen(width, height, true), column, row);
+        }
+
         /// <summary>How often the console was asked for keys. For tests.</summary>
         public int KeyPollCount { get { return Volatile.Read(ref _keyPolls); } }
 
@@ -81,7 +126,7 @@ namespace Maester.Engine
             {
                 lock (_gate)
                 {
-                    if (!_open || !_fullScreen || _pauseDepth > 0 || !(_running || _gameShown)) return;
+                    if (!_open || !_fullScreen || _pauseDepth > 0 || !(_running || _gameShown || _mouseDrain)) return;
                 }
                 Interlocked.Increment(ref _keyPolls);
                 if (Console.IsInputRedirected)
@@ -91,11 +136,21 @@ namespace Maester.Engine
                 }
                 // Not now, but the job may be brought back to the foreground.
                 if (!InForeground()) return;
-                for (int n = 0; n < KeysPerTick && Console.KeyAvailable; n++)
+                // The clicks of the mouse that came in before the terminal stopped reporting them are dropped,
+                // with the keys typed with them, so that none reaches the prompt as text.
+                if (_mouseDrain)
+                {
+                    DrainClicks();
+                    return;
+                }
+                // A report of the mouse is read to its end, past the keys of one tick when it must be.
+                for (int n = 0; (n < KeysPerTick || _input.Count > 0) && n < KeysPerTick * 4 && Console.KeyAvailable; n++)
                 {
                     var info = Console.ReadKey(true);
-                    SendKey(info.Key, info.KeyChar);
+                    TakeInput(info.Key, info.KeyChar);
                 }
+                // An escape with nothing after it is the Escape key.
+                if (_input.Count > 0 && _input.Count < 3 && !Console.KeyAvailable) FlushInput();
             }
             catch (Exception)
             {
@@ -106,6 +161,165 @@ namespace Maester.Engine
             {
                 Interlocked.Exchange(ref _polling, 0);
             }
+        }
+
+        // ------------------------------------------------------------------ the mouse (outside _gate)
+
+        /// <summary>
+        /// A character from the console. An escape starts what may be a report of the mouse (ESC [ &lt; button ;
+        /// column ; row, then M for a press or m for a release): its characters are held until it ends, and
+        /// whatever turns out not to be one goes on as the keys it was.
+        /// </summary>
+        private void TakeInput(ConsoleKey key, char c)
+        {
+            if (_input.Count == 0)
+            {
+                if (c == '\u001b' && ClickLinks) _input.Add(new ConsoleKeyInfo(c, key, false, false, false));
+                else SendKey(key, c);
+                return;
+            }
+            int at = _input.Count;
+            if ((at == 1 && c == '[') || (at == 2 && c == '<') || (at >= 3 && at < MouseReportLongest && ((c >= '0' && c <= '9') || c == ';')))
+            {
+                _input.Add(new ConsoleKeyInfo(c, key, false, false, false));
+                return;
+            }
+            if (at >= 3 && (c == 'M' || c == 'm'))
+            {
+                var report = new StringBuilder();
+                for (int i = 3; i < _input.Count; i++) report.Append(_input[i].KeyChar);
+                _input.Clear();
+                var parts = report.ToString().Split(';');
+                int button, column, row;
+                if (parts.Length == 3 && int.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out button) &&
+                    int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out column) &&
+                    int.TryParse(parts[2], NumberStyles.None, CultureInfo.InvariantCulture, out row))
+                {
+                    string url;
+                    lock (_gate) url = HandleMouse(button, column - 1, row - 1, c == 'M');
+                    if (url != null) OpenClickedLink(url);
+                }
+                return;
+            }
+            FlushInput();
+            TakeInput(key, c);
+        }
+
+        /// <summary>Reads and drops what waits at the console once the terminal stopped reporting the mouse.</summary>
+        private void DrainClicks()
+        {
+            _mouseDrain = false;
+            _input.Clear();
+            try
+            {
+                if (!_console || Console.IsInputRedirected || !InForeground()) return;
+                for (int n = 0; n < KeysPerTick * 8 && Console.KeyAvailable; n++) Console.ReadKey(true);
+            }
+            catch (Exception) { /* A console that cannot be read has nothing to drop. */ }
+        }
+
+        /// <summary>The characters held as the start of a report of the mouse, which was not one, as keys.</summary>
+        private void FlushInput()
+        {
+            var held = _input.ToArray();
+            _input.Clear();
+            foreach (var info in held) SendKey(info.Key, info.KeyChar);
+        }
+
+        /// <summary>
+        /// A press or a release of a button of the mouse at a cell of the screen (from zero). A click of the left
+        /// button with no modifier key, pressed and released on the same cell, on a hyperlink of the dashboard
+        /// gives the address of the link to open. The game and everything else take no clicks.
+        /// </summary>
+        private string HandleMouse(int button, int column, int row, bool press)
+        {
+            if (!_open || !_fullScreen || _gameShown || button != 0) return null;
+            if (press)
+            {
+                _pressColumn = column;
+                _pressRow = row;
+                return null;
+            }
+            bool same = column == _pressColumn && row == _pressRow;
+            _pressColumn = _pressRow = -1;
+            return same ? LinkAt(BuildScreen(CurrentWidth(), CurrentHeight(), Ansi), column, row) : null;
+        }
+
+        /// <summary>The address of the hyperlink at a cell of a screen (from zero), or null where there is none.</summary>
+        private static string LinkAt(List<Line> screen, int column, int row)
+        {
+            if (row < 0 || row >= screen.Count || column < 0) return null;
+            string text = screen[row].Text ?? string.Empty;
+            string url = null;
+            int cell = 0;
+            int i = 0;
+            while (i < text.Length)
+            {
+                char c = text[i];
+                if (c == '\u001b' && i + 1 < text.Length && text[i + 1] == ']')
+                {
+                    // An OSC sequence, to the bell or the string terminator: a hyperlink starts or ends.
+                    int j = i + 2;
+                    while (j < text.Length && text[j] != '\u0007' && text[j] != '\u001b') j++;
+                    string body = text.Substring(i + 2, j - i - 2);
+                    if (body.StartsWith("8;", StringComparison.Ordinal))
+                    {
+                        int semi = body.IndexOf(';', 2);
+                        url = semi >= 0 && semi + 1 < body.Length ? body.Substring(semi + 1) : null;
+                    }
+                    i = j < text.Length && text[j] == '\u001b' ? j + 2 : j + 1;
+                    continue;
+                }
+                if (c == '\u001b' && i + 1 < text.Length && text[i + 1] == '[')
+                {
+                    // A CSI sequence (colours, the cursor) takes no cell.
+                    int j = i + 2;
+                    while (j < text.Length && (text[j] < '@' || text[j] > '~')) j++;
+                    i = j + 1;
+                    continue;
+                }
+                // The second half of a surrogate pair is in the cell of the first.
+                if (!char.IsLowSurrogate(c))
+                {
+                    if (cell == column) return url != null && IsSafeLink(url) ? url : null;
+                    cell++;
+                }
+                i++;
+            }
+            return null;
+        }
+
+        /// <summary>Opens a link that was clicked, with OpenLink when it is set, else in the browser of the system.</summary>
+        private void OpenClickedLink(string url)
+        {
+            try
+            {
+                var open = OpenLink;
+                if (open != null)
+                {
+                    open(url);
+                    return;
+                }
+                var start = new ProcessStartInfo(RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "open" : "xdg-open")
+                {
+                    UseShellExecute = false,
+                    // Whatever the opener says would land on the dashboard.
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+                start.ArgumentList.Add(url);
+                using (Process.Start(start)) { }
+            }
+            catch (Exception) { /* A link that cannot be opened must not reach the run. */ }
+        }
+
+        /// <summary>Whether the dashboard should take the clicks of the mouse for the tests it is about to run.</summary>
+        private bool WantsClicks()
+        {
+            if (!ClickLinks || !ReadKeys || !_console || !Ansi || !_fullScreen) return false;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT) return false;
+            try { return !Console.IsInputRedirected; }
+            catch (Exception) { return false; }
         }
 
         [DllImport("libc")]

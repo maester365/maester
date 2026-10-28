@@ -6,6 +6,7 @@ Describe 'Request-MtGitHubAppOrganizationInstall' {
     BeforeEach {
         $script:readHostCallCount = 0
         Mock Get-MtUserInteractive -ModuleName Maester { $true }
+        Mock Test-MtGitHubPromptBlocked -ModuleName Maester { $false }
     }
 
     It 'Explains the install step, opens the browser only after confirmation, and returns true' {
@@ -59,6 +60,20 @@ Describe 'Request-MtGitHubAppOrganizationInstall' {
 
         Should -Invoke Open-MtBrowserUrl -ModuleName Maester -Times 0 -Exactly
         Should -Invoke Read-Host -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Returns false without prompting when nobody can answer, even if the host reports interactive' {
+        Mock Test-MtGitHubPromptBlocked -ModuleName Maester { $true }
+        Mock Read-Host -ModuleName Maester { throw 'Read-Host must not be called when nobody can answer.' }
+        Mock Open-MtBrowserUrl -ModuleName Maester { throw 'Browser must not open when nobody can answer.' }
+
+        InModuleScope Maester {
+            $result = Request-MtGitHubAppOrganizationInstall -Organization 'myorg' -InstallUrl 'https://github.com/apps/maester-cli/installations/new' 6>$null
+            $result | Should -BeFalse
+        }
+
+        Should -Invoke Read-Host -ModuleName Maester -Times 0 -Exactly
+        Should -Invoke Open-MtBrowserUrl -ModuleName Maester -Times 0 -Exactly
     }
 
     It 'Returns false without prompting in non-interactive sessions' {

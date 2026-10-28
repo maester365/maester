@@ -52,8 +52,6 @@
       "GlobalSettings": {
         "DataverseEnvironmentUrl": "",
         "EmergencyAccessAccounts": [],
-        "GitHubApiBaseUri": "https://api.github.com",
-        "GitHubApiVersion": "2022-11-28",
         "GitHubOrganization": ""
       },
       "EffectiveSeverity": {
@@ -68,8 +66,6 @@
       "GlobalSettings": {
         "DataverseEnvironmentUrl": "",
         "EmergencyAccessAccounts": [],
-        "GitHubApiBaseUri": "https://api.github.com",
-        "GitHubApiVersion": "2022-11-28",
         "GitHubOrganization": ""
       },
       "EffectiveSeverity": {

@@ -257,6 +257,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1223](./MT.1223.md) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224.md) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225.md) | Users should not be able to create Agent Identity Blueprints. | Medium | Entra ID | Agent identities |
+| [MT.1226](./MT.1226.md) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Medium | Entra ID | Applications |
 | [MT.1228](./MT.1228.md) | Ensure iOS compliance policy blocks jailbroken devices. | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229.md) | Ensure iOS compliance policy requires a strong device passcode. | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230.md) | Ensure iOS compliance policy requires a minimum operating system version. | Medium | Intune | Device compliance |
@@ -281,3 +282,4 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1249](./MT.1249.md) | Ensure Android app protection policy acts on the device threat level. | Medium | Intune | App protection |
 | [MT.1250](./MT.1250.md) | Ensure Android app protection policy blocks screen capture of organization data. | Low | Intune | App protection |
 | [MT.1251](./MT.1251.md) | Ensure Android app protection policy requires Play Integrity device attestation. | Medium | Intune | App protection |
+| [MT.1252](./MT.1252.md) | Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID. | Medium | Entra ID | App consent and permissions |

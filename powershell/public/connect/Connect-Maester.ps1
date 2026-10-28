@@ -405,11 +405,24 @@
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
             $securityComplianceConnected = $false
-            if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
+            # Security & Compliance rides on the Exchange Online connection, so decide on whether Exchange
+            # Online is actually connected, not on the -Service argument. The -Service terms short-circuit the
+            # single-call path (Exchange Online was just attempted earlier in this same invocation); otherwise
+            # Test-MtConnection reports the live session, so connecting in two steps (Exchange Online first,
+            # Security & Compliance after) works too. #2467
+            # Drop any cached session list so the check sees sessions connected since it was cached.
+            $__MtSession.ExoCache.Remove('ConnectionInformation')
+            $exchangeOnlineReady = $Service -contains 'ExchangeOnline' -or $Service -contains 'All' -or
+               [bool](Test-MtConnection -Service ExchangeOnline -ErrorAction SilentlyContinue)
+            if (-not $exchangeOnlineReady) {
                Write-Verbose 'The Security & Compliance module is dependent on the Exchange Online module. For more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell'
-               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires ExchangeOnline in -Service'
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires an Exchange Online connection'
             } elseif ($UseDeviceCode) {
+               # Connect-IPPSSession has no device code flow, so skipping is unavoidable. When the caller asked
+               # for Security & Compliance (directly or through All) a warning makes the lost test coverage
+               # visible instead of a single Skipped row that reads like "not applicable to this tenant". #2467
                Write-Verbose 'The Security & Compliance module does not support device code flow authentication.'
+               Write-Warning 'Security & Compliance does not support device code sign-in (-UseDeviceCode); its tests will be skipped. Connect without -UseDeviceCode to include them.'
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Device code sign-in is not supported for Security & Compliance'
             } elseif (-not $exchangeModuleInstalled) {
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
@@ -417,6 +430,8 @@
                try {
                   Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false -ErrorAction Stop
                   $securityComplianceConnected = $true
+                  # The Exchange Online check above may have cached the session list before this connection existed.
+                  $__MtSession.ExoCache.Remove('ConnectionInformation')
                   $securityComplianceUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
                      Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' } |
                      Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
@@ -433,6 +448,7 @@
                      try {
                         Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false -ErrorAction Stop
                         $securityComplianceConnected = $true
+                        $__MtSession.ExoCache.Remove('ConnectionInformation')
                         Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details "Using UPN $ExoUPN from Exchange Online"
                      } catch {
                         Write-Verbose "Failed to connect to the Security & Compliance PowerShell: $($_.Exception.Message)"
