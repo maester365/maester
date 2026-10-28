@@ -29,6 +29,7 @@ $__MtSession = @{
 	DataverseResourceUrl   = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
 	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
 	SpoCache               = @{}                 # Cache for SharePoint Online tenant settings retrieved via PnP
+	FabricCache            = @{}                 # Fabric admin API data cached for the current test run
 	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
 	ADCache                = @{}                 # Active Directory data cache
 	ADConnection           = $null               # Active Directory connection state

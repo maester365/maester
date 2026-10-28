@@ -20,7 +20,7 @@ keywords:
 
 # CIS.M365.5.1.3.4 - (L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
