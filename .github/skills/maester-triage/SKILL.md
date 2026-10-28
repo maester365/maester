@@ -129,7 +129,7 @@ the diff decides.
 
 Use the product keys from `powershell/assets/MaesterTaxonomy.psd1`: `product: entra`,
 `exchange`, `defender`, `intune`, `purview`, `sharepoint`, `teams`, `microsoft-365`, `azure`,
-`azure-devops`, `github`, `ad`, `copilot-studio`. For a PR that adds or changes checks, count the
+`azure-devops`, `github`, `ad`, `copilot-studio`, `fabric`. For a PR that adds or changes checks, count the
 `Product` of each check it touches and keep the three products with the most checks, dropping
 any product with a single check when the PR touches more than three products. For an issue or
 discussion, the product the report is about. Engine changes that are not specific to one service

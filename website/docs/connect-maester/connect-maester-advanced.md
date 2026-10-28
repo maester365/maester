@@ -248,6 +248,20 @@ Connect-Maester -Service Dataverse
 
 > The service principal must be registered as an Application User in Power Platform with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
 
+### Microsoft Fabric (via Az.Accounts)
+
+The CIS Microsoft Fabric checks (CIS.M365.9.1.1–9.1.12) read the tenant settings from the [Fabric admin API](https://learn.microsoft.com/rest/api/fabric/admin/tenants/list-tenant-settings) with a token from your Azure context. Connect with `Connect-AzAccount` (or `Connect-Maester -Service Azure`) before running `Invoke-Maester`.
+
+```powershell
+# Interactive, as a Fabric administrator
+Connect-AzAccount
+
+# Non-interactive (service principal)
+Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
+```
+
+> A user must hold the **Fabric Administrator** role. A service principal or managed identity must be allowed to call the admin APIs: in the Fabric admin portal, under **Admin API settings**, turn on **Service principals can access read-only admin APIs** and add a security group that contains the service principal. Without this access the API returns 403 Forbidden and the Fabric checks report an error.
+
 ### Azure DevOps (via ADOPS)
 
 The Azure DevOps security tests (AZDO.*) use the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module. This module is not bundled with Maester; install it separately and connect to your organization before running `Invoke-Maester`. If `ADOPS` is not installed or there is no active connection, the Azure DevOps tests are skipped.

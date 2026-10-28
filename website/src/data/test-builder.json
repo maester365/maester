@@ -559,6 +559,33 @@
       ]
     },
     {
+      "key": "fabric",
+      "name": "Microsoft Fabric",
+      "aliases": [
+        "Fabric",
+        "Microsoft Fabric",
+        "Power BI"
+      ],
+      "features": [
+        {
+          "key": "export-and-sharing",
+          "name": "Export and sharing settings"
+        },
+        {
+          "key": "developer-settings",
+          "name": "Developer settings"
+        },
+        {
+          "key": "information-protection",
+          "name": "Information protection"
+        },
+        {
+          "key": "tenant-settings",
+          "name": "Tenant settings"
+        }
+      ]
+    },
+    {
       "key": "microsoft-365",
       "name": "Microsoft 365",
       "aliases": [
@@ -2041,6 +2068,90 @@
           "id": "8.6.1",
           "tests": [
             "CIS.M365.8.6.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.1",
+          "tests": [
+            "CIS.M365.9.1.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.2",
+          "tests": [
+            "CIS.M365.9.1.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.3",
+          "tests": [
+            "CIS.M365.9.1.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.4",
+          "tests": [
+            "CIS.M365.9.1.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.5",
+          "tests": [
+            "CIS.M365.9.1.5"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "9.1.6",
+          "tests": [
+            "CIS.M365.9.1.6"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.7",
+          "tests": [
+            "CIS.M365.9.1.7"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.8",
+          "tests": [
+            "CIS.M365.9.1.8"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.9",
+          "tests": [
+            "CIS.M365.9.1.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.10",
+          "tests": [
+            "CIS.M365.9.1.10"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.11",
+          "tests": [
+            "CIS.M365.9.1.11"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "9.1.12",
+          "tests": [
+            "CIS.M365.9.1.12"
           ],
           "level": "L1"
         }
