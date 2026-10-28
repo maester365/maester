@@ -6,6 +6,9 @@ Describe 'Get-MtExo -Request AdminAuditLogConfig' {
             function global:Get-ConnectionInformation { }
         }
 
+        New-Module -Name tmpEXO_restricted_mttest -ScriptBlock {
+            function Get-OrganizationConfig { }
+        } | Import-Module -Global -Force
         # Connect-ExchangeOnline and Connect-IPPSSession each import a temporary module that exports
         # Get-AdminAuditLogConfig. The Security & Compliance copy is imported last, so an unqualified
         # call resolves to it and reports audit log ingestion as disabled (#1802).
@@ -18,7 +21,7 @@ Describe 'Get-MtExo -Request AdminAuditLogConfig' {
     }
 
     AfterAll {
-        Remove-Module tmpEXO_mttest, tmpEOP_mttest -Force -ErrorAction SilentlyContinue
+        Remove-Module tmpEXO_restricted_mttest, tmpEXO_mttest, tmpEOP_mttest -Force -ErrorAction SilentlyContinue
         Clear-MtExoCache
     }
 
@@ -26,10 +29,11 @@ Describe 'Get-MtExo -Request AdminAuditLogConfig' {
         Clear-MtExoCache
     }
 
-    It 'Calls the Exchange Online session copy when Security & Compliance is also connected' {
+    It 'Skips an earlier Exchange Online module that does not export the command' {
         Mock -ModuleName Maester Get-ConnectionInformation {
-            [PSCustomObject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; ModuleName = 'tmpEXO_mttest' }
-            [PSCustomObject]@{ Name = 'ExchangeOnline_2'; IsEopSession = $true; State = 'Connected'; ModuleName = 'tmpEOP_mttest' }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEXO_restricted_mttest') }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_2'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEXO_mttest') }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_3'; IsEopSession = $true; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEOP_mttest') }
         }
 
         (Get-MtExo -Request AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled | Should -BeTrue
