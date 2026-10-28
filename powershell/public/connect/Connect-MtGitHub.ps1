@@ -228,7 +228,7 @@
         if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
     }
 
-    if ([string]::IsNullOrEmpty($plainToken) -and (Get-MtUserInteractive)) {
+    if ([string]::IsNullOrEmpty($plainToken) -and (Get-MtUserInteractive) -and -not (Test-MtGitHubPromptBlocked)) {
         $deviceToken = Get-MtGitHubAppDeviceToken -ClientId $maesterGitHubAppClientId
         if ($null -eq $deviceToken -or [string]::IsNullOrWhiteSpace([string]$deviceToken.AccessToken)) {
             $failureReason = if ($null -ne $deviceToken -and -not [string]::IsNullOrWhiteSpace([string]$deviceToken.FailureReason)) { [string]$deviceToken.FailureReason } else { 'GitHubDeviceFlowFailed' }
@@ -259,7 +259,7 @@
 
     # Probe 1: token identity
     try {
-        $userResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+        $userResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user" -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
         $user = $userResponse.Content | ConvertFrom-Json
         Write-Verbose "GitHub token identity: $($user.login)"
     } catch {
@@ -327,7 +327,7 @@
         $roleWarning = $null
 
         try {
-            $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
             try {
                 $orgData = $orgResponse.Content | ConvertFrom-Json -ErrorAction Stop
             } catch {
@@ -386,7 +386,7 @@
         # Use /user/memberships/orgs/{org} so the token only has to prove its own membership,
         # not read an arbitrary /orgs/{org}/memberships/{username} record.
         try {
-            $membershipResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            $membershipResponse = Invoke-WebRequest -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
 
             $membershipData = $null
             try {
@@ -471,7 +471,7 @@
     $adminAcceptedPermissions = $null
     $adminWarning            = $null
     try {
-        $adminResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+        $adminResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions" -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
         $adminVerified   = $true
         $adminStatusCode = 200
         if ($adminResponse.PSObject.Properties.Name -contains 'StatusCode' -and $null -ne $adminResponse.StatusCode) {

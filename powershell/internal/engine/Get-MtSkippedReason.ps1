@@ -1,4 +1,4 @@
-function Get-MtSkippedReason {
+﻿function Get-MtSkippedReason {
     <#
     .SYNOPSIS
     Returns the description for why a test was skipped.
@@ -19,7 +19,7 @@ function Get-MtSkippedReason {
         "NotConnectedSharePoint" { "Not connected to SharePoint Online. See [Connecting to SharePoint Online](https://maester.dev/docs/connect-maester/#connect-to-sharepoint-online-optional)"; break }
         "NotConnectedActiveDirectory" { "Not connected to Active Directory. Run ``Connect-Maester -Service ActiveDirectory`` before running Active Directory tests."; break }
         "NotConnectedActiveDirectoryDNS" { "Active Directory DNS data could not be retrieved."; break }
-        "NotDotGovDomain" { "This test is only for federal, executive branch, departments and agencies. To override use [Test-MtCisaDmarcAggregateCisa -Force](https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa)"; break }
+        "NotDotGovDomain" { "This test is only for federal, executive branch, departments and agencies. To check all domains anyway, add ``{ `"Id`": `"CISA.MS.EXO.4.3`", `"Parameters`": { `"Force`": true } }`` to TestSettings in your run configuration. See [CISA.MS.EXO.4.3](https://maester.dev/docs/tests/CISA.MS.EXO.4.3)"; break }
         "NotLicensedEntraIDP1" { "This test is for tenants that are licensed for Entra ID P1. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }
         "NotLicensedEntraIDP2" { "This test is for tenants that are licensed for Entra ID P2. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }
         "NotLicensedEntraIDGovernance" { "This test is for tenants that are licensed for Entra ID Governance. See [Entra ID Governance licensing](https://learn.microsoft.com/entra/fundamentals/licensing#microsoft-entra-id-governance)"; break }

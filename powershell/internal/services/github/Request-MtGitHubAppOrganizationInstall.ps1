@@ -20,7 +20,7 @@ function Request-MtGitHubAppOrganizationInstall {
         [string] $TokenDocsUrl = 'https://maester.dev/docs/commands/Connect-MtGitHub'
     )
 
-    if (-not (Get-MtUserInteractive)) {
+    if (-not (Get-MtUserInteractive) -or (Test-MtGitHubPromptBlocked)) {
         return $false
     }
 

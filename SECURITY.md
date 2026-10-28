@@ -18,6 +18,8 @@ Use GitHub private vulnerability reporting for this repository:
 
 https://github.com/maester365/maester/security/advisories/new
 
+If you cannot use GitHub, email maester.security@merill.net.
+
 Include enough detail for maintainers to reproduce and assess the vulnerability:
 
 - Affected Maester version or commit.

@@ -143,7 +143,8 @@ function Resolve-MtPackGitHubSource {
         RepositoryId  = [long]$repository.id
         OwnerId       = [long]$repository.owner.id
         OwnerLogin    = [string]$repository.owner.login
-        Private       = [bool]$repository.private
+        # Unknown stays $null, so a pack whose visibility GitHub didn't report is never treated as public.
+        Private       = if ($repository.PSObject.Properties['private'] -and $null -ne $repository.private) { [bool]$repository.private } else { $null }
         Archived      = [bool]$repository.archived
         Ref           = $ref
         Commit        = $commit

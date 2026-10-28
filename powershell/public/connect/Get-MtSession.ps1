@@ -33,6 +33,10 @@ function Get-MtSession {
         $sessionCopy[$key] = $__MtSession[$key]
     }
 
+    if ($null -ne $sessionCopy['ADCredential']) {
+        $sessionCopy['ADCredential'] = '<redacted>'
+    }
+
     $authHeader = $__MtSession['GitHubAuthHeader']
     if ($null -ne $authHeader) {
         if ($authHeader -is [System.Collections.IDictionary]) {

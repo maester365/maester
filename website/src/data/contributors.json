@@ -756,6 +756,57 @@
       "recentCommits": 1
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "ArrankaGo LLC",
+      "location": "Dominican Republic",
+      "locationFlag": "",
+      "url": "https://consulting.arrankago.com",
+      "socials": {
+        "linkedin": "eduard-arbona-99872b403",
+        "bluesky": "arbona.bsky.social"
+      },
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [
+        "MT.1228",
+        "MT.1229",
+        "MT.1230",
+        "MT.1231",
+        "MT.1232",
+        "MT.1233",
+        "MT.1234",
+        "MT.1235",
+        "MT.1236",
+        "MT.1237",
+        "MT.1238",
+        "MT.1239",
+        "MT.1240",
+        "MT.1241",
+        "MT.1242",
+        "MT.1243",
+        "MT.1244",
+        "MT.1245",
+        "MT.1246",
+        "MT.1247",
+        "MT.1248",
+        "MT.1249",
+        "MT.1250",
+        "MT.1251"
+      ],
+      "testsContributed": [
+        "MT.1011",
+        "MT.1024"
+      ],
+      "initials": "EA",
+      "recentCommits": 12
+    },
+    {
       "id": "bdrogja",
       "github": "bdrogja",
       "name": "Boris Drogja",
@@ -889,6 +940,46 @@
       "recentCommits": 13
     },
     {
+      "id": "nicolonsky",
+      "github": "nicolonsky",
+      "name": "Nicola Suter",
+      "title": "All things related to endpoints and security",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
+      "pinLast": false,
+      "company": "baseVISION",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://tech.nicolonsky.ch",
+      "socials": {
+        "linkedin": "nicolasuter",
+        "x": "nicolonsky"
+      },
+      "avatar": "https://github.com/nicolonsky.png",
+      "firstContribution": "2025-12-05",
+      "testsAuthored": [
+        "MT.1090",
+        "MT.1091",
+        "MT.1092",
+        "MT.1093",
+        "MT.1094",
+        "MT.1095",
+        "MT.1096",
+        "MT.1097",
+        "MT.1098",
+        "MT.1099",
+        "MT.1100",
+        "MT.1101",
+        "MT.1102",
+        "MT.1103",
+        "MT.1105",
+        "MT.1226"
+      ],
+      "testsContributed": [],
+      "initials": "NS",
+      "recentCommits": 0
+    },
+    {
       "id": "Mynster9361",
       "github": "Mynster9361",
       "name": "-Mynster",
@@ -947,45 +1038,6 @@
       ],
       "initials": "M",
       "recentCommits": 3
-    },
-    {
-      "id": "nicolonsky",
-      "github": "nicolonsky",
-      "name": "Nicola Suter",
-      "title": "All things related to endpoints and security",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
-      "pinLast": false,
-      "company": "baseVISION",
-      "location": "Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://tech.nicolonsky.ch",
-      "socials": {
-        "linkedin": "nicolasuter",
-        "x": "nicolonsky"
-      },
-      "avatar": "https://github.com/nicolonsky.png",
-      "firstContribution": "2025-12-05",
-      "testsAuthored": [
-        "MT.1090",
-        "MT.1091",
-        "MT.1092",
-        "MT.1093",
-        "MT.1094",
-        "MT.1095",
-        "MT.1096",
-        "MT.1097",
-        "MT.1098",
-        "MT.1099",
-        "MT.1100",
-        "MT.1101",
-        "MT.1102",
-        "MT.1103",
-        "MT.1105"
-      ],
-      "testsContributed": [],
-      "initials": "NS",
-      "recentCommits": 0
     },
     {
       "id": "thomas-s-schmidt",
@@ -1447,7 +1499,7 @@
         "MT.1100"
       ],
       "initials": "SE",
-      "recentCommits": 5
+      "recentCommits": 4
     },
     {
       "id": "DanielLystad",
@@ -1723,6 +1775,29 @@
       "recentCommits": 1
     },
     {
+      "id": "Dfrank77",
+      "github": "Dfrank77",
+      "name": "Darius Frank",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Dfrank77.png",
+      "firstContribution": "2026-10-15",
+      "testsAuthored": [
+        "MT.1224",
+        "MT.1252"
+      ],
+      "testsContributed": [],
+      "initials": "DF",
+      "recentCommits": 7
+    },
+    {
       "id": "simon-vedder",
       "github": "simon-vedder",
       "name": "Simon Vedder",
@@ -1827,28 +1902,6 @@
       ],
       "initials": "A",
       "recentCommits": 0
-    },
-    {
-      "id": "Dfrank77",
-      "github": "Dfrank77",
-      "name": "Darius Frank",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/Dfrank77.png",
-      "firstContribution": "2026-10-15",
-      "testsAuthored": [
-        "MT.1224"
-      ],
-      "testsContributed": [],
-      "initials": "DF",
-      "recentCommits": 7
     },
     {
       "id": "Oppedijk",
@@ -1967,32 +2020,6 @@
       ],
       "initials": "CE",
       "recentCommits": 0
-    },
-    {
-      "id": "earbona23",
-      "github": "earbona23",
-      "name": "Eduard Arbona",
-      "title": "Security engineer, Microsoft Entra ID and cloud identity",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "ArrankaGo LLC",
-      "location": "Dominican Republic",
-      "locationFlag": "",
-      "url": "https://consulting.arrankago.com",
-      "socials": {
-        "linkedin": "eduard-arbona-99872b403",
-        "bluesky": "arbona.bsky.social"
-      },
-      "avatar": "https://github.com/earbona23.png",
-      "firstContribution": "2026-09-14",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1011",
-        "MT.1024"
-      ],
-      "initials": "EA",
-      "recentCommits": 12
     },
     {
       "id": "amlhive-tech",
@@ -2725,7 +2752,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 171
+      "recentCommits": 167
     }
   ],
   "attributions": {
@@ -6236,6 +6263,110 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1226": {
+      "author": "nicolonsky",
+      "contributors": []
+    },
+    "MT.1228": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1229": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1230": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1231": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1232": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1233": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1234": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1235": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1236": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1237": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1238": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1239": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1240": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1241": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1242": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1243": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1244": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1245": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1246": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1247": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1248": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1249": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1250": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1251": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1252": {
+      "author": "Dfrank77",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": []
@@ -6591,7 +6722,7 @@
       "path": "/docs/tests/AD-CFG-21"
     },
     "AD-CFG-22": {
-      "title": "Exactly one KDS root key should exist",
+      "title": "KDS root key count should be acceptable",
       "path": "/docs/tests/AD-CFG-22"
     },
     "AD-CFG-23": {
@@ -6783,7 +6914,7 @@
       "path": "/docs/tests/AD-DCOMP-05"
     },
     "AD-DCOMP-06": {
-      "title": "No enabled computers should be stale for 180 days or more",
+      "title": "No enabled computers should be stale beyond the configured threshold",
       "path": "/docs/tests/AD-DCOMP-06"
     },
     "AD-DCOMP-07": {
@@ -7219,7 +7350,7 @@
       "path": "/docs/tests/AD-GRP-10"
     },
     "AD-KRBTGT-01": {
-      "title": "KRBTGT password age should not exceed 180 days",
+      "title": "KRBTGT password age should not exceed the configured maximum",
       "path": "/docs/tests/AD-KRBTGT-01"
     },
     "AD-KRBTGT-02": {
@@ -9589,6 +9720,110 @@
     "MT.1225": {
       "title": "Users should not be able to create Agent Identity Blueprints.",
       "path": "/docs/next/tests/MT.1225"
+    },
+    "MT.1226": {
+      "title": "GitHub and GitLab federated identity credentials should use immutable subject identifiers.",
+      "path": "/docs/next/tests/MT.1226"
+    },
+    "MT.1228": {
+      "title": "Ensure iOS compliance policy blocks jailbroken devices.",
+      "path": "/docs/next/tests/MT.1228"
+    },
+    "MT.1229": {
+      "title": "Ensure iOS compliance policy requires a strong device passcode.",
+      "path": "/docs/next/tests/MT.1229"
+    },
+    "MT.1230": {
+      "title": "Ensure iOS compliance policy requires a minimum operating system version.",
+      "path": "/docs/next/tests/MT.1230"
+    },
+    "MT.1231": {
+      "title": "Ensure iOS compliance policy requires a Defender machine risk score level.",
+      "path": "/docs/next/tests/MT.1231"
+    },
+    "MT.1232": {
+      "title": "Ensure Android compliance policy blocks rooted devices.",
+      "path": "/docs/next/tests/MT.1232"
+    },
+    "MT.1233": {
+      "title": "Ensure Android compliance policy requires a strong device password.",
+      "path": "/docs/next/tests/MT.1233"
+    },
+    "MT.1234": {
+      "title": "Ensure Android compliance policy requires a recent security patch level.",
+      "path": "/docs/next/tests/MT.1234"
+    },
+    "MT.1235": {
+      "title": "Ensure Android compliance policy requires device threat protection.",
+      "path": "/docs/next/tests/MT.1235"
+    },
+    "MT.1236": {
+      "title": "Ensure Android compliance policy blocks USB debugging.",
+      "path": "/docs/next/tests/MT.1236"
+    },
+    "MT.1237": {
+      "title": "Ensure Android compliance policy blocks devices managed with device administrator.",
+      "path": "/docs/next/tests/MT.1237"
+    },
+    "MT.1238": {
+      "title": "Ensure iOS app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1238"
+    },
+    "MT.1239": {
+      "title": "Ensure iOS app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1239"
+    },
+    "MT.1240": {
+      "title": "Ensure iOS app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1240"
+    },
+    "MT.1241": {
+      "title": "Ensure iOS app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1241"
+    },
+    "MT.1242": {
+      "title": "Ensure iOS app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1242"
+    },
+    "MT.1243": {
+      "title": "Ensure iOS app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1243"
+    },
+    "MT.1244": {
+      "title": "Ensure Android app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1244"
+    },
+    "MT.1245": {
+      "title": "Ensure Android app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1245"
+    },
+    "MT.1246": {
+      "title": "Ensure Android app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1246"
+    },
+    "MT.1247": {
+      "title": "Ensure Android app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1247"
+    },
+    "MT.1248": {
+      "title": "Ensure Android app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1248"
+    },
+    "MT.1249": {
+      "title": "Ensure Android app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1249"
+    },
+    "MT.1250": {
+      "title": "Ensure Android app protection policy blocks screen capture of organization data.",
+      "path": "/docs/next/tests/MT.1250"
+    },
+    "MT.1251": {
+      "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
+      "path": "/docs/next/tests/MT.1251"
+    },
+    "MT.1252": {
+      "title": "Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.",
+      "path": "/docs/next/tests/MT.1252"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

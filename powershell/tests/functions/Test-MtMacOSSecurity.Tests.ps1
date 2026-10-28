@@ -542,7 +542,14 @@
                         displayName                      = 'Mac Compliance'
                         systemIntegrityProtectionEnabled = $true
                         gatekeeperAllowedAppSource       = 'macAppStore'
-                        assignments                      = @([pscustomobject]@{ id = 'a1' })
+                        assignments                      = @(
+                            [pscustomobject]@{
+                                id     = 'a1'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                    groupId       = '11111111-1111-1111-1111-111111111111'
+                                }
+                            })
                     },
                     [pscustomobject]@{
                         id            = 'win-1'
@@ -561,6 +568,62 @@
                 $result[0].RequiresSip | Should -BeTrue
                 $result[0].IsAssigned | Should -BeTrue
                 $result[0].AssignmentCount | Should -Be 1
+            }
+        }
+
+        It 'does not count an exclusion group as coverage' {
+            # Graph returns inclusion and exclusion targets in the same collection. A policy whose
+            # only assignment excludes a group is evaluated against no device, so counting the
+            # collection raw would report it as assigned and let MT.1214 and MT.1216 treat it as
+            # compliant.
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                return @(
+                    [pscustomobject]@{
+                        id                               = 'mac-excl'
+                        '@odata.type'                    = '#microsoft.graph.macOSCompliancePolicy'
+                        displayName                      = 'Excluded only'
+                        systemIntegrityProtectionEnabled = $true
+                        assignments                      = @(
+                            [pscustomobject]@{
+                                id     = 'excluded'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                    groupId       = '33333333-3333-3333-3333-333333333333'
+                                }
+                            })
+                    },
+                    [pscustomobject]@{
+                        id                               = 'mac-mixed'
+                        '@odata.type'                    = '#microsoft.graph.macOSCompliancePolicy'
+                        displayName                      = 'Included and excluded'
+                        systemIntegrityProtectionEnabled = $true
+                        assignments                      = @(
+                            [pscustomobject]@{
+                                id     = 'included'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                                    groupId       = '44444444-4444-4444-4444-444444444444'
+                                }
+                            },
+                            [pscustomobject]@{
+                                id     = 'excluded'
+                                target = [pscustomobject]@{
+                                    '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                                    groupId       = '55555555-5555-5555-5555-555555555555'
+                                }
+                            })
+                    }
+                )
+            }
+
+            InModuleScope Maester {
+                $result = Get-MtMacOSCompliancePolicy
+
+                $result.Count | Should -Be 2
+                $result[0].AssignmentCount | Should -Be 0
+                $result[0].IsAssigned | Should -BeFalse
+                $result[1].AssignmentCount | Should -Be 1
+                $result[1].IsAssigned | Should -BeTrue
             }
         }
 
@@ -623,13 +686,63 @@
             }
             Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
                 $RelativeUri -like '*/assignments*'
-            } -MockWith { return @([pscustomobject]@{ id = 'a1' }) }
+            } -MockWith {
+                return @([pscustomobject]@{
+                        id     = 'a1'
+                        target = [pscustomobject]@{
+                            '@odata.type' = '#microsoft.graph.groupAssignmentTarget'
+                            groupId       = '22222222-2222-2222-2222-222222222222'
+                        }
+                    })
+            }
 
             InModuleScope Maester {
                 $r = Get-MtMacOSGatekeeperEnforcement
                 $r.Count | Should -Be 1
                 $r[0].AssessmentEnabled | Should -BeTrue
                 $null -eq $r[0].AllowIdentifiedDevelopers | Should -BeTrue
+            }
+        }
+
+        It 'does not count an exclusion group as coverage' {
+            # The usability filter keeps an element that has an id, and an exclusion assignment has
+            # one. A configuration policy assigned only as an exclusion enforces the payload on no
+            # device, so it must not be reported as assigned.
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*configurationPolicies*' -and
+                $RelativeUri -notlike '*/settings*' -and $RelativeUri -notlike '*/assignments*'
+            } -MockWith {
+                return @([pscustomobject]@{ id = 'p1'; name = 'Gatekeeper' })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*/settings*'
+            } -MockWith {
+                return @([pscustomobject]@{
+                        settingInstance = [pscustomobject]@{
+                            settingDefinitionId         = 'com.apple.systempolicy.control_enableassessment'
+                            choiceSettingValue          = [pscustomobject]@{ value = 'com.apple.systempolicy.control_enableassessment_true' }
+                            groupSettingCollectionValue = @()
+                        }
+                    })
+            }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like '*/assignments*'
+            } -MockWith {
+                return @([pscustomobject]@{
+                        id     = 'excluded'
+                        target = [pscustomobject]@{
+                            '@odata.type' = '#microsoft.graph.exclusionGroupAssignmentTarget'
+                            groupId       = '66666666-6666-6666-6666-666666666666'
+                        }
+                    })
+            }
+
+            InModuleScope Maester {
+                $r = Get-MtMacOSGatekeeperEnforcement
+
+                $r.Count | Should -Be 1
+                $r[0].AssignmentCount | Should -Be 0
+                $r[0].IsAssigned | Should -BeFalse
             }
         }
     }

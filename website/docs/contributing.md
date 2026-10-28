@@ -15,6 +15,8 @@ This guide is for anyone who wants to contribute to the Maester project. Whether
 
 Follow the guide below to set up Maester for development on your local machine, make changes, and submit a pull request.
 
+If you work with GitHub Copilot or Claude Code, the repository ships agents and skills that know these conventions, for example `maester-test-expert` for writing a check. [Agents and skills](./agents-and-skills.md) lists them, who each one is for, and how to change them.
+
 ## Repository layout
 
 Maester has a fixed folder layout so that anyone, person or AI agent, can tell where a file belongs from what it
@@ -356,6 +358,29 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 - Read the [markdown documentation](https://docusaurus.io/docs/markdown-features) for more information on some of the custom markdown features available.
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://maester.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
+
+#### Blog post images
+
+Every blog post has a card image (`img/card.png` in the post's folder) that is shown on the [blog](https://maester.dev/blog) and in link previews on social media. The images all use one template, so don't make one by hand.
+
+You don't have to do anything: after a new post is merged, the `Blog card images` workflow makes its card and opens a pull request with it. If the post has no headline and label, Claude suggests them, and the maintainer checks them in that pull request.
+
+To choose the text yourself, add a short headline and a label to the post's front matter:
+
+```yaml
+card_headline: "Maester *3.0*: a new test engine" # *words* are highlighted
+card_label: Release # Release, Guide, Feature, New tests, Integration, Event, Video, News, ...
+```
+
+To see the card before you open your pull request, generate it from the ./website folder. The first time, install the browser that renders it with `npx playwright install chromium`.
+
+```shell
+npm run blog-cards                                # posts that don't have a card yet
+npm run blog-cards -- 2026-10-24-maester-packs    # one post, by its folder name
+npm run blog-cards -- --all                       # every post, after a change to the template
+```
+
+The script saves the image and sets `image: ./img/card.png` in the post's front matter. Without `card_headline` the card uses the post's title. The template is `website/scripts/blog-cards/template.html`.
 
 ### Site versioning
 

@@ -5,6 +5,16 @@
     $script:createdStubs = @()
     # Mocks with a -ParameterFilter only see parameters the command declares, so give those stubs the parameters the tests filter on.
     $stubBodies = @{
+        'Connect-AzAccount' = {
+            [CmdletBinding()]
+            param([switch]$SkipContextPopulation, [switch]$UseDeviceAuthentication, [string]$Environment, [string]$Tenant)
+            $null = $PSBoundParameters
+        }
+        'Connect-MicrosoftTeams' = {
+            [CmdletBinding()]
+            param([string]$TeamsEnvironmentName, [switch]$UseDeviceAuthentication)
+            $null = $PSBoundParameters
+        }
         'Connect-IPPSSession' = {
             [CmdletBinding()]
             param([string]$ConnectionUri, [string]$AzureADAuthorizationEndpointUri, [string]$UserPrincipalName, [switch]$BypassMailboxAnchoring, [switch]$ShowBanner)
@@ -259,6 +269,53 @@ Describe 'Connect-Maester connection summary' {
         Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly
     }
 
+    It 'Passes the Teams environment together with -UseDeviceCode' {
+        Connect-Maester -Service Teams -UseDeviceCode -TeamsEnvironmentName TeamsGCCH 6>$null
+
+        Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $UseDeviceAuthentication -and $TeamsEnvironmentName -eq 'TeamsGCCH'
+        }
+    }
+
+    Context 'When an Az context from another tenant already exists' {
+        BeforeEach {
+            Mock Get-AzContext -ModuleName Maester {
+                [pscustomobject]@{
+                    Account = [pscustomobject]@{ Id = 'admin@contoso.com' }
+                    Tenant  = [pscustomobject]@{ Id = '11111111-1111-1111-1111-111111111111' }
+                }
+            }
+            Mock Connect-AzAccount -ModuleName Maester {}
+        }
+
+        It 'Signs in to the requested tenant instead of reusing the context' {
+            Connect-Maester -Service Azure -TenantId '22222222-2222-2222-2222-222222222222' 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Tenant -eq '22222222-2222-2222-2222-222222222222'
+            }
+        }
+
+        It 'Reuses the context when its tenant is the requested one, whatever the letter case' {
+            Connect-Maester -Service Azure -TenantId '11111111-1111-1111-1111-111111111111'.ToUpper() 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when no tenant is requested' {
+            Connect-Maester -Service Azure 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Reuses the context when the tenant is given as a domain name, which cannot be compared with its ID' {
+            $verboseOutput = Connect-Maester -Service Azure -TenantId 'contoso.onmicrosoft.com' -Verbose 4>&1 6>$null
+
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 0 -Exactly
+            "$verboseOutput" | Should -BeLike "*cannot be compared*11111111-1111-1111-1111-111111111111*"
+        }
+    }
+
     It 'Shows only the first line of a Teams sign-in error' {
         Mock Connect-MicrosoftTeams -ModuleName Maester {
             throw [System.DllNotFoundException]::new("Unable to load shared library 'kernel32.dll' or one of its dependencies.`ndlopen(kernel32.dll.dylib, 0x0001): tried: ...")
@@ -291,6 +348,84 @@ Describe 'Connect-Maester connection summary' {
         $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
         $scc.Status | Should -Be 'Connected'
         $scc.Details | Should -Be 'Using UPN admin@contoso.com from Exchange Online'
+    }
+
+    It 'Connects Security & Compliance when Exchange Online is already connected but not in -Service (#2467)' {
+        # Two-step connect: an earlier call connected Exchange Online, so its session is live even though this
+        # call asks only for Security & Compliance. The decision must follow the live session, not -Service.
+        Mock Test-MtConnection -ModuleName Maester { $true } -ParameterFilter { $Service -contains 'ExchangeOnline' }
+
+        Connect-Maester -Service SecurityCompliance 6>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Connected'
+        $scc.Details | Should -Be 'compliance@contoso.com'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Reports Security & Compliance as connected right after a two-step connect (#2557)' {
+        # Uses the real Test-MtConnection and Get-MtExo, so the session list the Exchange Online check caches
+        # before Connect-IPPSSession must not hide the new Security & Compliance session afterwards.
+        $script:mtTestIppsConnected = $false
+        Mock Test-MtModuleImported -ModuleName Maester { $true } -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
+        Mock Get-ConnectionInformation -ModuleName Maester {
+            [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
+            if ($script:mtTestIppsConnected) {
+                [pscustomobject]@{ Name = 'ExchangeOnlineProtection_1'; IsEopSession = $true; State = 'Connected'; UserPrincipalName = 'compliance@contoso.com'; ModuleName = 'tmpEOP' }
+            }
+        }
+        Mock Connect-IPPSSession -ModuleName Maester { $script:mtTestIppsConnected = $true }
+        InModuleScope Maester { Clear-MtExoCache }
+
+        try {
+            Connect-Maester -Service SecurityCompliance 6>$null
+
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance').Status | Should -Be 'Connected'
+            Test-MtConnection -Service SecurityCompliance | Should -BeTrue
+        } finally {
+            $script:mtTestIppsConnected = $null
+            InModuleScope Maester { Clear-MtExoCache }
+        }
+    }
+
+    It 'Ignores a session list cached before Exchange Online connected (#2557)' {
+        Mock Test-MtModuleImported -ModuleName Maester { $true } -ParameterFilter { $Name -eq 'ExchangeOnlineManagement' }
+        Mock Get-ConnectionInformation -ModuleName Maester {
+            [pscustomobject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; UserPrincipalName = 'admin@contoso.com'; ModuleName = 'tmpEXO' }
+        }
+        Mock Connect-IPPSSession -ModuleName Maester {}
+        # An earlier check cached a list from before Exchange Online was connected.
+        InModuleScope Maester { $__MtSession.ExoCache['ConnectionInformation'] = @() }
+
+        try {
+            Connect-Maester -Service SecurityCompliance 6>$null
+
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance').Status | Should -Be 'Connected'
+            Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 1 -Exactly
+        } finally {
+            InModuleScope Maester { Clear-MtExoCache }
+        }
+    }
+
+    It 'Skips Security & Compliance when Exchange Online is neither requested nor connected (#2467)' {
+        Mock Test-MtConnection -ModuleName Maester { $false } -ParameterFilter { $Service -contains 'ExchangeOnline' }
+
+        Connect-Maester -Service SecurityCompliance 6>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Skipped'
+        $scc.Details | Should -Be 'Requires an Exchange Online connection'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 0 -Exactly
+    }
+
+    It 'Warns rather than silently skips Security & Compliance under -Service All -UseDeviceCode (#2467)' {
+        Connect-Maester -Service All -UseDeviceCode -WarningVariable deviceCodeWarnings 6>$null 3>$null
+
+        $scc = $script:connectionSummaryRows | Where-Object Service -eq 'Security & Compliance'
+        $scc.Status | Should -Be 'Skipped'
+        $scc.Details | Should -Be 'Device code sign-in is not supported for Security & Compliance'
+        ($deviceCodeWarnings -join "`n") | Should -Match 'device code'
+        Should -Invoke Connect-IPPSSession -ModuleName Maester -Times 0 -Exactly
     }
 
     It 'Separates a failed Dataverse discovery from a tenant without environments' {
