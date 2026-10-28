@@ -1,10 +1,10 @@
 ﻿function Test-MtCisWeakAuthenticationMethodsDisabled {
     <#
     .SYNOPSIS
-        Checks if weak authentication methods (SMS, voice call, email OTP) are disabled in the tenant.
+        Checks if SMS and voice call authentication methods are disabled in the tenant.
 
     .DESCRIPTION
-        Weak authentication methods such as SMS, voice call, and email OTP should be disabled.
+        SMS and voice call authentication methods should be disabled.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.3.5, L1)
 
     .EXAMPLE
@@ -41,9 +41,8 @@
     Write-Verbose 'Executing checks'
     $checkSms = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Sms" }).State -eq "disabled"
     $checkVoice = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Voice" }).State -eq "disabled"
-    $checkEmail = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Email" }).State -eq "disabled"
 
-    $testResult = $checkSms -and $checkVoice -and $checkEmail
+    $testResult = $checkSms -and $checkVoice
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
@@ -69,16 +68,8 @@
         $checkVoiceResult = '❌ Fail'
     }
 
-    if ($checkEmail) {
-        $checkEmailResult = '✅ Pass'
-    }
-    else {
-        $checkEmailResult = '❌ Fail'
-    }
-
     $resultMd += "| SMS | $checkSmsResult |`n"
     $resultMd += "| Voice call | $checkVoiceResult |`n"
-    $resultMd += "| Email OTP | $checkEmailResult |`n"
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

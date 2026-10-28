@@ -9,6 +9,8 @@ The recommended state is to Disable these methods:
 * SMS
 * Voice Call
 
+Email OTP is assessed separately by CIS 5.2.3.7.
+
 #### Rationale
 
 Traditional MFA methods such as SMS codes, email-based OTPs, and push notifications are becoming less effective against today’s attackers. Sophisticated phishing campaigns have demonstrated that second factors can be intercepted or spoofed. Attackers now exploit social engineering, man-in-the-middle tactics, and user fatigue (e.g., MFA bombing) to bypass these mechanisms. These risks are amplified in distributed, cloud-first organizations with hybrid workforces and varied device ecosystems.

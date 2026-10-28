@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 263 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 265 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 125 | CIS Benchmark controls implemented as Maester tests. |
@@ -791,6 +791,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
+| [MT.1226](./MT.1226) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Maester | Medium | Entra ID | Applications |
 | [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |
@@ -815,6 +816,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1249](./MT.1249) | Ensure Android app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
 | [MT.1250](./MT.1250) | Ensure Android app protection policy blocks screen capture of organization data. | Maester | Low | Intune | App protection |
 | [MT.1251](./MT.1251) | Ensure Android app protection policy requires Play Integrity device attestation. | Maester | Medium | Intune | App protection |
+| [MT.1252](./MT.1252) | Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID. | Maester | Medium | Entra ID | App consent and permissions |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |
