@@ -268,6 +268,8 @@ function Initialize-MtDashboard {
         # What the keys can start keeps one line for this user, next to the cache of the blog posts.
         $userData = [System.Environment]::GetFolderPath('LocalApplicationData')
         if ($userData) { $Renderer.GameBestPath = Join-Path $userData 'Maester/run-best.txt' }
+        # While the tests run a plain click opens a link, without Cmd or Ctrl. Windows reports the mouse another way.
+        $Renderer.ClickLinks = -not $IsWindows
     }
 
     if ($panels -contains 'Drift' -and $OutputJsonFile) {
