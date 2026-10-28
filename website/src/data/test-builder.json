@@ -603,6 +603,10 @@
         {
           "key": "backup",
           "name": "Backup"
+        },
+        {
+          "key": "subscriptions",
+          "name": "Subscriptions"
         }
       ]
     },
