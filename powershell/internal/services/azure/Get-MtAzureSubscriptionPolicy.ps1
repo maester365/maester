@@ -16,16 +16,8 @@
     [OutputType([PSCustomObject])]
     param()
 
-    try
-    {
-        $policy = Invoke-MtAzureRequest `
-            -RelativeUri '/providers/Microsoft.Subscription/policies/default' `
-            -ApiVersion '2021-10-01'
-    }
-    catch {
-        Write-Verbose "Error retrieving subscription policy: $_"
-        return $null
-    }
-
-    return $policy
+    # Invoke-MtAzureRequest returns $null on 401/403; other failures throw and are reported by the engine.
+    Invoke-MtAzureRequest `
+        -RelativeUri '/providers/Microsoft.Subscription/policies/default' `
+        -ApiVersion '2021-10-01'
 }
