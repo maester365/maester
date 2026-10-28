@@ -2,7 +2,16 @@
     BeforeAll {
         Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
-        Use-MtModuleFunction -Name Test-MtCisGeographicAccessControl, Test-MtCisTokenProtection, Test-MtCisPhishingResistantMfaForAdmin, Test-MtCisMfaForEveryUser, Test-MtCisManagedDeviceForAuthentication
+        Use-MtModuleFunction -Name @(
+            'Test-MtCisGeographicAccessControl',
+            'Test-MtCisTokenProtection',
+            'Test-MtCisMfaForAdminRole',
+            'Test-MtCisMfaForEveryUser',
+            'Test-MtCisPhishingResistantMfaForAdmin',
+            'Test-MtCisBlockMediumHighSignInRisk',
+            'Test-MtCisManagedDeviceForAuthentication',
+            'Test-MtCisManagedDeviceForSecurityInfo'
+        )
         $script:adminRoleIds = @(InModuleScope Maester { Get-MtCisAdministratorRole | ForEach-Object { $_.Id } })
 
         function New-TestPolicy {
@@ -11,6 +20,7 @@
                 [string[]] $IncludeUsers = @('All'),
                 [string[]] $IncludeRoles = @(),
                 [string[]] $IncludeApplications = @('All'),
+                [string[]] $IncludeUserActions = @(),
                 [string[]] $ExcludeApplications = @(),
                 [string[]] $IncludeLocations = @(),
                 [string[]] $ExcludeLocations = @(),
@@ -18,7 +28,8 @@
                 [string[]] $AllowedCombinations = @(),
                 [switch] $IncludeAuthenticationStrength,
                 [string[]] $Platforms = @(),
-                [string[]] $ClientAppTypes = @()
+                [string[]] $ClientAppTypes = @(),
+                [string[]] $SignInRiskLevels = @()
             )
 
             $authenticationStrength = if ($AllowedCombinations.Count -gt 0 -or $IncludeAuthenticationStrength) {
@@ -40,7 +51,7 @@
                     }
                     applications = [PSCustomObject]@{
                         includeApplications = $IncludeApplications
-                        includeUserActions = @()
+                        includeUserActions = $IncludeUserActions
                         excludeApplications = $ExcludeApplications
                     }
                     locations = [PSCustomObject]@{
@@ -53,7 +64,7 @@
                     }
                     clientAppTypes = $ClientAppTypes
                     userRiskLevels = @()
-                    signInRiskLevels = @()
+                    signInRiskLevels = $SignInRiskLevels
                     insiderRiskLevels = @()
                     authenticationFlows = [PSCustomObject]@{ transferMethods = @() }
                     devices = [PSCustomObject]@{ deviceFilter = [PSCustomObject]@{ rule = $null } }
@@ -126,6 +137,14 @@
         }
     }
 
+    Context 'CIS.M365.5.2.2.1 application exclusions' {
+        It 'passes an MFA policy for all admin roles when an application is excluded' {
+            $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -ExcludeApplications @('application-id') -BuiltInControls @('mfa')
+
+            Test-MtCisMfaForAdminRole | Should -BeTrue
+        }
+    }
+
     Context 'CIS.M365.5.2.2.2 application exclusions' {
         It 'passes an MFA policy for all users and all apps' {
             $script:policy = New-TestPolicy -BuiltInControls @('mfa')
@@ -133,10 +152,10 @@
             Test-MtCisMfaForEveryUser | Should -BeTrue
         }
 
-        It 'fails when the policy excludes an application' {
+        It 'passes when the policy excludes an application for manual review' {
             $script:policy = New-TestPolicy -BuiltInControls @('mfa') -ExcludeApplications @('00000002-0000-0ff1-ce00-000000000000')
 
-            Test-MtCisMfaForEveryUser | Should -BeFalse
+            Test-MtCisMfaForEveryUser | Should -BeTrue
         }
     }
 
@@ -151,6 +170,20 @@
             $script:policy = New-TestPolicy -BuiltInControls @('domainJoinedDevice')
 
             Test-MtCisManagedDeviceForAuthentication | Should -BeFalse
+        }
+    }
+
+    Context 'CIS.M365.5.2.2.10 managed device for security information' {
+        It 'passes when a compliant device is required' {
+            $script:policy = New-TestPolicy -IncludeUserActions @('urn:user:registersecurityinfo') -BuiltInControls @('compliantDevice')
+
+            Test-MtCisManagedDeviceForSecurityInfo | Should -BeTrue
+        }
+
+        It 'fails when only a hybrid joined device is required' {
+            $script:policy = New-TestPolicy -IncludeUserActions @('urn:user:registersecurityinfo') -BuiltInControls @('domainJoinedDevice')
+
+            Test-MtCisManagedDeviceForSecurityInfo | Should -BeFalse
         }
     }
 
@@ -189,10 +222,30 @@
             Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
         }
 
+        It 'passes when an application is excluded for manual review' {
+            $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -ExcludeApplications @('application-id') -AllowedCombinations @('fido2')
+
+            Test-MtCisPhishingResistantMfaForAdmin | Should -BeTrue
+        }
+
         It 'fails when no allowed combinations are configured' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -IncludeAuthenticationStrength
 
             Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
+        }
+    }
+
+    Context 'CIS.M365.5.2.2.8 application exclusions' {
+        It 'passes when medium and high sign-in risk are blocked without application exclusions' {
+            $script:policy = New-TestPolicy -SignInRiskLevels @('medium', 'high') -BuiltInControls @('block')
+
+            Test-MtCisBlockMediumHighSignInRisk | Should -BeTrue
+        }
+
+        It 'fails when an application is excluded' {
+            $script:policy = New-TestPolicy -SignInRiskLevels @('medium', 'high') -ExcludeApplications @('application-id') -BuiltInControls @('block')
+
+            Test-MtCisBlockMediumHighSignInRisk | Should -BeFalse
         }
     }
 }

@@ -4,13 +4,13 @@
         Checks that a Conditional Access policy requires a compliant device for all users and apps.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy requires a compliant device (a hybrid joined device may be allowed as an alternative), for all users in all cloud apps, using the OR operator.
+        Checks that at least one enabled Conditional Access policy requires a compliant device for all users in all cloud apps. A hybrid joined device may optionally be allowed as an alternative with the OR operator.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.9, L1)
 
     .EXAMPLE
         Test-MtCisManagedDeviceForAuthentication
 
-        Returns true if an enabled policy requires a managed device for all users and all cloud apps.
+        Returns true if an enabled policy requires a compliant device for all users and all cloud apps, optionally allowing a hybrid joined device.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.5.2.2.9
@@ -56,8 +56,8 @@
         [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; Failed = $failedText; Pass = $failed.Count -eq 0 }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -gt 0
-    $passText = 'An enabled Conditional Access policy requires a managed device for all users and all cloud apps.'
-    $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that requires a managed device was found.' } else { 'No enabled Conditional Access policy requires a managed device for all users and all cloud apps.' }
+    $passText = 'An enabled Conditional Access policy requires a compliant device for all users and all cloud apps, optionally allowing a hybrid joined device.'
+    $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that requires a compliant or hybrid joined device was found.' } else { 'No enabled Conditional Access policy requires a compliant device for all users and all cloud apps.' }
 
     $resultMd = "| Policy | State | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"

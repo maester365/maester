@@ -13,7 +13,7 @@ Policies with sign-in-risk or user-risk conditions are not evaluated by this tes
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Go to **Entra ID** > **Conditional Access** > [**Policies**](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) and select **New policy**.
 3. Under **Users**, select **Directory roles** and add the administrative roles. Exclude your emergency access accounts.
-4. Under **Target resources**, select **All resources (formerly All cloud apps)**.
+4. Under **Target resources**, select **All resources (formerly All cloud apps)** and do not add application exclusions.
 5. Under **Grant**, select **Grant access** and **Require authentication strength**, then choose **Phishing-resistant MFA**.
 6. Set **Enable policy** to **On** (use **Report-only** first to measure the impact) and select **Create**.
 
