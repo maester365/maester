@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Get audit log search status'
-    $auditLogSearch = Get-AdminAuditLogConfig
+    $auditLogSearch = Get-MtExo -Request AdminAuditLogConfig
 
     $usableConfig = @($auditLogSearch | Where-Object { $null -ne $_ -and $null -ne $_.UnifiedAuditLogIngestionEnabled })
     if ($usableConfig.Count -eq 0) {

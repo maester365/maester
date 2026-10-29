@@ -205,7 +205,7 @@ that ships with Maester must also answer the others marked "Built-in tests". The
 | `Control` | string[] | `<framework-key>:<requirement-id>`, for example `cis-m365:5.1.5.1` or `nist-800-53-r5:IA-2(1)` | No | None | The requirements of frameworks the test implements or supports. The first one that a framework file knows becomes the `Benchmark` of the result. See [Mapping a test to a framework](#mapping-a-test-to-a-framework). |
 | `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
 | `License` | string[] | Service plan names, not product names; `&` joins plans | No | No requirement | The tenant needs **any one** element. See [License](#license). |
-| `Permission` | string[] | One permission per element, no commas | No | None | The permissions the test needs, for example `Policy.Read.All`. Recorded on the result row; not enforced in 3.0. |
+| `Permission` | string[] | `<Service>:<Kind>:<Name>`; `\|` joins alternatives | No | None | The permissions the test needs. The identity needs **every** element, and **any one** alternative inside an element. Recorded on the result row; not enforced in 3.0. See [Permission](#permission). |
 | `TenantType` | string[] | `Workforce`, `External` | No | `Workforce` | Tenant types the test applies to. Recorded; enforced only when you turn it on. |
 | `Cloud` | string[] | `Commercial`, `GCC`, `GCCHigh`, `DoD`, `China`, `Bleu`, `Delos`, `GovSG` | No | All clouds | Clouds the test applies to. Recorded; enforced only when you turn it on. |
 | `Platform` | string[] | `Windows`, `Linux`, `MacOS` | No | All platforms | Operating systems the test can run on. |
@@ -419,6 +419,73 @@ name from Microsoft's Service plans included column nor a token of `powershell/a
 The list of Microsoft's names is `website/src/data/license-service-plans.json`, which a scheduled workflow
 refreshes from the Microsoft page every day. Only enabled subscriptions count. When the licences cannot be read (no Graph connection, or no
 permission), the licence check is not applied and the test runs.
+
+### Permission
+
+`Permission` says what the identity Maester signs in with must be granted for the test to read its data. It
+is recorded on the result row and in the catalog, so the docs and the report can say what to grant; Maester 3.0
+does not skip a test on it.
+
+Each permission is written `<Service>:<Kind>:<Name>`:
+
+- **Service** is a name from the service registry (above) that the test also lists in `Service`.
+- **Kind** is the kind of grant, from the list below.
+- **Name** is the permission as the product spells it, for example `Policy.Read.All` or `View-Only Configuration`.
+  It is everything after the second colon, so it may itself contain colons.
+
+The test needs **every** element of the list. Inside an element, `|` joins **alternatives**: any one of them is
+enough. Put the least privileged alternative first.
+
+```powershell
+Permission = 'Graph:Scope:Policy.Read.All'                                       # one permission
+Permission = ('Graph:Scope:User.Read.All', 'Graph:Scope:AuditLog.Read.All')      # both
+Permission = 'Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All'      # either
+Permission = ('Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All',    # (either of these)
+              'Graph:Scope:AuditLog.Read.All')                                   # and this
+Permission = 'Graph:Scope:RoleManagement.Read.Directory | Graph:Role:Global Reader'  # a scope or a role
+Permission = ('Graph:Scope:Policy.Read.All',                                     # two services: the test
+              'ExchangeOnline:Role:View-Only Configuration')                     # lists both in Service
+```
+
+This is the other way round from `License`, where the list means "any one" and `&` means "all": a test usually
+needs several permissions at once and has an alternative for only some of them. To say "(A and B) or C", write
+"(A or C) and (B or C)": `('X:Scope:A | X:Scope:C', 'X:Scope:B | X:Scope:C')`.
+
+| Service | Kind | Example name | What it is |
+| --- | --- | --- | --- |
+| `Graph` | `Scope` | `Policy.Read.All` | A Microsoft Graph permission that works as a delegated or an application permission |
+| | `DelegatedScope` | `User.Read` | A Graph permission the test can use only delegated, with a user signed in |
+| | `ApplicationScope` | `User.Read.All` | A Graph permission the test can use only as an application permission |
+| | `Role` | `Global Reader` | A Microsoft Entra role, by its display name |
+| `Azure` | `Role` | `Reader` | An Azure role; the scope it is assigned at is chosen at setup |
+| | `Action` | `Microsoft.Authorization/policyAssignments/read` | An Azure resource provider operation |
+| `ExchangeOnline` | `Role` | `View-Only Configuration` | An Exchange management role or role group, or an Entra role that grants one |
+| | `Cmdlet` | `Get-OrganizationConfig` | A cmdlet the test runs |
+| `SecurityCompliance` | `Role` | `View-Only DLP Compliance Management` | A Purview role or role group, or an Entra role that grants one |
+| | `Cmdlet` | `Get-DlpCompliancePolicy` | A cmdlet the test runs |
+| `SharePointOnline` | `Scope` | `Sites.FullControl.All` | A SharePoint API permission (not the Graph one of the same name) |
+| | `Role` | `SharePoint Administrator` | A Microsoft Entra role |
+| `Teams` | `Role` | `Teams Administrator` | A Microsoft Entra role |
+| | `Cmdlet` | `Get-CsTeamsMeetingPolicy` | A cmdlet the test runs |
+| `Dataverse` | `Role` | `System Administrator` | A Dataverse security role |
+| `AzureDevOps` | `Scope` | `vso.project` | An OAuth or personal access token scope |
+| | `Role` | `Project Collection Administrators` | A security group or access level |
+| `GitHub` | `Permission` | `administration:read` | A GitHub App or fine-grained token permission |
+| | `Scope` | `read:org` | A classic personal access token scope |
+| | `Role` | `Organization owner` | An organization or enterprise role |
+| `ActiveDirectory` | `Ldap` | `user:ReadProperty`, `*.ntSecurityDescriptor:ReadControl`, `Configuration/*:ReadProperty` | An LDAP right on an object class, `[<partition>/]<objectClass>[.<attribute>]:<right>`; the partition is `Configuration` or `Schema`, and the domain when omitted |
+| | `Cim` | `root\MicrosoftDNS:MicrosoftDNS_Zone:Read` | Remote CIM (WMI) access, `<namespace>:<class>:<right>` |
+| | `File` | `SYSVOL:Read` | A share on the domain controllers, `<share>:<right>` |
+| | `Remoting` | `Microsoft.PowerShell` | A PowerShell remoting endpoint |
+| | `Group` | `Remote Management Users` | Membership of a group |
+
+The kinds are listed in `powershell/assets/MaesterServiceRegistry.psd1`. Maester writes a registered service
+and kind in the registry's spelling and puts one space around each `|`. For a test shipped with Maester the
+reader also checks that the service is one the test lists in `Service` and that the kind belongs to it; a custom
+test may name a service or kind the registry does not know, such as a pack connector's.
+
+Name the permission the test's code actually uses, the least privileged one that works. Do not list a
+permission that a broader one in the same element already includes.
 
 ### TenantType and Cloud
 

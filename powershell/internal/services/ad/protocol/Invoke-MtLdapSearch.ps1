@@ -1,4 +1,13 @@
 ﻿function Invoke-MtLdapSearch {
+    <#
+    .SYNOPSIS
+    Searches LDAP, optionally consuming converted responses one page at a time.
+    .PARAMETER ProcessPage
+    Optional page consumer. When supplied, receives a page envelope and PageState for each response;
+    the search returns no entries and discards any output from the callback.
+    .PARAMETER PageState
+    Caller-owned state passed unchanged as the second argument to ProcessPage.
+    #>
     [CmdletBinding()]
     [OutputType([object[]])]
     param(
@@ -22,7 +31,11 @@
 
         [System.DirectoryServices.SecurityMasks] $SecurityDescriptorFlags,
 
-        [timespan] $Timeout
+        [timespan] $Timeout,
+
+        [scriptblock] $ProcessPage,
+
+        [object] $PageState
     )
 
     function ConvertTo-LdapFilterLiteral {
@@ -164,6 +177,8 @@
     $searchScope = [System.DirectoryServices.Protocols.SearchScope]::$Scope
     $effectiveTimeout = if ($PSBoundParameters.ContainsKey('Timeout')) { $Timeout } else { $null }
     $pageCookie = [byte[]]@()
+    $pageNumber = 0
+    [long]$objectsRead = 0
 
     do {
         $request = New-Object -TypeName System.DirectoryServices.Protocols.SearchRequest -ArgumentList @(
@@ -201,6 +216,9 @@
                 $response = $Connection.SendRequest($request)
             }
         }
+        catch [System.DirectoryServices.Protocols.DirectoryOperationException] {
+            throw  # Preserve the typed exception so callers can inspect ResultCode
+        }
         catch [System.OperationCanceledException] {
             throw 'LDAP search was cancelled.'
         }
@@ -212,8 +230,16 @@
             throw "LDAP search failed. $($_.Exception.Message)"
         }
 
-        foreach ($entry in @($response.Entries)) {
-            $results.Add((Convert-SearchEntry -Entry $entry)) | Out-Null
+        if ($null -ne $ProcessPage) {
+            $pageEntries = [System.Collections.Generic.List[object]]::new()
+            foreach ($entry in @($response.Entries)) {
+                $pageEntries.Add((Convert-SearchEntry -Entry $entry)) | Out-Null
+            }
+        }
+        else {
+            foreach ($entry in @($response.Entries)) {
+                $results.Add((Convert-SearchEntry -Entry $entry)) | Out-Null
+            }
         }
 
         $pageResponseControl = Get-PageControlFromResponse -Response $response
@@ -223,8 +249,28 @@
         else {
             [byte[]]@()
         }
+
+        if ($null -ne $ProcessPage) {
+            $pageNumber++
+            $objectsRead += [long]$pageEntries.Count
+            [long]$estimatedTotal = 0
+            if ($PageSize -gt 0 -and $null -ne $pageResponseControl -and
+                $pageResponseControl.PSObject.Properties['TotalCount'] -and $pageResponseControl.TotalCount -gt 0) {
+                $estimatedTotal = [long]$pageResponseControl.TotalCount
+            }
+            $page = [pscustomobject]@{
+                Entries = [object[]]$pageEntries.ToArray()
+                PageNumber = [int]$pageNumber
+                ObjectsRead = [long]$objectsRead
+                EstimatedTotal = [long]$estimatedTotal
+                HasMore = [bool]($PageSize -gt 0 -and $pageCookie.Length -gt 0)
+            }
+            $null = & $ProcessPage $page $PageState
+        }
     }
     while ($PageSize -gt 0 -and $pageCookie.Length -gt 0)
 
-    return @($results)
+    if ($null -eq $ProcessPage) {
+        return @($results)
+    }
 }

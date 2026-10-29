@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning,
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -34,6 +35,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdDaclDistinctObjectCount"
+    if (-not (Test-MtAdDaclPlatformSupported)) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {

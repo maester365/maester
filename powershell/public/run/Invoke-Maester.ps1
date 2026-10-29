@@ -292,8 +292,10 @@
         # This is used for running tests that does not require a Graph connection.
         [switch] $SkipGraphConnect,
 
-        # Disable Telemetry
-        # If set, telemetry information will not be logged.
+        # Do not send the run events to api.maester.dev: a random installation ID, a hash of the
+        # tenant ID, the versions and platform, when the run started and how long it took, its outcome, the result
+        # counts and the public packs installed and run.
+        # Setting the environment variable MAESTER_DISABLE_TELEMETRY to 1 does the same for every command.
         [switch] $DisableTelemetry,
 
         # Skip the version check.
@@ -438,8 +440,12 @@
         # in the results and output files when -IncludeAffectedObjects was actually requested.
         $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
 
-        if (-not $DisableTelemetry) {
-            Write-Telemetry -EventName InvokeMaester
+        # Anonymous run events: one now and one when the run ends, so a run that never ends shows up
+        # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
+        $telemetryRun = $null
+        if (-not $DisableTelemetry -and -not $DryRun) {
+            $telemetryRun = [pscustomobject]@{ RunId = [guid]::NewGuid().ToString(); StartedAt = [datetime]::UtcNow; Stage = 'Setup'; LastError = $(if ($Error.Count) { $Error[0] }); Sent = $false }
+            Write-Telemetry -EventName InvokeMaesterStart -Run $telemetryRun
         }
 
         Write-MtOlderVersionWarning
@@ -918,6 +924,7 @@
         $nativeRows = @()
         $nativeTimer = [System.Diagnostics.Stopwatch]::StartNew()
         $pesterResults = $null
+        if ($telemetryRun) { $telemetryRun.Stage = 'Tests' }
         try {
             # Stage 7: native tests first, then one Invoke-Pester call if the plan has Pester files.
             if ($nativePlan.Count -gt 0) {
@@ -962,6 +969,7 @@
             $__MtSession.IncludeAffectedObjects = $false
         }
         $null = Remove-MtForeignModule
+        if ($telemetryRun) { $telemetryRun.Stage = 'Report' }
 
         if ($pesterResults -or $nativeRows.Count -gt 0) {
 
@@ -1093,8 +1101,13 @@
                 $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
                 if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
-                    # Open test results in the default browser.
-                    Invoke-Item $out.OutputHtmlFile | Out-Null
+                    # Open test results in the default browser. A headless machine can report itself as interactive
+                    # but have no program to open the file, which must not fail a run whose report is already written.
+                    try {
+                        Invoke-Item $out.OutputHtmlFile -ErrorAction Stop | Out-Null
+                    } catch {
+                        Write-Warning "Could not open the report '$($out.OutputHtmlFile)': $($_.Exception.Message) Use -NonInteractive to skip opening it."
+                    }
                 }
             }
 
@@ -1145,6 +1158,10 @@
 
             Write-MtProgress -Activity '🔥 Completed tests' -Status "Total $($maesterResults.TotalCount) " -Completed -Force # Clear progress bar.
         }
+        if ($telemetryRun) {
+            $telemetryRun.Sent = $true
+            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -MaesterResults $maesterResults -PackSet $packSet
+        }
         Reset-MtProgressView
         if ($PassThru) {
             return $maesterResults
@@ -1152,11 +1169,20 @@
     }
 
     clean {
+        # A run that returned early, failed or was stopped still sends its end event, as Incomplete.
+        if ($telemetryRun -and -not $telemetryRun.Sent) {
+            $telemetryRun.Sent = $true
+            # The newest error is compared with the one before the run, not counted: $Error stops growing once it is full.
+            $errorType = if ($Error.Count -and -not [object]::ReferenceEquals($Error[0], $telemetryRun.LastError) -and $Error[0].Exception) { $Error[0].Exception.GetType().FullName }
+            Write-Telemetry -EventName InvokeMaester -Run $telemetryRun -Outcome Incomplete -ErrorType $errorType -MaesterResults $maesterResults -PackSet $packSet
+        }
         # Always restore the console: the status line or live region of an interactive run must not
         # outlive the command, whether it returned early, failed or was stopped with Ctrl+C.
         Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
         Restore-MtConsoleEncoding
         # The console mode is this run's: a later Invoke-MtTest works out its own.
         $__MtSession.Console = $null
+        # Telemetry is sent in the background; give the end event a moment in case PowerShell exits next.
+        Wait-MtTelemetry
     }
 }

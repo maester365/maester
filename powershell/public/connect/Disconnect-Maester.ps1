@@ -1,4 +1,4 @@
-function Disconnect-Maester {
+﻿function Disconnect-Maester {
    <#
     .Synopsis
     Disconnects the services connected through Connect-Maester.
@@ -26,7 +26,11 @@ function Disconnect-Maester {
 
    if ($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Graph."
-      Disconnect-MgGraph
+      try {
+         Disconnect-MgGraph -ErrorAction Stop
+      } catch {
+         Write-Warning "Disconnect-MgGraph encountered an error: $($_.Exception.Message)"
+      }
    }
 
    if ($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All") {
@@ -40,7 +44,12 @@ function Disconnect-Maester {
 
    if ($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
-      Disconnect-ExchangeOnline
+      try {
+         # Without -Confirm:$false the command asks for confirmation, which hangs an unattended run.
+         Disconnect-ExchangeOnline -Confirm:$false -ErrorAction Stop
+      } catch {
+         Write-Warning "Disconnect-ExchangeOnline encountered an error: $($_.Exception.Message)"
+      }
    }
    if ($__MtSession.Connections -contains "SharePointOnline" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from SharePoint Online (PnP)."
@@ -54,7 +63,11 @@ function Disconnect-Maester {
 
    if ($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
-      Disconnect-MicrosoftTeams
+      try {
+         Disconnect-MicrosoftTeams -ErrorAction Stop
+      } catch {
+         Write-Warning "Disconnect-MicrosoftTeams encountered an error: $($_.Exception.Message)"
+      }
    }
 
    if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {

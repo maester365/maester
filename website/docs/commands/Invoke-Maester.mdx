@@ -806,8 +806,10 @@ Accept wildcard characters: False
 
 ### -DisableTelemetry
 
-Disable Telemetry
-If set, telemetry information will not be logged.
+Do not send the run events to api.maester.dev: a random installation ID, a hash of the
+tenant ID, the versions and platform, when the run started and how long it took, its outcome, the result
+counts and the public packs installed and run.
+Setting the environment variable MAESTER_DISABLE_TELEMETRY to 1 does the same for every command.
 
 ```yaml
 Type: SwitchParameter

@@ -15,6 +15,8 @@ This guide is for anyone who wants to contribute to the Maester project. Whether
 
 Follow the guide below to set up Maester for development on your local machine, make changes, and submit a pull request.
 
+If you work with GitHub Copilot or Claude Code, the repository ships agents and skills that know these conventions, for example `maester-test-expert` for writing a check. [Agents and skills](./agents-and-skills.md) lists them, who each one is for, and how to change them.
+
 ## Repository layout
 
 Maester has a fixed folder layout so that anyone, person or AI agent, can tell where a file belongs from what it
@@ -28,7 +30,7 @@ carries the same rules for AI coding and review agents.
    This applies to every folder under `tests/`, `powershell/` and `build/`. Files keep their own conventions:
    `Test.<ID>.ps1` and `Test.<ID>.md` for checks, `Verb-Noun.ps1` for functions.
 2. **One name per service.** A service folder has the same name wherever it appears:
-   `ad`, `azure`, `azure-devops`, `copilot`, `copilot-studio`, `defender`, `entra`, `exchange`, `foundry`, `github`,
+   `ad`, `azure`, `azure-devops`, `copilot`, `copilot-studio`, `defender`, `entra`, `exchange`, `fabric`, `foundry`, `github`,
    `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`. Adding a service means adding
    it to this list and to the layout test.
 3. **A file goes in the group that matches its job**, not in the suite that first needed it (see the trees below).

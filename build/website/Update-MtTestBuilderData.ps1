@@ -10,7 +10,7 @@
       powershell/assets/MaesterTestSchema.psd1        attributes, allowed values, patterns
       powershell/assets/MaesterTaxonomy.psd1          products, features, areas, resource types
       powershell/assets/MaesterAttackTechniques.json  the pinned MITRE ATT&CK release
-      powershell/assets/MaesterServiceRegistry.psd1   services
+      powershell/assets/MaesterServiceRegistry.psd1   services and their permission kinds
       powershell/assets/MaesterLicenseTable.psd1      licence tokens
       tests/*/suite.json                              suites and their ID patterns
       tests/*/frameworks/*.json                       frameworks and their requirements
@@ -132,7 +132,14 @@ $data = [ordered]@{
         })
     areas            = @($taxonomy.Areas | ForEach-Object { [ordered]@{ key = $_.Key; name = $_.Name; description = $_.Description } })
     resourceTypes    = @($taxonomy.ResourceTypes | ForEach-Object { [ordered]@{ key = $_.Key; description = $_.Description } })
-    services         = @($services.Services.Keys | Sort-Object | ForEach-Object { [ordered]@{ name = $_; aliases = @($services.Services[$_].Aliases | Where-Object { $_ }); optIn = [bool]$services.Services[$_].OptIn } })
+    services         = @($services.Services.Keys | Sort-Object | ForEach-Object {
+            [ordered]@{
+                name            = $_
+                aliases         = @($services.Services[$_].Aliases | Where-Object { $_ })
+                optIn           = [bool]$services.Services[$_].OptIn
+                permissionKinds = @($services.Services[$_].PermissionKinds | ForEach-Object { [ordered]@{ kind = $_.Kind; example = $_.Example; description = $_.Description } })
+            }
+        })
     licenses         = @($licenses.Tokens.Keys | Sort-Object)
     suites           = @($suites)
     frameworks       = @($frameworks)
