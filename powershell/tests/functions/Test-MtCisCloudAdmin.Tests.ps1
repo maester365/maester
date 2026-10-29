@@ -52,4 +52,33 @@ Describe 'Test-MtCisCloudAdmin' -Tag 'Unit' {
             @($expectedRoleIds | Where-Object { $_ -notin $roleIds }).Count -eq 0
         }
     }
+
+    It 'errors when Graph omits an administrative user from the details response' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{
+                id                    = 'global-admin'
+                displayName           = 'global-admin'
+                onPremisesSyncEnabled = $false
+            }
+        }
+
+        InModuleScope Maester {
+            { Test-MtCisCloudAdmin } | Should -Throw '*did not return user details*'
+        }
+    }
+
+    It 'errors when Graph omits onPremisesSyncEnabled for a requested user' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            foreach ($userId in $UniqueId) {
+                [pscustomobject]@{
+                    id          = $userId
+                    displayName = $userId
+                }
+            }
+        }
+
+        InModuleScope Maester {
+            { Test-MtCisCloudAdmin } | Should -Throw '*did not return onPremisesSyncEnabled*'
+        }
+    }
 }

@@ -55,6 +55,20 @@
     if ($userIds.Count -gt 0) {
         Write-Verbose 'Requesting users onPremisesSyncEnabled property'
         $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId $userIds -Select id, displayName, onPremisesSyncEnabled)
+
+        $returnedUserIds = @($users | ForEach-Object { [string]$_.id })
+        $missingUserIds = @($userIds | Where-Object { $_ -notin $returnedUserIds })
+        if ($missingUserIds.Count -gt 0) {
+            throw "Microsoft Graph did not return user details for all administrative role members. Missing user IDs: $($missingUserIds -join ', ')."
+        }
+
+        $usersMissingSyncStatus = @($users | Where-Object {
+            $_.PSObject.Properties.Name -notcontains 'onPremisesSyncEnabled'
+        })
+        if ($usersMissingSyncStatus.Count -gt 0) {
+            $missingSyncStatusIds = @($usersMissingSyncStatus | ForEach-Object { [string]$_.id })
+            throw "Microsoft Graph did not return onPremisesSyncEnabled for administrative role members: $($missingSyncStatusIds -join ', ')."
+        }
     }
 
     Write-Verbose 'Filtering users for onPremisesSyncEnabled'

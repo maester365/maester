@@ -239,16 +239,84 @@
     end {
         if ($listRequests.Count -gt 0) {
             $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($GraphBaseUri.AbsoluteUri, $ApiVersion, '$batch'))
+            $maxBatchRetries = 2
             for ($iRequest = 0; $iRequest -lt $listRequests.Count; $iRequest += $BatchSize) {
                 $indexEnd = [System.Math]::Min($iRequest + $BatchSize - 1, $listRequests.Count - 1)
-                $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
-                Write-Debug $jsonRequests
+                $batchRequests = @($listRequests[$iRequest..$indexEnd])
+                $pendingRequests = $batchRequests
+                $completedResponses = @{}
+                $attempt = 0
 
-                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri (Resolve-TransportUri $uriQueryEndpoint.Uri) -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
-                $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
+                while ($pendingRequests.Count -gt 0) {
+                    $jsonRequests = New-Object psobject -Property @{ requests = $pendingRequests } | ConvertTo-Json -Depth 5
+                    Write-Debug $jsonRequests
 
-                foreach ($results in ($resultsBatch.body)) {
-                    Complete-Result $results $DisablePaging
+                    $batchResponse = Invoke-MtGraphRequestCache -Method POST -Uri (Resolve-TransportUri $uriQueryEndpoint.Uri) -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
+                    $responseById = @{}
+                    foreach ($response in @($batchResponse.responses)) {
+                        if ($null -eq $response) { continue }
+                        $responseId = [string]$response.id
+                        if ([string]::IsNullOrEmpty($responseId) -or $responseId -notin @($pendingRequests | ForEach-Object { [string]$_.id })) {
+                            throw "Graph batch returned an unexpected response ID '$responseId'."
+                        }
+                        if ($responseById.ContainsKey($responseId)) {
+                            throw "Graph batch returned more than one response for subrequest '$responseId'."
+                        }
+                        $responseById[$responseId] = $response
+                    }
+
+                    $retryRequests = [System.Collections.Generic.List[psobject]]::new()
+                    $retryAfterSeconds = $null
+                    foreach ($request in $pendingRequests) {
+                        $requestId = [string]$request.id
+                        if (!$responseById.ContainsKey($requestId)) {
+                            throw "Graph batch did not return a response for subrequest '$requestId' to '$($request.url)'."
+                        }
+
+                        $response = $responseById[$requestId]
+                        $statusCode = 0
+                        $hasValidStatusCode = [int]::TryParse([string]$response.status, [ref]$statusCode)
+                        if (!$hasValidStatusCode -or $statusCode -lt 100 -or $statusCode -gt 599) {
+                            throw "Graph batch returned an invalid status for subrequest '$requestId' to '$($request.url)'."
+                        }
+
+                        if ($statusCode -ge 200 -and $statusCode -lt 300) {
+                            $completedResponses[$requestId] = $response
+                            continue
+                        }
+
+                        $isRetryableStatus = $statusCode -eq 429 -or $statusCode -in 500, 502, 503, 504
+                        if ($request.method -ne 'GET' -or !$isRetryableStatus -or $attempt -ge $maxBatchRetries) {
+                            $errorMessage = [string]$response.body.error.message
+                            if ([string]::IsNullOrWhiteSpace($errorMessage)) {
+                                $errorMessage = 'No error details were returned.'
+                            }
+                            throw "Graph batch subrequest '$requestId' to '$($request.url)' failed with HTTP $statusCode. $errorMessage"
+                        }
+
+                        $null = $retryRequests.Add($request)
+                        $retryAfter = 0
+                        if ([int]::TryParse([string]$response.headers.'Retry-After', [ref]$retryAfter) -and $retryAfter -ge 0) {
+                            if ($null -eq $retryAfterSeconds) {
+                                $retryAfterSeconds = $retryAfter
+                            } else {
+                                $retryAfterSeconds = [Math]::Max($retryAfterSeconds, $retryAfter)
+                            }
+                        }
+                    }
+
+                    if ($retryRequests.Count -gt 0) {
+                        $attempt++
+                        $delay = if ($null -ne $retryAfterSeconds) { [Math]::Min($retryAfterSeconds, 30) } else { [Math]::Pow(2, $attempt) }
+                        Write-Verbose ("Graph batch returned retryable responses; retrying {0} GET request(s) in {1} seconds ({2} of {3})." -f $retryRequests.Count, $delay, $attempt, $maxBatchRetries)
+                        Start-Sleep -Seconds $delay
+                    }
+
+                    $pendingRequests = $retryRequests.ToArray()
+                }
+
+                foreach ($request in $batchRequests) {
+                    Complete-Result $completedResponses[[string]$request.id].body $DisablePaging
                 }
             }
         }

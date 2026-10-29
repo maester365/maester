@@ -29,7 +29,7 @@
         Mitre = 'T1566.002',
         Control = ('cis-m365:1.1.4', 'nist-800-53-r5:AC-6(5)'),
         Service = 'Graph',
-        Permission = ('Graph:Scope:RoleManagement.Read.Directory|Graph:Scope:RoleManagement.Read.All', 'Graph:Scope:LicenseAssignment.Read.All|Graph:Scope:Directory.Read.All'),
+        Permission = ('Graph:Scope:RoleManagement.Read.Directory|Graph:Scope:RoleManagement.Read.All', 'Graph:Scope:Directory.Read.All'),
         Author = 'NZLostboy'
     )]
     [CmdletBinding()]
