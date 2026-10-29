@@ -4,25 +4,19 @@
         Checks if the average CPU load factor is configured between 20-30%
 
     .DESCRIPTION
-        Tests that all assigned Microsoft Defender Antivirus policies have the
+        Tests that the assigned Microsoft Defender Antivirus policies have the
         average CPU load factor configured within the recommended range of 20-30%.
         Inappropriate CPU load settings may impact system performance or scan effectiveness.
     .PARAMETER ComplianceLogic
-        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a different value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
 
-    .PARAMETER ComplianceLogic
-        Specify compliance logic: AllPolicies or AnyPolicy
-
-    .PARAMETER PolicyFiltering
-        Specify policy filtering: All, IncludeUnassigned, or OnlyAssigned
-
     .EXAMPLE
         Test-MtMdeCpuLoadFactor
 
-        Returns $true if all policies have CPU load factor configured between 20-30%.
+        Returns $true if the assigned Defender Antivirus policies together have CPU load factor configured between 20-30%, with no policy setting a different value.
 
     .LINK
         https://maester.dev/docs/commands/Test-MtMdeCpuLoadFactor
@@ -40,13 +34,14 @@
         ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'Graph',
-        Author = 'bdrogja'
+        Author = 'bdrogja',
+        Contributor = 'Gbenrotto'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        [ValidateSet('AllPolicies', 'AnyPolicy')]
-        [string]$ComplianceLogic = 'AllPolicies',
+        [ValidateSet('EffectivePolicy', 'AllPolicies', 'AnyPolicy')]
+        [string]$ComplianceLogic = 'EffectivePolicy',
 
         [ValidateSet('All', 'IncludeUnassigned', 'OnlyAssigned')]
         [string]$PolicyFiltering = 'OnlyAssigned'
@@ -78,17 +73,7 @@ if ($deviceCount -eq 0) {
 
     $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Average CPU load factor is correctly configured between 20-30% in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
-    } else {
-        $testResultMarkdown = "Average CPU load factor is not properly configured in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
-        }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
+    $testResultMarkdown = Get-MdeComplianceResultMarkdown -Compliance $compliance -SettingName 'Average CPU load factor' -ExpectedState 'correctly configured between 20-30%'
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
