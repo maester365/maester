@@ -6,7 +6,7 @@
     .DESCRIPTION
     ISM-1403 (Guidelines for system access, User account lockouts) asks that user accounts, except for break
     glass accounts, are protected by fixed or risk-based lockout mechanisms aligned to a maximum of five failed
-    logon attempts. This control is not part of the Essential Eight Maturity Model. The ASD Blueprint for Secure
+    logon attempts. This control is not part of the Essential Eight maturity model. The ASD Blueprint for Secure
     Cloud sets the smart lockout threshold to 5.
 
     CIS.M365.5.2.3.8 reads the same setting and allows up to 10, so this test runs that check

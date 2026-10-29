@@ -51,10 +51,10 @@ const suiteConfig = {
   asd: {
     label: "ASD",
     title: "ASD Essential Eight and ISM Tests",
-    sidebarLabel: "🦘 ASD",
-    description: "ASD Essential Eight Maturity Model and Information Security Manual (ISM) controls implemented as Maester tests.",
+    sidebarLabel: "🦘 ASD Essential Eight",
+    description: "ASD Essential Eight requirements and Information security manual (ISM) controls implemented as Maester tests.",
     overview:
-      "These tests verify Microsoft 365 tenant configuration against the Australian Signals Directorate's Essential Eight Maturity Model and the Information Security Manual (ISM) controls it is built from.",
+      "These tests verify Microsoft 365 tenant configuration against the [Essential Eight](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight) and the [Information security manual (ISM)](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism), both published by the Australian Signals Directorate (ASD). You may know them as the ACSC Essential Eight and the ACSC ISM: the Australian Cyber Security Centre (ACSC) is part of ASD. The Essential Eight maturity model (November 2023) sets requirements at Maturity Level One to Three, and ASD maps each requirement to an ISM control, so each test is named after the ISM control it checks: ASD.ISM-1504 checks ISM-1504. A few tests check ISM controls outside the Essential Eight, such as ASD.ISM-1403.",
   },
   cis: {
     label: "CIS",

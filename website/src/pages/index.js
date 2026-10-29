@@ -129,8 +129,8 @@ const suites = [
   {
     emoji: "🦘",
     title: "ASD Essential Eight",
-    desc: "Australian Signals Directorate Essential Eight and ISM controls.",
-    count: "15 tests",
+    desc: "Australian Signals Directorate Essential Eight requirements and ISM controls.",
+    count: "14 tests",
     href: "/docs/tests/asd",
   },
   {

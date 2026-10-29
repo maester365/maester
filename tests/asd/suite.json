@@ -5,7 +5,7 @@
   "IdPattern": "^ASD\\.",
   "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
   "Upstream": {
-    "Name": "ASD Information Security Manual (OSCAL)",
+    "Name": "ASD Information security manual (OSCAL)",
     "Url": "https://www.cyber.gov.au/ism/oscal"
   },
   "Frameworks": [

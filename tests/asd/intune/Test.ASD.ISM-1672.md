@@ -10,7 +10,7 @@ A macro that is allowed to run can still be malicious. With macro runtime scanni
 
 #### Related links
 
-* [Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+* [Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
 * [ASD Microsoft Office macro security](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/microsoft-office-macro-security)
 * [Antimalware Scan Interface (AMSI)](https://learn.microsoft.com/windows/win32/amsi/antimalware-scan-interface-portal)
 

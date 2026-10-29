@@ -1282,7 +1282,7 @@
   "frameworks": [
     {
       "key": "essential-eight",
-      "name": "ASD Essential Eight Maturity Model",
+      "name": "ASD Essential Eight maturity model",
       "version": "2026.09.4",
       "url": "https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model-ism-mapping",
       "suite": "ASD",
@@ -2328,7 +2328,7 @@
     },
     {
       "key": "ism",
-      "name": "ASD Information Security Manual",
+      "name": "ASD Information security manual (ISM)",
       "version": "2026.09.4",
       "url": "https://www.cyber.gov.au/ism",
       "suite": "ASD",

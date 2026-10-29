@@ -126,7 +126,7 @@ const sidebars = {
         },
         {
           type: "category",
-          label: "🦘 ASD",
+          label: "🦘 ASD Essential Eight",
           link: {type: 'doc', id: 'tests/asd/overview'},
           collapsed: true,
           collapsible: true,

@@ -163,6 +163,11 @@ Note what is **not** there: no `Test-MtConnection` guard, no `Get-MtLicenseInfor
 - Top level contains only function definitions: no statements, no script `param()` block.
 - The test function has `[CmdletBinding()]`.
 
+A benchmark check's ID is the suite prefix, then the requirement's ID as the benchmark writes it, without a
+version suffix: `CIS.M365.5.2.2.2`, `CISA.MS.AAD.3.1` (SCuBA `MS.AAD.3.1v1`), `ASD.ISM-1504` (ASD writes
+`ISM-1504` with a hyphen). The part after the prefix is the requirement's `Id` in the framework file, which the
+unit tests check. See [Test IDs](../../../website/docs/writing-tests/index.mdx#test-ids).
+
 ### The `[MaesterTest]` attribute
 
 Arguments are **named and constant**: quoted strings, `$true`/`$false`, a parenthesised list `('a', 'b')`, a single

@@ -89,6 +89,16 @@ An ID is letters and digits in segments separated by `.` or `-` (and `_` after t
 with a letter, contains at least one digit or separator, and is at most 64 characters. `CONTOSO.1001`,
 `CONTOSO-ID-07` and `CT0001` are all valid. IDs are compared case-insensitively.
 
+A test that implements a benchmark requirement is named after it: the suite's prefix, then the requirement's
+ID as the benchmark writes it, without a version suffix. That is also its `Id` in the framework file. The prefix ends in a period;
+the rest keeps the benchmark's own punctuation, so a reader can search for the ID the benchmark uses.
+
+| Test ID | Prefix | The benchmark's ID |
+| --- | --- | --- |
+| `CIS.M365.5.2.2.2` | `CIS.M365.` | Recommendation `5.2.2.2` of the CIS Microsoft 365 Foundations Benchmark |
+| `CISA.MS.AAD.3.1` | `CISA.` | SCuBA policy `MS.AAD.3.1v1`, without its version suffix |
+| `ASD.ISM-1504` | `ASD.` | ISM control `ISM-1504`, written with a hyphen by ASD |
+
 Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
 `EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `ASD.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
 planned for a later release. A custom test with one of these prefixes still runs, with a
@@ -730,8 +740,8 @@ The frameworks that ship with Maester, with the key to use in `Control`:
 | `cis-m365` | CIS Microsoft 365 Foundations Benchmark | [tests/cis/frameworks/cis-m365.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-m365.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cis-github` | CIS GitHub Benchmark | [tests/cis/frameworks/cis-github.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-github.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cisa-scuba` | CISA SCuBA Secure Configuration Baselines for Microsoft 365 | [tests/cisa/frameworks/cisa-scuba.json](https://github.com/maester365/maester/blob/main/tests/cisa/frameworks/cisa-scuba.json) | [tests/cisa/suite.json](https://github.com/maester365/maester/blob/main/tests/cisa/suite.json) |
-| `essential-eight` | ASD Essential Eight Maturity Model (each requirement is an ISM control; `Level` ML1 to ML3, `Strategy`) | [tests/asd/frameworks/essential-eight.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/essential-eight.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
-| `ism` | ASD Information Security Manual (`Guideline`, `Section`, `Applicability`) | [tests/asd/frameworks/ism.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/ism.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
+| `essential-eight` | ASD Essential Eight maturity model (each requirement is an ISM control; `Level` ML1 to ML3, `Strategy`) | [tests/asd/frameworks/essential-eight.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/essential-eight.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
+| `ism` | ASD Information security manual (ISM) (`Guideline`, `Section`, `Applicability`) | [tests/asd/frameworks/ism.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/ism.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
 
 Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
 no framework file; its control IDs are in

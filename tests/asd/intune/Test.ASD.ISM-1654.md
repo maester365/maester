@@ -10,7 +10,7 @@ Internet Explorer 11 is out of support and keeps the legacy rendering engine and
 
 #### Related links
 
-* [Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+* [Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
 * [Disable Internet Explorer 11 as a standalone browser](https://learn.microsoft.com/deployedge/edge-ie-disable-ie11)
 
 <!--- Results --->

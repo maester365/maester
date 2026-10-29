@@ -11,7 +11,7 @@ A workstation that defers quality updates with no deadline installs them when th
 
 #### Related links
 
-* [Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+* [Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
 * [ASD Patching applications and operating systems](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/patching-applications-and-operating-systems)
 * [Windows update rings policy in Intune](https://learn.microsoft.com/intune/intune-service/protect/windows-update-for-business-configure)
 

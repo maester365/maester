@@ -12,7 +12,7 @@ ASD's assessment guide applies this requirement to unprivileged and privileged u
 
 #### Related links
 
-* [Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+* [Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
 * [ASD Blueprint for Secure Cloud: Require strong auth](https://blueprint.asd.gov.au/configuration/entra-id/protection/conditional-access/policies/strong-authentication/)
 * [Conditional Access authentication strength](https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths)
 * [Phishing-resistant passwordless authentication deployment](https://learn.microsoft.com/entra/identity/authentication/how-to-plan-prerequisites-phishing-resistant-passwordless-authentication)

@@ -1,8 +1,10 @@
 # ASD Essential Eight and ISM
 
-Checks that verify a Microsoft 365 tenant against the Australian Signals Directorate (ASD)
-[Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
-and the controls of the [Information Security Manual](https://www.cyber.gov.au/ism) (ISM) that it is built from.
+Checks that verify a Microsoft 365 tenant against the
+[Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+and the [Information security manual](https://www.cyber.gov.au/ism) (ISM), both published by the Australian Signals
+Directorate (ASD). They are also known as the ACSC Essential Eight and the ACSC ISM; the Australian Cyber Security
+Centre (ACSC) is part of ASD. ASD maps each requirement of the maturity model to an ISM control.
 
 ## Layout
 

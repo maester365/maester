@@ -10,7 +10,7 @@ A macro in an email attachment or a downloaded document is still the most common
 
 #### Related links
 
-* [Essential Eight Maturity Model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
+* [Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model)
 * [ASD Microsoft Office macro security](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/microsoft-office-macro-security)
 * [Macros from the internet are blocked by default in Office](https://learn.microsoft.com/deployoffice/security/internet-macros-blocked)
 
