@@ -2,11 +2,26 @@
 
 Rationale: Without a DMARC policy available for each domain, recipients may improperly handle SPF and DKIM failures, possibly enabling spoofed emails to reach end users' mailboxes. Publishing DMARC records at the second-level domain protects the second-level domains and all subdomains.
 
+#### How this test works
+
+This test applies the same rule as CISA ScubaGear:
+
+* It checks every accepted domain in Exchange Online, including the initial `*.onmicrosoft.com` domain and subdomains. Only the coexistence domain (`*.mail.onmicrosoft.com`) is left out, because Microsoft manages it.
+* For each domain it queries `_dmarc.<domain>` and keeps the TXT records that start with `v=DMARC1`. If there is exactly one, that is the domain's record. If there are none, or more than one, it walks up the parent domains as described in [RFC 9989](https://datatracker.ietf.org/doc/html/rfc9989) (at most eight DNS queries per domain) and uses the record it finds there. A record published for `example.com` therefore also covers `mail.example.com`.
+* A domain passes when its record starts with exactly `v=DMARC1;`. The policy (`p=`) and the report addresses (`rua=`) are not checked here: CISA.MS.EXO.4.2 and CISA.MS.EXO.4.3 check them.
+* A domain fails when no record is found, including when the DNS lookup fails.
+
+On macOS and Linux the test needs the DnsClient-PS module (`Install-Module DnsClient-PS -Scope CurrentUser`); without it the test is skipped.
+
+The `Strict` parameter is no longer used and has no effect.
+
 #### Remediation action
 
-DMARC is not configured through the Exchange admin center, but rather via DNS records hosted by the agency's domain. As such, implementation varies depending on how an agency manages its DNS records. See [Form the DMARC TXT record for your domain | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-dmarc-configure?view=o365-worldwide#step-4-form-the-dmarc-txt-record-for-your-domain) for Microsoft guidance.
+DMARC is not configured through the Exchange admin center, but rather via DNS records hosted by the agency's domain. As such, implementation varies depending on how an agency manages its DNS records. See [Form the DMARC TXT record for your domain | Microsoft Learn](https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure#syntax-for-dmarc-txt-records) for Microsoft guidance.
 
 A DMARC record published at the second-level domain will protect all subdomains. In other words, a DMARC record published for `example.com` will protect both `a.example.com` and `b.example.com`, but a separate record would need to be published for `c.example.gov`.
+
+For the initial `*.onmicrosoft.com` domain, add the record in the Microsoft 365 admin center: see [Use the Microsoft 365 admin center to add DMARC TXT records for *.onmicrosoft.com domains](https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure#use-the-microsoft-365-admin-center-to-add-dmarc-txt-records-for-onmicrosoftcom-domains-in-microsoft-365).
 
 To test your DMARC configuration, consider using one of many publicly available web-based tools. Additionally, DMARC records can be requested using the PowerShell tool `Resolve-DnsName`. For example:
 
@@ -18,7 +33,7 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 
 * [Exchange admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
 * [CISA 4 Domain-Based Message Authentication, Reporting, and Conformance (DMARC) - MS.EXO.4.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo41v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L147)
+* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego)
 
 <!--- Results --->
 %TestResult%

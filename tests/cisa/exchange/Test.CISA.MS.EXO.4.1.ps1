@@ -1,19 +1,25 @@
 ﻿function Test-MtCisaDmarcRecordExist {
     <#
     .SYNOPSIS
-    Checks state of DMARC records for all exo second level domains
+    Checks that a DMARC record applies to every accepted domain
 
     .DESCRIPTION
     A DMARC policy SHALL be published for every second-level domain.
 
+    Applies the rule of CISA ScubaGear (MS.EXO.4.1v1): every accepted domain except the coexistence domain
+    needs a DMARC record that starts with v=DMARC1;. The record can be published at the domain or at a parent
+    domain found by the DNS tree walk of RFC 9989. The policy and the report addresses are checked by
+    MS.EXO.4.2 and MS.EXO.4.3.
+
     .EXAMPLE
     Test-MtCisaDmarcRecordExist
 
-    Returns true if DMARC record exists for all 2LD
+    Returns true if a DMARC record applies to every accepted domain
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcRecordExist
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'Strict', Justification = 'Kept so that configurations that set it still run')]
     [MaesterTest(
         Id = 'CISA.MS.EXO.4.1',
         Title = 'A DMARC policy SHALL be published for every second-level domain.',
@@ -33,124 +39,61 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        # Check 2nd Level Domains Explicitly per CISA
+        # No longer used: every accepted domain is checked. Kept so that configurations that set it still run.
         [switch]$Strict
     )
 
-    $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# Parked domains should have DMARC with reject policy
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # The coexistence domain (contoso.mail.onmicrosoft.com) is managed by Microsoft and cannot have a DMARC record.
+    $domains = @(Get-MtExo -Request AcceptedDomain | Where-Object { -not $_.IsCoexistenceDomain } | Sort-Object -Property DomainName -Unique)
 
-    $seen = @{}
-    $dmarcRecords = @()
-    foreach($domain in ($acceptedDomains | Sort-Object -Property DomainName -Unique)){
-        #This regex does NOT capture for third level domain scenarios
-        #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
-        $dmarcMatch = $domain.domainname -match $matchDomain
-        if($dmarcMatch){
-            $domainName = $Matches.second
-        }else{
-            $domainName = $domain.domainname
-        }
-
-        if ($seen[$domainName]) {
-            continue
-        }
-        $seen[$domainName] = $True
-
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domainName -Records DMARC
-        $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
-        $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
-
-        if($dmarcRecord.dmarcRecord.GetType().Name -eq "DMARCRecord"){
-            $dmarcRecord.pass = "Passed"
-        }elseif($domain.IsCoexistenceDomain){
-            $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = "Coexistence domain"
-        }elseif($domain.InitialDomain){
-            $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = "Initial domain"
-        }elseif($dmarcRecord.dmarcRecord -like "*not available"){
-            $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = $dmarcRecord.dmarcRecord
-        }elseif($domainName -eq 'onmicrosoft.com'){
-            $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = 'Not applicable'
-        }else{
-            $dmarcRecord.reason = $dmarcRecord.dmarcRecord
-        }
-
-        $dmarcRecords += $dmarcRecord
-    }
-
-    if("Failed" -in $dmarcRecords.pass -and $Strict){
-        $testResult = $false
-    }elseif("Failed" -in $dmarcRecords.pass -and -not $Strict){
-        if("Failed" -in ($dmarcRecords|Where-Object{$_.domain -in $acceptedDomains.DomainName}).pass){
-            $testResult = $false
-        }else{
-            $testResult = $true
-        }
-    }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
-        if($dmarcRecords.reason -like "*not available"){
+    $dnsCache = @{}
+    $dmarcRecords = [System.Collections.Generic.List[object]]::new()
+    foreach ($domain in $domains) {
+        $dmarcRecord = Find-MtDmarcRecord -DomainName $domain.DomainName -Cache $dnsCache
+        $notAvailable = @($dmarcRecord.Lookups | Where-Object { $_.Status -eq 'NotAvailable' })
+        if ($notAvailable) {
+            Write-Verbose $notAvailable[0].Error
             Add-MtTestResultDetail -SkippedBecause NotSupported
             return $null
-        }else{
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Skipped for $($dmarcRecords.reason)"
         }
-    }else{
-        $testResult = $true
+        $dmarcRecords.Add($dmarcRecord)
     }
 
-    if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's second level domains have a DMARC record. Review report targets.`n`n%TestResult%"
-    }else{
-        $testResultMarkdown = "Your tenant's second level domains do not have a DMARC record.`n`n%TestResult%"
-    }
-
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
-    $skipResult = "🗄️ Skip"
-    $result = "| Domain | Result | Reason | Targets |`n"
+    $testResult = $true
+    $result = "| Domain | Result | Found at | Details |`n"
     $result += "| --- | --- | --- | --- |`n"
-    foreach ($item in $dmarcRecords | Sort-Object -Property domain) {
-        switch($item.pass){
-            "Passed" {$itemResult = $passResult}
-            "Failed" {$itemResult = $failResult}
-            "Skipped" {$itemResult = $skipResult}
+    foreach ($item in $dmarcRecords) {
+        $passed = $false
+        $foundAt = if ($item.PolicyDomain) { Get-MtSafeMarkdown "_dmarc.$($item.PolicyDomain)" }
+        if ($null -eq $item.Record) {
+            $failedLookup = $item.Lookups | Where-Object { $_.Status -eq 'Error' } | Select-Object -First 1
+            $ambiguousLookup = $item.Lookups | Where-Object { @($_.Answers -match '^v=DMARC1').Count -gt 1 } | Select-Object -First 1
+            $details = 'No DMARC record found.'
+            if ($failedLookup) {
+                $details += " The DNS lookup for $(Get-MtSafeMarkdown $failedLookup.Name) failed: $(Get-MtSafeMarkdown $failedLookup.Error)"
+            } elseif ($ambiguousLookup) {
+                $details += " $(Get-MtSafeMarkdown $ambiguousLookup.Name) has more than one DMARC record."
+            }
+        } elseif (-not $item.Record.StartsWith('v=DMARC1;', [System.StringComparison]::Ordinal)) {
+            $details = "The record does not start with v=DMARC1;: $(Get-MtSafeMarkdown $item.Record)"
+        } else {
+            $passed = $true
+            $details = Get-MtSafeMarkdown $item.Record
         }
-
-        if ($item.pass -eq "Skipped") {
-            $result += "| $($item.domain) | $($itemResult) | $($item.reason) ||`n"
-            continue
+        if (-not $passed) {
+            $testResult = $false
         }
-
-        $aggregates = $item.dmarcRecord.reportAggregate.mailAddress
-        $aggregatesCount = ($aggregates|Measure-Object).Count
-        if($aggregatesCount -ge 3){
-            $aggregates = "$($aggregates[0]), $($aggregates[1]), "
-            $aggregates += "& ...$aggregatesCount targets"
-        }elseif($aggregatesCount -gt 1){
-            $aggregates = $aggregates -join ", "
-        }
-        $forensics = $item.dmarcRecord.reportForensic.mailAddress
-        $forensicsCount = ($forensics|Measure-Object).Count
-        if($forensicsCount -ge 3){
-            $forensics = "$($forensics[0]), $($forensics[1]), "
-            $forensics += "& ...$forensicsCount targets"
-        }elseif($aggregatesCount -gt 1){
-            $forensics = $forensics -join ", "
-        }
-
-        $result += "| $($item.domain) | $($itemResult) | $($item.reason) | Aggregate Reports: $($aggregates) |`n"
-        $result += "| $($item.domain) | $($itemResult) | $($item.reason) | Forensic Reports: $($forensics) |`n"
+        $itemResult = if ($passed) { "✅ Pass" } else { "❌ Fail" }
+        $result += "| $(Get-MtSafeMarkdown $item.DomainName) | $itemResult | $foundAt | $details |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($testResult) {
+        $testResultMarkdown = "Well done. A DMARC record applies to every accepted domain.`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Some accepted domains do not have a DMARC record.`n`n%TestResult%"
+    }
+    # String.Replace, as a record can contain '$', which -replace reads as a substitution.
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $result)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
