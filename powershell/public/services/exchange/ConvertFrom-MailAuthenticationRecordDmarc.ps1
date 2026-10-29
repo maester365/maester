@@ -31,7 +31,7 @@
     .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 
-    Returns [DMARCRecord], "Failure to obtain record" when the record name does not exist (NXDOMAIN), or "DNS lookup unavailable" when the lookup fails for another reason
+    Returns [DMARCRecord] for a valid record, "Failure to obtain record" when no matching record exists, "Invalid DMARC record" when a matching record fails validation, or "DNS lookup unavailable" when DNS resolution fails for another reason
 
     .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDmarc

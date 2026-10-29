@@ -54,12 +54,17 @@ Describe 'Get-MtExo' {
         (Get-MtExo -Request AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled | Should -BeFalse
     }
 
-    It 'Resolves a path-valued Exchange Online module name for VIP users' {
+    It 'Finds a connected Exchange Online module that exports Get-User with IsVIP' {
         Mock -ModuleName Maester Get-ConnectionInformation {
             [PSCustomObject]@{
                 IsEopSession = $false
-                State = 'Connected'
-                ModuleName = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_vip_mttest'
+                State        = 'Connected'
+                ModuleName   = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_restricted_mttest'
+            }
+            [PSCustomObject]@{
+                IsEopSession = $false
+                State        = 'Connected'
+                ModuleName   = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_vip_mttest'
             }
         }
 

@@ -4,7 +4,7 @@
         Checks that every accepted domain has a DMARC policy of quarantine or reject with aggregate and forensic reporting.
 
     .DESCRIPTION
-        Looks up the DMARC record that applies to each accepted domain, falling back to the organisational domain, and passes when the applied policy is quarantine or reject, covers 100 percent of mail and defines mailto addresses for aggregate (rua) and forensic (ruf) reports.
+        Looks up the DMARC record that applies to each accepted domain, falling back to the organisational domain when the domain has no valid record, including a malformed record. Passes when the applied policy is quarantine or reject, covers 100 percent of mail and defines mailto addresses for aggregate (rua) and forensic (ruf) reports.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.10, L1)
 
     .EXAMPLE
@@ -42,12 +42,17 @@
         $dmarc = $null
         $source = $null
         $unavailable = $false
+        $invalidCandidate = $null
         # DMARC policy discovery uses the domain, then its organisational domain only.
         $candidates = @($name, (Get-MtRegistrableDomain -DomainName $name)) | Select-Object -Unique
         foreach ($candidate in $candidates) {
             $found = ConvertFrom-MailAuthenticationRecordDmarc -DomainName $candidate
-            if ($found -is [string] -and ($found -like '*not available' -or $found -eq 'DNS lookup unavailable')) { $unavailable = $true; break }
-            if ($found.GetType().Name -eq 'DMARCRecord') {
+            if ($found -is [string]) {
+                if ($found -like '*not available' -or $found -eq 'DNS lookup unavailable') { $unavailable = $true; break }
+                if ($found -eq 'Invalid DMARC record') { $invalidCandidate = $candidate }
+                continue
+            }
+            if ($null -ne $found -and $found.GetType().Name -eq 'DMARCRecord') {
                 $dmarc = $found
                 $source = $candidate
                 break
@@ -62,7 +67,7 @@
             $policy = if ($source -ne $name -and $dmarc.policySubdomain) { $dmarc.policySubdomain } else { $dmarc.policy }
         }
         $checks = [ordered]@{
-            'Record is valid' = $null -eq $dmarc -or $dmarc.valid
+            'Record is valid' = $null -ne $dmarc -and $dmarc.valid
             'Policy is quarantine or reject' = $policy -in @('quarantine', 'reject')
             'Applies to 100 percent' = $null -eq $dmarc -or $dmarc.percentage -eq 100 -or $null -eq $dmarc.percentage
             'Aggregate reports (rua)' = @($dmarc.reportAggregate | Where-Object { $_.mailAddress }).Count -gt 0
@@ -71,19 +76,19 @@
         $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         [pscustomobject]@{
             Domain = $name
-            Policy = if ($policy) { $policy } else { 'No record' }
-            Source = if ($source) { $source } else { 'None' }
+            Policy = if ($policy) { $policy } elseif ($invalidCandidate) { 'Invalid DMARC record' } else { 'No valid record' }
+            Source = if ($source) { $source } elseif ($invalidCandidate) { $invalidCandidate } else { 'None' }
             Failed = $failedChecks -join ', '
             Pass = $failedChecks.Count -eq 0
         }
     }
     $checked = @($report | Where-Object { $null -ne $_.Pass })
     $unchecked = @($report | Where-Object { $null -eq $_.Pass })
-    if ($unchecked.Count -gt 0) {
+    $failed = @($checked | Where-Object { -not $_.Pass })
+    if ($failed.Count -eq 0 -and $unchecked.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }
-    $failed = @($checked | Where-Object { -not $_.Pass })
     $testResult = $failed.Count -eq 0
 
     $passText = 'All accepted domains have an enforcing DMARC policy with reporting addresses.'
