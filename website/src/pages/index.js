@@ -127,7 +127,7 @@ const suites = [
     href: "/docs/tests/eidsca",
   },
   {
-    emoji: "🦘",
+    emoji: "🇦🇺",
     title: "ASD Essential Eight",
     desc: "Australian Signals Directorate Essential Eight requirements and ISM controls.",
     count: "14 tests",
