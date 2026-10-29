@@ -8,7 +8,7 @@
         cloud extended timeout configured within the recommended range of 30-50 seconds.
         Insufficient cloud timeout may prevent thorough analysis of suspicious files.
     .PARAMETER ComplianceLogic
-        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a different value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
+        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a non-compliant value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
@@ -16,7 +16,7 @@
     .EXAMPLE
         Test-MtMdeCloudExtendedTimeout
 
-        Returns $true if the assigned Defender Antivirus policies together have cloud extended timeout configured between 30-50 seconds, with no policy setting a different value.
+        Returns $true if the assigned Defender Antivirus policies together have cloud extended timeout configured between 30-50 seconds, with no policy setting a non-compliant value.
 
     .LINK
         https://maester.dev/docs/commands/Test-MtMdeCloudExtendedTimeout

@@ -7,7 +7,7 @@
         Verify that script scanning is enabled to block malicious scripts.
         Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript execution.
     .PARAMETER ComplianceLogic
-        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a different value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
+        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a non-compliant value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
@@ -15,7 +15,7 @@
     .EXAMPLE
         Test-MtMdeScriptScanning
 
-        Returns $true if the assigned Defender Antivirus policies together have script scanning enabled, with no policy setting a different value.
+        Returns $true if the assigned Defender Antivirus policies together have script scanning enabled, with no policy setting a non-compliant value.
 
     .LINK
         https://maester.dev/docs/commands/Test-MtMdeScriptScanning

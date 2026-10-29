@@ -8,7 +8,7 @@
         in Microsoft Defender Antivirus policies. Quick scans are replaced by
         real-time protection, so this setting is not required for compliance.
     .PARAMETER ComplianceLogic
-        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a different value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
+        How the evaluated policies combine into one result: 'EffectivePolicy' (default), 'AllPolicies' or 'AnyPolicy'. This setting is optional, so a policy that doesn't set it counts as compliant and the check passes under every logic, including when no policy sets it.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.

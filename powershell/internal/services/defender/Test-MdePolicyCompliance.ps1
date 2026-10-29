@@ -11,16 +11,19 @@
         Tenants often split Defender Antivirus settings across several policies, so a policy
         that leaves a setting unconfigured is normal. The default 'EffectivePolicy' logic
         evaluates the combined result of the assigned policies: the setting passes when at least
-        one policy configures it compliantly and no policy configures a different value. A
+        one policy configures it compliantly and no policy configures it non-compliantly. A
         policy that does not configure the setting is neutral.
 
         The settings these checks read do not support Intune policy merge (only the antivirus
-        exclusion lists do), so two policies with different values for the same setting are a
-        conflict that Intune may resolve to either value or to none; and devices that receive only
-        the policy with the other value are not compliant. Different values therefore fail.
+        exclusion lists do). A compliant value in one policy and a non-compliant value in another
+        therefore fail: devices that receive only the non-compliant policy are not compliant, and
+        devices that receive both may get either value, or none.
 
         EffectivePolicy treats the policies it is given as reaching the same devices; it does not
-        resolve which groups each policy is assigned to. With Get-MdePolicyConfiguration
+        resolve which groups each policy is assigned to. For the same reason it does not compare
+        values between compliant policies: two policies that set different values that are each
+        compliant (cloud block level High and High Plus, say) pass, as they do under AllPolicies,
+        although a device that receives both has an Intune conflict. With Get-MdePolicyConfiguration
         -PolicyFiltering All or IncludeUnassigned, unassigned policies count as if they were assigned.
 
         A Graph error while reading a policy's settings is not caught: the check ends as Error
@@ -156,8 +159,8 @@
         }
     }
 
-    # A compliant and a different value across policies fails: devices that receive only the other policy
-    # are not compliant, and these settings do not support policy merge, so devices that receive both
+    # A compliant and a non-compliant value across policies fails: devices that receive only the non-compliant
+    # policy are not compliant, and these settings do not support policy merge, so devices that receive both
     # get whichever value Intune's conflict resolution picks (most secure, then last modified, or none).
     $hasConflict = ($compliantPolicies.Count -gt 0) -and ($nonCompliantPolicies.Count -gt 0)
 

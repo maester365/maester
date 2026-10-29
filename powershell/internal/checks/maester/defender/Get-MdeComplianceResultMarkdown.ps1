@@ -60,16 +60,15 @@
         # EffectivePolicy with some policies that leave the setting unconfigured. Maester does not resolve
         # which devices each policy reaches, so say what was checked and what the admin must confirm.
         $setsIt = if ($compliantCount -eq 1) { 'the policy that sets it is' } else { 'the policies that set it are' }
-        $summary = "Well done. $SettingName is $ExpectedState in $compliantCount of the $total $scope Defender Antivirus policies, " +
-        "and no policy sets a different value; the others don't configure it. " +
-        "Make sure $setsIt assigned to every device that needs this setting."
+        $summary = "Well done. $SettingName is $ExpectedState in $compliantCount of the $total $scope Defender Antivirus policies; " +
+        "the others don't configure it. Make sure $setsIt assigned to every device that needs this setting."
     } elseif ($Compliance.ComplianceLogic -eq 'EffectivePolicy' -and $Compliance.HasConflict) {
-        $summary = "$SettingName is set to different values by the $scope Defender Antivirus policies. " +
-        "Devices that receive only a policy with the other value are not compliant, and devices that receive both have a conflict " +
-        "that Intune may resolve to either value. Use the compliant value in every policy that sets it."
+        $summary = "$SettingName is compliant in some of the $scope Defender Antivirus policies and not in others. " +
+        "Devices that receive only a non-compliant policy are not compliant, and devices that receive both may get either value. " +
+        "Use a compliant value in every policy that sets it."
     } elseif ($Compliance.ComplianceLogic -eq 'EffectivePolicy' -and $nonCompliantCount -gt 0) {
-        $usesIt = if ($nonCompliantCount -eq 1) { "the $scope policy that sets it uses" } else { "the $scope policies that set it use" }
-        $summary = "$SettingName is not ${ExpectedState}: $usesIt a different value."
+        $setsIt = if ($nonCompliantCount -eq 1) { "the $scope policy that sets it doesn't" } else { "the $scope policies that set it don't" }
+        $summary = "$SettingName is not ${ExpectedState}: $setsIt use a compliant value."
     } elseif ($Compliance.ComplianceLogic -eq 'EffectivePolicy') {
         $summary = "$SettingName isn't set in $anyPolicy, so Maester can't confirm it. Set it in a policy assigned to your devices."
     } elseif ($Compliance.ComplianceLogic -eq 'AnyPolicy') {
@@ -80,7 +79,7 @@
 
     $rows = [System.Collections.Generic.List[string]]::new()
     foreach ($name in @($Compliance.CompliantPolicies)) { $rows.Add("| $(Get-MtSafeMarkdown $name) | ✅ Compliant |") }
-    foreach ($name in @($Compliance.NonCompliantPolicies)) { $rows.Add("| $(Get-MtSafeMarkdown $name) | ❌ Different value |") }
+    foreach ($name in @($Compliance.NonCompliantPolicies)) { $rows.Add("| $(Get-MtSafeMarkdown $name) | ❌ Not compliant |") }
     foreach ($name in @($Compliance.NotConfiguredPolicies)) {
         $status = if ($Compliance.ComplianceLogic -eq 'AllPolicies') { '❌ Not configured' } else { '➖ Not configured' }
         $rows.Add("| $(Get-MtSafeMarkdown $name) | $status |")

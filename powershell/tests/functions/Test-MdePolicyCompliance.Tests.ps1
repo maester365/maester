@@ -159,6 +159,35 @@ Describe 'Test-MdePolicyCompliance' {
         }
     }
 
+    It 'passes policies that set different values that are each compliant, as AllPolicies does' {
+        InModuleScope Maester {
+            # Decided in review of #2606: values are not compared between compliant policies, because
+            # without assignment resolution Maester cannot tell whether any device receives both.
+            $block = 'device_vendor_msft_policy_config_defender_cloudblocklevel'
+            $levels = @{ '_0' = 0; '_2' = 2; '_4' = 4; '_6' = 6 }
+            $config = & $script:NewPolicyConfiguration ([ordered]@{
+                    'AV - Servers' = @(& $script:NewSetting $block '_2')
+                    'AV - Laptops' = @(& $script:NewSetting $block '_4')
+                })
+            foreach ($logic in 'EffectivePolicy', 'AllPolicies') {
+                $result = Test-MdePolicyCompliance -PolicyConfiguration $config -SettingId $block -ComplianceCheck MinimumLevel -ValidLevels $levels -MinimumValue 2 -ComplianceLogic $logic
+                $result.IsCompliant | Should -BeTrue -Because "$logic does not compare values between compliant policies"
+                $result.HasConflict | Should -BeFalse
+            }
+        }
+    }
+
+    It 'passes an optional (NotRequired) setting that no policy sets, under every logic' {
+        InModuleScope Maester {
+            $quick = 'device_vendor_msft_policy_config_defender_schedulequickscantime'
+            $config = & $script:NewPolicyConfiguration ([ordered]@{ 'AV - Core' = @(); 'AV - Exclusions' = @() })
+            foreach ($logic in 'EffectivePolicy', 'AllPolicies', 'AnyPolicy') {
+                (Test-MdePolicyCompliance -PolicyConfiguration $config -SettingId $quick -ComplianceCheck NotRequired -ComplianceLogic $logic).IsCompliant |
+                    Should -BeTrue -Because "MT.1159's help says it passes under $logic when no policy sets it"
+            }
+        }
+    }
+
     It 'applies the same rule to Enum, MinimumLevel and MinimumValue checks' {
         InModuleScope Maester {
             $pua = 'device_vendor_msft_policy_config_defender_puaprotection'
@@ -272,7 +301,8 @@ Describe 'Get-MdeComplianceResultMarkdown' {
         InModuleScope Maester {
             $md = Get-MdeComplianceResultMarkdown -SettingName 'Archive scanning' -ExpectedState 'enabled' -Compliance (& $script:NewCompliance @{
                     IsCompliant = $true; CompliantPolicies = @('AV - Core'); NotConfiguredPolicies = @('AV - Exclusions') })
-            $md | Should -Match '^Well done\. Archive scanning is enabled in 1 of the 2 assigned Defender Antivirus policies, and no policy sets a different value; the others don''t configure it\. Make sure the policy that sets it is assigned to every device that needs this setting\.'
+            $md | Should -Match '^Well done\. Archive scanning is enabled in 1 of the 2 assigned Defender Antivirus policies; the others don''t configure it\. Make sure the policy that sets it is assigned to every device that needs this setting\.'
+            $md | Should -Not -Match 'different value' -Because 'a pass does not establish that compliant policies use the same value'
             $md | Should -Match '\| AV - Core \| ✅ Compliant \|'
             $md | Should -Match '\| AV - Exclusions \| ➖ Not configured \|'
         }
@@ -287,12 +317,12 @@ Describe 'Get-MdeComplianceResultMarkdown' {
         }
     }
 
-    It 'describes different values without claiming Intune always reports a conflict' {
+    It 'describes compliant and non-compliant policies without claiming their values differ' {
         InModuleScope Maester {
             $md = Get-MdeComplianceResultMarkdown -SettingName 'Archive scanning' -ExpectedState 'enabled' -Compliance (& $script:NewCompliance @{
                     HasConflict = $true; CompliantPolicies = @('AV - Baseline'); NonCompliantPolicies = @('AV - Developer') })
-            $md | Should -Match '^Archive scanning is set to different values by the assigned Defender Antivirus policies\. Devices that receive only a policy with the other value are not compliant'
-            $md | Should -Match '\| AV - Developer \| ❌ Different value \|'
+            $md | Should -Match '^Archive scanning is compliant in some of the assigned Defender Antivirus policies and not in others\. Devices that receive only a non-compliant policy are not compliant'
+            $md | Should -Match '\| AV - Developer \| ❌ Not compliant \|'
         }
     }
 
@@ -300,10 +330,10 @@ Describe 'Get-MdeComplianceResultMarkdown' {
         InModuleScope Maester {
             $one = Get-MdeComplianceResultMarkdown -SettingName 'Full scan on mapped network drives' -ExpectedState 'correctly disabled' -Compliance (& $script:NewCompliance @{
                     NonCompliantPolicies = @('AV - Core'); NotConfiguredPolicies = @('AV - Exclusions') })
-            $one | Should -Match '^Full scan on mapped network drives is not correctly disabled: the assigned policy that sets it uses a different value\.'
+            $one | Should -Match '^Full scan on mapped network drives is not correctly disabled: the assigned policy that sets it doesn''t use a compliant value\.'
             $two = Get-MdeComplianceResultMarkdown -SettingName 'Archive scanning' -ExpectedState 'enabled' -Compliance (& $script:NewCompliance @{
                     NonCompliantPolicies = @('AV - A', 'AV - B') })
-            $two | Should -Match '^Archive scanning is not enabled: the assigned policies that set it use a different value\.'
+            $two | Should -Match '^Archive scanning is not enabled: the assigned policies that set it don''t use a compliant value\.'
         }
     }
 

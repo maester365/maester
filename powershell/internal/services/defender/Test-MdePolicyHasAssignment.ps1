@@ -24,7 +24,7 @@
     )
 
     # A failed read is not caught: treating the policy as unassigned would drop it from the evaluation, and under
-    # EffectivePolicy dropping a policy that sets a different value would turn a failing check into a pass.
+    # EffectivePolicy dropping a policy that sets a non-compliant value would turn a failing check into a pass.
     # The error reaches the engine, which reports the check as Error.
     $assignmentParams = @{
         RelativeUri = "deviceManagement/configurationPolicies/$PolicyId/assignments"
