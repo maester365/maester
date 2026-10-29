@@ -258,6 +258,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1224](./MT.1224.md) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225.md) | Users should not be able to create Agent Identity Blueprints. | Medium | Entra ID | Agent identities |
 | [MT.1226](./MT.1226.md) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Medium | Entra ID | Applications |
+| [MT.1227](./MT.1227.md) | Subscriptions should be blocked from leaving and entering the tenant | Medium | Azure | Subscriptions |
 | [MT.1228](./MT.1228.md) | Ensure iOS compliance policy blocks jailbroken devices. | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229.md) | Ensure iOS compliance policy requires a strong device passcode. | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230.md) | Ensure iOS compliance policy requires a minimum operating system version. | Medium | Intune | Device compliance |
