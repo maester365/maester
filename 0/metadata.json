@@ -1,0 +1,77 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M62MFCCMYARBAM4P6YPVWEK5",
+  "session_id": "cad13d5b-f6a5-465e-ab70-f69ded04259c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-29T01:30:31.165782Z",
+  "branch": "pr-2552",
+  "checkpoints_count": 2,
+  "save_step_count": 3,
+  "files_touched": [
+    "website/src/data/test-builder.json"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "6ee6ddebb727",
+  "checkpoint_transcript_start": 4102,
+  "transcript_lines_at_start": 4102,
+  "compact_transcript_start": 597,
+  "token_usage": {
+    "input_tokens": 114,
+    "cache_creation_tokens": 70194,
+    "cache_read_tokens": 24620210,
+    "output_tokens": 41825,
+    "api_call_count": 54
+  },
+  "redaction": {
+    "replacements": 1088,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 6,
+      "credentialed_uri": 0,
+      "entropy": 1086,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_0119cx9idtgodyTf6tV88WBv",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "maester-triage"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "309ca8d32020",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 374,
+        "end": 375,
+        "entry_ids": [
+          "f4d6dc06-58cd-462c-937d-b28738efca3a"
+        ],
+        "tool_use_id": "toolu_0119cx9idtgodyTf6tV88WBv"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_0119cx9idtgodyTf6tV88WBv"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: maester-triage",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 3
+  }
+}
