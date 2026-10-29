@@ -5,6 +5,13 @@
         # Check functions that became native tests are not exported.
         Use-MtModuleFunction -Name Test-MtCaBaselineScopesEnforcement
 
+        # The error Invoke-MtGraphRequest rethrows when Graph answers with an HTTP error status.
+        function Get-GraphHttpError {
+            param([System.Net.HttpStatusCode] $StatusCode)
+            $response = [System.Net.Http.HttpResponseMessage]::new($StatusCode)
+            [Microsoft.PowerShell.Commands.HttpResponseException]::new("Response status code does not indicate success: $([int]$StatusCode).", $response)
+        }
+
         $script:EnforcedAppId = '00000002-0000-0000-c000-000000000000'
         $script:DisabledAppId = '00000000-0000-0000-0000-000000000000'
         $script:PlaceholderAppId = '7c9e6f2a-4b1d-4e8a-9f3c-b5d2a8e1c4f7'
@@ -47,14 +54,16 @@
         $script:Investigate = $false
         $script:GraphObjects = $null
         $script:GraphObjectType = $null
+        $script:SkippedBecause = $null
 
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $GraphObjects, $GraphObjectType, [switch] $Investigate)
+            param($Result, $GraphObjects, $GraphObjectType, [switch] $Investigate, $SkippedBecause)
 
             $script:Result = $Result
             $script:Investigate = [bool]$Investigate
             $script:GraphObjects = @($GraphObjects | Where-Object { $_ })
             $script:GraphObjectType = $GraphObjectType
+            $script:SkippedBecause = $SkippedBecause
         }
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } {
             [pscustomobject]@{ id = 'sp-object-id'; displayName = 'CA placeholder' }
@@ -198,7 +207,19 @@
         $script:GraphObjects.displayName | Should -Be @('Require compliant device')
     }
 
-    It 'fails when a policy that targets specific applications excludes Windows Azure Active Directory' {
+    It 'fails when a policy that includes Windows Azure Active Directory itself also excludes it' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
+            Get-BaselineScopeSetting -ResourceAppId $script:EnforcedAppId
+        }
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            Get-Policy -Name 'Directory access' -IncludeApplications $script:EnforcedAppId -ExcludeApplications $script:EnforcedAppId
+        }
+
+        Test-MtCaBaselineScopesEnforcement | Should -BeFalse
+        $script:GraphObjects.displayName | Should -Be @('Directory access')
+    }
+
+    It 'asks for investigation when a policy that does not include Windows Azure Active Directory excludes it' {
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
             Get-BaselineScopeSetting -ResourceAppId $script:EnforcedAppId
         }
@@ -206,8 +227,87 @@
             Get-Policy -Name 'Office 365 only' -IncludeApplications 'Office365' -ExcludeApplications $script:EnforcedAppId
         }
 
+        Test-MtCaBaselineScopesEnforcement | Should -BeTrue
+        $script:Investigate | Should -BeTrue
+        $script:Result | Should -Not -Match 'Well done'
+        $script:Result | Should -Match 'no effect today'
+        $script:Result | Should -Match '\[Office 365 only\]\('
+        $script:GraphObjects | Should -BeNullOrEmpty
+    }
+
+    It 'adds the policies with an inactive Windows Azure Active Directory exclusion to the <Selection> result' -ForEach @(
+        @{ Selection = 'disabled'; AppId = '00000000-0000-0000-0000-000000000000'; Ret = $false; Inv = $false }
+        @{ Selection = 'customized'; AppId = '7c9e6f2a-4b1d-4e8a-9f3c-b5d2a8e1c4f7'; Ret = $true; Inv = $true }
+        @{ Selection = 'no choice'; AppId = ''; Ret = $true; Inv = $true }
+    ) {
+        $settings = Get-BaselineScopeSetting -ResourceAppId $AppId
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } { $settings }.GetNewClosure()
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            Get-Policy -Name 'Office 365 only' -IncludeApplications 'Office365' -ExcludeApplications $script:EnforcedAppId
+        }
+
+        Test-MtCaBaselineScopesEnforcement | Should -Be $Ret
+        $script:Investigate | Should -Be $Inv
+        $script:Result | Should -Match 'no effect today'
+        $script:Result | Should -Match '\[Office 365 only\]\('
+    }
+
+    It 'lists both kinds of Windows Azure Active Directory exclusion when the tenant has both' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
+            Get-BaselineScopeSetting -ResourceAppId $script:EnforcedAppId
+        }
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            Get-Policy -Name 'Require compliant device' -ExcludeApplications $script:EnforcedAppId
+            Get-Policy -Name 'Office 365 only' -IncludeApplications 'Office365' -ExcludeApplications $script:EnforcedAppId
+        }
+
         Test-MtCaBaselineScopesEnforcement | Should -BeFalse
-        $script:GraphObjects.displayName | Should -Be @('Office 365 only')
+        $script:GraphObjects.displayName | Should -Be @('Require compliant device')
+        $script:Result | Should -Match 'no effect today'
+        $script:Result | Should -Match '\[Office 365 only\]\('
+    }
+
+    It 'is skipped when the Conditional Access settings return <Code>' -ForEach @(
+        @{ Code = 401; Status = [System.Net.HttpStatusCode]::Unauthorized }
+        @{ Code = 403; Status = [System.Net.HttpStatusCode]::Forbidden }
+    ) {
+        $err = Get-GraphHttpError -StatusCode $Status
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } { throw $err }.GetNewClosure()
+
+        Test-MtCaBaselineScopesEnforcement | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -Be 'NotAuthorized'
+        Should -Invoke -ModuleName Maester Get-MtConditionalAccessPolicy -Times 0
+    }
+
+    It 'rethrows other errors from the Conditional Access settings' {
+        $err = Get-GraphHttpError -StatusCode ([System.Net.HttpStatusCode]::InternalServerError)
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } { throw $err }.GetNewClosure()
+
+        { Test-MtCaBaselineScopesEnforcement } | Should -Throw '*500*'
+        $script:SkippedBecause | Should -BeNullOrEmpty
+    }
+
+    It 'falls back to the application ID when the placeholder lookup returns 403' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
+            Get-BaselineScopeSetting -ResourceAppId $script:PlaceholderAppId
+        }
+        $err = Get-GraphHttpError -StatusCode ([System.Net.HttpStatusCode]::Forbidden)
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } { throw $err }.GetNewClosure()
+
+        Test-MtCaBaselineScopesEnforcement | Should -BeTrue
+        $script:Investigate | Should -BeTrue
+        $script:Result | Should -Match ([regex]::Escape($script:PlaceholderAppId))
+        $script:Result | Should -Match 'no permission to read it'
+    }
+
+    It 'rethrows other errors from the placeholder lookup' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
+            Get-BaselineScopeSetting -ResourceAppId $script:PlaceholderAppId
+        }
+        $err = Get-GraphHttpError -StatusCode ([System.Net.HttpStatusCode]::BadGateway)
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'servicePrincipals' } { throw $err }.GetNewClosure()
+
+        { Test-MtCaBaselineScopesEnforcement } | Should -Throw '*502*'
     }
 
     It 'ignores policies that are not enabled or have no application conditions' {
