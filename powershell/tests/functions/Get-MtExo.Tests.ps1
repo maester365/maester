@@ -1,4 +1,4 @@
-﻿Describe 'Get-MtExo' {
+Describe 'Get-MtExo' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
 
@@ -38,9 +38,9 @@
 
     It 'Skips an earlier Exchange Online module that does not export the command' {
         Mock -ModuleName Maester Get-ConnectionInformation {
-            [PSCustomObject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEXO_restricted_mttest') }
-            [PSCustomObject]@{ Name = 'ExchangeOnline_2'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEXO_mttest') }
-            [PSCustomObject]@{ Name = 'ExchangeOnline_3'; IsEopSession = $true; State = 'Connected'; ModuleName = (Join-Path $env:TEMP 'tmpEOP_mttest') }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_1'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_restricted_mttest') }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_2'; IsEopSession = $false; State = 'Connected'; ModuleName = (Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_mttest') }
+            [PSCustomObject]@{ Name = 'ExchangeOnline_3'; IsEopSession = $true; State = 'Connected'; ModuleName = (Join-Path ([IO.Path]::GetTempPath()) 'tmpEOP_mttest') }
         }
 
         (Get-MtExo -Request AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled | Should -BeTrue
@@ -59,7 +59,7 @@
             [PSCustomObject]@{
                 IsEopSession = $false
                 State = 'Connected'
-                ModuleName = Join-Path $env:TEMP 'tmpEXO_vip_mttest'
+                ModuleName = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_vip_mttest'
             }
         }
 

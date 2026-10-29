@@ -16,7 +16,7 @@ BeforeAll {
     # tests/maester/<service>, tests/cisa/<service>, powershell/{public,internal}/services/<service> and
     # powershell/internal/checks/<suite>/<service>. Add a new service here and in the contributing guide.
     $script:ServiceNames = @(
-        'ad', 'azure', 'azure-devops', 'copilot', 'copilot-studio', 'defender', 'entra', 'exchange', 'foundry', 'github',
+        'ad', 'azure', 'azure-devops', 'copilot', 'copilot-studio', 'defender', 'entra', 'exchange', 'fabric', 'foundry', 'github',
         'global-secure-access',
         'graph', 'intune', 'purview', 'sharepoint', 'teams', 'xspm'
     )
