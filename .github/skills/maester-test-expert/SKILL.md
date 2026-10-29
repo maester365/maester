@@ -564,8 +564,8 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
       the description or the remediation text.
 - [ ] No `Category` or `Preview`; no `Tag` for product, feature, area, suite, benchmark, licence,
       severity or the ID. `Lifecycle = 'Preview'` and the `LongRunning` flag where they apply.
-- [ ] A CIS, CISA or ASD check sets `Control` to its requirement (`cis-m365:<id>`, `cis-github:<id>`, `essential-eight:<id>` or
-      `cisa-scuba:<id>`), first, and the requirement is in the suite's framework file.
+- [ ] A CIS, CISA or ASD check sets `Control` to its requirement (`cis-m365:<id>`, `cis-github:<id>`, `cisa-scuba:<id>`,
+      `essential-eight:<id>` or `ism:<id>`), first, and the requirement is in the suite's framework file.
 - [ ] `Control` was considered for every check: a CIS or CISA requirement that asks for the same setting, and
       NIST SP 800-53 controls from `powershell/assets/MaesterNistControls.json` (none when a `cisa-scuba`
       reference already brings them). Left empty only when nothing applies.

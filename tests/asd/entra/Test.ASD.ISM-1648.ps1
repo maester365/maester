@@ -9,9 +9,10 @@
 
     The check lists the users with an active or eligible assignment to a directory role that Microsoft Entra
     marks as privileged, directly or through a role-assignable group, and reads the last sign-in of each. A
-    user fails when the account is enabled and the most recent interactive or non-interactive sign-in is
-    older than the number of days given (45 by default), or when the account has never signed in and was
-    created before that. The emergency access accounts named in the Maester configuration
+    user fails when the account is enabled and the most recent successful interactive or non-interactive
+    sign-in is older than the number of days given (45 by default), or when no successful sign-in is recorded
+    and the account was created before that. Microsoft Graph has recorded successful sign-ins since December
+    2023 without backfilling older activity. The emergency access accounts named in the Maester configuration
     (EmergencyAccessAccounts) are left out, because they are meant to stay unused.
 
     MT.1029 reports the same accounts through the Privileged Identity Management stale accounts alert, whose
@@ -20,7 +21,8 @@
     .EXAMPLE
     Test-MtAsdInactivePrivilegedAccess
 
-    Returns true when every enabled privileged user signed in within the last 45 days.
+    Returns true when no enabled privileged user is known to have been inactive for 45 days or more.
+    Reports Investigate when a user's inactivity cannot be determined.
 
     .LINK
     https://maester.dev/docs/tests/ASD.ISM-1648
@@ -52,22 +54,26 @@
     $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
-        return $null
+        return $false
     }
 
     $cutoff = [datetime]::UtcNow.AddDays(-$InactiveDays)
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId @($rolesOf.Keys) -Select id, userPrincipalName, displayName, accountEnabled, createdDateTime, signInActivity)
+    $unknown = [System.Collections.Generic.List[object]]::new()
     $inactive = foreach ($user in $users) {
         if ($user.accountEnabled -ne $true) { continue }
-        $signIns = @($user.signInActivity.lastSignInDateTime, $user.signInActivity.lastNonInteractiveSignInDateTime | Where-Object { $_ } | ForEach-Object { [datetime]$_ })
-        $lastSignIn = if ($signIns.Count -gt 0) { ($signIns | Measure-Object -Maximum).Maximum.ToUniversalTime() } else { $null }
-        $isInactive = if ($lastSignIn) { $lastSignIn -lt $cutoff } else { $user.createdDateTime -and ([datetime]$user.createdDateTime).ToUniversalTime() -lt $cutoff }
+        $lastSignIn = if ($user.signInActivity.lastSuccessfulSignInDateTime) { ([datetime]$user.signInActivity.lastSuccessfulSignInDateTime).ToUniversalTime() } else { $null }
+        if (-not $lastSignIn -and -not $user.createdDateTime) {
+            $unknown.Add([pscustomobject]@{ User = $user.userPrincipalName; Roles = $rolesOf[$user.id] -join ', ' })
+            continue
+        }
+        $isInactive = if ($lastSignIn) { $lastSignIn -lt $cutoff } else { ([datetime]$user.createdDateTime).ToUniversalTime() -lt $cutoff }
         if ($isInactive) {
             [pscustomobject]@{
                 id                = $user.id
                 displayName       = $user.displayName
                 userPrincipalName = $user.userPrincipalName
-                LastSignIn        = if ($lastSignIn) { $lastSignIn.ToString('yyyy-MM-dd') } else { 'Never' }
+                LastSignIn        = if ($lastSignIn) { $lastSignIn.ToString('yyyy-MM-dd') } else { 'Not recorded' }
                 Roles             = $rolesOf[$user.id] -join ', '
             }
         }
@@ -76,12 +82,16 @@
     $testResult = $inactive.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Every enabled user with a privileged directory role signed in within the last $InactiveDays days ($($rolesOf.Count) users checked)."
+        $testResultMarkdown = "No enabled user with a privileged directory role is known to have been inactive for $InactiveDays days or more ($($rolesOf.Count) users checked)."
     } else {
-        $table = "| User | Last sign-in | Privileged roles |`n| --- | --- | --- |`n"
+        $table = "| User | Last successful sign-in | Privileged roles |`n| --- | --- | --- |`n"
         foreach ($user in ($inactive | Sort-Object userPrincipalName)) { $table += "| $($user.userPrincipalName) | $($user.LastSignIn) | $($user.Roles) |`n" }
-        $testResultMarkdown = "$($inactive.Count) enabled user(s) with a privileged directory role have not signed in for $InactiveDays days or more. Disable the account or remove the role, and let an access review or a PIM alert catch the next one.`n`n$table"
+        $testResultMarkdown = "$($inactive.Count) enabled user(s) with a privileged directory role have no successful sign-in recorded within $InactiveDays days. Disable the account or remove the role, and let an access review or a PIM alert catch the next one.`n`n$table"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    if ($unknown.Count -gt 0) {
+        $testResultMarkdown += "`n`nThe inactivity of $($unknown.Count) user(s) cannot be determined because neither a successful sign-in nor an account creation date was returned:`n`n| User | Privileged roles |`n| --- | --- |`n"
+        foreach ($user in ($unknown | Sort-Object User)) { $testResultMarkdown += "| $($user.User) | $($user.Roles) |`n" }
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:($testResult -and $unknown.Count -gt 0)
     return $testResult
 }

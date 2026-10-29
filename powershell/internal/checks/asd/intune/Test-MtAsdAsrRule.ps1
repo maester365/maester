@@ -41,11 +41,12 @@
     }
     $names = @($Rule.Values | ForEach-Object { "**$_**" }) -join ' and '
     if ($testResult) {
-        $testResultMarkdown = "Well done. Assigned Intune policies set the attack surface reduction rule$(if ($Rule.Count -gt 1) { 's' }) $names to Block.`n`n$table"
+        $testResultMarkdown = "Intune policies with inclusion assignments configure the attack surface reduction rule$(if ($Rule.Count -gt 1) { 's' }) $names to Block.`n`n$table"
     } else {
         $missing = @($report | Where-Object { -not $_.Blocked } | ForEach-Object { "**$($_.Name)**" }) -join ' and '
         $testResultMarkdown = "No assigned Intune policy sets $missing to Block. Audit and Warn only report the behaviour, and a policy that is not assigned applies to no device. Add the rule$(if ($Rule.Count -gt 1) { 's' }) with the mode **Block** to an Endpoint security > Attack surface reduction policy that is assigned to your workstations.`n`n$table"
     }
+    $testResultMarkdown += "`n`nThis checks policy configuration and inclusion assignments; it does not verify assignment coverage or exclusions, conflicting policies, or effective settings on devices."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

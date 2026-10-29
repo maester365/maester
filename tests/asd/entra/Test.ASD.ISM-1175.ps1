@@ -1,7 +1,7 @@
 ﻿function Test-MtAsdPrivilegedUserMailbox {
     <#
     .SYNOPSIS
-    Checks that users with a privileged directory role have no Exchange Online mailbox.
+    Checks for mailbox-providing Exchange Online service plans on users with a privileged directory role.
 
     .DESCRIPTION
     ISM-1175 (Essential Eight, Restrict administrative privileges, Maturity Level One) asks that privileged
@@ -16,8 +16,8 @@
     enabled Exchange Online service plan that provides a mailbox (Plan 1, Plan 2, Kiosk or Essentials). The
     Exchange Foundation plan that comes with Entra ID, Intune and Defender licences creates no mailbox and is
     not counted. The emergency access accounts named in the Maester configuration
-    (EmergencyAccessAccounts) are left out. Blocking the internet and web services for these accounts is done
-    on the device and is not read by this check.
+    (EmergencyAccessAccounts) are left out. The absence of these plans does not prove an account has no mailbox
+    or is used only for privileged duties. Internet and web-service access are not checked.
 
     MT.1028 looks for mailboxes on permanent Control Plane assignments only. ASD's test covers every privileged
     account, eligible ones included, so this check reads them itself.
@@ -25,7 +25,7 @@
     .EXAMPLE
     Test-MtAsdPrivilegedUserMailbox
 
-    Returns true when no privileged user has an Exchange Online mailbox.
+    Returns true when no privileged user has an enabled mailbox-providing Exchange Online plan.
 
     .LINK
     https://maester.dev/docs/tests/ASD.ISM-1175
@@ -60,7 +60,7 @@
     $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
-        return $null
+        return $false
     }
 
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId @($rolesOf.Keys) -Select id, userPrincipalName, displayName, assignedPlans)
@@ -72,12 +72,13 @@
     $testResult = $withMailbox.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. None of the $($rolesOf.Count) users with a privileged directory role has an Exchange Online mailbox."
+        $testResultMarkdown = "None of the $($rolesOf.Count) users with a privileged directory role has an enabled mailbox-providing Exchange Online service plan."
     } else {
         $table = "| User | Privileged roles |`n| --- | --- |`n"
         foreach ($user in ($withMailbox | Sort-Object userPrincipalName)) { $table += "| $($user.userPrincipalName) | $($user.Roles) |`n" }
-        $testResultMarkdown = "$($withMailbox.Count) of $($rolesOf.Count) users with a privileged directory role have an Exchange Online mailbox. Give each administrator a separate, unlicensed account for privileged duties and move the role to it.`n`n$table"
+        $testResultMarkdown = "$($withMailbox.Count) of $($rolesOf.Count) users with a privileged directory role have an enabled mailbox-providing Exchange Online service plan. Give each administrator a separate, unlicensed account for privileged duties and move the role to it.`n`n$table"
     }
+    $testResultMarkdown += "`n`nThis check does not verify mailbox existence, access to other email or web services, or whether the account is used only for privileged duties."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

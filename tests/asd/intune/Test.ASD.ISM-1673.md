@@ -2,6 +2,8 @@
 
 Macro malware calls the Win32 API to allocate memory, load shellcode and reach the operating system directly. Blocking those calls leaves VBA its document automation and takes away its use as a loader. This check reads the attack surface reduction rules of every Intune Windows configuration policy (Endpoint security and settings catalog policies share the same setting definitions) and passes when an assigned policy sets **Block Win32 API calls from Office macros** to **Block**. Audit and Warn only report the behaviour and do not satisfy the control.
 
+The check confirms that a policy has an inclusion assignment. It does not verify assignment coverage or exclusions, conflicting policies, or the effective settings on devices.
+
 #### Remediation action
 
 1. In **Microsoft Intune admin center**, go to **Endpoint security** > **[Attack surface reduction](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/asr)** and open your attack surface reduction rules policy, or create one for **Windows** with the profile **Attack Surface Reduction Rules**.
