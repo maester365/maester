@@ -45,7 +45,8 @@ background to avoid user confusion.
 - Adding or correcting a check's attributes: product, feature, area, resource type, severity, user impact,
   implementation cost, ATT&CK techniques, service or licence declarations
 - Writing or updating a check's `.md` (description, remediation, result template)
-- Reviewing a check for correctness, attributes that fit the rubric, or documentation completeness
+- Reviewing a check for correctness, duplication with a test in another suite, attributes that fit the rubric, or
+  documentation completeness
 - Debugging a failing, erroring or skipped check
 - Writing or converting a user's custom test (`custom/` folder)
 
@@ -391,7 +392,8 @@ only when nothing applies. It is the only way a check is mapped to a framework. 
    CISA check lists `cisa-scuba:<id>` and an ASD check `essential-eight:<ISM id>` (or `ism:<ISM id>`), first. If the requirement is not in the suite's framework file yet, add it
    there with its facts (level and profiles, or criticality) in the same pull request.
 2. **A CIS, CISA or ASD requirement that asks for the same setting.** A Maester check that verifies what
-   `cisa-scuba:MS.AAD.3.1` asks for lists it. Look the requirement up in `tests/cis/frameworks/*.json`,
+   `cisa-scuba:MS.AAD.3.1` asks for lists it. A benchmark check never adds its requirement to another suite's
+   test: when that test already checks what the benchmark asks, the benchmark check is a shim (next section). Look the requirement up in `tests/cis/frameworks/*.json`,
    `tests/cisa/frameworks/cisa-scuba.json` and `tests/asd/frameworks/*.json`, or in the lookup of the [test builder](https://maester.dev/test-builder).
    `Get-MtTest -Suite CISA | Format-Table Id, Title, Control` shows what the existing checks map to.
 3. **NIST SP 800-53 Rev. 5 controls**, written `nist-800-53-r5:<control>`, chosen with the NIST part of the
@@ -402,6 +404,38 @@ only when nothing applies. It is the only way a check is mapped to a framework. 
 
 The first value that names a requirement in a framework file becomes the `Benchmark` of the result, so the order
 matters. An inventory count, or a health, licensing or tidiness check, usually lists nothing.
+
+### A requirement another suite already checks (shims)
+
+Benchmarks overlap: CIS, CISA, ASD and Maester tests often read the same setting. Before writing a check for a
+benchmark requirement, and when reviewing one:
+
+1. **Find the tests in every suite that read the setting.** `Get-MtTest -Product <key> -Feature <key> |
+   Format-Table Id, Title`, and search `tests/` for the Graph endpoint or setting name.
+2. **Read the benchmark's own sources**, not only the requirement's one-line text: its audit or assessment
+   guidance and any reference configuration it publishes (CIS audit and remediation sections; the SCuBA baseline
+   and ScubaGear; for ASD the ISM, the Essential Eight assessment process guide and the ASD Blueprint for Secure
+   Cloud). Note every concrete value: a number of days, a threshold, a role list, an authentication strength, a
+   rule that must be Block. Use the web tools; cite the page.
+3. **Decide:**
+   - Same check: write a **shim**, a test with its own `Id`, `Title`, `Control`, `Author` and `.md` whose body is
+     `return <the other test's function>` (`return Test-MtCisMfaForEveryUser`).
+   - Same check, different value that the other test takes as a parameter: a shim with its own parameter whose
+     default is the benchmark's value, passed on (`return Test-MtCisSmartLockoutThreshold -MaximumLockoutThreshold $MaximumLockoutThreshold`).
+   - Something no test checks, or a rule no parameter covers: a check of its own. Read data through
+     `internal/services/<service>/` helpers, and move a helper there (with a neutral name) when another suite
+     already has the code; never copy another check's logic or name a generic helper after a suite.
+
+A shim declares the same `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType`, `Severity`,
+`UserImpact`, `ImplementationCost`, `Mitre`, `Service`, `License`, `Permission`, `TenantType`, `Cloud`,
+`Platform`, `Lifecycle`, `LongRunning` and `Exclusive` as the test it calls; calls a test that is not a shim;
+passes only parameters that test declares; leaves its own requirement off that test's `Control`; and says in its
+`.md` what the benchmark asks and which test it runs, by ID. `powershell/tests/general/TestShims.Tests.ps1`
+enforces all of this. The full guidance, with an example, is
+[Tests that another suite already has](../../../website/docs/writing-tests/index.mdx#tests-that-another-suite-already-has).
+
+When reviewing, fail a benchmark check that re-implements a check another suite already has when the benchmark's
+sources give no reason for the difference, and say which test it duplicates and which source you read.
 
 ### Where the keys come from
 
@@ -448,29 +482,32 @@ the rubric. When you review a check yourself, follow "Reviewing a test's attribu
 
 ## Step-by-Step Workflow: Creating a New Check
 
-1. **Reserve an ID.** Check [issue #697](https://github.com/maester365/maester/issues/697) and comment to reserve
+1. **Look for a test that already checks it**, in every suite, and for a benchmark requirement read the
+   benchmark's own sources. If the benchmark asks for what an existing test checks, the new check is a shim; see
+   [A requirement another suite already checks](#a-requirement-another-suite-already-checks-shims).
+2. **Reserve an ID.** Check [issue #697](https://github.com/maester365/maester/issues/697) and comment to reserve
    the next `MT.xxxx` (the maester-issue-manager agent can do this). `Get-MtTest MT.12*` shows which IDs exist.
-2. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Product <product key>
+3. **Scaffold** with `New-MtTest -Id <ID> -Title '...' -Service <service> -Product <product key>
    -Path ./tests/<suite>/<service>`.
-3. **Fill in the attribute**: `License`, `Author`, flags as needed.
-4. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
+4. **Fill in the attribute**: `License`, `Author`, flags as needed.
+5. **Write the function**: read with `Invoke-MtGraphRequest` or the helpers, decide, `Add-MtTestResultDetail`,
    return a boolean. Add parameters for tunable values.
-5. **Write the guide, the `.md`**, in full: a one-line summary, why the setting matters, numbered remediation
+6. **Write the guide, the `.md`**, in full: a one-line summary, why the setting matters, numbered remediation
    steps with a direct link to the admin portal page, related links (Microsoft Learn, and the benchmark when the
    check maps to one), and the results footer. Replace every placeholder that `New-MtTest` wrote; a check with
    scaffold text in its guide is not finished. Verify product facts and links with Microsoft Learn.
-6. **Choose the attribute values** with the rubric: `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`,
+7. **Choose the attribute values** with the rubric: `Feature`, `Area`, `ResourceType`, `Severity`, `UserImpact`,
    `ImplementationCost`, `Mitre`, `Control`, and `RelatedProduct` when one applies. See
    [Choosing the attribute values](#choosing-the-attribute-values) and
    [Framework requirements and NIST controls](#framework-requirements-and-nist-controls-control). The
    [test builder](https://maester.dev/test-builder) shows the allowed values and the rubric for each attribute
    and writes the attribute; use it to check a value you are unsure of.
-7. **Validate offline**: `Import-Module ./powershell/Maester.psd1 -Force; Get-MtTest <ID>` must show
+8. **Validate offline**: `Import-Module ./powershell/Maester.psd1 -Force; Get-MtTest <ID>` must show
    `IsValid = True` and no `Errors`. Name the ID and leave out `-Path`: `Get-MtTest -Path <file>` applies the
    rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
-8. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
+9. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
    `-Parameter @{...}` for each parameter. Check the row's `Result`, `ReasonCode`, `ResultDetail.TestResult`.
-9. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
+10. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
    and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test.
 
 ## Converting a User's Pester-format Test
@@ -500,6 +537,8 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 
 ### Test logic
 - [ ] Returns exactly one `$true`/`$false`; no stray pipeline output.
+- [ ] No other suite already checks the same setting; or the benchmark's own sources were read and the check is
+      a shim of that test, or differs from it for a reason those sources give.
 - [ ] No `Test-MtConnection` guard, no `Get-MtLicenseInformation` check; `Service` and `License` declared instead.
 - [ ] No blanket `try { } catch { Add-MtTestResultDetail -SkippedBecause Error ... }`.
 - [ ] `-SkippedBecause NotApplicable` (not `$null`) when the check does not apply.
@@ -554,6 +593,8 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 | `Category` or `Preview` in the attribute | `InvalidMetadata`; both were removed in 3.0 | `Product` and `Feature`; `Lifecycle = 'Preview'` |
 | A `Tag` such as `'CA'`, `'Entra'` or `'Maester'` on a built-in check | Unit tests fail; tags are not the taxonomy | Use the attribute that says it; see [Tags](#tags) |
 | A product alias (`'Entra ID'`) or a key that is not in the taxonomy | Unit tests fail | Use the key from `powershell/assets/MaesterTaxonomy.psd1`, or add the key in the same pull request |
+| Re-implementing a check another suite already has | Two tests give two answers for one setting and drift apart with every benchmark update | A shim that returns the other test's result; see [shims](#a-requirement-another-suite-already-checks-shims) |
+| A generic helper named after a suite (`Get-MtAsd*`) in `internal/checks/<suite>/` | Other suites copy it instead of reusing it | A neutral name in `internal/services/<service>/` |
 | Copying `Severity`, `Area` or `Mitre` from a similar check | The value may not fit this check, and the attribute review fails a value that does not fit | Choose each value with the rubric |
 | Validating a built-in check with `Get-MtTest -Path` only | It applies the rules of a custom test and reports no missing attribute | `Get-MtTest <ID>` |
 | File name does not match `Id` | `InvalidMetadata` | Rename to `Test.<Id>.ps1` |

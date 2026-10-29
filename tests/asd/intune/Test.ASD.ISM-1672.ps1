@@ -8,15 +8,17 @@
     macro antivirus scanning is enabled.
 
     The check reads the Intune settings catalog policies for Windows and looks for the Office setting
-    "Macro Runtime Scan Scope" set to Enabled with the scope "Enable for low trust documents" or
-    "Enable for all documents", in a policy that is assigned. The scan hands macro behaviour to the
+    "Macro Runtime Scan Scope" set to Enabled with the scope "Enable for all documents", in a policy that is
+    assigned. ASD's guide to restricting Microsoft Office macros and the ASD Blueprint for Secure Cloud both set
+    all documents, and the assessment process guide calls it the ideal value. "Enable for low trust documents"
+    scans only files with the Mark of the Web, whose macros ISM-1488 already blocks, so it does not count. The scan hands macro behaviour to the
     Antimalware Scan Interface (AMSI), where Microsoft Defender Antivirus or another registered antivirus
     inspects it.
 
     .EXAMPLE
     Test-MtAsdOfficeMacroAntivirusScanning
 
-    Returns true when an assigned policy enables macro runtime scanning.
+    Returns true when an assigned policy enables macro runtime scanning for all documents.
 
     .LINK
     https://maester.dev/docs/tests/ASD.ISM-1672
@@ -53,7 +55,7 @@
             Assigned = $setting.IsAssigned
             Enabled  = $enabled
             Scope    = if ($enabled -and $scopes.ContainsKey([string]$scopeValue)) { $scopes[[string]$scopeValue] } elseif ($enabled) { 'Unknown' } else { 'Not configured' }
-            Scans    = $enabled -and $scopeValue -in '1', '2'
+            Scans    = $enabled -and $scopeValue -eq '2'
         }
     }
     $effective = @($report | Where-Object { $_.Assigned -and $_.Scans })
@@ -67,7 +69,7 @@
         if ($testResult) {
             $testResultMarkdown = "Well done. An assigned Intune policy enables antivirus scanning of Office macros at runtime.`n`n$table"
         } else {
-            $testResultMarkdown = "The Office setting **Macro Runtime Scan Scope** is configured, but no assigned policy enables it for low trust or all documents.`n`n$table"
+            $testResultMarkdown = "The Office setting **Macro Runtime Scan Scope** is configured, but no assigned policy enables it for all documents.`n`n$table"
         }
     }
     Add-MtTestResultDetail -Result $testResultMarkdown

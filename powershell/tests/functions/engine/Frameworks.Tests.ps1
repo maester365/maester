@@ -499,10 +499,10 @@ Describe 'Benchmark and Control on result rows' {
 
     It 'Gives the rows of the ASD suite their maturity level and strategy, and the ISM control as Control, without a tenant' {
         $rows = @((Get-Run 'Asd').Tests | Where-Object Suite -EQ 'ASD')
-        $rows.Count | Should -Be 15
+        $rows.Count | Should -Be 14
         @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'essential-eight', 'ism' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
         $essentialEight = @($rows | Where-Object { $_.Benchmark.Framework -ceq 'essential-eight' })
-        $essentialEight.Count | Should -Be 14
+        $essentialEight.Count | Should -Be 13
         @($essentialEight | Where-Object { $_.Benchmark.Level -cnotin 'ML1', 'ML2', 'ML3' -or -not $_.Benchmark.Strategy } | ForEach-Object Id) | Should -BeNullOrEmpty
         # The framework file relates each Essential Eight requirement to the ISM control of the same ID.
         @($essentialEight | Where-Object { $_.Control -cnotcontains "ism:$($_.Benchmark.Requirement)" } | ForEach-Object Id) | Should -BeNullOrEmpty
@@ -510,8 +510,8 @@ Describe 'Benchmark and Control on result rows' {
         $row.Benchmark.Level | Should -BeExactly 'ML1'
         $row.Benchmark.Strategy | Should -BeExactly 'Multi-factor authentication'
         @($row.Control)[0] | Should -BeExactly 'essential-eight:ISM-1504'
-        # Related references follow the test's own values: the ISM controls of ISM-1504 and ISM-0974, in that order.
-        @($row.Control)[-2..-1] | Should -Be @('ism:ISM-1504', 'ism:ISM-0974')
+        # The Related reference follows the test's own values: the ISM control of the same ID.
+        @($row.Control)[-1] | Should -BeExactly 'ism:ISM-1504'
         $ism = $rows | Where-Object Id -EQ 'ASD.ISM-1403'
         $ism.Benchmark.Framework | Should -BeExactly 'ism'
         $ism.Benchmark.Section | Should -BeExactly 'User account lockouts'

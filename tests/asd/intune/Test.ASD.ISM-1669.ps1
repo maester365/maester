@@ -39,5 +39,7 @@
     [OutputType([bool])]
     param()
 
-    return Test-MtAsdAsrRule -RuleSuffix 'blockofficeapplicationsfrominjectingcodeintootherprocesses' -RuleName 'Block Office applications from injecting code into other processes'
+    return Test-MtAsdAsrRule -Rule ([ordered]@{
+            blockofficeapplicationsfrominjectingcodeintootherprocesses = 'Block Office applications from injecting code into other processes'
+        })
 }

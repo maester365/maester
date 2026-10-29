@@ -8,11 +8,14 @@
     access to systems and their resources is disabled after 45 days of inactivity.
 
     The check lists the users with an active or eligible assignment to a directory role that Microsoft Entra
-    marks as privileged, and reads the last sign-in of each. A user fails when the account is enabled and the
-    most recent interactive or non-interactive sign-in is older than the number of days given (45 by
-    default), or when the account has never signed in and was created before that. The emergency access
-    accounts named in the Maester configuration (EmergencyAccessAccounts) are left out, because they are
-    meant to stay unused.
+    marks as privileged, directly or through a role-assignable group, and reads the last sign-in of each. A
+    user fails when the account is enabled and the most recent interactive or non-interactive sign-in is
+    older than the number of days given (45 by default), or when the account has never signed in and was
+    created before that. The emergency access accounts named in the Maester configuration
+    (EmergencyAccessAccounts) are left out, because they are meant to stay unused.
+
+    MT.1029 reports the same accounts through the Privileged Identity Management stale accounts alert, whose
+    number of days each tenant sets. ASD names 45 days, so this check reads the sign-ins itself.
 
     .EXAMPLE
     Test-MtAsdInactivePrivilegedAccess
@@ -29,9 +32,9 @@
         Feature = 'roles',
         Area = 'privileged-access',
         ResourceType = 'User',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = ('essential-eight:ISM-1648', 'nist-800-53-r5:AC-2(3)'),
         Service = 'Graph',
@@ -46,7 +49,7 @@
         [int] $InactiveDays = 45
     )
 
-    $rolesOf = Get-MtAsdPrivilegedUser
+    $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null

@@ -98,6 +98,9 @@ powershell/
   and permissions.
 - **Data access is shared, check logic is not.** Code that reads a service (`services/`) is reused by many checks and
   by custom tests. Code that only one suite's checks need stays in `checks/<suite>/`.
+  The one exception is a benchmark test that asks for what a test in another suite already checks: it is a shim
+  that returns that test's result, not a copy of its logic. See
+  [Tests that another suite already has](./writing-tests/index.mdx#tests-that-another-suite-already-has).
 
 ### Making an internal helper public
 
@@ -256,6 +259,7 @@ When contributing tests, please ensure the following:
 #### Before writing the test
 
 - [x] Check if your new idea is not already covered by an existing test (you can also jump on the [Maester Discord](https://discord.entra.news) to discuss). `Get-MtTest` lists every test.
+- [x] For a benchmark test (CIS, CISA, ASD), look for a test in any suite that reads the same setting, and read the benchmark's own audit or assessment guidance. If it asks for what that test checks, write a shim that returns that test's result instead of a second implementation; see [Tests that another suite already has](./writing-tests/index.mdx#tests-that-another-suite-already-has).
 - [x] Reserve a unique id for your test. See [#️⃣ Pick next Maester test sequence number](https://github.com/maester365/maester/issues/697) on how to reserve a unique id for your new test.
 
 #### Writing the test

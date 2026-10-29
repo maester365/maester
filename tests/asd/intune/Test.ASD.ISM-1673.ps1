@@ -39,5 +39,7 @@
     [OutputType([bool])]
     param()
 
-    return Test-MtAsdAsrRule -RuleSuffix 'blockwin32apicallsfromofficemacros' -RuleName 'Block Win32 API calls from Office macros'
+    return Test-MtAsdAsrRule -Rule ([ordered]@{
+            blockwin32apicallsfromofficemacros = 'Block Win32 API calls from Office macros'
+        })
 }

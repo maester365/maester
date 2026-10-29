@@ -145,7 +145,9 @@ Five cases come up often:
   object, is `Low`. It is `Medium` or higher only when the outage switches off a security control, and then it is
   rated as the loss of that control.
 - **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.
-- **The same check in two suites** gets the same value in both.
+- **The same check in two suites** gets the same value in both. Usually the second is a shim that returns the
+  first test's result and declares all of its values; see
+  [Tests that another suite already has](./index.mdx#tests-that-another-suite-already-has).
 - **The main control against an attack that starts from a stolen password** is `High`. A second layer behind
   that control is `Medium`. Number matching against MFA fatigue is `High`; showing the app name and location in
   the prompt is `Medium`.

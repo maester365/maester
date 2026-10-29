@@ -21,12 +21,18 @@ requirement in the Essential Eight framework first, `Control = 'essential-eight:
 relates that requirement to `ism:ISM-1504`, which Maester adds to the result. A check for a control that the
 maturity model does not use names the ISM directly, `Control = 'ism:ISM-0421'`.
 
-A test in another suite that checks what one of these controls asks for may name the same requirement in its
-`Control`, after the requirement it is written for.
-
 The `Benchmark` of a result carries the facts of the requirement: the maturity level that first requires it
 (`Level`: `ML1`, `ML2` or `ML3`) and the mitigation strategy or strategies (`Strategy`) from the Essential Eight framework, or the
 guideline, section and classification applicability from the ISM.
 
 A passing check is evidence for the control it names. It is not an assessment: an Essential Eight assessment also
 covers endpoints, servers and processes that a tenant check cannot see.
+
+## Checks that another suite already has
+
+Where ASD asks for what a CIS, CISA or Maester test already checks, the ASD check is a shim: it declares its own
+ID, title and `Control` and returns the result of that test (`ASD.ISM-1504` returns `Test-MtCisMfaForEveryUser`).
+Where ASD names a different value, the shim passes it as a parameter (`ASD.ISM-1403` runs the CIS lockout check
+with a maximum of 5). A check has logic of its own only where ASD's own sources (the ISM, the Essential Eight
+assessment process guide and the ASD Blueprint for Secure Cloud) ask for something no other test checks. See
+[Tests that another suite already has](https://maester.dev/docs/next/writing-tests#tests-that-another-suite-already-has).

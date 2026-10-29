@@ -9,8 +9,9 @@
 
     The check reads the Intune settings catalog policies for Windows and looks for the Internet Explorer
     setting "Disable Internet Explorer 11 as a standalone browser" set to Enabled in a policy that is assigned.
-    Devices where Internet Explorer is removed as a Windows feature, or that run a Windows release without it,
-    satisfy the control without this setting; the check does not see them.
+    Devices where Internet Explorer is removed as a Windows feature satisfy the control without this setting,
+    and the ASD Blueprint for Secure Cloud removes it with a platform script. Maester cannot read platform
+    scripts, so a tenant that relies on removal fails this check and should turn it off in the configuration.
 
     .EXAMPLE
     Test-MtAsdInternetExplorerDisabled
@@ -47,7 +48,7 @@
     $testResult = @($report | Where-Object { $_.Enabled -and $_.Assigned }).Count -gt 0
 
     if ($rows.Count -eq 0) {
-        $testResultMarkdown = 'No Intune Windows policy configures **Disable Internet Explorer 11 as a standalone browser**. Enable it in a settings catalog policy assigned to your workstations, or remove the Internet Explorer optional feature.'
+        $testResultMarkdown = 'No Intune Windows policy configures **Disable Internet Explorer 11 as a standalone browser**. Enable it in a settings catalog policy assigned to your workstations. If you remove the Internet Explorer optional feature instead, as the ASD Blueprint for Secure Cloud does with a platform script, the control is met but Maester cannot see it: turn this test off in `maester-config.json` with `Enabled` set to `false` and the reason.'
     } else {
         $table = "| Policy | Setting | Assigned |`n| --- | --- | --- |`n"
         foreach ($r in $report) { $table += "| $($r.Policy) | $(if ($r.Enabled) { 'Enabled' } else { 'Disabled' }) | $(if ($r.Assigned) { 'Yes' } else { 'No' }) |`n" }

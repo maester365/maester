@@ -1,19 +1,20 @@
 ﻿function Test-MtAsdOfficeChildProcessesBlocked {
     <#
     .SYNOPSIS
-    Checks that an assigned Intune policy sets the attack surface reduction rule "Block all Office applications from creating child processes" to Block.
+    Checks that assigned Intune policies set the attack surface reduction rules "Block all Office applications from creating child processes" and "Block Office communication application from creating child processes" to Block.
 
     .DESCRIPTION
     ISM-1667 (Essential Eight, User application hardening, Maturity Level Two) asks that Microsoft Office is blocked from creating child processes.
 
     Attack surface reduction rules are read from every Intune Windows configuration policy (Endpoint security
-    and settings catalog share the setting definition IDs). The check passes when an assigned policy sets the
-    rule to Block; Audit and Warn only report the behaviour and do not satisfy the control.
+    and settings catalog share the setting definition IDs). The check passes when assigned policies set both
+    rules to Block; Audit and Warn only report the behaviour and do not satisfy the control.
+    Outlook is covered by its own rule, so ASD's assessment process guide asks for both.
 
     .EXAMPLE
     Test-MtAsdOfficeChildProcessesBlocked
 
-    Returns true when an assigned policy sets the rule to Block.
+    Returns true when assigned policies set both rules to Block.
 
     .LINK
     https://maester.dev/docs/tests/ASD.ISM-1667
@@ -39,5 +40,8 @@
     [OutputType([bool])]
     param()
 
-    return Test-MtAsdAsrRule -RuleSuffix 'blockallofficeapplicationsfromcreatingchildprocesses' -RuleName 'Block all Office applications from creating child processes'
+    return Test-MtAsdAsrRule -Rule ([ordered]@{
+            blockallofficeapplicationsfromcreatingchildprocesses = 'Block all Office applications from creating child processes'
+            blockofficecommunicationappfromcreatingchildprocesses = 'Block Office communication application from creating child processes'
+        })
 }

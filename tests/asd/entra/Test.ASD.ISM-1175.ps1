@@ -1,33 +1,38 @@
-﻿function Test-MtAsdDedicatedPrivilegedAccount {
+﻿function Test-MtAsdPrivilegedUserMailbox {
     <#
     .SYNOPSIS
-    Checks that users with a privileged directory role have no Exchange Online mailbox, so that the account is dedicated to privileged duties.
+    Checks that users with a privileged directory role have no Exchange Online mailbox.
 
     .DESCRIPTION
-    ISM-0445 (Essential Eight, Restrict administrative privileges, Maturity Level One) asks that privileged
-    users are assigned a dedicated privileged user account to be used solely for duties requiring privileged
-    access, and ISM-1175 that privileged user accounts are prevented from accessing the internet, email and
-    web services.
+    ISM-1175 (Essential Eight, Restrict administrative privileges, Maturity Level One) asks that privileged
+    user accounts, excluding those explicitly authorised to access online services, are prevented from
+    accessing the internet, email and web services. ASD's assessment guide tests the email part by listing the
+    privileged accounts that have an email address. ISM-0445 asks that privileged human users have a dedicated
+    account for privileged duties, and a mailbox on an administrator account is the usual sign that the account
+    is also used for everyday work.
 
-    A mailbox on an administrator account is the usual sign that the account is also used for everyday work,
-    and it exposes the privileged account to phishing. The check lists the users with an active or eligible
-    assignment to a directory role that Microsoft Entra marks as privileged, and fails for each one that has an
+    The check lists the users with an active or eligible assignment to a directory role that Microsoft Entra
+    marks as privileged, directly or through a role-assignable group, and fails for each one that has an
     enabled Exchange Online service plan that provides a mailbox (Plan 1, Plan 2, Kiosk or Essentials). The
     Exchange Foundation plan that comes with Entra ID, Intune and Defender licences creates no mailbox and is
     not counted. The emergency access accounts named in the Maester configuration
-    (EmergencyAccessAccounts) are left out.
+    (EmergencyAccessAccounts) are left out. Blocking the internet and web services for these accounts is done
+    on the device and is not read by this check.
+
+    MT.1028 looks for mailboxes on permanent Control Plane assignments only. ASD's test covers every privileged
+    account, eligible ones included, so this check reads them itself.
 
     .EXAMPLE
-    Test-MtAsdDedicatedPrivilegedAccount
+    Test-MtAsdPrivilegedUserMailbox
 
     Returns true when no privileged user has an Exchange Online mailbox.
 
     .LINK
-    https://maester.dev/docs/tests/ASD.ISM-0445
+    https://maester.dev/docs/tests/ASD.ISM-1175
     #>
     [MaesterTest(
-        Id = 'ASD.ISM-0445',
-        Title = 'Privileged users are assigned a dedicated privileged user account.',
+        Id = 'ASD.ISM-1175',
+        Title = 'Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services.',
         Product = 'entra',
         Feature = 'roles',
         Area = 'privileged-access',
@@ -36,7 +41,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1566'),
-        Control = ('essential-eight:ISM-0445', 'essential-eight:ISM-1175', 'nist-800-53-r5:AC-6(2)', 'nist-800-53-r5:AC-6(5)'),
+        Control = ('essential-eight:ISM-1175', 'essential-eight:ISM-0445', 'nist-800-53-r5:AC-6(2)', 'nist-800-53-r5:AC-6(5)'),
         Service = 'Graph',
         Author = 'jusso-dev'
     )]
@@ -52,7 +57,7 @@
         )
     )
 
-    $rolesOf = Get-MtAsdPrivilegedUser
+    $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
