@@ -67,6 +67,45 @@ Describe 'Deletion results through the native Invoke-MtTest entry point' {
         $script:nativeHttpError = $true
         (Invoke-MtTest -Id CIS.GH.1.2.3 -Config $script:nativeConfig).Result | Should -Be 'Error'
     }
+
+    It 'Keeps paginated owner <Failure> failures Error with earlier identities only in result Markdown' -ForEach @(@{ Failure = 'HTTP' }, @{ Failure = 'JSON' }) {
+        Mock Invoke-WebRequest -ModuleName Maester {
+            param($Uri)
+            if ($Uri -like '*page=2') {
+                if ($Failure -eq 'JSON') { return @{ Content = '{'; Headers = @{} } }
+                throw 'Server text could include sensitive-owner-login.'
+            }
+            if (([uri]$Uri).AbsolutePath -eq '/orgs/fixture-org') {
+                return @{ Content = '{"id":100,"members_can_delete_repositories":false}'; Headers = @{} }
+            }
+            return @{ Content = '[{"id":1,"login":"retained-owner"},{"id":2}]'; Headers = @{ Link = '<https://api.github.com/orgs/fixture-org/members?role=admin&per_page=100&page=2>; rel="next"' } }
+        }
+        $row = Invoke-MtTest -Id CIS.GH.1.2.3 -Config $script:nativeConfig
+        $row.Result | Should -Be 'Error'
+        $row.ReasonCode | Should -Be 'TestError'
+        $row.ResultDetail.TestResult | Should -Match 'retained-owner'
+        $row.ResultDetail.TestResult | Should -Match '\| 2 \| 3 \|'
+        $row.ResultDetail.TestResultRedacted | Should -Not -Match 'retained-owner'
+        $row.ReasonDetail | Should -Not -Match 'sensitive-owner-login|retained-owner|GitHubPartialResponse'
+        ($row.ErrorRecord | ConvertTo-Json -Depth 50 -Compress) | Should -Not -Match 'sensitive-owner-login|retained-owner|GitHubPartialResponse'
+    }
+
+    It 'Keeps complete versus partial native owner verdicts explicit (<Id>, <Partial>)' -ForEach @(
+        @{ Id = 'CIS.GH.1.2.3'; Partial = $false }, @{ Id = 'CIS.GH.1.2.4'; Partial = $false },
+        @{ Id = 'CIS.GH.1.2.3'; Partial = $true }, @{ Id = 'CIS.GH.1.2.4'; Partial = $true }
+    ) {
+        Mock Invoke-WebRequest -ModuleName Maester {
+            param($Uri)
+            if (([uri]$Uri).AbsolutePath -eq '/orgs/fixture-org') {
+                return @{ Content = '{"id":100,"members_can_delete_repositories":false,"members_can_delete_issues":false}'; Headers = @{} }
+            }
+            return @{ Content = '[{"id":1},{"id":2}]'; Headers = $(if ($Partial) { @{ 'X-GitHub-SSO' = 'partial-results' } } else { @{} }) }
+        }
+        $row = Invoke-MtTest -Id $Id -Config $script:nativeConfig
+        $row.Result | Should -Be $(if ($Partial) { 'Skipped' } else { 'Passed' })
+        $row.ResultDetail.TestResult | Should -Match '\| 2 \| 3 \|'
+    }
+
     It 'Rejects a maximum above three through native parameter binding' {
         $row = Invoke-MtTest -Id CIS.GH.1.2.3 -Config $script:nativeConfig -Parameter @{ MaximumOrganizationOwners = 4 }
         $row.Result | Should -Be 'Error'
@@ -117,6 +156,7 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
         }
         $script:graph = @{ data = @{ repository = @{ databaseId = 200; rulesets = @{ totalCount = 0; nodes = @(); pageInfo = @{ hasNextPage = $false; endCursor = $null } } } } }
         $script:links = @{}
+        $script:partialSso = $false
         $script:ratePath = $null
         Mock Invoke-WebRequest -ModuleName Maester {
             param($Uri, $Method, $Headers, $Body)
@@ -136,7 +176,7 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
             else { throw 'Unexpected fixture request.' }
             # Do not pipe array values: preserve [] and singleton array shapes on the wire.
             $content = ConvertTo-Json -InputObject $value -Depth 30 -Compress
-            return @{ Content = $content; Headers = $(if ($script:links.ContainsKey($path)) { @{ Link = $script:links[$path] } } else { @{} }) }
+            return @{ Content = $content; Headers = $(if ($script:partialSso -and $path -ne '/orgs/fixture-org') { @{ 'X-GitHub-SSO' = 'partial-results' } } elseif ($script:links.ContainsKey($path)) { @{ Link = $script:links[$path] } } else { @{} }) }
         }
         Mock Add-MtTestResultDetail -ModuleName Maester {}
     }
@@ -360,4 +400,188 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/graphql' }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 0 -ParameterFilter { $Investigate }
     }
+
+    It 'Fails an excess owner lower bound despite <Gap> and missing approvals' -ForEach @(
+        @{ Gap = 'complete collection' }, @{ Gap = 'malformed row' }, @{ Gap = 'duplicate row' }, @{ Gap = 'partial SSO' }
+    ) {
+        Set-DeletionPolicy $null
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(1..4 | ForEach-Object { @{ id = $_; login = "owner-$_" } })
+        if ($Gap -eq 'malformed row') { $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] += $null }
+        if ($Gap -eq 'duplicate row') { $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] += @{ id = 1 } }
+        if ($Gap -eq 'partial SSO') { $script:partialSso = $true }
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match '\| 4 \| 3 \|' }
+    }
+
+    It 'Fails an unapproved observed owner despite a malformed companion row' {
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 4; login = 'observed-owner' }, @{ id = 'invalid' })
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match 'observed-owner' -and $Result -match 'Not approved' -and $Result -match '(?i)incomplete|partial' }
+    }
+
+    It 'Retains distinct partial owners without establishing a pass' {
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 1; login = 'observed-owner' }, @{ id = 1; login = 'observed-owner' }, $null)
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and $Result -match '\| 1 \| 3 \|' -and $Result -match 'observed-owner' }
+    }
+
+    It 'Retains a repository violation with unusable evidence in either order (<Kind>, <Reverse>)' -ForEach @(
+        @{ Kind = 'Issue'; Reverse = $false }, @{ Kind = 'Issue'; Reverse = $true },
+        @{ Kind = 'Repository'; Reverse = $false }, @{ Kind = 'Repository'; Reverse = $true }
+    ) {
+        $script:organization.members_can_delete_issues = $true
+        $script:organization.members_can_delete_repositories = $true
+        $second = @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } }
+        $repos = @($script:responses['/orgs/fixture-org/repos?type=all&per_page=100'][0], $second)
+        if ($Reverse) { [array]::Reverse($repos) }
+        $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] = $repos
+        $script:policy.Repositories += [pscustomobject]@{ Id = '201'; ApprovedAdministratorIds = @('1', '2') }
+        Set-DeletionPolicy $script:policy
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        $script:responses['/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'] = $null
+        $function = if ($Kind -eq 'Issue') { 'Test-MtCisGitHubIssueDeletionLimited' } else { 'Test-MtCisGitHubRepositoryDeletionLimited' }
+        & $function | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match 'fixture-repo' -and $Result -match 'other-repo' -and $Result -match '(?i)incomplete|partial' }
+    }
+
+    It 'Uses distinct validated administrators as lower bounds (<Count>, <Incomplete>)' -ForEach @(
+        @{ Count = 1; Incomplete = $false; Expected = $false }, @{ Count = 2; Incomplete = $false; Expected = $true }, @{ Count = 3; Incomplete = $false; Expected = $false },
+        @{ Count = 1; Incomplete = $true; Expected = $null }, @{ Count = 2; Incomplete = $true; Expected = $null }, @{ Count = 3; Incomplete = $true; Expected = $false }
+    ) {
+        $script:organization.members_can_delete_issues = $true
+        $script:policy.Repositories[0].ApprovedAdministratorIds = @('1', '2', '3')
+        Set-DeletionPolicy $script:policy
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] = @(1..$Count | ForEach-Object { @{ id = $_; permissions = @{ admin = $true } } })
+        if ($Incomplete) { $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += $null }
+        $actual = Test-MtCisGitHubIssueDeletionLimited
+        if ($null -eq $Expected) { $actual | Should -BeNullOrEmpty } else { $actual | Should -Be $Expected }
+    }
+
+    It 'Does not classify contradictory duplicate permissions as a decisive administrator' {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }, @{ id = 4; permissions = @{ admin = $false } }
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and $Result -match '\| fixture-repo \| 2 \| 0 \|' }
+    }
+
+    It 'Deduplicates matching administrators but retains an excess lower bound' {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }, @{ id = 4; permissions = @{ admin = $true } }
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| fixture-repo \| 3 \| 1 \|' }
+    }
+
+    It 'Keeps incomplete excess administrator evidence Skipped when restrictive policy remains unresolved' {
+        $script:organization.members_can_delete_repositories = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }, $null
+        $script:graph.data.repository.rulesets.totalCount = 1
+        $script:graph.data.repository.rulesets.nodes = @(@{ id = 'policy-1'; target = 'REPOSITORY'; enforcement = 'ACTIVE' })
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and -not $Investigate -and $Result -match 'active repository-target policy' -and $Result -match '\| fixture-repo \| 3 \| 1 \|' }
+    }
+
+    It 'Keeps a later HTTP failure as Error while retaining earlier evidence' {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] += @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } }
+        $script:policy.Repositories += [pscustomobject]@{ Id = '201'; ApprovedAdministratorIds = @('1', '2') }
+        Set-DeletionPolicy $script:policy
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        $script:ratePath = '/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'
+        { Test-MtCisGitHubIssueDeletionLimited } | Should -Throw -ExpectedMessage '*rate limit*'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match '\| fixture-repo \| 3 \| 1 \|' -and $Result -match '(?i)execution|request' }
+    }
+
+
+    It 'Keeps exactly two distinct administrators indeterminate when a duplicate prevents completeness' {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 1; permissions = @{ admin = $true } }
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and $Result -match '\| fixture-repo \| 2 \| 0 \|' }
+    }
+
+    It 'Preserves excess admins despite malformed permission or identity companions (<Companion>)' -ForEach @(@{ Companion = 'permission' }, @{ Companion = 'identity' }) {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += if ($Companion -eq 'permission') { @{ id = 5; permissions = @{ admin = 'true' } } } else { @{ id = '5'; permissions = @{ admin = $true } } }
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| fixture-repo \| 3 \| 1 \|' -and $Result -match '(?i)incomplete|partial' }
+    }
+
+    It 'Retains only nonconflicting administrator evidence regardless of duplicate order (<Reverse>)' -ForEach @(@{ Reverse = $false }, @{ Reverse = $true }) {
+        $script:organization.members_can_delete_issues = $true
+        $records = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } }, @{ id = 4; permissions = @{ admin = $false } }, @{ id = 4; permissions = @{ admin = $true } }, @{ id = 5; permissions = @{ admin = $true } })
+        if ($Reverse) { [array]::Reverse($records) }
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] = $records
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| fixture-repo \| 3 \| 1 \| 5 \|' }
+    }
+
+    It 'Uses the retained owner lower bound at the production pagination cap' {
+        Set-DeletionPolicy $null
+        Mock Invoke-WebRequest -ModuleName Maester {
+            param($Uri)
+            if (([uri]$Uri).AbsolutePath -eq '/orgs/fixture-org') {
+                return @{ Content = '{"id":100,"members_can_delete_repositories":false}'; Headers = @{} }
+            }
+            $page = if ($Uri -match '[&?]page=(\d+)') { [int]$Matches[1] } else { 1 }
+            return @{ Content = '[{"id":' + $page + '}]'; Headers = @{ Link = '<https://api.github.com/orgs/fixture-org/members?role=admin&per_page=100&page=' + ($page + 1) + '>; rel="next"' } }
+        }
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 101
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| 100 \| 3 \|' -and $Result -match 'lower bound' }
+    }
+
+    It 'Confirms partial repository violations only after usable restrictive-policy evidence' {
+        $script:organization.members_can_delete_repositories = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }, $null
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -like '*/graphql' }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match 'confirmed' -and $Result -match 'lower bound' }
+    }
+
+
+    It 'Distinguishes no administrators in a usable population from an empty collaborator response' {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] = @(@{ id = 1; permissions = @{ admin = $false } })
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| fixture-repo \| 0 \| 0 \|' -and $Result -match 'Complete' }
+    }
+
+
+    It 'Preserves outcome precedence with coexisting required and policy gaps (<Reverse>, <Confirmed>)' -ForEach @(
+        @{ Reverse = $false; Confirmed = $false }, @{ Reverse = $true; Confirmed = $false },
+        @{ Reverse = $false; Confirmed = $true }, @{ Reverse = $true; Confirmed = $true }
+    ) {
+        $script:organization.members_can_delete_repositories = $true
+        $repos = @($script:responses['/orgs/fixture-org/repos?type=all&per_page=100'][0], @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } })
+        $script:policy.Repositories += [pscustomobject]@{ Id = '201'; ApprovedAdministratorIds = @('1', '2') }
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        $script:responses['/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'] = $null
+        if ($Confirmed) {
+            $repos += @{ id = 202; name = 'confirmed-repo'; full_name = 'fixture-org/confirmed-repo'; owner = @{ login = 'fixture-org' } }
+            $script:policy.Repositories += [pscustomobject]@{ Id = '202'; ApprovedAdministratorIds = @('1', '2') }
+            $script:responses['/repos/fixture-org/confirmed-repo/collaborators?affiliation=all&per_page=100'] = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } }, @{ id = 4; permissions = @{ admin = $true } })
+        }
+        if ($Reverse) { [array]::Reverse($repos) }
+        $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] = $repos
+        Set-DeletionPolicy $script:policy
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/graphql' } {
+            param($Body)
+            $request = $Body | ConvertFrom-Json
+            $restricted = $request.variables.repo -eq 'fixture-repo'
+            $rulesets = @{ totalCount = $(if ($restricted) { 1 } else { 0 }); nodes = @(); pageInfo = @{ hasNextPage = $false; endCursor = $null } }
+            if ($restricted) { $rulesets.nodes = @(@{ id = 'policy-1'; target = 'REPOSITORY'; enforcement = 'ACTIVE' }) }
+            $response = @{ data = @{ repository = @{ databaseId = $(if ($restricted) { 200 } else { 202 }); rulesets = $rulesets } } }
+            return @{ Content = $response | ConvertTo-Json -Depth 30 -Compress; Headers = @{} }
+        }
+        $actual = Test-MtCisGitHubRepositoryDeletionLimited
+        if ($Confirmed) {
+            $actual | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match 'confirmed-repo' -and $Result -match 'active repository-target policy' -and $Result -match 'other-repo:.*incomplete' }
+        } else {
+            $actual | Should -BeNullOrEmpty
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and -not $Investigate -and $Result -match 'active repository-target policy' -and $Result -match 'other-repo:.*incomplete' }
+        }
+    }
+
 }

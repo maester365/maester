@@ -518,6 +518,20 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         $row.ReasonDetail | Should -Match 'Indeterminate'
     }
 
+
+    It 'Fails creation when Boolean true is decisive despite an unusable companion (<Field>, <Companion>)' -ForEach @(
+        foreach ($field in 'members_can_create_public_repositories', 'members_can_create_private_repositories') {
+            foreach ($companion in 'missing', 'null', '"false"', '0', '{}') { @{ Field = $field; Companion = $companion } }
+        }
+    ) {
+        $other = if ($Field -eq 'members_can_create_public_repositories') { 'members_can_create_private_repositories' } else { 'members_can_create_public_repositories' }
+        $script:rawBody = '{"' + $Field + '":true' + $(if ($Companion -ne 'missing') { ',"' + $other + '":' + $Companion }) + '}'
+        $row = Invoke-MtTest -Id 'CIS.GH.1.2.2'
+        $row.Result | Should -Be 'Failed'
+        $row.ResultDetail.TestResult | Should -Match 'True'
+        $row.ResultDetail.TestResult | Should -Match 'Unavailable'
+    }
+
     It 'Uses check-visible evidence on configured host <BaseUri>, with missing fields still indeterminate' -ForEach @(
         @{ BaseUri = 'https://api.github.com' }
         @{ BaseUri = 'https://api.synthetic.ghe.com' }

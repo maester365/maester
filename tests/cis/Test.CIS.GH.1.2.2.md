@@ -29,7 +29,7 @@ Evidence fields:
 - `members_can_create_internal_repositories` when returned, shown as informational
 - `members_allowed_repository_creation_type` is displayed when returned, but is not decisive
 
-Both decisive fields must be Boolean values. The test passes when both are `false` and fails when either is `true`. Internal repository creation is shown as additional enterprise/GHEC context only because the CIS GH 1.2.2 literal audit covers public and private repository creation.
+The test passes only when both decisive fields are Boolean `false`. Either Boolean `true` establishes failure even if the companion field is missing, null or malformed; that gap is still shown. Otherwise, unusable decisive evidence is indeterminate. Internal repository creation is shown as additional enterprise/GHEC context only because the CIS GH 1.2.2 literal audit covers public and private repository creation.
 
 #### Permissions required
 
@@ -45,9 +45,9 @@ Use the API host and token appropriate to the deployment. GHE.com requires an au
 
 #### Known limitations
 
-Only the connected organization's returned settings are assessed; this test does not enumerate every organization in an enterprise or reconstruct inherited policies. Required fields must be present and usable. Missing, null, or invalid evidence produces an explicit indeterminate Skipped result, while request and JSON parsing failures remain Error results. Missing data does not establish that a setting is disabled or that the recommendation is not applicable. Validation applies to fields available after shared JSON parsing; it is not complete raw-response schema validation.
+Only the connected organization's returned settings are assessed; this test does not enumerate every organization in an enterprise or reconstruct inherited policies. Both decisive fields must be present and usable to pass. When no Boolean `true` already establishes failure, missing, null or invalid evidence produces an explicit indeterminate Skipped result. Request and JSON parsing failures remain Error results. Missing data does not establish that a setting is disabled or that the recommendation is not applicable. Validation applies to fields available after shared JSON parsing; it is not complete raw-response schema validation.
 
-This test uses the granular repository creation fields because GitHub is replacing the legacy `members_allowed_repository_creation_type` umbrella field. That umbrella value is displayed when returned, but is not decisive. If required granular fields are not returned, the test skips with a field-specific reason.
+This test uses the granular repository creation fields because GitHub is replacing the legacy `members_allowed_repository_creation_type` umbrella field. That umbrella value is displayed when returned, but is not decisive. If required granular fields are not returned and neither observed field is Boolean `true`, the test skips with a field-specific reason.
 
 #### Related links
 

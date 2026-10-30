@@ -12,6 +12,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $script:owners = @(@{ id = 1; login = 'fixture-owner-one' }, @{ id = 2; login = 'fixture-owner-two' })
         $script:responseHeaders = @{}
         $script:status = 200
+        $script:partialError = $false
         $script:config = @{
             GlobalSettings = @{
                 GitHubDeletionPolicy = @{
@@ -34,12 +35,14 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
             if ($path -eq '/orgs/fixture-org') {
                 return [pscustomobject]@{ Content = '{"id":100,"login":"fixture-org","members_can_delete_repositories":false,"members_can_delete_issues":false}'; Headers = @{} }
             }
+            if ($script:partialError -and $path -like '*page=2*') { throw 'fixture-owner-one: 90123456789 parsing failure' }
             if ($path -ne '/orgs/fixture-org/members?role=admin&per_page=100') { throw 'Unrecognized fixture endpoint; network is forbidden.' }
             if ($script:status -ne 200) {
                 $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$script:status)
                 foreach ($key in $script:responseHeaders.Keys) { $null = $response.Headers.TryAddWithoutValidation($key, [string]$script:responseHeaders[$key]) }
                 throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic owner collection failure', $response)
             }
+            if ($script:partialError) { $script:responseHeaders.Link = '<https://api.github.com/orgs/fixture-org/members?role=admin&page=2>; rel="next"' }
             return [pscustomobject]@{ Content = ConvertTo-Json -InputObject $script:owners -Compress; Headers = $script:responseHeaders }
         }
     }
@@ -169,6 +172,24 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $standalone = Get-MtHtmlReport -MaesterResults $export -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{}
         $standalone | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
         ($export | ConvertTo-Json -Depth 15) | Should -BeExactly $before
+    }
+
+    It 'Retains partial owner evidence on Error without leaking identities through error metadata' {
+        $script:partialError = $true
+        $script:owners = @(@{ id = 90123456789; login = 'fixture-owner-one' })
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{} }
+        $folder = Join-Path $TestDrive 'error'
+        $script:config.Output = @{ TestResult = @{ Path = (Join-Path $TestDrive 'error.xml'); Format = 'JUnitXml' } }
+        $result = Invoke-Maester -Config $script:config -TestId CIS.GH.1.2.3 -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -ExportCsv -RedactUserIdentity AllOutputs
+        $row = $result.Tests | Where-Object Id -EQ 'CIS.GH.1.2.3'
+        $row.Result | Should -Be 'Error'
+        $row.ResultDetail.TestResult | Should -Match 'fixture-owner-one'
+        foreach ($extension in 'json', 'html', 'md', 'csv') {
+            $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            $content | Should -Not -Match 'fixture-owner-one|90123456789|GitHubPartialResponse|TestResultRedacted'
+            $content | Should -Match 'object-[a-f0-9]{16}'
+        }
+        (Get-Content (Join-Path $TestDrive 'error.xml') -Raw) | Should -Not -Match 'fixture-owner-one|90123456789'
     }
 
     It 'Applies the generic map once across AllOutputs JSON and HTML' {
