@@ -30,10 +30,10 @@ Restricting this invitation path reduces the chance that an unapproved user crea
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Export and sharing settings**, find **Users can invite guest users to collaborate through item sharing and permissions**.
-4. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups** with at least one group selected.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Export and Sharing settings**.
+4. Set **Users can invite guest users to collaborate through item sharing and permissions** to **Disabled**, or choose **Enabled** with **Specific security groups** selected and defined. If the organization doesn't actively use this feature, keep it **Disabled**.
 5. Select **Apply**.
 
 #### Related links

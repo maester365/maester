@@ -30,10 +30,10 @@ These APIs are not governed by Fabric's item permission model. Scope the setting
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Developer settings**, find **Service principals can create workspaces, connections, and deployment pipelines**.
-4. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups** containing the applications that need this access.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Developer settings**.
+4. Set **Service principals can create workspaces, connections, and deployment pipelines** to **Disabled**, or choose **Enabled** with **Specific security groups** selected and defined for the applications that need this access. If the organization doesn't actively use this feature, keep it **Disabled**.
 5. Select **Apply**.
 
 #### Related links
