@@ -34,7 +34,7 @@
     [OutputType([bool])]
     param()
 
-    $config = Get-AdminAuditLogConfig
+    $config = Get-MtExo -Request AdminAuditLogConfig
 
     $testResult = $config.UnifiedAuditLogIngestionEnabled
 

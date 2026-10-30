@@ -89,8 +89,18 @@ An ID is letters and digits in segments separated by `.` or `-` (and `_` after t
 with a letter, contains at least one digit or separator, and is at most 64 characters. `CONTOSO.1001`,
 `CONTOSO-ID-07` and `CT0001` are all valid. IDs are compared case-insensitively.
 
+A test that implements a benchmark requirement is named after it: the suite's prefix, then the requirement's
+ID as the benchmark writes it, without a version suffix. That is also its `Id` in the framework file. The prefix ends in a period;
+the rest keeps the benchmark's own punctuation, so a reader can search for the ID the benchmark uses.
+
+| Test ID | Prefix | The benchmark's ID |
+| --- | --- | --- |
+| `CIS.M365.5.2.2.2` | `CIS.M365.` | Recommendation `5.2.2.2` of the CIS Microsoft 365 Foundations Benchmark |
+| `CISA.MS.AAD.3.1` | `CISA.` | SCuBA policy `MS.AAD.3.1v1`, without its version suffix |
+| `ASD.ISM-1504` | `ASD.` | ISM control `ISM-1504`, written with a hyphen by ASD |
+
 Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `ASD.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
 planned for a later release. A custom test with one of these prefixes still runs, with a
 warning. A custom test that uses the exact ID of a built-in test is not run at all, and the built-in runs
 instead. To change how a built-in test behaves, set its parameters or severity in the
@@ -720,8 +730,8 @@ A test says which requirement of a framework it implements in its own attribute,
 ```
 
 A `Control` value is `<framework-key>:<requirement-id>`. This is the only way a test is mapped to a framework. It
-is the same for the CIS and CISA tests that ship with Maester (`Control = 'cis-m365:5.1.5.1'`,
-`Control = 'cisa-scuba:MS.AAD.3.1'`) and for a test of your own.
+is the same for the CIS, CISA and ASD tests that ship with Maester (`Control = 'cis-m365:5.1.5.1'`,
+`Control = 'cisa-scuba:MS.AAD.3.1'`, `Control = 'essential-eight:ISM-1504'`) and for a test of your own.
 
 The frameworks that ship with Maester, with the key to use in `Control`:
 
@@ -730,6 +740,8 @@ The frameworks that ship with Maester, with the key to use in `Control`:
 | `cis-m365` | CIS Microsoft 365 Foundations Benchmark | [tests/cis/frameworks/cis-m365.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-m365.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cis-github` | CIS GitHub Benchmark | [tests/cis/frameworks/cis-github.json](https://github.com/maester365/maester/blob/main/tests/cis/frameworks/cis-github.json) | [tests/cis/suite.json](https://github.com/maester365/maester/blob/main/tests/cis/suite.json) |
 | `cisa-scuba` | CISA SCuBA Secure Configuration Baselines for Microsoft 365 | [tests/cisa/frameworks/cisa-scuba.json](https://github.com/maester365/maester/blob/main/tests/cisa/frameworks/cisa-scuba.json) | [tests/cisa/suite.json](https://github.com/maester365/maester/blob/main/tests/cisa/suite.json) |
+| `essential-eight` | ASD Essential Eight maturity model (each requirement is an ISM control; `Level` ML1 to ML3, `Strategy`) | [tests/asd/frameworks/essential-eight.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/essential-eight.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
+| `ism` | ASD Information security manual (ISM) (`Guideline`, `Section`, `Applicability`) | [tests/asd/frameworks/ism.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/ism.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
 
 Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
 no framework file; its control IDs are in
@@ -794,7 +806,7 @@ a framework that has a file and its ID is a requirement in that file.
 `Get-MtTest` shows both. See [the result schema](../result-schema.md#benchmark).
 
 A framework is found by its key, whatever suite declares it. A custom test can name a framework that ships with
-Maester (`cis-m365`, `cis-github`, `cisa-scuba`) or one that a suite in your own test folder declares. Two suites
+Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`) or one that a suite in your own test folder declares. Two suites
 must not declare the same key: Maester warns, names both `suite.json` files and uses the first, and a framework
 that ships with Maester comes before one of yours.
 
@@ -840,6 +852,86 @@ CIS and CISA test names a requirement of its own suite's framework.
 
 A `Benchmark` or a `Control` says that a test supports a requirement. It does not say that a tenant complies with
 the framework.
+
+## Tests that another suite already has
+
+Benchmarks overlap. CIS, CISA SCuBA and ASD all ask for multifactor authentication for every user, and Maester
+has its own test for it as well. Before you write a test for a benchmark requirement, look for a test that
+already reads the same setting, then decide from the benchmark's own sources whether it asks for anything that
+test does not check.
+
+1. **Find the tests that read the setting.** `Get-MtTest -Product entra -Feature conditional-access | Format-Table
+   Id, Title` lists the candidates; searching `tests/` for the Graph endpoint or the setting name finds the rest.
+   Look in every suite, not only the one you are writing for.
+2. **Read what the benchmark asks, in its own sources.** The one-line text of a requirement is usually generic.
+   The detail that decides between two implementations is in the benchmark's audit or assessment guidance and in
+   any reference configuration it publishes: the audit and remediation sections of a CIS benchmark, the SCuBA
+   baseline and ScubaGear for CISA, and for ASD the ISM, the Essential Eight assessment process guide and the ASD
+   Blueprint for Secure Cloud. Note every concrete value they name: a number of days, a threshold, a list of
+   roles, an authentication strength, a rule that must be set to Block.
+3. **Choose what to write:**
+
+| What the benchmark asks | What you write |
+| --- | --- |
+| What an existing test checks | A shim: a test with its own ID, title, `Control` and guide whose body returns the result of the existing test |
+| The same check with a different value, which the existing test takes as a parameter | A shim that passes the value, with the benchmark's value as the default of its own parameter |
+| Something no test checks, or a rule no parameter covers | A test of its own. Read the data with the helpers in `powershell/internal/services/<service>/`, and move a helper there when another suite has the code you need; don't copy another test's logic |
+
+A shim for ASD's lockout requirement, which asks for what CIS 5.2.3.8 checks with a lower maximum:
+
+```powershell
+function Test-MtAsdSmartLockoutThreshold {
+    <# ...help that says what ASD asks and which test this runs... #>
+    [MaesterTest(
+        Id = 'ASD.ISM-1403',
+        Title = 'User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts.',
+        Product = 'entra',
+        Feature = 'password-protection',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
+        Mitre = ('T1110.001', 'T1110.003'),
+        Control = ('ism:ISM-1403', 'nist-800-53-r5:AC-7'),
+        Service = 'Graph',
+        Author = 'jusso-dev'
+    )]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        # The most failed sign-ins allowed before an account is locked. ASD sets five; CIS allows ten.
+        [ValidateRange(1, 50)]
+        [int] $MaximumLockoutThreshold = 5
+    )
+
+    return Test-MtCisSmartLockoutThreshold -MaximumLockoutThreshold $MaximumLockoutThreshold
+}
+```
+
+A shim:
+
+- declares the same values as the test it calls for `Product`, `RelatedProduct`, `Feature`, `Area`,
+  `ResourceType`, `Severity`, `UserImpact`, `ImplementationCost`, `Mitre`, `Service`, `License`, `Permission`,
+  `TenantType`, `Cloud`, `Platform`, `Lifecycle`, `LongRunning` and `Exclusive`. Its own are `Id`, `Title`,
+  `Control`, `Author`, `Contributor` and its parameters.
+- names the requirement it implements first in `Control`, and that requirement is not added to the `Control` of
+  the test it calls, so a run reports it once.
+- calls a test that is not a shim itself, and passes only parameters that test declares.
+- says in its guide what the benchmark asks and links the test it runs by its ID.
+
+`powershell/tests/general/TestShims.Tests.ps1` finds every built-in test whose body is a single `return` of
+another built-in test's function and fails when one of these is not true. The result text comes from the test
+that is called, so write that test's messages without naming its benchmark.
+
+When the two benchmarks drift apart, change the shim. If the benchmark of the shim asks for something new,
+replace the `return` with a test of its own. If the test it calls changes for its own benchmark, check the shims
+that call its function and decide for each whether the change applies to its benchmark too.
+
+A Maester test that also checks what a benchmark asks for needs no shim; it names the requirement in its
+`Control`, as [Mapping a test to a framework](#mapping-a-test-to-a-framework) describes. A custom test cannot be a
+shim, because the functions of built-in tests are not exported; it runs a built-in test with `Invoke-MtTest -Id`
+instead (see [What a custom test can call](#what-a-custom-test-can-call)).
 
 ## Running and inspecting tests
 

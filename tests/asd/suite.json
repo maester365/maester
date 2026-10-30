@@ -1,0 +1,15 @@
+{
+  "Id": "ASD",
+  "Name": "ASD Essential Eight and ISM",
+  "Source": "ASD",
+  "IdPattern": "^ASD\\.",
+  "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
+  "Upstream": {
+    "Name": "ASD Information security manual (OSCAL)",
+    "Url": "https://www.cyber.gov.au/ism/oscal"
+  },
+  "Frameworks": [
+    { "Key": "essential-eight", "Version": "2026.09.4" },
+    { "Key": "ism", "Version": "2026.09.4" }
+  ]
+}

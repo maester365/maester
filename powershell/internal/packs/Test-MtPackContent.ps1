@@ -265,7 +265,7 @@ function Get-MtPackReservedTag {
     [CmdletBinding()]
     [OutputType([string[]])]
     param()
-    [string[]]@('Maester', 'MT', 'CIS', 'CISA', 'EIDSCA', 'ORCA', 'AD', 'AZDO', 'XSPM', 'All', 'Custom')
+    [string[]]@('Maester', 'MT', 'CIS', 'CISA', 'EIDSCA', 'ORCA', 'AD', 'ASD', 'AZDO', 'XSPM', 'All', 'Custom')
 }
 
 function Test-MtPackScriptFile {

@@ -427,6 +427,103 @@
       "recentCommits": 8
     },
     {
+      "id": "JeremyFinney-lgtm",
+      "github": "JeremyFinney-lgtm",
+      "name": "Jeremy Finney",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/JeremyFinney-lgtm.png",
+      "firstContribution": "2026-10-17",
+      "testsAuthored": [
+        "CIS.M365.1.3.2",
+        "CIS.M365.4.2",
+        "CIS.M365.5.1.3.1",
+        "CIS.M365.5.1.3.4",
+        "CIS.M365.5.1.4.1",
+        "CIS.M365.5.1.4.2",
+        "CIS.M365.5.1.4.3",
+        "CIS.M365.5.1.4.4",
+        "CIS.M365.5.1.4.5",
+        "CIS.M365.5.1.5.3",
+        "CIS.M365.5.1.5.4",
+        "CIS.M365.5.1.5.5",
+        "CIS.M365.5.1.5.6",
+        "CIS.M365.5.1.6.1",
+        "CIS.M365.5.1.6.3",
+        "CIS.M365.5.1.8.1",
+        "CIS.M365.5.2.2.1",
+        "CIS.M365.5.2.2.2",
+        "CIS.M365.5.2.2.3",
+        "CIS.M365.5.2.2.4",
+        "CIS.M365.5.2.2.5",
+        "CIS.M365.5.2.2.6",
+        "CIS.M365.5.2.2.7",
+        "CIS.M365.5.2.2.8",
+        "CIS.M365.5.2.2.9",
+        "CIS.M365.5.2.2.10",
+        "CIS.M365.5.2.2.11",
+        "CIS.M365.5.2.2.12",
+        "CIS.M365.5.2.2.13",
+        "CIS.M365.5.2.2.14",
+        "CIS.M365.5.2.2.15",
+        "CIS.M365.5.2.2.16",
+        "CIS.M365.5.2.2.17",
+        "CIS.M365.5.2.3.1",
+        "CIS.M365.5.2.3.2",
+        "CIS.M365.5.2.3.3",
+        "CIS.M365.5.2.3.4",
+        "CIS.M365.5.2.3.6",
+        "CIS.M365.5.2.3.7",
+        "CIS.M365.5.2.3.8",
+        "CIS.M365.5.2.3.9",
+        "CIS.M365.5.2.3.10",
+        "CIS.M365.5.3.1",
+        "CIS.M365.5.3.2",
+        "CIS.M365.5.3.3",
+        "CIS.M365.5.3.4",
+        "CIS.M365.5.3.5",
+        "CIS.M365.7.2.1",
+        "CIS.M365.7.2.3",
+        "CIS.M365.7.2.4",
+        "CIS.M365.7.2.6",
+        "CIS.M365.7.2.8",
+        "CIS.M365.7.2.10",
+        "CIS.M365.8.1.2",
+        "CIS.M365.8.2.1",
+        "CIS.M365.8.2.4",
+        "CIS.M365.8.5.1",
+        "CIS.M365.8.5.2",
+        "CIS.M365.8.5.4",
+        "CIS.M365.8.5.5",
+        "CIS.M365.8.5.6",
+        "CIS.M365.8.5.7",
+        "CIS.M365.8.5.8",
+        "CIS.M365.8.5.9",
+        "CIS.M365.9.1.1",
+        "CIS.M365.9.1.2",
+        "CIS.M365.9.1.3",
+        "CIS.M365.9.1.4",
+        "CIS.M365.9.1.5",
+        "CIS.M365.9.1.6",
+        "CIS.M365.9.1.7",
+        "CIS.M365.9.1.8",
+        "CIS.M365.9.1.9",
+        "CIS.M365.9.1.10",
+        "CIS.M365.9.1.11",
+        "CIS.M365.9.1.12"
+      ],
+      "testsContributed": [],
+      "initials": "JF",
+      "recentCommits": 52
+    },
+    {
       "id": "Cloud-Architekt",
       "github": "Cloud-Architekt",
       "name": "Thomas Naunheim",
@@ -516,91 +613,6 @@
       "testsContributed": [],
       "initials": "TN",
       "recentCommits": 1
-    },
-    {
-      "id": "JeremyFinney-lgtm",
-      "github": "JeremyFinney-lgtm",
-      "name": "jeremy finney",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/JeremyFinney-lgtm.png",
-      "firstContribution": "2026-10-17",
-      "testsAuthored": [
-        "CIS.M365.1.3.2",
-        "CIS.M365.4.2",
-        "CIS.M365.5.1.3.1",
-        "CIS.M365.5.1.3.4",
-        "CIS.M365.5.1.4.1",
-        "CIS.M365.5.1.4.2",
-        "CIS.M365.5.1.4.3",
-        "CIS.M365.5.1.4.4",
-        "CIS.M365.5.1.4.5",
-        "CIS.M365.5.1.5.3",
-        "CIS.M365.5.1.5.4",
-        "CIS.M365.5.1.5.5",
-        "CIS.M365.5.1.5.6",
-        "CIS.M365.5.1.6.1",
-        "CIS.M365.5.1.6.3",
-        "CIS.M365.5.1.8.1",
-        "CIS.M365.5.2.2.1",
-        "CIS.M365.5.2.2.2",
-        "CIS.M365.5.2.2.3",
-        "CIS.M365.5.2.2.4",
-        "CIS.M365.5.2.2.5",
-        "CIS.M365.5.2.2.6",
-        "CIS.M365.5.2.2.7",
-        "CIS.M365.5.2.2.8",
-        "CIS.M365.5.2.2.9",
-        "CIS.M365.5.2.2.10",
-        "CIS.M365.5.2.2.11",
-        "CIS.M365.5.2.2.12",
-        "CIS.M365.5.2.2.13",
-        "CIS.M365.5.2.2.14",
-        "CIS.M365.5.2.2.15",
-        "CIS.M365.5.2.2.16",
-        "CIS.M365.5.2.2.17",
-        "CIS.M365.5.2.3.1",
-        "CIS.M365.5.2.3.2",
-        "CIS.M365.5.2.3.3",
-        "CIS.M365.5.2.3.4",
-        "CIS.M365.5.2.3.6",
-        "CIS.M365.5.2.3.7",
-        "CIS.M365.5.2.3.8",
-        "CIS.M365.5.2.3.9",
-        "CIS.M365.5.2.3.10",
-        "CIS.M365.5.3.1",
-        "CIS.M365.5.3.2",
-        "CIS.M365.5.3.3",
-        "CIS.M365.5.3.4",
-        "CIS.M365.5.3.5",
-        "CIS.M365.7.2.1",
-        "CIS.M365.7.2.3",
-        "CIS.M365.7.2.4",
-        "CIS.M365.7.2.6",
-        "CIS.M365.7.2.8",
-        "CIS.M365.7.2.10",
-        "CIS.M365.8.1.2",
-        "CIS.M365.8.2.1",
-        "CIS.M365.8.2.4",
-        "CIS.M365.8.5.1",
-        "CIS.M365.8.5.2",
-        "CIS.M365.8.5.4",
-        "CIS.M365.8.5.5",
-        "CIS.M365.8.5.6",
-        "CIS.M365.8.5.7",
-        "CIS.M365.8.5.8",
-        "CIS.M365.8.5.9"
-      ],
-      "testsContributed": [],
-      "initials": "JF",
-      "recentCommits": 41
     },
     {
       "id": "SebastianClaesson",
@@ -781,7 +793,7 @@
         "MT.1024"
       ],
       "initials": "EA",
-      "recentCommits": 17
+      "recentCommits": 18
     },
     {
       "id": "bdrogja",
@@ -914,7 +926,47 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 18
+      "recentCommits": 19
+    },
+    {
+      "id": "nicolonsky",
+      "github": "nicolonsky",
+      "name": "Nicola Suter",
+      "title": "All things related to endpoints and security",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
+      "pinLast": false,
+      "company": "baseVISION",
+      "location": "Switzerland",
+      "locationFlag": "🇨🇭",
+      "url": "https://tech.nicolonsky.ch",
+      "socials": {
+        "linkedin": "nicolasuter",
+        "x": "nicolonsky"
+      },
+      "avatar": "https://github.com/nicolonsky.png",
+      "firstContribution": "2025-12-05",
+      "testsAuthored": [
+        "MT.1090",
+        "MT.1091",
+        "MT.1092",
+        "MT.1093",
+        "MT.1094",
+        "MT.1095",
+        "MT.1096",
+        "MT.1097",
+        "MT.1098",
+        "MT.1099",
+        "MT.1100",
+        "MT.1101",
+        "MT.1102",
+        "MT.1103",
+        "MT.1105",
+        "MT.1226"
+      ],
+      "testsContributed": [],
+      "initials": "NS",
+      "recentCommits": 21
     },
     {
       "id": "Mynster9361",
@@ -977,42 +1029,38 @@
       "recentCommits": 3
     },
     {
-      "id": "nicolonsky",
-      "github": "nicolonsky",
-      "name": "Nicola Suter",
-      "title": "All things related to endpoints and security",
-      "mvp": true,
-      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb",
+      "id": "jusso-dev",
+      "github": "jusso-dev",
+      "name": "jusso-dev",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
       "pinLast": false,
-      "company": "baseVISION",
-      "location": "Switzerland",
-      "locationFlag": "🇨🇭",
-      "url": "https://tech.nicolonsky.ch",
-      "socials": {
-        "linkedin": "nicolasuter",
-        "x": "nicolonsky"
-      },
-      "avatar": "https://github.com/nicolonsky.png",
-      "firstContribution": "2025-12-05",
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/jusso-dev.png",
+      "firstContribution": "",
       "testsAuthored": [
-        "MT.1090",
-        "MT.1091",
-        "MT.1092",
-        "MT.1093",
-        "MT.1094",
-        "MT.1095",
-        "MT.1096",
-        "MT.1097",
-        "MT.1098",
-        "MT.1099",
-        "MT.1100",
-        "MT.1101",
-        "MT.1102",
-        "MT.1103",
-        "MT.1105"
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872"
       ],
       "testsContributed": [],
-      "initials": "NS",
+      "initials": "JD",
       "recentCommits": 0
     },
     {
@@ -1751,6 +1799,52 @@
       "recentCommits": 1
     },
     {
+      "id": "Dfrank77",
+      "github": "Dfrank77",
+      "name": "Darius Frank",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Dfrank77.png",
+      "firstContribution": "2026-10-15",
+      "testsAuthored": [
+        "MT.1224",
+        "MT.1252"
+      ],
+      "testsContributed": [],
+      "initials": "DF",
+      "recentCommits": 17
+    },
+    {
+      "id": "Oppedijk",
+      "github": "Oppedijk",
+      "name": "Erik Oppedijk",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "Xebia",
+      "location": "Netherlands",
+      "locationFlag": "🇳🇱",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Oppedijk.png",
+      "firstContribution": "2024-08-26",
+      "testsAuthored": [
+        "MT.1056",
+        "MT.1227"
+      ],
+      "testsContributed": [],
+      "initials": "EO",
+      "recentCommits": 6
+    },
+    {
       "id": "simon-vedder",
       "github": "simon-vedder",
       "name": "Simon Vedder",
@@ -1854,50 +1948,6 @@
         "CISA.MS.AAD.7.3"
       ],
       "initials": "A",
-      "recentCommits": 0
-    },
-    {
-      "id": "Dfrank77",
-      "github": "Dfrank77",
-      "name": "Darius Frank",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/Dfrank77.png",
-      "firstContribution": "2026-10-15",
-      "testsAuthored": [
-        "MT.1224"
-      ],
-      "testsContributed": [],
-      "initials": "DF",
-      "recentCommits": 8
-    },
-    {
-      "id": "Oppedijk",
-      "github": "Oppedijk",
-      "name": "Erik Oppedijk",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "Xebia",
-      "location": "Netherlands",
-      "locationFlag": "🇳🇱",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/Oppedijk.png",
-      "firstContribution": "2024-08-26",
-      "testsAuthored": [
-        "MT.1056"
-      ],
-      "testsContributed": [],
-      "initials": "EO",
       "recentCommits": 0
     },
     {
@@ -2724,10 +2774,11 @@
         "MT.1054",
         "MT.1056",
         "MT.1058",
-        "MT.1084"
+        "MT.1084",
+        "MT.1227"
       ],
       "initials": "MF",
-      "recentCommits": 172
+      "recentCommits": 180
     }
   ],
   "attributions": {
@@ -3811,6 +3862,62 @@
       "author": "soulemike",
       "contributors": []
     },
+    "ASD.ISM-1175": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1403": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1488": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1504": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1648": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1649": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1654": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1667": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1668": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1669": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1672": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1673": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1695": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1872": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
     "AZDO.1000": {
       "author": "SebastianClaesson",
       "contributors": []
@@ -4535,6 +4642,54 @@
       "contributors": [
         "merill"
       ]
+    },
+    "CIS.M365.9.1.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.11": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.9.1.12": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CISA.MS.AAD.1.1": {
       "author": "soulemike",
@@ -6146,6 +6301,16 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1226": {
+      "author": "nicolonsky",
+      "contributors": []
+    },
+    "MT.1227": {
+      "author": "Oppedijk",
+      "contributors": [
+        "merill"
+      ]
+    },
     "MT.1228": {
       "author": "earbona23",
       "contributors": []
@@ -6240,6 +6405,10 @@
     },
     "MT.1251": {
       "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1252": {
+      "author": "Dfrank77",
       "contributors": []
     },
     "ORCA.100": {
@@ -7592,6 +7761,62 @@
       "title": "No users should be configured for unconstrained delegation",
       "path": "/docs/tests/AD-USER-29"
     },
+    "ASD.ISM-1175": {
+      "title": "Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services.",
+      "path": "/docs/next/tests/ASD.ISM-1175"
+    },
+    "ASD.ISM-1403": {
+      "title": "User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts.",
+      "path": "/docs/next/tests/ASD.ISM-1403"
+    },
+    "ASD.ISM-1488": {
+      "title": "Microsoft Office macros in files originating from the internet are blocked.",
+      "path": "/docs/next/tests/ASD.ISM-1488"
+    },
+    "ASD.ISM-1504": {
+      "title": "Multi-factor authentication is used to authenticate human users to their organisation's online services.",
+      "path": "/docs/next/tests/ASD.ISM-1504"
+    },
+    "ASD.ISM-1648": {
+      "title": "Privileged access to systems and their resources is disabled after 45 days of inactivity.",
+      "path": "/docs/next/tests/ASD.ISM-1648"
+    },
+    "ASD.ISM-1649": {
+      "title": "Just-in-time administration is used for the administration of systems and their resources.",
+      "path": "/docs/next/tests/ASD.ISM-1649"
+    },
+    "ASD.ISM-1654": {
+      "title": "Internet Explorer 11 is disabled or removed.",
+      "path": "/docs/next/tests/ASD.ISM-1654"
+    },
+    "ASD.ISM-1667": {
+      "title": "Microsoft Office is blocked from creating child processes.",
+      "path": "/docs/next/tests/ASD.ISM-1667"
+    },
+    "ASD.ISM-1668": {
+      "title": "Microsoft Office is blocked from creating executable content.",
+      "path": "/docs/next/tests/ASD.ISM-1668"
+    },
+    "ASD.ISM-1669": {
+      "title": "Microsoft Office is blocked from injecting code into other processes.",
+      "path": "/docs/next/tests/ASD.ISM-1669"
+    },
+    "ASD.ISM-1672": {
+      "title": "Microsoft Office macro antivirus scanning is enabled.",
+      "path": "/docs/next/tests/ASD.ISM-1672"
+    },
+    "ASD.ISM-1673": {
+      "title": "Microsoft Office macros are blocked from making Win32 API calls.",
+      "path": "/docs/next/tests/ASD.ISM-1673"
+    },
+    "ASD.ISM-1695": {
+      "title": "Patches for vulnerabilities in the operating systems of workstations are applied within one month of release.",
+      "path": "/docs/next/tests/ASD.ISM-1695"
+    },
+    "ASD.ISM-1872": {
+      "title": "Multi-factor authentication used for authenticating human users of online services is phishing-resistant.",
+      "path": "/docs/next/tests/ASD.ISM-1872"
+    },
     "AZDO.1000": {
       "title": "Azure DevOps OAuth apps can access resources in your organization through OAuth.",
       "path": "/docs/next/tests/AZDO.1000"
@@ -8227,6 +8452,54 @@
     "CIS.M365.8.6.1": {
       "title": "(L1) Ensure users can report security concerns in Teams",
       "path": "/docs/tests/CIS.M365.8.6.1"
+    },
+    "CIS.M365.9.1.1": {
+      "title": "(L1) Restrict guest access to Fabric",
+      "path": "/docs/next/tests/CIS.M365.9.1.1"
+    },
+    "CIS.M365.9.1.2": {
+      "title": "(L1) Restrict external guest invitations through Fabric",
+      "path": "/docs/next/tests/CIS.M365.9.1.2"
+    },
+    "CIS.M365.9.1.3": {
+      "title": "(L1) Restrict guest browsing of Fabric content",
+      "path": "/docs/next/tests/CIS.M365.9.1.3"
+    },
+    "CIS.M365.9.1.4": {
+      "title": "(L1) Restrict public publishing of Fabric reports",
+      "path": "/docs/next/tests/CIS.M365.9.1.4"
+    },
+    "CIS.M365.9.1.5": {
+      "title": "(L2) Disable R and Python visuals in Fabric",
+      "path": "/docs/next/tests/CIS.M365.9.1.5"
+    },
+    "CIS.M365.9.1.6": {
+      "title": "(L1) Enable sensitivity labels for Fabric content",
+      "path": "/docs/next/tests/CIS.M365.9.1.6"
+    },
+    "CIS.M365.9.1.7": {
+      "title": "(L1) Restrict organization-wide Fabric links",
+      "path": "/docs/next/tests/CIS.M365.9.1.7"
+    },
+    "CIS.M365.9.1.8": {
+      "title": "(L1) Restrict external sharing of semantic models",
+      "path": "/docs/next/tests/CIS.M365.9.1.8"
+    },
+    "CIS.M365.9.1.9": {
+      "title": "(L1) Block resource-key authentication for Fabric datasets",
+      "path": "/docs/next/tests/CIS.M365.9.1.9"
+    },
+    "CIS.M365.9.1.10": {
+      "title": "(L1) Restrict service principal access to Fabric public APIs",
+      "path": "/docs/next/tests/CIS.M365.9.1.10"
+    },
+    "CIS.M365.9.1.11": {
+      "title": "(L1) Restrict service principal profiles in Fabric",
+      "path": "/docs/next/tests/CIS.M365.9.1.11"
+    },
+    "CIS.M365.9.1.12": {
+      "title": "(L1) Restrict service principal access to Fabric global APIs",
+      "path": "/docs/next/tests/CIS.M365.9.1.12"
     },
     "CISA.MS.AAD.1.1": {
       "title": "Legacy authentication SHALL be blocked.",
@@ -9504,6 +9777,14 @@
       "title": "Users should not be able to create Agent Identity Blueprints.",
       "path": "/docs/next/tests/MT.1225"
     },
+    "MT.1226": {
+      "title": "GitHub and GitLab federated identity credentials should use immutable subject identifiers.",
+      "path": "/docs/next/tests/MT.1226"
+    },
+    "MT.1227": {
+      "title": "Subscriptions should be blocked from leaving and entering the tenant",
+      "path": "/docs/next/tests/MT.1227"
+    },
     "MT.1228": {
       "title": "Ensure iOS compliance policy blocks jailbroken devices.",
       "path": "/docs/next/tests/MT.1228"
@@ -9599,6 +9880,10 @@
     "MT.1251": {
       "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
       "path": "/docs/next/tests/MT.1251"
+    },
+    "MT.1252": {
+      "title": "Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.",
+      "path": "/docs/next/tests/MT.1252"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

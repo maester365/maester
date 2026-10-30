@@ -232,7 +232,7 @@
         if ($bstr -ne [IntPtr]::Zero) { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
     }
 
-    if ([string]::IsNullOrEmpty($plainToken) -and (Get-MtUserInteractive)) {
+    if ([string]::IsNullOrEmpty($plainToken) -and (Get-MtUserInteractive) -and -not (Test-MtGitHubPromptBlocked)) {
         $deviceToken = Get-MtGitHubAppDeviceToken -ClientId $maesterGitHubAppClientId
         if ($null -eq $deviceToken -or [string]::IsNullOrWhiteSpace([string]$deviceToken.AccessToken)) {
             $failureReason = if ($null -ne $deviceToken -and -not [string]::IsNullOrWhiteSpace([string]$deviceToken.FailureReason)) { [string]$deviceToken.FailureReason } else { 'GitHubDeviceFlowFailed' }
