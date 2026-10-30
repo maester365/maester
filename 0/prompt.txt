@@ -1,0 +1,29 @@
+cisa released an update to https://github.com/cisagov/ScubaGear plus they also have https://github.com/cisagov/ScubaGoggles for google. 
+
+maester packs supports multi-language (I think??) can we investigate creating maester packs for them? First do an analysis, whats going to be the pre-reqs etc...
+
+---
+
+ScubaGoggles first
+
+---
+
+<task-notification>
+<task-id>bpnsb5otn</task-id>
+<tool-use-id>toolu_01LF4441puLUPbjikDxcS7F8</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/c01385b4-b063-4eac-9479-8c7a224a2960/tasks/bpnsb5otn.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full module unit test suite" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+dont we have an info or warning or is that the severity
+
+---
+
+got it, so for the pack location. we have another repository for the ztassessment pack. shouldn't this be on its own repo?
+
+---
+
+Own repository
