@@ -5,6 +5,7 @@
 
     .DESCRIPTION
         Checks that at least one enabled Conditional Access policy requires an authentication strength for the administrative roles in all cloud apps. Its allowed combinations must be a non-empty subset of Windows Hello for Business, FIDO2 security key and certificate-based authentication methods.
+        Application exclusions cause the policy to fail.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.5, L2)
 
     .EXAMPLE
@@ -44,10 +45,12 @@
     $report = foreach ($policy in $candidates) {
         $problems = @(Get-MtCisConditionalAccessScopeProblem -Policy $policy -Users AdministratorRoles)
         $grantProblems = @(Get-MtCisConditionalAccessGrantProblem -Policy $policy)
+        $excludedApplications = @($policy.conditions.applications.excludeApplications | Where-Object { $_ })
         $allowed = @($policy.grantControls.authenticationStrength.allowedCombinations)
         $otherMethods = @($allowed | Where-Object { $phishingResistantMethods -notcontains $_ })
         $checks = [ordered]@{
             'Scope covers the required users and apps' = $problems.Count -eq 0
+            'No excluded applications' = $excludedApplications.Count -eq 0
             'Phishing-resistant strength only' = $allowed.Count -gt 0 -and $otherMethods.Count -eq 0
             'Grant controls combine as required' = $grantProblems.Count -eq 0
             'Enabled' = $policy.state -eq 'enabled'
@@ -56,16 +59,17 @@
         $details = @($problems) + @($grantProblems)
         $failedText = $failed -join ', '
         if ($details.Count -gt 0) { $failedText += " ($($details -join '; '))" }
-        [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; Failed = $failedText; Pass = $failed.Count -eq 0 }
+        $excludedApplicationsText = if ($excludedApplications.Count -gt 0) { $excludedApplications -join ', ' } else { 'None' }
+        [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; ExcludedApplications = $excludedApplicationsText; Failed = $failedText; Pass = $failed.Count -eq 0 }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -gt 0
     $passText = 'An enabled Conditional Access policy requires phishing-resistant MFA for the administrative roles.'
     $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that uses an authentication strength was found.' } else { 'No enabled Conditional Access policy requires phishing-resistant MFA for all the administrative roles.' }
 
-    $resultMd = "| Policy | State | Failed checks | Result |`n"
-    $resultMd += "| --- | --- | --- | --- |`n"
+    $resultMd = "| Policy | State | Excluded applications | Failed checks | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.State) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Name) | $($row.State) | $($row.ExcludedApplications) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

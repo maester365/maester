@@ -140,10 +140,13 @@
     }
 
     Context 'CIS.M365.5.2.2.1 application exclusions' {
-        It 'passes an MFA policy for all admin roles when an application is excluded' {
+        It 'fails an MFA policy for all admin roles when an application is excluded' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -ExcludeApplications @('application-id') -BuiltInControls @('mfa')
 
-            Test-MtCisMfaForAdminRole | Should -BeTrue
+            Test-MtCisMfaForAdminRole | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Result -like '*application-id*' -and $Result -like '*No excluded applications*'
+            }
         }
     }
 
@@ -154,10 +157,22 @@
             Test-MtCisMfaForEveryUser | Should -BeTrue
         }
 
-        It 'passes when the policy excludes an application for manual review' {
+        It 'fails when a non-exempt application is excluded' {
             $script:policy = New-TestPolicy -BuiltInControls @('mfa') -ExcludeApplications @('00000002-0000-0ff1-ce00-000000000000')
 
+            Test-MtCisMfaForEveryUser | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Result -like '*00000002-0000-0ff1-ce00-000000000000*' -and $Result -like '*No excluded applications*'
+            }
+        }
+
+        It 'allows Microsoft Rights Management Services to be excluded' {
+            $script:policy = New-TestPolicy -BuiltInControls @('mfa') -ExcludeApplications @('00000012-0000-0000-c000-000000000000')
+
             Test-MtCisMfaForEveryUser | Should -BeTrue
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Result -like '*Microsoft Rights Management Services (00000012-0000-0000-c000-000000000000)*'
+            }
         }
     }
 
@@ -236,10 +251,13 @@
             Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
         }
 
-        It 'passes when an application is excluded for manual review' {
+        It 'fails when an application is excluded' {
             $script:policy = New-TestPolicy -IncludeRoles $script:adminRoleIds -ExcludeApplications @('application-id') -AllowedCombinations @('fido2')
 
-            Test-MtCisPhishingResistantMfaForAdmin | Should -BeTrue
+            Test-MtCisPhishingResistantMfaForAdmin | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Result -like '*application-id*' -and $Result -like '*No excluded applications*'
+            }
         }
 
         It 'fails when no allowed combinations are configured' {

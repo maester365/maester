@@ -4,14 +4,14 @@ Passwords are the most common way into Microsoft 365 accounts: they are phished,
 
 The policy must target all users and all resources, require MFA or an authentication strength, and be enabled. Policies that apply only at a certain risk level, or that are in report-only mode, do not satisfy the test. Excluding emergency access accounts is expected.
 
-User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are evaluated; Microsoft Rights Management Services (`00000012-0000-0000-c000-000000000000`) is the only allowed exclusion. The benchmark recommends this exception so external users can open documents protected by sensitivity labels. Any other excluded application causes the policy to fail, and the result lists excluded applications.
 
 #### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Go to **Entra ID** > **Conditional Access** > [**Policies**](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) and select **New policy**.
 3. Under **Users**, include **All users**. Exclude your emergency access accounts.
-4. Under **Target resources**, select **All resources (formerly All cloud apps)** and do not add application exclusions.
+4. Under **Target resources**, select **All resources (formerly All cloud apps)**. If external users need to open documents protected by sensitivity labels, exclude Microsoft Rights Management Services (`00000012-0000-0000-c000-000000000000`); do not add other application exclusions.
 5. Under **Grant**, select **Grant access** and **Require multifactor authentication** (or **Require authentication strength**).
 6. Set **Enable policy** to **On** (use **Report-only** first to measure the impact) and select **Create**.
 

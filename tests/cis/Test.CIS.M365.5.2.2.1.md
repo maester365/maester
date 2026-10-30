@@ -4,7 +4,7 @@ Administrator accounts can change identity, mail and security configuration for 
 
 The test passes when one enabled policy lists every role in the set that the test checks: Application, Authentication, Billing, Cloud Application, Conditional Access, Exchange, Global, Helpdesk, Password, Privileged Authentication, Privileged Role, Security, SharePoint and User Administrator roles, plus Global Reader. Policies in report-only mode do not count. Keep emergency access accounts in the policy exclusions.
 
-User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are evaluated and must be empty; any excluded application causes the policy to fail. The result lists excluded application IDs. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

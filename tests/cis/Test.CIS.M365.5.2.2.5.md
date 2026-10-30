@@ -6,7 +6,7 @@ Users need a registered FIDO2 security key, Windows Hello for Business or a cert
 
 The allowed combinations must be a non-empty subset of Windows Hello for Business, FIDO2 or certificate-based multifactor authentication. It does not need to include all three, and any other method makes the check fail.
 
-Policies with sign-in-risk or user-risk conditions are not evaluated by this test, so narrowing conditions on those policies are not reported. User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. For policies this test evaluates, a condition that narrows the policy is reported unless the check is about that condition.
+Policies with sign-in-risk or user-risk conditions are not evaluated by this test, so narrowing conditions on those policies are not reported. User and group exclusions are not evaluated by this test. Application exclusions are evaluated and must be empty; any excluded application causes the policy to fail. The result lists excluded application IDs. For policies this test evaluates, a condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 
