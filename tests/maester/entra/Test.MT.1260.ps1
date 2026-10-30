@@ -1,20 +1,5 @@
 ﻿function Test-MtEntraUnremediatedHighRiskUser {
-    <#
-    .SYNOPSIS
-    Finds users that Entra ID Protection rates high risk and that nobody has remediated.
-    .DESCRIPTION
-    Entra ID Protection flags users it believes are compromised and assigns a risk level and a
-    risk state. A flag only clears when someone remediates it (password reset) or an admin
-    dismisses or confirms-safe it. This check reports users whose risk level is high and whose
-    risk state still shows active, unremediated risk, so an admin can act on flags that have been
-    left sitting. It reads risk only; it never changes a user's risk state.
-    .EXAMPLE
-    Test-MtEntraUnremediatedHighRiskUser
-    .LINK
-    https://maester.dev/docs/commands/Test-MtEntraUnremediatedHighRiskUser
-    .LINK
-    https://learn.microsoft.com/graph/api/resources/riskyuser?view=graph-rest-1.0
-    #>
+
     [MaesterTest(
         Id = 'MT.1260',
         Title = 'High-risk users should not be left unremediated in Entra ID Protection.',
@@ -74,10 +59,64 @@
         return $true
     }
 
+    # Privileged users at risk raise severity to High (#2518). Roles are only read when there is
+    # something to report, so a clean tenant makes no extra Graph calls. The role lookup is extra
+    # detail: if it fails, the unremediated users are still reported, with a note.
+    $PrivilegedRolesByUser = @{}
+    $RoleNote = ''
+    try {
+        $RoleDefinitions = @(
+            Invoke-MtGraphRequest -ApiVersion 'v1.0' `
+                -RelativeUri 'roleManagement/directory/roleDefinitions' `
+                -Select @('id', 'displayName')
+        )
+        $RoleDefLookup = @{}
+        foreach ($Def in $RoleDefinitions) { $RoleDefLookup[[string]$Def.id] = $Def }
+
+        # Same properties as MT.1209 and MT.1210 so the active assignments come from the Graph cache.
+        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
+        if (!$RoleAssignmentResult.EligibleChecked) {
+            $RoleNote = "`n`nNote: PIM-eligible role assignments were not checked because they need " +
+                'Microsoft Entra ID P2 or Governance. Only active role assignments were checked.'
+        }
+
+        $UnremediatedIds = @{}
+        foreach ($Item in $Unremediated) { $UnremediatedIds[[string]$Item.id] = $true }
+
+        foreach ($Assignment in @($RoleAssignmentResult.Assignments)) {
+            $PrincipalId = [string]$Assignment.principalId
+            if (!$UnremediatedIds.ContainsKey($PrincipalId)) { continue }
+            $RoleDef = $RoleDefLookup[[string]$Assignment.roleDefinitionId]
+            if ($null -eq $RoleDef) { continue }
+            # isPrivileged is not queryable on roleDefinitions; use Maester's role catalog, as MT.1210 does.
+            $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
+            if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
+            $RoleName = [string]$RoleDef.displayName
+            if ($Assignment.AssignmentType -eq 'Eligible') { $RoleName += ' (eligible)' }
+            if (!$PrivilegedRolesByUser.ContainsKey($PrincipalId)) {
+                $PrivilegedRolesByUser[$PrincipalId] = [System.Collections.Generic.List[string]]::new()
+            }
+            $PrivilegedRolesByUser[$PrincipalId].Add($RoleName)
+        }
+    } catch {
+        Write-Verbose "Could not read directory role assignments: $($_.Exception.Message)"
+        $PrivilegedRolesByUser = @{}
+        $RoleNote = "`n`nNote: Directory role assignments could not be read, so privileged users were not identified."
+    }
+
+    # Privileged users first, then by user principal name.
+    $Sorted = @(
+        $Unremediated | Sort-Object -Property @{ Expression = { -not $PrivilegedRolesByUser.ContainsKey([string]$_.id) } }, userPrincipalName
+    )
+    $PrivilegedCount = @($Unremediated | Where-Object { $PrivilegedRolesByUser.ContainsKey([string]$_.id) }).Count
+
     $Result = "Found $($Unremediated.Count) high-risk user(s) with unremediated risk."
-    $Result += "`n`n| User | User principal name | Risk state | Risk detail | Risk last updated |"
-    $Result += "`n| --- | --- | --- | --- | --- |"
-    foreach ($Item in $Unremediated) {
+    if ($PrivilegedCount -gt 0) {
+        $Result += " $PrivilegedCount of them hold a privileged directory role, so severity is raised to High."
+    }
+    $Result += "`n`n| User | User principal name | Risk state | Risk detail | Risk last updated | Privileged role |"
+    $Result += "`n| --- | --- | --- | --- | --- | --- |"
+    foreach ($Item in $Sorted) {
         $DisplayName = [string]$Item.userDisplayName
         if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
         $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
@@ -87,9 +126,17 @@
         $Updated = if ($Item.riskLastUpdatedDateTime) {
             ($Item.riskLastUpdatedDateTime -as [datetime]).ToUniversalTime().ToString('yyyy-MM-dd')
         } else { 'Unknown' }
-        $Result += "`n| $DisplayName | $Upn | $State | $Detail | $Updated |"
+        $Roles = if ($PrivilegedRolesByUser.ContainsKey([string]$Item.id)) {
+            [System.Net.WebUtility]::HtmlEncode(($PrivilegedRolesByUser[[string]$Item.id] -join ', ')) -replace '\|', '&#124;'
+        } else { 'None' }
+        $Result += "`n| $DisplayName | $Upn | $State | $Detail | $Updated | $Roles |"
     }
+    $Result += $RoleNote
 
-    Add-MtTestResultDetail -Result $Result
+    if ($PrivilegedCount -gt 0) {
+        Add-MtTestResultDetail -Result $Result -Severity 'High'
+    } else {
+        Add-MtTestResultDetail -Result $Result
+    }
     return $false
 }
