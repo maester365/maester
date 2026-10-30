@@ -26,7 +26,7 @@
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
-        Mitre = 'T1566.002',
+        Mitre = 'T1566',
         Control = ('cis-m365:1.1.4', 'nist-800-53-r5:AC-6(5)'),
         Service = 'Graph',
         Permission = ('Graph:Scope:RoleManagement.Read.Directory|Graph:Scope:RoleManagement.Read.All', 'Graph:Scope:Directory.Read.All'),
@@ -38,10 +38,6 @@
         # License SKU part numbers without user-facing applications that administrators may keep.
         [string[]] $AllowedLicenseSkuPartNumbers = @('AAD_PREMIUM', 'AAD_PREMIUM_P2')
     )
-
-    if ((Get-MgContext).AuthType -ne 'Delegated') {
-        Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
-    }
 
     Write-Verbose 'Getting administrative roles'
     $roles = Get-MtRole | Where-Object {
@@ -61,16 +57,53 @@
 
     $userIds = @($administrativeUsers.id)
     $users = @()
+    $skuPartNumbersById = @{}
     if ($userIds.Count -gt 0) {
         Write-Verbose 'Requesting administrative user details'
-        $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId $userIds -Select id, displayName, userPrincipalName)
+        $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId $userIds -Select id, displayName, userPrincipalName, assignedLicenses)
+
+        $returnedUserIds = @($users | ForEach-Object { [string]$_.id })
+        $missingUserIds = @($userIds | Where-Object { $_ -notin $returnedUserIds })
+        if ($missingUserIds.Count -gt 0) {
+            throw "Microsoft Graph did not return user details for all active administrative role members. Missing user IDs: $($missingUserIds -join ', ')."
+        }
+
+        $usersMissingAssignedLicenses = @($users | Where-Object {
+            $_.PSObject.Properties.Name -notcontains 'assignedLicenses'
+        })
+        if ($usersMissingAssignedLicenses.Count -gt 0) {
+            $missingAssignedLicenseIds = @($usersMissingAssignedLicenses | ForEach-Object { [string]$_.id })
+            throw "Microsoft Graph did not return assignedLicenses for active administrative role members: $($missingAssignedLicenseIds -join ', ')."
+        }
+
+        $skuIds = @(
+            $users |
+            ForEach-Object { $_.assignedLicenses } |
+            Where-Object { $null -ne $_ } |
+            ForEach-Object { [string]$_.skuId } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            Sort-Object -Unique
+        )
+        if ($skuIds.Count -gt 0) {
+            Write-Verbose 'Requesting subscribed SKU details'
+            $subscribedSkus = @(Invoke-MtGraphRequest -RelativeUri 'subscribedSkus' -Select skuId, skuPartNumber)
+            foreach ($subscribedSku in $subscribedSkus) {
+                if (-not [string]::IsNullOrWhiteSpace([string]$subscribedSku.skuId)) {
+                    $skuPartNumbersById[[string]$subscribedSku.skuId] = [string]$subscribedSku.skuPartNumber
+                }
+            }
+        }
     }
 
     $licenseFindings = [System.Collections.Generic.List[object]]::new()
     foreach ($user in $users) {
-        $licenses = @(Invoke-MtGraphRequest -RelativeUri "users/$($user.id)/licenseDetails" -Select skuPartNumber)
+        $licenses = @($user.assignedLicenses | Where-Object { $null -ne $_ })
         foreach ($license in $licenses) {
-            $skuPartNumber = [string]$license.skuPartNumber
+            $skuId = [string]$license.skuId
+            $skuPartNumber = [string]$skuPartNumbersById[$skuId]
+            if ([string]::IsNullOrWhiteSpace($skuPartNumber)) {
+                $skuPartNumber = "Unknown SKU ($skuId)"
+            }
             if ([string]::IsNullOrWhiteSpace($skuPartNumber) -or $skuPartNumber -notin $AllowedLicenseSkuPartNumbers) {
                 $null = $licenseFindings.Add([pscustomobject]@{
                     DisplayName        = $user.displayName

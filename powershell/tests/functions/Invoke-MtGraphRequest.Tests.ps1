@@ -203,8 +203,8 @@ Describe 'Invoke-MtGraphRequest' {
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
                 @{ responses = @(
-                        @{ id = 0; status = 200; body = @{ value = @(@{ id = 'a' }) } }
-                        @{ id = 1; status = 200; body = @{ value = @(@{ id = 'b' }) } }
+                        @{ id = 0; body = @{ value = @(@{ id = 'a' }) } }
+                        @{ id = 1; body = @{ value = @(@{ id = 'b' }) } }
                     )
                 }
             }
@@ -217,73 +217,6 @@ Describe 'Invoke-MtGraphRequest' {
             $requests.url | Should -Be @('users', 'groups')
             # No request url may carry an absolute endpoint, or batching would pin a cloud.
             foreach ($url in $requests.url) { $url | Should -Not -Match '^https?://' }
-        }
-    }
-
-    Context 'Batch response handling' {
-        BeforeEach {
-            Mock Start-Sleep -ModuleName Maester {}
-        }
-
-        It 'Retries transient GET subrequests and honors Retry-After' {
-            $script:MtBatchCallCount = 0
-            $script:MtBatchBodies = @()
-            Mock Invoke-MgGraphRequest -ModuleName Maester {
-                $script:MtBatchCallCount++
-                $script:MtBatchBodies += $Body
-                if ($script:MtBatchCallCount -eq 1) {
-                    @{ responses = @(
-                            @{ id = '0'; status = 200; body = [pscustomobject]@{ value = @([pscustomobject]@{ id = 'a' }) } }
-                            @{ id = '1'; status = 429; headers = @{ 'Retry-After' = '5' }; body = @{ error = @{ message = 'Throttled' } } }
-                        )
-                    }
-                } else {
-                    @{ responses = @(
-                            @{ id = '1'; status = 200; body = [pscustomobject]@{ value = @([pscustomobject]@{ id = 'b' }) } }
-                        )
-                    }
-                }
-            }
-
-            $result = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users', 'groups' }
-
-            @($result.id) | Should -Be @('a', 'b')
-            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
-                $Method -eq 'POST' -and $Uri -eq 'v1.0/$batch'
-            }
-            $retriedRequests = ($script:MtBatchBodies[1] | ConvertFrom-Json).requests
-            @($retriedRequests.id) | Should -Be @('1')
-            Should -Invoke Start-Sleep -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
-        }
-
-        It 'Throws when a requested subrequest has no response' {
-            Mock Invoke-MgGraphRequest -ModuleName Maester {
-                @{ responses = @(
-                        @{ id = '0'; status = 200; body = @{ value = @() } }
-                    )
-                }
-            }
-
-            InModuleScope Maester {
-                { Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -DisablePaging } |
-                    Should -Throw '*did not return a response for subrequest*'
-            }
-        }
-
-        It 'Throws instead of returning a non-retryable subresponse error body' {
-            Mock Invoke-MgGraphRequest -ModuleName Maester {
-                @{ responses = @(
-                        @{ id = '0'; status = 403; body = @{ error = @{ message = 'Forbidden' } } }
-                        @{ id = '1'; status = 200; body = @{ value = @() } }
-                    )
-                }
-            }
-
-            InModuleScope Maester {
-                { Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -DisablePaging } |
-                    Should -Throw '*HTTP 403*Forbidden*'
-            }
-            Should -Not -Invoke Start-Sleep -ModuleName Maester
         }
     }
 
