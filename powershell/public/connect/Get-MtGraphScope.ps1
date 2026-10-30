@@ -99,6 +99,7 @@
         'AgentIdentityBlueprint.Read.All'
         'AgentIdentityBlueprintPrincipal.Read.All'
         'Application.Read.All'
+        'IdentityRiskyUser.Read.All'
     )
 
     if ($IncludePreview) {

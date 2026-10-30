@@ -11,6 +11,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
+        Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:IR-4'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Permission = 'Graph:Scope:IdentityRiskyUser.Read.All',
