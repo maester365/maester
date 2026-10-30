@@ -65,6 +65,7 @@ It then filters all GPOs where the `CreationTime` is earlier than **January 1st,
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoCreatedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

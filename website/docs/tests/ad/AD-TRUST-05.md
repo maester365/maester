@@ -95,6 +95,7 @@ This test retrieves all trust properties from LDAP and derives display values:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

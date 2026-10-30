@@ -59,6 +59,7 @@ The test inspects AD configuration for CRL distribution point entries, counts th
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdCrlDistributionPointsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-20.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

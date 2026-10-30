@@ -70,6 +70,7 @@ This test retrieves all user objects with SPNs, extracts the service class from 
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnServiceClassCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

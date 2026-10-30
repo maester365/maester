@@ -80,6 +80,7 @@ This test identifies domain administrator accounts and provides detailed informa
 | Supports controls | nist-800-53-r5:AC-6(5), nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtAdUserSpnDomainAdminDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-13.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

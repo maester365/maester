@@ -69,6 +69,7 @@ This test retrieves all Active Directory replication connections and identifies:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNonAutoReplicationConnectionCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-REPL-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSConnection:ReadProperty |
 
 ## Source
 

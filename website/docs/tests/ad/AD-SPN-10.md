@@ -71,6 +71,7 @@ This test analyzes all user SPNs, identifies unknown service classes, and provid
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnUnknownDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-10.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

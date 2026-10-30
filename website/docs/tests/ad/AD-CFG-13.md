@@ -60,6 +60,7 @@ Certificate templates define which certificate types can be issued and under wha
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdCertificateTemplatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-13.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

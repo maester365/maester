@@ -70,6 +70,7 @@ For performance reasons, the test analyzes members from the first 50 groups and 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupMemberAccountTypeCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:group.member:ReadProperty |
 
 ## Source
 

@@ -69,6 +69,7 @@ This test identifies subnets with overly broad CIDR notation that could encompas
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetCatchAllCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

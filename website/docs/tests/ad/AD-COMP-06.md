@@ -69,6 +69,7 @@ This test identifies enabled computer accounts where the Distinguished Name cont
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerInDefaultContainer](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

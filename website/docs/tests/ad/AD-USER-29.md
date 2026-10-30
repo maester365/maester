@@ -68,6 +68,7 @@ This test lists each user with `TrustedForDelegation` or `TrustedToAuthForDelega
 | Supports controls | nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtAdUserDelegationDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-29.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

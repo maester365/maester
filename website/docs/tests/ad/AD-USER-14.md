@@ -64,6 +64,7 @@ This test counts user objects where the `ServicePrincipalName` attribute contain
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnSetCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-14.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

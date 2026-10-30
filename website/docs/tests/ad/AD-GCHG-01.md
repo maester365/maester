@@ -78,6 +78,7 @@ The analysis helps identify trends and patterns in group management activity.
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupChangeAveragePerYear](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GCHG-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty |
 
 ## Source
 

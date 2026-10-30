@@ -103,6 +103,7 @@ Results are sorted by last validation date (oldest first).
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustStaleDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

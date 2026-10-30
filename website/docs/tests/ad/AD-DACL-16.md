@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters unresolved `IdentityReference` v
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclUnresolvedSidDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-16.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

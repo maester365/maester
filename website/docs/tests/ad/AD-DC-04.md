@@ -83,6 +83,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | Supports controls | nist-800-53-r5:SC-8 |
 | PowerShell test | [Test-MtAdDcSmbSigningEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read |
 
 ## Source
 

@@ -70,6 +70,7 @@ This test queries the SMB server configuration on each domain controller to chec
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcSmbv311EnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read |
 
 ## Source
 

@@ -71,6 +71,7 @@ This test counts SRV records used by Active Directory Domain Services, including
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsAdSrvRecordCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-11.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_ResourceRecord:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_RootHints:Read |
 
 ## Source
 

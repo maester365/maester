@@ -87,6 +87,7 @@ This test analyzes computer objects in Active Directory and:
 | Supports controls | nist-800-53-r5:CM-8 |
 | PowerShell test | [Test-MtAdComputerOperatingSystemCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

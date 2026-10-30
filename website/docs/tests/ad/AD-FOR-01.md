@@ -73,6 +73,7 @@ This test retrieves the current forest functional level from Active Directory al
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdForestFunctionalLevel](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

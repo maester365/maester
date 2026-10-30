@@ -76,6 +76,7 @@ This test retrieves the tombstone lifetime from the Directory Service configurat
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTombstoneLifetime](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty, ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 
