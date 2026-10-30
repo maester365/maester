@@ -8,21 +8,15 @@
         analysis and threat investigation. Short retention may impact forensic analysis
         and threat investigation.
     .PARAMETER ComplianceLogic
-        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+        How the evaluated policies combine into one result. 'EffectivePolicy' (default) passes when at least one policy sets a compliant value and no policy sets a non-compliant value; policies that don't configure the setting are ignored, and it does not check which devices each policy is assigned to. 'AllPolicies' requires every policy to configure the setting compliantly. 'AnyPolicy' requires at least one compliant policy. Unassigned policies included through PolicyFiltering count as if they were assigned.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
 
-    .PARAMETER ComplianceLogic
-        Specify compliance logic: AllPolicies or AnyPolicy
-
-    .PARAMETER PolicyFiltering
-        Specify policy filtering: All, IncludeUnassigned, or OnlyAssigned
-
     .EXAMPLE
         Test-MtMdeRetainCleanedMalware
 
-        Returns true if all assigned Defender AV policies have cleaned malware retention set to at least 30 days.
+        Returns $true if the assigned Defender Antivirus policies together have cleaned malware retention set to at least 30 days, with no policy setting a non-compliant value.
 
     .LINK
         https://maester.dev/docs/commands/Test-MtMdeRetainCleanedMalware
@@ -40,13 +34,14 @@
         ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'Graph',
-        Author = 'bdrogja'
+        Author = 'bdrogja',
+        Contributor = 'Gbenrotto'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        [ValidateSet('AllPolicies', 'AnyPolicy')]
-        [string]$ComplianceLogic = 'AllPolicies',
+        [ValidateSet('EffectivePolicy', 'AllPolicies', 'AnyPolicy')]
+        [string]$ComplianceLogic = 'EffectivePolicy',
 
         [ValidateSet('All', 'IncludeUnassigned', 'OnlyAssigned')]
         [string]$PolicyFiltering = 'OnlyAssigned'
@@ -77,17 +72,7 @@ if ($deviceCount -eq 0) {
 
     $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Cleaned malware retention is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
-    } else {
-        $testResultMarkdown = "Cleaned malware retention is not properly configured in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
-        }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
+    $testResultMarkdown = Get-MdeComplianceResultMarkdown -Compliance $compliance -SettingName 'Cleaned malware retention' -ExpectedState 'correctly configured'
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
