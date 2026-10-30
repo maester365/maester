@@ -278,6 +278,17 @@ Describe 'CISA.MS.EXO.4.1 with DNS mocked' {
             $script:testResultMarkdown | Should -Match '\| contoso\.com \| ❌ Fail \| \\_dmarc\.contoso\.com \| The record does not start with v=DMARC1;'
         }
 
+        It 'uses a V=DMARC1; record at the domain instead of a parent record and fails it, as ScubaGear does' {
+            # ScubaGear picks the record case-insensitively (-match '^v=DMARC1') and checks it case-sensitively (Rego startswith).
+            Mock -ModuleName Maester Get-MtExo { return @(New-TestAcceptedDomain -DomainName 'mail.contoso.com') }
+            $script:dnsAnswers['_dmarc.mail.contoso.com'] = 'V=DMARC1; p=reject;'
+
+            Test-MtCisaDmarcRecordExist | Should -BeFalse
+
+            $script:dnsQueries | Should -Be @('_dmarc.mail.contoso.com')
+            $script:testResultMarkdown | Should -Match '\| mail\.contoso\.com \| ❌ Fail \| \\_dmarc\.mail\.contoso\.com \| The record does not start with v=DMARC1;'
+        }
+
         It 'fails a domain whose DNS lookup failed' {
             Mock -ModuleName Maester Get-MtExo { return @(New-TestAcceptedDomain -DomainName 'contoso.com') }
             $script:dnsAnswers['_dmarc.contoso.com'] = New-TestLookup -Name '_dmarc.contoso.com' -Status 'Error' -Message 'Timed out'
