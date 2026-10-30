@@ -19,7 +19,7 @@ keywords:
 
 # MT.1159 - Quick Scan Time configuration is not required.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bdrogja" title="Boris Drogja · Original author"><img src="https://github.com/bdrogja.png" alt="Boris Drogja" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bdrogja">Boris Drogja</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bdrogja" title="Boris Drogja · Original author"><img src="https://github.com/bdrogja.png" alt="Boris Drogja" /></a><a className="test-byline-avatar" href="/contributors/gbenrotto" title="Olugbenro Ogundipe · Co-contributor"><img src="https://github.com/Gbenrotto.png" alt="Olugbenro Ogundipe" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bdrogja">Boris Drogja</a> with <a href="/contributors/gbenrotto">Olugbenro Ogundipe</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
