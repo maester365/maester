@@ -15,8 +15,9 @@ import {
   addByHand,
   registryChanges,
   withPrefix,
+  parsePermission,
 } from "./generate";
-import { Badge, Button, Checkbox, Combobox, Input, RadioCards, Select, Tabs, TabsContent, Textarea } from "./ui";
+import { Badge, Button, Checkbox, Combobox, Input, RadioCards, Select, Tabs, TabsContent } from "./ui";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
 
@@ -150,6 +151,117 @@ const productSummary = (products) => {
   const names = products.slice(0, 3).map((p) => p.name);
   return "In " + names.join(", ") + (products.length > 3 ? " and " + (products.length - 3) + " more" : "");
 };
+
+// Permission: each box is one thing the test needs (all of them); the permissions inside a box are alternatives
+// (any one of them), least privileged first.
+function PermissionBuilder({ groups, services, onChange }) {
+  const registry = services.length ? data.services.filter((s) => services.includes(s.name)) : data.services;
+  const [draft, setDraft] = useState({});
+  const shown = groups.length ? groups : [[]];
+  const update = (index, values) => onChange(shown.map((g, i) => (i === index ? values : g)));
+  const filled = shown.filter((g) => g.length);
+  const draftFor = (index) => {
+    const d = draft[index] || {};
+    const service = registry.find((s) => s.name === d.service) || registry[0];
+    const kind = (service && service.permissionKinds.find((k) => k.kind === d.kind)) || (service && service.permissionKinds[0]);
+    return { service, kind, name: d.name || "" };
+  };
+  const setDraftFor = (index, patch) => setDraft((all) => ({ ...all, [index]: { ...(all[index] || {}), ...patch } }));
+  const describe = (text) => {
+    const p = parsePermission(text);
+    if (!p) return text;
+    const service = data.services.find((s) => s.name === p.service);
+    const kind = service && service.permissionKinds.find((k) => k.kind === p.kind);
+    return kind ? kind.description : null;
+  };
+
+  return (
+    <div className={styles.stack}>
+      <div className={styles.explain}>
+        <p>
+          Each box is one thing the test needs, and the test needs <strong>all</strong> of them. Permissions inside one box are <strong>alternatives</strong>: any one of them is enough. Put the least privileged one first.
+        </p>
+        <p>
+          A permission is written <code>&lt;Service&gt;:&lt;Kind&gt;:&lt;Name&gt;</code> and <code>|</code> joins alternatives, so “User.Read.All, and Policy.Read.All or Directory.Read.All” is{" "}
+          <code>Permission = ('Graph:Scope:User.Read.All', 'Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All')</code>.
+        </p>
+      </div>
+      {shown.map((group, index) => {
+        const d = draftFor(index);
+        const value = d.service && d.kind && d.name.trim() ? d.service.name + ":" + d.kind.kind + ":" + d.name.trim() : "";
+        const valid = value && parsePermission(value) && !group.includes(value);
+        const add = () => {
+          if (!valid) return;
+          update(index, [...group, value]);
+          setDraftFor(index, { name: "" });
+        };
+        return (
+          <React.Fragment key={index}>
+            {index > 0 && <div className={styles.or}>and</div>}
+            <div className={styles.group}>
+              {group.length > 0 && (
+                <ul className={styles.picked}>
+                  {group.map((text, n) => (
+                    <li key={text}>
+                      <span>
+                        {n > 0 && <span className={styles.and}>or </span>}
+                        <code>{text}</code>
+                        {describe(text) && <span className={styles.tactics}> · {describe(text)}</span>}
+                      </span>
+                      <Button variant="ghost" size="xs" aria-label={"Remove " + text} onClick={() => update(index, group.filter((x) => x !== text))}>
+                        Remove
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {d.service && (
+                <div className={styles.groupRow}>
+                  <Select id={index === 0 ? "input-permission-service" : undefined} value={d.service.name} onValueChange={(v) => setDraftFor(index, { service: v, kind: undefined })} placeholder="Service" options={registry.map((s) => ({ value: s.name, label: s.name }))} />
+                  <Select value={d.kind.kind} onValueChange={(v) => setDraftFor(index, { kind: v })} placeholder="Kind" options={d.service.permissionKinds.map((k) => ({ value: k.kind, label: k.kind, hint: k.description }))} />
+                  <Input
+                    id={index === 0 ? "input-permission" : undefined}
+                    aria-label="Permission name"
+                    value={d.name}
+                    placeholder={d.kind.example}
+                    onChange={(e) => setDraftFor(index, { name: e.target.value })}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
+                  />
+                  <Button onClick={add} disabled={!valid}>
+                    {group.length ? "Add an alternative (or)" : "Add"}
+                  </Button>
+                  {shown.length > 1 && (
+                    <Button variant="ghost" onClick={() => onChange(shown.filter((_, i) => i !== index))}>
+                      Remove requirement
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </React.Fragment>
+        );
+      })}
+      <div>
+        <Button onClick={() => onChange([...shown, []])} disabled={shown[shown.length - 1].length === 0}>
+          Add another requirement (and)
+        </Button>
+      </div>
+      {filled.length > 0 && (
+        <p className={styles.note}>
+          The identity Maester signs in with needs {filled.map((g, i) => (
+            <span key={i}>
+              {i > 0 && <strong> and </strong>}
+              {filled.length > 1 && g.length > 1 && "("}
+              {g.map((text) => (parsePermission(text) || { name: text }).name).join(" or ")}
+              {filled.length > 1 && g.length > 1 && ")"}
+            </span>
+          ))}
+          . Maester records this on the result; it does not skip the test on it yet.
+        </p>
+      )}
+    </div>
+  );
+}
 
 function LicenseBuilder({ groups, onChange }) {
   const [catalog, setCatalog] = useState(null);
@@ -565,7 +677,7 @@ export default function TestBuilder() {
             id="control"
             name="Control"
             label="Framework requirements"
-            hint="Requirements of CIS, CISA, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
+            hint="Requirements of CIS, CISA, ASD Essential Eight, the ISM, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
             rubric={R.Control}
             problems={problems}
             notInList={
@@ -587,10 +699,10 @@ export default function TestBuilder() {
           >
             <ol className={styles.steps}>
               <li>
-                <strong>The requirement the test is written for.</strong> A CIS or CISA test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code>.
+                <strong>The requirement the test is written for.</strong> A CIS, CISA or ASD test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code> or <code>essential-eight:ISM-1504</code>.
               </li>
               <li>
-                <strong>A CIS or CISA requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
+                <strong>A CIS, CISA or ASD requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
               </li>
               <li>
                 <strong>NIST SP 800-53 controls</strong>, at most three, when a passing result is direct evidence for them. Skip this when you already listed a <code>cisa-scuba</code> requirement: CISA publishes its NIST mapping and the result gets it from there.
@@ -673,8 +785,19 @@ export default function TestBuilder() {
           >
             <LicenseBuilder groups={state.license} onChange={(v) => set({ license: v })} />
           </Field>
-          <Field id="permission" name="Permission" label="Permissions" hint={P.Permission.description + " One per line, for example Policy.Read.All."} problems={problems}>
-            <Textarea id="input-permission" rows={2} value={state.permission} placeholder="Policy.Read.All" onChange={(e) => set({ permission: e.target.value })} />
+          <Field
+            id="permission"
+            name="Permission"
+            label="Permissions"
+            hint="What the identity Maester signs in with must be granted for the test to read its data. Name the least privileged permission the code uses."
+            problems={problems}
+            notInList={
+              <p>
+                The kinds of permission each service has are listed in <RepoFile path="powershell/assets/MaesterServiceRegistry.psd1" />. A test shipped with Maester names only the services it lists under Services.
+              </p>
+            }
+          >
+            <PermissionBuilder groups={state.permission} services={state.serviceNone ? [] : state.services} onChange={(v) => set({ permission: v })} />
           </Field>
           <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Leave empty for Workforce only."} problems={problems}>
             <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} onChange={(v) => set({ tenantType: v })} />

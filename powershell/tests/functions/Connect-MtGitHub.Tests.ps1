@@ -54,11 +54,26 @@ Describe 'Connect-MtGitHub' {
                 $__MtSession.GitHubConnection.FailureReason | Should -Be 'NoToken'
             }
         }
+
+        It 'Does not start the device flow when nobody can answer it, even if the host reports interactive' {
+            Mock Get-MtUserInteractive -ModuleName Maester { $true }
+            Mock Test-MtGitHubPromptBlocked -ModuleName Maester { $true }
+            Mock Get-MtGitHubAppDeviceToken -ModuleName Maester { throw 'The device flow must not start.' }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            Should -Invoke Get-MtGitHubAppDeviceToken -ModuleName Maester -Times 0 -Exactly
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected     | Should -BeFalse
+                $__MtSession.GitHubConnection.FailureReason | Should -Be 'NoToken'
+            }
+        }
     }
 
     Context 'Maester GitHub App device flow' {
         BeforeEach {
             Mock Get-MtUserInteractive -ModuleName Maester { $true }
+            Mock Test-MtGitHubPromptBlocked -ModuleName Maester { $false }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
                 [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
             }
@@ -127,6 +142,7 @@ Describe 'Connect-MtGitHub' {
             $script:membershipProbeCount = 0
 
             Mock Get-MtUserInteractive -ModuleName Maester { $true }
+            Mock Test-MtGitHubPromptBlocked -ModuleName Maester { $false }
             Mock Get-MtGitHubAppDeviceToken -ModuleName Maester {
                 [PSCustomObject]@{ AccessToken = 'ghu_device'; ExpiresAt = $null; FailureReason = $null }
             }
@@ -369,6 +385,30 @@ Describe 'Connect-MtGitHub' {
 
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -ParameterFilter {
                 $Uri -match 'api\.myco\.ghe\.com' -and $Headers['X-GitHub-Api-Version'] -eq '2024-01-01'
+            }
+        }
+
+        It 'uses the default GitHub endpoint and API version when settings are absent' {
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+        }
+
+        It 'falls back to the code defaults when the settings registry returns nothing' {
+            Mock Get-MtSetting -ModuleName Maester { $null } -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
+            }
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+            Should -Invoke Get-MtSetting -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
             }
         }
 

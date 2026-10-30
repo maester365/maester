@@ -20,13 +20,15 @@ keywords:
 
 # CIS.M365.7.2.8 - (L2) Ensure external sharing is restricted by security group
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
 When external sharing is turned on, every user who can share SharePoint and OneDrive content can also share it with people outside the organization. If an account is compromised, the attacker gets the same right and can send files to an outside address.
 
 Limiting external sharing to members of specific security groups means only the people in those groups can share with external users. Other users can still work with their files and sites, but they cannot share them externally until they are added to a group. The members must also be allowed to invite guests in the Microsoft Entra external collaboration settings.
+
+Microsoft Entra organizational relationship settings, such as **Members can invite** and **Guests can invite**, can be more restrictive than SharePoint and take precedence for B2B invitations. This test checks the SharePoint group allowlist only; it does not verify those tenant-wide Entra settings.
 
 #### Remediation action
 
@@ -49,6 +51,7 @@ Set-PnPTenant -WhoCanShareAuthenticatedGuestAllowList '<group object id>'
 * [SharePoint admin center](https://admin.microsoft.com/sharepoint)
 * [External sharing overview](https://learn.microsoft.com/sharepoint/external-sharing-overview)
 * [Allow only members in specific security groups to share SharePoint and OneDrive files and folders externally](https://learn.microsoft.com/sharepoint/manage-security-groups)
+* [Microsoft Entra B2B integration for SharePoint and OneDrive](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration)
 * [Set-PnPTenant](https://pnp.github.io/powershell/cmdlets/Set-PnPTenant.html)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 7.2.8](https://www.cisecurity.org/benchmark/microsoft_365)
 

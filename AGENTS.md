@@ -19,7 +19,9 @@ maester.dev), `report/` (React app that builds the HTML report template).
   converts users' Pester-format tests. New MT.xxxx checks go here; follow
   `.github/skills/maester-test-expert/SKILL.md` and `website/docs/writing-tests/index.mdx`,
   and choose the attribute values with `website/docs/writing-tests/attribute-rubric.md`
-  (see "Reviewing a test's attributes" below).
+  (see "Reviewing a test's attributes" below). A benchmark test for a requirement that another
+  suite already checks is a shim that returns that test's result (see "Reviewing a test for
+  duplicates" below).
 - `powershell/tests/` — **unit tests for the module itself**.
 
 ## Commands
@@ -41,14 +43,18 @@ maester.dev), `report/` (React app that builds the HTML report template).
   the website's contributor data.
 - A test is mapped to a framework in one place: the `Control` attribute, `<framework-key>:<requirement-id>`. A
   CIS test carries `Control = 'cis-m365:5.1.5.1'`, a CISA test `Control = 'cisa-scuba:MS.AAD.3.1'`, and any other
-  test may name the same requirements. Every test in `tests/cis` and `tests/cisa` must name a requirement of its
+  test may name the same requirements. An ASD test carries `Control = 'essential-eight:ISM-1504'` (or `ism:<id>` for a
+  control outside the maturity model). Every test in `tests/cis`, `tests/cisa` and `tests/asd` must name a requirement of its
   suite's framework. The engine builds `Benchmark` from the first `Control` that a framework file knows and adds
   that requirement's `Related` references to `Control`; do not repeat those, and do not add benchmark tags.
 - A framework file is a catalogue, not a list of tests: `tests/<suite>/frameworks/<key>.json`
   (`tests/cis/frameworks/cis-m365.json`, `tests/cis/frameworks/cis-github.json`,
-  `tests/cisa/frameworks/cisa-scuba.json`), declared in the suite's `suite.json` (`Frameworks`: `Key`,
+  `tests/cisa/frameworks/cisa-scuba.json`, and the generated `tests/asd/frameworks/essential-eight.json` and
+  `tests/asd/frameworks/ism.json`, written by `build/asd/Update-AsdFramework.ps1` from the ISM OSCAL release),
+  declared in the suite's `suite.json` (`Frameworks`: `Key`,
   `Version`). It holds the framework's name and version and each requirement's `Id` and facts (CIS `Level` and
-  `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references), never the text of a benchmark and
+  `Profile`; CISA `Criticality`, `Upstream` and `Related` NIST references; Essential Eight `Level` and `Strategy`;
+  ISM `Guideline`, `Section` and `Applicability`), never the text of a benchmark and
   never a `Tests` list. When a new test implements a requirement the file does not have, add the requirement in
   the same commit, or `./build/Build-MaesterModule.ps1` and the unit tests fail.
 
@@ -61,7 +67,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
 - Folder names under `tests/`, `powershell/` and `build/` are lowercase kebab-case
   (`global-secure-access`, not `GlobalSecureAccess`). No two paths may differ only in case.
 - One name per service, the same everywhere: `ad`, `azure`, `azure-devops`, `copilot`,
-  `copilot-studio`, `defender`, `entra`, `exchange`, `foundry`, `github`,
+  `copilot-studio`, `defender`, `entra`, `exchange`, `fabric`, `foundry`, `github`,
   `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`.
   Folders name the product whose settings a check reads, never a theme: an AI check goes in
   the folder of its product (an Entra agent identity check in `entra/`) and declares
@@ -70,7 +76,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   framework files, `frameworks/<key>.json` beside its `suite.json` (lowercase key; nothing else goes in a
   `frameworks/` folder).
   Suites: `maester/<service>/` (plus `drift/`; `maester/xspm/` has its own suite.json),
-  `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
+  `cis/`, `cisa/<service>/`, `asd/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
   (reserved for users; never commit tests there).
 - `powershell/public/` (exported) is grouped by job: `run/`, `connect/`, `report/`, `app/`,
   `packs/`, `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
@@ -88,6 +94,37 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   `git mv` it from `internal/services/<service>/` to `public/services/<service>/`, add it to
   `FunctionsToExport`, and give it full comment-based help (see "Making an internal helper public"
   in the contributing guide). Exporting a command makes it public API; flag a promotion in review.
+
+## Reviewing a test for duplicates
+
+Benchmarks overlap, and a check that CIS, CISA, ASD and Maester each implement in their own way gives
+two answers for one setting and drifts with every benchmark update. When you write, change or review a
+test, look for a duplicate before the attribute review:
+
+1. Find the tests in every suite that read the same setting (`Get-MtTest -Product <key> -Feature <key>`,
+   and a search of `tests/` for the Graph endpoint or setting name).
+2. If one exists, read what the benchmark asks in its own sources, not only the requirement's one-line
+   text: its audit or assessment guidance and any reference configuration it publishes (for ASD, the
+   ISM, the Essential Eight assessment process guide and the ASD Blueprint for Secure Cloud). Note
+   every concrete value they name, and whether it differs from the existing test.
+3. Decide, as "Tests that another suite already has" in `website/docs/writing-tests/index.mdx` says:
+   - the benchmark asks for what the existing test checks: the new test is a shim, a test whose body is
+     `return <the existing test's function>`, with its own `Id`, `Title`, `Control` and guide;
+   - it asks for the same check with a different value the existing test takes as a parameter: a shim
+     that passes the value;
+   - it asks for something no test checks, or a rule no parameter covers: a test of its own, which
+     reads data through `powershell/internal/services/<service>/` helpers instead of copying another
+     test's logic.
+4. Fail the review when a benchmark test re-implements a check another suite already has and the
+   benchmark's sources give no reason, or when a helper named after a suite (`Get-MtAsd*`,
+   `Get-MtCis*`) does data access that is not specific to that suite. Say which test it duplicates
+   and which source you read.
+
+`powershell/tests/general/TestShims.Tests.ps1` checks the mechanical part: a shim declares the same
+attribute values as the test it calls (`Product` to `Mitre`, `Service`, `License` and the other gates),
+calls a test that exists and is not a shim, passes only parameters that test declares, leaves its own
+requirement off that test's `Control`, and names that test in its guide. Whether the benchmark asks for
+the same thing is the reviewer's judgement.
 
 ## Reviewing a test's attributes
 
@@ -121,3 +158,22 @@ Three things enforce this, in order:
 - The person or agent reviewing the pull request applies the same rubric and is the last word. A
   maintainer who disagrees with the workflow can apply the `attribute-review-override` label and
   should say why in the pull request.
+
+## Labelling pull requests, issues and discussions
+
+Labels follow one rubric so the queue can be filtered by status, type and product. The
+labels are defined in `.github/labels.json`; the rules for choosing them are in
+`.github/skills/maester-triage/SKILL.md`. To triage, use the `maester-triage` agent (or follow
+the skill directly): it shows its plan before changing anything and only ever changes labels.
+After editing `.github/labels.json`, run `./build/github/Sync-GitHubLabels.ps1` to see the
+changes and `-Apply` to make them. `-Apply` creates, renames and updates labels and copies a merged
+label onto the items that carry the old one; add `-DeleteMerged` to also delete the old labels.
+
+## Agents and skills
+
+The agents and skills in this repository are listed in `website/docs/agents-and-skills.md`. Each
+has one source file: `.github/agents/<name>.agent.md` or `.github/skills/<name>/SKILL.md`. The
+Claude Code copies under `.claude/agents/` and `.claude/skills/`, and that docs page, are generated
+from them by `./build/github/Update-AgentFiles.ps1`. Edit the source file, run the script, and
+commit both; never edit a generated copy. `powershell/tests/general/AgentFiles.Tests.ps1` fails
+when they drift.

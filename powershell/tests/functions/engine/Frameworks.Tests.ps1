@@ -145,8 +145,8 @@ Describe 'Frameworks of a suite' {
             }
         }
         $keys.Own | Should -Be @('contoso-baseline', 'contoso-cloud') -Because 'the tests shipped with Maester refer to nothing outside their own folder'
-        $keys.Custom | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'contoso-baseline', 'contoso-cloud') -Because 'a custom test can also refer to a framework shipped with Maester'
-        $keys.None | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba')
+        $keys.Custom | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'contoso-baseline', 'contoso-cloud', 'essential-eight', 'ism') -Because 'a custom test can also refer to a framework shipped with Maester'
+        $keys.None | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'essential-eight', 'ism')
     }
 
     It 'Reports a key that two suites declare, names both files and keeps the first' {
@@ -310,7 +310,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $script:frameworkFiles = @(Get-ChildItem -Path (Join-Path $script:repoRoot 'tests') -Recurse -File -Filter '*.json' | Where-Object { $_.Directory.Name -eq 'frameworks' })
     }
 
-    It 'Declares the benchmarks of the CIS and CISA suites in their suite.json' {
+    It 'Declares the benchmarks of the CIS, CISA and ASD suites in their suite.json' {
         $cis = Get-Content (Join-Path $script:repoRoot 'tests/cis/suite.json') -Raw | ConvertFrom-Json
         @($cis.Frameworks | ForEach-Object { "$($_.Key) $($_.Version)" }) | Should -Be @('cis-m365 7.0.0', 'cis-github 1.2.0')
         $cisa = Get-Content (Join-Path $script:repoRoot 'tests/cisa/suite.json') -Raw | ConvertFrom-Json
@@ -318,31 +318,38 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $cisa.Frameworks[0].Key | Should -Be 'cisa-scuba'
         @(@($cis.Frameworks) + @($cisa.Frameworks) | Where-Object { $_.PSObject.Properties['IdPrefix'] }) | Should -HaveCount 0 -Because 'a test is mapped by its Control, not by the prefix of its ID'
         $cisa.Frameworks[0].Version | Should -Not -BeNullOrEmpty
+        $asd = Get-Content (Join-Path $script:repoRoot 'tests/asd/suite.json') -Raw | ConvertFrom-Json
+        @($asd.Frameworks.Key) | Should -Be @('essential-eight', 'ism')
+        # Both come from one ISM OSCAL release, so they carry one version.
+        @($asd.Frameworks.Version | Sort-Object -Unique).Count | Should -Be 1
+        $asd.Frameworks[0].Version | Should -Not -BeNullOrEmpty
     }
 
     It 'Has a framework file for every declared framework and no problem in any of them' {
-        @($script:frameworkFiles.Name | Sort-Object) | Should -Be @('cis-github.json', 'cis-m365.json', 'cisa-scuba.json')
+        @($script:frameworkFiles.Name | Sort-Object) | Should -Be @('cis-github.json', 'cis-m365.json', 'cisa-scuba.json', 'essential-eight.json', 'ism.json')
         $problems = @(InModuleScope Maester { Get-MtFrameworkProblem -Test @(Get-MtTestCatalog) -Root (Get-MtMaesterTestFolderPath) })
         $problems | Should -BeNullOrEmpty
     }
 
-    It 'Gives every <Prefix> test a Benchmark of <Framework>, from the first Control of the test' -ForEach @(
-        @{ Prefix = 'CIS.M365.'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 108 }
-        @{ Prefix = 'CIS.GH.'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
-        @{ Prefix = 'CISA.'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
+    It 'Gives every <Prefix> test a Benchmark of <Label>, from the first Control of the test' -ForEach @(
+        @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 120 }
+        @{ Prefix = 'CIS.GH.'; Label = 'cis-github'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
+        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
+        @{ Prefix = 'ASD.'; Label = 'essential-eight or ism'; Framework = @('essential-eight', 'ism'); Version = $null; Count = 14 }
     ) {
         $tests = @($script:builtIn | Where-Object { $_.Id.StartsWith($Prefix) })
         $tests.Count | Should -Be $Count
-        @($tests | Where-Object { -not $_.Benchmark -or $_.Benchmark.Framework -cne $Framework } | ForEach-Object Id) | Should -BeNullOrEmpty
+        # An ASD test implements an Essential Eight requirement, or an ISM control outside the maturity model.
+        @($tests | Where-Object { -not $_.Benchmark -or $_.Benchmark.Framework -cnotin @($Framework) } | ForEach-Object Id) | Should -BeNullOrEmpty
         if ($Version) { @($tests | Where-Object { $_.Benchmark.Version -cne $Version } | ForEach-Object Id) | Should -BeNullOrEmpty }
         @($tests | Where-Object { -not $_.Benchmark.Version } | ForEach-Object Id) | Should -BeNullOrEmpty
         # The requirement a built-in test implements is the rest of its ID after the prefix.
         @($tests | Where-Object { "$Prefix$($_.Benchmark.Requirement)" -cne $_.Id } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($tests | Where-Object { @($_.Control)[0] -cne "${Framework}:$($_.Benchmark.Requirement)" } | ForEach-Object Id) | Should -BeNullOrEmpty
+        @($tests | Where-Object { @($_.Control)[0] -cne "$($_.Benchmark.Framework):$($_.Benchmark.Requirement)" } | ForEach-Object Id) | Should -BeNullOrEmpty
     }
 
     It 'Carries Benchmark as null on every other test' {
-        $others = @($script:builtIn | Where-Object { $_.Id -notlike 'CIS.*' -and $_.Id -notlike 'CISA.*' })
+        $others = @($script:builtIn | Where-Object { $_.Id -notlike 'CIS.*' -and $_.Id -notlike 'CISA.*' -and $_.Id -notlike 'ASD.*' })
         $others.Count | Should -BeGreaterThan 600
         @($others | Where-Object { -not $_.PSObject.Properties['Benchmark'] -or $null -ne $_.Benchmark } | ForEach-Object Id) | Should -BeNullOrEmpty
     }
@@ -397,7 +404,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
             $content = Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
             foreach ($requirement in $content.Requirements) {
                 foreach ($name in $requirement.PSObject.Properties.Name) {
-                    if ($name -cnotin 'Id', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream') { "$($file.Name): requirement $($requirement.Id) has $name" }
+                    if ($name -cnotin 'Id', 'Related', 'Level', 'Profile', 'Criticality', 'Upstream', 'Strategy', 'Guideline', 'Section', 'Applicability') { "$($file.Name): requirement $($requirement.Id) has $name" }
                 }
             }
         }
@@ -421,6 +428,7 @@ Describe 'Benchmark and Control on result rows' {
             Custom = '-SkipBuiltIn'
             Cis    = '-Suite cis -DryRun'
             Cisa   = '-Suite cisa -DryRun'
+            Asd    = '-Suite asd -DryRun'
         }
         $lines = [System.Collections.Generic.List[string]]::new()
         $lines.Add("`$ErrorActionPreference = 'Continue'")
@@ -481,12 +489,33 @@ Describe 'Benchmark and Control on result rows' {
 
     It 'Gives the rows of the CIS suite their Benchmark without a tenant' {
         $rows = @((Get-Run 'Cis').Tests | Where-Object Suite -EQ 'CIS')
-        $rows.Count | Should -Be 113
+        $rows.Count | Should -Be 125
         @($rows | Where-Object { $_.Result -notin 'NotRun', 'Skipped' -or $_.ReasonCode -eq 'NotSelected' } | ForEach-Object Id) | Should -BeNullOrEmpty -Because 'the suite is selected and nothing runs'
         @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'cis-m365', 'cis-github' -or $_.Benchmark.Level -cnotin 'L1', 'L2' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
         $row = $rows | Where-Object Id -EQ 'CIS.M365.1.1.1'
         $row.Benchmark.Version | Should -BeExactly '7.0.0'
         $row.Benchmark.Profile | Should -Be @('E3 Level 1')
+    }
+
+    It 'Gives the rows of the ASD suite their maturity level and strategy, and the ISM control as Control, without a tenant' {
+        $rows = @((Get-Run 'Asd').Tests | Where-Object Suite -EQ 'ASD')
+        $rows.Count | Should -Be 14
+        @($rows | Where-Object { $_.Benchmark.Framework -cnotin 'essential-eight', 'ism' -or -not $_.Benchmark.Requirement } | ForEach-Object Id) | Should -BeNullOrEmpty
+        $essentialEight = @($rows | Where-Object { $_.Benchmark.Framework -ceq 'essential-eight' })
+        $essentialEight.Count | Should -Be 13
+        @($essentialEight | Where-Object { $_.Benchmark.Level -cnotin 'ML1', 'ML2', 'ML3' -or -not $_.Benchmark.Strategy } | ForEach-Object Id) | Should -BeNullOrEmpty
+        # The framework file relates each Essential Eight requirement to the ISM control of the same ID.
+        @($essentialEight | Where-Object { $_.Control -cnotcontains "ism:$($_.Benchmark.Requirement)" } | ForEach-Object Id) | Should -BeNullOrEmpty
+        $row = $rows | Where-Object Id -EQ 'ASD.ISM-1504'
+        $row.Benchmark.Level | Should -BeExactly 'ML1'
+        $row.Benchmark.Strategy | Should -BeExactly 'Multi-factor authentication'
+        @($row.Control)[0] | Should -BeExactly 'essential-eight:ISM-1504'
+        # The Related reference follows the test's own values: the ISM control of the same ID.
+        @($row.Control)[-1] | Should -BeExactly 'ism:ISM-1504'
+        $ism = $rows | Where-Object Id -EQ 'ASD.ISM-1403'
+        $ism.Benchmark.Framework | Should -BeExactly 'ism'
+        $ism.Benchmark.Section | Should -BeExactly 'User account lockouts'
+        @($ism.Benchmark.Applicability) | Should -Contain 'P'
     }
 
     It 'Gives the rows of the CISA suite their Benchmark and the NIST SP 800-53 controls without a tenant' {
@@ -700,7 +729,7 @@ Describe 'Docs export' {
     }
 
     It 'Names every framework the tests use, with its version' {
-        @($script:export.Frameworks.Key) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba')
+        @($script:export.Frameworks.Key) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'essential-eight', 'ism')
         ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Name | Should -Be 'CIS Microsoft 365 Foundations Benchmark'
         ($script:export.Frameworks | Where-Object Key -EQ 'cis-m365').Version | Should -BeExactly '7.0.0'
         @($script:export.Tests | Where-Object { $_.Benchmark -and $_.Benchmark.Framework -cnotin $script:export.Frameworks.Key } | ForEach-Object Id) | Should -BeNullOrEmpty
@@ -724,7 +753,7 @@ Describe 'Docs export' {
 
     It 'Gives the level of every CIS test, which the generated title shows as (L1) or (L2)' {
         $cis = @($script:export.Tests | Where-Object { $_.Id -like 'CIS.*' })
-        $cis.Count | Should -Be 113
+        $cis.Count | Should -Be 125
         @($cis | Where-Object { $_.Benchmark.Level -cnotmatch '^L[12]$' } | ForEach-Object Id) | Should -BeNullOrEmpty
         $generator = Get-Content -LiteralPath (Join-Path $script:repoRoot 'website/scripts/generate-test-docs.mjs') -Raw
         $generator | Should -Match 'test\.Benchmark\?\.Level' -Because 'the title prefix comes from Benchmark'

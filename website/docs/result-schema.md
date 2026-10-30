@@ -137,7 +137,7 @@ Added in 2.1:
 
 | Field | Type | Content |
 | --- | --- | --- |
-| `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
+| `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `ASD`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
 | `Suite` | string | The suite ID, for example `Maester`, `CISA`, `AD` or `Custom`. |
 | `Product` | string | The key of the product where the fix is made, for example `entra` or `exchange`. `Taxonomy.Products` gives the name. A custom test may use a name of its own. |
 | `RelatedProduct` | array of strings | Keys of other products the test also checks or depends on. |
@@ -152,7 +152,7 @@ Added in 2.1:
 | `ReplacedBy` | string | For a `Deprecated` test, the ID of the test that took its place. |
 | `Service` | array of strings | The services the test needs, by their names in the service registry. |
 | `License` | array of strings | The service plans the test needs; the tenant needs any one. |
-| `Permission` | array of strings | The permissions the test declares. Recorded; not enforced. |
+| `Permission` | array of strings | The permissions the test declares, each written `<Service>:<Kind>:<Name>`. The test needs every element; `\|` inside an element joins alternatives, any one of which is enough. Recorded; not enforced. |
 | `Benchmark` | object | The requirement of a published benchmark that the test implements: the first value of its `Control` attribute that a framework file knows. `null` when there is none. See [Benchmark](#benchmark). |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |
@@ -186,7 +186,7 @@ first `Control` value of the test that names a requirement in a framework file, 
 
 | Field | Content |
 | --- | --- |
-| `Framework` | The key of the framework. The framework files that ship with Maester are `cis-m365`, `cis-github` and `cisa-scuba`; a custom suite can declare its own. |
+| `Framework` | The key of the framework. The framework files that ship with Maester are `cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight` and `ism`; a custom suite can declare its own. |
 | `Version` | The version of the framework that the framework file describes. |
 | `Requirement` | The ID of the requirement, for example `1.1.1` or `MS.AAD.3.5`: the part of the `Control` value after the colon. |
 | `Level`, `Profile` | CIS: the level of the recommendation (`L1` or `L2`) and the profiles it belongs to, such as `E3 Level 1`. |

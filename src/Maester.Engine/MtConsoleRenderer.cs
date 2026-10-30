@@ -356,6 +356,11 @@ namespace Maester.Engine
                 _insights = _facts != null && _total >= InsightLeastTests;
                 _started = true;
                 _running = true;
+                if (WantsClicks() && !_mouseOn)
+                {
+                    Write(MouseOn);
+                    _mouseOn = true;
+                }
                 DrawNow();
                 if (!_fullScreen) StartTimer();
             }
@@ -524,6 +529,13 @@ namespace Maester.Engine
                 _workers.Clear();
                 foreach (var l in _lanes) l.Running = 0;
                 _status = null;
+                if (_mouseOn)
+                {
+                    // The terminal has the clicks again; the next tick drops those it reported before this.
+                    Write(MouseOff);
+                    _mouseOn = false;
+                    _mouseDrain = true;
+                }
                 if (_fullScreen)
                 {
                     EndGameWithRun();
@@ -574,6 +586,8 @@ namespace Maester.Engine
             if (timer != null) timer.Dispose();
             if (ticker != null) ticker.Dispose();
             if (audio != null) audio.Close();
+            // Clicks that no tick dropped before the end must not reach the prompt as text.
+            if (_mouseDrain) DrainClicks();
         }
 
         /// <summary>Leaves the alternate screen with the cursor shown, colours reset, auto-wrap on and no taskbar progress.</summary>
@@ -581,6 +595,7 @@ namespace Maester.Engine
         {
             var sb = new StringBuilder();
             if (TaskbarProgress) sb.Append("\u001b]9;4;0;0\u0007");
+            if (_mouseOn) sb.Append(MouseOff);
             sb.Append(Esc).Append("0m").Append(Esc).Append("?7h").Append(Esc).Append("?25h").Append(Esc).Append("?1049l");
             return sb.ToString();
         }
@@ -946,11 +961,57 @@ namespace Maester.Engine
             var screen = (Boxed(max, rows) ? BuildBoxedMain(max, rows, ansi) : null) ?? BuildPlainMain(max, rows, ansi);
             if (paneWidth > 0)
             {
-                var pane = BuildPane(paneWidth, rows, ansi);
-                if (pane.Count > 0) return Beside(screen, pane, mainWidth, rows);
+                // The status of the run is the top row of the right column, at its right edge.
+                var pill = BuildStatusPill(paneWidth, ansi);
+                var pane = BuildPane(paneWidth, pill == null ? rows : rows - 1, ansi);
+                if (pane.Count > 0)
+                {
+                    if (pill != null) pane.Insert(0, pill);
+                    return Beside(screen, pane, mainWidth, rows);
+                }
             }
             return screen;
         }
+
+        /// <summary>
+        /// The status of the run, for the top of the right column: the phase it is in, with a dot that pulses
+        /// while it works, the domain of the tenant, and the time of day ("● RUN TESTS · contoso.com · 18:31:41").
+        /// Null before a phase starts, or with no room for its name.
+        /// </summary>
+        private Line BuildStatusPill(int width, bool ansi)
+        {
+            if (_phases.Count == 0) return null;
+            Phase current = null;
+            foreach (var p in _phases)
+            {
+                if (!p.Done && p.Clock != null) { current = p; break; }
+            }
+            if (current == null) return null;
+
+            string dot = _tick / PillPulseTicks % 2 == 0 ? (Unicode ? "●" : "*") : (Unicode ? "○" : "o");
+            string state = current.Name.ToUpperInvariant();
+            string colour = Amber;
+            string sep = Unicode ? " · " : " - ";
+            string clock = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+            string domain = _tenant != null && !string.IsNullOrEmpty(_tenant.Domain) ? _tenant.Domain : null;
+
+            // The domain goes first when the row is short of room, then the time.
+            int room = width - 1;
+            int least = dot.Length + 1 + state.Length;
+            if (least > room) return null;
+            bool withClock = least + sep.Length + clock.Length <= room;
+            bool withDomain = domain != null && least + sep.Length + domain.Length + (withClock ? sep.Length + clock.Length : 0) <= room;
+
+            var b = new LineBuilder(ansi).Add(dot + " ", colour).Add(state, "1;" + colour);
+            if (withDomain) b.Add(sep, "2").Add(domain, "2");
+            if (withClock) b.Add(sep, "2").Add(clock, "2");
+            var pill = b.Build();
+            string pad = new string(' ', Math.Max(0, room - pill.Plain.Length));
+            return new Line { Text = pad + pill.Text, Plain = pad + pill.Plain };
+        }
+
+        // The dot of the status pill turns on and off every half second.
+        private const int PillPulseTicks = 5;
 
         /// <summary>The main column in plain lines, on a console that is short of rows or columns for its boxes.</summary>
         private List<Line> BuildPlainMain(int max, int rows, bool ansi)
@@ -1319,11 +1380,14 @@ namespace Maester.Engine
         private const string Esc8 = "\u001b]8;;";
         private const string LinkEnd = "\u001b]8;;\u001b\\";
 
-        /// <summary>Text that a terminal with hyperlink support (OSC 8) opens at <paramref name="url"/>; other terminals show the text alone.</summary>
+        /// <summary>
+        /// Text that a terminal with hyperlink support (OSC 8) opens at <paramref name="url"/>, underlined so that it
+        /// reads as a link; other terminals show the text alone.
+        /// </summary>
         public static string Hyperlink(string text, string url)
         {
             if (string.IsNullOrEmpty(url) || !IsSafeLink(url)) return text ?? string.Empty;
-            return Esc8 + url + "\u001b\\" + text + LinkEnd;
+            return Esc8 + url + "\u001b\\" + Esc + "4m" + text + Esc + "24m" + LinkEnd;
         }
 
         /// <summary>

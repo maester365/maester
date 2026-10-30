@@ -35,7 +35,7 @@ export const emptyState = {
   services: [],
   serviceNone: false,
   license: [],
-  permission: "",
+  permission: [],
   tenantType: [],
   cloud: [],
   platform: [],
@@ -62,6 +62,7 @@ export const exampleState = {
   mitre: ["T1078.004", "T1528", "T1566"],
   services: ["Graph"],
   license: [["AAD_PREMIUM"]],
+  permission: [["Graph:Scope:Policy.Read.All"]],
   author: "your-github-handle",
 };
 
@@ -217,6 +218,39 @@ export function validate(state, data) {
     .flat()
     .filter((l) => !licensePattern.test(l))
     .forEach((l) => add("license", "error", l + " is not a service plan name. Use letters, digits, _ and -."));
+  // The engine rejects an alternative listed twice in a requirement, and a requirement listed twice, compared
+  // without case.
+  state.permission.forEach((group) => {
+    const seen = new Set();
+    group.forEach((p) => {
+      if (seen.has(p.toLowerCase())) add("permission", "error", p + " is listed more than once in a requirement. Remove one of them.");
+      seen.add(p.toLowerCase());
+    });
+  });
+  const seenPermissions = new Set();
+  permissionElements(state).forEach((element) => {
+    const key = element.toLowerCase();
+    if (seenPermissions.has(key)) add("permission", "error", element + " is listed more than once. Remove one of the requirements.");
+    seenPermissions.add(key);
+  });
+  state.permission.flat().forEach((p) => {
+    const parsed = parsePermission(p);
+    if (!parsed) {
+      add("permission", "error", p + " is not <Service>:<Kind>:<Name>.");
+      return;
+    }
+    const service = data.services.find((s) => s.name.toLowerCase() === parsed.service.toLowerCase() || s.aliases.some((a) => a.toLowerCase() === parsed.service.toLowerCase()));
+    if (!service) {
+      if (builtin) add("permission", "error", parsed.service + " is not in the service registry.");
+      return;
+    }
+    if (!service.permissionKinds.some((k) => k.kind.toLowerCase() === parsed.kind.toLowerCase())) {
+      add("permission", builtin ? "error" : "warn", parsed.kind + " is not a kind of permission of " + service.name + ". Use " + service.permissionKinds.map((k) => k.kind).join(", ") + ".");
+    }
+    // Service = 'None' is written when serviceNone is set, whatever services were ticked before.
+    const declared = state.serviceNone ? [] : state.services;
+    if (builtin && !declared.includes(service.name)) add("permission", "error", p + " names " + service.name + ", which is not one of the services of the test. Add it under Services.");
+  });
 
   // Lifecycle
   if (state.replacedBy.trim()) {
@@ -235,6 +269,17 @@ export function validate(state, data) {
 
 const quote = (v) => "'" + String(v).replace(/'/g, "''") + "'";
 const list = (values) => (values.length === 1 ? quote(values[0]) : "(" + values.map(quote).join(", ") + ")");
+
+// Permission: <Service>:<Kind>:<Name>. The name is everything after the second colon, so it may contain colons.
+export function parsePermission(text) {
+  const m = /^\s*([A-Za-z][A-Za-z0-9.\-]*):([A-Za-z]+):([^,|\r\n]*[^,|\s])\s*$/.exec(String(text || ""));
+  return m ? { service: m[1], kind: m[2], name: m[3].trim() } : null;
+}
+
+// Permission: the identity needs every element; alternatives joined with | inside an element are any one.
+export function permissionElements(state) {
+  return state.permission.filter((group) => group.length).map((group) => group.join(" | "));
+}
 
 // License: the tenant needs any one element; plans joined with & inside an element are all needed.
 export function licenseElements(state) {
@@ -266,7 +311,7 @@ export function attributeEntries(state) {
   if (state.serviceNone) put("Service", quote("None"));
   else arr("Service", state.services);
   arr("License", licenseElements(state));
-  arr("Permission", splitList(state.permission));
+  arr("Permission", permissionElements(state));
   arr("TenantType", state.tenantType);
   arr("Cloud", state.cloud);
   arr("Platform", state.platform);

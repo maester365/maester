@@ -20,10 +20,10 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 263 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 265 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 125 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -52,7 +52,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-CFG-19](./AD-CFG-19) | Intermediate CA details should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20) | CRL distribution points count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21) | NTAuth certificates count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22) | Exactly one KDS root key should exist | Active Directory | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22) | KDS root key count should be acceptable | Active Directory | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23) | SMTP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24) | IP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01) | Computer disabled count should be retrievable | Active Directory | Info | Active Directory | Computers |
@@ -100,7 +100,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-DCOMP-03](./AD-DCOMP-03) | Non-DC computers with constrained delegation count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-04](./AD-DCOMP-04) | Computer operating system count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-05](./AD-DCOMP-05) | Computer operating system details should be investigated | Active Directory | Info | Active Directory | Computers |
-| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale for 180 days or more | Active Directory | Medium | Active Directory | Computers |
+| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale beyond the configured threshold | Active Directory | Medium | Active Directory | Computers |
 | [AD-DCOMP-07](./AD-DCOMP-07) | Computer DNS host name count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-08](./AD-DCOMP-08) | Computer DNS zone count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-09](./AD-DCOMP-09) | Computer DNS zone details should be investigated | Active Directory | Info | Active Directory | Computers |
@@ -209,7 +209,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-GRP-08](./AD-GRP-08) | Domain local group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-09](./AD-GRP-09) | Global group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-10](./AD-GRP-10) | Universal group count should be retrievable | Active Directory | Info | Active Directory | Groups |
-| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed 180 days | Active Directory | Medium | Active Directory | Account security |
+| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed the configured maximum | Active Directory | Medium | Active Directory | Account security |
 | [AD-KRBTGT-02](./AD-KRBTGT-02) | KRBTGT last logon should be investigated | Active Directory | Info | Active Directory | Account security |
 | [AD-KRBTGT-03](./AD-KRBTGT-03) | KRBTGT should have standard UAC settings (disabled account) | Active Directory | Medium | Active Directory | Account security |
 | [AD-MSA-01](./AD-MSA-01) | Managed service account count should be investigated | Active Directory | Info | Active Directory | Account security |
@@ -460,6 +460,18 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.8.5.8](./CIS.M365.8.5.8) | (L2) Ensure external meeting chat is off | CIS | Medium | Teams | Meetings |
 | [CIS.M365.8.5.9](./CIS.M365.8.5.9) | (L2) Ensure meeting recording is off by default | CIS | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | Teams | Messaging |
+| [CIS.M365.9.1.1](./CIS.M365.9.1.1) | (L1) Restrict guest access to Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.10](./CIS.M365.9.1.10) | (L1) Restrict service principal access to Fabric public APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.11](./CIS.M365.9.1.11) | (L1) Restrict service principal profiles in Fabric | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.12](./CIS.M365.9.1.12) | (L1) Restrict service principal access to Fabric global APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.2](./CIS.M365.9.1.2) | (L1) Restrict external guest invitations through Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.3](./CIS.M365.9.1.3) | (L1) Restrict guest browsing of Fabric content | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.4](./CIS.M365.9.1.4) | (L1) Restrict public publishing of Fabric reports | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.5](./CIS.M365.9.1.5) | (L2) Disable R and Python visuals in Fabric | CIS | Medium | Microsoft Fabric | Tenant settings |
+| [CIS.M365.9.1.6](./CIS.M365.9.1.6) | (L1) Enable sensitivity labels for Fabric content | CIS | Medium | Microsoft Fabric | Information protection |
+| [CIS.M365.9.1.7](./CIS.M365.9.1.7) | (L1) Restrict organization-wide Fabric links | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.8](./CIS.M365.9.1.8) | (L1) Restrict external sharing of semantic models | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.9](./CIS.M365.9.1.9) | (L1) Block resource-key authentication for Fabric datasets | CIS | Medium | Microsoft Fabric | Developer settings |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | Medium | Entra ID | Identity Protection |
@@ -470,8 +482,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | CISA | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | CISA | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6) | Phishing-resistant MFA SHALL be required for highly privileged roles. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | High | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | Medium | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | Medium | Entra ID | Conditional Access |
 | [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1) | Security logs SHALL be sent to the agency's security operations center for monitoring. | CISA | High | Entra ID | Logs and monitoring |
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1) | Only administrators SHALL be allowed to register applications. | CISA | Medium | Entra ID | User and directory settings |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2) | Only administrators SHALL be allowed to consent to applications. | CISA | High | Entra ID | App consent and permissions |
@@ -597,8 +609,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1009](./MT.1009) | At least one Conditional Access policy is configured to block other legacy authentication. | Maester | High | Entra ID | Conditional Access |
 | [MT.1010](./MT.1010) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | Maester | High | Entra ID | Conditional Access |
 | [MT.1011](./MT.1011) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | Maester | High | Entra ID | Conditional Access |
-| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | High | Entra ID | Conditional Access |
-| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | High | Entra ID | Conditional Access |
+| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | Medium | Entra ID | Conditional Access |
+| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1014](./MT.1014) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | Maester | High | Entra ID | Conditional Access |
 | [MT.1015](./MT.1015) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1016](./MT.1016) | At least one Conditional Access policy is configured to require MFA for guest access. | Maester | High | Entra ID | Conditional Access |
@@ -732,7 +744,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled. | Maester | Low | Defender | Endpoint antivirus |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically. | Maester | Medium | Defender | Endpoint antivirus |
 | [MT.1172](./MT.1172) | Unified audit log ingestion is enabled. | Maester | High | Purview | Audit |
-| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Medium | Purview | Information protection |
+| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Low | Purview | Information protection |
 | [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled. | Maester | Medium | Purview | Insider risk management |
 | [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location. | Maester | Medium | Purview | Data lifecycle management |
@@ -779,6 +791,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
+| [MT.1226](./MT.1226) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Maester | Medium | Entra ID | Applications |
 | [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |
@@ -803,6 +816,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1249](./MT.1249) | Ensure Android app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
 | [MT.1250](./MT.1250) | Ensure Android app protection policy blocks screen capture of organization data. | Maester | Low | Intune | App protection |
 | [MT.1251](./MT.1251) | Ensure Android app protection policy requires Play Integrity device attestation. | Maester | Medium | Intune | App protection |
+| [MT.1252](./MT.1252) | Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID. | Maester | Medium | Entra ID | App consent and permissions |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |

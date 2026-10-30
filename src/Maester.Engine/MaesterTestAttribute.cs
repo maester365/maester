@@ -78,7 +78,8 @@ public sealed class MaesterTestAttribute : Attribute
     /// <summary>Service plan names; the tenant needs any one element. 'A&amp;B' inside an element means all of them.</summary>
     public string[] License { get; set; }
 
-    /// <summary>Permissions the test needs, one per element. Recorded; not enforced.</summary>
+    /// <summary>Permissions the test needs, written &lt;Service&gt;:&lt;Kind&gt;:&lt;Name&gt;. Every element is needed; | inside an
+    /// element joins alternatives, any one of which is enough. Recorded; not enforced.</summary>
     public string[] Permission { get; set; }
 
     /// <summary>Workforce or External.</summary>

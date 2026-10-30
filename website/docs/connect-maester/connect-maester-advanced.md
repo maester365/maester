@@ -174,6 +174,28 @@ Connect-ExchangeOnline -Certificate $cert -AppID $applicationId -Organization $m
 Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moera -ShowBanner:$false
 ```
 
+#### Roles for app-only access to Exchange Online and Security & Compliance
+
+The `Exchange.ManageAsApp` application permission lets the application sign in: under **Office 365 Exchange Online** for Exchange Online PowerShell, and under **Microsoft Exchange Online Protection** for Security & Compliance PowerShell (add both if you connect to both). The permission doesn't say what the application may read. Give the application a role as well, or the connection fails with an error like this:
+
+```text
+The role assigned to application <application ID> isn't supported in this scenario. Please check online documentation for assigning correct Directory Roles to Azure AD Application for EXO App-Only Authentication.
+```
+
+Use either of these options:
+
+- **A Microsoft Entra role.** Assign the role to the application's enterprise application (service principal). **Security Reader** and **Global Reader** are read-only and work for both Exchange Online and Security & Compliance PowerShell, so either one covers the Exchange Online and Security & Compliance connections that the Exchange, ORCA and CISA Exchange tests use. To assign one, go to **Microsoft Entra admin center** > **Identity** > **Roles & admins**, select the role, select **Add assignments**, and pick the enterprise application.
+- **An Exchange Online role.** Register the service principal in Exchange Online and assign it the **View-Only Configuration** role. This covers Exchange Online only; for Security & Compliance PowerShell, use a Microsoft Entra role.
+
+  ```powershell
+  New-ServicePrincipal -AppId <Application ID> -ObjectId <Enterprise application object ID> -DisplayName <Name>
+  New-ManagementRoleAssignment -Role "View-Only Configuration" -App <Name>
+  ```
+
+If Security & Compliance PowerShell connects but the application has no Microsoft Entra role that covers it, the session loads without cmdlets such as `Get-ProtectionAlert`. The ORCA tests then error with `The term 'Get-ProtectionAlert' is not recognized`. Assign Security Reader or Global Reader and connect again.
+
+See [App-only authentication for unattended scripts](https://learn.microsoft.com/powershell/exchange/app-only-auth-powershell-v2) on Microsoft Learn for the full list of supported roles.
+
 ### Microsoft Teams PowerShell Module
 
 The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps).
@@ -225,6 +247,20 @@ Connect-Maester -Service Dataverse
 ```
 
 > The service principal must be registered as an Application User in Power Platform with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
+
+### Microsoft Fabric (via Az.Accounts)
+
+The CIS Microsoft Fabric checks (CIS.M365.9.1.1–9.1.12) read the tenant settings from the [Fabric admin API](https://learn.microsoft.com/rest/api/fabric/admin/tenants/list-tenant-settings) with a token from your Azure context. Connect with `Connect-AzAccount` (or `Connect-Maester -Service Azure`) before running `Invoke-Maester`.
+
+```powershell
+# Interactive, as a Fabric administrator
+Connect-AzAccount
+
+# Non-interactive (service principal)
+Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
+```
+
+> A user must hold the **Fabric Administrator** role. A service principal or managed identity must be allowed to call the admin APIs: in the Fabric admin portal, under **Admin API settings**, turn on **Service principals can access read-only admin APIs** and add a security group that contains the service principal. Without this access the API returns 403 Forbidden and the Fabric checks report an error.
 
 ### Azure DevOps (via ADOPS)
 
