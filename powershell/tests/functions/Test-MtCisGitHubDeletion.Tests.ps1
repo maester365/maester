@@ -4,6 +4,8 @@
     Use-MtModuleFunction -Name Test-MtCisGitHubRepositoryDeletionLimited, Test-MtCisGitHubIssueDeletionLimited
 
     function Set-DeletionPolicy {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper sets synthetic in-memory module state and has no persistent or external side effects.')]
+        [CmdletBinding()]
         param([object] $Policy)
         InModuleScope Maester -Parameters @{ Policy = $Policy } {
             $__MtSession.MaesterConfig = [pscustomobject]@{ GlobalSettings = [pscustomobject]@{ GitHubDeletionPolicy = $Policy } }
