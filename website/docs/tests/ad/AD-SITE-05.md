@@ -71,6 +71,7 @@ This test retrieves all sites and subnets, identifies sites with no subnet assoc
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutSubnetDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:site:ReadProperty, ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

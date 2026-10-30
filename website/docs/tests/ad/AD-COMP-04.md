@@ -71,6 +71,7 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerNonStandardGroup](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

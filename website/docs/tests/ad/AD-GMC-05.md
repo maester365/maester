@@ -72,6 +72,7 @@ For performance reasons, the test analyzes the first 50 groups and limits displa
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupMemberTrustDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:group.member:ReadProperty |
 
 ## Source
 

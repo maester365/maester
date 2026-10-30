@@ -93,6 +93,7 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 | Supports controls | nist-800-53-r5:AC-6 |
 | PowerShell test | [Test-MtAdComputerNonDcUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty, ActiveDirectory:Ldap:nTDSDSA:ReadProperty |
 
 ## Source
 

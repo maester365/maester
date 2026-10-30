@@ -68,6 +68,7 @@ The test returns informational results to help you assess the scope of disabled 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

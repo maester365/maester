@@ -64,6 +64,7 @@ This test counts user objects where the `HomeDirectory` attribute contains a non
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHomeDirectoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-16.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

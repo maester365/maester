@@ -65,6 +65,7 @@ This test counts NS records that represent delegations (where the record name is
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsZoneDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_ResourceRecord:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_RootHints:Read |
 
 ## Source
 

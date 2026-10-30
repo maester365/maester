@@ -70,6 +70,7 @@ This test retrieves all sites and domain controllers, then identifies and lists 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutDcDetails](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:site:ReadProperty |
 
 ## Source
 

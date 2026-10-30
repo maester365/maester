@@ -74,6 +74,7 @@ This test retrieves all trust objects from Active Directory using `Get-ADTrust` 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

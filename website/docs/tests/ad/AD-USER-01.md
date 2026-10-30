@@ -59,6 +59,7 @@ This test retrieves cached Active Directory user data from `Get-MtADDomainState`
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserDisabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

@@ -67,6 +67,7 @@ It filters GPOs where `ModificationTime` is earlier than `2020-01-01` and calcul
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoChangedBefore2020Count](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

@@ -76,6 +76,7 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustInterForestCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

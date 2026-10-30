@@ -69,6 +69,7 @@ This test counts subnets that use IPv6 address format (containing colons).
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetIpv6Count](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

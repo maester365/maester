@@ -64,6 +64,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdUserDelegationAllowedCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

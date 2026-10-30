@@ -77,6 +77,7 @@ The table is intended to support quick review during GPO cleanup and maintenance
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

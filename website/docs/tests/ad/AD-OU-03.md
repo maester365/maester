@@ -70,6 +70,7 @@ keywords:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOuStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:organizationalUnit:ReadProperty |
 
 ## Source
 

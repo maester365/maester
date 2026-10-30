@@ -88,6 +88,7 @@ This test provides detailed analysis:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDnsZoneDetails](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

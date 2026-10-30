@@ -61,6 +61,7 @@ The test enumerates intermediate CA certificates in the AD configuration context
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdIntermediateCaDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-19.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

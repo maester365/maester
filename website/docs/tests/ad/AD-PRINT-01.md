@@ -75,6 +75,7 @@ This test queries Active Directory for printQueue objects to count published pri
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdPrinterTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/printer/Test.AD-PRINT-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:printQueue:ReadProperty |
 
 ## Source
 

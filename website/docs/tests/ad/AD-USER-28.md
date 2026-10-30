@@ -65,6 +65,7 @@ This test counts user accounts with either `TrustedForDelegation` or `TrustedToA
 | MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdUserDelegationConfiguredCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-28.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

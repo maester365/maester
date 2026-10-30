@@ -88,6 +88,7 @@ This test counts computers with and without the `dNSHostName` attribute populate
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDnsHostNameCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

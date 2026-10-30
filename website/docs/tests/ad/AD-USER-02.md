@@ -65,6 +65,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | Supports controls | nist-800-53-r5:AC-2(3) |
 | PowerShell test | [Test-MtAdUserDormantEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

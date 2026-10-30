@@ -87,6 +87,7 @@ This test extracts DNS zones from computer `dNSHostName` attributes and:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerDnsZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

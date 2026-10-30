@@ -65,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 | MITRE ATT&CK | T1098 Account Manipulation, T1222.001 Windows Permissions |
 | PowerShell test | [Test-MtAdDaclPrivilegedAllowAceDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-10.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source
