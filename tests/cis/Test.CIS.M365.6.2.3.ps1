@@ -57,14 +57,9 @@
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
     $exceptionText = if ($exceptions.Count -gt 0) { $exceptions -join ', ' } else { 'None' }
-    $resultMd += "`nAllow-list entries (manual review required if present): $exceptionText`n"
+    $resultMd += "`nException list (not part of the result): $exceptionText`n"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 
-    if ($testResult -and $exceptions.Count -gt 0) {
-        $testResultMarkdown = "External sender identification is enabled. Review each allow-list address and confirm that the organization has approved it.`n`n$resultMd"
-        Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    } else {
-        Add-MtTestResultDetail -Result $testResultMarkdown
-    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

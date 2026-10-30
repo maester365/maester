@@ -4,8 +4,6 @@ MailTips show a short warning in the message while it is being written, for exam
 
 The test needs all MailTips on, the external recipient tip on, group metrics on and a large audience threshold greater than zero.
 
-CIS does not prescribe one threshold for every organization: its PowerShell audit procedure asks administrators to verify an acceptable value and notes that `25` is the default. This check reports the configured value and only rejects an unset or nonpositive threshold; confirm that any other positive value is suitable for your organization.
-
 #### Remediation action
 
 1. Connect to Exchange Online with `Connect-ExchangeOnline`.

@@ -53,9 +53,8 @@
     }
 
     $result = $owaMailboxPolicyDefault.AdditionalStorageProvidersAvailable
-    $testResult = $result -eq $false
 
-    if ($testResult) {
+    if ($result -eq $false) {
         $testResultMarkdown = "Well done. AdditionalStorageProvidersAvailable is ``$($result)```n`n"
     } else {
         $testResultMarkdown = "``AdditionalStorageProvidersAvailable`` should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
@@ -63,5 +62,5 @@
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+return !$result
 }

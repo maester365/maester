@@ -2,7 +2,7 @@
 
 A spam confidence level of -1 tells Exchange Online to deliver the message without spam filtering. If the rule matches a sender domain, anyone who can spoof that domain, or who compromises it, sends mail straight to your users, with the same trust as an internal sender.
 
-If a business exception is necessary, CIS says to whitelist the domain only when inbound mail from that domain originates from a specific IP address, and to document and regularly review the exception. The CIS PowerShell audit flags every rule that combines `SenderDomainIs` with `SetSCL -1`; this check does not verify an IP restriction or exception documentation, so assess each flagged rule against those conditions. Prefer fixing the cause of false positives, for example by configuring SPF, DKIM and DMARC for the partner domain.
+Use the tenant allow/block list with an expiry for temporary exceptions, and fix the cause of the false positives, for example with SPF, DKIM and DMARC for the partner domain.
 
 #### Remediation action
 

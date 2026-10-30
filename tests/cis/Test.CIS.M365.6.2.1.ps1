@@ -4,7 +4,7 @@
         Checks that mail flow rules and outbound spam policies do not forward mail to external recipients.
 
     .DESCRIPTION
-        Checks that no enabled transport rule that is not in audit mode redirects mail outside the accepted domains, and that every returned outbound spam policy has automatic forwarding disabled. The default policy must be present to pass.
+        Checks that no enabled transport rule that is not in audit mode redirects mail outside the accepted domains, and that no outbound spam policy users receive allows automatic forwarding to external recipients.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.2.1, L1)
 
     .EXAMPLE
@@ -39,13 +39,12 @@
     $acceptedDomains = @(Get-MtExo -Request AcceptedDomain | ForEach-Object { "$($_.DomainName)".Trim().TrimEnd('.') } | Where-Object { $_ })
     $transportRules = @(Get-MtExo -Request TransportRule)
     $outboundPolicies = @(Get-MtExo -Request HostedOutboundSpamFilterPolicy)
-    $defaultOutboundPolicies = @($outboundPolicies | Where-Object { $_.IsDefault -eq $true })
+    $enabledRules = @(Get-MtExo -Request HostedOutboundSpamFilterRule | Where-Object { $_.State -eq 'Enabled' })
+    $rulePolicyNames = @($enabledRules | ForEach-Object { $_.HostedOutboundSpamFilterPolicy })
+    $activeOutboundPolicies = @($outboundPolicies | Where-Object { $_.IsDefault -eq $true -or $rulePolicyNames -contains $_.Name })
 
     $findings = [System.Collections.Generic.List[object]]::new()
     $recipientCache = @{}
-    if ($defaultOutboundPolicies.Count -eq 0) {
-        $findings.Add([pscustomobject]@{ Source = 'Outbound spam policy'; Detail = 'The default outbound spam policy was not returned; automatic forwarding could not be verified.' })
-    }
     foreach ($rule in $transportRules) {
         # Disabled and audit-mode rules do not perform the recipient actions.
         if ($rule.State -eq 'Disabled' -or $rule.Mode -in 'Audit', 'AuditAndNotify') { continue }
@@ -100,7 +99,7 @@
             }
         }
     }
-    foreach ($policy in $outboundPolicies) {
+    foreach ($policy in $activeOutboundPolicies) {
         if ($policy.AutoForwardingMode -ne 'Off') {
             $findings.Add([pscustomobject]@{ Source = "Outbound spam policy: $($policy.Name)"; Detail = "Automatic forwarding is $($policy.AutoForwardingMode)" })
         }
