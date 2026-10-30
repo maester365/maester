@@ -171,7 +171,8 @@
 
             Test-MtCisMfaForEveryUser | Should -BeTrue
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
-                $Result -like '*Microsoft Rights Management Services (00000012-0000-0000-c000-000000000000)*'
+                $Result -like '*Microsoft Rights Management Services (00000012-0000-0000-c000-000000000000)*' -and
+                $Result -like '*Microsoft Rights Management Services is the only permitted application exclusion*'
             }
         }
     }

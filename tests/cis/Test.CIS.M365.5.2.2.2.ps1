@@ -68,7 +68,7 @@
         [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; ExcludedApplications = $excludedApplicationsText; Failed = $failedText; Pass = $failed.Count -eq 0 }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -gt 0
-    $passText = 'An enabled Conditional Access policy requires multifactor authentication for all users and all cloud apps.'
+    $passText = 'An enabled Conditional Access policy requires multifactor authentication for all users and all cloud apps; Microsoft Rights Management Services is the only permitted application exclusion.'
     $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that requires multifactor authentication was found.' } else { 'No enabled Conditional Access policy requires multifactor authentication for all users and all cloud apps.' }
 
     $resultMd = "| Policy | State | Excluded applications | Failed checks | Result |`n"
