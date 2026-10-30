@@ -1,5 +1,21 @@
 ﻿function Test-MtEntraUnremediatedHighRiskUser {
-
+    <#
+    .SYNOPSIS
+    Finds users that Entra ID Protection rates high risk and that nobody has remediated.
+    .DESCRIPTION
+    Entra ID Protection flags users it believes are compromised and assigns a risk level and a
+    risk state. A flag only clears when someone remediates it (password reset) or an admin
+    dismisses or confirms-safe it. This check reports users whose risk level is high and whose
+    risk state still shows active, unremediated risk, so an admin can act on flags that have been
+    left sitting. If a reported user holds a privileged directory role, the severity is raised to
+    High. It reads risk only; it never changes a user's risk state.
+    .EXAMPLE
+    Test-MtEntraUnremediatedHighRiskUser
+    .LINK
+    https://maester.dev/docs/commands/Test-MtEntraUnremediatedHighRiskUser
+    .LINK
+    https://learn.microsoft.com/graph/api/resources/riskyuser?view=graph-rest-1.0
+    #>
     [MaesterTest(
         Id = 'MT.1260',
         Title = 'High-risk users should not be left unremediated in Entra ID Protection.',
