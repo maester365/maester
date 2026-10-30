@@ -49,7 +49,7 @@ Remove allow listing on domains.
 | Area | Email and collaboration protection |
 | Resource type | Policy |
 | User impact | Low |
-| Implementation cost | Medium |
+| Implementation cost | Low |
 | MITRE ATT&CK | T1566 Phishing, T1684.002 Email Spoofing |
 | Supports controls | nist-800-53-r5:SI-8 |
 | PowerShell test | [Test-ORCA118_1](https://github.com/maester365/maester/blob/main/tests/orca/Test.ORCA.118.1.ps1) |
