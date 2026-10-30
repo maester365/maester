@@ -36,6 +36,7 @@
     { "family": "product", "name": "product: ad", "color": "c5def5", "description": "On-premises Active Directory", "appliesTo": ["pr", "issue", "discussion"], "renamedFrom": ["ad"] },
     { "family": "product", "name": "product: copilot-studio", "color": "c5def5", "description": "Copilot Studio", "appliesTo": ["pr", "issue", "discussion"] },
     { "family": "product", "name": "product: fabric", "color": "c5def5", "description": "Microsoft Fabric", "appliesTo": ["pr", "issue", "discussion"] },
+    { "family": "suite", "name": "suite: asd", "color": "e4d7f7", "description": "ASD Essential Eight and ISM checks (tests/asd)", "appliesTo": ["pr", "issue", "discussion"] },
     { "family": "suite", "name": "suite: cis", "color": "e4d7f7", "description": "CIS Microsoft 365 Foundations Benchmark checks (tests/cis)", "appliesTo": ["pr", "issue", "discussion"] },
     { "family": "suite", "name": "suite: cisa", "color": "e4d7f7", "description": "CISA SCuBA checks (tests/cisa)", "appliesTo": ["pr", "issue", "discussion"] },
     { "family": "suite", "name": "suite: eidsca", "color": "e4d7f7", "description": "EIDSCA checks, generated from upstream (tests/eidsca)", "appliesTo": ["pr", "issue", "discussion"] },
