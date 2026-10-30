@@ -65,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs 
 | MITRE ATT&CK | T1003.006 DCSync, T1098 Account Manipulation |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-11.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

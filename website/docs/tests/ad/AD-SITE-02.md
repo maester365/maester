@@ -70,6 +70,7 @@ This test compares the list of sites with domain controllers against all sites i
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutDcCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:site:ReadProperty |
 
 ## Source
 

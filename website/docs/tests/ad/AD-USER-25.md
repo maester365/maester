@@ -64,6 +64,7 @@ This test lists built-in administrator style accounts and reports `PasswordLastS
 | MITRE ATT&CK | T1078.001 Default Accounts, T1110.003 Password Spraying |
 | PowerShell test | [Test-MtAdUserBuiltInAdminPasswordAgeDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-25.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

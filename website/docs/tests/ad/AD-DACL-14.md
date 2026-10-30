@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries` and counts entries where `IsInherited` is
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclNonInheritedAceCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-14.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

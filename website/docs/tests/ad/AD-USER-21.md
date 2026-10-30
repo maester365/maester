@@ -66,6 +66,7 @@ This test reviews AD user objects and flags accounts whose `SamAccountName` or `
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-21.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

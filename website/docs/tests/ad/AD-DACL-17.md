@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters for `InheritedObjectType` GUIDs 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclInheritedObjectTypeCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-17.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

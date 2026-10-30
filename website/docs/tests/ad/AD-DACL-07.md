@@ -65,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `Ident
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclDistinctIdentityCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

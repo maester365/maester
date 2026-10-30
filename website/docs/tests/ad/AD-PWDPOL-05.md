@@ -81,6 +81,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | MITRE ATT&CK | T1556.005 Reversible Encryption |
 | PowerShell test | [Test-MtAdPasswordReversibleEncryption](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty |
 
 ## Source
 

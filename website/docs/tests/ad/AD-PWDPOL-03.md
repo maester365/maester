@@ -78,6 +78,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | MITRE ATT&CK | T1110 Brute Force |
 | PowerShell test | [Test-MtAdPasswordMinLength](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.minPwdLength:ReadProperty |
 
 ## Source
 

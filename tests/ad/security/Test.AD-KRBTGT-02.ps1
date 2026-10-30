@@ -31,6 +31,7 @@
         Severity = 'Info',
         Mitre = 'T1078.001',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

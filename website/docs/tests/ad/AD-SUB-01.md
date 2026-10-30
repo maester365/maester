@@ -69,6 +69,7 @@ This test retrieves all Active Directory subnets using `Get-ADReplicationSubnet`
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

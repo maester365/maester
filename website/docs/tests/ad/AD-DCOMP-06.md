@@ -96,6 +96,7 @@ Provides counts and lists affected computers.
 | Supports controls | nist-800-53-r5:AC-2(3) |
 | PowerShell test | [Test-MtAdComputerStaleEnabledCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

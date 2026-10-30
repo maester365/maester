@@ -29,6 +29,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

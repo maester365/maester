@@ -97,7 +97,7 @@
             Field       = 'Presence'
             Id          = '^(MT\.1024|MT\.1033|MT\.1034|MT\.1059|MT1060)$'
             Old         = '^$'
-            NewRow      = @{ ReasonCode = '^(NoInstances|InstanceSourceFailed|InvalidInstanceId|NotSelected|ExcludedByTag|ExcludedById|DisabledByConfig|ServiceNotConnected|ServiceNotRegistered|LicenseNotFound|TenantTypeMismatch|CloudMismatch|PlatformMismatch)$' }
+            NewRow      = @{ ReasonCode = '^(NoInstances|InstanceSourceFailed|InvalidInstanceId|NotSelected|ExcludedByTag|ExcludedById|ExcludedByProduct|DisabledByConfig|ServiceNotConnected|ServiceNotRegistered|LicenseNotFound|TenantTypeMismatch|CloudMismatch|PlatformMismatch)$' }
         }
 
         # 5.3 item 4: MT.1022 and MT.1023 gain the Describe tags that 2.x drops inside a Context.

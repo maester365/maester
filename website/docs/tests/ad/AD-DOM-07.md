@@ -71,6 +71,7 @@ This test validates NetBIOS names against standard naming conventions, checking 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNetbiosNameStandardCompliance](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty |
 
 ## Source
 

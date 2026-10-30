@@ -79,6 +79,7 @@ This test retrieves detailed information from the schema container including:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSchemaVersionDetails](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Schema/*.objectVersion:ReadProperty |
 
 ## Source
 

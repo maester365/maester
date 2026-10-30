@@ -66,6 +66,7 @@ keywords:
 | Supports controls | nist-800-53-r5:IA-5(1), nist-800-53-r5:SC-28 |
 | PowerShell test | [Test-MtAdGpoCpasswordFoundCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOREP-17.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

@@ -1,4 +1,4 @@
-Describe 'Get-MtExo -Request AdminAuditLogConfig' {
+Describe 'Get-MtExo' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
 
@@ -18,10 +18,17 @@ Describe 'Get-MtExo -Request AdminAuditLogConfig' {
         New-Module -Name tmpEOP_mttest -ScriptBlock {
             function Get-AdminAuditLogConfig { [PSCustomObject]@{ Name = 'Admin Audit Log Settings'; UnifiedAuditLogIngestionEnabled = $false } }
         } | Import-Module -Global -Force
+        New-Module -Name tmpEXO_vip_mttest -ScriptBlock {
+            function Get-User {
+                [CmdletBinding()]
+                param([switch]$IsVIP, [string]$ResultSize)
+                [PSCustomObject]@{ UserPrincipalName = 'vip@example.test'; IsVIP = $IsVIP.IsPresent; ResultSize = $ResultSize }
+            }
+        } | Import-Module -Global -Force
     }
 
     AfterAll {
-        Remove-Module tmpEXO_restricted_mttest, tmpEXO_mttest, tmpEOP_mttest -Force -ErrorAction SilentlyContinue
+        Remove-Module tmpEXO_restricted_mttest, tmpEXO_mttest, tmpEOP_mttest, tmpEXO_vip_mttest -Force -ErrorAction SilentlyContinue
         Clear-MtExoCache
     }
 
@@ -45,5 +52,26 @@ Describe 'Get-MtExo -Request AdminAuditLogConfig' {
         }
 
         (Get-MtExo -Request AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled | Should -BeFalse
+    }
+
+    It 'Finds a connected Exchange Online module that exports Get-User with IsVIP' {
+        Mock -ModuleName Maester Get-ConnectionInformation {
+            [PSCustomObject]@{
+                IsEopSession = $false
+                State        = 'Connected'
+                ModuleName   = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_restricted_mttest'
+            }
+            [PSCustomObject]@{
+                IsEopSession = $false
+                State        = 'Connected'
+                ModuleName   = Join-Path ([IO.Path]::GetTempPath()) 'tmpEXO_vip_mttest'
+            }
+        }
+
+        $vipUsers = @(Get-MtExo -Request VipUser)
+        $vipUsers.Count | Should -Be 1
+        $vipUsers[0].UserPrincipalName | Should -Be 'vip@example.test'
+        $vipUsers[0].IsVIP | Should -BeTrue
+        $vipUsers[0].ResultSize | Should -Be 'Unlimited'
     }
 }

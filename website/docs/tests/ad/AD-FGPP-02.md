@@ -82,6 +82,7 @@ The test reports the variety of settings across all policies.
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdFineGrainedPolicyValueCount](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty |
 
 ## Source
 

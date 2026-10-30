@@ -71,6 +71,7 @@ The default 90-day threshold is a common security baseline. Set `DormantThreshol
 | MITRE ATT&CK | T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdComputerDormantCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

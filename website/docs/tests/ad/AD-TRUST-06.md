@@ -94,6 +94,7 @@ The test returns:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustStaleCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

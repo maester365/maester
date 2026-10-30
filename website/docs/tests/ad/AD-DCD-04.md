@@ -82,6 +82,7 @@ The test provides different guidance based on whether the forest is single-domai
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcNonGlobalCatalogCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DCD-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

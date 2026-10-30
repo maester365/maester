@@ -64,6 +64,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | MITRE ATT&CK | T1556.005 Reversible Encryption |
 | PowerShell test | [Test-MtAdUserReversibleEncryptionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

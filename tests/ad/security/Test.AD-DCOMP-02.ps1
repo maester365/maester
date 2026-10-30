@@ -36,6 +36,7 @@
         Mitre = ('T1558', 'T1550.003'),
         Control = 'nist-800-53-r5:AC-6',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

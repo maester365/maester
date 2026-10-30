@@ -16,16 +16,17 @@ This is the main Maester command that runs the tests and generates a report of t
 
 ```powershell
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-Product <String[]>]
- [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>] [-Suite <String[]>] [-Pack <String[]>]
- [-AllPacks] [-IncludeLongRunning] [-IncludePreview] [-OutputHtmlFile <String>] [-IncludeAffectedObjects]
- [-RedactUserIdentity <String>] [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>]
- [-OutputJsonFile <String>] [-OutputFolder <String>] [-OutputFolderFileName <String>]
- [-PesterConfiguration <Object>] [-Verbosity <String>] [-NonInteractive] [-PassThru]
- [-MailRecipient <String[]>] [-MailTestResultsUri <String>] [-MailUserId <String>] [-TeamId <String>]
- [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>] [-SkipGraphConnect] [-DisableTelemetry]
- [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo] [-OutputMode <String>] [-DriftRoot <String>]
- [-TestId <String[]>] [-ExcludeTestId <String[]>] [-Config <Object>] [-DryRun] [-SkipBuiltIn]
- [-PackLock <String>] [-SkipPack] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-ExcludeProduct <String[]>] [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>]
+ [-Suite <String[]>] [-Pack <String[]>] [-AllPacks] [-IncludeLongRunning] [-IncludePreview]
+ [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
+ [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
+ [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <Object>]
+ [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
+ [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
+ [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
+ [-OutputMode <String>] [-DriftRoot <String>] [-TestId <String[]>] [-ExcludeTestId <String[]>]
+ [-Config <Object>] [-DryRun] [-SkipBuiltIn] [-PackLock <String>] [-SkipPack]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,6 +43,7 @@ Active Directory tests run only after an explicit Connect-Maester -Service Activ
 -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes.
 Each takes a list: the values of one selector are alternatives, and different selectors must all match.
 They combine the same way with -Tag and -TestId.
+-ExcludeProduct leaves out the tests of a product and wins over every selector.
 The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 
 ## EXAMPLES
@@ -92,13 +94,22 @@ Values of one selector are alternatives; different selectors must all match.
 ### EXAMPLE 6
 
 ```powershell
+Invoke-Maester -ExcludeProduct exchange
+```
+
+Runs the tests that ship with Maester and the custom tests, except the tests about Exchange Online (a test whose Product or RelatedProduct is exchange).
+Pester-format custom tests have no product and still run.
+
+### EXAMPLE 7
+
+```powershell
 Invoke-Maester -Suite cisa -Area authentication
 ```
 
 Runs the tests of the CISA suite that are about authentication.
 -Product, -Feature, -Area, -Severity and -Suite select by the typed attributes of the tests and combine with -Tag and -TestId.
 
-### EXAMPLE 7
+### EXAMPLE 8
 
 ```powershell
 Invoke-Maester -OutputFolder './my-test-results'
@@ -106,7 +117,7 @@ Invoke-Maester -OutputFolder './my-test-results'
 
 Runs tests and generates a report of the results in the ./my-test-results folder.
 
-### EXAMPLE 8
+### EXAMPLE 9
 
 ```powershell
 Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
@@ -114,7 +125,7 @@ Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
 
 Runs the tests and generates a report of the results in the specified file.
 
-### EXAMPLE 9
+### EXAMPLE 10
 
 ```powershell
 Invoke-Maester -Path ./maester/Custom -SkipBuiltIn
@@ -122,7 +133,7 @@ Invoke-Maester -Path ./maester/Custom -SkipBuiltIn
 
 Runs only the custom tests in the ./maester/Custom folder.
 
-### EXAMPLE 10
+### EXAMPLE 11
 
 ```powershell
 Invoke-Maester -MailRecipient john@contoso.com
@@ -130,7 +141,7 @@ Invoke-Maester -MailRecipient john@contoso.com
 
 Runs the tests and sends a report of the results to an email recipient.
 
-### EXAMPLE 11
+### EXAMPLE 12
 
 ```powershell
 Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
@@ -138,7 +149,7 @@ Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19
 
 Runs the tests and posts a summary of the results to a Teams channel.
 
-### EXAMPLE 12
+### EXAMPLE 13
 
 ```powershell
 Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
@@ -146,7 +157,7 @@ Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflow
 
 Runs the tests and posts a summary of the results to a Teams channel.
 
-### EXAMPLE 13
+### EXAMPLE 14
 
 ```powershell
 Invoke-Maester -Verbosity Normal
@@ -154,7 +165,7 @@ Invoke-Maester -Verbosity Normal
 
 Shows results of tests as they are run, including details on failed tests.
 
-### EXAMPLE 14
+### EXAMPLE 15
 
 ```powershell
 $configuration = New-PesterConfiguration
@@ -167,7 +178,7 @@ Invoke-Maester -PesterConfiguration $configuration
 
 Runs the built-in tests and the custom tests in the ./tests/Custom folder that include the 'CA' tag and exclude the 'App' tag.
 
-### EXAMPLE 15
+### EXAMPLE 16
 
 ```powershell
 Connect-Maester -Service All
@@ -177,7 +188,7 @@ Invoke-Maester -IncludeLongRunning -IncludePreview
 Connect to all Microsoft 365 services and run their tests, including the long-running and preview tests.
 Active Directory tests remain excluded.
 
-### EXAMPLE 16
+### EXAMPLE 17
 
 ```powershell
 Connect-Maester -Service ActiveDirectory
@@ -186,7 +197,7 @@ Invoke-Maester -Product ad -SkipGraphConnect
 
 Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
-### EXAMPLE 17
+### EXAMPLE 18
 
 ```powershell
 Invoke-Maester -Pack ZTA
@@ -195,7 +206,7 @@ Invoke-Maester -Pack ZTA
 Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default.
 Other installed packs do not run.
 
-### EXAMPLE 18
+### EXAMPLE 19
 
 ```powershell
 Invoke-Maester -Pack ZTA -SkipBuiltIn
@@ -203,7 +214,7 @@ Invoke-Maester -Pack ZTA -SkipBuiltIn
 
 Runs only the Zero Trust Assessment pack.
 
-### EXAMPLE 19
+### EXAMPLE 20
 
 ```powershell
 Invoke-Maester -AllPacks
@@ -212,7 +223,7 @@ Invoke-Maester -AllPacks
 Runs the tests that ship with Maester and every installed pack.
 Without -Pack or -AllPacks, installed packs do not run.
 
-### EXAMPLE 20
+### EXAMPLE 21
 
 ```powershell
 Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
@@ -221,7 +232,7 @@ Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3.
 A test named by its exact ID runs even if it is a preview or long-running test.
 
-### EXAMPLE 21
+### EXAMPLE 22
 
 ```powershell
 Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
@@ -231,7 +242,7 @@ Shows what would run, and why every other test would not, without running any te
 Each test that would have run is reported as NotRun with reason DryRun.
 Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
 
-### EXAMPLE 22
+### EXAMPLE 23
 
 ```powershell
 Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
@@ -312,6 +323,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExcludeProduct
+
+Do not run the tests of these products: keys such as entra or exchange, or an alias such as 'exo' or 'Entra ID'.
+Matches a test's Product or any of its RelatedProduct values, and '*' wildcards are allowed, as for -Product.
+Adds to Selection.ExcludeProduct in the run configuration and wins over -Product, -TestId and the other selectors.
+Excluded tests are reported as NotRun with the reason code ExcludedByProduct.
+A test without a product, such as a Pester-format custom test, is never excluded.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Feature
 
 Only run the tests about these features of a product, for example conditional-access.
@@ -365,7 +396,7 @@ Accept wildcard characters: False
 
 ### -Suite
 
-Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD.
+Only run the tests of these suites, for example Maester, CISA, CIS, ASD, EIDSCA, ORCA or AD.
 '*' wildcards are allowed.
 
 ```yaml

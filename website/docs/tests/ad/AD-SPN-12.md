@@ -79,6 +79,7 @@ This test identifies domain administrator accounts (using the well-known RID 500
 | Supports controls | nist-800-53-r5:AC-6(5), nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtAdUserSpnDomainAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-12.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

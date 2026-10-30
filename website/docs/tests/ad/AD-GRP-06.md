@@ -75,6 +75,7 @@ The test provides counts and percentages to understand the distribution of group
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupDistributionCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty |
 
 ## Source
 

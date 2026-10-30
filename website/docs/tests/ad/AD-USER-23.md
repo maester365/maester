@@ -64,6 +64,7 @@ This test returns enabled user accounts that match the built-in administrator RI
 | MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdUserBuiltInAdminEnabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-23.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

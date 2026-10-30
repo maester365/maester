@@ -65,6 +65,7 @@ This test queries AD configuration for the dSHeuristics setting(s) and reports a
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDsHeuristicsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 
