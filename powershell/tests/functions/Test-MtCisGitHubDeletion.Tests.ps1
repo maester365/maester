@@ -109,7 +109,7 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
         Set-DeletionPolicy $script:policy
         $script:organization = @{ id = 100; login = 'fixture-org'; members_can_delete_issues = $false; members_can_delete_repositories = $false }
         $script:responses = @{
-            '/orgs/fixture-org/members?role=admin&per_page=100' = @(@{ id = 1 }, @{ id = 2 })
+            '/orgs/fixture-org/members?role=admin&per_page=100' = @(@{ id = 1; login = 'fixture-owner-one' }, @{ id = 2; login = 'fixture-owner-two' })
             '/orgs/fixture-org/repos?type=all&per_page=100' = @(@{ id = 200; name = 'fixture-repo'; full_name = 'fixture-org/fixture-repo'; owner = @{ login = 'fixture-org' } })
             '/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100' = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } }, @{ id = 3; permissions = @{ admin = $false } })
             '/orgs/fixture-org/custom-repository-roles' = @{ total_count = 0; custom_roles = @() }
@@ -163,7 +163,7 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
     It 'Fails a non-approved live owner and identifies only observed IDs' {
         $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 4 })
         Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
-        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match 'owner IDs: 4' -and $Result -notmatch '999' }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result.Contains('| Unavailable | 4 | Not approved |') -and $Result -notmatch '999' }
     }
     It 'Traverses owner pagination before deciding approval membership' {
         $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 1 })
@@ -175,11 +175,46 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
     It 'Investigates absent or empty approvals (<Case>)' -ForEach @(
         @{ Case = 'missing object'; Policy = $null },
         @{ Case = 'default empty object'; Policy = @{} },
-        @{ Case = 'empty owner list'; Policy = @{ ApiBaseUri = 'https://api.github.com'; OrganizationId = '100'; ApprovedOwnerIds = @() } }
+        @{ Case = 'empty owner list'; Policy = @{ ApiBaseUri = 'https://api.github.com'; OrganizationId = '100'; ApprovedOwnerIds = @() } },
+        @{ Case = 'missing owner list'; Policy = @{ ApiBaseUri = 'https://api.github.com'; OrganizationId = '100' } }
     ) {
         Set-DeletionPolicy ($Policy | ConvertTo-Json -Depth 10 | ConvertFrom-Json)
         Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
-        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
+            $Investigate -and $Result.Contains('| fixture-owner-one | 1 | Not configured |') -and
+            $Result.Contains('| fixture-owner-two | 2 | Not configured |') -and $Result -notmatch '999'
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -like '*/members?*' }
+    }
+    It 'Lists every observed owner with configured approval status for both deletion checks' {
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] += @{ id = 4; login = 'fixture-unapproved' }
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
+        Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 2 -ParameterFilter {
+            -not $Investigate -and $Result.Contains('| fixture-owner-one | 1 | Approved |') -and
+            $Result.Contains('| fixture-owner-two | 2 | Approved |') -and
+            $Result.Contains('| fixture-unapproved | 4 | Not approved |') -and $Result -notmatch '999'
+        }
+    }
+    It 'Escapes owner logins as untrusted result markdown' {
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 1; login = "[owner](https://example.invalid)`n| forged" })
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeTrue
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
+            $Result.Contains('| \[owner\]\(https://example.invalid\) \| forged | 1 | Approved |') -and
+            -not $Result.Contains("`n| forged")
+        }
+    }
+    It 'Retains a usable owner ID when the optional login is unavailable' {
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 1 })
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeTrue
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| [^|]+ \| 1 \| Approved \|' }
+    }
+    It 'Does not present unavailable owner evidence as an empty complete roster when approvals are missing' {
+        Set-DeletionPolicy $null
+        $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = $null
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -match 'Indeterminate' }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 0 -ParameterFilter { $Investigate }
     }
     It 'Rejects malformed or mismatched policy configuration (<Case>)' -ForEach @(
         @{ Case = 'number instead of ID string'; Key = 'OrganizationId'; Value = 100 },

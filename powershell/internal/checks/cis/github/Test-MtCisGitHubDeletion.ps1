@@ -24,29 +24,41 @@
         return $null
     }
     $policy = Resolve-MtGitHubDeletionPolicy -Organization $org
+    $heading = "Organization setting ``$field``: ``$($org.$field)``.`n`n"
+    if (-not $org.$field) {
+        $owners = Get-MtGitHubIdentityCollection -RelativeUri "/orgs/$encoded/members?role=admin" -Label 'Organization owner'
+        $approvalsConfigured = $null -ne $policy -and $null -ne $policy.PSObject.Properties['ApprovedOwnerIds'] -and $policy.ApprovedOwnerIds.Count -gt 0
+        $ownerRows = [System.Collections.Generic.List[string]]::new()
+        $unapproved = @()
+        foreach ($owner in $owners.Items) {
+            $login = if ($owner.login -is [string] -and -not [string]::IsNullOrWhiteSpace($owner.login)) { Get-MtSafeMarkdown $owner.login } else { 'Unavailable' }
+            $approval = if (-not $approvalsConfigured) { 'Not configured' } elseif ([string]$owner.id -cin $policy.ApprovedOwnerIds) { 'Approved' } else { 'Not approved' }
+            if ($approval -eq 'Not approved') { $unapproved += $owner }
+            $ownerRows.Add("| $login | $($owner.id) | $approval |")
+        }
+        $complete = $owners.Complete -and $owners.Items.Count -gt 0
+        $coverage = if ($complete) { 'Complete' } else { 'Incomplete / partial; total owner count unknown' }
+        $unapprovedCount = if ($approvalsConfigured) { [string]$unapproved.Count } else { 'Not configured' }
+        $details = "Organization ID: ``$($org.id)``.`n`n| Observed owners | Maximum | Unapproved owners | Evidence |`n| --- | --- | --- | --- |`n| $($owners.Items.Count) | $MaximumOrganizationOwners | $unapprovedCount | $coverage |`n`n| Owner login | User ID | Approval |`n| --- | --- | --- |`n" + ($ownerRows -join "`n")
+        if ($ownerRows.Count -eq 0) { $details += "`nNo validated owner rows were available. This does not establish that the organization has no owners." }
+        if (-not $owners.Complete -or $owners.Items.Count -eq 0) {
+            $reason = if (-not $owners.Complete) { $owners.Gap } else { 'The organization-owner collection is unexpectedly empty.' }
+            Add-MtTestResultDetail -Result ($heading + $details + "`n`nIndeterminate: " + $reason) -SkippedBecause Custom -SkippedCustomReason ("Indeterminate: " + $reason)
+            return $null
+        }
+        if (-not $approvalsConfigured) {
+            $instruction = if ($null -eq $policy) { 'Configure GlobalSettings.GitHubDeletionPolicy with ApprovedOwnerIds for the organization-owner branch.' } else { 'Configure a nonempty ApprovedOwnerIds roster for the organization-owner branch.' }
+            Add-MtTestResultDetail -Investigate -Result ($heading + $details + "`n`n" + $instruction + ' Observed membership does not approve a user as trusted and qualified.')
+            return $null
+        }
+        $result = $owners.Items.Count -le $MaximumOrganizationOwners -and $unapproved.Count -eq 0
+        $message = if ($result) { 'Well done. The complete organization-owner population is within the configured maximum and every owner is approved as trusted and qualified.' } else { 'Review organization owners: remove unnecessary owner assignments or explicitly approve trusted and qualified owners. Keep the live population within the configured maximum.' }
+        Add-MtTestResultDetail -Result ($message + "`n`n" + $heading + $details + "`n`nThe maximum is a Maester policy choice (default 3, configurable from 1 to 3); CIS does not define a numeric value for 'few'. Unassigned approval entries do not affect the live count.")
+        return $result
+    }
     if ($null -eq $policy) {
         Add-MtTestResultDetail -Investigate -Result "Configure GlobalSettings.GitHubDeletionPolicy with the users approved as trusted and qualified. The observed $field value is $($org.$field); no approval population was supplied."
         return $null
-    }
-    $heading = "Organization setting ``$field``: ``$($org.$field)``.`n`n"
-    if (-not $org.$field) {
-        if (-not $policy.PSObject.Properties['ApprovedOwnerIds'] -or $policy.ApprovedOwnerIds.Count -eq 0) {
-            Add-MtTestResultDetail -Investigate -Result ($heading + 'Configure ApprovedOwnerIds for the organization-owner branch.')
-            return $null
-        }
-        $owners = Get-MtGitHubIdentityCollection -RelativeUri "/orgs/$encoded/members?role=admin" -Label 'Organization owner'
-        if (-not $owners.Complete -or $owners.Items.Count -eq 0) {
-            $reason = if (-not $owners.Complete) { $owners.Gap } else { 'The organization-owner collection is unexpectedly empty.' }
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason ("Indeterminate: " + $reason)
-            return $null
-        }
-        $unapproved = @($owners.Items | Where-Object { [string]$_.id -cnotin $policy.ApprovedOwnerIds })
-        $result = $owners.Items.Count -le $MaximumOrganizationOwners -and $unapproved.Count -eq 0
-        $message = if ($result) { 'Well done. The complete organization-owner population is within the configured maximum and every owner is approved as trusted and qualified.' } else { 'Review organization owners: remove unnecessary owner assignments or explicitly approve trusted and qualified owners. Keep the live population within the configured maximum.' }
-        $details = "| Live owners | Maximum | Unapproved owners |`n| --- | --- | --- |`n| $($owners.Items.Count) | $MaximumOrganizationOwners | $($unapproved.Count) |"
-        if ($unapproved.Count) { $details += "`n`nUnapproved observed owner IDs: " + (($unapproved | ForEach-Object { [string]$_.id }) -join ', ') + '.' }
-        Add-MtTestResultDetail -Result ($message + "`n`n" + $heading + $details + "`n`nThe maximum is a Maester policy choice (default 3, configurable from 1 to 3); CIS does not define a numeric value for 'few'. Unassigned approval entries do not affect the live count.")
-        return $result
     }
     if ($policy.CompleteRepositoryInventory -ne $true -or -not $policy.PSObject.Properties['Repositories']) {
         Add-MtTestResultDetail -Investigate -Result ($heading + 'Declare CompleteRepositoryInventory and approve administrators for every organization repository before assessing the administrator branch.')

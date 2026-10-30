@@ -5,7 +5,7 @@ BeforeAll {
 Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' {
     BeforeEach {
         $script:apiBase = 'https://api.github.com'
-        $script:owners = @(@{ id = 1 }, @{ id = 2 })
+        $script:owners = @(@{ id = 1; login = 'fixture-owner-one' }, @{ id = 2; login = 'fixture-owner-two' })
         $script:responseHeaders = @{}
         $script:status = 200
         $script:config = @{
@@ -101,6 +101,32 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         (Invoke-MtTest -Id 'CIS.GH.1.2.4' -Config $script:config).Result | Should -Be 'Error'
     }
 
+    It 'Exports both observed owner rosters through Invoke-Maester without approval configuration' {
+        $jsonPath = Join-Path $TestDrive 'unconfigured.json'
+        $htmlPath = Join-Path $TestDrive 'unconfigured.html'
+        $result = Invoke-Maester -Config @{ GlobalSettings = @{} } -TestId CIS.GH.1.2.3, CIS.GH.1.2.4 -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputJsonFile $jsonPath -OutputHtmlFile $htmlPath
+        $rows = @($result.Tests | Where-Object Id -In 'CIS.GH.1.2.3', 'CIS.GH.1.2.4')
+        $rows.Count | Should -Be 2
+        @($rows | Where-Object Result -NE 'Investigate').Count | Should -Be 0
+        foreach ($row in $rows) {
+            $row.ResultDetail.TestResult | Should -Match ([regex]::Escape('| fixture-owner-one | 1 | Not configured |'))
+            $row.ResultDetail.TestResult | Should -Match ([regex]::Escape('| fixture-owner-two | 2 | Not configured |'))
+        }
+        $export = Get-Content $jsonPath -Raw | ConvertFrom-Json
+        $exportRows = @($export.Tests | Where-Object Id -In 'CIS.GH.1.2.3', 'CIS.GH.1.2.4')
+        $exportRows.Count | Should -Be 2
+        foreach ($row in $exportRows) {
+            $row.Result | Should -Be 'Investigate'
+            $row.ResultDetail.TestResult | Should -Match 'fixture-owner-one|fixture-owner-two'
+        }
+        foreach ($path in $jsonPath, $htmlPath) {
+            $content = Get-Content $path -Raw
+            $content.Contains('fixture-owner-one') | Should -BeTrue
+            $content.Contains('fixture-owner-two') | Should -BeTrue
+            $content | Should -Not -Match '9876543210123|synthetic-never-network'
+        }
+    }
+
     It 'Exports an executed Passed result without unused approvals in JSON, HTML or verbose output' {
         $jsonPath = Join-Path $TestDrive 'executed.json'
         $htmlPath = Join-Path $TestDrive 'executed.html'
@@ -113,6 +139,8 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
             $content | Should -Not -Match '9876543210123|synthetic-never-network'
             $content | Should -Match 'GitHubDeletionPolicy'
             $content | Should -Match 'redacted'
+            $content.Contains('fixture-owner-one') | Should -BeTrue
+            $content.Contains('fixture-owner-two') | Should -BeTrue
         }
     }
 }

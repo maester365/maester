@@ -21,6 +21,8 @@ Configure the users your organization considers trusted and qualified in [GitHub
 
 A conforming administrator baseline also requires complete custom repository-role and organization-role catalogs without additional issue-deletion permissions. Relevant additional permissions or unusable catalogs require investigation; role definitions alone do not enumerate their effective assignments. An already proven administrator-count or approval violation does not need these additive catalogs to fail. Repository-administrator status is not treated as a universal issue-deletion capability result, and no sample issue is required.
 
+The disabled-setting result lists every validated observed owner by escaped login and numeric ID, with Approved, Not approved or Not configured status, the observed organization ID, count, maximum and completeness. Owners are collected even without approval configuration; listing a user does not approve them. Missing logins display Unavailable, and incomplete collections remain indeterminate. Unobserved approval entries are not disclosed.
+
 Missing approvals or a repository-scope mismatch produces Investigate. Malformed configuration produces Error. Missing, unusable or incomplete required settings, identities or population evidence produces an explicit indeterminate Skipped result; request and parsing failures remain Error. Empty owner or repository results never establish absence or compliance.
 
 The disabled-setting branch assesses the CIS-prescribed organization-owner population without evaluating compensating repository policies; it does not certify every actor's deletion capabilities. Restrictive-policy alternatives are investigated only in the enabled repository-deletion branch.
@@ -42,7 +44,7 @@ Use the correct API host and host-appropriate manual token for GHE.com (`https:/
 
 Assessment covers one connected organization. It depends on an assessor-declared complete repository inventory because a token-visible inventory alone cannot prove organization-wide visibility. REST collaborator permissions represent effective base roles, including inherited grants; GraphQL `permissionSources` is not used as a complete grant model. Restrictive-policy equivalence, unresolved additional custom issue-deletion grants, and API visibility gaps require investigation.
 
-All reads are bounded and read-only. Owner/collaborator pagination is capped at 100 pages; policy pagination is also capped. Concurrent changes can affect pagination. No deletion attempt, permission change, tenant-wide enterprise scan or automatic retry is performed. Results include live counts, repository names and observed unapproved user IDs and should be handled as tenant evidence.
+All reads are bounded and read-only. Owner/collaborator pagination is capped at 100 pages; policy pagination is also capped. Concurrent changes can affect pagination. No deletion attempt, permission change, tenant-wide enterprise scan or automatic retry is performed. Results include observed organization and owner identities, live counts, repository names and observed unapproved administrator IDs and should be handled as tenant evidence.
 
 #### Related links
 

@@ -337,7 +337,11 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         }
         # Only replace transport: real JSON parsing, request cache, native check and result collector run.
         Mock Invoke-WebRequest -ModuleName Maester {
-            if ($Uri -ne $script:expectedUri -or $Method -ne 'GET') {
+            if ($Method -ne 'GET') { throw 'Unexpected transport method blocked by fixture.' }
+            if ($Uri -eq "$script:expectedUri/members?role=admin&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":11,"login":"synthetic-owner"}]'; Headers = @{} }
+            }
+            if ($Uri -ne $script:expectedUri) {
                 throw 'Unexpected transport request blocked by fixture.'
             }
             [PSCustomObject]@{ Content = $script:rawBody; Headers = @{} }
@@ -428,7 +432,12 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
             $detail | Should -Match 'trusted and qualified'
             $detail | Should -Match $Field
             $detail | Should -Match $Json
-            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
+            if ($Json -eq 'false') {
+                $detail.Contains('| synthetic-owner | 11 | Not configured |') | Should -BeTrue
+                Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
+            } else {
+                Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
+            }
         }
     }
 

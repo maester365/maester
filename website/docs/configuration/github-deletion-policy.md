@@ -65,6 +65,8 @@ When the relevant member-deletion setting is `false`, Maester collects the organ
 
 The maximum defaults to **3**, and each test accepts **1 through 3**. This is a documented Maester policy choice for CIS's undefined word “few”; it is not a number supplied by CIS. Approval lists may contain more than three users: approved users who are not currently owners do not count toward the limit. A missing or empty owner approval list produces Investigate.
 
+The owner population is collected even when approval configuration is missing. Results list every validated observed owner by escaped login and numeric user ID, with **Approved**, **Not approved** or **Not configured** status, plus the observed organization ID, count, maximum and collection completeness. Missing or unusable logins display **Unavailable** without changing the verdict. An incomplete collection remains indeterminate; any displayed rows are partial evidence and do not establish the total owner population. Configured users who were not observed are never listed.
+
 This branch assesses the CIS-prescribed organization-owner population without evaluating compensating repository policies; it is not an exhaustive certification of actor capabilities. It does not require repository inventories, custom-role catalogs, policies, or a sample issue. Restrictive-policy alternatives are investigated only in the enabled repository-deletion branch.
 
 ### Repository-administrator branch
@@ -89,7 +91,7 @@ For repository deletion, a baseline that already meets the count and approval cr
 
 New REST reads use API version `2026-03-10`; the existing connection default stays unchanged. Owner and collaborator pagination stops at 100 pages of 100 items; repository inventory uses the shared bounded collector. Policy pagination stops at 100 pages, with no nested rule or bypass collection. Any truncation prevents an unsupported Pass or failure based on missing restrictive evidence. There are no automatic retries. Concurrent access changes can still affect a paginated observation.
 
-The configuration is marked sensitive and redacted from exported configuration. Results report live counts, repository names and observed unapproved user IDs, so handle reports as tenant evidence. Credentials never belong in this object. No sample issue, deletion attempt, permission change or separate assessment service is needed.
+The configuration is marked sensitive and redacted from exported configuration. Results report observed organization and owner identities, live counts, repository names and observed unapproved administrator IDs, so handle reports as tenant evidence. Credentials never belong in this object. No sample issue, deletion attempt, permission change or separate assessment service is needed.
 
 ### Related references
 
