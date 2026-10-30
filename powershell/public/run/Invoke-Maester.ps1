@@ -1013,10 +1013,8 @@
             # Csv and Excel are produced by Convert-MtResultsToFlatObject, which writes the file
             # itself, so redaction has to happen on a copy of the results rather than on the output.
             $exportResults = $maesterResults
-            if ($redactNonHtml -and $userIdentityReplacements.Count -gt 0) {
-                $exportResults = $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue |
-                    ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements -JsonEncoded |
-                        ConvertFrom-Json
+            if ($redactNonHtml) {
+                $exportResults = ConvertTo-MtRedactedResult -MaesterResults $maesterResults -ReplacementMap $userIdentityReplacements
             }
 
             Set-MtConsolePhase 'Reports'
@@ -1034,54 +1032,38 @@
 
             if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
                 # Attachments keep their name and size: their content is another tool's report, embedded only in the HTML report.
-                $jsonResults = $maesterResults
-                if ($maesterResults.PSObject.Properties['Attachments']) {
-                    $jsonResults = $maesterResults | Select-Object -Property * -ExcludeProperty Attachments
-                    $jsonResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($maesterResults.Attachments | Select-Object -Property * -ExcludeProperty Content)
+                $jsonResults = $exportResults
+                if ($exportResults.PSObject.Properties['Attachments']) {
+                    $jsonResults = $exportResults | Select-Object -Property * -ExcludeProperty Attachments
+                    $jsonResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($exportResults.Attachments | Select-Object -Property * -ExcludeProperty Content)
                 }
                 $output = $jsonResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue
-                if ($redactNonHtml) {
-                    $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
-                }
                 $output | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
             }
 
-            if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsJsonFile) -and $maesterResults.AffectedObjects) {
+            if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsJsonFile) -and $exportResults.AffectedObjects) {
                 Write-MtProgress -Activity 'Creating affected objects'
-                $output = ConvertTo-Json -InputObject @($maesterResults.AffectedObjects) -Depth 5 -WarningAction SilentlyContinue
-                if ($redactNonHtml) {
-                    $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements -JsonEncoded
-                }
+                $output = ConvertTo-Json -InputObject @($exportResults.AffectedObjects) -Depth 5 -WarningAction SilentlyContinue
                 $output | Out-File -FilePath $out.OutputAffectedObjectsJsonFile -Encoding UTF8
             }
 
-            if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsCsvFile) -and $maesterResults.AffectedObjects) {
-                $output = $maesterResults.AffectedObjects | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
+            if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsCsvFile) -and $exportResults.AffectedObjects) {
+                $output = $exportResults.AffectedObjects | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
                 @{ Name = 'Tests'; Expression = { $_.Tests -join '; ' } },
                 @{ Name = 'Sources'; Expression = { $_.Sources -join '; ' } } |
                     ConvertTo-Csv -NoTypeInformation
-                if ($redactNonHtml) {
-                    # Piped so the replacement regex is built once, not once per row.
-                    $output = @($output | ConvertTo-MtRedactedReportContent -ReplacementMap $userIdentityReplacements)
-                }
                 $output | Out-File -FilePath $out.OutputAffectedObjectsCsvFile -Encoding UTF8
             }
 
             if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
                 Write-MtProgress -Activity 'Creating markdown report'
-                $output = Get-MtMarkdownReport -MaesterResults $maesterResults
-                if ($redactNonHtml) {
-                    $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements
-                }
+                $output = Get-MtMarkdownReport -MaesterResults $exportResults
                 $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
             }
 
             if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
                 Write-MtProgress -Activity 'Creating markdown summary report'
-                $output = Get-MtMarkdownSummaryReport -MaesterResults $maesterResults
-                if ($redactNonHtml) {
-                    $output = ConvertTo-MtRedactedReportContent -Content $output -ReplacementMap $userIdentityReplacements
-                }
+                $output = Get-MtMarkdownSummaryReport -MaesterResults $exportResults
                 $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
             }
 
@@ -1097,7 +1079,9 @@
 
             if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
                 Write-MtProgress -Activity 'Creating html report'
-                $output = Get-MtHtmlReport -MaesterResults $maesterResults -RedactUserIdentity $RedactUserIdentity -UserIdentityReplacementMap $userIdentityReplacements
+                # AllOutputs has already applied the generic map to the prepared copy.
+                $htmlReplacements = if ($redactNonHtml) { @{} } else { $userIdentityReplacements }
+                $output = Get-MtHtmlReport -MaesterResults $exportResults -RedactUserIdentity $RedactUserIdentity -UserIdentityReplacementMap $htmlReplacements
                 $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
                 if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {

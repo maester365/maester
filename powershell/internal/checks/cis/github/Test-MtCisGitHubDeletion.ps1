@@ -24,44 +24,46 @@
         return $null
     }
     $policy = Resolve-MtGitHubDeletionPolicy -Organization $org
-    $heading = "Organization setting ``$field``: ``$($org.$field)``.`n`n"
+    $report = @{
+        Kind = $Kind; Field = $field; Setting = $org.$field; OrganizationId = $org.id
+        ApiAuthority = ([uri]$__MtSession.GitHubConnection.ApiBaseUri).GetLeftPart([UriPartial]::Authority).ToLowerInvariant()
+        MaximumOrganizationOwners = $MaximumOrganizationOwners; OwnerBranch = -not $org.$field
+        Owners = @(); Repositories = @(); Gaps = @(); Message = ''
+    }
     if (-not $org.$field) {
         $owners = Get-MtGitHubIdentityCollection -RelativeUri "/orgs/$encoded/members?role=admin" -Label 'Organization owner'
         $approvalsConfigured = $null -ne $policy -and $null -ne $policy.PSObject.Properties['ApprovedOwnerIds'] -and $policy.ApprovedOwnerIds.Count -gt 0
-        $ownerRows = [System.Collections.Generic.List[string]]::new()
-        $unapproved = @()
-        foreach ($owner in $owners.Items) {
-            $login = if ($owner.login -is [string] -and -not [string]::IsNullOrWhiteSpace($owner.login)) { Get-MtSafeMarkdown $owner.login } else { 'Unavailable' }
-            $approval = if (-not $approvalsConfigured) { 'Not configured' } elseif ([string]$owner.id -cin $policy.ApprovedOwnerIds) { 'Approved' } else { 'Not approved' }
-            if ($approval -eq 'Not approved') { $unapproved += $owner }
-            $ownerRows.Add("| $login | $($owner.id) | $approval |")
-        }
-        $complete = $owners.Complete -and $owners.Items.Count -gt 0
-        $coverage = if ($complete) { 'Complete' } else { 'Incomplete / partial; total owner count unknown' }
-        $unapprovedCount = if ($approvalsConfigured) { [string]$unapproved.Count } else { 'Not configured' }
-        $details = "Organization ID: ``$($org.id)``.`n`n| Observed owners | Maximum | Unapproved owners | Evidence |`n| --- | --- | --- | --- |`n| $($owners.Items.Count) | $MaximumOrganizationOwners | $unapprovedCount | $coverage |`n`n| Owner login | User ID | Approval |`n| --- | --- | --- |`n" + ($ownerRows -join "`n")
-        if ($ownerRows.Count -eq 0) { $details += "`nNo validated owner rows were available. This does not establish that the organization has no owners." }
+        $unapproved = @($owners.Items | Where-Object { $approvalsConfigured -and [string]$_.id -cnotin $policy.ApprovedOwnerIds })
+        $report.Owners = $owners.Items
+        $report.ApprovalsConfigured = $approvalsConfigured
+        $report.ApprovedOwnerIds = $policy.ApprovedOwnerIds
+        $report.OwnerComplete = $owners.Complete -and $owners.Items.Count -gt 0
         if (-not $owners.Complete -or $owners.Items.Count -eq 0) {
             $reason = if (-not $owners.Complete) { $owners.Gap } else { 'The organization-owner collection is unexpectedly empty.' }
-            Add-MtTestResultDetail -Result ($heading + $details + "`n`nIndeterminate: " + $reason) -SkippedBecause Custom -SkippedCustomReason ("Indeterminate: " + $reason)
+            $report.Message = "Indeterminate: " + $reason
+            Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity) -SkippedBecause Custom -SkippedCustomReason ("Indeterminate: " + $reason)
             return $null
         }
         if (-not $approvalsConfigured) {
             $instruction = if ($null -eq $policy) { 'Configure GlobalSettings.GitHubDeletionPolicy with ApprovedOwnerIds for the organization-owner branch.' } else { 'Configure a nonempty ApprovedOwnerIds roster for the organization-owner branch.' }
-            Add-MtTestResultDetail -Investigate -Result ($heading + $details + "`n`n" + $instruction + ' Observed membership does not approve a user as trusted and qualified.')
+            $report.Message = $instruction + ' Observed membership does not approve a user as trusted and qualified.'
+            Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
             return $null
         }
         $result = $owners.Items.Count -le $MaximumOrganizationOwners -and $unapproved.Count -eq 0
         $message = if ($result) { 'Well done. The complete organization-owner population is within the configured maximum and every owner is approved as trusted and qualified.' } else { 'Review organization owners: remove unnecessary owner assignments or explicitly approve trusted and qualified owners. Keep the live population within the configured maximum.' }
-        Add-MtTestResultDetail -Result ($message + "`n`n" + $heading + $details + "`n`nThe maximum is a Maester policy choice (default 3, configurable from 1 to 3); CIS does not define a numeric value for 'few'. Unassigned approval entries do not affect the live count.")
+        $report.Message = $message
+        Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $result
     }
     if ($null -eq $policy) {
-        Add-MtTestResultDetail -Investigate -Result "Configure GlobalSettings.GitHubDeletionPolicy with the users approved as trusted and qualified. The observed $field value is $($org.$field); no approval population was supplied."
+        $report.Message = "Configure GlobalSettings.GitHubDeletionPolicy with the users approved as trusted and qualified. The observed $field value is $($org.$field); no approval population was supplied."
+        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }
     if ($policy.CompleteRepositoryInventory -ne $true -or -not $policy.PSObject.Properties['Repositories']) {
-        Add-MtTestResultDetail -Investigate -Result ($heading + 'Declare CompleteRepositoryInventory and approve administrators for every organization repository before assessing the administrator branch.')
+        $report.Message = 'Declare CompleteRepositoryInventory and approve administrators for every organization repository before assessing the administrator branch.'
+        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }
     $inventory = Get-MtGitHubRepositoryInventory
@@ -70,21 +72,24 @@
         return $null
     }
     if ($inventory.Repositories.Count -eq 0) {
-        Add-MtTestResultDetail -Investigate -Result ($heading + 'No repositories were visible. This does not establish a complete organization inventory or a not-applicable result.')
+        $report.Message = 'No repositories were visible. This does not establish a complete organization inventory or a not-applicable result.'
+        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }
     $declared = @{}
     foreach ($entry in $policy.Repositories) { $declared[$entry.Id] = $entry }
     $liveIds = @($inventory.Repositories | ForEach-Object { [string]$_.id })
     if (@($liveIds | Where-Object { -not $declared.ContainsKey($_) }).Count -or @($declared.Keys | Where-Object { $_ -cnotin $liveIds }).Count) {
-        Add-MtTestResultDetail -Investigate -Result ($heading + 'The declared repository IDs and the complete live inventory do not match. Reconcile missing, inaccessible, newly created or removed repositories; no exclusions are supported.')
+        $report.Message = 'The declared repository IDs and the complete live inventory do not match. Reconcile missing, inaccessible, newly created or removed repositories; no exclusions are supported.'
+        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }
     if (@($policy.Repositories | Where-Object { $_.ApprovedAdministratorIds.Count -eq 0 }).Count) {
-        Add-MtTestResultDetail -Investigate -Result ($heading + 'Configure a nonempty ApprovedAdministratorIds roster for every repository. Empty approval rosters do not establish an assessed trust decision.')
+        $report.Message = 'Configure a nonempty ApprovedAdministratorIds roster for every repository. Empty approval rosters do not establish an assessed trust decision.'
+        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }
-    $rows = [System.Collections.Generic.List[string]]::new()
+    $rows = [System.Collections.Generic.List[object]]::new()
     $violations = [System.Collections.Generic.List[object]]::new()
     foreach ($repository in $inventory.Repositories) {
         $name = [uri]::EscapeDataString($repository.name)
@@ -97,15 +102,19 @@
         $administrators = @($collaborators.Items | Where-Object { $_.permissions.admin -eq $true })
         $unapproved = @($administrators | Where-Object { [string]$_.id -cnotin $declared[[string]$repository.id].ApprovedAdministratorIds })
         $conforms = $administrators.Count -eq 2 -and $unapproved.Count -eq 0
-        $unapprovedIds = ($unapproved | ForEach-Object { [string]$_.id }) -join ', '
-        $rows.Add("| $(Get-MtSafeMarkdown $repository.name) | $($administrators.Count) | $($unapproved.Count) | $unapprovedIds | $(if ($conforms) { 'Meets baseline' } else { 'Needs review' }) |")
+        $rows.Add([pscustomobject]@{
+            Name = $repository.name; AdministratorCount = $administrators.Count
+            UnapprovedIds = @($unapproved | ForEach-Object { [string]$_.id }); Complete = $true
+            Assessment = if ($conforms) { 'Meets baseline' } else { 'Needs review' }
+        })
         if (-not $conforms) { $violations.Add($repository) }
     }
-    $table = "| Repository | Effective administrators | Unapproved | Unapproved observed user IDs | Assessment |`n| --- | --- | --- | --- | --- |`n" + ($rows -join "`n")
+    $report.Repositories = $rows.ToArray()
     if ($Kind -eq 'Issue' -and $violations.Count -eq 0) {
         $roleGap = Get-MtCisGitHubDeletionRoleGap -Organization $organization
         if ($roleGap) {
-            Add-MtTestResultDetail -Investigate -Result ($heading + $table + "`n`n" + $roleGap)
+            $report.Gaps = @($roleGap)
+            Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
             return $null
         }
     }
@@ -117,13 +126,15 @@
             if ($gap) { $policyGaps.Add("$(Get-MtSafeMarkdown $repository.name): $gap") } else { $confirmedViolations++ }
         }
         if ($violations.Count -gt 0 -and $confirmedViolations -eq 0) {
-            Add-MtTestResultDetail -Investigate -Result ($heading + $table + "`n`n" + (($policyGaps | Select-Object -Unique) -join "`n`n"))
+            $report.Gaps = @($policyGaps | Select-Object -Unique)
+            Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
             return $null
         }
     }
     $result = $violations.Count -eq 0
     $message = if ($result) { 'Well done. Every repository in the declared complete organization inventory has exactly two effective administrators, both approved as trusted and qualified.' } else { 'Review repository administrator access: at least one repository does not have exactly two effective administrators, both approved as trusted and qualified.' }
-    $coverage = if ($policyGaps.Count) { "`n`nAdditional repositories remain unresolved: " + (($policyGaps | Select-Object -Unique) -join ' ') } else { '' }
-    Add-MtTestResultDetail -Result ($message + "`n`n" + $heading + $table + $coverage + "`n`nEffective administrator permissions include inherited grants. This assessment uses the configured approvals; it does not independently determine a person’s trust or qualifications. No issue was deleted or sampled.")
+    $report.Message = $message
+    $report.Gaps = @($policyGaps | Select-Object -Unique)
+    Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
     return $result
 }

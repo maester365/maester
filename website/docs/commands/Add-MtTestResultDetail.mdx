@@ -18,7 +18,7 @@ Add detailed information about a test so that it can be displayed in the test re
 Add-MtTestResultDetail [[-Description] <String>] [[-Result] <String>] [[-GraphObjects] <Object[]>]
  [[-GraphObjectType] <String>] [[-TestName] <String>] [[-TestTitle] <String>] [[-SkippedBecause] <String>]
  [[-SkippedCustomReason] <String>] [-Investigate] [[-SkippedError] <Object>] [[-Severity] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-RedactedResult] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -249,6 +249,24 @@ Aliases:
 
 Required: False
 Position: 10
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RedactedResult
+
+Complete pseudonymized result Markdown, used when user identity redaction is enabled.
+The static result template is applied, but GraphObjects are never inserted into this alternative.
+Protects result Markdown only, not arbitrary titles, descriptions, skip reasons or errors.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

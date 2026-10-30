@@ -1,5 +1,9 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Pester supplies this container parameter to BeforeAll for source and built-module validation.')]
+[CmdletBinding()]
+param([string] $ModulePath = "$PSScriptRoot/../../Maester.psd1")
+
 BeforeAll {
-    Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    Import-Module $ModulePath -Force
 }
 
 Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' {
@@ -124,6 +128,83 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
             $content.Contains('fixture-owner-one') | Should -BeTrue
             $content.Contains('fixture-owner-two') | Should -BeTrue
             $content | Should -Not -Match '9876543210123|synthetic-never-network'
+        }
+    }
+
+    It 'Protects displayed identities in <Mode> exports with an empty generic map' -ForEach @(
+        @{ Mode = 'None' }, @{ Mode = 'HtmlOnly' }, @{ Mode = 'AllOutputs' }
+    ) {
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{} }
+        $script:excelInput = $null
+        Mock Convert-MtResultsToFlatObject -ModuleName Maester -ParameterFilter { $ExcelFilePath } { $script:excelInput = $InputObject }
+        $folder = Join-Path $TestDrive $Mode
+        $xmlPath = Join-Path $TestDrive "$Mode.xml"
+        $script:config.Output = @{ TestResult = @{ Path = $xmlPath; Format = 'JUnitXml' } }
+        $result = Invoke-Maester -Config $script:config -TestId CIS.GH.1.2.3, CIS.GH.1.2.4 -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -ExportCsv -ExportExcel -RedactUserIdentity $Mode -IncludeAffectedObjects
+        $rows = @($result.Tests | Where-Object Id -In 'CIS.GH.1.2.3', 'CIS.GH.1.2.4')
+        @($rows | Where-Object Result -NE 'Passed').Count | Should -Be 0
+        ($rows.ResultDetail.TestResult -join '') | Should -Match 'fixture-owner-one'
+        $result.AffectedObjects.Type | Should -Contain 'GitHubOrganization'
+        foreach ($extension in 'json', 'html', 'md', 'csv') {
+            $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($Mode -eq 'AllOutputs' -or ($Mode -eq 'HtmlOnly' -and $extension -eq 'html')) {
+                $content | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
+                $content | Should -Match 'object-[a-f0-9]{16}'
+            } else {
+                $content | Should -Match 'fixture-owner-one'
+            }
+        }
+        Should -Invoke Convert-MtResultsToFlatObject -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $ExcelFilePath }
+        $excelJson = $script:excelInput | ConvertTo-Json -Depth 15
+        if ($Mode -eq 'AllOutputs') { $excelJson | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted' }
+        else { $excelJson | Should -Match 'fixture-owner-one' }
+        ([xml](Get-Content $xmlPath -Raw)).testsuites | Should -Not -BeNullOrEmpty
+        $xml = Get-Content $xmlPath -Raw
+        $xml | Should -Not -Match 'fixture-owner-one|fixture-owner-two'
+        $export = Get-Content (Join-Path $folder 'result.json') -Raw | ConvertFrom-Json
+        $exportRows = @($export.Tests | Where-Object Id -In 'CIS.GH.1.2.3', 'CIS.GH.1.2.4')
+        @($exportRows | Where-Object Result -NE 'Passed').Count | Should -Be 0
+        foreach ($row in $exportRows) { $row.ResultDetail.TestResult | Should -Match '\| 2 \| 3 \| 0 \| Complete' }
+        $before = $export | ConvertTo-Json -Depth 15
+        $standalone = Get-MtHtmlReport -MaesterResults $export -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{}
+        $standalone | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
+        ($export | ConvertTo-Json -Depth 15) | Should -BeExactly $before
+    }
+
+    It 'Applies the generic map once across AllOutputs JSON and HTML' {
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{ 'fixture-org' = 'object-first'; 'object-first' = 'object-second' } }
+        $folder = Join-Path $TestDrive 'once'
+        $null = Invoke-Maester -Config $script:config -TestId CIS.GH.1.2.3 -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -RedactUserIdentity AllOutputs -IncludeAffectedObjects
+        foreach ($extension in 'json', 'html') {
+            $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            $content | Should -Match 'object-first'
+            $content | Should -Not -Match 'object-second'
+        }
+    }
+
+    It 'Redacts unapproved administrator IDs while preserving numeric counts through native exports' {
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{} }
+        Mock Invoke-WebRequest -ModuleName Maester {
+            if ($Method -ne 'GET' -or $Headers['X-GitHub-Api-Version'] -ne '2026-03-10') { throw 'Unexpected administrator fixture request.' }
+            $data = switch (([uri]$Uri).PathAndQuery) {
+                '/orgs/fixture-org' { @{ id = 100; members_can_delete_issues = $true } }
+                '/orgs/fixture-org/repos?type=all&per_page=100' { ,@(@{ id = 200; name = 'fixture-repo'; full_name = 'fixture-org/fixture-repo'; owner = @{ login = 'fixture-org' } }) }
+                '/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100' { ,@(1..3 | ForEach-Object { @{ id = $_; permissions = @{ admin = $true } } }) }
+                default { throw 'Unexpected fixture endpoint; network is forbidden.' }
+            }
+            [pscustomobject]@{ Content = ConvertTo-Json -InputObject $data -Depth 8 -Compress; Headers = @{} }
+        }
+        $script:config.GlobalSettings.GitHubDeletionPolicy.CompleteRepositoryInventory = $true
+        $script:config.GlobalSettings.GitHubDeletionPolicy.Repositories = @(@{ Id = '200'; ApprovedAdministratorIds = @('1', '2') })
+        $folder = Join-Path $TestDrive 'administrators'
+        $result = Invoke-Maester -Config $script:config -TestId CIS.GH.1.2.4 -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -ExportCsv -RedactUserIdentity AllOutputs
+        $row = $result.Tests | Where-Object Id -EQ 'CIS.GH.1.2.4'
+        $row.Result | Should -Be 'Failed'
+        $row.ResultDetail.TestResult | Should -Match '\| fixture-repo \| 3 \| 1 \| 3 \|'
+        foreach ($extension in 'json', 'html', 'md', 'csv') {
+            $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            $content | Should -Not -Match '\| fixture-repo \| 3 \| 1 \| 3 \||TestResultRedacted'
+            $content | Should -Match '\| fixture-repo \| 3 \| 1 \| object-[a-f0-9]{16} \|'
         }
     }
 
