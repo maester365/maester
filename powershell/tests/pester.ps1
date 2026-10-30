@@ -52,6 +52,9 @@
 )
 
 Write-Host "Starting Tests"
+# Unit tests never send telemetry; the worker processes inherit this.
+$env:MAESTER_DISABLE_TELEMETRY = '1'
+
 Write-Host "Importing Module"
 
 Remove-Module Maester -ErrorAction Ignore

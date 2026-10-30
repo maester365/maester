@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 5
+      "recentCommits": 8
     },
     {
       "id": "Cloud-Architekt",
@@ -531,7 +531,7 @@
       "url": "",
       "socials": {},
       "avatar": "https://github.com/JeremyFinney-lgtm.png",
-      "firstContribution": "2026-10-18",
+      "firstContribution": "2026-10-17",
       "testsAuthored": [
         "CIS.M365.1.3.2",
         "CIS.M365.4.2",
@@ -579,11 +579,28 @@
         "CIS.M365.5.3.2",
         "CIS.M365.5.3.3",
         "CIS.M365.5.3.4",
-        "CIS.M365.5.3.5"
+        "CIS.M365.5.3.5",
+        "CIS.M365.7.2.1",
+        "CIS.M365.7.2.3",
+        "CIS.M365.7.2.4",
+        "CIS.M365.7.2.6",
+        "CIS.M365.7.2.8",
+        "CIS.M365.7.2.10",
+        "CIS.M365.8.1.2",
+        "CIS.M365.8.2.1",
+        "CIS.M365.8.2.4",
+        "CIS.M365.8.5.1",
+        "CIS.M365.8.5.2",
+        "CIS.M365.8.5.4",
+        "CIS.M365.8.5.5",
+        "CIS.M365.8.5.6",
+        "CIS.M365.8.5.7",
+        "CIS.M365.8.5.8",
+        "CIS.M365.8.5.9"
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 36
+      "recentCommits": 41
     },
     {
       "id": "SebastianClaesson",
@@ -716,6 +733,57 @@
       "recentCommits": 1
     },
     {
+      "id": "earbona23",
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "ArrankaGo LLC",
+      "location": "Dominican Republic",
+      "locationFlag": "",
+      "url": "https://consulting.arrankago.com",
+      "socials": {
+        "linkedin": "eduard-arbona-99872b403",
+        "bluesky": "arbona.bsky.social"
+      },
+      "avatar": "https://github.com/earbona23.png",
+      "firstContribution": "2026-09-14",
+      "testsAuthored": [
+        "MT.1228",
+        "MT.1229",
+        "MT.1230",
+        "MT.1231",
+        "MT.1232",
+        "MT.1233",
+        "MT.1234",
+        "MT.1235",
+        "MT.1236",
+        "MT.1237",
+        "MT.1238",
+        "MT.1239",
+        "MT.1240",
+        "MT.1241",
+        "MT.1242",
+        "MT.1243",
+        "MT.1244",
+        "MT.1245",
+        "MT.1246",
+        "MT.1247",
+        "MT.1248",
+        "MT.1249",
+        "MT.1250",
+        "MT.1251"
+      ],
+      "testsContributed": [
+        "MT.1011",
+        "MT.1024"
+      ],
+      "initials": "EA",
+      "recentCommits": 17
+    },
+    {
       "id": "bdrogja",
       "github": "bdrogja",
       "name": "Boris Drogja",
@@ -846,7 +914,7 @@
       ],
       "testsContributed": [],
       "initials": "AS",
-      "recentCommits": 13
+      "recentCommits": 18
     },
     {
       "id": "Mynster9361",
@@ -1239,7 +1307,7 @@
       ],
       "testsContributed": [],
       "initials": "CB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "BakkerJan",
@@ -1272,7 +1340,7 @@
         "MT.1002"
       ],
       "initials": "JB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "RobbeVandenDaele",
@@ -1407,7 +1475,7 @@
         "MT.1100"
       ],
       "initials": "SE",
-      "recentCommits": 3
+      "recentCommits": 4
     },
     {
       "id": "DanielLystad",
@@ -1808,7 +1876,7 @@
       ],
       "testsContributed": [],
       "initials": "DF",
-      "recentCommits": 7
+      "recentCommits": 8
     },
     {
       "id": "Oppedijk",
@@ -1927,32 +1995,6 @@
       ],
       "initials": "CE",
       "recentCommits": 0
-    },
-    {
-      "id": "earbona23",
-      "github": "earbona23",
-      "name": "Eduard Arbona",
-      "title": "Security engineer, Microsoft Entra ID and cloud identity",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "ArrankaGo LLC",
-      "location": "Dominican Republic",
-      "locationFlag": "",
-      "url": "https://consulting.arrankago.com",
-      "socials": {
-        "linkedin": "eduard-arbona-99872b403",
-        "bluesky": "arbona.bsky.social"
-      },
-      "avatar": "https://github.com/earbona23.png",
-      "firstContribution": "2026-09-14",
-      "testsAuthored": [],
-      "testsContributed": [
-        "MT.1011",
-        "MT.1024"
-      ],
-      "initials": "EA",
-      "recentCommits": 12
     },
     {
       "id": "amlhive-tech",
@@ -2685,7 +2727,7 @@
         "MT.1084"
       ],
       "initials": "MF",
-      "recentCommits": 170
+      "recentCommits": 172
     }
   ],
   "attributions": {
@@ -4362,20 +4404,44 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.7.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.2": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.7.2.4": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.5": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.7": {
       "author": "Mynster9361",
       "contributors": []
     },
+    "CIS.M365.7.2.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.7.2.9": {
       "author": "Mynster9361",
+      "contributors": []
+    },
+    "CIS.M365.7.2.10": {
+      "author": "JeremyFinney-lgtm",
       "contributors": []
     },
     "CIS.M365.7.2.11": {
@@ -4393,6 +4459,14 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.1.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.2.2": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4406,6 +4480,10 @@
         "merill"
       ]
     },
+    "CIS.M365.8.2.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.4.1": {
       "author": "HenrikPiecha",
       "contributors": [
@@ -4414,11 +4492,43 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.8.5.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.8.5.3": {
       "author": "HenrikPiecha",
       "contributors": [
         "merill"
       ]
+    },
+    "CIS.M365.8.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.6": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.7": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.8.5.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.8.6.1": {
       "author": "HenrikPiecha",
@@ -6036,6 +6146,102 @@
       "author": "agnivesh",
       "contributors": []
     },
+    "MT.1228": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1229": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1230": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1231": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1232": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1233": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1234": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1235": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1236": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1237": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1238": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1239": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1240": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1241": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1242": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1243": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1244": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1245": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1246": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1247": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1248": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1249": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1250": {
+      "author": "earbona23",
+      "contributors": []
+    },
+    "MT.1251": {
+      "author": "earbona23",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": []
@@ -6391,7 +6597,7 @@
       "path": "/docs/tests/AD-CFG-21"
     },
     "AD-CFG-22": {
-      "title": "Exactly one KDS root key should exist",
+      "title": "KDS root key count should be acceptable",
       "path": "/docs/tests/AD-CFG-22"
     },
     "AD-CFG-23": {
@@ -6583,7 +6789,7 @@
       "path": "/docs/tests/AD-DCOMP-05"
     },
     "AD-DCOMP-06": {
-      "title": "No enabled computers should be stale for 180 days or more",
+      "title": "No enabled computers should be stale beyond the configured threshold",
       "path": "/docs/tests/AD-DCOMP-06"
     },
     "AD-DCOMP-07": {
@@ -7019,7 +7225,7 @@
       "path": "/docs/tests/AD-GRP-10"
     },
     "AD-KRBTGT-01": {
-      "title": "KRBTGT password age should not exceed 180 days",
+      "title": "KRBTGT password age should not exceed the configured maximum",
       "path": "/docs/tests/AD-KRBTGT-01"
     },
     "AD-KRBTGT-02": {
@@ -7906,21 +8112,45 @@
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
       "path": "/docs/tests/CIS.M365.6.5.3"
     },
+    "CIS.M365.7.2.1": {
+      "title": "(L1) Ensure modern authentication for SharePoint applications is required",
+      "path": "/docs/next/tests/CIS.M365.7.2.1"
+    },
     "CIS.M365.7.2.2": {
       "title": "(L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
       "path": "/docs/tests/CIS.M365.7.2.2"
+    },
+    "CIS.M365.7.2.3": {
+      "title": "(L1) Ensure external content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.3"
+    },
+    "CIS.M365.7.2.4": {
+      "title": "(L2) Ensure OneDrive content sharing is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.4"
     },
     "CIS.M365.7.2.5": {
       "title": "(L2) Ensure that SharePoint guest users cannot share items they don't own",
       "path": "/docs/tests/CIS.M365.7.2.5"
     },
+    "CIS.M365.7.2.6": {
+      "title": "(L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists",
+      "path": "/docs/next/tests/CIS.M365.7.2.6"
+    },
     "CIS.M365.7.2.7": {
       "title": "(L1) Ensure link sharing is restricted in SharePoint and OneDrive",
       "path": "/docs/tests/CIS.M365.7.2.7"
     },
+    "CIS.M365.7.2.8": {
+      "title": "(L2) Ensure external sharing is restricted by security group",
+      "path": "/docs/next/tests/CIS.M365.7.2.8"
+    },
     "CIS.M365.7.2.9": {
       "title": "(L1) Ensure guest access to a site or OneDrive will expire automatically",
       "path": "/docs/tests/CIS.M365.7.2.9"
+    },
+    "CIS.M365.7.2.10": {
+      "title": "(L1) Ensure reauthentication with verification code is restricted",
+      "path": "/docs/next/tests/CIS.M365.7.2.10"
     },
     "CIS.M365.7.2.11": {
       "title": "(L1) Ensure the SharePoint default sharing link permission is set",
@@ -7934,6 +8164,14 @@
       "title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
       "path": "/docs/tests/CIS.M365.8.1.1"
     },
+    "CIS.M365.8.1.2": {
+      "title": "(L1) Ensure users can't send emails to a channel email address",
+      "path": "/docs/next/tests/CIS.M365.8.1.2"
+    },
+    "CIS.M365.8.2.1": {
+      "title": "(L2) Ensure external domains are restricted in the Teams admin center",
+      "path": "/docs/next/tests/CIS.M365.8.2.1"
+    },
     "CIS.M365.8.2.2": {
       "title": "(L1) Ensure communication with unmanaged Teams users is disabled",
       "path": "/docs/tests/CIS.M365.8.2.2"
@@ -7942,13 +8180,49 @@
       "title": "(L1) Ensure external Teams users cannot initiate conversations",
       "path": "/docs/tests/CIS.M365.8.2.3"
     },
+    "CIS.M365.8.2.4": {
+      "title": "(L1) Ensure the organization cannot communicate with accounts in trial Teams tenants",
+      "path": "/docs/next/tests/CIS.M365.8.2.4"
+    },
     "CIS.M365.8.4.1": {
       "title": "(L1) Ensure app permission policies are configured",
       "path": "/docs/tests/CIS.M365.8.4.1"
     },
+    "CIS.M365.8.5.1": {
+      "title": "(L2) Ensure anonymous users can't join a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.1"
+    },
+    "CIS.M365.8.5.2": {
+      "title": "(L1) Ensure anonymous users and dial-in callers can't start a meeting",
+      "path": "/docs/next/tests/CIS.M365.8.5.2"
+    },
     "CIS.M365.8.5.3": {
       "title": "(L1) Ensure only people in my org can bypass the lobby",
       "path": "/docs/tests/CIS.M365.8.5.3"
+    },
+    "CIS.M365.8.5.4": {
+      "title": "(L1) Ensure users dialing in can't bypass the lobby",
+      "path": "/docs/next/tests/CIS.M365.8.5.4"
+    },
+    "CIS.M365.8.5.5": {
+      "title": "(L2) Ensure meeting chat does not allow anonymous users",
+      "path": "/docs/next/tests/CIS.M365.8.5.5"
+    },
+    "CIS.M365.8.5.6": {
+      "title": "(L2) Ensure only organizers and co-organizers can present",
+      "path": "/docs/next/tests/CIS.M365.8.5.6"
+    },
+    "CIS.M365.8.5.7": {
+      "title": "(L1) Ensure external participants can't give or request control",
+      "path": "/docs/next/tests/CIS.M365.8.5.7"
+    },
+    "CIS.M365.8.5.8": {
+      "title": "(L2) Ensure external meeting chat is off",
+      "path": "/docs/next/tests/CIS.M365.8.5.8"
+    },
+    "CIS.M365.8.5.9": {
+      "title": "(L2) Ensure meeting recording is off by default",
+      "path": "/docs/next/tests/CIS.M365.8.5.9"
     },
     "CIS.M365.8.6.1": {
       "title": "(L1) Ensure users can report security concerns in Teams",
@@ -9229,6 +9503,102 @@
     "MT.1225": {
       "title": "Users should not be able to create Agent Identity Blueprints.",
       "path": "/docs/next/tests/MT.1225"
+    },
+    "MT.1228": {
+      "title": "Ensure iOS compliance policy blocks jailbroken devices.",
+      "path": "/docs/next/tests/MT.1228"
+    },
+    "MT.1229": {
+      "title": "Ensure iOS compliance policy requires a strong device passcode.",
+      "path": "/docs/next/tests/MT.1229"
+    },
+    "MT.1230": {
+      "title": "Ensure iOS compliance policy requires a minimum operating system version.",
+      "path": "/docs/next/tests/MT.1230"
+    },
+    "MT.1231": {
+      "title": "Ensure iOS compliance policy requires a Defender machine risk score level.",
+      "path": "/docs/next/tests/MT.1231"
+    },
+    "MT.1232": {
+      "title": "Ensure Android compliance policy blocks rooted devices.",
+      "path": "/docs/next/tests/MT.1232"
+    },
+    "MT.1233": {
+      "title": "Ensure Android compliance policy requires a strong device password.",
+      "path": "/docs/next/tests/MT.1233"
+    },
+    "MT.1234": {
+      "title": "Ensure Android compliance policy requires a recent security patch level.",
+      "path": "/docs/next/tests/MT.1234"
+    },
+    "MT.1235": {
+      "title": "Ensure Android compliance policy requires device threat protection.",
+      "path": "/docs/next/tests/MT.1235"
+    },
+    "MT.1236": {
+      "title": "Ensure Android compliance policy blocks USB debugging.",
+      "path": "/docs/next/tests/MT.1236"
+    },
+    "MT.1237": {
+      "title": "Ensure Android compliance policy blocks devices managed with device administrator.",
+      "path": "/docs/next/tests/MT.1237"
+    },
+    "MT.1238": {
+      "title": "Ensure iOS app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1238"
+    },
+    "MT.1239": {
+      "title": "Ensure iOS app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1239"
+    },
+    "MT.1240": {
+      "title": "Ensure iOS app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1240"
+    },
+    "MT.1241": {
+      "title": "Ensure iOS app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1241"
+    },
+    "MT.1242": {
+      "title": "Ensure iOS app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1242"
+    },
+    "MT.1243": {
+      "title": "Ensure iOS app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1243"
+    },
+    "MT.1244": {
+      "title": "Ensure Android app protection policy requires a strong app PIN.",
+      "path": "/docs/next/tests/MT.1244"
+    },
+    "MT.1245": {
+      "title": "Ensure Android app protection policy keeps organization data inside managed apps.",
+      "path": "/docs/next/tests/MT.1245"
+    },
+    "MT.1246": {
+      "title": "Ensure Android app protection policy encrypts organization data.",
+      "path": "/docs/next/tests/MT.1246"
+    },
+    "MT.1247": {
+      "title": "Ensure Android app protection policy requires a minimum OS and app version.",
+      "path": "/docs/next/tests/MT.1247"
+    },
+    "MT.1248": {
+      "title": "Ensure Android app protection policy limits offline access to organization data.",
+      "path": "/docs/next/tests/MT.1248"
+    },
+    "MT.1249": {
+      "title": "Ensure Android app protection policy acts on the device threat level.",
+      "path": "/docs/next/tests/MT.1249"
+    },
+    "MT.1250": {
+      "title": "Ensure Android app protection policy blocks screen capture of organization data.",
+      "path": "/docs/next/tests/MT.1250"
+    },
+    "MT.1251": {
+      "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
+      "path": "/docs/next/tests/MT.1251"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

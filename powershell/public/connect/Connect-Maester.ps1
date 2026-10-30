@@ -106,6 +106,11 @@
 
    Connects to SharePoint Online using the specified client ID and admin URL.
 
+.EXAMPLE
+   Connect-Maester -Service Graph,CNT.GoogleWorkspace -ServiceSetting @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }
+
+   Connects to Microsoft Graph and to the service of an installed Maester Pack, through the pack's connector. Get-MtConnector lists the services of the installed packs.
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -143,11 +148,18 @@
 
       # The Teams environment to connect to. Default is O365Default.
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
-      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+      [string]$TeamsEnvironmentName = $null,
 
       # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
-      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
+      # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
+      [ArgumentCompleter({ # $args: command name, parameter name, word to complete.
+            & (Get-Module Maester | Select-Object -First 1) { param($builtIn, $word) Get-MtServiceCompletion -BuiltIn $builtIn -WordToComplete $word } @('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline') $args[2] })]
       [string[]]$Service = 'Graph',
+
+      # Settings for the connectors of Maester Packs, by service: @{ 'CNT.GoogleWorkspace' = @{ Domain = 'contoso.com' } }.
+      # With one pack service in -Service, the settings can be given directly: @{ Domain = 'contoso.com' }. They win over
+      # Connections.<Service> in maester-config.json and over MAESTER_<SERVICE>_<SETTING> environment variables.
+      [hashtable]$ServiceSetting = @{},
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
@@ -201,7 +213,15 @@
       [switch]$ActiveDirectorySkipCertificateCheck
     )
 
-   $__MtSession.Connections = $Service
+   try {
+      $requestedServices = Resolve-MtRequestedService -Service $Service -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline'
+   } catch {
+      Write-Error -Message $_.Exception.Message -Category InvalidArgument
+      return
+   }
+   $packServices = @($requestedServices.Pack)
+   $Service = @($requestedServices.BuiltIn)
+   $__MtSession.Connections = @($Service) + @($packServices)
    $__MtSession.ConnectionSummary = @()
 
    # Record the outcome of each service so a single summary table can be shown at the end.
@@ -228,6 +248,14 @@
                # Skip Connect-AzAccount if there is already an active Az context
                # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
                $existingContext = Get-AzContext -ErrorAction SilentlyContinue
+               # A tenant given as an ID can be compared with the context; a domain name cannot, so that context is kept.
+               if ($existingContext -and $TenantId -match '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$' -and
+                  $existingContext.Tenant.Id -and $existingContext.Tenant.Id -ne $TenantId) {
+                  Write-Verbose "The existing Az context is for tenant '$($existingContext.Tenant.Id)', not '$TenantId'. Signing in to '$TenantId'."
+                  $existingContext = $null
+               } elseif ($existingContext -and $TenantId -and $existingContext.Tenant.Id -and $TenantId -ne $existingContext.Tenant.Id) {
+                  Write-Verbose "-TenantId '$TenantId' cannot be compared with the existing Az context's tenant '$($existingContext.Tenant.Id)', so the context is kept."
+               }
                if ($existingContext) {
                   Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
                } else {
@@ -377,11 +405,24 @@
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
             $securityComplianceConnected = $false
-            if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
+            # Security & Compliance rides on the Exchange Online connection, so decide on whether Exchange
+            # Online is actually connected, not on the -Service argument. The -Service terms short-circuit the
+            # single-call path (Exchange Online was just attempted earlier in this same invocation); otherwise
+            # Test-MtConnection reports the live session, so connecting in two steps (Exchange Online first,
+            # Security & Compliance after) works too. #2467
+            # Drop any cached session list so the check sees sessions connected since it was cached.
+            $__MtSession.ExoCache.Remove('ConnectionInformation')
+            $exchangeOnlineReady = $Service -contains 'ExchangeOnline' -or $Service -contains 'All' -or
+               [bool](Test-MtConnection -Service ExchangeOnline -ErrorAction SilentlyContinue)
+            if (-not $exchangeOnlineReady) {
                Write-Verbose 'The Security & Compliance module is dependent on the Exchange Online module. For more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell'
-               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires ExchangeOnline in -Service'
+               Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Requires an Exchange Online connection'
             } elseif ($UseDeviceCode) {
+               # Connect-IPPSSession has no device code flow, so skipping is unavoidable. When the caller asked
+               # for Security & Compliance (directly or through All) a warning makes the lost test coverage
+               # visible instead of a single Skipped row that reads like "not applicable to this tenant". #2467
                Write-Verbose 'The Security & Compliance module does not support device code flow authentication.'
+               Write-Warning 'Security & Compliance does not support device code sign-in (-UseDeviceCode); its tests will be skipped. Connect without -UseDeviceCode to include them.'
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Skipped' -Details 'Device code sign-in is not supported for Security & Compliance'
             } elseif (-not $exchangeModuleInstalled) {
                Add-ConnectionResult -Name 'Security & Compliance' -Status 'Not installed' -Details 'Run: Install-Module ExchangeOnlineManagement -Scope CurrentUser'
@@ -389,6 +430,8 @@
                try {
                   Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false -ErrorAction Stop
                   $securityComplianceConnected = $true
+                  # The Exchange Online check above may have cached the session list before this connection existed.
+                  $__MtSession.ExoCache.Remove('ConnectionInformation')
                   $securityComplianceUpn = Get-ConnectionInformation -ErrorAction SilentlyContinue |
                      Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' } |
                      Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
@@ -405,6 +448,7 @@
                      try {
                         Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false -ErrorAction Stop
                         $securityComplianceConnected = $true
+                        $__MtSession.ExoCache.Remove('ConnectionInformation')
                         Add-ConnectionResult -Name 'Security & Compliance' -Status 'Connected' -Details "Using UPN $ExoUPN from Exchange Online"
                      } catch {
                         Write-Verbose "Failed to connect to the Security & Compliance PowerShell: $($_.Exception.Message)"
@@ -508,7 +552,8 @@
                $teamsParams = @{ ErrorAction = 'Stop' }
                if ($UseDeviceCode) {
                   $teamsParams['UseDeviceAuthentication'] = $true
-               } elseif ($TeamsEnvironmentName) {
+               }
+               if ($TeamsEnvironmentName) {
                   $teamsParams['TeamsEnvironmentName'] = $TeamsEnvironmentName
                }
                $teamsConnection = Connect-MicrosoftTeams @teamsParams
@@ -638,6 +683,30 @@
        } catch {
           Write-Verbose "Failed to connect to Active Directory: $($_.Exception.Message)"
           Add-ConnectionResult -Name 'Active Directory' -Status 'Failed' -Details (Get-ErrorSummary $_)
+       }
+    }
+
+    # Maester Pack connectors (Maester Packs design, section 6.2), after Maester's own services so a connector can use them.
+    if ($packServices.Count -gt 0) {
+       $packConfig = Resolve-MtRunConfig -Path (Get-Location).Path -WarningAction SilentlyContinue
+       foreach ($packService in $packServices) {
+          $entry = (Get-MtServiceRegistry).Services[$packService]
+          $displayName = ConvertTo-MtPackSafeText $entry.DisplayName
+          try {
+             $explicit = if ($ServiceSetting.ContainsKey($packService)) { $ServiceSetting[$packService] } elseif ($packServices.Count -eq 1 -and -not ($ServiceSetting.Values | Where-Object { $_ -is [System.Collections.IDictionary] })) { $ServiceSetting } else { @{} }
+             $settings = Get-MtPackConnectorSetting -Service $packService -RunConfig $packConfig -Explicit $explicit
+             Write-Verbose "Connecting to $displayName through the pack $($entry.Pack.Id)"
+             $null = Invoke-MtPackConnector -Service $packService -Function Connect -Setting $settings
+             if (Test-MtPackConnection -Service $packService) {
+                $state = $__MtSession.PackConnections[$packService]
+                Add-ConnectionResult -Name $displayName -Status 'Connected' -Details $(if ($state) { @($state.Account, $state.Tenant | Where-Object { $_ }) -join ', ' } else { '' })
+             } else {
+                Add-ConnectionResult -Name $displayName -Status 'Failed' -Details "The connector of $($entry.Pack.Id) did not connect"
+             }
+          } catch {
+             Write-Verbose "Failed to connect to ${displayName}: $($_.Exception.Message)"
+             Add-ConnectionResult -Name $displayName -Status 'Failed' -Details (Get-ErrorSummary $_)
+          }
        }
     }
 

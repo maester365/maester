@@ -73,9 +73,12 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   `cis/`, `cisa/<service>/`, `ad/<area>/`, generated `eidsca/` and `orca/`, and `custom/`
   (reserved for users; never commit tests there).
 - `powershell/public/` (exported) is grouped by job: `run/`, `connect/`, `report/`, `app/`,
-  `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
-  `report/`, `app/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
+  `packs/`, `services/<service>/`. `powershell/internal/` uses `engine/`, `session/`, `connect/`,
+  `report/`, `app/`, `packs/`, `services/<service>/`, `checks/<suite>/<service>/`, `generated/`,
   `utility/`. Nothing sits directly in `public/` or `internal/`.
+- `packs/<name>/` at the repository root holds the Maester Packs that ship with Maester (ID `maester.<name>`,
+  a code of the pack's own such as `ZTA`, test IDs `<Code>.<n>` without the `MP.` that installed packs use). They are not under `tests/`: a pack loads into its own private
+  module, and its rows carry `Source = Custom` and `Package`. See `packs/README.md`.
 - Put a function by its job, not by the check that first needed it: reusable data access
   for a service goes in `internal/services/<service>/`; logic only one suite's checks use
   goes in `internal/checks/<suite>/<service>/`; a helper users call from custom tests goes
@@ -118,3 +121,22 @@ Three things enforce this, in order:
 - The person or agent reviewing the pull request applies the same rubric and is the last word. A
   maintainer who disagrees with the workflow can apply the `attribute-review-override` label and
   should say why in the pull request.
+
+## Labelling pull requests, issues and discussions
+
+Labels follow one rubric so the queue can be filtered by status, type and product. The
+labels are defined in `.github/labels.json`; the rules for choosing them are in
+`.github/skills/maester-triage/SKILL.md`. To triage, use the `maester-triage` agent (or follow
+the skill directly): it shows its plan before changing anything and only ever changes labels.
+After editing `.github/labels.json`, run `./build/github/Sync-GitHubLabels.ps1` to see the
+changes and `-Apply` to make them. `-Apply` creates, renames and updates labels and copies a merged
+label onto the items that carry the old one; add `-DeleteMerged` to also delete the old labels.
+
+## Agents and skills
+
+The agents and skills in this repository are listed in `website/docs/agents-and-skills.md`. Each
+has one source file: `.github/agents/<name>.agent.md` or `.github/skills/<name>/SKILL.md`. The
+Claude Code copies under `.claude/agents/` and `.claude/skills/`, and that docs page, are generated
+from them by `./build/github/Update-AgentFiles.ps1`. Edit the source file, run the script, and
+commit both; never edit a generated copy. `powershell/tests/general/AgentFiles.Tests.ps1` fails
+when they drift.

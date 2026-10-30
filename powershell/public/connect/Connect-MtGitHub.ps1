@@ -267,7 +267,7 @@
     function Invoke-ConnectionProbe ([string] $Uri) {
         Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection
         try {
-            $response = Invoke-WebRequest -Uri $Uri -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+            $response = Invoke-WebRequest -Uri $Uri -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
             Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection -Headers $response.Headers
             return $response
         } catch {

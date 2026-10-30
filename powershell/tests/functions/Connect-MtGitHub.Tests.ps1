@@ -95,6 +95,18 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
+        It 'Sets a connection timeout and a read timeout on every GitHub request so an unresponsive endpoint cannot hang the connection' {
+            Mock Get-MtGitHubAppDeviceToken -ModuleName Maester {
+                [PSCustomObject]@{ AccessToken = 'ghu_device'; ExpiresAt = [datetime]'2030-01-01T00:00:00Z'; FailureReason = $null }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -Exactly
+            # -ConnectionTimeoutSeconds limits connecting and receiving the headers; -OperationTimeoutSeconds limits each read of the body.
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -Exactly -ParameterFilter { $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30 }
+        }
+
         It 'Records the device flow failure reason and does not retain an auth header' {
             Mock Get-MtGitHubAppDeviceToken -ModuleName Maester {
                 [PSCustomObject]@{ AccessToken = $null; ExpiresAt = $null; FailureReason = 'GitHubDeviceFlowDenied' }
@@ -357,6 +369,30 @@ Describe 'Connect-MtGitHub' {
 
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -ParameterFilter {
                 $Uri -match 'api\.myco\.ghe\.com' -and $Headers['X-GitHub-Api-Version'] -eq '2024-01-01'
+            }
+        }
+
+        It 'uses the default GitHub endpoint and API version when settings are absent' {
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+        }
+
+        It 'falls back to the code defaults when the settings registry returns nothing' {
+            Mock Get-MtSetting -ModuleName Maester { $null } -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
+            }
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+                $__MtSession.GitHubConnection.ApiVersion | Should -Be '2022-11-28'
+            }
+            Should -Invoke Get-MtSetting -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $Name -in 'GitHubApiBaseUri', 'GitHubApiVersion'
             }
         }
 

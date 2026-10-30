@@ -25,6 +25,9 @@
 
     .PARAMETER DisableCache
     Bypasses session cache. Active rate-limit protection still applies.
+
+    .PARAMETER MaxPages
+    Optional page bound for metadata pagination. Capped evidence is incomplete and is not cached.
     #>
     [CmdletBinding()]
     param(
@@ -34,8 +37,13 @@
         [switch] $DisableCache,
         [ValidatePattern('^\d{4}-\d{2}-\d{2}$')]
         [string] $ApiVersion,
-        [switch] $IncludeMetadata
+        [switch] $IncludeMetadata,
+        [ValidateRange(1, 100)] [int] $MaxPages
     )
+
+    if ($PSBoundParameters.ContainsKey('MaxPages') -and (-not $IncludeMetadata -or -not $Paginate)) {
+        throw 'MaxPages requires IncludeMetadata and Paginate.'
+    }
 
     if ($null -eq $__MtSession.GitHubConnection -or
         $__MtSession.GitHubConnection.Connected -ne $true) {
@@ -59,6 +67,7 @@
     $cacheKey = if ($IncludeMetadata) {
         "Metadata|GET|$version|$absUri|Paginate=$($Paginate.IsPresent)"
     } else { Get-MtGitHubCacheKey -ApiVersion $version -AbsoluteUri $absUri }
+    if ($MaxPages) { $cacheKey += "|MaxPages=$MaxPages" }
     if ($IncludeMetadata -and -not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($cacheKey)) {
         $cached = $__MtSession.GitHubCache[$cacheKey]
         if ($cached.CompletedUtc -isnot [DateTimeOffset] -or ([DateTimeOffset]::UtcNow - $cached.CompletedUtc).TotalMinutes -ge 5) {
@@ -174,6 +183,10 @@
             }
             $next = Get-NextLink $page.Link
             if (-not $Paginate -or $null -eq $next) { break }
+            if ($MaxPages -and $pageCount -ge $MaxPages) {
+                $issues.Add('Pagination page cap reached.')
+                break
+            }
             if (-not (Test-NextLinkSameOrigin -NextUri $next -BaseUri $baseUri)) { throw 'GitHub pagination refused a foreign next link.' }
             if (-not $visited.Add($next)) { throw 'GitHub pagination cycle detected.' }
             try { $page = Invoke-Page $next } catch {
@@ -199,7 +212,7 @@
         }
         # Assignment expressions also enumerate singleton arrays; the envelope retains the exact array.
         if ($Paginate) { $result.Data = $items.ToArray() } else { $result.Data = $first.Body }
-        if (-not $DisableCache -and $result.CollectionIntegrityValid) { $__MtSession.GitHubCache[$cacheKey] = $result }
+        if (-not $DisableCache -and $result.CollectionIntegrityValid -and (-not $Paginate -or $result.PaginationComplete)) { $__MtSession.GitHubCache[$cacheKey] = $result }
         return $result
     }
 

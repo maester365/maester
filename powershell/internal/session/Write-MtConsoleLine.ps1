@@ -239,8 +239,8 @@ function Initialize-MtDashboard {
     }
 
     # The status bar on the last row: where to read more about the project, each a hyperlink.
-    # The first four are at the left of the bar and the last three at its right edge. The sponsor page is
-    # not in the bar: it has the Sponsor panel.
+    # The first four are at the left of the bar and the last four at its right edge. The sponsor page is in
+    # the bar as well as in the Sponsor panel, so it is on screen at any width.
     $bar = [ordered]@{
         'maester.dev'           = 'https://maester.dev'
         'Docs'                  = 'https://maester.dev/docs'
@@ -250,8 +250,9 @@ function Initialize-MtDashboard {
         'Discord'               = 'https://discord.maester.dev'
         'Issues'                = 'https://github.com/maester365/maester/issues'
     }
-    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1') }
-    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 3)
+    $bar[$(if ($Console -and $Console.Unicode) { "Sponsor $([char]0x2665)" } else { 'Sponsor' })] = 'https://maester.dev/sponsor'
+    if ($panels -contains 'Sponsor') { $Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://maester.dev/sponsor') }
+    $Renderer.SetStatusBar([string[]]@($bar.Keys), [string[]]@($bar.Values), 4)
     # Terminals open a hyperlink on a click with a modifier key: say which.
     $modifier = if (-not $IsMacOS) { 'Ctrl' } elseif ($Console -and $Console.Unicode) { [string][char]0x2318 } else { 'Cmd' }
     $Renderer.SetStatusBarHint("$modifier-click to open")

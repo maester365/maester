@@ -20,10 +20,10 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 239 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 263 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 96 | CIS Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -52,7 +52,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-CFG-19](./AD-CFG-19) | Intermediate CA details should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-20](./AD-CFG-20) | CRL distribution points count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
 | [AD-CFG-21](./AD-CFG-21) | NTAuth certificates count should be retrievable | Active Directory | Info | Active Directory | Certificate Services |
-| [AD-CFG-22](./AD-CFG-22) | Exactly one KDS root key should exist | Active Directory | Info | Active Directory | Directory configuration |
+| [AD-CFG-22](./AD-CFG-22) | KDS root key count should be acceptable | Active Directory | Info | Active Directory | Directory configuration |
 | [AD-CFG-23](./AD-CFG-23) | SMTP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-CFG-24](./AD-CFG-24) | IP site links count should be retrievable | Active Directory | Info | Active Directory | Sites and subnets |
 | [AD-COMP-01](./AD-COMP-01) | Computer disabled count should be retrievable | Active Directory | Info | Active Directory | Computers |
@@ -100,7 +100,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-DCOMP-03](./AD-DCOMP-03) | Non-DC computers with constrained delegation count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-04](./AD-DCOMP-04) | Computer operating system count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-05](./AD-DCOMP-05) | Computer operating system details should be investigated | Active Directory | Info | Active Directory | Computers |
-| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale for 180 days or more | Active Directory | Medium | Active Directory | Computers |
+| [AD-DCOMP-06](./AD-DCOMP-06) | No enabled computers should be stale beyond the configured threshold | Active Directory | Medium | Active Directory | Computers |
 | [AD-DCOMP-07](./AD-DCOMP-07) | Computer DNS host name count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-08](./AD-DCOMP-08) | Computer DNS zone count should be investigated | Active Directory | Info | Active Directory | Computers |
 | [AD-DCOMP-09](./AD-DCOMP-09) | Computer DNS zone details should be investigated | Active Directory | Info | Active Directory | Computers |
@@ -209,7 +209,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-GRP-08](./AD-GRP-08) | Domain local group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-09](./AD-GRP-09) | Global group count should be retrievable | Active Directory | Info | Active Directory | Groups |
 | [AD-GRP-10](./AD-GRP-10) | Universal group count should be retrievable | Active Directory | Info | Active Directory | Groups |
-| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed 180 days | Active Directory | Medium | Active Directory | Account security |
+| [AD-KRBTGT-01](./AD-KRBTGT-01) | KRBTGT password age should not exceed the configured maximum | Active Directory | Medium | Active Directory | Account security |
 | [AD-KRBTGT-02](./AD-KRBTGT-02) | KRBTGT last logon should be investigated | Active Directory | Info | Active Directory | Account security |
 | [AD-KRBTGT-03](./AD-KRBTGT-03) | KRBTGT should have standard UAC settings (disabled account) | Active Directory | Medium | Active Directory | Account security |
 | [AD-MSA-01](./AD-MSA-01) | Managed service account count should be investigated | Active Directory | Info | Active Directory | Account security |
@@ -431,17 +431,34 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.5.3.4](./CIS.M365.5.3.4) | (L1) Ensure approval is required for Global Administrator role activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.5.3.5](./CIS.M365.5.3.5) | (L1) Ensure approval is required for Privileged Role Administrator activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Medium | Exchange Online | Outlook |
+| [CIS.M365.7.2.1](./CIS.M365.7.2.1) | (L1) Ensure modern authentication for SharePoint applications is required | CIS | Medium | SharePoint | Access control |
+| [CIS.M365.7.2.10](./CIS.M365.7.2.10) | (L1) Ensure reauthentication with verification code is restricted | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11) | (L1) Ensure the SharePoint default sharing link permission is set | CIS | Medium | SharePoint | Sharing links |
 | [CIS.M365.7.2.2](./CIS.M365.7.2.2) | (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.3](./CIS.M365.7.2.3) | (L1) Ensure external content sharing is restricted | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.4](./CIS.M365.7.2.4) | (L2) Ensure OneDrive content sharing is restricted | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.5](./CIS.M365.7.2.5) | (L2) Ensure that SharePoint guest users cannot share items they don't own | CIS | Medium | SharePoint | External sharing |
+| [CIS.M365.7.2.6](./CIS.M365.7.2.6) | (L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.7](./CIS.M365.7.2.7) | (L1) Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Medium | SharePoint | Sharing links |
+| [CIS.M365.7.2.8](./CIS.M365.7.2.8) | (L2) Ensure external sharing is restricted by security group | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.9](./CIS.M365.7.2.9) | (L1) Ensure guest access to a site or OneDrive will expire automatically | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.3.1](./CIS.M365.7.3.1) | (L2) Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Medium | SharePoint | Access control |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | Teams | File sharing |
+| [CIS.M365.8.1.2](./CIS.M365.8.1.2) | (L1) Ensure users can't send emails to a channel email address | CIS | Medium | Teams | Messaging |
+| [CIS.M365.8.2.1](./CIS.M365.8.2.1) | (L2) Ensure external domains are restricted in the Teams admin center | CIS | Medium | Teams | External access |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | Teams | External access |
 | [CIS.M365.8.2.3](./CIS.M365.8.2.3) | (L1) Ensure external Teams users cannot initiate conversations | CIS | Medium | Teams | External access |
+| [CIS.M365.8.2.4](./CIS.M365.8.2.4) | (L1) Ensure the organization cannot communicate with accounts in trial Teams tenants | CIS | Medium | Teams | External access |
 | [CIS.M365.8.4.1](./CIS.M365.8.4.1) | (L1) Ensure app permission policies are configured | CIS | Medium | Teams | Apps |
+| [CIS.M365.8.5.1](./CIS.M365.8.5.1) | (L2) Ensure anonymous users can't join a meeting | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.2](./CIS.M365.8.5.2) | (L1) Ensure anonymous users and dial-in callers can't start a meeting | CIS | Medium | Teams | Meetings |
 | [CIS.M365.8.5.3](./CIS.M365.8.5.3) | (L1) Ensure only people in my org can bypass the lobby | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.4](./CIS.M365.8.5.4) | (L1) Ensure users dialing in can't bypass the lobby | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.5](./CIS.M365.8.5.5) | (L2) Ensure meeting chat does not allow anonymous users | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.6](./CIS.M365.8.5.6) | (L2) Ensure only organizers and co-organizers can present | CIS | Low | Teams | Meetings |
+| [CIS.M365.8.5.7](./CIS.M365.8.5.7) | (L1) Ensure external participants can't give or request control | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.8](./CIS.M365.8.5.8) | (L2) Ensure external meeting chat is off | CIS | Medium | Teams | Meetings |
+| [CIS.M365.8.5.9](./CIS.M365.8.5.9) | (L2) Ensure meeting recording is off by default | CIS | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | Teams | Messaging |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
@@ -453,8 +470,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.AAD.3.4](./CISA.MS.AAD.3.4) | The Authentication Methods Manage Migration feature SHALL be set to Migration Complete. | CISA | Low | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.5](./CISA.MS.AAD.3.5) | The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled. | CISA | High | Entra ID | Authentication methods |
 | [CISA.MS.AAD.3.6](./CISA.MS.AAD.3.6) | Phishing-resistant MFA SHALL be required for highly privileged roles. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | High | Entra ID | Conditional Access |
-| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | High | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.7](./CISA.MS.AAD.3.7) | Managed devices SHOULD be required for authentication. | CISA | Medium | Entra ID | Conditional Access |
+| [CISA.MS.AAD.3.8](./CISA.MS.AAD.3.8) | Managed Devices SHOULD be required to register MFA. | CISA | Medium | Entra ID | Conditional Access |
 | [CISA.MS.AAD.4.1](./CISA.MS.AAD.4.1) | Security logs SHALL be sent to the agency's security operations center for monitoring. | CISA | High | Entra ID | Logs and monitoring |
 | [CISA.MS.AAD.5.1](./CISA.MS.AAD.5.1) | Only administrators SHALL be allowed to register applications. | CISA | Medium | Entra ID | User and directory settings |
 | [CISA.MS.AAD.5.2](./CISA.MS.AAD.5.2) | Only administrators SHALL be allowed to consent to applications. | CISA | High | Entra ID | App consent and permissions |
@@ -516,7 +533,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CISA.MS.EXO.9.5](./CISA.MS.EXO.9.5) | At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe). | CISA | High | Exchange Online | Anti-malware |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | SharePoint | External sharing |
-| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | High | SharePoint | External sharing |
+| [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | Medium | SharePoint | External sharing |
 | [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1) | File and folder default sharing scope SHALL be set to Specific People. | CISA | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2) | File and folder default sharing permissions SHALL be set to View only. | CISA | Medium | SharePoint | Sharing links |
 | [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1) | Expiration days for Anyone links SHALL be set to 30 days or less. | CISA | Medium | SharePoint | Sharing links |
@@ -580,8 +597,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1009](./MT.1009) | At least one Conditional Access policy is configured to block other legacy authentication. | Maester | High | Entra ID | Conditional Access |
 | [MT.1010](./MT.1010) | At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. | Maester | High | Entra ID | Conditional Access |
 | [MT.1011](./MT.1011) | At least one Conditional Access policy is configured to secure security info registration only from a trusted location. | Maester | High | Entra ID | Conditional Access |
-| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | High | Entra ID | Conditional Access |
-| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | High | Entra ID | Conditional Access |
+| [MT.1012](./MT.1012) | At least one Conditional Access policy is configured to require MFA for risky sign-ins. | Maester | Medium | Entra ID | Conditional Access |
+| [MT.1013](./MT.1013) | At least one Conditional Access policy is configured to require new password when user risk is high. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1014](./MT.1014) | At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. | Maester | High | Entra ID | Conditional Access |
 | [MT.1015](./MT.1015) | At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. | Maester | Medium | Entra ID | Conditional Access |
 | [MT.1016](./MT.1016) | At least one Conditional Access policy is configured to require MFA for guest access. | Maester | High | Entra ID | Conditional Access |
@@ -715,7 +732,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled. | Maester | Low | Defender | Endpoint antivirus |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically. | Maester | Medium | Defender | Endpoint antivirus |
 | [MT.1172](./MT.1172) | Unified audit log ingestion is enabled. | Maester | High | Purview | Audit |
-| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Medium | Purview | Information protection |
+| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Low | Purview | Information protection |
 | [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled. | Maester | Medium | Purview | Insider risk management |
 | [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | High | Purview | Data loss prevention |
 | [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location. | Maester | Medium | Purview | Data lifecycle management |
@@ -762,6 +779,30 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
+| [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
+| [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
+| [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |
+| [MT.1231](./MT.1231) | Ensure iOS compliance policy requires a Defender machine risk score level. | Maester | Medium | Intune | Device compliance |
+| [MT.1232](./MT.1232) | Ensure Android compliance policy blocks rooted devices. | Maester | Medium | Intune | Device compliance |
+| [MT.1233](./MT.1233) | Ensure Android compliance policy requires a strong device password. | Maester | Medium | Intune | Device compliance |
+| [MT.1234](./MT.1234) | Ensure Android compliance policy requires a recent security patch level. | Maester | Medium | Intune | Device compliance |
+| [MT.1235](./MT.1235) | Ensure Android compliance policy requires device threat protection. | Maester | Medium | Intune | Device compliance |
+| [MT.1236](./MT.1236) | Ensure Android compliance policy blocks USB debugging. | Maester | Low | Intune | Device compliance |
+| [MT.1237](./MT.1237) | Ensure Android compliance policy blocks devices managed with device administrator. | Maester | Low | Intune | Device compliance |
+| [MT.1238](./MT.1238) | Ensure iOS app protection policy requires a strong app PIN. | Maester | Medium | Intune | App protection |
+| [MT.1239](./MT.1239) | Ensure iOS app protection policy keeps organization data inside managed apps. | Maester | Medium | Intune | App protection |
+| [MT.1240](./MT.1240) | Ensure iOS app protection policy encrypts organization data. | Maester | Medium | Intune | App protection |
+| [MT.1241](./MT.1241) | Ensure iOS app protection policy requires a minimum OS and app version. | Maester | Low | Intune | App protection |
+| [MT.1242](./MT.1242) | Ensure iOS app protection policy limits offline access to organization data. | Maester | Low | Intune | App protection |
+| [MT.1243](./MT.1243) | Ensure iOS app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
+| [MT.1244](./MT.1244) | Ensure Android app protection policy requires a strong app PIN. | Maester | Medium | Intune | App protection |
+| [MT.1245](./MT.1245) | Ensure Android app protection policy keeps organization data inside managed apps. | Maester | Medium | Intune | App protection |
+| [MT.1246](./MT.1246) | Ensure Android app protection policy encrypts organization data. | Maester | Medium | Intune | App protection |
+| [MT.1247](./MT.1247) | Ensure Android app protection policy requires a minimum OS and app version. | Maester | Low | Intune | App protection |
+| [MT.1248](./MT.1248) | Ensure Android app protection policy limits offline access to organization data. | Maester | Low | Intune | App protection |
+| [MT.1249](./MT.1249) | Ensure Android app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
+| [MT.1250](./MT.1250) | Ensure Android app protection policy blocks screen capture of organization data. | Maester | Low | Intune | App protection |
+| [MT.1251](./MT.1251) | Ensure Android app protection policy requires Play Integrity device attestation. | Maester | Medium | Intune | App protection |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |

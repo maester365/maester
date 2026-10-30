@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "CISA.MS.AAD.3.8"
-  - "High"
+  - "Medium"
   - "CISA"
   - "Entra ID"
   - "Conditional Access"
@@ -54,7 +54,7 @@ Create a Conditional Access policy requiring a user to be on a managed device wh
 | Field | Value |
 | --- | --- |
 | Test ID | CISA.MS.AAD.3.8 |
-| Severity | High |
+| Severity | Medium |
 | Suite | CISA |
 | Product | Entra ID |
 | Feature | Conditional Access |

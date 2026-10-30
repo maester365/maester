@@ -4,6 +4,9 @@ description: An announcement about new and improved tags that replace current on
 slug: whats-new-with-maester-tags
 authors: [samerde]
 tags: [tags]
+image: ./img/card.png
+card_headline: "What's new with *Maester tags*"
+card_label: News
 hide_table_of_contents: false
 date: 2025-10-20
 ---

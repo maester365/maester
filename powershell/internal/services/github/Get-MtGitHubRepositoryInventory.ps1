@@ -7,7 +7,7 @@
     param()
     $organization = $__MtSession.GitHubConnection.Organization
     $encoded = [uri]::EscapeDataString($organization)
-    $evidence = Invoke-MtGitHubRequest -RelativeUri "/orgs/$encoded/repos?type=all" -Paginate -ApiVersion '2026-03-10' -IncludeMetadata
+    $evidence = Invoke-MtGitHubRequest -RelativeUri "/orgs/$encoded/repos?type=all" -Paginate -ApiVersion '2026-03-10' -IncludeMetadata -MaxPages 100
     $issues = [System.Collections.Generic.List[string]]::new()
     foreach ($issue in $evidence.Issues) { $issues.Add($issue) }
     if (-not $evidence.PaginationComplete) { $issues.Add('Repository pagination is incomplete.') }

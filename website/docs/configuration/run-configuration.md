@@ -89,6 +89,7 @@ Keys Maester does not know are kept and passed through, so they do no harm. The 
     "Area": [],
     "Severity": [],
     "Suite": [],
+    "Pack": [],
     "Tag": [],
     "ExcludeTag": [],
     "TestId": [],
@@ -156,6 +157,7 @@ Which tests run. Every key has a command-line equivalent.
 | `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
 | `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
 | `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `EIDSCA`, `ORCA` or `AD`. |
+| `Pack` | array | `[]` | Run only these [Maester Packs](../packs/index.md#choosing-which-packs-run), by pack ID or code (like `-Pack`). A pack named here runs even if it is off, with its long-running and preview tests. Other packs do not run. |
 | `Tag` | array | `[]` | Run only tests that any of these tags selects (like `-Tag`). |
 | `ExcludeTag` | array | `[]` | Do not run tests that any of these tags selects (like `-ExcludeTag`). |
 | `TestId` | array | `[]` | Run only these IDs (like `-TestId`). |
@@ -292,6 +294,7 @@ output, keep every timeout below that period: a test writes nothing while it run
 | `ConsoleMode` | string | `Auto` | How the console output is written: `Interactive` (a live status line with the result counts and the running test), `Stream` (lines only, for CI and redirected output), `Plain` (lines without colour or symbols) or `Auto` (Interactive on a terminal, Stream otherwise). `-OutputMode` and the `MAESTER_OUTPUT_MODE` environment variable win over it. |
 | `DashboardPanels` | string[] | all of them | The panels of the full-screen dashboard of an interactive run, in order: `Tenant` (tenant name, primary domain and account; left out when Graph is not connected), `ActiveDirectory` (the domain, its domain controller and the account it is connected as; shown only after `Connect-Maester -Service ActiveDirectory`), `Totals` (the results so far as a bar split by result, with the counts), `Connections` (the services of the run and which of them are connected), `Failed` (failed tests by severity), `Slowest` (the tests that took the longest), `Drift` (changes against the newest earlier results file in the output folder), `FixFirst` (failed tests of severity Critical or High whose fix has a low user impact and a low cost), `Blog` (the newest post on maester.dev), `Version` (not a panel: a newer Maester on the PowerShell Gallery is mentioned under the logo, as a link), `Tips`, `Contributor` (one of the people who built Maester, with a link to their page), `Sponsor` (one line with a link to the sponsor page), `Pace` (a graph of how long each test took), `Results` (one block per test) and the insight panels `WeakestAreas` (the areas with the lowest share of passed tests), `AttackTactics` (failed tests by MITRE ATT&CK tactic), `FailedTests` (one dot per failed test, by the user impact and the cost of its fix), `NistFamilies` (the NIST 800-53 control families with the lowest share of passed tests), `PassRate` (the share of passed tests from the first test to now) and `EveryTest` (how long each test took, in the order the tests finished). `Pace`, `Results` and the insight panels are in the main column (the graph at the top, next to the logo; the blocks under the product lanes; the insight panels under the list of tests, in rows of three when the console has the rows for them, and only in a run of 25 tests or more); the others show in a column on the right when the console is about 140 columns or wider, with `Blog`, `Tips` and `Contributor` at its bottom. `Blog` and `Version` each make one web request in the background, and are left out with `-SkipVersionCheck`. An empty list turns the panels off. |
 | `CIAnnotations` | bool | `true` | On GitHub Actions and Azure Pipelines, writes the first 20 Failed (as warnings) and Error (as errors) rows as annotations. |
+| `SponsorMessage` | bool | `true` | After the run summary, writes a short note that Maester runs on sponsorships, with a link to [maester.dev/sponsor](https://maester.dev/sponsor). In an interactive console the heading is animated for about a second and a half; elsewhere (CI, redirected output, `Plain`) it is written as plain lines. `false` leaves it out. |
 
 See [CI test results](../result-schema.md#ci-test-results-nunit-and-junit-xml) for how each result maps to an XML
 outcome.

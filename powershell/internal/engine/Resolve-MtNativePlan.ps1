@@ -76,6 +76,12 @@ function Resolve-MtNativePlan {
         }
         $set = { param($disposition, $code, $detail, $legacy) $row.Disposition = $disposition; $row.ReasonCode = $code; $row.ReasonDetail = $detail; $row.LegacySkipCode = $legacy }
 
+        # A test of a pack that did not pass the loader gate: reported, never run (Maester Packs design, section 5.5).
+        if ($t.PSObject.Properties['PackStatus'] -and $t.PackStatus) {
+            & $set $t.PackStatus.Disposition $t.PackStatus.ReasonCode $t.PackStatus.Reason $(if ($t.PackStatus.Disposition -eq 'NotRun') { 'Custom' })
+            [pscustomobject]$row; continue
+        }
+
         # Invalid metadata, load failures, duplicates, newer engine required.
         if ($t.Errors -and $t.Errors.Count -gt 0) {
             $first = $t.Errors[0]
@@ -129,7 +135,14 @@ function Resolve-MtNativePlan {
                 & $set 'NotRun' 'NotSelected' "Not selected by -$($miss.Selector) ($($miss.Value -join ', '))."
                 [pscustomobject]$row; continue
             }
+            # A pack's suite named exactly by -Suite turns the pack on, as an exact ID does: its preview and
+            # long-running tests run too (Maester Packs design, section 4.7).
+            if ($t.PSObject.Properties['PackId'] -and $t.PackId -and ($Selection.Suite | Where-Object { -not $_.Contains('*') -and $_ -eq $t.Suite })) { $row.ExactlyNamed = $true }
         }
+
+        # A pack named with -Pack (or Selection.Pack) runs whole, as an exact ID does: its preview and
+        # long-running tests run too.
+        if ($t.PSObject.Properties['PackSelected'] -and $t.PackSelected) { $row.ExactlyNamed = $true }
 
         # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its
         # Maester 2.x tags (section 5.1). A pattern that only a 2.x tag answers is noted for the warning below.
@@ -153,7 +166,9 @@ function Resolve-MtNativePlan {
         $optIn = @($t.Service | Where-Object { $registry.Services[$_].OptIn })
         $optInDisconnected = @($optIn | Where-Object { $TenantContext -and $TenantContext.Services.PSObject.Properties[$_] -and -not $TenantContext.Services.$_ })
         if ($optInDisconnected) {
-            & $set 'NotRun' 'OptInServiceNotConnected' 'Active Directory tests run only after Connect-Maester -Service ActiveDirectory.'
+            $first = $optInDisconnected[0]
+            $name = if ($registry.Services[$first].ContainsKey('DisplayName')) { $registry.Services[$first].DisplayName } else { 'Active Directory' }
+            & $set 'NotRun' 'OptInServiceNotConnected' "$name tests run only after Connect-Maester -Service $first."
             [pscustomobject]$row; continue
         }
         # A test named by its exact ID runs even if it is a preview or long-running test.
@@ -295,8 +310,10 @@ function Test-MtApplicability {
         foreach ($s in @($Test.Service)) {
             $connected = $TenantContext.Services.PSObject.Properties[$s]
             if ($connected -and -not $connected.Value) {
-                $legacy = $registry.Services[$s].LegacySkipCode
-                $text = Get-MtSkippedReason -SkippedBecause $legacy
+                $entry = $registry.Services[$s]
+                $legacy = $entry.LegacySkipCode
+                # A pack connector's service names its own connect command.
+                $text = if ($entry.ContainsKey('Pack')) { "Not connected to $($entry.DisplayName). Run Connect-Maester -Service $s." } else { Get-MtSkippedReason -SkippedBecause $legacy }
                 return & $fail 'ServiceNotConnected' $text $legacy
             }
         }

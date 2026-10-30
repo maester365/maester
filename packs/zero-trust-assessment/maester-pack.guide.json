@@ -1,0 +1,57 @@
+{
+  "$schema": "https://maester.dev/schemas/maester-pack-guide-1.0.json",
+  "Summary": "Microsoft's Zero Trust Assessment, run by Maester, with every result in the Maester report.",
+  "Prerequisites": [
+    { "Text": "Install the Zero Trust Assessment module once.", "Command": "Install-Module ZeroTrustAssessment -Scope CurrentUser" },
+    { "Text": "PowerShell 7.4 or later." }
+  ],
+  "Connect": {
+    "Steps": [
+      { "Text": "Connect Maester to the tenant. The pack is skipped while Maester is not connected to Graph.", "Command": "Connect-Maester" }
+    ],
+    "Notes": [
+      "You don't run Connect-ZtAssessment yourself: the assessment runs in its own PowerShell process, and Maester signs in there for you.",
+      "After an interactive Connect-Maester you sign in a second time, in the browser. Without a browser, set ZeroTrustAssessment.Connect to { \"UseDeviceCode\": true }."
+    ],
+    "More": "https://maester.dev/docs/next/packs/zero-trust-assessment#let-maester-run-the-assessment"
+  },
+  "Run": {
+    "Commands": [
+      { "Text": "Only the Zero Trust Assessment", "Command": "Invoke-Maester -Pack ZTA -SkipBuiltIn" },
+      { "Text": "Maester's tests and the assessment", "Command": "Invoke-Maester -Pack ZTA" }
+    ],
+    "Notes": [
+      "The assessment can take an hour or more on a large tenant. Raise Execution.LongRunningTimeoutSeconds in maester-config.json if Maester stops it first."
+    ],
+    "Options": [
+      { "Name": "ZeroTrustAssessment.Pillar", "Default": "All", "Text": "Run one pillar only: Identity, Devices, Network, Data, Infrastructure, SecOps or AI." },
+      { "Name": "ZeroTrustAssessment.Tests", "Default": "all", "Text": "Run only these assessment test IDs, for example [\"21770\", \"21771\"]." },
+      { "Name": "ZeroTrustAssessment.Days", "Default": "30", "Text": "Days of sign-in logs the assessment reads (1 to 30)." },
+      { "Name": "ZeroTrustAssessment.Connect", "Default": "none", "Text": "Further Connect-ZtAssessment parameters, for example { \"Service\": [\"Graph\", \"Azure\"], \"UseDeviceCode\": true }." },
+      { "Name": "ZeroTrustAssessment.ShowLog", "Default": "true", "Text": "List the tests the assessment runs in its live output." },
+      { "Name": "ZeroTrustAssessment.EmbedReport", "Default": "true", "Text": "Embed the assessment's own HTML report in the Maester report." },
+      { "Name": "ZeroTrustAssessment.OutputPath", "Default": "temporary", "Text": "Where the assessment writes its report and export. Kept when set." },
+      { "Name": "ZeroTrustAssessment.ReportPath", "Default": "empty", "Text": "Read a report you already have instead of running the assessment." },
+      { "Name": "ZeroTrustAssessment.DisableTelemetry", "Default": "true", "Text": "The assessment sends the tenant ID to Microsoft unless this is true." }
+    ],
+    "More": "https://maester.dev/docs/next/packs/zero-trust-assessment#settings"
+  },
+  "AppOnly": {
+    "Supported": true,
+    "Methods": { "Certificate": true, "ClientSecret": false, "ManagedIdentity": false, "WorkloadIdentity": false },
+    "Text": "Connect Maester to Graph app-only with a certificate. The assessment uses the same app and certificate, found by its thumbprint in the certificate store. Give the app the Graph permissions below; Get-ZtGraphScope lists them.",
+    "OtherRoles": [
+      "The assessment's Azure, Exchange Online, Security & Compliance and SharePoint tests need the roles the Zero Trust Assessment documentation lists for app-only sign-in. To leave them out, set ZeroTrustAssessment.Connect to { \"Service\": [\"Graph\"] }."
+    ],
+    "Command": "Connect-MgGraph -ClientId <app id> -TenantId <tenant id> -CertificateThumbprint <thumbprint> -NoWelcome\nInvoke-Maester -Pack ZTA -NonInteractive",
+    "More": "https://maester.dev/docs/next/packs/zero-trust-assessment#run-it-in-a-pipeline"
+  },
+  "Links": [
+    { "Text": "About the Zero Trust Assessment", "Url": "https://aka.ms/zerotrust/assessment" },
+    { "Text": "See a demo report", "Url": "https://aka.ms/zerotrust/assessment/demo" }
+  ],
+  "Support": {
+    "Tests": "https://github.com/microsoft/zerotrustassessment/issues",
+    "Pack": "https://github.com/maester365/maester/issues"
+  }
+}

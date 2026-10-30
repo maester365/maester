@@ -4,20 +4,20 @@ function Get-NextModuleVersion {
         Works out the version of the next Maester release or preview.
 
     .DESCRIPTION
-        A preview is a prerelease of the release it leads to: 3.0.0-preview1, 3.0.0-preview2, then 3.0.0.
-        After 3.0.0 ships the previews are 3.1.0-preview1 and so on.
+        A preview is a prerelease of the release it leads to: 3.1.0-preview01, 3.1.0-preview02, then 3.1.0.
 
         - The next release is <Major>.0.0 when Major is above the latest stable release, otherwise the latest
           stable release with its minor number raised by one.
-        - A preview takes the next release's number and the label preview<N>, where N is one more than the
-          highest preview of that release already published.
+        - A preview takes the next release's number and the label preview<NN>, where NN is one more than the
+          highest preview of that release already published, with two digits because the PowerShell Gallery
+          compares labels as text. The 3.0.0 previews after preview9 are rc01, rc02 and so on.
 
         So a preview never uses up a release number, and every preview sorts below its release.
 
     .EXAMPLE
-        Get-NextModuleVersion -StableVersion 2.3.0 -PublishedVersion '3.0.0-preview1' -Major 3 -Preview
+        Get-NextModuleVersion -StableVersion 3.0.0 -PublishedVersion '3.1.0-preview01' -Major 3 -Preview
 
-        Returns ModuleVersion 3.0.0, Prerelease preview2 and FullVersion 3.0.0-preview2.
+        Returns ModuleVersion 3.1.0, Prerelease preview02 and FullVersion 3.1.0-preview02.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -39,11 +39,23 @@ function Get-NextModuleVersion {
 
     $label = ''
     if ($Preview) {
-        $highest = 0
-        foreach ($version in $PublishedVersion) {
-            if ($version -match "^$([regex]::Escape($target))-preview(?<n>\d+)$") { $highest = [Math]::Max($highest, [int]$Matches.n) }
+        # The gallery compares prerelease labels as text, so the number has two digits (preview09 sorts below
+        # preview10). The 3.0.0 previews were numbered preview1 to preview9 before this, and preview9 sorts
+        # above every preview<NN>, so a release that has one of those goes on as rc01, rc02 and so on.
+        $published = @($PublishedVersion | Where-Object { $_ -like "$target-*" } | ForEach-Object { $_.Substring($target.Length + 1) })
+        $next = {
+            param($prefix)
+            $highest = 0
+            foreach ($text in $published) {
+                if ($text -match "^$prefix(?<n>\d+)$") { $highest = [Math]::Max($highest, [int]$Matches.n) }
+            }
+            '{0}{1:D2}' -f $prefix, ($highest + 1)
         }
-        $label = 'preview{0}' -f ($highest + 1)
+        $label = & $next 'preview'
+        if (@($published | Where-Object { [string]::CompareOrdinal($_, $label) -ge 0 }).Count) { $label = & $next 'rc' }
+        if (@($published | Where-Object { [string]::CompareOrdinal($_, $label) -ge 0 }).Count) {
+            throw "No preview label of $target sorts above the published ones ($($published -join ', '))."
+        }
     }
 
     [pscustomobject]@{

@@ -23,9 +23,10 @@
     $builtInFiles = @(Get-MtBuiltInPesterFile -BuiltInRoot $builtInRoot)
     $builtInInventory = @(if ($builtInFiles.Count -gt 0) { Get-MtPesterFileInventory -Path $builtInFiles })
     $resolvedBuiltInRoot = if (Test-Path -LiteralPath $builtInRoot) { (Resolve-Path -LiteralPath $builtInRoot).Path } else { $builtInRoot }
+    $builtInPrefix = $resolvedBuiltInRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
 
     $candidates = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -notmatch '[\\/][Cc]ustom[\\/]' -and -not $_.FullName.StartsWith($resolvedBuiltInRoot, [System.StringComparison]::OrdinalIgnoreCase) } |
+            Where-Object { $_.FullName -notmatch '[\\/][Cc]ustom[\\/]' -and -not $_.FullName.StartsWith($builtInPrefix, [System.StringComparison]::OrdinalIgnoreCase) } |
             ForEach-Object { $_.FullName })
     $removed = [System.Collections.Generic.List[string]]::new()
     if ($candidates.Count -gt 0) {

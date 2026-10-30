@@ -977,7 +977,7 @@ namespace Maester.Engine
 
             // While tests run the top of the screen is a band of five rows: the small logo, and the Pace graph
             // to its right. It needs a console of some size; a smaller one gets one line.
-            bool band = tests && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
+            bool band = (tests || OutputTimed) && _runLogo != null && rows >= RunBandLeastRows && max >= _runLogoWidth + 3 + RunBandLeastGraph;
 
             // Before the tests start the phases have a line under the banner. Once they run, the phases are
             // right above the overall progress (under the band), or in the header when that is one line.
@@ -987,7 +987,7 @@ namespace Maester.Engine
                 body.Add(phases);
                 body.Add(blank());
             }
-            if (band && phases != null) body.Add(phases);
+            if (band && tests && phases != null) body.Add(phases);
             if (tests)
             {
                 int done = FinishedCount();
@@ -1019,8 +1019,9 @@ namespace Maester.Engine
             // one line, by name and number of tests. That is a lane whose tests all finished as skipped, and a
             // lane that the run gave no tests and the note "n skipped" (its service is not connected).
             var skippedLanes = tests ? SkippedLanes() : new List<Lane>();
-            int lanesWanted = tests ? _lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0) : 0;
-            int needed = body.Count + tail.Count + 2 + (info ? 1 : 0);
+            int lanesWanted = tests ? Lanes.Count - skippedLanes.Count + (skippedLanes.Count > 0 ? 1 : 0) : 0;
+            bool output = _outputTitle != null;
+            int needed = body.Count + tail.Count + 2 + (info ? 1 : 0) + (output && !tests ? OutputOpeningRows : 0);
             if (band) header.AddRange(BuildRunBand(max, ansi));
             else if (tests) header.AddRange(BuildRunHeader(max, phases, ansi));
             else header.AddRange(BuildOpeningHeader(max, rows, needed, ansi));
@@ -1063,7 +1064,7 @@ namespace Maester.Engine
             // Without the band the Pace graph is under the lanes, when there are rows for it next to the result
             // blocks and a few of the tests that ran (two to five rows of graph, and the line that says what it
             // shows).
-            int free = rows - header.Count - body.Count - lanes.Count - tail.Count - 1;
+            int free = rows - header.Count - body.Count - lanes.Count - tail.Count - 1 - (output && tests ? OutputTestRows + 1 : 0);
             var pace = new List<Line>();
             if (tests && !band && PanelShown(PacePanel) && free >= 10)
             {
@@ -1082,6 +1083,12 @@ namespace Maester.Engine
             screen.AddRange(pace);
             screen.AddRange(chart);
             screen.AddRange(tail);
+            // The output box of the work that runs: the rows that are left before the tests start, ten rows while they run.
+            if (output && rows - screen.Count >= OutputLeastRows + 1)
+            {
+                screen.Add(blank());
+                screen.AddRange(BuildOutputBox(Math.Max(1, max - 1), tests ? Math.Min(OutputTestRows, rows - screen.Count) : rows - screen.Count, ansi));
+            }
             // The rows that are left under the running tests list the tests that ran before them. The insight
             // panels are under that list, at the bottom: they leave it three tests, and the list has the rows
             // that no panel takes.

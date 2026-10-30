@@ -20,6 +20,7 @@ Describe 'CIS GitHub organization setting tests' {
         }
 
         $script:orgResponse = [PSCustomObject]@{
+            id                                       = 1001
             login                                    = 'myorg'
             members_can_create_public_repositories  = $false
             members_can_create_private_repositories = $false
@@ -31,7 +32,12 @@ Describe 'CIS GitHub organization setting tests' {
             default_repository_permission           = 'read'
         }
 
-        Mock Invoke-MtGitHubRequest -ModuleName Maester { $script:orgResponse }
+        Mock Invoke-MtGitHubRequest -ModuleName Maester {
+            if ($IncludeMetadata) {
+                return [pscustomobject]@{ Data = $script:orgResponse; ContentKind = 'Object'; CollectionIntegrityValid = $true; PaginationComplete = $false; Issues = @() }
+            }
+            $script:orgResponse
+        }
         Mock Add-MtTestResultDetail -ModuleName Maester { }
     }
 
@@ -120,22 +126,6 @@ Describe 'CIS GitHub organization setting tests' {
                 HasLegacyFooter = $true
                 HasInternalNote = $true
                 IsInvestigate   = $false
-            }
-            @{
-                Function        = 'Test-MtCisGitHubRepositoryDeletionLimited'
-                Id              = 'CIS.GH.1.2.3'
-                ExpectedRows    = @('\| `members_can_delete_repositories` \| `False` \|')
-                HasLegacyFooter = $false
-                HasInternalNote = $false
-                IsInvestigate   = $true
-            }
-            @{
-                Function        = 'Test-MtCisGitHubIssueDeletionLimited'
-                Id              = 'CIS.GH.1.2.4'
-                ExpectedRows    = @('\| `members_can_delete_issues` \| `False` \|')
-                HasLegacyFooter = $false
-                HasInternalNote = $false
-                IsInvestigate   = $true
             }
             @{
                 Function        = 'Test-MtCisGitHubTeamCreationLimited'
@@ -240,72 +230,6 @@ Describe 'CIS GitHub organization setting tests' {
 
     }
 
-    Context 'Manual review required' {
-        It 'Marks repository deletion as investigate when member repository deletion is disabled' {
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
-
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                -not $SkippedBecause -and
-                -not $SkippedCustomReason -and
-                $Investigate -eq $true -and
-                $Result -match 'Manual review required' -and
-                $Result -match 'few' -and
-                $Result -match 'trusted and qualified' -and
-                $Result -match 'organization owners' -and
-                $Result -match '\| `members_can_delete_repositories` \| `False` \|'
-            }
-        }
-
-        It 'Marks repository deletion as investigate when member repository deletion is enabled' {
-            $script:orgResponse.members_can_delete_repositories = $true
-
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
-
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                -not $SkippedBecause -and
-                -not $SkippedCustomReason -and
-                $Investigate -eq $true -and
-                $Result -match 'Manual review required' -and
-                $Result -match 'exactly two' -and
-                $Result -match 'trusted and qualified' -and
-                $Result -match 'every repository' -and
-                $Result -match '\| `members_can_delete_repositories` \| `True` \|'
-            }
-        }
-
-        It 'Marks issue deletion as investigate when member issue deletion is disabled' {
-            Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
-
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                -not $SkippedBecause -and
-                -not $SkippedCustomReason -and
-                $Investigate -eq $true -and
-                $Result -match 'Manual review required' -and
-                $Result -match 'few' -and
-                $Result -match 'trusted and qualified' -and
-                $Result -match 'organization owners' -and
-                $Result -match '\| `members_can_delete_issues` \| `False` \|'
-            }
-        }
-
-        It 'Marks issue deletion as investigate when member issue deletion is enabled' {
-            $script:orgResponse.members_can_delete_issues = $true
-
-            Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
-
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                -not $SkippedBecause -and
-                -not $SkippedCustomReason -and
-                $Investigate -eq $true -and
-                $Result -match 'Manual review required' -and
-                $Result -match 'exactly two' -and
-                $Result -match 'trusted and qualified' -and
-                $Result -match 'every repository' -and
-                $Result -match '\| `members_can_delete_issues` \| `True` \|'
-            }
-        }
-    }
-
     Context 'Missing evidence' {
         $missingFieldCases = @(
             @{
@@ -395,7 +319,7 @@ Describe 'CIS GitHub organization setting tests' {
 
 Describe 'CIS GitHub evidence through the native transport and parser path' {
     BeforeAll {
-        $script:validBody = '{"members_can_create_public_repositories":false,"members_can_create_private_repositories":false,"members_can_create_internal_repositories":false,"members_can_delete_repositories":false,"members_can_delete_issues":false,"members_can_create_teams":false,"default_repository_permission":"read"}'
+        $script:validBody = '{"id":1001,"login":"synthetic-org","members_can_create_public_repositories":false,"members_can_create_private_repositories":false,"members_can_create_internal_repositories":false,"members_can_delete_repositories":false,"members_can_delete_issues":false,"members_can_create_teams":false,"default_repository_permission":"read"}'
     }
 
     BeforeEach {
@@ -495,31 +419,24 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         }
     }
 
-    Context 'Deletion evidence remains partial' {
+    Context 'Deletion approval configuration is absent' {
         $deletionCases = foreach ($check in @(
                 @{ Id = 'CIS.GH.1.2.3'; Field = 'members_can_delete_repositories' }
                 @{ Id = 'CIS.GH.1.2.4'; Field = 'members_can_delete_issues' }
             )) {
             foreach ($value in 'true', 'false') { @{ Id = $check.Id; Field = $check.Field; Json = $value } }
         }
-        It 'Keeps <Id> Investigate for <Json> and reports the remaining CIS review' -ForEach $deletionCases {
-            $script:rawBody = '{"' + $Field + '":' + $Json + '}'
+        It 'Keeps <Id> Investigate for <Json> until approval configuration is supplied' -ForEach $deletionCases {
+            $script:rawBody = '{"id":1001,"login":"synthetic-org","' + $Field + '":' + $Json + '}'
             $row = @(Invoke-MtTest -Id $Id)
             $row.Count | Should -Be 1
             $row[0].Result | Should -Be 'Investigate'
             $detail = $row[0].ResultDetail.TestResult
-            $detail | Should -Match 'partial'
-            $detail | Should -Not -Match '\| Expected \|'
-            $detail | Should -Match ([regex]::Escape('`' + $Field + '` | `' + $Json + '`'))
-            if ($Json -eq 'true') {
-                $detail | Should -Match 'exactly two'
-                $detail | Should -Match 'every repository'
-                $detail | Should -Match 'trusted and qualified'
-            } else {
-                $detail | Should -Match 'few'
-                $detail | Should -Match 'organization owners'
-                $detail | Should -Match 'trusted and qualified'
-            }
+            $detail | Should -Match 'GitHubDeletionPolicy'
+            $detail | Should -Match 'trusted and qualified'
+            $detail | Should -Match $Field
+            $detail | Should -Match $Json
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
         }
     }
 

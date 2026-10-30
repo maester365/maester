@@ -13,6 +13,10 @@
     The report omits each test's ErrorRecord, which the report doesn't display. The
     MaesterResults object passed in and the JSON results file keep it.
 
+    Reports added with Add-MtReportAttachment are embedded in the page, each in its own element, and
+    opened from a button. They are left out when RedactUserIdentity is HtmlOnly or AllOutputs, because
+    Maester cannot redact another tool's report.
+
     .Example
     $pesterResults = Invoke-Pester -PassThru
     $maesterResults = ConvertTo-MtMaesterResult $pesterResults
@@ -107,9 +111,23 @@
                         }
                     })
             }
+            # The report data lists each attachment without its content, which is written into its own element.
+            if ($null -ne $copy.Attachments) {
+                if ($RedactUserIdentity -ne 'None') {
+                    $copy.Remove('Attachments')
+                    $redactedAttachments.Value = $true
+                } else {
+                    $copy.Attachments = @($copy.Attachments | Where-Object { $_ -and $_.Content } | ForEach-Object {
+                            $attachmentContent.Add($_)
+                            [PSCustomObject](& $copyWithout $_ 'Content')
+                        })
+                }
+            }
             [PSCustomObject]$copy
         }
 
+        $attachmentContent = [System.Collections.Generic.List[object]]::new()
+        $redactedAttachments = [ref]$false
         $reportResults = & $removeErrorRecord $MaesterResults
 
         # Check the copy rather than the input so hashtable results are detected too.
@@ -118,6 +136,10 @@
         $depth = if ($isMultiTenant) { 7 } else { 5 }
         if ($isMultiTenant -and $null -ne $reportResults.Tenants) {
             $reportResults.Tenants = @($reportResults.Tenants | ForEach-Object { & $removeErrorRecord $_ })
+        }
+
+        if ($redactedAttachments.Value) {
+            Write-Warning "RedactUserIdentity: the reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
         }
 
         Write-Verbose "Generating HTML report."
@@ -159,6 +181,18 @@
         $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
         $outputHtml += $json
         $outputHtml += $templateHtml.Substring($insertLocationEnd)
+
+        # Each attachment is Base64 text, which cannot end the script element. The report reads it by the element's id.
+        if ($attachmentContent.Count -gt 0) {
+            $elements = foreach ($attachment in $attachmentContent) {
+                $id = [string]$attachment.Id -replace '[^A-Za-z0-9_-]', ''
+                $content = [string]$attachment.Content -replace '[^A-Za-z0-9+/=]', ''
+                '<script type="application/octet-stream" id="maester-attachment-{0}" data-encoding="{1}">{2}</script>' -f $id, 'gzip+base64', $content
+            }
+            $bodyEnd = $outputHtml.LastIndexOf('</body>', [System.StringComparison]::OrdinalIgnoreCase)
+            if ($bodyEnd -lt 0) { $bodyEnd = $outputHtml.Length }
+            $outputHtml = $outputHtml.Insert($bodyEnd, ($elements -join "`n") + "`n")
+        }
 
         return $outputHtml
     }
