@@ -20,9 +20,10 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 265 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 266 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
+| [ASD](./asd) | 14 | ASD Essential Eight requirements and Information security manual (ISM) controls implemented as Maester tests. |
 | [CIS](./cis) | 125 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
@@ -301,6 +302,20 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-USER-27](./AD-USER-27) | Honey pot user details should be investigated | Active Directory | Info | Active Directory | Users |
 | [AD-USER-28](./AD-USER-28) | User delegation configured count should be investigated | Active Directory | Info | Active Directory | Users |
 | [AD-USER-29](./AD-USER-29) | No users should be configured for unconstrained delegation | Active Directory | High | Active Directory | Users |
+| [ASD.ISM-1175](./ASD.ISM-1175) | Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services. | ASD | High | Entra ID | Roles and administrators |
+| [ASD.ISM-1403](./ASD.ISM-1403) | User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts. | ASD | Medium | Entra ID | Password protection |
+| [ASD.ISM-1488](./ASD.ISM-1488) | Microsoft Office macros in files originating from the internet are blocked. | ASD | Medium | Intune | Device configuration |
+| [ASD.ISM-1504](./ASD.ISM-1504) | Multi-factor authentication is used to authenticate human users to their organisation's online services. | ASD | High | Entra ID | Conditional Access |
+| [ASD.ISM-1648](./ASD.ISM-1648) | Privileged access to systems and their resources is disabled after 45 days of inactivity. | ASD | Medium | Entra ID | Roles and administrators |
+| [ASD.ISM-1649](./ASD.ISM-1649) | Just-in-time administration is used for the administration of systems and their resources. | ASD | High | Entra ID | Privileged Identity Management |
+| [ASD.ISM-1654](./ASD.ISM-1654) | Internet Explorer 11 is disabled or removed. | ASD | Low | Intune | Device configuration |
+| [ASD.ISM-1667](./ASD.ISM-1667) | Microsoft Office is blocked from creating child processes. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1668](./ASD.ISM-1668) | Microsoft Office is blocked from creating executable content. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1669](./ASD.ISM-1669) | Microsoft Office is blocked from injecting code into other processes. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1672](./ASD.ISM-1672) | Microsoft Office macro antivirus scanning is enabled. | ASD | Medium | Intune | Device configuration |
+| [ASD.ISM-1673](./ASD.ISM-1673) | Microsoft Office macros are blocked from making Win32 API calls. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1695](./ASD.ISM-1695) | Patches for vulnerabilities in the operating systems of workstations are applied within one month of release. | ASD | High | Intune | Device configuration |
+| [ASD.ISM-1872](./ASD.ISM-1872) | Multi-factor authentication used for authenticating human users of online services is phishing-resistant. | ASD | High | Entra ID | Conditional Access |
 | [AZDO.1000](./AZDO.1000) | Azure DevOps OAuth apps can access resources in your organization through OAuth. | Maester | High | Azure DevOps | Security policies |
 | [AZDO.1001](./AZDO.1001) | Identities can connect to your organization's Git repos through SSH. | Maester | High | Azure DevOps | Security policies |
 | [AZDO.1002](./AZDO.1002) | Log Audit Events. | Maester | High | Azure DevOps | Auditing |
@@ -792,6 +807,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
 | [MT.1226](./MT.1226) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Maester | Medium | Entra ID | Applications |
+| [MT.1227](./MT.1227) | Subscriptions should be blocked from leaving and entering the tenant | Maester | Medium | Azure | Subscriptions |
 | [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |

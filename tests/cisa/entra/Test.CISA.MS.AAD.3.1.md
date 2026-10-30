@@ -2,6 +2,8 @@
 
 Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized.
 
+The test passes when an enabled Conditional Access policy for all users and all cloud apps requires the built-in **Phishing-resistant MFA** authentication strength, or a custom authentication strength limited to Windows Hello for Business, passkeys (FIDO2) and certificate-based multifactor authentication.
+
 #### Remediation action:
 
 Create a Conditional Access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new Conditional Access policy, per the values below:

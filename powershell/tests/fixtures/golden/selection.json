@@ -2,7 +2,7 @@
   "_meta": {
     "Description": "Maester 2.x golden: Pester filter built by Invoke-Maester and the IDs it selects. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.",
     "FilterSource": "The include and exclude tags of the real Invoke-Maester run context, run with -DryRun -SkipGraphConnect in an empty folder.",
-    "SelectionSource": "The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.",
+    "SelectionSource": "The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, ExcludedByProduct, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.",
     "Assumptions": [
       "Not connected to Active Directory, so Invoke-Maester appends AD to Filter.ExcludeTag.",
       "Run.Path \".\" is the installed tests folder (repo tests/ without Custom); \"./tests/<x>\" maps to repo tests/<x>.",
@@ -21,13 +21,27 @@
           "AD"
         ]
       },
-      "SelectedCount": 556,
+      "SelectedCount": 570,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -745,13 +759,27 @@
           "AD"
         ]
       },
-      "SelectedCount": 512,
+      "SelectedCount": 526,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -1278,7 +1306,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 572,
+      "SelectedCount": 586,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -1287,6 +1315,20 @@
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -1873,13 +1915,27 @@
           "AD"
         ]
       },
-      "SelectedCount": 572,
+      "SelectedCount": 586,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -2466,7 +2522,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 602,
+      "SelectedCount": 616,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -2475,6 +2531,20 @@
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -3289,13 +3359,27 @@
           "AD"
         ]
       },
-      "SelectedCount": 512,
+      "SelectedCount": 526,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",
@@ -3828,7 +3912,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 558,
+      "SelectedCount": 572,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -3837,6 +3921,20 @@
         "MT1060"
       ],
       "SelectedIds": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872",
         "AZDO.1000",
         "AZDO.1001",
         "AZDO.1002",

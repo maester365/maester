@@ -10,7 +10,10 @@
 
     By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (Test.*.ps1) are found anywhere under the path and Pester-format custom tests (*.Tests.ps1) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
-    -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
+    -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. -ExcludeProduct leaves out the tests of a product and wins over every selector. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
+
+    .PARAMETER ExcludeProduct
+    Do not run the tests of these products: keys such as entra or exchange, or an alias such as 'exo' or 'Entra ID'. Matches a test's Product or any of its RelatedProduct values, and '*' wildcards are allowed, as for -Product. Adds to Selection.ExcludeProduct in the run configuration and wins over -Product, -TestId and the other selectors. Excluded tests are reported as NotRun with the reason code ExcludedByProduct. A test without a product, such as a Pester-format custom test, is never excluded.
 
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
@@ -51,6 +54,11 @@
     Invoke-Maester -Product entra -Severity Critical, High
 
     Runs the Entra ID tests whose severity is Critical or High. Values of one selector are alternatives; different selectors must all match.
+
+    .EXAMPLE
+    Invoke-Maester -ExcludeProduct exchange
+
+    Runs the tests that ship with Maester and the custom tests, except the tests about Exchange Online (a test whose Product or RelatedProduct is exchange). Pester-format custom tests have no product and still run.
 
     .EXAMPLE
     Invoke-Maester -Suite cisa -Area authentication
@@ -174,6 +182,10 @@
         # Matches a test's Product or any of its RelatedProduct values. '*' wildcards are allowed.
         [string[]] $Product,
 
+        # Do not run the tests of these products, matched like -Product. Wins over every selector.
+        # A test without a product, such as a Pester-format custom test, is never excluded.
+        [string[]] $ExcludeProduct,
+
         # Only run the tests about these features of a product, for example conditional-access. '*' wildcards are allowed.
         [string[]] $Feature,
 
@@ -184,7 +196,7 @@
         # A severity set for a test in the run configuration is the one that counts.
         [string[]] $Severity,
 
-        # Only run the tests of these suites, for example Maester, CISA, CIS, EIDSCA, ORCA or AD. '*' wildcards are allowed.
+        # Only run the tests of these suites, for example Maester, CISA, CIS, ASD, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
 
         # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
@@ -514,12 +526,12 @@
         }
 
         $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
-            -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Pack $Pack `
+            -Product $Product -ExcludeProduct $ExcludeProduct -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Pack $Pack `
             -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
         # The selectors live in $selection from here on. A test runs in a child scope of this function, so a
         # test that reads a $Severity or $Product it never set would otherwise see the value of the parameter.
-        $Product = $Feature = $Area = $Severity = $Suite = $Pack = $null
+        $Product = $ExcludeProduct = $Feature = $Area = $Severity = $Suite = $Pack = $null
         $Tag = $selection.Tag
         $ExcludeTag = $selection.ExcludeTag
         $IncludePreview = [switch]$selection.IncludePreview
@@ -839,7 +851,9 @@
 
         # Stages 2, 5 and 6 for native tests: the tenant context, then selection and applicability.
         $nativeTests = @($nativeBuiltIn) + @($nativeCustom) + @($nativePack)
-        $neededServices = @($nativeTests | ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
+        # A service that only the tests of excluded products need is not read or connected.
+        $neededServices = @($nativeTests | Where-Object { -not (Test-MtProductExcluded -Selection $selection -Product (@($_.Product) + @($_.RelatedProduct))) } |
+                ForEach-Object { $_.Service } | Where-Object { $_ } | Select-Object -Unique)
         Write-MtProgress -Activity 'Starting Maester' -Status 'Reading the tenant context...' -Force
         # The dashboard shows the tenant and the services while they are read, and fills in each answer as it comes.
         $tenantStep = if ($console.Mode -eq 'Interactive') { Start-MtDashboardTenant -Renderer $renderer -Console $console -Service $(if ($neededServices) { $neededServices } else { @('Graph') }) }

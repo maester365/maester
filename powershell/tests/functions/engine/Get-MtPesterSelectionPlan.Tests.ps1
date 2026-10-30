@@ -100,6 +100,10 @@ Describe 'Get-MtPesterSelectionPlan' {
         Get-Reason $plan 'S.1004' | Should -Be 'ExcludedById'
     }
 
+    It 'Excludes no Pester-format test with ExcludeProduct, because none has a product' {
+        (Get-Plan -Selection @{ ExcludeProduct = @('*') }).ExcludeLines.Count | Should -Be 0
+    }
+
     It 'Lifts the Preview exclusion for an exact ID but not for a wildcard' {
         $exact = Get-Plan -Selection @{ TestId = @('S.1002') }
         $exact.LiftPreview | Should -BeTrue

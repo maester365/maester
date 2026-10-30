@@ -424,7 +424,7 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 8
+      "recentCommits": 7
     },
     {
       "id": "JeremyFinney-lgtm",
@@ -679,7 +679,7 @@
       ],
       "testsContributed": [],
       "initials": "SC",
-      "recentCommits": 2
+      "recentCommits": 1
     },
     {
       "id": "f-bader",
@@ -1027,6 +1027,41 @@
       ],
       "initials": "M",
       "recentCommits": 3
+    },
+    {
+      "id": "jusso-dev",
+      "github": "jusso-dev",
+      "name": "jusso-dev",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/jusso-dev.png",
+      "firstContribution": "",
+      "testsAuthored": [
+        "ASD.ISM-1175",
+        "ASD.ISM-1403",
+        "ASD.ISM-1488",
+        "ASD.ISM-1504",
+        "ASD.ISM-1648",
+        "ASD.ISM-1649",
+        "ASD.ISM-1654",
+        "ASD.ISM-1667",
+        "ASD.ISM-1668",
+        "ASD.ISM-1669",
+        "ASD.ISM-1672",
+        "ASD.ISM-1673",
+        "ASD.ISM-1695",
+        "ASD.ISM-1872"
+      ],
+      "testsContributed": [],
+      "initials": "JD",
+      "recentCommits": 0
     },
     {
       "id": "thomas-s-schmidt",
@@ -1761,7 +1796,7 @@
       ],
       "testsContributed": [],
       "initials": "BV",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "Dfrank77",
@@ -1785,6 +1820,29 @@
       "testsContributed": [],
       "initials": "DF",
       "recentCommits": 17
+    },
+    {
+      "id": "Oppedijk",
+      "github": "Oppedijk",
+      "name": "Erik Oppedijk",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "Xebia",
+      "location": "Netherlands",
+      "locationFlag": "🇳🇱",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Oppedijk.png",
+      "firstContribution": "2024-08-26",
+      "testsAuthored": [
+        "MT.1056",
+        "MT.1227"
+      ],
+      "testsContributed": [],
+      "initials": "EO",
+      "recentCommits": 6
     },
     {
       "id": "simon-vedder",
@@ -1890,28 +1948,6 @@
         "CISA.MS.AAD.7.3"
       ],
       "initials": "A",
-      "recentCommits": 0
-    },
-    {
-      "id": "Oppedijk",
-      "github": "Oppedijk",
-      "name": "Erik Oppedijk",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
-      "pinLast": false,
-      "company": "Xebia",
-      "location": "Netherlands",
-      "locationFlag": "🇳🇱",
-      "url": "",
-      "socials": {},
-      "avatar": "https://github.com/Oppedijk.png",
-      "firstContribution": "2024-08-26",
-      "testsAuthored": [
-        "MT.1056"
-      ],
-      "testsContributed": [],
-      "initials": "EO",
       "recentCommits": 0
     },
     {
@@ -2031,7 +2067,7 @@
         "CISA.MS.EXO.3.1"
       ],
       "initials": "HH",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "knussbaumer",
@@ -2310,7 +2346,7 @@
         "MT.1071"
       ],
       "initials": "MM",
-      "recentCommits": 4
+      "recentCommits": 0
     },
     {
       "id": "mattcave",
@@ -2738,10 +2774,11 @@
         "MT.1054",
         "MT.1056",
         "MT.1058",
-        "MT.1084"
+        "MT.1084",
+        "MT.1227"
       ],
       "initials": "MF",
-      "recentCommits": 177
+      "recentCommits": 181
     }
   ],
   "attributions": {
@@ -3823,6 +3860,62 @@
     },
     "AD-USER-29": {
       "author": "soulemike",
+      "contributors": []
+    },
+    "ASD.ISM-1175": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1403": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1488": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1504": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1648": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1649": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1654": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1667": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1668": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1669": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1672": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1673": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1695": {
+      "author": "jusso-dev",
+      "contributors": []
+    },
+    "ASD.ISM-1872": {
+      "author": "jusso-dev",
       "contributors": []
     },
     "AZDO.1000": {
@@ -6212,6 +6305,12 @@
       "author": "nicolonsky",
       "contributors": []
     },
+    "MT.1227": {
+      "author": "Oppedijk",
+      "contributors": [
+        "merill"
+      ]
+    },
     "MT.1228": {
       "author": "earbona23",
       "contributors": []
@@ -7661,6 +7760,62 @@
     "AD-USER-29": {
       "title": "No users should be configured for unconstrained delegation",
       "path": "/docs/tests/AD-USER-29"
+    },
+    "ASD.ISM-1175": {
+      "title": "Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services.",
+      "path": "/docs/next/tests/ASD.ISM-1175"
+    },
+    "ASD.ISM-1403": {
+      "title": "User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts.",
+      "path": "/docs/next/tests/ASD.ISM-1403"
+    },
+    "ASD.ISM-1488": {
+      "title": "Microsoft Office macros in files originating from the internet are blocked.",
+      "path": "/docs/next/tests/ASD.ISM-1488"
+    },
+    "ASD.ISM-1504": {
+      "title": "Multi-factor authentication is used to authenticate human users to their organisation's online services.",
+      "path": "/docs/next/tests/ASD.ISM-1504"
+    },
+    "ASD.ISM-1648": {
+      "title": "Privileged access to systems and their resources is disabled after 45 days of inactivity.",
+      "path": "/docs/next/tests/ASD.ISM-1648"
+    },
+    "ASD.ISM-1649": {
+      "title": "Just-in-time administration is used for the administration of systems and their resources.",
+      "path": "/docs/next/tests/ASD.ISM-1649"
+    },
+    "ASD.ISM-1654": {
+      "title": "Internet Explorer 11 is disabled or removed.",
+      "path": "/docs/next/tests/ASD.ISM-1654"
+    },
+    "ASD.ISM-1667": {
+      "title": "Microsoft Office is blocked from creating child processes.",
+      "path": "/docs/next/tests/ASD.ISM-1667"
+    },
+    "ASD.ISM-1668": {
+      "title": "Microsoft Office is blocked from creating executable content.",
+      "path": "/docs/next/tests/ASD.ISM-1668"
+    },
+    "ASD.ISM-1669": {
+      "title": "Microsoft Office is blocked from injecting code into other processes.",
+      "path": "/docs/next/tests/ASD.ISM-1669"
+    },
+    "ASD.ISM-1672": {
+      "title": "Microsoft Office macro antivirus scanning is enabled.",
+      "path": "/docs/next/tests/ASD.ISM-1672"
+    },
+    "ASD.ISM-1673": {
+      "title": "Microsoft Office macros are blocked from making Win32 API calls.",
+      "path": "/docs/next/tests/ASD.ISM-1673"
+    },
+    "ASD.ISM-1695": {
+      "title": "Patches for vulnerabilities in the operating systems of workstations are applied within one month of release.",
+      "path": "/docs/next/tests/ASD.ISM-1695"
+    },
+    "ASD.ISM-1872": {
+      "title": "Multi-factor authentication used for authenticating human users of online services is phishing-resistant.",
+      "path": "/docs/next/tests/ASD.ISM-1872"
     },
     "AZDO.1000": {
       "title": "Azure DevOps OAuth apps can access resources in your organization through OAuth.",
@@ -9625,6 +9780,10 @@
     "MT.1226": {
       "title": "GitHub and GitLab federated identity credentials should use immutable subject identifiers.",
       "path": "/docs/next/tests/MT.1226"
+    },
+    "MT.1227": {
+      "title": "Subscriptions should be blocked from leaving and entering the tenant",
+      "path": "/docs/next/tests/MT.1227"
     },
     "MT.1228": {
       "title": "Ensure iOS compliance policy blocks jailbroken devices.",
