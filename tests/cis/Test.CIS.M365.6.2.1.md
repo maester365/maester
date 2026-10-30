@@ -2,7 +2,7 @@
 
 Auto-forwarding is a favourite way to take mail from a compromised mailbox: the attacker adds a rule that copies every message to an outside address and then keeps receiving mail after the password is reset. It is also an easy way for a user to move company data to a personal account.
 
-The test lists enabled transport rules outside audit mode that redirect mail to an address outside the accepted domains. It resolves a recipient stored by alias or name before checking its address. Domain matching is exact: a subdomain is external unless it is itself an accepted domain. The test also checks the default outbound spam policy and custom policies that an enabled rule applies to; unused custom policies are not evaluated. Automatic forwarding must be **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
+The test checks the `RedirectMessageTo` property used by the CIS PowerShell audit procedure, and lists enabled transport rules outside audit mode that redirect mail to an address outside the accepted domains. It resolves a recipient stored by alias or name before checking its address. Domain matching is exact: a subdomain is external unless it is itself an accepted domain. It also checks every outbound spam policy returned by Exchange, including custom policies without an enabled rule, and fails if the default policy is missing. Automatic forwarding must be **Off**. The default **Automatic - System-controlled** does not pass, because its effect depends on the organisation.
 
 #### Remediation action
 

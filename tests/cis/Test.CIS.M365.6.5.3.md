@@ -4,6 +4,8 @@ This setting allows users to open certain external files while working in Outloo
 
 Ensure **AdditionalStorageProvidersAvailable** is restricted on the default OWA policy.
 
+The check passes only when the default policy returns `False`. A missing value does not demonstrate that storage providers are restricted and therefore does not pass.
+
 #### Rationale
 
 By default, additional storage providers are allowed in Office on the Web (such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.). This could lead to information leakage and additional risk of infection from organizational non-trusted storage providers. Restricting this will inherently reduce risk as it will narrow opportunities for infection and data leakage.
