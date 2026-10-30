@@ -4,17 +4,14 @@
     CIS.GH.1.2.4: Ensure issue deletion is limited to specific users.
 
     .DESCRIPTION
-    CIS GitHub Benchmark v1.2.0 section 1.2.4 marks this recommendation as
-    Manual. This test collects organization setting evidence from
-    GET /orgs/{org} and marks the result as Investigate because CIS GH 1.2.4
-    still requires a manual trust review for either repository administrators
-    or organization owners.
+    Assesses the CIS owner or repository-administrator branch using typed live
+    evidence and users configured as trusted and qualified in GitHubDeletionPolicy.
+    Missing approvals or unresolved restrictive alternatives require investigation.
 
     .EXAMPLE
-    Test-MtCisGitHubIssueDeletionLimited
+    Test-MtCisGitHubIssueDeletionLimited -MaximumOrganizationOwners 3
 
-    Returns Investigate when the GitHub organization setting is a Boolean;
-    unusable evidence is indeterminate.
+    Checks the connected organization against the configured approval roster.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited
@@ -36,43 +33,11 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Maximum live organization owners when member issue deletion is disabled; a Maester policy choice, not a CIS numeric requirement.
+        [ValidateRange(1, 3)]
+        [int] $MaximumOrganizationOwners = 3
+    )
 
-    Write-Verbose 'Retrieving GitHub organization settings for CIS.GH.1.2.4.'
-    $org = Get-MtGitHubOrganization
-    $field = 'members_can_delete_issues'
-    if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.2.4 and may be missing because of permissions, plan, API version, or organization type."
-        return $null
-    }
-
-    if ($org.$field -isnot [bool]) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field '$field' must be a Boolean to evaluate CIS.GH.1.2.4. No configuration verdict was produced."
-        return $null
-    }
-
-    $resultMarkdown = @"
-CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
-
-| Field | Actual |
-| --- | --- |
-| ``$field`` | ``$($org.$field)`` |
-
-Partial evidence only: this setting does not establish CIS compliance. The administrator/owner population and trust review below remains unassessed.
-"@
-
-    if ($org.$field -eq $true) {
-        $resultMarkdown += @"
-
-Manual review required - ``members_can_delete_issues`` is true. For CIS GH 1.2.4, verify that every repository has exactly two repository administrators, both trusted and qualified; document the population and trust review.
-"@
-    } else {
-        $resultMarkdown += @"
-
-Manual review required - ``members_can_delete_issues`` is false. For CIS GH 1.2.4, verify that there are only a few organization owners, all trusted and qualified; document the population and trust review. CIS does not specify a numeric owner limit.
-"@
-    }
-
-    Add-MtTestResultDetail -Result $resultMarkdown -Investigate
-    return $null
+    return Test-MtCisGitHubDeletion -Kind Issue -MaximumOrganizationOwners $MaximumOrganizationOwners
 }

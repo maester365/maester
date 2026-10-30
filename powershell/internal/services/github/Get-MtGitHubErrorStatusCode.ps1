@@ -8,6 +8,7 @@
     $null for transport failures where no HTTP response was produced.
     #>
     param([Parameter(Mandatory)] $ErrorRecord)
+    if ($ErrorRecord.Exception.Data['GitHubRateLimit']) { return $ErrorRecord.Exception.Data['GitHubRateLimit'].HttpStatus }
     try {
         if ($ErrorRecord.Exception.Response -and $ErrorRecord.Exception.Response.StatusCode) {
             return [int]$ErrorRecord.Exception.Response.StatusCode
