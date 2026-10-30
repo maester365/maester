@@ -75,6 +75,7 @@ This test retrieves detailed information about each supported SASL mechanism:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSupportedSaslMechanismDetails](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty |
 
 ## Source
 

@@ -73,6 +73,7 @@ keywords:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupInContainerCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty |
 
 ## Source
 

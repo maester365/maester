@@ -70,6 +70,7 @@ This test retrieves all Active Directory sites using `Get-ADReplicationSite` and
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:site:ReadProperty |
 
 ## Source
 

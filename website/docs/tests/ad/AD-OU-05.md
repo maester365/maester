@@ -77,6 +77,7 @@ This test retrieves all Organizational Units from Active Directory and:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOuEmptyDetails](https://github.com/maester365/maester/blob/main/tests/ad/ou/Test.AD-OU-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty, ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:organizationalUnit:ReadProperty, ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

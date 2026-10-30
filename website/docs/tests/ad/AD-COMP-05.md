@@ -71,6 +71,7 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 | MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdComputerSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

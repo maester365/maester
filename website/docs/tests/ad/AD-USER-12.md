@@ -69,6 +69,7 @@ This test counts user objects where `primaryGroupId` is populated and not equal 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserNonStandardPrimaryGroupCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-12.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

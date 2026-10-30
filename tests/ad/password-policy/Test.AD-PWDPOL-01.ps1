@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1110.004',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

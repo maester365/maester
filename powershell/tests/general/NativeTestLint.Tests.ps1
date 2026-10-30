@@ -154,6 +154,8 @@ Describe 'Product of the built-in tests' {
             'cisa/entra'                   = 'entra'
             'cisa/exchange'                = 'exchange'
             'cisa/sharepoint'              = 'sharepoint'
+            'asd/entra'                    = 'entra'
+            'asd/intune'                   = 'intune'
             'ad'                           = 'ad'
             'eidsca'                       = 'entra'
             'orca'                         = 'defender'

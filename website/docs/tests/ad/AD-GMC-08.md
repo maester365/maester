@@ -74,6 +74,7 @@ The test categorizes groups by their status (empty privileged, empty non-privile
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupEmptyNonPrivilegedCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:group.member:ReadProperty |
 
 ## Source
 

@@ -70,6 +70,7 @@ This test analyzes all computer SPNs, groups them by service class, and provides
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnServiceClassUsage](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

@@ -64,6 +64,7 @@ This test counts non-system user accounts whose names match attractive terms suc
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHoneyPotCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-26.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

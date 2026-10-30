@@ -60,6 +60,7 @@ Well-known security principals are built-in identities with special meaning in A
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdWellKnownSecurityPrincipalsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-10.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

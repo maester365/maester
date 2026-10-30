@@ -8,16 +8,10 @@
         in Microsoft Defender Antivirus policies. Quick scans are replaced by
         real-time protection, so this setting is not required for compliance.
     .PARAMETER ComplianceLogic
-        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+        How the evaluated policies combine into one result: 'EffectivePolicy' (default), 'AllPolicies' or 'AnyPolicy'. This setting is optional, so a policy that doesn't set it counts as compliant and the check passes under every logic, including when no policy sets it.
 
     .PARAMETER PolicyFiltering
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
-
-    .PARAMETER ComplianceLogic
-        Specify compliance logic: AllPolicies or AnyPolicy
-
-    .PARAMETER PolicyFiltering
-        Specify policy filtering: All, IncludeUnassigned, or OnlyAssigned
 
     .EXAMPLE
         Test-MtMdeQuickScanTime
@@ -38,13 +32,14 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'Graph',
-        Author = 'bdrogja'
+        Author = 'bdrogja',
+        Contributor = 'Gbenrotto'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        [ValidateSet('AllPolicies', 'AnyPolicy')]
-        [string]$ComplianceLogic = 'AllPolicies',
+        [ValidateSet('EffectivePolicy', 'AllPolicies', 'AnyPolicy')]
+        [string]$ComplianceLogic = 'EffectivePolicy',
 
         [ValidateSet('All', 'IncludeUnassigned', 'OnlyAssigned')]
         [string]$PolicyFiltering = 'OnlyAssigned'
@@ -74,17 +69,7 @@ if ($deviceCount -eq 0) {
 
     $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Quick scan time configuration is not required and all $($policyConfig.TotalCount) assigned Defender Antivirus policies are compliant."
-    } else {
-        $testResultMarkdown = "Quick scan time configuration is not properly configured in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
-        }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
+    $testResultMarkdown = Get-MdeComplianceResultMarkdown -Compliance $compliance -SettingName 'Quick scan time configuration' -ExpectedState 'not required'
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult

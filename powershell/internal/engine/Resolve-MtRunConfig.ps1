@@ -248,6 +248,7 @@ function Complete-MtRunConfig {
         TestId             = @()
         ExcludeTestId      = @()
         Product            = @()
+        ExcludeProduct     = @()
         Feature            = @()
         Area               = @()
         Severity           = @()
@@ -262,7 +263,7 @@ function Complete-MtRunConfig {
             $Config.Selection | Add-Member -MemberType NoteProperty -Name $key -Value $selectionDefaults[$key] -Force
         }
     }
-    foreach ($key in 'Tag', 'ExcludeTag', 'TestId', 'ExcludeTestId', 'Product', 'Feature', 'Area', 'Severity', 'Suite', 'Pack') {
+    foreach ($key in 'Tag', 'ExcludeTag', 'TestId', 'ExcludeTestId', 'Product', 'ExcludeProduct', 'Feature', 'Area', 'Severity', 'Suite', 'Pack') {
         $Config.Selection.$key = @($Config.Selection.$key | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
     }
     if ($Config.Selection.DefaultAction -notin 'Run', 'Skip') {

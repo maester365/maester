@@ -49,7 +49,7 @@ warnings    :
 ConvertFrom-MailAuthenticationRecordDkim -DomainName "microsoft.com"
 ```
 
-Returns [DKIMRecord] or "Failure to obtain record"
+Returns [DKIMRecord], "Failure to obtain record" when the record name does not exist (NXDOMAIN), or "DNS lookup unavailable" when the lookup fails for another reason
 
 ## PARAMETERS
 

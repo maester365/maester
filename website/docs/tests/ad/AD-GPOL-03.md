@@ -76,6 +76,7 @@ This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedTargetCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

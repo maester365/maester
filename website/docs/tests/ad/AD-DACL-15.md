@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries` and looks for entries whose `IdentityRefe
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclUnresolvedSidCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-15.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

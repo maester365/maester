@@ -60,6 +60,7 @@ Trusted root CAs act as the trust anchors for an entire PKI trust chain. If an a
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustedRootCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-16.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

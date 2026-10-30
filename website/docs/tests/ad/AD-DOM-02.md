@@ -77,6 +77,7 @@ This test retrieves the current machine account quota value from Active Director
 | MITRE ATT&CK | T1136.002 Domain Account |
 | PowerShell test | [Test-MtAdMachineAccountQuota](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.ms-DS-MachineAccountQuota:ReadProperty |
 
 ## Source
 

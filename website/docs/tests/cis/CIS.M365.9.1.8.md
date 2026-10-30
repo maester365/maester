@@ -20,7 +20,7 @@ keywords:
 
 # CIS.M365.9.1.8 - (L1) Restrict external sharing of semantic models
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -30,10 +30,10 @@ This setting governs the in-place sharing of semantic models with users in anoth
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Export and sharing settings**, find **Allow specific users to turn on external data sharing**.
-4. Choose **Disabled**, or choose **Enabled** and scope the setting to **Specific security groups** with at least one group selected.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Export and Sharing settings**.
+4. Set **Allow specific users to turn on external data sharing** to **Disabled**, or choose **Enabled** with **Specific security groups** selected and defined. If the organization doesn't actively use this feature, keep it **Disabled**.
 5. Select **Apply**.
 
 #### Related links

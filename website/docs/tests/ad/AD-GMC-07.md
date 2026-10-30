@@ -69,6 +69,7 @@ This test examines all group memberships in Active Directory and identifies secu
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupMemberForeignSidDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:group.member:ReadProperty |
 
 ## Source
 

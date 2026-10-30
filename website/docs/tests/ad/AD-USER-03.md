@@ -63,6 +63,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | MITRE ATT&CK | T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdUserPasswordNeverExpiresCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

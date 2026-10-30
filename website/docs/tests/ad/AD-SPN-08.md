@@ -70,6 +70,7 @@ This test analyzes all user SPNs, groups them by service class, and provides a c
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnServiceClassUsage](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

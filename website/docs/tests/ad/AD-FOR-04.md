@@ -77,6 +77,7 @@ This test checks the optional features in Active Directory to determine if the R
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRecycleBinStatus](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty, ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty |
 
 ## Source
 

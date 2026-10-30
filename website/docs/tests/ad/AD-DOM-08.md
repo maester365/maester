@@ -68,6 +68,7 @@ This test checks each NetBIOS name for length compliance (1-15 characters) and i
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNetbiosNameNonStandardDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty |
 
 ## Source
 

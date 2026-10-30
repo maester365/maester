@@ -69,6 +69,7 @@ This test retrieves all Group Policy Objects from Active Directory and counts th
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

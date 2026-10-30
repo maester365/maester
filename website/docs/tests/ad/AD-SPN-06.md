@@ -71,6 +71,7 @@ This test retrieves all user objects from Active Directory, extracts their SPNs,
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnTotalCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

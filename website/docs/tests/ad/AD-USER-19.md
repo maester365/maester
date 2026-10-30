@@ -64,6 +64,7 @@ This test counts user objects whose distinguished names indicate they are beneat
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserInContainerCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-19.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

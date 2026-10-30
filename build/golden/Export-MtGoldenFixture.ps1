@@ -482,7 +482,7 @@ function Get-InvokeMaesterSelection {
 
 # Reason codes of tests that selection leaves out. OptInServiceNotConnected stands for 2.x adding AD to
 # Filter.ExcludeTag when Active Directory is not connected.
-$NotSelectedReasons = @('NotSelected', 'NotListed', 'Preview', 'LongRunning', 'ExcludedByTag', 'ExcludedById', 'DisabledByConfig', 'OptInServiceNotConnected')
+$NotSelectedReasons = @('NotSelected', 'NotListed', 'Preview', 'LongRunning', 'ExcludedByTag', 'ExcludedById', 'ExcludedByProduct', 'DisabledByConfig', 'OptInServiceNotConnected')
 
 # An empty user folder: every built-in test is native and runs from the module.
 $workDir = Join-Path ([System.IO.Path]::GetTempPath()) "maester-golden-$([guid]::NewGuid().ToString('N'))"
@@ -567,7 +567,7 @@ $selectionDocument = [ordered]@{
     _meta = [ordered]@{
         Description     = 'Maester 2.x golden: Pester filter built by Invoke-Maester and the IDs it selects. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.'
         FilterSource    = 'The include and exclude tags of the real Invoke-Maester run context, run with -DryRun -SkipGraphConnect in an empty folder.'
-        SelectionSource = 'The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.'
+        SelectionSource = 'The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, ExcludedByProduct, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.'
         Assumptions     = @(
             'Not connected to Active Directory, so Invoke-Maester appends AD to Filter.ExcludeTag.',
             'Run.Path "." is the installed tests folder (repo tests/ without Custom); "./tests/<x>" maps to repo tests/<x>.',

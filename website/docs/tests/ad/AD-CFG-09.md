@@ -60,6 +60,7 @@ AD-based activation objects are used by Windows for volume activation and relate
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdAdActivationObjectsCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

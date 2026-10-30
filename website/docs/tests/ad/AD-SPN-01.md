@@ -70,6 +70,7 @@ This test retrieves all computer objects from Active Directory, extracts their S
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnServiceClassCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

@@ -72,6 +72,7 @@ This test checks all domain names in the forest against RFC 1123 naming standard
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainNameStandardCompliance](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

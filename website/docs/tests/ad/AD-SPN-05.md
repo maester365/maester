@@ -67,6 +67,7 @@ This test parses all computer SPNs and checks if the host portion contains a dot
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnNonFqdnHosts](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

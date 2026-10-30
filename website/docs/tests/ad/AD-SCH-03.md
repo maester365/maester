@@ -79,6 +79,7 @@ This test retrieves the objectVersion attribute from the schema container to det
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSchemaVersionEntryCount](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Schema/*.objectVersion:ReadProperty |
 
 ## Source
 

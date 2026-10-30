@@ -70,6 +70,7 @@ This test retrieves all Active Directory optional features and counts:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOptionalFeatureCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-FEAT-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty |
 
 ## Source
 

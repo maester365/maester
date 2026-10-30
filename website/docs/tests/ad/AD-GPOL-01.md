@@ -74,6 +74,7 @@ It then:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoLinkedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

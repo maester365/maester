@@ -145,7 +145,9 @@ Five cases come up often:
   object, is `Low`. It is `Medium` or higher only when the outage switches off a security control, and then it is
   rated as the loss of that control.
 - **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.
-- **The same check in two suites** gets the same value in both.
+- **The same check in two suites** gets the same value in both. Usually the second is a shim that returns the
+  first test's result and declares all of its values; see
+  [Tests that another suite already has](./index.mdx#tests-that-another-suite-already-has).
 - **The main control against an attack that starts from a stolen password** is `High`. A second layer behind
   that control is `Medium`. Number matching against MFA fatigue is `High`; showing the app name and location in
   the prompt is `Medium`.
@@ -162,6 +164,7 @@ Anchors from existing tests:
 | Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |
 | MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |
 | Disabled user count should be retrievable | `Info` | Inventory for review. |
+| [EIDSCA.AP14 — users may read other users](../tests/eidsca/EIDSCA.AP14.md) | `Info` | Disabling `allowedToReadOtherUsers` is not itself a security finding. Review the restriction because it can disrupt collaboration, user lookup and default features. |
 
 Microsoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same
 Microsoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk
@@ -223,13 +226,14 @@ example `cis-m365:5.1.5.1`, `cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`.
 it: one shipped with Maester or one of your own.
 
 - `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and
-  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'`. Every test in `tests/cis` and `tests/cisa` must name a
-  requirement of its suite's framework. The unit tests check this.
+  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'` and an ASD test `Control = 'essential-eight:ISM-1504'`.
+  Every test in `tests/cis`, `tests/cisa` and `tests/asd` must name a requirement of its suite's framework. The unit
+  tests check this.
 - The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the
   requirement the test is written for first, and any other requirement it supports after it.
 - Use the same attribute for a test that exists for its own reasons and also supports a requirement: a Maester
   test that checks the setting a CISA policy asks for, or a CIS test that also supports a NIST control.
-- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`), the requirement must
+- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`), the requirement must
   exist in that framework's file. If it is new, add it to the file with its facts. The module build and the unit
   tests fail otherwise.
 - Do not repeat the `Related` controls of a requirement. The framework file lists them and Maester adds them to

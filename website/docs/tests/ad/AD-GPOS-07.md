@@ -63,6 +63,7 @@ keywords:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoAllSettingsDisabledDetails](https://github.com/maester365/maester/blob/main/tests/ad/gpo-state/Test.AD-GPOS-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 
