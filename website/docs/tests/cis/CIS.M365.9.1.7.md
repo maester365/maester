@@ -30,10 +30,10 @@ An organization-wide link can grant access to tenant users who were not individu
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Export and sharing settings**, find **Allow shareable links to grant access to everyone in your organization**.
-4. Choose **Disabled**, or choose **Enabled** and scope link creation to **Specific security groups** with at least one group selected.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Export and Sharing settings**.
+4. Set **Allow shareable links to grant access to everyone in your organization** to **Disabled**, or choose **Enabled** with **Specific security groups** selected and defined. If the organization doesn't actively use this feature, keep it **Disabled**.
 5. Select **Apply**.
 
 #### Related links
