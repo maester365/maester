@@ -53,7 +53,7 @@ report interval set, defaults to 86400 seconds…}
 ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 ```
 
-Returns [DMARCRecord] or "Failure to obtain record"
+Returns [DMARCRecord] for a valid record, "Failure to obtain record" when no matching record exists, "Invalid DMARC record" when a matching record fails validation, or "DNS lookup unavailable" when DNS resolution fails for another reason
 
 ## PARAMETERS
 
