@@ -38,4 +38,150 @@ Describe 'Get-MailAuthenticationRecord' {
             $Name -eq 'contoso.com' -and $Server -eq '1.1.1.1'
         }
     }
+
+    It 'Returns one record set and does not recurse or look up DKIM when the SPF record has a redirect modifier' {
+        Mock ConvertFrom-MailAuthenticationRecordSpf -ModuleName Maester {
+            [PSCustomObject]@{
+                terms = @([PSCustomObject]@{ modifier = 'redirect'; modifierTarget = '_spf.example.net' })
+            }
+        }
+        Mock ConvertFrom-MailAuthenticationRecordDkim -ModuleName Maester { }
+
+        $result = @(Get-MailAuthenticationRecord -DomainName 'contoso.com' -Records SPF)
+
+        $result.Count | Should -Be 1
+        $result[0].domain | Should -Be 'contoso.com'
+        Should -Invoke ConvertFrom-MailAuthenticationRecordSpf -ModuleName Maester -Exactly 1
+        Should -Invoke ConvertFrom-MailAuthenticationRecordDkim -ModuleName Maester -Exactly 0
+    }
+}
+
+Describe 'ConvertFrom-MailAuthenticationRecord DNS error classification' {
+    BeforeAll {
+        $script:DnsResolverCommand = if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') { 'Resolve-DnsName' } else { 'Resolve-Dns' }
+        $script:CreatedDnsResolverStub = & (Get-Module Maester) {
+            param($CommandName)
+            if (-not (Get-Command $CommandName -ErrorAction SilentlyContinue)) {
+                # DnsClient-PS is optional. Provide the command signature so Pester can mock it offline.
+                Set-Item -Path "Function:script:$CommandName" -Value {
+                    [CmdletBinding()]
+                    param($Query, $QueryType, $NameServer)
+                    throw 'The DNS resolver must be mocked in this test.'
+                }
+                $true
+            } else {
+                $false
+            }
+        } $script:DnsResolverCommand
+    }
+
+    AfterAll {
+        if ($script:CreatedDnsResolverStub) {
+            & (Get-Module Maester) {
+                param($CommandName)
+                Remove-Item -Path "Function:script:$CommandName"
+            } $script:DnsResolverCommand
+        }
+    }
+
+    BeforeEach {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('No DNS records were returned.'),
+                'DNS_INFO_NO_RECORDS',
+                [System.Management.Automation.ErrorCategory]::ObjectNotFound,
+                $null
+            )
+        }
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing SPF record' {
+        ConvertFrom-MailAuthenticationRecordSpf -DomainName 'contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing DKIM record' {
+        ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'classifies DNS_INFO_NO_RECORDS as a missing DMARC record' {
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Failure to obtain record'
+    }
+
+    It 'keeps DNS resolver failures classified as unavailable' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordSpf -DomainName 'contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'keeps DKIM resolver failures classified as unavailable' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'keeps DMARC resolver failures classified as unavailable' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            throw [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('The DNS server returned a failure.'),
+                'DNS_ERROR_RCODE_SERVER_FAILURE',
+                [System.Management.Automation.ErrorCategory]::ResourceUnavailable,
+                $null
+            )
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'DNS lookup unavailable'
+    }
+
+    It 'returns invalid DKIM records with a false Base64 result' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DKIM1; k=rsa; p=%%%'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DKIM1; k=rsa; p=%%%' })
+            }
+        }
+
+        $record = ConvertFrom-MailAuthenticationRecordDkim -DomainName 'contoso.com' -DkimDnsName 'selector._domainkey.contoso.com'
+
+        $record.GetType().Name | Should -Be 'DKIMRecord'
+        $record.validBase64 | Should -BeFalse
+    }
+
+    It 'returns an invalid DMARC record without classifying it as DNS unavailability' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DMARC1; p=reject; pct=101'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DMARC1; p=reject; pct=101' })
+            }
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Invalid DMARC record'
+    }
+
+    It 'returns a malformed DMARC URI as an invalid record' {
+        Mock -CommandName $script:DnsResolverCommand -ModuleName Maester {
+            [pscustomobject]@{
+                Type = 'TXT'
+                Strings = 'v=DMARC1; p=reject; rua=mailto:@@; ruf=mailto:forensic@contoso.com'
+                Answers = @([pscustomobject]@{ RecordType = 'TXT'; Text = 'v=DMARC1; p=reject; rua=mailto:@@; ruf=mailto:forensic@contoso.com' })
+            }
+        }
+
+        ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'contoso.com' | Should -Be 'Invalid DMARC record'
+    }
 }

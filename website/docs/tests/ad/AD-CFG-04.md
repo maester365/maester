@@ -63,6 +63,7 @@ This test retrieves the set of enabled AD optional feature flags and reports the
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdOptionalFeaturesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty |
 
 ## Source
 

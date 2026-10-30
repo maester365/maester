@@ -74,6 +74,7 @@ This test retrieves the RID available pool from Active Directory and calculates 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRidsRemaining](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.rIDAvailablePool:ReadProperty |
 
 ## Source
 

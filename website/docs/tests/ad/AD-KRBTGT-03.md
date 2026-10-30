@@ -86,6 +86,7 @@ This test retrieves the KRBTGT account and:
 | Supports controls | nist-800-53-r5:CM-6 |
 | PowerShell test | [Test-MtAdKrbtgtNonStandardUacCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

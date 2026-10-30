@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty', 'ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

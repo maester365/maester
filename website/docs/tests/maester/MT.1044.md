@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1044"
-  - "High"
+  - "Low"
   - "Exchange Online"
   - "Client access"
   - "Authentication"
@@ -61,7 +61,7 @@ The result should be `True`.
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1044 |
-| Severity | High |
+| Severity | Low |
 | Suite | Maester |
 | Product | Exchange Online |
 | Feature | Client access |

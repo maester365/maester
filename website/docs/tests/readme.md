@@ -20,10 +20,11 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 263 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 266 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 47 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 113 | CIS Benchmark controls implemented as Maester tests. |
+| [ASD](./asd) | 14 | ASD Essential Eight requirements and Information security manual (ISM) controls implemented as Maester tests. |
+| [CIS](./cis) | 148 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 | [Active Directory](./ad) | 270 | Active Directory inventory and security configuration tests for on-premises domains. |
 
@@ -301,6 +302,20 @@ Every test is researched, written, and refined by security experts from the Maes
 | [AD-USER-27](./AD-USER-27) | Honey pot user details should be investigated | Active Directory | Info | Active Directory | Users |
 | [AD-USER-28](./AD-USER-28) | User delegation configured count should be investigated | Active Directory | Info | Active Directory | Users |
 | [AD-USER-29](./AD-USER-29) | No users should be configured for unconstrained delegation | Active Directory | High | Active Directory | Users |
+| [ASD.ISM-1175](./ASD.ISM-1175) | Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services. | ASD | High | Entra ID | Roles and administrators |
+| [ASD.ISM-1403](./ASD.ISM-1403) | User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts. | ASD | Medium | Entra ID | Password protection |
+| [ASD.ISM-1488](./ASD.ISM-1488) | Microsoft Office macros in files originating from the internet are blocked. | ASD | Medium | Intune | Device configuration |
+| [ASD.ISM-1504](./ASD.ISM-1504) | Multi-factor authentication is used to authenticate human users to their organisation's online services. | ASD | High | Entra ID | Conditional Access |
+| [ASD.ISM-1648](./ASD.ISM-1648) | Privileged access to systems and their resources is disabled after 45 days of inactivity. | ASD | Medium | Entra ID | Roles and administrators |
+| [ASD.ISM-1649](./ASD.ISM-1649) | Just-in-time administration is used for the administration of systems and their resources. | ASD | High | Entra ID | Privileged Identity Management |
+| [ASD.ISM-1654](./ASD.ISM-1654) | Internet Explorer 11 is disabled or removed. | ASD | Low | Intune | Device configuration |
+| [ASD.ISM-1667](./ASD.ISM-1667) | Microsoft Office is blocked from creating child processes. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1668](./ASD.ISM-1668) | Microsoft Office is blocked from creating executable content. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1669](./ASD.ISM-1669) | Microsoft Office is blocked from injecting code into other processes. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1672](./ASD.ISM-1672) | Microsoft Office macro antivirus scanning is enabled. | ASD | Medium | Intune | Device configuration |
+| [ASD.ISM-1673](./ASD.ISM-1673) | Microsoft Office macros are blocked from making Win32 API calls. | ASD | High | Intune | Endpoint security |
+| [ASD.ISM-1695](./ASD.ISM-1695) | Patches for vulnerabilities in the operating systems of workstations are applied within one month of release. | ASD | High | Intune | Device configuration |
+| [ASD.ISM-1872](./ASD.ISM-1872) | Multi-factor authentication used for authenticating human users of online services is phishing-resistant. | ASD | High | Entra ID | Conditional Access |
 | [AZDO.1000](./AZDO.1000) | Azure DevOps OAuth apps can access resources in your organization through OAuth. | Maester | High | Azure DevOps | Security policies |
 | [AZDO.1001](./AZDO.1001) | Identities can connect to your organization's Git repos through SSH. | Maester | High | Azure DevOps | Security policies |
 | [AZDO.1002](./AZDO.1002) | Log Audit Events. | Maester | High | Azure DevOps | Auditing |
@@ -363,19 +378,30 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.1.3.5](./CIS.M365.1.3.5) | (L1) Ensure internal phishing protection for Forms is enabled | CIS | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.6](./CIS.M365.1.3.6) | (L2) Ensure the customer lockbox feature is enabled | CIS | Medium | Microsoft 365 | Organization settings |
 | [CIS.M365.1.3.7](./CIS.M365.1.3.7) | (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' | CIS | Medium | Microsoft 365 | Organization settings |
+| [CIS.M365.1.3.9](./CIS.M365.1.3.9) | (L1) Ensure shared bookings pages are restricted to select users | CIS | Low | Microsoft 365 | Organization settings |
 | [CIS.M365.2.1.1](./CIS.M365.2.1.1) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy) | CIS | Medium | Defender | Safe Links |
+| [CIS.M365.2.1.10](./CIS.M365.2.1.10) | (L1) Ensure DMARC records for all Exchange Online domains are published | CIS | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.11](./CIS.M365.2.1.11) | (L2) Ensure comprehensive attachment filtering is applied | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | High | Defender | Anti-spam |
+| [CIS.M365.2.1.15](./CIS.M365.2.1.15) | (L1) Ensure outbound anti-spam message limits are in place | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.3](./CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
 | [CIS.M365.2.1.4](./CIS.M365.2.1.4) | (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy) | CIS | High | Defender | Safe Attachments |
 | [CIS.M365.2.1.5](./CIS.M365.2.1.5) | (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled | CIS | Medium | Defender | Safe Attachments |
 | [CIS.M365.2.1.6](./CIS.M365.2.1.6) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.7](./CIS.M365.2.1.7) | (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | CIS | Medium | Defender | Anti-phishing |
+| [CIS.M365.2.1.8](./CIS.M365.2.1.8) | (L1) Ensure that SPF records are published for all Exchange Domains | CIS | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | CIS | Medium | Defender | Email authentication |
+| [CIS.M365.2.4.1](./CIS.M365.2.4.1) | (L1) Ensure Priority account protection is enabled and configured | CIS | Medium | Defender | Tenant settings |
+| [CIS.M365.2.4.2](./CIS.M365.2.4.2) | (L1) Ensure Priority accounts have 'Strict protection' presets applied | CIS | Medium | Defender | Tenant settings |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | CIS | Medium | Defender | Zero-hour auto purge |
 | [CIS.M365.3.1.1](./CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | CIS | High | Purview | Audit |
+| [CIS.M365.3.2.1](./CIS.M365.3.2.1) | (L1) Ensure DLP policies are enabled | CIS | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.2.2](./CIS.M365.3.2.2) | (L1) Ensure DLP policies are enabled for Microsoft Teams | CIS | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.2.3](./CIS.M365.3.2.3) | (L1) Ensure DLP policies are published for Copilot users | CIS | Medium | Purview | Data loss prevention |
+| [CIS.M365.3.3.1](./CIS.M365.3.3.1) | (L1) Ensure Information Protection sensitivity label policies are published | CIS | Low | Purview | Information protection |
 | [CIS.M365.4.1](./CIS.M365.4.1) | (L1) Ensure devices without a compliance policy are marked 'not compliant' | CIS | Medium | Intune | Device compliance |
 | [CIS.M365.4.2](./CIS.M365.4.2) | (L1) Ensure device enrollment for personally owned devices is blocked by default | CIS | Medium | Intune | Device enrollment |
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | (L1) Ensure users cannot register applications | CIS | Medium | Entra ID | User and directory settings |
@@ -430,7 +456,19 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.5.3.3](./CIS.M365.5.3.3) | (L1) Ensure 'Access reviews' for privileged roles are configured | CIS | Medium | Entra ID | Identity Governance |
 | [CIS.M365.5.3.4](./CIS.M365.5.3.4) | (L1) Ensure approval is required for Global Administrator role activation | CIS | Medium | Entra ID | Privileged Identity Management |
 | [CIS.M365.5.3.5](./CIS.M365.5.3.5) | (L1) Ensure approval is required for Privileged Role Administrator activation | CIS | Medium | Entra ID | Privileged Identity Management |
+| [CIS.M365.6.1.1](./CIS.M365.6.1.1) | (L1) Ensure 'AuditDisabled' organizationally is set to 'False' | CIS | High | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.1.2](./CIS.M365.6.1.2) | (L1) Ensure mailbox audit actions are configured | CIS | Medium | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.1.3](./CIS.M365.6.1.3) | (L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes | CIS | Medium | Exchange Online | Mailbox auditing |
+| [CIS.M365.6.2.1](./CIS.M365.6.2.1) | (L1) Ensure all forms of mail forwarding are blocked and/or disabled | CIS | High | Exchange Online | Mail flow |
+| [CIS.M365.6.2.2](./CIS.M365.6.2.2) | (L1) Ensure mail transport rules do not whitelist specific domains | CIS | Medium | Exchange Online | Mail flow |
+| [CIS.M365.6.2.3](./CIS.M365.6.2.3) | (L1) Ensure email from external senders is identified | CIS | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.3.1](./CIS.M365.6.3.1) | (L2) Ensure users installing Outlook add-ins is not allowed | CIS | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.3.2](./CIS.M365.6.3.2) | (L1) Ensure the ability to add personal email accounts and calendars is disabled | CIS | Low | Exchange Online | Outlook |
+| [CIS.M365.6.5.1](./CIS.M365.6.5.1) | (L1) Ensure modern authentication for Exchange Online is enabled | CIS | Low | Exchange Online | Client access |
+| [CIS.M365.6.5.2](./CIS.M365.6.5.2) | (L1) Ensure MailTips are enabled for end users | CIS | Low | Exchange Online | Outlook |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | (L2) Ensure additional storage providers are restricted in Outlook on the web | CIS | Medium | Exchange Online | Outlook |
+| [CIS.M365.6.5.4](./CIS.M365.6.5.4) | (L1) Ensure SMTP AUTH is disabled | CIS | High | Exchange Online | Client access |
+| [CIS.M365.6.5.5](./CIS.M365.6.5.5) | (L2) Ensure Direct Send submissions are rejected | CIS | Medium | Exchange Online | Mail flow |
 | [CIS.M365.7.2.1](./CIS.M365.7.2.1) | (L1) Ensure modern authentication for SharePoint applications is required | CIS | Medium | SharePoint | Access control |
 | [CIS.M365.7.2.10](./CIS.M365.7.2.10) | (L1) Ensure reauthentication with verification code is restricted | CIS | Medium | SharePoint | External sharing |
 | [CIS.M365.7.2.11](./CIS.M365.7.2.11) | (L1) Ensure the SharePoint default sharing link permission is set | CIS | Medium | SharePoint | Sharing links |
@@ -460,6 +498,18 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.8.5.8](./CIS.M365.8.5.8) | (L2) Ensure external meeting chat is off | CIS | Medium | Teams | Meetings |
 | [CIS.M365.8.5.9](./CIS.M365.8.5.9) | (L2) Ensure meeting recording is off by default | CIS | Low | Teams | Meetings |
 | [CIS.M365.8.6.1](./CIS.M365.8.6.1) | (L1) Ensure users can report security concerns in Teams | CIS | Medium | Teams | Messaging |
+| [CIS.M365.9.1.1](./CIS.M365.9.1.1) | (L1) Restrict guest access to Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.10](./CIS.M365.9.1.10) | (L1) Restrict service principal access to Fabric public APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.11](./CIS.M365.9.1.11) | (L1) Restrict service principal profiles in Fabric | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.12](./CIS.M365.9.1.12) | (L1) Restrict service principal access to Fabric global APIs | CIS | Medium | Microsoft Fabric | Developer settings |
+| [CIS.M365.9.1.2](./CIS.M365.9.1.2) | (L1) Restrict external guest invitations through Fabric | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.3](./CIS.M365.9.1.3) | (L1) Restrict guest browsing of Fabric content | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.4](./CIS.M365.9.1.4) | (L1) Restrict public publishing of Fabric reports | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.5](./CIS.M365.9.1.5) | (L2) Disable R and Python visuals in Fabric | CIS | Medium | Microsoft Fabric | Tenant settings |
+| [CIS.M365.9.1.6](./CIS.M365.9.1.6) | (L1) Enable sensitivity labels for Fabric content | CIS | Medium | Microsoft Fabric | Information protection |
+| [CIS.M365.9.1.7](./CIS.M365.9.1.7) | (L1) Restrict organization-wide Fabric links | CIS | Low | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.8](./CIS.M365.9.1.8) | (L1) Restrict external sharing of semantic models | CIS | Medium | Microsoft Fabric | Export and sharing settings |
+| [CIS.M365.9.1.9](./CIS.M365.9.1.9) | (L1) Block resource-key authentication for Fabric datasets | CIS | Medium | Microsoft Fabric | Developer settings |
 | [CISA.MS.AAD.1.1](./CISA.MS.AAD.1.1) | Legacy authentication SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.1](./CISA.MS.AAD.2.1) | Users detected as high risk SHALL be blocked. | CISA | High | Entra ID | Conditional Access |
 | [CISA.MS.AAD.2.2](./CISA.MS.AAD.2.2) | A notification SHOULD be sent to the administrator when high-risk users are detected. | CISA | Medium | Entra ID | Identity Protection |
@@ -628,7 +678,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1041](./MT.1041) | Ensure users installing Outlook add-ins is not allowed | Maester | Medium | Exchange Online | Outlook |
 | [MT.1042](./MT.1042) | Restrict dial-in users from bypassing a meeting lobby | Maester | Medium | Teams | Meetings |
 | [MT.1043](./MT.1043) | Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | Maester | Medium | Exchange Online | Mail flow |
-| [MT.1044](./MT.1044) | Ensure modern authentication for Exchange Online is enabled | Maester | High | Exchange Online | Client access |
+| [MT.1044](./MT.1044) | Ensure modern authentication for Exchange Online is enabled | Maester | Low | Exchange Online | Client access |
 | [MT.1045](./MT.1045) | Only invited users should be automatically admitted to Teams meetings | Maester | Medium | Teams | Meetings |
 | [MT.1046](./MT.1046) | Restrict anonymous users from joining meetings | Maester | Medium | Teams | Meetings |
 | [MT.1047](./MT.1047) | Restrict anonymous users from starting Teams meetings | Maester | Medium | Teams | Meetings |
@@ -734,7 +784,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1172](./MT.1172) | Unified audit log ingestion is enabled. | Maester | High | Purview | Audit |
 | [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot. | Maester | Low | Purview | Information protection |
 | [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled. | Maester | Medium | Purview | Insider risk management |
-| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | High | Purview | Data loss prevention |
+| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location. | Maester | Medium | Purview | Data loss prevention |
 | [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location. | Maester | Medium | Purview | Data lifecycle management |
 | [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set. | Maester | Medium | Intune | Endpoint security |
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly. | Maester | High | Intune | Endpoint security |
@@ -779,6 +829,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1223](./MT.1223) | Agent Identities should not have high-risk Microsoft Graph permissions (Preview). | Maester | High | Entra ID | Agent identities |
 | [MT.1224](./MT.1224) | Microsoft-managed Conditional Access policies should not be left in report-only mode. | Maester | Low | Entra ID | Conditional Access |
 | [MT.1225](./MT.1225) | Users should not be able to create Agent Identity Blueprints. | Maester | Medium | Entra ID | Agent identities |
+| [MT.1226](./MT.1226) | GitHub and GitLab federated identity credentials should use immutable subject identifiers. | Maester | Medium | Entra ID | Applications |
+| [MT.1227](./MT.1227) | Subscriptions should be blocked from leaving and entering the tenant | Maester | Medium | Azure | Subscriptions |
 | [MT.1228](./MT.1228) | Ensure iOS compliance policy blocks jailbroken devices. | Maester | Medium | Intune | Device compliance |
 | [MT.1229](./MT.1229) | Ensure iOS compliance policy requires a strong device passcode. | Maester | Medium | Intune | Device compliance |
 | [MT.1230](./MT.1230) | Ensure iOS compliance policy requires a minimum operating system version. | Maester | Medium | Intune | Device compliance |
@@ -803,6 +855,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1249](./MT.1249) | Ensure Android app protection policy acts on the device threat level. | Maester | Medium | Intune | App protection |
 | [MT.1250](./MT.1250) | Ensure Android app protection policy blocks screen capture of organization data. | Maester | Low | Intune | App protection |
 | [MT.1251](./MT.1251) | Ensure Android app protection policy requires Play Integrity device attestation. | Maester | Medium | Intune | App protection |
+| [MT.1252](./MT.1252) | Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID. | Maester | Medium | Entra ID | App consent and permissions |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Low | Defender | Anti-spam |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Low | Defender | Anti-spam |

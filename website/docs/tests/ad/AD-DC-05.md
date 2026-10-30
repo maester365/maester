@@ -78,6 +78,7 @@ This test identifies which domain controllers hold FSMO roles and counts how man
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcAllFsmoRolesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

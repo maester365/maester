@@ -64,6 +64,7 @@ This test lists built-in administrator style accounts and returns their `LastLog
 | MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdUserBuiltInAdminLastLogonDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-24.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

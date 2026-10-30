@@ -64,6 +64,7 @@ This test returns non-system users whose names match attacker-attractive terms a
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserHoneyPotDetails](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-27.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

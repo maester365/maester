@@ -69,6 +69,7 @@ This test extracts the first three octets from all IPv4 subnets and counts the d
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetFirstThreeOctetsCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-10.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

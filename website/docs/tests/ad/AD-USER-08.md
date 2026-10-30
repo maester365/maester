@@ -59,6 +59,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState`, filte
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserNeverLoggedInCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

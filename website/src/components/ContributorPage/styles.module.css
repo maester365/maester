@@ -124,7 +124,8 @@
   border-top: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.testList a {
+.testList a,
+.testRow {
   display: flex;
   gap: 1rem;
   align-items: baseline;

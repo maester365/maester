@@ -71,6 +71,7 @@ This test provides detailed information about each AD DS SRV record, including:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsAdSrvRecordDetails](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-12.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_ResourceRecord:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_RootHints:Read |
 
 ## Source
 

@@ -71,6 +71,7 @@ Note: Not all computer accounts will have this attribute, depending on how they 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerCreatorSidCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

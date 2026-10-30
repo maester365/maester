@@ -75,6 +75,7 @@ This test retrieves the default domain password policy using `Get-ADDefaultDomai
 | MITRE ATT&CK | T1110.002 Password Cracking, T1078.002 Domain Accounts |
 | PowerShell test | [Test-MtAdPasswordMaxAge](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.maxPwdAge:ReadProperty |
 
 ## Source
 

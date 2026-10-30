@@ -74,6 +74,7 @@ The gPLink attribute is checked to determine if any GPOs are linked to each OU.
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoLinkedOUCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

@@ -31,6 +31,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
         Mitre = 'T1552.006',
         Control = ('nist-800-53-r5:IA-5(1)', 'nist-800-53-r5:SC-28'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

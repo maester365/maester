@@ -62,6 +62,7 @@ The test queries AD site link configuration entries using IP as the replication 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdIpSiteLinksCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-24.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

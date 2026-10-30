@@ -70,6 +70,7 @@ This test counts computers with different delegation configurations:
 | MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdComputerDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

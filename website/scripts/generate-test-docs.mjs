@@ -48,6 +48,14 @@ const suiteConfig = {
     overview:
       "These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud Business Applications baseline guidance.",
   },
+  asd: {
+    label: "ASD",
+    title: "ASD Essential Eight and ISM Tests",
+    sidebarLabel: "🇦🇺 ASD Essential Eight",
+    description: "ASD Essential Eight requirements and Information security manual (ISM) controls implemented as Maester tests.",
+    overview:
+      "These tests verify Microsoft 365 tenant configuration against the [Essential Eight](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight) and the [Information security manual (ISM)](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism), both published by the Australian Signals Directorate (ASD). You may know them as the ACSC Essential Eight and the ACSC ISM: the Australian Cyber Security Centre (ACSC) is part of ASD. The Essential Eight maturity model (November 2023) sets requirements at Maturity Level One to Three, and ASD maps each requirement to an ISM control, so each test is named after the ISM control it checks: ASD.ISM-1504 checks ISM-1504. A few tests check ISM controls outside the Essential Eight, such as ASD.ISM-1403.",
+  },
   cis: {
     label: "CIS",
     title: "CIS Benchmark Tests",
@@ -511,6 +519,10 @@ function renderTestPage(test, contributorData) {
     if (test.benchmark.Level) body.push(`| Benchmark level | ${escapeTable(test.benchmark.Level)} |`);
     if (profiles.length > 0) body.push(`| Benchmark profiles | ${escapeTable(profiles.join(", "))} |`);
     if (test.benchmark.Criticality) body.push(`| Criticality | ${escapeTable(test.benchmark.Criticality)} |`);
+    const strategies = [test.benchmark.Strategy ?? []].flat();
+    if (strategies.length > 0) body.push(`| Essential Eight strategy | ${escapeTable(strategies.join(", "))} |`);
+    if (test.benchmark.Guideline) body.push(`| ISM guideline | ${escapeTable(test.benchmark.Guideline)} |`);
+    if (test.benchmark.Section) body.push(`| ISM section | ${escapeTable(test.benchmark.Section)} |`);
     if (upstream) body.push(`| Upstream requirement | ${escapeTable(upstream)} |`);
   }
   if (test.controls.length > 0) body.push(`| Supports controls | ${escapeTable(test.controls.join(", "))} |`);

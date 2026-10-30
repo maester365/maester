@@ -289,10 +289,12 @@ namespace Maester.Engine
             for (int n = 0; n < left.Count; n++) AppendBarSegment(plain, owner, left[n], n > 1);
             // Between the groups: the hint in the middle, when it fits with two columns on each side.
             int gap = max - used;
-            if (!string.IsNullOrEmpty(_barHint) && _barHint.Length + 4 <= gap)
+            // While the dashboard takes the clicks itself a plain click opens a link, which needs no hint.
+            string hint = _mouseOn ? null : _barHint;
+            if (!string.IsNullOrEmpty(hint) && hint.Length + 4 <= gap)
             {
-                int before = (gap - _barHint.Length) / 2;
-                plain.Append(' ', before).Append(_barHint).Append(' ', gap - before - _barHint.Length);
+                int before = (gap - hint.Length) / 2;
+                plain.Append(' ', before).Append(hint).Append(' ', gap - before - hint.Length);
             }
             else
             {
@@ -314,7 +316,9 @@ namespace Maester.Engine
                     link = owner[x];
                     if (link >= 0 && !string.IsNullOrEmpty(_barLinks[link])) text.Append(Esc8).Append(_barLinks[link]).Append("\u001b\\");
                 }
-                string want = BarColour(x, plain.Length, owner[x] == 0);
+                // The words of a label that is a link are underlined, not the spaces around them.
+                bool word = owner[x] >= 0 && !string.IsNullOrEmpty(_barLinks[owner[x]]) && x > 0 && owner[x - 1] == owner[x] && x + 1 < plain.Length && owner[x + 1] == owner[x];
+                string want = BarColour(x, plain.Length, owner[x] == 0) + (word ? ";4" : ";24");
                 if (want != colour)
                 {
                     text.Append(Esc).Append(want).Append('m');
@@ -739,6 +743,12 @@ namespace Maester.Engine
         private const string NeutralBorder = "38;5;240";
         private const string Amber = "38;5;215";
 
+        /// <summary>The accent of the dashboard: the orange in the middle of the wordmark.</summary>
+        private string AccentColour()
+        {
+            return TrueColor ? "38;2;255;106;61" : "38;5;209";
+        }
+
         /// <summary>
         /// The right column: each panel that has something to show, in order, as a box with its title in the top
         /// border. The border takes the colour of the panel's state (red around failures, amber around drift).
@@ -842,7 +852,13 @@ namespace Maester.Engine
             string title = Fit(panel.Title ?? string.Empty, inner - 2);
             string badge = panel.Badge;
             if (!string.IsNullOrEmpty(badge) && title.Length + badge.Length + 8 > width) badge = null;
-            var top = new LineBuilder(ansi).Add((Unicode ? "╭" : "+") + h + " ", colour).Add(title, panel.TitleColour != null ? "1;" + panel.TitleColour : "1").Add(" ", colour);
+            // With Unicode the title has a diamond before it, in the colour of the panel's state or the accent,
+            // when the border keeps a line between the title and the badge (or the corner) with it.
+            int least = title.Length + 8 + (badge == null ? 0 : badge.Length + 3);
+            string mark = Unicode && least <= width ? "◆ " : string.Empty;
+            var top = new LineBuilder(ansi).Add((Unicode ? "╭" : "+") + h + " ", colour);
+            if (mark.Length > 0) top.Add(mark, panel.TitleColour ?? panel.Colour ?? AccentColour());
+            top.Add(title, panel.TitleColour != null ? "1;" + panel.TitleColour : "1").Add(" ", colour);
             int fill = width - top.Length - 1 - (badge == null ? 0 : badge.Length + 3);
             top.Add(Repeat(h, Math.Max(0, fill)), colour);
             if (badge != null) top.Add(" " + badge + " ", panel.Colour ?? "2").Add(h, colour);

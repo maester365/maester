@@ -16,13 +16,13 @@ BeforeAll {
     # tests/maester/<service>, tests/cisa/<service>, powershell/{public,internal}/services/<service> and
     # powershell/internal/checks/<suite>/<service>. Add a new service here and in the contributing guide.
     $script:ServiceNames = @(
-        'ad', 'azure', 'azure-devops', 'copilot', 'copilot-studio', 'defender', 'entra', 'exchange', 'foundry', 'github',
+        'ad', 'azure', 'azure-devops', 'copilot', 'copilot-studio', 'defender', 'entra', 'exchange', 'fabric', 'foundry', 'github',
         'global-secure-access',
         'graph', 'intune', 'purview', 'sharepoint', 'teams', 'xspm'
     )
     # Areas of the maester suite that are not a service.
     $script:MaesterAreas = @('drift')
-    $script:Suites = @('ad', 'cis', 'cisa', 'custom', 'eidsca', 'maester', 'orca')
+    $script:Suites = @('ad', 'asd', 'cis', 'cisa', 'custom', 'eidsca', 'maester', 'orca')
     $script:PublicGroups = @('app', 'connect', 'packs', 'report', 'run', 'services')
     $script:InternalGroups = @('app', 'checks', 'connect', 'engine', 'generated', 'packs', 'report', 'services', 'session', 'utility')
     $script:KebabCase = '^[a-z0-9]+(-[a-z0-9]+)*$'
@@ -126,12 +126,14 @@ Describe 'Repository layout' -Skip:(-not $script:HasGit) {
             $missing | Should -BeNullOrEmpty
         }
 
-        It 'names the service folders of the maester and cisa suites with the shared service names' {
+        It 'names the service folders of the maester, cisa and asd suites with the shared service names' {
             $offenders = @(
                 Get-ChildFolderName -Parent 'tests/maester' | Where-Object { $_ -notin ($script:ServiceNames + $script:MaesterAreas + 'frameworks') } |
                     ForEach-Object { "tests/maester/$_" }
                 Get-ChildFolderName -Parent 'tests/cisa' | Where-Object { $_ -notin ($script:ServiceNames + 'frameworks') } |
                     ForEach-Object { "tests/cisa/$_" }
+                Get-ChildFolderName -Parent 'tests/asd' | Where-Object { $_ -notin ($script:ServiceNames + 'frameworks') } |
+                    ForEach-Object { "tests/asd/$_" }
             )
             $offenders | Should -BeNullOrEmpty -Because "service folders are named one of: $($script:ServiceNames -join ', '); frameworks holds the framework files of the suite"
         }
@@ -164,7 +166,7 @@ Describe 'Repository layout' -Skip:(-not $script:HasGit) {
             $offenders = @(
                 Get-ChildFolderName -Parent 'powershell/internal/checks' | Where-Object { $_ -notin $script:Suites } |
                     ForEach-Object { "powershell/internal/checks/$_" }
-                foreach ($suite in 'maester', 'cisa') {
+                foreach ($suite in 'maester', 'cisa', 'asd') {
                     Get-ChildFolderName -Parent "powershell/internal/checks/$suite" |
                         Where-Object { $_ -notin ($script:ServiceNames + $script:MaesterAreas) } |
                         ForEach-Object { "powershell/internal/checks/$suite/$_" }

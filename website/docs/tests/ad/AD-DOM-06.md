@@ -68,6 +68,7 @@ This test checks each domain name label against RFC 1123 standards and provides 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainNameNonStandardDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

@@ -77,6 +77,7 @@ keywords:
 | MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdGroupSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty |
 
 ## Source
 

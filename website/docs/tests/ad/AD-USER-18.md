@@ -64,6 +64,7 @@ This test counts user objects where the `ScriptPath` attribute contains a non-em
 | MITRE ATT&CK | T1037.003 Network Logon Script |
 | PowerShell test | [Test-MtAdUserScriptPathCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-18.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

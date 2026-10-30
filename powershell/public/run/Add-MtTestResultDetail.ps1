@@ -75,7 +75,7 @@
         # Common reasons for why the test was skipped.
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
-            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
+            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', 'NotLicensedCommunicationsDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
             'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory', 'NotConnectedActiveDirectoryDNS', 'NotConnectedGitHub', 'NotConnectedSharePoint', 'NotLicensedEntraIDP2OrGovernance',
             'NotApplicable', 'NotSupportedAzureDevOpsAppPermission'

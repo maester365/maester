@@ -60,6 +60,7 @@ This test inspects the SPN mapping configuration exposed by AD, extracts the con
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSpnMappings](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

@@ -32,7 +32,7 @@
     function Get-TestBox {
         # What is inside a box of the main column, between its sides: the lines of the box whose top border has the title.
         param([string[]] $Screen, [string] $Title)
-        $top = @($Screen | Where-Object { $_ -match ('^ ╭─ ' + [regex]::Escape($Title) + ' ') })
+        $top = @($Screen | Where-Object { $_ -match ('^ ╭─ (?:◆ )?' + [regex]::Escape($Title) + ' ') })
         if ($top.Count -eq 0) { return }
         $inner = $top[0].IndexOf('╮') - 4
         for ($i = [array]::IndexOf($Screen, $top[0]) + 1; $i -lt $Screen.Count -and $Screen[$i] -notmatch '^ ╰'; $i++) { $Screen[$i].Substring(3, $inner) }
@@ -349,16 +349,16 @@ Describe 'MtConsoleRenderer dashboard' {
         # Then Products, Tests and Running in boxes, all as wide.
         $tops = @($screen | Where-Object { $_ -match '^ ╭' })
         $tops.Count | Should -Be 3
-        $tops[0] | Should -Match '^ ╭─ Products ─+ 2 products ─╮$'
-        $tops[1] | Should -Match '^ ╭─ Tests ─+ 6 of 20 ─╮$'
-        $tops[2] | Should -Match '^ ╭─ Running ─+ 1 test ─╮$'
+        $tops[0] | Should -Match '^ ╭─ ◆ Products ─+ 2 products ─╮$'
+        $tops[1] | Should -Match '^ ╭─ ◆ Tests ─+ 6 of 20 ─╮$'
+        $tops[2] | Should -Match '^ ╭─ ◆ Running ─+ 1 test ─╮$'
         @($screen | Where-Object { $_ -match '^ [╭│├╰]' } | ForEach-Object { $_.Length } | Select-Object -Unique) | Should -Be 119
         # The box of the products is green and the box of the running tests teal, with their titles; the
         # result blocks have the grey of the right column.
         $out = $t.Writer.ToString()
-        $out | Should -Match ([regex]::Escape("$esc[38;5;71m╭─ $esc[0m$esc[1;38;5;71mProducts"))
-        $out | Should -Match ([regex]::Escape("$esc[38;5;73m╭─ $esc[0m$esc[1;38;5;73mRunning"))
-        $out | Should -Match ([regex]::Escape("$esc[38;5;240m╭─ $esc[0m$esc[1mTests"))
+        $out | Should -Match ([regex]::Escape("$esc[38;5;71m╭─ $esc[0m$esc[38;5;71m◆ $esc[0m$esc[1;38;5;71mProducts"))
+        $out | Should -Match ([regex]::Escape("$esc[38;5;73m╭─ $esc[0m$esc[38;5;73m◆ $esc[0m$esc[1;38;5;73mRunning"))
+        $out | Should -Match ([regex]::Escape("$esc[38;5;240m╭─ $esc[0m$esc[38;5;209m◆ $esc[0m$esc[1mTests"))
         # The running tests, then under a dashed line the tests that finished, down to the bottom of the screen.
         @(Get-TestBox $screen 'Running')[0] | Should -Match '^. X\.1 +An Exchange test +[\d.]+s$'
         ($screen -join "`n") | Should -Match '\n ├╌ Finished ╌+┤\n │ ✓ E\.6 '
@@ -370,7 +370,7 @@ Describe 'MtConsoleRenderer dashboard' {
         $after = $t.Renderer.GetPlainScreen(120, 40)
         $after[2] | Should -Match '^ ✓ Prepare ━{8} ✓ Run tests ━{58} ● Results ┄{8} ○ Reports$'
         $after[3] | Should -Match '^   [\d.]+s +[\d.]+s · 6/20 +[\d.]+s · Writing the reports… +✓ 6  ✗ 0  ! 0  \? 0  – 0$'
-        ($after -join "`n") | Should -Match '\n ╭─ Finished ─+ 6 of 20 ─╮\n │ ✓ E\.6 '
+        ($after -join "`n") | Should -Match '\n ╭─ ◆ Finished ─+ 6 of 20 ─╮\n │ ✓ E\.6 '
         $after[38] | Should -Match '^ ╰─+╯$'
         $t.Renderer.Close()
     }
@@ -382,7 +382,7 @@ Describe 'MtConsoleRenderer dashboard' {
         $screen = $t.Renderer.GetPlainScreen(120, 34) -join "`n"
         $screen | Should -Not -Match '[╭╰]'
         $screen | Should -Match '\n Entra +─+ +0/20 '
-        ($t.Renderer.GetPlainScreen(120, 35) -join "`n") | Should -Match '\n ╭─ Products ─'
+        ($t.Renderer.GetPlainScreen(120, 35) -join "`n") | Should -Match '\n ╭─ ◆ Products ─'
         $t.Renderer.Close()
     }
 
@@ -494,7 +494,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard
         $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso', 'merill@contoso.com'))
         $wide = $t.Renderer.GetPlainScreen(160, 44)
-        ($wide | Where-Object { $_ -match '╭─ Tenant ─+╮$' }).IndexOf('Tenant') | Should -BeGreaterThan 98
+        ($wide | Where-Object { $_ -match '╭─ ◆ Tenant ─+╮$' }).IndexOf('Tenant') | Should -BeGreaterThan 98
         ($wide -join "`n") | Should -Match 'merill@contoso\.com'
         ($t.Renderer.GetPlainScreen(120, 44) -join "`n") | Should -Not -Match 'merill@contoso\.com'
         $t.Renderer.Close()
@@ -529,7 +529,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('A.3', 'Failed', 'Medium')
         $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        ($screen | Where-Object { $_ -match 'Failed so far' }) | Should -Match '╭─ Failed so far ─+ 3 ─╮$'
+        ($screen | Where-Object { $_ -match 'Failed so far' }) | Should -Match '╭─ ◆ Failed so far ─+ 3 ─╮$'
         ($screen | Where-Object { $_ -match ' Critical ' }) | Should -Match '█+\s+2 │$'
         ($screen | Where-Object { $_ -match ' High ' }) | Should -Match '\s0 │$'
         ($screen | Where-Object { $_ -match ' Medium ' }) | Should -Match '█+.?\s+1 │$'
@@ -565,7 +565,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ItemFinished('A.3', 'Passed', 'High')
         $t.Renderer.ItemFinished('A.4', 'Passed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Drift since last run ─+ Oct 9, 08:12 ─╮'
+        $screen | Should -Match '╭─ ◆ Drift since last run ─+ Oct 9, 08:12 ─╮'
         $screen | Should -Match '1 newly failing'
         $screen | Should -Match 'A\.1'
         $screen | Should -Match '1 fixed'
@@ -640,7 +640,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Start(700)
         1..40 | ForEach-Object { $t.Renderer.ItemStarting("W.$_", "Test $_", $null); $t.Renderer.ItemFinished("W.$_", 'Failed', 'High') }
         $short = $t.Renderer.GetPlainScreen(200, 30)
-        @($short | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count | Should -Be 4
+        @($short | Where-Object { $_ -match '╭─ ◆ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count | Should -Be 4
         $slow = @($short | Where-Object { $_ -match '│ W\.\d+ ' }).Count
         $slow | Should -BeGreaterThan 3
         $slow | Should -BeLessThan 40
@@ -653,7 +653,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Panels 'Tips'
         $t.Renderer.SetTips(@('A tip', 'Another'))
         $t.Renderer.Start(1)
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '╭─ Tip ─+╮\n[^\n]*│ A tip +│\n[^\n]*╰'
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '╭─ ◆ Tip ─+╮\n[^\n]*│ A tip +│\n[^\n]*╰'
         $t.Writer.ToString() | Should -Not -Match ([regex]::Escape("$esc]8;;"))
         $t.Renderer.Close()
     }
@@ -664,11 +664,11 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetBlogPost($post)
         $t.Renderer.Start(1)
         $screen = $t.Renderer.GetPlainScreen(160, 44)
-        ($screen -join "`n") | Should -Match '╭─ From the blog ─+ Oct 07 ─╮'
+        ($screen -join "`n") | Should -Match '╭─ ◆ From the blog ─+ Oct 07 ─╮'
         $lines = @($screen | Where-Object { $_ -match '│ (Maester 3\.0|preview users)' })
         $lines.Count | Should -Be 2
         ($screen -join "`n") | Should -Not -Match 'maester\.dev/blog'
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/blog/3$esc\Maester 3.0:"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/blog/3$esc\$esc[4mMaester 3.0:"))
         $t.Renderer.Close()
 
         # A title that needs more than two lines is cut on the second.
@@ -707,7 +707,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Start(1)
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
         $box.Count | Should -Be 4
-        $box[0] | Should -Match '^╭─ Active Directory ─+╮$'
+        $box[0] | Should -Match '^╭─ ◆ Active Directory ─+╮$'
         $box[1] | Should -Match '^│ north\.sevenkingdoms\.local +winterfell │$'
         $box[2] | Should -Match '^│ NORTH\\eddard\.stark · Negotiate +│$'
 
@@ -733,7 +733,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Panels 'Totals'
         $t.Renderer.Start(100)
         $empty = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
-        $empty[0] | Should -Match '^╭─ Results ─+ 0 of 100 ─╮$'
+        $empty[0] | Should -Match '^╭─ ◆ Results ─+ 0 of 100 ─╮$'
         $empty[1] | Should -Be ('│ ' + ('░' * 54) + ' │')
         $empty[2] | Should -Match '^│ Waiting for results… +│$'
 
@@ -742,7 +742,7 @@ Describe 'MtConsoleRenderer panels' {
         foreach ($result in $results) { $n++; $t.Renderer.ItemStarting("R.$n", "Test $n", $null); $t.Renderer.ItemFinished("R.$n", $result, 'High') }
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
         $box.Count | Should -Be 4
-        $box[0] | Should -Match '^╭─ Results ─+ 10 of 100 ─╮$'
+        $box[0] | Should -Match '^╭─ ◆ Results ─+ 10 of 100 ─╮$'
         # 54 cells: six tenths passed, two failed, one to investigate, one skipped. Without colour each
         # result has its own shade.
         $bar = $box[1].Substring(2, 54)
@@ -807,16 +807,16 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Start(1)
         $pane = { @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane) }
         $box = & $pane
-        $box[0] | Should -Match '^╭─ Featured contributor ─+╮$'
+        $box[0] | Should -Match '^╭─ ◆ Featured contributor ─+╮$'
         $box[1] | Should -Match '^│ Thomas Naunheim +@Cloud-Architekt │$'
         # A count of nothing is left out.
         $box[2] | Should -Match '^│ 63 tests · since 2024 +│$'
         $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\"))
         # The name has the colour of the handle.
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\Thomas Naunheim"))
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\@Cloud-Architekt"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\$esc[4mThomas Naunheim"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m$esc]8;;https://maester.dev/contributors/cloud-architekt$esc\$esc[4m@Cloud-Architekt"))
         # It is the panel with the accent border.
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m╭─ $esc[0m$esc[1mFeatured contributor"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[36m╭─ $esc[0m$esc[36m◆ $esc[0m$esc[1mFeatured contributor"))
 
         $t.Renderer.SetContributors($people, 1)
         (& $pane)[2] | Should -Match '^│ 1 test · 12 improvements · since 2025 +│$'
@@ -856,7 +856,7 @@ Describe 'MtConsoleRenderer panels' {
             param($height)
             $screen = $t.Renderer.GetPlainScreen(160, $height)
             [pscustomobject]@{
-                Panels = @($screen | Where-Object { $_ -match '╭─ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count
+                Panels = @($screen | Where-Object { $_ -match '╭─ ◆ (Tenant|Failed so far|Slowest so far|Tip) ' }).Count
                 Tests  = @($screen | Where-Object { $_ -match '│ W\.\d+ ' }).Count
             }
         }
@@ -884,7 +884,7 @@ Describe 'MtConsoleRenderer panels' {
         $roomy | Should -Match '│ Short +│\n[^\n]*│ +│\n'
         # Without: only the severity that has failures, and the tip at its own height. Both panels stay.
         $tight = $t.Renderer.GetPlainScreen(160, 9)
-        @($tight | Where-Object { $_ -match '╭─ (Failed so far|Tip) ' }).Count | Should -Be 2
+        @($tight | Where-Object { $_ -match '╭─ ◆ (Failed so far|Tip) ' }).Count | Should -Be 2
         ($tight -join "`n") | Should -Not -Match '│ (Critical|Medium|Low) '
         ($tight -join "`n") | Should -Match '│ High '
         ($tight -join "`n") | Should -Match '│ Short +│\n[^\n]*╰'
@@ -896,7 +896,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetConnections(@('Graph', 'Exchange Online', 'Security & Compliance', 'Teams', 'Azure DevOps'), @($true, $true, $true, $false, $false))
         $t.Renderer.Start(1)
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
-        $box[0] | Should -Match '^╭─ Connections ─+ 3 of 5 ─╮$'
+        $box[0] | Should -Match '^╭─ ◆ Connections ─+ 3 of 5 ─╮$'
         $box[1] | Should -Match '^│ ● Graph +● Exchange Online +│$'
         $box[2] | Should -Match '^│ ● Security & Compliance +○ Teams +│$'
         $box[3] | Should -Match '^│ ○ Azure DevOps +│$'
@@ -918,7 +918,7 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Panels 'Connections'
         $t.Renderer.SetConnections(@('Graph', 'Azure', 'Teams'), [bool[]]@($true, $false, $false), [bool[]]@($false, $true, $true))
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
-        $box[0] | Should -Match '^╭─ Connections ─+ checking… ─╮$'
+        $box[0] | Should -Match '^╭─ ◆ Connections ─+ checking… ─╮$'
         $box[1] | Should -Match '^│ ● Graph +[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Azure +│$'
         $box[2] | Should -Match '^│ [⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] Teams +│$'
         # A service that is being checked is not connected yet, whatever was said for it.
@@ -927,7 +927,7 @@ Describe 'MtConsoleRenderer panels' {
         # With every answer in, the panel is as it always was.
         $t.Renderer.SetConnections(@('Graph', 'Azure', 'Teams'), [bool[]]@($true, $true, $false), [bool[]]@($false, $false, $false))
         $box = @($t.Renderer.GetPlainScreen(160, 44) | Select-TestPane)
-        $box[0] | Should -Match '^╭─ Connections ─+ 2 of 3 ─╮$'
+        $box[0] | Should -Match '^╭─ ◆ Connections ─+ 2 of 3 ─╮$'
         $box[1] | Should -Match '^│ ● Graph +● Azure +│$'
         $box[2] | Should -Match '^│ ○ Teams +│$'
         $t.Renderer.Close()
@@ -936,21 +936,21 @@ Describe 'MtConsoleRenderer panels' {
     It 'Shows the Results and Failed panels at zero before the tests start, when asked to' {
         # As before: nothing until the tests start.
         $t = New-TestPanelDashboard -Panels 'Totals', 'Failed'
-        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match '╭─ (Results|Failed so far) '
+        ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Not -Match '╭─ ◆ (Results|Failed so far) '
         $t.Renderer.Close()
 
         $t = New-TestPanelDashboard -Panels 'Totals', 'Failed'
         $t.Renderer.PanelsBeforeStart = $true
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Results ─+ starting… ─╮'
-        $screen | Should -Match '╭─ Failed so far ─+ 0 ─╮'
+        $screen | Should -Match '╭─ ◆ Results ─+ starting… ─╮'
+        $screen | Should -Match '╭─ ◆ Failed so far ─+ 0 ─╮'
         $screen | Should -Match '│ Critical +0 │'
         # Once the tests start the panels count as they always did.
         $t.Renderer.Start(4)
         $t.Renderer.ItemStarting('A.1', 'A test', $null); $t.Renderer.ItemFinished('A.1', 'Failed', 'High')
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Results ─+ 1 of 4 ─╮'
-        $screen | Should -Match '╭─ Failed so far ─+ 1 ─╮'
+        $screen | Should -Match '╭─ ◆ Results ─+ 1 of 4 ─╮'
+        $screen | Should -Match '╭─ ◆ Failed so far ─+ 1 ─╮'
         $t.Renderer.Close()
     }
 
@@ -962,14 +962,14 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.ShowStatus('Reading the tenant context')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
         $screen[1] | Should -Match ('^FLAME  ' + (' ' * 24) + 'v3\.0\.0 · maester\.dev\b')
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\maester.dev$esc]8;;$esc\"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\$esc[4mmaester.dev$esc[24m$esc]8;;$esc\"))
 
         $t.Renderer.SetHeaderUpdate('v3.1.0 available', 'https://www.powershellgallery.com/packages/Maester/3.1.0')
         $screen = $t.Renderer.GetPlainScreen(160, 44)
         $screen[1] | Should -Match '^FLAME     v3\.0\.0 · ↑ v3\.1\.0 available · maester\.dev\b'
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;38;5;215m$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\↑ v3.1.0 available$esc]8;;$esc\"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[1;38;5;215m$esc]8;;https://www.powershellgallery.com/packages/Maester/3.1.0$esc\$esc[4m↑ v3.1.0 available$esc[24m$esc]8;;$esc\"))
         # There is no Version panel.
-        ($screen -join "`n") | Should -Not -Match '╭─ Version'
+        ($screen -join "`n") | Should -Not -Match '╭─ ◆ Version'
         # Once the tests start, the one line that replaces the banner mentions it too.
         $t.Renderer.Start(1)
         $t.Renderer.GetPlainScreen(160, 44)[0] | Should -Be ' MAESTER v3.0.0 · ↑ v3.1.0 available'
@@ -1028,15 +1028,15 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Start(1)
         $out = $t.Writer.ToString()
         # Without true colour: dark text on one orange, the name in bold, each label a hyperlink.
-        $out | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\$esc[1;38;5;232;48;5;208m maester.dev $esc]8;;$esc\"))
-        $out | Should -Match ([regex]::Escape("$esc]8;;https://github.com/maester365/maester?sponsor=1$esc\ ♥ Sponsor $esc]8;;$esc\"))
+        $out | Should -Match ([regex]::Escape("$esc]8;;https://maester.dev$esc\$esc[1;38;5;232;48;5;208;24m $esc[1;38;5;232;48;5;208;4mmaester.dev$esc[1;38;5;232;48;5;208;24m $esc]8;;$esc\"))
+        $out | Should -Match ([regex]::Escape("$esc]8;;https://github.com/maester365/maester?sponsor=1$esc\ $esc[22;38;5;232;48;5;208;4m♥ Sponsor$esc[22;38;5;232;48;5;208;24m $esc]8;;$esc\"))
         # With true colour: the gradient of the wordmark, Maester red at the left edge to amber at the right,
         # with white text on the red and dark text on the amber.
         $t.Renderer.TrueColor = $true
         $t.Renderer.SetStatusBar(@('maester.dev', 'Sponsor'), @('https://maester.dev', $null), 1)
         $out = $t.Writer.ToString()
-        $out | Should -Match ([regex]::Escape("$esc[1;38;2;255;255;255;48;2;229;36;59m "))
-        $out | Should -Match ([regex]::Escape("38;2;43;13;6;48;2;255;181;71m $esc[0m"))
+        $out | Should -Match ([regex]::Escape("$esc[1;38;2;255;255;255;48;2;229;36;59;24m "))
+        $out | Should -Match ([regex]::Escape("38;2;43;13;6;48;2;255;181;71;24m $esc[0m"))
         $t.Renderer.TrueColor = $false
         $t.Renderer.SetStatusBar(@('maester.dev', 'Contributors', 'Our Manifesto', '♥ Sponsor'), @($null, $null, $null, $null))
         # A narrow window keeps the labels that fit.
@@ -1055,6 +1055,49 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Close()
     }
 
+    It 'Shows the phase, the domain and the time at the top of the right column' {
+        $t = New-TestPanelDashboard -Panels 'Tenant', 'Results'
+        $t.Renderer.SetPanelText('Tenant', 'Tenant', @('Contoso'))
+        # No phase yet: the column starts with its first panel.
+        $t.Renderer.SetPhases(@('Prepare', 'Run tests', 'Results', 'Reports'))
+        $t.Renderer.GetPlainScreen(160, 44)[0] | Should -Match '╭─ ◆ Tenant '
+        $t.Renderer.StartPhase('Run tests')
+        $t.Renderer.SetTenant('Contoso', 'contoso.com', $null)
+        $screen = $t.Renderer.GetPlainScreen(160, 44)
+        $screen[0] | Should -Match ' ● RUN TESTS · contoso\.com · \d\d:\d\d:\d\d$'
+        # It ends one column inside the corner of the panel under it.
+        $screen[0].TrimEnd().Length | Should -Be $screen[1].LastIndexOf('╮')
+        $screen[1] | Should -Match '╭─ ◆ Tenant '
+        $t.Renderer.Close()
+    }
+
+    It 'Opens a link with a plain click when ClickLinks is on' {
+        $t = New-TestPanelDashboard -Panels 'Results'
+        $t.Renderer.SetStatusBar(@('maester.dev', 'Docs'), @('https://maester.dev', 'https://maester.dev/docs'))
+        $opened = [System.Collections.Generic.List[string]]::new()
+        $t.Renderer.OpenLink = [Action[string]] { param($url) $opened.Add($url) }
+        $t.Renderer.ClickLinks = $true
+        $t.Renderer.Start(1)
+        # The status bar is the last row; the first label takes columns 0 to 12.
+        $t.Renderer.GetLinkAt(160, 44, 3, 43) | Should -Be 'https://maester.dev'
+        $t.Renderer.GetLinkAt(160, 44, 80, 43) | Should -BeNullOrEmpty
+        $t.Renderer.GetLinkAt(160, 44, 3, 10) | Should -BeNullOrEmpty
+
+        # A click is a press and a release of the left button on one cell; the terminal counts from one.
+        $t.Renderer.SendInput("$esc[<0;4;44M$esc[<0;4;44m")
+        $opened | Should -Be @('https://maester.dev')
+        # A drag, another button, a modifier key or a cell with no link opens nothing.
+        $t.Renderer.SendInput("$esc[<0;4;44M$esc[<0;9;44m")
+        $t.Renderer.SendInput("$esc[<2;4;44M$esc[<2;4;44m")
+        $t.Renderer.SendInput("$esc[<16;4;44M$esc[<16;4;44m")
+        $t.Renderer.SendInput("$esc[<0;80;44M$esc[<0;80;44m")
+        $opened.Count | Should -Be 1
+        # The reports end where they end: the keys around them go on as keys.
+        { $t.Renderer.SendInput("d$esc[<0;4;44M$esc[<0;4;44me$esc") } | Should -Not -Throw
+        $opened.Count | Should -Be 2
+        $t.Renderer.Close()
+    }
+
     It 'Says how long ago the earlier run was, and when' {
         $t = New-TestPanelDashboard
         $before = [System.Collections.Generic.Dictionary[string, string]]::new()
@@ -1063,13 +1106,13 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.SetBaseline($before, $when)
         $t.Renderer.Start(2)
         $screen = $t.Renderer.GetPlainScreen(160, 44) -join "`n"
-        $screen | Should -Match '╭─ Drift since last run ─+ 4 days ago ─╮'
+        $screen | Should -Match '╭─ ◆ Drift since last run ─+ 4 days ago ─╮'
         $screen | Should -Match ([regex]::Escape($when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)) + '  ✓ 1  ✗ 0  \? 1 ')
         # The date opens the report of that run, when its address is known.
         $date = $when.ToString('MMM d, HH:mm', [cultureinfo]::InvariantCulture)
         $t.Writer.ToString() | Should -Not -Match ([regex]::Escape("$esc]8;;file:"))
         $t.Renderer.SetBaselineReport('file:///results/TestResults-old.html')
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;file:///results/TestResults-old.html$esc\$date$esc]8;;$esc\"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc]8;;file:///results/TestResults-old.html$esc\$esc[4m$date$esc[24m$esc]8;;$esc\"))
         $t.Renderer.Close()
     }
 
@@ -1092,7 +1135,7 @@ Describe 'MtConsoleRenderer panels' {
         $t.Renderer.Start(1)
         $out = $t.Writer.ToString()
         # The cut line still has its dimmed date and its link, and the link is closed after the ellipsis.
-        $out | Should -Match ([regex]::Escape("$esc[2mOct 07$esc[0m  $esc]8;;https://maester.dev/blog/post$esc\A long title") + '[^\r\n]*…' + [regex]::Escape("$esc[0m$esc]8;;$esc\"))
+        $out | Should -Match ([regex]::Escape("$esc[2mOct 07$esc[0m  $esc]8;;https://maester.dev/blog/post$esc\$esc[4mA long title") + '[^\r\n]*…' + [regex]::Escape("$esc[0m$esc]8;;$esc\"))
         ($t.Renderer.GetPlainScreen(160, 44) -join "`n") | Should -Match '│ Oct 07  A long title .*… │'
         $t.Renderer.Close()
     }
@@ -1172,7 +1215,7 @@ Describe 'MtConsoleRenderer panels' {
         $pace[4] | Should -Be ('▄███▁'.PadLeft(92))
         # The slowest tests have their panel in the right column.
         $box = @($screen | Select-TestPane)
-        $box[0] | Should -Match '^╭─ Slowest so far ─+╮$'
+        $box[0] | Should -Match '^╭─ ◆ Slowest so far ─+╮$'
         $box[1] | Should -Match '^│ S\.2 +Test 2 +34\.0s │$'
         $box[2] | Should -Match '^│ S\.4 +Test 4 +3\.0s │$'
         ($box -join "`n") | Should -Not -Match 'K\.1'
@@ -1221,9 +1264,9 @@ Describe 'MtConsoleRenderer panels' {
         $t = New-TestPanelDashboard -Width 141
         $t.Renderer.SetTips(@('one two three four five six seven eight nine ten eleven twelve thirteen fourteen'))
         $screen = $t.Renderer.GetPlainScreen(141, 44)
-        ($screen | Where-Object { $_ -match '╭─ Tip ─+╮$' }) | Should -Not -BeNullOrEmpty
+        ($screen | Where-Object { $_ -match '╭─ ◆ Tip ─+╮$' }) | Should -Not -BeNullOrEmpty
         # The Tip panel has the border of the other panels, not an accent.
-        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[38;5;240m╭─ $esc[0m$esc[1mTip"))
+        $t.Writer.ToString() | Should -Match ([regex]::Escape("$esc[38;5;240m╭─ $esc[0m$esc[38;5;209m◆ $esc[0m$esc[1mTip"))
         foreach ($line in $screen) { $line.Length | Should -BeLessThan 141 }
         ($screen -join ' ') | Should -Match 'fourteen'
         $t.Renderer.Close()
@@ -1373,10 +1416,11 @@ Describe 'MtConsoleRenderer insight panels' {
         # The lines of one insight panel, without its border, by its title.
         function Get-InsightPanel {
             param([string[]] $Screen, [string] $Title)
-            $top = @($Screen | Where-Object { $_ -match "[╭+][─-] $([regex]::Escape($Title)) " })[0]
+            $top = @($Screen | Where-Object { $_ -match "[╭+][─-] (?:◆ )?$([regex]::Escape($Title)) " })[0]
             if (-not $top) { return @() }
             $row = [array]::IndexOf($Screen, $top)
-            $from = $top.IndexOf($Title) - 3
+            $at = $top.IndexOf($Title)
+            $from = [Math]::Max($top.LastIndexOf([char]0x256D, $at), $top.LastIndexOf([char]'+', $at))
             $width = ($top.Substring($from) -replace '(?<=[╮+]).*$').Length
             if ($top.Substring($from, 1) -eq '+') { $width = $top.IndexOf('+', $from + 1) - $from + 1 }
             @(1..7 | ForEach-Object { $Screen[$row + $_].Substring($from + 2, $width - 4).TrimEnd() })
@@ -1600,8 +1644,8 @@ Describe 'MtConsoleRenderer insight panels' {
         $row = @($screen | Where-Object { $_ -match 'Weakest areas' })
         $row.Count | Should -Be 1
         # Three panels side by side, in the main column: the right column starts after them.
-        $row[0] | Should -Match '^ ╭─ Weakest areas ─.*╮ ╭─ ATT&CK tactics ─.*╮ ╭─ Failed tests ─+╮ +[│╭╰]'
-        $row[0].IndexOf('╮ ╭─ ATT') | Should -BeGreaterThan 36
+        $row[0] | Should -Match '^ ╭─ (?:◆ )?Weakest areas ─.*╮ ╭─ (?:◆ )?ATT&CK tactics ─.*╮ ╭─ (?:◆ )?Failed tests ─+╮ +[│╭╰]'
+        [regex]::Match($row[0], '╮ ╭─ (?:◆ )?ATT').Index | Should -BeGreaterThan 36
         ($screen -join "`n") | Should -Not -Match 'NIST 800-53 families|Pass rate so far|Every test'
         & $recent $screen | Should -Be 3
         # The panels are at the bottom of the main column, above the status bar.
@@ -1612,7 +1656,7 @@ Describe 'MtConsoleRenderer insight panels' {
         $first = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match 'Weakest areas' })[0])
         $second = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match 'NIST 800-53 families' })[0])
         $second | Should -Be ($first + 9)
-        $screen[$second] | Should -Match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─.*╮ ╭─ Every test ─'
+        $screen[$second] | Should -Match '^ ╭─ (?:◆ )?NIST 800-53 families ─.*╮ ╭─ (?:◆ )?Pass rate so far ─.*╮ ╭─ (?:◆ )?Every test ─'
         $screen[62] | Should -Match '^ ╰─+╯ ╰─+╯ ╰─+╯ '
         # The rows that the two rows of panels leave go to the result blocks first, one square per test
         # (746 tests in rows of 96), and the finished tests keep their three.
@@ -1631,8 +1675,8 @@ Describe 'MtConsoleRenderer insight panels' {
         $t = New-InsightDashboard -NoColor
         Complete-InsightTest $t.Renderer
         $screen = $t.Renderer.GetPlainScreen(80, 64)
-        @($screen | Where-Object { $_ -match '^ ╭─ Weakest areas ─.*╮ ╭─ ATT&CK tactics ─+╮$' }).Count | Should -Be 1
-        @($screen | Where-Object { $_ -match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─.*╮$' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ (?:◆ )?Weakest areas ─.*╮ ╭─ (?:◆ )?ATT&CK tactics ─+╮$' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ (?:◆ )?NIST 800-53 families ─.*╮ ╭─ (?:◆ )?Pass rate so far ─.*╮$' }).Count | Should -Be 1
         ($screen -join "`n") | Should -Not -Match 'Failed tests|Every test'
         $screen | ForEach-Object { $_.Length | Should -BeLessThan 80 }
         # A wider one has all three, each within the main column.
@@ -1646,8 +1690,8 @@ Describe 'MtConsoleRenderer insight panels' {
         $t = New-InsightDashboard -NoColor -Panels @($script:insightPanels | Where-Object { $_ -notin 'AttackTactics', 'FixFirst', 'EveryTest' })
         Complete-InsightTest $t.Renderer
         $screen = $t.Renderer.GetPlainScreen(165, 64)
-        @($screen | Where-Object { $_ -match '^ ╭─ Weakest areas ─.*╮ ╭─ Failed tests ─' }).Count | Should -Be 1
-        @($screen | Where-Object { $_ -match '^ ╭─ NIST 800-53 families ─.*╮ ╭─ Pass rate so far ─' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ (?:◆ )?Weakest areas ─.*╮ ╭─ (?:◆ )?Failed tests ─' }).Count | Should -Be 1
+        @($screen | Where-Object { $_ -match '^ ╭─ (?:◆ )?NIST 800-53 families ─.*╮ ╭─ (?:◆ )?Pass rate so far ─' }).Count | Should -Be 1
         ($screen -join "`n") | Should -Not -Match 'ATT&CK tactics|Fix first|Every test'
         $t.Renderer.Close()
     }
@@ -1656,15 +1700,15 @@ Describe 'MtConsoleRenderer insight panels' {
         $t = New-InsightDashboard -NoColor
         Complete-InsightTest $t.Renderer
         $screen = $t.Renderer.GetPlainScreen(165, 64)
-        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ (?:◆ )?([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
         $titles | Should -Be 'Tenant', 'Results', 'Connections', 'Failed so far', 'Slowest so far', 'Drift since last run', 'Fix first', 'From the blog', 'Tip', 'Featured contributor'
         # The last three end on the last row above the status bar.
         $screen[62] | Should -Match '╰─+╯$'
         $screen[61] | Should -Match '│ 3 tests +│$'
-        $blog = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ From the blog ' })[0])
+        $blog = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ (?:◆ )?From the blog ' })[0])
         # Slowest takes the rows that are left over between the panels of the top and of the bottom.
         @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count | Should -BeGreaterThan 5
-        $fix = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ Fix first ' })[0])
+        $fix = [array]::IndexOf($screen, @($screen | Where-Object { $_ -match '╭─ (?:◆ )?Fix first ' })[0])
         @($screen[$fix..$blog] | Where-Object { $_.Length -lt 105 }).Count | Should -Be 0
         $t.Renderer.Close()
 
@@ -1672,7 +1716,7 @@ Describe 'MtConsoleRenderer insight panels' {
         $t = New-InsightDashboard -NoColor -Panels 'Tips', 'Contributor', 'Tenant', 'Failed'
         Complete-InsightTest $t.Renderer
         $screen = $t.Renderer.GetPlainScreen(165, 40)
-        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ (?:◆ )?([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
         $titles | Should -Be 'Tenant', 'Failed so far', 'Tip', 'Featured contributor'
         $screen[38] | Should -Match '╰─+╯$'
         $t.Renderer.Close()
@@ -1687,7 +1731,7 @@ Describe 'MtConsoleRenderer insight panels' {
                 Height  = $height
                 Fix     = @($screen | Select-TestPane | Where-Object { $_ -match '^│ ✗ T\d\d ' }).Count
                 Slowest = @($screen | Where-Object { $_ -match '│ T\d\d +Title of T\d\d +\d\.\ds │$' }).Count
-                Others  = @($screen | Where-Object { $_ -match '╭─ (Tenant|Results|Connections|Failed so far|Drift since last run|From the blog|Tip|Featured contributor) ' }).Count
+                Others  = @($screen | Where-Object { $_ -match '╭─ (?:◆ )?(Tenant|Results|Connections|Failed so far|Drift since last run|From the blog|Tip|Featured contributor) ' }).Count
             }
         }
         # Fix first has fewer tests, then none, while Slowest still has its two.
@@ -1698,7 +1742,7 @@ Describe 'MtConsoleRenderer insight panels' {
         @($states | Where-Object { $_.Slowest -eq 1 -and $_.Others -eq 8 }).Count | Should -BeGreaterThan 0
         @($states | Where-Object { $_.Others -lt 8 -and $_.Slowest -gt 1 }).Count | Should -Be 0
         # The three of the bottom are the last to go.
-        @($states | Where-Object { $_.Height -ge 30 } | ForEach-Object { @($t.Renderer.GetPlainScreen(165, $_.Height) | Where-Object { $_ -match '╭─ (From the blog|Tip|Featured contributor) ' }).Count } | Select-Object -Unique) | Should -Be 3
+        @($states | Where-Object { $_.Height -ge 30 } | ForEach-Object { @($t.Renderer.GetPlainScreen(165, $_.Height) | Where-Object { $_ -match '╭─ (?:◆ )?(From the blog|Tip|Featured contributor) ' }).Count } | Select-Object -Unique) | Should -Be 3
         $t.Renderer.Close()
     }
 
@@ -1708,8 +1752,8 @@ Describe 'MtConsoleRenderer insight panels' {
         1..20 | ForEach-Object { $t.Renderer.ItemStarting("R.$_", "Running $_", 'Product 1') }
         foreach ($height in 52, 64) {
             $screen = $t.Renderer.GetPlainScreen(165, $height)
-            ($screen -join "`n") | Should -Match '╭─ Weakest areas '
-            ($screen -join "`n") | Should -Match '╭─ Running ─+ 20 tests ─╮'
+            ($screen -join "`n") | Should -Match '╭─ (?:◆ )?Weakest areas '
+            ($screen -join "`n") | Should -Match '╭─ (?:◆ )?Running ─+ 20 tests ─╮'
             $listed = @($screen | Where-Object { $_ -match '^ │ \S R\.\d+ ' }).Count
             $listed | Should -BeGreaterThan 2
             $listed | Should -BeLessThan 20
@@ -1718,11 +1762,11 @@ Describe 'MtConsoleRenderer insight panels' {
             @($screen | Where-Object { $_ -match '^ │ [✓✗] T\d\d ' }).Count | Should -BeGreaterThan 2
         }
         # A taller console has both rows of panels.
-        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match '╭─ NIST 800-53 families '
+        ($t.Renderer.GetPlainScreen(165, 64) -join "`n") | Should -Match '╭─ (?:◆ )?NIST 800-53 families '
         # A console of 44 rows keeps one row of panels, without the tests that ran last: the Running box has
         # no line over finished tests it has no row for.
         $short = $t.Renderer.GetPlainScreen(165, 44)
-        ($short -join "`n") | Should -Match '╭─ Weakest areas '
+        ($short -join "`n") | Should -Match '╭─ (?:◆ )?Weakest areas '
         @($short | Where-Object { $_ -match '^ │ \S R\.\d+ ' }).Count | Should -BeGreaterThan 0
         ($short -join "`n") | Should -Not -Match '├╌ Finished'
         ($short -join "`n") | Should -Match '… and \d+ more running'
@@ -1734,7 +1778,7 @@ Describe 'MtConsoleRenderer insight panels' {
         $t.Renderer.SetSponsor('Sponsor us to keep building Maester', 'https://github.com/maester365/maester?sponsor=1')
         Complete-InsightTest $t.Renderer
         $screen = $t.Renderer.GetPlainScreen(165, 40)
-        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ ([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
+        $titles = @($screen | ForEach-Object { if ($_ -match '   ╭─ (?:◆ )?([A-Z][A-Za-z ]+?) ─') { $Matches[1] } })
         $titles | Should -Be 'Tenant', 'Featured contributor', 'Tip', 'Sponsor'
         $screen[37] | Should -Match '│ ♥  Sponsor us to keep building Maester +│$'
         $screen[38] | Should -Match '╰─+╯$'
@@ -1750,7 +1794,7 @@ Describe 'MtConsoleRenderer insight panels' {
 
         # Without a text there is no panel.
         $none = New-InsightDashboard -NoColor -Panels 'Sponsor', 'Tenant'
-        ($none.Renderer.GetPlainScreen(165, 40) -join "`n") | Should -Not -Match '╭─ Sponsor '
+        ($none.Renderer.GetPlainScreen(165, 40) -join "`n") | Should -Not -Match '╭─ (?:◆ )?Sponsor '
         $none.Renderer.Close()
     }
 

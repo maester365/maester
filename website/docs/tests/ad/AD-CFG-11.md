@@ -60,6 +60,7 @@ DHCP servers registered in Active Directory are authorized to provide IP address
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRegisteredDhcpServersCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-11.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

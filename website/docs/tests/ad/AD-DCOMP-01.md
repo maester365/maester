@@ -85,6 +85,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 | MITRE ATT&CK | T1558 Steal or Forge Kerberos Tickets, T1550.003 Pass the Ticket |
 | PowerShell test | [Test-MtAdComputerUnconstrainedDelegationCount](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty, ActiveDirectory:Ldap:nTDSDSA:ReadProperty |
 
 ## Source
 

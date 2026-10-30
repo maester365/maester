@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters for allow ACEs with `ActiveDirec
 | MITRE ATT&CK | T1003.006 DCSync, T1098 Account Manipulation |
 | PowerShell test | [Test-MtAdDaclPrivilegedExtendedRightIdentity](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-13.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

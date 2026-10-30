@@ -77,6 +77,7 @@ This test retrieves all domain controllers and checks their configured LDAPS (SS
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcNonStandardLdapsPortCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DCD-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSDSA:ReadProperty |
 
 ## Source
 

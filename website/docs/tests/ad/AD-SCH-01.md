@@ -76,6 +76,7 @@ This test retrieves all schema objects and analyzes their creation dates to iden
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSchemaModificationYearCount](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Schema/*:ReadProperty |
 
 ## Source
 
