@@ -35,7 +35,9 @@ The disabled-setting branch assesses the CIS-prescribed organization-owner popul
 
 #### Permissions required
 
-Use an organization owner with a classic PAT carrying `admin:org` and `repo` for full private-repository and organization evidence. Token scopes do not grant roles that the account does not have. Fine-grained tokens and GitHub Apps need access to all organization repositories, organization Members read and the relevant custom-role read permissions, plus repository metadata access. A successful connection or its separate Actions-policy probe does not establish evidence completeness.
+Use an organization owner with a classic PAT carrying `admin:org` and `repo` for full private-repository and organization evidence. Token scopes do not grant roles that the account does not have. Fine-grained PATs and [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-with-a-github-app-on-behalf-of-a-user) need access to all organization repositories, organization Members read and the relevant custom-role read permissions, plus repository metadata access. A successful connection or its separate Actions-policy probe does not establish evidence completeness.
+
+GitHub App installation access tokens are unsupported by `Connect-MtGitHub`, which requires an authenticated user through `GET /user` and verifies that user's organization membership through `GET /user/memberships/orgs/{org}`.
 
 Use the correct API host and host-appropriate manual token for GHE.com (`https://api.SUBDOMAIN.ghe.com`). New decisive REST reads use `2026-03-10`; connection defaults remain unchanged. Authentication limitations, partial SSO, denied access and incomplete pagination cannot establish compliance.
 

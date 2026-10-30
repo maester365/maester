@@ -44,7 +44,9 @@ gh api --paginate 'repos/ORGANIZATION/REPOSITORY/collaborators?affiliation=all&p
 
 For GHE.com, add the matching GitHub CLI `--hostname SUBDOMAIN.ghe.com` option. Independently compare the populations with **People** and each repository's **Manage access** view, including organization and enterprise access, before approving users or declaring inventory completeness.
 
-Use an organization owner and a token with sufficient visibility. A classic PAT normally needs `admin:org` and `repo`; token scopes do not confer account roles. Fine-grained or App authentication needs organization Members read, access to every repository, and relevant custom-role read permissions for the issue-administrator branch. A successful connection does not prove these later reads are complete.
+Use an organization owner and a token with sufficient visibility. A classic PAT normally needs `admin:org` and `repo`; token scopes do not confer account roles. Fine-grained PATs and [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-with-a-github-app-on-behalf-of-a-user) need organization Members read, access to every repository, and relevant custom-role read permissions for the issue-administrator branch. A successful connection does not prove these later reads are complete.
+
+GitHub App installation access tokens are unsupported by `Connect-MtGitHub`, which requires an authenticated user through `GET /user` and verifies that user's organization membership through `GET /user/memberships/orgs/{org}`.
 
 Run only these two checks from the source checkout using your private configuration:
 
@@ -67,7 +69,9 @@ The maximum defaults to **3**, and each test accepts **1 through 3**. This is a 
 
 The owner population is collected even when approval configuration is missing. Results list every validated observed owner by escaped login and numeric user ID, with **Approved**, **Not approved** or **Not configured** status, plus the observed organization ID, count, maximum and collection completeness. Missing or unusable logins display **Unavailable** without changing the verdict. Validated rows from incomplete collections are retained and deduplicated. Their count is a lower bound and cannot establish the total owner population or a Pass. Exceeding the configured maximum, or observing an owner outside a configured nonempty approval roster, establishes failure even when other evidence is incomplete. Configured users who were not observed are never listed.
 
-This branch assesses the CIS-prescribed organization-owner population without evaluating compensating repository policies; it is not an exhaustive certification of actor capabilities. It does not require repository inventories, custom-role catalogs, policies, or a sample issue. Restrictive-policy alternatives are investigated only in the enabled repository-deletion branch.
+For issue deletion, GitHub's current [documentation](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/allowing-people-to-delete-issues-in-your-organization) says an organization owner must enable the feature before issues can be deleted. CIS GitHub Benchmark v1.2.0 section 1.2.4 still prescribes an owner audit when `members_can_delete_issues` is `false`.
+
+This branch follows the CIS-prescribed organization-owner population assessment without evaluating compensating repository policies; it is not an exhaustive certification of actor capabilities. It does not require repository inventories, custom-role catalogs, policies, or a sample issue. Restrictive-policy alternatives are investigated only in the enabled repository-deletion branch.
 
 ### Repository-administrator branch
 
