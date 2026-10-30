@@ -131,7 +131,8 @@ const suites = [
     title: "ASD Essential Eight",
     desc: "Australian Signals Directorate Essential Eight requirements and ISM controls.",
     count: "14 tests",
-    href: "/docs/tests/asd",
+    // /docs/ serves the released docs, which predate the ASD suite. Use /docs/tests/asd once a release includes it.
+    href: "/docs/next/tests/asd",
   },
   {
     emoji: "📨",
