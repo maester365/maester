@@ -65,6 +65,7 @@ This test retrieves `$adState.DaclEntries`, filters entries where `ObjectClass` 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclOuObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

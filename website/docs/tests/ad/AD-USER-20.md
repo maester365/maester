@@ -64,6 +64,7 @@ This test counts user objects whose `SamAccountName` or `Name` matches common se
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserKnownServiceAccountCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-20.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

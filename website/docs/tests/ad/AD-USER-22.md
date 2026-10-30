@@ -66,6 +66,7 @@ This test counts user objects whose SID ends in `-500` or are marked as `isCriti
 | MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdUserBuiltInAdminCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-22.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

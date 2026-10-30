@@ -59,6 +59,7 @@ The test queries the AD NTAuth certificate container, counts the number of confi
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdNtAuthCertificatesCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-21.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

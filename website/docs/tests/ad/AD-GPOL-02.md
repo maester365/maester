@@ -71,6 +71,7 @@ The gPLink attribute is parsed to determine the state of each link.
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtCheckADGPOL02](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

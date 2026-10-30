@@ -72,6 +72,7 @@ This test retrieves the current domain functional level from Active Directory an
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainFunctionalLevel](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.name:ReadProperty |
 
 ## Source
 

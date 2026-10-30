@@ -66,6 +66,7 @@ This test identifies DNS zones that contain only SOA and NS records, with no A, 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsZonesWithOnlySoaNs](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_ResourceRecord:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_RootHints:Read |
 
 ## Source
 

@@ -71,6 +71,7 @@ This test analyzes all computer SPNs, compares service classes against a known d
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnUnknownDetails](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

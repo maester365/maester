@@ -69,6 +69,7 @@ This test analyzes subnet-to-site associations to count how many sites have at l
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetSiteAssociationCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:site:ReadProperty, ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

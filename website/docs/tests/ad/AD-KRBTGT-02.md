@@ -81,6 +81,7 @@ This test retrieves the KRBTGT account and checks:
 | MITRE ATT&CK | T1078.001 Default Accounts |
 | PowerShell test | [Test-MtAdKrbtgtLastLogon](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

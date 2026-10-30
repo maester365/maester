@@ -67,6 +67,7 @@ This test reads `$adState.DaclEntries`, filters out the all-zero `InheritedObjec
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclInheritedObjectTypeDetails](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-18.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

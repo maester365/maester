@@ -69,6 +69,7 @@ This test counts user objects where the `SIDHistory` attribute contains one or m
 | MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdUserSidHistoryCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-13.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         LongRunning,
         Author = 'soulemike'
     )]

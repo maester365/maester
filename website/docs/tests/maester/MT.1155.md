@@ -19,7 +19,7 @@ keywords:
 
 # MT.1155 - Full Scan Mapped Drives should be disabled for performance.
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bdrogja" title="Boris Drogja · Original author"><img src="https://github.com/bdrogja.png" alt="Boris Drogja" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bdrogja">Boris Drogja</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bdrogja" title="Boris Drogja · Original author"><img src="https://github.com/bdrogja.png" alt="Boris Drogja" /></a><a className="test-byline-avatar" href="/contributors/gbenrotto" title="Olugbenro Ogundipe · Co-contributor"><img src="https://github.com/Gbenrotto.png" alt="Olugbenro Ogundipe" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bdrogja">Boris Drogja</a> with <a href="/contributors/gbenrotto">Olugbenro Ogundipe</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -33,8 +33,11 @@ Full scan on mapped drives can cause significant performance issues.
 2. Edit the relevant Microsoft Defender Antivirus policy
 3. Disable **Allow Full Scan on Mapped Network Drives**
 
+If your antivirus settings are split across several policies, this setting only needs to be set in one of them, as long as that policy is assigned to every device that needs it. No other assigned policy should set a different value: Intune does not merge this setting, so a device that receives both values may end up with either one, or none.
+
 #### Related links
 
+- [Policy merge and conflicts for Antivirus policy settings](https://learn.microsoft.com/intune/device-configuration/endpoint-security/antivirus#policy-merge-for-settings)
 - [Configure Microsoft Defender Antivirus](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/configure-microsoft-defender-antivirus-features)
 - [Microsoft Endpoint Manager](https://endpoint.microsoft.com)
 

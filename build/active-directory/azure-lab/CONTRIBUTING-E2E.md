@@ -180,6 +180,12 @@ The `Connect-Maester -ActiveDirectoryCredential` path is fully validated over bo
 
 Always use **PowerShell 7 (`pwsh`)** for runner-based validation. PowerShell 5.1 has module scope issues that prevent Maester's internal LDAP functions from resolving correctly. Azure VM Run Command defaults to PS 5.1 and is not suitable for E2E certification.
 
+## Permission Model
+
+See the [Active Directory Permission Model](https://maester.dev/docs/advanced/active-directory) documentation on the Maester website for the full permission format reference, elevated-privileges list, protocol reference, and known misleading outcomes.
+
+In short: every AD test declares its exact permissions via the `[MaesterTest] Permission` attribute using the format `<protocol>:<category>:<objectClass>:<attribute>:<right>`. Query them at runtime with `Get-MtTest`, and validate them with `Invoke-Pester ./powershell/tests/general/ADPermissionValidation.Tests.ps1`.
+
 ## Cleanup
 
 ```powershell

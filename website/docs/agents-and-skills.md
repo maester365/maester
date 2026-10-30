@@ -19,10 +19,7 @@ An agent is a role with its own instructions and tools. Ask for it by name, for 
 
 | Agent | For | What it does | How to use it |
 | --- | --- | --- | --- |
-| [`maester-issue-manager`](https://github.com/maester365/maester/blob/main/.github/agents/maester-issue-manager.agent.md) | Contributors and maintainers | Reserves MT test IDs on issue #697 and keeps tracking issues tidy for new checks. | Called by the other agents, or ask Claude Code to use it |
-| [`maester-test-expert`](https://github.com/maester365/maester/blob/main/.github/agents/maester-test-expert.agent.md) | Contributors writing or reviewing checks | Writes, reviews and documents checks, including their attributes and the Test.&lt;ID&gt;.md guide. | Pick it in Copilot's agent list, or ask Claude Code to use it |
-| [`maester-test-planner`](https://github.com/maester365/maester/blob/main/.github/agents/maester-test-planner.agent.md) | Contributors planning a new check | Plans a new or changed check before any code is written: files, attributes, validation steps. | Called by the other agents, or ask Claude Code to use it |
-| [`maester-triage`](https://github.com/maester365/maester/blob/main/.github/agents/maester-triage.agent.md) | Maintainers and reviewers | Labels and re-labels PRs, issues and discussions with the label rubric so the queue can be filtered. | Pick it in Copilot's agent list, or ask Claude Code to use it |
+
 
 ## Skills
 
@@ -31,8 +28,7 @@ any agent can follow them directly.
 
 | Skill | For | What it covers |
 | --- | --- | --- |
-| [`maester-test-expert`](https://github.com/maester365/maester/blob/main/.github/skills/maester-test-expert/SKILL.md) | Contributors writing or reviewing checks | The full guide to writing a check: layout, templates, attributes, rubric, validation and remediation. |
-| [`maester-triage`](https://github.com/maester365/maester/blob/main/.github/skills/maester-triage/SKILL.md) | Maintainers and reviewers | The label rubric for PRs, issues and discussions, and the steps for applying it. |
+
 
 ## Changing an agent or skill
 

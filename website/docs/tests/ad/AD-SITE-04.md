@@ -69,6 +69,7 @@ This test analyzes subnet-to-site associations to identify sites that have no su
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSiteWithoutSubnetCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SITE-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:site:ReadProperty, ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

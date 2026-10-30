@@ -67,6 +67,7 @@ This test retrieves the SPN suffixes configured at the forest level using the `G
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSpnSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FORS-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

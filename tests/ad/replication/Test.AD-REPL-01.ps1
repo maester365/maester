@@ -34,6 +34,7 @@
         ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:nTDSConnection:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

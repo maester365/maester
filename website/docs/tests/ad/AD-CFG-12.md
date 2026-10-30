@@ -61,6 +61,7 @@ Enterprise Certification Authorities (CAs) issue certificates for domain authent
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdEnterpriseCaCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-12.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

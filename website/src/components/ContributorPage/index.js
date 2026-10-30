@@ -1,24 +1,34 @@
 import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
+import { useDocsData } from "@docusaurus/plugin-content-docs/client";
 import contributorData from "@site/src/data/contributors.json";
 import { MvpBadge, SocialLinks } from "@site/src/pages/contributors";
 import styles from "./styles.module.css";
 
 function TestList({ title, testIds }) {
+  // contributors.json can list a test before its generated page is committed (a build without PowerShell uses
+  // the committed pages), so link only to pages this build has.
+  const docPaths = new Set(useDocsData(undefined).versions.flatMap((version) => version.docs.map((doc) => doc.path)));
   if (testIds.length === 0) return null;
   return (
     <section className={styles.section}>
       <h2>{title}</h2>
       <ul className={styles.testList}>
-        {testIds.map((id) => (
-          <li key={id}>
-            <Link to={contributorData.tests?.[id]?.path ?? `/docs/tests/${id}`}>
+        {testIds.map((id) => {
+          const path = contributorData.tests?.[id]?.path ?? `/docs/tests/${id}`;
+          const content = (
+            <>
               <span className={styles.testId}>{id}</span>
               <span className={styles.testTitle}>{contributorData.tests?.[id]?.title ?? ""}</span>
-            </Link>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={id}>
+              {docPaths.has(path) ? <Link to={path}>{content}</Link> : <span className={styles.testRow}>{content}</span>}
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

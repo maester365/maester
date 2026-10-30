@@ -33,6 +33,7 @@
         Mitre = 'None',
         Control = 'nist-800-53-r5:CM-8',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

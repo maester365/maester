@@ -164,6 +164,7 @@ Anchors from existing tests:
 | Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |
 | MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |
 | Disabled user count should be retrievable | `Info` | Inventory for review. |
+| [EIDSCA.AP14 — users may read other users](../tests/eidsca/EIDSCA.AP14.md) | `Info` | Disabling `allowedToReadOtherUsers` is not itself a security finding. Review the restriction because it can disrupt collaboration, user lookup and default features. |
 
 Microsoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same
 Microsoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk

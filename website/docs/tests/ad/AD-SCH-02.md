@@ -77,6 +77,7 @@ This test analyzes schema objects and groups them by creation year, providing:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSchemaModificationYearDetails](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Schema/*:ReadProperty |
 
 ## Source
 

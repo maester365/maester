@@ -75,6 +75,7 @@ To configure this setting:
 | MITRE ATT&CK | T1110 Brute Force |
 | PowerShell test | [Test-MtAdAccountLockoutThreshold](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-PWDPOL-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.lockoutThreshold:ReadProperty |
 
 ## Source
 

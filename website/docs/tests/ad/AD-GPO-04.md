@@ -74,6 +74,7 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoUnlinkedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPO-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

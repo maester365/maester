@@ -62,6 +62,7 @@ This test retrieves the environment’s configured tombstone lifetime value from
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTombstoneLifetimeConfig](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

@@ -87,6 +87,7 @@ The test returns:
 | MITRE ATT&CK | T1134.005 SID-History Injection |
 | PowerShell test | [Test-MtAdTrustQuarantinedCount](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

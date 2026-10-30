@@ -75,6 +75,7 @@ This test groups all enabled computers by their parent container and calculates:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerPerOUAverage](https://github.com/maester365/maester/blob/main/tests/ad/computer/Test.AD-COMP-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

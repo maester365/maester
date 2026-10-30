@@ -87,6 +87,7 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 | Supports controls | nist-800-53-r5:IA-5 |
 | PowerShell test | [Test-MtAdKrbtgtPasswordLastSet](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-KRBTGT-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 
