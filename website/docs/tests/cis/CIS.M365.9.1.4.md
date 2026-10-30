@@ -30,10 +30,10 @@ The check verifies that the setting has at least one security group and that new
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Export and sharing settings**, find **Publish to web**.
-4. Choose **Disabled**, or choose **Enabled**, allow only existing embed codes, and scope the setting to **Specific security groups** with at least one group selected.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Export and Sharing settings**.
+4. Set **Publish to web** to **Disabled**, or choose **Enabled**, set **Choose how embed codes work** to **Only allow existing codes**, and select and define **Specific security groups**. If the organization doesn't actively use this feature, keep it **Disabled**.
 5. Select **Apply**. Review existing embed codes separately and remove any that expose sensitive reports.
 
 #### Related links
