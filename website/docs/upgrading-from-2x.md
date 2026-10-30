@@ -120,6 +120,7 @@ New `Invoke-Maester` parameters:
 | Parameter | Effect |
 | --- | --- |
 | `-Product` | Run only the tests of these products: keys such as `entra` or `exchange`, or an alias such as `Entra ID`. |
+| `-ExcludeProduct` | Do not run the tests of these products, matched like `-Product`. Wins over the other selectors. Pester-format tests, which have no product, still run. |
 | `-Feature` | Run only the tests about these features of a product, for example `conditional-access`. |
 | `-Area` | Run only the tests of these security areas, for example `authentication` or `privileged-access`. |
 | `-Severity` | Run only the tests with these severities. |
@@ -150,8 +151,8 @@ Every existing parameter stays. Changed behaviour:
   exact ID is in `-TestId`.
 - **Active Directory tests are chosen by their service.** A test that needs Active Directory runs only after
   `Connect-Maester -Service ActiveDirectory`. The `AD` tag no longer decides this.
-- **Deselected tests carry a reason.** `NotRun` rows say why: not selected, excluded by tag or ID, disabled,
-  preview, long-running, Active Directory not connected. See
+- **Deselected tests carry a reason.** `NotRun` rows say why: not selected, excluded by tag, ID or product,
+  disabled, preview, long-running, Active Directory not connected. See
   [Applicability and reason codes](./configuration/applicability.md).
 - **`-Verbosity Normal`** prints one line per finished test, and `Detailed` also a line when each test starts.
 
@@ -169,6 +170,7 @@ carry 2.x tags, so a tag no longer grows with the product; a selector does.
 | --- | --- |
 | `-Tag CISA`, `-Tag Maester` | `-Suite cisa`, `-Suite maester` |
 | `-Tag EXO`, `-Tag Entra` | `-Product exchange`, `-Product entra` |
+| `-ExcludeTag EXO`, `-ExcludeTag Entra` | `-ExcludeProduct exchange`, `-ExcludeProduct entra` |
 | `-Tag CA`, `-Tag Privileged` | `-Feature conditional-access`, `-Area privileged-access` |
 | `-Tag MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5` |
 | `-Tag Severity:High` | `-Severity High` |
