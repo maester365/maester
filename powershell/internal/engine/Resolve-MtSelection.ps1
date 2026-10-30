@@ -5,8 +5,9 @@ function Resolve-MtSelection {
 
     .DESCRIPTION
     -Tag, -TestId and the typed selectors (-Product, -Feature, -Area, -Severity, -Suite) replace the config
-    lists, and so does -Pack; -ExcludeTag and -ExcludeTestId add to them; the include switches are true when either source
-    sets them. A product named by an alias, such as Entra ID, becomes its key.
+    lists, and so does -Pack; -ExcludeTag, -ExcludeTestId and -ExcludeProduct add to them; the include switches are true
+    when either source sets them. A product named by an alias, such as Entra ID, becomes its key, in -Product and
+    -ExcludeProduct alike.
 
     .EXAMPLE
     Resolve-MtSelection -RunConfig $config -BoundParameters $PSBoundParameters
@@ -22,6 +23,7 @@ function Resolve-MtSelection {
         [Parameter()] [string[]] $TestId,
         [Parameter()] [string[]] $ExcludeTestId,
         [Parameter()] [string[]] $Product,
+        [Parameter()] [string[]] $ExcludeProduct,
         [Parameter()] [string[]] $Feature,
         [Parameter()] [string[]] $Area,
         [Parameter()] [string[]] $Severity,
@@ -38,9 +40,16 @@ function Resolve-MtSelection {
         $list = if ($value) { $value } elseif ($s.PSObject.Properties[$name]) { $s.$name } else { @() }
         foreach ($item in @($list)) { if (-not [string]::IsNullOrWhiteSpace($item)) { [string]$item } }
     }
-    $products = foreach ($item in @(& $selector $Product 'Product')) {
+    # A product name becomes its key; a wildcard pattern stays as it is.
+    $productKey = {
+        param($item)
         $key = if ($item.Contains('*')) { $null } else { Resolve-MtProductKey -Name $item }
         if ($key) { $key } else { $item }
+    }
+    $products = foreach ($item in @(& $selector $Product 'Product')) { & $productKey $item }
+    $configExcludeProduct = if ($s.PSObject.Properties['ExcludeProduct']) { @($s.ExcludeProduct) } else { @() }
+    $excludeProducts = foreach ($item in @($configExcludeProduct) + @($ExcludeProduct)) {
+        if (-not [string]::IsNullOrWhiteSpace($item)) { & $productKey ([string]$item) }
     }
     [pscustomobject]@{
         Tag                = @(if ($Tag) { $Tag } else { $s.Tag })
@@ -48,6 +57,7 @@ function Resolve-MtSelection {
         TestId             = @(if ($TestId) { $TestId } else { $s.TestId })
         ExcludeTestId      = @(@($s.ExcludeTestId) + @($ExcludeTestId) | Where-Object { $_ } | Select-Object -Unique)
         Product            = [string[]]@($products)
+        ExcludeProduct     = [string[]]@($excludeProducts | Select-Object -Unique)
         Feature            = [string[]]@(& $selector $Feature 'Feature')
         Area               = [string[]]@(& $selector $Area 'Area')
         Severity           = [string[]]@(& $selector $Severity 'Severity')
@@ -118,6 +128,31 @@ function Test-MtSelectorInUse {
     $false
 }
 
+function Test-MtProductExcluded {
+    <#
+    .SYNOPSIS
+    Returns the -ExcludeProduct patterns that match a test's Product or RelatedProduct values.
+
+    .DESCRIPTION
+    The patterns are product keys or '*' wildcards, as for -Product. A test that has no product, such as a
+    Pester-format test, matches none: -ExcludeProduct never leaves it out, unlike -Product.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        # Output of Resolve-MtSelection.
+        [Parameter(Mandatory)] [pscustomobject] $Selection,
+        # The test's Product and RelatedProduct values.
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [string[]] $Product
+    )
+
+    if (-not $Selection.PSObject.Properties['ExcludeProduct']) { return }
+    $values = @($Product | Where-Object { $_ })
+    foreach ($pattern in @($Selection.ExcludeProduct | Where-Object { $_ })) {
+        if ($values | Where-Object { $_ -like $pattern }) { $pattern }
+    }
+}
+
 function Test-MtIdMatch {
     <#
     .SYNOPSIS
@@ -152,8 +187,8 @@ function Get-MtPesterSelectionPlan {
     family through its literal ID prefix.
 
     A Pester-format test has no Product, Feature or Area, so a run that selects by one of them leaves it
-    out. Its Suite is that of its file (-FileOrigin), and its severity is known before the run only from a
-    TestSettings row.
+    out, and -ExcludeProduct never excludes it. Its Suite is that of its file (-FileOrigin), and its severity
+    is known before the run only from a TestSettings row.
 
     Returns: ExcludeLines (file:line strings), Reasons (file:line -> reason object), LiftPreview and
     LiftLongRunning (an exact -TestId names a Preview or long-running test, so the default tag

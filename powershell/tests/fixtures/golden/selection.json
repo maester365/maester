@@ -2,7 +2,7 @@
   "_meta": {
     "Description": "Maester 2.x golden: Pester filter built by Invoke-Maester and the IDs it selects. Regenerate with build/golden/Export-MtGoldenFixture.ps1; never hand-edit.",
     "FilterSource": "The include and exclude tags of the real Invoke-Maester run context, run with -DryRun -SkipGraphConnect in an empty folder.",
-    "SelectionSource": "The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.",
+    "SelectionSource": "The rows of that dry run that selection did not leave out (any reason other than NotSelected, NotListed, Preview, LongRunning, ExcludedByTag, ExcludedById, ExcludedByProduct, DisabledByConfig or OptInServiceNotConnected). Families are listed by their 2.x prefix.",
     "Assumptions": [
       "Not connected to Active Directory, so Invoke-Maester appends AD to Filter.ExcludeTag.",
       "Run.Path \".\" is the installed tests folder (repo tests/ without Custom); \"./tests/<x>\" maps to repo tests/<x>.",
