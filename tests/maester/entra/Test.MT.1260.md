@@ -4,7 +4,7 @@ Entra ID Protection rates a user's risk and tracks a risk state for each flagged
 
 This check reports users whose risk level is **high** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a user's risk state.
 
-A companion check, MT.1261, reports the same for medium-risk users at a lower severity. This check is about the outcome (users actually left unremediated). It is complementary to MT.1253, which checks that a Conditional Access policy requiring risk remediation is in place; one checks the control, this one checks the result.
+A companion check for medium-risk users, MT.1261, is planned. This check is about the outcome (users actually left unremediated). It is complementary to MT.1253, which checks that a Conditional Access policy requiring risk remediation is in place; one checks the control, this one checks the result.
 
 ### Remediation action:
 
