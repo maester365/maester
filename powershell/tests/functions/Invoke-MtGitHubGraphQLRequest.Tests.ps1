@@ -34,6 +34,16 @@ Describe 'GitHub GraphQL read transport' {
         }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 4
     }
+    It 'Bounds requests and does not cache or retry a timeout' {
+        Mock Invoke-WebRequest -ModuleName Maester { throw [System.TimeoutException]::new('Synthetic stalled request.') }
+        InModuleScope Maester {
+            { Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture } | Should -Throw '*stalled request*'
+            $__MtSession.GitHubCache.Count | Should -Be 0
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30
+        }
+    }
     It 'Routes to the connected GHE.com host and isolates its cache' {
         InModuleScope Maester {
             Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture | Out-Null

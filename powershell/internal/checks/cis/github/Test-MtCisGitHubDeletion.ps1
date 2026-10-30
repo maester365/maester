@@ -70,46 +70,33 @@
         Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $true
     }
-    if ($null -eq $policy) {
-        $report.Message = 'Configure GlobalSettings.GitHubDeletionPolicy with the users approved as trusted and qualified; no approval population was supplied.'
-        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
-        return $null
-    }
-    if ($policy.CompleteRepositoryInventory -ne $true -or -not $policy.PSObject.Properties['Repositories']) {
-        $report.Message = 'Declare CompleteRepositoryInventory and approve administrators for every organization repository before assessing the administrator branch.'
-        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
-        return $null
-    }
-    $inventory = Get-MtGitHubRepositoryInventory
-    if ($inventory.Issues.Count -gt 0) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason ('Indeterminate: organization repository inventory. ' + ($inventory.Issues -join ' '))
-        return $null
-    }
-    if ($inventory.Repositories.Count -eq 0) {
-        $report.Message = 'No repositories were visible. This does not establish a complete organization inventory or a not-applicable result.'
-        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
-        return $null
-    }
-    $declared = @{}
-    foreach ($entry in $policy.Repositories) { $declared[$entry.Id] = $entry }
-    $liveIds = @($inventory.Repositories | ForEach-Object { [string]$_.id })
-    if (@($liveIds | Where-Object { -not $declared.ContainsKey($_) }).Count -or @($declared.Keys | Where-Object { $_ -cnotin $liveIds }).Count) {
-        $report.Message = 'The declared repository IDs and the complete live inventory do not match. Reconcile missing, inaccessible, newly created or removed repositories; no exclusions are supported.'
-        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
-        return $null
-    }
-    if (@($policy.Repositories | Where-Object { $_.ApprovedAdministratorIds.Count -eq 0 }).Count) {
-        $report.Message = 'Configure a nonempty ApprovedAdministratorIds roster for every repository. Empty approval rosters do not establish an assessed trust decision.'
-        Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
-        return $null
-    }
     $rows = [System.Collections.Generic.List[object]]::new()
     $violations = [System.Collections.Generic.List[object]]::new()
     $collectionGaps = [System.Collections.Generic.List[string]]::new()
+    $scopeGaps = [System.Collections.Generic.List[string]]::new()
     $policyGaps = [System.Collections.Generic.List[string]]::new()
+    $declared = @{}
+    foreach ($entry in $policy.Repositories) { $declared[$entry.Id] = $entry }
+    if ($null -eq $policy) {
+        $scopeGaps.Add('Configure GlobalSettings.GitHubDeletionPolicy with a complete repository inventory and users approved as trusted and qualified. No approval population was supplied.')
+    } else {
+        if ($policy.CompleteRepositoryInventory -ne $true) { $scopeGaps.Add('Declare CompleteRepositoryInventory to confirm that the assessor has accounted for every organization repository.') }
+        if (-not $policy.PSObject.Properties['Repositories']) { $scopeGaps.Add('Declare Repositories and approve administrators for every organization repository.') }
+    }
     $confirmedViolations = 0
     try {
+        $inventory = Get-MtGitHubRepositoryInventory
+        foreach ($issue in $inventory.Issues) { $collectionGaps.Add("Organization repository inventory: $issue") }
+        if ($inventory.Repositories.Count -eq 0 -and $inventory.Issues.Count -eq 0) {
+            $scopeGaps.Add('No repositories were visible. This does not establish a complete organization inventory or a not-applicable result.')
+        }
+        $liveIds = @($inventory.Repositories | ForEach-Object { [string]$_.id })
+        if ($null -ne $policy -and $policy.PSObject.Properties['Repositories'] -and (@($liveIds | Where-Object { -not $declared.ContainsKey($_) }).Count -or @($declared.Keys | Where-Object { $_ -cnotin $liveIds }).Count)) {
+            $scopeGaps.Add('The declared repository IDs and the observed inventory do not match. Reconcile missing, inaccessible, newly created or removed repositories; no exclusions are supported.')
+        }
         foreach ($repository in $inventory.Repositories) {
+            $approvalsConfigured = $declared.ContainsKey([string]$repository.id) -and $declared[[string]$repository.id].ApprovedAdministratorIds.Count -gt 0
+            if (-not $approvalsConfigured) { $scopeGaps.Add("$(Get-MtSafeMarkdown $repository.name): Configure a nonempty ApprovedAdministratorIds roster. Observed access does not approve a user as trusted and qualified.") }
             $name = [uri]::EscapeDataString($repository.name)
             $collaborators = Get-MtGitHubIdentityCollection -RelativeUri "/repos/$encoded/$name/collaborators?affiliation=all" -Label 'Repository collaborator'
             $complete = $collaborators.Complete -and $collaborators.Items.Count -gt 0 -and @($collaborators.Items | Where-Object { $_.permissions.admin -isnot [bool] }).Count -eq 0
@@ -118,12 +105,12 @@
                 $collectionGaps.Add("$(Get-MtSafeMarkdown $repository.name): $reason")
             }
             $administrators = @($collaborators.Items | Where-Object { $_.permissions.admin -is [bool] -and $_.permissions.admin -eq $true -and [string]$_.id -cnotin $collaborators.ConflictingAdministratorIds })
-            $unapproved = @($administrators | Where-Object { [string]$_.id -cnotin $declared[[string]$repository.id].ApprovedAdministratorIds })
+            $unapproved = @($administrators | Where-Object { $approvalsConfigured -and [string]$_.id -cnotin $declared[[string]$repository.id].ApprovedAdministratorIds })
             $violation = $administrators.Count -gt 2 -or $unapproved.Count -gt 0 -or ($complete -and $administrators.Count -lt 2)
             $rows.Add([pscustomobject]@{
                 Name = $repository.name; AdministratorCount = $administrators.Count
-                UnapprovedIds = @($unapproved | ForEach-Object { [string]$_.id }); Complete = $complete
-                Assessment = if ($violation) { 'Needs review' } elseif ($complete) { 'Meets baseline' } else { 'Indeterminate' }
+                UnapprovedIds = @($unapproved | ForEach-Object { [string]$_.id }); Complete = $complete; ApprovalsConfigured = $approvalsConfigured
+                Assessment = if ($violation) { 'Needs review' } elseif (-not $complete) { 'Indeterminate' } elseif (-not $approvalsConfigured) { 'Approvals not configured' } else { 'Meets baseline' }
             })
             if ($violation) { $violations.Add($repository) }
             if ($collaborators.ExecutionError) { throw $collaborators.ExecutionError }
@@ -137,14 +124,14 @@
             $confirmedViolations = $violations.Count
             # Additive issue permissions cannot remove an already validated violation. Do not
             # traverse optional catalogs to look past unusable required population evidence.
-            if ($violations.Count -eq 0 -and $collectionGaps.Count -eq 0) {
+            if ($violations.Count -eq 0 -and $collectionGaps.Count -eq 0 -and $scopeGaps.Count -eq 0) {
                 $roleGap = Get-MtCisGitHubDeletionRoleGap -Organization $organization
                 if ($roleGap) { $policyGaps.Add($roleGap) }
             }
         }
     } catch {
         $report.Repositories = $rows.ToArray()
-        $report.Gaps = @($collectionGaps.ToArray()) + @($policyGaps.ToArray())
+        $report.Gaps = @($collectionGaps.ToArray()) + @($scopeGaps.ToArray()) + @($policyGaps.ToArray())
         $report.Message = 'A GitHub evidence request or parsing operation failed. Collected repository observations are retained, but this assessment remains an execution error.'
         Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         # Do not expose an original exception's partial response, raw user IDs or arbitrary
@@ -153,7 +140,7 @@
         throw [System.InvalidOperationException]::new($message)
     }
     $report.Repositories = $rows.ToArray()
-    $report.Gaps = @($collectionGaps.ToArray()) + @($policyGaps.ToArray())
+    $report.Gaps = @($collectionGaps.ToArray()) + @($scopeGaps.ToArray()) + @($policyGaps.ToArray())
     if ($confirmedViolations -gt 0) {
         $report.Message = 'Review repository administrator access: at least one repository has a confirmed count or approval violation. Require exactly two effective administrators, both approved as trusted and qualified. Additional evidence gaps do not negate the confirmed violation.'
         Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
@@ -162,12 +149,12 @@
     # Without a confirmed violation, incomplete required populations retain Skipped
     # even when optional policy uncertainty also remains. All gaps stay in the report.
     if ($collectionGaps.Count -gt 0) {
-        $report.Message = 'Indeterminate: complete effective administrator populations could not be established.'
+        $report.Message = 'Indeterminate: a usable complete repository inventory or effective administrator population could not be established.'
         Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity) -SkippedBecause Custom -SkippedCustomReason ('Indeterminate: ' + ($collectionGaps -join ' '))
         return $null
     }
-    if ($policyGaps.Count -gt 0) {
-        $report.Message = 'Investigate the unresolved restrictive repository policy or additive issue permissions before determining compliance.'
+    if ($scopeGaps.Count -gt 0 -or $policyGaps.Count -gt 0) {
+        $report.Message = 'Investigate the outstanding repository inventory, approval or permission-policy gaps before determining compliance.'
         Add-MtTestResultDetail -Investigate -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         return $null
     }

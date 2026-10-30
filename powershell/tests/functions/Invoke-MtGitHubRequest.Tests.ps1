@@ -40,6 +40,36 @@ Describe 'Invoke-MtGitHubRequest' {
         }
     }
 
+    Context 'Request timeouts' {
+        It 'Bounds every page for legacy and metadata requests (<Metadata>)' -ForEach @(@{ Metadata = $false }, @{ Metadata = $true }) {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $headers = if ($Uri -like '*page=2') { @{} } else { @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = $headers }
+            }
+            InModuleScope Maester -Parameters @{ Metadata = $Metadata } {
+                Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata:$Metadata | Out-Null
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30
+            }
+        }
+
+        It 'Retains earlier pages on timeout without caching incomplete retrievals' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                if ($Uri -like '*page=2') { throw [System.TimeoutException]::new('Synthetic stalled request.') }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+            }
+            InModuleScope Maester {
+                $caught = $null
+                try { Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata | Out-Null } catch { $caught = $_ }
+                $caught.Exception | Should -BeOfType ([System.TimeoutException])
+                $caught.Exception.Data['GitHubPartialResponse'].Data.id | Should -Be 1
+                $__MtSession.GitHubCache.Count | Should -Be 0
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
+        }
+    }
+
     Context 'Cache key helper' {
         It 'Builds cache keys as ApiVersion|absoluteUri' {
             InModuleScope Maester {

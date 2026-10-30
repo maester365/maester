@@ -82,7 +82,8 @@
     function Invoke-Page ([string]$Uri) {
         Invoke-MtGitHubRateLimitGuard -Api REST
         try {
-            $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
+            # Match connection probes: bound header waiting and each stalled body read.
+            $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
 
             Invoke-MtGitHubRateLimitGuard -Api REST -Headers $wr.Headers
 

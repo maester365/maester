@@ -38,8 +38,9 @@ function Get-MtCisGitHubDeletionResult {
     } else {
         $rows = foreach ($repository in $Evidence.Repositories) {
             $ids = @($repository.UnapprovedIds | ForEach-Object { & $userId $_ }) -join ', '
+            $unapprovedCount = if ($repository.ApprovalsConfigured) { [string]@($repository.UnapprovedIds).Count } else { 'Not configured' }
             $coverage = if ($repository.Complete) { 'Complete' } else { 'Incomplete / partial; observed count is a lower bound' }
-            "| $(Get-MtSafeMarkdown $repository.Name) | $($repository.AdministratorCount) | $(@($repository.UnapprovedIds).Count) | $ids | $($repository.Assessment) | $coverage |"
+            "| $(Get-MtSafeMarkdown $repository.Name) | $($repository.AdministratorCount) | $unapprovedCount | $ids | $($repository.Assessment) | $coverage |"
         }
         $result += "| Repository | Effective administrators | Unapproved | Unapproved observed user IDs | Assessment | Evidence |`n| --- | --- | --- | --- | --- | --- |`n" + ($rows -join "`n")
         $result += "`n`nEffective administrator permissions include inherited grants. This assessment uses the configured approvals; it does not independently determine a person's trust or qualifications. No issue was deleted or sampled."

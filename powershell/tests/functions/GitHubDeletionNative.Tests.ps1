@@ -6,6 +6,128 @@ BeforeAll {
     Import-Module $ModulePath -Force
 }
 
+Describe 'Partial repository coverage through native execution and exports' {
+    BeforeEach {
+        $script:requestPaths = [System.Collections.Generic.List[string]]::new()
+        $script:timeoutPath = $null
+        $script:activePolicy = $false
+        $script:repositoryResponses = @{
+            '/orgs/fixture-org' = @{ id = 100; members_can_delete_repositories = $true; members_can_delete_issues = $true }
+            '/orgs/fixture-org/repos?type=all&per_page=100' = @(
+                @{ id = 200; name = 'fixture-repo'; full_name = 'fixture-org/fixture-repo'; owner = @{ login = 'fixture-org' } },
+                @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } }
+            )
+            '/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100' = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } })
+            '/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100' = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } })
+        }
+        $script:repositoryConfig = @{ GlobalSettings = @{ GitHubDeletionPolicy = @{
+            ApiBaseUri = 'https://api.github.com'; OrganizationId = '100'; CompleteRepositoryInventory = $true
+            Repositories = @(@{ Id = '200'; ApprovedAdministratorIds = @('1', '2', '9876543210123') })
+        } } }
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = [pscustomobject]@{ Connected = $true; Organization = 'fixture-org'; ApiBaseUri = 'https://api.github.com'; ApiVersion = '2022-11-28' }
+            $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer synthetic-never-network'; 'X-GitHub-Api-Version' = '2022-11-28' }
+            $__MtSession.GitHubCache = @{}
+            $__MtSession.GitHubRateLimits = $null
+            $__MtSession.MaesterConfig = $null
+        }
+        Mock Invoke-WebRequest -ModuleName Maester {
+            if ($Uri -notlike 'https://api.github.com/*' -or $ConnectionTimeoutSeconds -ne 30 -or $OperationTimeoutSeconds -ne 30) { throw 'Unexpected native transport options.' }
+            $path = ([uri]$Uri).PathAndQuery
+            $script:requestPaths.Add($path)
+            if ($path -eq $script:timeoutPath) { throw [System.TimeoutException]::new('Sensitive server text: 90123456789 synthetic-never-network') }
+            if ($path -eq '/graphql') {
+                if ($Method -ne 'POST' -or $Headers.ContainsKey('X-GitHub-Api-Version')) { throw 'Unexpected GraphQL transport options.' }
+                $request = $Body | ConvertFrom-Json
+                if ($request.operationName -ne 'DeletionPolicies' -or $request.variables.repo -ne 'fixture-repo') { throw 'Unexpected policy request; network is forbidden.' }
+                $nodes = @(if ($script:activePolicy) { @{ id = 'fixture-policy'; target = 'REPOSITORY'; enforcement = 'ACTIVE' } })
+                $data = @{ data = @{ repository = @{ databaseId = 200; rulesets = @{ totalCount = $nodes.Count; nodes = $nodes; pageInfo = @{ hasNextPage = $false; endCursor = $null } } } } }
+            } else {
+                if ($Method -ne 'GET' -or $Headers['X-GitHub-Api-Version'] -ne '2026-03-10' -or -not $script:repositoryResponses.ContainsKey($path)) { throw 'Unexpected fixture endpoint; network is forbidden.' }
+                $data = $script:repositoryResponses[$path]
+            }
+            [pscustomobject]@{ Content = ConvertTo-Json -InputObject $data -Depth 12 -Compress; Headers = @{} }
+        }
+    }
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.GitHubAuthHeader = $null
+            $__MtSession.GitHubCache = @{}
+            $__MtSession.GitHubRateLimits = $null
+            $__MtSession.MaesterConfig = $null
+        }
+    }
+
+    It 'Assesses <Id> without a policy and preserves the <Expected> outcome for <Count> administrators' -ForEach @(
+        @{ Id = 'CIS.GH.1.2.3'; Count = 2; Expected = 'Investigate' },
+        @{ Id = 'CIS.GH.1.2.4'; Count = 2; Expected = 'Investigate' },
+        @{ Id = 'CIS.GH.1.2.3'; Count = 3; Expected = 'Failed' },
+        @{ Id = 'CIS.GH.1.2.4'; Count = 3; Expected = 'Failed' }
+    ) {
+        if ($Count -eq 3) { $script:repositoryResponses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 90123456789; permissions = @{ admin = $true } } }
+        $row = Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{} }
+        $row.Result | Should -Be $Expected
+        $row.ResultDetail.TestResult | Should -Match "\| fixture-repo \| $Count \| Not configured \|"
+        $row.ResultDetail.TestResult | Should -Not -Match 'Meets baseline|90123456789'
+        $script:requestPaths | Should -Contain '/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'
+        $script:requestPaths | Should -Not -Contain '/orgs/fixture-org/custom-repository-roles'
+    }
+
+    It 'Keeps a candidate violation indeterminate when restrictive policy is active despite a scope gap' {
+        $script:repositoryResponses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 90123456789; permissions = @{ admin = $true } }
+        $script:activePolicy = $true
+        $row = Invoke-MtTest -Id CIS.GH.1.2.3 -Config $script:repositoryConfig
+        $row.Result | Should -Be 'Investigate'
+        $row.ResultDetail.TestResult | Should -Match 'active repository-target policy'
+        $row.ResultDetail.TestResult | Should -Match 'do not match'
+    }
+
+    It 'Sanitizes an inventory timeout and makes no follow-on requests' {
+        $script:timeoutPath = '/orgs/fixture-org/repos?type=all&per_page=100'
+        $row = Invoke-MtTest -Id CIS.GH.1.2.4 -Config $script:repositoryConfig
+        $row.Result | Should -Be 'Error'
+        $row.ReasonDetail | Should -Not -Match 'Sensitive server text|90123456789|synthetic-never-network'
+        ($row.ErrorRecord | ConvertTo-Json -Depth 30) | Should -Not -Match 'Sensitive server text|90123456789|synthetic-never-network'
+        $script:requestPaths.Count | Should -Be 2
+    }
+
+    It 'Exports retained findings and gaps with <Mode> redaction after <Outcome>' -ForEach @(
+        @{ Mode = 'None'; Outcome = 'Failed' }, @{ Mode = 'HtmlOnly'; Outcome = 'Failed' }, @{ Mode = 'AllOutputs'; Outcome = 'Failed' },
+        @{ Mode = 'None'; Outcome = 'Error' }, @{ Mode = 'HtmlOnly'; Outcome = 'Error' }, @{ Mode = 'AllOutputs'; Outcome = 'Error' }
+    ) {
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{} }
+        $script:excelInput = $null
+        Mock Convert-MtResultsToFlatObject -ModuleName Maester -ParameterFilter { $ExcelFilePath } { $script:excelInput = $InputObject }
+        $script:repositoryResponses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 90123456789; permissions = @{ admin = $true } }
+        if ($Outcome -eq 'Error') { $script:timeoutPath = '/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100' }
+        $folder = Join-Path $TestDrive "$Outcome-$Mode"
+        $xmlPath = Join-Path $TestDrive "$Outcome-$Mode.xml"
+        $script:repositoryConfig.Output = @{ TestResult = @{ Path = $xmlPath; Format = 'JUnitXml' } }
+        $result = Invoke-Maester -Config $script:repositoryConfig -TestId CIS.GH.1.2.4 -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -ExportCsv -ExportExcel -RedactUserIdentity $Mode
+        $row = $result.Tests | Where-Object Id -EQ 'CIS.GH.1.2.4'
+        $row.Result | Should -Be $Outcome
+        $row.ResultDetail.TestResult | Should -Match '\| fixture-repo \| 3 \| 1 \| 90123456789 \|'
+        foreach ($extension in 'json', 'html', 'md', 'csv') {
+            $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            ($content -match 'fixture-repo|other-repo') | Should -BeTrue
+            ($content -match 'do not match') | Should -BeTrue
+            ($content -match 'Sensitive server text|synthetic-never-network|9876543210123|GitHubPartialResponse') | Should -BeFalse
+            if ($Mode -eq 'AllOutputs' -or ($Mode -eq 'HtmlOnly' -and $extension -eq 'html')) {
+                ($content -match '90123456789|TestResultRedacted') | Should -BeFalse
+                ($content -match 'object-[a-f0-9]{16}') | Should -BeTrue
+            } else { ($content -match '90123456789') | Should -BeTrue }
+        }
+        Should -Invoke Convert-MtResultsToFlatObject -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $ExcelFilePath }
+        $excelJson = $script:excelInput | ConvertTo-Json -Depth 30
+        if ($Mode -eq 'AllOutputs') { ($excelJson -match '90123456789|TestResultRedacted') | Should -BeFalse }
+        else { ($excelJson -match '90123456789') | Should -BeTrue }
+        ($excelJson -match 'Sensitive server text|synthetic-never-network|9876543210123|GitHubPartialResponse') | Should -BeFalse
+        ((Get-Content $xmlPath -Raw) -match '90123456789|Sensitive server text|synthetic-never-network|9876543210123') | Should -BeFalse
+        if ($Outcome -eq 'Error') { $script:requestPaths.Count | Should -Be 4 }
+    }
+}
+
 Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' {
     BeforeEach {
         $script:apiBase = 'https://api.github.com'

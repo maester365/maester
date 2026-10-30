@@ -341,6 +341,12 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
             if ($Uri -eq "$script:expectedUri/members?role=admin&per_page=100") {
                 return [PSCustomObject]@{ Content = '[{"id":11,"login":"synthetic-owner"}]'; Headers = @{} }
             }
+            if ($Uri -eq "$script:expectedUri/repos?type=all&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":200,"name":"synthetic-repo","full_name":"synthetic-org/synthetic-repo","owner":{"login":"synthetic-org"}}]'; Headers = @{} }
+            }
+            if ($Uri -eq 'https://api.github.com/repos/synthetic-org/synthetic-repo/collaborators?affiliation=all&per_page=100') {
+                return [PSCustomObject]@{ Content = '[{"id":11,"permissions":{"admin":true}},{"id":12,"permissions":{"admin":true}}]'; Headers = @{} }
+            }
             if ($Uri -ne $script:expectedUri) {
                 throw 'Unexpected transport request blocked by fixture.'
             }
@@ -422,7 +428,7 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
             )) {
             foreach ($value in 'true', 'false') { @{ Id = $check.Id; Field = $check.Field; Json = $value } }
         }
-        It 'Keeps <Id> Investigate for <Json> until approval configuration is supplied' -ForEach $deletionCases {
+        It 'Keeps <Id> Investigate for <Json> when counts meet the baseline but approvals are missing' -ForEach $deletionCases {
             $script:rawBody = '{"id":1001,"login":"synthetic-org","' + $Field + '":' + $Json + '}'
             $row = @(Invoke-MtTest -Id $Id)
             $row.Count | Should -Be 1
@@ -436,7 +442,8 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
                 $detail.Contains('| synthetic-owner | 11 | Not configured |') | Should -BeTrue
                 Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
             } else {
-                Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
+                $detail.Contains('| synthetic-repo | 2 | Not configured |') | Should -BeTrue
+                Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 3 -Exactly
             }
         }
     }

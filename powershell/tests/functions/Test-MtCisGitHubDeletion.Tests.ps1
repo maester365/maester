@@ -363,6 +363,117 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
         Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate -and $Result -match 'do not match' }
     }
+    It 'Retains a confirmed count violation despite a <Gap> (<Kind>)' -ForEach @(
+        @{ Gap = 'missing policy'; Kind = 'Issue' }, @{ Gap = 'missing policy'; Kind = 'Repository' },
+        @{ Gap = 'missing completeness declaration'; Kind = 'Issue' }, @{ Gap = 'missing completeness declaration'; Kind = 'Repository' },
+        @{ Gap = 'missing repository declarations'; Kind = 'Issue' }, @{ Gap = 'missing repository declarations'; Kind = 'Repository' },
+        @{ Gap = 'stale repository declaration'; Kind = 'Issue' }, @{ Gap = 'stale repository declaration'; Kind = 'Repository' },
+        @{ Gap = 'empty approval roster'; Kind = 'Issue' }, @{ Gap = 'empty approval roster'; Kind = 'Repository' },
+        @{ Gap = 'undeclared repository'; Kind = 'Issue' }, @{ Gap = 'undeclared repository'; Kind = 'Repository' }
+    ) {
+        $script:organization.members_can_delete_issues = $true
+        $script:organization.members_can_delete_repositories = $true
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        switch ($Gap) {
+            'missing policy' { $script:policy = $null }
+            'missing completeness declaration' { $script:policy.PSObject.Properties.Remove('CompleteRepositoryInventory') }
+            'missing repository declarations' { $script:policy.PSObject.Properties.Remove('Repositories') }
+            'stale repository declaration' { $script:policy.Repositories += [pscustomobject]@{ Id = '201'; ApprovedAdministratorIds = @('1', '2') } }
+            'empty approval roster' { $script:policy.Repositories[0].ApprovedAdministratorIds = @() }
+            'undeclared repository' {
+                $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] += @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } }
+                $script:responses['/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'] = @(@{ id = 1; permissions = @{ admin = $true } }, @{ id = 2; permissions = @{ admin = $true } })
+            }
+        }
+        Set-DeletionPolicy $script:policy
+        $function = if ($Kind -eq 'Issue') { 'Test-MtCisGitHubIssueDeletionLimited' } else { 'Test-MtCisGitHubRepositoryDeletionLimited' }
+        $actual = & $function
+        $actual | Should -BeOfType ([bool])
+        $actual | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match '\| fixture-repo \| 3 \|' -and $Result -match '(?i)configure|declar|do not match' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -like '*/fixture-repo/collaborators*' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times $(if ($Kind -eq 'Repository') { 1 } else { 0 }) -ParameterFilter { $Uri -like '*/graphql' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0 -ParameterFilter { $Uri -match 'custom-repository-roles|organization-roles' }
+    }
+    It 'Reports missing approvals without treating observed administrators as unapproved (<Missing>, <Kind>)' -ForEach @(
+        @{ Missing = 'policy'; Kind = 'Issue' }, @{ Missing = 'policy'; Kind = 'Repository' },
+        @{ Missing = 'repository'; Kind = 'Issue' }, @{ Missing = 'repository'; Kind = 'Repository' },
+        @{ Missing = 'roster'; Kind = 'Issue' }, @{ Missing = 'roster'; Kind = 'Repository' }
+    ) {
+        $script:organization.members_can_delete_issues = $true
+        $script:organization.members_can_delete_repositories = $true
+        switch ($Missing) {
+            'policy' { $script:policy = $null }
+            'repository' { $script:policy.Repositories = @() }
+            'roster' { $script:policy.Repositories[0].ApprovedAdministratorIds = @() }
+        }
+        Set-DeletionPolicy $script:policy
+        $function = if ($Kind -eq 'Issue') { 'Test-MtCisGitHubIssueDeletionLimited' } else { 'Test-MtCisGitHubRepositoryDeletionLimited' }
+        & $function | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Investigate -and $Result -match '\| fixture-repo \| 2 \| Not configured \|  \| Approvals not configured \| Complete \|' -and
+            $Result -notmatch 'Meets baseline' -and $RedactedResult -match '\| fixture-repo \| 2 \| Not configured \|'
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0 -ParameterFilter { $Uri -match 'custom-repository-roles|organization-roles|graphql' }
+    }
+    It 'Keeps the restrictive-policy qualification when no approvals are configured' {
+        $script:organization.members_can_delete_repositories = $true
+        Set-DeletionPolicy $null
+        $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } }
+        $script:graph.data.repository.rulesets.totalCount = 1
+        $script:graph.data.repository.rulesets.nodes = @(@{ id = 'policy-1'; target = 'REPOSITORY'; enforcement = 'ACTIVE' })
+        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate -and $Result -match '\| fixture-repo \| 3 \| Not configured \|' -and $Result -match 'active repository-target policy' }
+    }
+    It 'Keeps an unapproved observed administrator decisive despite an unrelated inventory gap' {
+        $script:organization.members_can_delete_issues = $true
+        $script:policy.Repositories[0].ApprovedAdministratorIds = @('1')
+        $script:policy.Repositories += [pscustomobject]@{ Id = '201'; ApprovedAdministratorIds = @('1', '2') }
+        Set-DeletionPolicy $script:policy
+        $actual = Test-MtCisGitHubIssueDeletionLimited
+        $actual | Should -BeOfType ([bool])
+        $actual | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match '\| fixture-repo \| 2 \| 1 \| 2 \|' -and $Result -match 'do not match' }
+    }
+    It 'Uses validated repositories from a partial inventory (<Companion>, <Violation>)' -ForEach @(
+        @{ Companion = 'malformed'; Violation = $false }, @{ Companion = 'malformed'; Violation = $true },
+        @{ Companion = 'duplicate'; Violation = $false }, @{ Companion = 'duplicate'; Violation = $true }
+    ) {
+        $script:organization.members_can_delete_issues = $true
+        $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] += if ($Companion -eq 'duplicate') { $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'][0] } else { $null }
+        if ($Violation) { $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'] += @{ id = 4; permissions = @{ admin = $true } } }
+        $actual = Test-MtCisGitHubIssueDeletionLimited
+        if ($Violation) { $actual | Should -BeOfType ([bool]); $actual | Should -BeFalse } else { $actual | Should -BeNullOrEmpty }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match 'Organization repository inventory' -and $Result -match '\| fixture-repo \|' -and [bool]$SkippedBecause -eq (-not $Violation) }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -like '*/fixture-repo/collaborators*' }
+    }
+    It 'Excludes ambiguous inventory identities while retaining unrelated count violations (<Reverse>)' -ForEach @(@{ Reverse = $false }, @{ Reverse = $true }) {
+        $script:organization.members_can_delete_issues = $true
+        $repositories = @(
+            @{ id = 200; name = 'fixture-repo'; full_name = 'fixture-org/fixture-repo'; owner = @{ login = 'fixture-org' } },
+            @{ id = 200; name = 'renamed-repo'; full_name = 'fixture-org/renamed-repo'; owner = @{ login = 'fixture-org' } },
+            @{ id = 201; name = 'other-repo'; full_name = 'fixture-org/other-repo'; owner = @{ login = 'fixture-org' } }
+        )
+        if ($Reverse) { [array]::Reverse($repositories) }
+        $script:responses['/orgs/fixture-org/repos?type=all&per_page=100'] = $repositories
+        $script:responses['/repos/fixture-org/other-repo/collaborators?affiliation=all&per_page=100'] = @(1..3 | ForEach-Object { @{ id = $_; permissions = @{ admin = $true } } })
+        $actual = Test-MtCisGitHubIssueDeletionLimited
+        $actual | Should -BeOfType ([bool])
+        $actual | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match '\| other-repo \| 3 \| Not configured \|' -and $Result -notmatch '\| fixture-repo \|' -and $Result -match 'different repository paths' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0 -ParameterFilter { $Uri -match '/(fixture-repo|renamed-repo)/collaborators' }
+    }
+    It 'Sanitizes inventory request and parsing errors before any collaborator requests (<Failure>)' -ForEach @(@{ Failure = 'HTTP' }, @{ Failure = 'JSON' }) {
+        $script:organization.members_can_delete_issues = $true
+        Set-DeletionPolicy $null
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -like '*/orgs/fixture-org/repos?*' } {
+            if ($Failure -eq 'JSON') { return @{ Content = '{"sensitive-server-value"'; Headers = @{} } }
+            throw 'sensitive-server-value'
+        }
+        { Test-MtCisGitHubIssueDeletionLimited } | Should -Throw -ExpectedMessage 'GitHub deletion evidence request or JSON parsing failed.'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { -not $Investigate -and -not $SkippedBecause -and $Result -match 'execution error' -and $Result -match 'Configure GlobalSettings.GitHubDeletionPolicy' -and $Result -notmatch 'sensitive-server-value' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0 -ParameterFilter { $Uri -match 'collaborators|graphql|custom-repository-roles|organization-roles' }
+    }
     It 'Skips malformed administrator evidence instead of treating missing admin as false' {
         $script:organization.members_can_delete_repositories = $true
         $script:responses['/repos/fixture-org/fixture-repo/collaborators?affiliation=all&per_page=100'][0].permissions.admin = $null

@@ -30,7 +30,8 @@
     $started = [DateTimeOffset]::UtcNow
     Invoke-MtGitHubRateLimitGuard -Api GraphQL
     try {
-        $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ErrorAction Stop
+        # Match connection probes: bound header waiting and each stalled body read.
+        $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
         Invoke-MtGitHubRateLimitGuard -Api GraphQL -Headers $response.Headers
     } catch {
         Invoke-MtGitHubRateLimitGuard -Api GraphQL -ErrorRecord $_

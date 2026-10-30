@@ -81,7 +81,7 @@ Describe 'Scoped redacted result Markdown' {
             $otherHost = Get-MtCisGitHubDeletionResult -Evidence $evidence -RedactUserIdentity
             $otherHost | Should -Not -Match $expected
             $evidence.OwnerBranch = $false
-            $evidence.Repositories = @(@{ Name = 'fixture'; AdministratorCount = 3; UnapprovedIds = @('2'); Complete = $false; Assessment = 'Needs review' })
+            $evidence.Repositories = @(@{ Name = 'fixture'; AdministratorCount = 3; UnapprovedIds = @('2'); Complete = $false; ApprovalsConfigured = $true; Assessment = 'Needs review' })
             $admin = Get-MtCisGitHubDeletionResult -Evidence $evidence -RedactUserIdentity
             $otherToken = Get-MtAffectedObjectUniqueId -System GitHub -Type User -Id 'https://api.fixture.ghe.com/users/2'
             $otherHost | Should -Match $otherToken
