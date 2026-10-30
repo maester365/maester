@@ -22,7 +22,7 @@
         Feature = 'identity-protection',
         Area = 'logging-and-detection',
         ResourceType = 'User',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
@@ -90,6 +90,6 @@
         $Result += "`n| $DisplayName | $Upn | $State | $Detail | $Updated |"
     }
 
-    Add-MtTestResultDetail -Result $Result -Severity 'High'
+    Add-MtTestResultDetail -Result $Result
     return $false
 }
