@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'T1110',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.lockoutDuration:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
