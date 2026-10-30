@@ -4,13 +4,13 @@
     Checks if the anti-phishing policy matches CIS recommendations
 
     .DESCRIPTION
-    The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
+    Evaluates anti-phishing policies and their highest-priority enabled matching rules. It checks enabled status, phishing threshold, targeted user and organization domain protection, mailbox intelligence and spoof protection, quarantine actions, safety tips, DMARC handling, and recipient scope. The test passes when at least one returned policy meets all checked criteria; it does not require every returned policy to pass.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.7, L1)
 
     .EXAMPLE
     Test-MtCisSafeAntiPhishingPolicy
 
-    Returns true if the default anti-phishing policy matches CIS recommendations
+    Returns true if at least one anti-phishing policy and its highest-priority enabled matching rule meet all CIS checks. Recipient scope passes with no targets, coverage of every accepted domain, or at least one group target; group membership and exclusions are not validated.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy

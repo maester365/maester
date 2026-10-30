@@ -22,7 +22,7 @@
         RelatedProduct = 'exchange',
         Feature = 'anti-spam',
         Area = 'email-protection',
-        ResourceType = 'Tenant',
+        ResourceType = 'Policy',
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
@@ -40,18 +40,11 @@
     $policies = @(Get-MtExo -Request HostedOutboundSpamFilterPolicy)
     $customPolicies = @($policies | Where-Object { $_.IsDefault -ne $true })
     $enabledRules = @(Get-MtExo -Request HostedOutboundSpamFilterRule | Where-Object { $_.State -eq 'Enabled' })
-    $customRules = @(
-        $enabledRules |
-            Where-Object {
-                $rulePolicy = [string]$_.HostedOutboundSpamFilterPolicy
-                @($customPolicies | Where-Object { @($_.Name, $_.Identity, $_.Id) -contains $rulePolicy }).Count -gt 0
-            } |
-            Sort-Object { [int]$_.Priority }
-    )
+    $orderedEnabledRules = @($enabledRules | Sort-Object { [int]$_.Priority })
 
     $selectedRule = $null
-    if ($customRules.Count -gt 0) {
-        $selectedRule = $customRules[0]
+    if ($orderedEnabledRules.Count -gt 0) {
+        $selectedRule = $orderedEnabledRules[0]
         $rulePolicy = [string]$selectedRule.HostedOutboundSpamFilterPolicy
         $selectedPolicies = @($customPolicies | Where-Object { $_.Name -eq $rulePolicy -or $_.Identity -eq $rulePolicy -or $_.Id -eq $rulePolicy })
         if ($selectedPolicies.Count -ne 1) {

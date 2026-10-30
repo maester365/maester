@@ -76,7 +76,14 @@
         $fileTypes = @($policy.FileTypes)
         $missingExtensions = @($L2Extensions | Where-Object { $_ -notin $fileTypes })
         $coverage = [double]($L2Extensions.Count - $missingExtensions.Count) / $L2Extensions.Count
-        $associatedRules = @($rules | Where-Object { $_.MalwareFilterPolicy -eq $policy.Id })
+        $policyIdentifiers = @($policy.Id, $policy.Name, $policy.Identity) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+        $associatedRules = @(
+            $rules | Where-Object {
+                -not [string]::IsNullOrWhiteSpace([string]$_.MalwareFilterPolicy) -and
+                $_.MalwareFilterPolicy -in $policyIdentifiers
+            }
+        )
         $ruleReports = foreach ($rule in $associatedRules) {
             [pscustomobject]@{
                 Name = $rule.Name

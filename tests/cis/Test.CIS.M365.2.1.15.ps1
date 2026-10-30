@@ -21,7 +21,7 @@
         Product = 'defender',
         Feature = 'anti-spam',
         Area = 'email-protection',
-        ResourceType = 'Policy',
+        ResourceType = 'Tenant',
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Low',

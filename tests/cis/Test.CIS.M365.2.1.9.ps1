@@ -10,8 +10,8 @@
     .EXAMPLE
     Test-MtCisDkim
 
-    Returns true if a DKIM record exists and EXO shows DKIM enabled for every evaluated domain.
-    Initial and coexistence domains are excluded from evaluation; if no domains remain, the test is skipped.
+    Returns true if every evaluated domain has a DKIM record, DKIM enabled in Exchange, and Exchange status Valid.
+    Initial, coexistence, and Exchange sending-disabled domains are excluded; if no domains remain, the test is skipped.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisDkim
