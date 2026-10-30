@@ -63,48 +63,62 @@
         'xlt', 'xltm', 'xlw', 'xnk', 'xps', 'xsl', 'xz', 'z'
     )
 
-    # Duplicate the array, so we are left with a list of extensions missing at the end
-    $missingExtensionList = $L2Extensions
+    Write-Verbose 'Getting malware filter policies and rules...'
+    $policies = @(Get-MtExo -Request MalwareFilterPolicy)
+    $rules = @(Get-MtExo -Request MalwareFilterRule)
+    $comprehensivePolicies = @($policies | Where-Object { @($_.FileTypes).Count -gt 120 })
+    if ($comprehensivePolicies.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'No malware filter policy with more than 120 file types was returned; compliance could not be established.'
+        return $false
+    }
 
-    Write-Verbose 'Getting Attachment Types Filter...'
-    $policies = Get-MtExo -Request MalwareFilterPolicy
-
-    # For each policy, run checks
-    foreach ($policyId in $policies.Id) {
-
-        # We grab the policy we are checking
-        $policy = $policies | Where-Object { $_.Id -eq $policyId }
-        if ($policy.EnableFileFilter -ne 'True') {
-            # If the policy isn't enabled, skip
-            continue
-        }
-
-        foreach ($extension in $L2Extensions) {
-            $checkResult = $policy | Where-Object { $_.FileTypes -contains $extension }
-            if ($checkResult) {
-                #If the check finds extension, remove it from the list as it is covered
-                $missingExtensionList = $missingExtensionList | Where-Object { $_ -ne $extension }
+    $policyReports = foreach ($policy in $comprehensivePolicies) {
+        $fileTypes = @($policy.FileTypes)
+        $missingExtensions = @($L2Extensions | Where-Object { $_ -notin $fileTypes })
+        $coverage = [double]($L2Extensions.Count - $missingExtensions.Count) / $L2Extensions.Count
+        $associatedRules = @($rules | Where-Object { $_.MalwareFilterPolicy -eq $policy.Id })
+        $ruleReports = foreach ($rule in $associatedRules) {
+            [pscustomobject]@{
+                Name = $rule.Name
+                State = $rule.State
+                Pass = $rule.State -eq 'Enabled'
             }
         }
 
+        $enabledRules = @($ruleReports | Where-Object { $_.Pass })
+        $policyName = if ($policy.Identity) { $policy.Identity } else { $policy.Name }
+        $ruleSummary = if ($ruleReports.Count -eq 0) {
+            'No associated rule'
+        } else {
+            @($ruleReports | ForEach-Object { "$($_.Name): $($_.State)" }) -join '; '
+        }
+        [pscustomobject]@{
+            Policy = $policyName
+            ExtensionCount = $fileTypes.Count
+            MissingExtensions = $missingExtensions
+            Coverage = $coverage
+            RuleSummary = $ruleSummary
+            Pass = $policy.EnableFileFilter -eq $true -and $coverage -ge 0.9 -and $enabledRules.Count -gt 0
+        }
     }
 
-    $testResult = ($missingExtensionList | Measure-Object).Count -eq 0
+    $testResult = @($policyReports | Where-Object { $_.Pass }).Count -gt 0
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant covers all CIS recommended file attachment extensions:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. A comprehensive attachment policy and its enabled rule meet CIS recommendations:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not cover all CIS recommended file attachment extensions:`n`n%TestResult%"
+        $testResultMarkdown = "No comprehensive attachment policy and enabled rule meet CIS recommendations:`n`n%TestResult%"
     }
 
-    $resultMd = "| Extension Name | Result |`n"
-    $resultMd += "| --- | --- |`n"
-    foreach ($item in $missingExtensionList) {
-        $itemResult = '❌ Fail'
-        $resultMd += "| $($item) | $($itemResult) |`n"
+    $resultMd = "| Policy | Extensions | Coverage | Missing extensions | Associated rule and scope | Result |`n"
+    $resultMd += "| --- | ---: | ---: | --- | --- | --- |`n"
+    foreach ($report in $policyReports) {
+        $missing = if ($report.MissingExtensions.Count -eq 0) { 'None' } else { $report.MissingExtensions -join ', ' }
+        $itemResult = if ($report.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $coverageText = '{0:P1}' -f $report.Coverage
+        $resultMd += "| $($report.Policy) | $($report.ExtensionCount) | $coverageText | $missing | $($report.RuleSummary) | $itemResult |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

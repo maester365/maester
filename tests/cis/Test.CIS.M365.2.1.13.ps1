@@ -37,13 +37,23 @@
     param()
 
     Write-Verbose 'Getting the Hosted Connection Filter policy...'
-    $connectionFilterSafeList = Get-HostedConnectionFilterPolicy | Where-Object {$_.isDefault -eq $true} | Select-Object EnableSafeList
+    $defaultPolicies = @(Get-MtExo -Request HostedConnectionFilterPolicy | Where-Object { $_.IsDefault -eq $true })
+    if ($defaultPolicies.Count -ne 1) {
+        Add-MtTestResultDetail -Result "Expected one default connection filter policy, found $($defaultPolicies.Count)."
+        return $false
+    }
+
+    $safeListProperty = $defaultPolicies[0].PSObject.Properties['EnableSafeList']
+    if ($null -eq $safeListProperty) {
+        Add-MtTestResultDetail -Result 'The default connection filter policy did not return EnableSafeList; compliance could not be established.'
+        return $false
+    }
 
     Write-Verbose 'Check if the Connection Filter safe list is enabled'
-    $result = $connectionFilterSafeList.EnableSafeList
+    $result = $safeListProperty.Value
 
     # We need to Invert the $result that we don't need to change the Markdown. False in $result is good and True is bad
-    $testResult = -not $result
+    $testResult = ($result -is [bool] -and -not $result) -or ([string]$result -ieq 'False')
 
     if ($testResult) {
         $testResultMarkdown = 'Well done. The connection filter safe list was not enabled ✅'

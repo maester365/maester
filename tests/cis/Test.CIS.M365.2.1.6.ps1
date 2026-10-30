@@ -17,7 +17,7 @@
     #>
     [MaesterTest(
         Id = 'CIS.M365.2.1.6',
-        Title = 'Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)',
+        Title = 'Ensure Exchange Online Spam Policies are set to notify administrators',
         Product = 'defender',
         RelatedProduct = 'exchange',
         Feature = 'anti-spam',
@@ -36,59 +36,67 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Getting Outbound Spam Filter Policy...'
-    $policies = Get-MtExo -Request HostedOutboundSpamFilterPolicy
+    Write-Verbose 'Getting outbound spam policies and rules...'
+    $policies = @(Get-MtExo -Request HostedOutboundSpamFilterPolicy)
+    $customPolicies = @($policies | Where-Object { $_.IsDefault -ne $true })
+    $enabledRules = @(Get-MtExo -Request HostedOutboundSpamFilterRule | Where-Object { $_.State -eq 'Enabled' })
+    $customRules = @(
+        $enabledRules |
+            Where-Object {
+                $rulePolicy = [string]$_.HostedOutboundSpamFilterPolicy
+                @($customPolicies | Where-Object { @($_.Name, $_.Identity, $_.Id) -contains $rulePolicy }).Count -gt 0
+            } |
+            Sort-Object { [int]$_.Priority }
+    )
 
-    # We grab the default policy as that is what CIS checks
-    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
-
-    $OutboundSpamFilterPolicyCheckList = @()
-
-    #BccSuspiciousOutboundMail should be True
-    $OutboundSpamFilterPolicyCheckList += [pscustomobject] @{
-        'CheckName' = 'BccSuspiciousOutboundMail'
-        'Value'     = 'True'
-    }
-
-    #NotifyOutboundSpam should be True
-    $OutboundSpamFilterPolicyCheckList += [pscustomobject] @{
-        'CheckName' = 'NotifyOutboundSpam'
-        'Value'     = 'True'
-    }
-
-    Write-Verbose 'Executing checks'
-    $failedCheckList = @()
-
-    foreach ($check in $OutboundSpamFilterPolicyCheckList) {
-        $checkResult = $policy | Where-Object { $_.($check.CheckName) -notmatch $check.Value }
-        if ($checkResult) {
-            #If the check fails, add it to the list so we can report on it later
-            $failedCheckList += $check.CheckName
+    $selectedRule = $null
+    if ($customRules.Count -gt 0) {
+        $selectedRule = $customRules[0]
+        $rulePolicy = [string]$selectedRule.HostedOutboundSpamFilterPolicy
+        $selectedPolicies = @($customPolicies | Where-Object { $_.Name -eq $rulePolicy -or $_.Identity -eq $rulePolicy -or $_.Id -eq $rulePolicy })
+        if ($selectedPolicies.Count -ne 1) {
+            Add-MtTestResultDetail -Result "Expected one policy for the highest-priority enabled outbound spam rule '$($selectedRule.Name)', found $($selectedPolicies.Count)."
+            return $false
         }
+        $policy = $selectedPolicies[0]
+        $policySelection = 'highest-priority enabled custom policy'
+    } else {
+        $defaultPolicies = @($policies | Where-Object { $_.IsDefault -eq $true })
+        if ($defaultPolicies.Count -ne 1) {
+            Add-MtTestResultDetail -Result "Expected one default outbound spam policy when no enabled custom rule applies, found $($defaultPolicies.Count)."
+            return $false
+        }
+        $policy = $defaultPolicies[0]
+        $policySelection = 'default policy'
     }
 
-    $testResult = ($failedCheckList | Measure-Object).Count -eq 0
-
+    $policyName = if ($policy.Name) { $policy.Name } else { $policy.Identity }
+    $ruleDescription = if ($selectedRule) { "Rule '$($selectedRule.Name)' (priority $($selectedRule.Priority))" } else { 'Default policy' }
+    $bccRecipients = @($policy.BccSuspiciousOutboundAdditionalRecipients | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $notificationRecipients = @($policy.NotifyOutboundSpamRecipients | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $checks = @(
+        [pscustomobject]@{ CheckName = 'BccSuspiciousOutboundMail'; Value = $policy.BccSuspiciousOutboundMail; Pass = $policy.BccSuspiciousOutboundMail -eq $true }
+        [pscustomobject]@{ CheckName = 'BccSuspiciousOutboundAdditionalRecipients'; Value = if ($bccRecipients.Count -gt 0) { $bccRecipients -join ', ' } else { 'Not set' }; Pass = $bccRecipients.Count -gt 0 }
+        [pscustomobject]@{ CheckName = 'NotifyOutboundSpam'; Value = $policy.NotifyOutboundSpam; Pass = $policy.NotifyOutboundSpam -eq $true }
+        [pscustomobject]@{ CheckName = 'NotifyOutboundSpamRecipients'; Value = if ($notificationRecipients.Count -gt 0) { $notificationRecipients -join ', ' } else { 'Not set' }; Pass = $notificationRecipients.Count -gt 0 }
+    )
+    $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
     $portalLink = 'https://security.microsoft.com/antispam'
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenants default Exchange Online Spam policy set to notify administrators ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. The $policySelection '$policyName' is configured to notify administrators ($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenants default Exchange Online Spam policy is not set to notify administrators ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "The $policySelection '$policyName' is not configured to notify administrators as required ($portalLink).`n`n%TestResult%"
     }
 
-    $resultMd = "| Check Name | Result |`n"
-    $resultMd += "| --- | --- |`n"
-    foreach ($item in $OutboundSpamFilterPolicyCheckList) {
-        $itemResult = '❌ Fail'
-        if ($item.CheckName -notin $failedCheckList) {
-            $itemResult = '✅ Pass'
-        }
-        $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
+    $resultMd = "| Policy | Rule | Setting | Current Value | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- |`n"
+    foreach ($check in $checks) {
+        $itemResult = if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $resultMd += "| $policyName | $ruleDescription | $($check.CheckName) | $($check.Value) | $itemResult |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
