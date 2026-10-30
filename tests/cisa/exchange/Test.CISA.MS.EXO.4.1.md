@@ -9,7 +9,7 @@ This test applies the same rule as CISA ScubaGear:
 * It checks every accepted domain in Exchange Online, including the initial `*.onmicrosoft.com` domain and subdomains. Only the coexistence domain (`*.mail.onmicrosoft.com`) is left out, because Microsoft manages it.
 * For each domain it queries `_dmarc.<domain>` and keeps the TXT records that start with `v=DMARC1`. If there is exactly one, that is the domain's record. If there are none, or more than one, it walks up the parent domains as described in [RFC 9989](https://datatracker.ietf.org/doc/html/rfc9989) (at most eight DNS queries per domain) and uses the record it finds there. A record published for `example.com` therefore also covers `mail.example.com`.
 * A domain passes when its record starts with exactly `v=DMARC1;`. The policy (`p=`) and the report addresses (`rua=`) are not checked here: CISA.MS.EXO.4.2 and CISA.MS.EXO.4.3 check them.
-* A domain fails when no record is found, including when the DNS lookup fails.
+* A domain fails when no record is found. A DNS lookup that fails counts as no record at that name, as in ScubaGear: the walk goes on, and a record found at a parent domain still applies. When no record is found, the result names the lookup that failed.
 
 On macOS and Linux the test needs the DnsClient-PS module (`Install-Module DnsClient-PS -Scope CurrentUser`); without it the test is skipped.
 

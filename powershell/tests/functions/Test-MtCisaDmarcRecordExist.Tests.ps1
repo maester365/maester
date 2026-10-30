@@ -1,9 +1,10 @@
-BeforeAll {
+﻿BeforeAll {
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     # Check functions that became native tests, and internal helpers, are not exported.
     Use-MtModuleFunction -Name Test-MtCisaDmarcRecordExist, Find-MtDmarcRecord, Resolve-MtDnsTxtRecord
 
     function New-TestLookup {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
         param(
             [string]$Name,
             [string[]]$Answers = @(),
@@ -20,6 +21,7 @@ BeforeAll {
     }
 
     function New-TestAcceptedDomain {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
         param(
             [string]$DomainName,
             [bool]$InitialDomain = $false,
@@ -285,6 +287,15 @@ Describe 'CISA.MS.EXO.4.1 with DNS mocked' {
             $script:testResultMarkdown | Should -Match 'The DNS lookup for \\_dmarc\.contoso\.com failed: Timed out'
         }
 
+        It 'passes a domain whose own lookup failed when a parent domain has a record, as ScubaGear does' {
+            Mock -ModuleName Maester Get-MtExo { return @(New-TestAcceptedDomain -DomainName 'mail.contoso.com') }
+            $script:dnsAnswers['_dmarc.mail.contoso.com'] = New-TestLookup -Name '_dmarc.mail.contoso.com' -Status 'Error' -Message 'Timed out'
+
+            Test-MtCisaDmarcRecordExist | Should -BeTrue
+
+            $script:testResultMarkdown | Should -Match '\| mail\.contoso\.com \| ✅ Pass \| \\_dmarc\.contoso\.com \|'
+        }
+
         It 'fails a domain with more than one DMARC record and none above it' {
             Mock -ModuleName Maester Get-MtExo { return @(New-TestAcceptedDomain -DomainName 'contoso.com') }
             $script:dnsAnswers['_dmarc.contoso.com'] = @('v=DMARC1; p=none;', 'v=DMARC1; p=reject;')
@@ -328,6 +339,8 @@ Describe 'Resolve-MtDnsTxtRecord' {
             $script:createdStub = $false
             if (-not (Get-Command -Name 'Resolve-Dns' -ErrorAction SilentlyContinue)) {
                 function global:Resolve-Dns {
+                    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Stands in for Resolve-Dns from DnsClient-PS.')]
+                    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Declares the parameters of DnsClient-PS for Pester mock binding.')]
                     [CmdletBinding()]
                     param($Query, $QueryType)
                 }
@@ -413,6 +426,7 @@ Describe 'Resolve-MtDnsTxtRecord' {
     Context 'with Resolve-DnsName on Windows' -Skip:(-not $IsWindows) {
         BeforeAll {
             function New-TestDnsError {
+                [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that only builds test data.')]
                 param([string]$ErrorId)
 
                 [System.Management.Automation.ErrorRecord]::new(
