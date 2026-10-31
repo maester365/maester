@@ -12,6 +12,15 @@ The test checks the `RedirectMessageTo` property used by the CIS PowerShell audi
 4. Sign in to the [Exchange admin center](https://admin.exchange.microsoft.com).
 5. Go to **Mail flow** > [**Rules**](https://admin.exchange.microsoft.com/#/transportrules) and delete or change each rule that redirects mail to an external address.
 
+To turn off automatic forwarding with PowerShell instead of steps 1 to 3, connect with `Connect-ExchangeOnline` and set it on each outbound spam policy, including custom policies without an enabled rule:
+
+```powershell
+Set-HostedOutboundSpamFilterPolicy -Identity '<policy name>' -AutoForwardingMode Off
+
+# Or set it on every outbound spam policy at once
+Get-HostedOutboundSpamFilterPolicy | Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode Off
+```
+
 #### Related links
 
 * [Microsoft Defender portal - Anti-spam policies](https://security.microsoft.com/antispam)

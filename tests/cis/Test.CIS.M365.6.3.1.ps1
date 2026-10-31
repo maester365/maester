@@ -1,16 +1,16 @@
 ﻿function Test-MtCisUserCannotInstallOutlookAddIn {
     <#
     .SYNOPSIS
-        Checks that the role assignment policies that users receive do not let them install add-ins.
+        Checks that the default role assignment policy does not let users install Outlook add-ins.
 
     .DESCRIPTION
-        Checks that neither the default role assignment policy nor a custom policy that a mailbox uses includes the roles that let users install their own apps: My Custom Apps, My Marketplace Apps and My ReadWriteMailbox Apps.
+        Checks that the default role assignment policy does not include the roles that let users install their own apps: My Custom Apps, My Marketplace Apps and My ReadWriteMailbox Apps. Custom role assignment policies are not evaluated, as in the CIS audit procedure.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.3.1, L2)
 
     .EXAMPLE
         Test-MtCisUserCannotInstallOutlookAddIn
 
-        Returns true if users cannot install Outlook add-ins with the role assignment policies they receive.
+        Returns true if the default role assignment policy assigns none of the add-in installation roles.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.6.3.1
