@@ -301,8 +301,8 @@ Describe 'Invoke-MtGraphRequest' {
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
                 @{ responses = @(
-                        @{ id = 0; status = 200; body = @{ value = @(@{ id = 'a' }) } }
-                        @{ id = 1; status = 200; body = @{ value = @(@{ id = 'b' }) } }
+                        @{ id = 0; body = @{ value = @(@{ id = 'a' }) } }
+                        @{ id = 1; body = @{ value = @(@{ id = 'b' }) } }
                     )
                 }
             }
@@ -322,7 +322,7 @@ Describe 'Invoke-MtGraphRequest' {
             $script:MtBatchBody = $null
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
-                @{ responses = @(@{ id = 0; status = 200; body = @{ value = @() } }, @{ id = 1; status = 200; body = @{ value = @() } }) }
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
             }
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -GraphBaseUri 'https://proxy.contoso.com/graph' -DisablePaging
@@ -370,7 +370,7 @@ Describe 'Invoke-MtGraphRequest' {
             $script:MtBatchBody = $null
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
-                @{ responses = @(@{ id = 0; status = 200; body = @{ value = @() } }, @{ id = 1; status = 200; body = @{ value = @() } }) }
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
             }
             $script:MtTestEnvironment = 'Proxy'
             InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -DisablePaging }
@@ -388,7 +388,7 @@ Describe 'Invoke-MtGraphRequest' {
             $script:MtBatchBody = $null
             Mock Invoke-MgGraphRequest -ModuleName Maester {
                 $script:MtBatchBody = $Body
-                @{ responses = @(@{ id = 0; status = 200; body = @{ value = @() } }, @{ id = 1; status = 200; body = @{ value = @() } }) }
+                @{ responses = @(@{ id = 0; body = @{ value = @() } }, @{ id = 1; body = @{ value = @() } }) }
             }
             InModuleScope Maester {
                 $null = Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a@contoso.com', 'b@contoso.com' -Select 'displayName' -GraphBaseUri 'https://proxy.contoso.com/graph/' -DisablePaging
