@@ -4,15 +4,14 @@
     Checks state of DKIM for all EXO domains
 
     .DESCRIPTION
-    DKIM SHOULD be enabled for all domains. Initial (MOERA) and coexistence domains are excluded, as
-    Microsoft automatically signs outbound mail for those domains.
+    DKIM should be enabled with a valid Exchange status for all sending domains. Initial (MOERA) and coexistence domains are excluded, as Microsoft automatically signs outbound mail for those domains.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.9, L1)
 
     .EXAMPLE
     Test-MtCisDkim
 
-    Returns true if a DKIM record exists and EXO shows DKIM enabled for every evaluated domain.
-    Initial and coexistence domains are excluded from evaluation; if no domains remain, the test is skipped.
+    Returns true if every evaluated domain has a DKIM record, DKIM enabled in Exchange, and Exchange status Valid.
+    Initial, coexistence, and Exchange sending-disabled domains are excluded; if no domains remain, the test is skipped.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisDkim
@@ -56,6 +55,7 @@
                 domain     = $domain.DomainName
                 pass       = 'Skipped'
                 reason     = 'Initial or coexistence domain excluded from DKIM audit (Microsoft auto-signs outbound mail for this domain)'
+                exchangeStatus = 'Excluded'
                 dkimRecord = $null
             }
             $dkimRecords += $dkimRecord
@@ -71,6 +71,7 @@
                 domain     = $domain.DomainName
                 pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } else { 'Failed' }
                 reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } else { 'No DkimSigningConfig found for domain' }
+                exchangeStatus = 'Not configured'
                 dkimRecord = $null
             }
             $dkimRecords += $dkimRecord
@@ -101,6 +102,7 @@
         $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimDnsName $dkimDnsName -Records DKIM
         $dkimRecord | Add-Member -MemberType NoteProperty -Name 'pass' -Value 'Failed'
         $dkimRecord | Add-Member -MemberType NoteProperty -Name 'reason' -Value ''
+        $dkimRecord | Add-Member -MemberType NoteProperty -Name 'exchangeStatus' -Value $dkimSigningConfig.Status
 
         if ($domain.SendingFromDomainDisabled) {
             $dkimRecord.pass = 'Skipped'
@@ -108,7 +110,10 @@
         } elseif (-not $dkimSigningConfig.enabled) {
             $dkimRecord.pass = 'Failed'
             $dkimRecord.reason = 'DKIM is disabled'
-        } elseif ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
+        } elseif ($dkimSigningConfig.Status -ne 'Valid') {
+            $dkimRecord.pass = 'Failed'
+            $dkimRecord.reason = "Exchange DKIM status is '$($dkimSigningConfig.Status)' (expected Valid)"
+        } elseif ($null -ne $dkimRecord.dkimRecord -and $dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
             if (-not $dkimRecord.dkimRecord.validBase64) {
                 $dkimRecord.reason = 'Malformed public key'
             } else {
@@ -146,15 +151,15 @@ if ('Failed' -in $dkimRecords.pass) {
     $passResult = '✅ Pass'
     $failResult = '❌ Fail'
     $skipResult = '🗄️ Skip'
-    $result = "| Domain | Result | Reason |`n"
-    $result += "| --- | --- | --- |`n"
+    $result = "| Domain | Result | Exchange status | Reason |`n"
+    $result += "| --- | --- | --- | --- |`n"
     foreach ($item in $dkimRecords | Sort-Object -Property domain) {
         switch ($item.pass) {
             'Passed' { $itemResult = $passResult }
             'Skipped' { $itemResult = $skipResult }
             'Failed' { $itemResult = $failResult }
         }
-        $result += "| $($item.domain) | $($itemResult) | $($item.reason) |`n"
+        $result += "| $($item.domain) | $($itemResult) | $($item.exchangeStatus) | $($item.reason) |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
