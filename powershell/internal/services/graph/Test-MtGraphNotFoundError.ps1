@@ -5,7 +5,10 @@ function Test-MtGraphNotFoundError {
 
     .DESCRIPTION
     Checks the response status code in its enum, string and integer forms, then the exception's own StatusCode
-    property, then the message, because the form depends on the Graph SDK and PowerShell version.
+    property, on the exception and its inner exception, because the form depends on the Graph SDK and PowerShell
+    version. When no status code is available it falls back to the Graph error code (Request_ResourceNotFound,
+    ResourceNotFound) or a "Not Found" status in the message. A bare "404" in the message is not enough: object ids
+    and Retry-After values can contain it.
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -15,11 +18,16 @@ function Test-MtGraphNotFoundError {
         [System.Management.Automation.ErrorRecord]$ErrorRecord
     )
 
-    $responseStatusCode = $ErrorRecord.Exception.Response.StatusCode
-    $exceptionStatusCode = $ErrorRecord.Exception.StatusCode
-    return ($responseStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
-        ($responseStatusCode -eq 'NotFound') -or
-        ($responseStatusCode -eq 404) -or
-        ($exceptionStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
-        ($ErrorRecord.Exception.Message -match 'NotFound|404')
+    $exceptions = @($ErrorRecord.Exception, $ErrorRecord.Exception.InnerException) | Where-Object { $null -ne $_ }
+    $statusCodes = foreach ($exception in $exceptions) {
+        if ($exception.PSObject.Properties['Response'] -and $null -ne $exception.Response) { $exception.Response.StatusCode }
+        if ($exception.PSObject.Properties['StatusCode']) { $exception.StatusCode }
+    }
+    $statusCodes = @($statusCodes | Where-Object { $null -ne $_ })
+    if ($statusCodes.Count -gt 0) {
+        return [bool]($statusCodes | Where-Object { [int]$_ -eq 404 -or "$_" -eq 'NotFound' })
+    }
+
+    $text = (@($ErrorRecord.ErrorDetails.Message) + @($exceptions | ForEach-Object Message)) -join "`n"
+    return $text -match '\b(Request_)?ResourceNotFound\b|\(Not ?Found\)|\b404 \(?Not ?Found\)?'
 }

@@ -9,6 +9,9 @@ function Get-MtRoleMember {
     If the assigned member is a group, all members of that group will be returned. A group that is not found (404) is
     skipped; any other error reading a group is thrown, so a check cannot pass without evaluating its members.
 
+    Results come from the session cache, so a second call in the same session returns the same members. Run
+    Clear-MtGraphCache to read them again.
+
     .Example
     Get-MtRoleMember -Role GlobalAdministrator
 

@@ -19,7 +19,8 @@ function Get-MtMdiHealthIssueInstance {
         # Maester 2.x showed no rows here. Defender for Identity is not enabled, or the app lacks the permission.
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Microsoft Defender for Identity health issues could not be read. Defender for Identity may not be enabled in this tenant, or the SecurityIdentitiesHealth.Read.All permission is missing. Details: $($_.Exception.Message)"
     }
-    $allHealthIssues = @($response.value | Where-Object { $_ })
+    # Work on copies: the response is in the session cache, and the code below adds properties and changes values.
+    $allHealthIssues = @($response.value | Where-Object { $_ } | ForEach-Object { [pscustomobject]$_ })
 
     # Add domainNames and sensorDNSNames as string properties to identify unique health issues
     $allHealthIssues | ForEach-Object {

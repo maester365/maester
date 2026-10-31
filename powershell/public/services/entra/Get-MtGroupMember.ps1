@@ -32,30 +32,19 @@
     return $null
   }
 
-  try {
-    $group = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0
-    if (-not $group) {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted."
-      return $null
-    }
-  } catch {
-    if (Test-MtGraphNotFoundError -ErrorRecord $_) {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
-      return $null
-    }
-    throw "Could not read group ($GroupId) from Microsoft Graph: $($_.Exception.Message)"
-  }
-
-  Write-Verbose -Message "Getting group members for group: $($group.displayName) ($GroupId)"
+  Write-Verbose -Message "Getting group members for group: $GroupId"
 
   try {
     $members = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/members" -ApiVersion v1.0
   } catch {
     if (Test-MtGraphNotFoundError -ErrorRecord $_) {
-      Write-Verbose "Group ($GroupId) was removed while its members were read and will be skipped. Details: $($_.Exception.Message)"
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
       return $null
     }
-    throw "Could not read the members of group ($GroupId) from Microsoft Graph: $($_.Exception.Message)"
+    # Keep the Graph exception as the inner exception, so callers can still read its status code. throw, not
+    # $PSCmdlet.ThrowTerminatingError, so the calling check stops instead of continuing without the members.
+    $exception = [System.InvalidOperationException]::new("Could not read the members of group ($GroupId) from Microsoft Graph: $($_.Exception.Message)", $_.Exception)
+    throw [System.Management.Automation.ErrorRecord]::new($exception, 'MtGroupMemberReadFailed', $_.CategoryInfo.Category, $GroupId)
   }
 
   if (-not $Recursive) {

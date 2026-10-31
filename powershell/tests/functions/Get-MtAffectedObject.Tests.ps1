@@ -263,6 +263,24 @@ Describe 'Affected objects' {
             ($objects | Where-Object { $_.Type -eq 'servicePrincipals' }).AnchorKind | Should -Be 'Collection'
         }
 
+        It 'Should read the url from a key that carries an output type suffix' {
+            $objects = InModuleScope Maester {
+                $__MtSession.GraphCache = @{
+                    'https://graph.microsoft.com/beta/security/identities/healthIssues_[Hashtable]'                    = 'x'
+                    'https://graph.microsoft.com/beta/directory/recommendations?$expand=impactedResources_[Hashtable]' = 'x'
+                }
+                try {
+                    Get-MtAffectedObjectFromCache
+                } finally {
+                    $__MtSession.GraphCache = @{}
+                }
+            }
+
+            $objects.Type | Should -Contain 'security/identities/healthIssues'
+            $objects.Type | Should -Contain 'directory/recommendations'
+            $objects.Type | Where-Object { $_ -like '*Hashtable*' } | Should -BeNullOrEmpty
+        }
+
         It 'Should normalize a keyed directory read onto its canonical Entra type' {
             $objects = InModuleScope Maester {
                 $__MtSession.GraphCache = @{

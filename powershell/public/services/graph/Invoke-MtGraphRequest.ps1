@@ -110,6 +110,11 @@
         # Exposed for callers that read the session value; no longer used to route requests.
         $__MtSession.GraphBaseUri = $GraphBaseUri
 
+        # Responses are cached in the shape they were requested in, so a Hashtable response is never served to a
+        # caller that asked for PSObject, or the other way round. The suffix starts with "_[" so the affected-object
+        # inventory, which strips "_[" and "_{" suffixes from cache keys, still reads the request URL.
+        $cacheKeySuffix = if ($OutputType -and $OutputType -ne 'PSObject') { "_[$OutputType]" } else { '' }
+
         # The endpoint itself can carry a path, for example a reverse proxy in front of Graph. A base
         # that does not end in a slash makes its last segment look like a document, which would put
         # that segment back into any uri made relative to it. Normalising the base once, here, is what
@@ -178,7 +183,7 @@
                 $results.value = $resultList
                 # Update the original request cache with the consolidated results
                 if (!$DisableCache) {
-                    $__MtSession.GraphCache[$uriQueryEndpointFinal.Uri.AbsoluteUri] = $results
+                    $__MtSession.GraphCache[$uriQueryEndpointFinal.Uri.AbsoluteUri + $cacheKeySuffix] = $results
                 }
             }
             Format-Result $results $DisablePaging
@@ -229,7 +234,7 @@
                 } else {
                     # The cache key stays absolute, which is what keeps entries from one
                     # environment from being served to another.
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey ($uriQueryEndpointFinal.Uri.AbsoluteUri + $cacheKeySuffix) -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
                     Complete-Result $results $DisablePaging
                 }
             }
