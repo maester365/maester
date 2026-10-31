@@ -933,6 +933,27 @@ A Maester test that also checks what a benchmark asks for needs no shim; it name
 shim, because the functions of built-in tests are not exported; it runs a built-in test with `Invoke-MtTest -Id`
 instead (see [What a custom test can call](#what-a-custom-test-can-call)).
 
+## What a benchmark test evaluates
+
+A CIS test does what the benchmark's **PowerShell audit procedure** does: it reads the same objects and passes on
+the same condition. The PowerShell steps are the part of an Automated recommendation that can be automated, and
+usually its most precise wording. When the UI steps and the PowerShell steps differ, follow the PowerShell steps.
+
+- **Scope.** When the audit reads every object, the test reads every object, including ones that apply to no
+  user. CIS 6.2.1 runs `Get-HostedOutboundSpamFilterPolicy` and checks `AutoForwardingMode` on each policy, so
+  the test checks custom policies that have no rule. When the audit reads one object, the test reads only that
+  one: CIS 2.1.15 runs `Get-HostedOutboundSpamFilterPolicy -Identity Default`, so the test does not evaluate
+  custom policies. Don't narrow a test to the policies users receive, or widen it beyond what the audit reads.
+  CIS leaves exceptions to the organization, so a test does not decide them for it.
+- **Values.** Use the thresholds the audit names or its script sets, such as the 90% of the extension list in
+  CIS 2.1.11. When organizations may need a different value, make it a parameter with the benchmark's value as
+  its default.
+- **Missing data.** When the object the audit reads is not returned, the test fails or reports an error. It never
+  passes because there was nothing to check.
+
+A view of the policies users actually receive belongs in a Maester (MT) test, not in a benchmark test. The same
+rule applies to CISA tests, with the SCuBA baseline and ScubaGear's policy in place of the CIS audit procedure.
+
 ## Running and inspecting tests
 
 ### Get-MtTest
