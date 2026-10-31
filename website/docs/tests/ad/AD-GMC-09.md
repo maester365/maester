@@ -80,6 +80,7 @@ It then lists these groups with their:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupEmptyNonPrivilegedDetails](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GMC-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty, ActiveDirectory:Ldap:group.member:ReadProperty |
 
 ## Source
 

@@ -68,6 +68,7 @@ The test enumerates KDS root keys present in Active Directory and evaluates the 
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdKdsRootKeysCount](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-22.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

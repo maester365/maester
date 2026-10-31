@@ -5,8 +5,8 @@ function Resolve-MtNativePlan {
 
     .DESCRIPTION
     Gates apply in this order, and the first failing gate gives the reason (design section 6):
-    invalid metadata; disabled by config; selection (IDs, typed selectors, tags, opt-in service, Preview,
-    long-running); platform; tenant type; cloud; service; licence; parameter binding.
+    invalid metadata; disabled by config; selection (IDs, excluded products, typed selectors, tags, opt-in
+    service, Preview, long-running); platform; tenant type; cloud; service; licence; parameter binding.
 
     The default exclusions are decided by attribute, not by tag (test attribute design, section 4): a test
     with Lifecycle = 'Preview' or LongRunning is left out when the run excludes them by default
@@ -112,6 +112,12 @@ function Resolve-MtNativePlan {
             & $set 'NotRun' 'ExcludedById' "Excluded by ID ($($excludedBy -join ', '))."
             [pscustomobject]$row; continue
         }
+        # -ExcludeProduct matches Product or RelatedProduct, and wins over -TestId and -Product.
+        $excludedBy = @(Test-MtProductExcluded -Selection $Selection -Product (@($t.Product) + @($t.RelatedProduct)))
+        if ($excludedBy) {
+            & $set 'NotRun' 'ExcludedByProduct' "Excluded by product ($($excludedBy -join ', '))."
+            [pscustomobject]$row; continue
+        }
         if ($Selection.TestId.Count -gt 0) {
             $includedBy = @(Test-MtIdMatch -Id $t.Id -Pattern $Selection.TestId)
             if (-not $includedBy -and $isFamily) {
@@ -152,7 +158,7 @@ function Resolve-MtNativePlan {
             foreach ($pattern in $IncludeTag) {
                 $via = & $matchTag $tags $pattern
                 if (-not $via) { continue }
-                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = 'Include' }
                 $included = $true
                 break
             }
@@ -186,7 +192,7 @@ function Resolve-MtNativePlan {
         $hits = @(foreach ($pattern in $userExcludeTag) {
                 $via = & $matchTag $tags $pattern
                 if (-not $via) { continue }
-                if ($via -eq 'Legacy') { $legacyTagUsed[$pattern] = $true }
+                if ($via -eq 'Legacy' -and -not $legacyTagUsed.Contains($pattern)) { $legacyTagUsed[$pattern] = 'Exclude' }
                 $pattern
             })
         if ($hits) {
@@ -225,7 +231,7 @@ function Resolve-MtNativePlan {
     }
 
     # One warning per run when a tag of Maester 2.x did the selecting, with the typed selector that replaces it.
-    if ($legacyTagUsed.Count -gt 0) { Write-Warning (Get-MtLegacyTagWarning -Tag @($legacyTagUsed.Keys)) }
+    if ($legacyTagUsed.Count -gt 0) { Write-Warning (Get-MtLegacyTagWarning -Tag @($legacyTagUsed.Keys) -ExcludeTag @($legacyTagUsed.Keys | Where-Object { $legacyTagUsed[$_] -eq 'Exclude' })) }
 }
 
 function Get-MtLegacyTagWarning {
@@ -235,19 +241,25 @@ function Get-MtLegacyTagWarning {
 
     .DESCRIPTION
     Names each tag and, where assets/Maester.LegacyTags.json gives one, the typed selector that replaces
-    it, for example -Tag CA and -Feature conditional-access (test attribute design, section 5.1).
+    it, for example -Tag CA and -Feature conditional-access (test attribute design, section 5.1). A product
+    tag used in -ExcludeTag names -ExcludeProduct: -ExcludeTag EXO is now -ExcludeProduct exchange.
     #>
     [CmdletBinding()]
     [OutputType([string])]
     param(
         # The -Tag and -ExcludeTag values that matched a test only through a 2.x tag.
-        [Parameter(Mandatory)] [string[]] $Tag
+        [Parameter(Mandatory)] [string[]] $Tag,
+        # Those of the tags that matched a test only through -ExcludeTag.
+        [Parameter()] [AllowEmptyCollection()] [string[]] $ExcludeTag = @()
     )
 
     $table = Get-MtLegacyTagTable
     $named = foreach ($t in $Tag) {
         $replacement = $null
-        if ($table.Replacement.TryGetValue($t, [ref] $replacement)) { "'$t' (now $replacement)" } else { "'$t'" }
+        if ($table.Replacement.TryGetValue($t, [ref] $replacement)) {
+            if ($t -in $ExcludeTag -and $replacement -like '-Product *') { $replacement = $replacement -replace '^-Product ', '-ExcludeProduct ' }
+            "'$t' (now $replacement)"
+        } else { "'$t'" }
     }
     if (@($named).Count -eq 1) {
         "The tag $named is a Maester 2.x tag. It still selects the same built-in tests, but tests added after Maester 3.0 do not carry it."

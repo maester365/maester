@@ -109,6 +109,7 @@ The test displays:
 | Supports controls | nist-800-53-r5:AC-4, nist-800-53-r5:SC-7 |
 | PowerShell test | [Test-MtAdTrustNonQuarantinedDetails](https://github.com/maester365/maester/blob/main/tests/ad/trust/Test.AD-TRUST-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:trustedDomain:ReadProperty |
 
 ## Source
 

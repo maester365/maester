@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'T1136.002',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.ms-DS-MachineAccountQuota:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

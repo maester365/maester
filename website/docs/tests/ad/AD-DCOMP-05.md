@@ -88,6 +88,7 @@ This test provides detailed analysis including:
 | Supports controls | nist-800-53-r5:CM-8 |
 | PowerShell test | [Test-MtAdComputerOperatingSystemDetails](https://github.com/maester365/maester/blob/main/tests/ad/security/Test.AD-DCOMP-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

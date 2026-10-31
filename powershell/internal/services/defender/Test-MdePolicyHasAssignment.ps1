@@ -1,4 +1,4 @@
-function Test-MdePolicyHasAssignment {
+﻿function Test-MdePolicyHasAssignment {
     <#
     .SYNOPSIS
         Checks if a configuration policy is assigned to any groups or devices
@@ -23,41 +23,38 @@ function Test-MdePolicyHasAssignment {
         [string]$PolicyId
     )
 
-    try {
-        $assignmentParams = @{
-            RelativeUri = "deviceManagement/configurationPolicies/$PolicyId/assignments"
-            ApiVersion  = 'beta'
-            ErrorAction = 'Stop'
-        }
-        $assignments = @(Invoke-MtGraphRequest @assignmentParams)
+    # A failed read is not caught: treating the policy as unassigned would drop it from the evaluation, and under
+    # EffectivePolicy dropping a policy that sets a non-compliant value would turn a failing check into a pass.
+    # The error reaches the engine, which reports the check as Error.
+    $assignmentParams = @{
+        RelativeUri = "deviceManagement/configurationPolicies/$PolicyId/assignments"
+        ApiVersion  = 'beta'
+        ErrorAction = 'Stop'
+    }
+    $assignments = @(Invoke-MtGraphRequest @assignmentParams)
 
-        if ($assignments.Count -eq 0) {
-            Write-Verbose "Policy $PolicyId has no assignments"
-            return $false
-        }
+    if ($assignments.Count -eq 0) {
+        Write-Verbose "Policy $PolicyId has no assignments"
+        return $false
+    }
 
-        # Look for inclusion assignments (not just exclusions)
-        $validAssignments = @()
-        foreach ($assignment in $assignments) {
-            if ($assignment.target.'@odata.type' -in @(
-                '#microsoft.graph.groupAssignmentTarget',
-                '#microsoft.graph.allDevicesAssignmentTarget',
-                '#microsoft.graph.allLicensedUsersAssignmentTarget'
-            )) {
-                $validAssignments += $assignment
-            }
+    # Look for inclusion assignments (not just exclusions)
+    $validAssignments = @()
+    foreach ($assignment in $assignments) {
+        if ($assignment.target.'@odata.type' -in @(
+            '#microsoft.graph.groupAssignmentTarget',
+            '#microsoft.graph.allDevicesAssignmentTarget',
+            '#microsoft.graph.allLicensedUsersAssignmentTarget'
+        )) {
+            $validAssignments += $assignment
         }
+    }
 
-        if ($validAssignments.Count -gt 0) {
-            Write-Verbose "Policy $PolicyId has $($validAssignments.Count) valid assignments"
-            return $true
-        } else {
-            Write-Verbose "Policy $PolicyId has only exclusion assignments"
-            return $false
-        }
-
-    } catch {
-        Write-Verbose "Error getting assignments for policy $PolicyId - $($_.Exception.Message). Treating as unassigned."
+    if ($validAssignments.Count -gt 0) {
+        Write-Verbose "Policy $PolicyId has $($validAssignments.Count) valid assignments"
+        return $true
+    } else {
+        Write-Verbose "Policy $PolicyId has only exclusion assignments"
         return $false
     }
 }

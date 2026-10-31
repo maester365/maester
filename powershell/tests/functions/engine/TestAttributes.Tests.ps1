@@ -566,6 +566,52 @@ Describe 'Typed selectors and default exclusions' {
         (Get-Plan @{ Product = 'teams' } | Where-Object { $_.Test.Id -eq 'SEL.1' }).ReasonDetail | Should -Be 'Not selected by -Product (teams).'
     }
 
+    It '-ExcludeProduct <Value> runs <Expected>' -ForEach @(
+        @{ Value = 'exchange'; Expected = 'SEL.1,SEL.3,SEL.4,SEL.5,SEL.6' }
+        @{ Value = 'EXO'; Expected = 'SEL.1,SEL.3,SEL.4,SEL.5,SEL.6' }
+        @{ Value = 'contoso*'; Expected = 'SEL.1,SEL.2,SEL.4,SEL.5,SEL.6' }
+        # SEL.2 is about exchange with entra as its RelatedProduct. SEL.4 and SEL.6 have no product and stay.
+        @{ Value = 'Entra ID'; Expected = 'SEL.3,SEL.4,SEL.6' }
+        @{ Value = @('entra', 'Contoso CRM'); Expected = 'SEL.4,SEL.6' }
+        @{ Value = '*'; Expected = 'SEL.4,SEL.6' }
+    ) {
+        (Get-Selected @{ ExcludeProduct = $Value }) -join ',' | Should -Be $Expected
+    }
+
+    It 'Reports a test left out by -ExcludeProduct as ExcludedByProduct' {
+        $row = Get-Plan @{ ExcludeProduct = 'exo' } | Where-Object { $_.Test.Id -eq 'SEL.2' }
+        $row.Disposition | Should -Be 'NotRun'
+        $row.ReasonCode | Should -Be 'ExcludedByProduct'
+        $row.ReasonDetail | Should -Be 'Excluded by product (exchange).'
+    }
+
+    It 'Lets -ExcludeProduct win over -Product and -TestId' {
+        (Get-Selected @{ Product = 'entra'; ExcludeProduct = 'exchange' }) -join ',' | Should -Be 'SEL.1,SEL.5'
+        (Get-Selected @{ Product = 'entra'; ExcludeProduct = 'entra' }) | Should -BeNullOrEmpty
+        (Get-Selected @{ TestId = 'SEL.2', 'SEL.3'; ExcludeProduct = 'exchange' }) -join ',' | Should -Be 'SEL.3'
+        (Get-Plan @{ TestId = 'SEL.2'; ExcludeProduct = 'exchange' } | Where-Object { $_.Test.Id -eq 'SEL.2' }).ReasonCode | Should -Be 'ExcludedByProduct'
+    }
+
+    It 'Adds -ExcludeProduct to Selection.ExcludeProduct of the run configuration' {
+        $config = @{ Selection = @{ ExcludeProduct = @('Entra ID') } }
+        (Get-Selected -Config $config) -join ',' | Should -Be 'SEL.3,SEL.4,SEL.6'
+        (Get-Selected @{ ExcludeProduct = 'contoso*' } -Config $config) -join ',' | Should -Be 'SEL.4,SEL.6'
+        $selection = InModuleScope Maester -Parameters @{ C = $config } { Resolve-MtSelection -RunConfig (Resolve-MtRunConfig -Config $C) -ExcludeProduct 'exo', 'entra' }
+        $selection.ExcludeProduct | Should -Be @('entra', 'exchange')
+        $resolved = InModuleScope Maester { (Resolve-MtRunConfig -Config @{}).Selection }
+        , $resolved.ExcludeProduct | Should -BeOfType [array]
+        @($resolved.ExcludeProduct).Count | Should -Be 0
+    }
+
+    It 'Does not count -ExcludeProduct as selecting by attribute' {
+        InModuleScope Maester {
+            $selection = Resolve-MtSelection -RunConfig (Resolve-MtRunConfig -Config @{}) -ExcludeProduct 'entra'
+            Test-MtSelectorInUse -Selection $selection | Should -BeFalse
+            @(Test-MtProductExcluded -Selection $selection -Product @()) | Should -HaveCount 0
+            @(Test-MtProductExcluded -Selection $selection -Product 'exchange', 'entra') | Should -Be @('entra')
+        }
+    }
+
     It 'Matches -Severity against the severity the run configuration sets for a test' {
         $config = @{ TestSettings = @(@{ Id = 'SEL.2'; Severity = 'High' }, @{ Id = 'SEL.1'; Severity = 'Low' }) }
         (Get-Selected @{ Severity = 'High' } -Config $config) -join ',' | Should -Be 'SEL.2,SEL.4'
@@ -644,6 +690,7 @@ Describe 'Typed selectors and default exclusions' {
         @(Get-MtTest -Suite cisa).Count | Should -BeGreaterThan 50
         @(Get-MtTest -Product ad | Where-Object { $_.Product -ne 'ad' -and $_.RelatedProduct -notcontains 'ad' }) | Should -HaveCount 0
         (Get-Command Invoke-Maester).Parameters.Keys | Should -Contain 'Product'
+        (Get-Command Invoke-Maester).Parameters['ExcludeProduct'].ParameterType | Should -Be ([string[]])
         foreach ($name in 'Product', 'Feature', 'Area', 'Severity', 'Suite') {
             (Get-Command Invoke-Maester).Parameters[$name].ParameterType | Should -Be ([string[]]) -Because $name
             (Get-Command Get-MtTest).Parameters[$name].ParameterType | Should -Be ([string[]]) -Because $name
@@ -683,6 +730,12 @@ Describe 'Selecting with Maester 2.x tags' {
         $r.Warnings[0] | Should -BeLike "*'MS.AAD.3.5'[,.]*"
         $r.Warnings[0] | Should -BeLike "*'CAWhatIf'[,.]*"
         @($r.Plan | Where-Object ReasonCode -EQ 'ExcludedByTag').Count | Should -Be 2
+    }
+
+    It 'Names -ExcludeProduct for a 2.x product tag used to exclude' {
+        $r = Get-TagPlan -ExcludeTag 'EXO'
+        $r.Warnings[0] | Should -BeLike "*'EXO' (now -ExcludeProduct exchange)*"
+        (Get-TagPlan -Tag 'EXO').Warnings[0] | Should -BeLike "*'EXO' (now -Product exchange)*"
     }
 
     It 'Excludes with a 2.x tag' {
@@ -735,6 +788,7 @@ Describe 'Rows, Taxonomy and warnings of a run' {
             IncludePreview = '-SkipBuiltIn -IncludePreview'
             AnyTag         = '-SkipBuiltIn -Tag contoso-suite'
             Product        = '-SkipBuiltIn -Product entra -DryRun'
+            ExcludeProduct = '-SkipBuiltIn -ExcludeProduct exo -DryRun'
             SuiteSelector  = '-SkipBuiltIn -Suite contoso -DryRun'
             ConfigSelector = "-SkipBuiltIn -DryRun -Config @{ Selection = @{ Feature = @('Billing') } }"
             LegacyTag      = '-Tag CA, EXO -ExcludeTag MS.EXO -DryRun'
@@ -849,6 +903,14 @@ Describe 'Rows, Taxonomy and warnings of a run' {
         $default.ReasonCode | Should -Be 'Preview'
         ((Get-Run 'IncludePreview').Tests | Where-Object Id -EQ 'ROW.3').Result | Should -Be 'Passed'
         ((Get-Run 'AnyTag').Tests | Where-Object Id -EQ 'ROW.3').Result | Should -Be 'Passed'
+    }
+
+    It 'Keeps a Pester-format test in a dry run that excludes a product' {
+        $r = Get-Run 'ExcludeProduct'
+        # ROW.1 is about entra with exchange as its RelatedProduct; the Pester-format test has no product and stays.
+        ($r.Tests | Where-Object Id -EQ 'ROW.1').ReasonCode | Should -Be 'ExcludedByProduct'
+        ($r.Tests | Where-Object Id -EQ 'ROW.2').ReasonCode | Should -Be 'DryRun'
+        ($r.Tests | Where-Object Id -EQ 'PES.1').ReasonCode | Should -Be 'DryRun'
     }
 
     It 'Leaves a Pester-format test out of a run that selects by product, and keeps it in a run that selects by its suite' {

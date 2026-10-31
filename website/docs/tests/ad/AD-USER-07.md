@@ -64,6 +64,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | MITRE ATT&CK | T1558.004 AS-REP Roasting |
 | PowerShell test | [Test-MtAdUserNoPreAuthCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-07.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

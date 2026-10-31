@@ -66,6 +66,7 @@ This test retrieves all domain controllers from Active Directory and counts them
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDomainControllerCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOM-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.name:ReadProperty, ActiveDirectory:Ldap:nTDSDSA:ReadProperty |
 
 ## Source
 

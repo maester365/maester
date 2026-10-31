@@ -67,6 +67,7 @@ This test retrieves all domains from the Active Directory forest and counts them
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdForestDomainCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-FOR-02.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

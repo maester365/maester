@@ -71,6 +71,7 @@ This test compares discovered SPN service classes against a database of known SP
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdComputerSpnUnknownCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:computer:ReadProperty |
 
 ## Source
 

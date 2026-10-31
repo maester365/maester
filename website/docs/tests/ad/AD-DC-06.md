@@ -77,6 +77,7 @@ This test retrieves the current FSMO role holders from the domain and forest obj
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcFsmoRoleHolderDetails](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-06.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty, ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:crossRef:ReadProperty |
 
 ## Source
 

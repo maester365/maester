@@ -67,6 +67,7 @@ This test identifies zones with names containing " CNF:" or "..InProgress-" pref
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDnsDuplicateZoneCount](https://github.com/maester365/maester/blob/main/tests/ad/dns/Test.AD-DNS-15.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Remoting:Microsoft.PowerShell, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_ResourceRecord:Read, ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_RootHints:Read |
 
 ## Source
 

@@ -68,6 +68,7 @@ This test retrieves Active Directory GPO state from `Get-MtADGpoState` (using `$
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGpoEnforcedCount](https://github.com/maester365/maester/blob/main/tests/ad/gpo/Test.AD-GPOL-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty, ActiveDirectory:File:SYSVOL:Read |
 
 ## Source
 

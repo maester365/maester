@@ -23,6 +23,8 @@
             SkuIds         = @('cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46', 'a3f586b6-8cce-4d9b-99d6-55238397f77a')
             LegacySkipCode = 'NotLicensedExoDlp'
         }
+        # Microsoft Communications DLP: DLP for Teams chat and channel messages.
+        COMMUNICATIONS_DLP        = @{ ServicePlanIds = @('6dc145d6-95dd-4191-b9c3-185575ee6f6b'); LegacySkipCode = 'NotLicensedCommunicationsDlp' }
         # Defender for Office 365 Plan 2 (incl. GOV).
         THREAT_INTELLIGENCE       = @{ ServicePlanIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); SkuIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdo' }
         # Defender for Office 365 Plan 1 or Plan 2 (incl. GOV).

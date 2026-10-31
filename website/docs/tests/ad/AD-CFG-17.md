@@ -61,6 +61,7 @@ The test enumerates trusted root CA certificates configured for AD (or in the mo
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdTrustedRootCaDetails](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-17.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Configuration/*:ReadProperty |
 
 ## Source
 

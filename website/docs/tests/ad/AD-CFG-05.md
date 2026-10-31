@@ -62,6 +62,7 @@ This test enumerates AD partitions/paths and reports which ones have Recycle Bin
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdRecycleBinEnabledPaths](https://github.com/maester365/maester/blob/main/tests/ad/config/Test.AD-CFG-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty |
 
 ## Source
 

@@ -65,6 +65,7 @@ This test retrieves `$adState.DaclEntries`, searches for `CNF` within `ObjectDN`
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclConflictObjectCount](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

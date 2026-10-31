@@ -69,6 +69,7 @@ This test extracts the first two octets from all IPv4 subnets and counts the dis
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSubnetFirstTwoOctetsCount](https://github.com/maester365/maester/blob/main/tests/ad/site/Test.AD-SUB-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:subnet:ReadProperty |
 
 ## Source
 

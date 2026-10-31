@@ -1186,6 +1186,7 @@
     "AAD_WRKLDID_P1",
     "AAD_WRKLDID_P2",
     "ATP_ENTERPRISE",
+    "COMMUNICATIONS_DLP",
     "DEFENDER_XDR",
     "Entra_Identity_Governance",
     "EOP_ENTERPRISE",
@@ -7147,6 +7148,13 @@
           "level": "L2"
         },
         {
+          "id": "1.3.9",
+          "tests": [
+            "CIS.M365.1.3.9"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "2.1.1",
           "tests": [
             "CIS.M365.2.1.1"
@@ -7196,9 +7204,23 @@
           "level": "L1"
         },
         {
+          "id": "2.1.8",
+          "tests": [
+            "CIS.M365.2.1.8"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "2.1.9",
           "tests": [
             "CIS.M365.2.1.9"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.10",
+          "tests": [
+            "CIS.M365.2.1.10"
           ],
           "level": "L1"
         },
@@ -7224,6 +7246,34 @@
           "level": "L1"
         },
         {
+          "id": "2.1.14",
+          "tests": [
+            "CIS.M365.2.1.14"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.1.15",
+          "tests": [
+            "CIS.M365.2.1.15"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.4.1",
+          "tests": [
+            "CIS.M365.2.4.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "2.4.2",
+          "tests": [
+            "CIS.M365.2.4.2"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "2.4.4",
           "tests": [
             "CIS.M365.2.4.4"
@@ -7234,6 +7284,34 @@
           "id": "3.1.1",
           "tests": [
             "CIS.M365.3.1.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "3.2.1",
+          "tests": [
+            "CIS.M365.3.2.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "3.2.2",
+          "tests": [
+            "CIS.M365.3.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "3.2.3",
+          "tests": [
+            "CIS.M365.3.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "3.3.1",
+          "tests": [
+            "CIS.M365.3.3.1"
           ],
           "level": "L1"
         },
@@ -7616,9 +7694,93 @@
           "level": "L1"
         },
         {
+          "id": "6.1.1",
+          "tests": [
+            "CIS.M365.6.1.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.1.2",
+          "tests": [
+            "CIS.M365.6.1.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.1.3",
+          "tests": [
+            "CIS.M365.6.1.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.2.1",
+          "tests": [
+            "CIS.M365.6.2.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.2.2",
+          "tests": [
+            "CIS.M365.6.2.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.2.3",
+          "tests": [
+            "CIS.M365.6.2.3"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.3.1",
+          "tests": [
+            "CIS.M365.6.3.1"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "6.3.2",
+          "tests": [
+            "CIS.M365.6.3.2"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.5.1",
+          "tests": [
+            "CIS.M365.6.5.1"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.5.2",
+          "tests": [
+            "CIS.M365.6.5.2"
+          ],
+          "level": "L1"
+        },
+        {
           "id": "6.5.3",
           "tests": [
             "CIS.M365.6.5.3"
+          ],
+          "level": "L2"
+        },
+        {
+          "id": "6.5.4",
+          "tests": [
+            "CIS.M365.6.5.4"
+          ],
+          "level": "L1"
+        },
+        {
+          "id": "6.5.5",
+          "tests": [
+            "CIS.M365.6.5.5"
           ],
           "level": "L2"
         },
@@ -17909,7 +18071,7 @@
     "Feature": "The part of the product the test is about. One key from the product's `Features` list.\n\n- Choose the feature whose settings page or object type the remediation sends the admin to.\n- When a test spans two features, choose the one that fails most directly. A Conditional Access policy that\n  requires a compliant device is `conditional-access`, not `devices`.\n- Tests that check the same thing get the same feature, whatever folder or suite they are in.\n- A feature that would hold one test only is usually too narrow. Prefer an existing feature.",
     "Area": "The security theme, whatever the product. One key.\n\n| Key | Use it for |\n| --- | --- |\n| `authentication` | How an identity proves who it is: MFA, authentication methods, passwords, legacy protocols, Kerberos and NTLM hardening, session and token lifetime. |\n| `privileged-access` | Administrative roles and accounts: who holds them, just-in-time elevation, emergency access, admin tiering, delegated admin rights. |\n| `access-control` | Who may reach which resource under which conditions: device, location and risk conditions, permissions on objects, user defaults. |\n| `applications` | App registrations, service principals and their credentials, consent and API permissions, OAuth apps, add-ins, connectors. |\n| `external-access` | Guests, cross-tenant access, federation and trusts, external sharing and external communication. |\n| `devices` | Device compliance, enrollment and configuration, endpoint protection, device identity. |\n| `email-protection` | Anti-phishing, anti-spam and anti-malware, Safe Links and Safe Attachments, SPF, DKIM and DMARC, mail flow rules, meeting and messaging protections. |\n| `data-protection` | Data loss prevention, sensitivity labels, encryption, retention, backup. |\n| `logging-and-detection` | Audit logs, diagnostic settings, alert policies, sensors and the health of detection tooling. |\n| `identity-lifecycle` | Stale and dormant accounts, ownership, access reviews, entitlement management, group membership hygiene. |\n| `infrastructure` | The directory and platform itself: domain controllers, DNS, replication, sites, schema, Group Policy health, protocol hardening, subscriptions, tenant-wide platform settings. |\n| `engineering-systems` | DevOps organizations, repositories, pipelines, build identities, the software supply chain. |\n| `ai` | AI agents and copilots: who can use and share them, how they authenticate, what data and tools they reach. |\n\nWhen more than one area fits, choose by what the control is for, in this order:\n\n1. It protects administrators or admin rights: `privileged-access`.\n2. It decides how sign-in is proven: `authentication`.\n3. It is about an application, service principal or agent as the subject: `applications`, or `ai` for agents.\n4. It is about people or data outside the organization: `external-access`.\n5. Otherwise the area that names the mechanism: `access-control`, `devices`, `email-protection`,\n   `data-protection`, `logging-and-detection`, `identity-lifecycle`, `engineering-systems`, `infrastructure`.\n\nA product never decides the area on its own. An Azure DevOps test about who is a Project Collection Administrator\nis `privileged-access`, not `engineering-systems`.\n\nInventory and health tests with no security theme of their own are `infrastructure`. When no area fits, choose\nthe closest and say so in the pull request, so the list can be reviewed.",
     "ResourceType": "What a failing result points at. One key.\n\n- `Tenant` when the test evaluates one tenant-, organization-, forest- or domain-wide setting. The result is\n  about the environment.\n- `Tenant` when the test checks that at least one policy of a kind exists, even when it lists the policies that\n  satisfy it. A failing result has nothing to list.\n- `Tenant` when the test evaluates the single default or global policy of a kind, because there is one of it and\n  it applies to everyone.\n- Otherwise the kind of object a failing result lists or counts: `User`, `Application`, `Device`,\n  `ConditionalAccessPolicy`, `GroupPolicy` and so on. A test that evaluates every policy and lists the ones that\n  fail uses the policy type.\n- A test that counts objects for review (an inventory test) uses the type it counts. When no key names that kind\n  of object and it is a one-off, use `Tenant`.\n- A family test, which yields one result per instance, uses the type of the instance.",
-    "Severity": "The risk to the organization while the test fails. Not the effort to fix it and not the disruption of fixing it.\n\n| Value | A failing result means |\n| --- | --- |\n| `Critical` | An attacker with no special position can take over the tenant, the domain or a privileged identity, or a secret is already exposed. Directly exploitable and wide in reach. |\n| `High` | A primary control is missing or weakened for many users or for privileged identities, and common techniques such as phishing, password spray or consent phishing are enough to use it. |\n| `Medium` | A defence-in-depth control is missing, or the exposure is limited to a few objects or one workload, or using it needs another weakness first. |\n| `Low` | Hardening or hygiene with a small security effect on its own. |\n| `Info` | The test reports a fact for review and makes no risk judgement. Info tests are left out of scores. |\n\nDecide in this order:\n\n1. **Reach.** Privileged identities or the whole tenant move the value up. A single workload or a few objects\n   move it down.\n2. **Directness.** Usable from the internet or by any signed-in user moves it up. Needing an earlier compromise\n   moves it down. A password taken by phishing, spray or stuffing is not an earlier compromise: those are the\n   common techniques `High` already assumes.\n3. **Role of the control.** The main control for a threat rates higher than a second layer behind another control.\n\n`Critical` is rare. If the description cannot say in one sentence how an attacker gets from the failing state to\nadmin rights or exposed secrets, the value is `High` or lower. A benchmark's own wording does not set the value:\na SHALL policy can be `Medium`.\n\nFive cases come up often:\n\n- **A test that passes whenever its data can be read** is `Info`, whatever the data is about. If the fact\n  deserves a severity, the test should fail on it.\n- **A failure that is only an outage or untidiness**, such as replication health, an expiring token or an unused\n  object, is `Low`. It is `Medium` or higher only when the outage switches off a security control, and then it is\n  rated as the loss of that control.\n- **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.\n- **The same check in two suites** gets the same value in both. Usually the second is a shim that returns the\n  first test's result and declares all of its values; see\n  [Tests that another suite already has](./index.mdx#tests-that-another-suite-already-has).\n- **The main control against an attack that starts from a stolen password** is `High`. A second layer behind\n  that control is `Medium`. Number matching against MFA fatigue is `High`; showing the app name and location in\n  the prompt is `Medium`.\n\nAnchors from existing tests:\n\n| Test | Value | Why |\n| --- | --- | --- |\n| No Group Policy object contains a `cpassword` | `Critical` | Any domain user can read and decrypt the stored password. |\n| No domain admin account has a service principal name | `Critical` | Any domain user can request a ticket and crack an admin password offline. |\n| Legacy authentication is blocked | `High` | Password spray bypasses MFA for every user. |\n| Number matching is required for Authenticator push notifications | `High` | MFA fatigue works against any user once a password is phished. |\n| Authenticator shows the app name and location | `Medium` | A second layer behind number matching. |\n| Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |\n| MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |\n| Disabled user count should be retrievable | `Info` | Inventory for review. |\n\nMicrosoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same\nMicrosoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk\nlevel and give the reason in the pull request if the two differ.",
+    "Severity": "The risk to the organization while the test fails. Not the effort to fix it and not the disruption of fixing it.\n\n| Value | A failing result means |\n| --- | --- |\n| `Critical` | An attacker with no special position can take over the tenant, the domain or a privileged identity, or a secret is already exposed. Directly exploitable and wide in reach. |\n| `High` | A primary control is missing or weakened for many users or for privileged identities, and common techniques such as phishing, password spray or consent phishing are enough to use it. |\n| `Medium` | A defence-in-depth control is missing, or the exposure is limited to a few objects or one workload, or using it needs another weakness first. |\n| `Low` | Hardening or hygiene with a small security effect on its own. |\n| `Info` | The test reports a fact for review and makes no risk judgement. Info tests are left out of scores. |\n\nDecide in this order:\n\n1. **Reach.** Privileged identities or the whole tenant move the value up. A single workload or a few objects\n   move it down.\n2. **Directness.** Usable from the internet or by any signed-in user moves it up. Needing an earlier compromise\n   moves it down. A password taken by phishing, spray or stuffing is not an earlier compromise: those are the\n   common techniques `High` already assumes.\n3. **Role of the control.** The main control for a threat rates higher than a second layer behind another control.\n\n`Critical` is rare. If the description cannot say in one sentence how an attacker gets from the failing state to\nadmin rights or exposed secrets, the value is `High` or lower. A benchmark's own wording does not set the value:\na SHALL policy can be `Medium`.\n\nFive cases come up often:\n\n- **A test that passes whenever its data can be read** is `Info`, whatever the data is about. If the fact\n  deserves a severity, the test should fail on it.\n- **A failure that is only an outage or untidiness**, such as replication health, an expiring token or an unused\n  object, is `Low`. It is `Medium` or higher only when the outage switches off a security control, and then it is\n  rated as the loss of that control.\n- **Alerts and notifications** are a second layer behind the control they watch, so they are `Medium` at most.\n- **The same check in two suites** gets the same value in both. Usually the second is a shim that returns the\n  first test's result and declares all of its values; see\n  [Tests that another suite already has](./index.mdx#tests-that-another-suite-already-has).\n- **The main control against an attack that starts from a stolen password** is `High`. A second layer behind\n  that control is `Medium`. Number matching against MFA fatigue is `High`; showing the app name and location in\n  the prompt is `Medium`.\n\nAnchors from existing tests:\n\n| Test | Value | Why |\n| --- | --- | --- |\n| No Group Policy object contains a `cpassword` | `Critical` | Any domain user can read and decrypt the stored password. |\n| No domain admin account has a service principal name | `Critical` | Any domain user can request a ticket and crack an admin password offline. |\n| Legacy authentication is blocked | `High` | Password spray bypasses MFA for every user. |\n| Number matching is required for Authenticator push notifications | `High` | MFA fatigue works against any user once a password is phished. |\n| Authenticator shows the app name and location | `Medium` | A second layer behind number matching. |\n| Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |\n| MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |\n| Disabled user count should be retrievable | `Info` | Inventory for review. |\n| [EIDSCA.AP14 — users may read other users](../tests/eidsca/EIDSCA.AP14.md) | `Info` | Disabling `allowedToReadOtherUsers` is not itself a security finding. Review the restriction because it can disrupt collaboration, user lookup and default features. |\n\nMicrosoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same\nMicrosoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk\nlevel and give the reason in the pull request if the two differ.",
     "UserImpact": "How much the recommended fix disrupts end users. Administrators and the owners of applications are not end\nusers here. Developers are the end users of Azure DevOps and GitHub.\n\n| Value | Applying the fix |\n| --- | --- |\n| `Low` | End users notice nothing, or only administrators are affected. |\n| `Medium` | Some users change how they work or meet a new prompt: a group loses a capability, users register a method once, a legacy client stops working for a subset. |\n| `High` | Most users change a daily habit, or a mistake locks people out or stops mail or an app for many. Needs communication and a staged rollout. |\n\nOmit `UserImpact` when `Severity` is `Info`.",
     "ImplementationCost": "How much administrator work the recommended fix takes.\n\n| Value | The fix is |\n| --- | --- |\n| `Low` | One setting or one policy in one portal. Under an hour, with no dependency on another team, a licence purchase or a rollout. |\n| `Medium` | Several steps: a policy that needs exclusions and a pilot, clean-up of a handful of objects, coordination with one other team. Hours to a few days. |\n| `High` | A project: new licences, infrastructure or process, a migration of users or apps, or clean-up across many objects. Weeks or more. |\n\nClean-up that one administrator can finish alone in a sitting is `Low`. Clean-up that needs the owner of each\nobject is `Medium`. Turning on a plan that is billed by use is `Medium`: the click is easy, the budget approval is\nnot. Count the work of the fix, including exclusions and rollout, but not the time to decide.\n\nOmit `ImplementationCost` when `Severity` is `Info`.",
     "Mitre": "The MITRE ATT&CK techniques that the checked control prevents or detects. A list of technique IDs, or `None`.\n\n- IDs only, in the form `T1110` or `T1110.003`. Tactic names are looked up from the pinned ATT&CK release\n  (`powershell/assets/MaesterAttackTechniques.json`) and are never typed.\n- Use a sub-technique when the control addresses only that sub-technique. When three or more sub-techniques of\n  one technique apply, list the technique instead. Do not list a technique together with one of its own\n  sub-techniques.\n- List a technique only if the test's description explains, or plainly implies, how the control stops or reveals\n  it. At most five.\n- A test that implements a benchmark which publishes a mapping, such as CISA SCuBA, starts from that mapping and\n  then applies these rules. An ID the pinned release has retired is replaced by its successor in that release,\n  found by name.\n- The description means the comment-based help and the Markdown file together.\n- Use `None` for a test with no attacker behaviour behind it, such as replication health or an inventory count.\n  An inventory test lists a technique only when the fact it reports is itself the precondition of that technique,\n  such as accounts that do not require Kerberos pre-authentication.\n- A retired or unknown ID fails the unit tests.",

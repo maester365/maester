@@ -71,6 +71,7 @@ This test compares discovered user SPN service classes against a database of kno
 | MITRE ATT&CK | T1558.003 Kerberoasting |
 | PowerShell test | [Test-MtAdUserSpnUnknownCount](https://github.com/maester365/maester/blob/main/tests/ad/spn/Test.AD-SPN-09.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

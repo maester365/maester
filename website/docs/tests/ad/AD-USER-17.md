@@ -64,6 +64,7 @@ This test counts user objects where the `ProfilePath` attribute contains a non-e
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserProfilePathCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-17.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

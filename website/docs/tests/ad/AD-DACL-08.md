@@ -65,6 +65,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, groups entries by `Ide
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDaclIdentityAceDistribution](https://github.com/maester365/maester/blob/main/tests/ad/dacl/Test.AD-DACL-08.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl |
 | Long running | Yes |
 
 ## Source

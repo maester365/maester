@@ -29,6 +29,7 @@
         Mitre = 'T1210',
         Control = 'nist-800-53-r5:CM-7',
         Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Remoting:Microsoft.PowerShell', 'ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]

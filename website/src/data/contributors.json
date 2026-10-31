@@ -424,12 +424,12 @@
         "MT.1036"
       ],
       "initials": "MS",
-      "recentCommits": 8
+      "recentCommits": 7
     },
     {
       "id": "JeremyFinney-lgtm",
       "github": "JeremyFinney-lgtm",
-      "name": "Jeremy Finney",
+      "name": "jeremy finney",
       "title": "",
       "mvp": false,
       "mvpUrl": "",
@@ -443,6 +443,17 @@
       "firstContribution": "2026-10-17",
       "testsAuthored": [
         "CIS.M365.1.3.2",
+        "CIS.M365.1.3.9",
+        "CIS.M365.2.1.8",
+        "CIS.M365.2.1.10",
+        "CIS.M365.2.1.14",
+        "CIS.M365.2.1.15",
+        "CIS.M365.2.4.1",
+        "CIS.M365.2.4.2",
+        "CIS.M365.3.2.1",
+        "CIS.M365.3.2.2",
+        "CIS.M365.3.2.3",
+        "CIS.M365.3.3.1",
         "CIS.M365.4.2",
         "CIS.M365.5.1.3.1",
         "CIS.M365.5.1.3.4",
@@ -489,6 +500,18 @@
         "CIS.M365.5.3.3",
         "CIS.M365.5.3.4",
         "CIS.M365.5.3.5",
+        "CIS.M365.6.1.1",
+        "CIS.M365.6.1.2",
+        "CIS.M365.6.1.3",
+        "CIS.M365.6.2.1",
+        "CIS.M365.6.2.2",
+        "CIS.M365.6.2.3",
+        "CIS.M365.6.3.1",
+        "CIS.M365.6.3.2",
+        "CIS.M365.6.5.1",
+        "CIS.M365.6.5.2",
+        "CIS.M365.6.5.4",
+        "CIS.M365.6.5.5",
         "CIS.M365.7.2.1",
         "CIS.M365.7.2.3",
         "CIS.M365.7.2.4",
@@ -521,7 +544,7 @@
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 52
+      "recentCommits": 91
     },
     {
       "id": "Cloud-Architekt",
@@ -679,7 +702,7 @@
       ],
       "testsContributed": [],
       "initials": "SC",
-      "recentCommits": 2
+      "recentCommits": 1
     },
     {
       "id": "f-bader",
@@ -1642,6 +1665,51 @@
       "recentCommits": 0
     },
     {
+      "id": "Gbenrotto",
+      "github": "Gbenrotto",
+      "name": "Olugbenro Ogundipe",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/Gbenrotto.png",
+      "firstContribution": "2026-10-29",
+      "testsAuthored": [],
+      "testsContributed": [
+        "MT.1148",
+        "MT.1149",
+        "MT.1150",
+        "MT.1151",
+        "MT.1152",
+        "MT.1153",
+        "MT.1154",
+        "MT.1155",
+        "MT.1156",
+        "MT.1157",
+        "MT.1158",
+        "MT.1159",
+        "MT.1160",
+        "MT.1161",
+        "MT.1162",
+        "MT.1163",
+        "MT.1164",
+        "MT.1165",
+        "MT.1166",
+        "MT.1167",
+        "MT.1168",
+        "MT.1169",
+        "MT.1170",
+        "MT.1171"
+      ],
+      "initials": "OO",
+      "recentCommits": 2
+    },
+    {
       "id": "JeanPhilippeGeorge",
       "github": "JeanPhilippeGeorge",
       "name": "Jean-Philippe George",
@@ -1796,7 +1864,7 @@
       ],
       "testsContributed": [],
       "initials": "BV",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "Dfrank77",
@@ -2067,7 +2135,7 @@
         "CISA.MS.EXO.3.1"
       ],
       "initials": "HH",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "knussbaumer",
@@ -2346,7 +2414,7 @@
         "MT.1071"
       ],
       "initials": "MM",
-      "recentCommits": 4
+      "recentCommits": 0
     },
     {
       "id": "mattcave",
@@ -2778,7 +2846,7 @@
         "MT.1227"
       ],
       "initials": "MF",
-      "recentCommits": 180
+      "recentCommits": 186
     }
   ],
   "attributions": {
@@ -4194,6 +4262,10 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.1.3.9": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.2.1.1": {
       "author": "NZLostboy",
       "contributors": [
@@ -4235,6 +4307,10 @@
         "Mynster9361"
       ]
     },
+    "CIS.M365.2.1.8": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.2.1.9": {
       "author": "NZLostboy",
       "contributors": [
@@ -4242,6 +4318,10 @@
         "brianreidc7",
         "amlhive-tech"
       ]
+    },
+    "CIS.M365.2.1.10": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.2.1.11": {
       "author": "NZLostboy",
@@ -4261,6 +4341,22 @@
         "knussbaumer"
       ]
     },
+    "CIS.M365.2.1.14": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.2.1.15": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.2.4.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.2.4.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.2.4.4": {
       "author": "NZLostboy",
       "contributors": [
@@ -4272,6 +4368,22 @@
       "contributors": [
         "thomas-s-schmidt"
       ]
+    },
+    "CIS.M365.3.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.3.2.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.3.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.3.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.4.1": {
       "author": "oed-metzb",
@@ -4504,12 +4616,60 @@
       "author": "JeremyFinney-lgtm",
       "contributors": []
     },
+    "CIS.M365.6.1.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.1.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.1.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.2.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.2.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.2.3": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.3.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.3.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.5.1": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.5.2": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
     "CIS.M365.6.5.3": {
       "author": "weyCC81",
       "contributors": [
         "bastienperez",
         "Mynster9361"
       ]
+    },
+    "CIS.M365.6.5.4": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
+    },
+    "CIS.M365.6.5.5": {
+      "author": "JeremyFinney-lgtm",
+      "contributors": []
     },
     "CIS.M365.7.2.1": {
       "author": "JeremyFinney-lgtm",
@@ -6013,99 +6173,147 @@
     },
     "MT.1148": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1149": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1150": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1151": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1152": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1153": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1154": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1155": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1156": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1157": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1158": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1159": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1160": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1161": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1162": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1163": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1164": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1165": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1166": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1167": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1168": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1169": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1170": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1171": {
       "author": "bdrogja",
-      "contributors": []
+      "contributors": [
+        "Gbenrotto"
+      ]
     },
     "MT.1172": {
       "author": "OfirGavish",
@@ -8065,6 +8273,10 @@
       "title": "(L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'",
       "path": "/docs/tests/CIS.M365.1.3.7"
     },
+    "CIS.M365.1.3.9": {
+      "title": "(L1) Ensure shared bookings pages are restricted to select users",
+      "path": "/docs/next/tests/CIS.M365.1.3.9"
+    },
     "CIS.M365.2.1.1": {
       "title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy)",
       "path": "/docs/tests/CIS.M365.2.1.1"
@@ -8093,9 +8305,17 @@
       "title": "(L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
       "path": "/docs/tests/CIS.M365.2.1.7"
     },
+    "CIS.M365.2.1.8": {
+      "title": "(L1) Ensure that SPF records are published for all Exchange Domains",
+      "path": "/docs/next/tests/CIS.M365.2.1.8"
+    },
     "CIS.M365.2.1.9": {
       "title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains",
       "path": "/docs/tests/CIS.M365.2.1.9"
+    },
+    "CIS.M365.2.1.10": {
+      "title": "(L1) Ensure DMARC records for all Exchange Online domains are published",
+      "path": "/docs/next/tests/CIS.M365.2.1.10"
     },
     "CIS.M365.2.1.11": {
       "title": "(L2) Ensure comprehensive attachment filtering is applied",
@@ -8109,6 +8329,22 @@
       "title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)",
       "path": "/docs/tests/CIS.M365.2.1.13"
     },
+    "CIS.M365.2.1.14": {
+      "title": "(L1) Ensure inbound anti-spam policies do not contain allowed domains",
+      "path": "/docs/next/tests/CIS.M365.2.1.14"
+    },
+    "CIS.M365.2.1.15": {
+      "title": "(L1) Ensure outbound anti-spam message limits are in place",
+      "path": "/docs/next/tests/CIS.M365.2.1.15"
+    },
+    "CIS.M365.2.4.1": {
+      "title": "(L1) Ensure Priority account protection is enabled and configured",
+      "path": "/docs/next/tests/CIS.M365.2.4.1"
+    },
+    "CIS.M365.2.4.2": {
+      "title": "(L1) Ensure Priority accounts have 'Strict protection' presets applied",
+      "path": "/docs/next/tests/CIS.M365.2.4.2"
+    },
     "CIS.M365.2.4.4": {
       "title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)",
       "path": "/docs/tests/CIS.M365.2.4.4"
@@ -8116,6 +8352,22 @@
     "CIS.M365.3.1.1": {
       "title": "(L1) Ensure Microsoft 365 audit log search is Enabled",
       "path": "/docs/tests/CIS.M365.3.1.1"
+    },
+    "CIS.M365.3.2.1": {
+      "title": "(L1) Ensure DLP policies are enabled",
+      "path": "/docs/next/tests/CIS.M365.3.2.1"
+    },
+    "CIS.M365.3.2.2": {
+      "title": "(L1) Ensure DLP policies are enabled for Microsoft Teams",
+      "path": "/docs/next/tests/CIS.M365.3.2.2"
+    },
+    "CIS.M365.3.2.3": {
+      "title": "(L1) Ensure DLP policies are published for Copilot users",
+      "path": "/docs/next/tests/CIS.M365.3.2.3"
+    },
+    "CIS.M365.3.3.1": {
+      "title": "(L1) Ensure Information Protection sensitivity label policies are published",
+      "path": "/docs/next/tests/CIS.M365.3.3.1"
     },
     "CIS.M365.4.1": {
       "title": "(L1) Ensure devices without a compliance policy are marked 'not compliant'",
@@ -8333,9 +8585,57 @@
       "title": "(L1) Ensure approval is required for Privileged Role Administrator activation",
       "path": "/docs/next/tests/CIS.M365.5.3.5"
     },
+    "CIS.M365.6.1.1": {
+      "title": "(L1) Ensure 'AuditDisabled' organizationally is set to 'False'",
+      "path": "/docs/next/tests/CIS.M365.6.1.1"
+    },
+    "CIS.M365.6.1.2": {
+      "title": "(L1) Ensure mailbox audit actions are configured",
+      "path": "/docs/next/tests/CIS.M365.6.1.2"
+    },
+    "CIS.M365.6.1.3": {
+      "title": "(L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes",
+      "path": "/docs/next/tests/CIS.M365.6.1.3"
+    },
+    "CIS.M365.6.2.1": {
+      "title": "(L1) Ensure all forms of mail forwarding are blocked and/or disabled",
+      "path": "/docs/next/tests/CIS.M365.6.2.1"
+    },
+    "CIS.M365.6.2.2": {
+      "title": "(L1) Ensure mail transport rules do not whitelist specific domains",
+      "path": "/docs/next/tests/CIS.M365.6.2.2"
+    },
+    "CIS.M365.6.2.3": {
+      "title": "(L1) Ensure email from external senders is identified",
+      "path": "/docs/next/tests/CIS.M365.6.2.3"
+    },
+    "CIS.M365.6.3.1": {
+      "title": "(L2) Ensure users installing Outlook add-ins is not allowed",
+      "path": "/docs/next/tests/CIS.M365.6.3.1"
+    },
+    "CIS.M365.6.3.2": {
+      "title": "(L1) Ensure the ability to add personal email accounts and calendars is disabled",
+      "path": "/docs/next/tests/CIS.M365.6.3.2"
+    },
+    "CIS.M365.6.5.1": {
+      "title": "(L1) Ensure modern authentication for Exchange Online is enabled",
+      "path": "/docs/next/tests/CIS.M365.6.5.1"
+    },
+    "CIS.M365.6.5.2": {
+      "title": "(L1) Ensure MailTips are enabled for end users",
+      "path": "/docs/next/tests/CIS.M365.6.5.2"
+    },
     "CIS.M365.6.5.3": {
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
       "path": "/docs/tests/CIS.M365.6.5.3"
+    },
+    "CIS.M365.6.5.4": {
+      "title": "(L1) Ensure SMTP AUTH is disabled",
+      "path": "/docs/next/tests/CIS.M365.6.5.4"
+    },
+    "CIS.M365.6.5.5": {
+      "title": "(L2) Ensure Direct Send submissions are rejected",
+      "path": "/docs/next/tests/CIS.M365.6.5.5"
     },
     "CIS.M365.7.2.1": {
       "title": "(L1) Ensure modern authentication for SharePoint applications is required",

@@ -20,7 +20,7 @@ keywords:
 
 # CIS.M365.9.1.6 - (L1) Enable sensitivity labels for Fabric content
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="Jeremy Finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="Jeremy Finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">Jeremy Finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/jeremyfinney-lgtm" title="jeremy finney · Original author"><img src="https://github.com/JeremyFinney-lgtm.png" alt="jeremy finney" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/jeremyfinney-lgtm">jeremy finney</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -31,9 +31,10 @@ This setting enables label application in Fabric. It does not confirm that label
 #### Remediation action
 
 1. Confirm that sensitivity labels are configured and published to the intended users, and that the required licensing prerequisites are met.
-2. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-3. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-4. Under **Information protection**, enable **Allow users to apply sensitivity labels for content**. Select the intended user scope and then select **Apply**.
+2. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+3. Select **Tenant settings**.
+4. Scroll to **Information protection**.
+5. Set **Allow users to apply sensitivity labels for content** to **Enabled**, or choose **Enabled** with **Specific security groups** selected and defined. Select **Apply**.
 
 #### Related links
 

@@ -64,8 +64,8 @@ the config with `-Config` if that is what you want. `-Verbose` logs the full pat
 - Every other object merges per key, recursively.
 - Arrays and plain values replace. An empty array in a higher layer clears the lower one.
 - On the command line, `-Tag` and `-TestId` replace the config's `Selection.Tag` and `Selection.TestId`;
-  `-ExcludeTag` and `-ExcludeTestId` add to the config's lists; `-IncludePreview` and `-IncludeLongRunning` turn
-  the setting on when either source does.
+  `-ExcludeTag`, `-ExcludeTestId` and `-ExcludeProduct` add to the config's lists; `-IncludePreview` and
+  `-IncludeLongRunning` turn the setting on when either source does.
 
 Keys Maester does not know are kept and passed through, so they do no harm. The 2.x keys `ModuleVersion` and
 `ConfigVersion` are ignored.
@@ -85,6 +85,7 @@ Keys Maester does not know are kept and passed through, so they do no harm. The 
     "BuiltIn": "All",
     "DefaultAction": "Run",
     "Product": [],
+    "ExcludeProduct": [],
     "Feature": [],
     "Area": [],
     "Severity": [],
@@ -153,6 +154,7 @@ Which tests run. Every key has a command-line equivalent.
 | `BuiltIn` | `All`, `None` | `All` | `None` runs only your custom tests, like `-SkipBuiltIn`. |
 | `DefaultAction` | `Run`, `Skip` | `Run` | `Skip` is allow-list mode: a test runs only if a `TestSettings` row for its ID sets `"Enabled": true`. Others are `NotRun` with reason `NotListed`. |
 | `Product` | array | `[]` | Run only tests of these products (like `-Product`): keys such as `entra` or `exchange`, or an alias such as `Entra ID`. Matches a test's `Product` or any of its `RelatedProduct` values. |
+| `ExcludeProduct` | array | `[]` | Do not run tests of these products (like `-ExcludeProduct`), matched like `Product`. Wins over `Product`, `TestId` and the other selectors. A test with no product is never excluded. |
 | `Feature` | array | `[]` | Run only tests about these features (like `-Feature`), for example `conditional-access`. |
 | `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
 | `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
@@ -176,7 +178,12 @@ Rules:
   and each result names the ones it uses under `Taxonomy`.
 - A Pester-format test has no product, feature or area, so a run that selects by one of them leaves it out. Its
   suite is that of its folder, and its severity counts only when a `TestSettings` row sets it.
-- A command-line value replaces the list of the same name in the config.
+- `ExcludeProduct` leaves out the tests whose `Product` or `RelatedProduct` matches, with the reason
+  `ExcludedByProduct`: `-ExcludeProduct exchange` runs everything except the Exchange Online tests, and
+  `-Product entra -ExcludeProduct entra` runs nothing. Unlike `Product`, it never leaves out a Pester-format
+  test, which has no product. Services that only the excluded tests need are not read or connected.
+- A command-line value replaces the list of the same name in the config, except `-ExcludeTag`,
+  `-ExcludeTestId` and `-ExcludeProduct`, which add to it.
 - Tags and IDs are compared case-insensitively. Tag lists match any tag; `*` wildcards are allowed.
 - Test IDs are exact or use `*` wildcards (`CISA.MS.AAD.3.*`). An ID named exactly runs even if the test is
   preview or long-running; a wildcard match does not lift those exclusions.
@@ -209,7 +216,7 @@ to the selectors when you can:
 | 2.x tag | Example | Now |
 | --- | --- | --- |
 | Suite | `CISA`, `Maester` | `-Suite cisa` |
-| Product or service | `EXO`, `Entra` | `-Product exchange` |
+| Product or service | `EXO`, `Entra` | `-Product exchange`; `-ExcludeTag EXO` is `-ExcludeProduct exchange` |
 | Topic | `CA`, `Privileged` | `-Feature conditional-access`, `-Area privileged-access` |
 | Benchmark control ID | `MS.AAD.3.5` | `-TestId CISA.MS.AAD.3.5` |
 | Severity | `Severity:High` | `-Severity High` |

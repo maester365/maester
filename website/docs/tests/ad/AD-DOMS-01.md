@@ -70,6 +70,7 @@ This test retrieves the allowed DNS suffixes configuration from the domain using
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdAllowedDnsSuffixesCount](https://github.com/maester365/maester/blob/main/tests/ad/domain/Test.AD-DOMS-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS.name:ReadProperty |
 
 ## Source
 

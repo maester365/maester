@@ -68,6 +68,7 @@ This test retrieves all domain controllers and counts the unique sites that cont
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdDcSiteCoverageCount](https://github.com/maester365/maester/blob/main/tests/ad/domain-controller/Test.AD-DC-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:nTDSDSA:ReadProperty, ActiveDirectory:Ldap:site:ReadProperty |
 
 ## Source
 

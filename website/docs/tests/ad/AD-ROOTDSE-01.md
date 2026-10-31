@@ -69,6 +69,7 @@ This test retrieves the Root DSE and counts:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdSupportedSaslMechanismCount](https://github.com/maester365/maester/blob/main/tests/ad/replication/Test.AD-ROOTDSE-01.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:domainDNS:ReadProperty |
 
 ## Source
 

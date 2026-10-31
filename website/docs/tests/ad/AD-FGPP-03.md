@@ -84,6 +84,7 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdFineGrainedPolicySettingCounts](https://github.com/maester365/maester/blob/main/tests/ad/password-policy/Test.AD-FGPP-03.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty |
 
 ## Source
 

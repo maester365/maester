@@ -59,6 +59,7 @@ This test retrieves Active Directory user data from `Get-MtADDomainState` and co
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdUserWorkstationRestrictionCount](https://github.com/maester365/maester/blob/main/tests/ad/user/Test.AD-USER-10.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:user:ReadProperty |
 
 ## Source
 

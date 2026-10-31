@@ -76,6 +76,12 @@
         "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
         "ConnectionInformation"          = "Get-ConnectionInformation"
         "AdminAuditLogConfig"            = "Get-AdminAuditLogConfig"
+        "EXOMailboxAudit"                = "Get-EXOMailbox -RecipientTypeDetails 'UserMailbox' -PropertySets 'Audit','Minimum' -ResultSize 'Unlimited'"
+        "MailboxAuditBypassAssociation"  = "Get-MailboxAuditBypassAssociation -ResultSize 'Unlimited' -WarningAction 'SilentlyContinue'"
+        "EmailTenantSettings"            = "Get-EmailTenantSettings"
+        "VipUser"                        = "Get-User -IsVIP -ResultSize 'Unlimited'"
+        "LabelPolicy"                    = "Get-LabelPolicy -WarningAction 'SilentlyContinue'"
+        "EXOMailboxRoleAssignmentPolicy" = "Get-EXOMailbox -RecipientTypeDetails 'UserMailbox' -Properties 'RoleAssignmentPolicy' -ResultSize 'Unlimited'"
     }
 
 
@@ -90,7 +96,24 @@
 
     if ($null -eq $__MtSession.ExoCache.$Request) {
         Write-Verbose "$request not in cache, requesting."
-        if ($Request -eq "AdminAuditLogConfig") {
+        if ($Request -eq "VipUser") {
+            $exoModule = Get-MtExo -Request ConnectionInformation |
+                Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                Where-Object {
+                    $candidateModuleName = Split-Path -Path $_.ModuleName -Leaf
+                    $candidateModule = Get-Module -Name $candidateModuleName
+                    $candidateModule -and
+                    $candidateModule.ExportedCommands.ContainsKey('Get-User') -and
+                    $candidateModule.ExportedCommands['Get-User'].Parameters.ContainsKey('IsVIP')
+                } |
+                Select-Object -First 1 -ExpandProperty ModuleName
+            if (-not $exoModule) {
+                throw 'Get-User -IsVIP is not available. Connect to Exchange Online with Connect-ExchangeOnline.'
+            }
+            $exoModuleName = Split-Path -Path $exoModule -Leaf
+            $commands.$Request = "$exoModuleName\Get-User -IsVIP -ResultSize 'Unlimited'"
+        }
+        elseif ($Request -eq "AdminAuditLogConfig") {
             # Connect-IPPSSession also exports Get-AdminAuditLogConfig, and its copy reports
             # UnifiedAuditLogIngestionEnabled as False (#1802). Use an Exchange Online module that exports it.
             $exoModule = Get-MtExo -Request ConnectionInformation |

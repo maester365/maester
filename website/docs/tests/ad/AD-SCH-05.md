@@ -80,6 +80,7 @@ This test checks for the presence of LAPS schema attributes (ms-Mcs-AdmPwd) to d
 | Supports controls | nist-800-53-r5:IA-5, nist-800-53-r5:AC-6(2) |
 | PowerShell test | [Test-MtAdLapsInstalledStatus](https://github.com/maester365/maester/blob/main/tests/ad/schema/Test.AD-SCH-05.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:Schema/*:ReadProperty |
 
 ## Source
 

@@ -73,6 +73,7 @@ This test retrieves all group objects from Active Directory and:
 | MITRE ATT&CK | None |
 | PowerShell test | [Test-MtAdGroupWithManagerCount](https://github.com/maester365/maester/blob/main/tests/ad/group/Test.AD-GRP-04.ps1) |
 | Services | ActiveDirectory |
+| Permissions | ActiveDirectory:Ldap:group:ReadProperty |
 
 ## Source
 
