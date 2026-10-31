@@ -162,6 +162,19 @@ Describe 'Invoke-MtGraphRequest' {
                 $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users?$select=displayName'
             }
         }
+
+        It 'Caches a Hashtable response apart from the PSObject response for the same uri' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -OutputType Hashtable -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -OutputType Hashtable -DisablePaging
+            }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_[Hashtable]'
+            }
+        }
     }
 
     Context 'Methods' {

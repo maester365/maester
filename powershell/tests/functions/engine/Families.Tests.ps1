@@ -163,6 +163,13 @@ Describe 'Built-in families' {
             ($script:rows | Where-Object Title -Like '*Sensor stopped*').Result | Should -Be 'Failed'
             ($script:rows | Where-Object Title -Like '*Auditing not configured*').Result | Should -Be 'Passed'
         }
+
+        It 'Leaves the Graph response unchanged, because it is shared through the session cache' {
+            $script:healthIssues[0].severity | Should -BeExactly 'high'
+            $script:healthIssues[0].status | Should -BeExactly 'open'
+            $script:healthIssues[0].ContainsKey('domainNamesString') | Should -BeFalse
+            $script:healthIssues[0].PSObject.Properties['domainNamesString'] | Should -BeNullOrEmpty
+        }
     }
 
     Context 'MT.1060 (drift folders)' {

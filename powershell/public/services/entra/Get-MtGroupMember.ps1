@@ -6,6 +6,10 @@
     .Description
     Returns all the members of the specific group ID.
 
+    A group that is not found (404), such as a deleted group or an external partner group assigned through GDAP,
+    returns $null. Any other error, such as missing permissions or throttling, is thrown, so a check that depends on
+    the members cannot pass without reading them.
+
     .Example
     Get-MtGroupMember
 
@@ -28,59 +32,35 @@
     return $null
   }
 
-  try {
-    $group = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0
-    if (-not $group) {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted."
-      return $null
-    }
-  } catch {
-    # Check status code via Response.StatusCode (Invoke-MgGraphRequest pattern used in this repo),
-    # including enum, string ('NotFound'), and integer (404) forms; then via the typed StatusCode
-    # property (.NET 5+/PS7); then fall back to message matching for older runtimes.
-    $responseStatusCode = $_.Exception.Response.StatusCode
-    $exceptionStatusCode = $_.Exception.StatusCode
-    $is404 = ($responseStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
-             ($responseStatusCode -eq 'NotFound') -or
-             ($responseStatusCode -eq 404) -or
-             ($exceptionStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
-             ($_.Exception.Message -match 'NotFound|404')
-    if ($is404) {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
-    } else {
-      Write-Warning "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
-    }
-    return $null
-  }
-
-  Write-Verbose -Message "Getting group members for group: $($group.displayName) ($GroupId)"
+  Write-Verbose -Message "Getting group members for group: $GroupId"
 
   try {
     $members = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/members" -ApiVersion v1.0
-
-    if (-not $Recursive) {
-      return $members
+  } catch {
+    if (Test-MtGraphNotFoundError -ErrorRecord $_) {
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
+      return $null
     }
+    # Keep the Graph exception as the inner exception, so callers can still read its status code. throw, not
+    # $PSCmdlet.ThrowTerminatingError, so the calling check stops instead of continuing without the members.
+    $exception = [System.InvalidOperationException]::new("Could not read the members of group ($GroupId) from Microsoft Graph: $($_.Exception.Message)", $_.Exception)
+    throw [System.Management.Automation.ErrorRecord]::new($exception, 'MtGroupMemberReadFailed', $_.CategoryInfo.Category, $GroupId)
+  }
 
-    # Process nested groups recursively
-    $nestedGroups = $members | Where-Object { $_.'@odata.type' -eq "#microsoft.graph.group" }
-    foreach ($nestedGroup in $nestedGroups) {
-      if ($nestedGroup.id) {
-        try {
-          $nestedMembers = Get-MtGroupMember -GroupId $nestedGroup.id -Recursive
-          if ($nestedMembers) {
-            $members += $nestedMembers
-          }
-        } catch {
-          Write-Warning "Failed to get members for nested group '$($nestedGroup.id)': $($_.Exception.Message)"
-        }
+  if (-not $Recursive) {
+    return $members
+  }
+
+  # Process nested groups recursively. A nested group that cannot be read throws, like the outer group.
+  $nestedGroups = $members | Where-Object { $_.'@odata.type' -eq "#microsoft.graph.group" }
+  foreach ($nestedGroup in $nestedGroups) {
+    if ($nestedGroup.id) {
+      $nestedMembers = Get-MtGroupMember -GroupId $nestedGroup.id -Recursive
+      if ($nestedMembers) {
+        $members += $nestedMembers
       }
     }
-
-    return $members
-
-  } catch {
-    Write-Error "Error retrieving group members for group '$GroupId': $($_.Exception.Message)"
-    return $null
   }
+
+  return $members
 }

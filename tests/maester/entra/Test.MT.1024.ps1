@@ -12,7 +12,7 @@ function Get-MtEntraRecommendationInstance {
     [OutputType([pscustomobject])]
     param()
 
-    $response = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
+    $response = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
     $textInfo = (Get-Culture).TextInfo
     foreach ($recommendation in @($response.value)) {
         if ($null -eq $recommendation) { continue }

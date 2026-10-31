@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -DisableCache
+    $settings = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy"
 
     Write-Verbose 'Executing checks'
     $checkSms = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Sms" }).State -eq "disabled"
