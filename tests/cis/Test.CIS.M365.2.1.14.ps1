@@ -36,6 +36,10 @@
 
     Write-Verbose 'Getting inbound anti-spam policies...'
     $policies = @(Get-MtExo -Request HostedContentFilterPolicy)
+    if ($policies.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'No inbound anti-spam policies were returned; compliance could not be established.'
+        return $false
+    }
 
     $report = foreach ($policy in $policies) {
         $allowed = @($policy.AllowedSenderDomains | Where-Object { $_ })

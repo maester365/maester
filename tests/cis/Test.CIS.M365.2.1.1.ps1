@@ -39,11 +39,21 @@
 
     Write-Verbose 'Getting Safe Links Policy...'
 
-    # Get the name of highest priority policy
-    $priority0Policy = Get-MtExo -Request SafeLinksRule | Where-Object { $_.Priority -eq '0' }
+    $priority0Rules = @(Get-MtExo -Request SafeLinksRule | Where-Object { $_.Priority -eq '0' })
+    if ($priority0Rules.Count -ne 1) {
+        Add-MtTestResultDetail -Result "Expected one Safe Links rule with priority 0, found $($priority0Rules.Count)."
+        return $false
+    }
 
-    # Get policy highest priority policy
-    $policy = Get-MtExo -Request SafeLinksPolicy | Where-Object { $_.Name -eq $priority0Policy }
+    $priority0Rule = $priority0Rules[0]
+    $policies = @(Get-MtExo -Request SafeLinksPolicy | Where-Object { $_.Name -eq $priority0Rule.SafeLinksPolicy })
+    if ($policies.Count -ne 1) {
+        Add-MtTestResultDetail -Result "The policy associated with priority 0 Safe Links rule '$($priority0Rule.Name)' was not found."
+        return $false
+    }
+
+    $policy = $policies[0]
+    $ruleEnabled = $priority0Rule.State -eq 'Enabled'
 
     $safeLinkCheckList = @()
 
@@ -111,25 +121,27 @@
         }
     }
 
-    $testResult = ($failedCheckList | Measure-Object).Count -eq 0
+    $testResult = ($failedCheckList | Measure-Object).Count -eq 0 -and $ruleEnabled
 
     $portalLink = 'https://security.microsoft.com/presetSecurityPolicies'
 
     if ($testResult) {
-        $testResultMarkdown = 'Well done. Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) matches CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = 'Well done. Safe Links policy ' + $policy.Name + " and its enabled priority 0 rule match CIS recommendations ($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = 'Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = 'Safe Links policy ' + $policy.Name + " or its priority 0 rule does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
 
-    $resultMd = "| Check Name | Result |`n"
-    $resultMd += "| --- | --- |`n"
+    $resultMd = "| Check Name | Current Value | Result |`n"
+    $resultMd += "| --- | --- | --- |`n"
     foreach ($item in $safeLinkCheckList) {
         $itemResult = '❌ Fail'
         if ($item.CheckName -notin $failedCheckList) {
             $itemResult = '✅ Pass'
         }
-        $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
+        $resultMd += "| $($item.CheckName) | $($policy.($item.CheckName)) | $($itemResult) |`n"
     }
+    $ruleStateResult = if ($ruleEnabled) { '✅ Pass' } else { '❌ Fail' }
+    $resultMd += "| Priority 0 rule state | $($priority0Rule.State) | $ruleStateResult |`n"
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

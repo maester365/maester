@@ -7,9 +7,38 @@ The test looks at all user mailboxes and lists those that have auditing disabled
 #### Remediation action
 
 1. Connect to Exchange Online with `Connect-ExchangeOnline`.
-2. Run `Get-EXOMailbox -RecipientTypeDetails UserMailbox -PropertySets Audit,Minimum` to see the audit settings of your mailboxes.
-3. Add the recommended actions to each mailbox that is listed, with `Set-Mailbox -Identity <user> -AuditAdmin @{Add=<actions>} -AuditDelegate @{Add=<actions>} -AuditOwner @{Add=<actions>}`. The `Add` value appends the actions to the current list and does not remove others.
-4. Make sure that no mailbox has `AuditEnabled` set to false.
+2. Run the following script to add the CIS audit actions to every user mailbox while preserving any additional actions already configured. It also enables auditing and sets the audit log age limit to 180 days as shown in the CIS remediation procedure.
+
+```powershell
+$AuditAdmin = @(
+    'ApplyRecord', 'Copy', 'Create', 'FolderBind', 'HardDelete',
+    'MailItemsAccessed', 'Move', 'MoveToDeletedItems', 'SendAs',
+    'SendOnBehalf', 'Send', 'SoftDelete', 'Update',
+    'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
+)
+$AuditDelegate = @(
+    'ApplyRecord', 'Create', 'FolderBind', 'HardDelete', 'Move',
+    'MailItemsAccessed', 'MoveToDeletedItems', 'SendAs', 'SendOnBehalf',
+    'SoftDelete', 'Update', 'UpdateFolderPermissions', 'UpdateInboxRules'
+)
+$AuditOwner = @(
+    'ApplyRecord', 'Create', 'HardDelete', 'MailboxLogin', 'Move',
+    'MailItemsAccessed', 'MoveToDeletedItems', 'Send', 'SoftDelete',
+    'Update', 'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
+)
+$Mailboxes = Get-EXOMailbox -RecipientTypeDetails UserMailbox -PropertySets Audit,Minimum -ResultSize Unlimited
+
+foreach ($Mailbox in $Mailboxes) {
+    Set-Mailbox -Identity $Mailbox.UserPrincipalName `
+        -AuditEnabled $true `
+        -AuditLogAgeLimit 180 `
+        -AuditAdmin @{ Add = $AuditAdmin } `
+        -AuditDelegate @{ Add = $AuditDelegate } `
+        -AuditOwner @{ Add = $AuditOwner }
+}
+```
+
+3. Check the result with `Get-EXOMailbox -RecipientTypeDetails UserMailbox -PropertySets Audit,Minimum -ResultSize Unlimited` and confirm `AuditEnabled` and the required actions are present.
 
 #### Related links
 
