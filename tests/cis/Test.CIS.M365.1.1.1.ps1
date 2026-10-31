@@ -45,7 +45,7 @@
     $assignments = @()
     $roleIds = @($roles.id)
     if ($roleIds.Count -gt 0) {
-        $assignments = @(Get-MtDirectoryRoleMember -RoleId $roleIds)
+        $assignments = @(Get-MtRoleMember -RoleId $roleIds)
     }
 
     Write-Verbose 'Filtering administrative role members for users'

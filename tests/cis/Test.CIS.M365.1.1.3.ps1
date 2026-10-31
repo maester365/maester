@@ -42,7 +42,7 @@
     } # Global Administrator
 
     Write-Verbose 'Getting role members'
-    $assignments = @(Get-MtDirectoryRoleMember -RoleId $role.id)
+    $assignments = @(Get-MtRoleMember -RoleId $role.id)
 
     Write-Verbose 'Getting list of user identities assigned the Global Administrator role'
     $globalAdministrators = @($assignments | Where-Object {

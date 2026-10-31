@@ -14,7 +14,7 @@ Describe 'Test-MtCisGlobalAdminCount' -Tag 'Unit' {
     }
 
     It 'counts unique users assigned directly or through a role-assigned group' {
-        Mock -ModuleName Maester Get-MtDirectoryRoleMember {
+        Mock -ModuleName Maester Get-MtRoleMember {
             [pscustomobject]@{ id = 'admin-1'; '@odata.type' = '#microsoft.graph.user' }
             [pscustomobject]@{ id = 'admin-2'; '@odata.type' = '#microsoft.graph.user' }
             [pscustomobject]@{ id = 'admin-1'; '@odata.type' = '#microsoft.graph.user' }
@@ -25,7 +25,7 @@ Describe 'Test-MtCisGlobalAdminCount' -Tag 'Unit' {
             Test-MtCisGlobalAdminCount | Should -BeTrue
         }
 
-        Should -Invoke Get-MtDirectoryRoleMember -ModuleName Maester -Exactly 1 -ParameterFilter {
+        Should -Invoke Get-MtRoleMember -ModuleName Maester -Exactly 1 -ParameterFilter {
             (@($RoleId | ForEach-Object { "$_" }) -join ',') -eq '62e90394-69f5-4237-9190-012177145e10'
         }
     }
@@ -34,7 +34,7 @@ Describe 'Test-MtCisGlobalAdminCount' -Tag 'Unit' {
         @{ Count = 1 }
         @{ Count = 5 }
     ) {
-        Mock -ModuleName Maester Get-MtDirectoryRoleMember {
+        Mock -ModuleName Maester Get-MtRoleMember {
             1..$Count | ForEach-Object { [pscustomobject]@{ id = "admin-$_"; '@odata.type' = '#microsoft.graph.user' } }
         }.GetNewClosure()
 
@@ -44,24 +44,12 @@ Describe 'Test-MtCisGlobalAdminCount' -Tag 'Unit' {
     }
 
     It 'errors when the members of a role-assigned group cannot be read' {
-        Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
-            [pscustomobject]@{
-                Assignments     = @(
-                    [pscustomobject]@{
-                        roleDefinitionId = '62e90394-69f5-4237-9190-012177145e10'
-                        principal        = [pscustomobject]@{ id = 'admin-group'; '@odata.type' = '#microsoft.graph.group' }
-                    }
-                )
-                EligibleChecked = $false
-            }
+        Mock -ModuleName Maester Get-MtRoleMember {
+            throw 'Could not read the members of group (33333333-3333-3333-3333-333333333333) from Microsoft Graph: Forbidden'
         }
-        Mock -ModuleName Maester Invoke-MtGraphRequest {
-            $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::Forbidden)
-            throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Forbidden', $response)
-        } -ParameterFilter { $RelativeUri -eq 'groups/admin-group/members' }
 
         InModuleScope Maester {
-            { Test-MtCisGlobalAdminCount } | Should -Throw '*Could not read the members of role-assigned group admin-group*'
+            { Test-MtCisGlobalAdminCount } | Should -Throw '*Could not read the members of group*'
         }
     }
 }

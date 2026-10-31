@@ -48,7 +48,7 @@
     $roleMembers = @()
     if ($roleIds.Count -gt 0) {
         Write-Verbose 'Getting active role members'
-        $roleMembers = @(Get-MtDirectoryRoleMember -RoleId $roleIds -MemberStatus Active)
+        $roleMembers = @(Get-MtRoleMember -RoleId $roleIds -MemberStatus Active)
     }
 
     $administrativeUsers = @($roleMembers | Where-Object {

@@ -13,16 +13,8 @@ Describe 'Test-MtCisAdminLicenseFootprint' -Tag 'Unit' {
                 [pscustomobject]@{ id = '00000000-0000-0000-0000-000000000002'; displayName = 'Exchange Administrator' }
             )
         }
-        Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
-            [pscustomobject]@{
-                Assignments     = @(
-                    [pscustomobject]@{
-                        roleDefinitionId = '00000000-0000-0000-0000-000000000001'
-                        principal        = [pscustomobject]@{ id = 'licensed-admin'; '@odata.type' = '#microsoft.graph.user' }
-                    }
-                )
-                EligibleChecked = $false
-            }
+        Mock -ModuleName Maester Get-MtRoleMember {
+            [pscustomobject]@{ id = 'licensed-admin'; '@odata.type' = '#microsoft.graph.user' }
         }
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             [pscustomobject]@{
@@ -46,8 +38,8 @@ Describe 'Test-MtCisAdminLicenseFootprint' -Tag 'Unit' {
         Should -Not -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
             $SkippedBecause -eq 'NotSupportedAppPermission'
         }
-        Should -Invoke Get-MtDirectoryRoleAssignment -ModuleName Maester -Exactly 1 -ParameterFilter {
-            $MemberStatus -eq 'Active' -and $ExpandPrincipal
+        Should -Invoke Get-MtRoleMember -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $MemberStatus -eq 'Active'
         }
         Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
             $RelativeUri -eq 'users' -and $Select -contains 'assignedLicenses'
@@ -111,55 +103,13 @@ Describe 'Test-MtCisAdminLicenseFootprint' -Tag 'Unit' {
         }
     }
 
-    Context 'role assigned to a group' {
-        BeforeEach {
-            Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
-                [pscustomobject]@{
-                    Assignments     = @(
-                        [pscustomobject]@{
-                            roleDefinitionId = '00000000-0000-0000-0000-000000000002'
-                            principal        = [pscustomobject]@{ id = 'admin-group'; '@odata.type' = '#microsoft.graph.group' }
-                        }
-                    )
-                    EligibleChecked = $false
-                }
-            }
+    It 'errors when the members of a role-assigned group cannot be read' {
+        Mock -ModuleName Maester Get-MtRoleMember {
+            throw 'Could not read the members of group (33333333-3333-3333-3333-333333333333) from Microsoft Graph: Forbidden'
         }
 
-        It 'evaluates the members of a role-assigned group' {
-            Mock -ModuleName Maester Invoke-MtGraphRequest {
-                [pscustomobject]@{ id = 'licensed-admin'; '@odata.type' = '#microsoft.graph.user' }
-            } -ParameterFilter { $RelativeUri -eq 'groups/admin-group/members' }
-
-            InModuleScope Maester {
-                Test-MtCisAdminLicenseFootprint | Should -BeFalse
-            }
-
-            Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
-                $RelativeUri -eq 'users' -and $UniqueId -contains 'licensed-admin'
-            }
-        }
-
-        It 'errors when the members of a role-assigned group cannot be read' {
-            Mock -ModuleName Maester Invoke-MtGraphRequest {
-                $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::Forbidden)
-                throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Forbidden', $response)
-            } -ParameterFilter { $RelativeUri -eq 'groups/admin-group/members' }
-
-            InModuleScope Maester {
-                { Test-MtCisAdminLicenseFootprint } | Should -Throw '*Could not read the members of role-assigned group admin-group*'
-            }
-        }
-
-        It 'skips a role-assigned group that no longer exists' {
-            Mock -ModuleName Maester Invoke-MtGraphRequest {
-                $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::NotFound)
-                throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Not Found', $response)
-            } -ParameterFilter { $RelativeUri -eq 'groups/admin-group/members' }
-
-            InModuleScope Maester {
-                Test-MtCisAdminLicenseFootprint | Should -BeTrue
-            }
+        InModuleScope Maester {
+            { Test-MtCisAdminLicenseFootprint } | Should -Throw '*Could not read the members of group*'
         }
     }
 }
