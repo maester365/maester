@@ -11,30 +11,30 @@ The test looks at all user mailboxes and lists those that have auditing disabled
 
 ```powershell
 $AuditAdmin = @(
-	'ApplyRecord', 'Copy', 'Create', 'FolderBind', 'HardDelete',
-	'MailItemsAccessed', 'Move', 'MoveToDeletedItems', 'SendAs',
-	'SendOnBehalf', 'Send', 'SoftDelete', 'Update',
-	'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
+    'ApplyRecord', 'Copy', 'Create', 'FolderBind', 'HardDelete',
+    'MailItemsAccessed', 'Move', 'MoveToDeletedItems', 'SendAs',
+    'SendOnBehalf', 'Send', 'SoftDelete', 'Update',
+    'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
 )
 $AuditDelegate = @(
-	'ApplyRecord', 'Create', 'FolderBind', 'HardDelete', 'Move',
-	'MailItemsAccessed', 'MoveToDeletedItems', 'SendAs', 'SendOnBehalf',
-	'SoftDelete', 'Update', 'UpdateFolderPermissions', 'UpdateInboxRules'
+    'ApplyRecord', 'Create', 'FolderBind', 'HardDelete', 'Move',
+    'MailItemsAccessed', 'MoveToDeletedItems', 'SendAs', 'SendOnBehalf',
+    'SoftDelete', 'Update', 'UpdateFolderPermissions', 'UpdateInboxRules'
 )
 $AuditOwner = @(
-	'ApplyRecord', 'Create', 'HardDelete', 'MailboxLogin', 'Move',
-	'MailItemsAccessed', 'MoveToDeletedItems', 'Send', 'SoftDelete',
-	'Update', 'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
+    'ApplyRecord', 'Create', 'HardDelete', 'MailboxLogin', 'Move',
+    'MailItemsAccessed', 'MoveToDeletedItems', 'Send', 'SoftDelete',
+    'Update', 'UpdateCalendarDelegation', 'UpdateFolderPermissions', 'UpdateInboxRules'
 )
 $Mailboxes = Get-EXOMailbox -RecipientTypeDetails UserMailbox -PropertySets Audit,Minimum -ResultSize Unlimited
 
 foreach ($Mailbox in $Mailboxes) {
-	Set-Mailbox -Identity $Mailbox.UserPrincipalName `
-		-AuditEnabled $true `
-		-AuditLogAgeLimit 180 `
-		-AuditAdmin @{ Add = $AuditAdmin } `
-		-AuditDelegate @{ Add = $AuditDelegate } `
-		-AuditOwner @{ Add = $AuditOwner }
+    Set-Mailbox -Identity $Mailbox.UserPrincipalName `
+        -AuditEnabled $true `
+        -AuditLogAgeLimit 180 `
+        -AuditAdmin @{ Add = $AuditAdmin } `
+        -AuditDelegate @{ Add = $AuditDelegate } `
+        -AuditOwner @{ Add = $AuditOwner }
 }
 ```
 
