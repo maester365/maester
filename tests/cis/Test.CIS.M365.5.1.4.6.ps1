@@ -35,7 +35,7 @@
     param()
 
     Write-Verbose 'Getting authorization policy settings...'
-    $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache).defaultUserRolePermissions
+    $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy").defaultUserRolePermissions
 
     Write-Verbose 'Executing checks'
     $testResult = $settings.allowedToReadBitlockerKeysForOwnedDevice -eq $false
