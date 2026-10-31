@@ -1,47 +1,36 @@
-1.2.3 (L1) Ensure repository deletion is limited to specific users
+Repository deletion is limited to the owners or repository administrators your organization has approved.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0
+Deleting a repository removes code, development history, and evidence of accidental or malicious activity. Keep deletion access with a small group of trusted and qualified users, and use an approved process to retire repositories. Other users may need an owner or administrator to delete a repository for them.
 
-Assessment Status: Manual
+CIS GitHub Benchmark v1.2.0 lists section 1.2.3 as a Manual assessment. Your organization decides which users are trusted and qualified; Maester compares your approvals with the owners and administrators returned by GitHub.
 
-#### Rationale
+Configure `GlobalSettings.GitHubDeletionPolicy` in `maester-config.json` as described in [GitHub deletion approvals](https://maester.dev/docs/configuration/github-deletion-policy). The test follows the organization's `members_can_delete_repositories` setting:
 
-Deleting repositories can cause major source loss, break delivery workflows, and hide malicious or accidental activity. Repository deletion should therefore be limited to a small set of trusted people whose access is reviewed intentionally.
+- When member deletion is disabled, every organization owner must be approved, and the number of owners must not exceed `MaximumOrganizationOwners`. The default is **3**, configurable from **1 through 3**. This is Maester's interpretation of "few"; CIS does not specify a number.
+- When member deletion is enabled, every repository must have **exactly two effective administrators**, both approved for that repository. Declare the complete repository inventory independently of what the API returns, including archived repositories. Repository exclusions are not supported.
 
-#### Impact
+Approved users who are not currently owners or administrators do not count toward these limits. Maester collects and reports observed access even when approvals have not been configured; seeing a user in the report does not approve that user.
 
-Members without the required repository or organization role will not be able to delete or transfer repositories. Teams may need a documented owner-led process for repository retirement.
+When member deletion is enabled, Maester checks for policies that may further restrict deletion before confirming an administrator-count or approval failure. An active repository-target policy needs review because Maester cannot verify its effective restrictions or who can bypass it. If no other repository confirms a failure, unresolved policy questions produce **Investigate**. This extra policy review is not needed when the administrator requirements are already met, and it is not part of the owner assessment when member deletion is disabled.
 
-#### Maester automation note
+A confirmed failure remains **Failed** even when other information is incomplete. When no failure is confirmed, missing, malformed, or incomplete required GitHub data produces **Skipped**. Otherwise, missing approvals or a repository list that is not confirmed as complete or does not match GitHub require **Investigate**. Invalid configuration, failed requests, and JSON parsing errors produce **Error**, even if earlier observations suggest a failure. The test cannot pass with incomplete information.
 
-CIS marks this recommendation as Manual. This Maester test collects the organization setting evidence that maps to CIS GH 1.2.3, then reports Investigate because CIS still requires a human trust review.
+Use an organization owner and a token that can read all required settings, users, and repositories. The [approval guide](https://maester.dev/docs/configuration/github-deletion-policy) lists the permissions and GHE.com connection requirements and explains how incomplete results are assessed. The check reads only the connected organization and does not attempt deletion or change permissions. Reports contain organization, user, and repository information and should be handled as sensitive assessment data.
 
-When `members_can_delete_repositories` is `true`, CIS requires verifying that repository admin members are trusted and qualified. When it is `false`, CIS still requires verifying that organization owners are trusted and qualified.
+#### Remediation action
 
-#### API evidence
-
-Endpoint: `GET /orgs/{org}`
-
-Evidence field: `members_can_delete_repositories`
-
-When this field is returned, the test records the actual value and returns Investigate so the remaining CIS manual review path is visible in Maester results.
-
-#### Permissions required
-
-GitHub requires organization-owner visibility for full organization details. Use `Connect-MtGitHub` with a classic PAT that has `admin:org`, or a fine-grained PAT with organization Members read and Administration read permissions.
-
-#### Remediation summary
-
-In the organization settings, open **Member privileges** and disable the option that allows members to delete or transfer repositories for the organization. If the setting remains enabled, manually verify that repository administrators are limited to trusted users and document the review. If the setting is disabled, verify that organization owners are limited to trusted users and document the review.
-
-#### Known limitations
-
-This test verifies the organization setting only. It does not enumerate repository administrators, organization owners, or decide whether those users are trusted.
+1. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open **Your organizations**, select the organization, then go to **Settings** > **Access** > **Member privileges** > **Repository deletion and transfer**.
+2. If member deletion is disabled, review **People** filtered to **Owners**. Remove unnecessary assignments, approve the remaining trusted and qualified owners, and keep the number of owners within the configured maximum.
+3. If member deletion is enabled, review **Settings** > **Collaborators & teams** for every repository, including access inherited from the organization or enterprise. Ensure exactly two effective administrators are assigned and approve both. Review any restrictive policies identified in the result.
+4. Update the approval configuration after access changes. If member deletion is enabled, also update the complete repository inventory. Then run the test again. Changing the member-deletion setting alone does not complete the assessment.
 
 #### Related links
 
 * [CIS GitHub Benchmark v1.2.0 - Section 1.2.3](https://www.cisecurity.org/benchmark/github)
-* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
+* [GitHub: Repository deletion permissions](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/setting-permissions-for-deleting-or-transferring-repositories)
+* [GitHub deletion approval configuration](https://maester.dev/docs/configuration/github-deletion-policy)
+* [REST: Organization members](https://docs.github.com/en/rest/orgs/members#list-organization-members)
+* [REST: Effective repository collaborators](https://docs.github.com/en/rest/collaborators/collaborators#list-repository-collaborators)
 
 <!--- Results --->
 %TestResult%
