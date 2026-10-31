@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -37,6 +37,36 @@ Describe 'Invoke-MtGitHubRequest' {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false }
                 { Invoke-MtGitHubRequest '/orgs/myorg' } | Should -Throw '*Connect-MtGitHub*'
             }
+        }
+    }
+
+    Context 'Request timeouts' {
+        It 'Bounds every page for legacy and metadata requests (<Metadata>)' -ForEach @(@{ Metadata = $false }, @{ Metadata = $true }) {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $headers = if ($Uri -like '*page=2') { @{} } else { @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = $headers }
+            }
+            InModuleScope Maester -Parameters @{ Metadata = $Metadata } {
+                Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata:$Metadata | Out-Null
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30
+            }
+        }
+
+        It 'Retains earlier pages on timeout without caching incomplete retrievals' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                if ($Uri -like '*page=2') { throw [System.TimeoutException]::new('Synthetic stalled request.') }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+            }
+            InModuleScope Maester {
+                $caught = $null
+                try { Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata | Out-Null } catch { $caught = $_ }
+                $caught.Exception | Should -BeOfType ([System.TimeoutException])
+                $caught.Exception.Data['GitHubPartialResponse'].Data.id | Should -Be 1
+                $__MtSession.GitHubCache.Count | Should -Be 0
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
         }
     }
 
@@ -296,10 +326,13 @@ Describe 'Invoke-MtGitHubRequest' {
                 }
             }
             InModuleScope Maester {
-                { Invoke-MtGitHubRequest '/orgs/myorg' } | Should -Not -Throw
-                $result = Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache
+                $result = Invoke-MtGitHubRequest '/orgs/myorg'
                 $result.login | Should -Be 'myorg'
+                # The valid response survives a malformed reset. A subsequent network request is
+                # blocked until a new connection because the primary reset deadline is unknown.
+                { Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache } | Should -Throw '*rate limit*'
             }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
         }
 
         It 'Does not throw on successful response when x-ratelimit-remaining is malformed' {
@@ -333,4 +366,142 @@ Describe 'Invoke-MtGitHubRequest' {
             }
         }
     }
+}
+
+
+Describe 'Opt-in GitHub REST evidence metadata' {
+    BeforeEach {
+        $script:metadataBody = '{"value":true}'
+        $script:metadataHeaders = @{}
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = [pscustomobject]@{ Connected = $true; Organization = 'fixture-org'; ApiBaseUri = 'https://api.github.com'; ApiVersion = '2022-11-28' }
+            $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer synthetic'; 'X-GitHub-Api-Version' = '2022-11-28' }
+            $__MtSession.GitHubCache = @{}
+        }
+        Mock Invoke-WebRequest -ModuleName Maester { [pscustomobject]@{ Content = $script:metadataBody; Headers = $script:metadataHeaders } }
+    }
+    AfterEach {
+        InModuleScope Maester { $__MtSession.GitHubConnection = $null; $__MtSession.GitHubAuthHeader = $null; $__MtSession.GitHubCache = @{} }
+    }
+    It 'Separates documented empty arrays from defensive unusable <Body>' -ForEach @(
+        @{ Body = '[]'; Valid = $true; Count = 0 }
+        @{ Body = '[ ]'; Valid = $true; Count = 0 }
+        @{ Body = '[{"name":"main"}]'; Valid = $true; Count = 1 }
+        @{ Body = '[null]'; Valid = $false; Count = 1 }
+        @{ Body = '[null,{"name":"main"}]'; Valid = $false; Count = 2 }
+        @{ Body = '[[{"name":"main"}]]'; Valid = $false; Count = 1 }
+        @{ Body = '[1]'; Valid = $false; Count = 1 }
+        @{ Body = 'null'; Valid = $false; Count = 0 }
+        @{ Body = ''; Valid = $false; Count = 0 }
+        @{ Body = '{}'; Valid = $false; Count = 0 }
+    ) {
+        $script:metadataBody = $Body
+        $out = InModuleScope Maester { Invoke-MtGitHubRequest '/repos/fixture-org/repo/branches' -Paginate -IncludeMetadata -ApiVersion '2026-03-10' }
+        $out.CollectionIntegrityValid | Should -Be $Valid
+        $out.Data.Count | Should -Be $Count
+        $out.PaginationComplete | Should -BeTrue
+        if (-not $Valid) { InModuleScope Maester { $__MtSession.GitHubCache.Count } | Should -Be 0 }
+    }
+    It 'Does not upgrade an existing legacy cached body into evidence metadata' {
+        $out = InModuleScope Maester {
+            Invoke-MtGitHubRequest '/orgs/fixture-org' | Out-Null
+            $metadata = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
+            $legacy = Invoke-MtGitHubRequest '/orgs/fixture-org'
+            [pscustomobject]@{ Metadata = $metadata; Legacy = $legacy }
+        }
+        $out.Metadata.StartedUtc | Should -BeOfType DateTimeOffset
+        $out.Legacy.PSObject.Properties.Name | Should -Not -Contain 'StartedUtc'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+    It 'Isolates version override and leaves the session header unchanged' {
+        InModuleScope Maester {
+            Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata -ApiVersion '2026-03-10' | Out-Null
+            Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata | Out-Null
+            $__MtSession.GitHubAuthHeader['X-GitHub-Api-Version'] | Should -Be '2022-11-28'
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Headers['X-GitHub-Api-Version'] -eq '2026-03-10' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+    It 'Separates explicit single-page and paginated modes with the same URL' {
+        $script:metadataBody = '[{"name":"main"}]'
+        $out = InModuleScope Maester {
+            $single = Invoke-MtGitHubRequest '/branches?per_page=100' -IncludeMetadata
+            $all = Invoke-MtGitHubRequest '/branches?per_page=100' -IncludeMetadata -Paginate
+            Invoke-MtGitHubRequest '/branches?per_page=100' -IncludeMetadata -Paginate | Out-Null
+            @($single, $all)
+        }
+        $out[0].PaginationComplete | Should -BeFalse
+        $out[1].PaginationComplete | Should -BeTrue
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+    It 'Keeps one metadata snapshot throughout a run' {
+        InModuleScope Maester {
+            $first = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
+            $next = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
+            $next.StartedUtc | Should -Be $first.StartedUtc
+            $next.CompletedUtc | Should -Be $first.CompletedUtc
+            $next.CompletedUtc = [DateTimeOffset]::UtcNow.AddMinutes(-6)
+            $fresh = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
+            $fresh.CompletedUtc | Should -Be $next.CompletedUtc
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
+    }
+    It 'Does not cache partial SSO evidence' {
+        $script:metadataBody = '[]'
+        $script:metadataHeaders = @{ 'X-GitHub-SSO' = 'partial-results; organizations=1' }
+        $out = InModuleScope Maester { Invoke-MtGitHubRequest '/branches' -IncludeMetadata -Paginate }
+        $out.AccessLimited | Should -BeTrue
+        $out.CollectionIntegrityValid | Should -BeFalse
+        InModuleScope Maester { $__MtSession.GitHubCache.Count } | Should -Be 0
+    }
+    It 'Follows a valid empty intermediate page and retains invalid members from later pages' {
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -notmatch '[?&]page=2' } {
+            [pscustomobject]@{ Content = '[]'; Headers = @{ Link = '<https://api.github.com/branches?page=2>; rel="next"' } }
+        }
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '[?&]page=2' } { [pscustomobject]@{ Content = '[null,{"name":"main"}]'; Headers = @{} } }
+        $out = InModuleScope Maester { Invoke-MtGitHubRequest '/branches' -IncludeMetadata -Paginate }
+        $out.PageCount | Should -Be 2
+        $out.Data.Count | Should -Be 2
+        $out.CollectionIntegrityValid | Should -BeFalse
+    }
+    It 'Rejects foreign pagination links without forwarding credentials' {
+        $script:metadataBody = '[]'
+        $script:metadataHeaders = @{ Link = '<https://untrusted.invalid/branches?page=2>; rel="next"' }
+        { InModuleScope Maester { Invoke-MtGitHubRequest '/branches' -IncludeMetadata -Paginate } } | Should -Throw '*foreign*'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
+    }
+    It 'Rejects a pagination cycle and never caches the incomplete traversal' {
+        $script:metadataBody = '[]'
+        $script:metadataHeaders = @{ Link = '<https://api.github.com/branches?per_page=100>; rel="next"' }
+        { InModuleScope Maester { Invoke-MtGitHubRequest '/branches' -IncludeMetadata -Paginate } } | Should -Throw '*cycle*'
+        InModuleScope Maester { $__MtSession.GitHubCache.Count } | Should -Be 0
+    }
+    It 'Preserves DisableCache read/write bypass for metadata' {
+        InModuleScope Maester {
+            Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata -DisableCache | Out-Null
+            Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata -DisableCache | Out-Null
+            $__MtSession.GitHubCache.Count | Should -Be 0
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+    It 'Inspects single-page array items without claiming complete enumeration' {
+        $script:metadataBody='[null,{"name":"main"}]'
+        $out=InModuleScope Maester {Invoke-MtGitHubRequest '/branches' -IncludeMetadata}
+        $out.Data.Count | Should -Be 2
+        $out.CollectionIntegrityValid | Should -BeFalse
+        $out.PaginationComplete | Should -BeFalse
+        InModuleScope Maester {$__MtSession.GitHubCache.Count} | Should -Be 0
+    }
+    It 'Does not remove an expired metadata entry when DisableCache bypasses reads and writes' {
+        InModuleScope Maester {
+            $first=Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
+            $expired=[DateTimeOffset]::UtcNow.AddMinutes(-6)
+            $first.CompletedUtc=$expired
+            Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata -DisableCache | Out-Null
+            $__MtSession.GitHubCache.Count | Should -Be 1
+            $__MtSession.GitHubCache['Metadata|GET|2022-11-28|https://api.github.com/orgs/fixture-org|Paginate=False'].CompletedUtc | Should -Be $expired
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+
 }
