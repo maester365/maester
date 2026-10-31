@@ -17,7 +17,7 @@ For GHE.com, use `https://api.SUBDOMAIN.ghe.com` and a token for that host; do n
 #### Remediation action
 
 1. Plan explicit repository or team access for members who need to contribute after the default changes. Coordinate those grants with the relevant repository owners.
-2. Open [your organizations](https://github.com/settings/organizations), select the organization, then go to **Settings** > **Access** > **Member privileges**.
+2. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open **Your organizations**, select the organization, then go to **Settings** > **Access** > **Member privileges**.
 3. Set **Base permissions** to **None** or **Read**, review the changes, and confirm the default-permission change.
 
 #### Related links

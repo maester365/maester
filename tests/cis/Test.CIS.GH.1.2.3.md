@@ -19,7 +19,7 @@ Use an organization owner and a token that can read all required settings, users
 
 #### Remediation action
 
-1. Open [your organizations](https://github.com/settings/organizations), select the organization, then go to **Settings** > **Access** > **Member privileges** > **Repository deletion and transfer**.
+1. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open **Your organizations**, select the organization, then go to **Settings** > **Access** > **Member privileges** > **Repository deletion and transfer**.
 2. If member deletion is disabled, review **People** filtered to **Owners**. Remove unnecessary assignments, approve the remaining trusted and qualified owners, and keep the number of owners within the configured maximum.
 3. If member deletion is enabled, review **Settings** > **Collaborators & teams** for every repository, including access inherited from the organization or enterprise. Ensure exactly two effective administrators are assigned and approve both. Review any restrictive policies identified in the result.
 4. Update the approval configuration and repository inventory after access changes, then run the test again. Changing the member-deletion setting alone does not complete the assessment.

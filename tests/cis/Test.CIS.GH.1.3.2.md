@@ -16,7 +16,7 @@ For GHE.com, use `https://api.SUBDOMAIN.ghe.com` and a token for that host; do n
 
 #### Remediation action
 
-1. Open [your organizations](https://github.com/settings/organizations), select the organization, then go to **Settings** > **Access** > **Member privileges**.
+1. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open **Your organizations**, select the organization, then go to **Settings** > **Access** > **Member privileges**.
 2. Under **Team creation rules**, clear **Allow members to create teams**.
 3. Save the change and use the organization's approved process for new-team requests.
 

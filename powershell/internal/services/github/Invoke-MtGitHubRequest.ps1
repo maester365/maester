@@ -4,8 +4,8 @@
     Internal: Authenticated read-only GET request to GitHub REST API with caching and pagination.
 
     .DESCRIPTION
-    Uses Invoke-WebRequest for PowerShell 5.1 compatibility (Invoke-RestMethod
-    -ResponseHeadersVariable is PowerShell 7+ only). Provides per-session caching,
+    Uses Invoke-WebRequest with bounded connection and operation timeouts.
+    Provides per-session caching,
     explicit opt-in pagination, and connection-scoped rate-limit protection.
 
     Cache key: ApiVersion|absoluteUri (cleared on reconnect and by Clear-ModuleVariable).

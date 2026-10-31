@@ -48,7 +48,7 @@ For GHE.com, use `https://api.SUBDOMAIN.ghe.com` and a token for that host; do n
 
 #### Remediation action
 
-1. Open [your organizations](https://github.com/settings/organizations), select the organization, then go to **Settings** > **Access** > **Member privileges**.
+1. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open **Your organizations**, select the organization, then go to **Settings** > **Access** > **Member privileges**.
 2. Clear the public and private repository-creation options for members and save the changes. If an enterprise policy controls the options, ask an enterprise owner to make the change.
 3. Review internal repository creation separately; it does not decide this check.
 
