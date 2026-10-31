@@ -48,13 +48,16 @@
         $missingAdmin = @($adminActions | Where-Object { @($mailbox.AuditAdmin) -notcontains $_ })
         $missingDelegate = @($delegateActions | Where-Object { @($mailbox.AuditDelegate) -notcontains $_ })
         $missingOwner = @($ownerActions | Where-Object { @($mailbox.AuditOwner) -notcontains $_ })
+        $missingAdminText = if ($missingAdmin.Count -gt 0) { $missingAdmin -join ', ' } else { 'None' }
+        $missingDelegateText = if ($missingDelegate.Count -gt 0) { $missingDelegate -join ', ' } else { 'None' }
+        $missingOwnerText = if ($missingOwner.Count -gt 0) { $missingOwner -join ', ' } else { 'None' }
         if (-not $mailbox.AuditEnabled -or $missingAdmin.Count -gt 0 -or $missingDelegate.Count -gt 0 -or $missingOwner.Count -gt 0) {
             [pscustomobject]@{
                 Mailbox = $mailbox.UserPrincipalName
                 AuditEnabled = $mailbox.AuditEnabled
-                MissingAdmin = $missingAdmin.Count
-                MissingDelegate = $missingDelegate.Count
-                MissingOwner = $missingOwner.Count
+                MissingAdmin = $missingAdminText
+                MissingDelegate = $missingDelegateText
+                MissingOwner = $missingOwnerText
             }
         }
     }
