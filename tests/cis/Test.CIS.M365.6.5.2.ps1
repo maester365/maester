@@ -4,7 +4,7 @@
         Checks that all MailTips are enabled and the large audience threshold is set.
 
     .DESCRIPTION
-        Checks the Exchange Online organisation configuration and passes when all MailTips, external recipient tips and group metrics are enabled and the large audience threshold is greater than zero.
+        Checks the Exchange Online organisation configuration and passes when all MailTips, external recipient tips and group metrics are enabled and a positive large audience threshold is set. CIS leaves the threshold value to the organization and notes 25 as the default.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.5.2, L1)
 
     .EXAMPLE
@@ -44,7 +44,7 @@
     )
     $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
 
-    $passText = 'MailTips are enabled for end users.'
+    $passText = 'MailTips are enabled for end users and a positive large-audience threshold is set.'
     $failText = 'MailTips are not fully enabled for end users.'
 
     $resultMd = "| Setting | Value | Result |`n"
