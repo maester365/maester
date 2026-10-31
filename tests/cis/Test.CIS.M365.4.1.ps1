@@ -37,7 +37,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings" -DisableCache
+    $settings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings"
 
     Write-Verbose 'Executing checks'
     $checkSecureByDefault = $settings | Where-Object { $_.secureByDefault -eq $true }

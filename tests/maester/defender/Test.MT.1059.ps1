@@ -14,7 +14,7 @@ function Get-MtMdiHealthIssueInstance {
     param()
 
     try {
-        $response = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorAction Stop
+        $response = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorAction Stop
     } catch {
         # Maester 2.x showed no rows here. Defender for Identity is not enabled, or the app lacks the permission.
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Microsoft Defender for Identity health issues could not be read. Defender for Identity may not be enabled in this tenant, or the SecurityIdentitiesHealth.Read.All permission is missing. Details: $($_.Exception.Message)"

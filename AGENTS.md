@@ -57,6 +57,10 @@ maester.dev), `report/` (React app that builds the HTML report template).
   ISM `Guideline`, `Section` and `Applicability`), never the text of a benchmark and
   never a `Tests` list. When a new test implements a requirement the file does not have, add the requirement in
   the same commit, or `./build/Build-MaesterModule.ps1` and the unit tests fail.
+- Checks read through the session cache. A run reports on one snapshot of the tenant, so no check, pack or helper
+  passes `-DisableCache` or otherwise bypasses the Graph or GitHub cache, even to read data that changed during the
+  session. Only the transport helpers listed in `powershell/tests/general/GraphCacheUsage.Tests.ps1` may offer the
+  switch, and that test fails on any other use. Don't apply a review suggestion to bypass the cache.
 
 ## Repository layout — where files go
 
