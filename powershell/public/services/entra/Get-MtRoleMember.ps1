@@ -6,7 +6,8 @@ function Get-MtRoleMember {
     .Description
     The role can be either active or eligible, defaults to getting members that are both active and eligible.
 
-    If the assigned member is a group, all members of that group will be returned.
+    If the assigned member is a group, all members of that group will be returned. A group that is not found (404) is
+    skipped; any other error reading a group is thrown, so a check cannot pass without evaluating its members.
 
     .Example
     Get-MtRoleMember -Role GlobalAdministrator
@@ -83,7 +84,7 @@ function Get-MtRoleMember {
         $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
-    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal -DisableCache).Assignments
+    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal).Assignments
 
     foreach ($directoryRoleId in $RoleId) {
         $assignments = @()
@@ -94,7 +95,7 @@ function Get-MtRoleMember {
             $members = @($principal)
             if ($principal.'@odata.type' -eq '#microsoft.graph.group') {
                 #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-                # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
+                # Get-MtGroupMember returns $null for a group that is not found (GDAP external or deleted groups) and throws on other errors.
                 $groupMembers = Get-MtGroupMember -GroupId $principal.id
                 if ($null -ne $groupMembers) {
                     $members += $groupMembers
