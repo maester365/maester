@@ -42,6 +42,8 @@ There should be no impact of setting up DKIM however, organizations should ensur
 
 >Note: Initial (MOERA, e.g. `contoso.onmicrosoft.com`) and coexistence (`*.mail.onmicrosoft.com`) domains are excluded from this check, as Microsoft automatically signs outbound mail for those domains.
 
+For each sending domain, the check requires Exchange DKIM to be enabled and its status to be **Valid**.
+
 #### Remediation action
 
 To remediate using a DNS Provider:

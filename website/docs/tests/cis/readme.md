@@ -37,11 +37,11 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.1.3.9](./CIS.M365.1.3.9.md) | (L1) Ensure shared bookings pages are restricted to select users | Low | Microsoft 365 | Organization settings |
 | [CIS.M365.2.1.1](./CIS.M365.2.1.1.md) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy) | Medium | Defender | Safe Links |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2.md) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | Medium | Defender | Anti-malware |
-| [CIS.M365.2.1.3](./CIS.M365.2.1.3.md) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | Medium | Defender | Anti-malware |
-| [CIS.M365.2.1.4](./CIS.M365.2.1.4.md) | (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy) | High | Defender | Safe Attachments |
+| [CIS.M365.2.1.3](./CIS.M365.2.1.3.md) | (L1) Ensure notifications for internal users sending malware is Enabled | Medium | Defender | Anti-malware |
+| [CIS.M365.2.1.4](./CIS.M365.2.1.4.md) | (L2) Ensure the highest-priority Safe Attachments policy is enabled | High | Defender | Safe Attachments |
 | [CIS.M365.2.1.5](./CIS.M365.2.1.5.md) | (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled | Medium | Defender | Safe Attachments |
-| [CIS.M365.2.1.6](./CIS.M365.2.1.6.md) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy) | Medium | Defender | Anti-spam |
-| [CIS.M365.2.1.7](./CIS.M365.2.1.7.md) | (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | Medium | Defender | Anti-phishing |
+| [CIS.M365.2.1.6](./CIS.M365.2.1.6.md) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.7](./CIS.M365.2.1.7.md) | (L1) Ensure that an anti-phishing policy has been created | Medium | Defender | Anti-phishing |
 | [CIS.M365.2.1.8](./CIS.M365.2.1.8.md) | (L1) Ensure that SPF records are published for all Exchange Domains | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9.md) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.10](./CIS.M365.2.1.10.md) | (L1) Ensure DMARC records for all Exchange Online domains are published | Medium | Defender | Email authentication |
@@ -49,7 +49,7 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12.md) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13.md) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.14](./CIS.M365.2.1.14.md) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | High | Defender | Anti-spam |
-| [CIS.M365.2.1.15](./CIS.M365.2.1.15.md) | (L1) Ensure outbound anti-spam message limits are in place | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.15](./CIS.M365.2.1.15.md) | (L1) Ensure outbound anti-spam message limits are in place (Default policy only) | Medium | Defender | Anti-spam |
 | [CIS.M365.2.4.1](./CIS.M365.2.4.1.md) | (L1) Ensure Priority account protection is enabled and configured | Medium | Defender | Tenant settings |
 | [CIS.M365.2.4.2](./CIS.M365.2.4.2.md) | (L1) Ensure Priority accounts have 'Strict protection' presets applied | Medium | Defender | Tenant settings |
 | [CIS.M365.2.4.4](./CIS.M365.2.4.4.md) | (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled) | Medium | Defender | Zero-hour auto purge |
