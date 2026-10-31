@@ -139,6 +139,8 @@ Owner results include each observed owner's login, numeric user ID and approval 
 
 Repository results include repository names, administrator counts and observed unapproved administrator IDs. Configured approval entries for users who were not observed are not listed. Approval configuration is treated as sensitive and redacted from exported configuration, but the observed organization and user information is still tenant data and should be handled accordingly.
 
+Saved exports omit the alternative result Markdown used for identity redaction. To produce a redacted report, select redaction during the run or use the in-memory results returned by `-PassThru`. Redacting imported unredacted results uses the generic replacement map and is best effort.
+
 ## Collection limits
 
 The new REST reads use API version `2026-03-10`; the connection default is unchanged. Owner, collaborator and repository inventory requests stop after 100 pages, with up to 100 items per REST page. Policy requests also stop after 100 pages and do not collect nested rules or bypass lists.

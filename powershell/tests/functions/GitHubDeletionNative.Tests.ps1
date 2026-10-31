@@ -338,8 +338,12 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         @($exportRows | Where-Object Result -NE 'Passed').Count | Should -Be 0
         foreach ($row in $exportRows) { $row.ResultDetail.TestResult | Should -Match '\| 2 \| 3 \| 0 \| Complete' }
         $before = $export | ConvertTo-Json -Depth 15
-        $standalone = Get-MtHtmlReport -MaesterResults $export -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{}
+        # In-memory results retain the alternative for later redaction, even with an empty map.
+        $standalone = Get-MtHtmlReport -MaesterResults $result -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{}
         $standalone | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
+        # Saved unredacted JSON omits the alternative; imported results use generic replacement.
+        $imported = Get-MtHtmlReport -MaesterResults $export -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{ 'fixture-owner-one' = 'object-imported-one'; 'fixture-owner-two' = 'object-imported-two' }
+        $imported | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
         ($export | ConvertTo-Json -Depth 15) | Should -BeExactly $before
     }
 
