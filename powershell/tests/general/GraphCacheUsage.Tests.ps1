@@ -78,9 +78,11 @@ BeforeAll {
                     ($null -eq $node.Argument -or $node.Argument.Extent.Text -eq '$true')
                 }, $true) | ForEach-Object { $_.Extent.StartLineNumber })
 
-        # An assignment to, or Clear()/Remove() on, a session cache: $__MtSession.GraphCache = @{}.
+        # An assignment to, or Clear()/Remove() on, a session cache: $__MtSession.GraphCache = @{}, or an entry
+        # in one: $__MtSession.GraphCache[$key] = $value.
         $isSessionCache = {
             param($expression)
+            while ($expression -is [System.Management.Automation.Language.IndexExpressionAst]) { $expression = $expression.Target }
             $expression -is [System.Management.Automation.Language.MemberExpressionAst] -and
             $expression.Expression.Extent.Text -eq '$__MtSession' -and
             $expression.Member.Extent.Text -like '*Cache'
