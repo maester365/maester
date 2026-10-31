@@ -53,11 +53,12 @@
         $table = "| Policy | Setting | Assigned |`n| --- | --- | --- |`n"
         foreach ($r in $report) { $table += "| $($r.Policy) | $(if ($r.Enabled) { 'Enabled' } else { 'Disabled' }) | $(if ($r.Assigned) { 'Yes' } else { 'No' }) |`n" }
         if ($testResult) {
-            $testResultMarkdown = "Well done. An assigned Intune policy disables Internet Explorer 11 as a standalone browser.`n`n$table"
+            $testResultMarkdown = "An Intune policy with an inclusion assignment configures Internet Explorer 11 as disabled as a standalone browser.`n`n$table"
         } else {
             $testResultMarkdown = "The setting is configured, but no assigned policy enables it.`n`n$table"
         }
     }
+    $testResultMarkdown += "`n`nThis checks policy configuration and inclusion assignments; it does not verify assignment coverage or exclusions, conflicting policies, or effective settings on devices."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
