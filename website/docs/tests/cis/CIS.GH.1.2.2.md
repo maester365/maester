@@ -1,6 +1,6 @@
 ---
 title: "CIS.GH.1.2.2 - (L1) Ensure repository creation is limited to specific members"
-description: "1.2.2 (L1) Ensure repository creation is limited to specific members CIS Benchmark: CIS GitHub Benchmark v1.2.0 Assessment Status: Manual Rationale Repository sprawl makes source ownership, visibility, and review harder to manage. Limiting who can create public and private repositories reduces the…"
+description: "Organization members cannot create public or private repositories. Limiting repository creation makes ownership and access easier to review and reduces the risk of code or data being exposed through an unmanaged repository. Members who need a new repository may need an owner, administrator, or appr…"
 slug: /tests/CIS.GH.1.2.2
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,55 +28,35 @@ keywords:
 
 ## Overview
 
-1.2.2 (L1) Ensure repository creation is limited to specific members
+Organization members cannot create public or private repositories.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0
+Limiting repository creation makes ownership and access easier to review and reduces the risk of code or data being exposed through an unmanaged repository. Members who need a new repository may need an owner, administrator, or approved internal process to create it.
 
-Assessment Status: Manual
+CIS GitHub Benchmark v1.2.0 lists section 1.2.2 as a Manual assessment. This test checks the connected organization's repository-creation settings from `GET /orgs/{org}`; it does not replace the rest of the manual review.
 
-#### Rationale
+The test passes when `members_can_create_public_repositories` and `members_can_create_private_repositories` are both Boolean `false`. Either value being Boolean `true` is enough to fail, even if the other value is missing or invalid. Otherwise, a missing, null, or non-Boolean value produces **Skipped**, with a reason explaining what could not be checked. Request or JSON parsing failures produce **Error**.
 
-Repository sprawl makes source ownership, visibility, and review harder to manage. Limiting who can create public and private repositories reduces the chance that organization code or data is exposed through an unmanaged repository and keeps the repository inventory easier to monitor.
+The report also shows `members_can_create_internal_repositories` and the legacy `members_allowed_repository_creation_type` when GitHub returns them. Neither decides the result: the CIS audit covers public and private repository creation, and Maester uses the separate settings for those repository types.
 
-#### Impact
-
-Members who previously created repositories directly may need an owner, administrator, or approved internal process to create new repositories for them.
-
-#### Maester automation note
-
-CIS marks this recommendation as Manual. This Maester test automates the portion of CIS GH 1.2.2 that maps to documented GitHub REST API evidence. It should be treated as automated evidence collection for the corresponding GitHub setting, not as a claim that every possible manual review path has been fully evaluated.
-
-This test checks the organization member privilege settings returned by `GET /orgs/{org}`.
-
-#### API evidence
-
-Endpoint: `GET /orgs/{org}`
-
-Evidence fields:
-
-- `members_can_create_public_repositories`
-- `members_can_create_private_repositories`
-- `members_can_create_internal_repositories` when returned, shown as informational
-- `members_allowed_repository_creation_type` is displayed when returned, but is not decisive
-
-The test passes when public and private repository creation are `false`. Internal repository creation is shown as additional enterprise/GHEC context only because the CIS GH 1.2.2 literal audit covers public and private repository creation.
+The test covers the connected organization's returned settings. It does not scan other organizations or reconstruct inherited policies. Maester checks these fields after parsing the response, rather than validating the entire response schema. Missing data does not mean a setting is disabled or the recommendation does not apply.
 
 #### Permissions required
 
-GitHub requires organization-owner visibility for full organization details. Use `Connect-MtGitHub` with a classic PAT that has `admin:org`, or a fine-grained PAT with organization Members read and Administration read permissions.
+Use an organization owner with a classic PAT or OAuth token carrying `admin:org` to read the full organization settings. With fine-grained PATs, the connection's membership check uses organization **Members: read**, and its separate administration check uses **Administration: read**. A successful connection does not guarantee that GitHub returns the fields this test needs. See [Connect-MtGitHub](https://maester.dev/docs/commands/Connect-MtGitHub) for the connection checks.
 
-#### Remediation summary
+For GHE.com, use `https://api.SUBDOMAIN.ghe.com` and a token for that host; do not assume the github.com device flow applies. The same missing-data rules apply to GHEC, Enterprise Managed Users, and GHE.com.
 
-In the organization settings, open **Member privileges** and clear the public and private repository creation options for members. For GHEC organizations associated with an enterprise, review internal repository creation separately as an enterprise governance decision.
+#### Remediation action
 
-#### Known limitations
-
-This test uses the granular repository creation fields because GitHub is replacing the legacy `members_allowed_repository_creation_type` umbrella field. That umbrella value is displayed when returned, but is not decisive. If required granular fields are not returned, the test skips with a field-specific reason.
+1. Open [your organizations](https://github.com/settings/organizations), select the organization, then go to **Settings** > **Access** > **Member privileges**.
+2. Clear the public and private repository-creation options for members and save the changes. If an enterprise policy controls the options, ask an enterprise owner to make the change.
+3. Review internal repository creation separately; it does not decide this check.
 
 #### Related links
 
 * [CIS GitHub Benchmark v1.2.0 - Section 1.2.2](https://www.cisecurity.org/benchmark/github)
-* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
+* [GitHub: Restricting repository creation](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/restricting-repository-creation-in-your-organization)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/enterprise-cloud@latest/rest/orgs/orgs?apiVersion=2026-03-10#get-an-organization)
 
 ## Test Metadata
 

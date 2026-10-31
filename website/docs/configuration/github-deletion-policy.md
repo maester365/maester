@@ -2,9 +2,15 @@
 title: GitHub deletion approvals
 ---
 
-The GitHub deletion checks (`CIS.GH.1.2.3` and `CIS.GH.1.2.4`) compare live access with your organization's approved users. Your configuration supplies the human judgment that those users are trusted and qualified; Maester checks the applicable population and count. It never grants access or attempts deletion.
+The GitHub deletion checks (`CIS.GH.1.2.3` and `CIS.GH.1.2.4`) compare the owners and repository administrators in your organization with the users you have approved. Your organization decides who is trusted and qualified. Maester checks their access and the number of people who have it.
 
-Put `GitHubDeletionPolicy` in `GlobalSettings` in a private configuration under the ignored `TestResults/` folder (for example `TestResults/github-deletion.config.json`) or outside the checkout, and pass it explicitly with `-Config`. Use a separate configuration for each GitHub organization. Keep approval lists under your normal access-review process; no expiry or reviewer metadata is required.
+Both recommendations are Manual assessments in CIS GitHub Benchmark v1.2.0. The approval configuration supplies the organizational judgment needed for Maester to assess them. The checks only read settings and access; they do not change permissions or attempt deletion.
+
+## Configure approvals
+
+Add `GitHubDeletionPolicy` to `GlobalSettings` in your existing `maester-config.json`. You can also put it in the supported `custom/maester-config.json` overlay. Use a separate configuration for each GitHub organization and review the approval lists through your normal access-review process. Maester does not require reviewer or expiry metadata.
+
+Maester discovers these standard files when you do not supply `-Config` or `MAESTER_CONFIG`. Passing `-Config` explicitly bypasses automatic configuration discovery. If you use both a main file and an overlay, pass both in order, for example `-Config ./maester-config.json, ./custom/maester-config.json`. See the [run configuration reference](./run-configuration.md#where-the-configuration-comes-from) for discovery and merge rules.
 
 ```json
 {
@@ -27,13 +33,23 @@ Put `GitHubDeletionPolicy` in `GlobalSettings` in a private configuration under 
 }
 ```
 
-All example IDs are synthetic. Use stable GitHub REST database IDs as **positive decimal strings**, not logins, node IDs, display names or JSON numbers. IDs must be unique within each list; repository IDs must also be unique. `ApiBaseUri` and `OrganizationId` must match the connection and the live organization. For GHE.com, use `https://api.SUBDOMAIN.ghe.com`. Unknown properties, invalid IDs, wrong value types or a target mismatch produce Error.
+The example IDs are synthetic. Use GitHub REST database IDs as **positive decimal strings**, rather than logins, node IDs, display names or JSON numbers. IDs must be unique within each list, and repository IDs must be unique across `Repositories`.
 
-Only configure the fields needed by your chosen branch. If both member-deletion settings are disabled, `ApiBaseUri`, `OrganizationId` and `ApprovedOwnerIds` are sufficient. Configure both branch populations if the two settings differ.
+`ApiBaseUri` and `OrganizationId` must match the connection and the organization returned by GitHub. For GHE.com, use `https://api.SUBDOMAIN.ghe.com`. Unknown properties, invalid or duplicate IDs, incorrect value types, or a different host or organization produce `Error`.
 
-### Look up IDs and run the checks
+Only configure the lists the checks need:
 
-Review IDs with an organization owner who can see the complete membership and repository populations. If you use GitHub CLI, authenticate it to the same host and intended account before running these optional read commands. Substitute your organization name; the commands do not change access or generate an approval roster automatically.
+- If both member-deletion settings are disabled, `ApiBaseUri`, `OrganizationId` and `ApprovedOwnerIds` are sufficient.
+- If either setting is enabled, declare the complete repository inventory and approve the administrators of each repository.
+- If the settings differ, provide both owner and repository-administrator approvals.
+
+## Find the IDs and run the checks
+
+Use an organization owner who can see the full membership and all repositories. A classic PAT normally needs `admin:org` and `repo`; token scopes do not grant organization roles. Fine-grained PATs and [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-with-a-github-app-on-behalf-of-a-user) need organization Members read permission, access to every repository and repository metadata, and the relevant custom-role read permissions for the issue-administrator check.
+
+`Connect-MtGitHub` does not support GitHub App installation access tokens. It identifies the authenticated user through `GET /user` and checks organization membership through `GET /user/memberships/orgs/{org}`. A successful connection, including its separate Actions-permission probe, does not establish that the later assessment requests can return everything the checks need.
+
+You can use GitHub CLI to look up the IDs. Authenticate it to the same host and intended account first, and substitute your organization and repository names:
 
 ```powershell
 gh api orgs/ORGANIZATION --jq '.id'
@@ -42,66 +58,98 @@ gh api --paginate 'orgs/ORGANIZATION/repos?type=all&per_page=100' --jq '.[] | {i
 gh api --paginate 'repos/ORGANIZATION/REPOSITORY/collaborators?affiliation=all&per_page=100' --jq '.[] | select(.permissions.admin == true) | {id, login}'
 ```
 
-For GHE.com, add the matching GitHub CLI `--hostname SUBDOMAIN.ghe.com` option. Independently compare the populations with **People** and each repository's **Manage access** view, including organization and enterprise access, before approving users or declaring inventory completeness.
+For GHE.com, add `--hostname SUBDOMAIN.ghe.com`. These optional commands only read information; they do not change access or approve users. Before adding approvals or declaring the inventory complete, compare the lists with **People** and each repository's **Manage access** view. Include access inherited from the organization and enterprise.
 
-Use an organization owner and a token with sufficient visibility. A classic PAT normally needs `admin:org` and `repo`; token scopes do not confer account roles. Fine-grained PATs and [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-with-a-github-app-on-behalf-of-a-user) need organization Members read, access to every repository, and relevant custom-role read permissions for the issue-administrator branch. A successful connection does not prove these later reads are complete.
-
-GitHub App installation access tokens are unsupported by `Connect-MtGitHub`, which requires an authenticated user through `GET /user` and verifies that user's organization membership through `GET /user/memberships/orgs/{org}`.
-
-Run only these two checks from the source checkout using your private configuration:
+To run the two checks from a source checkout:
 
 ```powershell
 Import-Module ./powershell/Maester.psd1 -Force
 $token = Read-Host 'GitHub PAT' -AsSecureString
 Connect-MtGitHub -Organization 'ORGANIZATION' -Token $token
 Remove-Variable token
-Invoke-MtTest -Id 'CIS.GH.1.2.3', 'CIS.GH.1.2.4' -Config ./TestResults/github-deletion.config.json
+Invoke-MtTest -Id 'CIS.GH.1.2.3', 'CIS.GH.1.2.4' -Config ./maester-config.json
 Disconnect-MtGitHub
 ```
 
-For GHE.com, also pass the matching `-ApiBaseUri 'https://api.SUBDOMAIN.ghe.com'` to `Connect-MtGitHub`. Keep the private configuration and resulting reports out of source control.
+For GHE.com, use a manual token for that host and pass `-ApiBaseUri 'https://api.SUBDOMAIN.ghe.com'` to `Connect-MtGitHub`. Keep the private configuration and resulting reports out of source control. Credentials do not belong in `GitHubDeletionPolicy`.
 
-### Organization-owner branch
+## When member deletion is disabled
 
-When the relevant member-deletion setting is `false`, Maester collects the organization's owners with `GET /orgs/{org}/members?role=admin`. Every actual owner must be on `ApprovedOwnerIds`, and the number of distinct actual owners must not exceed `MaximumOrganizationOwners`.
+When the relevant setting is `false`, Maester reads the owners with `GET /orgs/{org}/members?role=admin`. Every current owner must be in `ApprovedOwnerIds`, and the number of owners must be within `MaximumOrganizationOwners`.
 
-The maximum defaults to **3**, and each test accepts **1 through 3**. This is a documented Maester policy choice for CIS's undefined word “few”; it is not a number supplied by CIS. Approval lists may contain more than three users: approved users who are not currently owners do not count toward the limit. A missing or empty owner approval list produces Investigate unless the validated owner count already exceeds the configured maximum. Excess validated owners fail independently of approvals; this threshold remains a Maester choice, not a CIS-specified number.
+The maximum defaults to **3**, configurable from **1 through 3** for each test. CIS refers to a "few" owners without specifying a number; this limit is Maester's interpretation. You can approve more users than the limit, but only users who are currently owners count toward it.
 
-The owner population is collected even when approval configuration is missing. Results list every validated observed owner by escaped login and numeric user ID, with **Approved**, **Not approved** or **Not configured** status, plus the observed organization ID, count, maximum and collection completeness. Missing or unusable logins display **Unavailable** without changing the verdict. Validated rows from incomplete collections are retained and deduplicated. Their count is a lower bound and cannot establish the total owner population or a Pass. Exceeding the configured maximum, or observing an owner outside a configured nonempty approval roster, establishes failure even when other evidence is incomplete. Configured users who were not observed are never listed.
+Maester lists the owners even if approvals have not been configured. A missing or empty approval list requires investigation unless the observed owner count already exceeds the maximum. Too many owners, or an owner outside a configured nonempty approval list, can establish a failure even if some other owners could not be read.
 
-For issue deletion, GitHub's current [documentation](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/allowing-people-to-delete-issues-in-your-organization) says an organization owner must enable the feature before issues can be deleted. CIS GitHub Benchmark v1.2.0 section 1.2.4 still prescribes an owner audit when `members_can_delete_issues` is `false`.
+For issue deletion, GitHub's [documentation](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/allowing-people-to-delete-issues-in-your-organization) says an organization owner must enable the feature before issues can be deleted. CIS section 1.2.4 still calls for an owner review when `members_can_delete_issues` is `false`.
 
-This branch follows the CIS-prescribed organization-owner population assessment without evaluating compensating repository policies; it is not an exhaustive certification of actor capabilities. It does not require repository inventories, custom-role catalogs, policies, or a sample issue. Restrictive-policy alternatives are investigated only in the enabled repository-deletion branch.
+This part of the assessment follows that CIS owner review. It does not determine every user's deletion capabilities or check whether repository policies provide another way to meet the requirement. It needs no repository inventory, custom-role list, repository-policy read or sample issue.
 
-### Repository-administrator branch
+## When member deletion is enabled
 
-When the relevant setting is `true`, Maester collects visible repository inventories and administrator populations even without `GitHubDeletionPolicy`. To establish Passed, declare **all** organization repository IDs, including archived and unused repositories. `CompleteRepositoryInventory: true` states that you have independently checked that the token-visible inventory covers the whole organization. Maester reconciles the declaration against the live inventory and requires matching IDs in both directions. No repository exclusions are supported. An empty inventory does not establish applicability or completeness.
+When the relevant setting is `true`, declare **all** organization repository IDs, including archived and unused repositories. No repository exclusions are supported. Set `CompleteRepositoryInventory` to `true` only after independently checking that the repositories visible to the token cover the whole organization.
 
-For every repository, the complete REST collaborator population must contain **exactly two effective administrators**, both on that repository's `ApprovedAdministratorIds`. The collaborator endpoint includes inherited base-administrator permissions; GraphQL `permissionSources` is not used to reconstruct grants. Extra approved users who are not actual administrators do not fail the test. Missing or empty approval rosters require investigation. Missing configuration, a missing or false completeness declaration, differences between declared and observed repository IDs, or an empty approval roster prevent Passed but do not stop assessment of usable repositories. This increases read-only API activity when configuration is incomplete. An absent or empty approval roster is shown as **Not configured**, never as zero unapproved users; it cannot establish that any observed administrator is approved or unapproved. Maester retains evidence from every usable collaborator collection. More than two validated distinct administrators or an observed unapproved administrator can establish a violation despite other gaps. Fewer than two is decisive only with a complete usable population. Duplicate IDs count once and prevent completeness; contradictory permissions for one ID are excluded from decisive administrator classification.
+Maester compares that list with the repositories returned by GitHub. Both lists must contain the same IDs. An empty list cannot establish that the check does not apply or that the inventory is complete.
 
-Matching duplicate repository identities contribute one repository and an incompleteness gap. Conflicting repository ID, path or ownership observations exclude the affected identities from assessment, independently of response order. Unrelated validated repositories can still establish a violation. A declared repository that is not observed remains a scope gap; Maester does not guess its name or access.
+Each repository must have **exactly two effective administrators**, both listed in its `ApprovedAdministratorIds`. Effective access includes inherited administrator permissions. Approved users who are not currently administrators do not count toward the total.
 
-For issue deletion, once scope, populations and approvals would otherwise support Passed, Maester also requires complete custom repository-role and organization-role catalogs without additional issue-deletion permissions. Relevant custom permissions, inaccessible catalogs, unknown semantics or malformed definitions require investigation because their effective assignment population is unresolved. An already proven administrator-count or approval violation can fail without collecting these additive permissions.
+Maester reads the available repositories and administrators even when configuration is missing or incomplete, which can require more API requests. Missing approvals, a missing or false completeness declaration, or a difference between the configured and returned repository lists prevents a pass. The check still assesses repositories it can read.
 
-For repository deletion, a baseline that already meets the count and approval criteria needs no restrictive-policy query. Before an apparent violation becomes Failed, Maester checks applicable parent and repository `REPOSITORY` policies. An active repository-target policy needs investigation; public API evidence does not establish stronger-policy equivalence or effective bypass membership. Complete evidence of non-enforcing policies does not block the verdict. A confirmed violation in one repository can fail the overall check even if other repositories still need policy review; those gaps remain in the result.
+### Issue deletion
 
-### Outcomes and collection limits
+Before the issue-deletion check can pass, Maester also needs complete custom repository-role and organization-role lists with no additional issue-deletion permissions. Additional permissions, inaccessible lists or definitions that Maester cannot interpret require investigation: role definitions alone do not show every user who receives those permissions.
 
-| Evidence | Result |
+A confirmed administrator-count or approval failure does not require these extra role requests. An administrator role alone is not proof that a user can delete every issue, and the check does not sample an issue.
+
+### Repository deletion
+
+If the administrator count and approvals meet the requirement, Maester does not need to read restrictive repository policies. Before failing a repository that does not meet those requirements, it checks applicable `REPOSITORY` policies, including parent policies.
+
+An active repository-target policy requires investigation. The API information does not establish whether it provides equivalent protection or who can bypass it. Policies confirmed not to be enforcing do not prevent a result.
+
+A confirmed failure in one repository can fail the check even when other repositories still need policy review. Those outstanding questions remain in the report. This policy review applies only when member repository deletion is enabled.
+
+## Understand the results
+
+| Result | Meaning |
 | --- | --- |
-| Applicable count and approval criteria satisfied, all required evidence usable | Passed |
-| Applicable count or approval criterion disproved by validated observations, without an unresolved relevant restrictive alternative; other gaps remain visible | Failed |
-| No confirmed violation, with missing approvals, scope reconciliation gap, a successful empty repository inventory, or unresolved relevant custom role/policy | Investigate |
-| No confirmed violation, with missing, malformed or incomplete required setting, inventory, identity or population evidence; unexpectedly empty owner or collaborator populations | Skipped with an explicit indeterminate reason |
-| Invalid configuration, HTTP failure, timeout or JSON parsing/execution failure | Error even when earlier observations suggest noncompliance; retain validated evidence where available. Role/policy access denials are recorded as unresolved visibility where applicable |
+| `Passed` | The count and approval requirements are met, and all information required for the assessment is available and usable. |
+| `Failed` | The returned information proves a count or approval requirement is not met. For repository deletion, restrictive policies relevant to that confirmed failure have been checked. Policies in other repositories may still need review. |
+| `Investigate` | No failure is confirmed, but approvals, the declared repository inventory, additional roles or repository policies need review. A successful request that returns no repositories also needs investigation. |
+| `Skipped` | No failure is confirmed and a required setting, repository inventory or list of users is missing, invalid or incomplete. Unexpectedly empty owner or collaborator lists also produce this result, with a reason explaining what could not be determined. |
+| `Error` | Configuration is invalid, or a request, timeout, JSON parsing or execution error stops the assessment. Earlier observations are retained where available, but they do not override the error. Some role or policy access denials instead require investigation, as described above. |
 
-When no violation is confirmed, incomplete required populations produce Skipped even if optional policy gaps coexist; all gaps remain visible. Policy or role uncertainty alone remains Investigate.
+When required information is incomplete and no failure is confirmed, the result is `Skipped` even if approvals or policies also need review. All outstanding issues remain in the report. Uncertainty about a policy or role alone produces `Investigate`.
 
-New REST reads use API version `2026-03-10`; the existing connection default stays unchanged. Owner and collaborator pagination stops at 100 pages of 100 items; repository inventory uses the shared bounded collector. Policy pagination stops at 100 pages, with no nested rule or bypass collection. Truncation prevents a Pass or a failure based only on too few observed administrators. It does not erase an already decisive lower bound or unapproved identity; repository-deletion violations still require usable restrictive-policy qualification. Every assessment HTTP request, including subsequent REST pages, uses a 30-second connection/header timeout and a 30-second stalled body-read timeout, matching connection probes. The stream-read limit applies between reads, not to the whole download. These limits and pagination caps do not define a total assessment deadline; configure the existing execution `TestTimeoutSeconds` or per-test `TimeoutSeconds` when one is required. There are no automatic retries. Execution failures stop further evidence requests. Concurrent access changes can still affect a paginated observation.
+### Missing or conflicting data
 
-The configuration is marked sensitive and redacted from exported configuration. Results report observed organization and owner identities, live counts, repository names and observed unapproved administrator IDs, so handle reports as tenant evidence. Credentials never belong in this object. No sample issue, deletion attempt, permission change or separate assessment service is needed.
+Maester keeps usable information from incomplete responses. The following rules prevent a partial list from being treated as a complete one:
 
-### Related references
+- An observed count is a minimum, not necessarily the total. Too many distinct owners or administrators, or an observed user outside a configured nonempty approval list, can establish a failure. Fewer than two administrators establishes a failure only when the full list is available and usable. Repository-deletion failures still require the policy review described above.
+- Duplicate user IDs count once and mark the list incomplete. Conflicting or unusable administrator permissions for the same ID cannot establish that the user is an administrator.
+- Matching duplicate repositories count once and mark the inventory incomplete. Conflicting repository IDs, paths or ownership information exclude those repositories from assessment, regardless of response order. Other usable repositories can still establish a failure.
+- A configured repository that GitHub does not return remains an unresolved inventory difference. Maester does not guess its name or access.
+- A missing or empty approval list is shown as **Not configured**. It does not approve or disapprove any user and is not reported as zero unapproved users.
+
+Administrator access comes from the REST collaborator endpoint, including inherited base permissions. The check does not use GraphQL `permissionSources` to reconstruct individual grants. Missing permissions, partial SSO access and incomplete pagination can leave the lists incomplete.
+
+### Information shown in the report
+
+Owner results include each observed owner's login, numeric user ID and approval status: **Approved**, **Not approved** or **Not configured**. They also show the organization ID, owner count, maximum and whether the list is complete. Logins are escaped for safe display; a missing or unusable login appears as **Unavailable** without changing the result.
+
+Repository results include repository names, administrator counts and observed unapproved administrator IDs. Configured approval entries for users who were not observed are not listed. Approval configuration is treated as sensitive and redacted from exported configuration, but the observed organization and user information is still tenant data and should be handled accordingly.
+
+## Collection limits
+
+The new REST reads use API version `2026-03-10`; the connection default is unchanged. Owner, collaborator and repository inventory requests stop after 100 pages, with up to 100 items per REST page. Policy requests also stop after 100 pages and do not collect nested rules or bypass lists.
+
+Each assessment HTTP request, including subsequent pages, has a 30-second connection/header timeout and a 30-second timeout between response-body reads. These limits do not bound the total download or assessment time. Use the existing execution `TestTimeoutSeconds` or per-test `TimeoutSeconds` setting when you need an overall deadline.
+
+Requests are not retried automatically. Execution failures stop further requests, and concurrent access changes can affect a paginated result. Reaching a collection limit prevents a pass or a failure based only on too few observed administrators; it does not erase an already confirmed excessive count or unapproved user. Repository-deletion failures still depend on the relevant policy review.
+
+The checks assess one connected organization. They do not scan every organization in an enterprise, change permissions or attempt deletion, and they need no sample issue or separate assessment service.
+
+## Related links
 
 - [GitHub: repository deletion permissions](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/setting-permissions-for-deleting-or-transferring-repositories)
 - [GitHub: issue deletion permissions](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/allowing-people-to-delete-issues-in-your-organization)
