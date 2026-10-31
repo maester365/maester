@@ -39,8 +39,8 @@
     Write-Verbose 'Getting the Hosted Connection Filter policy...'
     $defaultPolicies = @(Get-MtExo -Request HostedConnectionFilterPolicy | Where-Object { $_.IsDefault -eq $true })
     if ($defaultPolicies.Count -eq 0) {
-        Add-MtTestResultDetail -Result 'Well done. No default connection filter policy was returned, so there is no default safe list to assess.'
-        return $true
+        Add-MtTestResultDetail -Result 'No default connection filter policy was returned; compliance could not be established.'
+        return $false
     }
     if ($defaultPolicies.Count -ne 1) {
         Add-MtTestResultDetail -Result "Expected one default connection filter policy, found $($defaultPolicies.Count)."
