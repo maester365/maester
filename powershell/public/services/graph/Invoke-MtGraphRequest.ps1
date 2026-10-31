@@ -70,7 +70,9 @@
         # Specify if this request should skip cache and go directly to Graph.
         [Parameter(Mandatory = $false)]
         [switch] $DisableCache,
-        # Specify the output type
+        # The shape of the response. Keep the default (PSObject) unless your code cannot work without another type.
+        # Responses are cached per output type, so a request for Hashtable or PSCustomObject misses the response
+        # that other checks already cached as PSObject and makes its own call to Microsoft Graph.
         [Parameter(Mandatory = $false)]
         [ValidateSet('PSObject', 'PSCustomObject', 'Hashtable')]
         [string] $OutputType = 'PSObject'
