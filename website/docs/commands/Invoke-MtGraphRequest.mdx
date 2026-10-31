@@ -35,6 +35,12 @@ The version of Invoke-Graph request supports
 Note: Batch requests don't support caching.
 :::
 
+In a batch, a request that Graph throttles (429, 503 or 504) is sent again after the wait Graph asks for, up to
+three times.
+A request for an object that does not exist (404) returns nothing.
+Any other failed request in the
+batch throws an error.
+
 ## EXAMPLES
 
 ### EXAMPLE 1
@@ -275,7 +281,10 @@ Accept wildcard characters: False
 
 ### -OutputType
 
-Specify the output type
+The shape of the response.
+Keep the default (PSObject) unless your code cannot work without another type.
+Responses are cached per output type, so a request for Hashtable or PSCustomObject misses the response
+that other checks already cached as PSObject and makes its own call to Microsoft Graph.
 
 ```yaml
 Type: String
