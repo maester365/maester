@@ -142,6 +142,9 @@
             Write-Warning "RedactUserIdentity: the reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
         }
 
+        Write-Verbose "Generating HTML report."
+        $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
+        # Redact before escaping: escaped & < > would no longer match the replacement values.
         if ($RedactUserIdentity -ne 'None') {
             if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
                 $replacements = $UserIdentityReplacementMap
@@ -150,13 +153,11 @@
                 $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
                     Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
                 if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted."
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
                 }
             }
-            $reportResults = ConvertTo-MtRedactedResult -MaesterResults $reportResults -ReplacementMap $replacements
+            $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded
         }
-        Write-Verbose "Generating HTML report."
-        $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
         # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
         $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')

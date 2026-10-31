@@ -13,7 +13,7 @@
     - Singleton records for tenant-level config resources (e.g. policies/authorizationPolicy)
     - Collection records for plain collection reads (e.g. users, servicePrincipals)
 
-    Legacy and metadata GitHub REST cache keys yield External records for the
+    GitHub cache keys ({ApiVersion}|{AbsoluteUri}) yield External records for the
     organization or repository addressed by the request.
 
     This is a run-level view (what data the run touched), not per-test attribution.
@@ -164,17 +164,10 @@
 
     if ($__MtSession.GitHubCache) {
         foreach ($key in $__MtSession.GitHubCache.Keys) {
-            # Recognize only the REST namespaces; GraphQL keys contain opaque request data.
-            # Pagination options belong to the cache key, never to the resource URI.
-            if ($key -match '^Metadata\|GET\|\d{4}-\d{2}-\d{2}\|(?<uri>[^|]+)\|Paginate=(?:True|False)(?:\|MaxPages=[1-9][0-9]*)?$' -or
-                $key -match '^\d{4}-\d{2}-\d{2}\|(?<uri>[^|]+)(?:\|MaxPages=[1-9][0-9]*)?$') {
-                $uri = $Matches.uri
-            } else { continue }
-            $parsedUri = $null
-            if ($uri -match '\s' -or -not [uri]::TryCreate($uri, [UriKind]::Absolute, [ref]$parsedUri) -or
-                $parsedUri.Scheme -ne 'https' -or -not $parsedUri.Host -or $parsedUri.UserInfo -or $parsedUri.Fragment) { continue }
-            $path = $parsedUri.AbsolutePath.Trim('/')
-            if (-not $path) { continue }
+            # Key format: {ApiVersion}|{AbsoluteUri}
+            $uri = ($key -split '\|', 2)[-1]
+            if ($uri -notmatch '^https://[^/]+/(.+)$') { continue }
+            $path = (($Matches[1]) -split '\?', 2)[0].TrimEnd('/')
             $segments = $path -split '/'
 
             $type = $null

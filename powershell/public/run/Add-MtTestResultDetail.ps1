@@ -98,15 +98,7 @@
         # Severity level of the test result. Leave empty if no Severity is defined yet.
         [Parameter(Mandatory = $false)]
         [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info', '')]
-        [string] $Severity,
-
-        # Complete pseudonymized result Markdown, used when user identity redaction is enabled.
-        # The static result template is applied, but GraphObjects are never inserted into this alternative.
-        # Protects result Markdown only, not arbitrary titles, descriptions, skip reasons or errors.
-        [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [ValidateScript({ -not [string]::IsNullOrWhiteSpace($_) })]
-        [string] $RedactedResult
+        [string] $Severity
     )
 
     # Under the native engine (Maester 3.0) the engine tells us which test is running; under Pester the
@@ -164,9 +156,6 @@
 
         if ($metadata) {
             $mdResult = $metadata.Result
-            if ($PSBoundParameters.ContainsKey('RedactedResult') -and $mdResult -match '%TestResult%') {
-                $RedactedResult = $mdResult.Replace('%TestResult%', $RedactedResult)
-            }
             if (![string]::IsNullOrEmpty($Result)) {
                 # If a result was provided in the parameter insert it into the markdown content
                 try {
@@ -246,9 +235,6 @@
         TestInvestigate = $TestInvestigate
         Severity        = $Severity
         Service         = $Service
-    }
-    if ($PSBoundParameters.ContainsKey('RedactedResult')) {
-        $testInfo.TestResultRedacted = $RedactedResult
     }
     # Only present when the run collects the affected objects, so results of runs that do not opt in are unchanged.
     if ($__MtSession.IncludeAffectedObjects) {
