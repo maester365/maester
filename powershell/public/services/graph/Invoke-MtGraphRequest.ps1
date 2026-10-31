@@ -16,6 +16,10 @@
     Note: Batch requests don't support caching.
     :::
 
+    In a batch, a request that Graph throttles (429, 503 or 504) is sent again after the wait Graph asks for, up to
+    three times. A request for an object that does not exist (404) returns nothing. Any other failed request in the
+    batch throws an error.
+
     .Example
     Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName"
 
@@ -138,6 +142,12 @@
 
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
+        # Batched requests that Graph throttled are retried up to this many attempts in all, waiting for the
+        # Retry-After header, capped so one request cannot hold up the run for long.
+        $BatchRetryStatusCodes = 429, 503, 504
+        $BatchMaxAttempts = 4
+        $BatchMaxRetryAfterSeconds = 60
+
         # The override-versus-relative decision lives here only, so the single-request path and the
         # batch path cannot drift apart. Relative by default is what lets Microsoft Graph PowerShell
         # route to the connected environment; absolute only when the caller overrode the endpoint.
@@ -241,14 +251,63 @@
             $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($GraphBaseUri.AbsoluteUri, $ApiVersion, '$batch'))
             for ($iRequest = 0; $iRequest -lt $listRequests.Count; $iRequest += $BatchSize) {
                 $indexEnd = [System.Math]::Min($iRequest + $BatchSize - 1, $listRequests.Count - 1)
-                $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
-                Write-Debug $jsonRequests
+                $pendingRequests = @($listRequests[$iRequest..$indexEnd])
+                $batchResponses = New-Object 'System.Collections.Generic.List[object]'
 
-                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri (Resolve-TransportUri $uriQueryEndpoint.Uri) -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
-                $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
+                # Each request in a batch succeeds or fails on its own. Graph throttles them one by one, so the
+                # throttled ones (429, 503, 504) are sent again after the wait Graph asks for.
+                for ($attempt = 1; $pendingRequests.Count -gt 0; $attempt++) {
+                    $jsonRequests = New-Object psobject -Property @{ requests = $pendingRequests } | ConvertTo-Json -Depth 5
+                    Write-Debug $jsonRequests
 
-                foreach ($results in ($resultsBatch.body)) {
-                    Complete-Result $results $DisablePaging
+                    $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri (Resolve-TransportUri $uriQueryEndpoint.Uri) -CacheKey $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
+
+                    $retryIds = @()
+                    $retryAfter = 0
+                    foreach ($response in @($resultsBatch.responses)) {
+                        if ([int]$response.status -in $BatchRetryStatusCodes -and $attempt -lt $BatchMaxAttempts) {
+                            $retryIds += [string]$response.id
+                            $retryAfterHeader = 0
+                            if ($response.headers -and [int]::TryParse([string]$response.headers.'Retry-After', [ref]$retryAfterHeader)) {
+                                $retryAfter = [System.Math]::Max($retryAfter, $retryAfterHeader)
+                            }
+                        } else {
+                            $batchResponses.Add($response)
+                        }
+                    }
+
+                    $pendingRequests = @($pendingRequests | Where-Object { [string]$_.id -in $retryIds })
+                    if ($pendingRequests.Count -gt 0) {
+                        # Without a Retry-After header, back off 2, 4, 8 seconds.
+                        $waitSeconds = if ($retryAfter -gt 0) { [System.Math]::Min($retryAfter, $BatchMaxRetryAfterSeconds) } else { [System.Math]::Pow(2, $attempt) }
+                        Write-Verbose ("Graph throttled {0} request(s) in a batch. Retrying in {1} second(s) (attempt {2} of {3})." -f $pendingRequests.Count, $waitSeconds, ($attempt + 1), $BatchMaxAttempts)
+                        Start-Sleep -Seconds $waitSeconds
+                    }
+                }
+
+                foreach ($response in ($batchResponses | Sort-Object -Property { [int]$_.id })) {
+                    $status = [int]$response.status
+                    $request = $listRequests | Where-Object { [string]$_.id -eq [string]$response.id } | Select-Object -First 1
+                    if ($status -eq 404) {
+                        # An object that does not exist, such as a deleted user, returns nothing, as it would on its own.
+                        Write-Verbose "Graph returned 404 Not Found for '$($request.url)' in a batch. Skipping it."
+                        continue
+                    }
+                    if ($status -ge 400) {
+                        # Any other failure stops the caller, so a check cannot report on the objects it did read
+                        # as if they were all of them.
+                        $graphError = Get-ObjectProperty $response.body 'error'
+                        $message = "Graph batch request for '$($request.url)' failed with status $status"
+                        if ($graphError) { $message += " ($($graphError.code)): $($graphError.message)" }
+                        $category = switch ($status) {
+                            401 { [System.Management.Automation.ErrorCategory]::AuthenticationError }
+                            403 { [System.Management.Automation.ErrorCategory]::PermissionDenied }
+                            429 { [System.Management.Automation.ErrorCategory]::LimitsExceeded }
+                            default { [System.Management.Automation.ErrorCategory]::InvalidResult }
+                        }
+                        throw [System.Management.Automation.ErrorRecord]::new([System.InvalidOperationException]::new($message), 'MtGraphBatchRequestFailed', $category, $request.url)
+                    }
+                    Complete-Result $response.body $DisablePaging
                 }
             }
         }

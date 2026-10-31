@@ -218,6 +218,100 @@ Describe 'Invoke-MtGraphRequest' {
             # No request url may carry an absolute endpoint, or batching would pin a cloud.
             foreach ($url in $requests.url) { $url | Should -Not -Match '^https?://' }
         }
+
+        It 'Skips a request in a batch that returns 404 and returns the rest' {
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = @{ id = 'a' } }
+                        @{ id = '1'; status = 404; body = @{ error = @{ code = 'Request_ResourceNotFound'; message = 'Not found.' } } }
+                    )
+                }
+            }
+            $result = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'gone' -DisablePaging })
+
+            $result.Count | Should -Be 1
+            $result[0].id | Should -Be 'a'
+        }
+
+        It 'Throws when a request in a batch fails with <Status>' -ForEach @(
+            @{ Status = 403; Code = 'Authorization_RequestDenied'; Category = 'PermissionDenied' }
+            @{ Status = 400; Code = 'BadRequest'; Category = 'InvalidResult' }
+        ) {
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = @{ id = 'a' } }
+                        @{ id = '1'; status = $Status; body = @{ error = @{ code = $Code; message = 'Denied.' } } }
+                    )
+                }
+            }
+            $thrown = $null
+            try { InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' -DisablePaging } } catch { $thrown = $_ }
+
+            $thrown | Should -Not -BeNullOrEmpty
+            $thrown.FullyQualifiedErrorId | Should -BeLike 'MtGraphBatchRequestFailed*'
+            $thrown.CategoryInfo.Category | Should -Be $Category
+            $thrown.Exception.Message | Should -BeLike "*'users/b'*status $Status ($Code)*"
+        }
+
+        It 'Sends a throttled request again after the Retry-After wait' {
+            $script:MtBatchBodies = [System.Collections.Generic.List[string]]::new()
+            Mock Start-Sleep -ModuleName Maester { }
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBodies.Add($Body)
+                if ($script:MtBatchBodies.Count -eq 1) {
+                    @{ responses = @(
+                            @{ id = '0'; status = 200; body = @{ id = 'a' } }
+                            @{ id = '1'; status = 429; headers = @{ 'Retry-After' = '7' }; body = @{ error = @{ code = 'TooManyRequests' } } }
+                        )
+                    }
+                } else {
+                    @{ responses = @(@{ id = '1'; status = 200; body = @{ id = 'b' } }) }
+                }
+            }
+            $result = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' -DisablePaging })
+
+            $result.id | Should -Be @('a', 'b')
+            $script:MtBatchBodies.Count | Should -Be 2
+            # Only the throttled request is sent again.
+            ($script:MtBatchBodies[1] | ConvertFrom-Json).requests.url | Should -Be 'users/b'
+            Should -Invoke Start-Sleep -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Seconds -eq 7 }
+        }
+
+        It 'Backs off when a throttled request has no Retry-After header' {
+            $script:MtBatchCalls = 0
+            Mock Start-Sleep -ModuleName Maester { }
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchCalls++
+                $status = if ($script:MtBatchCalls -eq 1) { 503 } else { 200 }
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = @{ id = 'a' } }
+                        @{ id = '1'; status = $status; body = @{ id = 'b' } }
+                    ) | Where-Object { $script:MtBatchCalls -eq 1 -or $_.id -eq '1' }
+                }
+            }
+            $result = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' -DisablePaging })
+
+            $result.id | Should -Be @('a', 'b')
+            Should -Invoke Start-Sleep -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Seconds -eq 2 }
+        }
+
+        It 'Throws when a request is still throttled after the last attempt' {
+            Mock Start-Sleep -ModuleName Maester { }
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = @{ id = 'a' } }
+                        @{ id = '1'; status = 429; headers = @{ 'Retry-After' = '120' }; body = @{ error = @{ code = 'TooManyRequests'; message = 'Slow down.' } } }
+                    ) | Where-Object { $_.id -eq '1' -or $Body -match 'users/a' }
+                }
+            }
+            $thrown = $null
+            try { InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' -DisablePaging } } catch { $thrown = $_ }
+
+            $thrown.CategoryInfo.Category | Should -Be 'LimitsExceeded'
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 4 -Exactly
+            # A long Retry-After is capped.
+            Should -Invoke Start-Sleep -ModuleName Maester -Times 3 -Exactly -ParameterFilter { $Seconds -eq 60 }
+        }
     }
 
     Context 'Endpoint resolution' {
