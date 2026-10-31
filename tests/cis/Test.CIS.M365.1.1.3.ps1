@@ -41,15 +41,15 @@
         $_.id -eq '62e90394-69f5-4237-9190-012177145e10'
     } # Global Administrator
 
-    Write-Verbose 'Getting role assignments'
-    $assignments = Get-MtRoleMember -RoleId $role.id
+    Write-Verbose 'Getting role members'
+    $assignments = @(Get-MtDirectoryRoleMember -RoleId $role.id)
 
     Write-Verbose 'Getting list of user identities assigned the Global Administrator role'
-    $globalAdministrators = $assignments | Where-Object {
+    $globalAdministrators = @($assignments | Where-Object {
         $_.'@odata.type' -eq '#microsoft.graph.user'
-    }
+    } | Sort-Object -Property id -Unique)
 
-    $testResult = ($globalAdministrators | Measure-Object).Count -ge 2 -and ($globalAdministrators | Measure-Object).Count -le 4
+    $testResult = $globalAdministrators.Count -ge 2 -and $globalAdministrators.Count -le 4
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has two or more and four or fewer Global Administrators:`n`n%TestResult%"
     } else {

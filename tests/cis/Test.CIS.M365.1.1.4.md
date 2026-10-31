@@ -2,7 +2,7 @@
 
 Active administrative accounts should be unlicensed or use licenses that do not provide access to user-facing applications. By default, this check accepts Microsoft Entra ID P1 (`AAD_PREMIUM`) and P2 (`AAD_PREMIUM_P2`). Other license SKU part numbers are reported unless they are added to the `AllowedLicenseSkuPartNumbers` parameter after confirming that they do not enable applications such as email, Teams, or SharePoint.
 
-The check evaluates permanent assignments to roles whose names contain `Administrator` and the `Global Reader` role. Eligible assignments managed through Privileged Identity Management are not evaluated. It reads assigned license SKU IDs in the batched user request and maps them through the tenant's subscribed SKU list.
+The check evaluates permanent assignments to roles whose names contain `Administrator` and the `Global Reader` role. Eligible assignments managed through Privileged Identity Management are not evaluated. Members of role-assigned groups are evaluated, and the check reports an error if a group's members cannot be read. It reads assigned license SKU IDs in the batched user request and maps them through the tenant's subscribed SKU list.
 
 Reducing the application footprint on privileged identities limits their exposure to phishing and malicious content in collaboration services. If administrators need those applications for daily work, use separate non-privileged accounts.
 

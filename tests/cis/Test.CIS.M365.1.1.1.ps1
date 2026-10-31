@@ -42,14 +42,18 @@
     }
 
     Write-Verbose 'Getting role members'
-    $assignments = Get-MtRoleMember -RoleId $roles.id
+    $assignments = @()
+    $roleIds = @($roles.id)
+    if ($roleIds.Count -gt 0) {
+        $assignments = @(Get-MtDirectoryRoleMember -RoleId $roleIds)
+    }
 
     Write-Verbose 'Filtering administrative role members for users'
     $administrativeUsers = @($assignments | Where-Object {
         $_.'@odata.type' -eq '#microsoft.graph.user'
     } | Sort-Object id -Unique)
 
-    $userIds = @($administrativeUsers.Id)
+    $userIds = @($administrativeUsers | ForEach-Object { [string]$_.id })
 
     $users = @()
     if ($userIds.Count -gt 0) {

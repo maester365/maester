@@ -48,14 +48,14 @@
     $roleMembers = @()
     if ($roleIds.Count -gt 0) {
         Write-Verbose 'Getting active role members'
-        $roleMembers = @(Get-MtRoleMember -RoleId $roleIds -MemberStatus Active)
+        $roleMembers = @(Get-MtDirectoryRoleMember -RoleId $roleIds -MemberStatus Active)
     }
 
     $administrativeUsers = @($roleMembers | Where-Object {
         $_.'@odata.type' -eq '#microsoft.graph.user'
     } | Sort-Object -Property id -Unique)
 
-    $userIds = @($administrativeUsers.id)
+    $userIds = @($administrativeUsers | ForEach-Object { [string]$_.id })
     $users = @()
     $skuPartNumbersById = @{}
     if ($userIds.Count -gt 0) {
