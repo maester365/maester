@@ -4,6 +4,8 @@ Exchange Online Protection (EOP) is Microsoft's cloud-based filtering service th
 
 EOP uses flexible anti-malware policies for malware protection settings. These policies can be set to notify Admins of malicious activity.
 
+The check evaluates the policy associated with the highest-priority enabled custom anti-malware rule when one exists; otherwise it evaluates the Default policy. The administrator notification address must be nonblank.
+
 #### Rationale
 
 This setting alerts administrators that an internal user sent a message that contained malware. This may indicate an account or machine compromise that would need to be investigated.
@@ -20,7 +22,7 @@ To enable notifications for internal users sending malware:
 2. Click to expand **E-mail & Collaboration** select **Policies & rules**.
 3. On the Policies & rules page select **Threat policies**.
 4. Under Policies select **Anti-malware**.
-5. Click on the **Default (Default)** policy.
+5. Click on the **Default (Default)** policy, unless the check identifies a higher-priority enabled custom policy.
 6. Click on **Edit protection settings** and change the settings for **Notify an admin about undelivered messages from internal senders** to **On** and enter the email address of the administrator who should be notified under **Administrator email address**.
 7. Click Save.
 
@@ -33,7 +35,7 @@ To enable notifications for internal users sending malware:
 Set-MalwareFilterPolicy -Identity '{Identity Name}' -EnableInternalSenderAdminNotifications $True -InternalSenderAdminAddress {admin@domain1.com}
 ```
 
->Note: Audit and Remediation guidance may focus on the Default policy however, if a Custom Policy exists in the organization's tenant, then ensure the setting is set as outlined in the highest priority policy listed.
+>Note: If the check identifies a custom policy, use that policy's identity in the PowerShell command and configure its notification address.
 
 #### Related links
 
