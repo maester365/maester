@@ -2,6 +2,8 @@
 
 By default, Office 365 includes built-in features that help protect users from phishing attacks. Set up anti-phishing polices to increase this protection, for example by refining settings to better detect and prevent impersonation and spoofing attacks. The default policy applies to all users within the organization and is a single view to fine-tune antiphishing protection. Custom policies can be created and configured for specific users, groups or domains within the organization and will take precedence over the default policy for the scoped users.
 
+This check evaluates enabled AntiPhish policies with a matching enabled rule. It checks the policy settings listed below and reports the rule's recipient scope. Group membership size is not evaluated and should be confirmed where group targets are used.
+
 #### Rationale
 
 Protects users from phishing attacks (like impersonation and spoofing) and uses safety tips to warn users about potentially harmful messages.

@@ -544,7 +544,7 @@
       ],
       "testsContributed": [],
       "initials": "JF",
-      "recentCommits": 91
+      "recentCommits": 96
     },
     {
       "id": "Cloud-Architekt",
@@ -2846,7 +2846,7 @@
         "MT.1227"
       ],
       "initials": "MF",
-      "recentCommits": 186
+      "recentCommits": 192
     }
   ],
   "attributions": {
@@ -8286,11 +8286,11 @@
       "path": "/docs/tests/CIS.M365.2.1.2"
     },
     "CIS.M365.2.1.3": {
-      "title": "(L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
+      "title": "(L1) Ensure notifications for internal users sending malware is Enabled",
       "path": "/docs/tests/CIS.M365.2.1.3"
     },
     "CIS.M365.2.1.4": {
-      "title": "(L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
+      "title": "(L2) Ensure the highest-priority Safe Attachments policy is enabled",
       "path": "/docs/tests/CIS.M365.2.1.4"
     },
     "CIS.M365.2.1.5": {
@@ -8298,11 +8298,11 @@
       "path": "/docs/tests/CIS.M365.2.1.5"
     },
     "CIS.M365.2.1.6": {
-      "title": "(L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
+      "title": "(L1) Ensure Exchange Online Spam Policies are set to notify administrators",
       "path": "/docs/tests/CIS.M365.2.1.6"
     },
     "CIS.M365.2.1.7": {
-      "title": "(L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
+      "title": "(L1) Ensure that an anti-phishing policy has been created",
       "path": "/docs/tests/CIS.M365.2.1.7"
     },
     "CIS.M365.2.1.8": {
@@ -8334,7 +8334,7 @@
       "path": "/docs/next/tests/CIS.M365.2.1.14"
     },
     "CIS.M365.2.1.15": {
-      "title": "(L1) Ensure outbound anti-spam message limits are in place",
+      "title": "(L1) Ensure outbound anti-spam message limits are in place (Default policy only)",
       "path": "/docs/next/tests/CIS.M365.2.1.15"
     },
     "CIS.M365.2.4.1": {

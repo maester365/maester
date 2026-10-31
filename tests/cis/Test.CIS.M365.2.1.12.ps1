@@ -37,10 +37,25 @@
     param()
 
     Write-Verbose 'Getting the Hosted Connection Filter policy...'
-    $connectionFilterIPAllowList = Get-HostedConnectionFilterPolicy | Where-Object {$_.isDefault -eq $true} | Select-Object IPAllowList
+    $defaultPolicies = @(Get-MtExo -Request HostedConnectionFilterPolicy | Where-Object { $_.IsDefault -eq $true })
+    if ($defaultPolicies.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'No default connection filter policy was returned; compliance could not be established.'
+        return $false
+    }
+    if ($defaultPolicies.Count -ne 1) {
+        Add-MtTestResultDetail -Result "Expected one default connection filter policy, found $($defaultPolicies.Count)."
+        return $false
+    }
+
+    $allowListProperty = $defaultPolicies[0].PSObject.Properties['IPAllowList']
+    if ($null -eq $allowListProperty) {
+        Add-MtTestResultDetail -Result 'The default connection filter policy did not return IPAllowList; compliance could not be established.'
+        return $false
+    }
 
     Write-Verbose 'Check if the Connection Filter IP allow list is empty'
-    $testResult = -not $connectionFilterIPAllowList.IPAllowList -or $connectionFilterIPAllowList.IPAllowList.Count -eq 0
+    $ipAllowList = @($allowListProperty.Value | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $testResult = $ipAllowList.Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = 'Well done. The connection filter IP allow list was empty ✅'

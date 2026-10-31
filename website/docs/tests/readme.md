@@ -385,13 +385,13 @@ Every test is researched, written, and refined by security experts from the Maes
 | [CIS.M365.2.1.12](./CIS.M365.2.1.12) | (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.13](./CIS.M365.2.1.13) | (L1) Ensure the connection filter safe list is off (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.14](./CIS.M365.2.1.14) | (L1) Ensure inbound anti-spam policies do not contain allowed domains | CIS | High | Defender | Anti-spam |
-| [CIS.M365.2.1.15](./CIS.M365.2.1.15) | (L1) Ensure outbound anti-spam message limits are in place | CIS | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.15](./CIS.M365.2.1.15) | (L1) Ensure outbound anti-spam message limits are in place (Default policy only) | CIS | Medium | Defender | Anti-spam |
 | [CIS.M365.2.1.2](./CIS.M365.2.1.2) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
-| [CIS.M365.2.1.3](./CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | CIS | Medium | Defender | Anti-malware |
-| [CIS.M365.2.1.4](./CIS.M365.2.1.4) | (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy) | CIS | High | Defender | Safe Attachments |
+| [CIS.M365.2.1.3](./CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled | CIS | Medium | Defender | Anti-malware |
+| [CIS.M365.2.1.4](./CIS.M365.2.1.4) | (L2) Ensure the highest-priority Safe Attachments policy is enabled | CIS | High | Defender | Safe Attachments |
 | [CIS.M365.2.1.5](./CIS.M365.2.1.5) | (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled | CIS | Medium | Defender | Safe Attachments |
-| [CIS.M365.2.1.6](./CIS.M365.2.1.6) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy) | CIS | Medium | Defender | Anti-spam |
-| [CIS.M365.2.1.7](./CIS.M365.2.1.7) | (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | CIS | Medium | Defender | Anti-phishing |
+| [CIS.M365.2.1.6](./CIS.M365.2.1.6) | (L1) Ensure Exchange Online Spam Policies are set to notify administrators | CIS | Medium | Defender | Anti-spam |
+| [CIS.M365.2.1.7](./CIS.M365.2.1.7) | (L1) Ensure that an anti-phishing policy has been created | CIS | Medium | Defender | Anti-phishing |
 | [CIS.M365.2.1.8](./CIS.M365.2.1.8) | (L1) Ensure that SPF records are published for all Exchange Domains | CIS | Medium | Defender | Email authentication |
 | [CIS.M365.2.1.9](./CIS.M365.2.1.9) | (L1) Ensure that DKIM is enabled for all Exchange Online Domains | CIS | Medium | Defender | Email authentication |
 | [CIS.M365.2.4.1](./CIS.M365.2.4.1) | (L1) Ensure Priority account protection is enabled and configured | CIS | Medium | Defender | Tenant settings |

@@ -37,7 +37,12 @@
     param()
 
     Write-Verbose 'Getting 365 Atp Policy...'
-    $policy = Get-MtExo -Request AtpPolicyForO365
+    $policies = @(Get-MtExo -Request AtpPolicyForO365)
+    if ($policies.Count -ne 1) {
+        Add-MtTestResultDetail -Result "Expected one ATP policy for Office 365, found $($policies.Count)."
+        return $false
+    }
+    $policy = $policies[0]
 
     $atpPolicyCheckList = @()
 

@@ -442,6 +442,24 @@ enforces all of this. The full guidance, with an example, is
 When reviewing, fail a benchmark check that re-implements a check another suite already has when the benchmark's
 sources give no reason for the difference, and say which test it duplicates and which source you read.
 
+### What a benchmark check evaluates
+
+A CIS check does what the benchmark's **PowerShell audit procedure** does: the same objects, the same pass
+condition. When the UI steps and the PowerShell steps differ, follow the PowerShell steps.
+
+- **Scope.** The audit reads every object → the check reads every object, including ones that apply to no user
+  (CIS 6.2.1 checks `AutoForwardingMode` on every `Get-HostedOutboundSpamFilterPolicy` result). The audit reads
+  one object → the check reads only that one (CIS 2.1.15 uses `-Identity Default`, so no custom policies). Never
+  narrow a check to the policies users receive, or widen it beyond what the audit reads.
+- **Values.** Use the thresholds the audit names or its script sets (CIS 2.1.11: 90% of the extension list). Make
+  one a parameter, defaulting to the benchmark's value, when organizations may need another.
+- **Missing data.** The object the audit reads is not returned → fail or error, never pass.
+
+An effective-policy view belongs in an MT check. For CISA, read the SCuBA baseline and ScubaGear's policy in place
+of the CIS audit. When reviewing, fail a benchmark check whose scope, values or missing-data handling differ from
+the audit procedure without a reason from the benchmark, and quote the audit step. The full guidance is
+[What a benchmark test evaluates](../../../website/docs/writing-tests/index.mdx#what-a-benchmark-test-evaluates).
+
 ### Where the keys come from
 
 - `Product`, `Feature`, `Area` and `ResourceType` take keys from `powershell/assets/MaesterTaxonomy.psd1`: the
@@ -542,6 +560,8 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 
 ### Test logic
 - [ ] Returns exactly one `$true`/`$false`; no stray pipeline output.
+- [ ] A benchmark check reads the same objects and uses the same pass condition as the benchmark's PowerShell
+      audit procedure, and fails or errors when the audited object is not returned.
 - [ ] No other suite already checks the same setting; or the benchmark's own sources were read and the check is
       a shim of that test, or differs from it for a reason those sources give.
 - [ ] No `Test-MtConnection` guard, no `Get-MtLicenseInformation` check; `Service` and `License` declared instead.
