@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache).defaultUserRolePermissions
+    $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy").defaultUserRolePermissions
 
     Write-Verbose 'Executing checks'
     $testResult = $settings.permissionGrantPoliciesAssigned -notcontains "ManagePermissionGrantsForSelf.microsoft-user-default-low" -and $settings.permissionGrantPoliciesAssigned -notcontains "ManagePermissionGrantsForSelf.microsoft-user-default-legacy"
