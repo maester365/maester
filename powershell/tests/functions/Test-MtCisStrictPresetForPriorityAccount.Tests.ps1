@@ -13,8 +13,7 @@
         $script:removeRecipientStub = $true
     }
 
-    function New-StrictRule {
-        [CmdletBinding(SupportsShouldProcess = $true)]
+    function Get-StrictRuleFixture {
         param([hashtable] $Conditions = @{})
         $rule = [ordered]@{
             Identity                  = 'Strict Preset Security Policy'
@@ -40,7 +39,7 @@ AfterAll {
 Describe 'Test-MtCisStrictPresetForPriorityAccount' {
     BeforeEach {
         $script:Result = $null
-        $script:Rule = New-StrictRule -Conditions @{ SentToMemberOf = @('Priority Accounts') }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ SentToMemberOf = @('Priority Accounts') }
         $script:VipUsers = @(
             [pscustomobject]@{
                 Name                      = 'ceo'
@@ -68,7 +67,7 @@ Describe 'Test-MtCisStrictPresetForPriorityAccount' {
     }
 
     It 'resolves SentTo values to the Entra object ID of the priority account' {
-        $script:Rule = New-StrictRule -Conditions @{ SentTo = @('Chief Exec Mailbox') }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ SentTo = @('Chief Exec Mailbox') }
         Mock -ModuleName Maester Get-Recipient { [pscustomobject]@{ ExternalDirectoryObjectId = 'user-ceo' } } -ParameterFilter { $Identity -eq 'Chief Exec Mailbox' }
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeTrue
@@ -76,26 +75,26 @@ Describe 'Test-MtCisStrictPresetForPriorityAccount' {
 
     It 'includes subdomains of a RecipientDomainIs domain' {
         $script:VipUsers[0].WindowsEmailAddress = 'ceo@exec.contoso.com'
-        $script:Rule = New-StrictRule -Conditions @{ RecipientDomainIs = @('contoso.com') }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ RecipientDomainIs = @('contoso.com') }
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeTrue
     }
 
     It 'fails when a priority account matches an exception' {
-        $script:Rule = New-StrictRule -Conditions @{ SentToMemberOf = @('Priority Accounts'); ExceptIfSentTo = @('ceo@contoso.com') }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ SentToMemberOf = @('Priority Accounts'); ExceptIfSentTo = @('ceo@contoso.com') }
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
         $script:Result | Should -Match 'ceo@contoso.com'
     }
 
     It 'requires a priority account to meet every recipient condition that is set' {
-        $script:Rule = New-StrictRule -Conditions @{ SentTo = @('someone.else@contoso.com'); RecipientDomainIs = @('contoso.com') }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ SentTo = @('someone.else@contoso.com'); RecipientDomainIs = @('contoso.com') }
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
     }
 
     It 'fails when the rule has no recipient conditions' {
-        $script:Rule = New-StrictRule
+        $script:Rule = Get-StrictRuleFixture
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
         $script:Result | Should -Match 'All recipients \(no conditions\)'
@@ -109,7 +108,7 @@ Describe 'Test-MtCisStrictPresetForPriorityAccount' {
     }
 
     It 'fails when a rule is disabled' {
-        $script:Rule = New-StrictRule -Conditions @{ SentToMemberOf = @('Priority Accounts'); State = 'Disabled' }
+        $script:Rule = Get-StrictRuleFixture -Conditions @{ SentToMemberOf = @('Priority Accounts'); State = 'Disabled' }
 
         Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
     }
