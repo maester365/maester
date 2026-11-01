@@ -6,7 +6,7 @@ import ThemedImage from "@theme/ThemedImage";
 import sponsorData from "@site/src/data/sponsors.json";
 import styles from "./sponsor.module.css";
 
-// Written weekly by website/scripts/sponsors.mjs: only contributors with a GitHub Sponsors listing, then the
+// Written daily by website/scripts/sponsors.mjs: only contributors with a GitHub Sponsors listing, then the
 // sponsors to thank: the featured ones from website/sponsors/featured.yml, and the maintainers' GitHub sponsors.
 const { maintainers, testAuthors, contributors, featured = [], backers = [] } = sponsorData;
 const hasThanks = featured.length > 0 || backers.length > 0;
@@ -212,7 +212,7 @@ export default function Sponsor() {
           <Backers />
         </div>
 
-        {total === 0 && <p className={styles.empty}>The list of sponsors is refreshed every week. Check back soon.</p>}
+        {total === 0 && <p className={styles.empty}>The list of sponsors is refreshed every day. Check back soon.</p>}
 
         <section className={styles.cta}>
           <h2>Contributed and not listed?</h2>
@@ -221,7 +221,7 @@ export default function Sponsor() {
             <a href="https://github.com/sponsors" target="_blank" rel="noopener noreferrer">
               GitHub Sponsors
             </a>{" "}
-            for your account and you'll show up here after the next weekly refresh. Want to be on this page?{" "}
+            for your account and you'll show up here after the next daily refresh. Want to be on this page?{" "}
             <Link to="/docs/contributing">Start contributing</Link>, or meet everyone who has on the{" "}
             <Link to="/contributors">contributors page</Link>.
           </p>

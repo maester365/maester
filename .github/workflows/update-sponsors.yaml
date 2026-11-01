@@ -5,7 +5,7 @@ name: Update sponsor page
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * 1" # Mondays 03:17 UTC
+    - cron: "17 3 * * *" # Daily, 03:17 UTC
   push:
     branches: ["main"]
     paths:

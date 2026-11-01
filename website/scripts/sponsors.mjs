@@ -8,7 +8,7 @@
 // featured sponsors kept by hand in website/sponsors/featured.yml, which are shown first with their logos.
 //
 // Whether a person has a listing is only known to GitHub (GraphQL `hasSponsorsListing`), so this needs a
-// token in GH_TOKEN or GITHUB_TOKEN. The .github/workflows/update-sponsors.yaml workflow runs it weekly with
+// token in GH_TOKEN or GITHUB_TOKEN. The .github/workflows/update-sponsors.yaml workflow runs it daily with
 // the maester-bot app and commits the result to website/src/data/sponsors.json, which the site reads at
 // build time, and to the Sponsors section of the repository README, which shows the same sponsors. Without a
 // token the people of the committed snapshot are kept; the featured sponsors and the README are still updated.
