@@ -134,6 +134,44 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $row.ResultDetail.TestResult | Should -Match ($Expected + ' findings: 1')
         $row.ResultDetail.TestResult | Should -Match 'freshness enforcement.*not established'
     }
+    It 'Keeps an empty required-check set indeterminate with potentially compensating <Type> rules' -ForEach @(
+        @{ Type = 'required_status_checks' }, @{ Type = 'future_rule' }
+    ) {
+        $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
+        $script:rulesBody = '[{"type":"' + $Type + '","ruleset_source_type":"Enterprise","ruleset_id":1}]'
+        $row = Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)
+        $row.Result | Should -Be 'Skipped'
+        $row.ResultDetail.TestResult | Should -Match 'alternative ruleset enforcement is unresolved'
+    }
+    It 'Retains an empty-set violation alongside <Expected> evidence on another branch' -ForEach @(
+        @{ Expected = 'Failed'; RequestError = $false }
+        @{ Expected = 'Error'; RequestError = $true }
+    ) {
+        $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
+        $script:statusRequestError = $RequestError
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/branches/other/protection/required_status_checks$' } {
+            if ($script:statusRequestError) { throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic forbidden policy', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]403)) }
+            [pscustomobject]@{ Content = '{"strict":true,"contexts":null,"checks":[]}'; Headers = @{} }
+        }
+        $row = Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig -Main @('main', 'other'))
+        $row.Result | Should -Be $Expected
+        $row.ResultDetail.TestResult | Should -Match 'Failed findings: 1'
+        if (-not $RequestError) { $row.ResultDetail.TestResult | Should -Match 'Indeterminate findings: 1' }
+        else { $row.ResultDetail.TestResult | Should -Match 'Error findings: 1' }
+    }
+    It 'Does not treat malformed required-check evidence <Body> as a valid empty set' -ForEach @(
+        @{ Body = '{"contexts":null,"checks":[]}' }
+        @{ Body = '{"contexts":[],"checks":null}' }
+        @{ Body = '{"contexts":[""],"checks":[]}' }
+        @{ Body = '{"contexts":[],"checks":[{"context":"ci"}]}' }
+    ) {
+        $script:statusBody = $Body
+        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Skipped'
+    }
+    It 'Accepts a required check supplied only in the application-aware representation' {
+        $script:statusBody = '{"strict":false,"contexts":[],"checks":[{"context":"ci","app_id":null}]}'
+        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Passed'
+    }
     It 'Requires strict freshness only for 1.1.10' {
         $script:statusBody = '{"strict":false,"contexts":["ci"],"checks":[]}'
         (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Passed'

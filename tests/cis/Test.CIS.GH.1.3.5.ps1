@@ -87,7 +87,7 @@
     $resultMarkdown = @"
 $summary
 
-CIS.GH.1.3.5 configuration evidence from ``GET /orgs/{org}`` (REST 2026-03-10).
+Organization two-factor configuration evidence from ``GET /orgs/{org}`` (REST 2026-03-10).
 
 | Evidence | Value |
 | --- | --- |

@@ -9,7 +9,7 @@ Organization two-factor enforcement reduces the risk that stolen passwords allow
 
 #### Assessment and scope
 
-This check reads `two_factor_requirement_enabled` from `GET /orgs/{org}`, explicitly using REST version `2026-03-10`. Boolean true passes and false fails. Missing, null, or wrongly typed evidence produces an explicit indeterminate Skipped result; request and JSON parsing failures remain Error. It concerns the connected organization, not every organization in an enterprise.
+This check delegates to [CIS.GH.1.3.5](https://maester.dev/docs/tests/CIS.GH.1.3.5), because both CIS audits assess the same organization two-factor setting. It reads `two_factor_requirement_enabled` from `GET /orgs/{org}`, explicitly using REST version `2026-03-10`. Boolean true passes and false fails. Missing, null, or wrongly typed evidence produces an explicit indeterminate Skipped result; request and JSON parsing failures remain Error. It concerns the connected organization, not every organization in an enterprise.
 
 Set `GitHubAccountModel` to `PersonalAccounts` for this GitHub organization-policy audit. `Unknown` is indeterminate. EMU and GHE.com require external identity-provider MFA evidence and remain indeterminate here, including when a GitHub policy field is returned. Identity provisioning, SSO presence, individual 2FA enrollment, and the connection's success are not substitutes for the required policy.
 

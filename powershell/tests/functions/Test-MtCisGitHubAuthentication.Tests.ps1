@@ -29,6 +29,9 @@ Describe 'CIS GitHub MFA through configuration, transport and native results' {
         $row = @(Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } })
         $row.Count | Should -Be 1
         $row[0].Result | Should -Be $Expected
+        $row[0].Id | Should -Be $Id
+        $row[0].Control | Should -Contain ('cis-github:' + $Id.Substring(7))
+        $row[0].ResultDetail.TestResult | Should -Not -Match 'CIS.GH.1.3.[45] configuration evidence'
         $row[0].ResultDetail.TestResult | Should -Match 'fixture-org'
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Headers['X-GitHub-Api-Version'] -eq '2026-03-10' }
     }
@@ -39,6 +42,7 @@ Describe 'CIS GitHub MFA through configuration, transport and native results' {
     ) {
         $script:mfaBody = $Body
         $row = Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }
+        $row.Id | Should -Be $Id
         $row.Result | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'TestSkipped'
         $row.ResultDetail.TestResult | Should -Match 'Indeterminate'
@@ -48,9 +52,12 @@ Describe 'CIS GitHub MFA through configuration, transport and native results' {
         (Invoke-MtTest -Id CIS.GH.1.3.5 -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }).Result | Should -Be 'Skipped'
     }
     It 'Requires relevant account context <Model> before collection' -ForEach @(
-        @{ Model = 'Unknown' }, @{ Model = 'EnterpriseManagedUsers' }
+        foreach ($id in 'CIS.GH.1.3.4', 'CIS.GH.1.3.5') {
+            foreach ($model in 'Unknown', 'EnterpriseManagedUsers') { @{ Id = $id; Model = $model } }
+        }
     ) {
-        $row = Invoke-MtTest -Id CIS.GH.1.3.4 -Config @{ GlobalSettings = @{ GitHubAccountModel = $Model } }
+        $row = Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{ GitHubAccountModel = $Model } }
+        $row.Id | Should -Be $Id
         $row.Result | Should -Be 'Skipped'
         $row.ReasonCode | Should -Not -Be 'NotApplicable'
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0
@@ -81,13 +88,19 @@ Describe 'CIS GitHub MFA through configuration, transport and native results' {
         (Invoke-MtTest -Id CIS.GH.1.3.5 -Config $file).Result | Should -Be 'Passed'
     }
     It 'Reports request HTTP <Status> as Error, not disabled or not-applicable' -ForEach @(
-        @{ Status = 401 }, @{ Status = 403 }, @{ Status = 404 }, @{ Status = 429 }, @{ Status = 500 }
+        foreach ($id in 'CIS.GH.1.3.4', 'CIS.GH.1.3.5') {
+            foreach ($status in 401, 403, 404, 429, 500) { @{ Id = $id; Status = $status } }
+        }
     ) {
         Mock Invoke-WebRequest -ModuleName Maester { throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic HTTP failure', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$Status)) }
-        (Invoke-MtTest -Id CIS.GH.1.3.5 -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }).Result | Should -Be 'Error'
+        $row = Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }
+        $row.Id | Should -Be $Id
+        $row.Result | Should -Be 'Error'
     }
-    It 'Keeps invalid JSON as an execution error' {
+    It 'Keeps invalid JSON as an execution error for <Id>' -ForEach @(@{ Id = 'CIS.GH.1.3.4' }, @{ Id = 'CIS.GH.1.3.5' }) {
         $script:mfaBody = '{bad'
-        (Invoke-MtTest -Id CIS.GH.1.3.5 -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }).Result | Should -Be 'Error'
+        $row = Invoke-MtTest -Id $Id -Config @{ GlobalSettings = @{ GitHubAccountModel = 'PersonalAccounts' } }
+        $row.Id | Should -Be $Id
+        $row.Result | Should -Be 'Error'
     }
 }

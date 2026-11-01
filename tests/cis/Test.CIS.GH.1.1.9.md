@@ -13,7 +13,9 @@ This native check assesses explicitly identified main branches. Configure the au
 
 Read-only evidence comes from `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks`, explicitly using REST version `2026-03-10`. The decisive evidence is `contexts and checks`, expected to be **a valid nonempty required-check set**. Required values must have their documented types. Both status-check representations (`contexts` and `checks`) are validated where used; null application IDs are allowed by the schema.
 
-GitHub accepts its documented successful, skipped, or neutral check conclusions. This check assesses the configured gate, not historical check executions or an invented list of required job names.
+The CIS audit names the status-check enablement checkbox. Its description and rationale also require predefined checks, and its default-value explanation associates no defined checks with no check enforcement. This assessment therefore treats a valid empty required-check set as Failed when alternative enforcement is resolved; CIS does not specify job names or a numeric minimum. The API-to-checkbox mapping for an empty set has not been qualified against a live platform.
+
+GitHub accepts its documented successful, skipped, or neutral check conclusions. This check assesses the configured required-check set, not historical check executions or an invented list of required job names.
 
 #### Permissions required
 
