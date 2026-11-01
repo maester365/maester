@@ -1,0 +1,137 @@
+---
+name: update-agent-blocked-permissions
+
+on:
+  schedule:
+    - cron: "0 8 10 * *" # Monthly on the 10th at 08:00 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: update-agent-blocked-permissions
+  cancel-in-progress: false
+
+env:
+  SNAPSHOT_PATH: powershell/internal/data/AgentBlockedPermissions.json
+
+jobs:
+  update-agent-blocked-permissions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Update agent blocked permissions snapshot
+        shell: pwsh
+        run: ./build/Update-MtAgentBlockedPermissions.ps1 -Verbose
+
+      - name: Summarize snapshot changes
+        id: diff
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $diff = @(git diff --unified=0 -- $env:SNAPSHOT_PATH)
+          if ($diff.Count -eq 0) {
+              Write-Host 'No changes to the blocked permissions snapshot.'
+              'changed=false' | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+              exit 0
+          }
+
+          $newSnapshot = Get-Content -LiteralPath $env:SNAPSHOT_PATH -Raw | ConvertFrom-Json
+          $newPerms = @{}
+          foreach ($p in $newSnapshot.Permissions) {
+              $newPerms[$p.Permission] = $p
+          }
+
+          $addedPattern   = '^\+\s*"Permission":\s*"(.+)"'
+          $removedPattern = '^-\s*"Permission":\s*"(.+)"'
+
+          $addedNames   = @($diff | Select-String -Pattern $addedPattern   | ForEach-Object { $_.Matches[0].Groups[1].Value })
+          $removedNames = @($diff | Select-String -Pattern $removedPattern | ForEach-Object { $_.Matches[0].Groups[1].Value })
+
+          $trulyAdded   = @($addedNames   | Where-Object { $_ -notin $removedNames } | Sort-Object)
+          $trulyRemoved = @($removedNames | Where-Object { $_ -notin $addedNames }   | Sort-Object)
+
+          $lines = [System.Collections.Generic.List[string]]::new()
+          $lines.Add("| Change | Permissions |")
+          $lines.Add("| --- | --- |")
+          $lines.Add("| Added | $($trulyAdded.Count) |")
+          $lines.Add("| Removed | $($trulyRemoved.Count) |")
+          $lines.Add("| New total | $($newSnapshot.Count) |")
+          $lines.Add('')
+
+          if ($trulyAdded.Count -gt 0) {
+              $lines.Add('### Newly blocked permissions')
+              $lines.Add('')
+              $lines.Add('Microsoft now blocks these for agents. If any appear in MT.1223''s curated list, the check is watching a permission that can no longer fire.')
+              $lines.Add('')
+              foreach ($name in $trulyAdded) {
+                  $lines.Add("- ``$name``")
+              }
+              $lines.Add('')
+          }
+
+          if ($trulyRemoved.Count -gt 0) {
+              $lines.Add('### Unblocked permissions')
+              $lines.Add('')
+              $lines.Add('Microsoft removed the block on these. Agents can now hold them. Evaluate whether any are dangerous enough to add to MT.1223.')
+              $lines.Add('')
+              foreach ($name in $trulyRemoved) {
+                  $lines.Add("- ``$name``")
+              }
+              $lines.Add('')
+          }
+
+          $summary = $lines -join "`n"
+          Write-Host $summary
+          $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+          $delimiter = "DIFF_$(New-Guid)"
+          "changed=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "diff_summary<<$delimiter`n$summary`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Generate maester-bot app token
+        id: app-token
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: "chore: update agent blocked permissions snapshot"
+          branch: "automation/update-agent-blocked-permissions"
+          delete-branch: true
+          title: "chore: update agent blocked permissions snapshot"
+          body: |
+            Refreshes `powershell/internal/data/AgentBlockedPermissions.json` from
+            Microsoft's [agent identity platform overview](https://learn.microsoft.com/en-us/graph/api/resources/agentid-platform-overview)
+            documentation.
+
+            Why this matters in Maester:
+            - `AgentBlockedPermissionDrift.Tests.ps1` compares MT.1223's curated list of high-risk
+              agent permissions against this snapshot. If Microsoft blocks a permission that MT.1223
+              watches for, the test fails so someone can remove the dead entry.
+            - Newly unblocked permissions may be dangerous enough to add to MT.1223.
+
+            ## Diff summary
+
+            ${{ steps.diff.outputs.diff_summary }}
+
+            Reviewer note:
+            - **Newly blocked** permissions that overlap with MT.1223 need to be removed from
+              `Get-MtEntraAgentHighRiskGraphPermissionFinding` because agents can no longer hold them.
+            - **Unblocked** permissions need a judgment call on whether they belong in MT.1223.
+          labels: automation
