@@ -91,6 +91,7 @@ function Initialize-MtRoleDefinition {
     'EdgeAdministrator' = [MtRoleDefinition]::new('3f1acade-1e04-4fbc-9b69-f0302cd84aef', $false)
     'EntraBackupAdministrator' = [MtRoleDefinition]::new('b6a27b2b-f905-4b2e-81b5-0d90e0ef1fdb', $false)
     'EntraBackupReader' = [MtRoleDefinition]::new('f42252d9-5400-4d7b-b9ef-cc582dbb8577', $false)
+    'EntraSOCIdentityResponder' = [MtRoleDefinition]::new('58f930cc-fcf4-4152-852c-1d7dbf502139', $true)
     'ExchangeAdministrator' = [MtRoleDefinition]::new('29232cdf-9323-42fd-ade2-1d097af3e4de', $false)
     'ExchangeBackupAdministrator' = [MtRoleDefinition]::new('49eb8f75-97e9-4e37-9b2b-6c3ebfcffa31', $false)
     'ExchangeRecipientAdministrator' = [MtRoleDefinition]::new('31392ffb-586c-42d1-9346-e59415a2cc4e', $false)
