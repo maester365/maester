@@ -5,10 +5,9 @@ Turning this off keeps your users out of the chat in meetings hosted by untruste
 #### Remediation action
 
 1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
-2. Go to **Meetings** > **Meeting policies**.
-3. Open the **Global (Org-wide default)** policy.
-4. Under **External meeting chat**, select **Off**.
-5. Select **Save**.
+2. Go to **Settings & policies** > [**Global (Org-wide default) settings**](https://admin.teams.microsoft.com/one-policy/settings) and select **Meetings**.
+3. Under **Meeting engagement**, set **External meeting chat** to **Off**.
+4. Select **Save**.
 
 ##### PowerShell
 
