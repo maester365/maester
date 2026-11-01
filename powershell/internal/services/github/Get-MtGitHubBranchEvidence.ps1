@@ -1,4 +1,4 @@
-﻿function Get-MtCisGitHubBranchEvidence {
+﻿function Get-MtGitHubBranchEvidence {
     <#
     .SYNOPSIS
     Internal: Reads one independently usable branch evidence dependency.

@@ -30,7 +30,7 @@
         foreach ($branch in $entry.Branches) { $null = $branches.Add($branch) }
         try {
             if ($Control -eq '1.1.12') {
-                $population = Get-MtCisGitHubBranchEvidence -Repository $repository -Kind Branches
+                $population = Get-MtGitHubBranchEvidence -Repository $repository -Kind Branches
                 if ($population.State -ne 'Available') { $issues.Add('Existing-branch enumeration contains incomplete or unusable evidence.') }
                 foreach ($branch in $population.Data) {
                     if (($null -eq $branch -or $branch.GetType() -ne [System.Management.Automation.PSCustomObject]) -or $branch.name -isnot [string] -or [string]::IsNullOrWhiteSpace($branch.name)) { $issues.Add('A branch item has no usable identity.'); continue }
@@ -39,7 +39,7 @@
                 if ($branches.Count -eq 0) { $issues.Add('An in-use repository returned no existing branches; applicability is unresolved.') }
             }
             if ($Control -eq '1.1.20') {
-                $current = Get-MtCisGitHubBranchEvidence -Repository $repository -Kind Repository
+                $current = Get-MtGitHubBranchEvidence -Repository $repository -Kind Repository
                 if ($current.State -ne 'Available' -or ($current.Data.id -isnot [int] -and $current.Data.id -isnot [long]) -or $current.Data.id -ne $repository.id -or $current.Data.default_branch -isnot [string] -or [string]::IsNullOrWhiteSpace($current.Data.default_branch)) {
                     $issues.Add('The actual default branch could not be established.')
                 } else { $null = $branches.Add($current.Data.default_branch) }
@@ -55,7 +55,7 @@
             $evidence = $null
             $rateLimited = $false
             try {
-                $evidence = Get-MtCisGitHubBranchEvidence -Repository $repository -Branch $branch -Kind $kind
+                $evidence = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind $kind
                 $policy = $evidence.Data
                 $conforming = $null
                 if ($evidence.State -eq 'Available') {
@@ -105,13 +105,13 @@
                 } elseif ($null -ne $conforming -or $evidence.State -eq 'NotFoundOrNotVisible') {
                     $absent = $false
                     if ($evidence.State -eq 'NotFoundOrNotVisible') {
-                        $state = Get-MtCisGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Branch
+                        $state = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Branch
                         if ($state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool] -and -not $state.Data.protected) { $absent = $true }
                         else { $reason = 'HTTP 404 is ambiguous or protection may be supplied by rulesets.' }
                     }
                     if ($absent) { $verdict = 'Failed'; $reason = 'An accessible existing branch is unprotected.' }
                     elseif ($null -ne $conforming) {
-                        $rules = Get-MtCisGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Rules
+                        $rules = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Rules
                         $potential = $rules.State -ne 'Available'
                         foreach ($rule in $rules.Data) {
                             if ($rule.type -isnot [string] -or $rule.type -cnotin $knownRuleTypes -or $rule.type -cin $candidateTypes) { $potential = $true }

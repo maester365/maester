@@ -163,11 +163,16 @@ full pagination. Collection checks distinguish JSON `[]` from JSON null, blank c
 aggregation. This is limited structural and decisive-field checking, not complete raw-response schema validation.
 Failed/incomplete collections are not cached as complete evidence.
 
-New metadata entries expire five minutes after original collection completion. Cache hits retain the original UTC
-timestamps instead of manufacturing new observation times. Reconnect, disconnect, and module reset clear the
-shared GitHub cache. GraphQL cache identity includes the endpoint, query, and variables. Raw evidence may be reused
-within expiry, but applicability and verdicts are recomputed from current configuration. The observation interval
-is not an atomic snapshot of GitHub; reconnect when a fresh session is needed after configuration changes.
+Cached evidence does not expire after a fixed time. A cache hit keeps the original UTC collection timestamps;
+it does not mean GitHub was queried again. Each `Invoke-Maester` run clears the shared GitHub cache before
+collecting evidence. Reconnect, disconnect, and module reset also clear it.
+
+Standalone `Invoke-MtTest` calls reuse the session cache. Waiting does not refresh that evidence. To check
+changed GitHub settings, start a new `Invoke-Maester` run or reconnect. Checks use the cache throughout a run.
+
+GraphQL cache entries are identified by the endpoint, query, and variables. Maester recomputes applicability
+and results from the current assessment configuration when it reuses evidence. The collection timestamps
+do not mean that all GitHub settings were read at the same instant.
 
 Keep actual assessment configuration, reports, tokens, and benchmark source inputs out of contributions. Synthetic
 fixtures establish the exercised code behavior, not authenticated GHEC/EMU/GHE.com behavior. These checks do not
