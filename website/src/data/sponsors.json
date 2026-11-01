@@ -155,6 +155,22 @@
       "sponsorUrl": "https://github.com/sponsors/mangeshraut712"
     }
   ],
+  "featured": [
+    {
+      "name": "CyberDrain",
+      "url": "https://cyberdrain.com",
+      "github": "CyberDrain",
+      "logo": "/img/sponsors/cyberdrain.png",
+      "logoDark": "/img/sponsors/cyberdrain-dark.png"
+    },
+    {
+      "name": "Increment",
+      "url": "https://www.increment.inc",
+      "github": "",
+      "logo": "/img/sponsors/increment.png",
+      "logoDark": "/img/sponsors/increment-dark.png"
+    }
+  ],
   "backers": [
     {
       "github": "merill",

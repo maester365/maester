@@ -81,6 +81,11 @@
   gap: 1rem;
 }
 
+/* Let the columns shrink below the longest name, which then ends in an ellipsis, so the page never scrolls sideways. */
+.grid > * {
+  min-width: 0;
+}
+
 .gridMaintainers { grid-template-columns: repeat(3, 1fr); }
 .gridAuthors { grid-template-columns: repeat(4, 1fr); }
 .gridContributors { grid-template-columns: repeat(6, 1fr); }
@@ -347,6 +352,46 @@
   margin-bottom: 1rem;
 }
 
+/* The featured sponsors: their logos, first and full width. */
+.featured {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.featured:not(:last-child) {
+  margin-bottom: 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.featured a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 76px;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  background: var(--ifm-background-color);
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.featured a:hover {
+  transform: translateY(-2px);
+  border-color: var(--sponsor-pink);
+  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.25);
+}
+
+.featuredLogo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .backers {
   display: flex;
   flex-wrap: wrap;
@@ -417,6 +462,17 @@
 
   .backers {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+
+  .featured {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .featured li {
+    flex: 1 1 220px;
+    max-width: 320px;
   }
 
   .withThanks .gridAuthors { grid-template-columns: repeat(3, 1fr); }

@@ -1,14 +1,17 @@
-# Refreshes the people on maester.dev/sponsor: the contributors who have a GitHub Sponsors listing.
+# Refreshes the people on maester.dev/sponsor (the contributors who have a GitHub Sponsors listing) and the sponsors
+# thanked there and in the Sponsors section of the README.
 name: Update sponsor page
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * 1" # Mondays 03:17 UTC
+    - cron: "17 3 * * *" # Daily, 03:17 UTC
   push:
     branches: ["main"]
     paths:
       - "website/contributors/contributors.yml"
+      - "website/sponsors/featured.yml"
+      - "website/static/img/sponsors/**"
       - "website/scripts/sponsors.mjs"
       - ".github/workflows/update-sponsors.yaml"
 
@@ -67,8 +70,9 @@ jobs:
           commit-message: Update sponsor page
           title: Update the sponsor page
           body: |
-            Automated refresh of the people on [maester.dev/sponsor](https://maester.dev/sponsor): the contributors with a GitHub Sponsors listing.
+            Automated refresh of the people on [maester.dev/sponsor](https://maester.dev/sponsor), the contributors with a GitHub Sponsors listing, and of the sponsors thanked there and in the Sponsors section of the README.
 
             Written by `website/scripts/sponsors.mjs`.
           add-paths: |
             website/src/data/sponsors.json
+            README.md
