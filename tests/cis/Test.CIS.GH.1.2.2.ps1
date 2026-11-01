@@ -42,13 +42,15 @@
     $requiredFields = @('members_can_create_public_repositories', 'members_can_create_private_repositories')
     $missingFields = @($requiredFields | Where-Object { -not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $_) })
 
-    if ($missingFields.Count -gt 0) {
+    $hasViolation = @($requiredFields | Where-Object { $org.$_ -is [bool] -and $org.$_ -eq $true }).Count -gt 0
+
+    if (-not $hasViolation -and $missingFields.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field(s): $($missingFields -join ', '). These fields are required to evaluate CIS.GH.1.2.2 and may be missing because of permissions, plan, API version, or organization type."
         return $null
     }
 
     $invalidFields = @($requiredFields | Where-Object { $org.$_ -isnot [bool] })
-    if ($invalidFields.Count -gt 0) {
+    if (-not $hasViolation -and $invalidFields.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field(s) must be Boolean values to evaluate CIS.GH.1.2.2: $($invalidFields -join ', '). No configuration verdict was produced."
         return $null
     }
@@ -56,14 +58,14 @@
     $checks = @(
         [PSCustomObject]@{
             Field    = 'members_can_create_public_repositories'
-            Actual   = $org.members_can_create_public_repositories
+            Actual   = if ($org.members_can_create_public_repositories -is [bool]) { $org.members_can_create_public_repositories } else { 'Unavailable' }
             Expected = $false
             Decisive = $true
             Pass     = $org.members_can_create_public_repositories -eq $false
         }
         [PSCustomObject]@{
             Field    = 'members_can_create_private_repositories'
-            Actual   = $org.members_can_create_private_repositories
+            Actual   = if ($org.members_can_create_private_repositories -is [bool]) { $org.members_can_create_private_repositories } else { 'Unavailable' }
             Expected = $false
             Decisive = $true
             Pass     = $org.members_can_create_private_repositories -eq $false
@@ -83,7 +85,8 @@
         $internalRepositoryNote = "The internal-repository row is informational. CIS GH 1.2.2's literal audit covers public and private only."
     }
 
-    $result = @($checks | Where-Object { $_.Decisive -eq $true -and $_.Pass -ne $true }).Count -eq 0
+    # One validated Boolean true disproves the requirement even when its companion is unusable.
+    $result = -not $hasViolation
     $detailRows = $checks | ForEach-Object {
         "| ``$($_.Field)`` | ``$($_.Actual)`` | ``$($_.Expected)`` |"
     }
@@ -111,6 +114,9 @@ $internalRepositoryNote
 
 $legacyValue
 "@
+    if ($invalidFields.Count -gt 0) {
+        $resultMarkdown += "`n`nAdditional evidence is unavailable or not Boolean: $($invalidFields -join ', '). The observed Boolean true still establishes the violation."
+    }
     Add-MtTestResultDetail -Result $resultMarkdown
     return $result
 }

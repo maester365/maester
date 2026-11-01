@@ -1,4 +1,4 @@
-﻿function Clear-ModuleVariable {
+function Clear-ModuleVariable {
     <#
     .SYNOPSIS
     Resets all module variables to their default values.

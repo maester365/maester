@@ -89,11 +89,16 @@ Describe 'Sensitive settings in exported result configuration' {
     }
 }
 
-Describe 'Sensitive GitHub deletion policy in result configuration' {
+Describe 'Sensitive settings in result configuration' {
     BeforeEach {
+        InModuleScope Maester {
+            $script:savedSettingsRegistry = $script:__MtSettingsRegistry
+            $script:__MtSettingsRegistry = Import-PowerShellDataFile (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
+            $script:__MtSettingsRegistry.Settings.FixtureSensitive = @{ Type = 'object'; Default = @{}; Sensitive = $true; Description = 'Synthetic sensitive setting.' }
+        }
         $script:config = [pscustomobject]@{
             GlobalSettings = [pscustomobject]@{
-                GitHubDeletionPolicy = [pscustomobject]@{
+                FixtureSensitive = [pscustomobject]@{
                     ApiBaseUri = 'https://api.fixture-private.ghe.com'
                     OrganizationId = '123456789'
                     ApprovedOwnerIds = @('234567891', '345678912')
@@ -106,7 +111,7 @@ Describe 'Sensitive GitHub deletion policy in result configuration' {
             TestSettingsHash = @{}
         }
     }
-    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null } }
+    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null; $script:__MtSettingsRegistry = $script:savedSettingsRegistry } }
 
     It 'Redacts the whole policy, preserves public settings and does not mutate input (native=<Native>)' -ForEach @(@{ Native = $true }, @{ Native = $false }) {
         $before = $script:config | ConvertTo-Json -Depth 30 -Compress
@@ -114,7 +119,7 @@ Describe 'Sensitive GitHub deletion policy in result configuration' {
             $nativeRows = if ($Native) { @([pscustomobject]@{ Id = 'CIS.GH.1.2.3' }) } else { @() }
             New-MtResultConfig -RunConfig $Config -NativeRows $nativeRows -Rows @([pscustomobject]@{ Id = 'CIS.GH.1.2.3'; Title = 'Fixture'; Severity = 'Low' })
         }
-        $out.GlobalSettings.GitHubDeletionPolicy | Should -Be '<redacted>'
+        $out.GlobalSettings.FixtureSensitive | Should -Be '<redacted>'
         $out.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
         $out.TestSettings[0].Severity | Should -Be 'Low'
         $out.GlobalSettings.'Pack.Public'.Values[0] = 'changed'
@@ -128,7 +133,7 @@ Describe 'Sensitive GitHub deletion policy in result configuration' {
                 $script:__MtSettingsRegistry = @{ Settings = @{ GitHubOrganization = @{ Sensitive = $true } } }
                 $out = New-MtResultConfig -RunConfig $Config
                 $out.GlobalSettings.GitHubOrganization | Should -Be '<redacted>'
-                $out.GlobalSettings.GitHubDeletionPolicy.OrganizationId | Should -Be '123456789'
+                $out.GlobalSettings.FixtureSensitive.OrganizationId | Should -Be '123456789'
                 $Config.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
             } finally { $script:__MtSettingsRegistry = $saved }
         }
@@ -146,10 +151,10 @@ Describe 'Sensitive GitHub deletion policy in result configuration' {
         foreach ($path in $jsonPath, $htmlPath) {
             $content = Get-Content $path -Raw
             $content | Should -Not -Match 'fixture-private|123456789|234567891|345678912|456789123'
-            $content | Should -Match 'GitHubDeletionPolicy'
+            $content | Should -Match 'FixtureSensitive'
             $content | Should -Match 'redacted'
         }
-        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.GitHubDeletionPolicy) | Should -Be '<redacted>'
+        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.FixtureSensitive) | Should -Be '<redacted>'
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 
@@ -163,9 +168,9 @@ Describe 'Sensitive GitHub deletion policy in result configuration' {
         $html = Get-MtHtmlReport -MaesterResults $result
         foreach ($content in $json, $html) {
             $content | Should -Not -Match 'fixture-private|123456789|234567891|345678912|456789123'
-            $content | Should -Match 'GitHubDeletionPolicy'
+            $content | Should -Match 'FixtureSensitive'
             $content | Should -Match 'redacted'
         }
-        $script:config.GlobalSettings.GitHubDeletionPolicy.ApprovedOwnerIds.Count | Should -Be 2
+        $script:config.GlobalSettings.FixtureSensitive.ApprovedOwnerIds.Count | Should -Be 2
     }
 }

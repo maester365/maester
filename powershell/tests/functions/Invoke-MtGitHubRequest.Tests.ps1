@@ -40,6 +40,36 @@ Describe 'Invoke-MtGitHubRequest' {
         }
     }
 
+    Context 'Request timeouts' {
+        It 'Bounds every page for legacy and metadata requests (<Metadata>)' -ForEach @(@{ Metadata = $false }, @{ Metadata = $true }) {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $headers = if ($Uri -like '*page=2') { @{} } else { @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = $headers }
+            }
+            InModuleScope Maester -Parameters @{ Metadata = $Metadata } {
+                Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata:$Metadata | Out-Null
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30
+            }
+        }
+
+        It 'Retains earlier pages on timeout without caching incomplete retrievals' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                if ($Uri -like '*page=2') { throw [System.TimeoutException]::new('Synthetic stalled request.') }
+                [pscustomobject]@{ Content = '[{"id":1}]'; Headers = @{ Link = '<https://api.github.com/orgs/myorg/repos?page=2>; rel="next"' } }
+            }
+            InModuleScope Maester {
+                $caught = $null
+                try { Invoke-MtGitHubRequest '/orgs/myorg/repos' -Paginate -IncludeMetadata | Out-Null } catch { $caught = $_ }
+                $caught.Exception | Should -BeOfType ([System.TimeoutException])
+                $caught.Exception.Data['GitHubPartialResponse'].Data.id | Should -Be 1
+                $__MtSession.GitHubCache.Count | Should -Be 0
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
+        }
+    }
+
     Context 'Cache key helper' {
         It 'Builds cache keys as ApiVersion|absoluteUri' {
             InModuleScope Maester {
@@ -404,7 +434,7 @@ Describe 'Opt-in GitHub REST evidence metadata' {
         $out[1].PaginationComplete | Should -BeTrue
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
     }
-    It 'Keeps original timestamps on hits and replaces expired evidence' {
+    It 'Keeps one metadata snapshot throughout a run' {
         InModuleScope Maester {
             $first = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
             $next = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
@@ -412,9 +442,9 @@ Describe 'Opt-in GitHub REST evidence metadata' {
             $next.CompletedUtc | Should -Be $first.CompletedUtc
             $next.CompletedUtc = [DateTimeOffset]::UtcNow.AddMinutes(-6)
             $fresh = Invoke-MtGitHubRequest '/orgs/fixture-org' -IncludeMetadata
-            $fresh.CompletedUtc | Should -BeGreaterThan $next.CompletedUtc
+            $fresh.CompletedUtc | Should -Be $next.CompletedUtc
         }
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
     }
     It 'Does not cache partial SSO evidence' {
         $script:metadataBody = '[]'

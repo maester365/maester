@@ -4,8 +4,8 @@
     Internal: Authenticated read-only GET request to GitHub REST API with caching and pagination.
 
     .DESCRIPTION
-    Uses Invoke-WebRequest for PowerShell 5.1 compatibility (Invoke-RestMethod
-    -ResponseHeadersVariable is PowerShell 7+ only). Provides per-session caching,
+    Uses Invoke-WebRequest with bounded connection and operation timeouts.
+    Provides per-session caching,
     explicit opt-in pagination, and connection-scoped rate-limit protection.
 
     Cache key: ApiVersion|absoluteUri (cleared on reconnect and by Clear-ModuleVariable).
@@ -68,12 +68,6 @@
         "Metadata|GET|$version|$absUri|Paginate=$($Paginate.IsPresent)"
     } else { Get-MtGitHubCacheKey -ApiVersion $version -AbsoluteUri $absUri }
     if ($MaxPages) { $cacheKey += "|MaxPages=$MaxPages" }
-    if ($IncludeMetadata -and -not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($cacheKey)) {
-        $cached = $__MtSession.GitHubCache[$cacheKey]
-        if ($cached.CompletedUtc -isnot [DateTimeOffset] -or ([DateTimeOffset]::UtcNow - $cached.CompletedUtc).TotalMinutes -ge 5) {
-            $__MtSession.GitHubCache.Remove($cacheKey)
-        }
-    }
     if (-not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($cacheKey)) {
         Write-Verbose "GitHub cache hit: $absUri"
         return $__MtSession.GitHubCache[$cacheKey]
@@ -82,7 +76,8 @@
     function Invoke-Page ([string]$Uri) {
         Invoke-MtGitHubRateLimitGuard -Api REST
         try {
-            $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
+            # Match connection probes: bound header waiting and each stalled body read.
+            $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
 
             Invoke-MtGitHubRateLimitGuard -Api REST -Headers $wr.Headers
 

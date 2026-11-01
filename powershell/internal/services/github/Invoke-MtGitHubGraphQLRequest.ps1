@@ -21,16 +21,15 @@
     $digest = [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($payload)))
     $key = "GraphQL|$uri|$digest"
     if (-not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($key)) {
-        $cached = $__MtSession.GitHubCache[$key]
-        if (([DateTimeOffset]::UtcNow - $cached.CompletedUtc).TotalMinutes -lt 5) { return $cached }
-        $__MtSession.GitHubCache.Remove($key)
+        return $__MtSession.GitHubCache[$key]
     }
     $headers = @{} + $__MtSession.GitHubAuthHeader
     $headers.Remove('X-GitHub-Api-Version')
     $started = [DateTimeOffset]::UtcNow
     Invoke-MtGitHubRateLimitGuard -Api GraphQL
     try {
-        $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ErrorAction Stop
+        # Match connection probes: bound header waiting and each stalled body read.
+        $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -ContentType 'application/json' -Body $payload -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
         Invoke-MtGitHubRateLimitGuard -Api GraphQL -Headers $response.Headers
     } catch {
         Invoke-MtGitHubRateLimitGuard -Api GraphQL -ErrorRecord $_

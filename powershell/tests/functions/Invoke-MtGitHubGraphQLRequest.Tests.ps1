@@ -34,6 +34,16 @@ Describe 'GitHub GraphQL read transport' {
         }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 4
     }
+    It 'Bounds requests and does not cache or retry a timeout' {
+        Mock Invoke-WebRequest -ModuleName Maester { throw [System.TimeoutException]::new('Synthetic stalled request.') }
+        InModuleScope Maester {
+            { Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture } | Should -Throw '*stalled request*'
+            $__MtSession.GitHubCache.Count | Should -Be 0
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $ConnectionTimeoutSeconds -eq 30 -and $OperationTimeoutSeconds -eq 30
+        }
+    }
     It 'Routes to the connected GHE.com host and isolates its cache' {
         InModuleScope Maester {
             Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture | Out-Null
@@ -43,7 +53,7 @@ Describe 'GitHub GraphQL read transport' {
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -eq 'https://api.fixture.ghe.com/graphql' }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
     }
-    It 'Retains original times and refreshes expired evidence' {
+    It 'Retains one GraphQL snapshot throughout a run' {
         InModuleScope Maester {
             $first = Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture
             $hit = Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture
@@ -51,9 +61,9 @@ Describe 'GitHub GraphQL read transport' {
             $hit.CompletedUtc | Should -Be $first.CompletedUtc
             $first.CompletedUtc = [DateTimeOffset]::UtcNow.AddMinutes(-6)
             $fresh = Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture
-            $fresh.CompletedUtc | Should -BeGreaterThan $first.CompletedUtc
+            $fresh.CompletedUtc | Should -Be $first.CompletedUtc
         }
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
     }
     It 'Does not cache known field-access errors with partial data' {
         $script:gqlBody = '{"data":{"enterprise":{"ownerInfo":null}},"errors":[{"type":"FORBIDDEN","path":["enterprise","ownerInfo"]}]}'

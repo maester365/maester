@@ -35,7 +35,7 @@
     [OutputType([bool])]
     param(
         # Maximum live organization owners when member issue deletion is disabled; a Maester policy choice, not a CIS numeric requirement.
-        [ValidateRange(1, 3)]
+        [ValidateRange(1, 2147483647)]
         [int] $MaximumOrganizationOwners = 3
     )
 

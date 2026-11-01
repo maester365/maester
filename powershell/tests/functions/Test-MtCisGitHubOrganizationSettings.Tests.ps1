@@ -237,14 +237,6 @@ Describe 'CIS GitHub organization setting tests' {
                 Field    = 'members_can_create_public_repositories'
             }
             @{
-                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
-                Field    = 'members_can_delete_repositories'
-            }
-            @{
-                Function = 'Test-MtCisGitHubIssueDeletionLimited'
-                Field    = 'members_can_delete_issues'
-            }
-            @{
                 Function = 'Test-MtCisGitHubTeamCreationLimited'
                 Field    = 'members_can_create_teams'
             }
@@ -268,8 +260,6 @@ Describe 'CIS GitHub organization setting tests' {
         # Native tests: the engine gates on Service = 'GitHub'; the functions no longer guard themselves.
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
-            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
-            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
@@ -300,8 +290,6 @@ Describe 'CIS GitHub organization setting tests' {
     Context 'GitHub request errors' {
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
-            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
-            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
@@ -337,7 +325,17 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         }
         # Only replace transport: real JSON parsing, request cache, native check and result collector run.
         Mock Invoke-WebRequest -ModuleName Maester {
-            if ($Uri -ne $script:expectedUri -or $Method -ne 'GET') {
+            if ($Method -ne 'GET') { throw 'Unexpected transport method blocked by fixture.' }
+            if ($Uri -eq "$script:expectedUri/members?role=admin&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":11,"login":"synthetic-owner"}]'; Headers = @{} }
+            }
+            if ($Uri -eq "$script:expectedUri/repos?type=all&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":200,"name":"synthetic-repo","full_name":"synthetic-org/synthetic-repo","owner":{"login":"synthetic-org"}}]'; Headers = @{} }
+            }
+            if ($Uri -eq 'https://api.github.com/repos/synthetic-org/synthetic-repo/collaborators?affiliation=all&per_page=100') {
+                return [PSCustomObject]@{ Content = '[{"id":11,"permissions":{"admin":true}},{"id":12,"permissions":{"admin":true}}]'; Headers = @{} }
+            }
+            if ($Uri -ne $script:expectedUri) {
                 throw 'Unexpected transport request blocked by fixture.'
             }
             [PSCustomObject]@{ Content = $script:rawBody; Headers = @{} }
@@ -355,8 +353,6 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
 
     $checkCases = @(
         @{ Id = 'CIS.GH.1.2.2' }
-        @{ Id = 'CIS.GH.1.2.3' }
-        @{ Id = 'CIS.GH.1.2.4' }
         @{ Id = 'CIS.GH.1.3.2' }
         @{ Id = 'CIS.GH.1.3.8' }
     )
@@ -419,33 +415,10 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         }
     }
 
-    Context 'Deletion approval configuration is absent' {
-        $deletionCases = foreach ($check in @(
-                @{ Id = 'CIS.GH.1.2.3'; Field = 'members_can_delete_repositories' }
-                @{ Id = 'CIS.GH.1.2.4'; Field = 'members_can_delete_issues' }
-            )) {
-            foreach ($value in 'true', 'false') { @{ Id = $check.Id; Field = $check.Field; Json = $value } }
-        }
-        It 'Keeps <Id> Investigate for <Json> until approval configuration is supplied' -ForEach $deletionCases {
-            $script:rawBody = '{"id":1001,"login":"synthetic-org","' + $Field + '":' + $Json + '}'
-            $row = @(Invoke-MtTest -Id $Id)
-            $row.Count | Should -Be 1
-            $row[0].Result | Should -Be 'Investigate'
-            $detail = $row[0].ResultDetail.TestResult
-            $detail | Should -Match 'GitHubDeletionPolicy'
-            $detail | Should -Match 'trusted and qualified'
-            $detail | Should -Match $Field
-            $detail | Should -Match $Json
-            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
-        }
-    }
-
     Context 'Unusable field evidence is indeterminate' {
         $booleanCases = foreach ($check in @(
                 @{ Id = 'CIS.GH.1.2.2'; Field = 'members_can_create_public_repositories' }
                 @{ Id = 'CIS.GH.1.2.2'; Field = 'members_can_create_private_repositories' }
-                @{ Id = 'CIS.GH.1.2.3'; Field = 'members_can_delete_repositories' }
-                @{ Id = 'CIS.GH.1.2.4'; Field = 'members_can_delete_issues' }
                 @{ Id = 'CIS.GH.1.3.2'; Field = 'members_can_create_teams' }
             )) {
             # These invalid values are defensive fixtures, not documented GitHub Boolean contracts.
@@ -515,6 +488,20 @@ Describe 'CIS GitHub evidence through the native transport and parser path' {
         $row.Result | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'TestSkipped'
         $row.ReasonDetail | Should -Match 'Indeterminate'
+    }
+
+
+    It 'Fails creation when Boolean true is decisive despite an unusable companion (<Field>, <Companion>)' -ForEach @(
+        foreach ($field in 'members_can_create_public_repositories', 'members_can_create_private_repositories') {
+            foreach ($companion in 'missing', 'null', '"false"', '0', '{}') { @{ Field = $field; Companion = $companion } }
+        }
+    ) {
+        $other = if ($Field -eq 'members_can_create_public_repositories') { 'members_can_create_private_repositories' } else { 'members_can_create_public_repositories' }
+        $script:rawBody = '{"' + $Field + '":true' + $(if ($Companion -ne 'missing') { ',"' + $other + '":' + $Companion }) + '}'
+        $row = Invoke-MtTest -Id 'CIS.GH.1.2.2'
+        $row.Result | Should -Be 'Failed'
+        $row.ResultDetail.TestResult | Should -Match 'True'
+        $row.ResultDetail.TestResult | Should -Match 'Unavailable'
     }
 
     It 'Uses check-visible evidence on configured host <BaseUri>, with missing fields still indeterminate' -ForEach @(
