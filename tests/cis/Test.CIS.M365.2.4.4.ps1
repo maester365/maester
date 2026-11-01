@@ -54,9 +54,11 @@
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams.`n`n%TestResult%"
-    } elseif ($policies.Count -eq 0) {
+    }
+    elseif ($policies.Count -eq 0) {
         $testResultMarkdown = "No Teams protection policy was returned, so Zero-hour auto purge (ZAP) for Microsoft Teams could not be confirmed.`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams.`n`n%TestResult%"
     }
 
@@ -70,13 +72,14 @@
     }
 
     if (@($exclusions).Count -gt 0) {
-        $resultMd += "`nReview these exclusions and confirm that each one is justified. ZAP does not act on Teams messages for these participants.`n`n"
+        $resultMd += "`nReview these exclusions and confirm that each one is justified. These exceptions match recipient conditions: if any recipient in a chat is not excluded, ZAP can still block the message for everyone. ZAP takes no action only when all recipients are excluded.`n`n"
         $resultMd += "| Exclusion | Participants |`n"
         $resultMd += "| --- | --- |`n"
         foreach ($exclusion in $exclusions) {
             $resultMd += "| $($exclusion.Exception) | $($exclusion.Values) |`n"
         }
-    } else {
+    }
+    else {
         $resultMd += "`nNo participants are excluded from Teams protection.`n"
     }
 
