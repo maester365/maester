@@ -79,15 +79,13 @@ Describe 'Scoped redacted result Markdown' {
 }
 
 Describe 'Scoped result export modes through Invoke-Maester' {
-    It 'Prepares independent output copies in <Mode> mode' -ForEach @(
-        @{ Mode = 'None' }, @{ Mode = 'HtmlOnly' }, @{ Mode = 'AllOutputs' }
-    ) {
-        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{} }
+    BeforeEach {
+        Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{ RAW_GENERIC_IDENTITY = 'SAFE_GENERIC_IDENTITY' } }
         $testPath = Join-Path $TestDrive 'fixture'
         $null = New-Item $testPath -ItemType Directory -Force
         @'
 function Test-CustomExportFixture {
-    [MaesterTest(Id = 'Custom.ExportFixture', Title = 'Export fixture', Service = 'None')]
+    [MaesterTest(Id = 'Custom.ExportFixture', Title = 'Export fixture RAW_GENERIC_IDENTITY', Service = 'None')]
     [CmdletBinding()]
     param()
     Add-MtTestResultDetail -Result 'RAW_FIXTURE_IDENTITY' -RedactedResult 'SAFE_FIXTURE_IDENTITY'
@@ -95,22 +93,94 @@ function Test-CustomExportFixture {
 }
 '@ | Set-Content (Join-Path $testPath 'Test.Custom.ExportFixture.ps1')
         'Export fixture' | Set-Content (Join-Path $testPath 'Test.Custom.ExportFixture.md')
-        $folder = Join-Path $TestDrive $Mode
-        $result = Invoke-Maester -Path $testPath -Config @{ GlobalSettings = @{} } -PassThru -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -RedactUserIdentity $Mode
+        $script:invokeParameters = @{
+            Path = $testPath; PassThru = $true; SkipBuiltIn = $true; SkipPack = $true
+            SkipGraphConnect = $true; NonInteractive = $true; DisableTelemetry = $true
+            SkipVersionCheck = $true; NoLogo = $true; OutputFolderFileName = 'result'
+        }
+    }
+
+    It 'Prepares independent output copies in <Mode> mode with <XmlFormat>' -ForEach @(
+        @{ Mode = 'None'; XmlFormat = 'JUnitXml' }, @{ Mode = 'HtmlOnly'; XmlFormat = 'JUnitXml' }, @{ Mode = 'AllOutputs'; XmlFormat = 'JUnitXml' }
+        @{ Mode = 'None'; XmlFormat = 'NUnitXml' }, @{ Mode = 'HtmlOnly'; XmlFormat = 'NUnitXml' }, @{ Mode = 'AllOutputs'; XmlFormat = 'NUnitXml' }
+    ) {
+        $folder = Join-Path $TestDrive "$Mode-$XmlFormat"
+        $xmlPath = Join-Path $folder 'result.xml'
+        $config = @{ GlobalSettings = @{}; Output = @{ TestResult = @{ Path = $xmlPath; Format = $XmlFormat } } }
+        $result = Invoke-Maester @script:invokeParameters -Config $config -OutputFolder $folder -ExportCsv -RedactUserIdentity $Mode
         $row = $result.Tests | Where-Object Id -EQ 'Custom.ExportFixture'
         $row.Result | Should -Be 'Passed'
         $row.ResultDetail.TestResult | Should -Match 'RAW_FIXTURE_IDENTITY'
         $row.ResultDetail.TestResultRedacted | Should -Match 'SAFE_FIXTURE_IDENTITY'
-        foreach ($extension in 'json', 'html', 'md') {
+        $row.Title | Should -Match 'RAW_GENERIC_IDENTITY'
+        $csvRow = Import-Csv (Join-Path $folder 'result.csv') | Where-Object ID -EQ 'Custom.ExportFixture'
+        $csvRow | Should -Not -BeNullOrEmpty
+        $csvRow.Result | Should -Be 'Passed'
+        $csvRow.ResultDetail | Should -Match $(if ($Mode -eq 'AllOutputs') { 'SAFE_FIXTURE_IDENTITY' } else { 'RAW_FIXTURE_IDENTITY' })
+        foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
             $content | Should -Not -Match 'TestResultRedacted'
             if ($Mode -eq 'AllOutputs' -or ($Mode -eq 'HtmlOnly' -and $extension -eq 'html')) {
                 $content | Should -Match 'SAFE_FIXTURE_IDENTITY'
                 $content | Should -Not -Match 'RAW_FIXTURE_IDENTITY'
+                $content | Should -Match 'SAFE_GENERIC_IDENTITY'
+                $content | Should -Not -Match 'RAW_GENERIC_IDENTITY'
             } else {
                 $content | Should -Match 'RAW_FIXTURE_IDENTITY'
                 $content | Should -Not -Match 'SAFE_FIXTURE_IDENTITY'
+                $content | Should -Match 'RAW_GENERIC_IDENTITY'
+                $content | Should -Not -Match 'SAFE_GENERIC_IDENTITY'
             }
         }
+
+        # XML projects names and outcomes, not the scoped Markdown detail.
+        $xmlContent = Get-Content $xmlPath -Raw
+        $xml = [xml]$xmlContent
+        $cases = @($xml.SelectNodes('//testcase | //test-case'))
+        $cases.Count | Should -Be 1
+        $cases[0].name | Should -Match 'Export fixture'
+        $cases[0].SelectNodes('failure | skipped | reason').Count | Should -Be 0
+        if ($XmlFormat -eq 'NUnitXml') { $cases[0].result | Should -Be 'Success' }
+        $xmlContent | Should -Not -Match 'TestResultRedacted|RAW_FIXTURE_IDENTITY|SAFE_FIXTURE_IDENTITY'
+        if ($Mode -eq 'AllOutputs') {
+            $cases[0].name | Should -Match 'SAFE_GENERIC_IDENTITY'
+            $xmlContent | Should -Not -Match 'RAW_GENERIC_IDENTITY'
+        } else {
+            $cases[0].name | Should -Match 'RAW_GENERIC_IDENTITY'
+            $xmlContent | Should -Not -Match 'SAFE_GENERIC_IDENTITY'
+        }
+    }
+
+    It 'Writes and reads an XLSX workbook in <Mode> mode' -ForEach @(
+        @{ Mode = 'None' }, @{ Mode = 'HtmlOnly' }, @{ Mode = 'AllOutputs' }
+    ) {
+        if (-not (Get-Module -ListAvailable ImportExcel)) {
+            Set-ItResult -Skipped -Because 'ImportExcel is required for the XLSX round-trip fixture.'
+            return
+        }
+        Import-Module ImportExcel
+        $folder = Join-Path $TestDrive "$Mode-xlsx"
+        $result = Invoke-Maester @script:invokeParameters -Config @{ GlobalSettings = @{} } -OutputFolder $folder -ExportExcel -RedactUserIdentity $Mode
+        $workbook = Join-Path $folder 'result.xlsx'
+        $workbook | Should -Exist
+        $rows = @(Import-Excel -Path $workbook -WorksheetName Results)
+        $rows.Count | Should -Be 1
+        $rows[0].ID | Should -Be 'Custom.ExportFixture'
+        $rows[0].Result | Should -Be 'Passed'
+        $content = $rows | ConvertTo-Json -Depth 5
+        $content | Should -Not -Match 'TestResultRedacted'
+        if ($Mode -eq 'AllOutputs') {
+            $rows[0].ResultDetail | Should -Match 'SAFE_FIXTURE_IDENTITY'
+            $rows[0].Title | Should -Match 'SAFE_GENERIC_IDENTITY'
+            $content | Should -Not -Match 'RAW_FIXTURE_IDENTITY|RAW_GENERIC_IDENTITY'
+        } else {
+            $rows[0].ResultDetail | Should -Match 'RAW_FIXTURE_IDENTITY'
+            $rows[0].Title | Should -Match 'RAW_GENERIC_IDENTITY'
+            $content | Should -Not -Match 'SAFE_FIXTURE_IDENTITY|SAFE_GENERIC_IDENTITY'
+        }
+        $row = $result.Tests | Where-Object Id -EQ 'Custom.ExportFixture'
+        $row.ResultDetail.TestResult | Should -Match 'RAW_FIXTURE_IDENTITY'
+        $row.ResultDetail.TestResultRedacted | Should -Match 'SAFE_FIXTURE_IDENTITY'
+        $row.Title | Should -Match 'RAW_GENERIC_IDENTITY'
     }
 }
