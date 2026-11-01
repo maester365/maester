@@ -37,27 +37,48 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Get TeamsProtectionPolicy'
-    $teamsProtectionPolicy = Get-TeamsProtectionPolicy | Select-Object ZapEnabled
+    Write-Verbose 'Getting the Teams protection policy and rule'
+    $policies = @(Get-MtExo -Request TeamsProtectionPolicy)
+    $rules = @(Get-MtExo -Request TeamsProtectionPolicyRule)
 
-    Write-Verbose 'Add policy to result if ZAP is not enabled'
-    $result = $teamsProtectionPolicy | Where-Object { $_.ZapEnabled -ne 'True' }
+    $testResult = $policies.Count -gt 0 -and @($policies | Where-Object { $_.ZapEnabled -ne $true }).Count -eq 0
 
-    $testResult = ($result | Measure-Object).Count -eq 0
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
-    } else {
-        $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+    $exclusions = foreach ($rule in $rules) {
+        foreach ($property in 'ExceptIfSentTo', 'ExceptIfSentToMemberOf', 'ExceptIfRecipientDomainIs') {
+            $values = @($rule.$property | Where-Object { $_ })
+            if ($values.Count -gt 0) {
+                [pscustomobject]@{ Exception = $property; Values = $values -join ', ' }
+            }
+        }
     }
 
-    $resultMd = "| Zero-hour auto purge (ZAP) |`n"
-    $resultMd += "| --- |`n"
     if ($testResult) {
-        $itemResult = '✅ Enabled'
+        $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams.`n`n%TestResult%"
+    } elseif ($policies.Count -eq 0) {
+        $testResultMarkdown = "No Teams protection policy was returned, so Zero-hour auto purge (ZAP) for Microsoft Teams could not be confirmed.`n`n%TestResult%"
     } else {
-        $itemResult = '❌ Not Enabled'
+        $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams.`n`n%TestResult%"
     }
-    $resultMd += "| $($itemResult) |`n"
+
+    $resultMd = "| Policy | Zero-hour auto purge (ZAP) | Result |`n"
+    $resultMd += "| --- | --- | --- |`n"
+    foreach ($policy in $policies) {
+        $resultMd += "| $($policy.Name) | $($policy.ZapEnabled) | $(if ($policy.ZapEnabled -eq $true) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    }
+    if ($policies.Count -eq 0) {
+        $resultMd += "| Not found | | ❌ Fail |`n"
+    }
+
+    if (@($exclusions).Count -gt 0) {
+        $resultMd += "`nReview these exclusions and confirm that each one is justified. ZAP does not act on Teams messages for these participants.`n`n"
+        $resultMd += "| Exclusion | Participants |`n"
+        $resultMd += "| --- | --- |`n"
+        foreach ($exclusion in $exclusions) {
+            $resultMd += "| $($exclusion.Exception) | $($exclusion.Values) |`n"
+        }
+    } else {
+        $resultMd += "`nNo participants are excluded from Teams protection.`n"
+    }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

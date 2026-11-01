@@ -38,18 +38,23 @@
 
     Write-Verbose 'Test-MtCisCommunicateWithUnmanagedTeamsUsers: Checking if communication with unmanaged Teams users is disabled'
 
-    $AllowTeamsConsumer = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumer
-    if ($AllowTeamsConsumer -eq $false) {
-        Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
-        return $true
+    $federation = Get-CsTenantFederationConfiguration
+    $externalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+    $orgSetting = $federation.AllowTeamsConsumer
+    $policySetting = $externalAccessPolicy.EnableTeamsConsumerAccess
+    $testResult = $orgSetting -eq $false -or $policySetting -eq $false
+
+    $resultMarkdown = if ($testResult) {
+        "Well done. Communication with unmanaged Teams users is disabled.`n`n"
     } else {
-        $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
-        if ($ExternalAccessPolicy.EnableTeamsConsumerAccess -eq $false) {
-            Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
-            return $true
-        } else {
-            Add-MtTestResultDetail -Result 'Communication with unmanaged Teams users is enabled.'
-            return $false
-        }
+        "Communication with unmanaged Teams users is enabled. Turn it off in the Global external access policy or in the organization settings.`n`n"
     }
+    $resultMarkdown += "| Setting | Value | Result |`n"
+    $resultMarkdown += "| --- | --- | --- |`n"
+    $resultMarkdown += "| AllowTeamsConsumer (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "| EnableTeamsConsumerAccess (Global external access policy) | $(if ($null -eq $policySetting) { 'Not found' } else { $policySetting }) | $(if ($policySetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "`nEither setting turned off meets the CIS recommendation."
+
+    Add-MtTestResultDetail -Result $resultMarkdown
+    return $testResult
 }

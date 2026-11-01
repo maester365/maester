@@ -4,13 +4,14 @@
     Ensure users can report security concerns in Teams
 
     .DESCRIPTION
-    Ensures users can report security concerns in Teams, with reports directed only to an internal destination.
+    Checks that users can report security concerns in Teams, and that reported Teams items and email messages
+    go only to the organization's reporting mailbox and not to Microsoft.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.6.1, E5 L1)
 
     .EXAMPLE
     Test-MtCisTeamsReportSecurityConcerns
 
-    Returns true if configured properly
+    Returns true if users can report security concerns in Teams and reports go only to the reporting mailbox
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisTeamsReportSecurityConcerns
@@ -27,8 +28,9 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566',
-        Control = 'cis-m365:8.6.1',
+        Control = ('cis-m365:8.6.1', 'nist-800-53-r5:IR-6'),
         Service = ('Teams', 'ExchangeOnline'),
+        License = ('ATP_ENTERPRISE', 'DEFENDER_XDR'),
         Author = 'HenrikPiecha',
         Contributor = 'merill'
     )]
@@ -39,75 +41,41 @@
 
     Write-Verbose 'Test-MtCisTeamsReportSecurityConcerns: Checking if users can report security concerns in Teams to internal destination'
 
-    $return = $true
-    $MicrosoftTeamsCheck = Get-CsTeamsMessagingPolicy -Identity Global | Select-Object AllowSecurityEndUserReporting
-    $MicrosoftReportPolicy = Get-ReportSubmissionPolicy | Select-Object ReportJunkToCustomizedAddress, ReportNotJunkToCustomizedAddress, ReportPhishToCustomizedAddress, ReportJunkAddresses, ReportNotJunkAddresses, ReportPhishAddresses, ReportChatMessageEnabled, ReportChatMessageToCustomizedAddressEnabled
+    $messagingPolicy = Get-CsTeamsMessagingPolicy -Identity Global
+    $reportPolicy = @(Get-MtExo -Request ReportSubmissionPolicy) | Select-Object -First 1
+    $reportRules = @(Get-MtExo -Request ReportSubmissionRule) | Where-Object { $_ }
 
-    $passResult = '✅ Pass'
-    $failResult = '❌ Fail'
+    $hasAddress = { param([object[]] $Values) @($Values | Where-Object { "$_" }).Count -gt 0 }
+    $ruleAddresses = @($reportRules | Where-Object { $_.State -ne 'Disabled' } | ForEach-Object { $_.SentTo } | Where-Object { "$_" })
 
-    $result = "| Policy | Value | Status |`n"
-    $result += "| --- | --- | --- |`n"
+    $checks = @(
+        [pscustomobject]@{ Setting = 'AllowSecurityEndUserReporting (Teams Global messaging policy)'; Value = $messagingPolicy.AllowSecurityEndUserReporting; Expected = 'True'; Pass = $messagingPolicy.AllowSecurityEndUserReporting -eq $true }
+        [pscustomobject]@{ Setting = 'ReportChatMessageEnabled'; Value = $reportPolicy.ReportChatMessageEnabled; Expected = 'False'; Pass = $reportPolicy.ReportChatMessageEnabled -eq $false }
+        [pscustomobject]@{ Setting = 'ReportChatMessageToCustomizedAddressEnabled'; Value = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled; Expected = 'True'; Pass = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled -eq $true }
+        [pscustomobject]@{ Setting = 'EnableReportToMicrosoft'; Value = $reportPolicy.EnableReportToMicrosoft; Expected = 'False'; Pass = $reportPolicy.EnableReportToMicrosoft -eq $false }
+        [pscustomobject]@{ Setting = 'ReportJunkToCustomizedAddress'; Value = $reportPolicy.ReportJunkToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportJunkToCustomizedAddress -eq $true }
+        [pscustomobject]@{ Setting = 'ReportNotJunkToCustomizedAddress'; Value = $reportPolicy.ReportNotJunkToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportNotJunkToCustomizedAddress -eq $true }
+        [pscustomobject]@{ Setting = 'ReportPhishToCustomizedAddress'; Value = $reportPolicy.ReportPhishToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportPhishToCustomizedAddress -eq $true }
+        [pscustomobject]@{ Setting = 'ReportJunkAddresses'; Value = @($reportPolicy.ReportJunkAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportJunkAddresses }
+        [pscustomobject]@{ Setting = 'ReportNotJunkAddresses'; Value = @($reportPolicy.ReportNotJunkAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportNotJunkAddresses }
+        [pscustomobject]@{ Setting = 'ReportPhishAddresses'; Value = @($reportPolicy.ReportPhishAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportPhishAddresses }
+        [pscustomobject]@{ Setting = 'Report submission rule (SentTo)'; Value = $ruleAddresses -join ', '; Expected = 'Enabled rule with the reporting mailbox'; Pass = $ruleAddresses.Count -gt 0 }
+    )
+    $return = $null -ne $messagingPolicy -and $null -ne $reportPolicy -and @($checks | Where-Object { -not $_.Pass }).Count -eq 0
 
-    if ($MicrosoftTeamsCheck.AllowSecurityEndUserReporting -eq $false) {
-        $result += "| AllowSecurityEndUserReporting | $($MicrosoftTeamsCheck.AllowSecurityEndUserReporting) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| AllowSecurityEndUserReporting | $($MicrosoftTeamsCheck.AllowSecurityEndUserReporting) | $passResult |`n"
-    }
-    if ($MicrosoftReportPolicy.ReportJunkToCustomizedAddress -eq $false) {
-        $result += "| ReportJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportJunkToCustomizedAddress) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportJunkToCustomizedAddress) | $passResult |`n"
+    $result = "| Setting | Value | Expected | Status |`n"
+    $result += "| --- | --- | --- | --- |`n"
+    foreach ($check in $checks) {
+        $displayValue = if ($null -eq $check.Value -or "$($check.Value)" -eq '') { 'Not set' } else { $check.Value }
+        $result += "| $($check.Setting) | $displayValue | $($check.Expected) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
-    if ($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress -eq $false) {
-        $result += "| ReportNotJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportNotJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress) | $passResult |`n"
-    }
-    if ($MicrosoftReportPolicy.ReportPhishToCustomizedAddress -eq $false) {
-        $result += "| ReportPhishToCustomizedAddress | $($MicrosoftReportPolicy.ReportPhishToCustomizedAddress) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportPhishToCustomizedAddress | $($MicrosoftReportPolicy.ReportPhishToCustomizedAddress) | $passResult |`n"
-    }
-    if ([string]::IsNullOrEmpty($MicrosoftReportPolicy.ReportJunkAddresses)) {
-        $result += "| ReportJunkAddresses | NULL | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportJunkAddresses | $($MicrosoftReportPolicy.ReportJunkAddresses) | $passResult |`n"
-    }
-    if ([string]::IsNullOrEmpty($MicrosoftReportPolicy.ReportNotJunkAddresses)) {
-        $result += "| ReportNotJunkAddresses | NULL | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportNotJunkAddresses | $($MicrosoftReportPolicy.ReportNotJunkAddresses) | $passResult |`n"
-    }
-    if ([string]::IsNullOrEmpty($MicrosoftReportPolicy.ReportPhishAddresses)) {
-        $result += "| ReportPhishAddresses | NULL | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportPhishAddresses | $($MicrosoftReportPolicy.ReportPhishAddresses) | $passResult |`n"
-    }
-    if ($MicrosoftReportPolicy.ReportChatMessageEnabled -eq $true) {
-        $result += "| ReportChatMessageEnabled | $($MicrosoftReportPolicy.ReportChatMessageEnabled) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportChatMessageEnabled | $($MicrosoftReportPolicy.ReportChatMessageEnabled) | $passResult |`n"
-    }
-    if ($MicrosoftReportPolicy.ReportChatMessageToCustomizedAddressEnabled -eq $false) {
-        $result += "| ReportChatMessageToCustomizedAddressEnabled | $($MicrosoftReportPolicy.ReportChatMessageToCustomizedAddressEnabled) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| ReportChatMessageToCustomizedAddressEnabled | $($MicrosoftReportPolicy.ReportChatMessageToCustomizedAddressEnabled) | $passResult |`n"
-    }
     if ($return) {
-        $testResultMarkdown = "Well done. All report submission policies are configured properly.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Users can report security concerns in Teams, and reports go only to your reporting mailbox.`n`n%TestResult%"
+    } elseif ($null -eq $reportPolicy) {
+        $testResultMarkdown = "No report submission policy was returned, so the reporting destination could not be confirmed. Configure the user reported settings in the Microsoft Defender portal.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "All or specific report submission policies are missing proper configuration.`n`n%TestResult%"
+        $testResultMarkdown = "Users can't report security concerns in Teams, or reports are not sent only to your reporting mailbox.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
