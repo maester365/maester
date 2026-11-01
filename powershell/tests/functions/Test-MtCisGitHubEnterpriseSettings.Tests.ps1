@@ -60,6 +60,12 @@ Describe 'CIS GitHub enterprise-dependent native assessments' {
         }
         (Invoke-MtTest -Id CIS.GH.1.3.9 -Config @{ GlobalSettings = @{ GitHubEnterprise = 'fixture-enterprise' } }).Result | Should -Be 'Passed'
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2 -ParameterFilter { ($Body | ConvertFrom-Json).operationName -eq 'MaesterCisAssociation' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            ($Body | ConvertFrom-Json).operationName -eq 'MaesterCisAssociation' -and $null -eq ($Body | ConvertFrom-Json).variables.after
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            ($Body | ConvertFrom-Json).operationName -eq 'MaesterCisAssociation' -and ($Body | ConvertFrom-Json).variables.after -ceq 'next'
+        }
     }
     It 'Treats an association cursor cycle as an execution error' {
         $script:associationBody = '{"data":{"enterprise":{"id":"E_1","slug":"fixture-enterprise","organizations":{"nodes":[],"pageInfo":{"hasNextPage":true,"endCursor":"repeat"}}}}}'

@@ -35,7 +35,7 @@
     [OutputType([bool])]
     param()
 
-    $evidence = Get-MtGitHubEnterprise -Purpose Notification
+    $evidence = Test-MtCisGitHubEnterprise -Purpose Notification
     Add-MtTestResultDetail -Result $evidence.Detail
     switch ($evidence.Verdict) {
         'Passed' { return $true }

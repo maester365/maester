@@ -35,7 +35,7 @@
     [OutputType([bool])]
     param()
 
-    $evidence = Get-MtGitHubOrganizationVerification
+    $evidence = Test-MtCisGitHubOrganizationVerification
     Add-MtTestResultDetail -Result $evidence.Detail
     switch ($evidence.Verdict) {
         'Passed' { return $true }

@@ -227,7 +227,7 @@ Describe 'GraphQL and bootstrap rate-limit boundaries' {
         }
         InModuleScope Maester {
             $__MtSession.MaesterConfig = [pscustomobject]@{ GlobalSettings = [pscustomobject]@{ GitHubEnterprise = 'fixture-enterprise' } }
-            { Get-MtGitHubEnterprise -Purpose Association -OrganizationId O_fixture -OrganizationLogin fixture-org } | Should -Throw '*rate limit*'
+            { Test-MtCisGitHubEnterprise -Purpose Association -OrganizationId O_fixture -OrganizationLogin fixture-org } | Should -Throw '*rate limit*'
             $__MtSession.GitHubCache.Count | Should -Be 1
             @($__MtSession.GitHubCache.Values)[0].Data.enterprise.id | Should -Be 'E_fixture'
         }
