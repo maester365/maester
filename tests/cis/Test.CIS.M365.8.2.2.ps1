@@ -45,7 +45,7 @@
     $testResult = $orgSetting -eq $false -or $policySetting -eq $false
 
     $resultMarkdown = if ($testResult) {
-        "Well done. Communication with unmanaged Teams users is disabled.`n`n"
+        "Well done. Communication with unmanaged Teams users is turned off by the audited Global external access policy or organization setting. Custom external access policies assigned to users are not checked.`n`n"
     } else {
         "Communication with unmanaged Teams users is enabled. Turn it off in the Global external access policy or in the organization settings.`n`n"
     }

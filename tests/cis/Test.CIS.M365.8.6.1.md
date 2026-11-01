@@ -32,6 +32,7 @@ $params = @{
     EnableReportToMicrosoft = $false
     ReportChatMessageEnabled = $false
     ReportChatMessageToCustomizedAddressEnabled = $true
+    ReportChatMessageAddresses = $usersub
     ReportJunkToCustomizedAddress = $true
     ReportNotJunkToCustomizedAddress = $true
     ReportPhishToCustomizedAddress = $true
@@ -43,7 +44,7 @@ Set-ReportSubmissionPolicy @params
 New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPolicy DefaultReportSubmissionPolicy -SentTo $usersub
 ```
 
-If the report submission rule already exists, use `Set-ReportSubmissionRule -Identity DefaultReportSubmissionRule -SentTo $usersub` instead of `New-ReportSubmissionRule`.
+If the report submission rule already exists, use `Set-ReportSubmissionRule -Identity DefaultReportSubmissionRule -SentTo $usersub` to configure its recipient. If the rule is disabled, enable it with `Enable-ReportSubmissionRule -Identity DefaultReportSubmissionRule`.
 
 #### Related links
 

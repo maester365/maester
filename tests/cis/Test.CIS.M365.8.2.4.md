@@ -1,6 +1,6 @@
 ﻿Trial Teams tenants are tenants that have only trial licenses and no purchased licenses. They are short-lived, easy to create and often used for spam and phishing. If your organization can communicate with accounts in trial tenants, users can receive messages and meeting invitations from senders that have little accountability.
 
-Blocking trial tenants keeps external communication limited to organizations that have purchased licenses. Users in your organization can still communicate with all other allowed external organizations. Users from trial tenants are removed from existing chats, so contacts who use a trial tenant need another channel, such as email, until they move to a licensed tenant.
+Setting `ExternalAccessWithTrialTenants` to `Blocked` blocks communication with trial-only tenants and removes their users from existing chats, except for domains explicitly allowed by `AllowedTrialTenantDomains`. This test reads only `ExternalAccessWithTrialTenants`, so a passing result doesn't rule out those allowlisted exceptions. Users in your organization can still communicate with other allowed external organizations.
 
 #### Remediation action
 

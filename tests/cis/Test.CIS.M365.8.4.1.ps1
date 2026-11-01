@@ -39,7 +39,21 @@
 
     Write-Verbose 'Test-MtCisThirdPartyAndCustomApps: Checking the Teams org-wide app settings'
 
-    $tenantSettings = @(Get-M365UnifiedTenantSettings)
+    $graphContext = if (Get-Command Get-MgContext -ErrorAction SilentlyContinue) { Get-MgContext } else { $null }
+    if ($graphContext -and $graphContext.AuthType -ne 'Delegated') {
+        Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
+        return $null
+    }
+
+    try {
+        $tenantSettings = @(Get-M365UnifiedTenantSettings -SettingNames GlobalApp, PrivateApp -ErrorAction Stop)
+    } catch {
+        if ($_.Exception.Message -match '(?i)(application[- ]based|app[- ]only|application authentication).{0,100}(not supported|unsupported)|(not supported|unsupported).{0,100}(application[- ]based|app[- ]only|application authentication)') {
+            Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
+            return $null
+        }
+        throw
+    }
     $customAppSetting = Get-CsTeamsSettingsCustomApp
 
     $thirdParty = ($tenantSettings | Where-Object { $_.SettingName -eq 'GlobalApp' } | Select-Object -First 1).SettingValue

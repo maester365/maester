@@ -14,6 +14,7 @@
     }
 
     function New-StrictRule {
+        [CmdletBinding(SupportsShouldProcess = $true)]
         param([hashtable] $Conditions = @{})
         $rule = [ordered]@{
             Identity                  = 'Strict Preset Security Policy'

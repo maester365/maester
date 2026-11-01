@@ -45,22 +45,57 @@
     $reportPolicy = @(Get-MtExo -Request ReportSubmissionPolicy) | Select-Object -First 1
     $reportRules = @(Get-MtExo -Request ReportSubmissionRule) | Where-Object { $_ }
 
-    $hasAddress = { param([object[]] $Values) @($Values | Where-Object { "$_" }).Count -gt 0 }
-    $ruleAddresses = @($reportRules | Where-Object { $_.State -ne 'Disabled' } | ForEach-Object { $_.SentTo } | Where-Object { "$_" })
+    $ruleAddresses = @(
+        $reportRules |
+            Where-Object { $_.State -eq 'Enabled' } |
+            ForEach-Object { $_.SentTo } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace("$($_)") }
+    )
+    $destinationValues = [ordered]@{
+        ReportJunkAddresses                = @($reportPolicy.ReportJunkAddresses)
+        ReportNotJunkAddresses             = @($reportPolicy.ReportNotJunkAddresses)
+        ReportPhishAddresses               = @($reportPolicy.ReportPhishAddresses)
+        'Report submission rule (SentTo)' = $ruleAddresses
+        ReportChatMessageAddresses         = @($reportPolicy.ReportChatMessageAddresses)
+    }
+    $reportingMailbox = @(
+        $destinationValues.Values |
+            ForEach-Object { $_ } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace("$($_)") } |
+            Select-Object -First 1
+    )[0]
+    $normalizedMailbox = if ($reportingMailbox) { "$reportingMailbox".Trim().ToLowerInvariant() } else { $null }
+    $destinationChecks = foreach ($destination in $destinationValues.GetEnumerator()) {
+        $addresses = @(
+            $destination.Value |
+                Where-Object { -not [string]::IsNullOrWhiteSpace("$($_)") } |
+                ForEach-Object { "$_".Trim().ToLowerInvariant() } |
+                Sort-Object -Unique
+        )
+        $displayAddresses = @(
+            $destination.Value |
+                Where-Object { -not [string]::IsNullOrWhiteSpace("$($_)") } |
+                ForEach-Object { "$_".Trim() } |
+                Sort-Object -Unique
+        )
+        [pscustomobject]@{
+            Setting  = $destination.Key
+            Value    = $displayAddresses -join ', '
+            Expected = if ($reportingMailbox) { $reportingMailbox } else { 'One reporting mailbox' }
+            Pass     = $null -ne $normalizedMailbox -and $addresses.Count -eq 1 -and $addresses[0] -eq $normalizedMailbox
+        }
+    }
+    $teamsAddressCheck = $destinationChecks | Where-Object { $_.Setting -eq 'ReportChatMessageAddresses' }
 
     $checks = @(
         [pscustomobject]@{ Setting = 'AllowSecurityEndUserReporting (Teams Global messaging policy)'; Value = $messagingPolicy.AllowSecurityEndUserReporting; Expected = 'True'; Pass = $messagingPolicy.AllowSecurityEndUserReporting -eq $true }
         [pscustomobject]@{ Setting = 'ReportChatMessageEnabled'; Value = $reportPolicy.ReportChatMessageEnabled; Expected = 'False'; Pass = $reportPolicy.ReportChatMessageEnabled -eq $false }
-        [pscustomobject]@{ Setting = 'ReportChatMessageToCustomizedAddressEnabled'; Value = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled; Expected = 'True'; Pass = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled -eq $true }
+        [pscustomobject]@{ Setting = 'ReportChatMessageToCustomizedAddressEnabled'; Value = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled; Expected = 'True'; Pass = $reportPolicy.ReportChatMessageToCustomizedAddressEnabled -eq $true -and $teamsAddressCheck.Pass }
         [pscustomobject]@{ Setting = 'EnableReportToMicrosoft'; Value = $reportPolicy.EnableReportToMicrosoft; Expected = 'False'; Pass = $reportPolicy.EnableReportToMicrosoft -eq $false }
         [pscustomobject]@{ Setting = 'ReportJunkToCustomizedAddress'; Value = $reportPolicy.ReportJunkToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportJunkToCustomizedAddress -eq $true }
         [pscustomobject]@{ Setting = 'ReportNotJunkToCustomizedAddress'; Value = $reportPolicy.ReportNotJunkToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportNotJunkToCustomizedAddress -eq $true }
         [pscustomobject]@{ Setting = 'ReportPhishToCustomizedAddress'; Value = $reportPolicy.ReportPhishToCustomizedAddress; Expected = 'True'; Pass = $reportPolicy.ReportPhishToCustomizedAddress -eq $true }
-        [pscustomobject]@{ Setting = 'ReportJunkAddresses'; Value = @($reportPolicy.ReportJunkAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportJunkAddresses }
-        [pscustomobject]@{ Setting = 'ReportNotJunkAddresses'; Value = @($reportPolicy.ReportNotJunkAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportNotJunkAddresses }
-        [pscustomobject]@{ Setting = 'ReportPhishAddresses'; Value = @($reportPolicy.ReportPhishAddresses) -join ', '; Expected = 'Reporting mailbox'; Pass = & $hasAddress $reportPolicy.ReportPhishAddresses }
-        [pscustomobject]@{ Setting = 'Report submission rule (SentTo)'; Value = $ruleAddresses -join ', '; Expected = 'Enabled rule with the reporting mailbox'; Pass = $ruleAddresses.Count -gt 0 }
-    )
+    ) + @($destinationChecks)
     $return = $null -ne $messagingPolicy -and $null -ne $reportPolicy -and @($checks | Where-Object { -not $_.Pass }).Count -eq 0
 
     $result = "| Setting | Value | Expected | Status |`n"

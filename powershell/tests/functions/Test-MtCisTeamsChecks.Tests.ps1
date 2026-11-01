@@ -9,8 +9,8 @@
         if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
             Set-Item -Path "function:global:$name" -Value {
                 [CmdletBinding()]
-                [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'Identity', Justification = 'Stub signature only; Mock binds -Identity from it.')]
                 param([string] $Identity)
+                $null = $Identity
             }
             $script:stubs += $name
         }
@@ -88,13 +88,15 @@ Describe 'Test-MtCisThirdPartyFileSharing' {
 Describe 'Test-MtCisThirdPartyAndCustomApps' {
     BeforeEach {
         $script:Result = $null
+        $script:SkippedBecause = $null
         $script:TenantSettings = @(
             [pscustomobject]@{ SettingName = 'DefaultApp'; SettingValue = 'All' }
             [pscustomobject]@{ SettingName = 'GlobalApp'; SettingValue = 'None' }
             [pscustomobject]@{ SettingName = 'PrivateApp'; SettingValue = 'None' }
         )
         $script:CustomApp = [pscustomobject]@{ IsSideloadedAppsInteractionEnabled = $false }
-        Mock -ModuleName Maester Add-MtTestResultDetail { param($Result) $script:Result = $Result }
+        Mock -ModuleName Maester Add-MtTestResultDetail { param($Result, $SkippedBecause) $script:Result = $Result; $script:SkippedBecause = $SkippedBecause }
+        Mock -ModuleName Maester Get-MgContext { [pscustomobject]@{ AuthType = 'Delegated' } }
         Mock -ModuleName Maester Get-M365UnifiedTenantSettings { $script:TenantSettings }
         Mock -ModuleName Maester Get-CsTeamsSettingsCustomApp { $script:CustomApp }
     }
@@ -119,6 +121,22 @@ Describe 'Test-MtCisThirdPartyAndCustomApps' {
         Test-MtCisThirdPartyAndCustomApps | Should -BeFalse
         $script:Result | Should -Match 'Not found'
     }
+
+    It 'skips before reading unified tenant settings with app-only authentication' {
+        Mock -ModuleName Maester Get-MgContext { [pscustomobject]@{ AuthType = 'AppOnly' } }
+
+        Test-MtCisThirdPartyAndCustomApps | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -Be 'NotSupportedAppPermission'
+        Should -Invoke Get-M365UnifiedTenantSettings -ModuleName Maester -Times 0 -Exactly
+    }
+
+    It 'skips when unified tenant settings reports unsupported app-only authentication' {
+        Mock -ModuleName Maester Get-MgContext { $null }
+        Mock -ModuleName Maester Get-M365UnifiedTenantSettings { throw 'Application-based authentication is not supported for this cmdlet.' }
+
+        Test-MtCisThirdPartyAndCustomApps | Should -BeNullOrEmpty
+        $script:SkippedBecause | Should -Be 'NotSupportedAppPermission'
+    }
 }
 
 Describe 'Test-MtCisTeamsReportSecurityConcerns' {
@@ -129,6 +147,7 @@ Describe 'Test-MtCisTeamsReportSecurityConcerns' {
             EnableReportToMicrosoft                     = $false
             ReportChatMessageEnabled                    = $false
             ReportChatMessageToCustomizedAddressEnabled = $true
+            ReportChatMessageAddresses                  = @('soc@contoso.com')
             ReportJunkToCustomizedAddress               = $true
             ReportNotJunkToCustomizedAddress            = $true
             ReportPhishToCustomizedAddress              = $true
@@ -164,6 +183,20 @@ Describe 'Test-MtCisTeamsReportSecurityConcerns' {
     It 'fails when Teams reporting is not set' {
         $script:MessagingPolicy = [pscustomobject]@{ AllowSecurityEndUserReporting = $null }
         Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
+    }
+
+    It 'fails when the Teams reporting mailbox is not configured' {
+        $script:Policy.ReportChatMessageAddresses = @()
+
+        Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
+        $script:Result | Should -Match 'ReportChatMessageAddresses \| Not set \| soc@contoso.com \| ❌ Fail'
+    }
+
+    It 'fails when a reporting destination differs from the single mailbox' {
+        $script:Rules[0].SentTo = @('triage@contoso.com')
+
+        Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
+        $script:Result | Should -Match 'Report submission rule \(SentTo\) \| triage@contoso.com \| soc@contoso.com \| ❌ Fail'
     }
 
     It 'fails when no report submission policy is returned' {
