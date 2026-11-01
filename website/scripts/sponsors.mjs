@@ -83,8 +83,10 @@ async function sponsorProfiles(logins) {
 
 // The public sponsors of a maintainer: everyone with a monthly sponsorship that is still running, and anyone
 // whose one-time sponsorship was made in the last RECENT_DAYS days. Private sponsorships are never returned for
-// another account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty.
+// another account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty;
+// any other failure stops the script, so a lookup cut short never replaces the committed list with a shorter one.
 const RECENT_DAYS = 90;
+const noAccess = new Set(["INSUFFICIENT_SCOPES", "FORBIDDEN"]);
 async function backersOf(login) {
   const query = `query ($login: String!, $after: String) {
     user(login: $login) {
@@ -104,30 +106,33 @@ async function backersOf(login) {
     }
   }`;
   const backers = [];
-  try {
-    for (let after = null; ; ) {
-      const response = await fetch("https://api.github.com/graphql", {
-        method: "POST",
-        headers: { ...headers, "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables: { login, after } }),
-      });
-      if (!response.ok) throw new Error(`${response.status} ${await response.text()}`);
-      const { data, errors } = await response.json();
-      if (errors?.length) throw new Error(errors.map((e) => e.message).join("; "));
-      const page = data?.user?.sponsorshipsAsMaintainer;
-      if (!page) break;
-      const since = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
-      for (const node of page.nodes) {
-        if (!node?.sponsorEntity) continue;
-        // A monthly sponsorship that ended has no end date to go by, so it is left out with old one-time ones.
-        const current = node.isOneTimePayment ? Date.parse(node.createdAt) >= since : node.isActive;
-        if (current) backers.push({ ...node.sponsorEntity, monthly: !node.isOneTimePayment });
+  for (let after = null; ; ) {
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables: { login, after } }),
+    });
+    if (!response.ok) throw new Error(`sponsors of ${login}: ${response.status} ${await response.text()}`);
+    const { data, errors } = await response.json();
+    if (errors?.length) {
+      const message = errors.map((e) => e.message).join("; ");
+      if (after === null && errors.every((e) => noAccess.has(e.type))) {
+        console.warn(`sponsors: may not read the sponsors of ${login}: ${message}`);
+        return [];
       }
-      if (!page.pageInfo.hasNextPage) break;
-      after = page.pageInfo.endCursor;
+      throw new Error(`sponsors of ${login}: ${message}`);
     }
-  } catch (error) {
-    console.warn(`sponsors: could not read the sponsors of ${login}: ${error.message}`);
+    const page = data?.user?.sponsorshipsAsMaintainer;
+    if (!page) break;
+    const since = Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000;
+    for (const node of page.nodes) {
+      if (!node?.sponsorEntity) continue;
+      // A monthly sponsorship that ended has no end date to go by, so it is left out with old one-time ones.
+      const current = node.isOneTimePayment ? Date.parse(node.createdAt) >= since : node.isActive;
+      if (current) backers.push({ ...node.sponsorEntity, monthly: !node.isOneTimePayment });
+    }
+    if (!page.pageInfo.hasNextPage) break;
+    after = page.pageInfo.endCursor;
   }
   return backers;
 }
