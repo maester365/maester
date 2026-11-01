@@ -7,7 +7,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/1288081?s=240&u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&v=4",
       "contributorPage": "/contributors/merill",
       "tests": 5,
-      "commits": 1723,
+      "commits": 1883,
       "sponsorUrl": "https://github.com/sponsors/merill"
     },
     {
@@ -17,7 +17,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/431932?s=240&u=9f8cc720d34a1e58a1ba93a02ed50e0037286c84&v=4",
       "contributorPage": "/contributors/soulemike",
       "tests": 403,
-      "commits": 313,
+      "commits": 317,
       "sponsorUrl": "https://github.com/sponsors/soulemike"
     },
     {
@@ -27,7 +27,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/20478745?s=240&u=329db460b9b806d59b0431da8a9fa6bf03e5a96a&v=4",
       "contributorPage": "/contributors/samerde",
       "tests": 2,
-      "commits": 622,
+      "commits": 641,
       "sponsorUrl": "https://github.com/sponsors/SamErde"
     }
   ],
@@ -38,9 +38,29 @@
       "title": "",
       "avatar": "https://avatars.githubusercontent.com/u/236941409?s=240&u=e487053416165ceb3c11aa7701adee81d5a1bd93&v=4",
       "contributorPage": "/contributors/jeremyfinney-lgtm",
-      "tests": 64,
-      "commits": 8,
+      "tests": 99,
+      "commits": 40,
       "sponsorUrl": "https://github.com/sponsors/JeremyFinney-lgtm"
+    },
+    {
+      "github": "earbona23",
+      "name": "Eduard Arbona",
+      "title": "Security engineer, Microsoft Entra ID and cloud identity",
+      "avatar": "https://avatars.githubusercontent.com/u/175124143?s=240&u=140e6b5b05ab343c256339cec6f6738121666bb8&v=4",
+      "contributorPage": "/contributors/earbona23",
+      "tests": 24,
+      "commits": 23,
+      "sponsorUrl": "https://github.com/sponsors/earbona23"
+    },
+    {
+      "github": "jusso-dev",
+      "name": "jusso-dev",
+      "title": "",
+      "avatar": "https://avatars.githubusercontent.com/u/16183422?s=240&u=62e003d52384e2daa53728b0aef0828d965655ba&v=4",
+      "contributorPage": "/contributors/jusso-dev",
+      "tests": 14,
+      "commits": 0,
+      "sponsorUrl": "https://github.com/sponsors/jusso-dev"
     },
     {
       "github": "svrooij",
@@ -93,16 +113,6 @@
       "tests": 0,
       "commits": 28,
       "sponsorUrl": "https://github.com/sponsors/michaelmsonne"
-    },
-    {
-      "github": "earbona23",
-      "name": "Eduard Arbona",
-      "title": "Security engineer, Microsoft Entra ID and cloud identity",
-      "avatar": "https://avatars.githubusercontent.com/u/175124143?s=240&u=140e6b5b05ab343c256339cec6f6738121666bb8&v=4",
-      "contributorPage": "/contributors/earbona23",
-      "tests": 0,
-      "commits": 17,
-      "sponsorUrl": "https://github.com/sponsors/earbona23"
     },
     {
       "github": "ChrFrohn",
@@ -190,6 +200,16 @@
       "monthly": true,
       "sponsors": [
         "SamErde"
+      ]
+    },
+    {
+      "github": "goldjg",
+      "name": "Graham Gold",
+      "avatar": "https://avatars.githubusercontent.com/u/43296126?s=120&u=aa7708ff07ca0136bd038bb4a8af036e0386ca21&v=4",
+      "organization": false,
+      "monthly": false,
+      "sponsors": [
+        "merill"
       ]
     }
   ]

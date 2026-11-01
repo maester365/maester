@@ -160,6 +160,7 @@ Thank you to the organisations and people who sponsor Maester and its maintainer
   <tr>
     <td align="center" width="110"><a href="https://github.com/merill"><img src="https://avatars.githubusercontent.com/u/1288081?s=120&amp;u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&amp;v=4" width="64" height="64" alt=""><br><sub><b>Merill Fernando</b></sub></a></td>
     <td align="center" width="110"><a href="https://github.com/RobinpZA"><img src="https://avatars.githubusercontent.com/u/165141638?s=120&amp;u=44e0f1186bb519fbcef14e33fd2b5838e2f3a830&amp;v=4" width="64" height="64" alt=""><br><sub><b>Robin Pieterse</b></sub></a></td>
+    <td align="center" width="110"><a href="https://github.com/goldjg"><img src="https://avatars.githubusercontent.com/u/43296126?s=120&amp;u=aa7708ff07ca0136bd038bb4a8af036e0386ca21&amp;v=4" width="64" height="64" alt=""><br><sub><b>Graham Gold</b></sub></a></td>
   </tr>
 </table>
 
