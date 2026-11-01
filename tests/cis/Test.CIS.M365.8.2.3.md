@@ -1,40 +1,18 @@
-﻿8.2.3 (L1) Ensure external Teams users cannot initiate conversations
+﻿External users with unmanaged Microsoft accounts, such as Microsoft Teams (free), can't start chats or meetings with users in your organization.
 
-This setting prevents external users who are not managed by an organization from initiating contact with users in the protected organization. The recommended state is to uncheck **External users with Teams accounts not managed by an organization can contact users in my organization**.
+Little effort is needed to get a free or trial Teams account, so attackers use unmanaged accounts to contact users through external access. Attacks delivered this way include DarkGate malware, social engineering and phishing by Midnight Blizzard, GIFShell and username enumeration. This setting is a stop gap for CIS 8.2.2: if some users are allowed to communicate with unmanaged accounts, they still can't be contacted first. Turning off the parent setting in 8.2.2 also blocks inbound contact. Users with an exception can still join meetings that unmanaged users set up, depending on the parent setting. This setting isn't available in GCC, GCC High, DoD or private cloud environments.
 
->Note: Disabling this setting is used as an additional stop gap for the previous setting which disables communication with unmanaged Teams users entirely. If an organization chooses to have an exception to (L1) Ensure communication with unmanaged Teams users is disabled they can do so while also disabling the ability for the same group of users to initiate contact. Disabling communication entirely will also disable the ability for unmanaged users to initiate contact.
-
-#### Rationale
-
-Allowing users to communicate with unmanaged Teams users presents a potential security threat as little effort is required by threat actors to gain access to a trial or free Microsoft Teams account.
-
-Some real-world attacks and exploits delivered via Teams over external access channels include:
-
-* DarkGate malware
-* Social engineering / Phishing attacks by "Midnight Blizzard"
-* GIFShell
-* Username enumeration
-
-#### Impact
-
-The impact of disabling this is very low.
-Organizations may choose to create additional policies for specific groups that need to communicate with unmanaged external users.
-
->Note: Chats and meetings with external unmanaged Teams users isn't available in GCC, GCC High, or DOD deployments, or in private cloud environments.
+The test passes when the Global (Org-wide default) external access policy or the organization settings turn off inbound contact from unmanaged accounts.
 
 #### Remediation action
 
-To remediate using the UI:
+1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
+2. Go to **External collaboration** > **External access** and open the **Policies** tab.
+3. Select the **Global (Org-wide default)** policy.
+4. Under **People in my org can chat and have meetings with external users who have unmanaged Microsoft accounts**, clear **People in my org can join external meetings and receive new chats from users who have unmanaged Microsoft accounts**.
+5. Select **Save**.
 
-1. Navigate to [Microsoft 365 Teams Admin Center](https://admin.teams.microsoft.com).
-2. Click to expand **Users** select **External access**.
-3. Select the **Policies** tab
-4. Click on the **Global (Org-wide default)** policy.
-5. Locate the parent setting **People in my organization can communicate with unmanaged Teams accounts**.
-6. Uncheck **External users with Teams accounts not managed by an organization can contact users in my organization**.
-7. Click **Save**.
-
->Note: If People in my organization can communicate with unmanaged Teams accounts is already set to Off then this setting will not be visible and will satisfy the requirements of this recommendation.
+If the parent setting is already **Off**, the option isn't shown and the recommendation is met. Clearing the same option on the **Organization settings** tab also meets the recommendation.
 
 ##### PowerShell
 
@@ -45,15 +23,13 @@ To remediate using the UI:
 Set-CsExternalAccessPolicy -Identity Global -EnableTeamsConsumerInbound $false
 ```
 
->Note: Configuring the organization settings to block inbound communication is also in compliance with this control.
-
 #### Related links
 
-* [Microsoft 365 Teams Admin Center](https://admin.teams.microsoft.com)
-* [IT Admins - Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/microsoftteams/trusted-organizations-external-meetings-chat?tabs=organization-settings)
+* [Microsoft Teams admin center](https://admin.teams.microsoft.com)
+* [Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/microsoftteams/trusted-organizations-external-meetings-chat)
 * [Midnight Blizzard conducts targeted social engineering over Microsoft Teams](https://www.microsoft.com/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/)
 * [GIFShell Attack Lets Hackers Create Reverse Shell through Microsoft Teams GIFs](https://www.bitdefender.com/en-us/blog/hotforsecurity/gifshell-attack-lets-hackers-create-reverse-shell-through-microsoft-teams-gifs)
-* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 516](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 8.2.3](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

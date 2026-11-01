@@ -1,49 +1,29 @@
-﻿8.6.1 (L1) Ensure users can report security concerns in Teams
+﻿Users can report security concerns in Microsoft Teams, and reported items go only to the organization's reporting mailbox.
 
-User reporting settings allow a user to report a message as malicious for further analysis. This recommendation is composed of 3 different settings and all be configured to pass:
+User reporting lets people flag suspicious Teams messages quickly, so the security team can act on phishing and malicious content. Reported items can contain sensitive or personal information, and reports can include messages that are threatening or harassing, so they should stay inside the organization and be reviewed by staff who can route them to the right team, such as Human Resources. Sending reports to Microsoft should follow company policy.
 
-* **In the Teams admin center:** On by default and controls whether users are able to report messages from Teams. When this setting is turned off, users can't report messages within Teams, so the corresponding setting in the Microsoft 365 Defender portal is irrelevant.
-* **In the Microsoft 365 Defender portal:** On by default for new tenants. Existing tenants need to enable it. If user reporting of messages is turned on in the Teams admin center, it also needs to be turned on the Defender portal for user reported messages to show up correctly on the User reported tab on the Submissions page.
-* **Defender - Report message destinations:** This applies to more than just Microsoft Teams and allows for an organization to keep their reports contained. Due to how the parameters are configured on the backend it is included in this assessment as a requirement.
-
-#### Rationale
-
-Users will be able to more quickly and systematically alert administrators of suspicious malicious messages within Teams. The content of these messages may be sensitive in nature and therefore should be kept within the organization and not shared with Microsoft without first consulting company policy.
-
->Note
->
->* The reported message remains visible to the user in the Teams client.
->* Users can report the same message multiple times.
->* The message sender isn't notified that messages were reported.
-
-#### Impact
-
-Enabling message reporting has an impact beyond just addressing security concerns. When users of the platform report a message, the content could include messages that are threatening or harassing in nature, possibly stemming from colleagues.
-Due to this the security staff responsible for reviewing and acting on these reports should be equipped with the skills to discern and appropriately direct such messages to the relevant departments, such as Human Resources (HR).
+CIS requires three settings: **Report a security concern** in the Teams Global messaging policy, **Monitor reported items in Microsoft Teams** in the Microsoft Defender portal, and reported items sent to **My reporting mailbox only**. The test reads `Get-CsTeamsMessagingPolicy -Identity Global`, the report submission policy and the report submission rule. Reporting must be on, Teams and email reports must go to the reporting mailbox and not to Microsoft (`ReportChatMessageEnabled` and `EnableReportToMicrosoft` are `False`), and the reporting mailbox must be set in the policy and in an enabled report submission rule. Microsoft Defender for Office 365 Plan 1 or Plan 2, or Microsoft Defender XDR, licences are required.
 
 #### Remediation action
 
-1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-2. Select **Settings & policies** > **Global (Org-wide default) settings**.
-3. Select **Messaging** to open the **messaging settings** section.
-4. Set **Report a security concern** to **On**.
-5. Next, navigate to [Microsoft 365 Defender](https://security.microsoft.com).
-6. Click on **Settings** > **Email & collaboration** > **User reported settings**.
-7. Scroll to **Microsoft Teams**.
-8. Check **Monitor reported messages in Microsoft Teams** and **Save**.
-9. Set **Send reported messages to:** to **My reporting mailbox only** with reports configured to be sent to authorized staff.
+1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
+2. Go to **Settings & policies** > [**Global (Org-wide default) settings**](https://admin.teams.microsoft.com/one-policy/settings) and select **Messaging**.
+3. Set **Report a security concern** to **On** and select **Save**.
+4. Sign in to the [Microsoft Defender portal](https://security.microsoft.com).
+5. Go to **System** > **Settings** > **Email & collaboration** > [**Teams user reported settings**](https://security.microsoft.com/securitysettings/teamsUserSubmission).
+6. Under **Microsoft Teams**, select **Monitor reported items in Microsoft Teams**, set **Send reported items to** to **My reporting mailbox only**, add the reporting mailbox for authorized staff and select **Save**.
+7. Go to [**User reported settings**](https://security.microsoft.com/securitysettings/userSubmission), set **Send reported items to** to **My reporting mailbox only** with the same reporting mailbox and select **Save**.
 
 ##### PowerShell
 
-1. Connect to Teams PowerShell using `Connect-MicrosoftTeams`.
-2. Connect to Exchange Online PowerShell using `Connect-ExchangeOnline`.
-3. Run the following cmdlet:
+1. Connect to Teams PowerShell using `Connect-MicrosoftTeams` and to Exchange Online PowerShell using `Connect-ExchangeOnline`.
+2. Run the following command:
 
 ```powershell
 Set-CsTeamsMessagingPolicy -Identity Global -AllowSecurityEndUserReporting $true
 ```
 
-1. To configure the Defender reporting policies, edit and run this script:
+3. Change the reporting mailbox in the following script and run it:
 
 ```powershell
 $usersub = "userreportedmessages@fabrikam.com" # Change this.
@@ -61,15 +41,17 @@ $params = @{
 }
 Set-ReportSubmissionPolicy @params
 New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPolicy DefaultReportSubmissionPolicy -SentTo $usersub
-
 ```
+
+If the report submission rule already exists, use `Set-ReportSubmissionRule -Identity DefaultReportSubmissionRule -SentTo $usersub` instead of `New-ReportSubmissionRule`.
 
 #### Related links
 
-* [Microsoft Teams Admin Center](https://admin.teams.microsoft.com)
-* [Microsoft 365 Defender](https://security.microsoft.com)
-* [User reported settings in Microsoft Teams](https://learn.microsoft.com/defender-office-365/submissions-teams?view=o365-worldwide)
-* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 554](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Microsoft Teams admin center - Settings & policies](https://admin.teams.microsoft.com/one-policy/settings)
+* [Microsoft Defender portal - Teams user reported settings](https://security.microsoft.com/securitysettings/teamsUserSubmission)
+* [User reported settings in Teams](https://learn.microsoft.com/defender-office-365/submissions-teams)
+* [Configure user reported message settings](https://learn.microsoft.com/defender-office-365/submissions-user-reported-messages-custom-mailbox)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 8.6.1](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

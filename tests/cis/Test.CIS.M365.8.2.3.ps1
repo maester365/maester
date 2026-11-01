@@ -38,20 +38,23 @@
 
     Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if external unmanaged Teams users cannot initiate conversations'
 
-    $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
-    if ($AllowTeamsConsumerInbound -eq $false) {
-        Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
-        return $true
+    $federation = Get-CsTenantFederationConfiguration
+    $externalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+    $orgSetting = $federation.AllowTeamsConsumerInbound
+    $policySetting = $externalAccessPolicy.EnableTeamsConsumerInbound
+    $testResult = $orgSetting -eq $false -or $policySetting -eq $false
+
+    $resultMarkdown = if ($testResult) {
+        "Well done. External unmanaged Teams users cannot initiate conversations.`n`n"
+    } else {
+        "External unmanaged Teams users can initiate conversations. Turn this off in the Global external access policy or in the organization settings.`n`n"
     }
-    else {
-        $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
-        if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
-            Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
-            return $true
-        }
-        else {
-            Add-MtTestResultDetail -Result 'External unmanaged Teams users can initiate conversations.'
-            return $false
-        }
-    }
+    $resultMarkdown += "| Setting | Value | Result |`n"
+    $resultMarkdown += "| --- | --- | --- |`n"
+    $resultMarkdown += "| AllowTeamsConsumerInbound (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "| EnableTeamsConsumerInbound (Global external access policy) | $(if ($null -eq $policySetting) { 'Not found' } else { $policySetting }) | $(if ($policySetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "`nEither setting turned off meets the CIS recommendation."
+
+    Add-MtTestResultDetail -Result $resultMarkdown
+    return $testResult
 }

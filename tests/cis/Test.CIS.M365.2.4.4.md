@@ -1,38 +1,33 @@
-﻿2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on
+﻿Zero-hour auto purge (ZAP) for Microsoft Teams is turned on.
 
-Zero-hour auto purge (ZAP) is a protection feature that retroactively detects and neutralizes malware and high confidence phishing. When ZAP for Teams protection blocks a message, the message is blocked for everyone in the chat. The initial block happens right after delivery, but ZAP occurs up to 48 hours after delivery.
+ZAP retroactively detects and blocks malware and high confidence phishing in Teams chats and channels. A message can be harmless when it's delivered and weaponized later, or a new signature can identify it after delivery. ZAP blocks such a message for everyone in the chat up to 48 hours after delivery. As with any anti-malware or anti-phishing protection, false positives can occur.
 
-#### Rationale
-
-ZAP is intended to protect users that have received zero-day malware messages or content that is weaponized after being delivered to users. It does this by continually monitoring spam and malware signatures taking automated retroactive action on messages that have already been delivered.
-
-#### Impact
-
-As with any anti-malware or anti-phishing product, false positives may occur
+The test passes when every Teams protection policy has ZAP turned on, and fails when no policy is returned. It also lists the participants excluded from Teams protection, which CIS asks you to review. The test runs on tenants with Microsoft Defender for Office 365 Plan 2.
 
 #### Remediation action
 
-To enable Zero-hour auto purge for Microsoft Teams:
-
-1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com)
-2. Click to expand **System** select **Settings** > **Email & collaboration** > **Microsoft Teams protection**
+1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com).
+2. Go to **System** > **Settings** > **Email & collaboration** > [**Microsoft Teams protection**](https://security.microsoft.com/securitysettings/teamsProtectionPolicy).
 3. Set **Zero-hour auto purge (ZAP)** to **On (Default)**.
+4. Under **Exclude these participants**, review the exclusions and remove any that are not justified.
 
 ##### PowerShell
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
-2. Run the following cmdlet:
+2. Run the following command:
 
 ```powershell
 Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 ```
 
+3. Review the exclusions with `Get-TeamsProtectionPolicyRule | Format-List ExceptIf*`.
+
 #### Related links
 
-* [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Zero-hour auto purge (ZAP) in Microsoft Teams](https://learn.microsoft.com/defender-office-365/zero-hour-auto-purge?view=o365-worldwide#zero-hour-auto-purge-zap-in-microsoft-teams)
-* [Configure ZAP for Teams protection in Defender for Office 365](https://learn.microsoft.com/defender-office-365/mdo-support-teams-about?view=o365-worldwide#configure-zap-for-teams-protection-in-defender-for-office-365-plan-2)
-* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 157](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Microsoft Defender portal - Microsoft Teams protection](https://security.microsoft.com/securitysettings/teamsProtectionPolicy)
+* [Zero-hour auto purge (ZAP) in Microsoft Teams](https://learn.microsoft.com/defender-office-365/zero-hour-auto-purge#zero-hour-auto-purge-zap-in-microsoft-teams)
+* [Configure ZAP for Teams protection in Defender for Office 365](https://learn.microsoft.com/defender-office-365/mdo-support-teams-about#configure-zap-for-teams-protection-in-defender-for-office-365-plan-2)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 2.4.4](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%
