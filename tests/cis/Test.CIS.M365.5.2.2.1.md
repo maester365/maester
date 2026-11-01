@@ -4,14 +4,14 @@ Administrator accounts can change identity, mail and security configuration for 
 
 The test passes when one enabled policy lists every role in the set that the test checks: Application, Authentication, Billing, Cloud Application, Conditional Access, Exchange, Global, Helpdesk, Password, Privileged Authentication, Privileged Role, Security, SharePoint and User Administrator roles, plus Global Reader. Policies in report-only mode do not count. Keep emergency access accounts in the policy exclusions.
 
-User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. Application exclusions are evaluated and must be empty; any excluded application causes the policy to fail. The result lists excluded application IDs. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Go to **Entra ID** > **Conditional Access** > [**Policies**](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) and select **New policy**.
 3. Under **Users**, select **Include** > **Select users and groups** > **Directory roles** and add every role listed above. Exclude your emergency access accounts.
-4. Under **Target resources**, select **All resources (formerly All cloud apps)**.
+4. Under **Target resources**, select **All resources (formerly All cloud apps)** and do not add application exclusions.
 5. Under **Grant**, select **Grant access** and **Require multifactor authentication** (or **Require authentication strength**).
 6. Set **Enable policy** to **On** (use **Report-only** first to measure the impact) and select **Create**.
 
