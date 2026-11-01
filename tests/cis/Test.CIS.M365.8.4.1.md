@@ -2,7 +2,7 @@
 
 Third-party and custom apps can read and act on Teams data on behalf of users. An app that a user adds without review may be malicious, unverified or over-privileged, and custom apps in preview can be uploaded without admin approval. Turning these defaults off means that only apps an admin has made available can be used. Admins can still make individual apps available to everyone or to specific users and groups on the **Manage apps** page; the org-wide settings apply to apps whose availability hasn't been set.
 
-The test reads the org-wide app settings with `Get-M365UnifiedTenantSettings` (`GlobalApp` for third-party apps and `PrivateApp` for custom apps must be `None`) and `Get-CsTeamsSettingsCustomApp` (`IsSideloadedAppsInteractionEnabled` must be `False`). Microsoft doesn't support `Get-M365UnifiedTenantSettings` with application-based Teams authentication, and the documented Graph teams-app-settings endpoint doesn't support application permissions for these settings. The test skips app-only contexts; run it with delegated authentication.
+The test reads the org-wide app settings with `Get-M365UnifiedTenantSettings` (`GlobalApp` for third-party apps and `PrivateApp` for custom apps must be `None`) and `Get-CsTeamsSettingsCustomApp` (`IsSideloadedAppsInteractionEnabled` must be `False`). Microsoft doesn't support `Get-M365UnifiedTenantSettings` with application-based Teams authentication, and the documented Graph teams-app-settings endpoint doesn't support application permissions for these settings. The test skips when the Teams settings cmdlet reports unsupported application authentication; it does not use `Get-MgContext`, which describes the separate Graph session. Run 8.4.1 with delegated Teams authentication.
 
 #### Remediation action
 

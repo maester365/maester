@@ -96,7 +96,6 @@ Describe 'Test-MtCisThirdPartyAndCustomApps' {
         )
         $script:CustomApp = [pscustomobject]@{ IsSideloadedAppsInteractionEnabled = $false }
         Mock -ModuleName Maester Add-MtTestResultDetail { param($Result, $SkippedBecause) $script:Result = $Result; $script:SkippedBecause = $SkippedBecause }
-        Mock -ModuleName Maester Get-MgContext { [pscustomobject]@{ AuthType = 'Delegated' } }
         Mock -ModuleName Maester Get-M365UnifiedTenantSettings { $script:TenantSettings }
         Mock -ModuleName Maester Get-CsTeamsSettingsCustomApp { $script:CustomApp }
     }
@@ -122,16 +121,14 @@ Describe 'Test-MtCisThirdPartyAndCustomApps' {
         $script:Result | Should -Match 'Not found'
     }
 
-    It 'skips before reading unified tenant settings with app-only authentication' {
+    It 'uses Teams settings when the Graph context is app-only' {
         Mock -ModuleName Maester Get-MgContext { [pscustomobject]@{ AuthType = 'AppOnly' } }
 
-        Test-MtCisThirdPartyAndCustomApps | Should -BeNullOrEmpty
-        $script:SkippedBecause | Should -Be 'NotSupportedAppPermission'
-        Should -Invoke Get-M365UnifiedTenantSettings -ModuleName Maester -Times 0 -Exactly
+        Test-MtCisThirdPartyAndCustomApps | Should -BeTrue
+        Should -Invoke Get-M365UnifiedTenantSettings -ModuleName Maester -Times 1 -Exactly
     }
 
     It 'skips when unified tenant settings reports unsupported app-only authentication' {
-        Mock -ModuleName Maester Get-MgContext { $null }
         Mock -ModuleName Maester Get-M365UnifiedTenantSettings { throw 'Application-based authentication is not supported for this cmdlet.' }
 
         Test-MtCisThirdPartyAndCustomApps | Should -BeNullOrEmpty
