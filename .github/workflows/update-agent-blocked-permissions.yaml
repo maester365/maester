@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SNAPSHOT_PATH: powershell/internal/data/AgentBlockedPermissions.json
+  SNAPSHOT_PATH: powershell/internal/generated/AgentBlockedPermissions.json
 
 jobs:
   update-agent-blocked-permissions:
@@ -147,7 +147,7 @@ jobs:
           delete-branch: true
           title: "chore: update agent blocked permissions snapshot"
           body: |
-            Refreshes `powershell/internal/data/AgentBlockedPermissions.json` from
+            Refreshes `powershell/internal/generated/AgentBlockedPermissions.json` from
             Microsoft's [agent identity platform overview](https://learn.microsoft.com/en-us/graph/api/resources/agentid-platform-overview)
             documentation.
 

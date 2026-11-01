@@ -5,7 +5,7 @@
     .DESCRIPTION
     Downloads Microsoft's agentid-platform-overview.md from the public docs repo,
     parses the "Microsoft Graph permissions blocked for agents" table, validates the
-    result, and writes a JSON snapshot into the module's internal data folder.
+    result, and writes a JSON snapshot into the module's internal generated folder.
     The update-agent-blocked-permissions workflow runs this monthly and raises a pull
     request when the table changes.
     For reproducibility, pass a commit-pinned raw URL with -SourceUrl.
@@ -17,7 +17,7 @@
 [CmdletBinding()]
 param (
     # Path to the generated JSON snapshot.
-    [string] $SnapshotPath = "$PSScriptRoot/../powershell/internal/data/AgentBlockedPermissions.json",
+    [string] $SnapshotPath = "$PSScriptRoot/../powershell/internal/generated/AgentBlockedPermissions.json",
 
     # Raw URL of Microsoft's agent ID platform overview page.
     [string] $SourceUrl = 'https://raw.githubusercontent.com/microsoftgraph/microsoft-graph-docs-contrib/main/api-reference/v1.0/resources/agentid-platform-overview.md',
@@ -76,7 +76,7 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
     $cells = $line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
 
     if ($cells.Count -lt 3) {
-        Write-Warning "Skipping malformed row (fewer than 3 columns): $line"
+        throw "Malformed row (expected 3 columns): $line"
         continue
     }
 
@@ -88,14 +88,14 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
     $permName = $permName.Trim()
 
     if ([string]::IsNullOrWhiteSpace($permName)) {
-        Write-Warning "Skipping row with empty permission name: $line"
+        throw "Empty permission name in row: $line"
         continue
     }
 
     # Column 1: Delegated, Column 2: Application
     # The values use symbols, not words, but handle both
-    $delegated = $cells[1] -match ([regex]::Escape([char]0x274C))   # red X
-    $application = $cells[2] -match ([regex]::Escape([char]0x274C)) # red X
+    $delegated = if ($cells[1] -match [char]0x274C) { $true } elseif ($cells[1] -match [char]0x2796) { $false } else { throw "Unexpected Delegated value $($cells[1]) for $permName" }
+    $application = if ($cells[2] -match [char]0x274C) { $true } elseif ($cells[2] -match [char]0x2796) { $false } else { throw "Unexpected Application value $($cells[2]) for $permName" }
 
     $permissions.Add(@{
         Permission  = $permName
@@ -114,7 +114,7 @@ Write-Verbose "Parsed $($permissions.Count) blocked permissions."
 
 # --- Hash the source for traceability ---
 
-$sourceBytes = [System.Text.Encoding]::UTF8.GetBytes($content)
+$sourceBytes = [System.Text.Encoding]::UTF8.GetBytes(($lines[$tableStartIndex..($i - 1)] -join "`n"))
 $sha256 = [System.Security.Cryptography.SHA256]::Create()
 try {
     $sourceHash = (-join ($sha256.ComputeHash($sourceBytes) | ForEach-Object { $_.ToString('x2') }))
