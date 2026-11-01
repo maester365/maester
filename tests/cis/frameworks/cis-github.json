@@ -4,10 +4,24 @@
   "Version": "1.2.0",
   "Url": "https://www.cisecurity.org/benchmark/github",
   "Requirements": [
-    { "Id": "1.2.2", "Level": "L1", "Profile": ["GH Level 1"] },
-    { "Id": "1.2.3", "Level": "L1", "Profile": ["GH Level 1"] },
-    { "Id": "1.2.4", "Level": "L1", "Profile": ["GH Level 1"] },
-    { "Id": "1.3.2", "Level": "L1", "Profile": ["GH Level 1"] },
-    { "Id": "1.3.8", "Level": "L1", "Profile": ["GH Level 1"] }
+    {"Id": "1.1.4", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.7", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.9", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.10", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.11", "Level": "L2", "Profile": ["GH Level 2"]},
+    {"Id": "1.1.12", "Level": "L2", "Profile": ["GH Level 2"]},
+    {"Id": "1.1.14", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.16", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.17", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.1.20", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.2.2", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.2.3", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.2.4", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.3.2", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.3.4", "Level": "L2", "Profile": ["GH Level 2"]},
+    {"Id": "1.3.5", "Level": "L2", "Profile": ["GH Level 2"]},
+    {"Id": "1.3.8", "Level": "L1", "Profile": ["GH Level 1"]},
+    {"Id": "1.3.9", "Level": "L2", "Profile": ["GH Level 2"]},
+    {"Id": "1.3.10", "Level": "L2", "Profile": ["GH Level 2"]}
   ]
 }

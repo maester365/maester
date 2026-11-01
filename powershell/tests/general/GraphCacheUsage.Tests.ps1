@@ -12,6 +12,7 @@ BeforeDiscovery {
         'powershell/internal/services/global-secure-access/Get-MtPrivateAccessApplication.ps1'
         'powershell/internal/services/defender/Get-MdeConfiguration.ps1'
         'powershell/internal/services/github/Invoke-MtGitHubRequest.ps1'
+        'powershell/internal/services/github/Invoke-MtGitHubGraphQLRequest.ps1'
         'powershell/public/services/sharepoint/Get-MtSpo.ps1'
         'powershell/public/connect/Clear-MtGraphCache.ps1'
         'powershell/public/connect/Clear-MtExoCache.ps1'

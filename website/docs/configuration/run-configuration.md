@@ -137,6 +137,10 @@ Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
 | `GitHubOrganization` | string | | GitHub checks. |
 | `GitHubApiBaseUri` | string | `https://api.github.com` | GitHub checks. |
 | `GitHubApiVersion` | string | `2022-11-28` | GitHub checks. |
+| `GitHubAccountModel` | string | `Unknown` | GitHub CIS organization MFA checks. |
+| `GitHubEnterprise` | string | | GitHub CIS verification and independently targeted enterprise notification checks. |
+| `GitHubCisRepositoryScope` | object | empty | GitHub CIS repository applicability and branch declarations. See [GitHub CIS configuration](./github-cis.md). |
+| `GitHubDeletionPolicy` | object | `{}` (approvals not configured) | `CIS.GH.1.2.3` and `CIS.GH.1.2.4`. See [GitHub deletion approvals](./github-deletion-policy.md). |
 | `XspmExternalDataUris` | object | built-in sources | XSPM checks. See the [overview](./overview.md#xspm-external-data-sources). |
 
 Any other key is passed through. Custom tests and test packs should use a `Namespace.Key` name, for example
