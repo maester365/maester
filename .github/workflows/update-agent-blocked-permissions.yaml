@@ -36,6 +36,37 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
+          # Check whether git already tracks this file. On the very first run
+          # after the automation is merged, the snapshot won't be in git yet.
+          # In that case every permission is "new", so we treat the entire file
+          # as an addition.
+          $tracked = git ls-files -- $env:SNAPSHOT_PATH
+          if (-not $tracked) {
+              Write-Host 'Snapshot file is new (first run). Treating entire file as a change.'
+              $newSnapshot = Get-Content -LiteralPath $env:SNAPSHOT_PATH -Raw | ConvertFrom-Json
+
+              $lines = [System.Collections.Generic.List[string]]::new()
+              $lines.Add("| Change | Permissions |")
+              $lines.Add("| --- | --- |")
+              $lines.Add("| Added | $($newSnapshot.Count) |")
+              $lines.Add("| Removed | 0 |")
+              $lines.Add("| New total | $($newSnapshot.Count) |")
+              $lines.Add('')
+              $lines.Add('### Initial snapshot')
+              $lines.Add('')
+              $lines.Add('This is the first snapshot. All permissions are newly recorded.')
+              $lines.Add('')
+
+              $summary = $lines -join "`n"
+              Write-Host $summary
+              $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+              $delimiter = "DIFF_$(New-Guid)"
+              "changed=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+              "diff_summary<<$delimiter`n$summary`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+              exit 0
+          }
+
           $diff = @(git diff --unified=0 -- $env:SNAPSHOT_PATH)
           if ($diff.Count -eq 0) {
               Write-Host 'No changes to the blocked permissions snapshot.'
@@ -135,3 +166,4 @@ jobs:
               `Get-MtEntraAgentHighRiskGraphPermissionFinding` because agents can no longer hold them.
             - **Unblocked** permissions need a judgment call on whether they belong in MT.1223.
           labels: automation
+

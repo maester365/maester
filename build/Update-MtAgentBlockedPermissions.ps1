@@ -75,7 +75,10 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
     # Split on | and trim. The split gives us empty strings at the start and end.
     $cells = $line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
 
-    if ($cells.Count -lt 3) { continue }
+    if ($cells.Count -lt 3) {
+        Write-Warning "Skipping malformed row (fewer than 3 columns): $line"
+        continue
+    }
 
     # Column 0: permission name (may be a markdown link like [Name](url))
     $permName = $cells[0]
@@ -84,12 +87,15 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
     }
     $permName = $permName.Trim()
 
+    if ([string]::IsNullOrWhiteSpace($permName)) {
+        Write-Warning "Skipping row with empty permission name: $line"
+        continue
+    }
+
     # Column 1: Delegated, Column 2: Application
     # The values use symbols, not words, but handle both
-    $delegated = $cells[1] -match ([regex]::Escape([char]0x274C))   # ❌
-    $application = $cells[2] -match ([regex]::Escape([char]0x274C)) # ❌
-
-    if ([string]::IsNullOrWhiteSpace($permName)) { continue }
+    $delegated = $cells[1] -match ([regex]::Escape([char]0x274C))   # red X
+    $application = $cells[2] -match ([regex]::Escape([char]0x274C)) # red X
 
     $permissions.Add(@{
         Permission  = $permName
@@ -117,11 +123,13 @@ try {
 }
 
 # --- Build output ---
+# Note: GeneratedAt is metadata only and is excluded from the diff-detection
+# input. The workflow's git-diff step compares the Permissions array, Count,
+# SourceUrl, and SourceSha256, which change only when Microsoft's table does.
 
 $output = [ordered]@{
     SourceUrl    = $SourceUrl
     SourceSha256 = $sourceHash
-    GeneratedAt  = (Get-Date -Format 'o')
     Count        = $permissions.Count
     Permissions  = @($permissions | Sort-Object { $_.Permission } | ForEach-Object {
         [ordered]@{
