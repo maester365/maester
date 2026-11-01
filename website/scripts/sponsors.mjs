@@ -4,12 +4,14 @@
 // primary authors of tests (the Author of a test's [MaesterTest] attribute, from the contributor snapshot
 // at website/src/data/contributors.json) and everyone else who has committed to the repository (GitHub's
 // contributors API). Only people with a Sponsors listing are kept; `sponsorPage: false` in contributors.yml
-// leaves a person out. The public sponsors of the core maintainers are listed too, to thank them.
+// leaves a person out. The public sponsors of the core maintainers are listed too, to thank them, after the
+// featured sponsors kept by hand in website/sponsors/featured.yml, which are shown first with their logos.
 //
 // Whether a person has a listing is only known to GitHub (GraphQL `hasSponsorsListing`), so this needs a
 // token in GH_TOKEN or GITHUB_TOKEN. The .github/workflows/update-sponsors.yaml workflow runs it weekly with
 // the maester-bot app and commits the result to website/src/data/sponsors.json, which the site reads at
-// build time. Without a token the committed snapshot is left as it is.
+// build time, and to the Sponsors section of the repository README, which shows the same sponsors. Without a
+// token the people of the committed snapshot are kept; the featured sponsors and the README are still updated.
 //
 // Locally: GH_TOKEN=$(gh auth token) node scripts/sponsors.mjs
 
@@ -22,16 +24,14 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
 const registryPath = join(websiteRoot, "contributors", "contributors.yml");
 const contributorsPath = join(websiteRoot, "src", "data", "contributors.json");
+const featuredPath = join(websiteRoot, "sponsors", "featured.yml");
 const snapshotPath = join(websiteRoot, "src", "data", "sponsors.json");
+const readmePath = join(websiteRoot, "..", "README.md");
 const repository = "maester365/maester";
 
 const botPattern = /\[bot\]|copilot|github[- ]actions?|actions-user|dependabot|web-flow|snyk/i;
 
 const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-if (!token) {
-  console.log("sponsors: no GH_TOKEN or GITHUB_TOKEN, keeping the committed snapshot.");
-  process.exit(0);
-}
 
 const headers = {
   Authorization: `Bearer ${token}`,
@@ -132,84 +132,188 @@ async function backersOf(login) {
   return backers;
 }
 
-const registry = existsSync(registryPath) ? loadYamlDocument(readFileSync(registryPath, "utf8")) ?? {} : {};
-const registryEntries = Object.entries(registry);
-const registryFor = (login) => registryEntries.find(([key]) => key.toLowerCase() === login.toLowerCase())?.[1] ?? {};
-const { profiles } = JSON.parse(readFileSync(contributorsPath, "utf8"));
-const profileFor = (login) => profiles.find((p) => p.github && p.github.toLowerCase() === login.toLowerCase());
-
-const maintainers = registryEntries.filter(([, entry]) => entry?.maintainer === true).map(([login]) => login);
-const testAuthors = profiles.filter((p) => p.github && p.testsAuthored.length > 0).map((p) => p.github);
-const committers = await repositoryContributors();
-const commitsFor = (login) => committers.find((c) => c.login.toLowerCase() === login.toLowerCase())?.contributions ?? 0;
-
-const seen = new Map();
-const unique = (logins) =>
-  logins.filter((login) => {
-    const key = login.toLowerCase();
-    if (seen.has(key) || registryFor(login).sponsorPage === false) return false;
-    seen.set(key, login);
-    return true;
-  });
-const groups = {
-  maintainers: unique(maintainers),
-  testAuthors: unique(testAuthors),
-  contributors: unique(committers.map((c) => c.login)),
-};
-
-const githubUsers = await sponsorProfiles([...seen.values()]);
-
-function entry(login) {
-  const user = githubUsers.get(login.toLowerCase());
-  if (!user?.hasSponsorsListing) return null;
-  const profile = profileFor(user.login);
-  const registered = registryFor(user.login);
-  return {
-    github: user.login,
-    name: registered.name || profile?.name || user.name || user.login,
-    title: registered.title || profile?.title || "",
-    avatar: profile?.avatar?.startsWith("/") ? profile.avatar : user.avatarUrl,
-    // A contributor page exists only for people the tests credit.
-    contributorPage: profile ? `/contributors/${profile.id.toLowerCase()}` : "",
-    tests: profile?.testsAuthored.length ?? 0,
-    commits: commitsFor(user.login),
-    sponsorUrl: `https://github.com/sponsors/${user.login}`,
-  };
-}
-
-const byName = (a, b) => a.name.localeCompare(b.name);
-const snapshot = {
-  maintainers: groups.maintainers.map(entry).filter(Boolean).sort(byName),
-  testAuthors: groups.testAuthors.map(entry).filter(Boolean).sort((a, b) => b.tests - a.tests || byName(a, b)),
-  contributors: groups.contributors.map(entry).filter(Boolean).sort((a, b) => b.commits - a.commits || byName(a, b)),
-};
-
-// The people and organisations who sponsor a core maintainer: thanked on the page. One entry each, with the
-// maintainers they sponsor; monthly sponsors first, then those who sponsor more maintainers.
-const backers = new Map();
-for (const maintainer of snapshot.maintainers) {
-  for (const backer of await backersOf(maintainer.github)) {
-    const key = backer.login.toLowerCase();
-    const known = backers.get(key) ?? {
-      github: backer.login,
-      name: backer.name || backer.login,
-      avatar: backer.avatarUrl,
-      organization: backer.__typename === "Organization",
-      monthly: false,
-      sponsors: [],
+// The featured sponsors, in the order of website/sponsors/featured.yml. A logo without a dark variant is used on
+// both backgrounds.
+function featuredSponsors() {
+  const listed = loadYamlDocument(readFileSync(featuredPath, "utf8")) ?? [];
+  return listed.map((sponsor) => {
+    for (const field of ["name", "url", "logo"]) {
+      if (!sponsor?.[field]) throw new Error(`${featuredPath}: ${sponsor?.name ?? "a sponsor"} has no ${field}.`);
+    }
+    for (const logo of [sponsor.logo, sponsor.logoDark].filter(Boolean)) {
+      if (!existsSync(join(websiteRoot, "static", logo))) throw new Error(`${featuredPath}: no file website/static${logo}.`);
+    }
+    return {
+      name: sponsor.name,
+      url: sponsor.url,
+      github: sponsor.github ?? "",
+      logo: sponsor.logo,
+      logoDark: sponsor.logoDark ?? sponsor.logo,
     };
-    known.monthly ||= backer.monthly;
-    if (!known.sponsors.includes(maintainer.github)) known.sponsors.push(maintainer.github);
-    backers.set(key, known);
-  }
+  });
 }
-snapshot.backers = [...backers.values()].sort(
-  (a, b) => Number(b.monthly) - Number(a.monthly) || b.sponsors.length - a.sponsors.length || byName(a, b)
-);
+
+// The people on the page, and the public sponsors of the core maintainers, looked up on GitHub.
+async function lookUpPeople() {
+  const registry = existsSync(registryPath) ? loadYamlDocument(readFileSync(registryPath, "utf8")) ?? {} : {};
+  const registryEntries = Object.entries(registry);
+  const registryFor = (login) => registryEntries.find(([key]) => key.toLowerCase() === login.toLowerCase())?.[1] ?? {};
+  const { profiles } = JSON.parse(readFileSync(contributorsPath, "utf8"));
+  const profileFor = (login) => profiles.find((p) => p.github && p.github.toLowerCase() === login.toLowerCase());
+
+  const maintainers = registryEntries.filter(([, entry]) => entry?.maintainer === true).map(([login]) => login);
+  const testAuthors = profiles.filter((p) => p.github && p.testsAuthored.length > 0).map((p) => p.github);
+  const committers = await repositoryContributors();
+  const commitsFor = (login) => committers.find((c) => c.login.toLowerCase() === login.toLowerCase())?.contributions ?? 0;
+
+  const seen = new Map();
+  const unique = (logins) =>
+    logins.filter((login) => {
+      const key = login.toLowerCase();
+      if (seen.has(key) || registryFor(login).sponsorPage === false) return false;
+      seen.set(key, login);
+      return true;
+    });
+  const groups = {
+    maintainers: unique(maintainers),
+    testAuthors: unique(testAuthors),
+    contributors: unique(committers.map((c) => c.login)),
+  };
+
+  const githubUsers = await sponsorProfiles([...seen.values()]);
+
+  function entry(login) {
+    const user = githubUsers.get(login.toLowerCase());
+    if (!user?.hasSponsorsListing) return null;
+    const profile = profileFor(user.login);
+    const registered = registryFor(user.login);
+    return {
+      github: user.login,
+      name: registered.name || profile?.name || user.name || user.login,
+      title: registered.title || profile?.title || "",
+      avatar: profile?.avatar?.startsWith("/") ? profile.avatar : user.avatarUrl,
+      // A contributor page exists only for people the tests credit.
+      contributorPage: profile ? `/contributors/${profile.id.toLowerCase()}` : "",
+      tests: profile?.testsAuthored.length ?? 0,
+      commits: commitsFor(user.login),
+      sponsorUrl: `https://github.com/sponsors/${user.login}`,
+    };
+  }
+
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const people = {
+    maintainers: groups.maintainers.map(entry).filter(Boolean).sort(byName),
+    testAuthors: groups.testAuthors.map(entry).filter(Boolean).sort((a, b) => b.tests - a.tests || byName(a, b)),
+    contributors: groups.contributors.map(entry).filter(Boolean).sort((a, b) => b.commits - a.commits || byName(a, b)),
+  };
+
+  // The people and organisations who sponsor a core maintainer: thanked on the page. One entry each, with the
+  // maintainers they sponsor; monthly sponsors first, then those who sponsor more maintainers.
+  const backers = new Map();
+  for (const maintainer of people.maintainers) {
+    for (const backer of await backersOf(maintainer.github)) {
+      const key = backer.login.toLowerCase();
+      const known = backers.get(key) ?? {
+        github: backer.login,
+        name: backer.name || backer.login,
+        avatar: backer.avatarUrl,
+        organization: backer.__typename === "Organization",
+        monthly: false,
+        sponsors: [],
+      };
+      known.monthly ||= backer.monthly;
+      if (!known.sponsors.includes(maintainer.github)) known.sponsors.push(maintainer.github);
+      backers.set(key, known);
+    }
+  }
+  people.backers = [...backers.values()].sort(
+    (a, b) => Number(b.monthly) - Number(a.monthly) || b.sponsors.length - a.sponsors.length || byName(a, b)
+  );
+
+  console.log(
+    `sponsors: ${people.maintainers.length} maintainers, ${people.testAuthors.length} test authors, ` +
+      `${people.contributors.length} other contributors with a Sponsors listing (of ${seen.size} people); ` +
+      `${people.backers.length} current public sponsors of the maintainers.`
+  );
+  return people;
+}
+
+// The Sponsors section of the repository README, between its sponsors:start and sponsors:end markers: the same
+// sponsors as the thank-you on the page. Images have absolute URLs, as the module ships the README too.
+const imageBase = `https://raw.githubusercontent.com/${repository}/main/website/static`;
+const html = (text) =>
+  String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function readmeSection({ featured, backers }) {
+  const lines = [
+    "<!-- sponsors:start -->",
+    "<!-- Written by website/scripts/sponsors.mjs. To change the featured sponsors, edit website/sponsors/featured.yml. -->",
+    "",
+    "## Sponsors",
+    "",
+    "Thank you to the organisations and people who sponsor Maester and its maintainers. You make Maester possible.",
+    "",
+  ];
+  if (featured.length > 0) {
+    const logos = featured.map(
+      (sponsor) =>
+        `<a href="${html(sponsor.url)}"><picture>` +
+        `<source media="(prefers-color-scheme: dark)" srcset="${imageBase}${html(sponsor.logoDark)}">` +
+        `<img src="${imageBase}${html(sponsor.logo)}" alt="${html(sponsor.name)}" height="52">` +
+        `</picture></a>`
+    );
+    lines.push("<p>", `  ${logos.join("&nbsp;&nbsp;&nbsp;&nbsp;\n  ")}`, "</p>", "");
+  }
+  if (backers.length > 0) {
+    lines.push("<table>");
+    for (let i = 0; i < backers.length; i += 6) {
+      lines.push("  <tr>");
+      for (const backer of backers.slice(i, i + 6)) {
+        lines.push(
+          `    <td align="center" width="110"><a href="https://github.com/${html(backer.github)}">` +
+            `<img src="${html(backer.avatar)}" width="64" height="64" alt=""><br><sub><b>${html(backer.name)}</b></sub></a></td>`
+        );
+      }
+      lines.push("  </tr>");
+    }
+    lines.push("</table>", "");
+  }
+  lines.push(
+    "Using Maester at work? Ask your company to sponsor one of the [people who build it](https://maester.dev/sponsor).",
+    "<!-- sponsors:end -->"
+  );
+  return lines.join("\n");
+}
+
+function writeReadme(snapshot) {
+  const readme = readFileSync(readmePath, "utf8");
+  const markers = /<!-- sponsors:start -->[\s\S]*?<!-- sponsors:end -->/;
+  if (!markers.test(readme)) {
+    console.warn("sponsors: README.md has no sponsors:start and sponsors:end markers, leaving it as it is.");
+    return;
+  }
+  writeFileSync(readmePath, readme.replace(markers, () => readmeSection(snapshot)));
+}
+
+const featured = featuredSponsors();
+const featuredLogins = new Set(featured.map((sponsor) => sponsor.github.toLowerCase()).filter(Boolean));
+
+let people;
+if (token) {
+  people = await lookUpPeople();
+} else {
+  console.log("sponsors: no GH_TOKEN or GITHUB_TOKEN, keeping the people of the committed snapshot.");
+  people = JSON.parse(readFileSync(snapshotPath, "utf8"));
+}
+
+// A featured sponsor who also sponsors a maintainer on GitHub is thanked once, with their logo.
+const { backers = [], ...groups } = people;
+const snapshot = {
+  ...groups,
+  featured,
+  backers: backers.filter((backer) => !featuredLogins.has(backer.github.toLowerCase())),
+};
 
 writeFileSync(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
-console.log(
-  `sponsors: ${snapshot.maintainers.length} maintainers, ${snapshot.testAuthors.length} test authors, ` +
-    `${snapshot.contributors.length} other contributors with a Sponsors listing (of ${seen.size} people); ` +
-    `${snapshot.backers.length} current public sponsors of the maintainers.`
-);
+writeReadme(snapshot);
+console.log(`sponsors: ${snapshot.featured.length} featured sponsors, ${snapshot.backers.length} other sponsors thanked.`);
