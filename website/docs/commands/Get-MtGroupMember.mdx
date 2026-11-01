@@ -22,6 +22,11 @@ Get-MtGroupMember [-GroupId] <Guid> [-Recursive] [-ProgressAction <ActionPrefere
 
 Returns all the members of the specific group ID.
 
+A group that is not found (404), such as a deleted group or an external partner group assigned through GDAP,
+returns $null.
+Any other error, such as missing permissions or throttling, is thrown, so a check that depends on
+the members cannot pass without reading them.
+
 ## EXAMPLES
 
 ### EXAMPLE 1
