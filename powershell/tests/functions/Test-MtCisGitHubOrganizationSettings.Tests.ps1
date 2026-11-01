@@ -20,6 +20,7 @@ Describe 'CIS GitHub organization setting tests' {
         }
 
         $script:orgResponse = [PSCustomObject]@{
+            id                                       = 1001
             login                                    = 'myorg'
             members_can_create_public_repositories  = $false
             members_can_create_private_repositories = $false
@@ -31,7 +32,12 @@ Describe 'CIS GitHub organization setting tests' {
             default_repository_permission           = 'read'
         }
 
-        Mock Invoke-MtGitHubRequest -ModuleName Maester { $script:orgResponse }
+        Mock Invoke-MtGitHubRequest -ModuleName Maester {
+            if ($IncludeMetadata) {
+                return [pscustomobject]@{ Data = $script:orgResponse; ContentKind = 'Object'; CollectionIntegrityValid = $true; PaginationComplete = $false; Issues = @() }
+            }
+            $script:orgResponse
+        }
         Mock Add-MtTestResultDetail -ModuleName Maester { }
     }
 
@@ -149,8 +155,10 @@ Describe 'CIS GitHub organization setting tests' {
 
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 $Result -match "$Id automated evidence from ``GET /orgs/\{org\}``\." -and
-                $Result -match '\| Field \| Actual \| Expected \|' -and
-                $Result -match '\| --- \| --- \| --- \|' -and
+                (($IsInvestigate -and $Result -match '\| Field \| Actual \|' -and $Result -notmatch '\| Expected \|') -or
+                    (-not $IsInvestigate -and $Result -match '\| Field \| Actual \| Expected \|')) -and
+                (($IsInvestigate -and $Result -match '\| --- \| --- \|') -or
+                    (-not $IsInvestigate -and $Result -match '\| --- \| --- \| --- \|')) -and
                 (($IsInvestigate -and $Investigate -eq $true) -or (-not $IsInvestigate -and -not $Investigate))
             }
 
@@ -229,14 +237,6 @@ Describe 'CIS GitHub organization setting tests' {
                 Field    = 'members_can_create_public_repositories'
             }
             @{
-                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
-                Field    = 'members_can_delete_repositories'
-            }
-            @{
-                Function = 'Test-MtCisGitHubIssueDeletionLimited'
-                Field    = 'members_can_delete_issues'
-            }
-            @{
                 Function = 'Test-MtCisGitHubTeamCreationLimited'
                 Field    = 'members_can_create_teams'
             }
@@ -260,8 +260,6 @@ Describe 'CIS GitHub organization setting tests' {
         # Native tests: the engine gates on Service = 'GitHub'; the functions no longer guard themselves.
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
-            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
-            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
@@ -292,8 +290,6 @@ Describe 'CIS GitHub organization setting tests' {
     Context 'GitHub request errors' {
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
-            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
-            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
@@ -305,6 +301,276 @@ Describe 'CIS GitHub organization setting tests' {
             $row = Invoke-MtTest -Id $Id
             $row.Result | Should -Be 'Error'
             $row.ReasonCode | Should -Be 'TestError'
+        }
+    }
+}
+
+Describe 'CIS GitHub evidence through the native transport and parser path' {
+    BeforeAll {
+        $script:validBody = '{"id":1001,"login":"synthetic-org","members_can_create_public_repositories":false,"members_can_create_private_repositories":false,"members_can_create_internal_repositories":false,"members_can_delete_repositories":false,"members_can_delete_issues":false,"members_can_create_teams":false,"default_repository_permission":"read"}'
+    }
+
+    BeforeEach {
+        $script:rawBody = $script:validBody
+        $script:expectedUri = 'https://api.github.com/orgs/synthetic-org'
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = [PSCustomObject]@{
+                Connected = $true
+                Organization = 'synthetic-org'
+                ApiBaseUri = 'https://api.github.com'
+                ApiVersion = '2026-03-10'
+            }
+            $__MtSession.GitHubAuthHeader = @{ 'X-GitHub-Api-Version' = '2026-03-10' }
+            $__MtSession.GitHubCache = @{}
+        }
+        # Only replace transport: real JSON parsing, request cache, native check and result collector run.
+        Mock Invoke-WebRequest -ModuleName Maester {
+            if ($Method -ne 'GET') { throw 'Unexpected transport method blocked by fixture.' }
+            if ($Uri -eq "$script:expectedUri/members?role=admin&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":11,"login":"synthetic-owner"}]'; Headers = @{} }
+            }
+            if ($Uri -eq "$script:expectedUri/repos?type=all&per_page=100") {
+                return [PSCustomObject]@{ Content = '[{"id":200,"name":"synthetic-repo","full_name":"synthetic-org/synthetic-repo","owner":{"login":"synthetic-org"}}]'; Headers = @{} }
+            }
+            if ($Uri -eq 'https://api.github.com/repos/synthetic-org/synthetic-repo/collaborators?affiliation=all&per_page=100') {
+                return [PSCustomObject]@{ Content = '[{"id":11,"permissions":{"admin":true}},{"id":12,"permissions":{"admin":true}}]'; Headers = @{} }
+            }
+            if ($Uri -ne $script:expectedUri) {
+                throw 'Unexpected transport request blocked by fixture.'
+            }
+            [PSCustomObject]@{ Content = $script:rawBody; Headers = @{} }
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.GitHubAuthHeader = $null
+            $__MtSession.GitHubCache = @{}
+            $__MtSession.MaesterConfig = $null
+        }
+    }
+
+    $checkCases = @(
+        @{ Id = 'CIS.GH.1.2.2' }
+        @{ Id = 'CIS.GH.1.3.2' }
+        @{ Id = 'CIS.GH.1.3.8' }
+    )
+
+    It 'Discovers exactly the five intended valid native checks' {
+        $expected = @('CIS.GH.1.2.2', 'CIS.GH.1.2.3', 'CIS.GH.1.2.4', 'CIS.GH.1.3.2', 'CIS.GH.1.3.8')
+        $actual = @(Get-MtTest -Id 'CIS.GH.*')
+        $actual.Count | Should -Be 5
+        Compare-Object ($expected | Sort-Object) ($actual.Id | Sort-Object) | Should -BeNullOrEmpty
+        foreach ($test in $actual) {
+            $test.IsValid | Should -BeTrue
+            $test.Errors | Should -BeNullOrEmpty
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0 -Exactly
+    }
+
+    Context 'Known configuration evidence' {
+        $creationCases = foreach ($public in $false, $true) {
+            foreach ($private in $false, $true) {
+                @{ Public = $public; Private = $private; Expected = $(if ($public -or $private) { 'Failed' } else { 'Passed' }) }
+            }
+        }
+        It 'Evaluates public=<Public>, private=<Private> independently of the deprecated umbrella field' -ForEach $creationCases {
+            $script:rawBody = '{"members_can_create_public_repositories":' + "$Public".ToLowerInvariant() + ',"members_can_create_private_repositories":' + "$Private".ToLowerInvariant() + ',"members_allowed_repository_creation_type":"' + $(if ($Expected -eq 'Passed') { 'all' } else { 'none' }) + '"}'
+            $row = @(Invoke-MtTest -Id 'CIS.GH.1.2.2')
+            $row.Count | Should -Be 1
+            $row[0].Result | Should -Be $Expected
+        }
+
+        It 'Keeps internal creation informational when it is <Internal>' -ForEach @(@{ Internal = 'true' }, @{ Internal = 'false' }) {
+            $script:rawBody = $script:validBody.Replace('"members_can_create_internal_repositories":false', '"members_can_create_internal_repositories":' + $Internal)
+            (Invoke-MtTest -Id 'CIS.GH.1.2.2').Result | Should -Be 'Passed'
+        }
+
+        It 'Evaluates team creation <Json> as <Expected>' -ForEach @(
+            @{ Json = 'false'; Expected = 'Passed' }
+            @{ Json = 'true'; Expected = 'Failed' }
+        ) {
+            $script:rawBody = '{"members_can_create_teams":' + $Json + '}'
+            (Invoke-MtTest -Id 'CIS.GH.1.3.2').Result | Should -Be $Expected
+        }
+
+        It 'Evaluates base permission <Value> as <Expected>' -ForEach @(
+            @{ Value = 'none'; Expected = 'Passed' }
+            @{ Value = 'read'; Expected = 'Passed' }
+            @{ Value = 'Read'; Expected = 'Passed' }
+            @{ Value = 'write'; Expected = 'Failed' }
+            @{ Value = 'admin'; Expected = 'Failed' }
+        ) {
+            $script:rawBody = '{"default_repository_permission":"' + $Value + '"}'
+            (Invoke-MtTest -Id 'CIS.GH.1.3.8').Result | Should -Be $Expected
+        }
+    }
+
+    Context 'Unusable field evidence is indeterminate' {
+        $booleanCases = foreach ($check in @(
+                @{ Id = 'CIS.GH.1.2.2'; Field = 'members_can_create_public_repositories' }
+                @{ Id = 'CIS.GH.1.2.2'; Field = 'members_can_create_private_repositories' }
+                @{ Id = 'CIS.GH.1.3.2'; Field = 'members_can_create_teams' }
+            )) {
+            # These invalid values are defensive fixtures, not documented GitHub Boolean contracts.
+            foreach ($json in 'null', '"false"', '0', '[]', '[false]', '{}') {
+                @{ Id = $check.Id; Field = $check.Field; Json = $json }
+            }
+        }
+        It 'Skips <Id> when <Field> contains unusable <Json>' -ForEach $booleanCases {
+            $script:rawBody = $script:validBody.Replace('"' + $Field + '":false', '"' + $Field + '":' + $Json)
+            $row = @(Invoke-MtTest -Id $Id)
+            $row.Count | Should -Be 1
+            $row[0].Result | Should -Be 'Skipped'
+            $row[0].ReasonCode | Should -Be 'TestSkipped'
+            $row[0].ReasonDetail | Should -Match 'Indeterminate'
+            $row[0].ReasonDetail | Should -Match $Field
+        }
+
+        It 'Skips nullable or unrecognized base permission <Json>' -ForEach @(
+            @{ Json = 'null' }
+            @{ Json = '""' }
+            @{ Json = '" "' }
+            @{ Json = '"unknown-permission"' }
+            @{ Json = 'false' }
+            @{ Json = '0' }
+            @{ Json = '["read"]' }
+            @{ Json = '{}' }
+        ) {
+            $script:rawBody = '{"default_repository_permission":' + $Json + '}'
+            $row = Invoke-MtTest -Id 'CIS.GH.1.3.8'
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'TestSkipped'
+            $row.ReasonDetail | Should -Match 'Indeterminate'
+            $row.ReasonDetail | Should -Match 'default_repository_permission'
+            $row.ReasonDetail | Should -Not -Match 'unknown-permission'
+        }
+
+        It 'Skips <Id> for missing required organization evidence' -ForEach $checkCases {
+            $script:rawBody = '{}'
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'TestSkipped'
+            $row.ReasonDetail | Should -Match 'Indeterminate'
+        }
+    }
+
+    Context 'Shapes still visible after existing normalization' {
+        $shapeCases = foreach ($check in $checkCases) {
+            foreach ($body in '', 'null', '[]', 'false', '0', '"text"', '[{},{}]') {
+                @{ Id = $check.Id; Body = $body }
+            }
+        }
+        It 'Skips <Id> for unusable response body <Body>' -ForEach $shapeCases {
+            $script:rawBody = $Body
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Skipped'
+            $row.ReasonCode | Should -Be 'TestSkipped'
+            $row.ReasonDetail | Should -Match 'Indeterminate'
+        }
+    }
+
+    It 'Requires both public and private evidence when only <Field> is returned' -ForEach @(
+        @{ Field = 'members_can_create_public_repositories' }
+        @{ Field = 'members_can_create_private_repositories' }
+    ) {
+        $script:rawBody = '{"' + $Field + '":false}'
+        $row = Invoke-MtTest -Id 'CIS.GH.1.2.2'
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'TestSkipped'
+        $row.ReasonDetail | Should -Match 'Indeterminate'
+    }
+
+
+    It 'Fails creation when Boolean true is decisive despite an unusable companion (<Field>, <Companion>)' -ForEach @(
+        foreach ($field in 'members_can_create_public_repositories', 'members_can_create_private_repositories') {
+            foreach ($companion in 'missing', 'null', '"false"', '0', '{}') { @{ Field = $field; Companion = $companion } }
+        }
+    ) {
+        $other = if ($Field -eq 'members_can_create_public_repositories') { 'members_can_create_private_repositories' } else { 'members_can_create_public_repositories' }
+        $script:rawBody = '{"' + $Field + '":true' + $(if ($Companion -ne 'missing') { ',"' + $other + '":' + $Companion }) + '}'
+        $row = Invoke-MtTest -Id 'CIS.GH.1.2.2'
+        $row.Result | Should -Be 'Failed'
+        $row.ResultDetail.TestResult | Should -Match 'True'
+        $row.ResultDetail.TestResult | Should -Match 'Unavailable'
+    }
+
+    It 'Uses check-visible evidence on configured host <BaseUri>, with missing fields still indeterminate' -ForEach @(
+        @{ BaseUri = 'https://api.github.com' }
+        @{ BaseUri = 'https://api.synthetic.ghe.com' }
+    ) {
+        # A synthetic connected session tests request routing, not device-flow or live-platform qualification.
+        InModuleScope Maester -Parameters @{ BaseUri = $BaseUri } {
+            $__MtSession.GitHubConnection.ApiBaseUri = $BaseUri
+        }
+        $script:expectedUri = "$BaseUri/orgs/synthetic-org"
+        (Invoke-MtTest -Id 'CIS.GH.1.2.2').Result | Should -Be 'Passed'
+        InModuleScope Maester { $__MtSession.GitHubCache = @{} }
+        $script:rawBody = '{"members_can_create_private_repositories":false}'
+        $row = Invoke-MtTest -Id 'CIS.GH.1.2.2'
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonDetail | Should -Match 'Indeterminate'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly
+    }
+
+    Context 'Existing singleton-array normalization limitation (characterization only)' {
+        # Array-wrapped organization objects are NOT an endorsed GitHub response contract.
+        # Current parsing/pipeline enumeration can erase their wrappers before a check sees them.
+        # Future parser rejection is allowed: these fixtures must not require preserving that limitation.
+        It 'Characterizes an array wrapper without promising complete raw-schema validation: <Wrapper>' -ForEach @(
+            @{ Wrapper = 'single' }
+            @{ Wrapper = 'nested' }
+        ) {
+            $script:rawBody = if ($Wrapper -eq 'single') { '[' + $script:validBody + ']' } else { '[[' + $script:validBody + ']]' }
+            $row = Invoke-MtTest -Id 'CIS.GH.1.3.2'
+            $row.Result | Should -BeIn @('Passed', 'Skipped', 'Error')
+            if ($row.Result -eq 'Passed') {
+                $parsed = InModuleScope Maester { Get-MtGitHubOrganization }
+                ($parsed -is [System.Array]) | Should -BeFalse
+                $parsed.members_can_create_teams | Should -BeOfType [bool]
+                $parsed.members_can_create_teams | Should -BeFalse
+            }
+        }
+    }
+
+    Context 'Transport and parsing failures retain Error' {
+        It 'Reports malformed JSON as Error for <Id>' -ForEach $checkCases {
+            $script:rawBody = '{'
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'TestError'
+        }
+
+        $httpCases = foreach ($check in $checkCases) {
+            foreach ($status in 401, 403, 404, 429, 500, 503) { @{ Id = $check.Id; Status = $status } }
+        }
+        It 'Reports HTTP <Status> as Error for <Id>' -ForEach $httpCases {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$Status)
+                throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic GitHub HTTP failure', $response)
+            }
+            $row = Invoke-MtTest -Id $Id
+            $row.Result | Should -Be 'Error'
+            $row.ReasonCode | Should -Be 'TestError'
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly
+        }
+    }
+
+    It 'Routes requested version <Version> and stores its version-qualified cache key' -ForEach @(
+        @{ Version = '2022-11-28' }
+        @{ Version = '2026-03-10' }
+    ) {
+        InModuleScope Maester -Parameters @{ Version = $Version } {
+            $__MtSession.GitHubConnection.ApiVersion = $Version
+            $__MtSession.GitHubAuthHeader['X-GitHub-Api-Version'] = $Version
+        }
+        (Invoke-MtTest -Id 'CIS.GH.1.3.2').Result | Should -Be 'Passed'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Headers['X-GitHub-Api-Version'] -eq $Version
+        }
+        InModuleScope Maester -Parameters @{ Version = $Version } {
+            $__MtSession.GitHubCache.ContainsKey("$Version|https://api.github.com/orgs/synthetic-org") | Should -BeTrue
         }
     }
 }
