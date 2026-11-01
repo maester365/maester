@@ -5,7 +5,7 @@
 
     # MicrosoftTeams is optional; stubs let its cmdlets be mocked when it is not installed.
     $script:stubs = @()
-    foreach ($name in 'Get-CsTeamsClientConfiguration', 'Get-CsTeamsMessagingPolicy', 'Get-M365UnifiedTenantSettings', 'Get-CsTeamsSettingsCustomApp') {
+    foreach ($name in 'Get-CsTeamsClientConfiguration', 'Get-CsTeamsMessagingPolicy', 'Get-M365UnifiedTenantSettings', 'Get-CsTeamsSettingsCustomApp', 'Get-CsTenantFederationConfiguration', 'Get-CsExternalAccessPolicy') {
         if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
             Set-Item -Path "function:global:$name" -Value {
                 [CmdletBinding()]
@@ -15,6 +15,9 @@
             $script:stubs += $name
         }
     }
+
+    . "$PSScriptRoot/../../../tests/cis/Test.CIS.M365.8.2.2.ps1"
+    . "$PSScriptRoot/../../../tests/cis/Test.CIS.M365.8.2.3.ps1"
 }
 
 AfterAll {
@@ -54,6 +57,47 @@ Describe 'Test-MtCisZAP' {
         Test-MtCisZAP | Should -BeTrue
         $script:Result | Should -Match 'ExceptIfSentTo \| research@contoso.com'
         $script:Result | Should -Match 'ExceptIfRecipientDomainIs \| research.contoso.com'
+    }
+}
+
+Describe 'CIS unmanaged Teams user settings' {
+    BeforeEach {
+        $script:Federation = [pscustomobject]@{
+            AllowTeamsConsumer       = $false
+            AllowTeamsConsumerInbound = $false
+        }
+        $script:GlobalPolicy = $null
+        Mock Get-CsTenantFederationConfiguration { $script:Federation }
+        Mock Get-CsExternalAccessPolicy {
+            if ($null -eq $script:GlobalPolicy) { throw 'The Global policy lookup should not run.' }
+            $script:GlobalPolicy
+        }
+    }
+
+    It 'passes 8.2.2 without looking up the Global policy when the organization setting is false' {
+        Test-MtCisCommunicateWithUnmanagedTeamsUsers | Should -BeTrue
+        Should -Invoke Get-CsExternalAccessPolicy -Times 0 -Exactly
+    }
+
+    It 'passes 8.2.3 without looking up the Global policy when the organization setting is false' {
+        Test-MtCisCommunicateInitiateExternalTeamsUsers | Should -BeTrue
+        Should -Invoke Get-CsExternalAccessPolicy -Times 0 -Exactly
+    }
+
+    It 'uses the Global policy fallback for 8.2.2 when the organization setting is enabled' {
+        $script:Federation.AllowTeamsConsumer = $true
+        $script:GlobalPolicy = [pscustomobject]@{ EnableTeamsConsumerAccess = $false }
+
+        Test-MtCisCommunicateWithUnmanagedTeamsUsers | Should -BeTrue
+        Should -Invoke Get-CsExternalAccessPolicy -Times 1 -Exactly
+    }
+
+    It 'uses the Global policy fallback for 8.2.3 when the organization setting is enabled' {
+        $script:Federation.AllowTeamsConsumerInbound = $true
+        $script:GlobalPolicy = [pscustomobject]@{ EnableTeamsConsumerInbound = $false }
+
+        Test-MtCisCommunicateInitiateExternalTeamsUsers | Should -BeTrue
+        Should -Invoke Get-CsExternalAccessPolicy -Times 1 -Exactly
     }
 }
 

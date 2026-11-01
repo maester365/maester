@@ -39,9 +39,12 @@
     Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if external unmanaged Teams users cannot initiate conversations'
 
     $federation = Get-CsTenantFederationConfiguration
-    $externalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
     $orgSetting = $federation.AllowTeamsConsumerInbound
-    $policySetting = $externalAccessPolicy.EnableTeamsConsumerInbound
+    $policySetting = $null
+    if ($orgSetting -ne $false) {
+        $externalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+        $policySetting = $externalAccessPolicy.EnableTeamsConsumerInbound
+    }
     $testResult = $orgSetting -eq $false -or $policySetting -eq $false
 
     $resultMarkdown = if ($testResult) {
@@ -52,7 +55,9 @@
     $resultMarkdown += "| Setting | Value | Result |`n"
     $resultMarkdown += "| --- | --- | --- |`n"
     $resultMarkdown += "| AllowTeamsConsumerInbound (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
-    $resultMarkdown += "| EnableTeamsConsumerInbound (Global external access policy) | $(if ($null -eq $policySetting) { 'Not found' } else { $policySetting }) | $(if ($policySetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $policyValue = if ($orgSetting -eq $false) { 'Not checked' } elseif ($null -eq $policySetting) { 'Not found' } else { $policySetting }
+    $policyResult = if ($orgSetting -eq $false) { 'Not checked' } elseif ($policySetting -eq $false) { 'Pass' } else { 'Fail' }
+    $resultMarkdown += "| EnableTeamsConsumerInbound (Global external access policy) | $policyValue | $policyResult |`n"
     $resultMarkdown += "`nEither setting turned off meets the CIS recommendation."
 
     Add-MtTestResultDetail -Result $resultMarkdown
