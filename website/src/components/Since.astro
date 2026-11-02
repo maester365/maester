@@ -1,0 +1,69 @@
+---
+// A guide section that only applies from a release: <Since version="3.1">…</Since>. The mark is worked out from
+// website/version-config.js: "Preview 3.1" while 3.1 is the preview, "New in 3.1" once it is stable, and nothing
+// two minor releases later.
+import { previewLabel, stableVersion } from '../lib/versions.mjs';
+
+interface Props {
+	version: string;
+	title?: string;
+}
+const { version, title } = Astro.props;
+const [major, minor] = version.split('.').map(Number);
+const [stableMajor, stableMinor] = stableVersion.split('.').map(Number);
+const [previewMajor, previewMinor] = previewLabel.split('.').map(Number);
+const known = (major === previewMajor && minor === previewMinor) || major < stableMajor || (major === stableMajor && minor <= stableMinor);
+if (!known) throw new Error(`<Since version="${version}">: the stable release is ${stableVersion} and the preview is ${previewLabel}; use one of them.`);
+const inPreview = major === previewMajor && minor === previewMinor && (major > stableMajor || (major === stableMajor && minor > stableMinor));
+const age = (stableMajor - major) * 100 + (stableMinor - minor);
+const showMark = inPreview || age < 2;
+---
+
+<div class:list={['mt-since', { 'mt-since--preview': inPreview }]}>
+	{
+		(showMark || title) && (
+			<p class="mt-since__head">
+				{showMark && (inPreview ? <span class="mt-since__mark">Preview {version}</span> : <span class="mt-since__mark mt-since__mark--new">New in {version}</span>)}
+				{title && <strong>{title}</strong>}
+			</p>
+		)
+	}
+	<slot />
+	{inPreview && <p class="mt-since__how">Only in the preview: <a href="/docs/preview">how to get it</a>.</p>}
+</div>
+
+<style>
+	.mt-since {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: var(--mt-radius);
+		padding: 0.75rem 1rem;
+		margin-block: 1rem;
+	}
+	.mt-since--preview {
+		border-color: var(--mt-warn-line);
+	}
+	.mt-since__head {
+		display: flex;
+		gap: 0.6rem;
+		align-items: center;
+		margin: 0 0 0.5rem;
+	}
+	.mt-since__mark {
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+		font-weight: 600;
+		border-radius: 6px;
+		padding: 0.1rem 0.45rem;
+		background: var(--mt-warn-soft);
+		color: var(--mt-warn-ink);
+	}
+	.mt-since__mark--new {
+		background: var(--mt-new-soft);
+		color: var(--mt-new-ink);
+	}
+	.mt-since__how {
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+		margin: 0.5rem 0 0;
+	}
+</style>

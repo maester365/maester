@@ -1,11 +1,7 @@
 ---
-sidebar_class_name: hidden
 description: "This is the main Maester command that runs the tests and generates a report of the results."
-id: Invoke-Maester
 title: Invoke-Maester
-hide_title: false
-hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/run/Invoke-Maester.ps1
+editUrl: https://github.com/maester365/maester/blob/main/powershell/public/run/Invoke-Maester.ps1
 ---
 
 ## SYNOPSIS
@@ -36,7 +32,7 @@ Using Invoke-Maester is the easiest way to run the Pester tests and generate a r
 For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
 By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests.
-With -Path, native custom tests (Test.*.ps1) are found anywhere under the path and Pester-format custom tests (*.Tests.ps1) only in a Custom folder.
+With -Path, native custom tests (`Test.*.ps1`) are found anywhere under the path and Pester-format custom tests (`*.Tests.ps1`) only in a Custom folder.
 Folders are searched up to three levels deep.
 Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 

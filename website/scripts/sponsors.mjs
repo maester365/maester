@@ -146,7 +146,7 @@ function featuredSponsors() {
       if (!sponsor?.[field]) throw new Error(`${featuredPath}: ${sponsor?.name ?? "a sponsor"} has no ${field}.`);
     }
     for (const logo of [sponsor.logo, sponsor.logoDark].filter(Boolean)) {
-      if (!existsSync(join(websiteRoot, "static", logo))) throw new Error(`${featuredPath}: no file website/static${logo}.`);
+      if (!existsSync(join(websiteRoot, "public", logo))) throw new Error(`${featuredPath}: no file website/public${logo}.`);
     }
     return {
       name: sponsor.name,
@@ -245,7 +245,7 @@ async function lookUpPeople() {
 
 // The Sponsors section of the repository README, between its sponsors:start and sponsors:end markers: the same
 // sponsors as the thank-you on the page. Images have absolute URLs, as the module ships the README too.
-const imageBase = `https://raw.githubusercontent.com/${repository}/main/website/static`;
+const imageBase = `https://raw.githubusercontent.com/${repository}/main/website/public`;
 const html = (text) =>
   String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 

@@ -1,13 +1,10 @@
 ---
-sidebar_position: 6
 title: ✨ Contributing
+sidebar:
+  order: 6
 ---
 
-import TOCInline from '@theme/TOCInline';
-
 # Contributing
-
-<TOCInline toc={toc} />
 
 ## Introduction
 

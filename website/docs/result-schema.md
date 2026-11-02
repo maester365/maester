@@ -1,7 +1,8 @@
 ---
 title: Result schema
-sidebar_label: 📄 Result schema
 description: Reference for the Maester 3.0 result JSON (schema 2.1), the NUnit and JUnit XML files, and merging the results of a run split across processes.
+sidebar:
+  label: Result schema
 ---
 
 # Result schema

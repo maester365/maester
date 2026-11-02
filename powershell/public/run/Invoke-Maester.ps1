@@ -8,7 +8,7 @@
 
     For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-    By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (Test.*.ps1) are found anywhere under the path and Pester-format custom tests (*.Tests.ps1) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
+    By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (`Test.*.ps1`) are found anywhere under the path and Pester-format custom tests (`*.Tests.ps1`) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
     -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. -ExcludeProduct leaves out the tests of a product and wins over every selector. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 

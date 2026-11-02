@@ -1243,7 +1243,7 @@
         "MT.1036"
       ],
       "initials": "SW",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "oed-metzb",
@@ -2846,7 +2846,7 @@
         "MT.1227"
       ],
       "initials": "MF",
-      "recentCommits": 193
+      "recentCommits": 192
     }
   ],
   "attributions": {
@@ -7971,243 +7971,243 @@
     },
     "ASD.ISM-1175": {
       "title": "Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services.",
-      "path": "/docs/next/tests/ASD.ISM-1175"
+      "path": "/docs/tests/ASD.ISM-1175"
     },
     "ASD.ISM-1403": {
       "title": "User accounts are protected by lockout mechanisms aligned to a maximum of five failed logon attempts.",
-      "path": "/docs/next/tests/ASD.ISM-1403"
+      "path": "/docs/tests/ASD.ISM-1403"
     },
     "ASD.ISM-1488": {
       "title": "Microsoft Office macros in files originating from the internet are blocked.",
-      "path": "/docs/next/tests/ASD.ISM-1488"
+      "path": "/docs/tests/ASD.ISM-1488"
     },
     "ASD.ISM-1504": {
       "title": "Multi-factor authentication is used to authenticate human users to their organisation's online services.",
-      "path": "/docs/next/tests/ASD.ISM-1504"
+      "path": "/docs/tests/ASD.ISM-1504"
     },
     "ASD.ISM-1648": {
       "title": "Privileged access to systems and their resources is disabled after 45 days of inactivity.",
-      "path": "/docs/next/tests/ASD.ISM-1648"
+      "path": "/docs/tests/ASD.ISM-1648"
     },
     "ASD.ISM-1649": {
       "title": "Just-in-time administration is used for the administration of systems and their resources.",
-      "path": "/docs/next/tests/ASD.ISM-1649"
+      "path": "/docs/tests/ASD.ISM-1649"
     },
     "ASD.ISM-1654": {
       "title": "Internet Explorer 11 is disabled or removed.",
-      "path": "/docs/next/tests/ASD.ISM-1654"
+      "path": "/docs/tests/ASD.ISM-1654"
     },
     "ASD.ISM-1667": {
       "title": "Microsoft Office is blocked from creating child processes.",
-      "path": "/docs/next/tests/ASD.ISM-1667"
+      "path": "/docs/tests/ASD.ISM-1667"
     },
     "ASD.ISM-1668": {
       "title": "Microsoft Office is blocked from creating executable content.",
-      "path": "/docs/next/tests/ASD.ISM-1668"
+      "path": "/docs/tests/ASD.ISM-1668"
     },
     "ASD.ISM-1669": {
       "title": "Microsoft Office is blocked from injecting code into other processes.",
-      "path": "/docs/next/tests/ASD.ISM-1669"
+      "path": "/docs/tests/ASD.ISM-1669"
     },
     "ASD.ISM-1672": {
       "title": "Microsoft Office macro antivirus scanning is enabled.",
-      "path": "/docs/next/tests/ASD.ISM-1672"
+      "path": "/docs/tests/ASD.ISM-1672"
     },
     "ASD.ISM-1673": {
       "title": "Microsoft Office macros are blocked from making Win32 API calls.",
-      "path": "/docs/next/tests/ASD.ISM-1673"
+      "path": "/docs/tests/ASD.ISM-1673"
     },
     "ASD.ISM-1695": {
       "title": "Patches for vulnerabilities in the operating systems of workstations are applied within one month of release.",
-      "path": "/docs/next/tests/ASD.ISM-1695"
+      "path": "/docs/tests/ASD.ISM-1695"
     },
     "ASD.ISM-1872": {
       "title": "Multi-factor authentication used for authenticating human users of online services is phishing-resistant.",
-      "path": "/docs/next/tests/ASD.ISM-1872"
+      "path": "/docs/tests/ASD.ISM-1872"
     },
     "AZDO.1000": {
       "title": "Azure DevOps OAuth apps can access resources in your organization through OAuth.",
-      "path": "/docs/next/tests/AZDO.1000"
+      "path": "/docs/tests/AZDO.1000"
     },
     "AZDO.1001": {
       "title": "Identities can connect to your organization's Git repos through SSH.",
-      "path": "/docs/next/tests/AZDO.1001"
+      "path": "/docs/tests/AZDO.1001"
     },
     "AZDO.1002": {
       "title": "Log Audit Events.",
-      "path": "/docs/next/tests/AZDO.1002"
+      "path": "/docs/tests/AZDO.1002"
     },
     "AZDO.1003": {
       "title": "Restrict public projects.",
-      "path": "/docs/next/tests/AZDO.1003"
+      "path": "/docs/tests/AZDO.1003"
     },
     "AZDO.1004": {
       "title": "Additional protections when using public package registries.",
-      "path": "/docs/next/tests/AZDO.1004"
+      "path": "/docs/tests/AZDO.1004"
     },
     "AZDO.1005": {
       "title": "IP Conditional Access policy validation.",
-      "path": "/docs/next/tests/AZDO.1005"
+      "path": "/docs/tests/AZDO.1005"
     },
     "AZDO.1006": {
       "title": "External Users access.",
-      "path": "/docs/next/tests/AZDO.1006"
+      "path": "/docs/tests/AZDO.1006"
     },
     "AZDO.1007": {
       "title": "Team and project administrator are allowed to invite new users.",
-      "path": "/docs/next/tests/AZDO.1007"
+      "path": "/docs/tests/AZDO.1007"
     },
     "AZDO.1008": {
       "title": "Request access to Azure DevOps by e-mail notifications to administrators.",
-      "path": "/docs/next/tests/AZDO.1008"
+      "path": "/docs/tests/AZDO.1008"
     },
     "AZDO.1009": {
       "title": "Feedback Collection.",
-      "path": "/docs/next/tests/AZDO.1009"
+      "path": "/docs/tests/AZDO.1009"
     },
     "AZDO.1010": {
       "title": "Audit streaming.",
-      "path": "/docs/next/tests/AZDO.1010"
+      "path": "/docs/tests/AZDO.1010"
     },
     "AZDO.1011": {
       "title": "Project Resource Limits.",
-      "path": "/docs/next/tests/AZDO.1011"
+      "path": "/docs/tests/AZDO.1011"
     },
     "AZDO.1012": {
       "title": "Work Items Tags Limits.",
-      "path": "/docs/next/tests/AZDO.1012"
+      "path": "/docs/tests/AZDO.1012"
     },
     "AZDO.1013": {
       "title": "Organization Owner should not be an individual.",
-      "path": "/docs/next/tests/AZDO.1013"
+      "path": "/docs/tests/AZDO.1013"
     },
     "AZDO.1014": {
       "title": "Anonymous access to pipeline badges.",
-      "path": "/docs/next/tests/AZDO.1014"
+      "path": "/docs/tests/AZDO.1014"
     },
     "AZDO.1015": {
       "title": "Limit variables that can be set at queue time.",
-      "path": "/docs/next/tests/AZDO.1015"
+      "path": "/docs/tests/AZDO.1015"
     },
     "AZDO.1016": {
       "title": "Limit job authorization scope to current project for non-release pipelines.",
-      "path": "/docs/next/tests/AZDO.1016"
+      "path": "/docs/tests/AZDO.1016"
     },
     "AZDO.1017": {
       "title": "Limit job authorization scope to current project for classic release pipelines.",
-      "path": "/docs/next/tests/AZDO.1017"
+      "path": "/docs/tests/AZDO.1017"
     },
     "AZDO.1018": {
       "title": "Protect access to repositories in YAML pipelines.",
-      "path": "/docs/next/tests/AZDO.1018"
+      "path": "/docs/tests/AZDO.1018"
     },
     "AZDO.1019": {
       "title": "Stage chooser.",
-      "path": "/docs/next/tests/AZDO.1019"
+      "path": "/docs/tests/AZDO.1019"
     },
     "AZDO.1020": {
       "title": "Creation of classic build pipelines.",
-      "path": "/docs/next/tests/AZDO.1020"
+      "path": "/docs/tests/AZDO.1020"
     },
     "AZDO.1021": {
       "title": "Creation of classic release pipelines.",
-      "path": "/docs/next/tests/AZDO.1021"
+      "path": "/docs/tests/AZDO.1021"
     },
     "AZDO.1022": {
       "title": "Limit building pull requests from forked GitHub repositories.",
-      "path": "/docs/next/tests/AZDO.1022"
+      "path": "/docs/tests/AZDO.1022"
     },
     "AZDO.1023": {
       "title": "Disable Marketplace tasks.",
-      "path": "/docs/next/tests/AZDO.1023"
+      "path": "/docs/tests/AZDO.1023"
     },
     "AZDO.1024": {
       "title": "Disable Node 6 tasks.",
-      "path": "/docs/next/tests/AZDO.1024"
+      "path": "/docs/tests/AZDO.1024"
     },
     "AZDO.1025": {
       "title": "Enable shell tasks arguments validation.",
-      "path": "/docs/next/tests/AZDO.1025"
+      "path": "/docs/tests/AZDO.1025"
     },
     "AZDO.1026": {
       "title": "Enable automatic enrollment to Advanced Security for Azure DevOps.",
-      "path": "/docs/next/tests/AZDO.1026"
+      "path": "/docs/tests/AZDO.1026"
     },
     "AZDO.1027": {
       "title": "Disable showing Gravatar images for users outside of your enterprise.",
-      "path": "/docs/next/tests/AZDO.1027"
+      "path": "/docs/tests/AZDO.1027"
     },
     "AZDO.1028": {
       "title": "Disable creation of TFVC repositories.",
-      "path": "/docs/next/tests/AZDO.1028"
+      "path": "/docs/tests/AZDO.1028"
     },
     "AZDO.1029": {
       "title": "Storage Usage Limit.",
-      "path": "/docs/next/tests/AZDO.1029"
+      "path": "/docs/tests/AZDO.1029"
     },
     "AZDO.1030": {
       "title": "Project Collection Administrators.",
-      "path": "/docs/next/tests/AZDO.1030"
+      "path": "/docs/tests/AZDO.1030"
     },
     "AZDO.1031": {
       "title": "Validate SSH Key Expiration.",
-      "path": "/docs/next/tests/AZDO.1031"
+      "path": "/docs/tests/AZDO.1031"
     },
     "AZDO.1032": {
       "title": "(Tenant) Restrict creation of global Personal Access Tokens.",
-      "path": "/docs/next/tests/AZDO.1032"
+      "path": "/docs/tests/AZDO.1032"
     },
     "AZDO.1033": {
       "title": "(Tenant) Enable automatic revocation of leaked Personal Access Tokens.",
-      "path": "/docs/next/tests/AZDO.1033"
+      "path": "/docs/tests/AZDO.1033"
     },
     "AZDO.1034": {
       "title": "(Tenant) Restrict creation of new Azure DevOps organizations.",
-      "path": "/docs/next/tests/AZDO.1034"
+      "path": "/docs/tests/AZDO.1034"
     },
     "AZDO.1035": {
       "title": "(Tenant) Restrict Personal Access Token lifespan.",
-      "path": "/docs/next/tests/AZDO.1035"
+      "path": "/docs/tests/AZDO.1035"
     },
     "AZDO.1036": {
       "title": "(Tenant) Restrict Personal Access Token full scope.",
-      "path": "/docs/next/tests/AZDO.1036"
+      "path": "/docs/tests/AZDO.1036"
     },
     "AZDO.1037": {
       "title": "(Organization) Restrict Personal Access Token creation.",
-      "path": "/docs/next/tests/AZDO.1037"
+      "path": "/docs/tests/AZDO.1037"
     },
     "AZDO.1038": {
       "title": "(Organization) Disallow extensions from accessing resources on the local network.",
-      "path": "/docs/next/tests/AZDO.1038"
+      "path": "/docs/tests/AZDO.1038"
     },
     "AZDO.1039": {
       "title": "(Organization) Secret Protection: new repositories enrolled automatically.",
-      "path": "/docs/next/tests/AZDO.1039"
+      "path": "/docs/tests/AZDO.1039"
     },
     "AZDO.1040": {
       "title": "(Organization) Secret Protection: existing repositories enrolled.",
-      "path": "/docs/next/tests/AZDO.1040"
+      "path": "/docs/tests/AZDO.1040"
     },
     "AZDO.1041": {
       "title": "(Organization) Secret Protection: push protection blocks secret commits.",
-      "path": "/docs/next/tests/AZDO.1041"
+      "path": "/docs/tests/AZDO.1041"
     },
     "AZDO.1042": {
       "title": "(Organization) Code Security: new repositories enrolled automatically.",
-      "path": "/docs/next/tests/AZDO.1042"
+      "path": "/docs/tests/AZDO.1042"
     },
     "AZDO.1043": {
       "title": "(Organization) Code Security: existing repositories enrolled.",
-      "path": "/docs/next/tests/AZDO.1043"
+      "path": "/docs/tests/AZDO.1043"
     },
     "AZDO.1044": {
       "title": "(Organization) Code Security: dependency and CodeQL alerts enabled.",
-      "path": "/docs/next/tests/AZDO.1044"
+      "path": "/docs/tests/AZDO.1044"
     },
     "AZDO.1045": {
       "title": "(Organization) Copilot code review: allowed for repositories.",
-      "path": "/docs/next/tests/AZDO.1045"
+      "path": "/docs/tests/AZDO.1045"
     },
     "CIS.GH.1.2.2": {
       "title": "(L1) Ensure repository creation is limited to specific members",
@@ -8251,7 +8251,7 @@
     },
     "CIS.M365.1.3.2": {
       "title": "(L2) Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices",
-      "path": "/docs/next/tests/CIS.M365.1.3.2"
+      "path": "/docs/tests/CIS.M365.1.3.2"
     },
     "CIS.M365.1.3.3": {
       "title": "(L2) Ensure 'External sharing' of calendars is not available",
@@ -8275,7 +8275,7 @@
     },
     "CIS.M365.1.3.9": {
       "title": "(L1) Ensure shared bookings pages are restricted to select users",
-      "path": "/docs/next/tests/CIS.M365.1.3.9"
+      "path": "/docs/tests/CIS.M365.1.3.9"
     },
     "CIS.M365.2.1.1": {
       "title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy)",
@@ -8307,7 +8307,7 @@
     },
     "CIS.M365.2.1.8": {
       "title": "(L1) Ensure that SPF records are published for all Exchange Domains",
-      "path": "/docs/next/tests/CIS.M365.2.1.8"
+      "path": "/docs/tests/CIS.M365.2.1.8"
     },
     "CIS.M365.2.1.9": {
       "title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains",
@@ -8315,7 +8315,7 @@
     },
     "CIS.M365.2.1.10": {
       "title": "(L1) Ensure DMARC records for all Exchange Online domains are published",
-      "path": "/docs/next/tests/CIS.M365.2.1.10"
+      "path": "/docs/tests/CIS.M365.2.1.10"
     },
     "CIS.M365.2.1.11": {
       "title": "(L2) Ensure comprehensive attachment filtering is applied",
@@ -8331,19 +8331,19 @@
     },
     "CIS.M365.2.1.14": {
       "title": "(L1) Ensure inbound anti-spam policies do not contain allowed domains",
-      "path": "/docs/next/tests/CIS.M365.2.1.14"
+      "path": "/docs/tests/CIS.M365.2.1.14"
     },
     "CIS.M365.2.1.15": {
       "title": "(L1) Ensure outbound anti-spam message limits are in place (Default policy only)",
-      "path": "/docs/next/tests/CIS.M365.2.1.15"
+      "path": "/docs/tests/CIS.M365.2.1.15"
     },
     "CIS.M365.2.4.1": {
       "title": "(L1) Ensure Priority account protection is enabled and configured",
-      "path": "/docs/next/tests/CIS.M365.2.4.1"
+      "path": "/docs/tests/CIS.M365.2.4.1"
     },
     "CIS.M365.2.4.2": {
       "title": "(L1) Ensure Priority accounts have 'Strict protection' presets applied",
-      "path": "/docs/next/tests/CIS.M365.2.4.2"
+      "path": "/docs/tests/CIS.M365.2.4.2"
     },
     "CIS.M365.2.4.4": {
       "title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)",
@@ -8355,19 +8355,19 @@
     },
     "CIS.M365.3.2.1": {
       "title": "(L1) Ensure DLP policies are enabled",
-      "path": "/docs/next/tests/CIS.M365.3.2.1"
+      "path": "/docs/tests/CIS.M365.3.2.1"
     },
     "CIS.M365.3.2.2": {
       "title": "(L1) Ensure DLP policies are enabled for Microsoft Teams",
-      "path": "/docs/next/tests/CIS.M365.3.2.2"
+      "path": "/docs/tests/CIS.M365.3.2.2"
     },
     "CIS.M365.3.2.3": {
       "title": "(L1) Ensure DLP policies are published for Copilot users",
-      "path": "/docs/next/tests/CIS.M365.3.2.3"
+      "path": "/docs/tests/CIS.M365.3.2.3"
     },
     "CIS.M365.3.3.1": {
       "title": "(L1) Ensure Information Protection sensitivity label policies are published",
-      "path": "/docs/next/tests/CIS.M365.3.3.1"
+      "path": "/docs/tests/CIS.M365.3.3.1"
     },
     "CIS.M365.4.1": {
       "title": "(L1) Ensure devices without a compliance policy are marked 'not compliant'",
@@ -8375,7 +8375,7 @@
     },
     "CIS.M365.4.2": {
       "title": "(L1) Ensure device enrollment for personally owned devices is blocked by default",
-      "path": "/docs/next/tests/CIS.M365.4.2"
+      "path": "/docs/tests/CIS.M365.4.2"
     },
     "CIS.M365.5.1.2.2": {
       "title": "(L1) Ensure users cannot register applications",
@@ -8387,31 +8387,31 @@
     },
     "CIS.M365.5.1.3.1": {
       "title": "(L1) Ensure users cannot create security groups",
-      "path": "/docs/next/tests/CIS.M365.5.1.3.1"
+      "path": "/docs/tests/CIS.M365.5.1.3.1"
     },
     "CIS.M365.5.1.3.4": {
       "title": "(L2) Ensure that 'Users can create Microsoft 365 groups in Azure portals, API or PowerShell' is set to 'No'",
-      "path": "/docs/next/tests/CIS.M365.5.1.3.4"
+      "path": "/docs/tests/CIS.M365.5.1.3.4"
     },
     "CIS.M365.5.1.4.1": {
       "title": "(L2) Ensure the ability to join devices to Entra is restricted",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.1"
+      "path": "/docs/tests/CIS.M365.5.1.4.1"
     },
     "CIS.M365.5.1.4.2": {
       "title": "(L1) Ensure the maximum number of devices per user is limited",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.2"
+      "path": "/docs/tests/CIS.M365.5.1.4.2"
     },
     "CIS.M365.5.1.4.3": {
       "title": "(L1) Ensure the GA role is not added as a local administrator during Entra join",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.3"
+      "path": "/docs/tests/CIS.M365.5.1.4.3"
     },
     "CIS.M365.5.1.4.4": {
       "title": "(L1) Ensure local administrator assignment is limited during Entra join",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.4"
+      "path": "/docs/tests/CIS.M365.5.1.4.4"
     },
     "CIS.M365.5.1.4.5": {
       "title": "(L1) Ensure Local Administrator Password Solution is enabled",
-      "path": "/docs/next/tests/CIS.M365.5.1.4.5"
+      "path": "/docs/tests/CIS.M365.5.1.4.5"
     },
     "CIS.M365.5.1.4.6": {
       "title": "(L2) Ensure users are restricted from recovering BitLocker keys",
@@ -8427,23 +8427,23 @@
     },
     "CIS.M365.5.1.5.3": {
       "title": "(L2) Ensure password addition is blocked for applications",
-      "path": "/docs/next/tests/CIS.M365.5.1.5.3"
+      "path": "/docs/tests/CIS.M365.5.1.5.3"
     },
     "CIS.M365.5.1.5.4": {
       "title": "(L1) Ensure password lifetime for applications does not exceed 180 days",
-      "path": "/docs/next/tests/CIS.M365.5.1.5.4"
+      "path": "/docs/tests/CIS.M365.5.1.5.4"
     },
     "CIS.M365.5.1.5.5": {
       "title": "(L1) Ensure new application passwords are system-generated",
-      "path": "/docs/next/tests/CIS.M365.5.1.5.5"
+      "path": "/docs/tests/CIS.M365.5.1.5.5"
     },
     "CIS.M365.5.1.5.6": {
       "title": "(L1) Ensure maximum certificate lifetime for applications does not exceed 180 days",
-      "path": "/docs/next/tests/CIS.M365.5.1.5.6"
+      "path": "/docs/tests/CIS.M365.5.1.5.6"
     },
     "CIS.M365.5.1.6.1": {
       "title": "(L2) Ensure that collaboration invitations are sent to allowed domains only",
-      "path": "/docs/next/tests/CIS.M365.5.1.6.1"
+      "path": "/docs/tests/CIS.M365.5.1.6.1"
     },
     "CIS.M365.5.1.6.2": {
       "title": "(L1) Ensure that guest user access is restricted",
@@ -8451,95 +8451,95 @@
     },
     "CIS.M365.5.1.6.3": {
       "title": "(L2) Ensure guest user invitations are limited",
-      "path": "/docs/next/tests/CIS.M365.5.1.6.3"
+      "path": "/docs/tests/CIS.M365.5.1.6.3"
     },
     "CIS.M365.5.1.8.1": {
       "title": "(L1) Ensure that password hash sync is enabled for hybrid deployments",
-      "path": "/docs/next/tests/CIS.M365.5.1.8.1"
+      "path": "/docs/tests/CIS.M365.5.1.8.1"
     },
     "CIS.M365.5.2.2.1": {
       "title": "(L1) Ensure multifactor authentication is enabled for all users in administrative roles",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.1"
+      "path": "/docs/tests/CIS.M365.5.2.2.1"
     },
     "CIS.M365.5.2.2.2": {
       "title": "(L1) Ensure multifactor authentication is enabled for all users",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.2"
+      "path": "/docs/tests/CIS.M365.5.2.2.2"
     },
     "CIS.M365.5.2.2.3": {
       "title": "(L1) Enable Conditional Access policies to block legacy authentication",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.3"
+      "path": "/docs/tests/CIS.M365.5.2.2.3"
     },
     "CIS.M365.5.2.2.4": {
       "title": "(L1) Ensure Sign-in frequency is enabled and browser sessions are not persistent for Administrative users",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.4"
+      "path": "/docs/tests/CIS.M365.5.2.2.4"
     },
     "CIS.M365.5.2.2.5": {
       "title": "(L2) Ensure 'Phishing-resistant MFA strength' is required for Administrators",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.5"
+      "path": "/docs/tests/CIS.M365.5.2.2.5"
     },
     "CIS.M365.5.2.2.6": {
       "title": "(L1) Enable Identity Protection user risk policies",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.6"
+      "path": "/docs/tests/CIS.M365.5.2.2.6"
     },
     "CIS.M365.5.2.2.7": {
       "title": "(L1) Enable Identity Protection sign-in risk policies",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.7"
+      "path": "/docs/tests/CIS.M365.5.2.2.7"
     },
     "CIS.M365.5.2.2.8": {
       "title": "(L2) Ensure 'sign-in risk' is blocked for medium and high risk",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.8"
+      "path": "/docs/tests/CIS.M365.5.2.2.8"
     },
     "CIS.M365.5.2.2.9": {
       "title": "(L1) Ensure a managed device is required for authentication",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.9"
+      "path": "/docs/tests/CIS.M365.5.2.2.9"
     },
     "CIS.M365.5.2.2.10": {
       "title": "(L1) Ensure a managed device is required to register security information",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.10"
+      "path": "/docs/tests/CIS.M365.5.2.2.10"
     },
     "CIS.M365.5.2.2.11": {
       "title": "(L1) Ensure sign-in frequency for Intune Enrollment is set to 'Every time'",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.11"
+      "path": "/docs/tests/CIS.M365.5.2.2.11"
     },
     "CIS.M365.5.2.2.12": {
       "title": "(L1) Ensure the device code sign-in flow is blocked",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.12"
+      "path": "/docs/tests/CIS.M365.5.2.2.12"
     },
     "CIS.M365.5.2.2.13": {
       "title": "(L1) Ensure that periodic reauthentication is required for all users",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.13"
+      "path": "/docs/tests/CIS.M365.5.2.2.13"
     },
     "CIS.M365.5.2.2.14": {
       "title": "(L2) Ensure trusted 'named locations' are defined",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.14"
+      "path": "/docs/tests/CIS.M365.5.2.2.14"
     },
     "CIS.M365.5.2.2.15": {
       "title": "(L2) Ensure exclusionary geographic access controls are utilized",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.15"
+      "path": "/docs/tests/CIS.M365.5.2.2.15"
     },
     "CIS.M365.5.2.2.16": {
       "title": "(L2) Ensure Token Protection is enforced for session tokens",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.16"
+      "path": "/docs/tests/CIS.M365.5.2.2.16"
     },
     "CIS.M365.5.2.2.17": {
       "title": "(L1) Ensure authentication transfer is blocked",
-      "path": "/docs/next/tests/CIS.M365.5.2.2.17"
+      "path": "/docs/tests/CIS.M365.5.2.2.17"
     },
     "CIS.M365.5.2.3.1": {
       "title": "(L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.1"
+      "path": "/docs/tests/CIS.M365.5.2.3.1"
     },
     "CIS.M365.5.2.3.2": {
       "title": "(L1) Ensure custom banned passwords lists are used",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.2"
+      "path": "/docs/tests/CIS.M365.5.2.3.2"
     },
     "CIS.M365.5.2.3.3": {
       "title": "(L1) Ensure password protection is enabled for on-prem Active Directory",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.3"
+      "path": "/docs/tests/CIS.M365.5.2.3.3"
     },
     "CIS.M365.5.2.3.4": {
       "title": "(L1) Ensure all member users are 'MFA capable'",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.4"
+      "path": "/docs/tests/CIS.M365.5.2.3.4"
     },
     "CIS.M365.5.2.3.5": {
       "title": "(L1) Ensure weak authentication methods are disabled",
@@ -8547,83 +8547,83 @@
     },
     "CIS.M365.5.2.3.6": {
       "title": "(L1) Ensure system-preferred multifactor authentication is enabled",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.6"
+      "path": "/docs/tests/CIS.M365.5.2.3.6"
     },
     "CIS.M365.5.2.3.7": {
       "title": "(L2) Ensure the email OTP authentication method is disabled",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.7"
+      "path": "/docs/tests/CIS.M365.5.2.3.7"
     },
     "CIS.M365.5.2.3.8": {
       "title": "(L1) Ensure that Account 'Lockout threshold' is '10' or less",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.8"
+      "path": "/docs/tests/CIS.M365.5.2.3.8"
     },
     "CIS.M365.5.2.3.9": {
       "title": "(L1) Ensure that Account 'Lockout duration in seconds' is at least 60 seconds",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.9"
+      "path": "/docs/tests/CIS.M365.5.2.3.9"
     },
     "CIS.M365.5.2.3.10": {
       "title": "(L1) Ensure Microsoft Authenticator on companion applications is disabled",
-      "path": "/docs/next/tests/CIS.M365.5.2.3.10"
+      "path": "/docs/tests/CIS.M365.5.2.3.10"
     },
     "CIS.M365.5.3.1": {
       "title": "(L2) Ensure privileged role assignments are activated and not assigned",
-      "path": "/docs/next/tests/CIS.M365.5.3.1"
+      "path": "/docs/tests/CIS.M365.5.3.1"
     },
     "CIS.M365.5.3.2": {
       "title": "(L1) Ensure 'Access reviews' for guest users are configured",
-      "path": "/docs/next/tests/CIS.M365.5.3.2"
+      "path": "/docs/tests/CIS.M365.5.3.2"
     },
     "CIS.M365.5.3.3": {
       "title": "(L1) Ensure 'Access reviews' for privileged roles are configured",
-      "path": "/docs/next/tests/CIS.M365.5.3.3"
+      "path": "/docs/tests/CIS.M365.5.3.3"
     },
     "CIS.M365.5.3.4": {
       "title": "(L1) Ensure approval is required for Global Administrator role activation",
-      "path": "/docs/next/tests/CIS.M365.5.3.4"
+      "path": "/docs/tests/CIS.M365.5.3.4"
     },
     "CIS.M365.5.3.5": {
       "title": "(L1) Ensure approval is required for Privileged Role Administrator activation",
-      "path": "/docs/next/tests/CIS.M365.5.3.5"
+      "path": "/docs/tests/CIS.M365.5.3.5"
     },
     "CIS.M365.6.1.1": {
       "title": "(L1) Ensure 'AuditDisabled' organizationally is set to 'False'",
-      "path": "/docs/next/tests/CIS.M365.6.1.1"
+      "path": "/docs/tests/CIS.M365.6.1.1"
     },
     "CIS.M365.6.1.2": {
       "title": "(L1) Ensure mailbox audit actions are configured",
-      "path": "/docs/next/tests/CIS.M365.6.1.2"
+      "path": "/docs/tests/CIS.M365.6.1.2"
     },
     "CIS.M365.6.1.3": {
       "title": "(L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes",
-      "path": "/docs/next/tests/CIS.M365.6.1.3"
+      "path": "/docs/tests/CIS.M365.6.1.3"
     },
     "CIS.M365.6.2.1": {
       "title": "(L1) Ensure all forms of mail forwarding are blocked and/or disabled",
-      "path": "/docs/next/tests/CIS.M365.6.2.1"
+      "path": "/docs/tests/CIS.M365.6.2.1"
     },
     "CIS.M365.6.2.2": {
       "title": "(L1) Ensure mail transport rules do not whitelist specific domains",
-      "path": "/docs/next/tests/CIS.M365.6.2.2"
+      "path": "/docs/tests/CIS.M365.6.2.2"
     },
     "CIS.M365.6.2.3": {
       "title": "(L1) Ensure email from external senders is identified",
-      "path": "/docs/next/tests/CIS.M365.6.2.3"
+      "path": "/docs/tests/CIS.M365.6.2.3"
     },
     "CIS.M365.6.3.1": {
       "title": "(L2) Ensure users installing Outlook add-ins is not allowed",
-      "path": "/docs/next/tests/CIS.M365.6.3.1"
+      "path": "/docs/tests/CIS.M365.6.3.1"
     },
     "CIS.M365.6.3.2": {
       "title": "(L1) Ensure the ability to add personal email accounts and calendars is disabled",
-      "path": "/docs/next/tests/CIS.M365.6.3.2"
+      "path": "/docs/tests/CIS.M365.6.3.2"
     },
     "CIS.M365.6.5.1": {
       "title": "(L1) Ensure modern authentication for Exchange Online is enabled",
-      "path": "/docs/next/tests/CIS.M365.6.5.1"
+      "path": "/docs/tests/CIS.M365.6.5.1"
     },
     "CIS.M365.6.5.2": {
       "title": "(L1) Ensure MailTips are enabled for end users",
-      "path": "/docs/next/tests/CIS.M365.6.5.2"
+      "path": "/docs/tests/CIS.M365.6.5.2"
     },
     "CIS.M365.6.5.3": {
       "title": "(L2) Ensure additional storage providers are restricted in Outlook on the web",
@@ -8631,15 +8631,15 @@
     },
     "CIS.M365.6.5.4": {
       "title": "(L1) Ensure SMTP AUTH is disabled",
-      "path": "/docs/next/tests/CIS.M365.6.5.4"
+      "path": "/docs/tests/CIS.M365.6.5.4"
     },
     "CIS.M365.6.5.5": {
       "title": "(L2) Ensure Direct Send submissions are rejected",
-      "path": "/docs/next/tests/CIS.M365.6.5.5"
+      "path": "/docs/tests/CIS.M365.6.5.5"
     },
     "CIS.M365.7.2.1": {
       "title": "(L1) Ensure modern authentication for SharePoint applications is required",
-      "path": "/docs/next/tests/CIS.M365.7.2.1"
+      "path": "/docs/tests/CIS.M365.7.2.1"
     },
     "CIS.M365.7.2.2": {
       "title": "(L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
@@ -8647,11 +8647,11 @@
     },
     "CIS.M365.7.2.3": {
       "title": "(L1) Ensure external content sharing is restricted",
-      "path": "/docs/next/tests/CIS.M365.7.2.3"
+      "path": "/docs/tests/CIS.M365.7.2.3"
     },
     "CIS.M365.7.2.4": {
       "title": "(L2) Ensure OneDrive content sharing is restricted",
-      "path": "/docs/next/tests/CIS.M365.7.2.4"
+      "path": "/docs/tests/CIS.M365.7.2.4"
     },
     "CIS.M365.7.2.5": {
       "title": "(L2) Ensure that SharePoint guest users cannot share items they don't own",
@@ -8659,7 +8659,7 @@
     },
     "CIS.M365.7.2.6": {
       "title": "(L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists",
-      "path": "/docs/next/tests/CIS.M365.7.2.6"
+      "path": "/docs/tests/CIS.M365.7.2.6"
     },
     "CIS.M365.7.2.7": {
       "title": "(L1) Ensure link sharing is restricted in SharePoint and OneDrive",
@@ -8667,7 +8667,7 @@
     },
     "CIS.M365.7.2.8": {
       "title": "(L2) Ensure external sharing is restricted by security group",
-      "path": "/docs/next/tests/CIS.M365.7.2.8"
+      "path": "/docs/tests/CIS.M365.7.2.8"
     },
     "CIS.M365.7.2.9": {
       "title": "(L1) Ensure guest access to a site or OneDrive will expire automatically",
@@ -8675,7 +8675,7 @@
     },
     "CIS.M365.7.2.10": {
       "title": "(L1) Ensure reauthentication with verification code is restricted",
-      "path": "/docs/next/tests/CIS.M365.7.2.10"
+      "path": "/docs/tests/CIS.M365.7.2.10"
     },
     "CIS.M365.7.2.11": {
       "title": "(L1) Ensure the SharePoint default sharing link permission is set",
@@ -8691,11 +8691,11 @@
     },
     "CIS.M365.8.1.2": {
       "title": "(L1) Ensure users can't send emails to a channel email address",
-      "path": "/docs/next/tests/CIS.M365.8.1.2"
+      "path": "/docs/tests/CIS.M365.8.1.2"
     },
     "CIS.M365.8.2.1": {
       "title": "(L2) Ensure external domains are restricted in the Teams admin center",
-      "path": "/docs/next/tests/CIS.M365.8.2.1"
+      "path": "/docs/tests/CIS.M365.8.2.1"
     },
     "CIS.M365.8.2.2": {
       "title": "(L1) Ensure communication with unmanaged Teams users is disabled",
@@ -8707,7 +8707,7 @@
     },
     "CIS.M365.8.2.4": {
       "title": "(L1) Ensure the organization cannot communicate with accounts in trial Teams tenants",
-      "path": "/docs/next/tests/CIS.M365.8.2.4"
+      "path": "/docs/tests/CIS.M365.8.2.4"
     },
     "CIS.M365.8.4.1": {
       "title": "(L1) Ensure app permission policies are configured",
@@ -8715,11 +8715,11 @@
     },
     "CIS.M365.8.5.1": {
       "title": "(L2) Ensure anonymous users can't join a meeting",
-      "path": "/docs/next/tests/CIS.M365.8.5.1"
+      "path": "/docs/tests/CIS.M365.8.5.1"
     },
     "CIS.M365.8.5.2": {
       "title": "(L1) Ensure anonymous users and dial-in callers can't start a meeting",
-      "path": "/docs/next/tests/CIS.M365.8.5.2"
+      "path": "/docs/tests/CIS.M365.8.5.2"
     },
     "CIS.M365.8.5.3": {
       "title": "(L1) Ensure only people in my org can bypass the lobby",
@@ -8727,27 +8727,27 @@
     },
     "CIS.M365.8.5.4": {
       "title": "(L1) Ensure users dialing in can't bypass the lobby",
-      "path": "/docs/next/tests/CIS.M365.8.5.4"
+      "path": "/docs/tests/CIS.M365.8.5.4"
     },
     "CIS.M365.8.5.5": {
       "title": "(L2) Ensure meeting chat does not allow anonymous users",
-      "path": "/docs/next/tests/CIS.M365.8.5.5"
+      "path": "/docs/tests/CIS.M365.8.5.5"
     },
     "CIS.M365.8.5.6": {
       "title": "(L2) Ensure only organizers and co-organizers can present",
-      "path": "/docs/next/tests/CIS.M365.8.5.6"
+      "path": "/docs/tests/CIS.M365.8.5.6"
     },
     "CIS.M365.8.5.7": {
       "title": "(L1) Ensure external participants can't give or request control",
-      "path": "/docs/next/tests/CIS.M365.8.5.7"
+      "path": "/docs/tests/CIS.M365.8.5.7"
     },
     "CIS.M365.8.5.8": {
       "title": "(L2) Ensure external meeting chat is off",
-      "path": "/docs/next/tests/CIS.M365.8.5.8"
+      "path": "/docs/tests/CIS.M365.8.5.8"
     },
     "CIS.M365.8.5.9": {
       "title": "(L2) Ensure meeting recording is off by default",
-      "path": "/docs/next/tests/CIS.M365.8.5.9"
+      "path": "/docs/tests/CIS.M365.8.5.9"
     },
     "CIS.M365.8.6.1": {
       "title": "(L1) Ensure users can report security concerns in Teams",
@@ -8755,51 +8755,51 @@
     },
     "CIS.M365.9.1.1": {
       "title": "(L1) Restrict guest access to Fabric",
-      "path": "/docs/next/tests/CIS.M365.9.1.1"
+      "path": "/docs/tests/CIS.M365.9.1.1"
     },
     "CIS.M365.9.1.2": {
       "title": "(L1) Restrict external guest invitations through Fabric",
-      "path": "/docs/next/tests/CIS.M365.9.1.2"
+      "path": "/docs/tests/CIS.M365.9.1.2"
     },
     "CIS.M365.9.1.3": {
       "title": "(L1) Restrict guest browsing of Fabric content",
-      "path": "/docs/next/tests/CIS.M365.9.1.3"
+      "path": "/docs/tests/CIS.M365.9.1.3"
     },
     "CIS.M365.9.1.4": {
       "title": "(L1) Restrict public publishing of Fabric reports",
-      "path": "/docs/next/tests/CIS.M365.9.1.4"
+      "path": "/docs/tests/CIS.M365.9.1.4"
     },
     "CIS.M365.9.1.5": {
       "title": "(L2) Disable R and Python visuals in Fabric",
-      "path": "/docs/next/tests/CIS.M365.9.1.5"
+      "path": "/docs/tests/CIS.M365.9.1.5"
     },
     "CIS.M365.9.1.6": {
       "title": "(L1) Enable sensitivity labels for Fabric content",
-      "path": "/docs/next/tests/CIS.M365.9.1.6"
+      "path": "/docs/tests/CIS.M365.9.1.6"
     },
     "CIS.M365.9.1.7": {
       "title": "(L1) Restrict organization-wide Fabric links",
-      "path": "/docs/next/tests/CIS.M365.9.1.7"
+      "path": "/docs/tests/CIS.M365.9.1.7"
     },
     "CIS.M365.9.1.8": {
       "title": "(L1) Restrict external sharing of semantic models",
-      "path": "/docs/next/tests/CIS.M365.9.1.8"
+      "path": "/docs/tests/CIS.M365.9.1.8"
     },
     "CIS.M365.9.1.9": {
       "title": "(L1) Block resource-key authentication for Fabric datasets",
-      "path": "/docs/next/tests/CIS.M365.9.1.9"
+      "path": "/docs/tests/CIS.M365.9.1.9"
     },
     "CIS.M365.9.1.10": {
       "title": "(L1) Restrict service principal access to Fabric public APIs",
-      "path": "/docs/next/tests/CIS.M365.9.1.10"
+      "path": "/docs/tests/CIS.M365.9.1.10"
     },
     "CIS.M365.9.1.11": {
       "title": "(L1) Restrict service principal profiles in Fabric",
-      "path": "/docs/next/tests/CIS.M365.9.1.11"
+      "path": "/docs/tests/CIS.M365.9.1.11"
     },
     "CIS.M365.9.1.12": {
       "title": "(L1) Restrict service principal access to Fabric global APIs",
-      "path": "/docs/next/tests/CIS.M365.9.1.12"
+      "path": "/docs/tests/CIS.M365.9.1.12"
     },
     "CISA.MS.AAD.1.1": {
       "title": "Legacy authentication SHALL be blocked.",
@@ -9219,7 +9219,7 @@
     },
     "EIDSCA.AP12": {
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Tenants.",
-      "path": "/docs/next/tests/EIDSCA.AP12"
+      "path": "/docs/tests/EIDSCA.AP12"
     },
     "EIDSCA.AP14": {
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users.",
@@ -9227,7 +9227,7 @@
     },
     "EIDSCA.AP15": {
       "title": "Default Authorization Settings - Default User Role Permissions - Allowed to create agent identity blueprints.",
-      "path": "/docs/next/tests/EIDSCA.AP15"
+      "path": "/docs/tests/EIDSCA.AP15"
     },
     "EIDSCA.AS04": {
       "title": "Authentication Method - SMS - Use for sign-in.",
@@ -9275,7 +9275,7 @@
     },
     "EIDSCA.CR05": {
       "title": "Consent Framework - Admin Consent Request - Admin consent reviewers have valid query scopes.",
-      "path": "/docs/next/tests/EIDSCA.CR05"
+      "path": "/docs/tests/EIDSCA.CR05"
     },
     "EIDSCA.PR01": {
       "title": "Default Settings - Password Rule Settings - Password Protection - Mode.",
@@ -9539,7 +9539,7 @@
     },
     "MT.1060": {
       "title": "Drift folders should match their baseline.",
-      "path": "/docs/next/tests/MT.1060"
+      "path": "/docs/tests/MT.1060"
     },
     "MT.1061": {
       "title": "Device registration MFA control conflicts with Conditional Access policies.",
@@ -10071,119 +10071,119 @@
     },
     "MT.1224": {
       "title": "Microsoft-managed Conditional Access policies should not be left in report-only mode.",
-      "path": "/docs/next/tests/MT.1224"
+      "path": "/docs/tests/MT.1224"
     },
     "MT.1225": {
       "title": "Users should not be able to create Agent Identity Blueprints.",
-      "path": "/docs/next/tests/MT.1225"
+      "path": "/docs/tests/MT.1225"
     },
     "MT.1226": {
       "title": "GitHub and GitLab federated identity credentials should use immutable subject identifiers.",
-      "path": "/docs/next/tests/MT.1226"
+      "path": "/docs/tests/MT.1226"
     },
     "MT.1227": {
       "title": "Subscriptions should be blocked from leaving and entering the tenant",
-      "path": "/docs/next/tests/MT.1227"
+      "path": "/docs/tests/MT.1227"
     },
     "MT.1228": {
       "title": "Ensure iOS compliance policy blocks jailbroken devices.",
-      "path": "/docs/next/tests/MT.1228"
+      "path": "/docs/tests/MT.1228"
     },
     "MT.1229": {
       "title": "Ensure iOS compliance policy requires a strong device passcode.",
-      "path": "/docs/next/tests/MT.1229"
+      "path": "/docs/tests/MT.1229"
     },
     "MT.1230": {
       "title": "Ensure iOS compliance policy requires a minimum operating system version.",
-      "path": "/docs/next/tests/MT.1230"
+      "path": "/docs/tests/MT.1230"
     },
     "MT.1231": {
       "title": "Ensure iOS compliance policy requires a Defender machine risk score level.",
-      "path": "/docs/next/tests/MT.1231"
+      "path": "/docs/tests/MT.1231"
     },
     "MT.1232": {
       "title": "Ensure Android compliance policy blocks rooted devices.",
-      "path": "/docs/next/tests/MT.1232"
+      "path": "/docs/tests/MT.1232"
     },
     "MT.1233": {
       "title": "Ensure Android compliance policy requires a strong device password.",
-      "path": "/docs/next/tests/MT.1233"
+      "path": "/docs/tests/MT.1233"
     },
     "MT.1234": {
       "title": "Ensure Android compliance policy requires a recent security patch level.",
-      "path": "/docs/next/tests/MT.1234"
+      "path": "/docs/tests/MT.1234"
     },
     "MT.1235": {
       "title": "Ensure Android compliance policy requires device threat protection.",
-      "path": "/docs/next/tests/MT.1235"
+      "path": "/docs/tests/MT.1235"
     },
     "MT.1236": {
       "title": "Ensure Android compliance policy blocks USB debugging.",
-      "path": "/docs/next/tests/MT.1236"
+      "path": "/docs/tests/MT.1236"
     },
     "MT.1237": {
       "title": "Ensure Android compliance policy blocks devices managed with device administrator.",
-      "path": "/docs/next/tests/MT.1237"
+      "path": "/docs/tests/MT.1237"
     },
     "MT.1238": {
       "title": "Ensure iOS app protection policy requires a strong app PIN.",
-      "path": "/docs/next/tests/MT.1238"
+      "path": "/docs/tests/MT.1238"
     },
     "MT.1239": {
       "title": "Ensure iOS app protection policy keeps organization data inside managed apps.",
-      "path": "/docs/next/tests/MT.1239"
+      "path": "/docs/tests/MT.1239"
     },
     "MT.1240": {
       "title": "Ensure iOS app protection policy encrypts organization data.",
-      "path": "/docs/next/tests/MT.1240"
+      "path": "/docs/tests/MT.1240"
     },
     "MT.1241": {
       "title": "Ensure iOS app protection policy requires a minimum OS and app version.",
-      "path": "/docs/next/tests/MT.1241"
+      "path": "/docs/tests/MT.1241"
     },
     "MT.1242": {
       "title": "Ensure iOS app protection policy limits offline access to organization data.",
-      "path": "/docs/next/tests/MT.1242"
+      "path": "/docs/tests/MT.1242"
     },
     "MT.1243": {
       "title": "Ensure iOS app protection policy acts on the device threat level.",
-      "path": "/docs/next/tests/MT.1243"
+      "path": "/docs/tests/MT.1243"
     },
     "MT.1244": {
       "title": "Ensure Android app protection policy requires a strong app PIN.",
-      "path": "/docs/next/tests/MT.1244"
+      "path": "/docs/tests/MT.1244"
     },
     "MT.1245": {
       "title": "Ensure Android app protection policy keeps organization data inside managed apps.",
-      "path": "/docs/next/tests/MT.1245"
+      "path": "/docs/tests/MT.1245"
     },
     "MT.1246": {
       "title": "Ensure Android app protection policy encrypts organization data.",
-      "path": "/docs/next/tests/MT.1246"
+      "path": "/docs/tests/MT.1246"
     },
     "MT.1247": {
       "title": "Ensure Android app protection policy requires a minimum OS and app version.",
-      "path": "/docs/next/tests/MT.1247"
+      "path": "/docs/tests/MT.1247"
     },
     "MT.1248": {
       "title": "Ensure Android app protection policy limits offline access to organization data.",
-      "path": "/docs/next/tests/MT.1248"
+      "path": "/docs/tests/MT.1248"
     },
     "MT.1249": {
       "title": "Ensure Android app protection policy acts on the device threat level.",
-      "path": "/docs/next/tests/MT.1249"
+      "path": "/docs/tests/MT.1249"
     },
     "MT.1250": {
       "title": "Ensure Android app protection policy blocks screen capture of organization data.",
-      "path": "/docs/next/tests/MT.1250"
+      "path": "/docs/tests/MT.1250"
     },
     "MT.1251": {
       "title": "Ensure Android app protection policy requires Play Integrity device attestation.",
-      "path": "/docs/next/tests/MT.1251"
+      "path": "/docs/tests/MT.1251"
     },
     "MT.1252": {
       "title": "Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.",
-      "path": "/docs/next/tests/MT.1252"
+      "path": "/docs/tests/MT.1252"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",

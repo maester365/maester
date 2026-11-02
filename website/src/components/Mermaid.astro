@@ -1,0 +1,33 @@
+---
+// Renders the page's Mermaid diagrams in the browser, only on pages that have one, in the current theme.
+---
+
+<script>
+	const diagrams = document.querySelectorAll<HTMLElement>('pre.mermaid');
+	if (diagrams.length > 0) {
+		const sources = [...diagrams].map((d) => d.textContent ?? '');
+		const render = async () => {
+			const { default: mermaid } = await import('mermaid');
+			const dark = document.documentElement.dataset.theme !== 'light';
+			mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral', fontFamily: 'Inter Variable, Inter, sans-serif' });
+			diagrams.forEach((d, i) => {
+				d.removeAttribute('data-processed');
+				d.textContent = sources[i];
+			});
+			await mermaid.run({ nodes: [...diagrams] });
+		};
+		render();
+		new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+	}
+</script>
+
+<style is:global>
+	pre.mermaid {
+		background: transparent;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: var(--mt-radius);
+		padding: 1rem;
+		text-align: center;
+		overflow-x: auto;
+	}
+</style>

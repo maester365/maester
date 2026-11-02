@@ -7,13 +7,12 @@ tags: [code-signing]
 image: ./img/card.png
 card_headline: "The end of *code signing*"
 card_label: News
-hide_table_of_contents: false
 date: 2025-11-01
 ---
 
 When we started with Maester, we were in the luxurious position to use a code signing certificate for all published versions. This, sadly, ends today.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Code signing and PowerShell
 

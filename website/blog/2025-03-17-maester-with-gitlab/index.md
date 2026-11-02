@@ -6,7 +6,6 @@ authors: wey
 tags: [gitlab]
 card_headline: "Maester on *GitLab*"
 card_label: Integration
-hide_table_of_contents: false
 date: 2025-03-12
 image: ./img/card.png
 #draft: true # Draft
@@ -17,7 +16,7 @@ Maester now works seamlessly with GitLab 👏!
 
 Teams using GitLab pipelines can easily integrate Maester into their CI/CD workflows to run automated security checks and enhance their security monitoring.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Maester running on GitLab
 

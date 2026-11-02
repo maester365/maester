@@ -1,0 +1,4107 @@
+{
+  "tests": {
+    "AD-CFG-01": "2.3.0",
+    "AD-CFG-02": "2.3.0",
+    "AD-CFG-03": "2.3.0",
+    "AD-CFG-04": "2.3.0",
+    "AD-CFG-05": "2.3.0",
+    "AD-CFG-06": "2.3.0",
+    "AD-CFG-07": "2.3.0",
+    "AD-CFG-08": "2.3.0",
+    "AD-CFG-09": "2.3.0",
+    "AD-CFG-10": "2.3.0",
+    "AD-CFG-11": "2.3.0",
+    "AD-CFG-12": "2.3.0",
+    "AD-CFG-13": "2.3.0",
+    "AD-CFG-14": "2.3.0",
+    "AD-CFG-15": "2.3.0",
+    "AD-CFG-16": "2.3.0",
+    "AD-CFG-17": "2.3.0",
+    "AD-CFG-18": "2.3.0",
+    "AD-CFG-19": "2.3.0",
+    "AD-CFG-20": "2.3.0",
+    "AD-CFG-21": "2.3.0",
+    "AD-CFG-22": "2.3.0",
+    "AD-CFG-23": "2.3.0",
+    "AD-CFG-24": "2.3.0",
+    "AD-COMP-01": "2.3.0",
+    "AD-COMP-02": "2.3.0",
+    "AD-COMP-03": "2.3.0",
+    "AD-COMP-04": "2.3.0",
+    "AD-COMP-05": "2.3.0",
+    "AD-COMP-06": "2.3.0",
+    "AD-COMP-07": "2.3.0",
+    "AD-COMP-08": "2.3.0",
+    "AD-COMP-09": "2.3.0",
+    "AD-COMP-10": "2.3.0",
+    "AD-DACL-01": "2.3.0",
+    "AD-DACL-02": "2.3.0",
+    "AD-DACL-03": "2.3.0",
+    "AD-DACL-04": "2.3.0",
+    "AD-DACL-05": "2.3.0",
+    "AD-DACL-06": "2.3.0",
+    "AD-DACL-07": "2.3.0",
+    "AD-DACL-08": "2.3.0",
+    "AD-DACL-09": "2.3.0",
+    "AD-DACL-10": "2.3.0",
+    "AD-DACL-11": "2.3.0",
+    "AD-DACL-12": "2.3.0",
+    "AD-DACL-13": "2.3.0",
+    "AD-DACL-14": "2.3.0",
+    "AD-DACL-15": "2.3.0",
+    "AD-DACL-16": "2.3.0",
+    "AD-DACL-17": "2.3.0",
+    "AD-DACL-18": "2.3.0",
+    "AD-DC-01": "2.3.0",
+    "AD-DC-02": "2.3.0",
+    "AD-DC-03": "2.3.0",
+    "AD-DC-04": "2.3.0",
+    "AD-DC-05": "2.3.0",
+    "AD-DC-06": "2.3.0",
+    "AD-DC-07": "2.3.0",
+    "AD-DC-08": "2.3.0",
+    "AD-DCD-01": "2.3.0",
+    "AD-DCD-02": "2.3.0",
+    "AD-DCD-03": "2.3.0",
+    "AD-DCD-04": "2.3.0",
+    "AD-DCOMP-01": "2.3.0",
+    "AD-DCOMP-02": "2.3.0",
+    "AD-DCOMP-03": "2.3.0",
+    "AD-DCOMP-04": "2.3.0",
+    "AD-DCOMP-05": "2.3.0",
+    "AD-DCOMP-06": "2.3.0",
+    "AD-DCOMP-07": "2.3.0",
+    "AD-DCOMP-08": "2.3.0",
+    "AD-DCOMP-09": "2.3.0",
+    "AD-DFSR-01": "2.3.0",
+    "AD-DNS-01": "2.3.0",
+    "AD-DNS-02": "2.3.0",
+    "AD-DNS-03": "2.3.0",
+    "AD-DNS-04": "2.3.0",
+    "AD-DNS-05": "2.3.0",
+    "AD-DNS-06": "2.3.0",
+    "AD-DNS-07": "2.3.0",
+    "AD-DNS-08": "2.3.0",
+    "AD-DNS-09": "2.3.0",
+    "AD-DNS-10": "2.3.0",
+    "AD-DNS-11": "2.3.0",
+    "AD-DNS-12": "2.3.0",
+    "AD-DNS-13": "2.3.0",
+    "AD-DNS-14": "2.3.0",
+    "AD-DNS-15": "2.3.0",
+    "AD-DNS-16": "2.3.0",
+    "AD-DNS-17": "2.3.0",
+    "AD-DNS-18": "2.3.0",
+    "AD-DNS-19": "2.3.0",
+    "AD-DOM-01": "2.3.0",
+    "AD-DOM-02": "2.3.0",
+    "AD-DOM-03": "2.3.0",
+    "AD-DOM-04": "2.3.0",
+    "AD-DOM-05": "2.3.0",
+    "AD-DOM-06": "2.3.0",
+    "AD-DOM-07": "2.3.0",
+    "AD-DOM-08": "2.3.0",
+    "AD-DOMS-01": "2.3.0",
+    "AD-FEAT-01": "2.3.0",
+    "AD-FEAT-02": "2.3.0",
+    "AD-FGPP-01": "2.3.0",
+    "AD-FGPP-02": "2.3.0",
+    "AD-FGPP-03": "2.3.0",
+    "AD-FGPP-04": "2.3.0",
+    "AD-FOR-01": "2.3.0",
+    "AD-FOR-02": "2.3.0",
+    "AD-FOR-03": "2.3.0",
+    "AD-FOR-04": "2.3.0",
+    "AD-FORS-01": "2.3.0",
+    "AD-FORS-02": "2.3.0",
+    "AD-FORS-03": "2.3.0",
+    "AD-FORS-04": "2.3.0",
+    "AD-GCHG-01": "2.3.0",
+    "AD-GMC-01": "2.3.0",
+    "AD-GMC-02": "2.3.0",
+    "AD-GMC-03": "2.3.0",
+    "AD-GMC-04": "2.3.0",
+    "AD-GMC-05": "2.3.0",
+    "AD-GMC-06": "2.3.0",
+    "AD-GMC-07": "2.3.0",
+    "AD-GMC-08": "2.3.0",
+    "AD-GMC-09": "2.3.0",
+    "AD-GMC-10": "2.3.0",
+    "AD-GMC-11": "2.3.0",
+    "AD-GPO-01": "2.3.0",
+    "AD-GPO-02": "2.3.0",
+    "AD-GPO-03": "2.3.0",
+    "AD-GPO-04": "2.3.0",
+    "AD-GPO-05": "2.3.0",
+    "AD-GPOL-01": "2.3.0",
+    "AD-GPOL-02": "2.3.0",
+    "AD-GPOL-03": "2.3.0",
+    "AD-GPOL-04": "2.3.0",
+    "AD-GPOL-05": "2.3.0",
+    "AD-GPOL-06": "2.3.0",
+    "AD-GPOREP-01": "2.3.0",
+    "AD-GPOREP-02": "2.3.0",
+    "AD-GPOREP-03": "2.3.0",
+    "AD-GPOREP-04": "2.3.0",
+    "AD-GPOREP-05": "2.3.0",
+    "AD-GPOREP-06": "2.3.0",
+    "AD-GPOREP-07": "2.3.0",
+    "AD-GPOREP-08": "2.3.0",
+    "AD-GPOREP-09": "2.3.0",
+    "AD-GPOREP-10": "2.3.0",
+    "AD-GPOREP-11": "2.3.0",
+    "AD-GPOREP-12": "2.3.0",
+    "AD-GPOREP-13": "2.3.0",
+    "AD-GPOREP-14": "2.3.0",
+    "AD-GPOREP-15": "2.3.0",
+    "AD-GPOREP-16": "2.3.0",
+    "AD-GPOREP-17": "2.3.0",
+    "AD-GPOREP-18": "2.3.0",
+    "AD-GPOREP-19": "2.3.0",
+    "AD-GPOREP-20": "2.3.0",
+    "AD-GPOS-01": "2.3.0",
+    "AD-GPOS-02": "2.3.0",
+    "AD-GPOS-03": "2.3.0",
+    "AD-GPOS-04": "2.3.0",
+    "AD-GPOS-05": "2.3.0",
+    "AD-GPOS-06": "2.3.0",
+    "AD-GPOS-07": "2.3.0",
+    "AD-GPOS-08": "2.3.0",
+    "AD-GPOS-09": "2.3.0",
+    "AD-GRP-01": "2.3.0",
+    "AD-GRP-02": "2.3.0",
+    "AD-GRP-03": "2.3.0",
+    "AD-GRP-04": "2.3.0",
+    "AD-GRP-05": "2.3.0",
+    "AD-GRP-06": "2.3.0",
+    "AD-GRP-07": "2.3.0",
+    "AD-GRP-08": "2.3.0",
+    "AD-GRP-09": "2.3.0",
+    "AD-GRP-10": "2.3.0",
+    "AD-KRBTGT-01": "2.3.0",
+    "AD-KRBTGT-02": "2.3.0",
+    "AD-KRBTGT-03": "2.3.0",
+    "AD-MSA-01": "2.3.0",
+    "AD-OU-01": "2.3.0",
+    "AD-OU-02": "2.3.0",
+    "AD-OU-03": "2.3.0",
+    "AD-OU-04": "2.3.0",
+    "AD-OU-05": "2.3.0",
+    "AD-PRINT-01": "2.3.0",
+    "AD-PWDPOL-01": "2.3.0",
+    "AD-PWDPOL-02": "2.3.0",
+    "AD-PWDPOL-03": "2.3.0",
+    "AD-PWDPOL-04": "2.3.0",
+    "AD-PWDPOL-05": "2.3.0",
+    "AD-PWDPOL-06": "2.3.0",
+    "AD-PWDPOL-07": "2.3.0",
+    "AD-REPL-01": "2.3.0",
+    "AD-REPL-02": "2.3.0",
+    "AD-ROOTDSE-01": "2.3.0",
+    "AD-ROOTDSE-02": "2.3.0",
+    "AD-ROOTDSE-03": "2.3.0",
+    "AD-SCH-01": "2.3.0",
+    "AD-SCH-02": "2.3.0",
+    "AD-SCH-03": "2.3.0",
+    "AD-SCH-04": "2.3.0",
+    "AD-SCH-05": "2.3.0",
+    "AD-SITE-01": "2.3.0",
+    "AD-SITE-02": "2.3.0",
+    "AD-SITE-03": "2.3.0",
+    "AD-SITE-04": "2.3.0",
+    "AD-SITE-05": "2.3.0",
+    "AD-SPN-01": "2.3.0",
+    "AD-SPN-02": "2.3.0",
+    "AD-SPN-03": "2.3.0",
+    "AD-SPN-04": "2.3.0",
+    "AD-SPN-05": "2.3.0",
+    "AD-SPN-06": "2.3.0",
+    "AD-SPN-07": "2.3.0",
+    "AD-SPN-08": "2.3.0",
+    "AD-SPN-09": "2.3.0",
+    "AD-SPN-10": "2.3.0",
+    "AD-SPN-11": "2.3.0",
+    "AD-SPN-12": "2.3.0",
+    "AD-SPN-13": "2.3.0",
+    "AD-SUB-01": "2.3.0",
+    "AD-SUB-02": "2.3.0",
+    "AD-SUB-03": "2.3.0",
+    "AD-SUB-04": "2.3.0",
+    "AD-SUB-05": "2.3.0",
+    "AD-SUB-06": "2.3.0",
+    "AD-SUB-07": "2.3.0",
+    "AD-SUB-08": "2.3.0",
+    "AD-SUB-09": "2.3.0",
+    "AD-SUB-10": "2.3.0",
+    "AD-SUB-11": "2.3.0",
+    "AD-TRUST-01": "2.3.0",
+    "AD-TRUST-02": "2.3.0",
+    "AD-TRUST-03": "2.3.0",
+    "AD-TRUST-04": "2.3.0",
+    "AD-TRUST-05": "2.3.0",
+    "AD-TRUST-06": "2.3.0",
+    "AD-TRUST-07": "2.3.0",
+    "AD-USER-01": "2.3.0",
+    "AD-USER-02": "2.3.0",
+    "AD-USER-03": "2.3.0",
+    "AD-USER-04": "2.3.0",
+    "AD-USER-05": "2.3.0",
+    "AD-USER-06": "2.3.0",
+    "AD-USER-07": "2.3.0",
+    "AD-USER-08": "2.3.0",
+    "AD-USER-09": "2.3.0",
+    "AD-USER-10": "2.3.0",
+    "AD-USER-11": "2.3.0",
+    "AD-USER-12": "2.3.0",
+    "AD-USER-13": "2.3.0",
+    "AD-USER-14": "2.3.0",
+    "AD-USER-15": "2.3.0",
+    "AD-USER-16": "2.3.0",
+    "AD-USER-17": "2.3.0",
+    "AD-USER-18": "2.3.0",
+    "AD-USER-19": "2.3.0",
+    "AD-USER-20": "2.3.0",
+    "AD-USER-21": "2.3.0",
+    "AD-USER-22": "2.3.0",
+    "AD-USER-23": "2.3.0",
+    "AD-USER-24": "2.3.0",
+    "AD-USER-25": "2.3.0",
+    "AD-USER-26": "2.3.0",
+    "AD-USER-27": "2.3.0",
+    "AD-USER-28": "2.3.0",
+    "AD-USER-29": "2.3.0",
+    "CIS.GH.1.2.2": "2.3.0",
+    "CIS.GH.1.2.3": "2.3.0",
+    "CIS.GH.1.2.4": "2.3.0",
+    "CIS.GH.1.3.2": "2.3.0",
+    "CIS.GH.1.3.8": "2.3.0",
+    "CIS.M365.1.1.1": "2.3.0",
+    "CIS.M365.1.1.3": "2.3.0",
+    "CIS.M365.1.2.1": "2.3.0",
+    "CIS.M365.1.2.2": "2.3.0",
+    "CIS.M365.1.3.1": "2.3.0",
+    "CIS.M365.1.3.3": "2.3.0",
+    "CIS.M365.1.3.4": "2.3.0",
+    "CIS.M365.1.3.5": "2.3.0",
+    "CIS.M365.1.3.6": "2.3.0",
+    "CIS.M365.1.3.7": "2.3.0",
+    "CIS.M365.2.1.1": "2.3.0",
+    "CIS.M365.2.1.2": "2.3.0",
+    "CIS.M365.2.1.3": "2.3.0",
+    "CIS.M365.2.1.4": "2.3.0",
+    "CIS.M365.2.1.5": "2.3.0",
+    "CIS.M365.2.1.6": "2.3.0",
+    "CIS.M365.2.1.7": "2.3.0",
+    "CIS.M365.2.1.9": "2.3.0",
+    "CIS.M365.2.1.11": "2.3.0",
+    "CIS.M365.2.1.12": "2.3.0",
+    "CIS.M365.2.1.13": "2.3.0",
+    "CIS.M365.2.4.4": "2.3.0",
+    "CIS.M365.3.1.1": "2.3.0",
+    "CIS.M365.4.1": "2.3.0",
+    "CIS.M365.5.1.2.2": "2.3.0",
+    "CIS.M365.5.1.2.3": "2.3.0",
+    "CIS.M365.5.1.4.6": "2.3.0",
+    "CIS.M365.5.1.5.1": "2.3.0",
+    "CIS.M365.5.1.5.2": "2.3.0",
+    "CIS.M365.5.1.6.2": "2.3.0",
+    "CIS.M365.5.2.3.5": "2.3.0",
+    "CIS.M365.6.5.3": "2.3.0",
+    "CIS.M365.7.2.2": "2.3.0",
+    "CIS.M365.7.2.5": "2.3.0",
+    "CIS.M365.7.2.7": "2.3.0",
+    "CIS.M365.7.2.9": "2.3.0",
+    "CIS.M365.7.2.11": "2.3.0",
+    "CIS.M365.7.3.1": "2.3.0",
+    "CIS.M365.8.1.1": "2.3.0",
+    "CIS.M365.8.2.2": "2.3.0",
+    "CIS.M365.8.2.3": "2.3.0",
+    "CIS.M365.8.4.1": "2.3.0",
+    "CIS.M365.8.5.3": "2.3.0",
+    "CIS.M365.8.6.1": "2.3.0",
+    "CISA.MS.AAD.1.1": "2.3.0",
+    "CISA.MS.AAD.2.1": "2.3.0",
+    "CISA.MS.AAD.2.2": "2.3.0",
+    "CISA.MS.AAD.2.3": "2.3.0",
+    "CISA.MS.AAD.3.1": "2.3.0",
+    "CISA.MS.AAD.3.2": "2.3.0",
+    "CISA.MS.AAD.3.3": "2.3.0",
+    "CISA.MS.AAD.3.4": "2.3.0",
+    "CISA.MS.AAD.3.5": "2.3.0",
+    "CISA.MS.AAD.3.6": "2.3.0",
+    "CISA.MS.AAD.3.7": "2.3.0",
+    "CISA.MS.AAD.3.8": "2.3.0",
+    "CISA.MS.AAD.4.1": "2.3.0",
+    "CISA.MS.AAD.5.1": "2.3.0",
+    "CISA.MS.AAD.5.2": "2.3.0",
+    "CISA.MS.AAD.5.3": "2.3.0",
+    "CISA.MS.AAD.5.4": "2.3.0",
+    "CISA.MS.AAD.6.1": "2.3.0",
+    "CISA.MS.AAD.7.1": "2.3.0",
+    "CISA.MS.AAD.7.2": "2.3.0",
+    "CISA.MS.AAD.7.3": "2.3.0",
+    "CISA.MS.AAD.7.4": "2.3.0",
+    "CISA.MS.AAD.7.5": "2.3.0",
+    "CISA.MS.AAD.7.6": "2.3.0",
+    "CISA.MS.AAD.7.7": "2.3.0",
+    "CISA.MS.AAD.7.8": "2.3.0",
+    "CISA.MS.AAD.7.9": "2.3.0",
+    "CISA.MS.AAD.8.1": "2.3.0",
+    "CISA.MS.AAD.8.2": "2.3.0",
+    "CISA.MS.AAD.8.3": "2.3.0",
+    "CISA.MS.EXO.1.1": "2.3.0",
+    "CISA.MS.EXO.2.1": "2.3.0",
+    "CISA.MS.EXO.2.2": "2.3.0",
+    "CISA.MS.EXO.3.1": "2.3.0",
+    "CISA.MS.EXO.4.1": "2.3.0",
+    "CISA.MS.EXO.4.2": "2.3.0",
+    "CISA.MS.EXO.4.3": "2.3.0",
+    "CISA.MS.EXO.5.1": "2.3.0",
+    "CISA.MS.EXO.6.1": "2.3.0",
+    "CISA.MS.EXO.6.2": "2.3.0",
+    "CISA.MS.EXO.7.1": "2.3.0",
+    "CISA.MS.EXO.8.1": "2.3.0",
+    "CISA.MS.EXO.8.2": "2.3.0",
+    "CISA.MS.EXO.8.3": "2.3.0",
+    "CISA.MS.EXO.8.4": "2.3.0",
+    "CISA.MS.EXO.9.1": "2.3.0",
+    "CISA.MS.EXO.9.2": "2.3.0",
+    "CISA.MS.EXO.9.3": "2.3.0",
+    "CISA.MS.EXO.9.4": "2.3.0",
+    "CISA.MS.EXO.9.5": "2.3.0",
+    "CISA.MS.EXO.10.1": "2.3.0",
+    "CISA.MS.EXO.10.2": "2.3.0",
+    "CISA.MS.EXO.10.3": "2.3.0",
+    "CISA.MS.EXO.11.1": "2.3.0",
+    "CISA.MS.EXO.11.2": "2.3.0",
+    "CISA.MS.EXO.11.3": "2.3.0",
+    "CISA.MS.EXO.12.1": "2.3.0",
+    "CISA.MS.EXO.12.2": "2.3.0",
+    "CISA.MS.EXO.13.1": "2.3.0",
+    "CISA.MS.EXO.14.1": "2.3.0",
+    "CISA.MS.EXO.14.2": "2.3.0",
+    "CISA.MS.EXO.14.3": "2.3.0",
+    "CISA.MS.EXO.14.4": "2.3.0",
+    "CISA.MS.EXO.15.1": "2.3.0",
+    "CISA.MS.EXO.15.2": "2.3.0",
+    "CISA.MS.EXO.15.3": "2.3.0",
+    "CISA.MS.EXO.16.1": "2.3.0",
+    "CISA.MS.EXO.16.2": "2.3.0",
+    "CISA.MS.EXO.17.1": "2.3.0",
+    "CISA.MS.EXO.17.2": "2.3.0",
+    "CISA.MS.EXO.17.3": "2.3.0",
+    "CISA.MS.SHAREPOINT.1.1": "2.3.0",
+    "CISA.MS.SHAREPOINT.1.2": "2.3.0",
+    "CISA.MS.SHAREPOINT.1.3": "2.3.0",
+    "CISA.MS.SHAREPOINT.2.1": "2.3.0",
+    "CISA.MS.SHAREPOINT.2.2": "2.3.0",
+    "CISA.MS.SHAREPOINT.3.1": "2.3.0",
+    "CISA.MS.SHAREPOINT.3.2": "2.3.0",
+    "CISA.MS.SHAREPOINT.3.3": "2.3.0",
+    "EIDSCA.AF01": "2.3.0",
+    "EIDSCA.AF02": "2.3.0",
+    "EIDSCA.AF03": "2.3.0",
+    "EIDSCA.AF04": "2.3.0",
+    "EIDSCA.AF05": "2.3.0",
+    "EIDSCA.AF06": "2.3.0",
+    "EIDSCA.AG01": "2.3.0",
+    "EIDSCA.AG02": "2.3.0",
+    "EIDSCA.AG03": "2.3.0",
+    "EIDSCA.AM01": "2.3.0",
+    "EIDSCA.AM02": "2.3.0",
+    "EIDSCA.AM03": "2.3.0",
+    "EIDSCA.AM04": "2.3.0",
+    "EIDSCA.AM06": "2.3.0",
+    "EIDSCA.AM07": "2.3.0",
+    "EIDSCA.AM09": "2.3.0",
+    "EIDSCA.AM10": "2.3.0",
+    "EIDSCA.AP01": "2.3.0",
+    "EIDSCA.AP04": "2.3.0",
+    "EIDSCA.AP05": "2.3.0",
+    "EIDSCA.AP06": "2.3.0",
+    "EIDSCA.AP07": "2.3.0",
+    "EIDSCA.AP08": "2.3.0",
+    "EIDSCA.AP09": "2.3.0",
+    "EIDSCA.AP10": "2.3.0",
+    "EIDSCA.AP14": "2.3.0",
+    "EIDSCA.AS04": "2.3.0",
+    "EIDSCA.AT01": "2.3.0",
+    "EIDSCA.AT02": "2.3.0",
+    "EIDSCA.AV01": "2.3.0",
+    "EIDSCA.CP01": "2.3.0",
+    "EIDSCA.CP03": "2.3.0",
+    "EIDSCA.CP04": "2.3.0",
+    "EIDSCA.CR01": "2.3.0",
+    "EIDSCA.CR02": "2.3.0",
+    "EIDSCA.CR03": "2.3.0",
+    "EIDSCA.CR04": "2.3.0",
+    "EIDSCA.PR01": "2.3.0",
+    "EIDSCA.PR02": "2.3.0",
+    "EIDSCA.PR03": "2.3.0",
+    "EIDSCA.PR05": "2.3.0",
+    "EIDSCA.PR06": "2.3.0",
+    "EIDSCA.ST08": "2.3.0",
+    "EIDSCA.ST09": "2.3.0",
+    "MT.1001": "2.3.0",
+    "MT.1002": "2.3.0",
+    "MT.1003": "2.3.0",
+    "MT.1004": "2.3.0",
+    "MT.1005": "2.3.0",
+    "MT.1006": "2.3.0",
+    "MT.1007": "2.3.0",
+    "MT.1008": "2.3.0",
+    "MT.1009": "2.3.0",
+    "MT.1010": "2.3.0",
+    "MT.1011": "2.3.0",
+    "MT.1012": "2.3.0",
+    "MT.1013": "2.3.0",
+    "MT.1014": "2.3.0",
+    "MT.1015": "2.3.0",
+    "MT.1016": "2.3.0",
+    "MT.1017": "2.3.0",
+    "MT.1018": "2.3.0",
+    "MT.1019": "2.3.0",
+    "MT.1020": "2.3.0",
+    "MT.1021": "2.3.0",
+    "MT.1022": "2.3.0",
+    "MT.1023": "2.3.0",
+    "MT.1024": "2.3.0",
+    "MT.1025": "2.3.0",
+    "MT.1026": "2.3.0",
+    "MT.1027": "2.3.0",
+    "MT.1028": "2.3.0",
+    "MT.1029": "2.3.0",
+    "MT.1030": "2.3.0",
+    "MT.1031": "2.3.0",
+    "MT.1032": "2.3.0",
+    "MT.1033": "2.3.0",
+    "MT.1034": "2.3.0",
+    "MT.1035": "2.3.0",
+    "MT.1036": "2.3.0",
+    "MT.1037": "2.3.0",
+    "MT.1038": "2.3.0",
+    "MT.1039": "2.3.0",
+    "MT.1041": "2.3.0",
+    "MT.1042": "2.3.0",
+    "MT.1043": "2.3.0",
+    "MT.1044": "2.3.0",
+    "MT.1045": "2.3.0",
+    "MT.1046": "2.3.0",
+    "MT.1047": "2.3.0",
+    "MT.1048": "2.3.0",
+    "MT.1049": "2.3.0",
+    "MT.1050": "2.3.0",
+    "MT.1051": "2.3.0",
+    "MT.1052": "2.3.0",
+    "MT.1053": "2.3.0",
+    "MT.1054": "2.3.0",
+    "MT.1055": "2.3.0",
+    "MT.1056": "2.3.0",
+    "MT.1057": "2.3.0",
+    "MT.1058": "2.3.0",
+    "MT.1059": "2.3.0",
+    "MT.1061": "2.3.0",
+    "MT.1062": "2.3.0",
+    "MT.1063": "2.3.0",
+    "MT.1064": "2.3.0",
+    "MT.1065": "2.3.0",
+    "MT.1066": "2.3.0",
+    "MT.1067": "2.3.0",
+    "MT.1068": "2.3.0",
+    "MT.1069": "2.3.0",
+    "MT.1070": "2.3.0",
+    "MT.1071": "2.3.0",
+    "MT.1072": "2.3.0",
+    "MT.1073": "2.3.0",
+    "MT.1074": "2.3.0",
+    "MT.1075": "2.3.0",
+    "MT.1076": "2.3.0",
+    "MT.1077": "2.3.0",
+    "MT.1078": "2.3.0",
+    "MT.1079": "2.3.0",
+    "MT.1080": "2.3.0",
+    "MT.1081": "2.3.0",
+    "MT.1083": "2.3.0",
+    "MT.1084": "2.3.0",
+    "MT.1085": "2.3.0",
+    "MT.1086": "2.3.0",
+    "MT.1087": "2.3.0",
+    "MT.1088": "2.3.0",
+    "MT.1089": "2.3.0",
+    "MT.1090": "2.3.0",
+    "MT.1091": "2.3.0",
+    "MT.1092": "2.3.0",
+    "MT.1093": "2.3.0",
+    "MT.1094": "2.3.0",
+    "MT.1095": "2.3.0",
+    "MT.1096": "2.3.0",
+    "MT.1097": "2.3.0",
+    "MT.1098": "2.3.0",
+    "MT.1099": "2.3.0",
+    "MT.1100": "2.3.0",
+    "MT.1101": "2.3.0",
+    "MT.1102": "2.3.0",
+    "MT.1103": "2.3.0",
+    "MT.1105": "2.3.0",
+    "MT.1106": "2.3.0",
+    "MT.1107": "2.3.0",
+    "MT.1108": "2.3.0",
+    "MT.1109": "2.3.0",
+    "MT.1110": "2.3.0",
+    "MT.1111": "2.3.0",
+    "MT.1112": "2.3.0",
+    "MT.1113": "2.3.0",
+    "MT.1114": "2.3.0",
+    "MT.1115": "2.3.0",
+    "MT.1116": "2.3.0",
+    "MT.1117": "2.3.0",
+    "MT.1118": "2.3.0",
+    "MT.1119": "2.3.0",
+    "MT.1120": "2.3.0",
+    "MT.1121": "2.3.0",
+    "MT.1122": "2.3.0",
+    "MT.1123": "2.3.0",
+    "MT.1147": "2.3.0",
+    "MT.1148": "2.3.0",
+    "MT.1149": "2.3.0",
+    "MT.1150": "2.3.0",
+    "MT.1151": "2.3.0",
+    "MT.1152": "2.3.0",
+    "MT.1153": "2.3.0",
+    "MT.1154": "2.3.0",
+    "MT.1155": "2.3.0",
+    "MT.1156": "2.3.0",
+    "MT.1157": "2.3.0",
+    "MT.1158": "2.3.0",
+    "MT.1159": "2.3.0",
+    "MT.1160": "2.3.0",
+    "MT.1161": "2.3.0",
+    "MT.1162": "2.3.0",
+    "MT.1163": "2.3.0",
+    "MT.1164": "2.3.0",
+    "MT.1165": "2.3.0",
+    "MT.1166": "2.3.0",
+    "MT.1167": "2.3.0",
+    "MT.1168": "2.3.0",
+    "MT.1169": "2.3.0",
+    "MT.1170": "2.3.0",
+    "MT.1171": "2.3.0",
+    "MT.1172": "2.3.0",
+    "MT.1173": "2.3.0",
+    "MT.1174": "2.3.0",
+    "MT.1175": "2.3.0",
+    "MT.1176": "2.3.0",
+    "MT.1177": "2.3.0",
+    "MT.1178": "2.3.0",
+    "MT.1179": "2.3.0",
+    "MT.1180": "2.3.0",
+    "MT.1181": "2.3.0",
+    "MT.1182": "2.3.0",
+    "MT.1183": "2.3.0",
+    "MT.1184": "2.3.0",
+    "MT.1185": "2.3.0",
+    "MT.1186": "2.3.0",
+    "MT.1187": "2.3.0",
+    "MT.1188": "2.3.0",
+    "MT.1189": "2.3.0",
+    "MT.1190": "2.3.0",
+    "MT.1191": "2.3.0",
+    "MT.1192": "2.3.0",
+    "MT.1193": "2.3.0",
+    "MT.1194": "2.3.0",
+    "MT.1195": "2.3.0",
+    "MT.1196": "2.3.0",
+    "MT.1197": "2.3.0",
+    "MT.1198": "2.3.0",
+    "MT.1199": "2.3.0",
+    "MT.1200": "2.3.0",
+    "MT.1201": "2.3.0",
+    "MT.1203": "2.3.0",
+    "MT.1204": "2.3.0",
+    "MT.1205": "2.3.0",
+    "MT.1206": "2.3.0",
+    "MT.1207": "2.3.0",
+    "MT.1208": "2.3.0",
+    "MT.1209": "2.3.0",
+    "MT.1210": "2.3.0",
+    "MT.1211": "2.3.0",
+    "MT.1212": "2.3.0",
+    "MT.1213": "2.3.0",
+    "MT.1214": "2.3.0",
+    "MT.1215": "2.3.0",
+    "MT.1216": "2.3.0",
+    "MT.1217": "2.3.0",
+    "MT.1223": "2.3.0",
+    "ORCA.100": "2.3.0",
+    "ORCA.101": "2.3.0",
+    "ORCA.102": "2.3.0",
+    "ORCA.103": "2.3.0",
+    "ORCA.104": "2.3.0",
+    "ORCA.105": "2.3.0",
+    "ORCA.106": "2.3.0",
+    "ORCA.107": "2.3.0",
+    "ORCA.108": "2.3.0",
+    "ORCA.108.1": "2.3.0",
+    "ORCA.109": "2.3.0",
+    "ORCA.110": "2.3.0",
+    "ORCA.111": "2.3.0",
+    "ORCA.112": "2.3.0",
+    "ORCA.113": "2.3.0",
+    "ORCA.114": "2.3.0",
+    "ORCA.115": "2.3.0",
+    "ORCA.116": "2.3.0",
+    "ORCA.118.1": "2.3.0",
+    "ORCA.118.2": "2.3.0",
+    "ORCA.118.3": "2.3.0",
+    "ORCA.118.4": "2.3.0",
+    "ORCA.119": "2.3.0",
+    "ORCA.120.1": "2.3.0",
+    "ORCA.120.2": "2.3.0",
+    "ORCA.120.3": "2.3.0",
+    "ORCA.121": "2.3.0",
+    "ORCA.123": "2.3.0",
+    "ORCA.124": "2.3.0",
+    "ORCA.139": "2.3.0",
+    "ORCA.140": "2.3.0",
+    "ORCA.141": "2.3.0",
+    "ORCA.142": "2.3.0",
+    "ORCA.143": "2.3.0",
+    "ORCA.156": "2.3.0",
+    "ORCA.158": "2.3.0",
+    "ORCA.179": "2.3.0",
+    "ORCA.180": "2.3.0",
+    "ORCA.189": "2.3.0",
+    "ORCA.189.2": "2.3.0",
+    "ORCA.205": "2.3.0",
+    "ORCA.220": "2.3.0",
+    "ORCA.221": "2.3.0",
+    "ORCA.222": "2.3.0",
+    "ORCA.223": "2.3.0",
+    "ORCA.224": "2.3.0",
+    "ORCA.225": "2.3.0",
+    "ORCA.226": "2.3.0",
+    "ORCA.227": "2.3.0",
+    "ORCA.228": "2.3.0",
+    "ORCA.229": "2.3.0",
+    "ORCA.230": "2.3.0",
+    "ORCA.231": "2.3.0",
+    "ORCA.232": "2.3.0",
+    "ORCA.233": "2.3.0",
+    "ORCA.233.1": "2.3.0",
+    "ORCA.234": "2.3.0",
+    "ORCA.235": "2.3.0",
+    "ORCA.236": "2.3.0",
+    "ORCA.237": "2.3.0",
+    "ORCA.238": "2.3.0",
+    "ORCA.239": "2.3.0",
+    "ORCA.240": "2.3.0",
+    "ORCA.241": "2.3.0",
+    "ORCA.242": "2.3.0",
+    "ORCA.243": "2.3.0",
+    "ORCA.244": "2.3.0"
+  },
+  "commands": {
+    "Add-MtMaesterAppFederatedCredential": {
+      "since": "2.3.0",
+      "parameters": {
+        "AppId": "2.3.0",
+        "GitHubBranch": "2.3.0",
+        "GitHubOrganization": "2.3.0",
+        "GitHubRepository": "2.3.0",
+        "Id": "2.3.0",
+        "Name": "2.3.0",
+        "SetGitHubSecrets": "2.3.0"
+      }
+    },
+    "Add-MtTestResultDetail": {
+      "since": "2.3.0",
+      "parameters": {
+        "Description": "2.3.0",
+        "GraphObjects": "2.3.0",
+        "GraphObjectType": "2.3.0",
+        "Investigate": "2.3.0",
+        "Result": "2.3.0",
+        "Severity": "2.3.0",
+        "SkippedBecause": "2.3.0",
+        "SkippedCustomReason": "2.3.0",
+        "SkippedError": "2.3.0",
+        "TestName": "2.3.0",
+        "TestTitle": "2.3.0"
+      }
+    },
+    "Clear-MtADCache": {
+      "since": "2.3.0",
+      "parameters": {
+        "Categories": "2.3.0",
+        "ComputerName": "2.3.0"
+      }
+    },
+    "Clear-MtDnsCache": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Clear-MtExoCache": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Clear-MtGraphCache": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Compare-MtJsonObject": {
+      "since": "2.3.0",
+      "parameters": {
+        "Baseline": "2.3.0",
+        "Current": "2.3.0",
+        "Path": "2.3.0",
+        "Settings": "2.3.0"
+      }
+    },
+    "Compare-MtTestResult": {
+      "since": "2.3.0",
+      "parameters": {
+        "BaseDir": "2.3.0",
+        "NewTest": "2.3.0",
+        "PriorTest": "2.3.0"
+      }
+    },
+    "Connect-Maester": {
+      "since": "2.3.0",
+      "parameters": {
+        "ActiveDirectoryAuthMode": "2.3.0",
+        "ActiveDirectoryCredential": "2.3.0",
+        "ActiveDirectoryDomain": "2.3.0",
+        "ActiveDirectoryForest": "2.3.0",
+        "ActiveDirectoryServer": "2.3.0",
+        "ActiveDirectoryTlsMode": "2.3.0",
+        "AzureEnvironment": "2.3.0",
+        "ClientTimeout": "2.3.0",
+        "Environment": "2.3.0",
+        "ExchangeEnvironmentName": "2.3.0",
+        "GitHubOrganization": "2.3.0",
+        "GraphClientId": "2.3.0",
+        "IncludePreview": "2.3.0",
+        "Privileged": "2.3.0",
+        "SendMail": "2.3.0",
+        "SendTeamsMessage": "2.3.0",
+        "Service": "2.3.0",
+        "SharePointAdminUrl": "2.3.0",
+        "SharePointCertificateThumbprint": "2.3.0",
+        "SharePointClientId": "2.3.0",
+        "TeamsEnvironmentName": "2.3.0",
+        "TenantId": "2.3.0",
+        "UseDeviceCode": "2.3.0"
+      }
+    },
+    "Connect-MtGitHub": {
+      "since": "2.3.0",
+      "parameters": {
+        "ApiBaseUri": "2.3.0",
+        "ApiVersion": "2.3.0",
+        "Organization": "2.3.0",
+        "Token": "2.3.0"
+      }
+    },
+    "Convert-MtResultsToFlatObject": {
+      "since": "2.3.0",
+      "parameters": {
+        "CsvFilePath": "2.3.0",
+        "ExcelFilePath": "2.3.0",
+        "ExportCsv": "2.3.0",
+        "ExportExcel": "2.3.0",
+        "Force": "2.3.0",
+        "InputObject": "2.3.0",
+        "JsonFilePath": "2.3.0",
+        "PassThru": "2.3.0"
+      }
+    },
+    "ConvertFrom-MailAuthenticationRecordDkim": {
+      "since": "2.3.0",
+      "parameters": {
+        "DkimDnsName": "2.3.0",
+        "DnsServerIpAddress": "2.3.0",
+        "DomainName": "2.3.0",
+        "NoHostsFile": "2.3.0",
+        "QuickTimeout": "2.3.0"
+      }
+    },
+    "ConvertFrom-MailAuthenticationRecordDmarc": {
+      "since": "2.3.0",
+      "parameters": {
+        "DnsServerIpAddress": "2.3.0",
+        "DomainName": "2.3.0",
+        "NoHostsFile": "2.3.0",
+        "QuickTimeout": "2.3.0"
+      }
+    },
+    "ConvertFrom-MailAuthenticationRecordMx": {
+      "since": "2.3.0",
+      "parameters": {
+        "DnsServerIpAddress": "2.3.0",
+        "DomainName": "2.3.0",
+        "NoHostsFile": "2.3.0",
+        "QuickTimeout": "2.3.0"
+      }
+    },
+    "ConvertFrom-MailAuthenticationRecordSpf": {
+      "since": "2.3.0",
+      "parameters": {
+        "DnsServerIpAddress": "2.3.0",
+        "DomainName": "2.3.0",
+        "NoHostsFile": "2.3.0",
+        "QuickTimeout": "2.3.0"
+      }
+    },
+    "Disconnect-Maester": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Disconnect-MtGitHub": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Get-MailAuthenticationRecord": {
+      "since": "2.3.0",
+      "parameters": {
+        "DkimDnsName": "2.3.0",
+        "DnsServerIpAddress": "2.3.0",
+        "DomainName": "2.3.0",
+        "NoHostsFile": "2.3.0",
+        "QuickTimeout": "2.3.0",
+        "Records": "2.3.0"
+      }
+    },
+    "Get-MtADDacls": {
+      "since": "2.3.0",
+      "parameters": {
+        "DnBase": "2.3.0",
+        "Refresh": "2.3.0"
+      }
+    },
+    "Get-MtADDomainState": {
+      "since": "2.3.0",
+      "parameters": {
+        "Categories": "2.3.0",
+        "ComputerName": "2.3.0",
+        "DnsTimeoutSeconds": "2.3.0",
+        "MaxRecordCount": "2.3.0",
+        "MaxZoneCount": "2.3.0",
+        "Refresh": "2.3.0"
+      }
+    },
+    "Get-MtADGpoState": {
+      "since": "2.3.0",
+      "parameters": {
+        "Refresh": "2.3.0"
+      }
+    },
+    "Get-MtAdminPortalUrl": {
+      "since": "2.3.0",
+      "parameters": {
+        "Environment": "2.3.0",
+        "Portal": "2.3.0"
+      }
+    },
+    "Get-MtAuthenticationMethodPolicyConfig": {
+      "since": "2.3.0",
+      "parameters": {
+        "State": "2.3.0"
+      }
+    },
+    "Get-MtAzureManagementGroup": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Get-MtConditionalAccessPolicy": {
+      "since": "2.3.0",
+      "parameters": {
+        "DisableCache": "2.3.0"
+      }
+    },
+    "Get-MtExo": {
+      "since": "2.3.0",
+      "parameters": {
+        "Request": "2.3.0"
+      }
+    },
+    "Get-MtExoThreatPolicyMalware": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Get-MtGraphScope": {
+      "since": "2.3.0",
+      "parameters": {
+        "IncludePreview": "2.3.0",
+        "Privileged": "2.3.0",
+        "SendMail": "2.3.0",
+        "SendTeamsMessage": "2.3.0"
+      }
+    },
+    "Get-MtGroupMember": {
+      "since": "2.3.0",
+      "parameters": {
+        "GroupId": "2.3.0",
+        "Recursive": "2.3.0"
+      }
+    },
+    "Get-MtHtmlReport": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaesterResults": "2.3.0",
+        "RedactUserIdentity": "2.3.0",
+        "UserIdentityReplacementMap": "2.3.0"
+      }
+    },
+    "Get-MtLicenseInformation": {
+      "since": "2.3.0",
+      "parameters": {
+        "Product": "2.3.0"
+      }
+    },
+    "Get-MtMaesterApp": {
+      "since": "2.3.0",
+      "parameters": {
+        "AppId": "2.3.0",
+        "Id": "2.3.0",
+        "Name": "2.3.0"
+      }
+    },
+    "Get-MtRegistrableDomain": {
+      "since": "2.3.0",
+      "parameters": {
+        "DomainName": "2.3.0"
+      }
+    },
+    "Get-MtRole": {
+      "since": "2.3.0",
+      "parameters": {
+        "CisaHighlyPrivilegedRoles": "2.3.0"
+      }
+    },
+    "Get-MtRoleMember": {
+      "since": "2.3.0",
+      "parameters": {
+        "MemberStatus": "2.3.0",
+        "Role": "2.3.0",
+        "RoleId": "2.3.0"
+      }
+    },
+    "Get-MtSafeMarkdown": {
+      "since": "2.3.0",
+      "parameters": {
+        "Text": "2.3.0"
+      }
+    },
+    "Get-MtSession": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Get-MtSpo": {
+      "since": "2.3.0",
+      "parameters": {
+        "ClearCache": "2.3.0"
+      }
+    },
+    "Get-MtTestInventory": {
+      "since": "2.3.0",
+      "parameters": {
+        "ExcludePath": "2.3.0",
+        "ExcludeTag": "2.3.0",
+        "ExportPath": "2.3.0",
+        "OutputType": "2.3.0",
+        "PassThru": "2.3.0",
+        "Path": "2.3.0"
+      }
+    },
+    "Get-MtUser": {
+      "since": "2.3.0",
+      "parameters": {
+        "Count": "2.3.0",
+        "MemberOfRole": "2.3.0",
+        "UserType": "2.3.0"
+      }
+    },
+    "Get-MtUserAuthenticationMethod": {
+      "since": "2.3.0",
+      "parameters": {
+        "UserId": "2.3.0"
+      }
+    },
+    "Get-MtUserAuthenticationMethodInfoByType": {
+      "since": "2.3.0",
+      "parameters": {
+        "AuthenticationMethod": "2.3.0"
+      }
+    },
+    "Get-ObjectDifference": {
+      "since": "2.3.0",
+      "parameters": {
+        "excludedObjects": "2.3.0",
+        "includedObjects": "2.3.0"
+      }
+    },
+    "Get-RelatedPolicy": {
+      "since": "2.3.0",
+      "parameters": {
+        "Arr": "2.3.0",
+        "ObjName": "2.3.0"
+      }
+    },
+    "Import-MtMaesterResult": {
+      "since": "2.3.0",
+      "parameters": {
+        "Path": "2.3.0"
+      }
+    },
+    "Import-SingleResultFile": {
+      "since": "2.3.0",
+      "parameters": {
+        "FilePath": "2.3.0",
+        "RequiredProperties": "2.3.0",
+        "ResultList": "2.3.0"
+      }
+    },
+    "Install-MaesterTests": {
+      "since": "2.3.0",
+      "parameters": {
+        "Path": "2.3.0",
+        "SkipPesterCheck": "2.3.0"
+      }
+    },
+    "Invoke-Maester": {
+      "since": "2.3.0",
+      "parameters": {
+        "DisableTelemetry": "2.3.0",
+        "DriftRoot": "2.3.0",
+        "ExcludeTag": "2.3.0",
+        "ExportCsv": "2.3.0",
+        "ExportExcel": "2.3.0",
+        "IncludeAffectedObjects": "2.3.0",
+        "IncludeLongRunning": "2.3.0",
+        "IncludePreview": "2.3.0",
+        "MailRecipient": "2.3.0",
+        "MailTestResultsUri": "2.3.0",
+        "MailUserId": "2.3.0",
+        "NoLogo": "2.3.0",
+        "NonInteractive": "2.3.0",
+        "OutputFolder": "2.3.0",
+        "OutputFolderFileName": "2.3.0",
+        "OutputHtmlFile": "2.3.0",
+        "OutputJsonFile": "2.3.0",
+        "OutputMarkdownFile": "2.3.0",
+        "OutputMarkdownSummaryFile": "2.3.0",
+        "PassThru": "2.3.0",
+        "Path": "2.3.0",
+        "PesterConfiguration": "2.3.0",
+        "RedactUserIdentity": "2.3.0",
+        "SkipGraphConnect": "2.3.0",
+        "SkipVersionCheck": "2.3.0",
+        "Tag": "2.3.0",
+        "TeamChannelId": "2.3.0",
+        "TeamChannelWebhookUri": "2.3.0",
+        "TeamId": "2.3.0",
+        "Verbosity": "2.3.0"
+      }
+    },
+    "Invoke-MtAzureRequest": {
+      "since": "2.3.0",
+      "parameters": {
+        "ApiVersion": "2.3.0",
+        "Filter": "2.3.0",
+        "Graph": "2.3.0",
+        "Method": "2.3.0",
+        "Payload": "2.3.0",
+        "RelativeUri": "2.3.0",
+        "Select": "2.3.0"
+      }
+    },
+    "Invoke-MtAzureResourceGraphRequest": {
+      "since": "2.3.0",
+      "parameters": {
+        "ApiVersion": "2.3.0",
+        "Query": "2.3.0"
+      }
+    },
+    "Invoke-MtGraphRequest": {
+      "since": "2.3.0",
+      "parameters": {
+        "ApiVersion": "2.3.0",
+        "BatchSize": "2.3.0",
+        "Body": "2.3.0",
+        "ConsistencyLevel": "2.3.0",
+        "DisableBatching": "2.3.0",
+        "DisableCache": "2.3.0",
+        "DisablePaging": "2.3.0",
+        "Filter": "2.3.0",
+        "GraphBaseUri": "2.3.0",
+        "Method": "2.3.0",
+        "OutputType": "2.3.0",
+        "QueryParameters": "2.3.0",
+        "RelativeUri": "2.3.0",
+        "Select": "2.3.0",
+        "UniqueId": "2.3.0"
+      }
+    },
+    "Invoke-MtGraphSecurityQuery": {
+      "since": "2.3.0",
+      "parameters": {
+        "Query": "2.3.0",
+        "Timespan": "2.3.0"
+      }
+    },
+    "Merge-MtMaesterResult": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaesterResults": "2.3.0",
+        "Path": "2.3.0"
+      }
+    },
+    "New-MtMaesterApp": {
+      "since": "2.3.0",
+      "parameters": {
+        "GitHubActions": "2.3.0",
+        "GitHubOrganization": "2.3.0",
+        "GitHubRepository": "2.3.0",
+        "Name": "2.3.0",
+        "Privileged": "2.3.0",
+        "Scopes": "2.3.0",
+        "SendMail": "2.3.0",
+        "SendTeamsMessage": "2.3.0",
+        "SetGitHubSecrets": "2.3.0"
+      }
+    },
+    "Resolve-SPFRecord": {
+      "since": "2.3.0",
+      "parameters": {
+        "Name": "2.3.0",
+        "Referrer": "2.3.0",
+        "Server": "2.3.0",
+        "Visited": "2.3.0"
+      }
+    },
+    "Send-MtMail": {
+      "since": "2.3.0",
+      "parameters": {
+        "CreateBodyOnly": "2.3.0",
+        "MaesterResults": "2.3.0",
+        "Recipient": "2.3.0",
+        "Subject": "2.3.0",
+        "TestResultsUri": "2.3.0",
+        "UserId": "2.3.0"
+      }
+    },
+    "Send-MtTeamsMessage": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaesterResults": "2.3.0",
+        "Subject": "2.3.0",
+        "TeamChannelId": "2.3.0",
+        "TeamChannelWebhookUri": "2.3.0",
+        "TeamId": "2.3.0",
+        "TestResultsUri": "2.3.0"
+      }
+    },
+    "Test-AzdoAllowExtensionsLocalNetworkAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoAllowRequestAccessToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoAllowTeamAdminsInvitationsAccessToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoArtifactsExternalPackageProtectionToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoAuditStream": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoDisableGlobalPATCreation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoDisablePATCreation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoEnforceAADConditionalAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoExternalGuestAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoFeedbackCollection": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoLogAuditEvent": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationAutomaticEnrollmentCodeSecurityNewRepository": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationAutomaticEnrollmentSecretProtectionNewRepository": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationBadgesArePrivate": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCodeSecurityEnrollment": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCodeSecurityScanning": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCopilotCodeReview": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCreationClassicBuildPipeline": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCreationClassicReleasePipeline": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationCreationRestriction": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationLimitVariablesAtQueueTime": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationOwner": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationProtectAccessToRepository": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationRepositorySettingsGravatarImage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationSecretProtectionEnrollment": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationSecretProtectionPushProtection": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationStageChooser": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationStorageUsage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationTaskRestrictionsDisableNode6Task": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoOrganizationTriggerPullRequestGitHubRepository": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoProjectCollectionAdministrator": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoPublicProject": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoResourceUsageProject": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoResourceUsageWorkItemTag": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoRestrictFullScopePersonalAccessToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoRestrictPersonalAccessTokenLifespan": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoSSHAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoThirdPartyAccessViaOauth": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-AzdoValidateSshKeyExpiration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MaesterResultValid": {
+      "since": "2.3.0",
+      "parameters": {
+        "RequiredProperties": "2.3.0",
+        "Result": "2.3.0",
+        "SourceFile": "2.3.0"
+      }
+    },
+    "Test-MtAdAccountLockoutDuration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdAccountLockoutThreshold": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdAdActivationObjectsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdAllowedDnsSuffixesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdAuthNPolicyConfigCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdCertificateTemplatesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerCreatorSidCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDelegationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDelegationDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDisabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDnsHostNameCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDnsZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDnsZoneDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerDormantCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerInDefaultContainer": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerNonDcConstrainedDelegationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerNonDcUnconstrainedDelegationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerNonStandardGroup": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerOperatingSystemCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerOperatingSystemDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerOUCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerPerOUAverage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSidHistoryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSpnNonFqdnHosts": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSpnServiceClassCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSpnServiceClassUsage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSpnUnknownCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerSpnUnknownDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerStaleEnabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdComputerUnconstrainedDelegationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdCrlDistributionPointsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdCrossForestReferencesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclConflictObjectCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclConflictObjectDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclDenyAceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclDenyAceDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclDistinctIdentityCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclDistinctObjectCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclIdentityAceDistribution": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclInheritedObjectTypeCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclInheritedObjectTypeDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclNonInheritedAceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclOuObjectCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclPrivilegedAllowAceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclPrivilegedAllowAceDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclPrivilegedExtendedRightCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclPrivilegedExtendedRightDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclPrivilegedExtendedRightIdentity": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclUnresolvedSidCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDaclUnresolvedSidDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcAllFsmoRolesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcFsmoRoleHolderDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcNonGlobalCatalogCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcNonStandardLdapPortCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcNonStandardLdapsPortCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcOperatingSystemCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcOperatingSystemDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcReadOnlyCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcSiteCoverageCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcSmbSigningEnabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcSmbv1EnabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDcSmbv311EnabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDefaultQueryPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDfsrSubscriptionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDisabledReplicationConnectionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsAdSrvRecordCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsAdSrvRecordDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsDnssecRecordCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsDuplicateZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsDynamicRecordCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsEmptyZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsNonStandardZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsReverseZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsReverseZoneNetworkCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsReverseZoneNetworkDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsRootServerIncorrectCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsRootServerIncorrectDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsSoaDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZoneCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZoneDelegationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZoneDelegationDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZoneRecordDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZonesWithOnlySoaNs": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDnsZonesWithRecordsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDomainControllerCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDomainFunctionalLevel": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDomainNameNonStandardDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDomainNameStandardCompliance": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdDsHeuristicsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdEnrollmentCaCertificateDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdEnrollmentTemplatesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdEnterpriseCaCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdFineGrainedPolicyAppliesTo": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdFineGrainedPolicyCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdFineGrainedPolicySettingCounts": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdFineGrainedPolicyValueCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdForestDomainCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdForestFunctionalLevel": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoAllSettingsDisabledDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoBlockedInheritanceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoChangedBefore2020Count": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoComputerSettingsDisabledDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoCpasswordFoundCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoCpasswordFoundDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoCreatedBefore2020Count": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDefaultPasswordFoundCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDefaultPasswordFoundDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDenyAceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDenyAceDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDisabledLinkCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoDisabledLinkDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoEnforcedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoEnforcementCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoInheritedPermissionsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoLinkedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoLinkedOUCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoApplyGroupPolicyAceCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoApplyGroupPolicyAceDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoAuthenticatedUsersCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoAuthenticatedUsersDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoDomainComputersCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoEnterpriseDcCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoPermissionsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoNoPermissionsDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoOwnerDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoOwnerDistinctCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoSettingsDisabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoStateTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoUnlinkedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoUnlinkedDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoUnlinkedTargetCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoUserSettingsDisabledDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoVersionMismatchCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoVersionMismatchDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoWmiFilterCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGpoWmiFilterDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupAdminCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupChangeAveragePerYear": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupDistributionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupDomainLocalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupEmptyNonPrivilegedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupEmptyNonPrivilegedDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupGlobalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupInContainerCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberAccountTypeCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberAccountTypeDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberDistinctGroupCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberForeignSidCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberForeignSidDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberTrustCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupMemberTrustDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupPrivilegedWithMembersCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupPrivilegedWithMembersDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupSecurityCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupSidHistoryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupStaleCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupUniversalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdGroupWithManagerCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdIntermediateCaCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdIntermediateCaDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdIpSiteLinksCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdKdsRootKeysCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdKrbtgtLastLogon": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdKrbtgtNonStandardUacCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdKrbtgtPasswordLastSet": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdLapsInstalledStatus": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdLdapQueryPolicyCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdMachineAccountQuota": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdManagedServiceAccountCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdNetbiosNameNonStandardDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdNetbiosNameStandardCompliance": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdNonAutoReplicationConnectionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdNtAuthCertificatesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOptionalFeatureCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOptionalFeatureEnabledDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOptionalFeaturesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOuAtDomainRootCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOuEmptyCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOuEmptyDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOuOverlappingNameCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdOuStaleCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPasswordComplexityRequired": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPasswordHistoryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPasswordMaxAge": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPasswordMinLength": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPasswordReversibleEncryption": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdPrinterTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdRecycleBinEnabledPaths": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdRecycleBinStatus": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdRegisteredDhcpServersCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdRidsRemaining": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdRootDseSynchronizedStatus": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSchemaModificationYearCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSchemaModificationYearDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSchemaVersionDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSchemaVersionEntryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSiteTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSiteWithoutDcCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSiteWithoutDcDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSiteWithoutSubnetCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSiteWithoutSubnetDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSmtpSiteLinksCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSpnMappings": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSpnSuffixesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetCatchAllCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetFirstOctetCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetFirstThreeOctetsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetFirstTwoOctetsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetIpv6CatchAllCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetIpv6Count": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetNonInternalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetNonInternalDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetSiteAssociationCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSubnetWithoutSiteCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSupportedSaslMechanismCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdSupportedSaslMechanismDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTombstoneLifetime": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTombstoneLifetimeConfig": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustedRootCaCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustedRootCaDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustInterForestCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustNonQuarantinedDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustQuarantinedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustStaleCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustStaleDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdTrustTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUpnSuffixesCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUpnSuffixesDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserAdminCountCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserBuiltInAdminCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserBuiltInAdminEnabledDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserBuiltInAdminLastLogonDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserBuiltInAdminPasswordAgeDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserDelegationAllowedCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserDelegationConfiguredCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserDelegationDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserDisabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserDormantEnabledCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserHomeDirectoryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserHoneyPotCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserHoneyPotDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserInContainerCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserKerberosDesOnlyCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserKnownServiceAccountCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserKnownServiceAccountDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserManagerSetCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserNeverLoggedInCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserNonStandardPrimaryGroupCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserNoPreAuthCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserPasswordNeverExpiresCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserPasswordNotRequiredCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserProfilePathCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserReversibleEncryptionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserScriptPathCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSidHistoryCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnDomainAdminCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnDomainAdminDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnNonFqdnHosts": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnServiceClassCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnServiceClassUsage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnSetCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnTotalCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnUnknownCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserSpnUnknownDetails": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdUserWorkstationRestrictionCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAdWellKnownSecurityPrincipalsCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentAuthorAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentBroadSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentDormant": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentEmailExfiltration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentHardCodedCredentials": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentMcpTools": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentMissingInstructions": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentNoAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentOrphaned": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAIAgentRiskyHttpConfig": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAndroidEnterpriseConnection": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAppleAutomatedDeviceEnrollmentToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtApplePushNotificationCertificate": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAppleVolumePurchaseProgramToken": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAppManagementPolicyEnabled": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAppRegistrationCertificateLifetime": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaximumValidityDays": "2.3.0"
+      }
+    },
+    "Test-MtAppRegistrationCredentialExpiry": {
+      "since": "2.3.0",
+      "parameters": {
+        "ExpiringWithinDays": "2.3.0"
+      }
+    },
+    "Test-MtAppRegistrationOwnersWithoutMFA": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAppRegistrationsWithSecrets": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtAuthenticationPolicyReferencedObjectsExist": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtBitLockerFullDiskEncryption": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaAgentRiskBlockPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaAllAppsExists": {
+      "since": "2.3.0",
+      "parameters": {
+        "SkipCheckAllUsers": "2.3.0"
+      }
+    },
+    "Test-MtCaApplicationEnforcedRestriction": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaApprovedClientApp": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaAzureDevOps": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaBlockLegacyExchangeActiveSyncAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaBlockLegacyOtherAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaBlockUnknownOrUnsupportedDevicePlatform": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaDeviceCodeFlow": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaDeviceComplianceAdminsExists": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaDeviceComplianceExists": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaEmergencyAccessExists": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaEnforceNonPersistentBrowserSession": {
+      "since": "2.3.0",
+      "parameters": {
+        "AllDevices": "2.3.0"
+      }
+    },
+    "Test-MtCaEnforceSignInFrequency": {
+      "since": "2.3.0",
+      "parameters": {
+        "AllDevices": "2.3.0"
+      }
+    },
+    "Test-MtCaExclusionForDirectorySyncAccount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaGap": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaGroupsRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaLicenseUtilization": {
+      "since": "2.3.0",
+      "parameters": {
+        "License": "2.3.0"
+      }
+    },
+    "Test-MtCaMfaForAdmin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaMfaForAdminManagement": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaMfaForAllUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaMfaForGuest": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaMfaForRiskySignIn": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaMisconfiguredIDProtection": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaReferencedGroupsExist": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaReferencedObjectsExist": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaRequirePasswordChangeForHighUserRisk": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaSecureSecurityInfoRegistration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaUntargetedPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCaWIFBlockLegacyAuthentication": {
+      "since": "2.3.0",
+      "parameters": {
+        "UserId": "2.3.0"
+      }
+    },
+    "Test-MtCertificateConnectors": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCis365PublicGroup": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaActivationNotification": {
+      "since": "2.3.0",
+      "parameters": {
+        "GlobalAdminOnly": "2.3.0"
+      }
+    },
+    "Test-MtCisaAntiSpamAllowList": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAntiSpamSafeList": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAppAdminConsent": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAppGroupOwnerConsent": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAppRegistration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAppUserConsent": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAssignmentNotification": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAttachmentFileType": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAttachmentFilter": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAuditLog": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAuditLogPremium": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAuditLogRetention": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAuthenticatorContext": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaAutoExternalForwarding": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaBlockExecutable": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaBlockHighRiskSignIn": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaBlockHighRiskUser": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaBlockLegacyAuth": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaCalendarSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaCloudGlobalAdmin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaContactSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaCrossTenantInboundDefault": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDiagnosticSettings": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDkim": {
+      "since": "2.3.0",
+      "parameters": {
+        "Selector": "2.3.0"
+      }
+    },
+    "Test-MtCisaDlp": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDlpAlternate": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDlpBaselineRule": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDlpPii": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaDmarcAggregateCisa": {
+      "since": "2.3.0",
+      "parameters": {
+        "Force": "2.3.0",
+        "Strict": "2.3.0"
+      }
+    },
+    "Test-MtCisaDmarcRecordExist": {
+      "since": "2.3.0",
+      "parameters": {
+        "Strict": "2.3.0"
+      }
+    },
+    "Test-MtCisaDmarcRecordReject": {
+      "since": "2.3.0",
+      "parameters": {
+        "Strict": "2.3.0"
+      }
+    },
+    "Test-MtCisaDmarcReport": {
+      "since": "2.3.0",
+      "parameters": {
+        "Strict": "2.3.0"
+      }
+    },
+    "Test-MtCisAdminConsentWorkflowEnabled": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaEmailFilterAlternative": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaExoAlert": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaExoAlertSiem": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaExternalSenderWarning": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaGlobalAdminCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaGlobalAdminRatio": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaGuestInvitation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaGuestUserAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaImpersonation": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaImpersonationTip": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaMailboxAuditing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaMailboxIntelligence": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaMalwareAction": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaMalwareZap": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaManagedDevice": {
+      "since": "2.3.0",
+      "parameters": {
+        "SkipHybridJoinCheck": "2.3.0"
+      }
+    },
+    "Test-MtCisaManagedDeviceRegistration": {
+      "since": "2.3.0",
+      "parameters": {
+        "SkipHybridJoinCheck": "2.3.0"
+      }
+    },
+    "Test-MtCisaMethodsMigration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaMfa": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaNotifyHighRisk": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaPasswordExpiration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaPermanentRoleAssignment": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaPhishResistant": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaPrivilegedPhishResistant": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaRequireActivationApproval": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSafeLink": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSafeLinkClickTracking": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSafeLinkDownloadScan": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSmtpAuthentication": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpamAction": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpamAlternative": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpamBypass": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpamFilter": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpfDirective": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpfRestriction": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoAnyoneLinkExpiration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoAnyoneLinkPermission": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoDefaultSharingPermission": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoDefaultSharingScope": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoOneDriveSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoSharingAllowedDomain": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaSpoVerificationCodeReauth": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisAttachmentFilter": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisAttachmentFilterComprehensive": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisAuditLogSearch": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaUnmanagedRoleAssignment": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisaWeakFactor": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCalendarSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCloudAdmin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCommunicateInitiateExternalTeamsUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCommunicateWithUnmanagedTeamsUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisConnectionFilterSafeList": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCreateTenantDisallowed": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisCustomerLockBox": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisDevicesWithoutCompliancePolicyMarked": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisDkim": {
+      "since": "2.3.0",
+      "parameters": {
+        "Selector": "2.3.0"
+      }
+    },
+    "Test-MtCisEnsureBitLockerKeyRecoveryRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisEnsureGuestAccessRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisEnsureUserConsentToAppsDisallowed": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisExoAdditionalStorageProvider": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisFormsPhishingProtectionEnabled": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGitHubIssueDeletionLimited": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGitHubRepositoryCreationLimited": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGitHubRepositoryDeletionLimited": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGitHubStrictBasePermission": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGitHubTeamCreationLimited": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisGlobalAdminCount": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisHostedConnectionFilterPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisInternalMalwareNotification": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisOutboundSpamFilterPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisPasswordExpiry": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSafeAntiPhishingPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSafeAttachment": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSafeAttachmentsAtpPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSafeLink": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSharedMailboxSignIn": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoB2BIntegration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoDefaultSharingLink": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoDefaultSharingLinkPermission": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoGuestAccessExpiry": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoGuestCannotShareUnownedItem": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisSpoPreventDownloadMaliciousFile": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisTeamsLobbyBypass": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisTeamsReportSecurityConcerns": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisThirdPartyAndCustomApps": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisThirdPartyApplicationsDisallowed": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisThirdPartyFileSharing": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisThirdPartyStorageServicesRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisUserOwnedAppsRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisWeakAuthenticationMethodsDisabled": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtCisZAP": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtConditionalAccessWhatIf": {
+      "since": "2.3.0",
+      "parameters": {
+        "AllResults": "2.3.0",
+        "ClientAppType": "2.3.0",
+        "Country": "2.3.0",
+        "DeviceInfo": "2.3.0",
+        "DevicePlatform": "2.3.0",
+        "IncludeApplications": "2.3.0",
+        "InsiderRiskLevel": "2.3.0",
+        "IpAddress": "2.3.0",
+        "ServicePrincipalRiskLevel": "2.3.0",
+        "SignInRiskLevel": "2.3.0",
+        "UserAction": "2.3.0",
+        "UserId": "2.3.0",
+        "UserRiskLevel": "2.3.0"
+      }
+    },
+    "Test-MtConnection": {
+      "since": "2.3.0",
+      "parameters": {
+        "Details": "2.3.0",
+        "Service": "2.3.0"
+      }
+    },
+    "Test-MtDeviceComplianceSettings": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDeviceRegistrationLocalAdminsGlobalAdmin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDeviceRegistrationLocalAdminsRegisteringUser": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDeviceRegistrationMfaConflict": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDomainsDmarcRecordMaturity": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDynamicGroupMemberOfRule": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtDynamicGroupUserControlledAttributes": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEidscaControl": {
+      "since": "2.3.0",
+      "parameters": {
+        "CheckId": "2.3.0"
+      }
+    },
+    "Test-MtEntitlementManagementDeletedGroups": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntitlementManagementInactivePolicies": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntitlementManagementOrphanedResources": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntitlementManagementValidApprovers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntitlementManagementValidResourceRoles": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentBlueprintAllAllowedInheritance": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentBlueprintCredentialHygiene": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaxActiveSecrets": "2.3.0",
+        "MaxValidityDays": "2.3.0"
+      }
+    },
+    "Test-MtEntraAgentBlueprintOpenAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentBlueprintOrphaned": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentBlueprintRedirectUriHygiene": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentDirectoryRoles": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentForeignPrivileged": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentHighRiskGraphPermissions": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentIdentityOrphaned": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentInactive": {
+      "since": "2.3.0",
+      "parameters": {
+        "MaxInactiveDays": "2.3.0"
+      }
+    },
+    "Test-MtEntraAgentOwner": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentSponsor": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentUserExcessiveAccess": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraAgentUserOrphaned": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraDeviceJoinRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraIDConnectSsso": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraIDConnectSyncSoftHardMatching": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtEntraMsolPowerShellBlocked": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoDelicensingResiliency": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoMailTip": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoModernAuth": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoMoeraMailActivity": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoOutlookAddin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoRejectDirectSend": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtExoSetScl": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtFeatureUpdatePolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGroupCreationRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaBaselineThreatIntelligenceEnforced": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaCompliantNetworkBreakGlassExcluded": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaForwardingProfileAssignmentNotNested": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaM365ProfileEnabled": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaPrivateAccessAppAssignmentNotNested": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaPrivateAccessAppCompliantDevice": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtGsaPrivateAccessAppSegmentHygiene": {
+      "since": "2.3.0",
+      "parameters": {
+        "BroadIPv4MaskThreshold": "2.3.0"
+      }
+    },
+    "Test-MtGsaQuickAccessNoSignInFrequency": {
+      "since": "2.3.0",
+      "parameters": {
+        "AllowedPolicies": "2.3.0"
+      }
+    },
+    "Test-MtHighPrivilegeServicePrincipalsForAllUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtHighRiskAppPermissions": {
+      "since": "2.3.0",
+      "parameters": {
+        "AttackPath": "2.3.0"
+      }
+    },
+    "Test-MtIntuneAppControl": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtIntuneASRRules": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtIntuneDiagnosticSettings": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtIntuneLAPSConfiguration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtIntuneManagedInstallerRules": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtIntuneRbacGroupsProtected": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtKrbtgtAzureADNotSynced": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtLimitOnMicrosoftDomainUsage": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMacOSDefenderRiskScore": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMacOSGatekeeper": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMacOSLAPSConfiguration": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMacOSSystemIntegrityProtection": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtManagedDeviceCleanupSettings": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtManagementGroupWriteRequirement": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMdeArchiveScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeBehaviorMonitoring": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCatchupFullScan": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCatchupQuickScan": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCloudBlockLevel": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCloudExtendedTimeout": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCloudProtection": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeCpuLoadFactor": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeDisableLocalAdminMerge": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeEmailScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeMappedDriveScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeNetworkFileScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeNetworkProtection": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdePuaProtection": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeQuickScanTime": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeRealtimeMonitoring": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeRealtimeScanDirection": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeRemovableDriveScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeRetainCleanedMalware": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeScheduleScanDay": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeScriptScanning": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeSignatureBeforeScan": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeSignatureUpdateInterval": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdeSubmitSamplesConsent": {
+      "since": "2.3.0",
+      "parameters": {
+        "ComplianceLogic": "2.3.0",
+        "PolicyFiltering": "2.3.0"
+      }
+    },
+    "Test-MtMdmAuthority": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtMobileThreatDefenseConnectors": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtOperationApprovalPolicies": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtPimAlertsExists": {
+      "since": "2.3.0",
+      "parameters": {
+        "AlertId": "2.3.0",
+        "FilteredAccessLevel": "2.3.0",
+        "FilteredBreakGlass": "2.3.0"
+      }
+    },
+    "Test-MtPrivPermanentDirectoryRole": {
+      "since": "2.3.0",
+      "parameters": {
+        "FilteredAccessLevel": "2.3.0",
+        "FilterPrincipal": "2.3.0"
+      }
+    },
+    "Test-MtPurviewAiDlpPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtPurviewAiInsiderRiskPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtPurviewAiRetentionPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtPurviewAiSensitivityLabelsForFiles": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtPurviewAuditLogIngestion": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtSecurityGroupCreationRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtServicePrincipalsForAllUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtSpExchangeAppAccessPolicy": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtTeamsRestrictParticipantGiveRequestControl": {
+      "since": "2.3.0",
+      "parameters": {
+        "TeamsMeetingPolicy": "2.3.0"
+      }
+    },
+    "Test-MtTenantCreationRestricted": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtTenantCustomization": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtUserAccessAdmin": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtVaultSoftDelete": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtWindowsDataProcessor": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmAppRegWithPrivilegedApiAndOwners": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmAppRegWithPrivilegedRolesAndOwners": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmAppRegWithPrivilegedUnusedPermissions": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmExposedCredentialsForPrivilegedUsers": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmHybridUsersWithAssignedEntraIdRoles": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmPendingApprovalCriticalAssetManagement": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmPrivilegedUsersLinkedToIdentity": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-MtXspmPublicRemotelyExploitableHighExposureDevices": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA100": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA101": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA102": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA103": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA104": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA105": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA106": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA107": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA108": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA108_1": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA109": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA110": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA111": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA112": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA113": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA114": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA115": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA116": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA118_1": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA118_2": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA118_3": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA118_4": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA119": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA120_malware": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA120_phish": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA120_spam": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA121": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA123": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA124": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA139": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA140": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA141": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA142": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA143": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA156": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA158": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA179": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA180": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA189": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA189_2": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA205": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA220": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA221": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA222": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA223": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA224": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA225": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA226": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA227": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA228": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA229": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA230": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA231": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA232": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA233": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA233_1": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA234": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA235": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA236": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA237": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA238": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA239": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA240": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA241": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA242": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA243": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Test-ORCA244": {
+      "since": "2.3.0",
+      "parameters": {}
+    },
+    "Update-MaesterTests": {
+      "since": "2.3.0",
+      "parameters": {
+        "Force": "2.3.0",
+        "Path": "2.3.0"
+      }
+    },
+    "Update-MtMaesterApp": {
+      "since": "2.3.0",
+      "parameters": {
+        "AppId": "2.3.0",
+        "Id": "2.3.0",
+        "Privileged": "2.3.0",
+        "Scopes": "2.3.0",
+        "SendMail": "2.3.0",
+        "SendTeamsMessage": "2.3.0"
+      }
+    }
+  }
+}

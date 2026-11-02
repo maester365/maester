@@ -1,0 +1,164 @@
+---
+// The reader's release channel. The docs describe the preview by default; a reader on the stable release can
+// switch, and the version marks on every page then say what their version doesn't have yet. The choice is kept in
+// localStorage and applied to <html data-channel> before the page paints (see overrides/Head.astro).
+import { previewLabel, previewVersion, stableVersion } from '../lib/versions.mjs';
+---
+
+<mt-version-picker class="mt-vp">
+	<details>
+		<summary aria-label="Choose the Maester version you use">
+			<span class="mt-vp__current mt-vp__current--preview">{previewLabel} preview</span>
+			<span class="mt-vp__current mt-vp__current--stable">{stableVersion} stable</span>
+			<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg>
+		</summary>
+		<div class="mt-vp__menu" role="radiogroup" aria-label="Maester version">
+			<button type="button" role="radio" data-channel="preview">
+				<span class="mt-vp__check" aria-hidden="true">✓</span>
+				<span>
+					<strong>Preview · {previewVersion}</strong>
+					<code>Install-Module Maester -AllowPrerelease</code>
+				</span>
+			</button>
+			<button type="button" role="radio" data-channel="stable">
+				<span class="mt-vp__check" aria-hidden="true">✓</span>
+				<span>
+					<strong>Stable · {stableVersion}</strong>
+					<code>Install-Module Maester</code>
+				</span>
+			</button>
+			<p>
+				These docs describe the preview. Pick the version you run and every page marks what it doesn't have yet.{' '}
+				<a href="/docs/preview">Get the preview →</a><br />
+				<a href="/docs/2.x/intro">Maester 2.x docs (archived) →</a>
+			</p>
+		</div>
+	</details>
+</mt-version-picker>
+
+<script>
+	class VersionPicker extends HTMLElement {
+		connectedCallback() {
+			const details = this.querySelector('details');
+			const buttons = [...this.querySelectorAll<HTMLButtonElement>('button[data-channel]')];
+			const sync = () => {
+				const current = document.documentElement.dataset.channel ?? 'preview';
+				for (const b of buttons) b.setAttribute('aria-checked', String(b.dataset.channel === current));
+			};
+			for (const button of buttons) {
+				button.addEventListener('click', () => {
+					const channel = button.dataset.channel ?? 'preview';
+					document.documentElement.dataset.channel = channel;
+					try {
+						localStorage.setItem('maester-channel', channel);
+					} catch {}
+					sync();
+					details?.removeAttribute('open');
+				});
+			}
+			document.addEventListener('click', (event) => {
+				if (details?.open && !this.contains(event.target as Node)) details.removeAttribute('open');
+			});
+			sync();
+		}
+	}
+	customElements.define('mt-version-picker', VersionPicker);
+</script>
+
+<style>
+	.mt-vp {
+		position: relative;
+	}
+	summary {
+		list-style: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		cursor: pointer;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 9px;
+		padding: 0.3rem 0.65rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+		white-space: nowrap;
+	}
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	.mt-vp__current--stable {
+		display: none;
+	}
+	:global(:root[data-channel='stable']) .mt-vp__current--stable {
+		display: inline;
+	}
+	:global(:root[data-channel='stable']) .mt-vp__current--preview {
+		display: none;
+	}
+	.mt-vp__menu {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 6px);
+		z-index: 20;
+		width: 21rem;
+		background: var(--sl-color-black);
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.45);
+		padding: 0.4rem;
+	}
+	button {
+		display: flex;
+		gap: 0.6rem;
+		width: 100%;
+		text-align: start;
+		background: transparent;
+		border: 0;
+		border-radius: 9px;
+		padding: 0.6rem 0.7rem;
+		cursor: pointer;
+		color: var(--sl-color-white);
+		font: inherit;
+		font-size: 0.875rem;
+	}
+	button:hover,
+	button[aria-checked='true'] {
+		background: var(--sl-color-gray-6);
+	}
+	button span:last-child {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+	button code {
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+		background: none;
+		padding: 0;
+	}
+	.mt-vp__check {
+		width: 1rem;
+		color: var(--sl-color-accent);
+		font-weight: 700;
+		visibility: hidden;
+	}
+	button[aria-checked='true'] .mt-vp__check {
+		visibility: visible;
+	}
+	p {
+		margin: 0.4rem 0 0;
+		border-top: 1px solid var(--sl-color-gray-5);
+		padding: 0.6rem 0.7rem 0.3rem;
+		font-size: 0.78rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+	p a {
+		font-weight: 600;
+		color: var(--sl-color-text-accent);
+		text-decoration: none;
+	}
+	p a:hover {
+		text-decoration: underline;
+	}
+</style>

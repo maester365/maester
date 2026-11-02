@@ -1,5 +1,5 @@
 ---
-title: 📤 Exporting results
+title: Exporting results
 ---
 
 Maester supports exporting test results to CSV and Excel files. This is useful for sharing test results with others or for further analysis in a spreadsheet program.
@@ -29,7 +29,7 @@ Convert-MtResultsToFlatObject -InputObject $results -CsvFilePath "C:\path\to\res
 
 To export test results to an Excel file, use the `Convert-MtResultsToFlatObject` command with the `-ExcelFilePath` parameter.
 
-:::info
+:::note
 
 The `Convert-MtResultsToFlatObject` command requires the `ImportExcel` module. You can install the module by running `Install-Module ImportExcel`.
 
