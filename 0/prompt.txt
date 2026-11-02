@@ -1,0 +1,29 @@
+why do we need contributor emails?
+
+---
+
+give me the detailed steps for cloudflare token. Should we use account API token to restrict them to this project instead of user api tokens
+
+---
+
+i can still see build website running for PR branches
+
+---
+
+Yes, narrow it
+
+---
+
+<task-notification>
+<task-type>artifact-auto-react</task-type>
+<summary>2 artifact auto-reply subscriptions paused by the interrupt (comments sent to Claude meanwhile are answered then)</summary>
+The user's interrupt paused them and the watches are kept; when the user asks you to publish these artifacts again, that publish resumes them, or resume_replies if the user asks, as does the user's next typed message — each only on hosts that pass typed input through as the user's, and comments sent to Claude in the meantime are answered then; publishing without being asked, while handling a notification or a wake-up, leaves them paused. Do not republish or resume just to re-enable auto-replies unless the user asks.
+</task-notification>
+
+---
+
+don't we create public docs based on internal modules
+
+---
+
+Yes, narrow it
