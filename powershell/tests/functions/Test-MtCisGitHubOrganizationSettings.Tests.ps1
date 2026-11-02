@@ -128,6 +128,22 @@ Describe 'CIS GitHub organization setting tests' {
                 IsInvestigate   = $false
             }
             @{
+                Function        = 'Test-MtCisGitHubRepositoryDeletionLimited'
+                Id              = 'CIS.GH.1.2.3'
+                ExpectedRows    = @('\| `members_can_delete_repositories` \| `False` \| `False` \|')
+                HasLegacyFooter = $false
+                HasInternalNote = $false
+                IsInvestigate   = $true
+            }
+            @{
+                Function        = 'Test-MtCisGitHubIssueDeletionLimited'
+                Id              = 'CIS.GH.1.2.4'
+                ExpectedRows    = @('\| `members_can_delete_issues` \| `False` \| `False` \|')
+                HasLegacyFooter = $false
+                HasInternalNote = $false
+                IsInvestigate   = $true
+            }
+            @{
                 Function        = 'Test-MtCisGitHubTeamCreationLimited'
                 Id              = 'CIS.GH.1.3.2'
                 ExpectedRows    = @('\| `members_can_create_teams` \| `False` \| `False` \|')
@@ -155,10 +171,8 @@ Describe 'CIS GitHub organization setting tests' {
 
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 $Result -match "$Id automated evidence from ``GET /orgs/\{org\}``\." -and
-                (($IsInvestigate -and $Result -match '\| Field \| Actual \|' -and $Result -notmatch '\| Expected \|') -or
-                    (-not $IsInvestigate -and $Result -match '\| Field \| Actual \| Expected \|')) -and
-                (($IsInvestigate -and $Result -match '\| --- \| --- \|') -or
-                    (-not $IsInvestigate -and $Result -match '\| --- \| --- \| --- \|')) -and
+                $Result -match '\| Field \| Actual \| Expected \|' -and
+                $Result -match '\| --- \| --- \| --- \|' -and
                 (($IsInvestigate -and $Investigate -eq $true) -or (-not $IsInvestigate -and -not $Investigate))
             }
 
@@ -230,11 +244,77 @@ Describe 'CIS GitHub organization setting tests' {
 
     }
 
+    Context 'Manual review required' {
+        It 'Marks repository deletion as investigate when member repository deletion is disabled' {
+            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'organization owners are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_repositories` \| `False` \| `False` \|'
+            }
+        }
+
+        It 'Marks repository deletion as investigate when member repository deletion is enabled' {
+            $script:orgResponse.members_can_delete_repositories = $true
+
+            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'repository admin members are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_repositories` \| `True` \| `False` \|'
+            }
+        }
+
+        It 'Marks issue deletion as investigate when member issue deletion is disabled' {
+            Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'organization owners are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_issues` \| `False` \| `False` \|'
+            }
+        }
+
+        It 'Marks issue deletion as investigate when member issue deletion is enabled' {
+            $script:orgResponse.members_can_delete_issues = $true
+
+            Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'repository admin members are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_issues` \| `True` \| `False` \|'
+            }
+        }
+    }
+
     Context 'Missing evidence' {
         $missingFieldCases = @(
             @{
                 Function = 'Test-MtCisGitHubRepositoryCreationLimited'
                 Field    = 'members_can_create_public_repositories'
+            }
+            @{
+                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
+                Field    = 'members_can_delete_repositories'
+            }
+            @{
+                Function = 'Test-MtCisGitHubIssueDeletionLimited'
+                Field    = 'members_can_delete_issues'
             }
             @{
                 Function = 'Test-MtCisGitHubTeamCreationLimited'
@@ -260,6 +340,8 @@ Describe 'CIS GitHub organization setting tests' {
         # Native tests: the engine gates on Service = 'GitHub'; the functions no longer guard themselves.
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
+            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
+            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
@@ -290,6 +372,8 @@ Describe 'CIS GitHub organization setting tests' {
     Context 'GitHub request errors' {
         $nativeCases = @(
             @{ Function = 'Test-MtCisGitHubRepositoryCreationLimited'; Id = 'CIS.GH.1.2.2' }
+            @{ Function = 'Test-MtCisGitHubRepositoryDeletionLimited'; Id = 'CIS.GH.1.2.3' }
+            @{ Function = 'Test-MtCisGitHubIssueDeletionLimited'; Id = 'CIS.GH.1.2.4' }
             @{ Function = 'Test-MtCisGitHubTeamCreationLimited'; Id = 'CIS.GH.1.3.2' }
             @{ Function = 'Test-MtCisGitHubStrictBasePermission'; Id = 'CIS.GH.1.3.8' }
         )
