@@ -640,7 +640,10 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
     }
 
     It 'Uses the retained owner lower bound at the production pagination cap' {
-        Set-DeletionPolicy $null
+        Set-DeletionPolicy (@{
+                ApiBaseUri = 'https://api.github.com'; OrganizationId = '100'
+                ApprovedOwnerIds = @(1..100 | ForEach-Object { [string]$_ })
+            } | ConvertTo-Json -Depth 5 | ConvertFrom-Json)
         Mock Invoke-WebRequest -ModuleName Maester {
             param($Uri)
             if (([uri]$Uri).AbsolutePath -eq '/orgs/fixture-org') {
@@ -649,7 +652,10 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
             $page = if ($Uri -match '[&?]page=(\d+)') { [int]$Matches[1] } else { 1 }
             return @{ Content = '[{"id":' + $page + '}]'; Headers = @{ Link = '<https://api.github.com/orgs/fixture-org/members?role=admin&per_page=100&page=' + ($page + 1) + '>; rel="next"' } }
         }
-        Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
+        $actual = Test-MtCisGitHubRepositoryDeletionLimited
+        $actual | Should -BeOfType ([bool])
+        $actual | Should -BeFalse
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $SkippedBecause -or $Investigate }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 101
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Result -match '\| 100 \| 3 \|' -and $Result -match 'lower bound' }
     }

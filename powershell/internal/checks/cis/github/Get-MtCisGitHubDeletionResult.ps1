@@ -1,4 +1,4 @@
-function Get-MtCisGitHubDeletionResult {
+﻿function Get-MtCisGitHubDeletionResult {
     <#
     .SYNOPSIS
     Internal: Renders raw or pseudonymized deletion results from the same evidence.
@@ -38,9 +38,10 @@ function Get-MtCisGitHubDeletionResult {
     } else {
         $rows = foreach ($repository in $Evidence.Repositories) {
             $ids = @($repository.UnapprovedIds | ForEach-Object { & $userId $_ }) -join ', '
-            $unapprovedCount = if ($repository.ApprovalsConfigured) { [string]@($repository.UnapprovedIds).Count } else { 'Not configured' }
-            $administratorCount = if ($repository.ApprovalsConfigured) { [string]$repository.AdministratorCount } else { 'Not assessed' }
-            $coverage = if (-not $repository.ApprovalsConfigured) { 'Not collected' } elseif ($repository.Complete) { 'Complete' } else { 'Incomplete / partial; observed count is a lower bound' }
+            $notAssessed = $repository.Assessment -eq 'Not assessed'
+            $unapprovedCount = if (-not $repository.ApprovalsConfigured) { 'Not configured' } elseif ($notAssessed) { 'Not assessed' } else { [string]@($repository.UnapprovedIds).Count }
+            $administratorCount = if ($notAssessed) { 'Not assessed' } else { [string]$repository.AdministratorCount }
+            $coverage = if ($notAssessed) { 'Not collected' } elseif ($repository.Complete) { 'Complete' } else { 'Incomplete / partial; observed count is a lower bound' }
             "| $(Get-MtSafeMarkdown $repository.Name) | $administratorCount | $unapprovedCount | $ids | $($repository.Assessment) | $coverage |"
         }
         $result += "| Repository | Effective administrators | Unapproved | Unapproved observed user IDs | Assessment | Evidence |`n| --- | --- | --- | --- | --- | --- |`n" + ($rows -join "`n")
