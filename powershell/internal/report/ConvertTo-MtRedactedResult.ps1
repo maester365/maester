@@ -1,4 +1,4 @@
-function ConvertTo-MtRedactedResult {
+﻿function ConvertTo-MtRedactedResult {
     <#
     .SYNOPSIS
     Copies results and prepares result Markdown before export.
