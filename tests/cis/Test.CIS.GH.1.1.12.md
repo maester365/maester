@@ -1,6 +1,6 @@
 Every existing branch requires signed commits.
 
-Requiring signed commits helps prevent an attacker from introducing unsigned changes into the software supply chain. Most contributors may need to set up signing and change their daily commit workflow. Plan a pilot and communicate the change, because an incorrect rollout can block contributions.
+Requiring signed commits helps prevent an attacker from introducing unsigned changes into the software supply chain. Contributors may need to set up signing and configure Git to sign commits automatically. Their usual commit commands can then stay the same. Plan a pilot and communicate the change, because contributors and bots need verified signatures and existing unsigned pull-request commits may need to be rewritten and signed before merging.
 
 CIS GitHub Benchmark v1.2.0 lists section 1.1.12 as a Manual assessment. This test checks every existing branch in each in-use repository using `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures` with REST version `2026-03-10`. The benchmark source is section 1.1.12, physical PDF pages 41–42; printed pages 40–41.
 
@@ -32,6 +32,7 @@ The API operations support fine-grained PATs and GitHub App user or installation
 * [CIS GitHub Benchmark](https://www.cisecurity.org/benchmark/github)
 * [GitHub: Managing a branch protection rule](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule)
 * [GitHub protection REST operations](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branch-protection?apiVersion=2026-03-10)
+* [GitHub: Signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
 * [GitHub protected branch behavior](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 * [GitHub branch enumeration](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branches?apiVersion=2026-03-10#list-branches)
 * [Applicable active rules](https://docs.github.com/en/enterprise-cloud@latest/rest/repos/rules?apiVersion=2026-03-10#get-rules-for-a-branch)

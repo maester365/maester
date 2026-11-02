@@ -23,7 +23,7 @@
         Area = 'engineering-systems',
         ResourceType = 'Repository',
         Severity = 'Medium',
-        UserImpact = 'High',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'T1195.002',
         Control = 'cis-github:1.1.12',
