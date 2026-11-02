@@ -2,15 +2,22 @@
 // at a sentence or word boundary at most `max` characters long. Used for test pages (scripts/generate-test-docs.mjs)
 // and for any docs page without a description of its own (src/routeData.ts).
 
-// Removes comments until none are left (one pass over "<!<!---->--" would leave a new "<!--" behind), then any
-// opener or closer left without its pair.
+// Removes HTML comments (which end at "-->" or "--!>") and MDX comments, as HTML does: a comment with no end runs to
+// the end of the text. It scans rather than using a regular expression, and repeats until no opener is left, since
+// removing one comment can join the pieces of another ("<!<!---->--").
 function stripComments(text) {
-	let previous;
-	do {
-		previous = text;
-		text = text.replace(/\{\/\*[\s\S]*?\*\/\}|<!--[\s\S]*?-->/g, '');
-	} while (text !== previous);
-	return text.replace(/<!--|-->|\{\/\*|\*\/\}/g, '');
+	const comments = [
+		{ open: '<!--', close: ['-->', '--!>'] },
+		{ open: '{/*', close: ['*/}'] },
+	];
+	for (;;) {
+		const found = comments.map((c) => ({ ...c, at: text.indexOf(c.open) })).filter((c) => c.at !== -1);
+		if (found.length === 0) return text;
+		const { open, close, at } = found.reduce((a, b) => (b.at < a.at ? b : a));
+		const ends = close.map((end) => [text.indexOf(end, at + open.length), end.length]).filter(([i]) => i !== -1);
+		const end = ends.length ? Math.min(...ends.map(([i, length]) => i + length)) : text.length;
+		text = text.slice(0, at) + text.slice(end);
+	}
 }
 
 export function plain(markdown) {
