@@ -1,0 +1,26 @@
+# Featured sponsors: the organisations shown first, with their logos, in the thank-you on
+# https://maester.dev/sponsor and in the Sponsors section of the repository README, in this order.
+#
+# Kept by hand. website/scripts/sponsors.mjs copies this list into website/src/data/sponsors.json, which the
+# page reads, and writes the README section from the same data. After editing it, run the script (no token
+# needed: `cd website && node scripts/sponsors.mjs`) or let the update-sponsors workflow do it.
+#
+#   - name: Contoso                         # shown as the logo's alt text and tooltip
+#     url: https://contoso.com              # where the logo links to
+#     github: contoso                       # (optional) their GitHub login: leaves them out of the list of
+#                                           #   the maintainers' GitHub sponsors, so they are thanked once
+#     logo: /img/sponsors/contoso.png       # in website/static: for light backgrounds
+#     logoDark: /img/sponsors/contoso-dark.png  # (optional) for dark backgrounds
+#
+# Logos are PNG or SVG, about 1000 pixels wide at most, cropped to the logo with a transparent background.
+
+- name: CyberDrain
+  url: https://cyberdrain.com
+  github: CyberDrain
+  logo: /img/sponsors/cyberdrain.png
+  logoDark: /img/sponsors/cyberdrain-dark.png
+
+- name: Increment
+  url: https://www.increment.inc
+  logo: /img/sponsors/increment.png
+  logoDark: /img/sponsors/increment-dark.png

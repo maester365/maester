@@ -368,6 +368,52 @@
   }
 }
 
+/* ---------- Sponsors ---------- */
+
+.sponsorsSection {
+  padding: 0 0 3.5rem;
+  text-align: center;
+}
+
+.sponsorLogos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem 4rem;
+  margin: 0.5rem 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.sponsorLogos a {
+  display: block;
+  opacity: 0.85;
+  transition: opacity 140ms ease;
+}
+
+.sponsorLogos a:hover {
+  opacity: 1;
+}
+
+/* One box for every logo, so a logo with a tagline under it is not drawn smaller than one without. */
+.sponsorLogo {
+  display: block;
+  width: 190px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.sponsorsLink {
+  font-size: 0.9rem;
+  color: var(--home-text-muted);
+  text-decoration: none !important;
+}
+
+.sponsorsLink:hover {
+  color: var(--home-text);
+}
+
 /* ---------- Section frame ---------- */
 
 .section {

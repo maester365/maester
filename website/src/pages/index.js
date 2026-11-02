@@ -1,11 +1,12 @@
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import useBaseUrl, { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 
 import Heading from "@theme/Heading";
 import PronunciationButton from "@site/src/components/PronunciationButton";
+import sponsorData from "@site/src/data/sponsors.json";
 import styles from "./index.module.css";
 
 const textContent = {
@@ -224,6 +225,33 @@ function Stats() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// The featured sponsors from website/sponsors/featured.yml, as on /sponsor. The home page is always dark, so it
+// shows the logos made for dark backgrounds.
+function Sponsors() {
+  const { withBaseUrl } = useBaseUrlUtils();
+  const { featured = [] } = sponsorData;
+  if (featured.length === 0) return null;
+  return (
+    <section className={styles.sponsorsSection}>
+      <div className="container">
+        <span className={styles.eyebrow}>Sponsored by</span>
+        <ul className={styles.sponsorLogos}>
+          {featured.map((sponsor) => (
+            <li key={sponsor.name}>
+              <a href={sponsor.url} target="_blank" rel="noopener noreferrer" title={sponsor.name}>
+                <img className={styles.sponsorLogo} src={withBaseUrl(sponsor.logoDark)} alt={sponsor.name} loading="lazy" />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <Link className={styles.sponsorsLink} to="/sponsor">
+          Thank you to everyone who sponsors Maester →
+        </Link>
       </div>
     </section>
   );
@@ -617,6 +645,7 @@ export default function Home() {
       <div className={styles.home}>
         <Hero />
         <Stats />
+        <Sponsors />
         <Features />
         <Suites />
       </div>

@@ -20,7 +20,7 @@
 #
 # `maintainer: true` marks a core maintainer: they are listed first on https://maester.dev/sponsor.
 # The sponsor page lists only people with a GitHub Sponsors listing; turn yours on at
-# https://github.com/sponsors and you are added at the next weekly refresh.
+# https://github.com/sponsors and you are added at the next daily refresh.
 #
 # Commit matching is fully automatic — you never need to list emails here.
 # Commits are matched to your GitHub account via your noreply email, the
