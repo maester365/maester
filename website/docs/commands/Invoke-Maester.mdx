@@ -14,7 +14,7 @@ This is the main Maester command that runs the tests and generates a report of t
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-Product <String[]>]
  [-ExcludeProduct <String[]>] [-Feature <String[]>] [-Area <String[]>] [-Severity <String[]>]
  [-Suite <String[]>] [-Pack <String[]>] [-AllPacks] [-IncludeLongRunning] [-IncludePreview]
- [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-RedactUserIdentity <String>]
+ [-OutputHtmlFile <String>] [-IncludeAffectedObjects] [-ExcludeAffectedObjects] [-RedactUserIdentity <String>]
  [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
  [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <Object>]
  [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
@@ -497,11 +497,30 @@ Accept wildcard characters: False
 
 ### -IncludeAffectedObjects
 
-Collect the affected objects: the consolidated list of objects the run touched.
-Adds the AffectedObjects property to the results, the Affected objects page to the html report and,
-with -OutputFolder, the &lt;name&gt;-affected-objects.json file (plus -affected-objects.csv with -ExportCsv).
-Off by default because it enlarges the report; it is enabled automatically when
--RedactUserIdentity is used, since redaction is driven by the inventory.
+Affected objects are collected by default.
+The switch is kept so that older scripts still run.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludeAffectedObjects
+
+Do not collect the affected objects: the consolidated list of objects the run touched.
+By default the results carry the AffectedObjects property, the html report has an Affected objects page
+when any test recorded an object and, with -OutputFolder, the &lt;name&gt;-affected-objects.json file is written
+(plus -affected-objects.csv with -ExportCsv).
+Use this switch to keep the report smaller.
+The objects are
+still collected when -RedactUserIdentity is used, since redaction is driven by them, but left out of the outputs.
 
 ```yaml
 Type: SwitchParameter
