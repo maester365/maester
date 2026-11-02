@@ -2860,14 +2860,14 @@
     }
   },
   "redaction": {
-    "replacements": 1522,
+    "replacements": 1523,
     "layers": {
       "betterleaks": 15,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 1522,
+      "entropy": 1523,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
