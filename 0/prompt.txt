@@ -1,0 +1,7 @@
+there are three actions one for sponsor update, one for powershell docs updates and another for generated test docs and contributor addition. are these still needed in the new site? 
+
+also I need to keep merging the PRs manually for these. is there an alternate way to handle these?
+
+---
+
+Yes, do it here
