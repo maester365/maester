@@ -1,0 +1,15 @@
+i merged the new site PR but the site is not updating
+
+---
+
+also review all the existing PR for deps and contributor atrib and powesehl docs and close off the ones not needed and also merge the dep prs into one so it can be merged.
+
+---
+
+<task-notification>
+<task-id>b3qqhg472</task-id>
+<tool-use-id>toolu_018hJYxtW1P3PWU8zcFNiEAp</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/2d9f0177-c129-494c-a54f-610e3d37d77a/tasks/b3qqhg472.output</output-file>
+<status>completed</status>
+<summary>Background command "Run a clean website build after the merge" completed (exit code 0)</summary>
+</task-notification>
