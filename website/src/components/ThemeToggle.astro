@@ -1,0 +1,108 @@
+---
+// One button for the theme. It shows the current setting and moves to the next on each click: System (follow the
+// device), Light, Dark. The choice is kept in localStorage under Starlight's key, so the docs and the other pages
+// agree; System is stored as an empty value, as Starlight does. Icons: Nucleo (Weather and Technology sets).
+---
+
+<mt-theme-toggle>
+	<button type="button" class="mt-theme" aria-label="Theme: system. Switch to light" title="Theme: system">
+		<svg class="mt-theme__icon mt-theme__icon--system" viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M13 21H15.01" class="accent"></path>
+			<path d="M17 14L17 7L7 7L7 14L17 14Z" class="accent"></path>
+			<path d="M19 18L19 20.5C19 21.3284 18.3284 22 17.5 22L6.5 22C5.67157 22 5 21.3284 5 20.5L5 18"></path>
+			<path d="M21 16L21 5C21 3.89543 20.1046 3 19 3L5 3C3.89543 3 3 3.89543 3 5L3 16C3 17.1046 3.89543 18 5 18L19 18C20.1046 18 21 17.1046 21 16Z"></path>
+		</svg>
+		<svg class="mt-theme__icon mt-theme__icon--light" viewBox="0 0 24 24" aria-hidden="true">
+			<circle cx="12" cy="12" r="5"></circle>
+			<path d="M12 1v2M19.778 4.222l-1.414 1.414M23 12h-2M19.778 19.778l-1.414-1.414M12 23v-2M4.222 19.778l1.414-1.414M1 12h2M4.222 4.222l1.414 1.414" class="accent"></path>
+		</svg>
+		<svg class="mt-theme__icon mt-theme__icon--dark" viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M4 11.9309C4 16.9396 8.0596 21 13.0674 21C16.4803 21 19.4528 19.1141 21 16.3273C20.4852 16.4181 19.9554 16.4655 19.4145 16.4655C14.4068 16.4655 10.3472 12.4051 10.3472 7.39637C10.3472 5.80122 10.7589 4.30225 11.4819 3C7.23006 3.74996 4 7.46316 4 11.9309Z"></path>
+		</svg>
+	</button>
+</mt-theme-toggle>
+
+<script>
+	type Setting = 'system' | 'light' | 'dark';
+	const storageKey = 'starlight-theme';
+	const order: Setting[] = ['system', 'light', 'dark'];
+	const query = matchMedia('(prefers-color-scheme: light)');
+	const system = () => (query.matches ? 'light' : 'dark');
+	const read = (): Setting => {
+		try {
+			const value = localStorage.getItem(storageKey);
+			return value === 'light' || value === 'dark' ? value : 'system';
+		} catch {
+			return 'system';
+		}
+	};
+	const apply = (setting: Setting) => {
+		document.documentElement.dataset.theme = setting === 'system' ? system() : setting;
+		document.documentElement.dataset.themeSetting = setting;
+		const next = order[(order.indexOf(setting) + 1) % order.length];
+		for (const button of document.querySelectorAll<HTMLButtonElement>('mt-theme-toggle button')) {
+			button.setAttribute('aria-label', `Theme: ${setting}. Switch to ${next}`);
+			button.title = `Theme: ${setting[0].toUpperCase()}${setting.slice(1)}`;
+		}
+	};
+
+	class ThemeToggle extends HTMLElement {
+		connectedCallback() {
+			apply(read());
+			this.querySelector('button')!.addEventListener('click', () => {
+				const next = order[(order.indexOf(read()) + 1) % order.length];
+				try {
+					localStorage.setItem(storageKey, next === 'system' ? '' : next);
+				} catch {}
+				apply(next);
+			});
+		}
+	}
+	query.addEventListener('change', () => {
+		if (read() === 'system') apply('system');
+	});
+	customElements.define('mt-theme-toggle', ThemeToggle);
+</script>
+
+<style>
+	.mt-theme {
+		display: inline-grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 9px;
+		border: 1px solid var(--sl-color-gray-5);
+		background: transparent;
+		color: var(--sl-color-white);
+		cursor: pointer;
+	}
+	.mt-theme:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-theme__icon {
+		grid-area: 1 / 1;
+		width: 16px;
+		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: square;
+		stroke-miterlimit: 10;
+		display: none;
+	}
+	.mt-theme__icon .accent {
+		stroke: var(--sl-color-gray-3);
+	}
+	/* Show the current setting; before the script runs, System. */
+	.mt-theme__icon--system {
+		display: block;
+	}
+	:global(:root[data-theme-setting='light']) .mt-theme__icon--system,
+	:global(:root[data-theme-setting='dark']) .mt-theme__icon--system {
+		display: none;
+	}
+	:global(:root[data-theme-setting='light']) .mt-theme__icon--light,
+	:global(:root[data-theme-setting='dark']) .mt-theme__icon--dark {
+		display: block;
+	}
+</style>

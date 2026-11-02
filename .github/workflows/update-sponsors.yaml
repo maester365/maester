@@ -11,7 +11,7 @@ on:
     paths:
       - "website/contributors/contributors.yml"
       - "website/sponsors/featured.yml"
-      - "website/static/img/sponsors/**"
+      - "website/public/img/sponsors/**"
       - "website/scripts/sponsors.mjs"
       - ".github/workflows/update-sponsors.yaml"
 

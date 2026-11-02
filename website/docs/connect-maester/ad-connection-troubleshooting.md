@@ -1,7 +1,9 @@
 ---
-sidebar_label: AD Connection Troubleshooting
-sidebar_position: 3
 title: Active Directory Connection Troubleshooting
+description: "Fix Active Directory connection errors in Maester: TLS modes (LDAPS and StartTLS), domain controller certificate problems, the Linux and macOS StartTLS limit, and verbose diagnostics."
+sidebar:
+  label: AD Connection Troubleshooting
+  order: 3
 ---
 
 ## Overview

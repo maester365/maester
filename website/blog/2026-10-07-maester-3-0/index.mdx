@@ -7,17 +7,27 @@ tags: [maester, release, preview, powershell]
 image: ./img/card.png
 card_headline: "Maester *3.0*: a new test engine"
 card_label: Release
-hide_table_of_contents: false
 date: 2026-10-07
+excerpt: Maester 3.0 merges into main on 8 October 2026 at 10:00 UTC, so the preview build on the PowerShell Gallery becomes 3.0. Here's what that means for your automation, and a walkthrough of the new native test format and engine.
 ---
 
-import {
-  Hero, Chapter, Say, Timeline, Split, Panel, Pipeline, Gates, Layers, Statuses, Files,
-} from "./_components";
+import Hero from './_components/Hero.astro';
+import Chapter from './_components/Chapter.astro';
+import Say from './_components/Say.astro';
+import Timeline from './_components/Timeline.astro';
+import Split from './_components/Split.astro';
+import Panel from './_components/Panel.astro';
+import Pipeline from './_components/Pipeline.astro';
+import Gates from './_components/Gates.astro';
+import Layers from './_components/Layers.astro';
+import Statuses from './_components/Statuses.astro';
+import Files from './_components/Files.astro';
 
 Maester 3.0 merges into `main` on **Thursday, 8 October 2026 at 10:00 UTC** (8 pm AEST). From that moment the **preview** build of Maester on the PowerShell Gallery is Maester 3.0, and 3.0 has breaking changes.
 
-:::warning If you run Maester in automation with the preview build, switch to the release build now
+{/* excerpt */}
+
+:::caution[If you run Maester in automation with the preview build, switch to the release build now]
 
 Your next scheduled run after the merge will pick up 3.0. The biggest change is that **Maester 3.0 needs PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported. We've worked hard to keep your custom tests (including Pester tests) working, but a rewrite this size will have rough edges.
 
@@ -38,7 +48,6 @@ To stay on 2.x, install the release build instead: drop `-AllowPrerelease`, or p
 
 If you're using Maester interactively and want to see what's coming, the preview is exactly where we want you. Try it, and tell us what breaks.
 
-{/* truncate */}
 
 <Hero
   eyebrow="Maester 3.0"
@@ -338,7 +347,7 @@ Maester now writes the NUnit 2.5 or JUnit XML file itself, for native and Pester
 6. If a custom test calls a built-in `Test-Mt*` function, call `Invoke-MtTest -Id <ID>` instead. The check functions are no longer exported.
 7. Try your usual command with `-DryRun` first to see what would run.
 
-A few results can come out differently from 2.x. The main one: a built-in test that throws is now `Error`, not `Failed`, so your failed count can go down and your error count up. The [upgrade guide](https://maester.dev/docs/next/upgrading-from-2x) lists every change, and the [native test guide](https://maester.dev/docs/next/writing-tests) covers the format in full. Both are in the preview docs from 8 October.
+A few results can come out differently from 2.x. The main one: a built-in test that throws is now `Error`, not `Failed`, so your failed count can go down and your error count up. The [upgrade guide](https://maester.dev/docs/upgrading-from-2x) lists every change, and the [native test guide](https://maester.dev/docs/writing-tests) covers the format in full. Both are in the preview docs from 8 October.
 
 ## Tell us what breaks
 

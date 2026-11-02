@@ -152,8 +152,8 @@ Contributions are welcome! If you want to contribute new tests or improve existi
 Thank you to the organisations and people who sponsor Maester and its maintainers. You make Maester possible.
 
 <p>
-  <a href="https://cyberdrain.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/static/img/sponsors/cyberdrain-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/static/img/sponsors/cyberdrain.png" alt="CyberDrain" height="52"></picture></a>&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://www.increment.inc"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/static/img/sponsors/increment-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/static/img/sponsors/increment.png" alt="Increment" height="52"></picture></a>
+  <a href="https://cyberdrain.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/cyberdrain-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/cyberdrain.png" alt="CyberDrain" height="52"></picture></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.increment.inc"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment.png" alt="Increment" height="52"></picture></a>
 </p>
 
 <table>

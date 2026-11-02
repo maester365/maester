@@ -1,0 +1,175 @@
+{
+  "run": {
+    "title": "What happens in a run",
+    "updated": "2026-11-02",
+    "for": "3.0",
+    "duration": 60,
+    "watches": [
+      "powershell/public/run/Invoke-Maester.ps1",
+      "powershell/internal/engine/"
+    ],
+    "chapters": [
+      {
+        "t": 0,
+        "title": "Resolve the config",
+        "text": "Maester merges your config files into one: what to run, settings for each check, and where results go.",
+        "length": 6.8
+      },
+      {
+        "t": 12,
+        "title": "Select the checks",
+        "text": "Your selection picks checks by product, framework, severity, test ID or pack. -DryRun shows the list before anything runs.",
+        "length": 9
+      },
+      {
+        "t": 24,
+        "title": "Apply the gates",
+        "text": "A check that needs a service you didn't connect, or a licence you don't have, is skipped with a reason code. It is never marked failed.",
+        "length": 8.3
+      },
+      {
+        "t": 36,
+        "title": "Run on the engine",
+        "text": "The engine runs each planned check, enforces time-outs and turns a family into one row per policy, mailbox or app.",
+        "length": 8
+      },
+      {
+        "t": 48,
+        "title": "Write the report",
+        "text": "One result becomes the HTML report, JSON, JUnit for your pipeline, and email or Teams alerts.",
+        "length": 8.2
+      }
+    ],
+    "timing": "fixed",
+    "voice": "af_heart"
+  },
+  "gates": {
+    "title": "Why a check didn't run",
+    "updated": "2026-11-02",
+    "for": "3.0",
+    "duration": 36,
+    "watches": [
+      "powershell/internal/engine/Resolve-MtNativePlan.ps1"
+    ],
+    "chapters": [
+      {
+        "t": 0,
+        "title": "The gates",
+        "text": "Before a check runs, it passes through gates, in this order. A check that stops at a gate is skipped, with that gate's reason code.",
+        "length": 8.3
+      },
+      {
+        "t": 10,
+        "title": "Stopped at a gate",
+        "text": "This Teams check reaches the service gate. Teams isn't connected, so it stops there: Skipped, ServiceNotConnected. Not failed.",
+        "length": 8.5
+      },
+      {
+        "t": 22,
+        "title": "Through every gate",
+        "text": "This check passes every gate, so the engine runs it. The report lists every skipped check with its reason, so you know what to fix.",
+        "length": 8.2
+      }
+    ],
+    "timing": "fixed",
+    "voice": "af_heart"
+  },
+  "how-it-works": {
+    "title": "How Maester works",
+    "updated": "2026-11-02",
+    "for": "3.0",
+    "duration": 100,
+    "voice": "af_heart",
+    "watches": [
+      "powershell/public/run/Invoke-Maester.ps1",
+      "powershell/public/connect/Connect-Maester.ps1",
+      "src/Maester.Engine/MtConsoleRenderer.cs",
+      "report/src/"
+    ],
+    "chapters": [
+      {
+        "id": "intro",
+        "t": 0.3,
+        "title": "Maester",
+        "text": "This is Maester: the open-source way to test your Microsoft 365 security, every day, in one run.",
+        "say": "This is Mayster: the open-source way to test your Microsoft three sixty-five security, every day, in one run.",
+        "length": 7.9
+      },
+      {
+        "id": "install",
+        "t": 9.1,
+        "title": "Install",
+        "text": "Install it from the PowerShell Gallery. Every check ships inside the module, so there's nothing else to set up.",
+        "length": 7
+      },
+      {
+        "id": "connect",
+        "t": 17,
+        "title": "Connect",
+        "text": "Connect Maester to your tenant. It reads your configuration with read-only permissions, and nothing leaves your tenant.",
+        "say": "Connect Mayster to your tenant. It reads your configuration with read-only permissions, and nothing leaves your tenant.",
+        "length": 7.4
+      },
+      {
+        "id": "invoke",
+        "t": 25.2,
+        "title": "Run",
+        "text": "Now run Invoke-Maester. Add the Zero Trust Assessment pack, and Microsoft's own assessment runs in the same pass.",
+        "say": "Now run Invoke Mayster. Add the Zero Trust Assessment pack, and Microsoft's own assessment runs in the same pass.",
+        "length": 8
+      },
+      {
+        "id": "console",
+        "t": 34.2,
+        "title": "Watch it run",
+        "text": "The console shows every product as it's tested, the checks running right now, and the results as they land: over twelve hundred checks across CIS, CISA, Microsoft's guidance and Zero Trust.",
+        "length": 13.1,
+        "say": "The console shows every product as it's tested, the checks running right now, and the results as they land: over twelve hundred checks across C.I.S., Sissa, Microsoft's guidance and Zero Trust."
+      },
+      {
+        "id": "report",
+        "t": 48.1,
+        "title": "The report",
+        "text": "When the run finishes, your report opens. It tells you what to fix first, ranked by severity and effort.",
+        "length": 6.6
+      },
+      {
+        "id": "detail",
+        "t": 55.6,
+        "title": "Every finding",
+        "text": "Every finding explains what an attacker could do, what Maester found, and exactly how to fix it.",
+        "say": "Every finding explains what an attacker could do, what Mayster found, and exactly how to fix it.",
+        "length": 6.4
+      },
+      {
+        "id": "frameworks",
+        "t": 62.9,
+        "title": "Frameworks",
+        "text": "See where you stand against the frameworks your auditors ask about, and the attack techniques each gap leaves open.",
+        "length": 6.6
+      },
+      {
+        "id": "zta",
+        "t": 70.4,
+        "title": "Zero Trust",
+        "text": "And Microsoft's Zero Trust Assessment sits right alongside, in the same report.",
+        "length": 5.8
+      },
+      {
+        "id": "automate",
+        "t": 77.1,
+        "title": "Automate",
+        "text": "Run it every day in GitHub Actions or Azure DevOps, and know the moment something changes.",
+        "length": 6.3
+      },
+      {
+        "id": "cloud",
+        "t": 84.3,
+        "title": "Maester Cloud",
+        "text": "Or run it with Maester Cloud, securely, in your own Azure subscription: your data never leaves your tenant. Find out more at maester.cloud, and get started at maester.dev.",
+        "say": "Or run it with Mayster Cloud, securely, in your own Azure subscription: your data never leaves your tenant. Find out more at mayster dot cloud, and get started at mayster dot dev.",
+        "length": 11.9
+      }
+    ]
+  }
+}

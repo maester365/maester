@@ -1,5 +1,5 @@
 ---
-title: "Introducing Maester 2.2 🚀"
+title: "Introducing Maester 2.2"
 description: Deep Active Directory coverage, AI data security checks with Microsoft Purview, SharePoint and GitHub security tests, Global Secure Access, contributor credits, and a sharper report experience.
 slug: maester-2-2
 authors: [maesterteam]
@@ -7,7 +7,6 @@ tags: [maester, release, security, entra, m365, activedirectory, purview, github
 image: ./img/card.png
 card_headline: "Maester *2.2*"
 card_label: Release
-hide_table_of_contents: false
 date: 2026-07-26
 ---
 
@@ -15,7 +14,7 @@ Maester 2.2 is here, and it's our biggest expansion of security coverage yet.
 
 Since 2.1.0 shipped in May, the community has kept up an incredible pace: 261 commits and 311 new tests. Maester now stretches all the way from your on-premises Active Directory to AI data security with Microsoft Purview, SharePoint Online, GitHub, Global Secure Access, and Intune.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Highlights
 

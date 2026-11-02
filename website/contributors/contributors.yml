@@ -29,7 +29,7 @@
 # git author name.
 #
 # Profile picture: your GitHub avatar is used by default. To use a different
-# image, drop `your-github-handle.png` (or .jpg) into website/static/img/contributors/.
+# image, drop `your-github-handle.png` (or .jpg) into website/public/img/contributors/.
 
 agnivesh:
   name: Agnivesh S.

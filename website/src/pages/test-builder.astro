@@ -1,0 +1,23 @@
+---
+// The test builder, in the docs layout: its own tab in the header, with the guides on writing tests beside it.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import TestBuilder from '../components/TestBuilder/index.jsx';
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'Test builder',
+		description: 'Pick the attributes of a Maester test, with the rubric for each one, and get the code.',
+		tableOfContents: false,
+	}}
+>
+	<p>
+		Every Maester test declares what it is about, how urgent a failure is and what it needs to run, in a <code>[MaesterTest()]</code> attribute. Pick the values here. Each field explains what it means and shows the rule reviewers apply, and the code updates as you go.
+	</p>
+	<p>
+		The lists and rules on this page are generated from the files Maester itself uses, so they match what the unit tests and the review step enforce. The full text is in the <a href="/docs/writing-tests/attribute-rubric">attribute rubric</a>.
+	</p>
+	<div class="not-content">
+		<TestBuilder client:load />
+	</div>
+</StarlightPage>

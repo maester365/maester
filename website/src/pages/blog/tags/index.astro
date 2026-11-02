@@ -1,0 +1,58 @@
+---
+// Every topic on the blog, with how many posts each has.
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import BlogHeader from '../../../components/blog/BlogHeader.astro';
+import { getPosts, tagsOf } from '../../../lib/blog';
+
+const tags = tagsOf(await getPosts());
+---
+
+<SiteLayout title="Blog topics" description="Every topic on the Maester blog." wide noindex>
+	<BlogHeader eyebrow="Topics" title="Every topic" lede={`${tags.length} topics across the blog.`} />
+	<ul class="topics">
+		{
+			tags.map((tag) => (
+				<li>
+					<a href={`/blog/tags/${tag.slug}`}>
+						{tag.label}
+						<span>{tag.posts.length}</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</SiteLayout>
+
+<style>
+	.topics {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.topics a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.5rem 0.6rem 0.5rem 1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		color: var(--sl-color-gray-1);
+		text-decoration: none;
+		transition: border-color 0.2s ease;
+	}
+	.topics a:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.topics span {
+		min-width: 1.6rem;
+		padding: 0.05rem 0.45rem;
+		border-radius: 999px;
+		background: var(--sl-color-gray-6);
+		font-size: 0.8rem;
+		text-align: center;
+		color: var(--sl-color-gray-2);
+	}
+</style>
