@@ -1,0 +1,366 @@
+---
+// A HyperFrames explainer, played live: the composition in public/explainers/<slug>/ runs in the HyperFrames
+// player, with chapters to jump to and the full transcript as text (for search engines, screen readers and
+// anyone who prefers to read).
+//
+// With `autoplay`, it starts playing muted when it scrolls into view, shows the voice-over as captions, and offers
+// one click to hear it with sound from the start. It pauses again when it scrolls away, and never starts by
+// itself for someone who prefers reduced motion. Without `autoplay` it waits behind a large play button.
+import explainers from '../data/explainers.json';
+
+interface Props {
+	slug: keyof typeof explainers;
+	/** Show the title above the player. */
+	heading?: boolean;
+	/** Play muted, with captions, when it comes into view. */
+	autoplay?: boolean;
+}
+const { slug, heading = true, autoplay = false } = Astro.props;
+const e = explainers[slug];
+const time = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+const hasSound = e.chapters.some((c) => 'length' in c);
+const cues = e.chapters.map((c, i) => ({
+	t: c.t,
+	end: 'length' in c ? c.t + (c as { length: number }).length + 0.3 : (e.chapters[i + 1]?.t ?? e.duration),
+	text: c.text,
+}));
+---
+
+<mt-explainer class="mt-ex not-content" data-slug={slug} data-autoplay={autoplay ? '' : undefined} data-cues={JSON.stringify(cues)} data-poster={Math.min(2, e.chapters[1]?.t ?? 2)}>
+	{heading && <p class="mt-ex__title">{e.title} <span>· {time(e.duration)}</span></p>}
+	<div class="mt-ex__frame">
+		<hyperframes-player src={`/explainers/${slug}/index.html`} runtime-src="/explainers/_shared/hyperframe.runtime.js" width="1920" height="1080" controls></hyperframes-player>
+		<button type="button" class="mt-ex__start" data-start>
+			<span class="mt-ex__play" aria-hidden="true">
+				<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+			</span>
+			<span class="mt-ex__start-text">
+				<strong>Watch {e.title.charAt(0).toLowerCase() + e.title.slice(1)}</strong>
+				<span>{time(e.duration)}{hasSound ? ' · with voice-over' : ''}</span>
+			</span>
+		</button>
+		{
+			hasSound && (
+				<button type="button" class="mt-ex__sound" data-sound hidden>
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" />
+						<path d="M15.5 8.8a4.5 4.5 0 0 1 0 6.4M18.4 5.9a8.5 8.5 0 0 1 0 12.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+					</svg>
+					Turn on sound
+				</button>
+			)
+		}
+		<p class="mt-ex__caption" data-caption aria-live="off" hidden></p>
+	</div>
+	<ol class="mt-ex__chapters">
+		{
+			e.chapters.map((c) => (
+				<li>
+					<button type="button" data-t={c.t}>
+						<span class="mt-ex__t">{time(c.t)}</span>
+						{c.title}
+					</button>
+				</li>
+			))
+		}
+	</ol>
+	<details class="mt-ex__transcript">
+		<summary>Transcript</summary>
+		{
+			e.chapters.map((c) => (
+				<p>
+					<strong>{c.title}.</strong> {c.text}
+				</p>
+			))
+		}
+		<p class="mt-ex__meta">Updated {e.updated} for Maester {e.for}. Made with HyperFrames from HTML in the Maester repository.</p>
+	</details>
+</mt-explainer>
+
+<script>
+	type Player = HTMLElement & { seek(t: number): void; play(): void; pause(): void; muted: boolean; currentTime: number; paused: boolean };
+
+	// The player (and the composition it loads) is fetched only when the explainer comes near the screen.
+	const load = () => import('@hyperframes/player').then(() => customElements.whenDefined('hyperframes-player'));
+	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	class Explainer extends HTMLElement {
+		connectedCallback() {
+			const player = this.querySelector('hyperframes-player') as Player;
+			const start = this.querySelector<HTMLButtonElement>('[data-start]')!;
+			const sound = this.querySelector<HTMLButtonElement>('[data-sound]');
+			const caption = this.querySelector<HTMLElement>('[data-caption]')!;
+			const cues: { t: number; end: number; text: string }[] = JSON.parse(this.dataset.cues ?? '[]');
+			const autoplay = this.hasAttribute('data-autoplay') && !reducedMotion;
+			// Muted autoplay until the viewer asks for sound or takes control; then the explainer is theirs.
+			let preview = false;
+
+			const playWithSound = async (at = 0) => {
+				await load();
+				preview = false;
+				player.muted = false;
+				start.hidden = true;
+				if (sound) sound.hidden = true;
+				caption.hidden = true;
+				player.seek(at);
+				player.play();
+			};
+
+			const showCaption = () => {
+				if (!preview) return;
+				const now = player.currentTime;
+				const cue = cues.find((c) => now >= c.t && now < c.end);
+				caption.hidden = !cue;
+				if (cue && caption.textContent !== cue.text) caption.textContent = cue.text;
+			};
+
+			start.addEventListener('click', () => playWithSound(0));
+			sound?.addEventListener('click', () => playWithSound(0));
+			for (const button of this.querySelectorAll<HTMLButtonElement>('button[data-t]')) {
+				button.addEventListener('click', () => playWithSound(Number(button.dataset.t)));
+			}
+			player.addEventListener('timeupdate', showCaption);
+			// Behind the play button, the title card rather than the empty first frame.
+			// The player reports ready more than once while the composition loads, and a seek made straight away doesn't
+			// paint: seek a moment after the last report.
+			let posterTimer = 0;
+			player.addEventListener('assetsready', () => {
+				clearTimeout(posterTimer);
+				posterTimer = window.setTimeout(() => !start.hidden && player.seek(Number(this.dataset.poster)), 400);
+			});
+
+			const near = new IntersectionObserver(
+				(entries) => {
+					if (entries.some((entry) => entry.isIntersecting)) {
+						near.disconnect();
+						load();
+					}
+				},
+				{ rootMargin: '600px' },
+			);
+			near.observe(this);
+
+			if (autoplay) {
+				// It plays muted while in view and pauses when scrolled away, until the viewer presses play: from then on,
+				// scrolling never starts or stops it.
+				let running = false;
+				const inView = new IntersectionObserver(
+					async (entries) => {
+						const visible = entries.some((entry) => entry.isIntersecting);
+						const ours = preview || !start.hidden;
+						if (visible && ours && !running) {
+							running = true;
+							await load();
+							if (!preview && start.hidden) return; // the viewer pressed play while it loaded
+							preview = true;
+							player.muted = true;
+							start.hidden = true;
+							if (sound) sound.hidden = false;
+							player.play();
+						} else if (!visible && preview && running) {
+							running = false;
+							player.pause();
+						}
+					},
+					{ threshold: 0.5 },
+				);
+				inView.observe(this.querySelector('.mt-ex__frame')!);
+			}
+
+			if (reducedMotion) this.querySelector('details')?.setAttribute('open', '');
+		}
+	}
+	customElements.define('mt-explainer', Explainer);
+</script>
+
+<style>
+	.mt-ex {
+		display: block;
+		margin: 1.5rem 0;
+	}
+	.mt-ex__title {
+		font-weight: 650;
+		margin: 0 0 0.6rem;
+	}
+	.mt-ex__title span {
+		color: var(--sl-color-gray-3);
+		font-weight: 400;
+	}
+	.mt-ex__frame {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: 16px;
+		overflow: hidden;
+		background: #09090b;
+		border: 1px solid var(--sl-color-gray-5);
+		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.5);
+	}
+	hyperframes-player {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	/* The big play button, over the first frame until the explainer plays. */
+	.mt-ex__start {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		border: 0;
+		background: radial-gradient(60% 60% at 50% 50%, rgba(9, 9, 11, 0.45), rgba(9, 9, 11, 0.75));
+		color: #fafafa;
+		font: inherit;
+		cursor: pointer;
+	}
+	.mt-ex__start[hidden] {
+		display: none;
+	}
+	/* Behind the button the title card shows through, softened, so it doesn't fight the button. (A backdrop blur
+	   on the button doesn't reach into the player's frame, so the player itself is blurred.) */
+	hyperframes-player {
+		transition: filter 0.4s ease;
+	}
+	.mt-ex__frame:has(.mt-ex__start:not([hidden])) hyperframes-player {
+		filter: blur(8px);
+	}
+	.mt-ex__play {
+		display: grid;
+		place-items: center;
+		width: clamp(4.5rem, 10vw, 7rem);
+		height: clamp(4.5rem, 10vw, 7rem);
+		border-radius: 999px;
+		background: #d22c31;
+		box-shadow: 0 0 0 0 rgba(210, 44, 49, 0.55);
+		animation: mt-pulse 2.2s ease-out infinite;
+		transition: transform 0.15s ease;
+	}
+	.mt-ex__start:hover .mt-ex__play {
+		transform: scale(1.06);
+	}
+	.mt-ex__play svg {
+		width: 42%;
+		height: 42%;
+		margin-left: 6%;
+	}
+	.mt-ex__start-text {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+		text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+	}
+	.mt-ex__start-text strong {
+		font-size: clamp(1rem, 2vw, 1.35rem);
+	}
+	.mt-ex__start-text span {
+		font-size: 0.9rem;
+		color: #d4d4d8;
+	}
+	@keyframes mt-pulse {
+		0% {
+			box-shadow: 0 0 0 0 rgba(210, 44, 49, 0.55);
+		}
+		70% {
+			box-shadow: 0 0 0 22px rgba(210, 44, 49, 0);
+		}
+		100% {
+			box-shadow: 0 0 0 0 rgba(210, 44, 49, 0);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mt-ex__play {
+			animation: none;
+		}
+	}
+
+	/* While it plays muted: a sound button and the voice-over as captions. */
+	.mt-ex__sound {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 0;
+		border-radius: 999px;
+		background: #fafafa;
+		color: #09090b;
+		font: inherit;
+		font-size: 0.9rem;
+		font-weight: 600;
+		padding: 0.55rem 1rem 0.55rem 0.8rem;
+		cursor: pointer;
+		box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+	}
+	.mt-ex__sound[hidden] {
+		display: none;
+	}
+	.mt-ex__sound svg {
+		width: 1.1rem;
+		height: 1.1rem;
+	}
+	.mt-ex__caption {
+		position: absolute;
+		left: 50%;
+		bottom: 4.25rem;
+		transform: translateX(-50%);
+		width: min(90%, 52rem);
+		margin: 0;
+		text-align: center;
+		font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+		line-height: 1.45;
+		color: #fafafa;
+		background: rgba(9, 9, 11, 0.78);
+		border-radius: 10px;
+		padding: 0.5rem 0.9rem;
+		pointer-events: none;
+	}
+	.mt-ex__caption[hidden] {
+		display: none;
+	}
+
+	.mt-ex__chapters {
+		list-style: none;
+		padding: 0;
+		margin: 0.75rem 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.mt-ex__chapters button {
+		font: inherit;
+		font-size: 0.82rem;
+		background: transparent;
+		color: var(--sl-color-white);
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		padding: 0.25rem 0.75rem;
+		cursor: pointer;
+	}
+	.mt-ex__chapters button:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-ex__t {
+		font-family: var(--sl-font-mono);
+		color: var(--sl-color-gray-3);
+		margin-inline-end: 0.4rem;
+	}
+	.mt-ex__transcript {
+		margin-top: 0.75rem;
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-ex__transcript summary {
+		cursor: pointer;
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.mt-ex__meta {
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+</style>

@@ -7,7 +7,6 @@ tags: [ama]
 card_headline: "AMA with the *Maester team*"
 card_label: Event
 image: ./img/card.png
-hide_table_of_contents: false
 date: 2024-12-08
 ---
 
@@ -17,7 +16,7 @@ Sign up for the [Discord event here](https://discord.com/channels/10080772878135
 
 ![Maester - Microsoft Teams Alerts](./img/ama-with-maester-team.png)
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## When?
 

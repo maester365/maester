@@ -6,7 +6,6 @@ authors: [mike, thomasschmidt]
 tags: [release,ORCA,Tests]
 card_headline: "Maester adds *ORCA* tests"
 card_label: Release
-hide_table_of_contents: false
 date: 2025-05-12
 image: ./img/card.png
 #draft: true # Draft
@@ -15,7 +14,7 @@ image: ./img/card.png
 
 The Maester module can now dynamically build the necessary files for testing and reporting on all the [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) controls. Providing users with a single report covering many controls that existed before Maester and which are still valuable. 🚀
 
-<!-- truncate -->
+<!-- excerpt -->
 
 Here's a sneak peek at the some of the checks from ORCA that will be included in the next Maester release.
 

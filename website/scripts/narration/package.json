@@ -1,0 +1,13 @@
+{
+  "name": "maester-explainer-narration",
+  "private": true,
+  "type": "module",
+  "description": "Makes the voice-over and music for the website's explainers. Not part of the site build: run it by hand when a script changes (see README.md).",
+  "dependencies": {
+    "@breezystack/lamejs": "1.2.7",
+    "kokoro-js": "1.2.1"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
+  }
+}

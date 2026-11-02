@@ -12,7 +12,7 @@
     * Ability to skip cache and go directly to Graph
     * Specify consistency level as a parameter
 
-    :::info
+    :::note
     Note: Batch requests don't support caching.
     :::
 

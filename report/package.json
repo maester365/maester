@@ -9,8 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "@remixicon/react": "^4.9.0",
     "clsx": "^2.1.1",
     "dompurify": "^3.4.17",
     "lucide-react": "^1.61.0",
@@ -23,7 +21,6 @@
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
     "@tailwindcss/postcss": "^4.3.3",
-    "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

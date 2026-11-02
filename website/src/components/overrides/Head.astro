@@ -1,0 +1,49 @@
+---
+// Starlight's head, plus: the reader's channel before first paint, analytics (Google Tag Manager once, and
+// PostHog), structured data, and noindex on the frozen 2.x docs.
+import Default from '@astrojs/starlight/components/Head.astro';
+import Analytics from '../Analytics.astro';
+
+const { entry, id } = Astro.locals.starlightRoute;
+// Not for search: the 2.x archive and the partials.
+const isArchive = id === 'docs/2.x' || id.startsWith('docs/2.x/') || id.startsWith('docs/sections/');
+// Astro.url ends in .html at build time (build.format 'file'); the site serves every page without it.
+const url = new URL(Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1'), Astro.site);
+const data = entry.data as Record<string, any>;
+const image = typeof data.image === 'string' && data.image.startsWith('/') ? new URL(data.image, Astro.site).href : undefined;
+const section = id.startsWith('docs/tests') ? ['Test catalog', '/docs/tests'] : id.startsWith('docs/commands') ? ['Commands', '/docs/commands'] : id.startsWith('docs/packs') ? ['Packs', '/docs/packs'] : ['Docs', '/docs/intro'];
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'TechArticle',
+		headline: data.title,
+		description: data.description,
+		url: url.href,
+		isPartOf: { '@type': 'WebSite', name: 'Maester', url: 'https://maester.dev' },
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Maester', item: 'https://maester.dev/' },
+			{ '@type': 'ListItem', position: 2, name: section[0], item: new URL(section[1], 'https://maester.dev').href },
+			{ '@type': 'ListItem', position: 3, name: data.title, item: url.href },
+		],
+	},
+];
+---
+
+<script is:inline>
+	try {
+		var themeSetting = localStorage.getItem('starlight-theme');
+		document.documentElement.dataset.themeSetting = themeSetting === 'light' || themeSetting === 'dark' ? themeSetting : 'system';
+		document.documentElement.dataset.channel = localStorage.getItem('maester-channel') === 'stable' ? 'stable' : 'preview';
+	} catch {
+		document.documentElement.dataset.channel = 'preview';
+	}
+</script>
+<Default />
+{isArchive && <meta name="robots" content="noindex" />}
+{image && <meta property="og:image" content={image} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+<Analytics />
