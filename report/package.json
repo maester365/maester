@@ -11,7 +11,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "dompurify": "^3.4.17",
-    "lucide-react": "^1.61.0",
+    "lucide-react": "^1.65.0",
     "marked": "^18.1.1",
     "preact": "^11.0.2",
     "react": "npm:@preact/compat@^18.3.2",
