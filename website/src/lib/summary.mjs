@@ -2,11 +2,19 @@
 // at a sentence or word boundary at most `max` characters long. Used for test pages (scripts/generate-test-docs.mjs)
 // and for any docs page without a description of its own (src/routeData.ts).
 
+// Removes comments until none are left (one pass over "<!<!---->--" would leave a new "<!--" behind), then any
+// opener or closer left without its pair.
+function stripComments(text) {
+	let previous;
+	do {
+		previous = text;
+		text = text.replace(/\{\/\*[\s\S]*?\*\/\}|<!--[\s\S]*?-->/g, '');
+	} while (text !== previous);
+	return text.replace(/<!--|-->|\{\/\*|\*\/\}/g, '');
+}
+
 export function plain(markdown) {
-	return String(markdown ?? '')
-		.replace(/^---[\s\S]*?^---/m, '')
-		.replace(/^(import|export)\s.*$/gm, '')
-		.replace(/\{\/\*[\s\S]*?\*\/\}|<!--[\s\S]*?-->/g, '')
+	return stripComments(String(markdown ?? '').replace(/^---[\s\S]*?^---/m, '').replace(/^(import|export)\s.*$/gm, ''))
 		.replace(/^(```|~~~)[\s\S]*?^\1/gm, '')
 		.replace(/<[^>]+>/g, ' ')
 		.replace(/!\[[^\]]*\]\([^)]*\)/g, '')
