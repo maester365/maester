@@ -14,6 +14,14 @@ Describe 'Scoped redacted result Markdown' {
         $detail.TestResult | Should -Be 'Static wrapper: Raw: RAW_GRAPH_IDENTITY'
         $detail.TestResultRedacted | Should -Be 'Static wrapper: Safe: object-test'
     }
+    It 'Keeps both complete result variants when Description is explicit' {
+        Add-MtTestResultDetail -TestName 'fixture' -Description 'Explicit guide' -Result 'Raw body' -RedactedResult 'Safe body'
+        $detail = InModuleScope Maester { $__MtSession.TestResultDetail.fixture }
+        $detail.TestDescription | Should -Be 'Explicit guide'
+        $detail.TestResult | Should -Be 'Raw body'
+        $detail.TestResultRedacted | Should -Be 'Safe body'
+        Should -Invoke Get-MtTestResultTemplate -ModuleName Maester -Times 0 -Exactly
+    }
     It 'Preserves the positional binding of existing parameters' {
         $command = Get-Command Add-MtTestResultDetail
         ($command.ParameterSets[0].Parameters | Where-Object Name -EQ 'GraphObjects').Position | Should -Contain 2
