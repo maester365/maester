@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_0152mDjVPaLtqjKApphBqVKR",
+  "agent_id": "a887d4eb1801465d4",
+  "subagent_type": "general-purpose",
+  "task_description": "Product design and UX review",
+  "token_usage": {
+    "input_tokens": 80,
+    "cache_creation_tokens": 206336,
+    "cache_read_tokens": 5718355,
+    "output_tokens": 26860,
+    "api_call_count": 40
+  },
+  "started_at": "2026-11-02T18:25:26.144391+11:00",
+  "completed_at": "2026-11-02T18:39:04.841782+11:00"
+}

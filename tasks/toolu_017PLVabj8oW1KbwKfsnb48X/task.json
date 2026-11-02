@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_017PLVabj8oW1KbwKfsnb48X",
+  "agent_id": "adad9a01393176b62",
+  "subagent_type": "general-purpose",
+  "task_description": "SEO and technical audit",
+  "token_usage": {
+    "input_tokens": 104,
+    "cache_creation_tokens": 173705,
+    "cache_read_tokens": 6817901,
+    "output_tokens": 38572,
+    "api_call_count": 52
+  },
+  "started_at": "2026-11-02T18:25:26.145352+11:00",
+  "completed_at": "2026-11-02T18:32:30.296398+11:00"
+}

@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6E697Y4VJKW141NW3RFRVH2",
+  "strategy": "manual-commit",
+  "branch": "claude/maester-report-redesign-500b00",
+  "checkpoints_count": 13,
+  "files_touched": [
+    "website/docs/export-results.md",
+    "website/docs/result-schema.md",
+    "website/docs/writing-tests/index.mdx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1704,
+    "cache_creation_tokens": 1810249,
+    "cache_read_tokens": 347619939,
+    "output_tokens": 776684,
+    "api_call_count": 827,
+    "subagent_tokens": {
+      "input_tokens": 252,
+      "cache_creation_tokens": 527472,
+      "cache_read_tokens": 16201328,
+      "output_tokens": 83677,
+      "api_call_count": 126
+    }
+  },
+  "redaction": {
+    "replacements": 1522,
+    "layers": {
+      "betterleaks": 15,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 1522,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
