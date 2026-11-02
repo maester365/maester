@@ -13,7 +13,7 @@ if (-not (Get-Module Pester -ListAvailable | Where-Object { $_.Version -eq '5.7.
 Import-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion
 Import-Module PlatyPS -RequiredVersion $platyPSVersion
 Import-Module Pester -RequiredVersion 5.7.1
-Import-Module DnsClient
+if ($IsWindows) { Import-Module DnsClient }
 
 # Generate the command reference markdown
 $commandsIndexFile = "./website/docs/commands/readme.mdx"

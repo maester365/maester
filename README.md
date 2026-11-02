@@ -145,7 +145,7 @@ The `module/` folder is a build artifact — it is ignored by git and never comm
 Contributions are welcome! If you want to contribute new tests or improve existing ones, please refer to the [contribution guide](https://maester.dev/docs/contributing).
 
 <!-- sponsors:start -->
-<!-- Written by website/scripts/sponsors.mjs. To change the featured sponsors, edit website/sponsors/featured.yml. -->
+<!-- Written by website/scripts/sponsors.mjs --readme. To change the featured sponsors, edit website/sponsors/featured.yml. -->
 
 ## Sponsors
 
@@ -156,13 +156,7 @@ Thank you to the organisations and people who sponsor Maester and its maintainer
   <a href="https://www.increment.inc"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment.png" alt="Increment" height="52"></picture></a>
 </p>
 
-<table>
-  <tr>
-    <td align="center" width="110"><a href="https://github.com/merill"><img src="https://avatars.githubusercontent.com/u/1288081?s=120&amp;u=57eb374fa2f7b642ddc37f6ebf4c926b3cc13b76&amp;v=4" width="64" height="64" alt=""><br><sub><b>Merill Fernando</b></sub></a></td>
-    <td align="center" width="110"><a href="https://github.com/RobinpZA"><img src="https://avatars.githubusercontent.com/u/165141638?s=120&amp;u=44e0f1186bb519fbcef14e33fd2b5838e2f3a830&amp;v=4" width="64" height="64" alt=""><br><sub><b>Robin Pieterse</b></sub></a></td>
-    <td align="center" width="110"><a href="https://github.com/goldjg"><img src="https://avatars.githubusercontent.com/u/43296126?s=120&amp;u=aa7708ff07ca0136bd038bb4a8af036e0386ca21&amp;v=4" width="64" height="64" alt=""><br><sub><b>Graham Gold</b></sub></a></td>
-  </tr>
-</table>
+<a href="https://maester.dev/sponsor"><picture><source media="(prefers-color-scheme: dark)" srcset="https://maester.dev/readme/sponsors-dark.svg"><img src="https://maester.dev/readme/sponsors.svg" alt="The people and organisations who sponsor the maintainers of Maester"></picture></a>
 
 Using Maester at work? Ask your company to sponsor one of the [people who build it](https://maester.dev/sponsor).
 <!-- sponsors:end -->

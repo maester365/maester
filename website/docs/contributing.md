@@ -371,8 +371,11 @@ Guides are Markdown files in `./website/docs`. A file's path is its URL: `docs/m
   [Starlight's components](https://starlight.astro.build/components/using-components/).
 - The pages under `Commands` are generated from each command's comment-based help: edit the `.ps1` file, not the page.
 - The test pages are built from each test's `[MaesterTest]` attribute and `Test.<ID>.md`: edit those, not the
-  website. `npm run export-catalog` refreshes `website/src/data/test-catalog.json` from your local tests (it needs
-  PowerShell 7 and the `Microsoft.Graph.Authentication` module).
+  website.
+- The first `npm start` or `npm run build` generates the test catalog and the command pages from your local
+  source, which needs PowerShell 7 and the `Microsoft.Graph.Authentication` module. After changing a test or a
+  command's help, run `npm run refresh-data` to see the change. These files aren't committed: maester.dev is built
+  from the source each time a change is merged.
 
 #### Stable and preview
 
