@@ -4,8 +4,8 @@
     Internal: Stops affected outbound GitHub requests until the observed server deadline.
     .DESCRIPTION
     Call without response parameters immediately before transport, including each page. With response
-    parameters, records a limit and throws only for an error response. Successful exhausted responses
-    remain usable. Cache reads are allowed; DisableCache never bypasses this guard.
+    parameters, records each limit independently and throws only for an error response. Successful
+    exhausted responses remain usable. Cache reads are allowed; DisableCache never bypasses this guard.
     State belongs to the authenticated connection and API authority and survives per-run cache clearing.
     Reconnecting creates a new connection. No sleeping or automatic retry is performed.
     See https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api#handle-rate-limit-errors-appropriately.
@@ -27,10 +27,13 @@
     $limits = $__MtSession.GitHubRateLimits.Limits
     $observing = $PSBoundParameters.ContainsKey('Headers') -or $ErrorRecord -or $GraphQLRateLimited
     if ($observing) {
-        $limit = Get-MtGitHubRateLimit -Api $Api -ErrorRecord $ErrorRecord -Headers $Headers -StatusCode $StatusCode -GraphQLRateLimited:$GraphQLRateLimited -Message $Message
-        if (-not $limit) { return }
-        $key = "$authority|$($limit.Scope)"
-        if (-not $limits.ContainsKey($key) -or $limit.ResumeUtc -gt $limits[$key].ResumeUtc) { $limits[$key] = $limit }
+        $observedLimits = @(Get-MtGitHubRateLimit -Api $Api -ErrorRecord $ErrorRecord -Headers $Headers -StatusCode $StatusCode -GraphQLRateLimited:$GraphQLRateLimited -Message $Message)
+        if (-not $observedLimits[0]) { return }
+        foreach ($observedLimit in $observedLimits) {
+            $key = "$authority|$($observedLimit.Scope)"
+            if (-not $limits.ContainsKey($key) -or $observedLimit.ResumeUtc -gt $limits[$key].ResumeUtc) { $limits[$key] = $observedLimit }
+        }
+        $limit = $observedLimits | Sort-Object ResumeUtc -Descending | Select-Object -First 1
         if (-not $ErrorRecord -and -not $GraphQLRateLimited -and $StatusCode -eq 200) {
             $resetText = if ($limit.ResetUtc) { $limit.ResetUtc.LocalDateTime } else { 'unknown' }
             Write-Verbose "GitHub API rate limit remaining is 0 after this successful response. Resets at: $resetText"
@@ -39,9 +42,12 @@
     } else {
         $limit = @('All', $Api | ForEach-Object { $limits["$authority|$_"] } | Where-Object { $_ -and $_.ResumeUtc -ge [DateTimeOffset]::UtcNow } | Sort-Object ResumeUtc -Descending | Select-Object -First 1)[0]
         if (-not $limit) { return }
+        $observedLimits = @($limit)
     }
     $diagnostic = if ($Api -eq 'GraphQL') { 'GitHub GraphQL execution failed. ' + $limit.Message } else { $limit.Message }
     $exception = [System.InvalidOperationException]::new($diagnostic)
+    # Keep the single diagnostic record for existing consumers and all observations for rethrows.
     $exception.Data['GitHubRateLimit'] = $limit
+    $exception.Data['GitHubRateLimits'] = $observedLimits
     throw $exception
 }

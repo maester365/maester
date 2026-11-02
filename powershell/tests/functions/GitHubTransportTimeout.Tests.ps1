@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Pester passes the container parameter to BeforeAll for source and built-module validation.')]
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Pester passes the container parameter to BeforeAll for source and built-module validation.')]
 [CmdletBinding()]
 param([string] $ModulePath = "$PSScriptRoot/../../Maester.psd1")
 
