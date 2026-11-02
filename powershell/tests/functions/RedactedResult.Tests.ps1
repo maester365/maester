@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -80,6 +80,7 @@ Describe 'Scoped redacted result Markdown' {
 
 Describe 'Scoped result export modes through Invoke-Maester' {
     BeforeEach {
+        Mock Get-MtModuleVersion -ModuleName Maester { [version]'3.2.1' }
         Mock Get-MtUserIdentityReplacementMap -ModuleName Maester { @{ RAW_GENERIC_IDENTITY = 'SAFE_GENERIC_IDENTITY' } }
         $testPath = Join-Path $TestDrive 'fixture'
         $null = New-Item $testPath -ItemType Directory -Force
@@ -132,6 +133,16 @@ function Test-CustomExportFixture {
                 $content | Should -Not -Match 'SAFE_GENERIC_IDENTITY'
             }
         }
+
+        # Released modules return a version object; Markdown must display it without changing JSON or PassThru.
+        $markdown = Get-Content (Join-Path $folder 'result.md') -Raw
+        $markdown | Should -Match '(?m)^Maester 3\.2\.1\s*$'
+        $savedVersion = (Get-Content (Join-Path $folder 'result.json') -Raw | ConvertFrom-Json).CurrentVersion
+        $savedVersion.Major | Should -Be 3
+        $savedVersion.Minor | Should -Be 2
+        $savedVersion.Build | Should -Be 1
+        $result.CurrentVersion | Should -BeOfType ([version])
+        $result.CurrentVersion | Should -Be ([version]'3.2.1')
 
         # XML projects names and outcomes, not the scoped Markdown detail.
         $xmlContent = Get-Content $xmlPath -Raw
