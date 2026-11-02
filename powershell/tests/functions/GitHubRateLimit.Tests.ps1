@@ -219,3 +219,98 @@ Describe 'GraphQL and bootstrap rate-limit boundaries' {
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times $(if ($Early) { 1 } else { 4 })
     }
 }
+
+Describe 'Simultaneous primary and secondary GitHub limits' {
+    BeforeEach {
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = [pscustomobject]@{ Connected = $true; ApiBaseUri = 'https://api.github.com'; ApiVersion = '2022-11-28' }
+            $__MtSession.GitHubAuthHeader = @{}
+            $__MtSession.GitHubCache = @{}
+            $__MtSession.GitHubRateLimits = $null
+        }
+        $script:combinedCalls = 0
+    }
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.GitHubAuthHeader = $null
+            $__MtSession.GitHubCache = @{}
+            $__MtSession.GitHubRateLimits = $null
+        }
+    }
+
+    It 'Enforces each deadline independently (<Transport>, <Scenario>)' -ForEach @(
+        foreach ($transport in 'REST', 'GraphQL HTTP', 'GraphQL data') {
+            foreach ($scenario in 'long primary', 'short primary', 'unknown primary', 'secondary outlasts primary') {
+                @{ Transport = $transport; Scenario = $scenario }
+            }
+        }
+    ) {
+        $script:combinedTransport = $Transport
+        $script:combinedHeaders = @{ 'x-ratelimit-remaining' = '0' }
+        if ($Scenario -ne 'unknown primary') {
+            $primarySeconds = if ($Scenario -eq 'long primary') { 3600 } else { 10 }
+            $script:combinedHeaders['x-ratelimit-reset'] = [DateTimeOffset]::UtcNow.AddSeconds($primarySeconds).ToUnixTimeSeconds()
+        }
+        if ($Scenario -ne 'short primary') { $script:combinedHeaders['retry-after'] = '120' }
+        Mock Invoke-WebRequest -ModuleName Maester {
+            $script:combinedCalls++
+            if ($script:combinedCalls -eq 1) {
+                if ($script:combinedTransport -eq 'GraphQL data') {
+                    # HTTP 200 GraphQL errors can signal the shared cooldown through Retry-After alone.
+                    $message = if ($script:combinedHeaders.ContainsKey('retry-after')) { 'API rate limit exceeded' } else { 'You have exceeded a secondary rate limit.' }
+                    $body = @{ data = $null; errors = @(@{ type = 'RATE_LIMITED'; message = $message }) } | ConvertTo-Json -Depth 5 -Compress
+                    return [pscustomobject]@{ Content = $body; Headers = $script:combinedHeaders }
+                }
+                $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::TooManyRequests)
+                foreach ($key in $script:combinedHeaders.Keys) { $null = $response.Headers.TryAddWithoutValidation($key, [string]$script:combinedHeaders[$key]) }
+                $err = [System.Management.Automation.ErrorRecord]::new([Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic combined limits', $response), 'FixtureHttp', 'InvalidOperation', $null)
+                $err.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"message":"You have exceeded a secondary rate limit."}')
+                throw $err
+            }
+            [pscustomobject]@{ Content = $(if ($Method -eq 'POST') { '{"data":{"viewer":{"login":"fixture-user"}}}' } else { '{"id":101}' }); Headers = @{} }
+        }
+        InModuleScope Maester -Parameters @{ Transport = $Transport; Scenario = $Scenario } {
+            $restRead = { Invoke-MtGitHubRequest '/repository' -DisableCache }
+            $graphQLRead = { Invoke-MtGitHubGraphQLRequest -Query 'query Fixture{viewer{login}}' -Variables @{} -OperationName Fixture -DisableCache }
+            $affectedRead = if ($Transport -eq 'REST') { $restRead } else { $graphQLRead }
+            $otherRead = if ($Transport -eq 'REST') { $graphQLRead } else { $restRead }
+            $api = if ($Transport -eq 'REST') { 'REST' } else { 'GraphQL' }
+            $caught = $null
+            try { & $affectedRead | Out-Null } catch { $caught = $_ }
+            $caught | Should -Not -BeNullOrEmpty
+            $primary = $__MtSession.GitHubRateLimits.Limits["https://api.github.com|$api"]
+            $secondary = $__MtSession.GitHubRateLimits.Limits['https://api.github.com|All']
+            $primary | Should -Not -BeNullOrEmpty
+            $secondary | Should -Not -BeNullOrEmpty
+            $primary.Kind | Should -Be 'Primary'
+            $secondary.Kind | Should -Be 'Secondary'
+            $secondarySeconds = if ($Scenario -eq 'short primary') { 60 } else { 120 }
+            ($secondary.ResumeUtc - [DateTimeOffset]::UtcNow).TotalSeconds | Should -BeGreaterThan ($secondarySeconds - 5)
+            ($secondary.ResumeUtc - [DateTimeOffset]::UtcNow).TotalSeconds | Should -BeLessOrEqual $secondarySeconds
+            if ($Scenario -eq 'unknown primary') { $primary.ResumeUtc | Should -Be ([DateTimeOffset]::MaxValue) }
+            elseif ($Scenario -eq 'long primary') { $primary.ResumeUtc | Should -BeGreaterThan ([DateTimeOffset]::UtcNow.AddMinutes(59)) }
+            else { $primary.ResumeUtc | Should -BeLessThan $secondary.ResumeUtc }
+            $expectedKind = if ($Scenario -in 'long primary', 'unknown primary') { 'Primary' } else { 'Secondary' }
+            $caught.Exception.Data['GitHubRateLimit'].Kind | Should -Be $expectedKind
+            @($caught.Exception.Data['GitHubRateLimits']).Count | Should -Be 2
+            @(Get-MtGitHubRateLimitMessage -ErrorRecord $caught).Count | Should -Be 1
+            Get-MtGitHubErrorStatusCode -ErrorRecord $caught | Should -Be $(if ($Transport -eq 'GraphQL data') { 200 } else { 429 })
+            { & $affectedRead } | Should -Throw '*rate limit*'
+            { & $otherRead } | Should -Throw '*rate limit*'
+            $__MtSession.GitHubCache.Count | Should -Be 0
+            if ($Scenario -in 'long primary', 'unknown primary') {
+                $secondary.ResumeUtc = [DateTimeOffset]::UtcNow.AddSeconds(-1)
+                { & $otherRead } | Should -Not -Throw
+                { & $affectedRead } | Should -Throw '*rate limit*'
+            } else {
+                $primary.ResumeUtc = [DateTimeOffset]::UtcNow.AddSeconds(-1)
+                { & $affectedRead } | Should -Throw '*rate limit*'
+                { & $otherRead } | Should -Throw '*rate limit*'
+                $secondary.ResumeUtc = [DateTimeOffset]::UtcNow.AddSeconds(-1)
+                { & $affectedRead } | Should -Not -Throw
+            }
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+}

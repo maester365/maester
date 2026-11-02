@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
