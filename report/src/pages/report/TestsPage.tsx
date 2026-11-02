@@ -34,7 +34,7 @@ export default function TestsPage() {
     if (on) set.add(value); else set.delete(value)
     setExplorer({ filters: { ...filters, [key]: [...set] } })
   }
-  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...rows.map((t) => `| ${t.Result} | ${t.Id} | ${t.Title.replace(/\|/g, "\\|")} | ${t.Severity} | ${model.productName(t.Product)} |`)].join("\n"), `Copied ${rows.length} rows`)
+  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...rows.map((t) => `| ${t.Result} | ${t.Id} | ${t.Title.replace(/[\\|]/g, "\\$&")} | ${t.Severity} | ${model.productName(t.Product)} |`)].join("\n"), `Copied ${rows.length} rows`)
   const groups = Object.keys(GROUPS).filter((g) => g !== "feature" || model.hasAttributes)
 
   return (

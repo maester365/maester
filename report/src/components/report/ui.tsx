@@ -187,11 +187,28 @@ export function Dropdown({ label, value, options, onChange }: { label: string; v
 }
 
 export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
-/** The organisation's banner logo that Maester embeds from Entra company branding. Only a data URI is used, so the
- *  report never loads a remote image. */
+const logos = new Map<string, string>()
+
+/** The organisation's banner logo that Maester embeds from Entra company branding, as a blob URL made from the
+ *  image's decoded bytes. Only a base64 data URI of a raster or SVG image is used, so the report never loads a
+ *  remote image and no text from the result reaches the page as markup. */
 export function tenantLogo(result: Record<string, unknown> | undefined): string | undefined {
   const banner = (result?.TenantLogos as Record<string, unknown> | undefined)?.Banner
-  return typeof banner === "string" && /^data:image\/[\w.+*-]+;base64,/i.test(banner) ? banner : undefined
+  if (typeof banner !== "string") return undefined
+  if (logos.has(banner)) return logos.get(banner)
+  // The type is the one Graph sent, often image/*. The browser works out a raster format from the bytes, but an
+  // SVG needs its own type, so it is told by its first character.
+  const match = /^data:image\/[\w.+*-]+;base64,([A-Za-z0-9+/=\s]+)$/i.exec(banner)
+  if (!match) return undefined
+  try {
+    const bytes = Uint8Array.from(atob(match[1].replace(/\s/g, "")), (c) => c.charCodeAt(0))
+    const type = /^\s*</.test(String.fromCharCode(...bytes.slice(0, 64))) ? "image/svg+xml" : "image/png"
+    const url = URL.createObjectURL(new Blob([bytes], { type }))
+    logos.set(banner, url)
+    return url
+  } catch {
+    return undefined
+  }
 }
 
 export const formatDate = (iso: string, withTime = false) => {
