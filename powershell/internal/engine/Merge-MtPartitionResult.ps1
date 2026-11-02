@@ -99,6 +99,11 @@ function Merge-MtPartitionResult {
     }
     # Each part lists the taxonomy names its own rows use; the merged result lists those of all rows.
     if ($merged.Contains('Taxonomy')) { $merged.Taxonomy = Get-MtResultTaxonomy -InputObject $rows }
+    if ($merged.Contains('Frameworks')) { $merged.Frameworks = @(Get-MtResultFramework -InputObject $rows) }
+    $packs = @($Results | ForEach-Object { if ($_.PSObject.Properties['Packs']) { $_.Packs } } | Where-Object { $_ } | Group-Object -Property Id | ForEach-Object { $_.Group[0] })
+    if ($packs.Count -gt 0) { $merged.Packs = $packs }
+    # A part's previous result may be another part of an earlier run, which holds only some of the tests.
+    $merged.Remove('Previous')
     $merged.Partitions = @($partitions)
     $merged.Tests = $rows
     $merged.Blocks = @($blocks)

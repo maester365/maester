@@ -1,13 +1,7 @@
 
 import React from "react";
 import { Badge } from "@/components/ui/report";
-import {
-  ExclamationCircleIcon,
-  ShieldExclamationIcon,
-  ExclamationTriangleIcon,
-  BellIcon,
-  InformationCircleIcon
-} from "@heroicons/react/24/solid";
+import { CircleAlert, ShieldAlert, TriangleAlert, Bell, Info } from "lucide-react"
 
 export default function SeverityBadge(props) {
     if (!props.Severity || props.Severity === "") {

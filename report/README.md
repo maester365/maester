@@ -54,13 +54,37 @@ data. Replace the `testResults` object in `/report/src/lib/testResults.ts`; the
 development server loads this fixture directly. Production HTML reads injected JSON
 from its dedicated data element, so generated HTML is not the source fixture.
 
-The sample has the shape of a Maester 3.0 result: each test that ships with Maester has
-typed attributes (`Product`, `Feature`, `Area` and so on) and no tags, and the top-level
-`Taxonomy` gives their display names. `/report/src/lib/testResultsLegacy.ts` keeps a
-Maester 2.x result, which has free-text categories and tags and none of the attributes.
-The report has to render both, and a 2.x result has to look as it did before, so check a
-change against each. To load the 2.x sample, add `?sample=2x` to the address of the
-development server, for example `http://localhost:5173/?sample=2x`.
+The sample has the shape of a Maester 3.0 result with the report fields (`Frameworks`, `Packs`,
+`Previous`, and `Fields` and `ShimOf` on rows; see `website/docs/result-schema.md`). Each test that ships
+with Maester has typed attributes (`Product`, `Feature`, `Area` and so on), and the top-level `Taxonomy`
+gives their display names. It also has synthetic rows so every view has data: ASD Essential Eight tests,
+part of the Zero Trust Assessment pack, a community pack and a previous run.
+`/report/src/lib/testResultsLegacy.ts` keeps a Maester 2.x result, which has free-text categories and tags
+and none of the attributes. The report has to render both.
+
+Add one of these to the address of the development server to check other kinds of run:
+
+| Address | Shows |
+| --- | --- |
+| `http://localhost:5173/?sample=2x` | A Maester 2.x result |
+| `http://localhost:5173/?sample=one` | A run of one test (the report shows the test itself) |
+| `http://localhost:5173/?sample=suite` | A run of the CIS suite |
+| `http://localhost:5173/?sample=tenants` | A merged result of five tenants (`Merge-MtMaesterResult`), which opens on the page that compares them |
+
+### How the report is put together
+
+- `src/lib/model.ts` turns a result into what the views use: rows with every field, counts, the ranking of
+  failures, framework coverage, packs and the changes since the previous run.
+- `src/components/report/views.ts` lists the views in the sidebar. A view is listed only when it has
+  something to show, so a small run gets a short sidebar. A pack's view is built from its rows' `Fields`,
+  so a new pack needs no code.
+- `src/pages/report/` has one file per view; `src/components/report/` has the shell, the test detail
+  (header and tabs) and the shared lists.
+- `src/styles/report.css` holds the design tokens (shared with maester.dev) and every `mt-` class. The
+  older pages (config, system, affected objects, exports) still use Tailwind.
+- Microsoft's product and feature icons are not embedded: the report loads them from maester.dev, and the dev server
+  serves them from `website/static/report-icons/v1` (see the README there for sources and terms; never change a file
+  in `v1`, since generated reports keep asking for it). `src/lib/featureIcons.ts` maps features to icons.
 
 ### Submitting a Pull-Request
 

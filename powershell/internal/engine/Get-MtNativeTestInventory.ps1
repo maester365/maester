@@ -76,6 +76,15 @@ function Get-MtNativeTestInventory {
         Write-Warning "These tests have a Control that names the framework '$($group.Name)' and a requirement that '$($group.Group[0].Framework.File)' does not have, so it gives them no Benchmark: $references."
     }
 
+    # A shim returns another test's function: ShimOf names that test, so a report can show the two as one setting.
+    $byFunction = @{}
+    foreach ($t in $tests) { if ($t.FunctionName -and $t.Id -and -not $byFunction.ContainsKey($t.FunctionName)) { $byFunction[$t.FunctionName] = $t.Id } }
+    foreach ($t in $tests) {
+        $target = if ($t.PSObject.Properties['ShimCommand'] -and $t.ShimCommand -and $byFunction.ContainsKey($t.ShimCommand)) { $byFunction[$t.ShimCommand] } else { $null }
+        if ($target -eq $t.Id) { $target = $null }
+        $t | Add-Member -NotePropertyName ShimOf -NotePropertyValue $target -Force
+    }
+
     # Duplicate IDs and function names. Neither runs.
     foreach ($group in ($tests | Where-Object Id | Group-Object { $_.Id.ToLowerInvariant() } | Where-Object Count -GT 1)) {
         foreach ($t in $group.Group) {
