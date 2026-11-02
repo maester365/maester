@@ -130,7 +130,7 @@
         Test-MtCaBaselineScopesEnforcement | Should -BeTrue
         $script:Investigate | Should -BeFalse
         $script:Result | Should -Match 'staged rollout'
-        $script:Result | Should -Match 'whether or not the rollout has reached this tenant'
+        $script:Result | Should -Match 'does not change which policies evaluate these sign-ins'
         $script:GraphObjects | Should -BeNullOrEmpty
     }
 

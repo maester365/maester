@@ -128,7 +128,7 @@
             $testResult += " Whether the rollout has reached this tenant cannot be confirmed from the tenant.`n`nThe following enabled policies target All resources and have a resource exclusion, so they do not evaluate sign-ins that request only baseline scopes until enforcement applies. Make the choice explicit in the [Baseline scopes settings]($settingsUrl): **Enable enforcement**, or **Customize behavior** if specific policies must retain the legacy behavior.`n`n%TestResult%" + $inactiveExclusionNote
             Add-MtTestResultDetail -Result $testResult -GraphObjects $affectedPolicies -GraphObjectType ConditionalAccess -Investigate
         } else {
-            $testResult += " No enabled policy targets All resources with a resource exclusion, so every policy evaluates these sign-ins whether or not the rollout has reached this tenant. We still recommend that you select **Enable enforcement** in the [Baseline scopes settings]($settingsUrl) to make the choice explicit."
+            $testResult += " No enabled policy targets All resources with a resource exclusion, so the rollout does not change which policies evaluate these sign-ins. We still recommend that you select **Enable enforcement** in the [Baseline scopes settings]($settingsUrl) to make the choice explicit."
             if ($inactiveExclusionNote) {
                 Add-MtTestResultDetail -Result ($testResult + $inactiveExclusionNote) -Investigate
             } else {
