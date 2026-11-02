@@ -1,0 +1,26 @@
+---
+// A change in behaviour: <Changed in="3.0">what is different, and what it was before</Changed>.
+interface Props {
+	in: string;
+}
+const { in: version } = Astro.props;
+---
+
+<aside class="mt-changed">
+	<strong>Changed in {version}:</strong>
+	<slot />
+</aside>
+
+<style>
+	.mt-changed {
+		border-inline-start: 3px solid #2563eb;
+		background: color-mix(in srgb, #2563eb 8%, transparent);
+		border-radius: 8px;
+		padding: 0.6rem 0.9rem;
+		margin-block: 1rem;
+		font-size: 0.95rem;
+	}
+	.mt-changed :global(p) {
+		display: inline;
+	}
+</style>

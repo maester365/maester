@@ -1,7 +1,8 @@
 ---
-sidebar_label: AD Connection Troubleshooting
-sidebar_position: 3
 title: Active Directory Connection Troubleshooting
+sidebar:
+  label: AD Connection Troubleshooting
+  order: 3
 ---
 
 ## Overview

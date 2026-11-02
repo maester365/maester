@@ -1,0 +1,103 @@
+// Lists of tests: the table every view uses, with optional grouping, and the ranked "fix these first" list.
+
+import { RESULT_LABEL, isQuickWin, maesterVersion, sortTests, tally, type Model, type Row } from "@/lib/model"
+import { useReport } from "./ReportContext"
+import { FeatureMark, Pill, ProductMark, Sev } from "./ui"
+
+export const GROUPS: Record<string, string> = { none: "No grouping", product: "Product", area: "Area", feature: "Feature", severity: "Severity", source: "Source", result: "Result" }
+
+export function sourceLabel(model: Model, t: Row) {
+  const pack = model.packOf(t)
+  return pack ? pack.Name : t.Suite || t.Source || ""
+}
+
+function groupKey(model: Model, group: string, t: Row): string {
+  switch (group) {
+    case "product": return model.productName(t.Product)
+    case "area": return model.areaName(t.Area) || "Other"
+    case "feature": return model.featureName(t) || "Other"
+    case "severity": return t.Severity || "Not set"
+    case "source": return sourceLabel(model, t) || "Other"
+    case "result": return RESULT_LABEL[t.Result] || t.Result
+    default: {
+      // A pack field, such as Pillar.
+      const value = t.Fields?.[group]
+      return (Array.isArray(value) ? value[0] : value) || "Other"
+    }
+  }
+}
+
+export function TestTable({ rows, group = "none", empty = "No tests match these filters." }: { rows: Row[]; group?: string; empty?: string }) {
+  const { model, openTest } = useReport()
+  const sorted = sortTests(rows)
+  let groups: [string, Row[]][] = []
+  if (group !== "none") {
+    const byKey = new Map<string, Row[]>()
+    for (const t of sorted) { const k = groupKey(model, group, t); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k)!.push(t) }
+    groups = [...byKey.entries()].sort((a, b) => tally(b[1]).Failed - tally(a[1]).Failed)
+  }
+  const order = (group === "none" ? sorted : groups.flatMap(([, list]) => list)).map((t) => t.Id)
+  const open = (id: string) => openTest(id, order)
+  const row = (t: Row) => (
+    <tr key={t.Id} className="click" tabIndex={0} onClick={() => open(t.Id)} onKeyDown={(e) => { if (e.key === "Enter") open(t.Id) }}>
+      <td><Pill result={t.Result} /></td>
+      <td className="ttl"><div style={{ display: "flex", flexDirection: "column", gap: 2 }}><span>{t.Title}</span><span className="mt-mono mt-muted" style={{ fontSize: 11.5 }}>{t.Id}</span></div></td>
+      <td className="mt-hide-sm"><span style={{ display: "inline-flex", gap: 7, alignItems: "center", whiteSpace: "nowrap" }}><ProductMark product={t.Product} size="sm" />{model.productName(t.Product)}</span></td>
+      <td><Sev severity={t.Severity} /></td>
+      <td className="mt-hide-sm mt-muted"><span className="mt-ell" title={sourceLabel(model, t)}>{sourceLabel(model, t)}</span></td>
+    </tr>
+  )
+  let body
+  if (group === "none") body = sorted.map(row)
+  else {
+    body = groups.flatMap(([k, list]) => {
+      const c = tally(list)
+      return [<tr key={`g-${k}`} className="grp"><td colSpan={5}>{group === "feature" && <FeatureMark product={list[0].Product} feature={list[0].Feature} />}{group === "product" && <ProductMark product={list[0].Product} size="sm" />}{k} <span>· {c.Failed} failed of {c.total}</span></td></tr>, ...list.map(row)]
+    })
+  }
+  return (
+    <div className="mt-tablewrap">
+      <table className="mt-table mt-tests">
+        <thead><tr><th>Result</th><th>Test</th><th className="mt-hide-sm">Product</th><th>Severity</th><th className="mt-hide-sm">Source</th></tr></thead>
+        <tbody>{rows.length ? body : <tr><td colSpan={5} className="mt-empty">{empty}</td></tr>}</tbody>
+      </table>
+    </div>
+  )
+}
+
+export function FixList({ rows, limit }: { rows: Row[]; limit: number }) {
+  const { model, openTest } = useReport()
+  return (
+    <div className="mt-card mt-fix">
+      {rows.slice(0, limit).map((t, i) => (
+        <button key={t.Id} type="button" className="mt-fixrow" onClick={() => openTest(t.Id, rows.slice(0, limit).map((r) => r.Id))}>
+          <span className="rank">{String(i + 1).padStart(2, "0")}</span>
+          <span>
+            <div className="t">{t.Title}</div>
+            <div className="m">
+              <ProductMark product={t.Product} size="sm" /><span>{model.productName(t.Product)}</span><span>·</span><span className="mt-mono">{t.Id}</span>
+              {model.changes.newlyFailing.includes(t) && <span className="mt-badge bad">New since last run</span>}
+            </div>
+          </span>
+          <span className="why">
+            <Sev severity={t.Severity} />
+            {isQuickWin(t) ? <span className="mt-badge good">Quick win</span> : <>
+              {t.ImplementationCost && <span className="mt-badge">Effort {t.ImplementationCost}</span>}
+              {t.UserImpact && <span className="mt-badge">User impact {t.UserImpact}</span>}
+            </>}
+          </span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export function Footer() {
+  const { model, models, multi } = useReport()
+  return (
+    <div className="mt-foot">
+      <span>Generated by Maester {maesterVersion(model.result)} · <a className="mt-link" href="https://maester.dev" target="_blank" rel="noopener noreferrer">maester.dev</a></span>
+      <span>This report holds configuration data from {multi ? `${models.length} tenants` : String(model.result.TenantName || "your tenant").replace(/\.+$/, "")}. Share it only with people who may see it.</span>
+    </div>
+  )
+}

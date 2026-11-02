@@ -41,7 +41,11 @@
         # Optional run context from Invoke-Maester: the selection, the selection plan and the run config.
         # Used to add the 3.0 fields (reason codes, family IDs) to each row.
         [Parameter(Mandatory = $false)]
-        [psobject] $RunContext
+        [psobject] $RunContext,
+
+        # Add Previous: the results of the last run on the tenant in the output folder (Get-MtPreviousResult).
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludePrevious
     )
 
     $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
@@ -632,6 +636,8 @@
             ExcludeTag = $excludeTag
             DryRun     = [bool]($RunContext -and $RunContext.DryRun)
         }
+        # The catalogue of each framework the rows map to, so that a consumer can show requirements no test checks.
+        Frameworks        = @(Get-MtResultFramework -InputObject $mtTests)
         Tests             = $mtTests
         Blocks            = $mtBlocks
         EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
@@ -644,6 +650,24 @@
     # Reports of other tools added with Add-MtReportAttachment. Only present when there are some, so other results are unchanged.
     if ($__MtSession.ReportAttachments -and $__MtSession.ReportAttachments.Count -gt 0) {
         $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Attachments' -Value @($__MtSession.ReportAttachments)
+    }
+
+    # The Maester Packs of the run. Only present when the run had some, so other results are unchanged.
+    $packs = @(if ($RunContext -and $RunContext.PSObject.Properties['PackSet']) { Get-MtResultPack -PackSet @($RunContext.PackSet) })
+    if ($packs.Count -gt 0) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Packs' -Value $packs
+    }
+
+    # The previous run on the tenant, for a report that shows what changed. Never fail the conversion over it.
+    # This runs before the run writes its own files, so the file at this run's output path, when the caller reuses
+    # a name such as TestResults-latest, is the previous run and is read like any other.
+    if ($IncludePrevious.IsPresent -and $OutputFiles -and $OutputFiles.PSObject.Properties['OutputFolder']) {
+        try {
+            $previous = Get-MtPreviousResult -Folder ([string]$OutputFiles.OutputFolder) -TenantId $tenantId
+            if ($previous) { $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Previous' -Value $previous }
+        } catch {
+            Write-Verbose "Failed to read the previous result: $($_.Exception.Message)"
+        }
     }
 
     # Add output files information if provided

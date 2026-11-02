@@ -1,0 +1,354 @@
+---
+// A blog post, laid out for reading: one column about 70 characters wide, the site's own header (no docs sidebar),
+// the contents beside it on wide screens, and the authors, topics and the posts either side of it at the end.
+import { getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import { authorsOf, formatDate, getPosts, label, readingTime, slugify, tagName, type Post } from '../../lib/blog';
+import '../../styles/blog-prose.css';
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return posts.map((post, i) => ({ params: { slug: post.id }, props: { post, newer: posts[i - 1], older: posts[i + 1] } }));
+}
+
+interface Props {
+	post: Post;
+	newer?: Post;
+	older?: Post;
+}
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const contents = headings.filter((h) => h.depth === 2);
+const by = authorsOf(post);
+const card = post.data.image ? (await getImage({ src: post.data.image, format: 'jpg', width: 1200 })).src : undefined;
+const url = `https://maester.dev/blog/${post.id}`;
+---
+
+<SiteLayout
+	title={post.data.title}
+	description={post.data.description}
+	image={card}
+	jsonLd={{
+		'@context': 'https://schema.org',
+		'@type': 'BlogPosting',
+		headline: post.data.title,
+		description: post.data.description,
+		url,
+		datePublished: post.data.date.toISOString(),
+		image: card ? new URL(card, 'https://maester.dev').href : undefined,
+		author: by.map((a) => ({ '@type': 'Person', name: a.name, url: a.url })),
+		publisher: { '@type': 'Organization', name: 'Maester', url: 'https://maester.dev' },
+	}}
+>
+	<article class="post">
+		<header class="post__head">
+			<a class="post__back" href="/blog">
+				<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+				All posts
+			</a>
+			<p class="post__meta">
+				<span class="post__kind">{label(post)}</span>
+				<time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+				<span aria-hidden="true">·</span>
+				<span>{readingTime(post)} min read</span>
+			</p>
+			<h1>{post.data.title}</h1>
+			<p class="post__lede">{post.data.description}</p>
+			<ul class="post__authors">
+				{
+					by.map((a) => (
+						<li>
+							{a.picture && <img src={a.picture} alt="" width="44" height="44" />}
+							<span>
+								<a href={`/blog/authors/${a.slug}`}>{a.name}</a>
+								{a.title && <small>{a.title}</small>}
+							</span>
+						</li>
+					))
+				}
+			</ul>
+		</header>
+
+		<div class:list={['post__layout', { 'post__layout--toc': contents.length >= 3 }]}>
+			<div class="post-prose" data-pagefind-body>
+				<Content />
+			</div>
+			{
+				contents.length >= 3 && (
+					<nav class="post__toc" aria-label="On this page">
+						<p>On this page</p>
+						<ol>
+							{contents.map((h) => (
+								<li>
+									<a href={`#${h.slug}`}>{h.text}</a>
+								</li>
+							))}
+						</ol>
+					</nav>
+				)
+			}
+		</div>
+
+		<footer class="post__foot">
+			{
+				post.data.tags.length > 0 && (
+					<p class="post__tags">
+						<span>Topics</span>
+						{post.data.tags.map((tag) => (
+							<a href={`/blog/tags/${slugify(tag)}`}>{tagName(tag)}</a>
+						))}
+					</p>
+				)
+			}
+			<div class="post__share">
+				<a href="https://discord.maester.dev">Talk about it on Discord</a>
+				<a href={`https://github.com/maester365/maester/tree/main/website/blog`}>Write for the blog</a>
+			</div>
+		</footer>
+	</article>
+
+	{
+		(newer || older) && (
+			<section class="post__more" aria-labelledby="more-posts">
+				<h2 id="more-posts">Keep reading</h2>
+				<div class="post__more-grid">
+					{newer && <PostCard post={newer} />}
+					{older && <PostCard post={older} />}
+				</div>
+			</section>
+		)
+	}
+</SiteLayout>
+
+<script>
+	// Mark the section being read in the contents.
+	const links = [...document.querySelectorAll<HTMLAnchorElement>('.post__toc a')];
+	const sections = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean) as HTMLElement[];
+	if (sections.length) {
+		const mark = () => {
+			const line = window.innerHeight * 0.25;
+			let current = sections[0];
+			for (const section of sections) if (section.getBoundingClientRect().top <= line) current = section;
+			for (const a of links) a.toggleAttribute('aria-current', a.hash.slice(1) === current.id);
+		};
+		addEventListener('scroll', mark, { passive: true });
+		mark();
+	}
+</script>
+
+<style>
+	.post {
+		padding: 1rem 0 0;
+	}
+	.post__head {
+		max-width: 46rem;
+		margin: 0 auto 3rem;
+	}
+	.post__back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+		margin-bottom: 2rem;
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-3);
+		text-decoration: none;
+	}
+	.post__back:hover {
+		color: var(--sl-color-white);
+	}
+	.post__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 0 0 1rem;
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-3);
+	}
+	.post__kind {
+		border-radius: 999px;
+		padding: 0.15rem 0.65rem;
+		background: var(--sl-color-accent-low);
+		color: var(--sl-color-accent-high);
+		font-weight: 600;
+		font-size: 0.78rem;
+	}
+	.post__head h1 {
+		margin: 0;
+		font-size: clamp(2.1rem, 5vw, 3.1rem);
+		line-height: 1.1;
+		letter-spacing: -0.03em;
+		font-weight: 700;
+		color: var(--sl-color-white);
+		text-wrap: balance;
+	}
+	.post__lede {
+		margin: 1.25rem 0 0;
+		font-size: 1.25rem;
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+		text-wrap: pretty;
+	}
+	.post__authors {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 2rem;
+		margin: 2rem 0 0;
+		padding: 1.5rem 0 0;
+		border-top: 1px solid var(--sl-color-gray-5);
+		list-style: none;
+	}
+	.post__authors li {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.post__authors img {
+		width: 44px;
+		height: 44px;
+		border-radius: 999px;
+		background: var(--sl-color-gray-6);
+	}
+	.post__authors span {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.35;
+	}
+	.post__authors a {
+		font-weight: 600;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.post__authors a:hover {
+		text-decoration: underline;
+	}
+	.post__authors small {
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-3);
+	}
+
+	/* The text column stays centred; the contents sit in the margin beside it when there is room. */
+	.post__layout {
+		display: grid;
+		grid-template-columns: minmax(0, 46rem);
+		justify-content: center;
+	}
+	@media (min-width: 78rem) {
+		.post__layout--toc {
+			grid-template-columns: 14rem minmax(0, 46rem) 14rem;
+			column-gap: 3rem;
+		}
+		.post__layout--toc .post-prose {
+			grid-column: 2;
+		}
+	}
+	.post__toc {
+		display: none;
+	}
+	@media (min-width: 78rem) {
+		.post__toc {
+			display: block;
+			grid-column: 3;
+			grid-row: 1;
+			position: sticky;
+			top: 6rem;
+			align-self: start;
+			max-height: calc(100vh - 8rem);
+			overflow: auto;
+		}
+	}
+	.post__toc p {
+		margin: 0 0 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.post__toc ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-inline-start: 1px solid var(--sl-color-gray-5);
+	}
+	.post__toc a {
+		display: block;
+		margin-inline-start: -1px;
+		padding: 0.3rem 0 0.3rem 0.9rem;
+		border-inline-start: 2px solid transparent;
+		font-size: 0.85rem;
+		line-height: 1.4;
+		color: var(--sl-color-gray-3);
+		text-decoration: none;
+	}
+	.post__toc a:hover {
+		color: var(--sl-color-white);
+	}
+	.post__toc a[aria-current] {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
+	}
+
+	.post__foot {
+		max-width: 46rem;
+		margin: 3.5rem auto 0;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.post__tags {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		margin: 0;
+	}
+	.post__tags span {
+		margin-inline-end: 0.25rem;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-3);
+	}
+	.post__tags a {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		padding: 0.2rem 0.75rem;
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.post__tags a:hover {
+		border-color: var(--sl-color-gray-3);
+		color: var(--sl-color-white);
+	}
+	.post__share {
+		display: flex;
+		gap: 1.25rem;
+		font-size: 0.88rem;
+	}
+	.post__share a {
+		color: var(--sl-color-gray-2);
+	}
+
+	.post__more {
+		margin: 5rem 0 0;
+		padding-top: 3rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	.post__more h2 {
+		margin: 0 0 1.5rem;
+		font-size: 1.5rem;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+	}
+	.post__more-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+		gap: 1.5rem;
+	}
+</style>

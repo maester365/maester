@@ -1,4 +1,4 @@
-# Validates that the Docusaurus website builds successfully.
+# Validates that the website (Astro + Starlight) builds, and that every URL of the old site still resolves.
 # Runs on PRs that modify website files or docs source files, and can also be
 # called from other workflows or triggered manually.
 name: "\U0001F3D7️ Build Website"
@@ -97,18 +97,6 @@ jobs:
 
           Copy-Item -Path $sourceCommands -Destination $docsRoot -Recurse -Force
 
-          $versionedDocsRoot = Join-Path $env:GITHUB_WORKSPACE "website/versioned_docs"
-          if (Test-Path $versionedDocsRoot) {
-            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
-              $sourceVersionCommands = Join-Path $versionFolder.FullName "commands"
-              if (Test-Path $sourceVersionCommands) {
-                $targetVersionRoot = Join-Path $artifactRoot "versioned_docs/$($versionFolder.Name)"
-                New-Item -ItemType Directory -Path $targetVersionRoot -Force | Out-Null
-                Copy-Item -Path $sourceVersionCommands -Destination $targetVersionRoot -Recurse -Force
-              }
-            }
-          }
-
           Compress-Archive -Path (Join-Path $artifactRoot "*") -DestinationPath command-reference-docs.zip -Force
 
       - name: Upload generated command reference
@@ -119,7 +107,7 @@ jobs:
           if-no-files-found: error
 
   build:
-    name: "Build Docusaurus website \U0001F3D7️"
+    name: "Build website \U0001F3D7️"
     needs: [detect-command-reference-changes, generate-command-reference]
     if: always() && needs.detect-command-reference-changes.result == 'success' && (needs.generate-command-reference.result == 'success' || needs.generate-command-reference.result == 'skipped')
     runs-on: ubuntu-latest
@@ -148,13 +136,6 @@ jobs:
           $ProgressPreference = "SilentlyContinue"
           Remove-Item -Path (Join-Path $env:WEBSITE_WORKING_DIRECTORY "docs/commands") -Recurse -Force -ErrorAction SilentlyContinue
 
-          $versionedDocsRoot = Join-Path $env:WEBSITE_WORKING_DIRECTORY "versioned_docs"
-          if (Test-Path $versionedDocsRoot) {
-            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
-              Remove-Item -Path (Join-Path $versionFolder.FullName "commands") -Recurse -Force -ErrorAction SilentlyContinue
-            }
-          }
-
           Expand-Archive -Path "${{ runner.temp }}/command-reference/command-reference-docs.zip" -DestinationPath $env:WEBSITE_WORKING_DIRECTORY -Force
 
       - name: ⚙️ Set up Node.js ${{ inputs.node_version || '24.x' }}
@@ -168,16 +149,19 @@ jobs:
         working-directory: ${{ inputs.working_directory || 'website' }}
         run: npm ci
 
-      # The test docs are generated from the source module (Get-MtTest), which needs this module to import.
-      # Without it the generator keeps the committed pages, so a PR's new or changed tests would not render.
-      - name: Install Microsoft.Graph.Authentication for the test docs generator
+      # The test pages are built from the test catalog, exported from the source module (Get-MtTest), which needs
+      # this module to import. Exporting it here means a PR's new or changed tests render in this build.
+      - name: Install Microsoft.Graph.Authentication for the test catalog export
         shell: pwsh
         run: Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
 
+      - name: Export the test catalog
+        working-directory: ${{ inputs.working_directory || 'website' }}
+        run: npm run export-catalog
+
+      # npm run build also checks every URL in website/src/data/url-contract.txt against the output.
       - name: "\U0001F3D7️ Build website"
         working-directory: ${{ inputs.working_directory || 'website' }}
         env:
-          # Lets the contributor generator resolve new commit emails to GitHub
-          # handles (cached in website/contributors/email-aliases.json).
           GH_TOKEN: ${{ github.token }}
         run: npm run build

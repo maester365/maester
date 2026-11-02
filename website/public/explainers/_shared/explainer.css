@@ -1,0 +1,14 @@
+/* Shared look for the Maester explainers: the site's tokens and fonts, at 1920 x 1080. */
+@font-face { font-family: "Inter"; src: url("fonts/inter.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/geist-mono-400.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Geist Mono"; src: url("fonts/geist-mono-500.woff2") format("woff2"); font-weight: 500; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #09090b; }
+body { font-family: "Inter", ui-sans-serif, system-ui, sans-serif; color: #fafafa; -webkit-font-smoothing: antialiased; }
+.mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+#root { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  background: radial-gradient(1200px 700px at 85% 0%, rgba(210, 44, 49, 0.22), rgba(9, 9, 11, 0) 60%), #09090b; }
+.eyebrow { position: absolute; left: 120px; top: 96px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 26px; letter-spacing: 0.12em; text-transform: uppercase; color: #a1a1aa; }
+.title { position: absolute; left: 120px; top: 140px; font-size: 64px; font-weight: 700; letter-spacing: -0.03em; }
+.caption { position: absolute; left: 120px; right: 120px; bottom: 110px; font-size: 40px; line-height: 1.35; color: #e4e4e7; opacity: 0; }
+.brand { position: absolute; right: 120px; top: 100px; font-size: 28px; font-weight: 700; color: #a1a1aa; }

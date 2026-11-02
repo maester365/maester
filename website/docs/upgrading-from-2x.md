@@ -1,7 +1,8 @@
 ---
 title: Upgrading from 2.x
-sidebar_label: ⬆️ Upgrading from 2.x
 description: What changes when you move from Maester 2.x to 3.0, and what to do about each change.
+sidebar:
+  label: Upgrading from 2.x
 ---
 
 # Upgrading from Maester 2.x to 3.0

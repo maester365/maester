@@ -6,7 +6,6 @@ authors: merill
 tags: [presentation]
 card_headline: "Maester *slide decks* for your next talk"
 card_label: Community
-hide_table_of_contents: false
 date: 2024-12-12
 image: ./img/card.png
 ---
@@ -15,7 +14,7 @@ Are you interested in presenting about Maester at a conference or at your organi
 
 We've created a repository to host slide decks that you can use to get started.
 
-{/* truncate */}
+<!-- excerpt -->
 
 You can find the slide decks in the [Maester Content Hub](https://github.com/maester365/content-hub).
 

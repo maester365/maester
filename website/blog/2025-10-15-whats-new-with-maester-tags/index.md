@@ -7,13 +7,12 @@ tags: [tags]
 image: ./img/card.png
 card_headline: "What's new with *Maester tags*"
 card_label: News
-hide_table_of_contents: false
 date: 2025-10-20
 ---
 
 Today we are happy to announce that it is now easier to assess your M365 environment with specific types of tagged tests. Key Maester tags are now less ambiguous, and a new function makes it easy to see all of the tests associated with each tag! 🏷️
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## A Review of How Tags are Used
 
@@ -82,7 +81,7 @@ These tests may take a long time in tenants that have a large number of user, gr
 
 Include tests that rely on functionality that is still in preview status. These might be tests that are based on new techniques that are still being validated by the Maester team or tests that are using a beta API.
 
-:::info
+:::note
 
 We can use these two options with any other combination of tags or excluded tags. However, tag exclusions will always override inclusions.
 
@@ -99,7 +98,7 @@ In addition, if these deprecated tags are used, you will now see a warning in th
 
 ![WARNING: The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead...](img/Invoke_Maester_deprecated_tag_warning.png)
 
-:::warning
+:::caution
 
 If you have implemented Maester through a scheduled task, workflow, or pipeline; please be sure to replace any use of the `All` and `Full` tags with their new switch parameter replacements.
 

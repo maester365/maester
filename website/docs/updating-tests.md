@@ -1,5 +1,5 @@
 ---
-title: 🧪 Updating tests
+title: Updating tests
 ---
 
 # Updating your Maester tests

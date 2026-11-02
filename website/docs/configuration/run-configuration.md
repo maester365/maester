@@ -1,7 +1,8 @@
 ---
 title: Run configuration reference
-sidebar_position: 4
 description: Every section and key of maester-config.json in Maester 3.0, how config files are found and layered, and how to pass a configuration with -Config.
+sidebar:
+  order: 4
 ---
 
 # Run configuration reference

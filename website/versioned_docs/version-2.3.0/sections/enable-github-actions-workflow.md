@@ -1,3 +1,8 @@
+---
+# A partial that guides import; also served as a page (noindex) for links to it.
+title: Create the GitHub Actions workflow
+---
+
 ### Create GitHub Action worklow for Maester
 
 - Open your `maester-tests` GitHub repository and go to **Actions**

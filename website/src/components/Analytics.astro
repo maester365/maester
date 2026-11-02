@@ -1,0 +1,43 @@
+---
+// Google Tag Manager (which loads Google Analytics, once) and PostHog, on maester.dev only.
+---
+
+<script is:inline>
+	if (location.hostname === 'maester.dev') (function (w, d, s, l, i) {
+		w[l] = w[l] || [];
+		w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+		var f = d.getElementsByTagName(s)[0],
+			j = d.createElement(s);
+		j.async = true;
+		j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i;
+		f.parentNode.insertBefore(j, f);
+	})(window, document, 'script', 'dataLayer', 'GTM-TXV8GGWT');
+</script>
+<script is:inline>
+	if (location.hostname === 'maester.dev') {
+		!(function (t, e) {
+			var o, n, p, r;
+			e.__SV ||
+				((window.posthog = e),
+				(e._i = []),
+				(e.init = function (i, s, a) {
+					function g(t, e) {
+						var o = e.split('.');
+						2 == o.length && ((t = t[o[0]]), (e = o[1])),
+							(t[e] = function () {
+								t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+							});
+					}
+					((p = t.createElement('script')).type = 'text/javascript'),
+						(p.async = !0),
+						(p.src = s.api_host + '/static/array.js'),
+						(r = t.getElementsByTagName('script')[0]).parentNode.insertBefore(p, r);
+					var u = e;
+					for (void 0 !== a ? (u = e[a] = []) : (a = 'posthog'), u.people = u.people || [], n = 'capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags'.split(' '), o = 0; o < n.length; o++) g(u, n[o]);
+					e._i.push([i, s, a]);
+				}),
+				(e.__SV = 1));
+		})(document, window.posthog || []);
+		posthog.init('phc_VxA235FsdurMGycf9DHjlUeZeIhLuC7r11Ptum0WjRK', { api_host: 'https://us.i.posthog.com' });
+	}
+</script>

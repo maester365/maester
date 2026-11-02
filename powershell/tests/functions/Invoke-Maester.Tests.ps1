@@ -217,8 +217,8 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
         }
 
-        It 'Redacts the html report when -RedactUserIdentity is used without -IncludeAffectedObjects' {
-            $folder = & $script:invokePii @{ RedactUserIdentity = 'HtmlOnly' }
+        It 'Redacts the html report when -RedactUserIdentity is used with -ExcludeAffectedObjects' {
+            $folder = & $script:invokePii @{ RedactUserIdentity = 'HtmlOnly'; ExcludeAffectedObjects = $true }
 
             $html = Get-Content (Join-Path $folder 'Pii.html') -Raw
             $html | Should -Not -BeLike '*Jane Doe*'
@@ -252,8 +252,16 @@ Describe 'PiiTitle' -Tag 'PiiTitle' {
             }
         }
 
-        It 'Leaves the affected objects out unless -IncludeAffectedObjects is used' {
+        It 'Collects the affected objects by default' {
             $folder = & $script:invokePii @{}
+
+            Test-Path (Join-Path $folder 'Pii-affected-objects.json') | Should -BeTrue
+            Get-Content (Join-Path $folder 'Pii.json') -Raw | Should -BeLike '*"AffectedObjects":*'
+            Get-Content (Join-Path $folder 'Pii.html') -Raw | Should -BeLike '*"AffectedObjects":*'
+        }
+
+        It 'Leaves the affected objects out with -ExcludeAffectedObjects' {
+            $folder = & $script:invokePii @{ ExcludeAffectedObjects = $true }
 
             Test-Path (Join-Path $folder 'Pii-affected-objects.json') | Should -BeFalse
             $json = Get-Content (Join-Path $folder 'Pii.json') -Raw

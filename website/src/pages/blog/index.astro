@@ -1,0 +1,45 @@
+---
+// The blog: the newest post large, then every other post as a card. One page for all of them (the Docusaurus
+// blog's /blog/page/2 redirects here).
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PostCard from '../../components/blog/PostCard.astro';
+import BlogHeader from '../../components/blog/BlogHeader.astro';
+import { broadTags, getPosts, tagsOf } from '../../lib/blog';
+
+const posts = await getPosts();
+const [latest, ...rest] = posts;
+const tags = tagsOf(posts).filter((tag) => !broadTags.has(tag.slug)).slice(0, 8);
+---
+
+<SiteLayout
+	title="Blog"
+	description="Releases, guides and news from the Maester team: open-source security testing for Microsoft 365."
+	wide
+	jsonLd={{
+		'@context': 'https://schema.org',
+		'@type': 'Blog',
+		name: 'Maester blog',
+		url: 'https://maester.dev/blog',
+		blogPost: posts.slice(0, 10).map((post) => ({
+			'@type': 'BlogPosting',
+			headline: post.data.title,
+			url: `https://maester.dev/blog/${post.id}`,
+			datePublished: post.data.date.toISOString(),
+		})),
+	}}
+>
+	<BlogHeader title="News and guides from the Maester team" lede="Releases, walkthroughs and the thinking behind Maester." tags={tags} />
+	{latest && <PostCard post={latest} featured eager />}
+	<section class="blog-grid" aria-label="More posts">
+		{rest.map((post, i) => <PostCard post={post} eager={i < 3} />)}
+	</section>
+</SiteLayout>
+
+<style>
+	.blog-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+	}
+</style>

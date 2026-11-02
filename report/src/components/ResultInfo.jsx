@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Card, Button, Title, Text, Flex, Divider, Grid } from "@/components/ui/report";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ExternalLink } from "lucide-react"
 import StatusLabel from "./StatusLabel";
 import StatusLabelSm from "./StatusLabelSm";
 import SeverityBadge from "./SeverityBadge";
@@ -137,7 +137,7 @@ export default function ResultInfo({ Item, isPrintView }) {
       <Title>{Item.Name}</Title>
       {!isPrintView && Item.HelpUrl &&
         <div className="text-left mt-2">
-          <Button icon={ArrowTopRightOnSquareIcon} variant="light" onClick={() => openInNewTab(Item.HelpUrl)}>
+          <Button icon={ExternalLink} variant="light" onClick={() => openInNewTab(Item.HelpUrl)}>
             Learn more @ {new URL(Item.HelpUrl).hostname}
           </Button>
         </div>
@@ -149,11 +149,11 @@ export default function ResultInfo({ Item, isPrintView }) {
         <div className="flex flex-row items-center">
           <Title>Test result</Title><StatusLabelSm Result={Item.Result} />
         </div>
-        <Markdown className="prose max-w-fit dark:prose-invert">{getTestResult()}</Markdown>
+        <Markdown className="mt-md">{getTestResult()}</Markdown>
       </Card>
       <Card className="mt-4 bg-slate-50">
         <Title>Test details</Title>
-        <Markdown className="prose max-w-fit dark:prose-invert">{getTestDetails()}</Markdown>
+        <Markdown className="mt-md">{getTestDetails()}</Markdown>
       </Card>
 
       {isPrintView ? (

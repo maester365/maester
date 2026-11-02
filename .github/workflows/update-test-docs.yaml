@@ -1,4 +1,4 @@
-# Regenerates test documentation and contributor attribution after source changes.
+# Refreshes the test catalog the website builds its test pages from, and contributor attribution, after source changes.
 name: Update generated test docs
 
 on:
@@ -8,7 +8,6 @@ on:
     paths:
       - "powershell/**"
       - "tests/**"
-      - "website/docs/commands/**"
       - "website/contributors/attribution-overrides.yml"
       - "website/contributors/contributors.yml"
       - "website/scripts/contributors.mjs"
@@ -65,13 +64,13 @@ jobs:
 
       - name: Export test catalog
         shell: pwsh
-        run: ./build/docs/Export-MtTestCatalogForDocs.ps1 -OutputPath website/.generated/test-catalog.json
+        run: ./build/docs/Export-MtTestCatalogForDocs.ps1 -OutputPath website/src/data/test-catalog.json
 
       - name: Generate test docs and contributor attribution
         working-directory: website
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: node scripts/generate-test-docs.mjs --catalog .generated/test-catalog.json
+        run: node scripts/generate-test-docs.mjs --update-aliases
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -80,13 +79,12 @@ jobs:
           branch: automation/update-test-docs
           delete-branch: true
           commit-message: Update generated test docs
-          title: Update generated test docs and contributor attribution
+          title: Update the test catalog and contributor attribution
           body: |
-            Automated refresh of generated test documentation and contributor attribution.
+            Automated refresh of the test catalog the website builds its test pages from, and of contributor attribution.
 
             Test metadata is exported from the native tests by `build/docs/Export-MtTestCatalogForDocs.ps1` (Get-MtTest) and rendered by `website/scripts/generate-test-docs.mjs`.
           add-paths: |
             website/contributors/email-aliases.json
-            website/docs/tests
-            website/versioned_docs/*/tests/**
+            website/src/data/test-catalog.json
             website/src/data/contributors.json
