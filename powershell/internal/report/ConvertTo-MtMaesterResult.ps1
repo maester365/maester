@@ -659,10 +659,11 @@
     }
 
     # The previous run on the tenant, for a report that shows what changed. Never fail the conversion over it.
+    # This runs before the run writes its own files, so the file at this run's output path, when the caller reuses
+    # a name such as TestResults-latest, is the previous run and is read like any other.
     if ($IncludePrevious.IsPresent -and $OutputFiles -and $OutputFiles.PSObject.Properties['OutputFolder']) {
         try {
-            $exclude = @(foreach ($name in 'OutputJsonFile', 'OutputHtmlFile') { if ($OutputFiles.PSObject.Properties[$name] -and $OutputFiles.$name) { [string]$OutputFiles.$name } })
-            $previous = Get-MtPreviousResult -Folder ([string]$OutputFiles.OutputFolder) -TenantId $tenantId -Exclude $exclude
+            $previous = Get-MtPreviousResult -Folder ([string]$OutputFiles.OutputFolder) -TenantId $tenantId
             if ($previous) { $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Previous' -Value $previous }
         } catch {
             Write-Verbose "Failed to read the previous result: $($_.Exception.Message)"

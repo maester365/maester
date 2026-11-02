@@ -534,7 +534,7 @@ html:has(.mt-app) { scrollbar-width: thin; scrollbar-color: var(--mt-line) trans
 .mt-kpi-hit { position: absolute; inset: 0; border: 0; background: none; border-radius: inherit; cursor: pointer; padding: 0; }
 .mt-kpi-hit:focus-visible { outline: 2px solid var(--mt-ember); outline-offset: 2px; }
 .mt-kpi.click > :not(.mt-kpi-hit) { position: relative; pointer-events: none; }
-.mt-kpi.click .mt-kchip { pointer-events: auto; }
+.mt-kpi.click button.mt-kchip, .mt-kpi.click a.mt-kchip { pointer-events: auto; }
 
 /* Tables in a finding wrap between words, never inside one, and scroll sideways when they need more room than the
    sheet has (#2610). Headers stay on one line. */
