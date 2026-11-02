@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import { Card } from "@/components/ui/report"
 import { Download, FileJson, Settings2, AlertTriangle, AlertCircle, Info, CircleAlert, ShieldAlert, ChevronDown, Check, Plus, Trash2, User, Users, Mail, Hash } from "lucide-react"
-import { useSidebar } from "@/components/Sidebar"
 import { useTenant } from "@/context/TenantContext"
 
 interface EmergencyAccessAccount {
@@ -242,7 +241,6 @@ const getInitialIdentifierType = (account: EmergencyAccessAccount): IdentifierTy
 }
 
 export default function ConfigPage() {
-  const { isCollapsed } = useSidebar()
   const { selectedTenant: testResults, tenants } = useTenant()
   const isMultiTenant = tenants.length > 1
   const originalConfig = testResults?.MaesterConfig
@@ -612,7 +610,7 @@ export default function ConfigPage() {
       {/* Fixed Export Bar at bottom of right pane */}
       <div
         className="fixed bottom-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg z-50 transition-all duration-200"
-        style={{ left: isCollapsed ? '4rem' : '16rem' }}
+        style={{ left: '16rem' }}
       >
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600 dark:text-gray-400">

@@ -58,23 +58,27 @@ touched — Entra ID objects such as Conditional Access policies, users, groups 
 principals, tenant-level configuration surfaces, the Microsoft Graph resources that were read,
 and external systems such as GitHub.
 
-Collection is opt-in, because it makes the report larger. Use `-IncludeAffectedObjects`:
+Maester collects them on every run:
 
 ```powershell
-$results = Invoke-Maester -IncludeAffectedObjects -PassThru
+$results = Invoke-Maester -PassThru
 $results.AffectedObjects | Where-Object Type -eq 'ConditionalAccessPolicy'
 ```
 
-The HTML report then has an **Affected objects** page, with the checks that passed or failed for
-each object and a link to open it in the admin portal. Without the switch, nothing is collected and
-the page is not offered.
+When a test recorded an object, the HTML report has an **Affected objects** page, with the checks that
+passed or failed for each object and a link to open it in the admin portal. A run whose tests recorded
+no objects has no such page.
 
-When you also use `-OutputFolder`, the list is written next to the other reports as
-`<name>-affected-objects.json`. Adding `-ExportCsv` also writes `<name>-affected-objects.csv`.
+With `-OutputFolder`, the list is also written next to the other reports as
+`<name>-affected-objects.json`, and `-ExportCsv` adds `<name>-affected-objects.csv`. Neither file is
+written when the list is empty.
 
 ```powershell
-Invoke-Maester -IncludeAffectedObjects -OutputFolder "C:\path\to\results" -ExportCsv
+Invoke-Maester -OutputFolder "C:\path\to\results" -ExportCsv
 ```
+
+The list makes the report larger. To leave it out, use `-ExcludeAffectedObjects`. `-IncludeAffectedObjects`,
+which turned collection on before Maester 3.0, still works and changes nothing.
 
 Each object carries a `UniqueId` that is derived from its identity, so the same object keeps the
 same id across runs and can be correlated between reports.

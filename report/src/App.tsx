@@ -1,72 +1,64 @@
 import { useLocation } from "@/lib/router"
-import { useEffect, useRef } from "react"
-import { Sidebar, SidebarProvider } from "@/components/Sidebar"
-import { Breadcrumb } from "@/components/Breadcrumb"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { TenantProvider } from "@/context/TenantContext"
+import { ReportProvider } from "@/components/report/ReportContext"
+import { Shell } from "@/components/report/Shell"
 
-// Import pages
-import HomePage from "@/pages/HomePage"
+import OverviewPage from "@/pages/report/OverviewPage"
+import ActionPlanPage from "@/pages/report/ActionPlanPage"
+import TestsPage from "@/pages/report/TestsPage"
+import ProductPage from "@/pages/report/ProductPage"
+import FrameworkPage from "@/pages/report/FrameworkPage"
+import AttackPage from "@/pages/report/AttackPage"
+import PackPage from "@/pages/report/PackPage"
+import ChangesPage from "@/pages/report/ChangesPage"
+import RunPage from "@/pages/report/RunPage"
+import TenantsPage from "@/pages/report/TenantsPage"
 import AffectedObjectsPage from "@/pages/AffectedObjectsPage"
-import SettingsPage from "@/pages/SettingsPage"
 import SystemPage from "@/pages/SystemPage"
 import ConfigPage from "@/pages/ConfigPage"
 import ExcelPage from "@/pages/ExcelPage"
 import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
 import ReportAttachmentPage from "@/pages/ReportAttachmentPage"
-import { reportMainElementId } from "@/lib/reportLinks"
 
-// Component to scroll to top on route change.
-// Skipped when a hash is present because the deep-link scroll will position
-// the viewport to the correct row instead.
-function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null> }) {
-  const { pathname, hash } = useLocation()
+function decode(value: string) {
+  try { return decodeURIComponent(value) } catch { return value }
+}
 
-  useEffect(() => {
-    if (hash) return
-    if (mainRef.current) {
-      mainRef.current.scrollTo(0, 0)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  return null
+// The page a route names. Any other path is the overview (an old #/<test id> link opens that test over it).
+function Page({ pathname }: { pathname: string }) {
+  const [, first = "", second = ""] = pathname.split("/")
+  switch (first) {
+    case "tenants": return <TenantsPage />
+    case "plan": return <ActionPlanPage />
+    case "tests": return <TestsPage />
+    case "product": return <ProductPage productKey={decode(second)} />
+    case "framework": return <FrameworkPage frameworkKey={decode(second)} />
+    case "attack": return <AttackPage />
+    case "pack": return <PackPage packId={decode(second)} />
+    case "changes": return <ChangesPage />
+    case "run": case "settings": return <RunPage />
+    case "system": return <div className="mt-wrap"><SystemPage /></div>
+    case "config": return <div className="mt-wrap"><ConfigPage /></div>
+    case "affected-objects": return <div className="mt-wrap"><AffectedObjectsPage /></div>
+    case "view": return <div className="mt-wrap">{second === "excel" ? <ExcelPage /> : second === "markdown" ? <MarkdownPage /> : <PrintPage />}</div>
+    default: return <OverviewPage />
+  }
 }
 
 function App({ testResults }: { testResults: unknown }) {
-  const mainRef = useRef<HTMLElement>(null)
   const { pathname } = useLocation()
-  // An embedded report fills the panel, without the page padding.
+  // An embedded report fills the main column, without the page padding.
   const isAttachment = pathname.startsWith("/reports/")
-  const page = pathname === "/affected-objects" ? <AffectedObjectsPage />
-    : pathname === "/settings" ? <SettingsPage />
-      : pathname === "/system" ? <SystemPage />
-        : pathname === "/config" ? <ConfigPage />
-          : pathname === "/view/excel" ? <ExcelPage />
-            : pathname === "/view/markdown" ? <MarkdownPage />
-              : pathname === "/view/print" ? <PrintPage />
-                : <HomePage />
-
   return (
     <ThemeProvider>
       <TenantProvider testResults={testResults}>
-        <SidebarProvider>
-          <div className="flex h-screen font-sans min-h-screen overflow-x-hidden bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600 dark:bg-black">
-            <Sidebar />
-            <div className="flex flex-1 flex-col overflow-hidden">
-              <Breadcrumb />
-              <main id={reportMainElementId} ref={mainRef} className="flex-1 overflow-auto">
-                <ScrollToTop mainRef={mainRef} />
-                {isAttachment ? <ReportAttachmentPage /> : (
-                  <div className="p-6">
-                    {page}
-                  </div>
-                )}
-              </main>
-            </div>
-          </div>
-        </SidebarProvider>
+        <ReportProvider>
+          <Shell flush={isAttachment}>
+            {isAttachment ? <ReportAttachmentPage /> : <Page pathname={pathname} />}
+          </Shell>
+        </ReportProvider>
       </TenantProvider>
     </ThemeProvider>
   )
