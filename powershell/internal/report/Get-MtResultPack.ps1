@@ -1,4 +1,4 @@
-function Get-MtResultPack {
+﻿function Get-MtResultPack {
     <#
     .SYNOPSIS
     Builds the Packs list of a result: one entry for each Maester Pack the run loaded or tried to load.

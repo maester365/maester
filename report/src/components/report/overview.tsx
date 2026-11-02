@@ -23,9 +23,11 @@ function Delta({ now, before }: { now: number | null; before: number | null | un
 interface Chip { label: string; n: number | string; colour?: string; onClick?: () => void; to?: string }
 
 function Kpi({ icon, label, value, note, noteTone, chips, onClick }: { icon: IconName; label: string; value: number | string; note?: string; noteTone?: "up" | "down"; chips: Chip[]; onClick?: () => void }) {
-  const onKey = (e: KeyboardEvent<HTMLDivElement>) => { if (onClick && (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) { e.preventDefault(); onClick() } }
+  // The card's own action is a button laid under its content, so the chips stay buttons and links of their own
+  // rather than controls nested inside a button.
   return (
-    <div className={`mt-card mt-kpi${onClick ? " click" : ""}`} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined} onClick={onClick} onKeyDown={onKey}>
+    <div className={`mt-card mt-kpi${onClick ? " click" : ""}`}>
+      {onClick && <button type="button" className="mt-kpi-hit" onClick={onClick} aria-label={`${label}: ${value}. Show these tests`} />}
       <span className="k"><Icon name={icon} />{label}</span>
       <span className="v"><b className="mt-num">{value}</b>{note && <small className={noteTone === "up" ? "mt-up" : noteTone === "down" ? "mt-down" : "mt-muted"}>{note}</small>}</span>
       {chips.length > 0 && (
@@ -53,6 +55,8 @@ export function Kpis() {
   const reasons = new Map<string, number>()
   for (const t of notRun) { const code = t.ReasonCode || (t.Result === "Error" ? "TestError" : "NotApplicable"); reasons.set(code, (reasons.get(code) || 0) + 1) }
   const grid = postureGrid(model)
+  // A framework none of whose requirements has a result has no rate, and is left out of the average.
+  const rated = grid.filter((g) => g.now.rate !== null && g.now.rate !== undefined)
   const newly = model.changes.newlyFailing.length
   const failedFilter = { Result: ["Failed"] }
   return (
@@ -66,7 +70,7 @@ export function Kpis() {
       <Kpi icon="service" label="Did not run" value={notRun.length} onClick={() => explore({ filters: { Result: [...new Set(notRun.map((t) => t.Result))] } })}
         chips={[...reasons.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([code, n]) => ({ label: (REASONS[code] || [code])[0].replace(/\.$/, ""), n }))} />
       {grid.length > 0 && (
-        <Kpi icon="framework" label="Frameworks" value={`${Math.round(grid.reduce((s, g) => s + (g.now.rate ?? 0), 0) / grid.length)}%`} note="requirements met, on average"
+        <Kpi icon="framework" label="Frameworks" value={rated.length ? `${Math.round(rated.reduce((s, g) => s + (g.now.rate as number), 0) / rated.length)}%` : "–"} note="requirements met, on average"
           chips={grid.map((g) => ({ label: frameworkLabel(g.framework).replace(/ Microsoft 365$/, ""), n: `${g.now.rate ?? "–"}%`, to: `/framework/${encodeURIComponent(g.framework.Key)}` }))} />
       )}
     </div>

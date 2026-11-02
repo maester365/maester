@@ -368,8 +368,9 @@
     )
 
     end {
-        # Affected objects are on unless the caller turned them off.
-        $includeAffectedObjects = -not $ExcludeAffectedObjects.IsPresent
+        # Affected objects are on unless the caller turned them off. A variable of its own: PowerShell names are not
+        # case-sensitive, so $includeAffectedObjects would be the -IncludeAffectedObjects switch.
+        $keepAffectedObjects = -not $ExcludeAffectedObjects.IsPresent
 
         function GetDefaultFileName() {
             $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
@@ -401,14 +402,14 @@
                 $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
                 $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
                 $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
-                if ($includeAffectedObjects) {
+                if ($keepAffectedObjects) {
                     # Written only when a test recorded an object.
                     $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.json") -Force
                 }
 
                 if ($ExportCsv.IsPresent) {
                     $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
-                    if ($includeAffectedObjects) {
+                    if ($keepAffectedObjects) {
                         $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.csv") -Force
                     }
                 }
@@ -456,7 +457,7 @@
         # Redaction maps user identities onto their stable ids, so it needs the inventory even when
         # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
         # in the results and output files when -ExcludeAffectedObjects was not used.
-        $collectAffectedObjects = $includeAffectedObjects -or $RedactUserIdentity -ne 'None'
+        $collectAffectedObjects = $keepAffectedObjects -or $RedactUserIdentity -ne 'None'
 
         # Anonymous run events: one now and one when the run ends, so a run that never ends shows up
         # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
@@ -1027,8 +1028,13 @@
 
             # Drop the inventory again when it was only collected to drive redaction, so the reports
             # stay the size the caller asked for and the Affected objects page is not silently turned on.
-            if ($collectAffectedObjects -and -not $includeAffectedObjects) {
+            if ($collectAffectedObjects -and -not $keepAffectedObjects) {
                 $maesterResults.PSObject.Properties.Remove('AffectedObjects')
+            }
+            # The affected-objects files are written only when tests recorded objects, so the result does not list them
+            # otherwise. $out is the result's OutputFiles.
+            if (-not @($maesterResults.AffectedObjects | Where-Object { $_ }).Count) {
+                foreach ($name in 'OutputAffectedObjectsJsonFile', 'OutputAffectedObjectsCsvFile') { $out.PSObject.Properties.Remove($name) }
             }
 
             # Csv and Excel are produced by Convert-MtResultsToFlatObject, which writes the file

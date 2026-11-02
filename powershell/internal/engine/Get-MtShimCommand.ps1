@@ -1,4 +1,4 @@
-function Get-MtShimCommand {
+﻿function Get-MtShimCommand {
     <#
     .SYNOPSIS
     Returns the command a test function returns when its whole body is one return of one Test-Mt* command.

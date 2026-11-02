@@ -1,4 +1,4 @@
-function Get-MtResultFramework {
+﻿function Get-MtResultFramework {
     <#
     .SYNOPSIS
     Builds the Frameworks list of a result: the catalogue of each framework the rows map to.

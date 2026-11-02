@@ -1,4 +1,4 @@
-# The result fields a report needs beyond the rows: the framework catalogues (Frameworks), the packs of the run
+﻿# The result fields a report needs beyond the rows: the framework catalogues (Frameworks), the packs of the run
 # (Packs), the previous run (Previous), and on rows the facts of a family instance (Fields) and the test a
 # benchmark shim returns (ShimOf). See website/docs/result-schema.md.
 

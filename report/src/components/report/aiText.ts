@@ -67,7 +67,11 @@ export function tenantsMarkdown(models: Model[]) {
 export const failuresMarkdown = (model: Model) => model.ranked.map((t) => testAsMarkdown(model, t)).join("\n\n---\n\n")
 
 export function failuresCsv(model: Model) {
-  const quote = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`
+  // A value a spreadsheet would read as a formula (a title from a custom test or pack can start with =) is kept as text.
+  const quote = (v: unknown) => {
+    const s = String(v ?? "")
+    return `"${(/^[=+\-@\t\r]/.test(s) ? `'${s}` : s).replace(/"/g, '""')}"`
+  }
   return ["Id,Title,Severity,Product,UserImpact,Effort,Frameworks"]
     .concat(model.ranked.map((t) => [t.Id, t.Title, t.Severity, model.productName(t.Product), t.UserImpact, t.ImplementationCost, requirementsOf(t).map(([k, id]) => `${k}:${id}`).join(" ")].map(quote).join(",")))
     .join("\n")

@@ -1,4 +1,4 @@
-function Get-MtPreviousResult {
+﻿function Get-MtPreviousResult {
     <#
     .SYNOPSIS
     Returns the result of the previous run on the same tenant, reduced to what a report needs to show changes.

@@ -1,4 +1,4 @@
-function Get-MtNistControlCatalog {
+﻿function Get-MtNistControlCatalog {
     <#
     .SYNOPSIS
     Returns the pinned NIST SP 800-53 control catalogue (assets/MaesterNistControls.json). Read once for the session.

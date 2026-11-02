@@ -528,3 +528,10 @@ html.mt-locked { overflow: hidden; }
 .mt-side::-webkit-scrollbar-thumb { background: transparent; }
 .mt-side:hover::-webkit-scrollbar-thumb { background: var(--mt-line); }
 html:has(.mt-app) { scrollbar-width: thin; scrollbar-color: var(--mt-line) transparent; }
+
+/* A KPI card's action sits under its content; the chips above it keep their own clicks. */
+.mt-kpi { position: relative; }
+.mt-kpi-hit { position: absolute; inset: 0; border: 0; background: none; border-radius: inherit; cursor: pointer; padding: 0; }
+.mt-kpi-hit:focus-visible { outline: 2px solid var(--mt-ember); outline-offset: 2px; }
+.mt-kpi.click > :not(.mt-kpi-hit) { position: relative; pointer-events: none; }
+.mt-kpi.click .mt-kchip { pointer-events: auto; }

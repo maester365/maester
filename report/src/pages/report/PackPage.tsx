@@ -35,7 +35,7 @@ export default function PackPage({ packId }: { packId: string }) {
           {pack.BuiltIn && <span className="mt-chip ember">Official</span>}
           {pack.Risk && <span className="mt-chip">{pack.Risk} risk</span>}
           {pack.Publisher && <span className="mt-chip">by {pack.Publisher}</span>}
-          {pack.Homepage && <a className="mt-chip" href={pack.Homepage} target="_blank" rel="noopener noreferrer">Pack page ↗</a>}
+          {pack.Homepage && /^https:\/\//i.test(pack.Homepage) && <a className="mt-chip" href={pack.Homepage} target="_blank" rel="noopener noreferrer">Pack page ↗</a>}
         </div>
       </div>
       <p className="mt-lead">{pack.Description ? `${pack.Description} ` : ""}Its results count in this report, but never as Maester's own checks.</p>

@@ -379,11 +379,12 @@ export default function AffectedObjectsPage() {
             <div className="max-w-4xl">
                 <h1 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-white">Affected objects</h1>
                 <p className="text-gray-500 dark:text-gray-400">
-                    This report has no affected objects. Run{" "}
+                    This report has no affected objects: no test recorded any, the run used{" "}
                     <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm dark:bg-gray-800">
-                        Invoke-Maester -IncludeAffectedObjects
-                    </code>{" "}
-                    to collect the objects behind each result.
+                        -ExcludeAffectedObjects
+                    </code>
+                    , or an older version of Maester made it. Run Maester 3.0 without that switch to collect the objects
+                    behind each result.
                 </p>
             </div>
         )
