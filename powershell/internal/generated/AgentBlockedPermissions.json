@@ -1,0 +1,302 @@
+{
+  "SourceUrl": "https://raw.githubusercontent.com/microsoftgraph/microsoft-graph-docs-contrib/main/api-reference/v1.0/resources/agentid-platform-overview.md",
+  "SourceSha256": "d0ad7a4c720e8c64e97aa2615811233fe8020866e509c1c4b2e6d538c38385aa",
+  "Count": 59,
+  "Permissions": [
+    {
+      "Permission": "AgentIdentity.Create",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentity.Create.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentity.CreateAsManager",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentityBlueprint.Create",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentityBlueprint.CreateAsManager",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentityBlueprint.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AgentIdentityBlueprintPrincipal.Create",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "AppRoleAssignment.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Application.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Application.ReadWrite.OwnedBy",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "BitlockerKey.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Calendars.Read",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "ChannelMessage.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "ChannelMessage.Read.Group",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Chat.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Chat.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "ConsentRequest.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "CustomSecAttributeAssignment.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "CustomSecAttributeDefinition.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "DelegatedPermissionGrant.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "Device.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Device.Write.Restricted",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "DeviceManagementConfiguration.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Directory.AccessAsUser.All",
+      "Delegated": true,
+      "Application": false
+    },
+    {
+      "Permission": "Directory.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "Directory.Write.Restricted",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "Domain.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "EduRoster.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "EntitlementManagement.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Files.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Files.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Group.Create",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Group.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "Group.Write.Restricted",
+      "Delegated": true,
+      "Application": false
+    },
+    {
+      "Permission": "GroupMember.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "IdentityProvider.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "LifecycleManagement.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Organization.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Policy.ReadWrite.AuthenticationMethod",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Policy.ReadWrite.CrossTenantAccess",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Policy.ReadWrite.PermissionGrant",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Policy.ReadWrite.SecurityDefaults",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "PrintJob.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "PrivilegedAccess.ReadWrite.AzureAD",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "PrivilegedAccess.ReadWrite.AzureResources",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "RoleManagement.ReadWrite.All",
+      "Delegated": true,
+      "Application": false
+    },
+    {
+      "Permission": "RoleManagement.ReadWrite.Directory",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "Sites.FullControl.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Sites.Manage.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Sites.Read.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Sites.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "Tasks.ReadWrite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "User-PasswordProfile.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "User.DeleteRestore.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "User.EnableDisableAccount.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "User.Invite.All",
+      "Delegated": false,
+      "Application": true
+    },
+    {
+      "Permission": "User.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    },
+    {
+      "Permission": "UserAuthenticationMethod.Read.All",
+      "Delegated": true,
+      "Application": false
+    },
+    {
+      "Permission": "UserAuthenticationMethod.ReadWrite.All",
+      "Delegated": true,
+      "Application": true
+    }
+  ]
+}
