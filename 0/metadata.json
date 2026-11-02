@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6E8TKNJD5M3P2T2MDE7DY2K",
+  "session_id": "2d9f0177-c129-494c-a54f-610e3d37d77a",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-02T13:57:52.780519Z",
+  "branch": "feat/website-astro",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "website/src/lib/summary.mjs"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "5f942224ba16",
+  "checkpoint_transcript_start": 7913,
+  "transcript_lines_at_start": 7913,
+  "compact_transcript_start": 1026,
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 10249,
+    "cache_read_tokens": 4484401,
+    "output_tokens": 5893,
+    "api_call_count": 11,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 1773,
+    "layers": {
+      "betterleaks": 15,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 1787,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 19
+  }
+}
