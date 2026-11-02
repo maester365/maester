@@ -6,5 +6,8 @@
   "dependencies": {
     "@breezystack/lamejs": "1.2.7",
     "kokoro-js": "1.2.1"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }
