@@ -73,6 +73,8 @@ Disconnect-MtGitHub
 
 For GHE.com, use a manual token for that host and pass `-ApiBaseUri 'https://api.SUBDOMAIN.ghe.com'` to `Connect-MtGitHub`. Keep the private configuration and resulting reports out of source control. Credentials do not belong in `GitHubDeletionPolicy`.
 
+After changing GitHub access, start a new `Invoke-Maester` run to collect fresh evidence. If you use `Invoke-MtTest`, disconnect with `Disconnect-MtGitHub` and reconnect with `Connect-MtGitHub` before running the checks again. Repeating `Invoke-MtTest` in the same session reloads the approval configuration but reuses cached GitHub evidence.
+
 ## When member deletion is disabled
 
 When the relevant setting is `false`, Maester reads the owners with `GET /orgs/{org}/members?role=admin`. Every current owner must be in `ApprovedOwnerIds`, and the number of owners must be within `MaximumOrganizationOwners`.
