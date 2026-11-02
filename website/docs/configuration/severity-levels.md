@@ -1,6 +1,7 @@
 ---
 title: Severity Levels
-sidebar_position: 3
+sidebar:
+  order: 3
 ---
 
 # Severity Levels for Maester Tests
@@ -114,7 +115,7 @@ For a test that produces one result per item (such as `MT.1024`), a row on an it
 To find the ID of a test you want to customize:
 
 1. Run `Get-MtTest | Format-Table Id, Title, Severity` (no tenant connection needed)
-2. Check the [Tests Overview](/docs/tests/) documentation
+2. Check the [Tests Overview](/docs/tests) documentation
 3. Look at the `Id` column of a Maester report
 
 ### Defining Severity Levels for Custom Tests
@@ -143,7 +144,7 @@ If a severity level is defined in multiple places, the following precedence orde
 2. The test's own severity: the `Severity` in its `[MaesterTest]` attribute, or the `Severity:` tag of a Pester-format test
 3. A severity the test reports at run time (used by tests whose severity depends on what they find)
 
-:::note Upgrading from 2.x
+:::note[Upgrading from 2.x]
 Maester 2.x shipped a `maester-config.json` with a severity row for every test. If you still have a copy of that file, its rows override the severities the tests now carry, including corrections made in later releases. Keep only the rows you changed.
 :::
 

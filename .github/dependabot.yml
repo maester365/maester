@@ -41,27 +41,31 @@ updates:
     commit-message:
       prefix: "chore(deps): "
     ignore:
-      # @docusaurus/theme-mermaid declares layout-elk ^0.1.9 as a peer, which allows
-      # only 0.1.x, so 0.2.x (counted as a minor update) and 1.x break npm ci.
-      # Lift once Docusaurus widens the peer range.
-      - dependency-name: "@mermaid-js/layout-elk"
-        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # Starlight declares the Astro version it supports as a peer: update the two together, by hand.
+      - dependency-name: "astro"
+        update-types: ["version-update:semver-major"]
+      # The HyperFrames player publishes several times a day. Update it on purpose, after testing the explainers.
+      - dependency-name: "@hyperframes/player"
     groups:
-      docusaurus:
+      astro:
         patterns:
-          - "@docusaurus/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-*"
       icons:
         patterns:
-          - "@fortawesome/*"
           - "@iconify/*"
+          - "@iconify-json/*"
       minor-and-patch:
         update-types:
           - "minor"
           - "patch"
         exclude-patterns:
-          - "@docusaurus/*"
-          - "@fortawesome/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-*"
           - "@iconify/*"
+          - "@iconify-json/*"
           - "react"
           - "react-dom"
 

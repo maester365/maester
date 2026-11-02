@@ -148,10 +148,12 @@ function ConvertTo-MtZtaInstance {
             $id = $unique
             $tags = @('ZeroTrust') + @(@($row.TestPillar) | Where-Object { $_ } | ForEach-Object { "ZeroTrust.$_" })
             $instance = [ordered]@{
-                Id    = $id
-                Title = ([string]$row.TestTitle -replace '\s+', ' ').Trim()
-                Tag   = $tags
-                Data  = $row
+                Id     = $id
+                Title  = ([string]$row.TestTitle -replace '\s+', ' ').Trim()
+                Tag    = $tags
+                # Shown by the report, which groups the pack's results by pillar and category.
+                Fields = [ordered]@{ Pillar = @($row.TestPillar | Where-Object { $_ }); Category = [string]$row.TestCategory }
+                Data   = $row
             }
             if ($severity.ContainsKey([string]$row.TestRisk)) { $instance.Severity = $severity[[string]$row.TestRisk] }
             [pscustomobject]$instance

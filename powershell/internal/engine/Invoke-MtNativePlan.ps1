@@ -571,10 +571,49 @@ function ConvertTo-MtNativeRow {
         Diagnostics     = $diagnostics
         # The pack a test comes from (Maester Packs design, section 5.5); null for every other test.
         Package         = if ($test.PSObject.Properties['Package']) { $test.Package } else { $null }
+        # Facts a family instance adds about itself, such as the pillar of a Zero Trust Assessment result.
+        Fields          = if ($isInstance) { ConvertTo-MtInstanceField (Get-MtInstanceValue -Instance $Instance -Name 'Fields') } else { $null }
+        # The test whose function a benchmark shim returns: the two report the same setting.
+        ShimOf          = if ($test.PSObject.Properties['ShimOf']) { $test.ShimOf } else { $null }
     }
     $attributes = Get-MtRowAttribute -Test $test
     foreach ($name in $attributes.Keys) { $row[$name] = $attributes[$name] }
     [pscustomobject]$row
+}
+
+function ConvertTo-MtInstanceField {
+    <#
+    .SYNOPSIS
+    Returns the Fields of a family instance as an object of names to strings or string arrays, or $null.
+
+    .DESCRIPTION
+    An instance source may return Fields as a hashtable or an object. Only values a report can show are kept:
+    a string, a number, a boolean or an array of those, written as text. Anything else, and an empty value,
+    is left out, so an instance cannot carry its raw data into the result through Fields.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Position = 0)] [AllowNull()] [object] $Fields
+    )
+
+    if ($null -eq $Fields) { return $null }
+    $pairs = if ($Fields -is [System.Collections.IDictionary]) { @($Fields.GetEnumerator() | ForEach-Object { [pscustomobject]@{ Name = [string]$_.Key; Value = $_.Value } }) }
+    else { @($Fields.PSObject.Properties | ForEach-Object { [pscustomobject]@{ Name = $_.Name; Value = $_.Value } }) }
+    $simple = { param($v) $v -is [string] -or $v -is [bool] -or $v -is [int] -or $v -is [long] -or $v -is [double] -or $v -is [decimal] }
+    $out = [ordered]@{}
+    foreach ($pair in $pairs) {
+        if (-not $pair.Name) { continue }
+        $value = $pair.Value
+        if ($value -is [System.Collections.IEnumerable] -and $value -isnot [string]) {
+            $items = @($value | Where-Object { $null -ne $_ -and (& $simple $_) -and "$_" -ne '' } | ForEach-Object { [string]$_ })
+            if ($items.Count -gt 0) { $out[$pair.Name] = $items }
+        } elseif ($null -ne $value -and (& $simple $value) -and "$value" -ne '') {
+            $out[$pair.Name] = [string]$value
+        }
+    }
+    if ($out.Count -eq 0) { return $null }
+    [pscustomobject]$out
 }
 
 function Get-MtRowAttribute {

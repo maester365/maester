@@ -1,29 +1,29 @@
 
 import React from "react";
 import { Icon } from "@/components/ui/report";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
+import { CircleCheck, TriangleAlert, Archive, CircleAlert, FastForward, SearchCheck } from "lucide-react"
 
 export default function StatusLabelSm(props) {
 
     return (
         <>
             {props.Result === "Passed" &&
-                <Icon icon={CheckCircleIcon} color="emerald" size="sm" />
+                <Icon icon={CircleCheck} color="emerald" size="sm" />
             }
             {props.Result === "Failed" &&
-                <Icon icon={ExclamationTriangleIcon} color="rose" size="sm" />
+                <Icon icon={TriangleAlert} color="rose" size="sm" />
             }
             {props.Result === "Skipped" &&
-                <Icon icon={ForwardIcon} color="yellow" size="sm" />
+                <Icon icon={FastForward} color="yellow" size="sm" />
             }
             {props.Result === "Error" &&
-                <Icon icon={ExclamationCircleIcon} color="orange" size="sm" />
+                <Icon icon={CircleAlert} color="orange" size="sm" />
             }
             {props.Result === "Investigate" &&
-                <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="sm" />
+                <Icon icon={SearchCheck} color="purple" size="sm" />
             }
             {(props.Result === "NotRun" || props.Result === "Not tested") &&
-                <Icon icon={ArchiveBoxIcon} size="md" color="gray" />
+                <Icon icon={Archive} size="md" color="gray" />
             }
         </>
     );

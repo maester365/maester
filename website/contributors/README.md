@@ -33,7 +33,7 @@ Attribution works with zero setup, but you can enrich your profile card:
   company, website, and social links (see the header comment for the format).
 - **Profile picture**: your GitHub avatar is used by default. To use a different
   photo, drop `<your-github-handle>.png` (or `.jpg`) into
-  `website/static/img/contributors/`.
+  `website/public/img/contributors/`.
 - Commit with an email GitHub can't map to your account (e.g. it isn't added to
   your GitHub profile)? Add it under `emails:` in your entry as a manual
   override — but in almost all cases matching just works without it.

@@ -1,0 +1,12 @@
+---
+import styles from "../styles.module.css";
+const root = (cls: string) => `${styles.root} ${cls}`;
+const { eyebrow, title, lede, facts = [] } = Astro.props;
+---
+
+<div class={root(styles.hero)}>
+	<div class={styles.eyebrow}>{eyebrow}</div>
+	<div class={styles.heroTitle}>{title}</div>
+	<p class={styles.lede}>{lede}</p>
+	<div class={styles.facts}>{facts.map(([value, label]: [string, string]) => <div class={styles.fact}><b>{value}</b><span>{label}</span></div>)}</div>
+</div>

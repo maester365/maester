@@ -1,7 +1,8 @@
 ---
 title: Zero Trust Assessment pack
-sidebar_position: 4
 description: Run Microsoft's Zero Trust Assessment from Maester and see each of its results in the Maester report.
+sidebar:
+  order: 4
 ---
 
 # Zero Trust Assessment pack

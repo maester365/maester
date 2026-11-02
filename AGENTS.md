@@ -4,7 +4,7 @@ Maester is a PowerShell framework for monitoring Microsoft 365 security
 configuration, with its own test engine. Pester is used only for the module's unit tests
 and to run users' Pester-format custom tests. Requires PowerShell 7.4+. Monorepo: `powershell/` (module source),
 `tests/` (security checks shipped to users), `src/Maester.Engine/` (C# engine core,
-built DLL committed in `powershell/lib/`), `build/`, `website/` (Docusaurus,
+built DLL committed in `powershell/lib/`), `build/`, `website/` (Astro + Starlight,
 maester.dev), `report/` (React app that builds the HTML report template).
 
 ## Two unrelated test trees — don't mix them
@@ -34,7 +34,8 @@ maester.dev), `report/` (React app that builds the HTML report template).
 ## Hard rules
 
 - Generated content — regenerate, never hand-edit: `website/docs/commands/`,
-  `website/docs/tests/`, `website/versioned_docs/`, everything under
+  `website/src/data/test-catalog.json` (the test pages are built from it),
+  `website/src/data/versions.json`, `website/versioned_docs/` (the frozen 2.x docs), everything under
   `powershell/internal/generated/`, and the native `tests/eidsca/Test.EIDSCA.*` and
   `tests/orca/Test.ORCA.*` files the generators in `build/eidsca/` and `build/orca/`
   write. Edit the PowerShell source, comment-based help or generator templates and let
@@ -65,7 +66,7 @@ maester.dev), `report/` (React app that builds the HTML report template).
 ## Repository layout — where files go
 
 Full rules and reasoning: `website/docs/contributing.md` ("Repository layout"), published at
-https://maester.dev/docs/next/contributing#repository-layout. `powershell/tests/general/RepositoryLayout.Tests.ps1`
+https://maester.dev/docs/contributing#repository-layout. `powershell/tests/general/RepositoryLayout.Tests.ps1`
 enforces them. When writing or reviewing a change, check every added, moved or renamed file:
 
 - Folder names under `tests/`, `powershell/` and `build/` are lowercase kebab-case

@@ -1,7 +1,8 @@
 ---
 title: Overview
-sidebar_label: Overview
-sidebar_position: 1
+sidebar:
+  label: Overview
+  order: 1
 ---
 
 # Multi-Tenant Reports

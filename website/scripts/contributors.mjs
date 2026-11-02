@@ -21,7 +21,7 @@ const repoRoot = join(websiteRoot, "..");
 const registryPath = join(websiteRoot, "contributors", "contributors.yml");
 const emailAliasesPath = join(websiteRoot, "contributors", "email-aliases.json");
 const snapshotPath = join(websiteRoot, "src", "data", "contributors.json");
-const avatarDir = join(websiteRoot, "static", "img", "contributors");
+const avatarDir = join(websiteRoot, "public", "img", "contributors");
 
 const botPattern = /\[bot\]|copilot|github[- ]actions?|actions-user|dependabot|web-flow|snyk/i;
 const noreplyPattern = /^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$/i;

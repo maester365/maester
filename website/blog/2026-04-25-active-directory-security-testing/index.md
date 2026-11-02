@@ -1,5 +1,5 @@
 ---
-title: "Introducing Active Directory Security Testing in Maester 🏰"
+title: "Introducing Active Directory Security Testing in Maester"
 description: Maester now supports comprehensive Active Directory security testing with 300+ new tests covering users, groups, computers, GPOs, DNS, trusts, and more.
 slug: active-directory-security-testing
 authors: [maesterteam]
@@ -7,7 +7,6 @@ tags: [maester, activedirectory, security, ad, release]
 image: ./img/card.png
 card_headline: "*Active Directory* security testing"
 card_label: New tests
-hide_table_of_contents: false
 date: 2026-04-25
 ---
 
@@ -15,7 +14,7 @@ date: 2026-04-25
 
 We're thrilled to announce a major expansion of Maester's security testing capabilities—**comprehensive Active Directory (AD) security testing** is now available! This release adds **300+ new tests** across 20 categories, giving you unprecedented visibility into your on-premises and hybrid AD infrastructure.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ---
 
