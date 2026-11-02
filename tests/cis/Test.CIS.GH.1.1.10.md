@@ -1,50 +1,38 @@
-1.1.10 (L1) Ensure open Git branches are up to date before they can be merged into code base
+Pull-request branches must be up to date before changes can be merged.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0. Assessment Status: Manual.
-Source: section 1.1.10, physical PDF pages 37–38; printed pages 36–37.
+Requiring current branch contents reduces the chance that an outdated change reintroduces a weakness removed from the codebase. Developers may need to update their branches and rerun checks before merging.
 
-#### Rationale
+CIS GitHub Benchmark v1.2.0 lists section 1.1.10 as a Manual assessment. This test checks the declared main branches using `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks` with REST version `2026-03-10`. The benchmark source is section 1.1.10, physical PDF pages 37–38; printed pages 36–37.
 
-Requiring current branch contents before merging reduces the chance that an outdated code change reintroduces a removed weakness into the software supply chain.
+The test passes for a branch when `strict` is Boolean `true` and the valid `contexts` and `checks` arrays contain at least one required check between them. Boolean `false` fails when alternative protection has been ruled out. Missing or invalid values produce **Skipped**. Context names must be nonempty strings; check entries need a nonempty context and a numeric or null application ID.
 
-#### Assessment and scope
+When `strict` is `true` and both valid arrays are empty, the result is **Skipped**: the returned configuration does not establish that branch freshness is enforced. CIS requires the status-check and up-to-date settings but does not specify a minimum selected-check count. Empty arrays in this combination establish neither a pass nor a failure. [CIS.GH.1.1.9](https://maester.dev/docs/tests/CIS.GH.1.1.9) separately checks whether predefined checks are required.
 
-This native check assesses explicitly identified main branches. Configure the authoritative repository inventory and applicable branch declarations in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A successful connection or visible repository list does not establish complete scope.
+A merge queue is not automatically treated as equivalent to the up-to-date setting. The test does not define an additional branch-freshness policy.
 
-Read-only evidence comes from `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks`, explicitly using REST version `2026-03-10`. The decisive evidence is the status-check policy and its Boolean `strict` setting. Required values must have their documented types. Both status-check representations (`contexts` and `checks`) are validated where used; null application IDs are allowed by the schema. With a valid nonempty check set, `strict=true` satisfies this configuration audit. `strict=false` is nonconforming, subject to unresolved alternative-ruleset enforcement.
+Configure the repositories and branch names in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A pass requires complete coverage of the declared applicable repositories and branches. A confirmed violation can fail the check while other coverage remains incomplete; the report keeps those gaps visible. A complete declaration with justified exclusions and no applicable repositories produces **NotApplicable**. An empty API response alone does not establish that result.
 
-CIS 1.1.10 requires the status-check and up-to-date settings but specifies no minimum selected-check count. When `strict=true` and both valid arrays are empty, freshness enforcement is not established for that combination: the branch is explicitly indeterminate (`Skipped` / `TestSkipped`) with a custom explanation. Empty arrays alone establish neither compliance nor a violation. CIS 1.1.9 separately assesses predefined required checks.
+A 404 response alone does not prove a branch is unprotected, because GitHub can hide inaccessible resources with that status. Where needed, Maester reads the branch and applicable active rules before deciding the result. Ruleset-only or possibly equivalent protection remains **Skipped** for review. A conforming classic setting can pass without requiring empty bypass lists. Required request, JSON parsing, or collection failures produce **Error**, even when earlier findings are available.
 
-A merge queue is not automatically treated as equivalent to the strict-update checkbox. This check does not invent an organization freshness policy.
+The test reads the current configuration and keeps its original UTC collection interval. Paginated reads can span concurrent changes. It checks the fields needed for this assessment, rather than the entire response schema, historical merges, or enforcement against every actor. It does not change repository settings.
 
 #### Permissions required
 
-Repository discovery uses Metadata read. Classic protection and status-policy reads use repository Administration read; branch enumeration/diagnostics use Contents read. These operations support fine-grained PATs and GitHub App user/installation tokens at the API level. A classic user PAT with `repo` is the broad nonpublic path, constrained by the caller's actual access. Enterprise ownership alone does not prove repository access. Maester's current connection requires a user identity and active organization membership; this check does not add installation-token connection support.
+Use a classic PAT with `repo` and an account with access to the repositories being assessed. Token scopes and enterprise ownership do not grant repository access. With fine-grained tokens, repository discovery uses **Metadata: read**, classic protection reads use **Administration: read**, and branch listing or diagnostics use **Contents: read**.
 
-#### Impact
-
-Developers may need to update a pull-request branch and rerun its checks before merging. Coordinate this workflow across repository owners.
+The API operations support fine-grained PATs and GitHub App user or installation tokens. Maester's connection requires a user identity and active organization membership, so it does not support installation tokens. For GHE.com, use its dedicated API host and a token for that host. The same missing-data rules apply to GHEC, Enterprise Managed Users, and GHE.com.
 
 #### Remediation action
 
-1. Identify every in-use repository and the branches covered by this recommendation. Reconcile public, internal, private, archived, and disabled repositories; do not exclude a repository just because it is archived.
-2. On [GitHub](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule), open the repository, then **Settings** > **Branches**. Use your deployment's host when working on GHE.com.
-3. Edit the applicable classic branch protection rule, or add one covering the required branch. Select **Require status checks to pass before merging** and **Require branches to be up to date before merging**.
-4. Save the rule. Coordinate developer rollout and repeat the read-only assessment with the complete scope.
-
-#### Result interpretation and limitations
-
-Passed means the named CIS configuration audit is satisfied for the complete declared applicable population. A confirmed violation produces Failed even if other evidence is missing, with incomplete coverage disclosed. A required collection/execution error takes precedence and remains Error. Missing/null/unusable evidence and unresolved alternative enforcement produce an explicit indeterminate Skipped result. NotApplicable requires a complete, valid applicability inventory with justified exclusions; empty API output alone is insufficient.
-
-Conforming classic evidence does not depend on additional ruleset bypass lists. Ruleset-only or potentially compensating alternatives remain indeterminate; the test does not calculate ruleset equivalence or certify enforcement against every actor. Separately returned bypass information is context, not an invented empty-list requirement.
-
-Metadata collection distinguishes valid empty arrays from null/empty bodies and invalid collection items before aggregation. This is limited structural and decisive-field validation, not full raw-response schema validation. Evidence retains its original UTC collection interval; paginated reads are not atomic snapshots.
-
-Standard GHEC, EMU, and GHE.com use repository-level evidence where available. GHE.com requires authenticated requests to its dedicated API host. Unsupported or unavailable evidence does not establish compliance. No tenant settings are changed by this assessment.
+1. Review the in-use repository inventory and required branch declarations. Account for public, internal, private, archived, and disabled repositories; archived status alone is not a reason to exclude one.
+2. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open the repository, then **Settings** > **Branches**.
+3. Edit the applicable classic branch protection rule, or add one covering the required branches. Select **Require status checks to pass before merging** and **Require branches to be up to date before merging**.
+4. Save the rule, coordinate the change with affected contributors, and run the test again with the reviewed scope.
 
 #### Related links
 
 * [CIS GitHub Benchmark](https://www.cisecurity.org/benchmark/github)
+* [GitHub: Managing a branch protection rule](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule)
 * [GitHub protection REST operations](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branch-protection?apiVersion=2026-03-10)
 * [GitHub protected branch behavior](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 * [GitHub branch enumeration](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branches?apiVersion=2026-03-10#list-branches)

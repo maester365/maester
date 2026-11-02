@@ -23,7 +23,7 @@
         Area = 'external-access',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'High',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'T1114.002',
         Control = 'cis-github:1.3.10',

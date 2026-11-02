@@ -1,34 +1,25 @@
 ---
 title: GitHub CIS configuration
-description: Explicit assessment targets, repository applicability, and evidence requirements for the GitHub CIS checks.
+description: Configure the organization, enterprise, repositories, and branches assessed by the GitHub CIS checks.
 ---
 
 # GitHub CIS configuration
 
-The GitHub CIS checks collect read-only evidence for the GitHub configuration audits in CIS GitHub Benchmark
-v1.2.0. CIS marks these recommendations as Manual. A Passed result means the implemented configuration audit
-is satisfied for its stated target and complete applicable population; it does not certify the whole benchmark,
-historical behavior, or every possible enforcement path.
+The GitHub CIS checks read the settings and access needed for their recommendations in CIS GitHub Benchmark v1.2.0. CIS lists these recommendations as Manual assessments. A pass means the settings checked by that test meet its requirements for the complete applicable scope. It does not replace the rest of the benchmark review or establish historical behavior.
 
-Connect with `Connect-MtGitHub` before running the checks. Connection success establishes a user identity and
-active organization membership. It does not prove complete repository visibility, enterprise ownership, or access
-to every policy field. Use host-appropriate credentials on standard GitHub Enterprise Cloud, EMU, or GHE.com;
-GitHub Enterprise Server and GitHub AE are not supported by this connection.
+Connect with `Connect-MtGitHub` before running the checks. A successful connection confirms a user identity and active organization membership. The account still needs access to the repositories, enterprise, and policy fields each check reads. Use credentials for the connected host on GitHub Enterprise Cloud, Enterprise Managed Users (EMU), or GHE.com. This connection does not support GitHub Enterprise Server or GitHub AE.
 
-## Assessment settings
+## Configure the assessment
 
-Set the following in `GlobalSettings` in the [run configuration](./run-configuration.md). Defaults deliberately
-leave the new assessment context unconfirmed.
+Add these values to `GlobalSettings` in your [run configuration](./run-configuration.md):
 
 | Setting | Default | Meaning |
 | --- | --- | --- |
-| `GitHubAccountModel` | `Unknown` | `Unknown`, `PersonalAccounts`, or `EnterpriseManagedUsers`. Used by the two organization MFA checks. |
-| `GitHubEnterprise` | empty string | Explicit enterprise slug used for organization verification applicability and the independently targeted enterprise notification check. |
-| `GitHubCisRepositoryScope` | empty object | Authoritative organization repository applicability inventory and the branch classifications needed by the selected branch checks. |
+| `GitHubAccountModel` | `Unknown` | Use `PersonalAccounts` or `EnterpriseManagedUsers` for the organization's account model. The two organization MFA checks use this value. |
+| `GitHubEnterprise` | empty string | The enterprise slug used to establish organization verification scope and to select the enterprise notification setting. |
+| `GitHubCisRepositoryScope` | empty object | The organization repository inventory, whether each repository is in use, and the branch names each check needs. |
 
-The following is an illustrative configuration, not a discovered or recommended inventory. Replace every
-repository ID and classification with the organization's actual authoritative scope. Do not infer production/main
-or long-standing status from a convenient branch name.
+The example uses synthetic IDs and branch classifications. Replace them with the organization's reviewed inventory. A branch name alone does not establish that it is a main, production, or long-standing branch.
 
 ```json
 {
@@ -57,140 +48,94 @@ or long-standing status from a convenient branch name.
 }
 ```
 
-`Complete` must be a Boolean. It is an assessor's applicability declaration, not evidence that an API token can
-see everything. Reconcile it with an authoritative repository inventory. Maester reads every page of the connected
-organization's repository listing and compares repository IDs with the declaration. Public, internal, private,
-archived, and disabled repositories remain accounted for. Archived status alone does not justify exclusion.
+### Repositories and completeness
 
-Each repository needs a numeric `Id` and Boolean `InUse`. Excluded repositories need a nonempty
-`ExclusionReason`. Every declared repository must be accounted for and every returned repository must be
-classified. A mismatch or incomplete visibility prevents a complete aggregate pass. New API evidence must identify
-the repository; names are not substituted for stable repository IDs.
+`Organization` must exactly match the connected organization. Each repository needs a positive numeric `Id` and Boolean `InUse`. Use REST database IDs, not names or GraphQL node IDs. These numeric IDs differ from the string IDs used by [GitHub deletion approvals](./github-deletion-policy.md).
 
-### Control-specific branch declarations
+Set `Complete` to `true` only after comparing the declaration with an authoritative organization inventory. It is your confirmation of scope; it does not establish that the token can see every repository. Maester reads every page of the organization's repository list and compares its IDs with the declaration.
 
-| Checks | Additional required population |
+Account for public, internal, private, archived, and disabled repositories. Every returned repository needs a classification, and every declared repository must be accounted for. A repository with `InUse: false` needs a nonempty `ExclusionReason`. Archived status alone does not justify exclusion. Missing repositories, unclassified repositories, or incomplete visibility prevent an overall pass.
+
+To test one repository in an organization with several repositories, declare that repository's real ID and branch names and leave `Complete: false`. Maester can assess it and report a confirmed failure. Conforming findings remain incomplete at the organization level while other repositories are unclassified. Classify all repositories before expecting a complete organization pass; exclude a repository only when there is a reviewed reason it does not apply.
+
+### Branch declarations
+
+| Checks | Branches assessed |
 | --- | --- |
-| `CIS.GH.1.1.4`, `1.1.7`, `1.1.9`, `1.1.10`, `1.1.11`, `1.1.14`, `1.1.17` | Explicit nonempty `MainBranches` for each in-use repository. |
-| `CIS.GH.1.1.12` | Every existing branch from every branch-list page, without a protected filter. No main-branch classification is required. |
-| `CIS.GH.1.1.16` | `MainBranches` and explicit `LongStandingBranches`; use an empty array only when the authoritative classification contains no additional trunk/long-standing branches. |
-| `CIS.GH.1.1.20` | The API's actual default branch plus explicitly identified main branches. |
+| `CIS.GH.1.1.4`, `1.1.7`, `1.1.9`, `1.1.10`, `1.1.11`, `1.1.14`, `1.1.17` | The nonempty `MainBranches` list for each in-use repository. |
+| `CIS.GH.1.1.12` | Every existing branch from every page of the branch list, without filtering for protection. `MainBranches` is not required. |
+| `CIS.GH.1.1.16` | `MainBranches` and `LongStandingBranches`. Supply an empty long-standing array only when there are no additional maintained branches. |
+| `CIS.GH.1.1.20` | The API's actual default branch and the declared main branches. |
 
-Shared collectors reuse reads without making every check require every endpoint or scope field. For example,
-signature-policy failure does not invalidate independently sufficient classic-policy evidence, and an omitted
-long-standing declaration does not block checks that do not use it.
+Long-standing branches are branches your team maintains over time, such as an integration branch or a supported release line. List additional maintained branches beyond `MainBranches`, using their actual names. An old, abandoned feature branch does not qualify merely because of its age. REST requests use concrete branch names, not wildcard patterns.
 
-Missing/default context and incomplete declarations are indeterminate. Provided malformed types and contradictory
-target identities are configuration errors. Only fields relevant to the selected assessment are prerequisites.
-Configuration layers follow the normal resolver: objects merge recursively and arrays replace, including an empty
-array clearing a lower layer. Each invocation uses its resolved scope; previous verdicts or classifications are not
-cached.
+Each check requires only the declarations and API reads it uses. For example, omitting `LongStandingBranches` does not block checks that assess only main branches, and a failed signature-policy read does not invalidate sufficient evidence for another setting.
+
+Missing settings and incomplete declarations produce an indeterminate result. Supplied values with invalid types or contradictory organization identities produce **Error**. Configuration objects merge recursively, while arrays replace the earlier array, including when the new array is empty. Each run uses its resolved declaration; Maester does not cache classifications or verdicts.
 
 ## Organization MFA
 
-`CIS.GH.1.3.4` and `CIS.GH.1.3.5` remain distinct recommendations even though they read the same Boolean
-`two_factor_requirement_enabled` from the connected organization. Personal-account organizations can be assessed
-from that policy. `Unknown` remains indeterminate. EMU, including GHE.com, depends on external identity-provider
-MFA evidence and remains indeterminate in these GitHub-only checks.
+`CIS.GH.1.3.4` and `CIS.GH.1.3.5` are separate CIS recommendations that check the same organization setting, `two_factor_requirement_enabled`. For `PersonalAccounts`, Boolean `true` passes and Boolean `false` fails. `Unknown` produces **Skipped**.
 
-Provisioning, SSO presence, individual enrollment, or a successful connection does not prove that policy. A result
-for one organization does not assess every organization in an enterprise. Full organization settings are documented
-for an organization owner with a classic PAT/OAuth token carrying `admin:org`; general endpoint support for other
-token types does not guarantee that every owner-only field is returned.
+EMU, including GHE.com, uses the external identity provider for MFA. These GitHub-only checks remain **Skipped** for that account model, even when GitHub returns its organization 2FA setting. Provisioning, SSO, individual enrollment, and a successful connection do not establish the IdP's MFA policy. One organization's result does not assess every organization in an enterprise.
+
+Use an organization owner with a classic PAT or OAuth token carrying `admin:org` to read full organization settings. Support for other token types at the endpoint does not guarantee access to every owner-only field.
 
 ## Organization verification and enterprise notifications
 
-`CIS.GH.1.3.9` assesses the connected organization's verified profile state through GraphQL `Organization.isVerified`.
-It first requires positive association with the explicitly selected enterprise, using the organization node ID in
-that enterprise's organization connection. The lookup may stop when it finds a valid positive match. A missing
-match is indeterminate, not proof that no enterprise relationship exists. It does not request or require
-`ownerInfo`, persist a DNS TXT requirement, count verified domains, or claim enterprise-wide organization coverage.
-Use supported authentication with access to the returned organization and association fields; do not assume
-undocumented field-specific fine-grained permissions.
+`CIS.GH.1.3.9` reads the connected organization's `isVerified` profile value through GraphQL. Before assessing it, Maester confirms that the same organization node ID appears in the enterprise selected by `GitHubEnterprise`. It reads later pages as needed and can stop at a valid match. A missing or inaccessible match produces **Skipped**; it does not establish that the organization has no enterprise relationship.
 
-`CIS.GH.1.3.10` independently targets the enterprise named by `GitHubEnterprise`. Its evidence identifies that
-enterprise and API host, without attributing its policy to the connected organization. The scalar
-`Enterprise.ownerInfo.notificationDeliveryRestrictionEnabledSetting` requires enterprise-owner visibility. GitHub
-documents enterprise owners' classic PATs with `read:enterprise` or `admin:enterprise`; prefer the read scope where
-sufficient. Organization connection probes do not establish enterprise access. No organization-association query
-is needed for this independent target.
+That check needs access to the organization and enterprise association fields. It does not request `ownerInfo` or assume that an enterprise-owner role or undocumented fine-grained permission is required. It does not count verified domains, require a verification DNS TXT record to remain, or assess every organization in the enterprise.
 
-`ENABLED` satisfies the named enterprise-setting audit and `DISABLED` fails it. Missing owner information,
-inaccessible fields, or unknown values are indeterminate. GitHub documents an organization exception when no
-eligible approved or verified domains remain. A Passed enterprise scalar does not establish actual delivery
-behavior for every organization or message.
+`CIS.GH.1.3.10` reads `Enterprise.ownerInfo.notificationDeliveryRestrictionEnabledSetting` for the enterprise selected by `GitHubEnterprise`. The result identifies that enterprise and API host. This enterprise-setting check does not require the connected organization to belong to the enterprise or attribute the policy to that organization.
 
-## Branch configuration and alternative enforcement
+Use an enterprise owner's classic PAT with `read:enterprise` or `admin:enterprise` for `ownerInfo`; prefer the read scope where sufficient. Scopes do not grant enterprise ownership, and the organization connection checks do not establish enterprise access.
 
-The branch checks assess the named classic protection settings in the benchmark. Valid conforming classic
-evidence does not depend on reading additional rulesets' bypass lists. Administrator enforcement is assessed by
-its own checkbox recommendation; no check invents a requirement that every bypass list be empty or every actor
-be unable to bypass every policy.
+`ENABLED` passes and `DISABLED` fails. Missing owner information, inaccessible fields, and unrecognized values produce **Skipped**. GitHub documents that an organization's restriction can become disabled when no eligible approved or verified domains remain. The enterprise setting does not prove that every organization or message is restricted.
 
-For negative or ambiguous classic evidence, applicable active rules are read where needed to avoid mistaking
-alternative protection for absence. Ruleset-only or potentially compensating enforcement remains indeterminate;
-there is no ruleset-equivalence scoring engine. Unrelated rules supply no compliance credit. Additional rulesets
-cannot weaken an already applicable conforming classic rule. Branch names are concrete, not wildcard patterns
-sent to REST endpoints.
+## Branch protection and rulesets
 
-Required status checks use GitHub's documented status semantics, including acceptable successful, skipped, or
-neutral conclusions. Required-signature checks assess the current native policy across every existing branch,
-not historical signatures or author trust. Main/default protection does not invent a minimum bundle of settings;
-other recommendations assess the individual policies.
+The branch checks read the classic branch protection settings named by CIS. A conforming classic setting can pass without reading extra ruleset bypass lists. Administrator enforcement has its own check. The tests do not require every bypass list to be empty or claim that every actor is unable to bypass a policy.
 
-## Results, evidence intervals, and caching
+When classic settings are nonconforming or ambiguous, Maester reads applicable active rules where needed to determine whether another policy may provide protection. Ruleset-only or possibly equivalent protection remains **Skipped** for review. The checks do not calculate ruleset equivalence. Unrelated rules do not establish compliance, and an additional ruleset does not weaken an already applicable conforming classic rule.
 
-| Evidence | Result |
+The status-check tests use GitHub's documented successful, skipped, and neutral conclusions. The signed-commit test reads the current requirement for every existing branch; it does not verify historical signatures or establish author trust. The default-branch test requires an applicable classic protection rule without choosing a minimum set of settings for it. Other recommendations check the individual settings.
+
+## Understand the results
+
+| Result | Meaning |
 | --- | --- |
-| Complete applicable population and every required predicate satisfied | Passed |
-| Confirmed violation, with no required execution error | Failed; additional missing evidence remains disclosed as incomplete coverage |
-| Missing/null/unusable required evidence or unresolved alternative enforcement, without a confirmed violation | Custom Skipped with an explicit indeterminate reason |
-| Required request, parsing, or collection execution error, including alongside a confirmed violation | Error; retained findings do not imply complete coverage |
-| Complete valid applicability evidence with justified exclusions leaving no applicable objects | NotApplicable |
+| `Passed` | Every required setting is satisfied across the complete applicable scope. |
+| `Failed` | Returned evidence confirms a violation and no required execution error occurred. Any additional coverage gaps remain visible. |
+| `Skipped` | Required evidence is missing, null, invalid, or unavailable, or alternative protection remains unresolved, with no confirmed violation. The report explains what could not be checked. |
+| `Error` | Invalid configuration or a required request, JSON parsing, or collection failure stops the assessment. Earlier findings remain available but do not establish a complete result. |
+| `NotApplicable` | A complete, valid declaration with justified exclusions leaves no applicable repositories. |
 
-A 404 from a protection/signature endpoint may be expected for unavailable protection and is contextualized. It
-is not proof that the setting is disabled: GitHub also masks inaccessible private resources with 404. Other
-request failures are not silently converted into unprotected branches. An unexplained empty population cannot
-become Passed or NotApplicable.
+A 404 from a protection or signature endpoint alone does not prove that protection is disabled. GitHub can also hide inaccessible private resources with 404. Maester checks the context before deciding the result. Other request failures are not treated as unprotected branches. An unexplained empty collection cannot establish **Passed** or **NotApplicable**.
 
-New collectors explicitly request REST `2026-03-10`; `GitHubApiVersion` retains its existing `2022-11-28` default
-for legacy callers. GraphQL uses its own schema and the configured `/graphql` host; the REST version header does
-not version it. Pure installation-token connection support is not added merely because an API operation accepts
-installation tokens.
+## Collection and caching
 
-Metadata-bearing REST reads are isolated from body-only legacy cache entries and separate single-page reads from
-full pagination. Collection checks distinguish JSON `[]` from JSON null, blank content, and invalid items before
-aggregation. This is limited structural and decisive-field checking, not complete raw-response schema validation.
-Failed/incomplete collections are not cached as complete evidence.
+New REST reads use version `2026-03-10`. `GitHubApiVersion` keeps its `2022-11-28` default for existing callers. GraphQL uses the connected `/graphql` endpoint and its own schema; the REST version header does not version it. API support for installation tokens does not add installation-token support to Maester's user connection.
 
-Cached evidence does not expire after a fixed time. A cache hit keeps the original UTC collection timestamps;
-it does not mean GitHub was queried again. Each `Invoke-Maester` run clears the shared GitHub cache before
-collecting evidence. Reconnect, disconnect, and module reset also clear it.
+REST reads that include metadata use separate cache entries from body-only reads, and full pagination is separate from a single-page read. Collection checks distinguish JSON `[]` from null, blank content, and invalid items. Maester checks the structure and fields required by each assessment, rather than the whole response schema. Failed or incomplete collections are not cached as complete evidence.
 
-Standalone `Invoke-MtTest` calls reuse the session cache. Waiting does not refresh that evidence. To check
-changed GitHub settings, start a new `Invoke-Maester` run or reconnect. Checks use the cache throughout a run.
+Evidence remains in the session cache without a fixed expiry. A cache hit keeps the original UTC collection interval. Each `Invoke-Maester` run clears the shared GitHub cache before collecting evidence. Reconnect, disconnect, and module reset also clear it. Standalone `Invoke-MtTest` calls reuse that cache; waiting does not refresh it. Start a new run or reconnect to assess changed settings. Checks use the cache throughout a run.
 
-GraphQL cache entries are identified by the endpoint, query, and variables. Maester recomputes applicability
-and results from the current assessment configuration when it reuses evidence. The collection timestamps
-do not mean that all GitHub settings were read at the same instant.
+GraphQL cache entries are identified by the endpoint, query, and variables. Maester recomputes the assessment from the current configuration when it reuses evidence. Collection timestamps do not mean all settings were read at the same instant, and paginated responses can span concurrent changes.
 
-Keep actual assessment configuration, reports, tokens, and benchmark source inputs out of contributions. Synthetic
-fixtures establish the exercised code behavior, not authenticated GHEC/EMU/GHE.com behavior. These checks do not
-write tenant settings or perform remediation.
+### Rate limits
 
-Explicit rate limiting pauses affected outbound requests for the authenticated connection and API host, including
-later pages and checks. Primary REST and GraphQL quotas stay separate; secondary limits stop both APIs. Maester
-honors `Retry-After` and primary reset times, retains completed findings, and reports incomplete collection as Error.
-There is no automatic retry or sleep. Cache reads remain available, but disabling the cache does not bypass the
-pause. Per-run cache clearing preserves the pause. If a primary response has no usable reset time, the connection
-remains blocked until it is replaced; reconnect only when GitHub permits requests again.
+An explicit rate limit pauses affected outbound requests for the authenticated connection and API host, including later pages and checks. REST and GraphQL primary quotas are separate; a secondary limit pauses both APIs. Maester honors `Retry-After` and primary reset times, keeps completed findings, and reports incomplete collection as **Error**.
 
-`GitHubEnterprise` and the entire `GitHubCisRepositoryScope` value are registered as sensitive and appear as
-`<redacted>` in exported result configuration, including JSON and embedded HTML data. The input configuration and
-live settings remain usable. This redaction does not anonymize identifiers or applicability explanations that a
-check legitimately includes in assessment evidence.
+There is no automatic retry or sleep. Cached evidence remains available, but disabling the cache does not bypass the pause. Clearing the cache for a new run also preserves the pause. If a primary response has no usable reset time, the connection stays paused until it is replaced. Reconnect only when GitHub permits requests again.
 
-## Official references
+## Reports and private configuration
+
+`GitHubEnterprise` and the whole `GitHubCisRepositoryScope` value are sensitive settings. Exported configuration, including JSON and the data embedded in HTML, shows them as `<redacted>`. The input file and live settings remain usable by the checks. This does not anonymize identifiers or scope explanations included in the assessment findings.
+
+Keep actual configuration, reports, tokens, and benchmark source files out of contributions. Synthetic fixtures establish the code paths they exercise; they do not establish authenticated behavior for every GHEC, EMU, or GHE.com environment. These checks read configuration and do not change tenant settings.
+
+## Related links
 
 - [Organization REST fields](https://docs.github.com/en/enterprise-cloud@latest/rest/orgs/orgs?apiVersion=2026-03-10#get-an-organization)
 - [Repository inventory](https://docs.github.com/en/enterprise-cloud@latest/rest/repos/repos?apiVersion=2026-03-10#list-organization-repositories)

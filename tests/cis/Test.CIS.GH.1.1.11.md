@@ -1,48 +1,36 @@
-1.1.11 (L2) Ensure all open comments are resolved before allowing code change merging
+Code-review conversations must be resolved before changes can be merged.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0. Assessment Status: Manual.
-Source: section 1.1.11, physical PDF pages 39–40; printed pages 38–39.
+Resolving review conversations helps ensure concerns about a change are addressed before it enters the software supply chain. Authors and reviewers need to resolve those conversations as part of their review workflow.
 
-#### Rationale
+CIS GitHub Benchmark v1.2.0 lists section 1.1.11 as a Manual assessment. This test checks the declared main branches using `GET /repos/{owner}/{repo}/branches/{branch}/protection` with REST version `2026-03-10`. The benchmark source is section 1.1.11, physical PDF pages 39–40; printed pages 38–39.
 
-Resolving review conversations ensures that concerns about a software supply-chain change are acknowledged before merging.
+The test passes for a branch when `required_conversation_resolution.enabled` is Boolean `true`. Boolean `false` fails when alternative protection has been ruled out. A missing, null, or non-Boolean value produces **Skipped**, with a reason explaining what could not be checked.
 
-#### Assessment and scope
+The GitHub setting covers code-review conversations. It does not require every general pull-request comment to be resolved.
 
-This native check assesses explicitly identified main branches. Configure the authoritative repository inventory and applicable branch declarations in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A successful connection or visible repository list does not establish complete scope.
+Configure the repositories and branch names in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A pass requires complete coverage of the declared applicable repositories and branches. A confirmed violation can fail the check while other coverage remains incomplete; the report keeps those gaps visible. A complete declaration with justified exclusions and no applicable repositories produces **NotApplicable**. An empty API response alone does not establish that result.
 
-Read-only evidence comes from `GET /repos/{owner}/{repo}/branches/{branch}/protection`, explicitly using REST version `2026-03-10`. The decisive evidence is `required_conversation_resolution.enabled`, expected to be **true**. Required values must have their documented types. Both status-check representations (`contexts` and `checks`) are validated where used; null application IDs are allowed by the schema.
+A 404 response alone does not prove a branch is unprotected, because GitHub can hide inaccessible resources with that status. Where needed, Maester reads the branch and applicable active rules before deciding the result. Ruleset-only or possibly equivalent protection remains **Skipped** for review. A conforming classic setting can pass without requiring empty bypass lists. Required request, JSON parsing, or collection failures produce **Error**, even when earlier findings are available.
 
-The GitHub setting concerns review conversations on code, not every general pull-request comment.
+The test reads the current configuration and keeps its original UTC collection interval. Paginated reads can span concurrent changes. It checks the fields needed for this assessment, rather than the entire response schema, historical merges, or enforcement against every actor. It does not change repository settings.
 
 #### Permissions required
 
-Repository discovery uses Metadata read. Classic protection and status-policy reads use repository Administration read; branch enumeration/diagnostics use Contents read. These operations support fine-grained PATs and GitHub App user/installation tokens at the API level. A classic user PAT with `repo` is the broad nonpublic path, constrained by the caller's actual access. Enterprise ownership alone does not prove repository access. Maester's current connection requires a user identity and active organization membership; this check does not add installation-token connection support.
+Use a classic PAT with `repo` and an account with access to the repositories being assessed. Token scopes and enterprise ownership do not grant repository access. With fine-grained tokens, repository discovery uses **Metadata: read**, classic protection reads use **Administration: read**, and branch listing or diagnostics use **Contents: read**.
 
-#### Impact
-
-Authors and reviewers must resolve code-review conversations before merging. Coordinate the review workflow with repository owners.
+The API operations support fine-grained PATs and GitHub App user or installation tokens. Maester's connection requires a user identity and active organization membership, so it does not support installation tokens. For GHE.com, use its dedicated API host and a token for that host. The same missing-data rules apply to GHEC, Enterprise Managed Users, and GHE.com.
 
 #### Remediation action
 
-1. Identify every in-use repository and the branches covered by this recommendation. Reconcile public, internal, private, archived, and disabled repositories; do not exclude a repository just because it is archived.
-2. On [GitHub](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule), open the repository, then **Settings** > **Branches**. Use your deployment's host when working on GHE.com.
-3. Edit the applicable classic branch protection rule, or add one covering the required branch. Select **Require conversation resolution before merging**.
-4. Save the rule. Coordinate developer rollout and repeat the read-only assessment with the complete scope.
-
-#### Result interpretation and limitations
-
-Passed means the named CIS configuration audit is satisfied for the complete declared applicable population. A confirmed violation produces Failed even if other evidence is missing, with incomplete coverage disclosed. A required collection/execution error takes precedence and remains Error. Missing/null/unusable evidence and unresolved alternative enforcement produce an explicit indeterminate Skipped result. NotApplicable requires a complete, valid applicability inventory with justified exclusions; empty API output alone is insufficient.
-
-Conforming classic evidence does not depend on additional ruleset bypass lists. Ruleset-only or potentially compensating alternatives remain indeterminate; the test does not calculate ruleset equivalence or certify enforcement against every actor. Separately returned bypass information is context, not an invented empty-list requirement.
-
-Metadata collection distinguishes valid empty arrays from null/empty bodies and invalid collection items before aggregation. This is limited structural and decisive-field validation, not full raw-response schema validation. Evidence retains its original UTC collection interval; paginated reads are not atomic snapshots.
-
-Standard GHEC, EMU, and GHE.com use repository-level evidence where available. GHE.com requires authenticated requests to its dedicated API host. Unsupported or unavailable evidence does not establish compliance. No tenant settings are changed by this assessment.
+1. Review the in-use repository inventory and required branch declarations. Account for public, internal, private, archived, and disabled repositories; archived status alone is not a reason to exclude one.
+2. On the connected GitHub web host (`github.com` or your enterprise's `SUBDOMAIN.ghe.com`), open the repository, then **Settings** > **Branches**.
+3. Edit the applicable classic branch protection rule, or add one covering the required branches. Select **Require conversation resolution before merging**.
+4. Save the rule, coordinate the change with affected contributors, and run the test again with the reviewed scope.
 
 #### Related links
 
 * [CIS GitHub Benchmark](https://www.cisecurity.org/benchmark/github)
+* [GitHub: Managing a branch protection rule](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/managing-a-branch-protection-rule)
 * [GitHub protection REST operations](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branch-protection?apiVersion=2026-03-10)
 * [GitHub protected branch behavior](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 * [GitHub branch enumeration](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branches?apiVersion=2026-03-10#list-branches)

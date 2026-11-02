@@ -1,36 +1,27 @@
-1.3.5 (L2) Ensure the organization is requiring members to use Multi-Factor Authentication (MFA)
+The organization requires members and outside collaborators to use two-factor authentication.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0. Assessment Status: Manual.
-Source: section 1.3.5, physical PDF pages 84–85; printed pages 83–84.
+Organization two-factor authentication reduces the risk that an attacker uses a stolen password to access code through a member or outside collaborator account. Enabling it can remove or block access for people who have not enrolled, so coordinate enrollment, recovery, and a staged rollout with affected contributors.
 
-#### Rationale
+CIS GitHub Benchmark v1.2.0 lists section 1.3.5 as a Manual assessment (physical PDF pages 84–85; printed pages 83–84). This test reads `two_factor_requirement_enabled` from `GET /orgs/{org}` with REST version `2026-03-10`.
 
-Organization two-factor enforcement reduces the risk that stolen passwords allow attackers to use members' cloud accounts to access code.
+For personal-account organizations, the test passes when the field is Boolean `true` and fails when it is Boolean `false`. A missing, null, or non-Boolean value produces **Skipped**, with a reason explaining what could not be checked. Request or JSON parsing failures produce **Error**.
 
-#### Assessment and scope
+Set `GitHubAccountModel` to `PersonalAccounts` only for organizations that use personal accounts. The default `Unknown` produces **Skipped**. Enterprise Managed Users, including GHE.com, use an external identity provider for MFA and remain **Skipped** in this GitHub-only check, even when GitHub returns its organization 2FA field. Provisioning, SSO, individual enrollment, and a successful connection do not establish the IdP's MFA policy.
 
-This check reads `two_factor_requirement_enabled` from `GET /orgs/{org}`, explicitly using REST version `2026-03-10`. Boolean true passes and false fails. Missing, null, or wrongly typed evidence produces an explicit indeterminate Skipped result; request and JSON parsing failures remain Error. It concerns the connected organization, not every organization in an enterprise.
-
-Set `GitHubAccountModel` to `PersonalAccounts` for this GitHub organization-policy audit. `Unknown` is indeterminate. EMU and GHE.com require external identity-provider MFA evidence and remain indeterminate here, including when a GitHub policy field is returned. Identity provisioning, SSO presence, individual 2FA enrollment, and the connection's success are not substitutes for the required policy.
+The test covers the connected organization's current policy. It does not assess every organization in an enterprise or every authentication event. Invalid account-model values or a mismatch between the configured and connected organization produce **Error**. Cached evidence keeps its original collection timestamps; use a new `Invoke-Maester` run or reconnect to assess changed settings.
 
 #### Permissions required
 
-GitHub documents organization-owner access with a classic PAT/OAuth token carrying `admin:org` for full organization details. General fine-grained/App endpoint support does not guarantee owner-only policy fields. Maester's active-membership and Actions probes do not establish that this field is visible. Use host-appropriate supported credentials; the check does not expand authentication scopes or consent.
+Use an organization owner with a classic PAT or OAuth token carrying `admin:org` to read the full organization settings. Support for other token types at the endpoint does not guarantee that GitHub returns the field this test needs. Maester's membership and Actions checks at connection time do not establish that visibility.
 
-#### Impact
-
-Enforcement can remove or block access for members and outside collaborators who have not enrolled. Coordinate enrollment and recovery before enabling the policy; a staged rollout may be needed for many users.
+For GHE.com, use its dedicated API host and a token for that host. The test does not add scopes or introduce another authentication flow.
 
 #### Remediation action
 
-1. Open [your organizations](https://github.com/settings/organizations), choose the organization, and open **Settings** > **Authentication security**. Use your deployment's host as appropriate.
-2. Coordinate 2FA enrollment and review GitHub's [enforcement effects](https://docs.github.com/en/enterprise-cloud@latest/organizations/keeping-your-organization-secure/managing-two-factor-authentication-for-your-organization/requiring-two-factor-authentication-in-your-organization) with organization owners and affected contributors.
+1. On the connected GitHub web host, open **Your organizations**, select the organization, then go to **Settings** > **Authentication security**.
+2. Coordinate 2FA enrollment and recovery with organization owners and affected contributors. Review GitHub's [enforcement effects](https://docs.github.com/en/enterprise-cloud@latest/organizations/keeping-your-organization-secure/managing-two-factor-authentication-for-your-organization/requiring-two-factor-authentication-in-your-organization) before enabling the policy.
 3. Select **Require two-factor authentication for everyone in your organization**, save, and complete any confirmation GitHub requires.
-4. Repeat the read-only assessment. For managed users, assess the identity provider's MFA policy through a separately supported process instead of changing a GitHub organization 2FA setting.
-
-#### Known limitations
-
-This assesses the current organization configuration, not every authentication event or an enterprise-wide identity policy. Malformed account-model settings or a configured/connected organization mismatch are configuration errors. New metadata caches retain the actual evidence timestamps; synthetic validation does not prove authenticated platform behavior.
+4. Run the test again. For managed users, review the identity provider's MFA policy through a supported process instead of changing the GitHub organization 2FA setting.
 
 #### Related links
 

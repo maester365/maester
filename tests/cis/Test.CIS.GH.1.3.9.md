@@ -1,36 +1,25 @@
-1.3.9 (L2) Ensure an organization’s identity is confirmed with a “Verified” badge
+The organization's profile has a Verified badge.
 
-CIS Benchmark: CIS GitHub Benchmark v1.2.0. Assessment Status: Manual.
-Source: section 1.3.9, physical PDF pages 92–93; printed pages 91–92.
+Verification helps people distinguish the organization from an attacker impersonating it. The fix does not change users' everyday access, but verifying the profile domains can require another team and time for DNS changes to take effect.
 
-#### Rationale
+CIS GitHub Benchmark v1.2.0 lists section 1.3.9 as a Manual assessment (physical PDF pages 92–93; printed pages 91–92). This test reads the connected organization's `id`, `login`, and `isVerified` through `POST /graphql`. GitHub defines `isVerified` as verification of the profile email and website.
 
-A verified profile helps distinguish an organization from an attacker masquerading as it.
+Set `GitHubEnterprise` to the intended enterprise's slug. Before assessing verification, Maester finds the same organization node ID in that enterprise's organizations list, reading later pages when needed. With that association confirmed, Boolean `true` passes and Boolean `false` fails.
 
-#### Assessment and scope
+Missing enterprise context, an inaccessible or missing association, denied fields, or an unusable verification value produces **Skipped**, with a reason explaining what could not be checked. A missing match does not establish that the organization has no enterprise relationship. Invalid configuration, request failures, and JSON parsing failures produce **Error**.
 
-This check uses `POST /graphql` to read the connected organization's `id`, `login`, and `isVerified`. GitHub defines the Boolean as verification of the profile email and website; its badge guidance connects those verified profile domains to the organization's Verified badge. True passes and false fails only after enterprise applicability is established.
-
-Set `GitHubEnterprise` explicitly. The check establishes a positive association by finding the same organization node ID in that enterprise's documented organizations connection, following cursors as needed. It does not claim a complete enterprise-wide organization assessment. A missing match, inaccessible association, missing enterprise context, nullable response parent, denied field, or unusable Boolean is indeterminate. An absent match is not proof that there is no enterprise relationship.
+The test covers the connected organization, including an internal EMU organization where GitHub returns the required fields. It does not scan every organization in the enterprise. Domain approval, domain counts, profile text, and the presence of a DNS record do not decide the result. GitHub allows the verification TXT record to be removed after the badge appears, so the test does not require that record to remain. GraphQL uses the connected API host and its own schema; the REST version header does not version it.
 
 #### Permissions required
 
-Use supported GraphQL user authentication with access to the organization and the enterprise association query. `ownerInfo` is not requested or required. Do not assume an enterprise-owner role or undocumented fine-grained/App field permission is necessary merely because this check verifies enterprise applicability; unavailable required fields remain indeterminate. The current Maester connection still requires active organization membership.
-
-#### Impact
-
-Verification changes the profile's trust signal without changing users' everyday access. Coordinate DNS verification with the domain owner; this can require another team and DNS propagation.
+Use supported GraphQL user authentication with access to the organization and the selected enterprise's organization list. This test does not request `ownerInfo` or require enterprise-owner access merely to establish the association. Field-specific fine-grained or App permissions are not assumed. Maester's connection still requires active organization membership.
 
 #### Remediation action
 
-1. An organization owner should open the organization's **Settings** > **Verified & approved domains**; see [GitHub's domain guidance](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/verifying-or-approving-a-domain-for-your-organization). An enterprise owner can instead verify domains in the enterprise's **Settings** > **Verified & approved domains** so its organizations inherit them.
-2. Add and verify the domains used by the organization's profile email and website, following GitHub's DNS verification instructions with the relevant domain administrators. Coordinate with an enterprise owner when using inherited domains.
-3. Confirm that the organization's profile displays its **Verified** badge. If the profile email and website use different domains or variants, verify the required domains.
-4. Repeat the read-only assessment. GitHub permits removing the DNS TXT record after the badge appears; this check does not require TXT persistence.
-
-#### Known limitations
-
-Domain approval alone, domain counts, website strings, company text, and DNS-record presence are not substituted for verified profile state. The result concerns the named organization, including an internal EMU organization where the field is available, not public visibility or every organization in an enterprise. GraphQL uses the deployment's API host and is not versioned by the REST version header. Request/parsing failures remain Error; unavailable assessment evidence remains indeterminate.
+1. An organization owner should open **Settings** > **Verified & approved domains** for the organization. An enterprise owner can instead verify domains in the enterprise's settings so its organizations inherit them.
+2. Work with the domain administrators to verify the domains used by the organization's profile email and website. Follow GitHub's DNS verification instructions and coordinate with an enterprise owner when using inherited domains.
+3. Confirm that the profile displays its **Verified** badge. If the email and website use different domains or variants, verify each required domain.
+4. Run the test again.
 
 #### Related links
 
