@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import "./styles/report.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Keep the Tailwind 3 palette and font metrics used by existing reports. */
@@ -206,10 +206,6 @@
 
 code {
   white-space: pre-wrap !important;
-}
-
-.prose thead th {
-  padding-top: 1px;
 }
 
 /* Custom scrollbar styles */

@@ -218,12 +218,15 @@
         # The path to the file to save the test results in html format. The filename should include an .html extension.
         [string] $OutputHtmlFile,
 
-        # Collect the affected objects: the consolidated list of objects the run touched.
-        # Adds the AffectedObjects property to the results, the Affected objects page to the html report and,
-        # with -OutputFolder, the <name>-affected-objects.json file (plus -affected-objects.csv with -ExportCsv).
-        # Off by default because it enlarges the report; it is enabled automatically when
-        # -RedactUserIdentity is used, since redaction is driven by the inventory.
+        # Affected objects are collected by default. The switch is kept so that older scripts still run.
         [switch] $IncludeAffectedObjects,
+
+        # Do not collect the affected objects: the consolidated list of objects the run touched.
+        # By default the results carry the AffectedObjects property, the html report has an Affected objects page
+        # when any test recorded an object and, with -OutputFolder, the <name>-affected-objects.json file is written
+        # (plus -affected-objects.csv with -ExportCsv). Use this switch to keep the report smaller. The objects are
+        # still collected when -RedactUserIdentity is used, since redaction is driven by them, but left out of the outputs.
+        [switch] $ExcludeAffectedObjects,
 
         # Replaces user identities (display names, user principal names and object ids) with stable
         # stable ids in the generated outputs.
@@ -365,6 +368,9 @@
     )
 
     end {
+        # Affected objects are on unless the caller turned them off.
+        $includeAffectedObjects = -not $ExcludeAffectedObjects.IsPresent
+
         function GetDefaultFileName() {
             $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
             return "TestResults-$timestamp.html"
@@ -395,14 +401,14 @@
                 $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
                 $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
                 $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
-                if ($IncludeAffectedObjects.IsPresent) {
-                    # Added only when requested so the OutputFiles of runs that do not opt in are unchanged.
+                if ($includeAffectedObjects) {
+                    # Written only when a test recorded an object.
                     $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsJsonFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.json") -Force
                 }
 
                 if ($ExportCsv.IsPresent) {
                     $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
-                    if ($IncludeAffectedObjects.IsPresent) {
+                    if ($includeAffectedObjects) {
                         $out | Add-Member -MemberType NoteProperty -Name OutputAffectedObjectsCsvFile -Value (Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-affected-objects.csv") -Force
                     }
                 }
@@ -449,8 +455,8 @@
 
         # Redaction maps user identities onto their stable ids, so it needs the inventory even when
         # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
-        # in the results and output files when -IncludeAffectedObjects was actually requested.
-        $collectAffectedObjects = $IncludeAffectedObjects.IsPresent -or $RedactUserIdentity -ne 'None'
+        # in the results and output files when -ExcludeAffectedObjects was not used.
+        $collectAffectedObjects = $includeAffectedObjects -or $RedactUserIdentity -ne 'None'
 
         # Anonymous run events: one now and one when the run ends, so a run that never ends shows up
         # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
@@ -929,6 +935,7 @@
             FileOrigin      = $fileOrigin
             Superseded      = $superseded
             TenantContext   = $tenantContext
+            PackSet         = @($packSet)
         }
 
         Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
@@ -1008,7 +1015,7 @@
                 }
             }
 
-            $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext -NativeRows $nativeRows -NativeDuration $nativeTimer.Elapsed
+            $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck -IncludeAffectedObjects:$collectAffectedObjects -RunContext $runContext -NativeRows $nativeRows -NativeDuration $nativeTimer.Elapsed -IncludePrevious
 
             # 'AllOutputs' redacts every generated output, 'HtmlOnly' leaves the machine readable
             # exports intact so findings can still be traced back to the real objects.
@@ -1020,7 +1027,7 @@
 
             # Drop the inventory again when it was only collected to drive redaction, so the reports
             # stay the size the caller asked for and the Affected objects page is not silently turned on.
-            if ($collectAffectedObjects -and -not $IncludeAffectedObjects.IsPresent) {
+            if ($collectAffectedObjects -and -not $includeAffectedObjects) {
                 $maesterResults.PSObject.Properties.Remove('AffectedObjects')
             }
 

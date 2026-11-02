@@ -1,13 +1,12 @@
-import { lazy, Suspense, useCallback, useMemo, useState, type CSSProperties, type ReactNode } from "react"
-import { ChevronRight, ExternalLink, FunnelX, Layers, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"
+import { ChevronRight, ExternalLink, FunnelX, Layers, ListChevronsDownUp, ListChevronsUpDown, Search } from "lucide-react"
+import { useCallback, useMemo, useState, type CSSProperties, type ReactNode } from "react"
 import { useTenant } from "@/context/TenantContext"
+import { useReport } from "@/components/report/ReportContext"
 import { Card, TextInput } from "@/components/ui/report"
 import { affectedObjectIconUri } from "@/lib/affectedObjectIcons"
 import { affectedObjectTypePriority, getAffectedObjectTypeInfo, type AffectedObjectTypeInfo } from "@/lib/affectedObjectTypes"
 import { cn } from "@/lib/utils"
 
-const ResultInfoSheet = lazy(() => import("@/components/ResultInfoSheet"))
 
 // The html report embeds a slim record (Referenced flag); older reports and the json output carry
 // the full record with its Sources list.
@@ -181,9 +180,7 @@ export default function AffectedObjectsPage() {
     const [sort, setSort] = useState<{ column: SortColumn; direction: 1 | -1 } | null>(null)
     const [open, setOpen] = useState<Set<string>>(new Set())
 
-    const [sheetTests, setSheetTests] = useState<TestResult[]>([])
-    const [sheetIndex, setSheetIndex] = useState(-1)
-    const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const { openTest } = useReport()
 
     // Data-driven checks share one id across several results: a check counts as failed for an
     // object when any of its results failed.
@@ -343,17 +340,9 @@ export default function AffectedObjectsPage() {
 
     const openCheck = useCallback(
         (object: AffectedObject, checkId: string) => {
-            const order = new Map(visibleChecks(object).map((c, i) => [c.id, i]))
-            const tests = allTests
-                .filter((test) => order.has(test?.Id))
-                .sort((a, b) => (order.get(a.Id) ?? 0) - (order.get(b.Id) ?? 0))
-            const index = tests.findIndex((test) => test.Id === checkId)
-            if (index === -1) return
-            setSheetTests(tests)
-            setSheetIndex(index)
-            setIsSheetOpen(true)
+            if (visibleChecks(object).some((c) => c.id === checkId) && allTests.some((test) => test?.Id === checkId)) openTest(checkId)
         },
-        [allTests, visibleChecks]
+        [allTests, visibleChecks, openTest]
     )
 
     const onSort = (column: SortColumn) => {
@@ -601,7 +590,7 @@ export default function AffectedObjectsPage() {
             <Card className="p-0">
                 <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-zinc-800">
                     <TextInput
-                        icon={MagnifyingGlassIcon}
+                        icon={Search}
                         value={search}
                         onChange={(e) => { setSearch(e.target.value) }}
                         placeholder="Search by name, id, type or check"
@@ -699,17 +688,6 @@ export default function AffectedObjectsPage() {
                 </table>
             </Card>
 
-            <Suspense fallback={null}>
-                <ResultInfoSheet
-                    Item={sheetTests.find((_, index) => index === sheetIndex) ?? null}
-                    isOpen={isSheetOpen}
-                    onClose={() => { setIsSheetOpen(false) }}
-                    onNavigateNext={sheetIndex < sheetTests.length - 1 ? () => { setSheetIndex(sheetIndex + 1) } : undefined}
-                    onNavigatePrevious={sheetIndex > 0 ? () => { setSheetIndex(sheetIndex - 1) } : undefined}
-                    currentIndex={sheetIndex !== -1 ? sheetIndex + 1 : undefined}
-                    totalCount={sheetTests.length}
-                />
-            </Suspense>
         </div>
     )
 }

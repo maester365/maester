@@ -629,7 +629,8 @@ The instance object has:
 | `Title` | No | The instance's title. Defaults to `-TestTitle` from the helper, then the attribute's title. |
 | `Severity` | No | The instance's severity, used when the config sets none. |
 | `Tag` | No | Extra tags written to the instance's row. |
-| `Data` | No | Anything the test needs. |
+| `Fields` | No | Facts about the instance that a report can group or filter by, as a hashtable of names to strings or arrays of strings, for example `@{ Pillar = 'Identity'; Category = 'Access control' }`. Written to the row's `Fields`; other values are left out. |
+| `Data` | No | Anything the test needs. It is not written to the result. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
 instance rows, the result has one row on the parent ID instead:
