@@ -12,8 +12,8 @@
     "clsx": "^2.1.1",
     "dompurify": "^3.4.17",
     "lucide-react": "^1.61.0",
-    "marked": "^18.1.1",
-    "preact": "^11.0.2",
+    "marked": "^18.1.2",
+    "preact": "^11.1.0",
     "react": "npm:@preact/compat@^18.3.2",
     "react-dom": "npm:@preact/compat@^18.3.2",
     "tailwind-merge": "^3.7.0"
