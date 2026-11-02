@@ -263,10 +263,9 @@ much code as the old home page removed; the growth is the icons. Reaching about 
 the same as today (about 1 MB for this sample, mostly `TestDescription` and `TestResult` markdown);
 `Get-MtHtmlReport` could gzip it like attachments if it grows.
 
-## Ideas from Huntress
+## Ideas taken into the design
 
-Huntress's Identity Posture Assessment for Microsoft 365 is the closest product to this report. Ideas
-taken into the mock:
+Taken into the mock:
 
 - **The score you could reach**: the headline says what the pass rate would be after fixing the
   high-severity failures.
@@ -283,7 +282,7 @@ Ideas for later, not in the mock:
   accepted it and when. The engine has no accepted risk in 3.0; this would be a report-side or config feature.
 - **Fix in the portal or in PowerShell**, so the action plan can split work by who does it. Needs a field
   on the test or a convention in the guide.
-- **Overview additions after SailPoint and Huntress (built):** headline cards with chips that open the tests
+- **Overview additions (built):** headline cards with chips that open the tests
   behind each number; the pass rate over the last ten runs (`Previous.History`, read from the start of each earlier
   result file); a compliance posture grid of frameworks by attacker outcome with each framework's change since the
   previous run; the attacker outcomes as tabs with what is open, what was fixed and which products; and the objects

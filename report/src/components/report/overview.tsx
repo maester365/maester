@@ -107,7 +107,7 @@ export function Trend({ points, compact }: { points?: RunPoint[]; compact?: bool
   )
 }
 
-/** Frameworks by attacker outcome, as SailPoint's compliance posture: failed tests in each cell, coloured by pass rate. */
+/** Frameworks by attacker outcome, as a compliance posture grid: failed tests in each cell, coloured by pass rate. */
 export function Posture() {
   const { model, explore } = useReport()
   const grid = postureGrid(model)
