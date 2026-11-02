@@ -1,7 +1,8 @@
 ---
-sidebar_label: Email Alerts
-sidebar_position: 10
 title: Set up Maester email alerts
+sidebar:
+  label: Email Alerts
+  order: 10
 ---
 
 # Set up Maester Email Alerts
@@ -52,7 +53,7 @@ Test-ServicePrincipalAuthorization $entraSP.AppId -Resource $mailbox
 Write-Host "Use '$($mailbox.ExternalDirectoryObjectId)' when calling Invoke-Maester -MailUserId or Send-MtMail -UserId"
 ```
 
-:::warning Remove Mail.Send Graph Permission in Entra
+:::caution[Remove Mail.Send Graph Permission in Entra]
 Make sure the app has not been granted `Mail.Send` permissions in Entra. RBAC and Graph permissions live side-by-side. Leaving the `Mail.Send` application permission could grant the app tenant-wide access to all mailboxes.
 
 If you previously used Graph Permission and optionally [Application Access Policy](https://learn.microsoft.com/graph/auth-limit-mailbox-access), removing both is important.
@@ -71,7 +72,7 @@ This method is no longer recommended, but included for reference. To configure:
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 
-:::info Important
+:::note[Important]
 It is recommended to limit the scope of the `Mail.Send` permission to only the mailbox that will be used to send the email alerts.
 
 This can be done by configuring an Application Access Policy in Exchange Online. For more information, see [Limiting application permissions to specific Exchange Online mailboxes](https://learn.microsoft.com/graph/auth-limit-mailbox-access).

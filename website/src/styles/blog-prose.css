@@ -1,0 +1,242 @@
+/* The text of a blog post: set for long reading (18px, generous leading, about 70 characters a line), with the
+   docs' asides, tables and media restyled for a page without the docs' stylesheet. Code blocks are Expressive
+   Code's, which bring their own styles. */
+.post-prose {
+	font-size: 1.125rem;
+	line-height: 1.8;
+	color: var(--sl-color-gray-1);
+	overflow-wrap: break-word;
+}
+.post-prose > * + * {
+	margin-top: 1.4em;
+}
+.post-prose > :first-child {
+	margin-top: 0;
+}
+.post-prose p,
+.post-prose ul,
+.post-prose ol,
+.post-prose blockquote,
+.post-prose table,
+.post-prose figure,
+.post-prose details {
+	margin-bottom: 0;
+}
+.post-prose :is(h2, h3, h4) {
+	color: var(--sl-color-white);
+	font-weight: 650;
+	scroll-margin-top: 6rem;
+	text-wrap: balance;
+	margin-bottom: 0;
+}
+.post-prose h2 {
+	margin-top: 2.6em;
+	font-size: 1.75rem;
+	line-height: 1.25;
+	letter-spacing: -0.02em;
+}
+.post-prose h3 {
+	margin-top: 2em;
+	font-size: 1.3rem;
+	line-height: 1.35;
+	letter-spacing: -0.01em;
+}
+.post-prose h4 {
+	margin-top: 1.8em;
+	font-size: 1.1rem;
+}
+.post-prose :is(h2, h3, h4) + *,
+.post-prose .sl-heading-wrapper + * {
+	margin-top: 0.75em;
+}
+/* Starlight wraps each heading with a link to it: the heading keeps its spacing, the link shows on hover. */
+.post-prose .sl-heading-wrapper {
+	display: flex;
+	align-items: baseline;
+	gap: 0.4rem;
+}
+.post-prose .sl-heading-wrapper.level-h2 {
+	margin-top: 2.6em;
+}
+.post-prose .sl-heading-wrapper.level-h3 {
+	margin-top: 2em;
+}
+.post-prose .sl-heading-wrapper.level-h4 {
+	margin-top: 1.8em;
+}
+.post-prose .sl-heading-wrapper > :is(h2, h3, h4) {
+	margin-top: 0;
+}
+.post-prose .sl-anchor-link {
+	color: var(--sl-color-gray-3);
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+.post-prose .sl-heading-wrapper:hover .sl-anchor-link,
+.post-prose .sl-anchor-link:focus-visible {
+	opacity: 1;
+}
+.post-prose .sl-anchor-link .sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+.post-prose a {
+	color: var(--sl-color-white);
+	text-decoration: underline;
+	text-decoration-color: var(--sl-color-accent);
+	text-decoration-thickness: 1.5px;
+	text-underline-offset: 3px;
+}
+.post-prose a:hover {
+	color: var(--sl-color-accent-high);
+}
+.post-prose :is(h2, h3, h4) a {
+	text-decoration: none;
+}
+.post-prose strong {
+	color: var(--sl-color-white);
+	font-weight: 650;
+}
+.post-prose :is(ul, ol) {
+	padding-inline-start: 1.4em;
+}
+.post-prose li + li {
+	margin-top: 0.45em;
+}
+.post-prose li > :is(ul, ol) {
+	margin-top: 0.45em;
+}
+.post-prose li::marker {
+	color: var(--sl-color-gray-3);
+}
+.post-prose blockquote {
+	margin-inline: 0;
+	padding: 0.2em 0 0.2em 1.25em;
+	border-inline-start: 3px solid var(--sl-color-accent);
+	color: var(--sl-color-gray-2);
+	font-style: italic;
+}
+.post-prose hr {
+	margin: 3em auto;
+	width: 6rem;
+	border: 0;
+	border-top: 1px solid var(--sl-color-gray-5);
+}
+.post-prose :not(pre) > code {
+	padding: 0.12em 0.4em;
+	border-radius: 6px;
+	background: var(--sl-color-gray-6);
+	border: 1px solid var(--sl-color-gray-5);
+	font-family: var(--sl-font-mono);
+	font-size: 0.85em;
+	color: var(--sl-color-white);
+	overflow-wrap: anywhere;
+}
+.post-prose :is(img, video, iframe) {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin-inline: auto;
+	border-radius: 12px;
+}
+.post-prose img {
+	border: 1px solid var(--sl-color-gray-5);
+}
+.post-prose iframe {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	border: 0;
+}
+.post-prose p > img:only-child {
+	margin-block: 0.5em;
+}
+.post-prose figcaption {
+	margin-top: 0.6em;
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--sl-color-gray-3);
+}
+.post-prose table {
+	display: block;
+	width: max-content;
+	max-width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+	line-height: 1.55;
+}
+.post-prose :is(th, td) {
+	padding: 0.6em 0.9em;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	text-align: start;
+	vertical-align: top;
+}
+.post-prose th {
+	color: var(--sl-color-white);
+	font-weight: 600;
+	border-bottom-color: var(--sl-color-gray-4);
+}
+.post-prose details {
+	border: 1px solid var(--sl-color-gray-5);
+	border-radius: 12px;
+	padding: 0.8em 1.1em;
+}
+.post-prose summary {
+	cursor: pointer;
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+.post-prose .expressive-code {
+	font-size: 0.9rem;
+	line-height: 1.6;
+}
+
+/* Asides (:::note, :::tip, :::caution, :::danger). */
+.post-prose .starlight-aside {
+	--aside-ink: var(--sl-color-gray-1);
+	--aside-line: #3b82f6;
+	--aside-bg: rgba(59, 130, 246, 0.08);
+	padding: 1em 1.25em;
+	border: 1px solid color-mix(in srgb, var(--aside-line) 35%, transparent);
+	border-inline-start: 4px solid var(--aside-line);
+	border-radius: 12px;
+	background: var(--aside-bg);
+	font-size: 1rem;
+	line-height: 1.7;
+}
+.post-prose .starlight-aside--tip {
+	--aside-line: #10b981;
+	--aside-bg: rgba(16, 185, 129, 0.08);
+}
+.post-prose .starlight-aside--caution {
+	--aside-line: #f59e0b;
+	--aside-bg: rgba(245, 158, 11, 0.09);
+}
+.post-prose .starlight-aside--danger {
+	--aside-line: #ef4444;
+	--aside-bg: rgba(239, 68, 68, 0.09);
+}
+.post-prose .starlight-aside__title {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	margin: 0 0 0.4em;
+	font-weight: 650;
+	color: var(--sl-color-white);
+}
+.post-prose .starlight-aside__icon {
+	width: 1.15em;
+	height: 1.15em;
+	flex: none;
+	fill: var(--aside-line);
+}
+.post-prose .starlight-aside__content > * + * {
+	margin-top: 0.75em;
+}
+.post-prose .starlight-aside__content > :first-child {
+	margin-top: 0;
+}

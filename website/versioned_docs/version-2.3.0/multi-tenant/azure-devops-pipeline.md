@@ -1,7 +1,8 @@
 ---
 title: Azure DevOps Pipeline
-sidebar_label: Azure DevOps Pipeline
-sidebar_position: 4
+sidebar:
+  label: Azure DevOps Pipeline
+  order: 4
 ---
 
 # Azure DevOps Pipeline

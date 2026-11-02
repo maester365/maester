@@ -1,0 +1,95 @@
+import React from "react";
+import Layout from "@site/src/react/shims/Layout.jsx";
+import Link from "@site/src/react/shims/Link.jsx";
+import { useDocsData } from "@site/src/react/shims/docsClient.js";
+import contributorData from "@site/src/data/contributors.json";
+import { MvpBadge, SocialLinks } from "@site/src/react/ContributorsPage.jsx";
+import styles from "./styles.module.css";
+
+function TestList({ title, testIds }) {
+  // contributors.json can list a test before its generated page is committed (a build without PowerShell uses
+  // the committed pages), so link only to pages this build has.
+  const docPaths = new Set(useDocsData(undefined).versions.flatMap((version) => version.docs.map((doc) => doc.path)));
+  if (testIds.length === 0) return null;
+  return (
+    <section className={styles.section}>
+      <h2>{title}</h2>
+      <ul className={styles.testList}>
+        {testIds.map((id) => {
+          const path = contributorData.tests?.[id]?.path ?? `/docs/tests/${id}`;
+          const content = (
+            <>
+              <span className={styles.testId}>{id}</span>
+              <span className={styles.testTitle}>{contributorData.tests?.[id]?.title ?? ""}</span>
+            </>
+          );
+          return (
+            <li key={id}>
+              {docPaths.has(path) ? <Link to={path}>{content}</Link> : <span className={styles.testRow}>{content}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+export default function ContributorPage({ contributorId }) {
+  const profile = contributorData.profiles.find((candidate) => candidate.id === contributorId);
+  if (!profile) {
+    return (
+      <Layout title="Contributor">
+        <div className={styles.page}>
+          <p>
+            Contributor not found. <Link to="/contributors">Back to all contributors</Link>
+          </p>
+        </div>
+      </Layout>
+    );
+  }
+
+  const profileHref = profile.github ? `https://github.com/${profile.github}` : profile.url;
+  return (
+    <Layout
+      title={`${profile.name} - Maester Contributor`}
+      description={`Maester tests authored and improved by ${profile.name}.`}
+    >
+      <div className={styles.page}>
+        <header className={styles.header}>
+          {profile.avatar ? (
+            <img className={styles.avatar} src={profile.avatar} alt={profile.name} />
+          ) : (
+            <div className={`${styles.avatar} ${styles.avatarFallback}`}>{profile.initials}</div>
+          )}
+          <div>
+            <h1>
+              {profileHref ? <a href={profileHref} target="_blank" rel="noopener noreferrer">{profile.name}</a> : profile.name}
+              {profile.mvp && <MvpBadge profile={profile} className={styles.mvpBadge} />}
+            </h1>
+            {profile.title && <p className={styles.headline}>{profile.title}</p>}
+            {(profile.company || profile.location) && (
+              <p className={styles.place}>
+                {profile.company && <span>🏢 {profile.company}</span>}
+                {profile.location && <span>{profile.locationFlag || "📍"} {profile.location}</span>}
+              </p>
+            )}
+            <p className={styles.meta}>
+              {profile.testsAuthored.length > 0 && (
+                <span>✍️ {profile.testsAuthored.length} {profile.testsAuthored.length === 1 ? "test" : "tests"} authored</span>
+              )}
+              {profile.github && (
+                <a href={`https://github.com/maester365/maester/commits?author=${profile.github}`} target="_blank" rel="noopener noreferrer">
+                  🤝 {profile.testsContributed.length > 0 ? `${profile.testsContributed.length} ` : ""}improvements
+                </a>
+              )}
+              <Link to="/contributors">All contributors →</Link>
+            </p>
+            <SocialLinks profile={profile} className={styles.socials} />
+          </div>
+        </header>
+        <TestList title="Tests authored" testIds={profile.testsAuthored} />
+        <TestList title="Also contributed to" testIds={profile.testsContributed} />
+      </div>
+    </Layout>
+  );
+}

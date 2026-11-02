@@ -1,0 +1,149 @@
+---
+// The top of the blog's list pages: a heading, a line about the list, the popular tags and the RSS feed.
+interface Props {
+	eyebrow?: string;
+	title: string;
+	lede?: string;
+	tags?: { slug: string; label: string }[];
+	current?: string;
+}
+const { eyebrow = 'Blog', title, lede, tags = [], current } = Astro.props;
+---
+
+<header class="blog-head">
+	<p class="blog-head__eyebrow">
+		{eyebrow === 'Blog' ? eyebrow : <a href="/blog">Blog</a>}
+		{eyebrow !== 'Blog' && <span aria-hidden="true">/</span>}
+		{eyebrow !== 'Blog' && eyebrow}
+	</p>
+	<h1>{title}</h1>
+	{lede && <p class="blog-head__lede">{lede}</p>}
+	<slot />
+	<div class="blog-head__bar">
+		{
+			tags.length > 0 && (
+				<nav class="blog-head__tags" aria-label="Topics">
+					<a href="/blog" aria-current={current === undefined && eyebrow === 'Blog' ? 'page' : undefined}>
+						All posts
+					</a>
+					{tags.map((tag) => (
+						<a href={`/blog/tags/${tag.slug}`} aria-current={current === tag.slug ? 'page' : undefined}>
+							{tag.label}
+						</a>
+					))}
+					<a href="/blog/tags">All topics</a>
+				</nav>
+			)
+		}
+		<a class="blog-head__rss" href="/blog/rss.xml">
+			<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+				<path fill="currentColor" d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7zm1.5 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"></path>
+			</svg>
+			RSS
+		</a>
+	</div>
+</header>
+
+<style>
+	.blog-head {
+		margin: 1rem 0 2.25rem;
+	}
+	.blog-head__eyebrow {
+		display: flex;
+		gap: 0.5rem;
+		margin: 0 0 0.75rem;
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-accent);
+	}
+	.blog-head__eyebrow a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.blog-head__eyebrow a:hover {
+		text-decoration: underline;
+	}
+	.blog-head h1 {
+		margin: 0;
+		max-width: 22ch;
+		text-wrap: balance;
+		font-size: clamp(2.1rem, 4.5vw, 3.25rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
+		font-weight: 700;
+		color: var(--sl-color-white);
+	}
+	.blog-head__lede {
+		margin: 1rem 0 0;
+		max-width: 40rem;
+		font-size: 1.15rem;
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+	}
+	.blog-head__bar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: 1.75rem;
+	}
+	.blog-head__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.blog-head__tags a,
+	.blog-head__rss {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		height: 2rem;
+		padding: 0 0.85rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		transition:
+			border-color 0.2s ease,
+			color 0.2s ease,
+			background-color 0.2s ease;
+	}
+	.blog-head__tags a:hover,
+	.blog-head__rss:hover {
+		border-color: var(--sl-color-gray-3);
+		color: var(--sl-color-white);
+	}
+	.blog-head__tags a[aria-current='page'] {
+		border-color: var(--sl-color-white);
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+		font-weight: 600;
+	}
+	.blog-head__rss {
+		color: #f59e0b;
+	}
+	/* On phones the topics are one row that scrolls sideways. */
+	@media (max-width: 40rem) {
+		.blog-head__bar {
+			flex-wrap: nowrap;
+			align-items: flex-start;
+		}
+		.blog-head__tags {
+			flex-wrap: nowrap;
+			min-width: 0;
+			overflow-x: auto;
+			scrollbar-width: none;
+			margin-inline: -1rem 0;
+			padding-inline: 1rem 0.25rem;
+			mask-image: linear-gradient(to right, #000 85%, transparent);
+		}
+		.blog-head__tags a,
+		.blog-head__rss {
+			flex: none;
+		}
+	}
+</style>

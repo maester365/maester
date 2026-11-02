@@ -1,7 +1,8 @@
 ---
 title: Merging Results
-sidebar_label: Merging Results
-sidebar_position: 2
+sidebar:
+  label: Merging Results
+  order: 2
 ---
 
 # Merging Results
@@ -30,7 +31,7 @@ Merge-MtMaesterResult -Path *.json | Get-MtHtmlReport | Out-File ./MultiTenantRe
 
 `Merge-MtMaesterResult -Path` loads the JSON files, validates them, and merges them into a single multi-tenant result — no manual file loading needed.
 
-:::tip Alternative: use a directory or explicit file paths
+:::tip[Alternative: use a directory or explicit file paths]
 ```powershell
 # From a directory (auto-discovers TestResults-*.json, falls back to *.json)
 Merge-MtMaesterResult -Path ./results/ | Get-MtHtmlReport | Out-File ./report.html
