@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6DPSCVYBB2YTF8BRDFWT00K",
+  "strategy": "manual-commit",
+  "branch": "feat/scubagoggles-pack",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "build/scubagear/README.md",
+    "build/scubagear/Update-MtScubaGearCatalog.ps1",
+    "packs/scubagear/README.md",
+    "packs/scubagear/catalog.json",
+    "packs/scubagear/maester-pack.guide.json",
+    "packs/scubagear/maester-pack.json",
+    "packs/scubagear/tests/Test.SCUBA.M365.md",
+    "packs/scubagear/tests/Test.SCUBA.M365.ps1",
+    "packs/scubagear/tests/suite.json",
+    "packs/scubagoggles/README.md",
+    "packs/scubagoggles/maester-pack.guide.json",
+    "packs/scubagoggles/tests/Test.SCUBA.GWS.md",
+    "packs/scubagoggles/tests/Test.SCUBA.GWS.ps1",
+    "powershell/assets/MaesterTestSchema.psd1",
+    "powershell/tests/fixtures/scubagear/M365BaselineConformance_2026_01_15_10_00_00/ScubaResults_00000000-0000-0000.json",
+    "powershell/tests/functions/ScubaGearPack.Tests.ps1",
+    "website/docs/packs/index.md",
+    "website/docs/packs/scubagear.md",
+    "website/docs/packs/scubagoggles.md",
+    "website/src/data/test-builder.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 351219,
+    "cache_read_tokens": 3170305,
+    "output_tokens": 3893,
+    "api_call_count": 9
+  },
+  "redaction": {
+    "replacements": 427,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 69,
+      "credentialed_uri": 0,
+      "entropy": 358,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

@@ -1,0 +1,17 @@
+can you investigate https://github.com/cisagov/ScubaGear and find out what are the components that require Windows PowerShell 5.1?
+
+---
+
+with -SkipEditionCheck will it work if the user is only running interactive auth
+
+---
+
+is there a way where we can patch that method in a custom maester pack?
+
+---
+
+can you check if there are any other PRs that do this WithUseEmbeddedWebView($false)  or and if there is an issue related to this or non-windows
+
+---
+
+so would adding it as a pack with just windows powershell 5.1 no and after they push out a new update it would start working?
