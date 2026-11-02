@@ -115,16 +115,40 @@
         $script:GraphObjects | Should -BeNullOrEmpty
     }
 
-    It 'asks for investigation when no choice is stored because <Case>' -ForEach @(
+    It 'passes when no choice is stored because <Case> and no policy keeps the legacy behavior' -ForEach @(
         @{ Case = 'advancedSettings is null'; Settings = { [pscustomobject]@{ advancedSettings = $null } } }
         @{ Case = 'baselineScopes is null'; Settings = { [pscustomobject]@{ advancedSettings = [pscustomobject]@{ baselineScopes = $null } } } }
         @{ Case = 'the response has no advancedSettings'; Settings = { [pscustomobject]@{} } }
     ) {
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } { & $Settings }.GetNewClosure()
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            Get-Policy -Name 'Require MFA'
+            Get-Policy -Name 'Office 365 only' -IncludeApplications 'Office365' -ExcludeApplications 'e3a1d7b9-6c2f-4d5e-a8b4-1f9c3e7d2a6b'
+            Get-Policy -Name 'Report-only pilot' -ExcludeApplications 'e3a1d7b9-6c2f-4d5e-a8b4-1f9c3e7d2a6b' -State 'enabledForReportingButNotEnforced'
+        }
+
+        Test-MtCaBaselineScopesEnforcement | Should -BeTrue
+        $script:Investigate | Should -BeFalse
+        $script:Result | Should -Match 'staged rollout'
+        $script:Result | Should -Match 'whether or not the rollout has reached this tenant'
+        $script:GraphObjects | Should -BeNullOrEmpty
+    }
+
+    It 'asks for investigation when no choice is stored and lists the All resources policies that have a resource exclusion' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/settings' } {
+            Get-BaselineScopeSetting -ResourceAppId ''
+        }
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            Get-Policy -Name 'Require compliant device' -ExcludeApplications 'e3a1d7b9-6c2f-4d5e-a8b4-1f9c3e7d2a6b'
+            Get-Policy -Name 'Require MFA'
+        }
 
         Test-MtCaBaselineScopesEnforcement | Should -BeTrue
         $script:Investigate | Should -BeTrue
-        $script:Result | Should -Match 'staged rollout'
+        $script:Result | Should -Match 'cannot be confirmed'
+        $script:Result | Should -Match '%TestResult%'
+        $script:GraphObjectType | Should -Be 'ConditionalAccess'
+        $script:GraphObjects.displayName | Should -Be @('Require compliant device')
     }
 
     It 'asks for investigation and lists the policies that exclude the placeholder application' {

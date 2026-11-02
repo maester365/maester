@@ -1,7 +1,7 @@
 ﻿function Test-MtCaBaselineScopesEnforcement {
     <#
     .SYNOPSIS
-    Checks if Conditional Access baseline scopes enforcement is enabled, either tenant-wide or with a custom placeholder application.
+    Checks if sign-ins that request only baseline scopes are subject to Conditional Access.
 
     .DESCRIPTION
     Sign-ins that request only baseline scopes (the OpenID Connect scopes and basic directory scopes such as
@@ -13,10 +13,12 @@
     scopes are evaluated against. The check passes when enforcement is enabled (the Windows Azure Active Directory
     application). It asks for investigation when the Customize behavior option points at a custom placeholder
     application, listing the Conditional Access policies that target All resources and exclude it and so retain
-    the legacy behavior, and
-    when no choice is stored, because enforcement then comes from Microsoft's staged rollout and cannot be
-    confirmed from the tenant. It fails when enforcement has been explicitly disabled, and lists the enabled
-    policies that target All resources and have a resource exclusion, because those keep the legacy behavior.
+    the legacy behavior. It fails when enforcement has been explicitly disabled, and lists the enabled policies
+    that target All resources and have a resource exclusion, because those keep the legacy behavior.
+
+    When no choice is stored, enforcement comes from Microsoft's staged rollout, which cannot be confirmed from the
+    tenant. The check passes when no enabled policy targets All resources with a resource exclusion, because the
+    rollout then changes no sign-in, and otherwise asks for investigation and lists those policies.
 
     It also fails, whatever the selection, when an enabled Conditional Access policy excludes Windows Azure Active
     Directory although it includes it, either through All resources or directly. With certain public client IDs that are
@@ -38,7 +40,7 @@
     #>
     [MaesterTest(
         Id = 'MT.1259',
-        Title = 'Conditional Access baseline scopes enforcement should be enabled.',
+        Title = 'Baseline scope sign-ins should be subject to Conditional Access.',
         Product = 'entra',
         Feature = 'conditional-access',
         Area = 'access-control',
@@ -59,7 +61,8 @@
 
     # The Baseline scopes settings store the tenant's choice as the resource application ID that baseline scope
     # sign-ins are evaluated against:
-    #   null or missing                        - no choice stored; enforcement comes from the staged rollout
+    #   null or missing                        - no choice stored; enforcement comes from the staged rollout,
+    #                                            after which this remains the default state
     #   00000000-0000-0000-0000-000000000000   - Disable enforcement
     #   00000002-0000-0000-c000-000000000000   - Enable enforcement (Windows Azure Active Directory)
     #   any other application ID               - Customize behavior with a custom placeholder application
@@ -99,7 +102,7 @@
 
     $inactiveExclusionNote = ''
     if ($inactiveDirectoryExclusions.Count -gt 0) {
-        $inactiveExclusionNote = "`n`nThe following enabled policies exclude **Windows Azure Active Directory** but do not include it, so the exclusion has no effect today. Remove the exclusion so that it cannot open a gap if the policy's scope is widened:`n`n" +
+        $inactiveExclusionNote = "`n`nThe following enabled policies exclude **Windows Azure Active Directory** (``$enforcedResourceAppId``) but do not include it, so the exclusion has no effect today. Remove the exclusion so that it cannot open a gap if the policy's scope is widened:`n`n" +
         (Get-GraphObjectMarkdown -GraphObjects $inactiveDirectoryExclusions -GraphObjectType ConditionalAccess)
     }
 
@@ -109,22 +112,34 @@
         return $false
     }
 
-    if ([string]::IsNullOrEmpty($resourceAppId)) {
-        $testResult = "No baseline scopes enforcement choice is stored in this tenant. Microsoft enables enforcement by default through its staged rollout, which started on June 15, 2026, but whether it has reached this tenant cannot be confirmed from the tenant. Make the choice explicit in the [Baseline scopes settings]($settingsUrl): **Enable enforcement**, or **Customize behavior** if specific policies must retain the legacy behavior." + $inactiveExclusionNote
-        Add-MtTestResultDetail -Result $testResult -Investigate
-        return $true
-    }
-
     # Only policies that target All resources and have a resource exclusion keep the legacy behavior.
     $allResourcesPolicies = @($enabledPolicies | Where-Object {
             $_.conditions.applications.includeApplications -contains 'All'
         })
+    $affectedPolicies = @($allResourcesPolicies | Where-Object {
+            @($_.conditions.applications.excludeApplications | Where-Object { $_ }).Count -gt 0
+        })
+
+    if ([string]::IsNullOrEmpty($resourceAppId)) {
+        # Once the staged rollout reaches a tenant, enforcement is the default and the settings still show no
+        # selection. Whether it has reached the tenant only matters for policies that would keep the legacy behavior.
+        $testResult = "No baseline scopes enforcement choice is stored in this tenant. Microsoft enables enforcement by default through its staged rollout, which started on June 15, 2026, and the [Baseline scopes settings]($settingsUrl) then show no selection."
+        if ($affectedPolicies.Count -gt 0) {
+            $testResult += " Whether the rollout has reached this tenant cannot be confirmed from the tenant.`n`nThe following enabled policies target All resources and have a resource exclusion, so they do not evaluate sign-ins that request only baseline scopes until enforcement applies. Make the choice explicit in the [Baseline scopes settings]($settingsUrl): **Enable enforcement**, or **Customize behavior** if specific policies must retain the legacy behavior.`n`n%TestResult%" + $inactiveExclusionNote
+            Add-MtTestResultDetail -Result $testResult -GraphObjects $affectedPolicies -GraphObjectType ConditionalAccess -Investigate
+        } else {
+            $testResult += " No enabled policy targets All resources with a resource exclusion, so every policy evaluates these sign-ins whether or not the rollout has reached this tenant. We still recommend that you select **Enable enforcement** in the [Baseline scopes settings]($settingsUrl) to make the choice explicit."
+            if ($inactiveExclusionNote) {
+                Add-MtTestResultDetail -Result ($testResult + $inactiveExclusionNote) -Investigate
+            } else {
+                Add-MtTestResultDetail -Result $testResult
+            }
+        }
+        return $true
+    }
 
     if ($resourceAppId -eq $disabledResourceAppId) {
         $testResult = "Baseline scopes enforcement is explicitly **disabled** in this tenant. Sign-ins that request only baseline scopes bypass every All resources Conditional Access policy that has a resource exclusion. Change the choice in the [Baseline scopes settings]($settingsUrl): **Enable enforcement**, or **Customize behavior** if specific policies must retain the legacy behavior."
-        $affectedPolicies = @($allResourcesPolicies | Where-Object {
-                @($_.conditions.applications.excludeApplications | Where-Object { $_ }).Count -gt 0
-            })
         if ($affectedPolicies.Count -gt 0) {
             $testResult += "`n`nThe following enabled policies target All resources and have a resource exclusion, so they currently do not evaluate these sign-ins. Review them before you change the setting:`n`n%TestResult%" + $inactiveExclusionNote
             Add-MtTestResultDetail -Result $testResult -GraphObjects $affectedPolicies -GraphObjectType ConditionalAccess
@@ -136,7 +151,7 @@
     }
 
     if ($resourceAppId -eq $enforcedResourceAppId) {
-        $testResult = "Baseline scopes enforcement is enabled. Sign-ins that request only baseline scopes are evaluated against **Windows Azure Active Directory** and are subject to your Conditional Access policies."
+        $testResult = "Baseline scopes enforcement is enabled. Sign-ins that request only baseline scopes are evaluated against **Windows Azure Active Directory** (``$enforcedResourceAppId``) and are subject to your Conditional Access policies."
         if ($inactiveExclusionNote) {
             Add-MtTestResultDetail -Result ($testResult + $inactiveExclusionNote) -Investigate
         } else {
