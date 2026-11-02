@@ -535,3 +535,17 @@ html:has(.mt-app) { scrollbar-width: thin; scrollbar-color: var(--mt-line) trans
 .mt-kpi-hit:focus-visible { outline: 2px solid var(--mt-ember); outline-offset: 2px; }
 .mt-kpi.click > :not(.mt-kpi-hit) { position: relative; pointer-events: none; }
 .mt-kpi.click .mt-kchip { pointer-events: auto; }
+
+/* Tables in a finding wrap between words, never inside one, and scroll sideways when they need more room than the
+   sheet has (#2610). Headers stay on one line. */
+.mt-md table { width: max-content; min-width: 0; }
+.mt-md th { white-space: nowrap; }
+.mt-md td { overflow-wrap: break-word; word-break: normal; min-width: 4em; max-width: 36em; vertical-align: top; }
+/* A shadow on the side a table can still scroll towards. */
+.mt-md table {
+  background:
+    linear-gradient(to right, var(--mt-paper) 30%, transparent) left / 40px 100% no-repeat local,
+    linear-gradient(to left, var(--mt-paper) 30%, transparent) right / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--mt-ink) 22%, transparent), transparent) left / 12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--mt-ink) 22%, transparent), transparent) right / 12px 100% no-repeat scroll;
+}
