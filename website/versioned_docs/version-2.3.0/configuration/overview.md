@@ -1,6 +1,7 @@
 ---
 title: Overview
-sidebar_position: 1
+sidebar:
+  order: 1
 ---
 
 # Configure Maester
@@ -15,7 +16,7 @@ Maester uses a two-tier configuration system:
 
 2. **Custom Configuration** (`./tests/Custom/maester-config.json`) - Your organization-specific overrides. Settings in this file take precedence over the main configuration.
 
-:::warning Important
+:::caution[Important]
 Never edit the main `maester-config.json` file in the `./tests` folder directly. Your changes will be overwritten when you update Maester tests.
 
 Always use the `./tests/Custom/maester-config.json` file for your customizations.

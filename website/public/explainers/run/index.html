@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+  Explainer: what happens in a Maester run. A HyperFrames composition (https://hyperframes.heygen.com):
+  HTML and CSS for the look, a paused GSAP timeline for the motion. The site plays it live with
+  <hyperframes-player>; `npx hyperframes render` turns it into a video for YouTube.
+  Chapters (seconds) are listed in src/data/explainers.json; keep them in step with the timeline below.
+  Watches: powershell/public/run/Invoke-Maester.ps1, powershell/internal/engine/
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="robots" content="noindex" />
+    <title>Maester explainer</title>
+    <link rel="stylesheet" href="../_shared/explainer.css" />
+    <script src="../_shared/gsap.min.js"></script>
+    <script src="../_shared/hyperframe.runtime.js"></script>
+    <style>
+      .stage { position: absolute; left: 120px; right: 120px; top: 360px; display: flex; gap: 40px; align-items: stretch; }
+      .node { flex: 1; border: 3px solid #27272a; border-radius: 28px; padding: 36px 32px; background: #111113; color: #71717a; }
+      .node b { display: block; font-size: 44px; letter-spacing: -0.02em; margin-bottom: 14px; }
+      .node span { font-family: "Geist Mono", ui-monospace, monospace; font-size: 26px; }
+      .arrow { position: absolute; top: 470px; height: 4px; width: 40px; background: #3f3f46; }
+      .result { position: absolute; left: 120px; top: 640px; display: flex; gap: 24px; opacity: 0; }
+      .pill { font-family: "Geist Mono", ui-monospace, monospace; font-size: 30px; border-radius: 999px; padding: 12px 26px; border: 2px solid #3f3f46; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="run" data-start="0" data-duration="60" data-width="1920" data-height="1080">
+      <!-- Voice-over (Kokoro) and music, mixed by website/scripts/narration -->
+      <audio id="mix" src="audio/mix.mp3" data-start="0" data-duration="60" data-track-index="2" data-volume="1"></audio>
+      <div class="eyebrow">Maester explainer</div>
+      <div class="title">What happens in a run</div>
+      <div class="brand">maester.dev</div>
+      <div class="stage">
+        <div class="node" id="n0"><b>Config</b><span>merge layers</span></div>
+        <div class="node" id="n1"><b>Select</b><span>-Product -Suite</span></div>
+        <div class="node" id="n2"><b>Gates</b><span>service · licence</span></div>
+        <div class="node" id="n3"><b>Engine</b><span>run · time out</span></div>
+        <div class="node" id="n4"><b>Report</b><span>HTML · JSON</span></div>
+      </div>
+      <div class="result" id="result">
+        <span class="pill" style="color:#86efac;border-color:#166534">612 passed</span>
+        <span class="pill" style="color:#fca5a5;border-color:#7f1d1d">94 failed</span>
+        <span class="pill">135 not run, each with a reason</span>
+      </div>
+      <p class="caption" id="c0">Maester merges your config files into one: what to run, settings for each check, and where results go.</p>
+      <p class="caption" id="c1">Your selection picks checks by product, framework, severity, test ID or pack. -DryRun shows the list before anything runs.</p>
+      <p class="caption" id="c2">A check that needs a service you didn't connect, or a licence you don't have, is skipped with a reason code. It is never marked failed.</p>
+      <p class="caption" id="c3">The engine runs each planned check, enforces time-outs and turns a family into one row per policy, mailbox or app.</p>
+      <p class="caption" id="c4">One result becomes the HTML report, JSON, JUnit for your pipeline, and email or Teams alerts.</p>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const chapters = [0, 12, 24, 36, 48];
+      const active = { borderColor: "#d22c31", backgroundColor: "rgba(210,44,49,0.18)", color: "#fafafa", duration: 0.6 };
+      const done = { borderColor: "#52525b", backgroundColor: "#111113", color: "#d4d4d8", duration: 0.6 };
+      tl.from(".title", { opacity: 0, y: 30, duration: 0.8 }, 0);
+      tl.from(".node", { opacity: 0, y: 40, duration: 0.6, stagger: 0.15 }, 0.3);
+      chapters.forEach((t, i) => {
+        tl.to(`#n${i}`, active, t + 1);
+        tl.to(`#c${i}`, { opacity: 1, y: 0, duration: 0.6 }, t + 1.2);
+        tl.to(`#c${i}`, { opacity: 0, duration: 0.4 }, t + 11.4);
+        if (i < chapters.length - 1) tl.to(`#n${i}`, done, t + 11.6);
+      });
+      tl.to("#result", { opacity: 1, y: 0, duration: 0.8 }, 52);
+      tl.set({}, {}, 60);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["run"] = tl;
+    </script>
+  </body>
+</html>

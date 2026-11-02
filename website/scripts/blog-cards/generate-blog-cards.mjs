@@ -102,7 +102,7 @@ if (folders.length === 0) {
 
 const { chromium } = await import("playwright");
 const template = readFileSync(join(scriptDir, "template.html"), "utf8");
-const logo = "data:image/svg+xml;base64," + readFileSync(join(websiteRoot, "static", "img", "logo.svg")).toString("base64");
+const logo = "data:image/svg+xml;base64," + readFileSync(join(websiteRoot, "public", "img", "logo.svg")).toString("base64");
 const examples = suggest ? cardExamples() : [];
 const browser = await chromium.launch();
 try {

@@ -1,7 +1,8 @@
 ---
 title: Pack security
-sidebar_position: 3
 description: What Maester checks before a pack runs, the lock file, the cooldown, the pack policy and the blocklist.
+sidebar:
+  order: 3
 ---
 
 # Pack security

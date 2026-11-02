@@ -7,7 +7,6 @@ tags: [maester, packs, zero-trust, preview, powershell]
 card_headline: "Maester *Packs* and the Zero Trust Assessment"
 card_label: Preview
 image: ./img/card.png
-hide_table_of_contents: false
 date: 2026-10-24
 draft: true
 ---
@@ -23,7 +22,7 @@ The Maester 3.0 preview has two new things we're really excited about: **Maester
 
 Until now, a test came to Maester one of two ways: we shipped it in the module, or you wrote it yourself in your custom tests folder. Packs open a third way, and we think it will bring a much wider variety of tests to Maester than we could ever write on our own.
 
-{/* truncate */}
+{/* excerpt */}
 
 ## What is a Maester Pack?
 
@@ -42,7 +41,7 @@ Uninstall-Module Maester -AllVersions
 Install-Module Maester -AllowPrerelease -Scope CurrentUser
 ```
 
-To go back to 2.x later, uninstall the preview and run `Install-Module Maester` without `-AllowPrerelease`. See [Upgrading from 2.x](/docs/next/upgrading-from-2x) for what changes in 3.0.
+To go back to 2.x later, uninstall the preview and run `Install-Module Maester` without `-AllowPrerelease`. See [Upgrading from 2.x](/docs/upgrading-from-2x) for what changes in 3.0.
 
 ## Install a pack with one command
 
@@ -137,11 +136,11 @@ Test-MtPack .            # every check Install-MtPack runs, without installing
 Invoke-MtTest -Path .    # run the pack's tests from its folder
 ```
 
-Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. Publish it on [packs.maester.cloud](https://packs.maester.cloud) so people can find it. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/next/writing-tests) applies.
+Push it, create a GitHub release, and anyone can install it with `Install-MtPack <owner>/<repository>`. Publish it on [packs.maester.cloud](https://packs.maester.cloud) so people can find it. If you'd rather start from an empty pack, `New-MtPack` creates one. The tests are the same native tests that Maester's own checks use, so everything in [Writing tests](/docs/writing-tests) applies.
 
 ### For pack builders
 
-[Writing a pack](/docs/next/packs/writing-a-pack) is the guide for pack builders, with the detail this post skips: the manifest and its code, tests and helpers, connectors, live output and progress, the banner image, checking a pack with `Test-MtPack` in its own CI, and publishing a release. [Pack security](/docs/next/packs/security) covers what `Install-MtPack` checks and what raises a pack's risk.
+[Writing a pack](/docs/packs/writing-a-pack) is the guide for pack builders, with the detail this post skips: the manifest and its code, tests and helpers, connectors, live output and progress, the banner image, checking a pack with `Test-MtPack` in its own CI, and publishing a release. [Pack security](/docs/packs/security) covers what `Install-MtPack` checks and what raises a pack's risk.
 
 <video src={buildingPack} poster={buildingPackPoster} autoPlay loop muted playsInline controls width="100%" style={{ borderRadius: 12, marginBottom: "1.5rem" }} />
 
@@ -194,16 +193,16 @@ Maester also embeds the assessment's own HTML report, with its pillar dashboards
 
 ![Microsoft's Zero Trust Assessment report, open on its Identity pillar, shown inside the Maester report](./img/report-zta-identity.png)
 
-The [Zero Trust Assessment pack guide](/docs/next/packs/zero-trust-assessment) covers running it in GitHub Actions and other pipelines, the settings, and how the assessment's statuses map to Maester's.
+The [Zero Trust Assessment pack guide](/docs/packs/zero-trust-assessment) covers running it in GitHub Actions and other pipelines, the settings, and how the assessment's statuses map to Maester's.
 
 ## Try it and tell us what you think
 
 Packs and the Zero Trust Assessment pack are in the Maester 3.0 preview. [Install the preview](#try-the-maester-30-preview), try the demo pack, and if you're thinking about writing a pack for your product or your team, we'd love to hear about it on [GitHub](https://github.com/maester365/maester/discussions) or [Discord](https://discord.maester.dev).
 
-- [Maester Packs](/docs/next/packs)
-- [Writing a pack](/docs/next/packs/writing-a-pack)
-- [Pack security](/docs/next/packs/security)
-- [Zero Trust Assessment pack](/docs/next/packs/zero-trust-assessment)
+- [Maester Packs](/docs/packs)
+- [Writing a pack](/docs/packs/writing-a-pack)
+- [Pack security](/docs/packs/security)
+- [Zero Trust Assessment pack](/docs/packs/zero-trust-assessment)
 - [Maester Packs site](https://packs.maester.cloud)
 - [Maester demo pack](https://github.com/maester365/maester-pack-demo)
 

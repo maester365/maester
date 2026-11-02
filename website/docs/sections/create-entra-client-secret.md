@@ -1,6 +1,11 @@
+---
+# A partial that guides import; also served as a page (noindex) for links to it.
+title: Create a client secret
+---
+
 ### Create a client secret
 
-:::warning
+:::caution
 Client secret authentication is not recommended for long-term automation, and we recommend using workload identity federation when possible. Client secrets expire, require manual rotation and manual updates in your pipeline/repository variables.
 :::
 

@@ -1,0 +1,59 @@
+---
+// An author: who they are and what they have written.
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import PostCard from '../../../components/blog/PostCard.astro';
+import BlogHeader from '../../../components/blog/BlogHeader.astro';
+import { authors, getPosts } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return Object.values(authors)
+		.map((author) => ({ author, posts: posts.filter((post) => post.data.authors.includes(author.id)) }))
+		.filter(({ posts }) => posts.length > 0)
+		.map(({ author, posts }) => ({ params: { author: author.slug }, props: { author, posts } }));
+}
+
+const { author, posts } = Astro.props;
+---
+
+<SiteLayout title={author.name} description={`Posts by ${author.name} on the Maester blog.`} wide noindex>
+	<BlogHeader eyebrow="Author" title={author.name} lede={author.title}>
+		<p class="who">
+			{author.picture && <img src={author.picture} alt="" width="72" height="72" />}
+			<span>
+				{posts.length} {posts.length === 1 ? 'post' : 'posts'}
+				{author.url && (
+					<>
+						{' · '}
+						<a href={author.url}>{new URL(author.url).hostname.replace(/^www\./, '')}</a>
+					</>
+				)}
+			</span>
+		</p>
+	</BlogHeader>
+	<section class="blog-grid" aria-label={`Posts by ${author.name}`}>
+		{posts.map((post, i) => <PostCard post={post} eager={i < 3} />)}
+	</section>
+</SiteLayout>
+
+<style>
+	.who {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin: 1.5rem 0 0;
+		color: var(--sl-color-gray-2);
+	}
+	.who img {
+		border-radius: 999px;
+		background: var(--sl-color-gray-6);
+	}
+	.who a {
+		color: var(--sl-color-white);
+	}
+	.blog-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+		gap: 1.5rem;
+	}
+</style>

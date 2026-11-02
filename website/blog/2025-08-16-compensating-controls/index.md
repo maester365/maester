@@ -7,13 +7,12 @@ tags: [blog]
 image: ./img/card.png
 card_headline: "Introduction to *compensating controls*"
 card_label: Guide
-hide_table_of_contents: false
 date: 2025-08-16
 ---
 
 If you have ever seen one of my presentations on or we have ever discussed technology security or operations, you have likely heard me say something like: _At a certain maturity level everything is just exception management_. Keep reading to get more details on one of the most common exception management techniques, **compensatory** or **compensating controls**.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## What is a control?
 

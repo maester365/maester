@@ -1,0 +1,31 @@
+---
+// The posts on one topic. Lists only repeat post titles, so they are left out of search engines (see the sitemap
+// filter in astro.config.mjs).
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import PostCard from '../../../components/blog/PostCard.astro';
+import BlogHeader from '../../../components/blog/BlogHeader.astro';
+import { broadTags, getPosts, tagsOf } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+	const tags = tagsOf(await getPosts());
+	return tags.map((tag) => ({ params: { tag: tag.slug }, props: { tag, popular: tags.filter((t) => !broadTags.has(t.slug)).slice(0, 8) } }));
+}
+
+const { tag, popular } = Astro.props;
+const count = tag.posts.length;
+---
+
+<SiteLayout title={`Posts about ${tag.label}`} description={`${count} ${count === 1 ? 'post' : 'posts'} about ${tag.label} on the Maester blog.`} wide noindex>
+	<BlogHeader eyebrow="Topic" title={tag.label} lede={`${count} ${count === 1 ? 'post' : 'posts'}`} tags={popular} current={tag.slug} />
+	<section class="blog-grid" aria-label={`Posts about ${tag.label}`}>
+		{tag.posts.map((post, i) => <PostCard post={post} eager={i < 3} />)}
+	</section>
+</SiteLayout>
+
+<style>
+	.blog-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+		gap: 1.5rem;
+	}
+</style>

@@ -547,3 +547,15 @@ build/active-directory/**/*.bak
 # Lab-specific configuration files (contain deployment-specific values)
 build/active-directory/azure-lab/LabConfig.json
 .tmp-maester-published-result-tests-*/
+
+# GSAP for the explainers, copied from node_modules by scripts/copy-explainer-assets.mjs
+website/public/explainers/_shared/gsap.min.js
+website/public/explainers/_shared/fonts/
+website/public/explainers/_shared/hyperframe.runtime.js
+website/dist/
+
+# Astro
+website/.astro/
+
+# Tools for the explainer voice-over (installed by hand)
+website/scripts/narration/node_modules/

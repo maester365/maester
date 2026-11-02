@@ -1,3 +1,4 @@
+import { ChevronDown, CircleX, Search, X } from "lucide-react"
 import {
   Children,
   type ComponentType,
@@ -11,8 +12,6 @@ import {
   useRef,
   useState,
 } from "react"
-import { XCircleIcon } from "@heroicons/react/20/solid"
-import { ChevronDown, Search, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -298,7 +297,7 @@ export function MultiSelect({ value, onValueChange, placeholder, className, chil
         </button>
         {value.length > 0 && (
           <button type="button" onClick={() => onValueChange([])} aria-label={`Clear ${placeholder}`} className="mr-1 rounded p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-            <XCircleIcon className="size-4" aria-hidden />
+            <CircleX className="size-4" aria-hidden />
           </button>
         )}
         {/* Decorative: the field itself is the toggle that announces the open state. */}

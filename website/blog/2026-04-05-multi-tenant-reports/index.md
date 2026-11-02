@@ -6,14 +6,13 @@ authors: sebastian
 tags: [feature, multi-tenant]
 card_headline: "*Multi-tenant* reports are here"
 card_label: Feature
-hide_table_of_contents: false
 image: ./img/card.png
 date: 2026-04-05
 ---
 
 We are excited to announce that Maester now supports multi-tenant reports! Run your security tests across multiple tenants and view the results in a single report. 🚀
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ![Multi-tenant report overview](./img/multi-tenant-header.png)
 
@@ -33,10 +32,10 @@ Single tenant reports continue to work exactly as before. The tenant selector on
 
 Check out the documentation to get your multi-tenant monitoring up and running:
 
-- Documentation: [Multi-Tenant Overview](/docs/next/multi-tenant/overview)
-- Documentation: [Merging Results](/docs/next/multi-tenant/merging-results)
-- Documentation: [Tenant-specific Configuration](/docs/next/multi-tenant/configuration)
-- Documentation: [Azure DevOps Pipeline](/docs/next/multi-tenant/azure-devops-pipeline)
+- Documentation: [Multi-Tenant Overview](/docs/multi-tenant/overview)
+- Documentation: [Merging Results](/docs/multi-tenant/merging-results)
+- Documentation: [Tenant-specific Configuration](/docs/multi-tenant/configuration)
+- Documentation: [Azure DevOps Pipeline](/docs/multi-tenant/azure-devops-pipeline)
 
 ## Contributor
 

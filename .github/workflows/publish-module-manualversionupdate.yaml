@@ -102,6 +102,14 @@ jobs:
         working-directory: website
         run: npm ci
 
+      # The release records which tests it contains (website/src/data/versions.json), read from the test catalog.
+      - name: Export the test catalog
+        shell: pwsh
+        working-directory: website
+        run: |
+          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
+          npm run export-catalog
+
       - name: Update website release version
         env:
           MODULE_VERSION: ${{ steps.moduleversion.outputs.tag }}
@@ -117,10 +125,8 @@ jobs:
           delete-branch: true
           title: 'ci(docs): update website release version ${{ steps.moduleversion.outputs.tag }}'
           body: |
-            Automated versioned documentation update for Maester ${{ steps.moduleversion.outputs.tag }}.
+            Marks Maester ${{ steps.moduleversion.outputs.tag }} as the stable release on maester.dev, and records the tests, commands and parameters it contains, so the site stops marking them as preview-only.
           add-paths: |
-            website/docusaurus.config.js
             website/version-config.js
-            website/versions.json
-            website/versioned_docs/
-            website/versioned_sidebars/
+            website/src/data/versions.json
+            website/src/data/test-catalog.json

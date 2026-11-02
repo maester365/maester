@@ -70,6 +70,7 @@ function Read-MtNativeTest {
         UnregisteredServices = @()
         MarkdownPath         = $null
         RequiresMaester      = $null
+        ShimCommand          = $null
         BuiltIn              = $BuiltIn.IsPresent
         Errors               = $errors
     }
@@ -120,6 +121,7 @@ function Read-MtNativeTest {
     $function = $testFunctions[0]
     $test.FunctionName = $function.Name
     $test.Line = $function.Extent.StartLineNumber
+    $test.ShimCommand = Get-MtShimCommand -Function $function
     $attribute = $function.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } | Select-Object -First 1
 
     if ($attribute.PositionalArguments.Count -gt 0) {

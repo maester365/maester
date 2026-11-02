@@ -7,7 +7,6 @@ tags: [maester, release, security, entra, m365, agents, azuredevops, activedirec
 image: ./img/card.png
 card_headline: "Maester *2.3*"
 card_label: Release
-hide_table_of_contents: false
 date: 2026-10-06
 ---
 
@@ -15,7 +14,7 @@ Maester 2.3 is here.
 
 2.2 went wide. 2.3 goes deep: the objects behind every failed check, AI agents in Microsoft Entra, the latest CIS benchmark, the Macs and code repositories in your estate, and a hard look at how Maester itself handles the data it collects from your tenant.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Highlights
 

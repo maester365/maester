@@ -5,7 +5,7 @@
     .DESCRIPTION
     Imports the Maester module from source (powershell/Maester.psd1), reads every built-in native test
     with Get-MtTest and writes its metadata to a JSON file. website/scripts/generate-test-docs.mjs reads
-    that file, plus each test's Test.<ID>.md, to build the pages in website/docs/tests/.
+    that file, plus each test's Test.<ID>.md, to build the test pages of the website.
 
     Each test has its attributes (Product, RelatedProduct, Feature, Area and ResourceType as taxonomy keys),
     the derived Block, Suite and Source, and LegacyTag: the tags it carried in Maester 2.x, which -Tag still
@@ -24,12 +24,13 @@
     repository-relative with forward slashes, and the file is UTF-8 without BOM with LF line endings.
 
     .PARAMETER OutputPath
-    Where to write the JSON file. Defaults to website/.generated/test-catalog.json (git-ignored).
+    Where to write the JSON file. Defaults to website/src/data/test-catalog.json, the catalog the website builds from.
 
     .EXAMPLE
     ./build/docs/Export-MtTestCatalogForDocs.ps1
 
-    Writes website/.generated/test-catalog.json, then `npm run generate-test-docs` (in website/) uses it.
+    Writes website/src/data/test-catalog.json. The website's build turns it into the test pages; `npm run
+    export-catalog` (in website/) runs this script.
 #>
 [CmdletBinding()]
 param(
@@ -39,7 +40,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..')).Path
-if (-not $OutputPath) { $OutputPath = Join-Path -Path $repoRoot -ChildPath 'website' -AdditionalChildPath '.generated', 'test-catalog.json' }
+if (-not $OutputPath) { $OutputPath = Join-Path -Path $repoRoot -ChildPath 'website' -AdditionalChildPath 'src', 'data', 'test-catalog.json' }
 
 Import-Module (Join-Path -Path $repoRoot -ChildPath 'powershell' -AdditionalChildPath 'Maester.psd1') -Force -WarningAction SilentlyContinue
 
