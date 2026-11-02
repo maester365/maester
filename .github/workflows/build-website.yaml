@@ -31,12 +31,15 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
+    # Only what the site is built from: the exported commands' help (the manifest lists them), the tests and
+    # the docs. A change to powershell/internal cannot add or change a page.
     paths:
       - "README.md"
       - "build/Update-CommandReference.ps1"
       - "build/docs/**"
       - "build/eidsca/*.json"
-      - "powershell/**"
+      - "powershell/Maester.psd1"
+      - "powershell/public/**"
       - "tests/**"
       - "website/**"
       - ".github/workflows/build-website.yaml"
