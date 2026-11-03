@@ -5,7 +5,9 @@
 .DESCRIPTION
     Without -Offline, clones or updates https://github.com/cammurray/orca in build/orca/orca and
     regenerates powershell/internal/generated/orca (the ORCA classes, the prerequisite functions and one
-    check-ORCA*.ps1 per upstream check), then the native tests.
+    check-ORCA*.ps1 per upstream check), then the native tests. Corrections to upstream (a malformed link,
+    say) go in build/orca/orca-fixups.psd1, which is applied to the clone's files as they are read; the run
+    stops when an entry no longer matches upstream.
 
     With -Offline, only the native tests are regenerated, from the committed
     powershell/internal/generated/orca/check-ORCA*.ps1 files. The drift test in
@@ -118,6 +120,29 @@ if (-not $Offline) {
         & git clone --depth 1 $orca $clone
     }
 
+    # Corrections to upstream, applied to each file as it is read. Every entry is checked before anything is
+    # written: one whose file or text upstream no longer has stops the run.
+    $fixups = @((Import-PowerShellDataFile (Join-Path $PSScriptRoot 'orca-fixups.psd1')).Fixups)
+    foreach ($fixup in $fixups) {
+        $fixup.File = $fixup.File -replace '\\', '/'  # 'Checks\check-ORCA180.ps1' matches as 'Checks/check-ORCA180.ps1'
+        $upstreamFile = Join-Path $clone $fixup.File
+        if (-not (Test-Path -LiteralPath $upstreamFile)) {
+            throw "orca-fixups.psd1: upstream has no $($fixup.File). Update or delete the entry."
+        }
+        if (-not (Get-Content -LiteralPath $upstreamFile -Raw).Contains($fixup.Find)) {
+            throw "orca-fixups.psd1: $($fixup.File) no longer contains $($fixup.Find). Upstream changed it; delete or update the entry."
+        }
+    }
+    function Read-OrcaUpstreamFile {
+        param ([Parameter(Mandatory)] [string] $Path)
+
+        $text = Get-Content (Join-Path $clone $Path) -Raw
+        foreach ($fixup in ($fixups | Where-Object { $_.File -eq $Path })) {
+            $text = $text.Replace($fixup.Find, $fixup.Replace)
+        }
+        return $text
+    }
+
     $prereqs = @(
         @{type = 'class'; name = 'ORCACheck' },
         @{type = 'class'; name = 'ORCACheckConfig' },
@@ -137,7 +162,7 @@ if (-not $Offline) {
         @{type = 'function'; name = 'Get-AnyPolicyState' }
     )
 
-    $module = Get-Content (Join-Path $clone 'orca.psm1') -Raw
+    $module = Read-OrcaUpstreamFile -Path 'orca.psm1'
     $parse = [System.Management.Automation.Language.Parser]::ParseInput($module, [ref]$null, [ref]$null)
 
     $codeBlocks = @()
@@ -222,7 +247,7 @@ if (-not $Offline) {
     # One check-ORCA*.ps1 per upstream check: the upstream class with the module import replaced.
     Get-ChildItem -Path $orcaInternal -Filter 'check-ORCA*.ps1' | Remove-Item
     foreach ($file in (Get-ChildItem (Join-Path $clone 'Checks') -Filter '*.ps1')) {
-        $checkContent = (Get-Content $file -Raw) -replace "using module `"..\\ORCA.psm1`"", ''
+        $checkContent = (Read-OrcaUpstreamFile -Path "Checks/$($file.Name)") -replace "using module `"..\\ORCA.psm1`"", ''
         Write-OrcaGeneratedContent -Path (Join-Path $orcaInternal $file.Name) -Value "$orcaPrereqContent`n`n$checkContent"
     }
 }
