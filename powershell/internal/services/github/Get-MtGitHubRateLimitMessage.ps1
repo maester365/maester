@@ -7,6 +7,6 @@
     consumers should use structured GitHubRateLimit exception data rather than parse this text.
     #>
     param([Parameter(Mandatory)] $ErrorRecord)
-    $limit = Get-MtGitHubRateLimit -ErrorRecord $ErrorRecord
+    $limit = Get-MtGitHubRateLimit -ErrorRecord $ErrorRecord | Sort-Object ResumeUtc -Descending | Select-Object -First 1
     if ($limit) { $limit.Message }
 }

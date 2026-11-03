@@ -85,7 +85,7 @@
     }
     $confirmedViolations = 0
     try {
-        $inventory = Get-MtGitHubRepositoryInventory
+        $inventory = Get-MtGitHubRepositoryInventory -RetainPartialOnError
         foreach ($issue in $inventory.Issues) { $collectionGaps.Add("Organization repository inventory: $issue") }
         if ($inventory.Repositories.Count -eq 0 -and $inventory.Issues.Count -eq 0) {
             $scopeGaps.Add('No repositories were visible. This does not establish a complete organization inventory or a not-applicable result.')
@@ -96,11 +96,13 @@
         }
         foreach ($repository in $inventory.Repositories) {
             $approvalsConfigured = $declared.ContainsKey([string]$repository.id) -and $declared[[string]$repository.id].ApprovedAdministratorIds.Count -gt 0
-            if (-not $approvalsConfigured) {
-                $scopeGaps.Add("$(Get-MtSafeMarkdown $repository.name): Configure a nonempty ApprovedAdministratorIds roster before assessing administrator access.")
+            if (-not $approvalsConfigured -or $inventory.ExecutionError) {
+                if (-not $approvalsConfigured) { $scopeGaps.Add("$(Get-MtSafeMarkdown $repository.name): Configure a nonempty ApprovedAdministratorIds roster before assessing administrator access.") }
+                # An inventory execution error stops all follow-on requests, even for configured
+                # repositories. Retain their names without inventing administrator observations.
                 $rows.Add([pscustomobject]@{
                     Name = $repository.name; AdministratorCount = $null; UnapprovedIds = @()
-                    Complete = $null; ApprovalsConfigured = $false; Assessment = 'Not assessed'
+                    Complete = $null; ApprovalsConfigured = $approvalsConfigured; Assessment = 'Not assessed'
                 })
                 continue
             }
@@ -122,6 +124,7 @@
             if ($violation) { $violations.Add($repository) }
             if ($collaborators.ExecutionError) { throw $collaborators.ExecutionError }
         }
+        if ($inventory.ExecutionError) { throw $inventory.ExecutionError }
         if ($Kind -eq 'Repository') {
             foreach ($repository in $violations) {
                 $gap = Get-MtCisGitHubDeletionPolicyGap -Organization $organization -Repository $repository.name -RepositoryId ([string]$repository.id)
@@ -143,7 +146,7 @@
         Add-MtTestResultDetail -Result (Get-MtCisGitHubDeletionResult -Evidence $report) -RedactedResult (Get-MtCisGitHubDeletionResult -Evidence $report -RedactUserIdentity)
         # Do not expose an original exception's partial response, raw user IDs or arbitrary
         # server text through ErrorRecord, ReasonDetail or alternative report metadata.
-        $message = if ($_.Exception.Data['GitHubRateLimit'] -or $_.Exception.Message -eq 'GitHub rate limit stopped identity collection.') { 'GitHub rate limit stopped deletion assessment.' } else { 'GitHub deletion evidence request or JSON parsing failed.' }
+        $message = if ($_.Exception.Data['GitHubRateLimit'] -or $_.Exception.Message -in 'GitHub rate limit stopped identity collection.', 'GitHub rate limit stopped repository inventory collection.') { 'GitHub rate limit stopped deletion assessment.' } else { 'GitHub deletion evidence request or JSON parsing failed.' }
         throw [System.InvalidOperationException]::new($message)
     }
     $report.Repositories = $rows.ToArray()

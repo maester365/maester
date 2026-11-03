@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Pester supplies this container parameter to BeforeAll for source and built-module validation.')]
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Pester supplies this container parameter to BeforeAll for source and built-module validation.')]
 [CmdletBinding()]
 param([string] $ModulePath = "$PSScriptRoot/../../Maester.psd1")
 
@@ -114,6 +114,51 @@ Describe 'Partial repository coverage through native execution and exports' {
         $row.ReasonDetail | Should -Not -Match 'Sensitive server text|90123456789|synthetic-never-network'
         ($row.ErrorRecord | ConvertTo-Json -Depth 30) | Should -Not -Match 'Sensitive server text|90123456789|synthetic-never-network'
         $script:requestPaths.Count | Should -Be 2
+    }
+
+    It 'Retains validated inventory after a later-page <Failure> error without assessing access (<Id>)' -ForEach @(
+        @{ Failure = 'Timeout'; Id = 'CIS.GH.1.2.3' }, @{ Failure = 'JSON'; Id = 'CIS.GH.1.2.3' }, @{ Failure = 'Rate limit'; Id = 'CIS.GH.1.2.3' },
+        @{ Failure = 'Timeout'; Id = 'CIS.GH.1.2.4' }, @{ Failure = 'JSON'; Id = 'CIS.GH.1.2.4' }, @{ Failure = 'Rate limit'; Id = 'CIS.GH.1.2.4' }
+    ) {
+        Mock Invoke-WebRequest -ModuleName Maester {
+            $path = ([uri]$Uri).PathAndQuery
+            $script:requestPaths.Add($path)
+            if ($path -eq '/orgs/fixture-org') {
+                return @{ Content = '{"id":100,"members_can_delete_repositories":true,"members_can_delete_issues":true}'; Headers = @{} }
+            }
+            if ($path -eq '/orgs/fixture-org/repos?type=all&per_page=100&page=2') {
+                if ($Failure -eq 'JSON') { return @{ Content = '{"sensitive-server-text":'; Headers = @{} } }
+                if ($Failure -eq 'Rate limit') {
+                    $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::TooManyRequests)
+                    $null = $response.Headers.TryAddWithoutValidation('Retry-After', '60')
+                    throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('sensitive-server-text', $response)
+                }
+                throw [System.TimeoutException]::new('sensitive-server-text')
+            }
+            if ($path -ne '/orgs/fixture-org/repos?type=all&per_page=100') { throw 'Unexpected endpoint; network is forbidden.' }
+            $items = @($script:repositoryResponses[$path]) + @(
+                @{ id = 202; name = 'unusable-repository' },
+                @{ id = 203; name = 'conflicting-repository'; full_name = 'fixture-org/conflicting-repository'; owner = @{ login = 'fixture-org' } },
+                @{ id = 203; name = 'conflicting-repository'; full_name = 'foreign-org/conflicting-repository'; owner = @{ login = 'foreign-org' } }
+            )
+            return @{
+                Content = ConvertTo-Json -InputObject $items -Depth 10 -Compress
+                Headers = @{ Link = '<https://api.github.com/orgs/fixture-org/repos?type=all&per_page=100&page=2>; rel="next"' }
+            }
+        }
+        $row = Invoke-MtTest -Id $Id -Config $script:repositoryConfig
+        $row.Result | Should -Be 'Error'
+        $row.ReasonCode | Should -Be 'TestError'
+        $row.ResultDetail.TestResult | Should -Match '\| fixture-repo \| Not assessed \| Not assessed \|  \| Not assessed \| Not collected \|'
+        $row.ResultDetail.TestResult | Should -Match '\| other-repo \| Not assessed \| Not configured \|  \| Not assessed \| Not collected \|'
+        $row.ResultDetail.TestResult | Should -Match 'inventory.*incomplete|pagination is incomplete'
+        $row.ResultDetail.TestResultRedacted | Should -Match 'fixture-repo.*Not assessed.*Not collected'
+        $row.ResultDetail.TestResult | Should -Not -Match 'unusable-repository|conflicting-repository|sensitive-server-text|9876543210123'
+        $row.ReasonDetail | Should -Not -Match 'fixture-repo|other-repo|sensitive-server-text|GitHubPartialResponse'
+        ($row.ErrorRecord | ConvertTo-Json -Depth 30) | Should -Not -Match 'fixture-repo|other-repo|sensitive-server-text|GitHubPartialResponse'
+        if ($Failure -eq 'Rate limit') { $row.ReasonDetail | Should -Match 'rate limit stopped deletion assessment' }
+        $script:requestPaths.Count | Should -Be 3
+        @($script:requestPaths | Where-Object { $_ -match 'collaborators|graphql|roles' }).Count | Should -Be 0
     }
 
     It 'Exports retained findings and gaps with <Mode> redaction after <Outcome>' -ForEach @(

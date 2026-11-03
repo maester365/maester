@@ -101,7 +101,9 @@
         [string] $Severity,
 
         # Complete pseudonymized result Markdown, used when user identity redaction is enabled.
-        # The static result template is applied, but GraphObjects are never inserted into this alternative.
+        # When Description is omitted, the static result template is applied to both result variants.
+        # With an explicit Description, supply complete content for both Result and RedactedResult.
+        # GraphObjects are never inserted into this alternative.
         # Protects result Markdown only, not arbitrary titles, descriptions, skip reasons or errors.
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]

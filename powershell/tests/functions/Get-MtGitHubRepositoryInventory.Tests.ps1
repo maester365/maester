@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     Use-MtModuleFunction -Name Get-MtGitHubRepositoryInventory
@@ -75,6 +75,11 @@ Describe 'Validated GitHub repository inventory identities' {
         $actual = Get-MtGitHubRepositoryInventory
         $actual.Repositories.Count | Should -Be 0
         $actual.Issues.Count | Should -BeGreaterThan 0
+    }
+
+    It 'Preserves throwing on request errors unless partial retention is explicitly requested' {
+        Mock Invoke-MtGitHubRequest -ModuleName Maester { throw 'Synthetic inventory failure' }
+        { Get-MtGitHubRepositoryInventory } | Should -Throw '*Synthetic inventory failure*'
     }
 
     It 'Retains a successful empty inventory without inventing identities or retrieval gaps' {

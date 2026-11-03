@@ -1081,7 +1081,11 @@
 
             if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
                 Write-MtProgress -Activity 'Creating markdown report'
-                $output = Get-MtMarkdownReport -MaesterResults $exportResults
+                # Redaction can JSON-round-trip the version object. Normalize only the Markdown copy,
+                # preserving the result schema in JSON and the original object returned by PassThru.
+                $markdownResults = $exportResults | Select-Object -Property *
+                $markdownResults.CurrentVersion = [string]$maesterResults.CurrentVersion
+                $output = Get-MtMarkdownReport -MaesterResults $markdownResults
                 $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
             }
 
