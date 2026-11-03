@@ -31,9 +31,10 @@ title: Microsoft Graph permissions Maester uses
 - **ThreatHunting.Read.All**
 - **UserAuthenticationMethod.Read.All**
 
-To run preview Agent ID tests, also grant these application permissions:
+To run preview tests, also grant these application permissions:
 
 - **AgentIdentity.Read.All**
 - **AgentIdentityBlueprint.Read.All**
 - **AgentIdentityBlueprintPrincipal.Read.All**
 - **Application.Read.All**
+- **SecurityEvents.Read.All**
