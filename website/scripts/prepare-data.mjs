@@ -7,7 +7,7 @@
 // command reference need PowerShell 7 and the Microsoft.Graph.Authentication module. The build-website workflow
 // runs this in a fresh checkout, so every deploy of maester.dev is built from the source of that commit.
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const websiteRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -36,13 +36,17 @@ if (missing('src/data/test-catalog.json')) {
 
 const commandPages = () => readdirSync(at('docs/commands')).filter((name) => name.endsWith('.mdx') && name !== 'readme.mdx');
 // A failed run can leave some pages half converted and the index page (readme.mdx, kept in git) deleted. Remove the
-// pages, so the next run generates them again, and restore the index page.
-function removeCommandPages() {
-	for (const name of commandPages()) rmSync(at(`docs/commands/${name}`), { force: true });
-	spawnSync('git', ['checkout', '--', 'website/docs/commands/readme.mdx'], { cwd: repoRoot, stdio: 'inherit' });
-}
+// pages, so the next run generates them again, and put back the index page as it was before the run, edits included.
+const commandIndex = at('docs/commands/readme.mdx');
 if (refresh || commandPages().length === 0) {
-	run('Generate the command reference', 'pwsh', pwsh('build/Update-CommandReference.ps1'), repoRoot, removeCommandPages);
+	const index = readFileSync(commandIndex);
+	run('Generate the command reference', 'pwsh', pwsh('build/Update-CommandReference.ps1'), repoRoot, () => {
+		try {
+			for (const name of commandPages()) rmSync(at(`docs/commands/${name}`), { force: true });
+		} finally {
+			writeFileSync(commandIndex, index);
+		}
+	});
 }
 
 // The test pages and the contributor credits; the site's content loader writes the test pages again on each build.
