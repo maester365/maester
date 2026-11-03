@@ -31,14 +31,16 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-    # Only what the site is built from: the exported commands' help (the manifest lists them), the tests and
-    # the docs. A change to powershell/internal cannot add or change a page.
+    # Only what the site is built from: the exported commands' help (the manifest lists them), the tests, the
+    # engine and the assets that read the tests into the catalog (taxonomy, schema, legacy tags), and the docs.
     paths:
       - "README.md"
       - "build/Update-CommandReference.ps1"
       - "build/docs/**"
       - "build/eidsca/*.json"
       - "powershell/Maester.psd1"
+      - "powershell/assets/**"
+      - "powershell/internal/engine/**"
       - "powershell/public/**"
       - "tests/**"
       - "website/**"
@@ -71,6 +73,8 @@ jobs:
         with:
           app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
           private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          # Read only: the build reads public profiles, sponsorships and the repository's contributors.
+          permission-contents: read
 
       - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

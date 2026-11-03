@@ -7,7 +7,7 @@
 // command reference need PowerShell 7 and the Microsoft.Graph.Authentication module. The build-website workflow
 // runs this in a fresh checkout, so every deploy of maester.dev is built from the source of that commit.
 import { spawnSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const websiteRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -16,10 +16,11 @@ const refresh = process.argv.includes('--refresh');
 const at = (path) => fileURLToPath(new URL(`../${path}`, import.meta.url));
 const missing = (path) => refresh || !existsSync(at(path));
 
-function run(label, command, args, cwd) {
+function run(label, command, args, cwd, cleanUp) {
 	console.log(`prepare-data: ${label}`);
 	const result = spawnSync(command, args, { cwd, stdio: 'inherit' });
 	if (result.error || result.status !== 0) {
+		cleanUp?.();
 		const reason = result.error?.code === 'ENOENT' ? `${command} is not installed` : (result.error?.message ?? `${command} exited with ${result.status}`);
 		console.error(`prepare-data: could not ${label.toLowerCase()}: ${reason}.`);
 		if (command === 'pwsh') console.error('It needs PowerShell 7 and the Microsoft.Graph.Authentication module: https://maester.dev/docs/contributing');
@@ -34,8 +35,14 @@ if (missing('src/data/test-catalog.json')) {
 }
 
 const commandPages = () => readdirSync(at('docs/commands')).filter((name) => name.endsWith('.mdx') && name !== 'readme.mdx');
+// A failed run can leave some pages half converted and the index page (readme.mdx, kept in git) deleted. Remove the
+// pages, so the next run generates them again, and restore the index page.
+function removeCommandPages() {
+	for (const name of commandPages()) rmSync(at(`docs/commands/${name}`), { force: true });
+	spawnSync('git', ['checkout', '--', 'website/docs/commands/readme.mdx'], { cwd: repoRoot, stdio: 'inherit' });
+}
 if (refresh || commandPages().length === 0) {
-	run('Generate the command reference', 'pwsh', pwsh('build/Update-CommandReference.ps1'), repoRoot);
+	run('Generate the command reference', 'pwsh', pwsh('build/Update-CommandReference.ps1'), repoRoot, removeCommandPages);
 }
 
 // The test pages and the contributor credits; the site's content loader writes the test pages again on each build.

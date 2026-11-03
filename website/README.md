@@ -31,6 +31,8 @@ Node.js 22.22 or later. The contributing guide has the details: [Contributing to
 
 ## Deployment
 
-Cloudflare Pages builds the site from `main`: root directory `website`, build command `npm run build`, output
-directory `dist`, Node.js 24. Pages serves `docs/intro.html` at `/docs/intro` and redirects `/docs/intro/` there, so
+The build-website workflow (`.github/workflows/build-website.yaml`) builds the site on every push to `main`, once a
+day and on request, then uploads `website/dist` to the Cloudflare Pages project with wrangler. The build needs
+PowerShell and the maester-bot token, which Cloudflare's own build doesn't have, so the Pages project must not also
+build from git. Pull requests are built as a check and never deployed. Pages serves `docs/intro.html` at `/docs/intro` and redirects `/docs/intro/` there, so
 every URL has one form, without a trailing slash.
