@@ -124,6 +124,7 @@ if (-not $Offline) {
     # written: one whose file or text upstream no longer has stops the run.
     $fixups = @((Import-PowerShellDataFile (Join-Path $PSScriptRoot 'orca-fixups.psd1')).Fixups)
     foreach ($fixup in $fixups) {
+        $fixup.File = $fixup.File -replace '\\', '/'  # 'Checks\check-ORCA180.ps1' matches as 'Checks/check-ORCA180.ps1'
         $upstreamFile = Join-Path $clone $fixup.File
         if (-not (Test-Path -LiteralPath $upstreamFile)) {
             throw "orca-fixups.psd1: upstream has no $($fixup.File). Update or delete the entry."
@@ -136,7 +137,7 @@ if (-not $Offline) {
         param ([Parameter(Mandatory)] [string] $Path)
 
         $text = Get-Content (Join-Path $clone $Path) -Raw
-        foreach ($fixup in ($fixups | Where-Object { ($_.File -replace '\\', '/') -eq $Path })) {
+        foreach ($fixup in ($fixups | Where-Object { $_.File -eq $Path })) {
             $text = $text.Replace($fixup.Find, $fixup.Replace)
         }
         return $text
