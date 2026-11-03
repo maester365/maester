@@ -1,9 +1,9 @@
 # Featured sponsors: the organisations shown first, with their logos, in the thank-you on
 # https://maester.dev/sponsor and in the Sponsors section of the repository README, in this order.
 #
-# Kept by hand. website/scripts/sponsors.mjs copies this list into website/src/data/sponsors.json, which the
-# page reads, and writes the README section from the same data. After editing it, run the script (no token
-# needed: `cd website && node scripts/sponsors.mjs`) or let the update-sponsors workflow do it.
+# Kept by hand. website/scripts/sponsors.mjs copies this list into the sponsor data the page reads on each
+# build. After editing it, update the README's Sponsors section in the same pull request (no token needed:
+# `cd website && node scripts/sponsors.mjs --readme`); the build-website workflow fails until you do.
 #
 #   - name: Contoso                         # shown as the logo's alt text and tooltip
 #     url: https://contoso.com              # where the logo links to

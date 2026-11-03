@@ -269,11 +269,8 @@ function extractSection(markdown, headingPattern) {
 }
 
 // The catalog comes from Get-MtTest (the authoritative reader of the [MaesterTest] attribute), exported
-// to JSON by build/docs/Export-MtTestCatalogForDocs.ps1. Resolution order:
-//   1. --catalog <path> or MAESTER_TEST_CATALOG: must exist (used by CI after running the exporter).
-//   2. Otherwise run the exporter with pwsh into website/.generated/test-catalog.json.
-// Returns null when no catalog can be produced (for example pwsh or Microsoft.Graph.Authentication is
-// not installed), so `npm start` still works with the committed pages.
+// to JSON by build/docs/Export-MtTestCatalogForDocs.ps1: --catalog <path> or MAESTER_TEST_CATALOG, or else
+// website/src/data/test-catalog.json, which scripts/prepare-data.mjs exports before each dev server and build.
 function catalogArgument() {
   const index = process.argv.indexOf("--catalog");
   if (index !== -1) return process.argv[index + 1] ?? "";
@@ -285,7 +282,7 @@ function catalogArgument() {
 // benchmark a suite implements, by the key a test's Benchmark uses.
 function loadCatalog() {
   const path = catalogArgument() ? resolve(process.cwd(), catalogArgument()) : defaultCatalogPath;
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is the committed catalog or one supplied by the caller
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- path is the exported catalog or one supplied by the caller
   if (!existsSync(path)) throw new Error(`Test catalog not found at ${path}. Run npm run export-catalog first.`);
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- same path as above
   return JSON.parse(readFileSync(path, "utf8"));
@@ -724,7 +721,8 @@ export function main() {
   const writes = [];
   clearGeneratedDocs();
 
-  // The update-test-docs workflow passes --update-aliases to record new commit emails; a site build only reads them.
+  // --update-aliases records the GitHub accounts of new commit emails in contributors/email-aliases.json; a site
+  // build looks them up again each time and only reads the file.
   const updateAliases = process.argv.includes("--update-aliases");
   const contributorData = computeContributorData(tests, { updateAliases, log: updateAliases ? console.log : () => {} });
   contributorData.profilesById = new Map(contributorData.profiles.map((profile) => [profile.id, profile]));

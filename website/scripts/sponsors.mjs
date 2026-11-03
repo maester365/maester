@@ -1,21 +1,27 @@
 // Builds the list of people on maester.dev/sponsor: the contributors who have a GitHub Sponsors listing.
 //
 // Three groups: the core maintainers (`maintainer: true` in website/contributors/contributors.yml), the
-// primary authors of tests (the Author of a test's [MaesterTest] attribute, from the contributor snapshot
+// primary authors of tests (the Author of a test's [MaesterTest] attribute, from the contributor credits
 // at website/src/data/contributors.json) and everyone else who has committed to the repository (GitHub's
 // contributors API). Only people with a Sponsors listing are kept; `sponsorPage: false` in contributors.yml
 // leaves a person out. The public sponsors of the core maintainers are listed too, to thank them, after the
 // featured sponsors kept by hand in website/sponsors/featured.yml, which are shown first with their logos.
 //
 // Whether a person has a listing is only known to GitHub (GraphQL `hasSponsorsListing`), so this needs a
-// token in GH_TOKEN or GITHUB_TOKEN. The .github/workflows/update-sponsors.yaml workflow runs it daily with
-// the maester-bot app and commits the result to website/src/data/sponsors.json, which the site reads at
-// build time, and to the Sponsors section of the repository README, which shows the same sponsors. Without a
-// token the people of the committed snapshot are kept; the featured sponsors and the README are still updated.
+// token in GH_TOKEN or GITHUB_TOKEN. Each deploy of maester.dev runs it (scripts/prepare-data.mjs, with the
+// maester-bot app's token) and writes website/src/data/sponsors.json, which the site reads at build time and
+// publishes at /data/sponsors.json, and the wall of sponsors that the repository README shows
+// (public/readme/sponsors.svg and sponsors-dark.svg). Without a token, or when GitHub can't be read, the list
+// published on maester.dev is used, so a local build shows the real sponsors and a failed lookup never empties
+// the page. Neither file is kept in git.
 //
-// Locally: GH_TOKEN=$(gh auth token) node scripts/sponsors.mjs
+// --readme also writes the Sponsors section of the repository README: the featured sponsors' logos and the wall.
+// It changes only when featured.yml does, and the build-website workflow fails a pull request that leaves it out
+// of date.
+//
+// Locally: GH_TOKEN=$(gh auth token) node scripts/sponsors.mjs [--readme]
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { load as loadYamlDocument } from "js-yaml";
@@ -27,6 +33,8 @@ const contributorsPath = join(websiteRoot, "src", "data", "contributors.json");
 const featuredPath = join(websiteRoot, "sponsors", "featured.yml");
 const snapshotPath = join(websiteRoot, "src", "data", "sponsors.json");
 const readmePath = join(websiteRoot, "..", "README.md");
+const wallDir = join(websiteRoot, "public", "readme");
+const publishedUrl = "https://maester.dev/data/sponsors.json";
 const repository = "maester365/maester";
 
 const botPattern = /\[bot\]|copilot|github[- ]actions?|actions-user|dependabot|web-flow|snyk/i;
@@ -84,7 +92,7 @@ async function sponsorProfiles(logins) {
 // The public sponsors of a maintainer: everyone with a monthly sponsorship that is still running, and anyone
 // whose one-time sponsorship was made in the last RECENT_DAYS days. Private sponsorships are never returned for
 // another account, so nobody who sponsored privately is named. A token that may not read them leaves the list empty;
-// any other failure stops the script, so a lookup cut short never replaces the committed list with a shorter one.
+// any other failure stops the lookup, so a lookup cut short never replaces the published list with a shorter one.
 const RECENT_DAYS = 90;
 const noAccess = new Set(["INSUFFICIENT_SCOPES", "FORBIDDEN"]);
 async function backersOf(login) {
@@ -243,16 +251,18 @@ async function lookUpPeople() {
   return people;
 }
 
-// The Sponsors section of the repository README, between its sponsors:start and sponsors:end markers: the same
-// sponsors as the thank-you on the page. Images have absolute URLs, as the module ships the README too.
+// The Sponsors section of the repository README, between its sponsors:start and sponsors:end markers: the
+// featured sponsors' logos, then the wall of everyone else who sponsors a maintainer. Images have absolute URLs,
+// as the module ships the README too. The wall is an image built on each deploy, so the README stays the same
+// when someone starts or stops sponsoring.
 const imageBase = `https://raw.githubusercontent.com/${repository}/main/website/public`;
 const html = (text) =>
   String(text).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-function readmeSection({ featured, backers }) {
+function readmeSection(featured) {
   const lines = [
     "<!-- sponsors:start -->",
-    "<!-- Written by website/scripts/sponsors.mjs. To change the featured sponsors, edit website/sponsors/featured.yml. -->",
+    "<!-- Written by website/scripts/sponsors.mjs --readme. To change the featured sponsors, edit website/sponsors/featured.yml. -->",
     "",
     "## Sponsors",
     "",
@@ -269,50 +279,104 @@ function readmeSection({ featured, backers }) {
     );
     lines.push("<p>", `  ${logos.join("&nbsp;&nbsp;&nbsp;&nbsp;\n  ")}`, "</p>", "");
   }
-  if (backers.length > 0) {
-    lines.push("<table>");
-    for (let i = 0; i < backers.length; i += 6) {
-      lines.push("  <tr>");
-      for (const backer of backers.slice(i, i + 6)) {
-        lines.push(
-          `    <td align="center" width="110"><a href="https://github.com/${html(backer.github)}">` +
-            `<img src="${html(backer.avatar)}" width="64" height="64" alt=""><br><sub><b>${html(backer.name)}</b></sub></a></td>`
-        );
-      }
-      lines.push("  </tr>");
-    }
-    lines.push("</table>", "");
-  }
   lines.push(
+    `<a href="https://maester.dev/sponsor"><picture>` +
+      `<source media="(prefers-color-scheme: dark)" srcset="https://maester.dev/readme/sponsors-dark.svg">` +
+      `<img src="https://maester.dev/readme/sponsors.svg" alt="The people and organisations who sponsor the maintainers of Maester">` +
+      `</picture></a>`,
+    "",
     "Using Maester at work? Ask your company to sponsor one of the [people who build it](https://maester.dev/sponsor).",
     "<!-- sponsors:end -->"
   );
   return lines.join("\n");
 }
 
-function writeReadme(snapshot) {
+// The wall of sponsors in the README: each sponsor's avatar and name, six to a row. GitHub shows a README's images
+// through its image proxy, which doesn't load the images an SVG links to, so the avatars are embedded.
+async function embed(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return url;
+    const type = response.headers.get("content-type") ?? "image/png";
+    return `data:${type};base64,${Buffer.from(await response.arrayBuffer()).toString("base64")}`;
+  } catch {
+    return url;
+  }
+}
+
+async function writeWall(backers) {
+  const columns = backers.length > 0 ? Math.min(6, backers.length) : 6;
+  const cell = { width: 110, height: 100 };
+  const avatars = await Promise.all(backers.map((backer) => embed(backer.avatar)));
+  for (const [file, text, ring] of [
+    ["sponsors.svg", "#1f2328", "#d1d9e0"],
+    ["sponsors-dark.svg", "#f0f6fc", "#3d444d"],
+  ]) {
+    const rows = Math.max(1, Math.ceil(backers.length / columns));
+    const width = columns * cell.width;
+    const height = rows * cell.height;
+    const people = backers.map((backer, i) => {
+      const x = (i % columns) * cell.width + cell.width / 2;
+      const y = Math.floor(i / columns) * cell.height + 8;
+      const name = backer.name.length > 16 ? `${backer.name.slice(0, 15)}…` : backer.name;
+      return [
+        `<clipPath id="c${i}"><circle cx="${x}" cy="${y + 32}" r="32"/></clipPath>`,
+        `<image href="${html(avatars[i])}" x="${x - 32}" y="${y}" width="64" height="64" clip-path="url(#c${i})"/>`,
+        `<circle cx="${x}" cy="${y + 32}" r="32" fill="none" stroke="${ring}"/>`,
+        `<text x="${x}" y="${y + 84}" text-anchor="middle">${html(name)}</text>`,
+      ].join("");
+    });
+    const empty = `<text x="${width / 2}" y="${height / 2}" text-anchor="middle">Sponsor the people who build Maester at maester.dev/sponsor</text>`;
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img">` +
+      `<title>The sponsors of Maester's maintainers</title>` +
+      `<style>text{font:600 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;fill:${text}}</style>` +
+      `${backers.length > 0 ? people.join("") : empty}</svg>\n`;
+    writeFileSync(join(wallDir, file), svg);
+  }
+}
+
+function writeReadme(featured) {
   const readme = readFileSync(readmePath, "utf8");
   const markers = /<!-- sponsors:start -->[\s\S]*?<!-- sponsors:end -->/;
   if (!markers.test(readme)) {
     console.warn("sponsors: README.md has no sponsors:start and sponsors:end markers, leaving it as it is.");
     return;
   }
-  writeFileSync(readmePath, readme.replace(markers, () => readmeSection(snapshot)));
+  writeFileSync(readmePath, readme.replace(markers, () => readmeSection(featured)));
 }
 
 const featured = featuredSponsors();
 const featuredLogins = new Set(featured.map((sponsor) => sponsor.github.toLowerCase()).filter(Boolean));
 
+const emptyPeople = { maintainers: [], testAuthors: [], contributors: [], backers: [] };
+
+// The list published by the last deploy of maester.dev.
+async function publishedPeople(reason) {
+  try {
+    const response = await fetch(publishedUrl);
+    if (!response.ok) throw new Error(`${response.status}`);
+    console.log(`sponsors: ${reason}, using the list published at ${publishedUrl}.`);
+    return await response.json();
+  } catch (error) {
+    console.warn(`sponsors: ${reason}, and the list at ${publishedUrl} could not be read (${error.message}): no people are listed.`);
+    return emptyPeople;
+  }
+}
+
 let people;
-if (token) {
-  people = await lookUpPeople();
+if (!token) {
+  people = await publishedPeople("no GH_TOKEN or GITHUB_TOKEN");
 } else {
-  console.log("sponsors: no GH_TOKEN or GITHUB_TOKEN, keeping the people of the committed snapshot.");
-  people = JSON.parse(readFileSync(snapshotPath, "utf8"));
+  try {
+    people = await lookUpPeople();
+  } catch (error) {
+    people = await publishedPeople(`the lookup failed (${error.message})`);
+  }
 }
 
 // A featured sponsor who also sponsors a maintainer on GitHub is thanked once, with their logo.
-const { backers = [], ...groups } = people;
+const { backers = [], ...groups } = { ...emptyPeople, ...people };
 const snapshot = {
   ...groups,
   featured,
@@ -320,5 +384,7 @@ const snapshot = {
 };
 
 writeFileSync(snapshotPath, `${JSON.stringify(snapshot, null, 2)}\n`);
-writeReadme(snapshot);
+mkdirSync(wallDir, { recursive: true });
+await writeWall(snapshot.backers);
+if (process.argv.includes("--readme")) writeReadme(featured);
 console.log(`sponsors: ${snapshot.featured.length} featured sponsors, ${snapshot.backers.length} other sponsors thanked.`);

@@ -33,15 +33,18 @@ maester.dev), `report/` (React app that builds the HTML report template).
 
 ## Hard rules
 
-- Generated content — regenerate, never hand-edit: `website/docs/commands/`,
-  `website/src/data/test-catalog.json` (the test pages are built from it),
-  `website/src/data/versions.json`, `website/versioned_docs/` (the frozen 2.x docs), everything under
+- Generated content — regenerate, never hand-edit: `website/src/data/versions.json`, `website/versioned_docs/` (the frozen 2.x docs), everything under
   `powershell/internal/generated/`, and the native `tests/eidsca/Test.EIDSCA.*` and
   `tests/orca/Test.ORCA.*` files the generators in `build/eidsca/` and `build/orca/`
   write. Edit the PowerShell source, comment-based help or generator templates and let
   automation regenerate. `powershell/assets/ConsoleContributors.json` (the dashboard's
   Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
   the website's contributor data.
+- Never commit the website data that each build generates: the command pages in `website/docs/commands/`
+  (everything but `readme.mdx`), `website/src/data/test-catalog.json`, `contributors.json` and `sponsors.json`.
+  They are ignored by git. `website/scripts/prepare-data.mjs` writes them from the module source, the git
+  history and GitHub before `npm run dev` and `npm run build`; `npm run refresh-data` writes them again.
+  The build-website workflow builds and deploys maester.dev from main, so a merge needs no follow-up PR.
 - A test is mapped to a framework in one place: the `Control` attribute, `<framework-key>:<requirement-id>`. A
   CIS test carries `Control = 'cis-m365:5.1.5.1'`, a CISA test `Control = 'cisa-scuba:MS.AAD.3.1'`, and any other
   test may name the same requirements. An ASD test carries `Control = 'essential-eight:ISM-1504'` (or `ism:<id>` for a
