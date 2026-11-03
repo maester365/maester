@@ -1,4 +1,4 @@
-function Resolve-MtDnsTxtRecord {
+﻿function Resolve-MtDnsTxtRecord {
     <#
     .SYNOPSIS
     Returns the TXT records published at a DNS name, without filtering them.
@@ -29,55 +29,11 @@ function Resolve-MtDnsTxtRecord {
         [string]$Name
     )
 
-    $result = [pscustomobject]@{
-        Name    = $Name
-        Status  = 'Success'
-        Answers = [string[]]@()
-        Error   = $null
+    $dnsResult = Resolve-MtDnsRecord -Name $Name -Type TXT
+    return [pscustomobject]@{
+        Name    = $dnsResult.Name
+        Status  = $dnsResult.Status
+        Answers = [string[]]@($dnsResult.Answers | ForEach-Object { $_.Value })
+        Error   = $dnsResult.Error
     }
-
-    if ($IsWindows) {
-        try {
-            $response = Resolve-DnsName -Name $Name -Type TXT -ErrorAction Stop
-            $result.Answers = [string[]]@($response | Where-Object { $_.Section -eq 'Answer' -and $_.Type -eq 'TXT' } | ForEach-Object { $_.Strings -join '' })
-        } catch [System.Management.Automation.CommandNotFoundException] {
-            $result.Status = 'NotAvailable'
-            $result.Error = 'Unsupported platform, Resolve-DnsName not available'
-        } catch {
-            Write-Verbose "TXT lookup for $($Name) failed: $_"
-            if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') {
-                $result.Status = 'NXDomain'
-            } elseif ($_.FullyQualifiedErrorId -notlike 'DNS_INFO_NO_RECORDS*') {
-                $result.Status = 'Error'
-                $result.Error = "$_"
-            }
-        }
-        return $result
-    }
-
-    if (-not (Get-Command -Name 'Resolve-Dns' -ErrorAction SilentlyContinue)) {
-        Write-Verbose 'For non-Windows platforms, please install the DnsClient-PS module: Install-Module DnsClient-PS -Scope CurrentUser'
-        $result.Status = 'NotAvailable'
-        $result.Error = 'Missing dependency, Resolve-Dns not available'
-        return $result
-    }
-
-    try {
-        $response = Resolve-Dns -Query $Name -QueryType TXT -ErrorAction Stop
-        if ($response.HasError) {
-            if ("$($response.Header.ResponseCode)" -eq 'NotExistentDomain') {
-                $result.Status = 'NXDomain'
-            } else {
-                $result.Status = 'Error'
-                $result.Error = $response.ErrorMessage
-            }
-        } else {
-            $result.Answers = [string[]]@($response.Answers | Where-Object { "$($_.RecordType)" -eq 'TXT' } | ForEach-Object { $_.Text -join '' })
-        }
-    } catch {
-        Write-Verbose "TXT lookup for $($Name) failed: $_"
-        $result.Status = 'Error'
-        $result.Error = "$_"
-    }
-    return $result
 }

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     # Check functions that became native tests are not exported.
     Use-MtModuleFunction -Name Test-MtCisaDkim, Test-MtCisDkim
@@ -12,6 +12,18 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
     BeforeEach {
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail { }
+            Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+                $classification = if ($DomainName -eq 'parked.example') { 'Parked' } else { 'Sending' }
+                [PSCustomObject]@{
+                    DomainName     = $DomainName
+                    Classification = $classification
+                    IsParked       = $classification -eq 'Parked'
+                    SpfRecord      = $null
+                    SpfDeniesAll   = $false
+                    DkimEvidence   = $false
+                    Reason         = 'Mock domain classification'
+                }
+            }
         Mock -ModuleName Maester Get-MailAuthenticationRecord {
             throw 'DNS lookup should not be attempted without a DKIM signing configuration'
         }
@@ -45,8 +57,8 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $true
-            ExpectedResultByCommand   = @{
-                'Test-MtCisDkim'  = $null
+                ExpectedResultByCommand   = @{
+                    'Test-MtCisDkim'  = $true
                 'Test-MtCisaDkim' = $null
             }
         }
@@ -104,6 +116,48 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             $result | Should -Be $expectedResult
         }
         Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Exactly 0
+    }
+}
+
+Describe 'CIS DKIM domain classification outcomes' {
+    BeforeEach {
+        Mock -ModuleName Maester Add-MtTestResultDetail {
+            $script:detail = [PSCustomObject]@{ Result = $Result; Investigate = [bool]$Investigate; SkippedBecause = $SkippedBecause }
+        }
+        Mock -ModuleName Maester Get-MtExo {
+            if ($Request -eq 'AcceptedDomain') {
+                return @([PSCustomObject]@{ DomainName = 'unknown.example'; InitialDomain = $false; IsCoexistenceDomain = $false })
+            }
+            return @()
+        }
+        Mock -ModuleName Maester Get-MailAuthenticationRecord { throw 'No DKIM lookup should be needed for this classification.' }
+    }
+
+    It 'investigates domains whose sending use cannot be established' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{ Classification = 'Unknown'; IsParked = $false; Reason = 'DNS evidence is incomplete.' }
+        }
+
+        Test-MtCisDkim | Should -BeTrue
+        $script:detail.Investigate | Should -BeTrue
+    }
+
+    It 'fails a parked override when DKIM evidence remains' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            $classification = if ($ParkedDomains -contains $DomainName) { 'Parked' } else { 'Sending' }
+            [PSCustomObject]@{ Classification = $classification; DkimEvidence = $true; Reason = 'Explicit parked override.' }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeFalse
+    }
+
+    It 'marks a non-sending receive domain out of scope for DKIM' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{ Classification = 'NotSending'; IsParked = $false; Reason = 'The domain has receive-only DNS records.' }
+        }
+
+        Test-MtCisDkim | Should -BeNullOrEmpty
+        $script:detail.SkippedBecause | Should -Be 'NotApplicable'
     }
 }
 
