@@ -136,7 +136,7 @@ if (-not $Offline) {
         param ([Parameter(Mandatory)] [string] $Path)
 
         $text = Get-Content (Join-Path $clone $Path) -Raw
-        foreach ($fixup in ($fixups | Where-Object { $_.File -eq $Path })) {
+        foreach ($fixup in ($fixups | Where-Object { ($_.File -replace '\\', '/') -eq $Path })) {
             $text = $text.Replace($fixup.Find, $fixup.Replace)
         }
         return $text
