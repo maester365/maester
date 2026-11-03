@@ -570,6 +570,11 @@ $null = $Builder.AppendLine("    $FunctionExportString")
 $null = $Builder.AppendLine(") -Alias @($AliasExportString)")
 $null = $Builder.AppendLine()
 
+# Tab completion (mirrors the source Maester.psm1, whose code after the dot-sourcing loops is not copied).
+$null = $Builder.AppendLine('# Tab completion for the parameters listed in Get-MtArgumentCompleterTable.')
+$null = $Builder.AppendLine('Register-MtArgumentCompleter')
+$null = $Builder.AppendLine()
+
 # Safely import module manifest (mirrors source Maester.psm1 behavior).
 $null = $Builder.AppendLine(@'
 # Safely import module manifest

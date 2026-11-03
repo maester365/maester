@@ -1,6 +1,8 @@
 # Maester 3.0 tab completion: design
 
-Status: proposal, for the owner's review. Nothing is implemented yet.
+Status: accepted and implemented in one pull request (steps 1 to 3 below), following the owner's ruling of
+2026-11-03: "one PR 1-3". The questions at the end were not answered separately, so the recommendations stand.
+"Implementation notes" says where the code differs from the design.
 
 Goal: pressing Tab after `-Product`, `-TestId`, `-Pack` and the other selectors of `Invoke-Maester` completes their
 values from what Maester knows (the taxonomy, the test catalogue, the suites, the installed packs and the custom
@@ -65,21 +67,17 @@ Also confirmed:
 
 ## Mechanism: one registration table, run at import
 
-`Register-MtArgumentCompleter`, a private function, holds a table of `Command`, `Parameter` and `Kind` rows and calls
-`Register-ArgumentCompleter` once for each row. The script block it registers is created in the function, so it is
-bound to the module that registered it, and it calls one dispatcher:
+`Get-MtArgumentCompleterTable`, a private function, returns rows of `Command`, `Parameter`, `Kind`, `Values` and
+`Narrow`. `Register-MtArgumentCompleter` calls `Register-ArgumentCompleter` once for each row with one script block.
+The script block is created in the function, so it is bound to the module that registered it, and it calls one
+dispatcher, which looks the row up by command and parameter:
 
 ```powershell
-$completer = {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    Get-MtArgumentCompletion -Kind $kind -CommandName $commandName -ParameterName $parameterName `
-        -WordToComplete $wordToComplete -FakeBoundParameters $fakeBoundParameters
-}.GetNewClosure()
+$completer = { Get-MtArgumentCompletion -CommandName $args[0] -ParameterName $args[1] -WordToComplete $args[2] -FakeBoundParameters $args[4] }
 ```
 
-(`GetNewClosure` keeps `$kind` from the loop; the implementation may instead pass the kind by looking the
-parameter up in the same table inside the dispatcher, which keeps the module binding without a closure. The unit
-tests decide: whichever one still reaches private functions.)
+`GetNewClosure()` is not used: it binds a script block to a new dynamic module, which loses the module scope. For an
+alias (`Invoke-MtMaester`), PowerShell passes the command's own name, so the table needs no alias rows.
 
 The source `Maester.psm1` calls `Register-MtArgumentCompleter` after it dot-sources the functions. The build writes
 its own tail for the consolidated `Maester.psm1` (`Build-MaesterModule.ps1`, after `Export-ModuleMember`), so the
@@ -245,10 +243,14 @@ All new functions are private, one function per file, `Verb-Noun.ps1`, UTF-8 wit
 
 | File | Job |
 | --- | --- |
-| `powershell/internal/engine/completion/Register-MtArgumentCompleter.ps1` | The `Command`/`Parameter`/`Kind` table and the registration loop. |
-| `powershell/internal/engine/completion/Get-MtArgumentCompletion.ps1` | The dispatcher: rules 1 to 7 above, and one block per kind. |
-| `powershell/internal/engine/completion/Get-MtCompletionIndex.ps1` | The cached index of built-in tests, taxonomy, legacy tags and suite names. |
+| `powershell/internal/engine/completion/Get-MtArgumentCompleterTable.ps1` | The `Command`/`Parameter`/`Kind` table. |
+| `powershell/internal/engine/completion/Register-MtArgumentCompleter.ps1` | The registration loop. |
+| `powershell/internal/engine/completion/Get-MtArgumentCompletion.ps1` | The dispatcher: rules 1 to 8 above. |
+| `powershell/internal/engine/completion/Get-MtCompletionCandidate.ps1` | The candidates of each kind, in order, with their tooltips. |
+| `powershell/internal/engine/completion/Get-MtCompletionIndex.ps1` | The cached index of built-in tests and suite names. |
 | `powershell/internal/engine/completion/Get-MtCompletionTestSet.ps1` | The tests a command line is about: built-in, custom under `-Path`, pack tests; narrowed by the selectors on the line. |
+| `powershell/internal/engine/completion/Get-MtCompletionCustomTest.ps1` | The native custom tests under a folder, cached until the files change. |
+| `powershell/internal/engine/completion/ConvertTo-MtCompletionTest.ps1` | What completion keeps of a test row. |
 | `powershell/internal/engine/completion/ConvertTo-MtCompletionResult.ps1` | Quoting and the `CompletionResult`. |
 | `powershell/internal/packs/Read-MtPackList.ps1` | Read-only list of built-in and locked packs, from JSON. |
 | `powershell/internal/services/<service>` | Unchanged; `Get-MtRoleMember`'s data access stays where it is. |
@@ -308,6 +310,36 @@ measured on the built module.
    `./build/Test-MaesterModuleOutput.ps1`, and measure the first and later completions on the built module.
 
 One pull request with a commit per step, or steps 1 and 2 first and step 3 as a second pull request.
+
+## Implementation notes
+
+What changed from the design while it was built, and why:
+
+- **Speed.** The first measurement of `-TestId` completion was 300 to 430 ms on every Tab. Three changes brought a
+  warm completion to 5 to 20 ms: each test's candidate (tooltip, list text, search text) is made once and kept on
+  its cached row (`Candidate`); the IDs are sorted with `[System.Array]::Sort[string, object]` on a padded `SortKey`
+  with an ordinal comparer (the non-generic overload sorted a copy of the items; a culture sort ignores hyphens);
+  and the narrowing in `Get-MtCompletionTestSet` matches with plain loops instead of calling
+  `Test-MtSelectorMatch`, `Test-MtProductExcluded` and `Test-MtIdMatch` for every test. It still resolves product
+  aliases with `Resolve-MtSelection`, and the loops match the same way (`-like` on each value, IDs exact or with `*`).
+- **The first Tab.** On the built module, the first completion in a session took 640 to 800 ms. Most of it was the
+  natural sort key, made with a script block `MatchEvaluator` (408 ms for 891 tests; two plain `-replace` calls take
+  40 ms), and pipelines in each test's tooltip (230 ms; plain statements take 88 ms). Measured afterwards, with the
+  unit tests running on the same machine: 280 to 320 ms for the first Tab, 9 to 33 ms after. That misses the 150 ms
+  target: about 50 ms is reading `Maester.TestCatalog.json`, 40 ms converting its rows, 20 ms the legacy tags, 90 ms
+  the test-ID tooltips and about 70 ms PowerShell's own completion work on the first call.
+- **Search needs three characters.** Rule 6's word search inside names and titles applies only to a word of three
+  characters or more: with two, `en` offered `defender`.
+- **Duplicates.** The dispatcher drops a value it has already offered, so a test ID that is both built in and under
+  `-Path` is listed once.
+- **Pack kinds.** `Pack` (`Invoke-Maester -Pack`: codes, then IDs), `PackId` (`Get-MtPack`: every pack) and
+  `InstalledPackId` (`Update-MtPack`, `Uninstall-MtPack` and `Restore-MtPack`: the lock file's packs that don't ship
+  with Maester). An installed pack's tests and services come from its lock entry; a built-in pack's tests from its
+  `Catalog` file.
+- **`-ExcludeProduct`** is the table's one row with `Narrow = $false`: its list depends only on which tests there are
+  (`-Path`, `-Pack`, `-AllPacks`, `-PackLock`, `-SkipBuiltIn`), not on the other selectors.
+- **Custom tests** add one function, `Get-MtCompletionCustomTest`, which caches per folder until the files change.
+  Its rows and the catalogue's come from `ConvertTo-MtCompletionTest`.
 
 ## Questions for the owner
 
