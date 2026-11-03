@@ -12,7 +12,13 @@ There should be no impact of setting up DKIM however, organizations should ensur
 
 >Note: Initial (MOERA, e.g. `contoso.onmicrosoft.com`) and coexistence (`*.mail.onmicrosoft.com`) domains are excluded from this check, as Microsoft automatically signs outbound mail for those domains.
 
-For each sending domain, the check requires Exchange DKIM to be enabled and its status to be **Valid**.
+For domains classified as sending, the check requires Exchange DKIM to be enabled and its status to be **Valid**. A likely sending domain has an SPF sender-authorizing mechanism, an Exchange DKIM signing configuration, or a selector1/selector2 DKIM CNAME/TXT record.
+
+Maester classifies a domain as not sending when its single SPF v1 record has only a non-authorizing `-all`, `~all`, or `?all` mechanism and no Exchange DKIM signing configuration or selector1/selector2 records are found. It is classified as parked only when it also has no usable MX route (or a null MX) and no A, AAAA, or CNAME record at the domain apex. This classification does not use `AcceptedDomain.SendingFromDomainDisabled`.
+
+For a confirmed parked domain, CIS requires that DKIM records are not published; the check passes only when no Exchange DKIM configuration or standard selector1/selector2 records are found. A domain with no sending signals but with receiving or other apex DNS records is outside the sending-domain audit scope. Domains with missing or conflicting evidence, or failed DNS lookups, are marked for investigation rather than automatically treated as parked. Selector discovery is limited to the standard Exchange Online selectors, so nonstandard DKIM selector names cannot be ruled out automatically.
+
+When DNS evidence is inconclusive but a domain is known to be parked, add its name to this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. This selects the parked audit branch; any detected Exchange DKIM configuration or standard selector record still fails the check.
 
 #### Remediation action
 
@@ -45,6 +51,8 @@ The initial domain is the domain that you used when you signed up for Office 365
 4. Under **Rules** section click **Email authentication settings**.
 5. Select **DKIM**
 6. Click on each domain and click **Enable** next to **Sign messages for this domain with DKIM signature**.
+
+For a confirmed parked domain, do not create an Exchange DKIM signing configuration or publish selector records. Before removing existing records, confirm the domain is not used to send email through Exchange Online or another service.
 
 Final remediation step using the Exchange Online PowerShell Module:
 
