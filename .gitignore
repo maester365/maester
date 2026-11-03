@@ -557,6 +557,9 @@ website/dist/
 # Astro
 website/.astro/
 
+# Rendered Open Graph cards, kept between builds by their hash (scripts/og-images.mjs)
+website/.cache/
+
 # Tools for the explainer voice-over (installed by hand)
 website/scripts/narration/node_modules/
 
