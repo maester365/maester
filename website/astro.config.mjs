@@ -93,7 +93,9 @@ export default defineConfig({
 				shiki: { langAlias: { PowerShell: 'powershell', Powershell: 'powershell', ps1: 'powershell' } },
 			},
 			head: [
-				{ tag: 'meta', attrs: { property: 'og:image', content: `${site}/img/maester-social-card.jpg` } },
+				{ tag: 'link', attrs: { rel: 'icon', href: '/icon-192.png', type: 'image/png', sizes: '192x192' } },
+				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
+				{ tag: 'link', attrs: { rel: 'manifest', href: '/site.webmanifest' } },
 				{ tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
 			],
 			plugins: [

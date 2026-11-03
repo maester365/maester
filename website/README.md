@@ -20,6 +20,8 @@ Node.js 22.22 or later. The contributing guide has the details: [Contributing to
 | `blog/` | Blog posts, one folder each. |
 | `versioned_docs/version-2.3.0/` | The Maester 2.x docs, frozen, served at `/docs/2.x` with `noindex`. |
 | `scripts/prepare-data.mjs` | Generates what the site is built from and git doesn't keep, before `npm run dev` and `npm run build`: the test catalog, the command reference, the contributor credits and the sponsors. `npm run refresh-data` generates them again. |
+| `scripts/og-images.mjs` | Renders each page's Open Graph card (`/og/<page>.jpg`) after `astro build`, from the card the page writes into `<meta name="maester:og">` (`src/lib/og.mjs`). Cards are cached by hash in `.cache/og`, so a build renders only the ones that changed. Raise `CARD_VERSION` in `src/lib/og.mjs` after changing the design. |
+| `scripts/make-icons.mjs` | Writes `favicon.ico`, the manifest icons and `apple-touch-icon.png` from `src/assets/maester-mark.svg`. Run it by hand when the mark changes. |
 | `src/data/test-catalog.json` | Every built-in test, exported from the test source (not kept in git). The test pages and the catalog are built from it at build time by `scripts/generate-test-docs.mjs` (into the ignored `.generated/`). |
 | `src/data/versions.json` | The release each test, command and parameter first shipped in. With `version-config.js` it decides what is marked **Preview**. |
 | `src/data/url-contract.txt` | Every URL the site had before the move to Astro. The build fails if one stops resolving. |

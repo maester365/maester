@@ -98,8 +98,17 @@ jobs:
         shell: pwsh
         run: Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
 
-      # npm run build first generates the site's data (scripts/prepare-data.mjs), then checks every URL in
-      # website/src/data/url-contract.txt against the output.
+      # The Open Graph cards rendered by earlier builds, by their hash (scripts/og-images.mjs): a build renders only
+      # the cards of the pages that changed.
+      - name: Restore the Open Graph cards
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.working_directory || 'website' }}/.cache/og
+          key: og-cards-${{ github.run_id }}
+          restore-keys: og-cards-
+
+      # npm run build first generates the site's data (scripts/prepare-data.mjs), renders the Open Graph cards, then
+      # checks every URL in website/src/data/url-contract.txt against the output.
       - name: "\U0001F3D7️ Build website"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
