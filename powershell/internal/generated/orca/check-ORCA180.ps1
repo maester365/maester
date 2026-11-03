@@ -37,7 +37,7 @@ class ORCA180 : ORCACheck
         $this.CheckType=[CheckType]::ObjectPropertyValue
         $this.Links= @{
             "Microsoft 365 Defender Portal - Anti-phishing"="https://security.microsoft.com/antiphishing"
-            "Anti-spoofing protection in Office 365"="https:/aka.ms/orca-atpp-docs-3"
+            "Anti-spoofing protection in Office 365"="https://aka.ms/orca-atpp-docs-3"
             "Recommended settings for EOP and Microsoft Defender for Office 365"="https://aka.ms/orca-atpp-docs-7"
         }
     }
