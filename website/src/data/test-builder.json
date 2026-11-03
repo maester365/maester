@@ -439,10 +439,6 @@
         {
           "key": "defender-for-identity",
           "name": "Defender for Identity"
-        },
-        {
-          "key": "secure-score",
-          "name": "Secure Score"
         }
       ]
     },

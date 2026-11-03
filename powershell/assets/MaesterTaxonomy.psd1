@@ -83,7 +83,6 @@
                 @{ Key = 'endpoint-antivirus'; Name = 'Endpoint antivirus' }
                 @{ Key = 'exposure-management'; Name = 'Exposure Management' }
                 @{ Key = 'defender-for-identity'; Name = 'Defender for Identity' }
-                @{ Key = 'secure-score'; Name = 'Secure Score' }
             )
         }
         @{

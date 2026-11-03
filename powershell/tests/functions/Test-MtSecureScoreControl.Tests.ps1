@@ -8,7 +8,7 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         Use-MtModuleFunction -Name ConvertFrom-MtSecureScoreHtml
         Use-MtModuleFunction -Name Test-MtSecureScoreControl
 
-        function New-ControlProfile {
+        function Get-FakeControlProfile {
             param([string] $Id, [double] $MaxScore = 5, [string] $Service = 'MDO', [object[]] $StateUpdates = @(), [bool] $Deprecated = $false)
             [pscustomobject]@{
                 id                  = $Id
@@ -23,7 +23,7 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
                 controlStateUpdates = @($StateUpdates)
             }
         }
-        function New-ControlScore {
+        function Get-FakeControlScore {
             param([string] $Name, [double] $Score)
             [pscustomobject]@{ controlName = $Name; score = $Score; description = "About $Name"; implementationStatus = 'Status text'; controlCategory = 'Apps' }
         }
@@ -49,17 +49,17 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         $script:Snapshot = [pscustomobject]@{
             value = @([pscustomobject]@{
                     controlScores = @(
-                        (New-ControlScore -Name 'mdo_safelinks' -Score 9),
-                        (New-ControlScore -Name 'AdminMFAV2' -Score 0.15),
-                        (New-ControlScore -Name 'exo_mailboxaudit' -Score 0)
+                        (Get-FakeControlScore -Name 'mdo_safelinks' -Score 9),
+                        (Get-FakeControlScore -Name 'AdminMFAV2' -Score 0.15),
+                        (Get-FakeControlScore -Name 'exo_mailboxaudit' -Score 0)
                     )
                 })
         }
         $script:Profiles = @(
-            (New-ControlProfile -Id 'mdo_safelinks' -MaxScore 9),
-            (New-ControlProfile -Id 'AdminMFAV2' -MaxScore 10 -Service 'AzureAD'),
-            (New-ControlProfile -Id 'exo_mailboxaudit' -MaxScore 3 -Service 'EXO'),
-            (New-ControlProfile -Id 'mda_okta_unscored' -MaxScore 5 -Service 'MDA_Okta')
+            (Get-FakeControlProfile -Id 'mdo_safelinks' -MaxScore 9),
+            (Get-FakeControlProfile -Id 'AdminMFAV2' -MaxScore 10 -Service 'AzureAD'),
+            (Get-FakeControlProfile -Id 'exo_mailboxaudit' -MaxScore 3 -Service 'EXO'),
+            (Get-FakeControlProfile -Id 'mda_okta_unscored' -MaxScore 5 -Service 'MDA_Okta')
         )
         $script:Recommendations = @{ value = @(@{ recommendationType = 'adminMFAV2' }) }
 
@@ -115,8 +115,8 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         }
 
         It 'does not mark an AzureAD control that is not an Entra recommendation' {
-            $script:Snapshot.value[0].controlScores = @(New-ControlScore -Name 'AATP_AccountWithLeakedCredentials' -Score 5)
-            $script:Profiles = @(New-ControlProfile -Id 'AATP_AccountWithLeakedCredentials' -Service 'AzureAD')
+            $script:Snapshot.value[0].controlScores = @(Get-FakeControlScore -Name 'AATP_AccountWithLeakedCredentials' -Score 5)
+            $script:Profiles = @(Get-FakeControlProfile -Id 'AATP_AccountWithLeakedCredentials' -Service 'AzureAD')
 
             $instance = @(Get-MtSecureScoreControlInstance)[0]
 
@@ -142,7 +142,7 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         }
 
         It 'skips a deprecated control' {
-            $script:Profiles = @($script:Profiles | Where-Object id -NE 'exo_mailboxaudit') + @(New-ControlProfile -Id 'exo_mailboxaudit' -MaxScore 3 -Deprecated $true)
+            $script:Profiles = @($script:Profiles | Where-Object id -NE 'exo_mailboxaudit') + @(Get-FakeControlProfile -Id 'exo_mailboxaudit' -MaxScore 3 -Deprecated $true)
 
             @(Get-MtSecureScoreControlInstance).Id | Should -Not -Contain 'exo_mailboxaudit'
         }
@@ -201,14 +201,14 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
 
     Context 'Test' {
         BeforeEach {
-            function New-Instance {
+            function Get-FakeInstance {
                 param([double] $Score, [double] $MaxScore, [object[]] $StateUpdates = @(), [bool] $InMt1024 = $false)
                 [pscustomobject]@{
                     Id       = 'ctrl'
                     Severity = 'Medium'
                     Data     = [pscustomobject]@{
-                        ControlScore = (New-ControlScore -Name 'ctrl' -Score $Score)
-                        Profile      = (New-ControlProfile -Id 'ctrl' -MaxScore $MaxScore -StateUpdates $StateUpdates)
+                        ControlScore = (Get-FakeControlScore -Name 'ctrl' -Score $Score)
+                        Profile      = (Get-FakeControlProfile -Id 'ctrl' -MaxScore $MaxScore -StateUpdates $StateUpdates)
                         InMt1024     = $InMt1024
                     }
                 }
@@ -216,14 +216,14 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         }
 
         It 'passes when the control has all of its points' {
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 9 -MaxScore 9) | Should -BeTrue
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 9 -MaxScore 9) | Should -BeTrue
             $script:TestResult | Should -Match '9 of 9 points'
             $script:TestResult | Should -Not -Match 'Open this improvement action'
             $script:Severity | Should -Be 'Medium'
         }
 
         It 'fails with the points earned and a link when the control has fewer points' {
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 0.15 -MaxScore 10) | Should -BeFalse
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0.15 -MaxScore 10) | Should -BeFalse
             $script:TestResult | Should -Match '0.15 of 10 points'
             $script:TestResult | Should -Match 'Open this improvement action\]\(https://security.microsoft.com/ctrl\)'
         }
@@ -236,7 +236,7 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         ) {
             $update = [pscustomobject]@{ state = $State; updatedBy = 'admin@contoso.com'; comment = 'Handled elsewhere'; updatedDateTime = '2026-10-01T00:00:00Z' }
 
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeNullOrEmpty
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'Custom'
             $script:SkippedCustomReason | Should -Match $Label
             $script:SkippedCustomReason | Should -Match 'admin@contoso.com'
@@ -246,14 +246,14 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
         It 'does not skip a Planned control, since the work is not done yet' {
             $update = [pscustomobject]@{ state = 'Planned'; updatedBy = 'admin@contoso.com'; comment = $null; updatedDateTime = '2026-10-01T00:00:00Z' }
 
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeFalse
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeFalse
             $script:SkippedBecause | Should -BeNullOrEmpty
         }
 
         It 'does not skip a control left in the Default state' {
             $update = [pscustomobject]@{ state = 'Default'; updatedBy = $null; comment = $null; updatedDateTime = $null }
 
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeFalse
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeFalse
             $script:SkippedBecause | Should -BeNullOrEmpty
         }
 
@@ -263,15 +263,15 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
                 [pscustomobject]@{ state = 'Default'; updatedBy = 'admin@contoso.com'; comment = $null; updatedDateTime = '2026-10-01T00:00:00Z' }
             )
 
-            Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -StateUpdates $updates) | Should -BeFalse
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -StateUpdates $updates) | Should -BeFalse
             $script:SkippedBecause | Should -BeNullOrEmpty
         }
 
         It 'notes the overlap with MT.1024 only for controls that are Entra recommendations' {
-            $null = Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -InMt1024 $true)
+            $null = Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -InMt1024 $true)
             $script:Description | Should -Match 'MT.1024'
 
-            $null = Test-MtSecureScoreControl -Instance (New-Instance -Score 0 -MaxScore 5 -InMt1024 $false)
+            $null = Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -InMt1024 $false)
             $script:Description | Should -Not -Match 'MT.1024'
         }
     }
