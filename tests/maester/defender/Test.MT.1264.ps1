@@ -52,8 +52,19 @@ function Get-MtSecureScoreControlInstance {
     foreach ($controlScore in @($snapshot.controlScores)) {
         $controlName = [string]$controlScore.controlName
         $controlProfile = $profileLookup[$controlName]
-        # Without the profile there is no maximum to compare the score against.
-        if ($null -eq $controlProfile -or $controlProfile.deprecated) { continue }
+        if ($controlProfile.deprecated) { continue }
+        # A scored control with no profile has no maximum to compare against. Keep it as an instance so
+        # the test reports it as an error instead of dropping it from the results.
+        if ($null -eq $controlProfile) {
+            [pscustomobject]@{
+                Id       = $controlName
+                Title    = "$controlName."
+                Severity = 'Medium'
+                Tag      = @(@($controlScore.controlCategory) | Where-Object { $_ })
+                Data     = [pscustomobject]@{ ControlScore = $controlScore; Profile = $null; InMt1024 = $false }
+            }
+            continue
+        }
 
         [pscustomobject]@{
             Id       = $controlName
@@ -154,6 +165,9 @@ function Test-MtSecureScoreControl {
 
     $controlScore = $Instance.Data.ControlScore
     $controlProfile = $Instance.Data.Profile
+    if ($null -eq $controlProfile) {
+        throw "Secure Score control '$($Instance.Id)' is in the tenant's score but has no control profile, so its maximum points could not be read."
+    }
     $score = [double]$controlScore.score
     $maxScore = [double]$controlProfile.maxScore
     $severity = $Instance.Severity

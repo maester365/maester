@@ -132,13 +132,15 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
             $instances.Data.InMt1024 | Should -Not -Contain $true
         }
 
-        It 'skips a scored control that has no profile' {
+        It 'keeps a scored control that has no profile so the test reports it as an error' {
             $script:Profiles = @($script:Profiles | Where-Object id -NE 'exo_mailboxaudit')
 
             $instances = @(Get-MtSecureScoreControlInstance)
 
-            $instances.Id | Should -Not -Contain 'exo_mailboxaudit'
-            $instances.Count | Should -Be 2
+            $instances.Count | Should -Be 3
+            $missing = $instances | Where-Object Id -EQ 'exo_mailboxaudit'
+            $missing.Data.Profile | Should -BeNullOrEmpty
+            { Test-MtSecureScoreControl -Instance $missing } | Should -Throw '*no control profile*'
         }
 
         It 'skips a deprecated control' {
