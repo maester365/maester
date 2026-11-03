@@ -172,6 +172,25 @@
         $script:TestResult | Should -Match 'Require MFA for Sales'
     }
 
+    It 'still fails and lists the group when the Conditional Access policies cannot be read' {
+        $Groups = @(Get-TestDynamicGroup -Id 'failed')
+        $Statuses = @(Get-TestProcessingStatus -Id 'failed' -Status 'Failed' -ErrorMessage 'Error')
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+            throw 'Insufficient privileges to complete the operation.'
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            if ($UniqueId) { return $Statuses }
+            return $Groups
+        }
+
+        Test-MtDynamicGroupProcessingFailure | Should -BeFalse
+        $script:TestResult | Should -Match '\[Group failed\]'
+        $script:TestResult | Should -Match 'Not available'
+        $script:TestResult | Should -Match 'could not be read'
+        $script:TestResult | Should -Match 'Insufficient privileges'
+        $script:TestResult | Should -Not -Match 'None found'
+    }
+
     It 'throws when the group query fails, which the engine records as an error' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'Graph failure' }
 

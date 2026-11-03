@@ -81,7 +81,16 @@
         return $true
     }
 
-    $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId @($FailedStatuses.id))
+    # The Conditional Access references only add context. When the policies can't be read, for example
+    # because the connection lacks the permission to read them, the failed groups are still reported.
+    $CaReferences = @()
+    $CaReadError = $null
+    try {
+        $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId @($FailedStatuses.id))
+    } catch {
+        $CaReadError = $_
+        Write-Verbose "Unable to read the Conditional Access policies: $($_.Exception.Message)"
+    }
     $Result = "Found $($FailedStatuses.Count) dynamic group(s) whose rule processing failed. Until " +
         'the error is fixed, their membership does not follow their rule.'
     $Result += "`n`n| Group | Error | CA references | Rule |"
@@ -95,11 +104,19 @@
         if ($ErrorMessage) {
             $ErrorText = [System.Net.WebUtility]::HtmlEncode($ErrorMessage) -replace '\|', '&#124;'
         }
-        $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
-            -Reference $CaReferences -GroupId $Group.id
+        $CaText = 'Not available'
+        if (-not $CaReadError) {
+            $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
+                -Reference $CaReferences -GroupId $Group.id
+        }
         $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
         $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
         $Result += "`n| $GroupLink | $ErrorText | $CaText | <code>$Rule</code> |"
+    }
+    if ($CaReadError) {
+        $CaMessage = $CaReadError.Exception.Message -replace "`r?`n", ' '
+        $Result += "`n`nThe Conditional Access policies could not be read, so the CA references are not " +
+            "shown: $([System.Net.WebUtility]::HtmlEncode($CaMessage))"
     }
     $Result += $PausedText
     Add-MtTestResultDetail -Result $Result
