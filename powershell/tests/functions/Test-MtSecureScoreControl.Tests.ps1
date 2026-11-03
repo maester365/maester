@@ -143,6 +143,15 @@ Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
             { Test-MtSecureScoreControl -Instance $missing } | Should -Throw '*no control profile*'
         }
 
+        It 'skips a control whose portal state update reaches the test through instance creation' {
+            $script:Profiles = @(Get-FakeControlProfile -Id 'exo_mailboxaudit' -MaxScore 5 -StateUpdates @([pscustomobject]@{ state = 'Ignored'; updatedBy = 'admin@contoso.com'; comment = 'Handled elsewhere'; updatedDateTime = '2026-10-01T00:00:00Z' }))
+            $script:Snapshot.value[0].controlScores = @(Get-FakeControlScore -Name 'exo_mailboxaudit' -Score 0)
+
+            $instance = @(Get-MtSecureScoreControlInstance) | Where-Object Id -EQ 'exo_mailboxaudit'
+
+            Test-MtSecureScoreControl -Instance $instance | Should -BeNullOrEmpty
+        }
+
         It 'skips a deprecated control' {
             $script:Profiles = @($script:Profiles | Where-Object id -NE 'exo_mailboxaudit') + @(Get-FakeControlProfile -Id 'exo_mailboxaudit' -MaxScore 3 -Deprecated $true)
 
