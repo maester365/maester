@@ -57,7 +57,7 @@
                 if ($found -eq 'Invalid DMARC record') { $invalidCandidate = $candidate }
                 continue
             }
-            if ($null -ne $found -and $found.GetType().Name -eq 'DMARCRecord') {
+            if ($null -ne $found -and $found -isnot [string]) {
                 $dmarc = $found
                 $source = $candidate
                 break

@@ -87,7 +87,7 @@ Describe 'Resolve-MtDnsRecord with Resolve-Dns' -Skip:$IsWindows {
                 Set-Item -Path 'Function:script:Resolve-Dns' -Value {
                     [CmdletBinding()]
                     param($Query, $QueryType, $NameServer)
-                    throw 'The DNS resolver must be mocked in this test.'
+                    throw "Resolve-Dns was called without a mock (query '$Query', type '$QueryType', server '$NameServer')."
                 }
                 $true
             } else {

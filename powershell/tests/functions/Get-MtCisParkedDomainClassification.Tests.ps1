@@ -4,7 +4,7 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Get-MtCisParkedDomainClassification
 
-        function New-TestDnsResult {
+        function ConvertTo-TestDnsResult {
             param(
                 [string]$Name,
                 [string]$Type,
@@ -22,15 +22,15 @@
             if ($script:dnsResults.ContainsKey($key)) {
                 return $script:dnsResults[$key]
             }
-            return New-TestDnsResult -Name $Name -Type $Type
+            return ConvertTo-TestDnsResult -Name $Name -Type $Type
         }
     }
 
     It 'classifies a deny-all domain with null MX and no other DNS use as parked' {
-        $script:dnsResults['TXT|parked.example'] = New-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|parked.example'] = ConvertTo-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
-        $script:dnsResults['MX|parked.example'] = New-TestDnsResult -Name 'parked.example' -Type MX -Answers @(
+        $script:dnsResults['MX|parked.example'] = ConvertTo-TestDnsResult -Name 'parked.example' -Type MX -Answers @(
             [pscustomobject]@{ Value = '.'; Preference = 0 }
         )
 
@@ -41,7 +41,7 @@
     }
 
     It 'classifies a deny-all domain without MX or fallback addresses as parked' {
-        $script:dnsResults['TXT|parked.example'] = New-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|parked.example'] = ConvertTo-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
 
@@ -51,7 +51,7 @@
     }
 
     It 'classifies a softfail-only domain as parked so the audit can enforce hard fail' {
-        $script:dnsResults['TXT|parked.example'] = New-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|parked.example'] = ConvertTo-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 ~all'; Preference = $null }
         )
 
@@ -62,10 +62,10 @@
     }
 
     It 'does not classify a domain with fallback address records as parked' {
-        $script:dnsResults['TXT|mail.example'] = New-TestDnsResult -Name 'mail.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|mail.example'] = ConvertTo-TestDnsResult -Name 'mail.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
-        $script:dnsResults['A|mail.example'] = New-TestDnsResult -Name 'mail.example' -Type A -Answers @(
+        $script:dnsResults['A|mail.example'] = ConvertTo-TestDnsResult -Name 'mail.example' -Type A -Answers @(
             [pscustomobject]@{ Value = '192.0.2.10'; Preference = $null }
         )
 
@@ -84,10 +84,10 @@
     }
 
     It 'classifies a domain with a published standard DKIM selector as sending' {
-        $script:dnsResults['TXT|sender.example'] = New-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|sender.example'] = ConvertTo-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
-        $script:dnsResults['CNAME|selector1._domainkey.sender.example'] = New-TestDnsResult -Name 'selector1._domainkey.sender.example' -Type CNAME -Answers @(
+        $script:dnsResults['CNAME|selector1._domainkey.sender.example'] = ConvertTo-TestDnsResult -Name 'selector1._domainkey.sender.example' -Type CNAME -Answers @(
             [pscustomobject]@{ Value = 'selector1-sender._domainkey.example.onmicrosoft.com'; Preference = $null }
         )
 
@@ -98,7 +98,7 @@
     }
 
     It 'applies an explicit parked override while retaining conflicting DKIM evidence' {
-        $script:dnsResults['CNAME|selector1._domainkey.sender.example'] = New-TestDnsResult -Name 'selector1._domainkey.sender.example' -Type CNAME -Answers @(
+        $script:dnsResults['CNAME|selector1._domainkey.sender.example'] = ConvertTo-TestDnsResult -Name 'selector1._domainkey.sender.example' -Type CNAME -Answers @(
             [pscustomobject]@{ Value = 'selector1-sender._domainkey.example.onmicrosoft.com'; Preference = $null }
         )
 
@@ -110,7 +110,7 @@
     }
 
     It 'classifies a domain with SPF mechanisms as sending' {
-        $script:dnsResults['TXT|sender.example'] = New-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|sender.example'] = ConvertTo-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 include:spf.example.net -all'; Preference = $null }
         )
 
@@ -120,7 +120,7 @@
     }
 
     It 'treats an unqualified all mechanism as a sending signal' {
-        $script:dnsResults['TXT|sender.example'] = New-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|sender.example'] = ConvertTo-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 all'; Preference = $null }
         )
 
@@ -137,7 +137,7 @@
     }
 
     It 'leaves redirect-only SPF unknown until the redirect target is evaluated' {
-        $script:dnsResults['TXT|unknown.example'] = New-TestDnsResult -Name 'unknown.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|unknown.example'] = ConvertTo-TestDnsResult -Name 'unknown.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 redirect=_spf.example.net'; Preference = $null }
         )
 
@@ -148,10 +148,10 @@
     }
 
     It 'leaves a domain unknown when a DKIM DNS lookup fails' {
-        $script:dnsResults['TXT|unknown.example'] = New-TestDnsResult -Name 'unknown.example' -Type TXT -Answers @(
+        $script:dnsResults['TXT|unknown.example'] = ConvertTo-TestDnsResult -Name 'unknown.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
-        $script:dnsResults['CNAME|selector1._domainkey.unknown.example'] = New-TestDnsResult -Name 'selector1._domainkey.unknown.example' -Type CNAME -Status Error
+        $script:dnsResults['CNAME|selector1._domainkey.unknown.example'] = ConvertTo-TestDnsResult -Name 'selector1._domainkey.unknown.example' -Type CNAME -Status Error
 
         $result = Get-MtCisParkedDomainClassification -DomainName 'unknown.example'
 

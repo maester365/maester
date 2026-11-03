@@ -4,37 +4,30 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Test-MtCisDmarcRecordsPublished
 
-        $script:dmarcRecordText = 'v=DMARC1; p=reject'
-        $script:dnsResolverCommand = if ($IsWindows) { 'Resolve-DnsName' } else { 'Resolve-Dns' }
-        $script:createdDnsResolverStub = & (Get-Module Maester) {
-            param($CommandName)
-            if (-not (Get-Command -Name $CommandName -ErrorAction SilentlyContinue)) {
-                Set-Item -Path "Function:script:$CommandName" -Value {
-                    [CmdletBinding()]
-                    param($Name, $Type, $Query, $QueryType, $NameServer)
-                    throw 'The DNS resolver must be mocked in this test.'
-                }
-                $true
-            } else {
-                $false
-            }
-        } $script:dnsResolverCommand
-        Mock -CommandName $script:dnsResolverCommand -ModuleName Maester {
-            if ($script:dnsResolverCommand -eq 'Resolve-DnsName') {
-                [pscustomobject]@{ Section = 'Answer'; Type = 'TXT'; Strings = @($script:dmarcRecordText) }
-            } else {
-                [pscustomobject]@{
-                    HasError = $false
-                    Header   = [pscustomobject]@{ ResponseCode = 'NoError' }
-                    Answers  = @([pscustomobject]@{ RecordType = 'TXT'; Text = @($script:dmarcRecordText) })
-                }
-            }
+        $script:parkedDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
         }
-        $script:parkedDmarcRecord = ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'parked.example'
-        $script:dmarcRecordText = 'v=DMARC1; p=quarantine'
-        $script:quarantineDmarcRecord = ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'quarantine.example'
-        $script:dmarcRecordText = 'v=DMARC1; p=reject; pct=100; rua=mailto:reports@example.com; ruf=mailto:forensic@example.com'
-        $script:fullyCompliantDmarcRecord = ConvertFrom-MailAuthenticationRecordDmarc -DomainName 'sending.example'
+        $script:quarantineDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'quarantine'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
+        }
+        $script:fullyCompliantDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @([pscustomobject]@{ mailAddress = 'reports@example.com' })
+            reportForensic  = @([pscustomobject]@{ mailAddress = 'forensic@example.com' })
+        }
 
         $script:domains = @()
         $script:registrableDomains = @{}
@@ -61,15 +54,6 @@
         }
         Mock Add-MtTestResultDetail -ModuleName Maester {
             $script:resultDetail = [pscustomobject]@{ Result = $Result; Investigate = [bool]$Investigate; SkippedBecause = $SkippedBecause }
-        }
-    }
-
-    AfterAll {
-        if ($script:createdDnsResolverStub) {
-            & (Get-Module Maester) {
-                param($CommandName)
-                Remove-Item -Path "Function:script:$CommandName"
-            } $script:dnsResolverCommand
         }
     }
 
