@@ -7,7 +7,6 @@ tags: [maester, release, security, entra, m365, azuredevops, defender]
 image: ./img/card.png
 card_headline: "What's new in *Maester 2.1*"
 card_label: Release
-hide_table_of_contents: false
 date: 2026-05-01
 ---
 
@@ -15,7 +14,7 @@ When we launched [Maester 2.0](/blog/maester-2-0), it was our biggest release ye
 
 This release brings Maester into more of the places security teams live every day: Azure DevOps, Microsoft Defender for Endpoint, Copilot Studio, entitlement management, multi-tenant operations, and the report experience itself.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Highlights
 

@@ -1,6 +1,14 @@
-# Validates that the Docusaurus website builds successfully.
-# Runs on PRs that modify website files or docs source files, and can also be
-# called from other workflows or triggered manually.
+# Builds maester.dev (Astro + Starlight) and checks that every URL of the old site still resolves. On a pull
+# request it only builds; on main, daily and on request it also deploys the build to Cloudflare Pages.
+#
+# The site's generated data is not kept in git: the build exports the test catalog and the command reference from
+# the module source, credits contributors from the git history and looks up sponsors on GitHub
+# (website/scripts/prepare-data.mjs). So a merge needs no follow-up pull request, and the daily run picks up new
+# sponsors.
+#
+# Deploying needs the CLOUDFLARE_API_TOKEN secret (a token with Cloudflare Pages: Edit) and the
+# CLOUDFLARE_ACCOUNT_ID secret in the maester.dev environment. The Cloudflare Pages project, which the
+# CLOUDFLARE_PAGES_PROJECT variable can name (default: maester), must not also build from git.
 name: "\U0001F3D7️ Build Website"
 
 on:
@@ -17,145 +25,63 @@ on:
         default: "website"
         type: string
   workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *" # Daily, 03:17 UTC: new sponsors
+  push:
+    branches: ["main"]
   pull_request:
     branches: ["main"]
+    # Only what the site is built from: the exported commands' help (the manifest lists them), the tests, the
+    # engine and the assets that read the tests into the catalog (taxonomy, schema, legacy tags), and the docs.
     paths:
+      - "README.md"
       - "build/Update-CommandReference.ps1"
+      - "build/docs/**"
       - "build/eidsca/*.json"
-      - "powershell/**"
+      - "powershell/Maester.psd1"
+      - "powershell/assets/**"
+      - "powershell/internal/engine/**"
+      - "powershell/public/**"
       - "tests/**"
       - "website/**"
       - ".github/workflows/build-website.yaml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
-permissions:
-  actions: read
-  contents: read
-  pull-requests: read
+permissions: {}
 
 jobs:
-  detect-command-reference-changes:
-    name: "Detect command reference changes"
-    runs-on: ubuntu-latest
-    outputs:
-      generate: ${{ github.event_name != 'pull_request' || steps.filter.outputs.command_reference == 'true' }}
-    permissions:
-      contents: read
-      pull-requests: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Check command reference inputs
-        if: github.event_name == 'pull_request'
-        id: filter
-        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-        with:
-          filters: |
-            command_reference:
-              - "build/Update-CommandReference.ps1"
-              - "powershell/**"
-              - "tests/**"
-              - ".github/workflows/build-website.yaml"
-
-  generate-command-reference:
-    name: "Generate command reference"
-    needs: detect-command-reference-changes
-    if: needs.detect-command-reference-changes.outputs.generate == 'true'
-    runs-on: windows-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Generate command reference
-        shell: pwsh
-        run: ./build/Update-CommandReference.ps1
-
-      - name: Package generated command reference
-        shell: pwsh
-        run: |
-          $ProgressPreference = "SilentlyContinue"
-          $artifactRoot = Join-Path $env:GITHUB_WORKSPACE "generated-command-reference"
-          $docsRoot = Join-Path $artifactRoot "docs"
-          New-Item -ItemType Directory -Path $docsRoot -Force | Out-Null
-
-          $sourceCommands = Join-Path $env:GITHUB_WORKSPACE "website/docs/commands"
-          if (-not (Test-Path $sourceCommands)) {
-            throw "Command reference docs were not generated at $sourceCommands."
-          }
-
-          Copy-Item -Path $sourceCommands -Destination $docsRoot -Recurse -Force
-
-          $versionedDocsRoot = Join-Path $env:GITHUB_WORKSPACE "website/versioned_docs"
-          if (Test-Path $versionedDocsRoot) {
-            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
-              $sourceVersionCommands = Join-Path $versionFolder.FullName "commands"
-              if (Test-Path $sourceVersionCommands) {
-                $targetVersionRoot = Join-Path $artifactRoot "versioned_docs/$($versionFolder.Name)"
-                New-Item -ItemType Directory -Path $targetVersionRoot -Force | Out-Null
-                Copy-Item -Path $sourceVersionCommands -Destination $targetVersionRoot -Recurse -Force
-              }
-            }
-          }
-
-          Compress-Archive -Path (Join-Path $artifactRoot "*") -DestinationPath command-reference-docs.zip -Force
-
-      - name: Upload generated command reference
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: generated-command-reference
-          path: command-reference-docs.zip
-          if-no-files-found: error
-
   build:
-    name: "Build Docusaurus website \U0001F3D7️"
-    needs: [detect-command-reference-changes, generate-command-reference]
-    if: always() && needs.detect-command-reference-changes.result == 'success' && (needs.generate-command-reference.result == 'success' || needs.generate-command-reference.result == 'skipped')
+    name: "Build website \U0001F3D7️"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory || 'website' }}
 
     steps:
+      # On main, the maester-bot app's token: it may read whether each contributor has a GitHub Sponsors listing
+      # and who sponsors the maintainers. A pull request build uses the repository's token, which may not, and
+      # shows the sponsors of the last deploy.
+      - name: Generate maester-bot app token
+        id: app-token
+        if: github.event_name != 'pull_request'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+          # Read only: the build reads public profiles, sponsorships and the repository's contributors.
+          permission-contents: read
+
       - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full history so contributor profiles get display names and first-contribution dates from git.
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Download generated command reference
-        if: needs.detect-command-reference-changes.outputs.generate == 'true'
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: generated-command-reference
-          path: ${{ runner.temp }}/command-reference
-
-      - name: Apply generated command reference
-        if: needs.detect-command-reference-changes.outputs.generate == 'true'
-        shell: pwsh
-        env:
-          WEBSITE_WORKING_DIRECTORY: ${{ inputs.working_directory || 'website' }}
-        run: |
-          $ProgressPreference = "SilentlyContinue"
-          Remove-Item -Path (Join-Path $env:WEBSITE_WORKING_DIRECTORY "docs/commands") -Recurse -Force -ErrorAction SilentlyContinue
-
-          $versionedDocsRoot = Join-Path $env:WEBSITE_WORKING_DIRECTORY "versioned_docs"
-          if (Test-Path $versionedDocsRoot) {
-            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
-              Remove-Item -Path (Join-Path $versionFolder.FullName "commands") -Recurse -Force -ErrorAction SilentlyContinue
-            }
-          }
-
-          Expand-Archive -Path "${{ runner.temp }}/command-reference/command-reference-docs.zip" -DestinationPath $env:WEBSITE_WORKING_DIRECTORY -Force
 
       - name: ⚙️ Set up Node.js ${{ inputs.node_version || '24.x' }}
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -165,19 +91,72 @@ jobs:
           cache-dependency-path: ${{ inputs.working_directory || 'website' }}/package-lock.json
 
       - name: "\U0001F4E6 Install dependencies"
-        working-directory: ${{ inputs.working_directory || 'website' }}
         run: npm ci
 
-      # The test docs are generated from the source module (Get-MtTest), which needs this module to import.
-      # Without it the generator keeps the committed pages, so a PR's new or changed tests would not render.
-      - name: Install Microsoft.Graph.Authentication for the test docs generator
+      # The test catalog export imports the source module, which needs this module.
+      - name: Install Microsoft.Graph.Authentication
         shell: pwsh
         run: Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
 
+      # The Open Graph cards rendered by earlier builds, by their hash (scripts/og-images.mjs): a build renders only
+      # the cards of the pages that changed.
+      - name: Restore the Open Graph cards
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.working_directory || 'website' }}/.cache/og
+          key: og-cards-${{ github.run_id }}
+          restore-keys: og-cards-
+
+      # npm run build first generates the site's data (scripts/prepare-data.mjs), renders the Open Graph cards, then
+      # checks every URL in website/src/data/url-contract.txt against the output.
       - name: "\U0001F3D7️ Build website"
-        working-directory: ${{ inputs.working_directory || 'website' }}
         env:
-          # Lets the contributor generator resolve new commit emails to GitHub
-          # handles (cached in website/contributors/email-aliases.json).
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         run: npm run build
+
+      # The README's Sponsors section is written from website/sponsors/featured.yml.
+      - name: Check the README's Sponsors section
+        if: github.event_name == 'pull_request'
+        run: |
+          node scripts/sponsors.mjs --readme
+          git diff --exit-code -- ../README.md || { echo "::error file=README.md::The Sponsors section is out of date. Run: cd website && node scripts/sponsors.mjs --readme"; exit 1; }
+
+      - name: Upload the site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: website
+          path: ${{ inputs.working_directory || 'website' }}/dist
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: Deploy to maester.dev
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.repository == 'maester365/maester'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment:
+      name: maester.dev
+      url: https://maester.dev
+
+    steps:
+      - name: Download the site
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: website
+          path: dist
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'maester' }}
+          COMMIT: ${{ github.sha }}
+        run: npx --yes wrangler@4.151.2 pages deploy dist --project-name "$PROJECT" --branch main --commit-hash "$COMMIT" --commit-dirty=true

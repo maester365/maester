@@ -1,0 +1,6 @@
+# maester.dev
+User-agent: *
+Allow: /
+Disallow: /explainers/
+
+Sitemap: https://maester.dev/sitemap-index.xml

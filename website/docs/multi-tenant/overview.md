@@ -1,7 +1,8 @@
 ---
-title: Overview
-sidebar_label: Overview
-sidebar_position: 1
+title: Run Maester across many tenants
+sidebar:
+  label: Overview
+  order: 1
 ---
 
 # Multi-Tenant Reports

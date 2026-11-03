@@ -43,7 +43,7 @@
     }
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri "admin/forms/settings" -DisableCache
+    $settings = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri "admin/forms/settings"
 
     Write-Verbose 'Executing checks'
     $CheckIsInOrgFormsPhishingScanEnabled = $settings | Where-Object { $_.isInOrgFormsPhishingScanEnabled -eq $true }

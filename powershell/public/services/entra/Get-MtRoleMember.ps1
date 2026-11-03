@@ -6,7 +6,11 @@ function Get-MtRoleMember {
     .Description
     The role can be either active or eligible, defaults to getting members that are both active and eligible.
 
-    If the assigned member is a group, all members of that group will be returned.
+    If the assigned member is a group, all members of that group will be returned. A group that is not found (404) is
+    skipped; any other error reading a group is thrown, so a check cannot pass without evaluating its members.
+
+    Results come from the session cache, so a second call in the same session returns the same members. Run
+    Clear-MtGraphCache to read them again.
 
     .Example
     Get-MtRoleMember -Role GlobalAdministrator
@@ -37,21 +41,10 @@ function Get-MtRoleMember {
     https://maester.dev/docs/commands/Get-MtRoleMember
     #>
 
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'ArgumentCompleter requires the full script block signature, even when only wordToComplete is used.')]
     [CmdletBinding(DefaultParameterSetName = 'RoleName')]
     param(
         # The name of the role to get members for.
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
-        [ArgumentCompleter({
-                param($commandName, $parameterName, $wordToComplete)
-                Initialize-MtRoleDefinition
-                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
-                $roleNames |
-                Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
-                Sort-Object | ForEach-Object {
-                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                }
-            })]
         [ValidateScript({
                 Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
@@ -83,7 +76,7 @@ function Get-MtRoleMember {
         $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
-    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal -DisableCache).Assignments
+    $roleAssignments = (Get-MtDirectoryRoleAssignment -RoleId $RoleId -MemberStatus $MemberStatus -ExpandPrincipal).Assignments
 
     foreach ($directoryRoleId in $RoleId) {
         $assignments = @()
@@ -94,7 +87,7 @@ function Get-MtRoleMember {
             $members = @($principal)
             if ($principal.'@odata.type' -eq '#microsoft.graph.group') {
                 #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-                # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
+                # Get-MtGroupMember returns $null for a group that is not found (GDAP external or deleted groups) and throws on other errors.
                 $groupMembers = Get-MtGroupMember -GroupId $principal.id
                 if ($null -ne $groupMembers) {
                     $members += $groupMembers

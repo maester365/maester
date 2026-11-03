@@ -1,7 +1,8 @@
 ---
 title: Maester Packs
-sidebar_position: 1
 description: Add tests, helpers and connectors that someone else publishes to Maester, checked and pinned before anything runs.
+sidebar:
+  order: 1
 ---
 
 # Maester Packs

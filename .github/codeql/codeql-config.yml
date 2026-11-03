@@ -4,3 +4,5 @@ paths-ignore:
   # Generated single-file build of report/ (minified React + third-party libraries).
   # The report source in report/src is still analyzed.
   - powershell/assets/ReportTemplate.html
+  # The same build with sample results, for the website's demo (website/scripts/build-demo-report.mjs).
+  - website/public/demo/report.html

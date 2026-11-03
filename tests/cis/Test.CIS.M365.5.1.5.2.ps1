@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -DisableCache
+    $settings = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy"
 
     Write-Verbose 'Executing checks'
     $checkAdminConsentWorkflowEnabled = $settings | Where-Object { $_.isEnabled -eq $true }

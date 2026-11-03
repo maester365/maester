@@ -18,12 +18,15 @@ two places:
 3. Identities are matched to GitHub accounts automatically: GitHub noreply
    addresses resolve directly; other commit emails are resolved once via the
    GitHub API and cached as privacy-preserving hashes in
-   [`email-aliases.json`](./email-aliases.json) (machine-maintained — never
-   edit it by hand); git author names cover the rest.
-4. The result is snapshotted to `website/src/data/contributors.json` (used when CI
-   builds from a shallow clone) and rendered into the generated test docs.
+   [`email-aliases.json`](./email-aliases.json) (written by
+   `node scripts/generate-test-docs.mjs --update-aliases`, never by hand;
+   emails not in it are looked up on each build); git author names cover the rest.
+4. The result is written to `website/src/data/contributors.json` (not kept in
+   git) and rendered into the generated test docs. Each deploy of maester.dev
+   works it out again from the full history. A profile page, once published,
+   stays: people listed in `website/src/data/url-contract.txt` keep theirs.
 
-Run `npm run generate-test-docs` in `website/` to refresh.
+Run `npm run refresh-data` in `website/` to refresh.
 
 ## Make your profile shine ✨
 
@@ -33,7 +36,7 @@ Attribution works with zero setup, but you can enrich your profile card:
   company, website, and social links (see the header comment for the format).
 - **Profile picture**: your GitHub avatar is used by default. To use a different
   photo, drop `<your-github-handle>.png` (or `.jpg`) into
-  `website/static/img/contributors/`.
+  `website/public/img/contributors/`.
 - Commit with an email GitHub can't map to your account (e.g. it isn't added to
   your GitHub profile)? Add it under `emails:` in your entry as a manual
   override — but in almost all cases matching just works without it.

@@ -15,7 +15,7 @@
     ```
 
     When running in a non-interactive environment (Azure DevOps, GitHub) the app needs permission to send from a mailbox,
-    see https://maester.dev/docs/monitoring/email/ for instructions.
+    see https://maester.dev/docs/alerts/email for instructions.
 
     .EXAMPLE
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
@@ -203,7 +203,7 @@
     } catch {
         if ($_.Exception.Response.StatusCode -eq 403) {
             # Delegated Mail.Send permission is checked earlier, so this is likely an application permission issue
-            Write-Error -Message "Sending email failed with access denied. Make sure you've granted Mail.Send permission to the specified mailbox, see https://maester.dev/docs/monitoring/email/ for instructions."
+            Write-Error -Message "Sending email failed with access denied. Make sure you've granted Mail.Send permission to the specified mailbox, see https://maester.dev/docs/alerts/email for instructions."
         }
         throw
     }

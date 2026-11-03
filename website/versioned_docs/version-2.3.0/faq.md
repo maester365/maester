@@ -1,6 +1,7 @@
 ---
-sidebar_position: 7
 title: ❓ FAQ
+sidebar:
+  order: 7
 ---
 
 ## Is this a Microsoft product?

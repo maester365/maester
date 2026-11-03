@@ -1,6 +1,7 @@
 ---
 title: Severity Levels
-sidebar_position: 3
+sidebar:
+  order: 3
 ---
 
 # Severity Levels for Maester Tests
@@ -139,7 +140,7 @@ If a severity level is defined in multiple places, the following precedence orde
 2. `-Tag` parameter in the test file
 3. Main `./tests/maester-config.json` (lowest priority)
 
-:::warning Important
+:::caution[Important]
 Avoid editing the `maester-config.json` file in the `./tests` root folder. Any changes you make to this file will be overwritten when you update the Maester tests.
 
 Always use the `./tests/Custom/maester-config.json` file for customizing severity levels.
