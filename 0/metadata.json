@@ -1,0 +1,87 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6GGKCGN0KVSF50FTPEP0EZM",
+  "session_id": "2fc5992e-cc9c-4373-91f5-a98ea5bd99eb",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-03T10:52:13.929965Z",
+  "branch": "fix/orca-upstream-fixups",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "build/orca/Update-OrcaTests.ps1",
+    "build/orca/orca-fixups.psd1",
+    "powershell/internal/generated/orca/check-ORCA180.ps1",
+    "powershell/tests/general/OrcaGenerator.Tests.ps1",
+    "tests/orca/Test.ORCA.180.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "9cd640cd31b8",
+  "checkpoint_transcript_start": 9901,
+  "transcript_lines_at_start": 9901,
+  "compact_transcript_start": 1259,
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 57288,
+    "cache_read_tokens": 10434530,
+    "output_tokens": 24728,
+    "api_call_count": 45,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 2528,
+    "layers": {
+      "betterleaks": 17,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 25,
+      "credentialed_uri": 0,
+      "entropy": 2515,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_016xccaeZQicZs7jXE2mu9VH",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "maester-pr-desk"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "9cd640cd31b8",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 9938,
+        "end": 9939,
+        "entry_ids": [
+          "e4575b9a-51d5-45c6-a971-0f4fd7da84d1"
+        ],
+        "tool_use_id": "toolu_016xccaeZQicZs7jXE2mu9VH"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_016xccaeZQicZs7jXE2mu9VH"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: maester-pr-desk",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 5
+  }
+}
