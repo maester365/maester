@@ -41,8 +41,11 @@ const commandIndex = at('docs/commands/readme.mdx');
 if (refresh || commandPages().length === 0) {
 	const index = readFileSync(commandIndex);
 	run('Generate the command reference', 'pwsh', pwsh('build/Update-CommandReference.ps1'), repoRoot, () => {
-		for (const name of commandPages()) rmSync(at(`docs/commands/${name}`), { force: true });
-		writeFileSync(commandIndex, index);
+		try {
+			for (const name of commandPages()) rmSync(at(`docs/commands/${name}`), { force: true });
+		} finally {
+			writeFileSync(commandIndex, index);
+		}
 	});
 }
 
