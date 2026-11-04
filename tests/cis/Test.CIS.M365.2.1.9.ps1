@@ -67,8 +67,8 @@
             $dkimRecords += [PSCustomObject]@{
                 domain         = $domain.DomainName
                 classification = $classification.Classification
-                pass           = if (-not $selectorLookupsComplete) { 'Investigate' } elseif ($hasDkimSelectorRecord) { 'Failed' } else { 'Passed' }
-                reason         = if (-not $selectorLookupsComplete) { "Standard DKIM selector DNS lookups did not complete, so record absence could not be confirmed. $($classification.Reason)" } elseif ($hasDkimSelectorRecord) { "Parked domain has a published standard DKIM selector record that must be removed. $($classification.Reason)" } else { "Parked domain has no published standard DKIM selector records. $($classification.Reason)" }
+                pass           = if ($hasDkimSelectorRecord) { 'Failed' } elseif (-not $selectorLookupsComplete) { 'Investigate' } else { 'Passed' }
+                reason         = if ($hasDkimSelectorRecord) { "Parked domain has a published standard DKIM selector record that must be removed. $($classification.Reason)" } elseif (-not $selectorLookupsComplete) { "Standard DKIM selector DNS lookups did not complete, so record absence could not be confirmed. $($classification.Reason)" } else { "Parked domain has no published standard DKIM selector records. $($classification.Reason)" }
                 exchangeStatus = if ($selectorLookupsComplete) { 'Not applicable' } else { 'Not determined' }
                 dkimRecord     = $null
             }

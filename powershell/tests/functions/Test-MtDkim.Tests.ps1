@@ -181,6 +181,21 @@ Describe 'CIS DKIM domain classification outcomes' {
         $script:detail.Investigate | Should -BeTrue
     }
 
+    It 'fails a parked override when a selector record exists and another lookup is incomplete' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{
+                Classification               = 'Parked'
+                DkimSelectorRecordEvidence   = $true
+                DkimSelectorLookupsComplete  = $false
+                Reason                       = 'A selector record exists and another lookup failed.'
+            }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeFalse
+        $script:detail.Investigate | Should -BeFalse
+        $script:detail.Result | Should -Match 'published standard DKIM selector record that must be removed'
+    }
+
     It 'marks a non-sending receive domain out of scope for DKIM' {
         Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
             [PSCustomObject]@{ Classification = 'NotSending'; IsParked = $false; Reason = 'The domain has receive-only DNS records.' }
