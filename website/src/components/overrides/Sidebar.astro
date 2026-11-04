@@ -5,6 +5,7 @@ import MobileMenuFooter from '@astrojs/starlight/components/MobileMenuFooter.ast
 import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
 import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
 import VersionPicker from '../VersionPicker.astro';
+import CatalogNav from '../catalog/CatalogNav.astro';
 
 const { id } = Astro.locals.starlightRoute;
 let { sidebar } = Astro.locals.starlightRoute;
@@ -19,6 +20,8 @@ const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic
 
 // The commands are grouped by job; a switch lists them A to Z instead (remembered in the browser).
 const isCommands = id === 'docs/commands' || id.startsWith('docs/commands/');
+// The test catalog has a nav of its own: its views, then the filters of the page (catalog/CatalogNav.astro).
+const isCatalog = id === 'docs/tests' || id.startsWith('docs/tests/');
 type Entry = (typeof sidebar)[number];
 const links = (entries: Entry[]): Entry[] => entries.flatMap((e) => (e.type === 'link' ? [e] : links(e.entries)));
 const overview = sidebar.filter((e) => e.type === 'link');
@@ -49,18 +52,23 @@ const alphabetical: Entry[] = isCommands
 	)
 }
 <SidebarPersister>
-	<div class:list={{ 'mt-cmd-nav': isCommands }} data-order="job">
-		<div class="mt-cmd-nav__job">
-			<SidebarSublist sublist={sidebar} />
-		</div>
-		{
-			isCommands && (
-				<div class="mt-cmd-nav__az">
-					<SidebarSublist sublist={alphabetical} />
+	{isCatalog && <CatalogNav id={id} />}
+	{
+		!isCatalog && (
+			<div class:list={{ 'mt-cmd-nav': isCommands }} data-order="job">
+				<div class="mt-cmd-nav__job">
+					<SidebarSublist sublist={sidebar} />
 				</div>
-			)
-		}
-	</div>
+				{
+					isCommands && (
+						<div class="mt-cmd-nav__az">
+							<SidebarSublist sublist={alphabetical} />
+						</div>
+					)
+				}
+			</div>
+		)
+	}
 </SidebarPersister>
 {
 	isCommands && (
