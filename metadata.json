@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6M5ETPEDWXQE9Q9DHXJ64AQ",
+  "strategy": "manual-commit",
+  "branch": "feat/zta-taxonomy-mapping",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "build/zta/README.md",
+    "build/zta/Update-MtZtaCatalog.ps1",
+    "packs/zero-trust-assessment/README.md",
+    "packs/zero-trust-assessment/catalog.json",
+    "packs/zero-trust-assessment/maester-pack.json",
+    "packs/zero-trust-assessment/tests/Test.ZTA.ps1",
+    "powershell/assets/MaesterTaxonomy.psd1",
+    "powershell/internal/engine/Invoke-MtNativePlan.ps1",
+    "powershell/tests/functions/ZeroTrustAssessmentPack.Tests.ps1",
+    "powershell/tests/functions/engine/ReviewFixes.Tests.ps1",
+    "powershell/tests/general/NativeTestAttributes.Tests.ps1",
+    "website/docs/packs/zero-trust-assessment.md",
+    "website/docs/writing-tests/index.mdx",
+    "website/src/data/test-builder.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4,
+    "cache_creation_tokens": 1305,
+    "cache_read_tokens": 898315,
+    "output_tokens": 988,
+    "api_call_count": 2
+  },
+  "redaction": {
+    "replacements": 528,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 520,
+      "key_context": 8,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
