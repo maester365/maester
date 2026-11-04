@@ -49,6 +49,11 @@ export const frameworkConfig = {
   ism: { code: "ISM", label: "ASD ISM", suite: "asd", complete: false, section: (r) => r.Guideline || "Other" },
 };
 
+// A GitHub avatar at the size the nav shows it (github.com/<handle>.png serves the full image otherwise).
+function smallAvatar(url) {
+  return /^https:\/\/github\.com\/[^/]+\.png$/.test(url) ? `${url}?size=40` : url;
+}
+
 function sectionName(names, key) {
   const name = new Map(Object.entries(names)).get(key);
   return name ? `${key} · ${name}` : key;
@@ -239,7 +244,7 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
   for (const t of tests) for (const id of t.authors) creditCounts.set(id, (creditCounts.get(id) ?? 0) + 1);
   const people = (contributors.profiles ?? [])
     .filter((p) => creditCounts.has(p.id))
-    .map((p) => ({ id: p.id, name: p.name, count: creditCounts.get(p.id) }))
+    .map((p) => ({ id: p.id, name: p.name, count: creditCounts.get(p.id), avatar: smallAvatar(p.avatar ?? "") }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   const data = {

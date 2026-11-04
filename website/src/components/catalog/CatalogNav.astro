@@ -36,6 +36,7 @@ const counted = (list: Check[], key: (t: Check) => string[], order?: string[]) =
 };
 const areaName = new Map(data.areas.map((a) => [a.key, a.name]));
 const personName = new Map(data.people.map((p) => [p.id, p.name]));
+const personAvatar = new Map(data.people.map((p) => [p.id, p.avatar]));
 const groups = scope && [
 	{ name: 'severity', label: 'Severity', values: counted(scope, (t) => [t.severity], severityOrder).map(([k, n]) => ({ value: k, label: k, count: n, dot: k })) },
 	{ name: 'area', label: 'Area', values: counted(scope, (t) => [t.area]).map(([k, n]) => ({ value: k, label: areaName.get(k) ?? k, count: n })) },
@@ -57,7 +58,7 @@ const groups = scope && [
 	{
 		name: 'author',
 		label: 'Author',
-		values: counted(scope, (t) => t.authors ?? []).map(([k, n]) => ({ value: k, label: personName.get(k) ?? k, count: n })),
+		values: counted(scope, (t) => t.authors ?? []).map(([k, n]) => ({ value: k, label: personName.get(k) ?? k, count: n, avatar: personAvatar.get(k) ?? '' })),
 	},
 ].filter((g) => g.values.length > 1 || (g.name === 'channel' && g.values.length));
 // The author list is long: the first few show, and a box finds the rest.
@@ -169,6 +170,7 @@ const AUTHORS_SHOWN = 6;
 							<label class="mt-cnav__check" data-extra={g.name === 'author' && i >= AUTHORS_SHOWN ? '1' : undefined} hidden={g.name === 'author' && i >= AUTHORS_SHOWN}>
 								<input type="checkbox" data-filter={g.name} value={v.value} />
 								{v.dot && <span class={`mt-cnav__dot mt-cnav__dot--${v.dot.toLowerCase()}`} />}
+								{v.avatar !== undefined && (v.avatar ? <img class="mt-cnav__avatar" src={v.avatar} alt="" width="18" height="18" loading="lazy" /> : <span class="mt-cnav__avatar" />)}
 								<span>{v.label}</span>
 								<span class="mt-cnav__n">{v.count}</span>
 							</label>
@@ -442,6 +444,15 @@ const AUTHORS_SHOWN = 6;
 		margin: 0;
 		flex: none;
 		accent-color: var(--sl-color-accent);
+	}
+	.mt-cnav__avatar {
+		width: 18px;
+		height: 18px;
+		flex: none;
+		margin: 0;
+		border-radius: 999px;
+		background: var(--sl-color-gray-5);
+		object-fit: cover;
 	}
 	.mt-cnav__check[hidden] {
 		display: none;
