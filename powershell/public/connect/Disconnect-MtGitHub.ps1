@@ -29,6 +29,7 @@
     $__MtSession.GitHubConnection = $null
     $__MtSession.GitHubAuthHeader = $null
     $__MtSession.GitHubCache = @{}
+    $__MtSession.GitHubRateLimits = $null
 
     if ($hadState) {
         Write-Host 'Disconnected from GitHub.' -ForegroundColor Green
