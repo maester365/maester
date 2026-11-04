@@ -1,0 +1,51 @@
+how can we bring data from the zero trust assessment into the affected objects blade. there are lots of results there, especially around apps plus aother. review smoe of the reports we've run before for the data. is there an additional step we can do after the run to massage the zt results so we can incldude them in affected objects (note that in the future we might port over all zt tests into maester natively and at that point we might not need this extra step so make it easy to remove later). come up with a plan frist
+
+---
+
+in zt-export we have a database with some of the key objects too including apps, service principals, users, groups etc. in a duckdb what other insigts can we pull from them directly and ernirch our report when it is available. go looku pthe code for zt asses to figure out more...
+
+---
+
+Facts on objects first
+
+---
+
+<task-notification>
+<task-id>b1o147rvo</task-id>
+<tool-use-id>toolu_01KXfN9sSLxQ6BJ2aGpU5WCH</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/tasks/b1o147rvo.output</output-file>
+<status>completed</status>
+<summary>Background command "until grep -qE "Tests completed|Tests Passed|Failed:|exit [0-9]" /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester1.log; do sleep 5; done; grep -nE "\[-\]|Tests Passed|Tests completed" /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester1.log | head -20" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b9lbjjdil</task-id>
+<tool-use-id>toolu_01QETE7nkBoVW4MbJk3dvthe</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/tasks/b9lbjjdil.output</output-file>
+<status>completed</status>
+<summary>Background command "cd /Users/merill/github/maester-zta-facts/powershell/tests/functions &amp;&amp; pwsh -NoProfile -Command '$c = New-PesterConfiguration; $c.Run.Path = @("./ZeroTrustAssessmentPack.Tests.ps1","./Get-MtAffectedObject.Tests.ps1","./Get-MtHtmlReport.Tests.ps1"); $c.Output.Verbosity = "Normal"; Invoke-Pester -Configuration $c' &gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester1.log 2&gt;&amp;1; echo "exit $?"" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bzzch9cjp</task-id>
+<tool-use-id>toolu_013Mce3qKGrztfEZLkJzEi1j</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/tasks/bzzch9cjp.output</output-file>
+<status>completed</status>
+<summary>Background command "cd /Users/merill/github/maester-zta-facts/powershell/tests/functions &amp;&amp; pwsh -NoProfile -Command '$c = New-PesterConfiguration; $c.Run.Path = @("./ZeroTrustAssessmentPack.Tests.ps1","./Get-MtAffectedObject.Tests.ps1","./Get-MtHtmlReport.Tests.ps1"); $c.Output.Verbosity = "Detailed"; Invoke-Pester -Configuration $c' &gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester2.log 2&gt;&amp;1; grep -nE "\[-\]|Tests Passed|Tests completed" /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester2.log | head -20; grep -c "Processing .* Exports" /private/tmp/claude-501/-Users-merill--claude-spares-spare-zGb5mn/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/scratchpad/pester2.log" completed (exit code 1: No matches found)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bnn7hi2bz</task-id>
+<tool-use-id>toolu_01CJFJrmebTDrt5r4avJxK3a</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/fe4151bb-18b6-4e7c-a90e-7bc0aa7a1d76/tasks/bnn7hi2bz.output</output-file>
+<status>completed</status>
+<summary>Monitor "real ZT assessment launched by pack tests" stream ended</summary>
+<event>pester finished</event>
+If this event is something the user would act on now, send a PushNotification. Routine or benign output doesn't need one.
+</task-notification>
