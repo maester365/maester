@@ -123,9 +123,27 @@ Describe 'Test-MtCisThirdPartyFileSharing' {
         Test-MtCisThirdPartyFileSharing -ApprovedProviders Box | Should -BeTrue
     }
 
+    It 'fails when approved and unapproved providers are both on' {
+        $script:Config.AllowDropBox = $true
+        $script:Config.AllowBox = $true
+        Test-MtCisThirdPartyFileSharing -ApprovedProviders Box | Should -BeFalse
+    }
+
     It 'fails when the client configuration is not returned' {
         $script:Config = $null
         Test-MtCisThirdPartyFileSharing | Should -BeFalse
+    }
+
+    It 'fails when a provider setting is missing' {
+        $script:Config = [pscustomobject]@{
+            AllowDropBox = $false
+            AllowBox = $false
+            AllowGoogleDrive = $false
+            AllowShareFile = $false
+        }
+
+        Test-MtCisThirdPartyFileSharing | Should -BeFalse
+        $script:Result | Should -Match 'AllowEgnyte \| Not found \| No \| .*Fail'
     }
 }
 
