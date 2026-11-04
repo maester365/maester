@@ -5,7 +5,9 @@ Writes the test catalog of the Zero Trust Assessment pack from a copy of the Zer
 .DESCRIPTION
 Reads the [ZtTest] attribute of every Test-Assessment.<id>.ps1 in the module's tests folder from the syntax tree
 (nothing is run), applies the titles and ratings of the module's TestMeta.json the way the assessment does, and
-writes packs/zero-trust-assessment/catalog.json: the module version it was built from and one entry per test.
+writes packs/zero-trust-assessment/catalog.json: the module version it was built from and one entry per test,
+with the test's Description and Remediation from its Test-Assessment.<id>.md (Microsoft's text, MIT licence), so
+maester.dev can show them.
 
 The catalog lists what the pack can report before any run: the test IDs, titles and ratings shown in the
 pack's listing. Results at run time come from the assessment's report, so a test added in a newer version of
@@ -101,6 +103,19 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
     foreach ($key in 'Title', 'Category', 'Pillar', 'RiskLevel', 'UserImpact', 'ImplementationCost', 'SfiPillar', 'TenantType', 'MinimumLicense') {
         if ($meta.ContainsKey($id) -and $meta[$id].ContainsKey($key) -and $meta[$id][$key]) { $values[$key] = $meta[$id][$key] }
     }
+    # The test's own text: Test-Assessment.<id>.md up to the results placeholder, split at its remediation heading.
+    $description = ''
+    $remediation = ''
+    $markdownPath = Join-Path $testsPath "Test-Assessment.$id.md"
+    if (Test-Path -LiteralPath $markdownPath) {
+        $text = (Get-Content -LiteralPath $markdownPath -Raw -Encoding utf8) -replace "`r`n", "`n"
+        $text = ($text -split '<!---\s*Results\s*--->', 2)[0].Trim()
+        $parts = [regex]::Split($text, '(?m)^\s*(?:\*\*Remediation (?:actions?|resources)\*\*|#+\s*Remediation (?:actions?|resources))\s*$', 2)
+        $description = $parts[0].Trim()
+        if ($parts.Count -gt 1) { $remediation = $parts[1].Trim() }
+        # Some tests have only a placeholder ("...") where their text will go.
+        if ($description -match '^\W*$') { $description = '' }
+    }
     $map = $mapping[$id]
     if (-not $map) { Write-Warning "ZTA.$id ($($values.Title)) is not in $MappingPath; add it."; $map = @{} }
     [ordered]@{
@@ -121,6 +136,8 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
         Area               = $map.Area
         Mitre              = @($map.Mitre | Where-Object { $_ })
         AlsoCheckedBy      = @($map.AlsoCheckedBy | Where-Object { $_ })
+        Description        = $description
+        Remediation        = $remediation
     }
 }
 

@@ -61,6 +61,13 @@ Describe 'Zero Trust Assessment pack' {
             @($catalog.Tests | Where-Object { [string]::IsNullOrWhiteSpace($_.Title) }) | Should -BeNullOrEmpty
         }
 
+        It 'has the description and remediation of the tests the module documents' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            @($catalog.Tests | Where-Object { -not $_.PSObject.Properties['Description'] -or -not $_.PSObject.Properties['Remediation'] }).Id | Should -BeNullOrEmpty
+            @($catalog.Tests | Where-Object Description).Count | Should -BeGreaterThan ($catalog.Tests.Count / 2) -Because 'catalog.json is written from the module with build/zta/Update-MtZtaCatalog.ps1'
+            @($catalog.Tests | Where-Object { $_.Description -match '<!---\s*Results' -or $_.Remediation -match '%TestResult%' }).Id | Should -BeNullOrEmpty
+        }
+
         It 'maps every test of the catalog, and only those, in taxonomy.json' {
             $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
             $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
