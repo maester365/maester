@@ -21,6 +21,8 @@ that has no file here.
 | azure.svg | Azure | other/10018-icon-service-Azure-A.svg |
 | azure-devops.svg | Azure DevOps | devops/10261-icon-service-Azure-DevOps.svg |
 | copilot-studio.svg | Copilot Studio | Copilot-studio/CopilotStudio_scalable.svg |
+| fabric.svg | Microsoft Fabric | fabric/fabric_color.svg (unchanged) |
+| ad.svg | Active Directory | Microsoft/dark-blue-Organization.svg, the same file as `features/organization.svg` |
 
 `purview.svg` (Microsoft Purview) is not from msicons: it is
 [Microsoft_Purview_Logo.svg](https://commons.wikimedia.org/wiki/File:Microsoft_Purview_Logo.svg) from Wikimedia Commons,
@@ -40,4 +42,11 @@ on 2026-11-02 and unchanged. That repository has no licence file and points to M
 [trademark and branding guidelines](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/branding);
 the logo is Microsoft's, under the terms above.
 
-msicons has no icon for Exchange Online, Microsoft Fabric, Microsoft 365, Active Directory or GitHub.
+msicons has no icon for Exchange Online, Microsoft 365, Active Directory or GitHub. Active Directory has no product
+icon of its own there, so `ad.svg` is msicons' generic organization icon, which the site's Active Directory suite
+mark also uses.
+
+`github.svg` (GitHub) is the `mark-github-24` icon from [primer/octicons](https://github.com/primer/octicons), tag
+`v19.33.0` (commit `cc4e12df6ff8`), taken on 2026-11-05, unchanged and under the MIT licence. It has no fill, so it
+draws black; the report and the site invert it in dark mode. GitHub's [logo guidelines](https://github.com/logos)
+allow the mark in black or white, unchanged.

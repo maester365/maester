@@ -223,6 +223,11 @@ h1#_top {
 	object-fit: cover;
 	margin: 0 !important;
 }
+/* Starlight spaces the blocks of a page apart; inside the byline that pushed the text below the avatar. */
+.test-byline > *,
+.test-byline-meta > * {
+	margin-top: 0 !important;
+}
 .test-byline-meta {
 	display: flex;
 	gap: 0.75rem;
@@ -238,3 +243,13 @@ h1#_top {
 	box-shadow: none;
 }
 
+
+/* The GitHub mark is black (public/report-icons/v1/products/README.md): white on a dark page. */
+:root[data-theme='dark'] img[src$='/products/github.svg'] {
+	filter: invert(1);
+}
+
+/* Exchange's logo fills half of its canvas (as in the report): draw it at the size of the other product icons. */
+img[src$='/products/exchange.png'] {
+	transform: scale(1.8);
+}
