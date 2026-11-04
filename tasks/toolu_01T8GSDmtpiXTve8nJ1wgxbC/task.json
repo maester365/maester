@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01T8GSDmtpiXTve8nJ1wgxbC",
+  "agent_id": "a81675ac506efb074",
+  "task_description": "Map ZTA batch 6",
+  "token_usage": {
+    "input_tokens": 26,
+    "cache_creation_tokens": 147428,
+    "cache_read_tokens": 1292204,
+    "output_tokens": 14703,
+    "api_call_count": 13
+  },
+  "started_at": "2026-11-05T07:31:01.925029+11:00",
+  "completed_at": "2026-11-05T07:33:25.783139+11:00"
+}
