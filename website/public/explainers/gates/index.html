@@ -1,0 +1,75 @@
+<!doctype html>
+<!--
+  Explainer: gates and reason codes. A HyperFrames composition (https://hyperframes.heygen.com).
+  Gate names and reason codes follow powershell/internal/engine/Resolve-MtNativePlan.ps1; update this file in the
+  same pull request when they change. Chapters are listed in src/data/explainers.json.
+  Watches: powershell/internal/engine/Resolve-MtNativePlan.ps1
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="robots" content="noindex" />
+    <title>Maester explainer</title>
+    <link rel="stylesheet" href="../_shared/explainer.css" />
+    <script src="../_shared/gsap.min.js"></script>
+    <script src="../_shared/hyperframe.runtime.js"></script>
+    <style>
+      .gates { position: absolute; left: 120px; top: 270px; width: 1100px; display: flex; flex-direction: column; gap: 18px; }
+      .gate { display: flex; justify-content: space-between; align-items: center; border: 3px solid #27272a; border-radius: 22px; padding: 22px 30px; background: #111113; font-size: 36px; color: #a1a1aa; }
+      .gate .code { font-family: "Geist Mono", ui-monospace, monospace; font-size: 26px; color: #71717a; }
+      .token { position: absolute; left: 1300px; width: 500px; border-radius: 22px; padding: 26px 30px; background: #18181b; border: 3px solid #3f3f46; }
+      .token b { display: block; font-family: "Geist Mono", ui-monospace, monospace; font-size: 30px; color: #fafafa; }
+      .token span { font-size: 28px; color: #a1a1aa; }
+      .verdict { position: absolute; left: 1300px; width: 500px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 30px; border-radius: 16px; padding: 18px 24px; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="gates" data-start="0" data-duration="36" data-width="1920" data-height="1080">
+      <!-- Voice-over (Kokoro) and music, mixed by website/scripts/narration -->
+      <audio id="mix" src="audio/mix.mp3" data-start="0" data-duration="36" data-track-index="2" data-volume="1"></audio>
+      <div class="eyebrow">Maester explainer</div>
+      <div class="title">Why a check didn't run</div>
+      <div class="brand">maester.dev</div>
+      <div class="gates">
+        <div class="gate" id="g0">Selection <span class="code">NotSelected · Preview · LongRunning</span></div>
+        <div class="gate" id="g1">Platform and cloud <span class="code">PlatformMismatch · CloudMismatch</span></div>
+        <div class="gate" id="g2">Service <span class="code">ServiceNotConnected</span></div>
+        <div class="gate" id="g3">Licence <span class="code">LicenseNotFound</span></div>
+        <div class="gate" id="g4">Parameters <span class="code">InvalidConfiguration</span></div>
+      </div>
+      <div class="token" id="t1" style="top: 270px"><b>CIS.M365.8.1.1</b><span>Teams: external file sharing</span></div>
+      <div class="verdict" id="v1" style="top: 430px; background: rgba(251,191,36,0.14); color: #fcd34d">Skipped · ServiceNotConnected</div>
+      <div class="token" id="t2" style="top: 270px; opacity: 0"><b>MT.1001</b><span>Device compliance policy</span></div>
+      <div class="verdict" id="v2" style="top: 760px; background: rgba(34,197,94,0.14); color: #86efac">Ran on the engine · Passed</div>
+      <p class="caption" id="c0">Before a check runs, it passes through gates, in this order. A check that stops at a gate is skipped, with that gate's reason code.</p>
+      <p class="caption" id="c1">This Teams check reaches the service gate. Teams isn't connected, so it stops there: Skipped, ServiceNotConnected. Not failed.</p>
+      <p class="caption" id="c2">This check passes every gate, so the engine runs it. The report lists every skipped check with its reason, so you know what to fix.</p>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const lit = { borderColor: "#52525b", color: "#fafafa", duration: 0.4 };
+      tl.from(".title", { opacity: 0, y: 30, duration: 0.8 }, 0);
+      tl.from(".gate", { opacity: 0, x: -40, duration: 0.5, stagger: 0.2 }, 0.4);
+      tl.to("#c0", { opacity: 1, duration: 0.6 }, 1.5);
+      tl.to("#c0", { opacity: 0, duration: 0.4 }, 9.5);
+      // Check one: stops at the service gate.
+      tl.to("#c1", { opacity: 1, duration: 0.6 }, 10);
+      [0, 1, 2].forEach((g, i) => tl.to(`#g${g}`, lit, 10.5 + i * 1.5));
+      tl.to("#t1", { y: 230, duration: 2.6, ease: "power1.inOut" }, 10.5);
+      tl.to("#g2", { borderColor: "#d97706", backgroundColor: "rgba(251,191,36,0.10)", duration: 0.5 }, 14);
+      tl.to("#v1", { opacity: 1, duration: 0.5 }, 14.3);
+      tl.to(["#c1", "#t1", "#v1"], { opacity: 0, duration: 0.5 }, 21);
+      tl.to(".gate", { borderColor: "#27272a", backgroundColor: "#111113", color: "#a1a1aa", duration: 0.5 }, 21.2);
+      // Check two: passes every gate.
+      tl.to("#c2", { opacity: 1, duration: 0.6 }, 22);
+      tl.to("#t2", { opacity: 1, duration: 0.4 }, 22);
+      [0, 1, 2, 3, 4].forEach((g, i) => tl.to(`#g${g}`, { borderColor: "#166534", color: "#fafafa", duration: 0.4 }, 22.5 + i * 1));
+      tl.to("#t2", { y: 380, duration: 5, ease: "power1.inOut" }, 22.5);
+      tl.to("#v2", { opacity: 1, duration: 0.5 }, 28);
+      tl.set({}, {}, 36);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["gates"] = tl;
+    </script>
+  </body>
+</html>

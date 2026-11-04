@@ -43,7 +43,7 @@
     }
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri "admin/appsAndServices/settings" -DisableCache
+    $settings = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri "admin/appsAndServices/settings"
 
     Write-Verbose 'Executing checks'
     $CheckIsOfficeStoreEnabled = $settings | Where-Object { $_.isOfficeStoreEnabled -eq $false }

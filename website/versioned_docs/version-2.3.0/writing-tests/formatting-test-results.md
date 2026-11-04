@@ -1,6 +1,7 @@
 ---
 title: Formatting test results
-sidebar_position: 2
+sidebar:
+  order: 2
 ---
 
 ## Overview

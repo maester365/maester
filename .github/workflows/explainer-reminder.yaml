@@ -1,0 +1,59 @@
+# Reminds a pull request's author when it changes a file that one of the website's explainers describes.
+# Each explainer in website/public/explainers lists the files it watches in website/src/data/explainers.json.
+# It only comments: an explainer can be updated in a follow-up.
+name: Explainer reminder
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions: {}
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      # The default branch's list of explainers, never the pull request's code.
+      - name: Checkout explainer list
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: website/src/data/explainers.json
+          sparse-checkout-cone-mode: false
+
+      - name: Comment when a watched file changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          changed=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
+          message=$(node -e '
+            const explainers = require("./website/src/data/explainers.json");
+            const changed = process.argv[1].split("\n").filter(Boolean);
+            const hits = [];
+            for (const [slug, e] of Object.entries(explainers)) {
+              const files = changed.filter((f) => e.watches.some((w) => (w.endsWith("/") ? f.startsWith(w) : f === w)));
+              const touched = changed.some((f) => f.startsWith(`website/public/explainers/${slug}/`));
+              if (files.length && !touched) hits.push(`- **${e.title}** (\`website/public/explainers/${slug}/\`) describes ${files.map((f) => `\`${f}\``).join(", ")}`);
+            }
+            if (hits.length) console.log(hits.join("\n"));
+          ' "$changed")
+          if [ -z "$message" ]; then exit 0; fi
+          marker="<!-- explainer-reminder -->"
+          body="$marker
+          This pull request changes files that a website explainer describes:
+
+          $message
+
+          If the change alters what the explainer shows (a gate, a reason code, a command, a count), update its composition and its chapters in \`website/src/data/explainers.json\`. If it doesn't, no action is needed."
+          existing=$(gh api "repos/$REPO/issues/$PR/comments" --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$existing" -f body="$body" > /dev/null
+          else
+            gh pr comment "$PR" --repo "$REPO" --body "$body"
+          fi

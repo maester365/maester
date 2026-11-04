@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $settings = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache
+    $settings = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy"
 
     $testResult = $settings.guestUserRoleId -eq "10dae51f-b6af-4016-8d66-8c2a99b929b3" -or $settings.guestUserRoleId -eq "2af84b1e-32c8-42b7-82bc-daa82404023b"
 

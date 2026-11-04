@@ -1,0 +1,31 @@
+{
+  "$comment": "Customer stories and Maester episodes for the home page. A story shows only when approved is a date: the day its people (and their employer, for a brand) signed off the quotes and clip.",
+  "stories": [
+    {
+      "id": "xbox",
+      "approved": null,
+      "headline": "Xbox checks 70+ Entra tenants with Maester, every night.",
+      "summary": "Xbox Security grades a gaming-specific Entra baseline of about 50 controls in every game studio's tenant, from one GitHub Actions pipeline. Audrey Long, Principal Cloud Security Architect in Xbox Security, explained how on Entra.Chat.",
+      "person": { "name": "Audrey Long", "role": "Principal Cloud Security Architect, Xbox Security", "initials": "AL" },
+      "quote": "So every night for all 70 of my tenants, I'm running all my Maester tests.",
+      "quotes": [
+        "The reports that I give to my studios, I have got nothing but amazing feedback on them.",
+        "If you change any of the settings that deviate away from the baseline, we're gonna know about it. And that's really powerful."
+      ],
+      "facts": [
+        { "value": "70+", "label": "Entra tenants, one per game studio" },
+        { "value": "~50", "label": "controls in the gaming baseline" },
+        { "value": "Nightly", "label": "one GitHub Actions pipeline, tenants in parallel" },
+        { "value": "Read-only", "label": "one multi-tenant app with federated credentials" }
+      ],
+      "episode": "https://entra.news/p/how-xbox-secures-70-entra-tenants",
+      "video": "https://www.youtube.com/watch?v=Je0nQ8j305w"
+    }
+  ],
+  "episodes": [
+    { "n": "67", "length": "47 min", "hook": "70+ tenants, every night", "title": "How Xbox Secures 70+ Entra Tenants Every Night with Maester", "who": "Audrey Long, Sam Erde", "date": "Jul 2026", "url": "https://entra.news/p/how-xbox-secures-70-entra-tenants", "tint": "210,44,49" },
+    { "n": "75", "length": "37 min", "hook": "Test Active Directory too", "title": "Active Directory Security Testing in Maester 2.2", "who": "Mike Soule, Sam Erde", "date": "Sep 2026", "url": "https://entra.news/p/active-directory-security-testing", "tint": "59,130,246" },
+    { "n": "57", "length": "62 min", "hook": "Copilot, DevOps, Defender", "title": "How to Secure Copilot Agents, Azure DevOps & Defender with Maester 2.1", "who": "Sam Erde", "date": "May 2026", "url": "https://entra.news/p/how-to-secure-copilot-agents-azure", "tint": "22,163,74" },
+    { "n": "36", "length": "44 min", "hook": "Zero Trust, assessed", "title": "Zero Trust Assessment: Secure your tenant", "who": "Sarah Lipsey, John Flores, Ravi Kalwani, Tarek Dawoud", "date": "Nov 2025", "url": "https://entra.news/p/find-your-tenants-hidden-flaws-in", "tint": "217,119,6" }
+  ]
+}

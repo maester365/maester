@@ -1,7 +1,8 @@
 ---
 title: Attribute rubric
-sidebar_position: 2
 description: How to choose the classification, priority and mapping attributes of a Maester test, and how those choices are checked.
+sidebar:
+  order: 2
 ---
 
 # Attribute rubric
@@ -11,7 +12,7 @@ it addresses. This page is the rule book for those values. Unit tests check what
 a review step checks the judgement calls against this page. A custom test may use the same attributes; the rules
 apply to it only if you want them to.
 
-The [test builder](pathname:///test-builder) lets you pick the values with this guidance beside each field and
+The [test builder](/test-builder) lets you pick the values with this guidance beside each field and
 shows the code as you go.
 
 | Question | Attributes | Required for built-in tests |
@@ -164,7 +165,7 @@ Anchors from existing tests:
 | Users cannot register applications | `Medium` | Needs a signed-in user and a further step to cause harm. |
 | MailTips are enabled for end users | `Low` | A small aid against mis-sent mail. |
 | Disabled user count should be retrievable | `Info` | Inventory for review. |
-| [EIDSCA.AP14 — users may read other users](../tests/eidsca/EIDSCA.AP14.md) | `Info` | Disabling `allowedToReadOtherUsers` is not itself a security finding. Review the restriction because it can disrupt collaboration, user lookup and default features. |
+| [EIDSCA.AP14 — users may read other users](/docs/tests/EIDSCA.AP14) | `Info` | Disabling `allowedToReadOtherUsers` is not itself a security finding. Review the restriction because it can disrupt collaboration, user lookup and default features. |
 
 Microsoft's [Zero Trust Assessment](https://github.com/microsoft/zerotrustassessment) rates many of the same
 Microsoft Entra and Intune settings. Where it has a test for the same setting, compare your value with its risk

@@ -1,0 +1,6 @@
+{
+  "$comment": "Fallback numbers for the home page, used when the build can't reach the PowerShell Gallery or GitHub. src/lib/stats.mjs fetches the live ones.",
+  "downloads": 624960,
+  "stars": 1171,
+  "updated": "2026-11-02"
+}

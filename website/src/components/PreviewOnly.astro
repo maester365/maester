@@ -1,0 +1,79 @@
+---
+// Shown on any test, command or guide that only the preview has: what that means, and how to get the preview.
+import { previewLabel, previewVersion, stableVersion } from '../lib/versions.mjs';
+
+interface Props {
+	what: 'check' | 'command' | 'page';
+	name?: string;
+}
+const { what, name } = Astro.props;
+const subject = what === 'page' ? 'This feature' : name ? `${name}` : `This ${what}`;
+---
+
+<aside class="mt-preview" aria-label="Only in the preview">
+	<div class="mt-preview__head">
+		<span class="mt-preview__badge">Preview {previewLabel}</span>
+		<strong>Only in the preview</strong>
+	</div>
+	<p>
+		{subject} is in Maester {previewVersion} and not in the stable {stableVersion} release yet. It will be in the next stable
+		release. To use it now, install the preview:
+	</p>
+	<pre><code>Install-Module Maester -AllowPrerelease -Force</code></pre>
+	<p class="mt-preview__links">
+		<a href="/docs/preview">How to get the preview, and go back</a>
+		<a href="/docs/preview#use-the-preview-in-automation">Use the preview in GitHub Actions</a>
+	</p>
+</aside>
+
+<style>
+	.mt-preview {
+		margin-top: 1rem;
+		border: 1px solid var(--mt-warn-line);
+		background: var(--mt-warn-soft);
+		border-radius: var(--mt-radius);
+		padding: 0.9rem 1.1rem;
+		font-size: 0.92rem;
+	}
+	.mt-preview__head {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		color: var(--sl-color-white);
+	}
+	.mt-preview__badge {
+		font-family: var(--sl-font-mono);
+		font-size: 0.7rem;
+		font-weight: 600;
+		border-radius: 6px;
+		padding: 0.1rem 0.45rem;
+		background: var(--mt-warn);
+		color: #fff;
+	}
+	p {
+		margin: 0.5rem 0 0;
+		color: var(--sl-color-gray-2);
+	}
+	pre {
+		margin: 0.6rem 0 0;
+		padding: 0.5rem 0.8rem;
+		border-radius: 8px;
+		background: var(--sl-color-gray-6);
+		border: 1px solid var(--sl-color-gray-5);
+		font-size: 0.82rem;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+	}
+	.mt-preview a {
+		color: var(--sl-color-white);
+		text-decoration-color: var(--mt-warn);
+		text-underline-offset: 3px;
+	}
+	.mt-preview__links {
+		display: flex;
+		gap: 1.25rem;
+		flex-wrap: wrap;
+		font-weight: 600;
+		font-size: 0.85rem;
+	}
+</style>

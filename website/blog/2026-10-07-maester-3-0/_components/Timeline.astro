@@ -1,0 +1,7 @@
+---
+import styles from "../styles.module.css";
+const root = (cls: string) => `${styles.root} ${cls}`;
+const { items } = Astro.props;
+---
+
+<div class={root(styles.timeline)}>{items.map(({ when, what, primary }: any) => <div class={`${styles.when} ${primary ? styles.primary : ""}`}><b>{when}</b><span>{what}</span></div>)}</div>

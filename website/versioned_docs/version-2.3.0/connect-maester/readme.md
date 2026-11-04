@@ -1,7 +1,8 @@
 ---
-sidebar_label: Connect-Maester
-sidebar_position: 1
 title: Connect-Maester
+sidebar:
+  label: Connect-Maester
+  order: 1
 ---
 
 # Connect-Maester
