@@ -21,7 +21,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 571,
+      "SelectedCount": 572,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -94,6 +94,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -760,7 +761,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 527,
+      "SelectedCount": 528,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -833,6 +834,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -1308,7 +1310,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 587,
+      "SelectedCount": 588,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -1383,6 +1385,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -1918,7 +1921,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 588,
+      "SelectedCount": 589,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -1992,6 +1995,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -2527,7 +2531,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 618,
+      "SelectedCount": 619,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -2603,6 +2607,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -3366,7 +3371,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 527,
+      "SelectedCount": 528,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1059",
@@ -3439,6 +3444,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",
@@ -3920,7 +3926,7 @@
           "AD"
         ]
       },
-      "SelectedCount": 574,
+      "SelectedCount": 575,
       "SelectedFamilies": [
         "MT.1024",
         "MT.1033",
@@ -3996,6 +4002,7 @@
         "CIS.GH.1.3.8",
         "CIS.M365.1.1.1",
         "CIS.M365.1.1.3",
+        "CIS.M365.1.1.4",
         "CIS.M365.1.2.1",
         "CIS.M365.1.2.2",
         "CIS.M365.1.3.1",

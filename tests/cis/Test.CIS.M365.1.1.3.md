@@ -2,6 +2,8 @@
 
 Between two and four Global Administrators should be designated in the tenant. Ideally, these accounts will not have licenses assigned to them which supports additional controls found in this benchmark.
 
+The check counts unique users with an active or eligible Global Administrator assignment, including members of role-assigned groups. It reports an error if a group's members cannot be read.
+
 #### Rationale
 
 The Global Administrator role grants unrestricted access across all services in Microsoft Entra ID and should never be used for routine daily activities. Limiting the number of Global Administrators reduces the attack surface of the tenant and aligns with the principle of least privilege.
