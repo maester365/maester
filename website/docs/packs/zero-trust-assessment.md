@@ -15,6 +15,11 @@ Each assessment result is one row, `ZTA.<assessment test ID>` (for example `ZTA.
 assessment's title, risk level (as the severity), description, remediation steps and findings. Results are tagged
 `ZeroTrust` and `ZeroTrust.<pillar>` (`ZeroTrust.Identity`, `ZeroTrust.Devices` and so on).
 
+Maester also places each result under the product, feature and security area it is about, such as Entra ID and
+Conditional Access, and lists the MITRE ATT&CK techniques its control addresses, so assessment results appear
+beside Maester's own checks in the report's product, area and ATT&CK views. The assessment does not record these,
+so Maester keeps the mapping in the pack's `taxonomy.json`.
+
 The pack's ID is `maester.zero-trust-assessment`. It needs no `Install-MtPack`: it is part of the Maester module,
 and `Get-MtPack` lists it.
 
