@@ -688,17 +688,25 @@ import AttackView from "@components/catalog/AttackView.astro";
 
 // A check of a pack: its ratings, where Maester places it, and links to the source, which the pack's own module
 // holds (the text of the check is not in this repository).
-function renderPackTestPage(pack, test, explorer) {
+// Markdown of the pack's own module, placed under a heading of this page: its headings move down two levels.
+function nestHeadings(markdown) {
+  return markdown.replace(/^(#{1,4}) /gm, (_, hashes) => `${hashes}## `);
+}
+
+function renderPackTestPage(pack, test, explorer, text) {
   const techniqueName = new Map(explorer.attack.techniques.map((t) => [t.Id, t.Name]));
-  const sourceFile = `${pack.source}/blob/main/src/powershell/tests/Test-Assessment.${test.testId}.md`;
   const titleById = new Map(explorer.tests.map((t) => [t.id, t.title]));
+  const description = (text?.Description ?? "").trim();
+  const remediation = (text?.Remediation ?? "").trim();
   const body = [generatedMarker, ""];
-  body.push(`This check is part of the [${pack.name}](/docs/tests/packs/${pack.slug}) pack. Microsoft writes and maintains it; Maester runs the assessment and shows its result in the Maester report, beside Maester's own checks.`, "");
+  body.push(`A check of the [${pack.name}](/docs/tests/packs/${pack.slug}) pack, written and maintained by Microsoft. Maester runs the assessment and shows the result in its report, beside Maester's own checks.`, "");
   if (test.also.length) {
     body.push(`:::note[Maester checks this too]`, `${test.also.map((id) => `[${id}](/docs/tests/${id}) (${titleById.get(id) ?? id})`).join(", ")} ${test.also.length === 1 ? "checks" : "check"} the same setting. Running both reports it twice.`, ":::", "");
   }
+  body.push("## Overview", "", description ? nestHeadings(description) : "Microsoft has not published a description of this check yet.", "");
+  if (remediation) body.push("## Remediation", "", nestHeadings(remediation), "");
   body.push("## Run it", "", "The check runs as part of the whole assessment, with the ZeroTrustAssessment module installed:", "", "```powershell", "Install-Module ZeroTrustAssessment -Scope CurrentUser", `Invoke-Maester -Pack ${pack.code}`, "```", "");
-  body.push("## About this check", "", "| | |", "| --- | --- |");
+  body.push("<details>", "<summary>About this check</summary>", "", "| | |", "| --- | --- |");
   body.push(`| Severity | ${test.severity} |`);
   if (test.cost) body.push(`| Effort to fix | ${test.cost} |`);
   if (test.impact) body.push(`| Impact on users | ${test.impact} |`);
@@ -710,11 +718,13 @@ function renderPackTestPage(pack, test, explorer) {
   if (test.mitre.length) body.push(`| ATT&CK | ${test.mitre.map((m) => `[${m}](/docs/tests?mitre=${m}) ${escapeTable(techniqueName.get(m) ?? "")}`).join(", ")} |`);
   if (test.license.length) body.push(`| Licence | ${escapeTable(test.license.join(", "))} |`);
   if (test.tenantType.length) body.push(`| Tenant | ${escapeTable(test.tenantType.join(", "))} |`);
-  body.push("", "Product, feature, area and ATT&CK are Maester's: the assessment does not record them, so Maester keeps them in the pack's `taxonomy.json`.", "");
-  body.push("## Source", "", `- Description and remediation: [\`Test-Assessment.${test.testId}.md\`](${sourceFile}) in ${pack.source.replace("https://github.com/", "")}`, `- Report an issue with the check: [${pack.source.replace("https://github.com/", "")}](${pack.source}/issues)`, "");
+  body.push("", "Product, feature, area and ATT&CK are Maester's: the assessment does not record them, so Maester keeps them in the pack's `taxonomy.json`.", "", "</details>", "");
+  body.push(`<small>The overview and remediation are from Microsoft's ${pack.module || "Zero Trust Assessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}, © Microsoft Corporation, under the MIT licence.</small>`, "");
+  const summary = description ? summarize(description) : "";
+  const metaDescription = summary ? shorten(summary, 155) : shorten(`${test.title.replace(/\.$/, "")}: a ${pack.name} check, with its severity, effort and the product it is about.`, 155);
   return `---
 title: ${yamlQuote(test.title.replace(/\.$/, ""))}
-description: ${yamlQuote(shorten(`${test.title.replace(/\.$/, "")}: a ${pack.name} check, with its severity, effort and the product it is about.`, 155))}
+description: ${yamlQuote(metaDescription)}
 slug: docs/tests/${test.id}
 editUrl: ${yamlQuote(`https://github.com/maester365/maester/edit/main/${pack.folder}/taxonomy.json`)}
 tableOfContents: false
@@ -855,9 +865,11 @@ export function main() {
   writeGenerated(join(docsTestsRoot, "attack.mdx"), renderAttackPage(explorer), writes);
   for (const product of explorer.products) writeGenerated(join(docsTestsRoot, "products", `${product.key}.mdx`), renderProductPage(explorer, product), writes);
   for (const framework of explorer.frameworks) writeGenerated(join(docsTestsRoot, "frameworks", `${framework.key}.mdx`), renderFrameworkPage(framework), writes);
+  // Each pack test's own text (Description, Remediation), from the pack's catalog.
+  const packText = new Map((catalog.Packs ?? []).flatMap((p) => p.Tests.map((t) => [t.Id, t])));
   for (const pack of explorer.packs) {
     writeGenerated(join(docsTestsRoot, "packs", `${pack.slug}.mdx`), renderPackPage(pack), writes);
-    for (const test of explorer.tests.filter((t) => t.pack === pack.code)) writeGenerated(join(docsTestsRoot, "packs", pack.slug, `${test.id}.md`), renderPackTestPage(pack, test, explorer), writes);
+    for (const test of explorer.tests.filter((t) => t.pack === pack.code)) writeGenerated(join(docsTestsRoot, "packs", pack.slug, `${test.id}.md`), renderPackTestPage(pack, test, explorer, packText.get(test.id)), writes);
   }
   writeGenerated(join(docsTestsRoot, "tags.md"), renderTagsIndex(tests), writes);
 
