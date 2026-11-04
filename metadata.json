@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6M0VWZ9TZZPQW7GC5SRSDAW",
+  "strategy": "manual-commit",
+  "branch": "pr2540-merge",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "powershell/tests/fixtures/golden/selection.json",
+    "powershell/tests/functions/Test-MtCisAdminLicenseFootprint.Tests.ps1",
+    "powershell/tests/functions/Test-MtCisCloudAdmin.Tests.ps1",
+    "powershell/tests/functions/Test-MtCisGlobalAdminCount.Tests.ps1",
+    "powershell/tests/functions/engine/Frameworks.Tests.ps1",
+    "tests/cis/Test.CIS.M365.1.1.1.md",
+    "tests/cis/Test.CIS.M365.1.1.1.ps1",
+    "tests/cis/Test.CIS.M365.1.1.3.md",
+    "tests/cis/Test.CIS.M365.1.1.3.ps1",
+    "tests/cis/Test.CIS.M365.1.1.4.md",
+    "tests/cis/Test.CIS.M365.1.1.4.ps1",
+    "tests/cis/frameworks/cis-m365.json",
+    "website/src/data/test-builder.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1344,
+    "cache_creation_tokens": 1844049,
+    "cache_read_tokens": 145287510,
+    "output_tokens": 394434,
+    "api_call_count": 600,
+    "subagent_tokens": {
+      "input_tokens": 506,
+      "cache_creation_tokens": 1714976,
+      "cache_read_tokens": 25829432,
+      "output_tokens": 155359,
+      "api_call_count": 252
+    }
+  },
+  "redaction": {
+    "replacements": 2095,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 2,
+      "credentialed_uri": 0,
+      "entropy": 2086,
+      "key_context": 7,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
