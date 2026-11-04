@@ -1,6 +1,6 @@
 ﻿1.1.1 (L1) Ensure Administrative accounts are cloud-only
 
-Administrative accounts are special privileged accounts that could have varying levels of access to data, users, and settings. Regular user accounts should never be utilized for administrative tasks and care should be taken, in the case of a hybrid environment, to keep administrative accounts separate from on-prem accounts. Administrative accounts should not have applications assigned so that they have no access to potentially vulnerable services (EX. email, Teams, SharePoint, etc.) and only access to perform tasks as needed for administrative purposes. **Ensure administrative accounts are not On-premises sync enabled.**
+Administrative accounts are special privileged accounts that could have varying levels of access to data, users, and settings. Regular user accounts should never be utilized for administrative tasks and care should be taken, in the case of a hybrid environment, to keep administrative accounts separate from on-prem accounts. Administrative accounts should not have applications assigned so that they have no access to potentially vulnerable services (EX. email, Teams, SharePoint, etc.) and only access to perform tasks as needed for administrative purposes. **Ensure user members of directory roles whose names contain `Administrator`, or the `Global Reader` role, are not On-premises sync enabled.** Members of role-assigned groups are included, and the check reports an error if a group's members cannot be read.
 
 #### Rationale
 
