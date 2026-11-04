@@ -139,6 +139,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 						data-suite={t.pack ? '' : t.suite}
 						data-mitre={t.mitre.join(' ')}
 						data-pillar={(t.pillar ?? []).join(' ')}
+						data-author={(t.authors ?? []).join(' ')}
 						data-g-product={`${t.product}|${t.productName || 'No product'}|${productIcon(t.product) ?? ''}|${t.product ? productInitials(t.product) : ''}`}
 						data-g-feature={`${t.product}/${t.feature}|${t.featureName || 'No feature'}|${featureIcon(t.product, t.feature) ?? ''}`}
 						data-g-area={`${t.area}|${t.areaName || 'No area'}`}
@@ -252,7 +253,8 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				any(s.product, d.product) &&
 				any(s.feature, d.feature) &&
 				any(s.suite, d.suite) &&
-				anyOf(s.mitre, d.mitre)
+				anyOf(s.mitre, d.mitre) &&
+				anyOf(s.author, d.author)
 			);
 		}
 
@@ -374,7 +376,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			const builtIn = shown.filter((r) => r.dataset.source === 'maester');
 			const packs = [...new Set(shown.map((r) => r.dataset.source!).filter((v) => v !== 'maester'))];
 			const products = [...new Set([...s.product, ...s.feature.map((f) => f.split('/')[0])])].filter((p) => !(scope === 'product' && p === this.dataset.value));
-			const loose = s.cost.length + s.impact.length + s.mitre.length + s.q.length > 0;
+			const loose = s.cost.length + s.impact.length + s.mitre.length + s.author.length + s.q.length > 0;
 			const notes: string[] = [];
 			if (loose && builtIn.length > 0 && builtIn.length <= 25 && scope !== 'pack') {
 				parts.splice(0, parts.length, `Invoke-Maester -TestId ${builtIn.map((r) => r.dataset.testId).join(',')}`);
@@ -384,7 +386,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				if (s.feature.length) parts.push(`-Feature ${[...new Set(s.feature.map((f) => f.split('/')[1]))].join(',')}`);
 				if (s.area.length) parts.push(`-Area ${s.area.join(',')}`);
 				if (s.severity.length) parts.push(`-Severity ${s.severity.join(',')}`);
-				if (loose) notes.push('Effort, impact, technique and search are not Invoke-Maester parameters: this runs every check the other filters select.');
+				if (loose) notes.push('Effort, impact, technique, author and search are not Invoke-Maester parameters: this runs every check the other filters select.');
 			}
 			if (s.channel.includes('preview')) parts.push('-IncludePreview');
 			if (scope !== 'pack' && packs.length) {

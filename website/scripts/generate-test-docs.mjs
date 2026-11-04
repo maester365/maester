@@ -830,7 +830,6 @@ export function main() {
   loadFrameworkNames(catalog.Frameworks);
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- repo constant
   releasedTests = new Set(Object.keys(JSON.parse(readFileSync(versionsPath, "utf8")).tests));
-  const explorer = writeExplorerData(catalog, releasedTests);
   const tests = buildInventory(catalogTests);
   // Checks of one family often share their documentation: lead those descriptions with the check's own title.
   const seen = new Map();
@@ -846,6 +845,8 @@ export function main() {
   const updateAliases = process.argv.includes("--update-aliases");
   const contributorData = computeContributorData(tests, { updateAliases, log: updateAliases ? console.log : () => {} });
   contributorData.profilesById = new Map(contributorData.profiles.map((profile) => [profile.id, profile]));
+  // The explorer's data, with who wrote and improved each check (the same credits as the test pages' bylines).
+  const explorer = writeExplorerData(catalog, releasedTests, contributorData);
   const testTitles = Object.fromEntries(tests.map((test) => [test.id, { title: test.title, path: `/docs/tests/${test.id}` }]));
   writeGenerated(snapshotPath, `${JSON.stringify({ profiles: contributorData.profiles, attributions: contributorData.attributions, tests: testTitles }, null, 2)}\n`, writes);
 

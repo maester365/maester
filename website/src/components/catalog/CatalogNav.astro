@@ -35,6 +35,7 @@ const counted = (list: Check[], key: (t: Check) => string[], order?: string[]) =
 	return order ? entries.sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])) : entries.sort((a, b) => b[1] - a[1]);
 };
 const areaName = new Map(data.areas.map((a) => [a.key, a.name]));
+const personName = new Map(data.people.map((p) => [p.id, p.name]));
 const groups = scope && [
 	{ name: 'severity', label: 'Severity', values: counted(scope, (t) => [t.severity], severityOrder).map(([k, n]) => ({ value: k, label: k, count: n, dot: k })) },
 	{ name: 'area', label: 'Area', values: counted(scope, (t) => [t.area]).map(([k, n]) => ({ value: k, label: areaName.get(k) ?? k, count: n })) },
@@ -53,7 +54,14 @@ const groups = scope && [
 			{ value: 'preview', label: 'Runs with -IncludePreview', count: scope.filter((t) => t.previewCheck).length },
 		].filter((v) => v.count),
 	},
+	{
+		name: 'author',
+		label: 'Author',
+		values: counted(scope, (t) => t.authors ?? []).map(([k, n]) => ({ value: k, label: personName.get(k) ?? k, count: n })),
+	},
 ].filter((g) => g.values.length > 1 || (g.name === 'channel' && g.values.length));
+// The author list is long: the first few show, and a box finds the rest.
+const AUTHORS_SHOWN = 6;
 ---
 
 <mt-catalog-nav class="mt-cnav" data-list={scope ? '1' : ''}>
@@ -152,16 +160,24 @@ const groups = scope && [
 					</button>
 				</div>
 				{groups.map((g) => (
-					<fieldset class="mt-cnav__group">
+					<fieldset class="mt-cnav__group" data-group={g.name}>
 						<legend class="mt-cnav__h">{g.label}</legend>
-						{g.values.map((v: any) => (
-							<label class="mt-cnav__check">
+						{g.name === 'author' && (
+							<input type="search" class="mt-cnav__find" placeholder={`Find one of ${g.values.length} authors`} aria-label="Find an author" data-find-author />
+						)}
+						{g.values.map((v: any, i: number) => (
+							<label class="mt-cnav__check" data-extra={g.name === 'author' && i >= AUTHORS_SHOWN ? '1' : undefined} hidden={g.name === 'author' && i >= AUTHORS_SHOWN}>
 								<input type="checkbox" data-filter={g.name} value={v.value} />
 								{v.dot && <span class={`mt-cnav__dot mt-cnav__dot--${v.dot.toLowerCase()}`} />}
 								<span>{v.label}</span>
 								<span class="mt-cnav__n">{v.count}</span>
 							</label>
 						))}
+						{g.name === 'author' && g.values.length > AUTHORS_SHOWN && (
+							<button type="button" class="mt-cnav__all" data-all-authors>
+								Show all {g.values.length}
+							</button>
+						)}
 					</fieldset>
 				))}
 			</section>
@@ -200,6 +216,26 @@ const groups = scope && [
 			});
 
 			for (const box of boxes) box.addEventListener('change', () => toggle(box.dataset.filter as (typeof FILTERS)[number], box.value, box.checked));
+
+			// Authors: the first few, all of them, or those whose name matches the box; a ticked author always shows.
+			const authorGroup = this.querySelector<HTMLElement>('[data-group="author"]');
+			const find = this.querySelector<HTMLInputElement>('[data-find-author]');
+			const all = this.querySelector<HTMLButtonElement>('[data-all-authors]');
+			let showAll = false;
+			const showAuthors = () => {
+				const q = (find?.value ?? '').trim().toLowerCase();
+				for (const label of authorGroup?.querySelectorAll<HTMLLabelElement>('label') ?? []) {
+					const box = label.querySelector('input')!;
+					const text = label.textContent!.toLowerCase();
+					label.hidden = !box.checked && (q ? !text.includes(q) && !box.value.toLowerCase().includes(q) : !showAll && label.dataset.extra === '1');
+				}
+				if (all) all.hidden = showAll || Boolean(q);
+			};
+			find?.addEventListener('input', showAuthors);
+			all?.addEventListener('click', () => {
+				showAll = true;
+				showAuthors();
+			});
 			clear?.addEventListener('click', () => {
 				const state = readState();
 				for (const name of FILTERS) if (name !== 'group') state[name] = [];
@@ -210,6 +246,7 @@ const groups = scope && [
 				for (const box of boxes) box.checked = state[box.dataset.filter as (typeof FILTERS)[number]].includes(box.value);
 				if (document.activeElement !== search) search.value = state.q[0] ?? '';
 				if (clear) clear.hidden = !isFiltered(state);
+				showAuthors();
 			});
 		}
 	}
@@ -405,6 +442,35 @@ const groups = scope && [
 		margin: 0;
 		flex: none;
 		accent-color: var(--sl-color-accent);
+	}
+	.mt-cnav__check[hidden] {
+		display: none;
+	}
+	.mt-cnav__find {
+		box-sizing: border-box;
+		width: calc(100% - 1rem);
+		margin: 0 0.5rem 0.3rem;
+		padding: 0.3rem 0.55rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 7px;
+		background: var(--sl-color-bg);
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__all {
+		margin: 0.15rem 0.5rem 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-text-accent);
+		cursor: pointer;
+		text-align: start;
+	}
+	.mt-cnav__all[hidden] {
+		display: none;
 	}
 	.mt-cnav__dot {
 		width: 8px;

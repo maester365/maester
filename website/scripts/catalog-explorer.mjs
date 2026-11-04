@@ -82,8 +82,14 @@ function loadFrameworkFiles() {
   return files;
 }
 
-// Writes src/data/explorer.json. releasedTests is the set of test IDs of the stable release (versions.json).
-export function writeExplorerData(catalog, releasedTests) {
+// Writes src/data/explorer.json. releasedTests is the set of test IDs of the stable release (versions.json);
+// contributors is the credit data of contributors.mjs (attributions by test ID, and profiles).
+export function writeExplorerData(catalog, releasedTests, contributors = { attributions: {}, profiles: [] }) {
+  const attributions = new Map(Object.entries(contributors.attributions ?? {}));
+  const creditsOf = (id) => {
+    const credit = attributions.get(id);
+    return credit ? [credit.author, ...(credit.contributors ?? [])].filter(Boolean) : [];
+  };
   const taxonomy = catalog.Taxonomy;
   const productNames = new Map(taxonomy.Products.map((p) => [p.Key, p.Name]));
   const featureNames = new Map(taxonomy.Features.map((f) => [`${f.Product}/${f.Key}`, f.Name]));
@@ -103,6 +109,7 @@ export function writeExplorerData(catalog, releasedTests) {
     cost: t.ImplementationCost || "",
     mitre: (t.Mitre ?? []).filter((m) => m && m !== "None"),
     control: t.Control ?? [],
+    authors: creditsOf(t.Id),
     previewOnly: !releasedTests.has(t.Id),
     previewCheck: t.Lifecycle === "Preview",
   }));
@@ -139,6 +146,7 @@ export function writeExplorerData(catalog, releasedTests) {
         cost: t.ImplementationCost || "",
         mitre: (t.Mitre ?? []).filter((m) => m && m !== "None"),
         control: [],
+        authors: [],
         previewOnly: true,
         previewCheck: false,
         pillar: t.Pillar ?? [],
@@ -226,6 +234,14 @@ export function writeExplorerData(catalog, releasedTests) {
     .map((a) => ({ key: a.Key, name: a.Name, count: areaCounts.get(a.Key) }))
     .sort((a, b) => b.count - a.count);
 
+  // The people credited with the checks, most checks first: the nav's author filter.
+  const creditCounts = new Map();
+  for (const t of tests) for (const id of t.authors) creditCounts.set(id, (creditCounts.get(id) ?? 0) + 1);
+  const people = (contributors.profiles ?? [])
+    .filter((p) => creditCounts.has(p.id))
+    .map((p) => ({ id: p.id, name: p.name, count: creditCounts.get(p.id) }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
   const data = {
     $comment: "Written by website/scripts/catalog-explorer.mjs. Do not edit.",
     total: tests.length,
@@ -235,6 +251,7 @@ export function writeExplorerData(catalog, releasedTests) {
     severities: severityOrder.map((s) => ({ key: s, count: tests.filter((t) => t.severity === s).length })).filter((s) => s.count),
     suites: [...count((t) => (t.pack ? "" : t.suite)).entries()].sort((a, b) => b[1] - a[1]).map(([key, n]) => ({ key, count: n })),
     packs,
+    people,
     frameworks,
     attack: { version: attack.Version ?? "", tactics: attack.Tactics ?? [], techniques: attack.Techniques ?? [] },
     tests,

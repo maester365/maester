@@ -2,7 +2,7 @@
 // The URL is the state: each filter is a query parameter with comma-separated values, so a filtered view can be
 // shared and survives a reload. A change is announced with a `mt-catalog` event on window.
 
-export const FILTERS = ['q', 'severity', 'area', 'cost', 'impact', 'source', 'channel', 'product', 'feature', 'suite', 'mitre', 'pillar', 'group'] as const;
+export const FILTERS = ['q', 'severity', 'area', 'cost', 'impact', 'source', 'channel', 'product', 'feature', 'suite', 'mitre', 'pillar', 'author', 'group'] as const;
 export type Filter = (typeof FILTERS)[number];
 export type State = Record<Filter, string[]>;
 
