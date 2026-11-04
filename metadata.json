@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6M5ETPEDWXQE9Q9DHXJ64AQ",
   "strategy": "manual-commit",
   "branch": "feat/zta-taxonomy-mapping",
-  "checkpoints_count": 8,
+  "checkpoints_count": 13,
   "files_touched": [
     "build/zta/README.md",
     "build/zta/Update-MtZtaCatalog.ps1",
@@ -27,6 +27,13 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
@@ -37,15 +44,15 @@
     "api_call_count": 2
   },
   "redaction": {
-    "replacements": 528,
+    "replacements": 1024,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 520,
-      "key_context": 8,
+      "entropy": 1012,
+      "key_context": 12,
       "provider_token": 0,
       "shell_stdin": 0
     }
