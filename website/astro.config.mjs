@@ -107,7 +107,7 @@ export default defineConfig({
 							link: '/docs/intro',
 							icon: 'open-book',
 							items: [
-								{ label: 'Get started', items: ['docs/intro', 'docs/installation', 'docs/preview', 'docs/upgrading-from-2x', 'docs/updating-tests'] },
+								{ label: 'Get started', items: ['docs/intro', 'docs/getting-started', 'docs/installation', 'docs/choosing-a-baseline', 'docs/making-the-case', 'docs/preview', 'docs/upgrading-from-2x', 'docs/updating-tests'] },
 								{ label: 'Connect', items: [{ autogenerate: { directory: 'docs/connect-maester' } }] },
 								{ label: 'Choose what to run', items: [{ autogenerate: { directory: 'docs/configuration' } }] },
 								{ label: 'Results', items: ['docs/export-results', 'docs/result-schema', 'docs/ca-what-if'] },
