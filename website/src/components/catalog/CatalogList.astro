@@ -389,10 +389,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				if (loose) notes.push('Effort, impact, technique, author and search are not Invoke-Maester parameters: this runs every check the other filters select.');
 			}
 			if (s.channel.includes('preview')) parts.push('-IncludePreview');
-			if (scope !== 'pack' && packs.length) {
-				if (!builtIn.length) parts.splice(0, parts.length, `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`);
-				else notes.push(`The ${packs.join(', ')} checks run as one assessment: add -Pack ${packs.join(',')}.`);
-			}
+			if (scope !== 'pack' && packs.length && !builtIn.length) parts.splice(0, parts.length, `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`);
 			if (scope === 'pack' || (!builtIn.length && packs.length)) notes.push('The pack runs the whole assessment, with its module installed; filters choose what you read, not what runs.');
 			cmd.textContent = parts.join(' ');
 			note.textContent = notes.join(' ');
