@@ -38,15 +38,15 @@ const CISA_SERVICES = {
   "MS.SECURITYSUITE": "Security suite",
 };
 
-// Each framework of the nav: its short code, the suite that runs it and how its requirements are grouped. A
+// Each framework of the nav, in the nav's order (NIST first): its short code, the suite that runs it and how its requirements are grouped. A
 // framework whose file lists only the requirements Maester checks (CIS GitHub, ISM) has no coverage figure.
 export const frameworkConfig = {
+  "nist-800-53-r5": { code: "NIST", label: "NIST SP 800-53 r5", suite: "", complete: false, section: (r) => r.Family || "Other" },
   "cis-m365": { code: "CIS", label: "CIS Microsoft 365", suite: "cis", complete: true, section: (r) => sectionName(CIS_M365_SECTIONS, r.Id.split(".")[0]) },
   "cis-github": { code: "CIS", label: "CIS GitHub", suite: "cis", complete: false, section: (r) => sectionName(CIS_GITHUB_SECTIONS, r.Id.split(".")[0]) },
   "cisa-scuba": { code: "CISA", label: "CISA SCuBA", suite: "cisa", complete: true, section: (r) => sectionName(CISA_SERVICES, r.Id.split(".").slice(0, 2).join(".")) },
   "essential-eight": { code: "E8", label: "Essential Eight", suite: "asd", complete: true, section: (r) => [r.Strategy].flat()[0] || "Other" },
   ism: { code: "ISM", label: "ASD ISM", suite: "asd", complete: false, section: (r) => r.Guideline || "Other" },
-  "nist-800-53-r5": { code: "NIST", label: "NIST SP 800-53 r5", suite: "", complete: false, section: (r) => r.Family || "Other" },
 };
 
 function sectionName(names, key) {
