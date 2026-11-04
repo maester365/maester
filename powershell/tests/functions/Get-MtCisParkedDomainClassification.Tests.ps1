@@ -61,6 +61,17 @@
         $result.SpfDeniesAll | Should -BeFalse
     }
 
+    It 'does not accept a parked hard-fail record with a trailing modifier' {
+        $script:dnsResults['TXT|parked.example'] = ConvertTo-TestDnsResult -Name 'parked.example' -Type TXT -Answers @(
+            [pscustomobject]@{ Value = 'v=spf1 -all exp=explain.example'; Preference = $null }
+        )
+
+        $result = Get-MtCisParkedDomainClassification -DomainName 'parked.example'
+
+        $result.Classification | Should -Be 'Parked'
+        $result.SpfDeniesAll | Should -BeFalse
+    }
+
     It 'does not classify a domain with fallback address records as parked' {
         $script:dnsResults['TXT|mail.example'] = ConvertTo-TestDnsResult -Name 'mail.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
@@ -83,6 +94,16 @@
         $result.Classification | Should -Be 'Sending'
     }
 
+    It 'separates a signing configuration from published selector evidence for a parked override' {
+        $config = [pscustomobject]@{ Domain = 'parked.example'; Enabled = $false }
+
+        $result = Get-MtCisParkedDomainClassification -DomainName 'parked.example' -DkimSigningConfigs @($config) -ParkedDomains 'parked.example'
+
+        $result.Classification | Should -Be 'Parked'
+        $result.DkimEvidence | Should -BeTrue
+        $result.DkimSelectorRecordEvidence | Should -BeFalse
+    }
+
     It 'classifies a domain with a published standard DKIM selector as sending' {
         $script:dnsResults['TXT|sender.example'] = ConvertTo-TestDnsResult -Name 'sender.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
@@ -95,6 +116,7 @@
 
         $result.Classification | Should -Be 'Sending'
         $result.DkimEvidence | Should -BeTrue
+        $result.DkimSelectorRecordEvidence | Should -BeTrue
     }
 
     It 'applies an explicit parked override while retaining conflicting DKIM evidence' {
@@ -107,6 +129,7 @@
         $result.Classification | Should -Be 'Parked'
         $result.IsOverride | Should -BeTrue
         $result.DkimEvidence | Should -BeTrue
+        $result.DkimSelectorRecordEvidence | Should -BeTrue
     }
 
     It 'classifies a domain with SPF mechanisms as sending' {

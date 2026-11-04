@@ -93,7 +93,7 @@
             [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification.Classification; Pass = $null; Investigate = $false; Detail = "DNS lookup not available for $($redirectTargets[-1])" }
             continue
         }
-        $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
+        $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all\s*$')
         $sendingDomainPass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
         $pass = $sendingDomainPass
         $investigate = $false

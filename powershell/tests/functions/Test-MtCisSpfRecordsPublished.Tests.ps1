@@ -69,6 +69,17 @@
         $script:resultDetail.Investigate | Should -BeFalse
     }
 
+    It 'requires the all qualifier to be the final sending-domain term' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 include:spf.example.net -all include:vendor.example' }
+        $script:classifications['example.com'] = [pscustomobject]@{
+            Classification = 'Sending'
+            SpfDeniesAll   = $false
+            Reason         = 'An SPF sending mechanism was found.'
+        }
+
+        Test-MtCisSpfRecordsPublished | Should -BeFalse
+    }
+
     It 'investigates when a soft-fail record passes only the sending-domain rule' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
         $script:classifications['example.com'] = [pscustomobject]@{

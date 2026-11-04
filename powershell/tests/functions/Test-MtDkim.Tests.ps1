@@ -21,6 +21,7 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
                     SpfRecord      = $null
                     SpfDeniesAll   = $false
                     DkimEvidence   = $false
+                    DkimSelectorRecordEvidence = $false
                     Reason         = 'Mock domain classification'
                 }
             }
@@ -145,10 +146,23 @@ Describe 'CIS DKIM domain classification outcomes' {
     It 'fails a parked override when DKIM evidence remains' {
         Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
             $classification = if ($ParkedDomains -contains $DomainName) { 'Parked' } else { 'Sending' }
-            [PSCustomObject]@{ Classification = $classification; DkimEvidence = $true; Reason = 'Explicit parked override.' }
+            [PSCustomObject]@{ Classification = $classification; DkimEvidence = $true; DkimSelectorRecordEvidence = $true; Reason = 'Explicit parked override.' }
         }
 
         Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeFalse
+    }
+
+    It 'passes a parked override with a signing configuration but no published selector records' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{
+                Classification               = 'Parked'
+                DkimEvidence                 = $true
+                DkimSelectorRecordEvidence   = $false
+                Reason                       = 'An Exchange signing configuration exists, but no selector records are published.'
+            }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeTrue
     }
 
     It 'marks a non-sending receive domain out of scope for DKIM' {

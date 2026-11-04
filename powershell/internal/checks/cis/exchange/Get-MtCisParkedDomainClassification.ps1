@@ -54,6 +54,7 @@
     } else {
         $null
     }
+    $spfHardFailAtEnd = $spfRecord -match '(?i)(?:^|\s)-all\s*$'
     $spfDoesNotAuthorizeSenders = $spfAllTerms.Count -eq 1 -and $spfAllQualifier -in @('-', '~', '?') -and $spfOtherTerms.Count -eq 0
     $spfHasSenderMechanisms = $spfRecord -and -not $spfDoesNotAuthorizeSenders -and ($spfOtherTerms.Count -gt 0 -or $spfAllQualifier -eq '+')
 
@@ -67,7 +68,8 @@
         $configDomain -and [string]::Equals([string]$configDomain, $DomainName, [System.StringComparison]::OrdinalIgnoreCase)
     })
     $dkimLookups = @($lookups.GetEnumerator() | Where-Object { $_.Key -like 'DKIM:*' })
-    $hasDkimEvidence = $domainConfigs.Count -gt 0 -or @($dkimLookups | Where-Object { @($_.Value.Answers).Count -gt 0 }).Count -gt 0
+    $hasDkimSelectorRecordEvidence = @($dkimLookups | Where-Object { @($_.Value.Answers).Count -gt 0 }).Count -gt 0
+    $hasDkimEvidence = $domainConfigs.Count -gt 0 -or $hasDkimSelectorRecordEvidence
     $unknownDkimLookups = @($dkimLookups | Where-Object { $_.Value.Status -notin @('Success', 'NXDomain') })
 
     $classification = 'Unknown'
@@ -130,8 +132,9 @@
         IsParked       = $classification -eq 'Parked'
         IsOverride     = $isOverride
         SpfRecord      = $spfRecord
-        SpfDeniesAll   = $spfDoesNotAuthorizeSenders -and $spfAllQualifier -eq '-' -and $spfRedirectTerms.Count -eq 0
+        SpfDeniesAll   = $spfDoesNotAuthorizeSenders -and $spfAllQualifier -eq '-' -and $spfRedirectTerms.Count -eq 0 -and $spfHardFailAtEnd
         DkimEvidence   = $hasDkimEvidence
+        DkimSelectorRecordEvidence = $hasDkimSelectorRecordEvidence
         Reason         = $reason
     }
 }
