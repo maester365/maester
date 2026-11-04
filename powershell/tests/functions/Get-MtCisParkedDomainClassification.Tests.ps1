@@ -86,6 +86,28 @@
         $result.IsParked | Should -BeFalse
     }
 
+    It 'leaves a domain unknown when a receiving DNS lookup is incomplete' -ForEach @(
+        @{ Type = 'MX'; Status = 'Error' }
+        @{ Type = 'MX'; Status = 'NotAvailable' }
+        @{ Type = 'A'; Status = 'Error' }
+        @{ Type = 'A'; Status = 'NotAvailable' }
+        @{ Type = 'AAAA'; Status = 'Error' }
+        @{ Type = 'AAAA'; Status = 'NotAvailable' }
+        @{ Type = 'CNAME'; Status = 'Error' }
+        @{ Type = 'CNAME'; Status = 'NotAvailable' }
+    ) {
+        $script:dnsResults['TXT|uncertain.example'] = ConvertTo-TestDnsResult -Name 'uncertain.example' -Type TXT -Answers @(
+            [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
+        )
+        $script:dnsResults["$Type|uncertain.example"] = ConvertTo-TestDnsResult -Name 'uncertain.example' -Type $Type -Status $Status
+
+        $result = Get-MtCisParkedDomainClassification -DomainName 'uncertain.example'
+
+        $result.Classification | Should -Be 'Unknown'
+        $result.IsParked | Should -BeFalse
+        $result.Reason | Should -Match 'Receiving or other domain use could not be ruled out'
+    }
+
     It 'classifies a configured DKIM domain as sending' {
         $config = [pscustomobject]@{ Domain = 'sender.example'; Enabled = $false }
 

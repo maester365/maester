@@ -111,6 +111,7 @@
     } elseif ($classification -eq 'NotSending') {
         $failedReceivingLookups = @($lookups.MX, $lookups.A, $lookups.AAAA, $lookups.CNAME | Where-Object { $_.Status -notin @('Success', 'NXDomain') })
         if ($failedReceivingLookups.Count -gt 0) {
+            $classification = 'Unknown'
             $reason += ' Receiving or other domain use could not be ruled out because some DNS lookups failed.'
         } elseif ($hasMx -or $hasAddress -or $hasCname) {
             $reason += ' Receiving or other domain use is present, so the domain is not classified as parked.'
