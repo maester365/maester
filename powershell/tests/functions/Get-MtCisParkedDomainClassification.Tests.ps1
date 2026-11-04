@@ -102,6 +102,7 @@
         $result.Classification | Should -Be 'Parked'
         $result.DkimEvidence | Should -BeTrue
         $result.DkimSelectorRecordEvidence | Should -BeFalse
+        $result.DkimSelectorLookupsComplete | Should -BeTrue
     }
 
     It 'classifies a domain with a published standard DKIM selector as sending' {
@@ -170,14 +171,15 @@
         $result.SpfDeniesAll | Should -BeFalse
     }
 
-    It 'leaves a domain unknown when a DKIM DNS lookup fails' {
+    It 'exposes incomplete selector lookup state when a parked override is supplied' {
         $script:dnsResults['TXT|unknown.example'] = ConvertTo-TestDnsResult -Name 'unknown.example' -Type TXT -Answers @(
             [pscustomobject]@{ Value = 'v=spf1 -all'; Preference = $null }
         )
         $script:dnsResults['CNAME|selector1._domainkey.unknown.example'] = ConvertTo-TestDnsResult -Name 'selector1._domainkey.unknown.example' -Type CNAME -Status Error
 
-        $result = Get-MtCisParkedDomainClassification -DomainName 'unknown.example'
+        $result = Get-MtCisParkedDomainClassification -DomainName 'unknown.example' -ParkedDomains 'unknown.example'
 
-        $result.Classification | Should -Be 'Unknown'
+        $result.Classification | Should -Be 'Parked'
+        $result.DkimSelectorLookupsComplete | Should -BeFalse
     }
 }

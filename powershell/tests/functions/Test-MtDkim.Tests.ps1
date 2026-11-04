@@ -22,6 +22,7 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
                     SpfDeniesAll   = $false
                     DkimEvidence   = $false
                     DkimSelectorRecordEvidence = $false
+                    DkimSelectorLookupsComplete = $true
                     Reason         = 'Mock domain classification'
                 }
             }
@@ -146,7 +147,7 @@ Describe 'CIS DKIM domain classification outcomes' {
     It 'fails a parked override when DKIM evidence remains' {
         Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
             $classification = if ($ParkedDomains -contains $DomainName) { 'Parked' } else { 'Sending' }
-            [PSCustomObject]@{ Classification = $classification; DkimEvidence = $true; DkimSelectorRecordEvidence = $true; Reason = 'Explicit parked override.' }
+            [PSCustomObject]@{ Classification = $classification; DkimEvidence = $true; DkimSelectorRecordEvidence = $true; DkimSelectorLookupsComplete = $true; Reason = 'Explicit parked override.' }
         }
 
         Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeFalse
@@ -158,11 +159,26 @@ Describe 'CIS DKIM domain classification outcomes' {
                 Classification               = 'Parked'
                 DkimEvidence                 = $true
                 DkimSelectorRecordEvidence   = $false
+                DkimSelectorLookupsComplete  = $true
                 Reason                       = 'An Exchange signing configuration exists, but no selector records are published.'
             }
         }
 
         Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeTrue
+    }
+
+    It 'investigates a parked override when selector DNS lookups are incomplete' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{
+                Classification               = 'Parked'
+                DkimSelectorRecordEvidence   = $false
+                DkimSelectorLookupsComplete  = $false
+                Reason                       = 'A selector DNS lookup failed.'
+            }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'unknown.example' | Should -BeTrue
+        $script:detail.Investigate | Should -BeTrue
     }
 
     It 'marks a non-sending receive domain out of scope for DKIM' {

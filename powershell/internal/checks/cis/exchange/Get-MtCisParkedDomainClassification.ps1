@@ -135,6 +135,7 @@
         SpfDeniesAll   = $spfDoesNotAuthorizeSenders -and $spfAllQualifier -eq '-' -and $spfRedirectTerms.Count -eq 0 -and $spfHardFailAtEnd
         DkimEvidence   = $hasDkimEvidence
         DkimSelectorRecordEvidence = $hasDkimSelectorRecordEvidence
+        DkimSelectorLookupsComplete = $unknownDkimLookups.Count -eq 0
         Reason         = $reason
     }
 }

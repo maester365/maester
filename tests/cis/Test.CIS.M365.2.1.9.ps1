@@ -63,12 +63,13 @@
         $classification = Get-MtCisParkedDomainClassification -DomainName $domain.DomainName -DkimSigningConfigs $dkimSigningConfigs -ParkedDomains $ParkedDomains
         if ($classification.Classification -eq 'Parked') {
             $hasDkimSelectorRecord = $classification.DkimSelectorRecordEvidence
+            $selectorLookupsComplete = $classification.DkimSelectorLookupsComplete
             $dkimRecords += [PSCustomObject]@{
                 domain         = $domain.DomainName
                 classification = $classification.Classification
-                pass           = if ($hasDkimSelectorRecord) { 'Failed' } else { 'Passed' }
-                reason         = if ($hasDkimSelectorRecord) { "Parked domain has a published standard DKIM selector record that must be removed. $($classification.Reason)" } else { "Parked domain has no published standard DKIM selector records. $($classification.Reason)" }
-                exchangeStatus = 'Not applicable'
+                pass           = if (-not $selectorLookupsComplete) { 'Investigate' } elseif ($hasDkimSelectorRecord) { 'Failed' } else { 'Passed' }
+                reason         = if (-not $selectorLookupsComplete) { "Standard DKIM selector DNS lookups did not complete, so record absence could not be confirmed. $($classification.Reason)" } elseif ($hasDkimSelectorRecord) { "Parked domain has a published standard DKIM selector record that must be removed. $($classification.Reason)" } else { "Parked domain has no published standard DKIM selector records. $($classification.Reason)" }
+                exchangeStatus = if ($selectorLookupsComplete) { 'Not applicable' } else { 'Not determined' }
                 dkimRecord     = $null
             }
             continue
