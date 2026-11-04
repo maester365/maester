@@ -554,7 +554,7 @@ ${body.join("\n")}`;
 
 function renderSuiteIndex(suite) {
   const config = suiteConfig[suite];
-  const key = { maester: "Maester", eidsca: "EIDSCA", cisa: "CISA", asd: "ASD", cis: "CIS", orca: "ORCA", ad: "AD" }[suite] ?? suite;
+  const key = new Map([["maester", "Maester"], ["eidsca", "EIDSCA"], ["cisa", "CISA"], ["asd", "ASD"], ["cis", "CIS"], ["orca", "ORCA"], ["ad", "AD"]]).get(suite) ?? suite;
   return `---
 title: ${yamlQuote(config.title)}
 slug: docs/tests/${suite}

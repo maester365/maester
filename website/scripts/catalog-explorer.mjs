@@ -50,7 +50,8 @@ export const frameworkConfig = {
 };
 
 function sectionName(names, key) {
-  return names[key] ? `${key} · ${names[key]}` : key;
+  const name = new Map(Object.entries(names)).get(key);
+  return name ? `${key} · ${name}` : key;
 }
 
 function readJson(path) {
@@ -60,22 +61,24 @@ function readJson(path) {
 
 // The framework files of the suites (tests/<suite>/frameworks/<key>.json) and the pinned NIST list.
 function loadFrameworkFiles() {
-  const files = {};
+  const files = new Map();
   for (const suite of readdirSync(join(repoRoot, "tests"))) {
     const folder = join(repoRoot, "tests", suite, "frameworks");
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- a folder of this repository
     if (!existsSync(folder)) continue;
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- a folder of this repository
     for (const name of readdirSync(folder).filter((n) => n.endsWith(".json"))) {
       const file = readJson(join(folder, name));
-      files[file.Framework] = { name: file.Name, version: file.Version, url: file.Url ?? "", requirements: file.Requirements };
+      files.set(file.Framework, { name: file.Name, version: file.Version, url: file.Url ?? "", requirements: file.Requirements });
     }
   }
   const nist = readJson(join(repoRoot, "powershell", "assets", "MaesterNistControls.json"));
-  files["nist-800-53-r5"] = {
+  files.set("nist-800-53-r5", {
     name: nist.Name ?? "NIST SP 800-53 Rev. 5",
     version: nist.Version ?? "",
     url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
     requirements: nist.Controls.map((c) => ({ Id: c.Id, Title: c.Title, Family: c.Family })),
-  };
+  });
   return files;
 }
 
@@ -170,9 +173,9 @@ export function writeExplorerData(catalog, releasedTests) {
     }
   }
   const frameworks = Object.entries(frameworkConfig)
-    .filter(([key]) => files[key])
+    .filter(([key]) => files.has(key))
     .map(([key, config]) => {
-      const file = files[key];
+      const file = files.get(key);
       let requirements = file.requirements.map((r) => ({
         id: r.Id,
         title: r.Title ?? "",

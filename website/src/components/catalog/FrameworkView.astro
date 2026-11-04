@@ -89,7 +89,7 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 						</span>
 					</summary>
 					{reqs.map((r) => (
-						<div class="mt-fw__req" data-level={r.level} data-has={r.tests.length ? 'has' : 'gap'}>
+						<div class="mt-fw__req" id={`req-${r.id}`} data-level={r.level} data-has={r.tests.length ? 'has' : 'gap'}>
 							<span class="mt-fw__rid">{r.id}</span>
 							<span>{r.level && <span class="mt-fw__lvl">{r.level}</span>}</span>
 							<span class="mt-fw__tests">
@@ -118,6 +118,13 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 		connectedCallback() {
 			let level = '';
 			let show = '';
+			// A link to one requirement (#req-<id>) opens its section and marks it.
+			const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+			if (target?.classList.contains('mt-fw__req')) {
+				target.closest('details')?.setAttribute('open', '');
+				target.classList.add('mt-fw__req--target');
+				target.scrollIntoView({ block: 'center' });
+			}
 			const apply = () => {
 				for (const req of this.querySelectorAll<HTMLElement>('.mt-fw__req')) req.hidden = Boolean((level && req.dataset.level !== level) || (show && req.dataset.has !== show));
 				for (const sec of this.querySelectorAll<HTMLDetailsElement>('.mt-fw__sec')) {
@@ -260,6 +267,9 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 		align-items: start;
 		padding: 0.6rem 1rem;
 		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	.mt-fw__req--target {
+		background: var(--sl-color-accent-low);
 	}
 	.mt-fw__req[hidden] {
 		display: none;

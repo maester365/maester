@@ -27,7 +27,8 @@ export const suiteInfo: Record<string, { name: string; slug: string }> = {
 	XSPM: { name: 'Exposure management (XSPM)', slug: '' },
 };
 
-export const pillarName = (p: string) => ({ SecOps: 'Security operations' })[p] ?? p;
+const pillarNames = new Map([['SecOps', 'Security operations']]);
+export const pillarName = (p: string) => pillarNames.get(p) ?? p;
 
 export function severityMix(list: Check[]) {
 	return severityOrder.map((s) => ({ key: s, count: list.filter((t) => t.severity === s).length })).filter((s) => s.count);

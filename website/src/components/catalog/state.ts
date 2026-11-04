@@ -11,6 +11,7 @@ export function readState(): State {
 	const state = {} as State;
 	for (const name of FILTERS) {
 		const value = params.get(name) ?? '';
+		// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
 		state[name] = name === 'q' ? (value ? [value] : []) : value.split(',').filter(Boolean);
 	}
 	return state;
@@ -18,6 +19,7 @@ export function readState(): State {
 
 export function writeState(state: State) {
 	const params = new URLSearchParams();
+	// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
 	for (const name of FILTERS) if (state[name].length) params.set(name, state[name].join(','));
 	const query = params.toString().replace(/%2C/g, ',');
 	history.replaceState(null, '', query ? `?${query}` : location.pathname);
@@ -30,6 +32,7 @@ export function update(change: Partial<State>) {
 
 export function toggle(name: Filter, value: string, on: boolean) {
 	const state = readState();
+	// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
 	const set = new Set(state[name]);
 	if (on) set.add(value);
 	else set.delete(value);
@@ -37,9 +40,12 @@ export function toggle(name: Filter, value: string, on: boolean) {
 }
 
 export function onState(listener: (state: State) => void) {
-	window.addEventListener('mt-catalog', (e) => listener((e as CustomEvent<State>).detail));
+	window.addEventListener('mt-catalog', (e) => {
+		listener((e as CustomEvent<State>).detail);
+	});
 	listener(readState());
 }
 
 // Filters that narrow the checks (all but how they are grouped).
+// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
 export const isFiltered = (state: State) => FILTERS.some((name) => name !== 'group' && state[name].length > 0);
