@@ -85,6 +85,9 @@ if ($importErrors.Count -gt 0) {
 	Write-Warning "Module loaded with $($importErrors.Count) import error(s). Some functionality may be unavailable."
 }
 
+# Tab completion for the parameters listed in Get-MtArgumentCompleterTable. The build writes the same call.
+Register-MtArgumentCompleter
+
 # Safely import module manifest
 try {
 	$ModuleInfo = Import-PowerShellDataFile -Path "$PsScriptRoot/Maester.psd1" -ErrorAction Stop

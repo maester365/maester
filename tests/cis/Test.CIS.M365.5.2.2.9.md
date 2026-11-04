@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires a compliant device (or, as an alternative, a hybrid joined device) for all users and all cloud apps.
+﻿An enabled Conditional Access policy requires a compliant device for all users and all cloud apps. A hybrid-joined device may optionally be allowed as an alternative.
 
 A stolen password or session token is far less useful when sign-in is limited to devices that your organisation manages and that meet its security baseline. Unmanaged devices are the usual source of malware that steals tokens.
 

@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "export-catalog": "node scripts/export-catalog.mjs",
+    "refresh-data": "node scripts/prepare-data.mjs --refresh",
     "update-license-plans": "node scripts/update-license-service-plans.mjs",
     "blog-cards": "node scripts/blog-cards/generate-blog-cards.mjs",
-    "predev": "node scripts/copy-explainer-assets.mjs",
+    "predev": "node scripts/copy-explainer-assets.mjs && node scripts/prepare-data.mjs",
     "dev": "astro dev",
     "start": "npm run dev",
-    "prebuild": "node scripts/copy-explainer-assets.mjs",
-    "build": "astro build && node scripts/check-url-contract.mjs",
+    "prebuild": "node scripts/copy-explainer-assets.mjs && node scripts/prepare-data.mjs",
+    "build": "astro build && node scripts/og-images.mjs && node scripts/check-url-contract.mjs",
     "preview": "astro preview",
     "check-urls": "node scripts/check-url-contract.mjs",
     "astro": "astro"
@@ -23,18 +24,18 @@
     "@astrojs/starlight": "0.42.8",
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource/geist-mono": "^5.3.0",
-    "@hyperframes/core": "^0.8.181",
-    "@hyperframes/player": "^0.8.181",
+    "@hyperframes/core": "^0.8.231",
+    "@hyperframes/player": "^0.8.231",
     "@iconify-json/devicon": "^1.2.0",
     "@iconify-json/gravity-ui": "^1.2.0",
     "@iconify-json/material-symbols": "^1.2.0",
     "@iconify-json/mdi": "^1.2.0",
     "@iconify-json/vscode-icons": "^1.2.0",
     "@iconify/utils": "^3.1.7",
-    "astro": "7.4.1",
+    "astro": "7.4.4",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "gsap": "^3.14.2",
+    "gsap": "^3.15.0",
     "js-yaml": "^4.3.2",
     "mermaid": "^12.2.0",
     "radix-ui": "^1.8.1",
@@ -45,7 +46,9 @@
     "starlight-sidebar-topics": "0.9.0"
   },
   "devDependencies": {
-    "playwright": "^1.63.0"
+    "@fontsource/inter": "^5.3.0",
+    "playwright": "^1.63.0",
+    "satori": "^0.63.2"
   },
   "engines": {
     "node": ">=22.22"
