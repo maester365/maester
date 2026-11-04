@@ -131,6 +131,13 @@ function ConvertTo-MtZtaInstance {
     )
 
     $severity = @{ High = 'High'; Medium = 'Medium'; Low = 'Low' }
+    # What each assessment test is about in Maester's terms (product, feature, area, ATT&CK), from the pack's
+    # mapping, which build/zta/Update-MtZtaCatalog.ps1 writes into catalog.json.
+    $mapped = @{}
+    $catalogPath = Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath 'catalog.json'
+    if (Test-Path -LiteralPath $catalogPath) {
+        foreach ($entry in @((Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json).Tests)) { $mapped[[string]$entry.TestId] = $entry }
+    }
     $rows = @($Report.Tests | Where-Object { $_ -and $_.TestStatus -ne 'Planned' -and $_.TestSkipped -ne 'UnderConstruction' })
     $repeated = @($rows | Group-Object -Property { [string]$_.TestId } | Where-Object Count -gt 1 | ForEach-Object Name)
     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -156,6 +163,13 @@ function ConvertTo-MtZtaInstance {
                 Data   = $row
             }
             if ($severity.ContainsKey([string]$row.TestRisk)) { $instance.Severity = $severity[[string]$row.TestRisk] }
+            $entry = $mapped[[string]$row.TestId]
+            if ($entry) {
+                foreach ($name in 'Product', 'RelatedProduct', 'Feature', 'Area', 'UserImpact', 'ImplementationCost', 'Mitre') {
+                    $property = $entry.PSObject.Properties[$name]
+                    if ($property -and $property.Value) { $instance[$name] = $property.Value }
+                }
+            }
             [pscustomobject]$instance
         }
     } finally {

@@ -60,6 +60,62 @@ Describe 'Zero Trust Assessment pack' {
             @($catalog.Tests.Id | Sort-Object -Unique).Count | Should -Be $catalog.Tests.Count
             @($catalog.Tests | Where-Object { [string]::IsNullOrWhiteSpace($_.Title) }) | Should -BeNullOrEmpty
         }
+
+        It 'maps every test of the catalog, and only those, in taxonomy.json' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            @($catalog.Tests.TestId | Where-Object { -not $mapping.ContainsKey([string]$_) }) | Should -BeNullOrEmpty -Because 'a test the assessment added needs a mapping: add it to taxonomy.json and run build/zta/Update-MtZtaCatalog.ps1'
+            @($mapping.Keys | Where-Object { $_ -notin @($catalog.Tests.TestId) }) | Should -BeNullOrEmpty -Because 'a test the assessment removed is left in taxonomy.json'
+        }
+
+        It 'copies the mapping into the catalog' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $stale = foreach ($entry in $catalog.Tests) {
+                $map = $mapping[[string]$entry.TestId]
+                if (-not $map) { continue }
+                if ($entry.Product -ne $map.Product -or $entry.Feature -ne $map.Feature -or $entry.Area -ne $map.Area -or (@($entry.Mitre) -join ',') -ne (@($map.Mitre) -join ',')) { $entry.Id }
+            }
+            @($stale) | Should -BeNullOrEmpty -Because 'catalog.json is written from taxonomy.json: run build/zta/Update-MtZtaCatalog.ps1'
+        }
+
+        It 'uses only keys of the taxonomy and techniques of the pinned ATT&CK release' {
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $problems = InModuleScope Maester -Parameters @{ Mapping = $mapping } {
+                param($Mapping)
+                $taxonomy = Get-MtTaxonomy
+                foreach ($id in $Mapping.Keys) {
+                    $map = $Mapping[$id]
+                    $features = $null
+                    if (-not $taxonomy.Lookup.Product.ContainsKey([string]$map.Product) -or $taxonomy.Lookup.Product[[string]$map.Product].Key -ne $map.Product) { "$id has the unknown product '$($map.Product)'."; continue }
+                    if (-not ($taxonomy.Lookup.Feature.TryGetValue($map.Product, [ref] $features) -and $features.ContainsKey([string]$map.Feature))) { "$id has the feature '$($map.Feature)', which $($map.Product) does not have." }
+                    if (-not $taxonomy.Lookup.Area.ContainsKey([string]$map.Area)) { "$id has the unknown area '$($map.Area)'." }
+                    foreach ($related in @($map.RelatedProduct | Where-Object { $_ })) {
+                        if ($related -eq $map.Product -or -not $taxonomy.Lookup.Product.ContainsKey($related)) { "$id has the related product '$related'." }
+                    }
+                    $mitre = @($map.Mitre | Where-Object { $_ })
+                    if (-not $mitre.Count) { "$id has no Mitre value; use None when no technique applies." }
+                    elseif ($mitre.Count -gt 5) { "$id lists more than five techniques." }
+                    if ($mitre -contains 'None' -and $mitre.Count -gt 1) { "$id lists None with techniques." }
+                    foreach ($problem in Get-MtAttackTechniqueProblem -Mitre $mitre) { "${id}: $problem" }
+                    foreach ($technique in $mitre) {
+                        if ($technique -match '^(T\d{4})\.\d{3}$' -and $mitre -contains $Matches[1]) { "$id lists $technique with its own technique $($Matches[1])." }
+                    }
+                }
+            }
+            @($problems) | Should -BeNullOrEmpty
+        }
+
+        It 'names only built-in tests that exist in AlsoCheckedBy' {
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $repository = (Resolve-Path "$PSScriptRoot/../../..").Path
+            $known = @{}
+            foreach ($file in Get-ChildItem -Path (Join-Path $repository 'tests') -Recurse -Filter 'Test.*.ps1') { $known[$file.BaseName.Substring(5)] = $true }
+            $missing = foreach ($id in $mapping.Keys) {
+                foreach ($other in @($mapping[$id].AlsoCheckedBy | Where-Object { $_ })) { if (-not $known.ContainsKey($other)) { "$id names $other" } }
+            }
+            @($missing) | Should -BeNullOrEmpty
+        }
     }
 
     Context 'reading a report' {
@@ -87,6 +143,15 @@ Describe 'Zero Trust Assessment pack' {
             $row.Tag | Should -Contain 'ZeroTrust.Identity'
             $row.ResultDetail.TestDescription | Should -BeLike 'Blocking authentication transfer*'
             $row.ResultDetail.TestResult | Should -BeLike '*Authentication transfer is not blocked.*'
+        }
+
+        It 'places a result under the product, feature, area and techniques of the mapping' {
+            $map = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests['21828']
+            $row = $script:Rows | Where-Object Id -eq 'ZTA.21828'
+            $row.Product | Should -Be $map.Product
+            $row.Feature | Should -Be $map.Feature
+            $row.Area | Should -Be $map.Area
+            @($row.Mitre) | Should -Be @($map.Mitre)
         }
 
         It 'uses Maester wording for a skip reason both tools share' {

@@ -221,6 +221,30 @@ function Test-Family$name {
             $row.Tag | Should -Contain 'FromInstance'
         }
 
+        It 'Writes the product, feature, area, ratings and techniques an instance sets for itself' {
+            $source = "@{ Id = 'a'; Product = 'Entra ID'; Feature = 'conditional-access'; Area = 'authentication'; RelatedProduct = 'exchange'; UserImpact = 'medium'; ImplementationCost = 'High'; Mitre = @('T1110', 'T9999') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-attributes') -Id 'CONTOSO.52' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -Be 'entra'
+            $row.Feature | Should -Be 'conditional-access'
+            $row.Area | Should -Be 'authentication'
+            $row.RelatedProduct | Should -Be @('exchange')
+            $row.UserImpact | Should -Be 'Medium'
+            $row.ImplementationCost | Should -Be 'High'
+            $row.Mitre | Should -Be @('T1110')
+        }
+
+        It 'Leaves out values the taxonomy does not know, so the row keeps its family''s' {
+            $source = "@{ Id = 'a'; Product = 'not-a-product'; Feature = 'conditional-access'; Area = 'not-an-area'; UserImpact = 'Severe'; Mitre = 'T9999' }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-unknown') -Id 'CONTOSO.53' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -BeNullOrEmpty
+            $row.Feature | Should -BeNullOrEmpty
+            $row.Area | Should -BeNullOrEmpty
+            $row.UserImpact | Should -BeNullOrEmpty
+            @($row.Mitre) | Should -BeNullOrEmpty
+        }
+
         It 'Rejects an instance ID that ends in a newline' {
             $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-newline') -Id 'CONTOSO.51' -Source '[pscustomobject]@{ Id = "c`n" }'
             $row = Invoke-MtTest -Path $file

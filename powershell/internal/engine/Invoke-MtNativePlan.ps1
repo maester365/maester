@@ -243,7 +243,7 @@ function New-MtNativeWorkItem {
 function Get-MtInstanceValue {
     <#
     .SYNOPSIS
-    Reads an optional field (Title, Severity, Tag) of a family instance, which an instance source can return as
+    Reads an optional field (Title, Severity, Tag, Product and the other attributes) of a family instance, which an instance source can return as
     an object or as a hashtable. Returns $null when the instance does not have it.
     #>
     [CmdletBinding()]
@@ -269,7 +269,7 @@ function Expand-MtTestFamily {
 
     .DESCRIPTION
     The source returns one object per instance: Id (the suffix; required, unique,
-    ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$) and optional Title, Severity, Tag and Data (design section 10).
+    ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$) and optional Title, Severity, Tag, Fields, Data and attribute values (design section 10; see Get-MtInstanceAttribute).
     A source that throws gives one Error row on the parent ID (InstanceSourceFailed); no instances give
     one Skipped row (NoInstances); an invalid or repeated suffix gives one Error row (InvalidInstanceId).
     Instances that an instance-level ID pattern, -ExcludeTestId or a disabled TestSettings row deselects
@@ -578,7 +578,66 @@ function ConvertTo-MtNativeRow {
     }
     $attributes = Get-MtRowAttribute -Test $test
     foreach ($name in $attributes.Keys) { $row[$name] = $attributes[$name] }
+    # A family instance can say what it is about when that differs from its family: a Zero Trust Assessment
+    # result is about Entra ID, Intune or Exchange, though the family is one test.
+    if ($isInstance) {
+        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product
+        foreach ($name in $own.Keys) { $row[$name] = $own[$name] }
+    }
     [pscustomobject]$row
+}
+
+function Get-MtInstanceAttribute {
+    <#
+    .SYNOPSIS
+    Returns the attribute values a family instance sets for itself, checked against the taxonomy.
+
+    .DESCRIPTION
+    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost and Mitre. Only
+    values the taxonomy knows are returned: a product key or alias (as its key), a feature of that product, an
+    area key, Low, Medium or High, and ATT&CK techniques of the pinned release. A value that does not pass is left
+    out, so the row keeps its family's value. A Feature is checked against the instance's Product when it sets
+    one, else against the family's.
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Collections.Specialized.OrderedDictionary])]
+    param(
+        [Parameter()] [AllowNull()] [object] $Instance,
+        # The family's product, used to check a Feature when the instance sets none.
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product
+    )
+
+    $values = [ordered]@{}
+    if ($null -eq $Instance) { return $values }
+    $taxonomy = Get-MtTaxonomy
+
+    $productKey = Resolve-MtProductKey -Name ([string](Get-MtInstanceValue -Instance $Instance -Name 'Product')) -Taxonomy $taxonomy
+    if ($productKey) { $values.Product = $productKey; $Product = $productKey }
+
+    $related = @(@(Get-MtInstanceValue -Instance $Instance -Name 'RelatedProduct') | Where-Object { $_ } |
+            ForEach-Object { Resolve-MtProductKey -Name ([string]$_) -Taxonomy $taxonomy } | Where-Object { $_ -and $_ -ne $Product } | Select-Object -Unique)
+    if ($related.Count) { $values.RelatedProduct = [string[]]$related }
+
+    $feature = [string](Get-MtInstanceValue -Instance $Instance -Name 'Feature')
+    $features = $null
+    if ($feature -and $Product -and $taxonomy.Lookup.Feature.TryGetValue($Product, [ref] $features) -and $features.ContainsKey($feature)) {
+        $values.Feature = [string]$features[$feature].Key
+    }
+
+    $area = [string](Get-MtInstanceValue -Instance $Instance -Name 'Area')
+    if ($area -and $taxonomy.Lookup.Area.ContainsKey($area)) { $values.Area = [string]$taxonomy.Lookup.Area[$area].Key }
+
+    foreach ($name in 'UserImpact', 'ImplementationCost') {
+        $value = [string](Get-MtInstanceValue -Instance $Instance -Name $name)
+        if ($value -in 'Low', 'Medium', 'High') { $values[$name] = (Get-Culture).TextInfo.ToTitleCase($value.ToLowerInvariant()) }
+    }
+
+    $mitre = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Mitre') | Where-Object { $_ } | ForEach-Object { [string]$_ })
+    if ($mitre.Count) {
+        $known = @($mitre | Where-Object { $_ -eq 'None' -or -not (Get-MtAttackTechniqueProblem -Mitre $_) })
+        if ($known.Count) { $values.Mitre = [string[]]$known }
+    }
+    $values
 }
 
 function ConvertTo-MtInstanceField {
