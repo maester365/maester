@@ -2,8 +2,9 @@
 
 The pack is in [`packs/zero-trust-assessment`](../../packs/zero-trust-assessment).
 
-`catalog.json` lists the assessment's tests, titles and ratings for the pack's listing. It is generated; do not
-edit it.
+`catalog.json` lists the assessment's tests, titles and ratings for the pack's listing, and each test's
+`Description` and `Remediation` from its `Test-Assessment.<id>.md` (Microsoft's text, MIT licence), which
+maester.dev shows on the test's page. It is generated; do not edit it.
 
 `taxonomy.json` is kept by hand. The assessment does not say which Maester product, feature and area a test is
 about, or which ATT&CK techniques its control addresses, so this file does, for each assessment test ID:
