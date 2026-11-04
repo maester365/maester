@@ -1,0 +1,16 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import EidscaSync from '../components/EidscaSync/index.jsx';
+---
+
+<SiteLayout title="EIDSCA sync" description="How the Maester EIDSCA tests are generated from the Entra ID Security Config Analyzer, and a live comparison with it." wide>
+	<header style="max-width: 46rem; margin-bottom: 2rem">
+		<h1>EIDSCA sync</h1>
+		<p>
+			The EIDSCA tests in Maester are generated from the Entra ID Security Config Analyzer (EIDSCA). This page shows which values come from EIDSCA and which Maester adds, and compares Maester with the latest EIDSCA config.
+		</p>
+	</header>
+	<div style="overflow-x: auto">
+		<EidscaSync client:load />
+	</div>
+</SiteLayout>

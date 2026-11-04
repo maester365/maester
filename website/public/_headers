@@ -1,0 +1,28 @@
+# Cloudflare Pages headers for maester.dev.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# Hashed build assets never change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/img/*
+  Cache-Control: public, max-age=604800
+
+# Open Graph cards: pages link them with ?v=<hash>, which changes when the card does.
+/og/*
+  Cache-Control: public, max-age=604800
+
+/explainers/*
+  Cache-Control: public, max-age=86400
+
+/demo/*
+  Cache-Control: public, max-age=86400
+  X-Robots-Tag: noindex
+
+# The Markdown copies of the docs pages are for AI tools and "Copy page", not for search results.
+/docs/*.md
+  X-Robots-Tag: noindex

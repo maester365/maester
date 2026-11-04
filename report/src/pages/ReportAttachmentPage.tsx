@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/report"
 import { useTenant } from "@/context/TenantContext"
 import { useLocation } from "@/lib/router"
@@ -35,7 +35,7 @@ export default function ReportAttachmentPage() {
         <p className="truncate text-sm text-gray-500 dark:text-gray-400">
           {attachment.FileName ? `${attachment.Name} · ${attachment.FileName}` : attachment.Name}
         </p>
-        <Button variant="light" icon={ArrowTopRightOnSquareIcon} onClick={() => openReportAttachment(attachment)}>
+        <Button variant="light" icon={ExternalLink} onClick={() => openReportAttachment(attachment)}>
           Open in new tab
         </Button>
       </div>

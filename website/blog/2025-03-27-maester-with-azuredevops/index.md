@@ -6,7 +6,6 @@ authors: sebastian
 tags: [AzureDevOps,WebApp,Bicep]
 card_headline: "Maester results on *Azure Web App*"
 card_label: Guide
-hide_table_of_contents: false
 date: 2025-03-27
 image: ./img/card.png
 #draft: true # Draft
@@ -19,7 +18,7 @@ Teams using Azure DevOps pipelines can now easily integrate Maester into their C
 
 Utiziling an Azure web app providing access to the results using Entra id as authentication.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Azure DevOps Web App Flowchart
 

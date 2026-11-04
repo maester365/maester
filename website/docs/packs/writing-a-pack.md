@@ -1,12 +1,13 @@
 ---
 title: Writing a pack
-sidebar_position: 2
 description: Create, check and publish a Maester Pack, with its manifest, tests, helpers and connector.
+sidebar:
+  order: 2
 ---
 
 # Writing a pack
 
-:::tip Guided setup
+:::tip[Guided setup]
 To make a pack without writing the files by hand, use the guided setup at
 [packs.maester.cloud/publish](https://packs.maester.cloud/publish). It copies the
 [demo pack](https://github.com/maester365/maester-pack-demo) into a repository of yours, or starts from an empty one,

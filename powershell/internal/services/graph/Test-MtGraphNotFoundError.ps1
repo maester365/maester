@@ -25,7 +25,8 @@ function Test-MtGraphNotFoundError {
     }
     $statusCodes = @($statusCodes | Where-Object { $null -ne $_ })
     if ($statusCodes.Count -gt 0) {
-        return [bool]($statusCodes | Where-Object { [int]$_ -eq 404 -or "$_" -eq 'NotFound' })
+        # Compared as text: an enum becomes 'NotFound', an integer '404', and a string status never fails to convert.
+        return [bool]($statusCodes | Where-Object { "$_" -in 'NotFound', '404' })
     }
 
     $text = (@($ErrorRecord.ErrorDetails.Message) + @($exceptions | ForEach-Object Message)) -join "`n"

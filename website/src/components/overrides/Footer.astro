@@ -1,0 +1,30 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import Mermaid from '../Mermaid.astro';
+---
+
+<Default />
+<Mermaid />
+<div class="mt-doc-footer">
+	<span>Maester is free and open source under the MIT licence.</span>
+	<a href="/sponsor">Sponsor</a>
+	<a href="/contributors">Contributors</a>
+	<a href="https://discord.maester.dev">Discord</a>
+	<a href="https://maester.cloud">Maester Cloud</a>
+</div>
+
+<style>
+	.mt-doc-footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 2rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-doc-footer a {
+		color: var(--sl-color-gray-2);
+	}
+</style>

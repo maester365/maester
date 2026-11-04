@@ -30,6 +30,7 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Not -Contain 'AgentIdentityBlueprint.Read.All'
         $scopes | Should -Not -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
         $scopes | Should -Not -Contain 'Application.Read.All'
+        $scopes | Should -Not -Contain 'IdentityRiskyUser.Read.All'
         $scopes | Should -Contain 'Directory.Read.All'
         $scopes | Should -Not -Contain 'User.ReadBasic.All'
     }
@@ -41,6 +42,7 @@ Describe 'Get-MtGraphScope' {
         $scopes | Should -Contain 'AgentIdentityBlueprint.Read.All'
         $scopes | Should -Contain 'AgentIdentityBlueprintPrincipal.Read.All'
         $scopes | Should -Contain 'Application.Read.All'
+        $scopes | Should -Contain 'IdentityRiskyUser.Read.All'
         $scopes | Should -Contain 'AuditLog.Read.All'
 
         $agentIdentityIndex = [array]::IndexOf($scopes, 'AgentIdentity.Read.All')

@@ -14,7 +14,7 @@ The Maester framework allows you to define tests that can be run against your Co
 
 This way you can ensure that your security policies are correctly configured and that they do not break when changes are made to your environment.
 
- :::info Important
+ :::note[Important]
 The Conditional Access What If API is currently in beta and is subject to change.
 Maester tests written using this API may need to be updated as the API moves towards v1.0.
 

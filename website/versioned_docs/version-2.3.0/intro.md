@@ -1,6 +1,7 @@
 ---
-sidebar_position: 1
 title: Introduction
+sidebar:
+  order: 1
 ---
 
 ## What is Maester?

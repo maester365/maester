@@ -1,0 +1,24 @@
+---
+// An Iconify icon, rendered to inline SVG at build time (the docs used <IIcon icon="mdi:github" />).
+import { getIconData, iconToHTML, iconToSVG } from '@iconify/utils';
+import devicon from '@iconify-json/devicon/icons.json';
+import gravityUi from '@iconify-json/gravity-ui/icons.json';
+import materialSymbols from '@iconify-json/material-symbols/icons.json';
+import mdi from '@iconify-json/mdi/icons.json';
+import vscodeIcons from '@iconify-json/vscode-icons/icons.json';
+
+interface Props {
+	icon: string;
+	height?: number | string;
+}
+const sets: Record<string, any> = { devicon, 'gravity-ui': gravityUi, 'material-symbols': materialSymbols, mdi, 'vscode-icons': vscodeIcons };
+const { icon, height = 18 } = Astro.props;
+const [prefix, name] = icon.split(':');
+const set = sets[prefix];
+const data = set ? (getIconData(set, name) ?? getIconData(set, name.toLowerCase())) : null;
+if (!data) console.warn(`[IIcon] Unknown icon ${icon}`);
+const svg = data ? iconToSVG(data, { height: String(height) }) : null;
+const html = svg ? iconToHTML(svg.body, { ...svg.attributes, 'aria-hidden': 'true', style: 'vertical-align: middle; display: inline-block' }) : '';
+---
+
+<Fragment set:html={html} />

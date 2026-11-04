@@ -88,6 +88,28 @@ Describe 'ORCA generator' {
         [System.IO.File]::ReadAllText((Join-Path $out 'Test.ORCA.101.ps1')) | Should -Be ([System.IO.File]::ReadAllText((Join-Path $script:CommittedRoot 'Test.ORCA.101.ps1')))
     }
 
+    It 'has a complete entry for every correction to upstream ORCA' {
+        $fixups = @((Import-PowerShellDataFile (Join-Path $script:RepoRoot 'build/orca/orca-fixups.psd1')).Fixups)
+        foreach ($fixup in $fixups) {
+            foreach ($key in 'File', 'Find', 'Replace', 'Reason') {
+                $fixup[$key] | Should -Not -BeNullOrEmpty -Because "every entry in orca-fixups.psd1 needs a $key"
+            }
+            $fixup.Find | Should -Not -Be $fixup.Replace -Because "$($fixup.File): Find and Replace are the same"
+        }
+    }
+
+    It 'leaves no malformed links in the generated ORCA files' {
+        # Upstream ORCA has shipped links with one slash after the scheme (https:/aka.ms/...). Correct them in
+        # build/orca/orca-fixups.psd1 and run ./build/orca/Update-OrcaTests.ps1.
+        $generated = @(Get-ChildItem -Path $script:CommittedRoot, (Join-Path $script:RepoRoot 'powershell/internal/generated/orca') -File)
+        $malformed = foreach ($file in $generated) {
+            foreach ($match in (Select-String -LiteralPath $file.FullName -Pattern 'https?:/(?!/)' -AllMatches)) {
+                "$($file.Name):$($match.LineNumber)"
+            }
+        }
+        @($malformed) | Should -BeNullOrEmpty
+    }
+
     It 'has Maester metadata for every ORCA check' {
         $metadata = (Get-Content (Join-Path $script:RepoRoot 'build/orca/orca-test-metadata.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
         $ids = @($script:Fresh | Where-Object Extension -EQ '.ps1' | ForEach-Object { $_.BaseName -replace '^Test\.', '' })

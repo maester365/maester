@@ -1,7 +1,8 @@
 ---
 title: Result schema
-sidebar_label: 📄 Result schema
 description: Reference for the Maester 3.0 result JSON (schema 2.1), the NUnit and JUnit XML files, and merging the results of a run split across processes.
+sidebar:
+  label: Result schema
 ---
 
 # Result schema
@@ -34,6 +35,9 @@ Added in 2.1:
 | `Taxonomy` | object | The display names of the product, feature, area and resource type keys and of the ATT&CK techniques that the rows use (below). |
 | `RunMetadata` | object | The `Metadata` section of the run configuration, echoed as given (for example a run ID). An empty object when not set. |
 | `Selection` | object | How the run selected tests (below). |
+| `Frameworks` | array | The catalogue of each framework the rows map to, so a report can show the requirements no test checks (below). Empty when no row names a framework. |
+| `Packs` | array | The [Maester Packs](./packs/index.md) of the run, including packs that could not run (below). Only present when the run had packs. |
+| `Previous` | object | The results of the last run on the same tenant in the output folder, so a report can show what changed (below). Only present when `Invoke-Maester` found one. |
 | `Partitions` | array | Only in a result merged with `Merge-MtMaesterResult -SameRun` (see [Splitting a run](#splitting-a-run-across-processes)). |
 
 ### TenantContext
@@ -83,6 +87,53 @@ gives the names, so a report can show them without the Maester module:
 | `IncludeTag` | The effective include tags. |
 | `ExcludeTag` | The effective exclude tags, including the ones Maester adds by default (`Preview`, `LongRunning`, `AD`). |
 | `DryRun` | `true` for a `-DryRun` result. |
+
+### Frameworks
+
+```json
+"Frameworks": [
+  { "Key": "cis-m365", "Name": "CIS Microsoft 365 Foundations Benchmark", "Version": "7.0.0",
+    "Url": "https://www.cisecurity.org/benchmark/microsoft_365", "Complete": true,
+    "Requirements": [{ "Id": "1.1.1", "Level": "L1", "Profile": ["E3 Level 1"] }] }
+]
+```
+
+- There is one entry for each framework that a row's `Benchmark` or `Control` names, in the order Maester ships
+  them. `Requirements` holds each requirement's `Id` and the facts its framework file gives (the same facts as
+  [`Benchmark`](#benchmark)), never the text of the benchmark.
+- `Complete` is `true` when `Requirements` lists the whole catalogue, so a requirement that is missing from every
+  row has no test. A catalogue of more than 300 requirements (the ASD ISM) lists only the requirements the rows
+  name, with `Complete` `false`.
+- `nist-800-53-r5` lists only the controls the rows name, each with `Title` and `Family`, and `Complete` `false`.
+- A framework that a custom suite declares has no entry yet.
+
+### Packs
+
+| Field | Content |
+| --- | --- |
+| `Id`, `Code`, `Name`, `Description`, `Version`, `Publisher`, `Homepage` | From the pack's manifest (`Version` and `Publisher` from the lock file when the manifest could not be read). |
+| `BuiltIn` | `true` for a pack that ships with Maester. |
+| `Risk` | The risk level you accepted when you installed the pack (`Low`, `Medium` or `High`). `null` for a pack that ships with Maester. |
+| `Status` | `Ready`, or why the pack did not run: `Failed`, `Blocked`, `NotAllowed` or `Unavailable`. |
+| `ReasonCode`, `Reason` | For a pack that did not run, the reason code its tests carry (such as `PackUnavailable`) and the reason in words. |
+
+A pack that the configuration turns off is not listed.
+
+### Previous
+
+```json
+"Previous": { "ExecutedAt": "2026-10-26T09:12:40.0000000+11:00", "File": "TestResults-2026-10-26-091240.json",
+              "Results": { "CIS.M365.1.1.1": "Passed", "MT.1001": "Failed" },
+              "History": [ { "ExecutedAt": "2026-10-26T09:12:40.0000000+11:00", "Total": 453, "Passed": 141, "Failed": 98,
+                             "Investigate": 18, "Error": 2, "Skipped": 175, "NotRun": 19 } ] }
+```
+
+`Invoke-Maester` reads the newest `TestResults-*.json` in the output folder that is for the same tenant, before
+it writes this run's files, and keeps only each test's ID and result. A test that is in this result and not in
+`Results` did not exist or did not run then. `History` holds the counts of up to ten earlier runs on the tenant,
+newest first, read from the start of each file, so the report can draw a trend. `Compare-MtTestResult` compares two whole results. A result merged with
+`Merge-MtMaesterResult -SameRun` has no `Previous`, because a part's previous file may be another part of an
+earlier run; its `Frameworks` and `Packs` cover every part.
 
 ### MaesterConfig
 
@@ -162,6 +213,8 @@ Added in 2.1:
 | `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind }`, where `Source` is `Default`, `Config` or `Parameter`. Empty for Pester rows. |
 | `Diagnostics` | array of strings | Warnings (`WARNING: ...`) and non-terminating errors (`ERROR: ...`) the test wrote. |
 | `Package` | object | For a test from a [Maester Pack](./packs/index.md): `Id`, `Name`, `Version`, `Commit`, `Publisher`, `BuiltIn` and `Runtime` of the pack. `null` for every other test. A pack's rows always have `Source` `Custom`. |
+| `Fields` | object | For an instance row, the `Fields` its family's instance source gave, for example `{ "Pillar": ["Identity"], "Category": "Access control" }` for a Zero Trust Assessment result. Values are strings or arrays of strings. `null` for every other row. |
+| `ShimOf` | string | For a benchmark test whose body returns another built-in test (a shim), the ID of that test: both rows report the same setting. `null` for every other row. |
 
 The fields from `Product` to `Permission` are the test's attributes; see
 [the `[MaesterTest]` attribute](./writing-tests/index.mdx#the-maestertest-attribute). A native row always has

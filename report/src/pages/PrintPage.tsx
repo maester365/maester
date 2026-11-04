@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useTenant } from "@/context/TenantContext"
 import { Button } from "@/components/Button"
-import { RiPrinterLine } from "@remixicon/react"
+import { Printer } from "lucide-react"
 import StatusLabel from "@/components/StatusLabel"
 import SeverityBadge from "@/components/SeverityBadge"
 import ResultInfo from "@/components/ResultInfo"
@@ -67,7 +67,7 @@ export default function PrintPage() {
     <div>
       <div className="no-print mb-6 flex items-center justify-end">
         <Button variant="primary" onClick={handlePrint} disabled={isPrinting}>
-          <RiPrinterLine className="mr-2 h-4 w-4" />
+          <Printer className="mr-2 h-4 w-4" />
           {isPrinting ? "Preparing..." : "Print Report"}
         </Button>
       </div>
