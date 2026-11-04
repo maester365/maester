@@ -38,3 +38,4 @@ To run preview tests, also grant these application permissions:
 - **AgentIdentityBlueprintPrincipal.Read.All**
 - **Application.Read.All**
 - **SecurityEvents.Read.All**
+- **IdentityRiskyUser.Read.All**
