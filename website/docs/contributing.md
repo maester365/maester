@@ -1,13 +1,10 @@
 ---
-sidebar_position: 6
-title: ✨ Contributing
+title: Contributing
+sidebar:
+  order: 6
 ---
 
-import TOCInline from '@theme/TOCInline';
-
 # Contributing
-
-<TOCInline toc={toc} />
 
 ## Introduction
 
@@ -335,17 +332,15 @@ The docs/commands folder is auto-generated based on the comments in the PowerShe
 
 ### Running documentation locally
 
-The [Maester.dev](https://maester.dev) website is built using [Docusaurus](https://docusaurus.io/).
-
-Follow this guide if you want to run the documentation locally and view changes in real-time.
+The [Maester.dev](https://maester.dev) website is built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
 
 #### Pre-requisites
 
-[Node.js](https://nodejs.org/en/download/) version 24.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+[Node.js](https://nodejs.org/en/download/) 22.22 or later (`node -v`). The CI builds use Node.js 24.
 
 #### Installation
 
-When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
+In the `./website` folder, install the dependencies:
 
 ```shell
 npm install
@@ -353,19 +348,60 @@ npm install
 
 #### Starting the site
 
-While in the ./website folder, run the following command to start the site locally. This will start a local server and open the site in your default browser to [http://localhost:3000/](http://localhost:3000/)
+While in the `./website` folder, start the site. It runs at [http://localhost:4321/](http://localhost:4321/) and reloads as you edit:
 
 ```shell
 npm start
 ```
 
+`npm run build` builds the whole site into `website/dist` and then checks that every URL the site has ever had still works (see [URLs](#urls) below).
+
 #### Editing content
 
-You will now be able to edit add and edit markdown files in the ./website/docs folder and see the changes in real-time in your browser.
+Guides are Markdown files in `./website/docs`. A file's path is its URL: `docs/monitoring/github.md` is
+`https://maester.dev/docs/monitoring/github`, and a `readme.md` or `index.md` is its folder's page.
 
-- Read the [markdown documentation](https://docusaurus.io/docs/markdown-features) for more information on some of the custom markdown features available.
-- You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://maester.dev/docs/automation/) page for examples.
-- The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
+- Link to other pages by their file, such as `[Configuration](configuration/overview.md)`. The site turns these
+  links into URLs, and they also work when you read the docs on GitHub.
+- Notes and warnings use Starlight's syntax: `:::note`, `:::tip`, `:::caution` or `:::danger`, with an optional
+  title in brackets (`:::tip[Before you start]`).
+- A page that uses components (tabs, icons, explainers) is an `.mdx` file and imports them, for example
+  `import { Tabs, TabItem } from '@astrojs/starlight/components';` or
+  `import IIcon from '@components/IIcon.astro';` for an [Iconify](https://icon-sets.iconify.design/) icon. See
+  [Starlight's components](https://starlight.astro.build/components/using-components/).
+- The pages under `Commands` are generated from each command's comment-based help: edit the `.ps1` file, not the page.
+- The test pages are built from each test's `[MaesterTest]` attribute and `Test.<ID>.md`: edit those, not the
+  website.
+- The first `npm start` or `npm run build` generates the test catalog and the command pages from your local
+  source, which needs PowerShell 7 and the `Microsoft.Graph.Authentication` module. After changing a test or a
+  command's help, run `npm run refresh-data` to see the change. These files aren't committed: maester.dev is built
+  from the source each time a change is merged.
+
+#### Stable and preview
+
+The docs describe the preview, which is published to the PowerShell Gallery each time a change is merged. Checks,
+commands and parameters that the stable release doesn't have are marked **Preview** automatically, from the test
+catalog and `website/src/data/versions.json`; you don't mark them yourself.
+
+In a guide, wrap a section that only applies from the next release in `<Since version="3.1">`, or describe a change
+in behaviour with `<Changed in="3.1">` (from `@components/Since.astro` and `@components/Changed.astro`). The build compares the version with
+`website/version-config.js` and shows **Preview 3.1** or **New in 3.1**; the release workflows keep both files up to
+date. Write the docs in the same pull request as the change.
+
+#### Explainers
+
+Short animated explainers (in the intro and the applicability guide, and on the home page) are
+[HyperFrames](https://hyperframes.heygen.com) compositions: HTML and CSS with a GSAP timeline, in
+`website/public/explainers/<name>/index.html`. Their chapters and transcript are in `website/src/data/explainers.json`;
+keep the two in step. Preview one with `npx hyperframes preview` in its folder. Each composition lists the source
+files it describes (`Watches:` in its header comment). If your change alters what an explainer shows, such as a gate,
+a reason code or a command's output, update the explainer in the same pull request.
+
+#### URLs
+
+`website/src/data/url-contract.txt` lists every URL the site had when it moved to Astro, and `npm run build` fails if
+any of them no longer opens a page, directly or through a redirect in `website/src/lib/redirects.mjs`. When you move or
+rename a page, add a redirect from its old URL.
 
 #### Blog post images
 
@@ -392,17 +428,10 @@ The script saves the image and sets `image: ./img/card.png` in the post's front 
 
 ### Site versioning
 
-There are two versions of the Maester website:
-
-- [Production](https://maester.dev) - This is the live version of the site that is updated whenever a new version of the Maester module is released.
-- [Preview](https://preview.maester.dev) - This is the version of the site that is updated with every commit to the main branch. This allows you to see changes before they are published to production.
-
-| Environment | URL | Branch | Update Trigger |
-| --- | --- | --- | --- |
-| Production | [https://maester.dev](https://maester.dev) | website-prod | New Maester module release |
-| Preview | [https://preview.maester.dev](https://preview.maester.dev) | main | Every commit to the main branch |
-
-When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
+There is one website, built from `main`, so a docs change is live once it is merged. It describes the preview of
+Maester, and marks what the stable release doesn't have yet (see [Stable and preview](#stable-and-preview) above).
+The docs of Maester 2.x are kept, frozen, at [maester.dev/docs/2.x](https://maester.dev/docs/2.x/intro), and are not
+indexed by search engines.
 
 #### Version numbers
 
@@ -423,12 +452,3 @@ A preview is a prerelease of the release it leads to, and the docs show that rel
 - PowerShell installs `3.0.0-preview2` and `3.0.0` into the same folder. Someone who has a preview moves to the
   release with `Install-Module Maester -Force`; Maester tells them so when it starts.
 
-#### Urgent changes to blog posts and documentation
-
-If a blog post or doc change is urgent and cannot wait till the next release, create a PR against the `website-prod` branch directly.
-
-Once that is reviewed and merged, you will need to create another PR to bring the changes into the `main` branch.
-
-This is because the `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
-
-This process ensures any interim changes to the production site are intentional.

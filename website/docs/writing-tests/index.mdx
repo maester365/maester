@@ -1,12 +1,13 @@
 ---
 title: Writing native tests
-sidebar_position: 1
 description: Write a Maester check as a native test, the default format from Maester 3.0.
+sidebar:
+  order: 1
 ---
 
 # Writing native tests
 
-:::tip New to writing tests?
+:::tip[New to writing tests?]
 Start with [Your first custom test](./first-custom-test.md), a short walk-through for checking one rule of your
 own. This page is the full reference.
 :::
@@ -24,7 +25,7 @@ Tests written for Maester 2.x with Pester (`*.Tests.ps1`) still run. See
 
 ## Quick start
 
-Prefer to click through the choices? The [test builder](pathname:///test-builder) explains every attribute and
+Prefer to click through the choices? The [test builder](/test-builder) explains every attribute and
 writes the code for you.
 
 ```powershell
@@ -389,7 +390,7 @@ Use the service plan, not the product. Microsoft lists both in
 take the name from the **Service plans included** column, such as `AAD_PREMIUM_P2`. The **Product name** and
 **String ID** columns, such as Microsoft 365 E5 and `SPE_E5`, are products. A product is a bundle that Microsoft
 re-packages over time, and the same feature ships in many of them, so a test that named a product would be
-skipped in tenants that have the feature through another one. The [test builder](pathname:///test-builder) has a
+skipped in tenants that have the feature through another one. The [test builder](/test-builder) has a
 licence explorer that finds the service plan from a product name, a friendly name or a GUID.
 
 ```powershell
@@ -629,7 +630,8 @@ The instance object has:
 | `Title` | No | The instance's title. Defaults to `-TestTitle` from the helper, then the attribute's title. |
 | `Severity` | No | The instance's severity, used when the config sets none. |
 | `Tag` | No | Extra tags written to the instance's row. |
-| `Data` | No | Anything the test needs. |
+| `Fields` | No | Facts about the instance that a report can group or filter by, as a hashtable of names to strings or arrays of strings, for example `@{ Pillar = 'Identity'; Category = 'Access control' }`. Written to the row's `Fields`; other values are left out. |
+| `Data` | No | Anything the test needs. It is not written to the result. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
 instance rows, the result has one row on the parent ID instead:
@@ -746,7 +748,7 @@ The frameworks that ship with Maester, with the key to use in `Control`:
 Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
 no framework file; its control IDs are in
 [powershell/assets/MaesterNistControls.json](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterNistControls.json)
-and are written `nist-800-53-r5:<control>`. The [test builder](pathname:///test-builder) looks all of them up.
+and are written `nist-800-53-r5:<control>`. The [test builder](/test-builder) looks all of them up.
 
 A framework file is the catalogue of one framework: its name, its version and every requirement, with the facts
 about each. A suite that holds a framework file declares it in its `suite.json`:
@@ -932,6 +934,27 @@ A Maester test that also checks what a benchmark asks for needs no shim; it name
 `Control`, as [Mapping a test to a framework](#mapping-a-test-to-a-framework) describes. A custom test cannot be a
 shim, because the functions of built-in tests are not exported; it runs a built-in test with `Invoke-MtTest -Id`
 instead (see [What a custom test can call](#what-a-custom-test-can-call)).
+
+## What a benchmark test evaluates
+
+A CIS test does what the benchmark's **PowerShell audit procedure** does: it reads the same objects and passes on
+the same condition. The PowerShell steps are the part of an Automated recommendation that can be automated, and
+usually its most precise wording. When the UI steps and the PowerShell steps differ, follow the PowerShell steps.
+
+- **Scope.** When the audit reads every object, the test reads every object, including ones that apply to no
+  user. CIS 6.2.1 runs `Get-HostedOutboundSpamFilterPolicy` and checks `AutoForwardingMode` on each policy, so
+  the test checks custom policies that have no rule. When the audit reads one object, the test reads only that
+  one: CIS 2.1.15 runs `Get-HostedOutboundSpamFilterPolicy -Identity Default`, so the test does not evaluate
+  custom policies. Don't narrow a test to the policies users receive, or widen it beyond what the audit reads.
+  CIS leaves exceptions to the organization, so a test does not decide them for it.
+- **Values.** Use the thresholds the audit names or its script sets, such as the 90% of the extension list in
+  CIS 2.1.11. When organizations may need a different value, make it a parameter with the benchmark's value as
+  its default.
+- **Missing data.** When the object the audit reads is not returned, the test fails or reports an error. It never
+  passes because there was nothing to check.
+
+A view of the policies users actually receive belongs in a Maester (MT) test, not in a benchmark test. The same
+rule applies to CISA tests, with the SCuBA baseline and ScubaGear's policy in place of the CIS audit procedure.
 
 ## Running and inspecting tests
 

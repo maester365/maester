@@ -17,7 +17,7 @@
     #>
     [MaesterTest(
         Id = 'CIS.M365.2.1.3',
-        Title = 'Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)',
+        Title = 'Ensure notifications for internal users sending malware is Enabled',
         Product = 'defender',
         RelatedProduct = 'exchange',
         Feature = 'anti-malware',
@@ -36,51 +36,70 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Getting Malware Filter Policy...'
-    $policies = Get-MtExo -Request MalwareFilterPolicy
+    Write-Verbose 'Getting anti-malware policies and rules...'
+    $policies = @(Get-MtExo -Request MalwareFilterPolicy)
+    $customPolicies = @($policies | Where-Object { $_.IsDefault -ne $true })
+    $enabledRules = @(Get-MtExo -Request MalwareFilterRule | Where-Object { $_.State -eq 'Enabled' })
+    $customPolicyIdentifiers = @($customPolicies | ForEach-Object { $_.Id; $_.Name; $_.Identity } | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $customRules = @(
+        $enabledRules |
+            Where-Object { $_.MalwareFilterPolicy -and $_.MalwareFilterPolicy -in $customPolicyIdentifiers } |
+            Sort-Object { [int]$_.Priority }
+    )
 
-    # We grab the default policy as that is what CIS checks
-    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
-
-    Write-Verbose 'Executing checks'
-    $enableInternalSenderAdminNotification = $policy | Where-Object {
-        $_.enableInternalSenderAdminNotifications -match 'True'
+    $selectedRule = $null
+    if ($customRules.Count -gt 0) {
+        $selectedRule = $customRules[0]
+        $rulePolicy = [string]$selectedRule.MalwareFilterPolicy
+        $selectedPolicies = @($customPolicies | Where-Object { $_.Id -eq $rulePolicy -or $_.Name -eq $rulePolicy -or $_.Identity -eq $rulePolicy })
+        if ($selectedPolicies.Count -ne 1) {
+            Add-MtTestResultDetail -Result "Expected one policy for the highest-priority enabled malware-filter rule '$($selectedRule.Name)', found $($selectedPolicies.Count)."
+            return $false
+        }
+        $policy = $selectedPolicies[0]
+        $policySelection = 'highest-priority enabled custom policy'
+    } else {
+        $defaultPolicies = @($policies | Where-Object { $_.IsDefault -eq $true })
+        if ($defaultPolicies.Count -ne 1) {
+            Add-MtTestResultDetail -Result "Expected one default anti-malware policy when no enabled custom rule applies, found $($defaultPolicies.Count)."
+            return $false
+        }
+        $policy = $defaultPolicies[0]
+        $policySelection = 'default policy'
     }
 
-    $internalSenderAdminAddress = $policy | Where-Object {
-        $null -ne $_.InternalSenderAdminAddress
-    }
-
-    $testResult = (($enableInternalSenderAdminNotification | Measure-Object).Count -ge 1) -and (($internalSenderAdminAddress | Measure-Object).Count -ge 1)
-
+    $policyName = if ($policy.Name) { $policy.Name } else { $policy.Identity }
+    $ruleDescription = if ($selectedRule) { "Rule '$($selectedRule.Name)' (priority $($selectedRule.Priority))" } else { 'Default policy' }
+    $addresses = @($policy.InternalSenderAdminAddress | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $checks = @(
+        [pscustomobject]@{
+            CheckName = 'EnableInternalSenderAdminNotifications'
+            Value     = $policy.EnableInternalSenderAdminNotifications
+            Pass      = $policy.EnableInternalSenderAdminNotifications -eq $true
+        }
+        [pscustomobject]@{
+            CheckName = 'InternalSenderAdminAddress'
+            Value     = if ($addresses.Count -gt 0) { $addresses -join ', ' } else { 'Not set' }
+            Pass      = $addresses.Count -gt 0
+        }
+    )
+    $testResult = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
     $portalLink = 'https://security.microsoft.com/antimalwarev2'
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenants default anti malware policy has recommended internal malware notifications configured ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. The $policySelection '$policyName' has internal malware notifications and a configured administrator address ($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenants default anti malware policy does not have the recommended internal malware notifications configured ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "The $policySelection '$policyName' does not have internal malware notifications and a nonblank administrator address configured ($portalLink).`n`n%TestResult%"
     }
 
-    $resultMd = "| Policy | Result |`n"
-    $resultMd += "| --- | --- |`n"
-
-    if ($enableInternalSenderAdminNotification) {
-        $enableInternalSenderAdminNotificationResult = '✅ Pass'
-    } else {
-        $enableInternalSenderAdminNotificationResult = '❌ Fail'
+    $resultMd = "| Policy | Rule | Setting | Value | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- |`n"
+    foreach ($check in $checks) {
+        $itemResult = if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $resultMd += "| $policyName | $ruleDescription | $($check.CheckName) | $($check.Value) | $itemResult |`n"
     }
-
-    if ($internalSenderAdminAddress) {
-        $internalSenderAdminAddressResult = '✅ Pass'
-    } else {
-        $internalSenderAdminAddressResult = '❌ Fail'
-    }
-
-    $resultMd += "| EnableInternalSenderAdminNotification | $enableInternalSenderAdminNotificationResult |`n"
-    $resultMd += "| InternalSenderAdminAddress | $internalSenderAdminAddressResult |`n"
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

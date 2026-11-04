@@ -17,7 +17,7 @@
     #>
     [MaesterTest(
         Id = 'CIS.M365.2.1.4',
-        Title = 'Ensure Safe Attachments policy is enabled (Only Checks Default Policy)',
+        Title = 'Ensure the highest-priority Safe Attachments policy is enabled',
         Product = 'defender',
         RelatedProduct = 'exchange',
         Feature = 'safe-attachments',
@@ -37,65 +37,102 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Getting Safe Attachment Policy...'
-    $policies = Get-MtExo -Request SafeAttachmentPolicy
+    Write-Verbose 'Getting Safe Attachment policies and rules...'
+    $policies = @(Get-MtExo -Request SafeAttachmentPolicy)
+    $presetRules = @(Get-MtExo -Request ATPProtectionPolicyRule)
+    $customRules = @(Get-MtExo -Request SafeAttachmentRule)
+    $builtInRules = @(Get-MtExo -Request ATPBuiltInProtectionRule)
 
-    # We grab the default policy as that is what CIS checks
-    $policy = $policies | Where-Object { $_.Name -eq 'Built-In Protection Policy' }
+    $strictRules = @($presetRules | Where-Object { $_.Identity -eq 'Strict Preset Security Policy' -and $_.State -eq 'Enabled' })
+    $standardRules = @($presetRules | Where-Object { $_.Identity -eq 'Standard Preset Security Policy' -and $_.State -eq 'Enabled' })
+    $selectedRule = $null
+    $selectedRuleType = $null
+    $policyCandidates = @()
 
-    $safeAttachmentCheckList = @()
-
-    #Enable
-    $safeAttachmentCheckList += [pscustomobject] @{
-        'CheckName' = 'Enable'
-        'Value'     = 'True'
-    }
-
-    #Action
-    $safeAttachmentCheckList += [pscustomobject] @{
-        'CheckName' = 'Action'
-        'Value'     = 'Block'
-    }
-
-    #QuarantineTag
-    $safeAttachmentCheckList += [pscustomobject] @{
-        'CheckName' = 'QuarantineTag'
-        'Value'     = 'AdminOnlyAccessPolicy'
-    }
-
-    Write-Verbose 'Executing checks'
-    $failedCheckList = @()
-
-    foreach ($check in $safeAttachmentCheckList) {
-        $checkResult = $policy | Where-Object { $_.($check.CheckName) -notmatch $check.Value }
-        if ($checkResult) {
-            #If the check fails, add it to the list so we can report on it later
-            $failedCheckList += $check.CheckName
+    if ($strictRules.Count -gt 0) {
+        $selectedRule = $strictRules[0]
+        $selectedRuleType = 'Strict preset'
+        $policyCandidates = @($policies | Where-Object { $_.RecommendedPolicyType -eq 'Strict' })
+    } elseif ($standardRules.Count -gt 0) {
+        $selectedRule = $standardRules[0]
+        $selectedRuleType = 'Standard preset'
+        $policyCandidates = @($policies | Where-Object { $_.RecommendedPolicyType -eq 'Standard' })
+    } else {
+        $enabledCustomRules = @($customRules | Where-Object { $_.State -eq 'Enabled' } | Sort-Object { [int]$_.Priority })
+        if ($enabledCustomRules.Count -gt 0) {
+            $selectedRule = $enabledCustomRules[0]
+            $selectedRuleType = 'custom'
+            $rulePolicy = $selectedRule.SafeAttachmentPolicy
+            $policyCandidates = @($policies | Where-Object {
+                    $_.Name -eq $rulePolicy -or $_.Identity -eq $rulePolicy -or $_.Id -eq $rulePolicy
+                })
+        } else {
+            $enabledBuiltInRules = @($builtInRules | Where-Object { $_.State -eq 'Enabled' })
+            if ($enabledBuiltInRules.Count -gt 0) {
+                $selectedRule = $enabledBuiltInRules[0]
+                $selectedRuleType = 'built-in protection'
+                $policyCandidates = @($policies | Where-Object {
+                        $_.IsBuiltInProtection -eq $true -or $_.Name -eq 'Built-In Protection Policy'
+                    })
+            }
         }
     }
 
-    $testResult = ($failedCheckList | Measure-Object).Count -eq 0
+    if ($null -eq $selectedRule) {
+        Add-MtTestResultDetail -Result 'No enabled Safe Attachments rule was returned; the highest-priority policy could not be determined.'
+        return $false
+    }
+    if ($policyCandidates.Count -ne 1) {
+        Add-MtTestResultDetail -Result "Expected one policy for the selected $selectedRuleType rule '$($selectedRule.Identity)', found $($policyCandidates.Count)."
+        return $false
+    }
+
+    $policy = $policyCandidates[0]
+    $domainTargets = @($selectedRule.RecipientDomainIs | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $groupTargets = @($selectedRule.SentToMemberOf | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $userTargets = @($selectedRule.SentTo | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+    $recipientConditions = @($domainTargets + $groupTargets + $userTargets)
+    $recipientExceptions = @(
+        $selectedRule.ExceptIfRecipientDomainIs
+        $selectedRule.ExceptIfSentToMemberOf
+        $selectedRule.ExceptIfSentTo
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+    $acceptedDomains = @()
+    if ($domainTargets.Count -gt 0) {
+        $acceptedDomains = @(Get-MtExo -Request AcceptedDomain | ForEach-Object { $_.Name })
+    }
+    $domainsCoverTenant = $acceptedDomains.Count -gt 0 -and @($acceptedDomains | Where-Object { $_ -notin $domainTargets }).Count -eq 0
+    $scopePass = $recipientConditions.Count -eq 0 -or $domainsCoverTenant -or $groupTargets.Count -gt 0
+    $scopeDescription = if ($recipientConditions.Count -eq 0) { 'All recipients' } else { $recipientConditions -join ', ' }
+    if ($recipientExceptions.Count -gt 0) {
+        $scopeDescription += "; exclusions: $($recipientExceptions -join ', ')"
+    }
+
+    $safeAttachmentCheckList = @(
+        [pscustomobject]@{ CheckName = 'Enable'; Value = $policy.Enable; Pass = $policy.Enable -eq $true }
+        [pscustomobject]@{ CheckName = 'Action'; Value = $policy.Action; Pass = $policy.Action -eq 'Block' }
+        [pscustomobject]@{ CheckName = 'QuarantineTag'; Value = $policy.QuarantineTag; Pass = $policy.QuarantineTag -eq 'AdminOnlyAccessPolicy' }
+        [pscustomobject]@{ CheckName = 'Rule state'; Value = $selectedRule.State; Pass = $selectedRule.State -eq 'Enabled' }
+        [pscustomobject]@{ CheckName = 'Rule scope'; Value = $scopeDescription; Pass = $scopePass }
+    )
+    $testResult = @($safeAttachmentCheckList | Where-Object { -not $_.Pass }).Count -eq 0
 
     $portalLink = 'https://security.microsoft.com/safeattachmentv2'
-
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenants default safe attachments policy matches CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. The highest-priority Safe Attachments policy '$($policy.Name)' and its rule match CIS recommendations ($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenants default safe attachments policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "The highest-priority Safe Attachments policy '$($policy.Name)' or its rule does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
 
-    $resultMd = "| Check Name | Result |`n"
-    $resultMd += "| --- | --- |`n"
+    $resultMd = "| Check Name | Value | Result |`n"
+    $resultMd += "| --- | --- | --- |`n"
     foreach ($item in $safeAttachmentCheckList) {
-        $itemResult = '❌ Fail'
-        if ($item.CheckName -notin $failedCheckList) {
-            $itemResult = '✅ Pass'
-        }
-        $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
+        $itemResult = if ($item.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $value = if ($null -eq $item.Value) { 'Not returned' } else { @($item.Value) -join ', ' }
+        $resultMd += "| $($item.CheckName) | $value | $itemResult |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

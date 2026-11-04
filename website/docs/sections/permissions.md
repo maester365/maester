@@ -1,3 +1,8 @@
+---
+# A partial that guides import; also served as a page (noindex) for links to it.
+title: Microsoft Graph permissions Maester uses
+---
+
 - **AccessReview.Read.All**
 - **AuditLog.Read.All**
 - **DeviceManagementApps.Read.All**

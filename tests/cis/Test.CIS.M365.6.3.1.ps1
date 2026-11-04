@@ -1,16 +1,16 @@
 ﻿function Test-MtCisUserCannotInstallOutlookAddIn {
     <#
     .SYNOPSIS
-        Checks that the role assignment policies that users receive do not let them install add-ins.
+        Checks that the default role assignment policy does not let users install Outlook add-ins.
 
     .DESCRIPTION
-        Checks that neither the default role assignment policy nor a custom policy that a mailbox uses includes the roles that let users install their own apps: My Custom Apps, My Marketplace Apps and My ReadWriteMailbox Apps.
+        Checks that the default role assignment policy does not include the roles that let users install their own apps: My Custom Apps, My Marketplace Apps and My ReadWriteMailbox Apps. Custom role assignment policies are not evaluated, as in the CIS audit procedure.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (6.3.1, L2)
 
     .EXAMPLE
         Test-MtCisUserCannotInstallOutlookAddIn
 
-        Returns true if users cannot install Outlook add-ins with the role assignment policies they receive.
+        Returns true if the default role assignment policy assigns none of the add-in installation roles.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.6.3.1
@@ -38,23 +38,17 @@
     $deniedRoles = @('My Custom Apps', 'My Marketplace Apps', 'My ReadWriteMailbox Apps')
     $policies = @(Get-MtExo -Request RoleAssignmentPolicy)
     $defaultPolicy = $policies | Where-Object { $_.IsDefault -eq $true } | Select-Object -First 1
-    $customGranting = @($policies | Where-Object { $_.IsDefault -ne $true -and @($_.AssignedRoles | Where-Object { $deniedRoles -contains $_ }).Count -gt 0 })
-    # Mailboxes are read only when a custom policy grants a denied role.
-    $inUse = @()
-    if ($customGranting.Count -gt 0) {
-        $mailboxPolicies = @(Get-MtExo -Request EXOMailboxRoleAssignmentPolicy | ForEach-Object { $_.RoleAssignmentPolicy } | Sort-Object -Unique)
-        $inUse = @($customGranting | Where-Object { $mailboxPolicies -contains $_.Name })
+    if ($null -eq $defaultPolicy) {
+        Add-MtTestResultDetail -Result 'The default role assignment policy was not returned; the CIS add-in roles could not be checked.'
+        return $false
     }
-    $evaluated = @(@($defaultPolicy) + $inUse | Where-Object { $null -ne $_ })
-    $report = foreach ($policy in $evaluated) {
-        foreach ($role in $deniedRoles) {
-            [pscustomobject]@{ Policy = $policy.Name; Role = $role; Assigned = @($policy.AssignedRoles) -contains $role }
-        }
+    $report = foreach ($role in $deniedRoles) {
+        [pscustomobject]@{ Policy = $defaultPolicy.Name; Role = $role; Assigned = @($defaultPolicy.AssignedRoles) -contains $role }
     }
-    $testResult = $null -ne $defaultPolicy -and @($report | Where-Object { $_.Assigned }).Count -eq 0
+    $testResult = @($report | Where-Object { $_.Assigned }).Count -eq 0
 
-    $passText = 'No role assignment policy that users receive lets them install Outlook add-ins.'
-    $failText = if ($null -eq $defaultPolicy) { 'No default role assignment policy was found.' } else { 'A role assignment policy that users receive lets them install Outlook add-ins.' }
+    $passText = 'The default role assignment policy does not let users install Outlook add-ins.'
+    $failText = 'The default role assignment policy lets users install Outlook add-ins.'
 
     $resultMd = "| Policy | Role | Assigned | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"

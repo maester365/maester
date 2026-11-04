@@ -4,10 +4,11 @@ Resource keys are shared credentials rather than individual identities. Blocking
 
 #### Remediation action
 
-1. Sign in to [Microsoft Fabric](https://app.fabric.microsoft.com) with a Fabric administrator account.
-2. Select **OneLake catalog** > **Govern** > **Configurations** > **Tenant settings**. If these options aren't available in your region, select **Settings** > **Admin portal** > **Tenant settings**.
-3. Under **Developer settings**, find **Block ResourceKey Authentication** and set it to **Enabled**.
-4. Select **Apply** and update any clients that still send data with resource keys to use identity-based authentication.
+1. Sign in to the [Microsoft Fabric admin portal](https://app.powerbi.com/admin-portal) with a Fabric administrator account.
+2. Select **Tenant settings**.
+3. Scroll to **Developer settings**.
+4. Set **Block ResourceKey Authentication** to **Enabled**.
+5. Select **Apply** and update any clients that still send data with resource keys to use identity-based authentication.
 
 #### Related links
 

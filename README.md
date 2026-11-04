@@ -143,3 +143,20 @@ The `module/` folder is a build artifact — it is ignored by git and never comm
 ## Contributing
 
 Contributions are welcome! If you want to contribute new tests or improve existing ones, please refer to the [contribution guide](https://maester.dev/docs/contributing).
+
+<!-- sponsors:start -->
+<!-- Written by website/scripts/sponsors.mjs --readme. To change the featured sponsors, edit website/sponsors/featured.yml. -->
+
+## Sponsors
+
+Thank you to the organisations and people who sponsor Maester and its maintainers. You make Maester possible.
+
+<p>
+  <a href="https://cyberdrain.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/cyberdrain-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/cyberdrain.png" alt="CyberDrain" height="52"></picture></a>&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.increment.inc"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment-dark.png"><img src="https://raw.githubusercontent.com/maester365/maester/main/website/public/img/sponsors/increment.png" alt="Increment" height="52"></picture></a>
+</p>
+
+<a href="https://maester.dev/sponsor"><picture><source media="(prefers-color-scheme: dark)" srcset="https://maester.dev/readme/sponsors-dark.svg"><img src="https://maester.dev/readme/sponsors.svg" alt="The people and organisations who sponsor the maintainers of Maester"></picture></a>
+
+Using Maester at work? Ask your company to sponsor one of the [people who build it](https://maester.dev/sponsor).
+<!-- sponsors:end -->
