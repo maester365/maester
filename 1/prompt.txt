@@ -1,0 +1,9 @@
+Add a note in our PR header that we are planning on a code free in the next 48 hours. After which we will only include bug fixes as we are planning on pushing out MAester 3.0 next week.
+
+---
+
+Yes, own branch
+
+---
+
+Push and open PR
