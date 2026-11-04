@@ -43,6 +43,17 @@ Describe 'CISA PIM checks when the PIM APIs reject the tenant license' -Tag 'Uni
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $SkippedBecause -eq 'NotLicensedEntraIDP2OrGovernance' }
     }
 
+    It '<Command> skips on a non-terminating AadPremiumLicenseRequired error' {
+        # The native engine runs checks with $ErrorActionPreference = 'Continue'
+        $ErrorActionPreference = 'Continue'
+        # Write the error from the module's scope, so it follows the caller's -ErrorAction like the Graph SDK does
+        Mock -ModuleName Maester Invoke-MtGraphRequest { & (Get-Module Maester) { Write-Error -ErrorRecord $args[0] } (Get-GraphErrorRecord -Code 'AadPremiumLicenseRequired') }
+
+        & $Command @Parameters | Should -BeNullOrEmpty
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $SkippedBecause -eq 'NotLicensedEntraIDP2OrGovernance' }
+    }
+
     It '<Command> rethrows other Graph errors' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw (Get-GraphErrorRecord -Code 'Authorization_RequestDenied') }
 

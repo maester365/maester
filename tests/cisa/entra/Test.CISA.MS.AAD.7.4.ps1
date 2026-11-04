@@ -53,7 +53,7 @@
             }
         }
         try {
-            $assignments = Invoke-MtGraphRequest @assignmentsSplat
+            $assignments = Invoke-MtGraphRequest @assignmentsSplat -ErrorAction Stop
         } catch {
             # subscribedSkus can report a P2 service plan that the PIM APIs do not accept
             if ($_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
