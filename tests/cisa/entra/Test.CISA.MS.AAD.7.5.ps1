@@ -52,7 +52,17 @@
                 expand = "principal"
             }
         }
-        $assignments = Invoke-MtGraphRequest @assignmentsSplat | Where-Object {`
+        try {
+            $assignments = Invoke-MtGraphRequest @assignmentsSplat
+        } catch {
+            # subscribedSkus can report a P2 service plan that the PIM APIs do not accept
+            if ($_.ErrorDetails.Message -match 'AadPremiumLicenseRequired') {
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+                return $null
+            }
+            throw
+        }
+        $assignments = $assignments | Where-Object {`
                 $null -eq $_.createdUsing -or `
                 $null -eq $_.scheduleInfo.startDateTime }
 
