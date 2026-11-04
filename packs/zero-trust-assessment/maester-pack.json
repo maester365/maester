@@ -15,6 +15,7 @@
   "RequiresMaester": ">=3.0",
   "Code": "ZTA",
   "Suites": ["tests"],
+  "Helpers": ["helpers"],
   "Catalog": "catalog.json",
   "Uses": {
     "Services": ["Graph"],

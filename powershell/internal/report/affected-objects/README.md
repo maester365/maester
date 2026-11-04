@@ -46,6 +46,7 @@ Every source normalizes into the same record shape so results can be merged and 
 | `PortalLink`        | Admin-portal deep link when a template exists for the type                                                       |
 | `Tests`             | Test ids (`MT.xxxx`, ...) that referenced the object (aggregated)                                                 |
 | `Sources`           | Which of the three detection sources found it (aggregated)                                                       |
+| `Facts`             | What a pack or test added about the object with `Add-MtAffectedObjectFact` (see [Facts](#facts)); empty if none  |
 
 ## Anchor kinds
 
@@ -105,6 +106,10 @@ pattern acts as a type system:
 | `UserProfileMenuBlade/~/*/userId/{guid}`                      | User                           |
 | `GroupDetailsMenuBlade/~/*/groupId/{guid}`                    | Group                          |
 | `DeviceDetailsMenuBlade/~/*/objectId/{guid}`                  | Device                         |
+| `AgentIdentity.MenuView/~/*/objectId/{guid}`                 | AgentIdentity                  |
+| `AgentBlueprintDetails.MenuView/~/*/appId/{guid}`            | AgentIdentityBlueprint         |
+| `AgentBlueprintDetails.MenuView/~/*/objectId/{guid}`         | AgentIdentityBlueprintPrincipal |
+| `Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/{guid}` | ConfigurationPolicy (Intune)   |
 | `Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/{guid}`      | AccessPackageCatalog           |
 | `EntitlementMenuBlade/~/overview/entitlementId/{guid}`        | AccessPackage                  |
 | `Microsoft_Azure_PIMCommon/AlertDetail/.../alertId/{id}`      | PimAlert                       |
@@ -197,11 +202,11 @@ After the merge, `Select-MtAffectedObjectByType` filters the inventory against t
 | `ExcludedTypes` | Recognised types that are deliberately not affected objects. Dropped silently.                                                                         |
 | Everything else | Systems absent from `KnownTypes` (`MicrosoftGraph`) pass through unchanged — their `Type` is a Graph resource path and cannot be enumerated. |
 
-Currently inventoried: `EntraID` — AccessPackage, AccessPackageCatalog, AppRegistration,
-AuthenticationMethod, AuthorizationPolicy, ConditionalAccessPolicy, ConsentPolicy, Device,
-DirectoryRole, Domains, Group, ServicePrincipal, User; `DefenderXDR` — Device;
-`ExchangeOnline` — SharingPolicy, TransportRule; `GitHub` — GitHubOrganization,
-GitHubRepository, GitHubResource.
+Currently inventoried: `EntraID` — AccessPackage, AccessPackageCatalog, AgentIdentity,
+AgentIdentityBlueprint, AgentIdentityBlueprintPrincipal, AppRegistration, AuthenticationMethod, AuthorizationPolicy,
+ConditionalAccessPolicy, ConsentPolicy, Device, DirectoryRole, Domains, Group, ServicePrincipal, User;
+`DefenderXDR` — Device; `ExchangeOnline` — SharingPolicy, TransportRule; `Intune` —
+ConfigurationPolicy; `GitHub` — GitHubOrganization, GitHubRepository, GitHubResource.
 
 Excluded: `EntraID` — `EntraRecommendation`, `PimAlert`. Both describe a condition of the
 tenant (a recommendation, an alert), not an addressable object, so they are findings that
@@ -215,6 +220,20 @@ up as an explicit maintenance item instead of silently reaching the report. Add 
 `ConvertTo-MtAffectedObjectRecord` also resolves type aliases before the record is built:
 `IdentityProtection` objects are the users at risk, so they are recorded as `User`
 (`Instance` with a user profile deep link) rather than as the Identity Protection blade.
+
+## Facts
+
+`Add-MtAffectedObjectFact` (exported, so packs and custom tests can call it) records facts about an
+object while the run collects affected objects: `Name`, `Value`, `Tone` (`Risk`, `Warning`, `Good` or
+`Info`), `Source` and `AsOf`. They are kept in `$__MtSession.AffectedObjectFacts`, keyed `System|Type|Id`,
+and `Get-MtAffectedObject` copies them onto the record with that key. Facts never add a record: an object
+no source found is not listed, however much is known about it. The html report embeds the facts of the
+objects that have any; the CSV joins them into one `Facts` column.
+
+The Zero Trust Assessment pack is the first source (`packs/zero-trust-assessment/helpers/Add-MtZtaObjectFact.ps1`):
+it reads the assessment's tenant export. Keys must match the records: an app registration is keyed by its
+appId, as its portal link is, and so is an agent identity blueprint; a blueprint principal is keyed by its
+service principal's object id.
 
 ## Extending detection
 

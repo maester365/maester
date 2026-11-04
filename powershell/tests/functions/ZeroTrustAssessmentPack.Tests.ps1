@@ -168,6 +168,109 @@ Describe 'Zero Trust Assessment pack' {
         }
     }
 
+    Context 'facts from the export' {
+        BeforeAll {
+            . (Join-Path $script:PackRoot 'helpers/Add-MtZtaObjectFact.ps1')
+
+            # A small export in the assessment's layout: zt-export/<Entity>/<Entity>-<n>.json pages of Graph JSON.
+            $script:Export = Join-Path $TestDrive 'facts/zt-export'
+            function Write-ZtaExportPage {
+                param([string] $Name, [object[]] $Value)
+                $folder = New-Item -ItemType Directory -Path (Join-Path $script:Export $Name) -Force
+                @{ value = @($Value) } | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $folder "$Name-0.json")
+                # The model file describes the table and must not be read as data.
+                '{ "value": [ { "id": "model" } ] }' | Set-Content -LiteralPath (Join-Path $folder "$Name-model.json")
+            }
+            $tenant = '11111111-1111-1111-1111-111111111111'
+            $graph = '22222222-0000-0000-0000-000000000001'
+            Copy-Item -LiteralPath (Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json') -Destination (New-Item -ItemType Directory -Path $script:Export -Force)
+            Write-ZtaExportPage ServicePrincipal @(
+                @{ id = $graph; appId = '00000003-0000-0000-c000-000000000000'; displayName = 'Microsoft Graph'; appOwnerOrganizationId = 'f8cdef31-a31e-4b4a-93e4-5f571e91255a'
+                    appRoles = @(@{ id = 'r1'; value = 'Directory.ReadWrite.All' }, @{ id = 'r2'; value = 'User.Read.All' }); appRoleAssignments = @() }
+                @{ id = 'sp-1'; appId = 'app-1'; displayName = 'Contoso sync'; appOwnerOrganizationId = $tenant; accountEnabled = $true
+                    appRoleAssignments = @(@{ resourceId = $graph; appRoleId = 'r1' }, @{ resourceId = $graph; appRoleId = 'r2' })
+                    oauth2PermissionGrants = @(@{ consentType = 'AllPrincipals'; resourceId = $graph; scope = 'openid User.ReadWrite.All' })
+                    passwordCredentials = @(@{ endDateTime = '2027-01-01T00:00:00Z' }, @{ endDateTime = '2025-01-01T00:00:00Z' }) }
+            )
+            Write-ZtaExportPage ServicePrincipalSignIn @(@{ appId = 'app-1'; lastSignInActivity = @{ lastSignInDateTime = '2026-01-01T00:00:00Z' } })
+            Write-ZtaExportPage Application @(@{ id = 'obj-1'; appId = 'app-1'; signInAudience = 'AzureADMultipleOrgs'; owners = @() })
+            Write-ZtaExportPage RoleDefinition @(@{ id = 'ga'; templateId = 'ga'; displayName = 'Global Administrator'; isPrivileged = $true })
+            Write-ZtaExportPage RoleAssignment @(@{ principalId = 'user-1'; roleDefinitionId = 'ga'; directoryScopeId = '/' })
+            Write-ZtaExportPage User @(@{ id = 'user-1'; userType = 'Member'; accountEnabled = $true; signInActivity = @{ lastSignInDateTime = '2026-10-20T00:00:00Z' } })
+            Write-ZtaExportPage UserRegistrationDetails @(@{ id = 'user-1'; isMfaRegistered = $false; isAdmin = $true })
+            Write-ZtaExportPage ConfigurationPolicy @(@{ id = 'pol-1'; platforms = 'windows10'; technologies = 'mdm'; settingCount = 3; assignments = @() })
+
+            $script:Report = [pscustomobject]@{ TenantId = $tenant; ExecutedAt = '2026-10-23T12:00:00Z' }
+            $script:Facts = @(ConvertTo-MtZtaObjectFactRecord -ExportPath $script:Export -Report $script:Report)
+            function Get-ZtaFact {
+                param([string] $Type, [string] $Id, [string] $Name)
+                ($script:Facts | Where-Object { $_.Type -eq $Type -and $_.Id -eq $Id }).Fact | Where-Object Name -EQ $Name
+            }
+        }
+
+        It 'names an app''s Tier 0 Graph permissions as a risk' {
+            $fact = Get-ZtaFact ServicePrincipal sp-1 'Application permissions'
+            $fact.Tone | Should -Be 'Risk'
+            $fact.Value | Should -Be 'Directory.ReadWrite.All has a path to Global Administrator. Microsoft Graph: Directory.ReadWrite.All, User.Read.All'
+        }
+
+        It 'lists write permissions consented for all users, without openid' {
+            $fact = Get-ZtaFact ServicePrincipal sp-1 'Consented for all users'
+            $fact.Value | Should -Be 'Microsoft Graph: User.ReadWrite.All'
+            $fact.Tone | Should -Be 'Warning'
+        }
+
+        It 'counts active and expired client secrets and dates sign-ins from the assessment' {
+            (Get-ZtaFact ServicePrincipal sp-1 'Client secrets').Value | Should -Be '1 active, the next expires on 2027-01-01; 1 expired'
+            $signIn = Get-ZtaFact ServicePrincipal sp-1 'Last sign-in'
+            $signIn.Value | Should -Be '2026-01-01 (295 days before the assessment)'
+            $signIn.Tone | Should -Be 'Warning'
+        }
+
+        It 'keys an app registration by its appId and gives it the app''s permissions' {
+            (Get-ZtaFact AppRegistration app-1 'Owners').Tone | Should -Be 'Warning'
+            (Get-ZtaFact AppRegistration app-1 'Who can sign in').Value | Should -Be 'Any Microsoft Entra organization'
+            (Get-ZtaFact AppRegistration app-1 'Application permissions').Tone | Should -Be 'Risk'
+        }
+
+        It 'names a permanent Global Administrator without MFA as a risk' {
+            (Get-ZtaFact User user-1 'Entra roles').Value | Should -Be 'Global Administrator (permanent)'
+            (Get-ZtaFact User user-1 'Entra roles').Tone | Should -Be 'Risk'
+            (Get-ZtaFact User user-1 'MFA').Tone | Should -Be 'Risk'
+            (Get-ZtaFact User user-1 'Last sign-in').Tone | Should -Be 'Info'
+        }
+
+        It 'names an unassigned Intune policy for review' {
+            $record = $script:Facts | Where-Object Type -EQ 'ConfigurationPolicy'
+            $record.System | Should -Be 'Intune'
+            (Get-ZtaFact ConfigurationPolicy pol-1 'Assignments').Value | Should -Be 'Not assigned'
+        }
+
+        It 'reads no model file as data' {
+            $script:Facts.Id | Should -Not -Contain 'model'
+        }
+
+        It 'adds the facts to the run when it collects affected objects, and nothing when ObjectFacts is false' {
+            $collect = {
+                param([hashtable] $Setting)
+                InModuleScope Maester { $__MtSession.IncludeAffectedObjects = $true; $__MtSession.AffectedObjectFacts = $null }
+                try {
+                    $null = Invoke-ZtaPack -Setting $Setting
+                    InModuleScope Maester { if ($__MtSession.AffectedObjectFacts) { @($__MtSession.AffectedObjectFacts.Keys) } }
+                } finally {
+                    InModuleScope Maester { $__MtSession.IncludeAffectedObjects = $false; $__MtSession.AffectedObjectFacts = $null }
+                }
+            }
+            $report = Join-Path $script:Export 'ZeroTrustAssessmentReport.json'
+
+            $keys = @(& $collect @{ 'ZeroTrustAssessment.ReportPath' = $report })
+            $keys | Should -Contain 'EntraID|User|user-1'
+            $keys | Should -Contain 'Intune|ConfigurationPolicy|pol-1'
+
+            @(& $collect @{ 'ZeroTrustAssessment.ReportPath' = $report; 'ZeroTrustAssessment.ObjectFacts' = $false }) | Should -BeNullOrEmpty
+        }
+    }
+
     Context 'running the assessment' {
         BeforeAll {
             # A stand-in for the ZeroTrustAssessment module: it records what it was called with and writes the
@@ -314,7 +417,11 @@ function Invoke-ZtAssessment {
         }
 
         It 'skips the family when the module is not installed' {
-            $env:PSModulePath = $script:OriginalModulePath
+            # Leave out every module folder that has the assessment, so a copy installed on this machine never
+            # runs a real assessment against the tenant it last signed in to.
+            $env:PSModulePath = @($script:OriginalModulePath -split [System.IO.Path]::PathSeparator | Where-Object {
+                    $_ -and -not (Test-Path -LiteralPath (Join-Path $_ 'ZeroTrustAssessment'))
+                }) -join [System.IO.Path]::PathSeparator
             try {
                 $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
             } finally {

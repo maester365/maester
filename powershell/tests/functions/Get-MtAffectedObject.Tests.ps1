@@ -619,6 +619,113 @@ Describe 'Affected objects' {
         }
     }
 
+    Context 'Facts' {
+        BeforeAll {
+            # One result that links a user, an agent identity, a blueprint, its principal and an Intune policy.
+            $script:factResults = [PSCustomObject]@{
+                Tests = @(
+                    [PSCustomObject]@{
+                        Id           = 'ZTA.1'
+                        ResultDetail = [PSCustomObject]@{
+                            TestResult = @(
+                                '[Adele](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/aaaaaaaa-0000-0000-0000-000000000001)'
+                                '[Agent](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/AgentIdentity.MenuView/~/overview/objectId/aaaaaaaa-0000-0000-0000-000000000002/menuId/overview)'
+                                '[Blueprint](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/AgentBlueprintDetails.MenuView/~/overview/appId/aaaaaaaa-0000-0000-0000-000000000003)'
+                                '[Blueprint](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/AgentBlueprintDetails.MenuView/~/overview/objectId/aaaaaaaa-0000-0000-0000-000000000005)'
+                                '[Policy](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/aaaaaaaa-0000-0000-0000-000000000004/technology/mdm)'
+                            ) -join "`n"
+                        }
+                    }
+                )
+            }
+
+            # Runs the block with the session collecting affected objects and an empty fact store.
+            function Invoke-WithFactCollection {
+                param([scriptblock] $ScriptBlock)
+                InModuleScope Maester -Parameters @{ Block = $ScriptBlock; Results = $script:factResults } {
+                    param($Block, $Results)
+                    $previous = $__MtSession.IncludeAffectedObjects
+                    try {
+                        $__MtSession.IncludeAffectedObjects = $true
+                        $__MtSession.AffectedObjectFacts = $null
+                        # Recreated here so the block runs in module scope, where the internal functions are.
+                        & ([scriptblock]::Create($Block.ToString())) $Results
+                    } finally {
+                        $__MtSession.IncludeAffectedObjects = $previous
+                        $__MtSession.AffectedObjectFacts = $null
+                    }
+                }
+            }
+        }
+
+        It 'Should recognise agent identities, blueprints and Intune configuration policies in result links' {
+            $inventory = Invoke-WithFactCollection { param($Results) Get-MtAffectedObject -MaesterResults $Results -ExcludeSessionCache }
+
+            ($inventory | Where-Object Type -EQ 'AgentIdentity').Id | Should -Be 'aaaaaaaa-0000-0000-0000-000000000002'
+            # By appId the link names the blueprint; by objectId, the blueprint's service principal.
+            ($inventory | Where-Object Type -EQ 'AgentIdentityBlueprint').Id | Should -Be 'aaaaaaaa-0000-0000-0000-000000000003'
+            ($inventory | Where-Object Type -EQ 'AgentIdentityBlueprintPrincipal').Id | Should -Be 'aaaaaaaa-0000-0000-0000-000000000005'
+            $policy = $inventory | Where-Object Type -EQ 'ConfigurationPolicy'
+            $policy.System | Should -Be 'Intune'
+            $policy.Id | Should -Be 'aaaaaaaa-0000-0000-0000-000000000004'
+        }
+
+        It 'Should add facts to the object with the same System, Type and Id, and add no object of its own' {
+            $inventory = Invoke-WithFactCollection {
+                param($Results)
+                Add-MtAffectedObjectFact -Type User -Id 'AAAAAAAA-0000-0000-0000-000000000001' -Source 'Test' -AsOf ([datetime]'2026-10-23T12:30:00Z') -Fact @(
+                    @{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk' }
+                    @{ Name = 'Account'; Value = 'Member' }
+                )
+                Add-MtAffectedObjectFact -Type User -Id 'bbbbbbbb-0000-0000-0000-000000000009' -Source 'Test' -Fact @{ Name = 'Account'; Value = 'Guest' }
+                Get-MtAffectedObject -MaesterResults $Results -ExcludeSessionCache
+            }
+
+            $user = $inventory | Where-Object Type -EQ 'User'
+            $user.Facts.Name | Should -Be @('MFA', 'Account')
+            $user.Facts[0].Tone | Should -Be 'Risk'
+            $user.Facts[1].Tone | Should -Be 'Info'
+            $user.Facts[0].Source | Should -Be 'Test'
+            $user.Facts[0].AsOf | Should -Be '2026-10-23T12:30:00Z'
+            $inventory.Id | Should -Not -Contain 'bbbbbbbb-0000-0000-0000-000000000009'
+            ($inventory | Where-Object Type -EQ 'ConfigurationPolicy').Facts | Should -BeNullOrEmpty
+        }
+
+        It 'Should take facts from the pipeline, replace a fact with the same name and source, and treat an unknown tone as Info' {
+            $inventory = Invoke-WithFactCollection {
+                param($Results)
+                @(
+                    [PSCustomObject]@{ System = 'Intune'; Type = 'ConfigurationPolicy'; Id = 'aaaaaaaa-0000-0000-0000-000000000004'; Fact = @(@{ Name = 'Assignments'; Value = 'Not assigned'; Tone = 'Warning' }) }
+                ) | Add-MtAffectedObjectFact -Source 'Test'
+                Add-MtAffectedObjectFact -System Intune -Type ConfigurationPolicy -Id 'aaaaaaaa-0000-0000-0000-000000000004' -Source 'Test' -Fact @{ Name = 'Assignments'; Value = '2'; Tone = 'Loud' } -WarningAction SilentlyContinue
+                Add-MtAffectedObjectFact -System Intune -Type ConfigurationPolicy -Id 'aaaaaaaa-0000-0000-0000-000000000004' -Source 'Other' -Fact @{ Name = 'Assignments'; Value = '3' }
+                Get-MtAffectedObject -MaesterResults $Results -ExcludeSessionCache
+            }
+
+            $facts = ($inventory | Where-Object Type -EQ 'ConfigurationPolicy').Facts
+            $facts.Count | Should -Be 2
+            $facts[0].Value | Should -Be '2'
+            $facts[0].Tone | Should -Be 'Info'
+            $facts[1].Source | Should -Be 'Other'
+        }
+
+        It 'Should keep no facts when the run does not collect affected objects' {
+            $kept = InModuleScope Maester {
+                $previous = $__MtSession.IncludeAffectedObjects
+                try {
+                    $__MtSession.IncludeAffectedObjects = $false
+                    $__MtSession.AffectedObjectFacts = $null
+                    Add-MtAffectedObjectFact -Type User -Id 'aaaaaaaa-0000-0000-0000-000000000001' -Source 'Test' -Fact @{ Name = 'Account'; Value = 'Member' }
+                    $__MtSession.AffectedObjectFacts
+                } finally {
+                    $__MtSession.IncludeAffectedObjects = $previous
+                }
+            }
+
+            $kept | Should -BeNullOrEmpty
+        }
+    }
+
     Context 'IncludeAffectedObjects gating' {
         BeforeAll {
             $script:pesterResults = InModuleScope Maester {
