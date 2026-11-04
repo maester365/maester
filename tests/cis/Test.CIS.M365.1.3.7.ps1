@@ -36,7 +36,7 @@
     param()
 
     Write-Verbose 'Getting settings...'
-    $ServicePrincipal = Invoke-MtGraphRequest -RelativeUri "servicePrincipals" -Filter "appId eq 'c1f33bc0-bdb4-4248-ba9b-096807ddb43e'" -DisableCache
+    $ServicePrincipal = Invoke-MtGraphRequest -RelativeUri "servicePrincipals" -Filter "appId eq 'c1f33bc0-bdb4-4248-ba9b-096807ddb43e'"
 
     Write-Verbose 'Executing checks'
     if ($ServicePrincipal) {

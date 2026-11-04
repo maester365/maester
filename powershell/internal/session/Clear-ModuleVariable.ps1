@@ -27,6 +27,7 @@ function Clear-ModuleVariable {
     $__MtSession.AzureDevOpsConnectionCache = $null
     # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.
     # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.
+    # GitHubRateLimits belongs to the connection and survives per-run cache resets.
     $__MtSession.GitHubCache = @{}
     $__MtSession.SpoCache = @{}
     $__MtSession.FabricCache = @{}

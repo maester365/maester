@@ -1,0 +1,311 @@
+<!doctype html>
+<!--
+  Explainer: how Maester works. A HyperFrames composition (https://hyperframes.heygen.com): install, connect,
+  Invoke-Maester with the Zero Trust Assessment pack, the console while it runs, and the report it writes.
+  Voice-over by Kokoro and an original music bed, mixed into audio/mix.mp3 (website/scripts/narration); chapter times come from timings.js,
+  which narrate.mjs writes. The report views are captures of the real report (scripts/capture-demo-report.mjs).
+  The console is drawn here in HTML after Maester's own dashboard (src/Maester.Engine/MtConsoleRenderer*.cs).
+  Watches: powershell/public/run/Invoke-Maester.ps1, powershell/public/connect/Connect-Maester.ps1,
+  src/Maester.Engine/MtConsoleRenderer.cs, report/src/
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="robots" content="noindex" />
+    <title>How Maester works (explainer)</title>
+    <link rel="stylesheet" href="../_shared/explainer.css" />
+    <script src="../_shared/gsap.min.js"></script>
+    <script src="../_shared/hyperframe.runtime.js"></script>
+    <script src="timings.js"></script>
+    <style>
+      .scene { position: absolute; inset: 0; opacity: 0; }
+      .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+
+      /* Intro and end card */
+      .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 34px; }
+      .flame { width: 120px; height: 140px; }
+      .big { font-size: 92px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.04; max-width: 1500px; }
+      .ember { color: #ff6b6f; }
+      .sub { font-size: 38px; color: #a1a1aa; }
+      .pill { font-family: "Geist Mono", monospace; font-size: 34px; background: #18181b; border: 2px solid #27272a; border-radius: 18px; padding: 22px 36px; color: #e4e4e7; }
+      .pill b { color: #ff8a8d; font-weight: 500; }
+      .chips { display: flex; gap: 20px; }
+      .chip { font-size: 30px; border: 2px solid #3f3f46; border-radius: 999px; padding: 12px 28px; color: #d4d4d8; }
+
+      /* Terminal */
+      .term { position: absolute; left: 160px; top: 110px; width: 1600px; height: 860px; border-radius: 26px; background: #0c0c0e; border: 2px solid #27272a; box-shadow: 0 60px 120px -40px rgba(0,0,0,.8); overflow: hidden; }
+      .term__bar { height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 26px; border-bottom: 2px solid #1f1f23; background: #111114; }
+      .term__bar i { width: 18px; height: 18px; border-radius: 99px; background: #3f3f46; display: block; }
+      .term__bar span { margin-left: 18px; font-family: "Geist Mono", monospace; font-size: 22px; color: #71717a; }
+      .term__body { padding: 40px 48px; font-family: "Geist Mono", monospace; font-size: 30px; line-height: 1.65; color: #e4e4e7; }
+      .line { opacity: 0; white-space: pre; }
+      .prompt { color: #71717a; }
+      .cmd { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 0; }
+      .k { color: #ff8a8d; } .g { color: #86efac; } .b { color: #93c5fd; } .m { color: #a1a1aa; } .y { color: #fcd34d; }
+      .bar { display: inline-block; width: 520px; height: 18px; border-radius: 9px; background: #27272a; vertical-align: middle; overflow: hidden; margin: 0 16px; }
+      .bar i { display: block; height: 100%; width: 0; background: #ff6b6f; border-radius: 9px; }
+
+      /* Console dashboard (after Maester's MtConsoleRenderer) */
+      .dash { position: absolute; inset: 64px 0 0 0; padding: 26px 34px; font-family: "Geist Mono", monospace; font-size: 22px; color: #d4d4d8; opacity: 0; }
+      .dash__head { display: flex; align-items: center; gap: 22px; margin-bottom: 20px; }
+      .word { font-weight: 500; letter-spacing: .14em; background: linear-gradient(90deg, #ff5f5f, #ffb347); -webkit-background-clip: text; color: transparent; font-size: 26px; }
+      .track { display: flex; gap: 10px; align-items: center; color: #71717a; }
+      .track b { font-weight: 500; }
+      .track .done { color: #86efac; } .track .now { color: #fafafa; }
+      .cols { display: grid; grid-template-columns: 1fr 470px; gap: 22px; }
+      .box { border: 2px solid #2b2b31; border-radius: 14px; padding: 16px 20px; margin-bottom: 18px; position: relative; }
+      .box > h4 { position: absolute; top: -15px; left: 16px; background: #0c0c0e; padding: 0 10px; font-weight: 500; font-size: 20px; margin: 0; }
+      .box--products { border-color: #3d6b3d; } .box--products > h4 { color: #86efac; }
+      .box--running { border-color: #2f6669; } .box--running > h4 { color: #5eead4; }
+      .lane { display: grid; grid-template-columns: 250px 1fr 120px; align-items: center; gap: 16px; height: 40px; }
+      .lane .track2 { height: 14px; border-radius: 7px; background: #1f1f23; overflow: hidden; display: flex; }
+      .lane .p { background: #22c55e; width: 0; } .lane .f { background: #ef4444; width: 0; } .lane .s { background: #52525b; width: 0; }
+      .lane span:last-child { text-align: right; color: #a1a1aa; }
+      .run { height: 36px; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
+      .run b { color: #5eead4; font-weight: 400; margin-right: 12px; }
+      .panel { border: 2px solid #2b2b31; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; position: relative; }
+      .panel > h4 { position: absolute; top: -14px; left: 14px; background: #0c0c0e; padding: 0 8px; font-weight: 500; font-size: 19px; color: #a1a1aa; margin: 0; }
+      .stack { height: 18px; border-radius: 9px; overflow: hidden; display: flex; background: #1f1f23; margin: 8px 0 10px; }
+      .stack i { display: block; width: 0; }
+      .num { position: relative; display: inline-block; min-width: 90px; height: 1.3em; vertical-align: bottom; }
+      .num em { position: absolute; left: 0; font-style: normal; opacity: 0; }
+      .dot { display: inline-block; width: 12px; height: 12px; border-radius: 9px; background: #22c55e; margin-right: 8px; }
+
+      /* Report window */
+      .win { position: absolute; left: 160px; top: 40px; width: 1600px; height: 1000px; border-radius: 26px; overflow: hidden; border: 2px solid #27272a; background: #09090b; box-shadow: 0 60px 120px -40px rgba(0,0,0,.85); }
+      .win img { position: absolute; left: 0; top: 0; width: 1600px; height: auto; opacity: 0; transform-origin: 50% 0; }
+      .call { position: absolute; font-size: 30px; font-weight: 600; background: #fafafa; color: #09090b; border-radius: 14px; padding: 14px 24px; box-shadow: 0 20px 40px -12px rgba(0,0,0,.6); opacity: 0; }
+      .call::before { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 99px; background: #d22c31; margin-right: 14px; vertical-align: middle; }
+      .caption { bottom: 36px; font-size: 34px; }
+
+      /* Maester Cloud */
+      .cloud { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 1480px; border-radius: 36px; padding: 80px 90px; background: radial-gradient(900px 500px at 90% 0%, rgba(210,44,49,.28), rgba(17,17,19,0) 60%), #111113; border: 2px solid #27272a; }
+      .cloud .eyebrow2 { font-family: "Geist Mono", monospace; font-size: 26px; letter-spacing: .12em; text-transform: uppercase; color: #a1a1aa; }
+      .cloud h2 { font-size: 72px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; margin: 22px 0 46px; }
+      .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+      .point { border: 2px solid #27272a; border-radius: 22px; padding: 30px 32px; background: #18181b; }
+      .point b { display: block; font-size: 34px; letter-spacing: -0.02em; margin-bottom: 10px; }
+      .point span { font-size: 26px; color: #a1a1aa; line-height: 1.4; }
+      .cloud__foot { margin-top: 48px; display: flex; align-items: center; gap: 30px; }
+      .cta { font-size: 34px; font-weight: 600; background: #fafafa; color: #09090b; border-radius: 16px; padding: 18px 34px; }
+      .cloud__foot .m { font-size: 28px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="how-it-works" data-start="0" data-duration="100" data-width="1920" data-height="1080">
+      <!-- Voice-over and music, mixed by scripts/narration/music.mjs -->
+      <audio id="mix" src="audio/mix.mp3" data-start="0" data-duration="100" data-track-index="2" data-volume="1"></audio>
+
+      <!-- Intro -->
+      <div class="scene" id="s-intro">
+        <div class="center">
+          <svg class="flame" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 1c1.4 4-1.2 6.4-2.6 8.3C7.6 11.6 6 13.6 6 16.6 6 21 8.7 25 12 25s6-3.1 6-7.4c0-2.3-.9-4-2.1-5.4.2 1.9-.7 3.4-2 3.8.7-4.2-.4-10.3-1.9-15z" fill="#ff5f5f"></path><path d="M12 25c-1.9 0-3.2-1.6-3.2-3.6 0-2 1.6-3.2 2.4-4.6.6 1.4 2 2 2 4 .6-.4 1-1.1 1.2-1.8.5.7.8 1.5.8 2.4 0 2-1.4 3.6-3.2 3.6z" fill="#ffb347"></path></svg>
+          <div class="big">Test your Microsoft 365 <span class="ember">security</span>,<br />every day, in one run.</div>
+          <div class="sub">Maester · open source · free</div>
+        </div>
+      </div>
+
+      <!-- Terminal: install, connect, invoke -->
+      <div class="scene" id="s-term">
+        <div class="term">
+          <div class="term__bar"><i></i><i></i><i></i><span>pwsh — Contoso (example)</span></div>
+          <div class="term__body">
+            <div class="line" id="l1"><span class="prompt">PS&gt; </span><span class="cmd" id="c1">Install-Module <span class="k">Maester</span></span></div>
+            <div class="line m" id="l2">Installing package 'Maester'<span class="bar"><i id="b1"></i></span>done</div>
+            <div class="line" id="l3"><span class="g">✓</span> Maester 3.0 installed. <span class="m">888 checks ship in the module.</span></div>
+            <div class="line" id="l4">&nbsp;</div>
+            <div class="line" id="l5"><span class="prompt">PS&gt; </span><span class="cmd" id="c2">Connect-Maester</span></div>
+            <div class="line m" id="l6">Signing in to Microsoft Graph with read-only permissions…</div>
+            <div class="line" id="l7"><span class="g">✓</span> Connected as <span class="b">admin@contoso.com</span> · Contoso</div>
+            <div class="line" id="l8"><span class="dot"></span>Graph  <span class="dot"></span>Exchange Online  <span class="dot"></span>Teams  <span class="dot"></span>Azure</div>
+            <div class="line" id="l9">&nbsp;</div>
+            <div class="line" id="l10"><span class="prompt">PS&gt; </span><span class="cmd" id="c3">Invoke-Maester <span class="y">-Pack</span> ZTA</span></div>
+            <div class="line m" id="l11">Selected 1,224 checks · CIS · CISA SCuBA · EIDSCA · ORCA · Maester · Zero Trust Assessment</div>
+          </div>
+          <!-- The dashboard takes over the terminal once the run starts -->
+          <div class="dash" id="dash">
+            <div class="dash__head">
+              <span class="word">MAESTER</span><span class="m">3.0.0</span>
+              <span class="track"><b class="done">Prepare ✓</b> ─── <b class="now" id="ph-run">Run tests ●</b> ─── <b id="ph-res">Results</b> ─── <b id="ph-rep">Reports</b></span>
+            </div>
+            <div class="cols">
+              <div>
+                <div class="box box--products">
+                  <h4>Products</h4>
+                  <div class="lane"><span>Entra ID</span><span class="track2"><i class="p" data-w="58"></i><i class="f" data-w="22"></i><i class="s" data-w="20"></i></span><span>309</span></div>
+                  <div class="lane"><span>Exchange Online</span><span class="track2"><i class="p" data-w="64"></i><i class="f" data-w="16"></i><i class="s" data-w="20"></i></span><span>118</span></div>
+                  <div class="lane"><span>Defender</span><span class="track2"><i class="p" data-w="70"></i><i class="f" data-w="14"></i><i class="s" data-w="16"></i></span><span>122</span></div>
+                  <div class="lane"><span>Intune</span><span class="track2"><i class="p" data-w="52"></i><i class="f" data-w="26"></i><i class="s" data-w="22"></i></span><span>58</span></div>
+                  <div class="lane"><span>Teams</span><span class="track2"><i class="p" data-w="76"></i><i class="f" data-w="12"></i><i class="s" data-w="12"></i></span><span>23</span></div>
+                  <div class="lane"><span>SharePoint</span><span class="track2"><i class="p" data-w="66"></i><i class="f" data-w="20"></i><i class="s" data-w="14"></i></span><span>20</span></div>
+                  <div class="lane"><span>Zero Trust</span><span class="track2"><i class="p" data-w="61"></i><i class="f" data-w="25"></i><i class="s" data-w="14"></i></span><span>336</span></div>
+                </div>
+                <div class="box box--running">
+                  <h4>Running</h4>
+                  <div class="run" id="r1"><b>CIS.M365.1.1.1</b>Ensure administrative accounts are cloud-only</div>
+                  <div class="run" id="r2"><b>CISA.MS.AAD.3.1</b>Phishing-resistant MFA shall be enforced for all users</div>
+                  <div class="run" id="r3"><b>ZTA.21770</b>Inactive applications don't have highly privileged Graph permissions</div>
+                  <div class="run" id="r4"><b>MT.1001</b>A Conditional Access policy requires device compliance</div>
+                </div>
+              </div>
+              <div>
+                <div class="panel"><h4>Tenant</h4>Contoso <span class="m" style="float:right">contoso.com</span><br /><span class="m">admin@contoso.com</span></div>
+                <div class="panel">
+                  <h4>Totals</h4>
+                  <div class="stack"><i id="tp" style="background:#22c55e"></i><i id="tf" style="background:#ef4444"></i><i id="ts" style="background:#52525b"></i></div>
+                  <span class="g">Passed</span> <span class="num"><em>0</em><em>148</em><em>402</em><em>612</em></span>
+                  <span class="k">Failed</span> <span class="num"><em>0</em><em>21</em><em>63</em><em>94</em></span>
+                </div>
+                <div class="panel"><h4>Connections</h4><span class="dot"></span>Graph &nbsp;<span class="dot"></span>Exchange &nbsp;<span class="dot"></span>Teams &nbsp;<span class="dot"></span>Azure</div>
+                <div class="panel"><h4>Failed</h4><span class="k">High</span> 41 &nbsp; <span class="y">Medium</span> 38 &nbsp; <span class="m">Low</span> 15</div>
+                <div class="panel"><h4>Tips</h4><span class="m">-DryRun lists what would run, and why the rest won't.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report -->
+      <div class="scene" id="s-report">
+        <div class="win">
+          <img id="i-overview" src="img/overview.webp" alt="" />
+          <img id="i-plan" src="img/plan.webp" alt="" />
+          <img id="i-test" src="img/test.webp" alt="" />
+          <img id="i-framework" src="img/framework.webp" alt="" />
+          <img id="i-attack" src="img/attack.webp" alt="" />
+          <img id="i-zta" src="img/zta.webp" alt="" />
+        </div>
+        <div class="call" id="k1" style="left: 900px; top: 780px">Fix these first</div>
+        <div class="call" id="k2" style="left: 230px; top: 420px">What an attacker could do</div>
+        <div class="call" id="k3" style="left: 230px; top: 560px">What Maester found, and how to fix it</div>
+        <div class="call" id="k4" style="left: 640px; top: 160px">CIS, CISA, Essential Eight, NIST</div>
+        <div class="call" id="k5" style="left: 640px; top: 160px">MITRE ATT&amp;CK</div>
+        <div class="call" id="k6" style="left: 640px; top: 160px">Microsoft's Zero Trust Assessment</div>
+      </div>
+
+      <!-- End card -->
+      <div class="scene" id="s-end">
+        <div class="center">
+          <div class="big" style="font-size: 80px">Run it every day.<br /><span class="ember">Know the moment something changes.</span></div>
+          <div class="chips"><span class="chip">GitHub Actions</span><span class="chip">Azure DevOps</span><span class="chip">Azure Automation</span><span class="chip">GitLab</span></div>
+          <div class="pill"><span class="m">PS&gt;</span> Install-Module <b>Maester</b></div>
+          <div class="sub">maester.dev</div>
+        </div>
+      </div>
+      <!-- Maester Cloud -->
+      <div class="scene" id="s-cloud">
+        <div class="cloud">
+          <div class="eyebrow2">Maester Cloud</div>
+          <h2>Or run it with Maester Cloud,<br /><span class="ember">in your own Azure subscription.</span></h2>
+          <div class="points">
+            <div class="point" id="p1"><b>Your subscription</b><span>Deployed into your own Azure, run securely by you.</span></div>
+            <div class="point" id="p2"><b>Your tenant</b><span>Your data never leaves it.</span></div>
+            <div class="point" id="p3"><b>Every run kept</b><span>History, drift and alerts across all your tenants.</span></div>
+          </div>
+          <div class="cloud__foot"><span class="cta">maester.cloud</span><span class="m">Get started free at maester.dev</span></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const C = window.__chapters;
+      const D = window.__duration;
+      const tl = gsap.timeline({ paused: true });
+      const show = (sel, at, d = 0.6) => tl.to(sel, { opacity: 1, duration: d }, at);
+      const hide = (sel, at, d = 0.5) => tl.to(sel, { opacity: 0, duration: d }, at);
+      const type = (sel, chars, at, d) => tl.to(sel, { width: `${chars}ch`, duration: d, ease: `steps(${chars})` }, at);
+
+      // Intro
+      show("#s-intro", 0, 0.4);
+      tl.from("#s-intro .big", { y: 40, duration: 1 }, 0);
+      hide("#s-intro", C.install.t - 0.6);
+
+      // Install
+      const ti = C.install.t;
+      show("#s-term", ti - 0.3);
+      show("#l1", ti); type("#c1", 22, ti + 0.3, 1.4);
+      show("#l2", ti + 2.2); tl.to("#b1", { width: "100%", duration: 2.2, ease: "power1.inOut" }, ti + 2.3);
+      show("#l3", ti + 4.8); show("#l4", ti + 5);
+
+      // Connect
+      const tc = C.connect.t;
+      show("#l5", tc); type("#c2", 15, tc + 0.3, 1.0);
+      show("#l6", tc + 1.8); show("#l7", tc + 3.6); show("#l8", tc + 4.6); show("#l9", tc + 5);
+
+      // Invoke
+      const tv = C.invoke.t;
+      show("#l10", tv); type("#c3", 23, tv + 0.3, 1.5);
+      show("#l11", tv + 2.6);
+
+      // Console dashboard
+      const td = C.invoke.t + 6;
+      hide(".term__body", td, 0.4);
+      show("#dash", td + 0.2);
+      const runEnd = C.report.t - 2.5;
+      document.querySelectorAll(".lane i").forEach((el, n) => {
+        tl.to(el, { width: `${el.dataset.w}%`, duration: runEnd - td - 2 - (n % 3), ease: "power1.inOut" }, td + 0.6 + (n % 7) * 0.15);
+      });
+      tl.to("#tp", { width: "48%", duration: runEnd - td - 1.5 }, td + 0.6);
+      tl.to("#tf", { width: "16%", duration: runEnd - td - 1.5 }, td + 0.6);
+      tl.to("#ts", { width: "24%", duration: runEnd - td - 1.5 }, td + 0.6);
+      const steps = [td + 0.3, td + 4, td + 8, runEnd - 0.5];
+      document.querySelectorAll(".num").forEach((num) => {
+        const ems = num.querySelectorAll("em");
+        ems.forEach((em, n) => {
+          tl.to(em, { opacity: 1, duration: 0.3 }, steps[n]);
+          if (n < ems.length - 1) tl.to(em, { opacity: 0, duration: 0.3 }, steps[n + 1]);
+        });
+      });
+      ["#r1", "#r2", "#r3", "#r4"].forEach((sel, n) => {
+        tl.fromTo(sel, { opacity: 0.25 }, { opacity: 1, duration: 0.4, repeat: 5, yoyo: true }, td + 0.8 + n * 0.6);
+      });
+      tl.to("#ph-run", { color: "#86efac", duration: 0.3 }, runEnd);
+      tl.to("#ph-res", { color: "#fafafa", duration: 0.3 }, runEnd + 0.4);
+      tl.to("#ph-rep", { color: "#fafafa", duration: 0.3 }, runEnd + 1);
+      hide("#s-term", C.report.t - 0.6);
+
+      // Report
+      const tr = C.report.t;
+      show("#s-report", tr - 0.4);
+      tl.from(".win", { y: 120, scale: 0.94, duration: 1.2, ease: "power2.out" }, tr - 0.4);
+      show("#i-overview", tr - 0.4, 0.1);
+      tl.to("#i-overview", { scale: 1.04, duration: 3.4, ease: "none" }, tr);
+      show("#i-plan", tr + 3.4, 0.6);
+      show("#k1", tr + 1.6); hide("#k1", C.detail.t - 0.5);
+
+      const tdt = C.detail.t;
+      show("#i-test", tdt, 0.6);
+      tl.set("#i-test", { transformOrigin: "100% 0%" }, tdt);
+      tl.to("#i-test", { scale: 1.32, duration: 5.5, ease: "power1.inOut" }, tdt + 0.4);
+      show("#k2", tdt + 1.2); show("#k3", tdt + 3.2);
+      hide(["#k2", "#k3"], C.frameworks.t - 0.4);
+
+      const tf = C.frameworks.t;
+      show("#i-framework", tf, 0.6); show("#k4", tf + 0.6); hide("#k4", tf + 3.6);
+      show("#i-attack", tf + 3.8, 0.6); show("#k5", tf + 4.2); hide("#k5", C.zta.t - 0.3);
+
+      const tz = C.zta.t;
+      show("#i-zta", tz, 0.6); show("#k6", tz + 0.5);
+      tl.to("#i-zta", { scale: 1.05, duration: 6, ease: "none" }, tz);
+      hide("#s-report", C.automate.t - 0.5);
+
+      // End card
+      const te = C.automate.t;
+      show("#s-end", te);
+      tl.from("#s-end .big", { y: 30, duration: 1 }, te);
+      tl.from("#s-end .pill", { opacity: 0, y: 20, duration: 0.8 }, te + 3);
+      hide("#s-end", C.cloud.t - 0.5);
+
+      // Maester Cloud
+      const tcl = C.cloud.t;
+      show("#s-cloud", tcl - 0.3);
+      tl.from(".cloud", { y: 60, duration: 1, ease: "power2.out" }, tcl - 0.3);
+      ["#p1", "#p2", "#p3"].forEach((sel, n) => tl.from(sel, { opacity: 0, y: 30, duration: 0.6 }, tcl + 1.5 + n * 1.6));
+      tl.from(".cloud__foot", { opacity: 0, duration: 0.6 }, tcl + 7);
+
+      tl.set({}, {}, D);
+      window.__timelines = window.__timelines || {};
+      window.__timelines["how-it-works"] = tl;
+    </script>
+  </body>
+</html>

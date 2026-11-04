@@ -4,6 +4,8 @@ Enabling Safe Links policy for Office applications allows URL's that exist insid
 
 >Note: E5 Licensing includes a number of Built-in Protection policies. When auditing policies note which policy you are viewing, and keep in mind CIS recommendations often extend the Default or Built-in Policies provided by MS. In order to Pass the highest priority policy must match all settings recommended.
 
+The check evaluates the policy associated with the priority-0 Safe Links rule. The rule must be enabled; matching policy settings do not pass if the rule is disabled.
+
 #### Rationale
 
 Safe Links for Office applications extends phishing protection to documents and emails that contain hyperlinks, even after they have been delivered to a user.

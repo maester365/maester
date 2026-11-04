@@ -1,7 +1,8 @@
 ---
 title: Your first custom test
-sidebar_position: 0
 description: A step-by-step start for IT admins who want Maester to check one of their own rules. No Maester internals needed.
+sidebar:
+  order: 0
 ---
 
 # Your first custom test
@@ -39,7 +40,7 @@ This writes two files into `custom`:
 use `MT`, `CIS`, `CISA`, `ASD`, `EIDSCA`, `ORCA`, `AD` or `AZDO`: those belong to the tests that ship with Maester.
 
 :::tip
-Prefer forms to typing? The [test builder](pathname:///test-builder) lets you pick everything from lists. Choose
+Prefer forms to typing? The [test builder](/test-builder) lets you pick everything from lists. Choose
 **My own custom test**, and copy the code it writes.
 :::
 
@@ -150,6 +151,6 @@ Your test now appears in the HTML report with the others.
 - **Skip the test in tenants without a licence**, add settings people can change, or produce one result per
   object: [Writing native tests](./index.mdx).
 - **Map the test to CIS, CISA or NIST**, or give it a product and area so it can be filtered:
-  the [test builder](pathname:///test-builder) explains each choice.
+  the [test builder](/test-builder) explains each choice.
 - **Already have tests written for Maester 2.x with Pester?** They still run. See
   [Pester-format tests](./pester-format-tests.md).

@@ -1,75 +1,56 @@
 {
-  "name": "maester",
-  "version": "0.1.0",
+  "name": "maester-website",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "docusaurus": "docusaurus",
-    "generate-test-docs": "node scripts/generate-test-docs.mjs",
-    "check-test-docs": "node scripts/generate-test-docs.mjs --check",
+    "export-catalog": "node scripts/export-catalog.mjs",
+    "refresh-data": "node scripts/prepare-data.mjs --refresh",
     "update-license-plans": "node scripts/update-license-service-plans.mjs",
     "blog-cards": "node scripts/blog-cards/generate-blog-cards.mjs",
-    "prebuild": "npm run generate-test-docs",
-    "prestart": "npm run generate-test-docs",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "predev": "node scripts/copy-explainer-assets.mjs && node scripts/prepare-data.mjs",
+    "dev": "astro dev",
+    "start": "npm run dev",
+    "prebuild": "node scripts/copy-explainer-assets.mjs && node scripts/prepare-data.mjs",
+    "build": "astro build && node scripts/og-images.mjs && node scripts/check-url-contract.mjs",
+    "preview": "astro preview",
+    "check-urls": "node scripts/check-url-contract.mjs",
+    "astro": "astro"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.10.2",
-    "@docusaurus/plugin-google-gtag": "^3.10.2",
-    "@docusaurus/plugin-google-tag-manager": "^3.10.2",
-    "@docusaurus/preset-classic": "^3.10.2",
-    "@docusaurus/theme-mermaid": "^3.10.2",
-    "@easyops-cn/docusaurus-search-local": "^0.55.3",
-    "@fortawesome/fontawesome-svg-core": "^7.3.1",
-    "@fortawesome/free-brands-svg-icons": "^7.3.1",
-    "@fortawesome/free-solid-svg-icons": "^7.3.1",
-    "@fortawesome/react-fontawesome": "^3.5.0",
-    "@iconify/react": "^6.0.3",
-    "@mdx-js/react": "^3.1.1",
-    "@mermaid-js/layout-elk": "^0.1.9",
+    "@astrojs/markdown-remark": "7.3.5",
+    "@astrojs/react": "^7.1.2",
+    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/starlight": "0.42.8",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/geist-mono": "^5.3.0",
+    "@hyperframes/core": "^0.8.231",
+    "@hyperframes/player": "^0.8.231",
+    "@iconify-json/devicon": "^1.2.0",
+    "@iconify-json/gravity-ui": "^1.2.0",
+    "@iconify-json/material-symbols": "^1.2.0",
+    "@iconify-json/mdi": "^1.2.0",
+    "@iconify-json/vscode-icons": "^1.2.0",
+    "@iconify/utils": "^3.1.7",
+    "astro": "7.4.4",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "posthog-docusaurus": "^2.0.5",
-    "prism-react-renderer": "^2.1.0",
+    "gsap": "^3.15.0",
+    "js-yaml": "^4.3.2",
+    "mermaid": "^12.2.0",
     "radix-ui": "^1.8.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5",
+    "starlight-llms-txt": "0.12.0",
+    "starlight-sidebar-topics": "0.9.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.10.1",
-    "@docusaurus/types": "^3.10.1",
-    "js-yaml": "^5.5.0",
-    "playwright": "^1.63.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 3 chrome version",
-      "last 3 firefox version",
-      "last 5 safari version"
-    ]
+    "@fontsource/inter": "^5.3.0",
+    "playwright": "^1.63.0",
+    "satori": "^0.63.2"
   },
   "engines": {
-    "node": ">=24"
-  },
-  "//overrides": "Workaround: cacheable-request@10.2.14 has a broken npm publish — dist/types.js is missing but dist/index.js imports it, causing ERR_MODULE_NOT_FOUND on Node.js v24. Pinned to 10.2.13 until the upstream package is fixed. See: https://github.com/jaredwray/cacheable/issues",
-  "overrides": {
-    "cacheable-request": "10.2.13",
-    "serialize-javascript": "7.0.5",
-    "uuid": "14.0.0",
-    "postcss-selector-parser": "7.1.6",
-    "qs": "6.16.0",
-    "tinypool": "2.1.2",
-    "katex": "0.18.2"
+    "node": ">=22.22"
   }
 }

@@ -4,13 +4,13 @@
         Checks that a Conditional Access policy requires a managed device to register security information.
 
     .DESCRIPTION
-        Checks that at least one enabled Conditional Access policy applies to all users for the register security information user action and requires a compliant device (a hybrid joined device may be allowed as an alternative), using the OR operator.
+        Checks that at least one enabled Conditional Access policy applies to all users for the register security information user action and requires a compliant device. A hybrid joined device may optionally be allowed as an alternative with the OR operator.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.2.10, L1)
 
     .EXAMPLE
         Test-MtCisManagedDeviceForSecurityInfo
 
-        Returns true if an enabled policy requires a managed device to register security information.
+        Returns true if an enabled policy requires a compliant device to register security information, optionally allowing a hybrid joined device.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.5.2.2.10
@@ -57,8 +57,8 @@
         [pscustomobject]@{ Name = $policy.displayName; State = $policy.state; Failed = $failedText; Pass = $failed.Count -eq 0 }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -gt 0
-    $passText = 'An enabled Conditional Access policy requires a managed device to register security information.'
-    $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that targets user actions was found.' } else { 'No enabled Conditional Access policy requires a managed device to register security information.' }
+    $passText = 'An enabled Conditional Access policy requires a compliant device to register security information, optionally allowing a hybrid joined device.'
+    $failText = if ($candidates.Count -eq 0) { 'No Conditional Access policy that targets user actions was found.' } else { 'No enabled Conditional Access policy requires a compliant device to register security information.' }
 
     $resultMd = "| Policy | State | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"

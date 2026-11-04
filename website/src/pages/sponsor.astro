@@ -1,0 +1,68 @@
+---
+// Sponsor: organisations first, then the people who build Maester (their GitHub Sponsors listings, refreshed
+// on each deploy by scripts/sponsors.mjs into src/data/sponsors.json).
+import SiteLayout from '../layouts/SiteLayout.astro';
+import SponsorPage from '../react/SponsorPage.jsx';
+---
+
+<SiteLayout
+	title="Sponsor"
+	description="Maester is free and open source. Sponsor the project as an organisation, or sponsor the people who build it."
+	wide
+>
+	<section class="org">
+		<div>
+			<p class="eyebrow">For organisations</p>
+			<h2>Keep Maester free for everyone</h2>
+			<p>
+				Sponsorship pays for maintainer time, the test tenants every check is proven against, and the Microsoft licences
+				those tenants need. Organisation sponsors are thanked with their logo on this page, on the home page and in the
+				README. Sponsorship never changes what a check reports: every check is reviewed against the same public rubric.
+			</p>
+		</div>
+		<div class="org__actions">
+			<a class="site-btn site-btn--primary" href="https://github.com/sponsors/maester365">Sponsor on GitHub</a>
+			<a class="site-btn site-btn--ghost" href="https://discord.maester.dev">Ask about invoicing on Discord</a>
+		</div>
+	</section>
+	<SponsorPage />
+</SiteLayout>
+
+<style>
+	.org {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem;
+		align-items: flex-end;
+		justify-content: space-between;
+		border: 1px solid var(--mt-line);
+		border-radius: 20px;
+		background: var(--mt-canvas);
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		margin-bottom: 1rem;
+	}
+	.org > div:first-child {
+		max-width: 44rem;
+	}
+	.org h2 {
+		font-size: 1.75rem;
+		letter-spacing: -0.02em;
+		margin: 0.25rem 0 0.5rem;
+	}
+	.org p {
+		color: var(--sl-color-gray-2);
+		margin: 0;
+	}
+	.eyebrow {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem !important;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3) !important;
+	}
+	.org__actions {
+		display: flex;
+		gap: 0.6rem;
+		flex-wrap: wrap;
+	}
+</style>

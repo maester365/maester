@@ -1,4 +1,4 @@
-import { DocumentChartBarIcon } from "@heroicons/react/24/outline"
+import { FileChartColumn } from "lucide-react"
 import { Button } from "@/components/ui/report"
 import { useNavigate } from "@/lib/router"
 import { getAttachmentPath, type ReportAttachment } from "@/lib/reportAttachments"
@@ -13,7 +13,7 @@ export default function ReportAttachmentButtons({ attachments, className }: { at
         <Button
           key={attachment.Id}
           variant="secondary"
-          icon={DocumentChartBarIcon}
+          icon={FileChartColumn}
           tooltip={`Show ${attachment.Name}`}
           onClick={() => navigate(getAttachmentPath(attachment))}
         >

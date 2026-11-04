@@ -1,0 +1,397 @@
+---
+// The Maester Manifesto, laid out like the one on maester.cloud (website/src/app/pages/manifesto.astro in the
+// maester-cloud repository): a hero, the text with its key lines pulled out as highlights, and a closing card.
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout
+	title="The Maester Manifesto"
+	description="Why Maester exists, why its core will remain open source, and how the community can make security testing available to everyone."
+>
+	<section class="hero">
+		<div class="wrap">
+			<span class="kicker">The Maester Manifesto</span>
+			<h1>Make security testing open, reusable, and available to everyone.</h1>
+			<p class="lede">Maester exists to turn security guidance into tests that anyone can run, understand, and improve.</p>
+		</div>
+	</section>
+
+	<article class="body">
+		<div class="wrap">
+			<div class="prose">
+				<p>Maester exists to make cloud security testing open, reusable, and available to everyone.</p>
+				<p>
+					The core idea is simple: security guidance should not only be written down. It should be executable. If a setting
+					matters, if a risky default is buried ten pages deep in a portal, or if a standard says something should be
+					configured a certain way, people should be able to run a test, see the result, understand the rationale, and
+					improve.
+				</p>
+				<p>
+					This should not require a large budget, a specialist team, or access to expensive tooling. Individual admins, small
+					security teams, nonprofits, schools, startups, and organizations in developing nations deserve useful security
+					checks, too.
+				</p>
+			</div>
+
+			<aside class="why">
+				<span class="label">Why it matters</span>
+				<div class="why__text">
+					<p>
+						That part is personal to me. I grew up in Sri Lanka. I know what it means when useful technology exists, but is
+						priced out of reach for the people and organizations that could benefit from it most.
+					</p>
+					<p class="strong">
+						Security should not become another place where the gap between well-funded organizations and everyone else gets
+						wider.
+					</p>
+					<p class="close">Maester exists to help close that gap.</p>
+				</div>
+			</aside>
+
+			<section class="part">
+				<span class="kicker">Open Source Core</span>
+				<h2>Maester is open source and will remain open source.</h2>
+				<div class="free">
+					<span class="label label--ember">Free, and staying free</span>
+					<div class="free__lines">
+						<p>The core framework will remain <span class="ember">free</span>.</p>
+						<p>The included core tests will remain <span class="ember">free</span>.</p>
+						<p>Running Maester locally in your own environment will remain <span class="ember">free</span>.</p>
+					</div>
+				</div>
+				<div class="prose">
+					<p>
+						Anyone should be able to take Maester, install it, inspect it, adapt it, run it, and use it in their own
+						workflows. That includes individual admins, internal security teams, consultants, MSPs, vendors, auditors,
+						educators, and community contributors.
+					</p>
+					<p>
+						An objective of the Maester project is to minimize duplication of effort, provide a reference model across
+						environments, and allow for that to be reused within the authority provided by the MIT license.
+					</p>
+				</div>
+			</section>
+
+			<section class="part">
+				<span class="kicker">A Community Project</span>
+				<h2>Community-driven, not a company-owned control point.</h2>
+				<div class="prose">
+					<p>
+						Commercial organizations should be able to build services around Maester without needing permission from one
+						vendor. The healthiest version of Maester is one where many people and organizations contribute to the open core,
+						build on it, and help improve it.
+					</p>
+					<p>
+						Jozra is Merill's company, and it will be one of the commercial participants building around Maester. I (Merill)
+						will continue investing heavily in the open project while also building hosted services that make Maester easier
+						to run and use, providing paid support, and offering commercial licensing for organizations that cannot use open
+						source software. The open framework itself should stand on its own as a community asset.
+					</p>
+				</div>
+			</section>
+
+			<section class="cards">
+				<div class="card">
+					<h3>For individuals and small teams</h3>
+					<p>Maester should be something you can use without asking for budget.</p>
+				</div>
+				<div class="card">
+					<h3>For organizations building on Maester</h3>
+					<p>Help fund the initiative through sponsorship, contribution, or commercial support.</p>
+				</div>
+			</section>
+
+			<section class="supporters">
+				<span class="label label--ember">Supporters</span>
+				<h2>Help us build it, in the open.</h2>
+				<p>
+					Maester is built by volunteers and by the people and organizations who sponsor them. Sponsorship pays for maintainer
+					time and the test tenants every check is proven against, and keeps the core framework and tests open, current, and
+					free for everyone: the admins, nonprofits, schools, and small teams who could never buy this otherwise.
+				</p>
+				<p>
+					Using Maester at work? Ask your organization to <b>sponsor</b> the project, or run it with{' '}
+					<b>Maester Cloud</b>: every subscription helps fund the open core.
+				</p>
+				<div class="actions">
+					<a href="/sponsor" class="btn btn--primary">Sponsor Maester</a>
+					<a href="https://maester.cloud" class="btn btn--ghost">Maester Cloud ↗</a>
+				</div>
+			</section>
+
+			<section class="mission">
+				<span class="label label--soft">The mission is simple</span>
+				<p>Make security testing open, reusable, and available to everyone.</p>
+				<div class="actions">
+					<a href="/sponsor" class="btn btn--ghost">Support the mission</a>
+				</div>
+			</section>
+		</div>
+	</article>
+</SiteLayout>
+
+<style>
+	.wrap {
+		width: 100%;
+		max-width: 56rem;
+		margin-inline: auto;
+		padding-inline: 1.5rem;
+	}
+	.kicker,
+	.label {
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.label {
+		font-size: 0.75rem;
+		color: var(--sl-color-white);
+	}
+	/* maester.cloud's red: #d22c31 in light, the lighter ember in dark. */
+	.label--ember,
+	.ember {
+		color: var(--mt-ember);
+	}
+
+	/* Hero */
+	.hero {
+		border-bottom: 1px solid var(--mt-line);
+		background: var(--sl-color-black);
+		padding-block: 4rem;
+	}
+	h1 {
+		margin: 1rem 0 0;
+		max-width: 48rem;
+		font-size: clamp(2.25rem, 6vw, 3.75rem);
+		font-weight: 700;
+		line-height: 1.1;
+		letter-spacing: -0.025em;
+		text-wrap: balance;
+	}
+	.lede {
+		margin: 1.5rem 0 0;
+		max-width: 42rem;
+		font-size: 1.125rem;
+		line-height: 1.65;
+		color: var(--sl-color-gray-2);
+	}
+
+	/* Body */
+	.body {
+		background: var(--mt-canvas);
+		padding-block: 4rem;
+	}
+	.prose {
+		max-width: 48rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		font-size: 1.02rem;
+		line-height: 2;
+		color: var(--sl-color-gray-2);
+	}
+	.prose p,
+	.why__text p,
+	.free__lines p,
+	.supporters p,
+	.mission p,
+	.card p {
+		margin: 0;
+	}
+
+	/* Why it matters */
+	.why {
+		margin-block: 3rem;
+		max-width: 48rem;
+		border-radius: 1.5rem;
+		border: 1px solid color-mix(in srgb, var(--sl-color-white) 20%, transparent);
+		background: color-mix(in srgb, var(--sl-color-gray-6) 45%, transparent);
+		padding: clamp(1.75rem, 4vw, 2.5rem);
+	}
+	.why__text {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		font-size: 1.125rem;
+		line-height: 2;
+		color: var(--sl-color-white);
+	}
+	.why__text .strong {
+		font-weight: 600;
+	}
+	.why__text .close {
+		font-size: 1.25rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+
+	/* Sections */
+	.part {
+		max-width: 48rem;
+		border-top: 1px solid var(--mt-line);
+		padding-top: 3rem;
+		margin-top: 3.5rem;
+	}
+	.part:first-of-type {
+		margin-top: 0;
+	}
+	h2 {
+		margin: 0.75rem 0 0;
+		font-size: 1.875rem;
+		font-weight: 700;
+		letter-spacing: -0.025em;
+		line-height: 1.2;
+	}
+	.part .prose {
+		margin-top: 1.5rem;
+	}
+
+	/* Free, and staying free */
+	.free {
+		margin-top: 1.5rem;
+		border-radius: 1.5rem;
+		border: 1px solid rgba(210, 44, 49, 0.2);
+		background: rgba(210, 44, 49, 0.04);
+		padding: clamp(1.75rem, 4vw, 2.25rem);
+	}
+	.free__lines {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.625rem;
+		font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+		font-weight: 700;
+		line-height: 1.35;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+	}
+
+	/* Two cards */
+	.cards {
+		margin-top: 3.5rem;
+		max-width: 48rem;
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	}
+	.card {
+		border-radius: 1rem;
+		border: 1px solid var(--mt-line);
+		background: var(--sl-color-black);
+		padding: 1.5rem;
+	}
+	.card h3 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+	.card p {
+		margin-top: 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.5rem;
+		color: var(--sl-color-gray-2);
+	}
+
+	/* Supporters */
+	.supporters {
+		margin-top: 3.5rem;
+		max-width: 48rem;
+		border-radius: 1.5rem;
+		border: 1px solid rgba(210, 44, 49, 0.2);
+		background: rgba(210, 44, 49, 0.04);
+		padding: clamp(1.75rem, 4vw, 2.5rem);
+	}
+	.supporters h2 {
+		font-size: clamp(1.5rem, 3vw, 1.875rem);
+	}
+	.supporters p {
+		margin-top: 1rem;
+		font-size: 1.02rem;
+		line-height: 2;
+		color: var(--sl-color-gray-2);
+	}
+	.supporters p + p {
+		margin-top: 0.75rem;
+	}
+	.supporters b {
+		color: var(--sl-color-white);
+	}
+
+	/* Mission */
+	.mission {
+		margin-top: 2rem;
+		max-width: 48rem;
+		border-radius: 1.5rem;
+		background: #18181b;
+		border: 1px solid #27272a;
+		color: #fff;
+		padding: clamp(2.5rem, 5vw, 3rem) clamp(1.75rem, 4vw, 2.5rem);
+	}
+	.label--soft {
+		color: rgba(244, 244, 245, 0.8);
+	}
+	.mission p {
+		margin-top: 1rem;
+		font-size: clamp(1.5rem, 4vw, 2.25rem);
+		font-weight: 700;
+		line-height: 1.2;
+		letter-spacing: -0.025em;
+	}
+
+	/* Buttons */
+	.actions {
+		margin-top: 1.5rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+	.mission .actions {
+		margin-top: 1.75rem;
+	}
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-height: 2.5rem;
+		padding: 0.7rem 1.05rem;
+		border-radius: 0.625rem;
+		border: 1px solid transparent;
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.15;
+		text-decoration: none;
+		transition: background-color 0.15s, border-color 0.15s;
+	}
+	.btn--primary {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+	}
+	.btn--primary:hover {
+		opacity: 0.9;
+	}
+	.btn--ghost {
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+		border-color: var(--mt-line);
+	}
+	.btn--ghost:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mission .btn--ghost {
+		background: #fff;
+		color: #18181b;
+		border-color: #fff;
+	}
+
+	@media (min-width: 40rem) {
+		.hero,
+		.body {
+			padding-block: 6rem;
+		}
+	}
+</style>

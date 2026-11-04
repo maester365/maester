@@ -1,5 +1,5 @@
 ---
-title: "Introducing Maester 2.0 🚀"
+title: "Introducing Maester 2.0"
 description: A major release with 400+ commits, 15+ new security tests, XSPM integration, enhanced reports, and more.
 slug: maester-2-0
 authors: [maesterteam]
@@ -7,7 +7,6 @@ tags: [maester, release, security, entra, m365]
 image: ./img/card.png
 card_headline: "Maester *2.0*"
 card_label: Release
-hide_table_of_contents: false
 date: 2026-02-11
 ---
 
@@ -15,7 +14,7 @@ date: 2026-02-11
 
 We're excited to announce **Maester 2.0** - our biggest release yet! With over 400 commits since version 1.3.0, this release brings powerful new capabilities for Microsoft 365 security testing.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ---
 

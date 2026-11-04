@@ -1,3 +1,8 @@
+---
+# A partial that guides import; also served as a page (noindex) for links to it.
+title: Microsoft Graph permissions Maester uses
+---
+
 - **AccessReview.Read.All**
 - **AuditLog.Read.All**
 - **DeviceManagementApps.Read.All**
@@ -26,9 +31,10 @@
 - **ThreatHunting.Read.All**
 - **UserAuthenticationMethod.Read.All**
 
-To run preview Agent ID tests, also grant these application permissions:
+To run preview tests, also grant these application permissions:
 
 - **AgentIdentity.Read.All**
 - **AgentIdentityBlueprint.Read.All**
 - **AgentIdentityBlueprintPrincipal.Read.All**
 - **Application.Read.All**
+- **IdentityRiskyUser.Read.All**
