@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_011Hx5RcWqXkHCZXWkzuLfDe",
+  "agent_id": "ad2f91bbbebf09958",
+  "subagent_type": "general-purpose",
+  "task_description": "Survey Microsoft 365 planning guides",
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 337464,
+    "cache_read_tokens": 1149820,
+    "output_tokens": 29858,
+    "api_call_count": 11
+  },
+  "started_at": "2026-11-05T07:56:33.346108+11:00",
+  "completed_at": "2026-11-05T08:10:34.399676+11:00"
+}

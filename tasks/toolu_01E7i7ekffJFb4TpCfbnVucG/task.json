@@ -1,0 +1,29 @@
+{
+  "tool_use_id": "toolu_01E7i7ekffJFb4TpCfbnVucG",
+  "agent_id": "a1ad1825b8f4f257b",
+  "subagent_type": "general-purpose",
+  "task_description": "Research Exposure Mgmt, ZTA, SCuBA, ASD, CIS",
+  "files": [
+    ".gitignore",
+    "build/docs/Export-MtTestCatalogForDocs.ps1",
+    "website/scripts/catalog-explorer.mjs",
+    "website/scripts/generate-test-docs.mjs",
+    "website/src/components/catalog/AttackView.astro",
+    "website/src/components/catalog/CatalogList.astro",
+    "website/src/components/catalog/CatalogNav.astro",
+    "website/src/components/catalog/CatalogOverview.astro",
+    "website/src/components/catalog/FrameworkView.astro",
+    "website/src/components/catalog/data.ts",
+    "website/src/components/catalog/state.ts",
+    "website/src/components/overrides/Sidebar.astro"
+  ],
+  "token_usage": {
+    "input_tokens": 86,
+    "cache_creation_tokens": 164098,
+    "cache_read_tokens": 5667245,
+    "output_tokens": 27120,
+    "api_call_count": 43
+  },
+  "started_at": "2026-11-05T08:05:53.882983+11:00",
+  "completed_at": "2026-11-05T08:05:53.883252+11:00"
+}
