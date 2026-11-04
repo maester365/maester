@@ -1,0 +1,89 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6M5E509EQS29J4JVAH30EE4",
+  "session_id": "9bc9d96b-2b79-4851-80f9-ab9184d1fb1a",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-04T20:54:05.799846Z",
+  "branch": "fix/website-test-pages",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "report/src/lib/featureIcons.ts",
+    "report/src/styles/report.css",
+    "website/public/report-icons/v1/products/README.md",
+    "website/scripts/generate-test-docs.mjs",
+    "website/src/components/TestCatalog.astro",
+    "website/src/components/overrides/PageTitle.astro",
+    "website/src/lib/report-icons.mjs",
+    "website/src/styles/theme.css"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "cd871d87c860",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 158,
+    "cache_creation_tokens": 368230,
+    "cache_read_tokens": 20366758,
+    "output_tokens": 150412,
+    "api_call_count": 75,
+    "subagent_tokens": {
+      "input_tokens": 182,
+      "cache_creation_tokens": 403306,
+      "cache_read_tokens": 15321644,
+      "output_tokens": 52693,
+      "api_call_count": 91
+    }
+  },
+  "redaction": {
+    "replacements": 496,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 492,
+      "key_context": 4,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01EJnKMTjfXth99vRYQSH4kr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "typesafe:typesafe-ai"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "cd871d87c860",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 140,
+        "end": 141,
+        "entry_ids": [
+          "516c2896-5a14-44db-a70b-6a7fe1216c0f"
+        ],
+        "tool_use_id": "toolu_01EJnKMTjfXth99vRYQSH4kr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01EJnKMTjfXth99vRYQSH4kr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: typesafe:typesafe-ai",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 5
+  }
+}
