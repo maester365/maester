@@ -177,6 +177,9 @@
       ],
       "Control": [
         "nist-800-53-r5:SC-8"
+      ],
+      "Step": [
+        "defender.dkim"
       ]
     },
     "ORCA.108.1": {
@@ -198,6 +201,9 @@
       ],
       "Control": [
         "nist-800-53-r5:SC-8"
+      ],
+      "Step": [
+        "defender.dkim"
       ]
     },
     "ORCA.109": {
@@ -1164,6 +1170,9 @@
       ],
       "Control": [
         "nist-800-53-r5:SI-8"
+      ],
+      "Step": [
+        "defender.spf-hard-fail"
       ]
     },
     "ORCA.236": {

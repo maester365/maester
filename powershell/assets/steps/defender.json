@@ -1,0 +1,169 @@
+{
+  "$schema": "./steps.schema.json",
+  "Product": "defender",
+  "Steps": [
+    {
+      "Id": "defender.endpoint-onboarding",
+      "Title": "Eligible devices are onboarded to Defender for Endpoint",
+      "Summary": "Every device that Defender for Endpoint can protect reports to it through a working sensor, so the device has a risk level.",
+      "RecommendedFirst": ["intune.defender-connector"],
+      "Rollout": [
+        "Assign an Intune EDR onboarding policy to a test device group, and check that the devices appear in the Defender portal's device inventory.",
+        "Then assign it to all Windows devices.",
+        "Deploy the Defender app to macOS, Android and iOS/iPadOS devices, which have no automatic onboarding package."
+      ],
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.41045) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-endpoint/onboarding-endpoint-manager",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Onboarding Windows devices through Intune lists the Intune connection as a prerequisite.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/microsoft-defender/configure-integration",
+          "Mirror": "intune-docs-mirror",
+          "Note": "With the connection, Intune gets Defender's onboarding package for its EDR policy. Without it, you paste an onboarding package into the policy yourself.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.spf",
+      "Title": "Publish an SPF record for every domain that sends mail",
+      "Summary": "Receiving servers can check that mail from your domains comes from Microsoft 365 or another sender you list.",
+      "Rollout": [
+        "List every system that sends as the domain: Microsoft 365, on-premises servers and third-party services.",
+        "Publish one SPF TXT record per sending domain and subdomain, and keep it under ten DNS lookups.",
+        "Give domains that never send mail the record v=spf1 -all."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-spf-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Each custom domain and sending subdomain needs one SPF TXT record naming Microsoft 365 and any other senders. onmicrosoft.com is covered already.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.spf-hard-fail",
+      "Title": "End every SPF record with -all",
+      "Summary": "Receivers are told to reject mail from servers that the SPF record doesn't list, so DMARC can act on spoofed mail with no signature.",
+      "RecommendedFirst": ["defender.spf", "defender.dmarc-published"],
+      "Rollout": [
+        "Keep ~all until the DMARC aggregate reports show no legitimate source failing SPF.",
+        "Change the qualifier to -all one domain at a time, keeping one SPF record per domain."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-about",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Start with the senders you know and ~all, add the others as you find them, then move to -all, so mail from a sender you missed isn't bounced.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-spf-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "DMARC reports show which servers send as the domain, so publish a DMARC record early and read its reports before -all rejects a source nobody listed.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.dkim",
+      "Title": "Sign outbound mail with DKIM for every custom domain",
+      "Summary": "Mail from your custom domains carries a DKIM signature that matches the From domain and survives forwarding.",
+      "Rollout": [
+        "Read the two CNAME values for the domain from the Defender portal or Get-DkimSigningConfig.",
+        "Create both selector CNAME records at the DNS host and wait until Microsoft 365 detects them.",
+        "Turn on DKIM signing for the domain and confirm that its status shows it is signing."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-dkim-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Custom domains aren't signed until both selector CNAME records exist and signing is on. onmicrosoft.com is signed already, and parked domains need no DKIM.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.dmarc-published",
+      "Title": "Publish a DMARC record for every domain",
+      "Summary": "Every domain, onmicrosoft.com included, has a DMARC record, so receivers check alignment and report who sends mail as you.",
+      "RecommendedFirst": ["defender.spf", "defender.dkim"],
+      "Rollout": [
+        "Publish v=DMARC1; p=none with a rua address that a dedicated mailbox or a reporting service reads.",
+        "Add the record for the onmicrosoft.com domain in the Microsoft 365 admin center.",
+        "Read the aggregate reports regularly to find senders that fail SPF or DKIM."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Set up SPF and DKIM before DMARC, which passes only on aligned SPF or DKIM. A p=none record changes no delivery and starts the reports.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "The onmicrosoft.com domain needs a DMARC record of its own, added in the Microsoft 365 admin center.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.dmarc-enforce",
+      "Title": "Enforce DMARC with reporting on every domain",
+      "Summary": "Receivers quarantine or reject mail that fails DMARC for any of your domains, and send you aggregate and failure reports.",
+      "Requires": ["defender.spf", "defender.dkim"],
+      "RecommendedFirst": ["defender.dmarc-published", "defender.spf-hard-fail"],
+      "Rollout": [
+        "Start with a low-volume domain or subdomain, and leave the parent domain for last.",
+        "Move from p=none to p=quarantine, and raise pct in steps from 10 to 100 while you watch the reports.",
+        "Keep the rua and ruf addresses in the record so that failures go on being reported."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "An enforcing policy acts on mail that fails both aligned SPF and DKIM. Set both up on every sending domain first, and run p=none with reports before you enforce.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/mdo-deployment-guide",
+          "Mirror": "defender-docs-mirror",
+          "Note": "The deployment guide sets up SPF, DKIM and DMARC in that order, and expects quarantine or reject with report addresses on each custom domain.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-spf-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "With ~all, DMARC in effect ignores SPF failures on mail that has no DKIM signature. Ending SPF in -all lets the policy act on that mail.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "defender.dmarc-reject",
+      "Title": "Reject mail that fails DMARC on every domain",
+      "Summary": "Receivers reject mail that claims to come from your domains but fails DMARC, parked domains and onmicrosoft.com included.",
+      "Requires": ["defender.spf", "defender.dkim"],
+      "RecommendedFirst": ["defender.dmarc-enforce"],
+      "Rollout": [
+        "After a period at p=quarantine, move each domain to p=reject, raising pct in steps if needed.",
+        "Do the subdomains in order of volume, then the parent domain.",
+        "Set parked domains and an unused onmicrosoft.com domain to p=reject straight away."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/defender-office-365/email-authentication-dmarc-configure",
+          "Mirror": "defender-docs-mirror",
+          "Note": "The target is p=reject on every domain, reached after a period at quarantine. Parked domains and an onmicrosoft.com domain that sends nothing can go straight there.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    }
+  ]
+}

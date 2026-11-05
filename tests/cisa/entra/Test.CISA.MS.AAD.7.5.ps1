@@ -26,6 +26,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1098.003',
         Control = 'cisa-scuba:MS.AAD.7.5',
+        Step = 'entra.pim-eligible-roles',
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',

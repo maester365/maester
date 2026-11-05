@@ -18,6 +18,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1098.003',
         Control = ('nist-800-53-r5:AC-2(7)', 'nist-800-53-r5:AC-6(5)'),
+        Step = 'entra.pim-eligible-roles',
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'Cloud-Architekt',

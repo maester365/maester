@@ -28,6 +28,7 @@
         ImplementationCost = 'Medium',
         Mitre = ('T1078.004', 'T1111'),
         Control = ('cis-m365:5.2.2.5', 'nist-800-53-r5:IA-2(1)', 'nist-800-53-r5:IA-2(8)'),
+        Step = 'entra.phishing-resistant-admins',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'JeremyFinney-lgtm'

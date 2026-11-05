@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1550.004',
         Control = ('cis-m365:5.2.2.16', 'nist-800-53-r5:SC-23'),
+        Step = 'entra.ca-token-protection-windows',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'JeremyFinney-lgtm'

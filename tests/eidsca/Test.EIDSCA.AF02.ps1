@@ -22,6 +22,7 @@ function Test-MtCheckEidscaAF02 {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1566.002',
+        Step = 'entra.passkeys-enabled',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

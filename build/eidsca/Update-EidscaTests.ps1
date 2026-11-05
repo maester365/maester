@@ -15,7 +15,7 @@
   files exactly. CI reruns it and fails on drift (powershell/tests/general/EidscaGenerator.Tests.ps1).
   Severity comes from the EIDSCA config, which is the source of truth for it. The Maester classification attributes
   that the EIDSCA config does not carry (RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost,
-  Mitre and Control) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design
+  Mitre, Control and Step) come from eidsca-test-metadata.json and Author/Contributor from the authorship seed (design
   section 11), so regeneration keeps them. Edit the metadata file, never the generated tests. A check without a
   metadata row is generated with a warning and fails the attribute unit tests until the row is added.
 
@@ -51,7 +51,7 @@ param (
     [string] $PageTitleCachePath = "$PSScriptRoot/PageTitles.json",
 
     # Maester classification of each check that the EIDSCA config does not carry: TestSettings rows with Id and the
-    # RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre and Control. Read only.
+    # RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control and Step. Read only.
     [string] $MaesterConfigPath = "$PSScriptRoot/eidsca-test-metadata.json",
 
     # Authorship seed with the author and contributors of each check (design section 11).
@@ -573,6 +573,7 @@ function GetMaesterTestAttribute($meta) {
     }
     if ($meta.Mitre.Count -gt 0) { $lines.Add("        Mitre = $(FormatAttributeList $meta.Mitre)") }
     if ($meta.Control.Count -gt 0) { $lines.Add("        Control = $(FormatAttributeList $meta.Control)") }
+    if ($meta.Step.Count -gt 0) { $lines.Add("        Step = $(FormatAttributeList $meta.Step)") }
     $lines.Add("        Service = $(FormatAttributeList $meta.Service)")
     if ($meta.License.Count -gt 0) { $lines.Add("        License = $(FormatAttributeList $meta.License)") }
     if ($meta.Author.Count -gt 0) { $lines.Add("        Author = $(FormatAttributeList $meta.Author)") }
@@ -719,6 +720,7 @@ foreach ($control in $aadsc) {
             ImplementationCost = if (-not $isInfo) { & $metadataValue 'ImplementationCost' }
             Mitre              = @(& $metadataValue 'Mitre' | Where-Object { $_ })
             Control            = @(& $metadataValue 'Control' | Where-Object { $_ })
+            Step               = @(& $metadataValue 'Step' | Where-Object { $_ })
             Service            = @('Graph')
             License            = @($skipCheck.License)
             Author             = $authors

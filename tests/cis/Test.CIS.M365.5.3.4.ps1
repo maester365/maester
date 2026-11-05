@@ -27,6 +27,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1078.004', 'T1548.005'),
         Control = ('cis-m365:5.3.4', 'nist-800-53-r5:AC-5'),
+        Step = 'entra.pim-approval-global-admin',
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'JeremyFinney-lgtm'
