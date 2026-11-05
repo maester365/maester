@@ -631,6 +631,7 @@ The instance object has:
 | `Severity` | No | The instance's severity, used when the config sets none. |
 | `Tag` | No | Extra tags written to the instance's row. |
 | `Fields` | No | Facts about the instance that a report can group or filter by, as a hashtable of names to strings or arrays of strings, for example `@{ Pillar = 'Identity'; Category = 'Access control' }`. Written to the row's `Fields`; other values are left out. |
+| `Product`, `Feature`, `Area`, `RelatedProduct`, `UserImpact`, `ImplementationCost`, `Mitre` | No | What this instance is about, when that differs from its family, with the same keys as the attribute. A family that reads results from another tool, such as the Zero Trust Assessment pack, places each result under its own product this way. A value the taxonomy does not know is left out, and the row keeps the family's. |
 | `Data` | No | Anything the test needs. It is not written to the result. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce

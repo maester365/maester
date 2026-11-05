@@ -5,7 +5,9 @@ Writes the test catalog of the Zero Trust Assessment pack from a copy of the Zer
 .DESCRIPTION
 Reads the [ZtTest] attribute of every Test-Assessment.<id>.ps1 in the module's tests folder from the syntax tree
 (nothing is run), applies the titles and ratings of the module's TestMeta.json the way the assessment does, and
-writes packs/zero-trust-assessment/catalog.json: the module version it was built from and one entry per test.
+writes packs/zero-trust-assessment/catalog.json: the module version it was built from and one entry per test,
+with the test's Description and Remediation from its Test-Assessment.<id>.md (Microsoft's text, MIT licence), so
+maester.dev can show them.
 
 The catalog lists what the pack can report before any run: the test IDs, titles and ratings shown in the
 pack's listing. Results at run time come from the assessment's report, so a test added in a newer version of
@@ -18,6 +20,13 @@ https://github.com/microsoft/zerotrustassessment. Defaults to the newest install
 .PARAMETER OutputPath
 Where to write the catalog. Defaults to packs/zero-trust-assessment/catalog.json in this repository.
 
+.PARAMETER MappingPath
+The pack's mapping of assessment tests to Maester's taxonomy: what each test is about (Product, Feature, Area,
+RelatedProduct), the ATT&CK techniques its control addresses (Mitre) and the built-in Maester tests that check the
+same setting (AlsoCheckedBy). The assessment has none of these, so the mapping is kept by hand in
+packs/zero-trust-assessment/taxonomy.json, keyed by assessment test ID, and copied into each catalog entry. A test
+the mapping does not have is written without them, with a warning: add it to the mapping.
+
 .EXAMPLE
 ./build/zta/Update-MtZtaCatalog.ps1
 
@@ -28,7 +37,9 @@ Where to write the catalog. Defaults to packs/zero-trust-assessment/catalog.json
 param(
     [string] $SourcePath,
 
-    [string] $OutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', 'packs', 'zero-trust-assessment', 'catalog.json')
+    [string] $OutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', 'packs', 'zero-trust-assessment', 'catalog.json'),
+
+    [string] $MappingPath = (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', 'packs', 'zero-trust-assessment', 'taxonomy.json')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,6 +57,12 @@ if (-not $manifestPath) { throw "No ZeroTrustAssessment.psd1 under $SourcePath."
 $moduleRoot = Split-Path -Parent $manifestPath
 $manifest = Import-PowerShellDataFile -LiteralPath $manifestPath
 $testsPath = Join-Path $moduleRoot 'tests'
+
+$mapping = @{}
+if (Test-Path -LiteralPath $MappingPath) {
+    $json = Get-Content -LiteralPath $MappingPath -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable
+    foreach ($key in $json.Tests.Keys) { $mapping[[string]$key] = $json.Tests[$key] }
+}
 
 $meta = @{}
 $metaPath = Join-Path $testsPath 'TestMeta.json'
@@ -86,6 +103,22 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
     foreach ($key in 'Title', 'Category', 'Pillar', 'RiskLevel', 'UserImpact', 'ImplementationCost', 'SfiPillar', 'TenantType', 'MinimumLicense') {
         if ($meta.ContainsKey($id) -and $meta[$id].ContainsKey($key) -and $meta[$id][$key]) { $values[$key] = $meta[$id][$key] }
     }
+    # The test's own text: Test-Assessment.<id>.md up to the results placeholder, split at its remediation heading.
+    $description = ''
+    $remediation = ''
+    $markdownPath = Join-Path $testsPath "Test-Assessment.$id.md"
+    if (Test-Path -LiteralPath $markdownPath) {
+        $text = (Get-Content -LiteralPath $markdownPath -Raw -Encoding utf8) -replace "`r`n", "`n"
+        $text = ($text -split '<!---\s*Results\s*--->', 2)[0].Trim()
+        # An instance Split: the static one would read the 2 as RegexOptions and split at every remediation heading.
+        $parts = [regex]::new('(?m)^\s*(?:\*\*Remediation (?:actions?|resources)\*\*|#+\s*Remediation (?:actions?|resources))\s*$').Split($text, 2)
+        $description = $parts[0].Trim()
+        if ($parts.Count -gt 1) { $remediation = $parts[1].Trim() }
+        # Some tests have only a placeholder ("...") where their text will go.
+        if ($description -match '^\W*$') { $description = '' }
+    }
+    $map = $mapping[$id]
+    if (-not $map) { Write-Warning "ZTA.$id ($($values.Title)) is not in $MappingPath; add it."; $map = @{} }
     [ordered]@{
         Id                 = "ZTA.$id"
         TestId             = $id
@@ -98,14 +131,35 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
         Service            = @($values.Service | Where-Object { $_ })
         License            = @(@($values.CompatibleLicense) + @($values.MinimumLicense) | Where-Object { $_ } | Select-Object -Unique)
         TenantType         = @($values.TenantType | Where-Object { $_ })
+        Product            = $map.Product
+        RelatedProduct     = @($map.RelatedProduct | Where-Object { $_ })
+        Feature            = $map.Feature
+        Area               = $map.Area
+        Mitre              = @($map.Mitre | Where-Object { $_ })
+        AlsoCheckedBy      = @($map.AlsoCheckedBy | Where-Object { $_ })
+        Description        = $description
+        Remediation        = $remediation
     }
 }
 
+# The module's MIT licence: the copyright and permission notice must go with the text copied into Tests.
+$licensePath = Get-ChildItem -LiteralPath $moduleRoot -File | Where-Object Name -Match '^licen[cs]e(\.txt|\.md)?$' | Select-Object -First 1
+# An installed module has it beside the manifest; a clone of the repository (src/powershell) at its root.
+foreach ($folder in (Split-Path -Parent $moduleRoot), (Split-Path -Parent (Split-Path -Parent $moduleRoot))) {
+    if ($licensePath -or -not $folder) { break }
+    $licensePath = Get-ChildItem -LiteralPath $folder -File -ErrorAction SilentlyContinue | Where-Object Name -Match '^licen[cs]e(\.txt|\.md)?$' | Select-Object -First 1
+}
+if (-not $licensePath) { throw "No licence file next to $manifestPath; the catalog copies the module's text and must carry its notice." }
+$licenseLines = (Get-Content -LiteralPath $licensePath.FullName -Raw -Encoding utf8) -replace "`r`n", "`n" -split "`n"
+$indent = ($licenseLines | Where-Object { $_.Trim() } | ForEach-Object { $_.Length - $_.TrimStart().Length } | Measure-Object -Minimum).Minimum
+$license = (($licenseLines | ForEach-Object { if ($_.Length -ge $indent) { $_.Substring($indent) } else { $_.TrimStart() } }) -join "`n").Trim()
+
 $catalog = [ordered]@{
-    '$comment'   = 'Generated by build/zta/Update-MtZtaCatalog.ps1 from the ZeroTrustAssessment module (MIT licence, (c) Microsoft Corporation). Do not edit by hand.'
+    '$comment'   = 'Generated by build/zta/Update-MtZtaCatalog.ps1 from the ZeroTrustAssessment module (MIT licence, (c) Microsoft Corporation) and the pack''s taxonomy.json. Do not edit by hand.'
     Module       = 'ZeroTrustAssessment'
     ModuleVersion = [string]$manifest.ModuleVersion
     Source       = 'https://github.com/microsoft/zerotrustassessment'
+    License      = $license
     Tests        = @($tests | Sort-Object { [int]$_.TestId })
 }
 $catalog | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $OutputPath -Encoding utf8NoBOM
