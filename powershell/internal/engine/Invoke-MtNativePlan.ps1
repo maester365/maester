@@ -243,7 +243,7 @@ function New-MtNativeWorkItem {
 function Get-MtInstanceValue {
     <#
     .SYNOPSIS
-    Reads an optional field (Title, Severity, Tag) of a family instance, which an instance source can return as
+    Reads an optional field (Title, Severity, Tag, Product and the other attributes) of a family instance, which an instance source can return as
     an object or as a hashtable. Returns $null when the instance does not have it.
     #>
     [CmdletBinding()]
@@ -269,7 +269,7 @@ function Expand-MtTestFamily {
 
     .DESCRIPTION
     The source returns one object per instance: Id (the suffix; required, unique,
-    ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$) and optional Title, Severity, Tag and Data (design section 10).
+    ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$) and optional Title, Severity, Tag, Fields, Data and attribute values (design section 10; see Get-MtInstanceAttribute).
     A source that throws gives one Error row on the parent ID (InstanceSourceFailed); no instances give
     one Skipped row (NoInstances); an invalid or repeated suffix gives one Error row (InvalidInstanceId).
     Instances that an instance-level ID pattern, -ExcludeTestId or a disabled TestSettings row deselects
@@ -571,10 +571,120 @@ function ConvertTo-MtNativeRow {
         Diagnostics     = $diagnostics
         # The pack a test comes from (Maester Packs design, section 5.5); null for every other test.
         Package         = if ($test.PSObject.Properties['Package']) { $test.Package } else { $null }
+        # Facts a family instance adds about itself, such as the pillar of a Zero Trust Assessment result.
+        Fields          = if ($isInstance) { ConvertTo-MtInstanceField (Get-MtInstanceValue -Instance $Instance -Name 'Fields') } else { $null }
+        # The test whose function a benchmark shim returns: the two report the same setting.
+        ShimOf          = if ($test.PSObject.Properties['ShimOf']) { $test.ShimOf } else { $null }
     }
     $attributes = Get-MtRowAttribute -Test $test
     foreach ($name in $attributes.Keys) { $row[$name] = $attributes[$name] }
+    # A family instance can say what it is about when that differs from its family: a Zero Trust Assessment
+    # result is about Entra ID, Intune or Exchange, though the family is one test.
+    if ($isInstance) {
+        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product -RelatedProduct $row.RelatedProduct
+        foreach ($name in $own.Keys) { $row[$name] = $own[$name] }
+    }
     [pscustomobject]$row
+}
+
+function Get-MtInstanceAttribute {
+    <#
+    .SYNOPSIS
+    Returns the attribute values a family instance sets for itself, checked against the taxonomy.
+
+    .DESCRIPTION
+    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost and Mitre. Only
+    values the taxonomy knows are returned: a product key or alias (as its key), a feature of that product, an
+    area key, Low, Medium or High, and ATT&CK techniques of the pinned release. A value that does not pass is left
+    out, so the row keeps its family's value. A Feature is checked against the instance's Product when it sets
+    one, else against the family's.
+
+    When the instance moves the row to another product, the family's Feature belongs to the old product: it is
+    cleared unless the instance sets a feature of its own, and the new product is taken off the family's
+    RelatedProduct. Mitre follows the list rules of a built-in test: None only on its own, at most five
+    techniques, no repeats.
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Collections.Specialized.OrderedDictionary])]
+    param(
+        [Parameter()] [AllowNull()] [object] $Instance,
+        # The family's product, used to check a Feature when the instance sets none.
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product,
+        # The family's related products, kept (less the new product) when the instance changes product.
+        [Parameter()] [AllowNull()] [string[]] $RelatedProduct
+    )
+
+    $values = [ordered]@{}
+    if ($null -eq $Instance) { return $values }
+    $taxonomy = Get-MtTaxonomy
+
+    $productKey = Resolve-MtProductKey -Name ([string](Get-MtInstanceValue -Instance $Instance -Name 'Product')) -Taxonomy $taxonomy
+    $productChanged = $productKey -and $productKey -ne $Product
+    if ($productKey) { $values.Product = $productKey; $Product = $productKey }
+
+    $related = @(@(Get-MtInstanceValue -Instance $Instance -Name 'RelatedProduct') | Where-Object { $_ } |
+            ForEach-Object { Resolve-MtProductKey -Name ([string]$_) -Taxonomy $taxonomy } | Where-Object { $_ -and $_ -ne $Product } | Select-Object -Unique)
+    if ($related.Count) { $values.RelatedProduct = [string[]]$related }
+    elseif ($productChanged -and $RelatedProduct -contains $Product) { $values.RelatedProduct = [string[]]@($RelatedProduct | Where-Object { $_ -ne $Product }) }
+
+    $feature = [string](Get-MtInstanceValue -Instance $Instance -Name 'Feature')
+    $features = $null
+    if ($feature -and $Product -and $taxonomy.Lookup.Feature.TryGetValue($Product, [ref] $features) -and $features.ContainsKey($feature)) {
+        $values.Feature = [string]$features[$feature].Key
+    } elseif ($productChanged) {
+        $values.Feature = $null
+    }
+
+    $area = [string](Get-MtInstanceValue -Instance $Instance -Name 'Area')
+    if ($area -and $taxonomy.Lookup.Area.ContainsKey($area)) { $values.Area = [string]$taxonomy.Lookup.Area[$area].Key }
+
+    foreach ($name in 'UserImpact', 'ImplementationCost') {
+        $value = [string](Get-MtInstanceValue -Instance $Instance -Name $name)
+        if ($value -in 'Low', 'Medium', 'High') { $values[$name] = (Get-Culture).TextInfo.ToTitleCase($value.ToLowerInvariant()) }
+    }
+
+    $mitre = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Mitre') | Where-Object { $_ } | ForEach-Object { [string]$_ })
+    if ($mitre.Count) {
+        $techniques = @($mitre | Where-Object { $_ -ne 'None' -and -not (Get-MtAttackTechniqueProblem -Mitre $_) } | Select-Object -Unique)
+        if ($techniques.Count) { $values.Mitre = [string[]]@($techniques | Select-Object -First 5) }
+        elseif ($mitre -contains 'None') { $values.Mitre = [string[]]@('None') }
+    }
+    $values
+}
+
+function ConvertTo-MtInstanceField {
+    <#
+    .SYNOPSIS
+    Returns the Fields of a family instance as an object of names to strings or string arrays, or $null.
+
+    .DESCRIPTION
+    An instance source may return Fields as a hashtable or an object. Only values a report can show are kept:
+    a string, a number, a boolean or an array of those, written as text. Anything else, and an empty value,
+    is left out, so an instance cannot carry its raw data into the result through Fields.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [Parameter(Position = 0)] [AllowNull()] [object] $Fields
+    )
+
+    if ($null -eq $Fields) { return $null }
+    $pairs = if ($Fields -is [System.Collections.IDictionary]) { @($Fields.GetEnumerator() | ForEach-Object { [pscustomobject]@{ Name = [string]$_.Key; Value = $_.Value } }) }
+    else { @($Fields.PSObject.Properties | ForEach-Object { [pscustomobject]@{ Name = $_.Name; Value = $_.Value } }) }
+    $simple = { param($v) $v -is [string] -or $v -is [bool] -or $v -is [int] -or $v -is [long] -or $v -is [double] -or $v -is [decimal] }
+    $out = [ordered]@{}
+    foreach ($pair in $pairs) {
+        if (-not $pair.Name) { continue }
+        $value = $pair.Value
+        if ($value -is [System.Collections.IEnumerable] -and $value -isnot [string]) {
+            $items = @($value | Where-Object { $null -ne $_ -and (& $simple $_) -and "$_" -ne '' } | ForEach-Object { [string]$_ })
+            if ($items.Count -gt 0) { $out[$pair.Name] = $items }
+        } elseif ($null -ne $value -and (& $simple $value) -and "$value" -ne '') {
+            $out[$pair.Name] = [string]$value
+        }
+    }
+    if ($out.Count -eq 0) { return $null }
+    [pscustomobject]$out
 }
 
 function Get-MtRowAttribute {

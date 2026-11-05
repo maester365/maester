@@ -1,6 +1,7 @@
 ---
 title: Formatting test results
-sidebar_position: 2
+sidebar:
+  order: 2
 ---
 
 ## Overview
@@ -118,6 +119,69 @@ Here's the updated test body with the graph objects that you can try out.
 ```
 
 To add support for additional types see [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/run/Add-MtTestResultDetail.ps1) and [Get-GraphObjectMarkdown](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1).
+
+### Adding facts about an object
+
+`-GraphObjects` says **which** objects a result is about: Maester lists them in the result, links them to the admin
+portal and adds them to the report's **Affected objects** page with the check that named them.
+[`Add-MtAffectedObjectFact`](../commands/Add-MtAffectedObjectFact.mdx) says **what is known** about an object: its last
+sign-in, the permissions it holds, whether its secrets have expired. The facts appear with the object when its row on
+the Affected objects page is expanded, whichever check named it.
+
+| | `Add-MtTestResultDetail -GraphObjects` | `Add-MtAffectedObjectFact` |
+| --- | --- | --- |
+| Answers | Which objects does this result concern? | What do we know about this object? |
+| Adds an object to the Affected objects page | Yes | No: facts only describe objects a check already names |
+| Shown | In the test result and on the Affected objects page | On the Affected objects page, in the JSON results and the objects files |
+| Tied to | The test that called it | The object, keyed by `System`, `Type` and `Id` |
+
+Each fact has a `Name`, a `Value` and a `Tone`: `Risk` for something to fix, `Warning` for something to review, `Good`
+for a sign that the object is in order, and `Info` (the default) for the rest. The `Source` names where the facts come
+from, and `-AsOf` when that data was read, if not now.
+
+```powershell
+    $apps = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')"
+    foreach ($app in $apps) {
+        Add-MtAffectedObjectFact -Type ServicePrincipal -Id $app.id -Source 'Contoso app inventory' -Fact @(
+            @{ Name = 'Business owner'; Value = $app.notes }
+            @{ Name = 'Last review'; Value = '2025-02-01 (over a year ago)'; Tone = 'Warning' }
+        )
+    }
+```
+
+#### Fact keys
+
+A fact can also carry a `Key` and a `Raw` value, for code that reads the results (a summary, an insight, another
+report) and should not have to parse text such as `2026-06-15 (143 days ago)`. `Value` stays the text people read;
+`Raw` is the same thing as data: a boolean, a number, a string, a list of strings, or a date (kept as ISO 8601 UTC
+text). `Raw` is kept only with a `Key`, and a fact without a `Key` is shown the same way.
+
+```powershell
+@{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Key = 'user.mfaRegistered'; Raw = $false }
+```
+
+Use a key from this list when one fits, so the same fact means the same thing whichever source adds it. A key is
+dotted camelCase; for a fact the list does not have, use a prefix of your own (`contoso.reviewDue`).
+
+| Key | Raw | Meaning |
+| --- | --- | --- |
+| `user.mfaRegistered` | boolean | The user has registered a method for multifactor authentication. |
+| `user.passwordless` | boolean | The user can sign in without a password. |
+| `user.privilegedRoles` | list of strings | The privileged Entra roles the user holds, permanent, activated or eligible. Empty when none. |
+| `signIn.daysSince` | number, or null | Days between the last sign-in and when the data was read (`AsOf`). Null when no sign-in was recorded. Users, apps and devices. |
+| `device.joinType` | string | `AzureAd` (Entra joined), `ServerAd` (hybrid joined) or `Workplace` (registered). |
+| `device.managed` | boolean | The device is managed by Intune or another MDM. |
+| `device.compliant` | boolean | The device meets its compliance policies. |
+| `device.os` | string | The operating system, for example `Windows` or `iOS`. |
+| `app.credentialExpired` | boolean | The app has at least one expired client secret or certificate. |
+| `app.ownerCount` | number | How many owners the app registration (or agent identity blueprint) has. |
+| `app.highPrivilegePermissions` | list of strings | The app's Tier 0 Microsoft Graph application permissions, those with a path to Global Administrator. Empty when none. |
+
+Use the `Type` and `Id` the page records for the object: `User`, `Group`, `Device`, `ServicePrincipal` and
+`ConditionalAccessPolicy` by object id, `AppRegistration` by its appId. Facts are kept only while `Invoke-Maester`
+collects affected objects, so the call does nothing in a run with `-ExcludeAffectedObjects`. The Zero Trust Assessment
+pack uses this to add what its tenant export says about each object (see
+[Facts on the Affected objects page](../packs/zero-trust-assessment.md#facts-on-the-affected-objects-page)).
 
 ### Marking tests as Investigate
 

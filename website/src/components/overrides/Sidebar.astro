@@ -1,0 +1,299 @@
+---
+// The topics are tabs in the header, so the sidebar shows only the current topic's pages. On phones the drawer also
+// has the topics and the version picker.
+import MobileMenuFooter from '@astrojs/starlight/components/MobileMenuFooter.astro';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
+import VersionPicker from '../VersionPicker.astro';
+import CatalogNav from '../catalog/CatalogNav.astro';
+
+const { id } = Astro.locals.starlightRoute;
+let { sidebar } = Astro.locals.starlightRoute;
+// Pages outside any topic (the 2.x archive) get the whole sidebar, one group per topic: show only their own group.
+if (id === 'docs/2.x' || id.startsWith('docs/2.x/')) {
+	type Entry = (typeof sidebar)[number];
+	const holds = (entry: Entry): boolean => (entry.type === 'link' ? entry.isCurrent : entry.entries.some(holds));
+	const own = sidebar.find(holds);
+	if (own?.type === 'group') sidebar = own.entries;
+}
+const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !topic.link.startsWith('/docs/2.x'));
+
+// The commands are grouped by job; a switch lists them A to Z instead (remembered in the browser).
+const isCommands = id === 'docs/commands' || id.startsWith('docs/commands/');
+// The test catalog has a nav of its own: its views, then the filters of the page (catalog/CatalogNav.astro).
+const isCatalog = id === 'docs/tests' || id.startsWith('docs/tests/');
+type Entry = (typeof sidebar)[number];
+const links = (entries: Entry[]): Entry[] => entries.flatMap((e) => (e.type === 'link' ? [e] : links(e.entries)));
+const overview = sidebar.filter((e) => e.type === 'link');
+const alphabetical: Entry[] = isCommands
+	? [
+			...overview,
+			{
+				type: 'group',
+				label: 'All commands',
+				collapsed: false,
+				badge: undefined,
+				entries: links(sidebar.filter((e) => e.type === 'group')).sort((a, b) => a.label.localeCompare(b.label)),
+			},
+		]
+	: [];
+---
+
+{
+	isCatalog && (
+		<>
+			<button type="button" class="mt-nav-toggle" data-nav-toggle aria-expanded="true" aria-label="Hide the sidebar" title="Hide the sidebar">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<rect x="3" y="4" width="18" height="16" rx="2" />
+					<path d="M9 4v16" />
+					<path class="mt-nav-toggle__arrow" d="M15.5 9.5L13 12l2.5 2.5" />
+				</svg>
+				<span>Hide sidebar</span>
+			</button>
+			{/* Before the page paints, so a hidden sidebar does not flash open on the next page. */}
+			<script is:inline>
+				(function () {
+					var root = document.documentElement;
+					var button = document.querySelector('[data-nav-toggle]');
+					function set(collapsed, save) {
+						if (collapsed) root.dataset.mtNav = 'collapsed';
+						else delete root.dataset.mtNav;
+						button.setAttribute('aria-expanded', String(!collapsed));
+						var label = collapsed ? 'Show the sidebar' : 'Hide the sidebar';
+						button.setAttribute('aria-label', label);
+						button.title = label;
+						if (save) {
+							try {
+								localStorage.setItem('maester-catalog-nav', collapsed ? 'collapsed' : 'open');
+							} catch (e) {}
+						}
+					}
+					var stored = null;
+					try {
+						stored = localStorage.getItem('maester-catalog-nav');
+					} catch (e) {}
+					set(stored === 'collapsed', false);
+					button.addEventListener('click', function () {
+						set(root.dataset.mtNav !== 'collapsed', true);
+					});
+				})();
+			</script>
+		</>
+	)
+}
+<div class="mt-mobile-version"><VersionPicker /></div>
+<nav class="mt-mobile-topics" aria-label="Documentation sections">
+	{topics.map((topic) => <a href={topic.link} aria-current={topic.isCurrent ? 'page' : undefined}>{topic.label}</a>)}
+</nav>
+{
+	isCommands && (
+		<div class="mt-cmd-order" role="group" aria-label="List commands">
+			<button type="button" data-order="job" aria-pressed="true">By job</button>
+			<button type="button" data-order="az" aria-pressed="false">A to Z</button>
+		</div>
+	)
+}
+<SidebarPersister>
+	{isCatalog && <CatalogNav id={id} />}
+	{
+		!isCatalog && (
+			<div class:list={{ 'mt-cmd-nav': isCommands }} data-order="job">
+				<div class="mt-cmd-nav__job">
+					<SidebarSublist sublist={sidebar} />
+				</div>
+				{
+					isCommands && (
+						<div class="mt-cmd-nav__az">
+							<SidebarSublist sublist={alphabetical} />
+						</div>
+					)
+				}
+			</div>
+		)
+	}
+</SidebarPersister>
+{
+	isCommands && (
+		<script is:inline>
+			(function () {
+				var nav = document.querySelector('.mt-cmd-nav');
+				var buttons = document.querySelectorAll('.mt-cmd-order button');
+				function set(order, save) {
+					nav.dataset.order = order;
+					buttons.forEach(function (b) {
+						b.setAttribute('aria-pressed', String(b.dataset.order === order));
+					});
+					if (save) {
+						try {
+							localStorage.setItem('maester-command-order', order);
+						} catch (e) {}
+					}
+				}
+				var stored = null;
+				try {
+					stored = localStorage.getItem('maester-command-order');
+				} catch (e) {}
+				if (stored === 'az') set('az', false);
+				buttons.forEach(function (b) {
+					b.addEventListener('click', function () {
+						set(b.dataset.order, true);
+					});
+				});
+			})();
+		</script>
+	)
+}
+
+<div class="md:sl-hidden">
+	<MobileMenuFooter />
+</div>
+
+<style is:global>
+	/* The test catalog's sidebar folds to a strip with the button that opens it again (wide screens only: on a
+	   phone the sidebar is a drawer already). The right column keeps its width. */
+	.mt-nav-toggle {
+		display: none;
+	}
+	@media (min-width: 50rem) {
+		.mt-nav-toggle {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			align-self: flex-start;
+			padding: 0.3rem 0.5rem;
+			margin: -0.25rem 0 -0.25rem -0.5rem;
+			border: 0;
+			border-radius: 7px;
+			background: none;
+			font: inherit;
+			font-size: 0.8rem;
+			color: var(--sl-color-gray-3);
+			cursor: pointer;
+		}
+		.mt-nav-toggle:hover {
+			background: var(--sl-color-gray-6);
+			color: var(--sl-color-white);
+		}
+		.mt-nav-toggle svg {
+			width: 18px;
+			height: 18px;
+			fill: none;
+			stroke: currentColor;
+			stroke-width: 1.8;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		:root[data-mt-nav='collapsed'][data-has-sidebar] {
+			--sl-content-inline-start: 3.25rem;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-pane {
+			width: 3.25rem;
+			overflow: hidden;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-content {
+			padding-inline: 0.55rem;
+		}
+		:root[data-mt-nav='collapsed'] .sidebar-content > :not(.mt-nav-toggle) {
+			display: none;
+		}
+		:root[data-mt-nav='collapsed'] .mt-nav-toggle {
+			margin: 0;
+		}
+		:root[data-mt-nav='collapsed'] .mt-nav-toggle span {
+			display: none;
+		}
+		:root[data-mt-nav='collapsed'] .mt-nav-toggle__arrow {
+			transform: scaleX(-1);
+			transform-origin: 14.25px 12px;
+		}
+	}
+</style>
+
+<style>
+	/* Commands: by job or A to Z, one name a line (cut with an ellipsis; the full name is in its tooltip). */
+	.mt-cmd-order {
+		display: flex;
+		gap: 2px;
+		margin-bottom: 1rem;
+		padding: 2px;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 8px;
+	}
+	.mt-cmd-order button {
+		flex: 1;
+		height: 1.85rem;
+		border: 0;
+		border-radius: 6px;
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+	}
+	.mt-cmd-order button:hover {
+		color: var(--sl-color-white);
+	}
+	.mt-cmd-order button[aria-pressed='true'] {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+		font-weight: 600;
+	}
+	.mt-cmd-nav[data-order='job'] .mt-cmd-nav__az,
+	.mt-cmd-nav[data-order='az'] .mt-cmd-nav__job {
+		display: none;
+	}
+	.mt-cmd-nav :global(a[title]) {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.mt-cmd-nav :global(a[title] span) {
+		display: inline;
+	}
+	.mt-cmd-nav :global(a.mt-key-command) {
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.mt-cmd-nav :global(a.mt-key-command)::before {
+		content: '';
+		display: inline-block;
+		width: 6px;
+		height: 6px;
+		margin-inline-end: 0.5rem;
+		border-radius: 999px;
+		background: var(--sl-color-accent);
+		vertical-align: 0.15em;
+	}
+	.mt-mobile-topics {
+		display: none;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 1rem;
+	}
+	.mt-mobile-topics a {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		padding: 0.2rem 0.7rem;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.mt-mobile-version {
+		display: none;
+		margin-bottom: 0.75rem;
+	}
+	@media (max-width: 49.99rem) {
+		.mt-mobile-topics {
+			display: flex;
+		}
+		.mt-mobile-version {
+			display: block;
+		}
+	}
+	.mt-mobile-topics a[aria-current='page'] {
+		border-color: var(--sl-color-accent);
+		color: var(--sl-color-white);
+		font-weight: 600;
+	}
+</style>

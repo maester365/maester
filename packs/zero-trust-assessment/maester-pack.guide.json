@@ -30,6 +30,7 @@
       { "Name": "ZeroTrustAssessment.Connect", "Default": "none", "Text": "Further Connect-ZtAssessment parameters, for example { \"Service\": [\"Graph\", \"Azure\"], \"UseDeviceCode\": true }." },
       { "Name": "ZeroTrustAssessment.ShowLog", "Default": "true", "Text": "List the tests the assessment runs in its live output." },
       { "Name": "ZeroTrustAssessment.EmbedReport", "Default": "true", "Text": "Embed the assessment's own HTML report in the Maester report." },
+      { "Name": "ZeroTrustAssessment.ObjectFacts", "Default": "true", "Text": "Add what the assessment's export says about each app, user, device and policy to the Affected objects page." },
       { "Name": "ZeroTrustAssessment.OutputPath", "Default": "temporary", "Text": "Where the assessment writes its report and export. Kept when set." },
       { "Name": "ZeroTrustAssessment.ReportPath", "Default": "empty", "Text": "Read a report you already have instead of running the assessment." },
       { "Name": "ZeroTrustAssessment.DisableTelemetry", "Default": "true", "Text": "The assessment sends the tenant ID to Microsoft unless this is true." }

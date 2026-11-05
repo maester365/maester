@@ -1,0 +1,4107 @@
+{
+  "$comment": "What each Zero Trust Assessment test is about in Maester's taxonomy, kept by hand and keyed by assessment test ID. See build/zta/README.md. Product, Feature, Area and RelatedProduct use the keys of powershell/assets/MaesterTaxonomy.psd1; Mitre the pinned ATT&CK release; AlsoCheckedBy names built-in Maester tests that check the same setting.",
+  "Tests": {
+    "21770": {
+      "Product": "entra",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21771": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21772": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1552",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1057"
+      ]
+    },
+    "21773": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1649",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21774": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21775": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1552"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1002"
+      ]
+    },
+    "21776": {
+      "Product": "entra",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AP08"
+      ]
+    },
+    "21777": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21778": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21779": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21780": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21781": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1557",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21782": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1557"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21783": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1557",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.2.5",
+        "CISA.MS.AAD.3.6"
+      ]
+    },
+    "21784": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1557",
+        "T1111"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.3.1"
+      ]
+    },
+    "21786": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.001",
+        "T1550.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.2.16"
+      ]
+    },
+    "21787": {
+      "Product": "entra",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1068",
+        "CIS.M365.5.1.2.3",
+        "EIDSCA.AP12"
+      ]
+    },
+    "21788": {
+      "Product": "azure",
+      "Feature": "access-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "entra"
+      ],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21789": {
+      "Product": "entra",
+      "Feature": "monitoring",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21790": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1537",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21791": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1136.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21792": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1087.004",
+        "T1069.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21793": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567",
+        "T1537"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21795": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1110.003",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21796": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.1.1",
+        "CIS.M365.5.2.2.3"
+      ]
+    },
+    "21797": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1013",
+        "CIS.M365.5.2.2.6"
+      ]
+    },
+    "21798": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.2.2"
+      ]
+    },
+    "21799": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1110"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1012",
+        "CIS.M365.5.2.2.7"
+      ]
+    },
+    "21800": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1111",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21801": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1111"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21802": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1621"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.3.3"
+      ]
+    },
+    "21803": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.3.4",
+        "EIDSCA.AG01"
+      ]
+    },
+    "21804": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1621",
+        "T1111"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21806": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1556.006",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21807": {
+      "Product": "entra",
+      "Feature": "user-settings",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1528"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.5.1",
+        "CIS.M365.5.1.2.2",
+        "EIDSCA.AP10"
+      ]
+    },
+    "21808": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.2.12"
+      ]
+    },
+    "21809": {
+      "Product": "entra",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.1.5.2",
+        "CISA.MS.AAD.5.3",
+        "EIDSCA.CR01"
+      ]
+    },
+    "21810": {
+      "Product": "entra",
+      "Feature": "app-consent",
+      "Area": "applications",
+      "RelatedProduct": [
+        "teams"
+      ],
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21811": {
+      "Product": "entra",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "RelatedProduct": [
+        "microsoft-365"
+      ],
+      "Mitre": [
+        "T1110"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.6.1"
+      ]
+    },
+    "21812": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21813": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21814": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1556.007",
+        "T1078.002",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.1.1.1",
+        "CISA.MS.AAD.7.3"
+      ]
+    },
+    "21815": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.3.1",
+        "CISA.MS.AAD.7.4"
+      ]
+    },
+    "21816": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.7.5"
+      ]
+    },
+    "21817": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1548.005"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.3.4",
+        "CISA.MS.AAD.7.6"
+      ]
+    },
+    "21818": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003",
+        "T1548.005"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21819": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003",
+        "T1548.005"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.7.8"
+      ]
+    },
+    "21820": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003",
+        "T1548.005"
+      ],
+      "AlsoCheckedBy": [
+        "CISA.MS.AAD.7.9"
+      ]
+    },
+    "21821": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1087.004",
+        "T1069.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21822": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21823": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1136.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21824": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.004",
+        "T1539"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21825": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.004",
+        "T1539"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21828": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.001",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.2.17"
+      ]
+    },
+    "21829": {
+      "Product": "entra",
+      "Feature": "hybrid-identity",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1606.002",
+        "T1484.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21830": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21831": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1556.009",
+        "T1484.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21832": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098",
+        "T1556.009"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1035"
+      ]
+    },
+    "21833": {
+      "Product": "entra",
+      "Feature": "hybrid-identity",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1556.007"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21834": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21835": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21836": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21837": {
+      "Product": "entra",
+      "Feature": "devices",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.1.4.2"
+      ]
+    },
+    "21838": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AF01"
+      ]
+    },
+    "21839": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566.002",
+        "T1557",
+        "T1539"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21840": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AF03"
+      ]
+    },
+    "21841": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1621",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AG02"
+      ]
+    },
+    "21842": {
+      "Product": "entra",
+      "Feature": "user-settings",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1531"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AP01"
+      ]
+    },
+    "21843": {
+      "Product": "entra",
+      "Feature": "user-settings",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1059.009",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1185"
+      ]
+    },
+    "21844": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1059.009",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21845": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AT01"
+      ]
+    },
+    "21846": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": [
+        "EIDSCA.AT02"
+      ]
+    },
+    "21847": {
+      "Product": "entra",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.3.3"
+      ]
+    },
+    "21848": {
+      "Product": "entra",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.3.2",
+        "EIDSCA.PR03"
+      ]
+    },
+    "21849": {
+      "Product": "entra",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003",
+        "T1110.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.3.9",
+        "EIDSCA.PR05"
+      ]
+    },
+    "21850": {
+      "Product": "entra",
+      "Feature": "password-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.001",
+        "T1110.003"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.3.8",
+        "EIDSCA.PR06"
+      ]
+    },
+    "21851": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21854": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1029"
+      ]
+    },
+    "21855": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21857": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21858": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1110.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21859": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "microsoft-365"
+      ],
+      "Mitre": [
+        "T1199",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21860": {
+      "Product": "entra",
+      "Feature": "monitoring",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "azure"
+      ],
+      "Mitre": [
+        "T1685.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21861": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1260"
+      ]
+    },
+    "21862": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21863": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21864": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21865": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.2.2.14"
+      ]
+    },
+    "21866": {
+      "Product": "entra",
+      "Feature": "recommendations",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1024"
+      ]
+    },
+    "21867": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21868": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21869": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21870": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21872": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21874": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21875": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1199",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21876": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21877": {
+      "Product": "entra",
+      "Feature": "external-identities",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21878": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "identity-lifecycle",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21879": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21881": {
+      "Product": "azure",
+      "Feature": "access-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "entra"
+      ],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21882": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21883": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21884": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1552.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21885": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21886": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "identity-lifecycle",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21887": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1584.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21888": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1584.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21889": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003",
+        "T1110.004",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21890": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21891": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21892": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21893": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21894": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1649",
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21895": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1552.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21896": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21897": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "identity-lifecycle",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21898": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "identity-lifecycle",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21899": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21912": {
+      "Product": "azure",
+      "Feature": "access-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "entra"
+      ],
+      "Mitre": [
+        "T1078.004",
+        "T1685.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21929": {
+      "Product": "entra",
+      "Feature": "identity-governance",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21941": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.004",
+        "T1539"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21953": {
+      "Product": "entra",
+      "Feature": "devices",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.003",
+        "T1021"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.1.4.5"
+      ]
+    },
+    "21954": {
+      "Product": "entra",
+      "Feature": "devices",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1552"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.5.1.4.6"
+      ]
+    },
+    "21955": {
+      "Product": "entra",
+      "Feature": "devices",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1531",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21964": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1556.009"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21983": {
+      "Product": "entra",
+      "Feature": "recommendations",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21984": {
+      "Product": "entra",
+      "Feature": "recommendations",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21985": {
+      "Product": "entra",
+      "Feature": "hybrid-identity",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110",
+        "T1558.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "21992": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1552.004",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "22072": {
+      "Product": "entra",
+      "Feature": "authentication-methods",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.001",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "22124": {
+      "Product": "entra",
+      "Feature": "recommendations",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "22128": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1199"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "22659": {
+      "Product": "entra",
+      "Feature": "identity-protection",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "23183": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1528",
+        "T1557"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24518": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24540": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1021",
+        "T1210",
+        "T1686.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24541": {
+      "Product": "intune",
+      "Feature": "device-compliance",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24542": {
+      "Product": "intune",
+      "Feature": "device-compliance",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24543": {
+      "Product": "intune",
+      "Feature": "device-compliance",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24545": {
+      "Product": "intune",
+      "Feature": "device-compliance",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24546": {
+      "Product": "intune",
+      "Feature": "device-enrollment",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24547": {
+      "Product": "intune",
+      "Feature": "device-compliance",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24548": {
+      "Product": "intune",
+      "Feature": "app-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567.002",
+        "T1115"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24549": {
+      "Product": "intune",
+      "Feature": "app-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567.002",
+        "T1115"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24550": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1005",
+        "T1006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24551": {
+      "Product": "intune",
+      "Feature": "device-enrollment",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110",
+        "T1078"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24552": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1021",
+        "T1210"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24553": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1203",
+        "T1068",
+        "T1210"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24554": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1203",
+        "T1068"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24555": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1072"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24560": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.003",
+        "T1021"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24561": {
+      "Product": "intune",
+      "Feature": "device-enrollment",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.003",
+        "T1021",
+        "T1552.001"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1217"
+      ]
+    },
+    "24564": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.003",
+        "T1136.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24568": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24569": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1005",
+        "T1006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24570": {
+      "Product": "entra",
+      "Feature": "hybrid-identity",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1110"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24572": {
+      "Product": "intune",
+      "Feature": "device-enrollment",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.005"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24573": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1003",
+        "T1068"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24574": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1027",
+        "T1106",
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24575": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1204.002",
+        "T1685"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24576": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24690": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1203",
+        "T1068"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24784": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1204.002",
+        "T1685"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24794": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24802": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1053"
+      ]
+    },
+    "24823": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24824": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24827": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24839": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1557.004",
+        "T1040"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24840": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1557.004",
+        "T1040"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24870": {
+      "Product": "intune",
+      "Feature": "device-configuration",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1557.004",
+        "T1040"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "24871": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25370": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25371": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1550.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25372": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25375": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25376": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25377": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "external-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567.002",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25379": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1550.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25380": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25381": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25382": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25383": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1098.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25384": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1098.001",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25391": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25392": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25393": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1133"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25394": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1133"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25395": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1046",
+        "T1021"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25396": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.003",
+        "T1110.004",
+        "T1557"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25398": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "T1021.001",
+        "T1557",
+        "T1078.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25399": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1557.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25400": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1557.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25401": {
+      "Product": "entra",
+      "Feature": "applications",
+      "Area": "applications",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25403": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "authentication",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "T1558",
+        "T1078.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25405": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25406": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1071.001",
+        "T1567",
+        "T1105"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25407": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25408": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1189",
+        "T1204.001",
+        "T1566.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25409": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1189",
+        "T1204.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25410": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1189",
+        "T1204.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25411": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1573",
+        "T1071.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25412": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1204.001",
+        "T1566.002",
+        "T1071.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25413": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25415": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25416": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1071",
+        "T1041",
+        "T1105"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25419": {
+      "Product": "entra",
+      "Feature": "monitoring",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1046",
+        "T1021",
+        "T1041"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25420": {
+      "Product": "entra",
+      "Feature": "monitoring",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25422": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25466": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25480": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25481": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25533": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1498",
+        "T1499"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25535": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1071",
+        "T1041"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25537": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1071",
+        "T1041"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25539": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190",
+        "T1210",
+        "T1071"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25541": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25543": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "25550": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1573",
+        "T1071.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26879": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26880": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26881": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26882": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.004",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26883": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26884": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.004",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26885": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1498"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26886": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1498"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26887": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1021",
+        "T1071"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26888": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "26889": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1190"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27000": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1189",
+        "T1204.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27001": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1573",
+        "T1071.001",
+        "T1041"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27002": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1573",
+        "T1071.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27003": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1573"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27004": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27015": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1499.002",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27016": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27017": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.004",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27018": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27019": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27020": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1110.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27024": {
+      "Product": "azure",
+      "Feature": "network-security",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1499.002",
+        "T1499.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "27028": {
+      "Product": "entra",
+      "Feature": "global-secure-access",
+      "Area": "ai",
+      "RelatedProduct": [
+        "copilot-studio"
+      ],
+      "Mitre": [
+        "T1567",
+        "T1071.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35001": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [
+        "purview"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35003": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35004": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "CIS.M365.3.3.1"
+      ]
+    },
+    "35005": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "sharepoint"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35006": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "sharepoint"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35007": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "sharepoint"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35008": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "sharepoint"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35009": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35010": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35011": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35012": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1213.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35013": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1213.002",
+        "T1530"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35014": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35015": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35016": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35017": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35018": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35019": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35020": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35021": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "sharepoint"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35022": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35023": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35024": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35025": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35026": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35027": {
+      "Product": "purview",
+      "Feature": "information-protection",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35028": {
+      "Product": "purview",
+      "Feature": "data-lifecycle-management",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35029": {
+      "Product": "exchange",
+      "Feature": "mail-flow",
+      "Area": "data-protection",
+      "RelatedProduct": [
+        "purview"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35030": {
+      "Product": "purview",
+      "Feature": "data-loss-prevention",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1213",
+        "T1530",
+        "T1567"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35032": {
+      "Product": "purview",
+      "Feature": "insider-risk-management",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35033": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35034": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35035": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35036": {
+      "Product": "purview",
+      "Feature": "data-classification",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35038": {
+      "Product": "purview",
+      "Feature": "insider-risk-management",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1213"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1174"
+      ]
+    },
+    "35039": {
+      "Product": "purview",
+      "Feature": "insider-risk-management",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35040": {
+      "Product": "purview",
+      "Feature": "insider-risk-management",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "35041": {
+      "Product": "purview",
+      "Feature": "data-loss-prevention",
+      "Area": "data-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1567"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41002": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "T1558.003",
+        "T1550.002",
+        "T1550.003",
+        "T1003.006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41003": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad",
+        "entra"
+      ],
+      "Mitre": [
+        "T1606.002",
+        "T1649",
+        "T1556.007"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41004": {
+      "Product": "ad",
+      "Feature": "users",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1558",
+        "T1550.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41008": {
+      "Product": "ad",
+      "Feature": "computers",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "defender",
+        "intune"
+      ],
+      "Mitre": [
+        "T1078.003",
+        "T1550.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41009": {
+      "Product": "ad",
+      "Feature": "groups",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1078.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41011": {
+      "Product": "ad",
+      "Feature": "permissions",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1003.006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41012": {
+      "Product": "ad",
+      "Feature": "permissions",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "defender",
+        "entra"
+      ],
+      "Mitre": [
+        "T1003.006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41018": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1059"
+      ]
+    },
+    "41019": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "T1078.002",
+        "T1550.002",
+        "T1550.003"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41020": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41022": {
+      "Product": "defender",
+      "Feature": "defender-for-identity",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "ad"
+      ],
+      "Mitre": [
+        "T1558.003",
+        "T1003.006",
+        "T1087.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41029": {
+      "Product": "defender",
+      "Feature": "anti-malware",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41031": {
+      "Product": "defender",
+      "Feature": "safe-attachments",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566.001",
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41032": {
+      "Product": "defender",
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566.002",
+        "T1204.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41033": {
+      "Product": "defender",
+      "Feature": "anti-phishing",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566",
+        "T1684.001",
+        "T1684.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41034": {
+      "Product": "defender",
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41035": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41036": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "email-protection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41039": {
+      "Product": "defender",
+      "Feature": "zero-hour-auto-purge",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41040": {
+      "Product": "defender",
+      "Feature": "anti-spam",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566",
+        "T1684.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41041": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41045": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1685",
+        "T1003",
+        "T1021"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41049": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1685"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41050": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1204.002",
+        "T1059",
+        "T1003.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41051": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1052.001",
+        "T1091",
+        "T1200"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41052": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1179"
+      ]
+    },
+    "41053": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1204.001",
+        "T1189",
+        "T1071"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41054": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1486",
+        "T1485"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41055": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1204.002",
+        "T1059"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41059": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41060": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1150"
+      ]
+    },
+    "41061": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41062": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41080": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "access-control",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1550.004",
+        "T1530"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41081": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41083": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "authentication",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "T1557",
+        "T1550.004",
+        "T1539"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41114": {
+      "Product": "defender",
+      "Feature": "safe-links",
+      "Area": "email-protection",
+      "RelatedProduct": [
+        "teams"
+      ],
+      "Mitre": [
+        "T1566",
+        "T1204.001",
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41116": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "exchange"
+      ],
+      "Mitre": [
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41119": {
+      "Product": "defender",
+      "Feature": "endpoint-antivirus",
+      "Area": "devices",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1685",
+        "T1564.012"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1166"
+      ]
+    },
+    "41121": {
+      "Product": "defender",
+      "Feature": "tenant-settings",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41201": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41202": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41203": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41204": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41205": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41206": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41207": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41208": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41209": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41210": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1071",
+        "T1566"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41211": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1685"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41212": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41213": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41214": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41215": {
+      "Product": "azure",
+      "Feature": "subscriptions",
+      "Area": "infrastructure",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41216": {
+      "Product": "azure",
+      "Feature": "subscriptions",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "41217": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "50001": {
+      "Product": "azure",
+      "Feature": "subscriptions",
+      "Area": "infrastructure",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51001": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.003",
+        "T1548.002",
+        "T1003.001",
+        "T1003.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51013": {
+      "Product": "intune",
+      "Feature": "app-protection",
+      "Area": "access-control",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004",
+        "T1550.001"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51014": {
+      "Product": "intune",
+      "Feature": "app-protection",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1068",
+        "T1553.006"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51015": {
+      "Product": "intune",
+      "Feature": "tenant-administration",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1072",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1096"
+      ]
+    },
+    "51016": {
+      "Product": "entra",
+      "Feature": "privileged-identity-management",
+      "Area": "privileged-access",
+      "RelatedProduct": [
+        "intune"
+      ],
+      "Mitre": [
+        "T1098.003",
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51018": {
+      "Product": "intune",
+      "Feature": "endpoint-security",
+      "Area": "devices",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1204.002"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "51019": {
+      "Product": "intune",
+      "Feature": "app-protection",
+      "Area": "authentication",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61002": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61004": {
+      "Product": "azure",
+      "Feature": "subscriptions",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61005": {
+      "Product": "microsoft-365",
+      "Feature": "organization-settings",
+      "Area": "ai",
+      "RelatedProduct": [
+        "copilot-studio"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61006": {
+      "Product": "entra",
+      "Feature": "roles",
+      "Area": "privileged-access",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61008": {
+      "Product": "entra",
+      "Feature": "agent-identities",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61009": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61011": {
+      "Product": "entra",
+      "Feature": "agent-identities",
+      "Area": "ai",
+      "RelatedProduct": [
+        "copilot-studio"
+      ],
+      "Mitre": [
+        "T1213"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61012": {
+      "Product": "entra",
+      "Feature": "conditional-access",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": [
+        "MT.1181"
+      ]
+    },
+    "61013": {
+      "Product": "entra",
+      "Feature": "agent-identities",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61014": {
+      "Product": "entra",
+      "Feature": "agent-identities",
+      "Area": "ai",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61016": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "entra"
+      ],
+      "Mitre": [
+        "T1078.004"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61017": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61018": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "purview"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61021": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61022": {
+      "Product": "azure",
+      "Feature": "subscriptions",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61023": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    },
+    "61024": {
+      "Product": "azure",
+      "Feature": "sentinel",
+      "Area": "logging-and-detection",
+      "RelatedProduct": [
+        "defender"
+      ],
+      "Mitre": [
+        "None"
+      ],
+      "AlsoCheckedBy": []
+    }
+  }
+}

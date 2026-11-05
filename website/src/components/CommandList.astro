@@ -1,0 +1,213 @@
+---
+// Every command in the reference, grouped by job: the two everyone runs first, then each group with what it is for.
+import { getCollection } from 'astro:content';
+import { commandGroups, keyCommands } from '../lib/command-groups.mjs';
+import { commandHistory, previewLabel } from '../lib/versions.mjs';
+
+const decode = (text: string) => text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+const pages = await getCollection('docs', (e) => /^docs\/commands\/[^/]+$/.test(e.id));
+const about = new Map(pages.map((e) => [e.id.split('/').pop()!, decode(e.data.description ?? '')]));
+const previewOnly = (name: string) => !commandHistory(name);
+const groups = commandGroups();
+---
+
+<div class="mt-cmds not-content">
+	<section class="mt-cmds__key" aria-label="Start here">
+		{
+			keyCommands.map((name) => (
+				<a class="mt-cmds__hero" href={`/docs/commands/${name}`}>
+					<span class="mt-cmds__eyebrow">{name === 'Connect-Maester' ? 'Step 1 · Sign in' : 'Step 2 · Run the checks'}</span>
+					<span class="mt-cmds__hero-name">{name}</span>
+					<span class="mt-cmds__hero-about">{about.get(name)}</span>
+					<code>PS&gt; {name}</code>
+				</a>
+			))
+		}
+	</section>
+
+	<nav class="mt-cmds__jump" aria-label="Command groups">
+		{
+			groups.map((g) => (
+				<a href={`#${g.id}`}>
+					{g.label}
+					<span>{g.commands.length}</span>
+				</a>
+			))
+		}
+	</nav>
+
+	{
+		groups.map((g) => (
+			<section class="mt-cmds__group" id={g.id} aria-labelledby={`${g.id}-title`}>
+				<header>
+					<h2 id={`${g.id}-title`}>{g.label}</h2>
+					{g.about && <p>{g.about}</p>}
+				</header>
+				<ul>
+					{g.commands.map((c) => (
+						<li class:list={{ 'is-key': keyCommands.includes(c.name) }}>
+							<a href={`/docs/commands/${c.name}`}>
+								<span class="mt-cmds__name">
+									{c.name}
+									{previewOnly(c.name) && (
+										<span class="mt-mark">
+											<span class="mt-mark__preview">New in {previewLabel}</span>
+											<span class="mt-mark__stable">Preview {previewLabel}</span>
+										</span>
+									)}
+								</span>
+								<span class="mt-cmds__about">{about.get(c.name)}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		))
+	}
+</div>
+
+<style>
+	.mt-cmds {
+		margin-top: 2rem;
+	}
+	.mt-cmds__key {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+		gap: 1rem;
+	}
+	.mt-cmds__hero {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 1.4rem 1.5rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 16px;
+		background: radial-gradient(90% 120% at 100% 0%, var(--sl-color-accent-low), transparent 60%), var(--sl-color-black);
+		color: inherit;
+		text-decoration: none;
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.mt-cmds__hero:hover {
+		border-color: var(--sl-color-accent);
+		transform: translateY(-2px);
+	}
+	.mt-cmds__eyebrow {
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--sl-color-accent);
+	}
+	.mt-cmds__hero-name {
+		font-family: var(--sl-font-mono);
+		font-size: 1.35rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.mt-cmds__hero-about {
+		font-size: 0.95rem;
+		line-height: 1.55;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-cmds__hero code {
+		align-self: flex-start;
+		margin-top: 0.4rem;
+		padding: 0.3rem 0.6rem;
+		border-radius: 8px;
+		background: var(--sl-color-gray-6);
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-1);
+	}
+
+	.mt-cmds__jump {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin: 2rem 0 0;
+	}
+	.mt-cmds__jump a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.3rem 0.5rem 0.3rem 0.8rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		font-size: 0.85rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.mt-cmds__jump a:hover {
+		border-color: var(--sl-color-gray-3);
+		color: var(--sl-color-white);
+	}
+	.mt-cmds__jump span {
+		padding: 0 0.4rem;
+		border-radius: 999px;
+		background: var(--sl-color-gray-6);
+		font-size: 0.75rem;
+	}
+
+	.mt-cmds__group {
+		margin-top: 2.75rem;
+		scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 1.5rem);
+	}
+	.mt-cmds__group h2 {
+		margin: 0;
+		font-size: 1.35rem;
+		color: var(--sl-color-white);
+	}
+	.mt-cmds__group header p {
+		margin: 0.35rem 0 0;
+		color: var(--sl-color-gray-3);
+		font-size: 0.95rem;
+	}
+	.mt-cmds__group ul {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+		gap: 0.6rem;
+		margin: 1rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.mt-cmds__group li a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		height: 100%;
+		box-sizing: border-box;
+		padding: 0.75rem 0.9rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		color: inherit;
+		text-decoration: none;
+		transition: border-color 0.2s ease;
+	}
+	.mt-cmds__group li a:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-cmds__group li.is-key a {
+		border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+	}
+	.mt-cmds__name {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--sl-font-mono);
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+		word-break: break-word;
+	}
+	.mt-cmds__about {
+		font-size: 0.85rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>

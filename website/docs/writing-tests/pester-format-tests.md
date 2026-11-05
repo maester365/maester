@@ -1,7 +1,8 @@
 ---
 title: Pester-format tests
-sidebar_position: 4
 description: Custom tests written with Pester keep running in Maester 3.0. How they run, what they need, and how to convert them to native tests.
+sidebar:
+  order: 4
 ---
 
 # Pester-format tests (still supported)

@@ -1,0 +1,75 @@
+---
+// A small speaker button that plays how "Maester" is pronounced. The recording is fetched on the first click.
+---
+
+<mt-say>
+	<button type="button" aria-label="Hear how Maester is pronounced" title="Hear how Maester is pronounced">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M11 5 6 9H3v6h3l5 4z"></path>
+			<path class="wave1" d="M15.5 8.8a4.5 4.5 0 0 1 0 6.4"></path>
+			<path class="wave2" d="M18.4 5.9a8.5 8.5 0 0 1 0 12.2"></path>
+		</svg>
+	</button>
+</mt-say>
+
+<script>
+	class Say extends HTMLElement {
+		connectedCallback() {
+			const button = this.querySelector('button')!;
+			let audio: HTMLAudioElement | null = null;
+			button.addEventListener('click', () => {
+				audio ??= new Audio('/audio/maester-pronunciation.mp3');
+				audio.onended = audio.onerror = () => button.classList.remove('playing');
+				audio.currentTime = 0;
+				button.classList.add('playing');
+				Promise.resolve(audio.play()).catch(() => button.classList.remove('playing'));
+			});
+		}
+	}
+	customElements.define('mt-say', Say);
+</script>
+
+<style>
+	button {
+		display: inline-grid;
+		place-items: center;
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		border-radius: 50%;
+		border: 1px solid var(--sl-color-gray-5);
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+		vertical-align: middle;
+		transition: color 150ms ease, border-color 150ms ease;
+	}
+	button:hover,
+	button:focus-visible {
+		color: var(--sl-color-white);
+		border-color: var(--sl-color-gray-3);
+	}
+	button.playing {
+		color: #ff6363;
+		border-color: rgba(255, 99, 99, 0.5);
+	}
+	svg {
+		width: 11px;
+		height: 11px;
+	}
+	.playing .wave1 {
+		animation: pulse 900ms ease-in-out infinite;
+	}
+	.playing .wave2 {
+		animation: pulse 900ms ease-in-out 150ms infinite;
+	}
+	@keyframes pulse {
+		0%,
+		100% {
+			opacity: 0.35;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+</style>

@@ -1,0 +1,255 @@
+---
+// Page title, plus what the reader needs to know about versions: a test or command that is only in the
+// preview says so and shows how to get the preview, whichever channel the reader picked.
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import CopyPage from '../CopyPage.astro';
+import PreviewOnly from '../PreviewOnly.astro';
+import { commandHistory, previewLabel, stableVersion } from '../../lib/versions.mjs';
+
+const { entry, id } = Astro.locals.starlightRoute;
+const data = entry.data as Record<string, any>;
+const isArchive = id === 'docs/2.x' || id.startsWith('docs/2.x/');
+const isDoc = id.startsWith('docs/') && !isArchive;
+
+const commandName = id.match(/^docs\/commands\/([^/]+)$/)?.[1];
+const isCommand = Boolean(commandName);
+const commandIsPreviewOnly = isCommand && !commandHistory(commandName!);
+const test = data.maester?.kind === 'test' ? data.maester : null;
+const previewOnly = commandIsPreviewOnly || Boolean(test?.previewOnly) || Boolean(data.since);
+const what = test ? 'check' : isCommand ? 'command' : 'page';
+const name = test?.id ?? commandName;
+// List pages (the catalog, each suite, the tags, the commands index) are tables, and the test builder is a form
+// beside its code: give them the full width, from the sidebar's edge. A test page has no contents list, so Starlight
+// would centre it in the space; it starts at the sidebar's edge too.
+const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags|overview|attack|products\/[^/]+|frameworks\/[^/]+|packs\/[^/]+))?$/.test(id) || id === 'docs/commands' || id === 'test-builder';
+---
+
+{
+	isList && (
+		<style
+			is:inline
+			set:html={`html:root { --sl-content-width: 76rem; } .sl-container { max-width: none; margin-inline: 0; } .sl-markdown-content td:first-child { white-space: nowrap; } .sl-markdown-content table { width: 100%; }`}
+		/>
+	)
+}
+{test && <style is:inline set:html={`html:root { --sl-content-width: 64rem; } .sl-container { margin-inline: 0; }`} />}
+{
+	/* A command page: room for the syntax and parameter tables (its contents list is short, so a narrower right column),
+	   and a title that fits the longest command names. */
+	isCommand && (
+		<style
+			is:inline
+			set:html={`html:root { --sl-content-width: 62rem; } @media (min-width: 72rem) { html:root .right-sidebar-container { width: 15rem; } html:root .main-pane { width: calc(100% - 15rem); } }`}
+		/>
+	)
+}
+
+<div class:list={['mt-title', { 'mt-title--command': isCommand, 'mt-title--long': isCommand && commandName!.length > 26, 'mt-title--test': Boolean(test) }]}>
+	<Default />
+	{isDoc && <CopyPage />}
+</div>
+
+{
+	test && (
+		<div class="mt-chips">
+			<span class="mt-chip mono">{test.id}</span>
+			{test.severity && <span class={`mt-chip mt-sev mt-sev--${test.severity.toLowerCase()}`}>{test.severity}</span>}
+			{test.product && <span class="mt-chip">{test.product}</span>}
+			{test.feature && <span class="mt-chip">{test.feature}</span>}
+			{previewOnly && <span class="mt-chip mt-chip--preview">Preview {previewLabel}</span>}
+			{test.previewCheck && <span class="mt-chip mt-chip--check">Runs with -IncludePreview</span>}
+		</div>
+	)
+}
+
+{previewOnly && <PreviewOnly what={what} name={name} />}
+
+{
+	isArchive && (
+		<aside class="mt-archive">
+			<strong>Maester 2.x docs, archived.</strong> These pages describe Maester 2.x and are no longer updated.{' '}
+			<a href="/docs/intro">Go to the current docs</a> ·{' '}
+			<a href="/docs/upgrading-from-2x">Upgrading from 2.x</a>
+		</aside>
+	)
+}
+
+{
+	test?.previewCheck && (
+		<aside class="mt-note">
+			<strong>Preview check.</strong> This check is still being tested or depends on a preview API, so it only runs when you
+			add <code>-IncludePreview</code>: <code>Invoke-Maester -TestId {test.id} -IncludePreview</code>
+		</aside>
+	)
+}
+
+{
+	isDoc && !isCommand && !test && !previewOnly && (
+		<aside class="mt-stable-note">
+			You're on Maester {stableVersion}. These docs describe the {previewLabel} preview, and differ in places.{' '}
+			<a href="/docs/2.x/intro">Read the 2.x docs</a> or <a href="/docs/preview">try the preview</a>.
+		</aside>
+	)
+}
+
+{
+	isCommand && (
+		<script>
+			// A syntax longer than a few lines shows its first lines, with a button for the rest, so the description
+			// below it is in view.
+			const heading = document.getElementById('syntax');
+			const block = (heading?.closest('.sl-heading-wrapper') ?? heading)?.nextElementSibling;
+			const pre = block?.querySelector('pre');
+			if (block && pre && pre.querySelectorAll('.ec-line').length > 5) {
+				block.classList.add('mt-syntax', 'mt-syntax--clamped');
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'mt-syntax__toggle';
+				button.setAttribute('aria-expanded', 'false');
+				button.textContent = 'Show full syntax';
+				button.addEventListener('click', () => {
+					const open = block.classList.toggle('mt-syntax--clamped') === false;
+					button.setAttribute('aria-expanded', String(open));
+					button.textContent = open ? 'Show less' : 'Show full syntax';
+				});
+				block.after(button);
+			}
+		</script>
+	)
+}
+
+<style>
+	.mt-title {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.mt-title > :first-child {
+		min-width: 0;
+	}
+	/* Command names run to 40 characters: a smaller title, broken after a hyphen when it must. */
+	.mt-title--command :global(h1#_top) {
+		font-size: clamp(1.6rem, 1rem + 1.6vw, 2.4rem);
+		line-height: 1.2;
+		overflow-wrap: anywhere;
+	}
+	/* Test titles are sentences, often two lines: smaller than a page title, so the check itself is in view. */
+	.mt-title--test :global(h1#_top) {
+		font-size: clamp(1.5rem, 1.1rem + 1vw, 2.1rem);
+		line-height: 1.2;
+	}
+	.mt-title--long :global(h1#_top) {
+		font-size: clamp(1.4rem, 0.75rem + 1.2vw, 2rem);
+	}
+	:global(.mt-syntax) {
+		position: relative;
+	}
+	:global(.mt-syntax--clamped pre) {
+		max-height: calc(5 * 1.65em + 1.5rem);
+		overflow: hidden !important;
+	}
+	:global(.mt-syntax--clamped figure)::after {
+		content: '';
+		position: absolute;
+		inset: auto 1px 1px;
+		height: 3rem;
+		border-radius: 0 0 var(--mt-radius, 12px) var(--mt-radius, 12px);
+		background: linear-gradient(to bottom, transparent, var(--sl-color-black));
+		pointer-events: none;
+	}
+	:global(.mt-syntax__toggle) {
+		display: inline-flex;
+		align-items: center;
+		margin-top: 0.6rem;
+		padding: 0.3rem 0.8rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		background: none;
+		font: inherit;
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+	}
+	:global(.mt-syntax__toggle:hover) {
+		border-color: var(--sl-color-gray-3);
+		color: var(--sl-color-white);
+	}
+	.mt-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: 0.75rem;
+	}
+	.mt-chip {
+		display: inline-flex;
+		align-items: center;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		padding: 0.1rem 0.6rem;
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mono {
+		font-family: var(--sl-font-mono);
+	}
+	.mt-sev {
+		border-radius: 6px;
+		font-weight: 600;
+		border: 0;
+	}
+	.mt-sev--critical {
+		background: #fee2e2;
+		color: #b91c1c;
+	}
+	.mt-sev--high {
+		background: #ffedd5;
+		color: #9a3412;
+	}
+	.mt-sev--medium {
+		background: #fef3c7;
+		color: #92400e;
+	}
+	.mt-sev--low,
+	.mt-sev--info {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-2);
+	}
+	.mt-chip--preview {
+		background: var(--mt-warn-soft);
+		border-color: var(--mt-warn-line);
+		color: var(--mt-warn-ink);
+		font-weight: 600;
+	}
+	.mt-chip--check {
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+	}
+	.mt-note {
+		margin-top: 1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: var(--mt-radius);
+		padding: 0.75rem 1rem;
+		font-size: 0.9rem;
+	}
+	.mt-archive {
+		margin-top: 1rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-inline-start: 3px solid var(--sl-color-gray-3);
+		border-radius: 8px;
+		padding: 0.6rem 0.9rem;
+		font-size: 0.875rem;
+	}
+	.mt-stable-note {
+		display: none;
+		margin-top: 1rem;
+		border-left: 3px solid var(--mt-warn);
+		background: var(--mt-warn-soft);
+		border-radius: 8px;
+		padding: 0.6rem 0.9rem;
+		font-size: 0.875rem;
+	}
+	:global(:root[data-channel='stable']) .mt-stable-note {
+		display: block;
+	}
+</style>

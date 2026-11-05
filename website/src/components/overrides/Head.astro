@@ -1,0 +1,58 @@
+---
+// Starlight's head, plus: the reader's channel before first paint, analytics (Google Tag Manager once, and
+// PostHog), structured data, and noindex on the frozen 2.x docs.
+import Default from '@astrojs/starlight/components/Head.astro';
+import Analytics from '../Analytics.astro';
+import { CARD_HEIGHT, CARD_WIDTH, cardUrl, defaultCard, docsCard } from '../../lib/og.mjs';
+
+const { entry, id } = Astro.locals.starlightRoute;
+// Not for search: the 2.x archive and the partials.
+const isArchive = id === 'docs/2.x' || id.startsWith('docs/2.x/') || id.startsWith('docs/sections/');
+// Astro.url ends in .html at build time (build.format 'file'); the site serves every page without it.
+const url = new URL(Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1'), Astro.site);
+const data = entry.data as Record<string, any>;
+// A page's own image when it names one; otherwise its card (scripts/og-images.mjs renders it after the build).
+const card = isArchive ? defaultCard : docsCard(id, data);
+const ownImage = typeof data.image === 'string' && data.image.startsWith('/') ? new URL(data.image, Astro.site).href : undefined;
+const image = ownImage ?? cardUrl(card);
+const section = id.startsWith('docs/tests') ? ['Test catalog', '/docs/tests'] : id.startsWith('docs/commands') ? ['Commands', '/docs/commands'] : id.startsWith('docs/packs') ? ['Packs', '/docs/packs'] : ['Docs', '/docs/intro'];
+const jsonLd = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'TechArticle',
+		headline: data.title,
+		description: data.description,
+		url: url.href,
+		isPartOf: { '@type': 'WebSite', name: 'Maester', url: 'https://maester.dev' },
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Maester', item: 'https://maester.dev/' },
+			{ '@type': 'ListItem', position: 2, name: section[0], item: new URL(section[1], 'https://maester.dev').href },
+			{ '@type': 'ListItem', position: 3, name: data.title, item: url.href },
+		],
+	},
+];
+---
+
+<script is:inline>
+	try {
+		var themeSetting = localStorage.getItem('starlight-theme');
+		document.documentElement.dataset.themeSetting = themeSetting === 'light' || themeSetting === 'dark' ? themeSetting : 'system';
+		document.documentElement.dataset.channel = localStorage.getItem('maester-channel') === 'stable' ? 'stable' : 'preview';
+	} catch {
+		document.documentElement.dataset.channel = 'preview';
+	}
+</script>
+<Default />
+{isArchive ? <meta name="robots" content="noindex" /> : <meta name="robots" content="max-image-preview:large" />}
+<meta property="og:image" content={image} />
+{!ownImage && <meta property="og:image:width" content={String(CARD_WIDTH)} />}
+{!ownImage && <meta property="og:image:height" content={String(CARD_HEIGHT)} />}
+<meta property="og:image:alt" content={data.title} />
+<meta name="twitter:image" content={image} />
+{!ownImage && !isArchive && <meta name="maester:og" content={JSON.stringify(card)} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+<Analytics />

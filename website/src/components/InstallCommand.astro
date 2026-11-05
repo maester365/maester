@@ -1,0 +1,137 @@
+---
+// The install command for the version the reader picked: the preview by default (what these docs describe), or
+// the stable release. The page's channel is <html data-channel>, set by the version picker.
+import { previewLabel, stableVersion } from '../lib/versions.mjs';
+
+interface Props {
+	/** The hero's dark pill instead of a docs code block. */
+	variant?: 'hero' | 'docs';
+}
+const { variant = 'docs' } = Astro.props;
+const preview = 'Install-Module Maester -AllowPrerelease -Scope CurrentUser';
+const stable = 'Install-Module Maester -Scope CurrentUser';
+---
+
+<mt-install class:list={['mt-install', `mt-install--${variant}`, 'not-content']}>
+	<div class="mt-install__box">
+		<code>
+			<span class="mt-install__prompt">PS&gt;</span>
+			<span class="mt-install__cmd mt-install__cmd--preview">Install-Module <b>Maester</b> -AllowPrerelease</span>
+			<span class="mt-install__cmd mt-install__cmd--stable">Install-Module <b>Maester</b></span>
+		</code>
+		<button type="button" data-preview={preview} data-stable={stable}>Copy</button>
+	</div>
+	<p class="mt-install__note">
+		<span class="mt-install__cmd--preview">Installs the {previewLabel} preview, which these docs describe. <a href="/docs/preview">About the preview</a></span>
+		<span class="mt-install__cmd--stable">Installs the stable release, {stableVersion}. <a href="/docs/2.x/intro">2.x docs</a></span>
+	</p>
+</mt-install>
+
+<script>
+	class InstallCommand extends HTMLElement {
+		connectedCallback() {
+			const button = this.querySelector('button')!;
+			button.addEventListener('click', () => {
+				const stable = document.documentElement.dataset.channel === 'stable';
+				navigator.clipboard.writeText((stable ? button.dataset.stable : button.dataset.preview) ?? '');
+				button.textContent = 'Copied';
+				setTimeout(() => (button.textContent = 'Copy'), 1500);
+			});
+		}
+	}
+	customElements.define('mt-install', InstallCommand);
+</script>
+
+<style>
+	.mt-install {
+		display: inline-flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		max-width: 100%;
+	}
+	.mt-install--docs {
+		display: flex;
+		margin-block: 1rem;
+	}
+	.mt-install__box {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		background: #18181b;
+		border: 1px solid #3f3f46;
+		border-radius: 10px;
+		padding: 0.6rem 0.7rem 0.6rem 1.1rem;
+		max-width: 100%;
+	}
+	code {
+		font-family: var(--sl-font-mono);
+		font-size: 0.9rem;
+		color: #e4e4e7;
+		background: none;
+		padding: 0;
+		white-space: nowrap;
+		overflow-x: auto;
+		flex: 1 1 auto;
+	}
+	b {
+		color: #ff8a8d;
+		font-weight: 500;
+	}
+	.mt-install__prompt {
+		color: #71717a;
+		margin-inline-end: 0.4rem;
+	}
+	button {
+		font: inherit;
+		font-size: 0.75rem;
+		border: 0;
+		background: #3f3f46;
+		color: #fff;
+		border-radius: 6px;
+		padding: 0.3rem 0.55rem;
+		cursor: pointer;
+		flex: none;
+	}
+	/* In the docs it sits among code blocks: their colours, in both themes. */
+	.mt-install--docs .mt-install__box {
+		background: var(--mt-code-bg);
+		border-color: var(--mt-code-line);
+		border-radius: 0.75rem;
+	}
+	.mt-install--docs code {
+		color: var(--mt-code-ink);
+	}
+	.mt-install--docs .mt-install__prompt {
+		color: var(--mt-code-muted);
+	}
+	.mt-install--docs b {
+		color: var(--sl-color-accent);
+	}
+	.mt-install--docs button {
+		background: var(--mt-code-btn);
+		border: 1px solid var(--mt-code-line);
+		color: var(--mt-code-ink);
+	}
+	.mt-install__note {
+		margin: 0;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+	/* In the hero it sits in a row of buttons, at their height; the banner above says it is the preview. */
+	.mt-install--hero .mt-install__box {
+		height: 3rem;
+		box-sizing: border-box;
+	}
+	.mt-install--hero .mt-install__note {
+		display: none;
+	}
+	.mt-install__cmd--stable {
+		display: none;
+	}
+	:global(:root[data-channel='stable']) .mt-install__cmd--stable {
+		display: inline;
+	}
+	:global(:root[data-channel='stable']) .mt-install__cmd--preview {
+		display: none;
+	}
+</style>

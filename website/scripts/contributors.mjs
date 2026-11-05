@@ -3,10 +3,10 @@
 // Per-test attribution comes from the Author and Contributor values of each test's
 // [MaesterTest] attribute; tests without them fall back to git history (with
 // rename tracking). Git history also supplies profile details, enriched with
-// the registry at website/contributors/contributors.yml. Because CI often
-// builds from a shallow clone, the computed result is snapshotted to
-// website/src/data/contributors.json; when full git history is unavailable the
-// committed snapshot is used as-is.
+// the registry at website/contributors/contributors.yml. The result is written
+// to website/src/data/contributors.json (not kept in git), which the site and
+// the module build read; a build without the full git history (a shallow
+// clone) uses that file as-is when it exists.
 
 import { execFileSync, execSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -21,7 +21,8 @@ const repoRoot = join(websiteRoot, "..");
 const registryPath = join(websiteRoot, "contributors", "contributors.yml");
 const emailAliasesPath = join(websiteRoot, "contributors", "email-aliases.json");
 const snapshotPath = join(websiteRoot, "src", "data", "contributors.json");
-const avatarDir = join(websiteRoot, "static", "img", "contributors");
+const urlContractPath = join(websiteRoot, "src", "data", "url-contract.txt");
+const avatarDir = join(websiteRoot, "public", "img", "contributors");
 
 const botPattern = /\[bot\]|copilot|github[- ]actions?|actions-user|dependabot|web-flow|snyk/i;
 const noreplyPattern = /^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$/i;
@@ -187,14 +188,26 @@ function buildIdentityResolver(registry, hashedAliases) {
 
 // Groups raw git identities into contributors. Returns test attributions plus
 // aggregate profile data.
+// Name particles that stay lowercase inside a name: "Robbe Van den Daele", "Stephan van Rooij".
+export const nameParticles = new Set(["van", "von", "der", "den", "de", "del", "della", "di", "da", "dos", "du", "la", "le", "bin", "ibn", "al", "el", "ter", "ten", "zu"]);
+
+// A git author name written all in lowercase ("jeremy finney") gets a capital at the start of each word but the
+// particles inside it (a last word is a surname: "Alex Le"); a name with any capital is the person's own spelling
+// and is kept. The registry's name always wins.
+export function capitalizeName(name) {
+  if (name !== name.toLowerCase()) return name;
+  const words = name.split(" ");
+  return words.map((word, i) => (i > 0 && i < words.length - 1 && nameParticles.has(word) ? word : word.replace(/^\p{L}/u, (c) => c.toUpperCase()))).join(" ");
+}
+
 export function computeContributorData(tests, { log = console.log, updateAliases = true } = {}) {
   if (!hasFullGitHistory()) {
     if (!existsSync(snapshotPath)) {
       throw new Error(
-        "Full git history is unavailable (shallow clone) and no contributors snapshot exists at website/src/data/contributors.json."
+        "Full git history is unavailable (shallow clone) and website/src/data/contributors.json does not exist. Run git fetch --unshallow."
       );
     }
-    log("Shallow git clone detected - using committed contributors snapshot.");
+    log("Shallow git clone detected - using the existing website/src/data/contributors.json.");
     return JSON.parse(readFileSync(snapshotPath, "utf8"));
   }
 
@@ -365,10 +378,14 @@ export function computeContributorData(tests, { log = console.log, updateAliases
 
   // A profile page, once published, is kept even when no test credits that person any more (the 3.0
   // Contributor rule is stricter than "touched the file"), so links to /contributors/<id> stay valid.
-  // Only people with a registry entry are kept, and no new zero-credit pages are created.
-  const publishedIds = new Set(
-    (existsSync(snapshotPath) ? JSON.parse(readFileSync(snapshotPath, "utf8")).profiles ?? [] : []).map((profile) => String(profile.id).toLowerCase())
-  );
+  // Only people with a registry entry are kept, and no new zero-credit pages are created. The published
+  // pages are those of the site's URL contract (src/data/url-contract.txt) and of the last generated credits.
+  const contractIds = readFileSync(urlContractPath, "utf8")
+    .split("\n")
+    .map((line) => line.trim().match(/^\/contributors\/([^/#?]+)\/?$/)?.[1])
+    .filter(Boolean);
+  const snapshotIds = existsSync(snapshotPath) ? (JSON.parse(readFileSync(snapshotPath, "utf8")).profiles ?? []).map((profile) => profile.id) : [];
+  const publishedIds = new Set([...contractIds, ...snapshotIds].map((id) => String(id).toLowerCase()));
   const keptIds = new Set();
   for (const id of Object.keys(registry)) {
     if (!publishedIds.has(id.toLowerCase()) || contributors.has(id)) continue;
@@ -378,8 +395,9 @@ export function computeContributorData(tests, { log = console.log, updateAliases
   // Finalize profiles: display name, avatar.
   for (const profile of contributors.values()) {
     if (!profile.name) {
-      // Prefer a git name that looks like a real name (contains a space).
-      profile.name = profile.gitNames.find((name) => name.includes(" ")) ?? profile.gitNames[0] ?? profile.id;
+      // Prefer a git name that looks like a real name (contains a space), capitalized when git has it all lowercase.
+      const gitName = profile.gitNames.find((name) => name.includes(" "));
+      profile.name = gitName ? capitalizeName(gitName) : (profile.gitNames[0] ?? profile.id);
     }
     profile.initials = initialsFor(profile.name);
     profile.firstContribution = profile.firstContribution ? profile.firstContribution.slice(0, 10) : "";

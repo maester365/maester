@@ -1,0 +1,53 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import Mermaid from '../Mermaid.astro';
+import CheckRail from '../catalog/CheckRail.astro';
+
+// A check's facts and mappings sit in the right column on a wide screen (PageSidebar.astro); a narrower one has no
+// right column, so they follow the page here instead.
+const data = Astro.locals.starlightRoute.entry.data as Record<string, any>;
+const checkId = data.maester?.kind === 'test' ? String(data.maester.id) : '';
+---
+
+{
+	checkId && (
+		<div class="mt-rail-inline">
+			<CheckRail id={checkId} />
+		</div>
+	)
+}
+<Default />
+<Mermaid />
+<div class="mt-doc-footer">
+	<span>Maester is free and open source under the MIT licence.</span>
+	<a href="/sponsor">Sponsor</a>
+	<a href="/contributors">Contributors</a>
+	<a href="https://discord.maester.dev">Discord</a>
+	<a href="https://maester.cloud">Maester Cloud</a>
+</div>
+
+<style>
+	.mt-rail-inline {
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	@media (min-width: 72rem) {
+		.mt-rail-inline {
+			display: none;
+		}
+	}
+	.mt-doc-footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 2rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-doc-footer a {
+		color: var(--sl-color-gray-2);
+	}
+</style>

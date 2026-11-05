@@ -1,7 +1,8 @@
 ---
-sidebar_label: Active Directory
-sidebar_position: 1
 title: Active Directory Advanced Topics
+sidebar:
+  label: Active Directory
+  order: 1
 ---
 
 # Active Directory Permission Model

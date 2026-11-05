@@ -1,0 +1,321 @@
+/* maester.dev theme: the maester.cloud design tokens mapped onto Starlight. */
+@import '@fontsource-variable/inter';
+@import '@fontsource/geist-mono/400.css';
+@import '@fontsource/geist-mono/500.css';
+
+:root {
+	--mt-ember: #ff6b6f;
+	--mt-ember-strong: #d22c31;
+	--mt-pass: #22c55e;
+	--mt-fail: #f87171;
+	--mt-warn: #fbbf24;
+	--mt-line: #27272a;
+	--mt-surface: #18181b;
+	--mt-canvas: #0f0f11;
+	--mt-ground: #09090b;
+	--mt-ink: #fafafa;
+	--mt-ink-2: #d4d4d8;
+	--mt-ink-3: #a1a1aa;
+	--mt-warn-soft: rgba(251, 191, 36, 0.12);
+	--mt-warn-line: rgba(251, 191, 36, 0.35);
+	--mt-warn-ink: #fcd34d;
+	--mt-new-soft: rgba(34, 197, 94, 0.12);
+	--mt-new-ink: #86efac;
+	--mt-radius: 12px;
+	/* Command boxes outside Markdown code blocks: the colours of Expressive Code's github themes. */
+	--mt-code-bg: #0d1117;
+	--mt-code-line: #3d444d;
+	--mt-code-ink: #f0f6fc;
+	--mt-code-muted: #9198a1;
+	--mt-code-btn: #212830;
+
+	--sl-font: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--sl-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+	--sl-color-accent-low: #3b1214;
+	--sl-color-accent: #ff6b6f;
+	--sl-color-accent-high: #ffd0d1;
+	--sl-color-white: #fafafa;
+	--sl-color-gray-1: #e4e4e7;
+	--sl-color-gray-2: #d4d4d8;
+	--sl-color-gray-3: #a1a1aa;
+	--sl-color-gray-4: #71717a;
+	--sl-color-gray-5: #3f3f46;
+	--sl-color-gray-6: #18181b;
+	--sl-color-black: #09090b;
+
+	--sl-nav-height: 3.75rem;
+	--sl-content-width: 46rem;
+}
+
+:root[data-theme='light'] {
+	--mt-ember: #d22c31;
+	--mt-ember-strong: #b4232a;
+	--mt-pass: #16a34a;
+	--mt-fail: #dc2626;
+	--mt-warn: #d97706;
+	--mt-line: #e4e4e7;
+	--mt-surface: #ffffff;
+	--mt-canvas: #fafafa;
+	--mt-ground: #ffffff;
+	--mt-ink: #18181b;
+	--mt-ink-2: #3f3f46;
+	--mt-ink-3: #71717a;
+	--mt-warn-soft: #fffbeb;
+	--mt-warn-line: #fde68a;
+	--mt-warn-ink: #92400e;
+	--mt-new-soft: #dcfce7;
+	--mt-new-ink: #166534;
+	--mt-code-bg: #ffffff;
+	--mt-code-line: #d1d9e0;
+	--mt-code-ink: #1f2328;
+	--mt-code-muted: #59636e;
+	--mt-code-btn: #f6f8fa;
+
+	--sl-color-accent-low: #fde8e8;
+	--sl-color-accent: #d22c31;
+	--sl-color-accent-high: #8f1d20;
+	--sl-color-white: #18181b;
+	--sl-color-gray-1: #27272a;
+	--sl-color-gray-2: #3f3f46;
+	--sl-color-gray-3: #52525b;
+	--sl-color-gray-4: #71717a;
+	--sl-color-gray-5: #d4d4d8;
+	--sl-color-gray-6: #f4f4f5;
+	--sl-color-gray-7: #fafafa;
+	--sl-color-black: #ffffff;
+}
+
+@media (min-width: 50rem) {
+	:root {
+		/* Room for the topic tabs under the search row. */
+		--sl-nav-height: 6rem;
+	}
+}
+
+.site-title img {
+	height: 1.75rem;
+	width: auto;
+	border-radius: 6px;
+}
+.site-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--sl-color-white);
+	gap: 0.6rem;
+}
+
+body {
+	font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Headings: tighter, like maester.cloud, with a clear step between the page title and its sections. */
+.sl-markdown-content :is(h1, h2, h3, h4) {
+	letter-spacing: -0.02em;
+	scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+}
+.sl-markdown-content h2 {
+	font-size: 1.6rem;
+	margin-top: 2.5rem;
+}
+.sl-markdown-content h3 {
+	font-size: 1.2rem;
+}
+.sl-markdown-content h4 {
+	font-size: 1rem;
+}
+:focus-visible {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+}
+.test-part {
+	font-size: 0.9rem;
+	color: var(--sl-color-gray-3);
+}
+h1#_top {
+	letter-spacing: -0.03em;
+	font-weight: 700;
+	text-wrap: balance;
+}
+
+/* Sidebar: quiet group headings (top-level links keep the normal link style). */
+.sidebar-content .group-label .large {
+	font-size: 0.75rem;
+	font-family: var(--sl-font-mono);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
+	font-weight: 500;
+}
+.sidebar-content a[aria-current='page'] {
+	background: var(--sl-color-gray-6);
+	color: var(--sl-color-white);
+	font-weight: 600;
+	border-inline-start: 2px solid var(--sl-color-accent);
+}
+
+/* Cards and tables */
+.sl-markdown-content table {
+	font-size: 0.9rem;
+}
+.sl-markdown-content :is(th, td) {
+	border-bottom: 1px solid var(--mt-line);
+	padding: 0.55rem 0.75rem;
+}
+.sl-markdown-content details {
+	border: 1px solid var(--mt-line);
+	border-radius: var(--mt-radius);
+	padding: 0.5rem 1rem;
+}
+
+/* Version marks: one text per reader channel (data-channel on <html>, set by the version picker). */
+.mt-mark {
+	display: inline-flex;
+	align-items: center;
+	margin-inline-start: 0.6rem;
+	padding: 0.1rem 0.45rem;
+	border-radius: 6px;
+	font-family: var(--sl-font-mono);
+	font-size: 0.7rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	vertical-align: middle;
+	background: var(--mt-new-soft);
+	color: var(--mt-new-ink);
+}
+.mt-mark__stable {
+	display: none;
+}
+:root[data-channel='stable'] .mt-mark {
+	background: var(--mt-warn-soft);
+	color: var(--mt-warn-ink);
+}
+:root[data-channel='stable'] .mt-mark__stable {
+	display: inline;
+}
+:root[data-channel='stable'] .mt-mark__preview {
+	display: none;
+}
+
+/* Test byline (generated test pages) */
+.test-byline {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	margin: 0.5rem 0 1.5rem;
+	font-size: 0.875rem;
+	color: var(--sl-color-gray-3);
+}
+.test-byline-avatars {
+	display: flex;
+}
+.test-byline-avatar {
+	display: inline-flex;
+	width: 28px;
+	height: 28px;
+	border-radius: 999px;
+	overflow: hidden;
+	border: 2px solid var(--sl-color-black);
+	margin-inline-start: -6px;
+	background: var(--sl-color-gray-6);
+	align-items: center;
+	justify-content: center;
+	font-size: 0.7rem;
+	text-decoration: none;
+}
+.test-byline-avatar:first-child {
+	margin-inline-start: 0;
+}
+.test-byline-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	margin: 0 !important;
+}
+/* Starlight spaces the blocks of a page apart; inside the byline that pushed the text below the avatar. */
+.test-byline > *,
+.test-byline-meta > * {
+	margin-top: 0 !important;
+}
+.test-byline-meta {
+	display: flex;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.test-byline-link {
+	font-weight: 600;
+}
+
+/* Expressive Code: match the card radius */
+.expressive-code .frame {
+	box-shadow: none;
+}
+
+
+/* The GitHub mark is black (public/report-icons/v1/products/README.md): white on a dark page. */
+:root[data-theme='dark'] img[src$='/products/github.svg'] {
+	filter: invert(1);
+}
+
+/* Exchange's logo fills half of its canvas (as in the report): draw it at the size of the other product icons. */
+img[src$='/products/exchange.png'] {
+	transform: scale(1.8);
+}
+
+/* The one-line note at the end of a Microsoft Zero Trust Assessment check page. */
+.mt-ms-note {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-top: 2rem !important;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid #dbe7f5;
+	border-radius: 0.75rem;
+	background: #f3f8fd;
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-2);
+}
+.mt-ms-note__logo {
+	flex: none;
+	width: 1rem;
+	height: 1rem;
+}
+.mt-ms-note a {
+	color: inherit;
+	font-weight: 600;
+}
+:root[data-theme='dark'] .mt-ms-note {
+	border-color: rgba(96, 165, 250, 0.2);
+	background: rgba(96, 165, 250, 0.07);
+}
+
+/* The React components from the Docusaurus site use its variables; map them to the Maester tokens.
+   Here rather than in site.css, so components on docs pages (the test builder) get them too. */
+:root {
+	--ifm-color-primary: var(--sl-color-accent);
+	--ifm-color-danger-dark: #b91c1c;
+	--ifm-color-danger-light: #fca5a5;
+	--ifm-color-warning-light: #fde68a;
+	--ifm-color-warning-darkest: #78350f;
+	--ifm-color-success-dark: #15803d;
+	--ifm-color-success-darkest: #14532d;
+	--ifm-background-color: var(--sl-color-black);
+	--ifm-background-surface-color: var(--mt-surface);
+	--ifm-font-color-base: var(--sl-color-white);
+	--ifm-font-family-monospace: var(--sl-font-mono);
+	--ifm-line-height-base: 1.6;
+	--ifm-heading-line-height: 1.2;
+	--ifm-navbar-height: 64px;
+	--ifm-color-emphasis-100: var(--sl-color-gray-6);
+	--ifm-color-emphasis-200: var(--sl-color-gray-5);
+	--ifm-color-emphasis-300: var(--sl-color-gray-5);
+	--ifm-color-emphasis-400: var(--sl-color-gray-4);
+	--ifm-color-emphasis-500: var(--sl-color-gray-4);
+	--ifm-color-emphasis-600: var(--sl-color-gray-3);
+	--ifm-color-emphasis-700: var(--sl-color-gray-2);
+	--ifm-color-emphasis-800: var(--sl-color-gray-1);
+	--ifm-color-emphasis-900: var(--sl-color-white);
+}

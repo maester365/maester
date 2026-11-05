@@ -1,0 +1,15 @@
+---
+// One page per contributor, from the snapshot in src/data/contributors.json.
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ContributorPage from '../../components/ContributorPage/index.jsx';
+import contributors from '../../data/contributors.json';
+
+export function getStaticPaths() {
+	return contributors.profiles.map((profile) => ({ params: { id: profile.id.toLowerCase() }, props: { profile } }));
+}
+const { profile } = Astro.props;
+---
+
+<SiteLayout title={`${profile.name}, Maester contributor`} description={`Maester tests authored and improved by ${profile.name}.`} wide>
+	<ContributorPage contributorId={profile.id} />
+</SiteLayout>

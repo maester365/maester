@@ -1,0 +1,125 @@
+---
+// The docs header: logo, the five topics as tabs, search, the version picker, and the site links.
+import Search from '@astrojs/starlight/components/Search.astro';
+import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
+import SocialIcons from '@astrojs/starlight/components/SocialIcons.astro';
+import ThemeToggle from '../ThemeToggle.astro';
+import VersionPicker from '../VersionPicker.astro';
+
+// The 2.x archive has its own sidebar but no tab.
+const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !topic.link.startsWith('/docs/2.x'));
+---
+
+<div class="mt-header">
+	<div class="mt-header__row">
+		<div class="title-wrapper sl-flex"><SiteTitle /></div>
+		<div class="mt-header__search sl-flex print:hidden"><Search /></div>
+		<div class="mt-header__right sl-hidden md:sl-flex print:hidden">
+			<VersionPicker />
+			<a class="mt-header__sponsor" href="/sponsor" aria-label="Sponsor Maester">
+				<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#db2777" d="M8 14.25s-6-3.6-6-8.1C2 3.8 3.7 2.5 5.4 2.5c1.2 0 2.1.7 2.6 1.6.5-.9 1.4-1.6 2.6-1.6 1.7 0 3.4 1.3 3.4 3.65 0 4.5-6 8.1-6 8.1z"></path></svg>
+				Sponsor
+			</a>
+			<div class="sl-flex social-icons"><SocialIcons /></div>
+			<ThemeToggle />
+		</div>
+	</div>
+	<nav class="mt-tabs sl-hidden md:sl-flex" aria-label="Documentation sections">
+		{
+			topics.map((topic) => (
+				<a href={topic.link} aria-current={topic.isCurrent ? 'page' : undefined} class:list={{ current: topic.isCurrent }}>
+					{topic.label}
+				</a>
+			))
+		}
+		<a href="/" class="mt-tabs__home">Home</a>
+	</nav>
+</div>
+
+<style is:global>
+	/* The docs header lets the page show through, blurred, as it scrolls under: a tint of the nav colour and a
+	   faint edge instead of a solid bar. Browsers without backdrop-filter get the solid colour. */
+	header.header {
+		background-color: var(--sl-color-bg-nav);
+		border-bottom-color: color-mix(in srgb, var(--sl-color-hairline-shade) 55%, transparent);
+	}
+	@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+		header.header {
+			background-color: color-mix(in srgb, var(--sl-color-bg-nav) 72%, transparent);
+			-webkit-backdrop-filter: saturate(180%) blur(14px);
+			backdrop-filter: saturate(180%) blur(14px);
+		}
+	}
+</style>
+
+<style>
+	.mt-header {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		justify-content: center;
+	}
+	.mt-header__row {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		justify-content: space-between;
+	}
+	.title-wrapper {
+		overflow: clip;
+		padding: 0.25rem;
+		margin: -0.25rem;
+		min-width: 0;
+	}
+	.mt-header__search {
+		flex: 1 1 auto;
+		justify-content: center;
+	}
+	.mt-header__right {
+		gap: 0.9rem;
+		align-items: center;
+	}
+	.social-icons {
+		gap: 0.75rem;
+		align-items: center;
+	}
+	.mt-header__sponsor {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 9px;
+		padding: 0.3rem 0.65rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.mt-header__sponsor:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-tabs {
+		gap: 1.5rem;
+		align-items: flex-end;
+		margin-top: 0.4rem;
+		font-size: 0.875rem;
+	}
+	.mt-tabs a {
+		color: var(--sl-color-gray-3);
+		text-decoration: none;
+		padding-bottom: 0.45rem;
+		border-bottom: 2px solid transparent;
+		font-weight: 500;
+	}
+	.mt-tabs a:hover {
+		color: var(--sl-color-white);
+	}
+	.mt-tabs a.current {
+		color: var(--sl-color-white);
+		border-bottom-color: var(--sl-color-accent);
+		font-weight: 600;
+	}
+	.mt-tabs .mt-tabs__home {
+		margin-inline-start: auto;
+	}
+</style>

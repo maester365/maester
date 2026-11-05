@@ -70,6 +70,33 @@ jobs:
           MODULE_VERSION: ${{ steps.moduleversion.outputs.tag }}
         run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion $env:MODULE_VERSION
 
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.x
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install website dependencies
+        working-directory: website
+        run: npm ci
+
+      # The release records which tests it contains (website/src/data/versions.json), read from the test catalog.
+      # The catalog, like the contributor credits, is not kept in git.
+      - name: Export the test catalog
+        shell: pwsh
+        working-directory: website
+        run: |
+          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
+          npm run export-catalog
+
+      # The dashboard's Featured contributors (Build-MaesterModule.ps1) come from the website's contributor credits.
+      - name: Credit the contributors
+        working-directory: website
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: node scripts/generate-test-docs.mjs
+
       # ./module/ is a build artifact produced by Build-MaesterModule.ps1.
       # It is ignored by git and must never be committed to source control.
       - name: Build, validate, and publish Maester module
@@ -91,17 +118,6 @@ jobs:
           tag: ${{ steps.moduleversion.outputs.tag }}
           commit: ${{ github.sha }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24.x
-          cache: 'npm'
-          cache-dependency-path: website/package-lock.json
-
-      - name: Install website dependencies
-        working-directory: website
-        run: npm ci
-
       - name: Update website release version
         env:
           MODULE_VERSION: ${{ steps.moduleversion.outputs.tag }}
@@ -117,10 +133,7 @@ jobs:
           delete-branch: true
           title: 'ci(docs): update website release version ${{ steps.moduleversion.outputs.tag }}'
           body: |
-            Automated versioned documentation update for Maester ${{ steps.moduleversion.outputs.tag }}.
+            Marks Maester ${{ steps.moduleversion.outputs.tag }} as the stable release on maester.dev, and records the tests, commands and parameters it contains, so the site stops marking them as preview-only.
           add-paths: |
-            website/docusaurus.config.js
             website/version-config.js
-            website/versions.json
-            website/versioned_docs/
-            website/versioned_sidebars/
+            website/src/data/versions.json

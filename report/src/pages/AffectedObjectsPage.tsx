@@ -1,13 +1,26 @@
-import { lazy, Suspense, useCallback, useMemo, useState, type CSSProperties, type ReactNode } from "react"
-import { ChevronRight, ExternalLink, FunnelX, Layers, ListChevronsDownUp, ListChevronsUpDown } from "lucide-react"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"
+import { ChevronRight, ExternalLink, FunnelX, Layers, ListChevronsDownUp, ListChevronsUpDown, Search } from "lucide-react"
+import { useCallback, useMemo, useState, type CSSProperties, type ReactNode } from "react"
 import { useTenant } from "@/context/TenantContext"
+import { useReport } from "@/components/report/ReportContext"
 import { Card, TextInput } from "@/components/ui/report"
 import { affectedObjectIconUri } from "@/lib/affectedObjectIcons"
 import { affectedObjectTypePriority, getAffectedObjectTypeInfo, type AffectedObjectTypeInfo } from "@/lib/affectedObjectTypes"
 import { cn } from "@/lib/utils"
 
-const ResultInfoSheet = lazy(() => import("@/components/ResultInfoSheet"))
+
+// What a pack or test knows about the object (Add-MtAffectedObjectFact), shown when the row is expanded.
+interface AffectedObjectFact {
+    Name: string
+    Value: string
+    Tone?: string | null
+    // A shared fact key (user.mfaRegistered, signIn.daysSince...) and the value as data, for summaries that read facts.
+    Key?: string | null
+    Raw?: boolean | number | string | string[] | null
+    Source?: string | null
+    AsOf?: string | null
+}
+
+type Tone = "Risk" | "Warning" | "Good" | "Info"
 
 // The html report embeds a slim record (Referenced flag); older reports and the json output carry
 // the full record with its Sources list.
@@ -20,6 +33,7 @@ interface AffectedObjectRecord {
     Tests?: string[] | null
     Referenced?: boolean
     Sources?: string[] | null
+    Facts?: AffectedObjectFact[] | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +62,9 @@ interface AffectedObject {
     failed: number
     failSeverity: number
     maxSeverity: number
+    facts: AffectedObjectFact[]
+    risks: number
+    warnings: number
 }
 
 const severities = ["Critical", "High", "Medium", "Low", "Info"] as const
@@ -76,6 +93,43 @@ const statusBadge: Record<Status, string> = {
     Other: "bg-gray-100 text-gray-600 dark:bg-zinc-800 dark:text-zinc-300",
 }
 const statusMark: Record<Status, string> = { Failed: "✕", Passed: "✓", Other: "•" }
+
+const toneOrder: Tone[] = ["Risk", "Warning", "Good", "Info"]
+const toTone = (tone?: string | null): Tone => (toneOrder.includes(tone as Tone) ? (tone as Tone) : "Info")
+const toneDot = new Map<Tone, string>([
+    ["Risk", "bg-red-600"],
+    ["Warning", "bg-amber-500"],
+    ["Good", "bg-green-600"],
+    ["Info", "bg-gray-300 dark:bg-zinc-600"],
+])
+const toneValue = new Map<Tone, string>([
+    ["Risk", "text-red-700 dark:text-red-300"],
+    ["Warning", "text-amber-800 dark:text-amber-300"],
+    ["Good", "text-green-700 dark:text-green-300"],
+    ["Info", "text-gray-800 dark:text-zinc-200"],
+])
+
+// The facts behind a "2 risks" badge, for its tooltip.
+function factTitle(o: AffectedObject, tone: Tone) {
+    return o.facts
+        .filter((fact) => toTone(fact.Tone) === tone)
+        .map((fact) => `${fact.Name}: ${fact.Value}`)
+        .join("\n")
+}
+
+// "Zero Trust Assessment, 23 Oct 2026": where a fact comes from and when that data was read.
+function factSourceLabel(fact: AffectedObjectFact) {
+    const source = fact.Source || "Unknown source"
+    const date = fact.AsOf ? new Date(fact.AsOf) : null
+    return date && !Number.isNaN(date.getTime())
+        ? `${source}, ${date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}`
+        : source
+}
+
+// The distinct source labels of an object's facts, in the order they first appear.
+function factSources(facts: AffectedObjectFact[]) {
+    return [...new Set(facts.map(factSourceLabel))]
+}
 
 const referencedSources = ["GraphObjects", "Markdown"]
 
@@ -181,9 +235,7 @@ export default function AffectedObjectsPage() {
     const [sort, setSort] = useState<{ column: SortColumn; direction: 1 | -1 } | null>(null)
     const [open, setOpen] = useState<Set<string>>(new Set())
 
-    const [sheetTests, setSheetTests] = useState<TestResult[]>([])
-    const [sheetIndex, setSheetIndex] = useState(-1)
-    const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const { openTest } = useReport()
 
     // Data-driven checks share one id across several results: a check counts as failed for an
     // object when any of its results failed.
@@ -222,6 +274,14 @@ export default function AffectedObjectsPage() {
                             a.id.localeCompare(b.id)
                     )
                 const failedChecks = checks.filter((check) => check.status === "Failed")
+                // Report data can hold nulls whatever the type says, so each entry is checked.
+                const rawFacts: (AffectedObjectFact | null | undefined)[] = Array.isArray(record.Facts) ? record.Facts : []
+                const facts = rawFacts
+                    .filter((fact): fact is AffectedObjectFact => Boolean(fact?.Name && fact.Value))
+                    .map((fact, order) => ({ fact, order }))
+                    // Risks first, then warnings, keeping the order the source gave within a tone.
+                    .sort((a, b) => toneOrder.indexOf(toTone(a.fact.Tone)) - toneOrder.indexOf(toTone(b.fact.Tone)) || a.order - b.order)
+                    .map(({ fact }) => fact)
                 return {
                     key: `${record.System}|${record.Type}|${record.Id ?? ""}|${index}`,
                     record,
@@ -236,6 +296,9 @@ export default function AffectedObjectsPage() {
                     failed: failedChecks.length,
                     failSeverity: Math.max(0, ...failedChecks.map((check) => severityRank(check.severity))),
                     maxSeverity: Math.max(0, ...checks.map((check) => severityRank(check.severity))),
+                    facts,
+                    risks: facts.filter((fact) => toTone(fact.Tone) === "Risk").length,
+                    warnings: facts.filter((fact) => toTone(fact.Tone) === "Warning").length,
                 }
             }),
         [records, checksById]
@@ -323,7 +386,14 @@ export default function AffectedObjectsPage() {
                 if (activeType !== null && groupKey(o) !== activeType) return false
                 if (
                     term &&
-                    ![o.info.name, o.label, o.record.Id, o.record.Type, ...o.checks.flatMap((c) => [c.id, c.title])]
+                    ![
+                        o.info.name,
+                        o.label,
+                        o.record.Id,
+                        o.record.Type,
+                        ...o.checks.flatMap((c) => [c.id, c.title]),
+                        ...o.facts.flatMap((f) => [f.Name, f.Value]),
+                    ]
                         .filter(Boolean)
                         .some((value) => String(value).toLowerCase().includes(term))
                 )
@@ -343,17 +413,9 @@ export default function AffectedObjectsPage() {
 
     const openCheck = useCallback(
         (object: AffectedObject, checkId: string) => {
-            const order = new Map(visibleChecks(object).map((c, i) => [c.id, i]))
-            const tests = allTests
-                .filter((test) => order.has(test?.Id))
-                .sort((a, b) => (order.get(a.Id) ?? 0) - (order.get(b.Id) ?? 0))
-            const index = tests.findIndex((test) => test.Id === checkId)
-            if (index === -1) return
-            setSheetTests(tests)
-            setSheetIndex(index)
-            setIsSheetOpen(true)
+            if (visibleChecks(object).some((c) => c.id === checkId) && allTests.some((test) => test?.Id === checkId)) openTest(checkId)
         },
-        [allTests, visibleChecks]
+        [allTests, visibleChecks, openTest]
     )
 
     const onSort = (column: SortColumn) => {
@@ -380,7 +442,9 @@ export default function AffectedObjectsPage() {
         setSort(null)
     }
 
-    const rowKeys = isReferencedTab ? rows.map((o) => o.key) : []
+    // Referenced objects open to their checks; any object opens to its facts.
+    const canOpen = (o: AffectedObject) => isReferencedTab || o.facts.length > 0
+    const rowKeys = rows.filter(canOpen).map((o) => o.key)
     const allOpen = rowKeys.length > 0 && rowKeys.every((key) => open.has(key))
     const hasFilters = activeType !== null || severityFilter.size > 0 || resultFilter !== "All" || search !== "" || sort !== null
     const columnCount = isReferencedTab ? 5 : 4
@@ -390,11 +454,12 @@ export default function AffectedObjectsPage() {
             <div className="max-w-4xl">
                 <h1 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-white">Affected objects</h1>
                 <p className="text-gray-500 dark:text-gray-400">
-                    This report has no affected objects. Run{" "}
+                    This report has no affected objects: no test recorded any, the run used{" "}
                     <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm dark:bg-gray-800">
-                        Invoke-Maester -IncludeAffectedObjects
-                    </code>{" "}
-                    to collect the objects behind each result.
+                        -ExcludeAffectedObjects
+                    </code>
+                    , or an older version of Maester made it. Run Maester 3.0 without that switch to collect the objects
+                    behind each result.
                 </p>
             </div>
         )
@@ -416,23 +481,25 @@ export default function AffectedObjectsPage() {
 
     const renderRow = (o: AffectedObject) => {
         const isOpen = open.has(o.key)
-        const checks = visibleChecks(o)
+        const expandable = canOpen(o)
+        const checks = isReferencedTab ? visibleChecks(o) : []
+        const sources = factSources(o.facts)
         const top = severities.find((s) => severityRank(s) === (o.failSeverity || o.maxSeverity))
         return [
             <tr
                 key={o.key}
                 className={cn(
                     "border-b border-gray-200 dark:border-zinc-800",
-                    isReferencedTab && "cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-900"
+                    expandable && "cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-900"
                 )}
                 onClick={(event) => {
-                    if (!isReferencedTab || (event.target as HTMLElement).closest("a")) return
+                    if (!expandable || (event.target as HTMLElement).closest("a")) return
                     setOpen(toggleIn(open, o.key))
                 }}
-                aria-expanded={isReferencedTab ? isOpen : undefined}
+                aria-expanded={expandable ? isOpen : undefined}
             >
                 <td className="w-9 py-3 pl-3 pr-0 align-middle">
-                    {isReferencedTab && (
+                    {expandable && (
                         <ChevronRight className={cn("h-4 w-4 text-gray-400 transition-transform", isOpen && "rotate-90")} />
                     )}
                 </td>
@@ -465,6 +532,20 @@ export default function AffectedObjectsPage() {
                             {o.record.DisplayName && o.record.Id ? o.record.Id : o.record.Type}
                         </div>
                     ) : null}
+                    {o.risks + o.warnings > 0 && (
+                        <div className="mt-1 flex flex-wrap gap-1">
+                            {o.risks > 0 && (
+                                <Pill className="bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300" title={factTitle(o, "Risk")}>
+                                    {o.risks === 1 ? "1 risk" : `${o.risks} risks`}
+                                </Pill>
+                            )}
+                            {o.warnings > 0 && (
+                                <Pill className="bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-300" title={factTitle(o, "Warning")}>
+                                    {o.warnings} to review
+                                </Pill>
+                            )}
+                        </div>
+                    )}
                 </td>
                 {isReferencedTab ? (
                     <>
@@ -485,15 +566,40 @@ export default function AffectedObjectsPage() {
                     <td className="px-3 py-3 align-middle text-xs text-gray-400 dark:text-zinc-500">Run-level read</td>
                 )}
             </tr>,
-            isReferencedTab && isOpen ? (
+            expandable && isOpen ? (
                 <tr key={`${o.key}-checks`} className="border-b border-gray-200 bg-gray-50/60 dark:border-zinc-800 dark:bg-zinc-900/40">
                     <td
                         colSpan={columnCount}
                         className="p-0"
                         // Size the id column to this object's longest id (mono text-xs is ~0.46rem a
                         // character), capped so very long data-driven ids truncate instead.
-                        style={{ "--id-col": `${Math.min(26, Math.max(...checks.map((c) => c.id.length))) * 0.46}rem` } as CSSProperties}
+                        style={{ "--id-col": `${Math.min(26, Math.max(0, ...checks.map((c) => c.id.length))) * 0.46}rem` } as CSSProperties}
                     >
+                        {o.facts.length > 0 && (
+                            <div className={cn("py-2.5 pl-12 pr-4", checks.length > 0 && "border-b border-gray-200 dark:border-zinc-800")}>
+                                <dl className="grid grid-cols-1 gap-x-4 gap-y-1.5 sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)]">
+                                    {o.facts.map((fact, index) => {
+                                        const tone = toTone(fact.Tone)
+                                        // With one source and date the line below the list says it; otherwise each fact does.
+                                        const ownSource = sources.length > 1 ? factSourceLabel(fact) : null
+                                        return (
+                                            <div key={`${fact.Name}-${index}`} className="contents">
+                                                <dt className="flex items-center gap-2 text-xs text-gray-500 dark:text-zinc-400">
+                                                    <span className={cn("h-2 w-2 shrink-0 rounded-full", toneDot.get(tone))} aria-hidden />
+                                                    <span>{fact.Name}</span>
+                                                    {tone !== "Info" && <span className="sr-only">({tone})</span>}
+                                                </dt>
+                                                <dd className={cn("pl-4 text-sm leading-snug [overflow-wrap:anywhere] sm:pl-0", toneValue.get(tone))}>
+                                                    {fact.Value}
+                                                    {ownSource && <span className="ml-2 text-[11px] text-gray-400 dark:text-zinc-500">{ownSource}</span>}
+                                                </dd>
+                                            </div>
+                                        )
+                                    })}
+                                </dl>
+                                {sources.length === 1 && <p className="mt-2 text-[11px] text-gray-400 dark:text-zinc-500">From {sources[0]}</p>}
+                            </div>
+                        )}
                         {checks.map((c) => (
                             <button
                                 key={c.id}
@@ -601,7 +707,7 @@ export default function AffectedObjectsPage() {
             <Card className="p-0">
                 <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-4 py-3 dark:border-zinc-800">
                     <TextInput
-                        icon={MagnifyingGlassIcon}
+                        icon={Search}
                         value={search}
                         onChange={(e) => { setSearch(e.target.value) }}
                         placeholder="Search by name, id, type or check"
@@ -699,17 +805,6 @@ export default function AffectedObjectsPage() {
                 </table>
             </Card>
 
-            <Suspense fallback={null}>
-                <ResultInfoSheet
-                    Item={sheetTests.find((_, index) => index === sheetIndex) ?? null}
-                    isOpen={isSheetOpen}
-                    onClose={() => { setIsSheetOpen(false) }}
-                    onNavigateNext={sheetIndex < sheetTests.length - 1 ? () => { setSheetIndex(sheetIndex + 1) } : undefined}
-                    onNavigatePrevious={sheetIndex > 0 ? () => { setSheetIndex(sheetIndex - 1) } : undefined}
-                    currentIndex={sheetIndex !== -1 ? sheetIndex + 1 : undefined}
-                    totalCount={sheetTests.length}
-                />
-            </Suspense>
         </div>
     )
 }

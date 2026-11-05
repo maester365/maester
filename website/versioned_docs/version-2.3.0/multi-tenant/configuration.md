@@ -1,7 +1,8 @@
 ---
 title: Tenant-specific Configuration
-sidebar_label: Configuration
-sidebar_position: 3
+sidebar:
+  label: Configuration
+  order: 3
 ---
 
 # Tenant-specific Configuration

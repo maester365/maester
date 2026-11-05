@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/Button"
 import { Dialog, DialogPanel } from "@/components/ui/report"
-import { RiClipboardLine, RiCheckLine } from "@remixicon/react"
+import { Clipboard, Check } from "lucide-react"
 import { useTenant } from "@/context/TenantContext"
 import { getTestAttributeExportValues, hasTestAttributes, testAttributeExportHeaders } from "@/lib/testAttributes"
 
@@ -65,7 +65,7 @@ export default function ExcelPage() {
         <DialogPanel className="max-w-md">
           <div className="flex flex-col items-center text-center">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-              <RiCheckLine className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
             <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
               Copied to Clipboard!
@@ -95,7 +95,7 @@ export default function ExcelPage() {
           Excel
         </h1>
         <Button variant="primary" onClick={copyToClipboard}>
-          <RiClipboardLine className="mr-2 h-4 w-4" />
+          <Clipboard className="mr-2 h-4 w-4" />
           Copy to Excel
         </Button>
       </div>

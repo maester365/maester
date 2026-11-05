@@ -1,6 +1,7 @@
 ---
-title: Overview
-sidebar_position: 1
+title: Configuration overview
+sidebar:
+  order: 1
 ---
 
 # Configure Maester
@@ -21,7 +22,7 @@ Each file merges over the one before, so a tenant file only needs the values tha
 
 Instead of files next to your tests, you can pass a configuration with `Invoke-Maester -Config` (a path, an object, or several merged left to right) or the `MAESTER_CONFIG` environment variable. Then the files next to your tests are not read.
 
-:::note Upgrading from 2.x
+:::note[Upgrading from 2.x]
 In 2.x the main `./tests/maester-config.json` was maintained by the Maester team and overwritten by `Update-MaesterTests`, so your changes had to go into `./tests/Custom/maester-config.json`. Both files keep working in 3.0. A copy of the old shipped file still overrides every test's severity; keep only the rows you changed. A tenant file is now merged over the main file instead of replacing it. See [Upgrading from 2.x](../upgrading-from-2x.md#configuration).
 :::
 

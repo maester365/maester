@@ -1,0 +1,163 @@
+---
+// Layout for the pages outside the docs: home, sponsor, contributors, manifesto and the tools. Same tokens,
+// fonts and theme switch as the docs, with a marketing header and footer.
+import '../styles/theme.css';
+import '../styles/site.css';
+import Analytics from '../components/Analytics.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { CARD_HEIGHT, CARD_WIDTH, cardPath, cardUrl, defaultCard } from '../lib/og.mjs';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	/** Wider content for tools like the test builder. */
+	wide?: boolean;
+	jsonLd?: Record<string, unknown>;
+	/** Keep the page out of search engines (lists that only repeat other pages' titles). */
+	noindex?: boolean;
+}
+const { title, description, image, wide = false, jsonLd, noindex = false } = Astro.props;
+// Astro.url ends in .html at build time (build.format 'file'); the site serves pages without it.
+const pagePath = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '') || '/';
+const canonical = pagePath === '/' ? 'https://maester.dev/' : new URL(pagePath, Astro.site).href;
+const fullTitle = pagePath === '/' ? title : `${title} | Maester`;
+const nav = [
+	{ label: 'Docs', href: '/docs/intro' },
+	{ label: 'Test catalog', href: '/docs/tests' },
+	{ label: 'Packs', href: '/docs/packs' },
+	{ label: 'Blog', href: '/blog' },
+	{ label: 'Contributors', href: '/contributors' },
+	{ label: 'Maester Cloud ↗', href: 'https://maester.cloud' },
+];
+const path = pagePath;
+// A page's own image when it passes one; otherwise its card (scripts/og-images.mjs renders it after the build). The
+// home page's card is the site's own; the pages kept out of search share it.
+const section = pagePath.startsWith('/blog') ? 'Blog' : pagePath.startsWith('/contributors') ? 'Contributors' : pagePath === '/sponsor' ? 'Sponsor' : undefined;
+const card = pagePath === '/' ? { ...defaultCard, path: 'index' } : noindex ? defaultCard : { path: cardPath(pagePath), label: section, title, description };
+const ogImage = image ? new URL(image, Astro.site).href : cardUrl(card);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{fullTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex" />}
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content={ogImage} />
+		{!image && <meta property="og:image:width" content={String(CARD_WIDTH)} />}
+		{!image && <meta property="og:image:height" content={String(CARD_HEIGHT)} />}
+		<meta property="og:image:alt" content={title} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
+		{!noindex && <meta name="robots" content="max-image-preview:large" />}
+		{!image && !noindex && <meta name="maester:og" content={JSON.stringify(card)} />}
+		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+		<script is:inline>
+			// The same theme setting as the docs (Starlight keeps it in localStorage as starlight-theme).
+			(function () {
+				var stored = null;
+				try {
+					stored = localStorage.getItem('starlight-theme');
+				} catch (e) {}
+				var theme = stored === 'light' || stored === 'dark' ? stored : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.dataset.themeSetting = stored === 'light' || stored === 'dark' ? stored : 'system';
+				var channel = null;
+				try {
+					channel = localStorage.getItem('maester-channel');
+				} catch (e) {}
+				document.documentElement.dataset.channel = channel === 'stable' ? 'stable' : 'preview';
+			})();
+		</script>
+		<Analytics />
+	</head>
+	<body>
+		<a class="skip" href="#main">Skip to content</a>
+		<header class="site-header">
+			<div class="site-header__inner">
+				<a href="/" class="site-logo" aria-label="Maester home">
+					<img src="/img/logo.svg" alt="" width="28" height="28" />
+					<span>Maester</span>
+				</a>
+				<nav aria-label="Main" class="site-nav">
+					{nav.map((item) => <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>)}
+				</nav>
+				<div class="site-header__right">
+					<a class="site-btn site-btn--ghost site-sponsor" href="/sponsor">
+						<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#db2777" d="M8 14.25s-6-3.6-6-8.1C2 3.8 3.7 2.5 5.4 2.5c1.2 0 2.1.7 2.6 1.6.5-.9 1.4-1.6 2.6-1.6 1.7 0 3.4 1.3 3.4 3.65 0 4.5-6 8.1-6 8.1z"></path></svg>
+						Sponsor
+					</a>
+					<a class="site-btn site-btn--ghost" href="https://github.com/maester365/maester" aria-label="Maester on GitHub">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17.6 4.7 18.6 5 18.6 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z"></path></svg>
+						<span class="site-hide-sm">GitHub</span>
+					</a>
+					<ThemeToggle />
+					<a class="site-btn site-btn--primary" href="/docs/installation">Get started</a>
+					<details class="site-menu">
+						<summary class="site-btn site-btn--ghost" aria-label="Menu">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+						</summary>
+						<nav class="site-menu__panel" aria-label="Main">
+							{nav.map((item) => <a href={item.href} aria-current={path.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>)}
+							<a href="/sponsor">Sponsor</a>
+							<a href="https://github.com/maester365/maester">GitHub</a>
+						</nav>
+					</details>
+				</div>
+			</div>
+		</header>
+		<main id="main" class:list={['site-main', { 'site-main--wide': wide }]}>
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<div class="site-footer__inner">
+				<div class="site-footer__brand">
+					<strong>Maester</strong>
+					<p>Open-source security testing for Microsoft 365, Entra, Azure and Active Directory. Pronounced "may-ster".</p>
+				</div>
+				<div>
+					<h2>Product</h2>
+					<a href="/docs/tests">Test catalog</a>
+					<a href="/docs/packs">Maester Packs</a>
+					<a href="/docs/packs/zero-trust-assessment">Zero Trust Assessment</a>
+					<a href="/blog/maester-3-0">What's new in 3.0</a>
+				</div>
+				<div>
+					<h2>Docs</h2>
+					<a href="/docs/installation">Install</a>
+					<a href="/docs/preview">Get the preview</a>
+					<a href="/docs/monitoring">Automate</a>
+					<a href="/docs/writing-tests">Write tests</a>
+					<a href="/docs/commands">Commands</a>
+				</div>
+				<div>
+					<h2>Community</h2>
+					<a href="https://discord.maester.dev">Discord</a>
+					<a href="/contributors">Contributors</a>
+					<a href="/sponsor">Sponsor</a>
+					<a href="/manifesto">Manifesto</a>
+					<a href="https://twitter.com/maester365">X / Twitter</a>
+				</div>
+				<div>
+					<h2>Maester Cloud</h2>
+					<a href="https://maester.cloud">Overview</a>
+					<a href="https://packs.maester.cloud">Packs site</a>
+				</div>
+			</div>
+			<div class="site-footer__legal">© {new Date().getFullYear()} Maester Team · MIT licence</div>
+		</footer>
+	</body>
+</html>

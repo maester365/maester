@@ -1,6 +1,7 @@
 ---
 title: Advanced guide
-sidebar_position: 3
+sidebar:
+  order: 3
 ---
 
 ## Overview
