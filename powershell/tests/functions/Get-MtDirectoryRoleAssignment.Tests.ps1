@@ -123,6 +123,17 @@ Describe 'Get-MtDirectoryRoleAssignment' -Tag 'Unit' {
         }
     }
 
+    It 'leaves the objects Graph returned unchanged' {
+        Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
+        $cached = [pscustomobject]@{ id = 'pim-active-1'; roleDefinitionId = 'role-1'; assignmentType = 'Assigned' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest { $cached }.GetNewClosure() -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignmentScheduleInstances' }
+
+        $result = Get-MtDirectoryRoleAssignment -MemberStatus Active
+
+        $result.Assignments.AssignmentType | Should -Be 'Active'
+        $cached.assignmentType | Should -Be 'Assigned'
+    }
+
     It 'uses the Graph cache unless asked not to' {
         Mock -ModuleName Maester Get-MtLicenseInformation { 'P1' }
 

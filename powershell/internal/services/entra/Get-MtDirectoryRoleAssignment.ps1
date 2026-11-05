@@ -72,7 +72,10 @@ function Get-MtDirectoryRoleAssignment {
 
         foreach ($assignment in @(Invoke-MtGraphRequest @params)) {
             if ($null -eq $assignment) { continue }
-            $assignment | Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $AssignmentType -Force -PassThru
+            # Copy before setting AssignmentType: property names are case-insensitive, so this replaces Graph's own
+            # assignmentType, and the session cache returns these same objects to every later caller.
+            $assignment | Select-Object -Property * |
+                Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $AssignmentType -Force -PassThru
         }
     }
 
