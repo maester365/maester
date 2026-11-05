@@ -4,7 +4,7 @@ Entra ID Protection rates a user's risk and tracks a risk state for each flagged
 
 This check reports users whose risk level is **medium** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a user's risk state.
 
-If a reported user holds a privileged directory role, active or PIM-eligible, the result lists the role and the severity is raised to Medium, since even a medium-risk flag on an admin account warrants prompt investigation.
+If a reported user holds a privileged directory role, active or PIM-eligible, the result lists the role and the severity is raised to High, since even a medium-risk flag on an admin account warrants prompt investigation.
 
 The check needs the Microsoft Graph permission `IdentityRiskyUser.Read.All`, which Maester does not request by default. Without it the check is skipped. To identify privileged users, it also reads directory roles, which needs `RoleManagement.Read.Directory` or `RoleManagement.Read.All`. If those reads fail, the users are still reported with a note. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
 

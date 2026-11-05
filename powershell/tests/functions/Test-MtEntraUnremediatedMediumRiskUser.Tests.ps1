@@ -173,7 +173,7 @@
             }
         }
 
-        It 'raises severity to Medium and lists the role when an at-risk user holds a privileged role' {
+        It 'raises severity to High and lists the role when an at-risk user holds a privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'user-2'; roleDefinitionId = 'role-ga'; AssignmentType = 'Active' })
@@ -182,7 +182,7 @@
             }
 
             Test-MtEntraUnremediatedMediumRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'Medium'
+            $script:Severity | Should -Be 'High'
             $script:TestResult | Should -Match 'Global Administrator'
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             $script:TestResult.IndexOf('bob@contoso.com') | Should -BeLessThan $script:TestResult.IndexOf('alice@contoso.com')
@@ -197,7 +197,7 @@
             }
 
             Test-MtEntraUnremediatedMediumRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'Medium'
+            $script:Severity | Should -Be 'High'
             $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
         }
 
