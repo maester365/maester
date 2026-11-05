@@ -25,7 +25,9 @@ and `Get-MtPack` lists it.
 
 ## Run it
 
-Install the assessment's module once, connect Maester to the tenant, then name the pack:
+Install the assessment's module once, connect Maester to the tenant, then name the pack. ZeroTrustAssessment 3.1.0 needs
+PowerShell 7.6 or later (Maester itself runs on 7.4); on an older PowerShell the pack is skipped and says so.
+
 
 ```powershell
 Install-Module ZeroTrustAssessment -Scope CurrentUser

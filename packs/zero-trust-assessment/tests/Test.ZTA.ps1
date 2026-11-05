@@ -209,6 +209,10 @@ function Invoke-MtZtaCollection {
     if (-not $module) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'The ZeroTrustAssessment module is not installed. Run Install-Module ZeroTrustAssessment -Scope CurrentUser, or set ZeroTrustAssessment.ReportPath to a report from an earlier run.'
     }
+    # The module can need a newer PowerShell than Maester does (3.1.0 needs 7.6): it is listed but will not load.
+    if ($module.PowerShellVersion -and $PSVersionTable.PSVersion -lt $module.PowerShellVersion) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "ZeroTrustAssessment $($module.Version) needs PowerShell $($module.PowerShellVersion) or later, and this is PowerShell $($PSVersionTable.PSVersion). Update PowerShell, or set ZeroTrustAssessment.ReportPath to a report from an earlier run."
+    }
 
     $outputPath = [string](Get-MtSetting -Name 'ZeroTrustAssessment.OutputPath' -Default '')
     $temporary = [string]::IsNullOrWhiteSpace($outputPath)
