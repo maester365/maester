@@ -21,7 +21,7 @@
         Title = 'High-risk service principals should not be left unremediated in Entra ID Protection.',
         Product = 'entra',
         Feature = 'identity-protection',
-        Area = 'logging-and-detection',
+        Area = 'applications',
         ResourceType = 'ServicePrincipal',
         Severity = 'Medium',
         UserImpact = 'Low',
