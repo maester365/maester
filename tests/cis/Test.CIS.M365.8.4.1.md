@@ -1,39 +1,37 @@
-﻿8.4.1 (L1) Ensure app permission policies are configured
+﻿Users can't install third-party or custom Teams apps by default, and can't interact with custom apps in preview.
 
-This policy setting controls which class of apps are available for users to install.
+Third-party and custom apps can read and act on Teams data on behalf of users. An app that a user adds without review may be malicious, unverified or over-privileged, and custom apps in preview can be uploaded without admin approval. Turning these defaults off means that only apps an admin has made available can be used. Admins can still make individual apps available to everyone or to specific users and groups on the **Manage apps** page; the org-wide settings apply to apps whose availability hasn't been set.
 
-#### Rationale
-
-Allowing users to install third-party or unverified apps poses a potential risk of introducing malicious software to the environment.
-
-#### Impact
-
-Users will only be able to install approved classes of apps.
+The test reads the org-wide app settings with `Get-M365UnifiedTenantSettings` (`GlobalApp` for third-party apps and `PrivateApp` for custom apps must be `None`) and `Get-CsTeamsSettingsCustomApp` (`IsSideloadedAppsInteractionEnabled` must be `False`). Microsoft doesn't support `Get-M365UnifiedTenantSettings` with application-based Teams authentication, and the documented Graph teams-app-settings endpoint doesn't support application permissions for these settings. The test skips when the Teams settings cmdlet reports unsupported application authentication; it does not use `Get-MgContext`, which describes the separate Graph session. Run 8.4.1 with delegated Teams authentication.
 
 #### Remediation action
 
-1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-2. Click to expand **Teams apps**, then select **Permission policies**.
-3. Select the **Global (Org-wide default)** policy.
-4. Under **Third-party apps**, set to **Block all apps** (or **Allow specific apps and block all others**).
-5. Under **Custom apps**, set to **Block all apps** (or **Allow specific apps and block all others**).
-6. Click **Save**.
+1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
+2. Go to **Teams apps** > [**Manage apps**](https://admin.teams.microsoft.com/policies/manage-apps).
+3. Select **Actions** > **Org-wide app settings**.
+4. Under **Third-party apps**, turn off **Let users install and use available apps by default**.
+5. Under **Custom apps**, turn off **Let users install and use available apps by default**.
+6. Under **Custom apps**, turn off **Let users interact with custom apps in preview**.
+7. Select **Save**.
 
 ##### PowerShell
 
 1. Connect to Teams PowerShell using `Connect-MicrosoftTeams`.
-2. Run the following command to block all third-party and custom apps:
+2. Run the following commands:
 
 ```powershell
-Set-CsTeamsAppPermissionPolicy -Identity Global -GlobalCatalogAppsType AllowedAppList -GlobalCatalogApps @() -PrivateCatalogAppsType AllowedAppList -PrivateCatalogApps @()
+Update-M365UnifiedTenantSettings -SettingName GlobalApp -SettingValue None
+Update-M365UnifiedTenantSettings -SettingName PrivateApp -SettingValue None
+Set-CsTeamsSettingsCustomApp -isSideloadedAppsInteractionEnabled $false
 ```
 
 #### Related links
 
-* [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Manage app permission policies in Microsoft Teams](https://learn.microsoft.com/microsoftteams/teams-app-permission-policies)
-* [Set-CsTeamsAppPermissionPolicy](https://learn.microsoft.com/powershell/module/teams/set-csteamsapppermissionpolicy)
-* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - Page 526](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Microsoft Teams admin center - Manage apps](https://admin.teams.microsoft.com/policies/manage-apps)
+* [App centric management to manage user access to Teams apps](https://learn.microsoft.com/microsoftteams/app-centric-management)
+* [Manage custom app policies and settings](https://learn.microsoft.com/microsoftteams/teams-custom-app-policies-and-settings)
+* [Update-M365UnifiedTenantSettings](https://learn.microsoft.com/powershell/module/microsoftteams/update-m365unifiedtenantsettings)
+* [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 8.4.1](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

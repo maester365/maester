@@ -1,16 +1,22 @@
 ﻿function Test-MtCisThirdPartyFileSharing {
     <#
     .SYNOPSIS
-    Ensure third-party file sharing cloud services in Teams are disabled
+    Ensure external file sharing in Teams is enabled for only approved cloud storage services
 
     .DESCRIPTION
-    Ensure third-party file sharing cloud services in Teams are disabled
+    Checks that the third-party cloud storage services in the Global Teams client configuration are turned off,
+    except those the organization has approved.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.1.1)
 
     .EXAMPLE
     Test-MtCisThirdPartyFileSharing
 
-    Returns true if all third-party file sharing cloud services in Teams are disabled
+    Returns true if every third-party cloud storage service in Teams is turned off
+
+    .EXAMPLE
+    Test-MtCisThirdPartyFileSharing -ApprovedProviders Box
+
+    Returns true if every third-party cloud storage service in Teams except Box is turned off
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyFileSharing
@@ -33,32 +39,43 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Cloud storage services the organization has approved for file sharing in Teams, which may stay turned on.
+        [ValidateSet('Dropbox', 'Box', 'GoogleDrive', 'ShareFile', 'Egnyte')]
+        [string[]] $ApprovedProviders
+    )
 
-    Write-Verbose 'Test-MtCisThirdPartyFileSharing: Checking if third-party file sharing cloud services in Teams are disabled'
+    Write-Verbose 'Test-MtCisThirdPartyFileSharing: Checking that only approved third-party cloud storage services are turned on in Teams'
 
-    $return = $true
-    $thirdPartyCloudServices = Get-CsTeamsClientConfiguration -Identity Global | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+    $clientConfig = Get-CsTeamsClientConfiguration -Identity Global
+    if ($null -eq $clientConfig) {
+        Add-MtTestResultDetail -Result 'The Global Teams client configuration was not returned, so the third-party cloud storage settings could not be confirmed.'
+        return $false
+    }
 
     $passResult = '✅ Pass'
     $failResult = '❌ Fail'
 
-    $result = "| Policy | Value | Status |`n"
-    $result += "| --- | --- | --- |`n"
+    $result = "| Setting | Value | Approved | Status |`n"
+    $result += "| --- | --- | --- | --- |`n"
 
-    foreach ($thirdPartyProvider in ($thirdPartyCloudServices.PSObject.Properties)) {
-        if ($thirdPartyProvider.Value -eq $false) {
-            $result += "| $($thirdPartyProvider.Name) | $($thirdPartyProvider.Value) | $passResult |`n"
+    $return = $true
+    foreach ($provider in 'Dropbox', 'Box', 'GoogleDrive', 'ShareFile', 'Egnyte') {
+        $setting = "Allow$provider"
+        $value = $clientConfig.$setting
+        $approved = $provider -in $ApprovedProviders
+        if ($value -eq $false -or ($approved -and $value -eq $true)) {
+            $result += "| $setting | $value | $(if ($approved) { 'Yes' } else { 'No' }) | $passResult |`n"
         } else {
-            $result += "| $($thirdPartyProvider.Name) | $($thirdPartyProvider.Value) | $failResult |`n"
+            $result += "| $setting | $(if ($null -eq $value) { 'Not found' } else { $value }) | $(if ($approved) { 'Yes' } else { 'No' }) | $failResult |`n"
             $return = $false
         }
     }
 
     if ($return) {
-        $testResultMarkdown = "Well done. All third-party cloud services are disabled.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Only approved third-party cloud storage services are turned on in Teams.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "All or specific third-party cloud services are enabled.`n`n%TestResult%"
+        $testResultMarkdown = "Third-party cloud storage services that are not approved are turned on in Teams. Turn them off, or add them to the ApprovedProviders parameter if the organization has approved them.`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
