@@ -137,7 +137,7 @@
     $resultMd = "| Domain | Classification | Applied policy | Record found at | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultText = if ($null -eq $row.Pass -and $row.Investigate) { 'Investigate' } elseif ($null -eq $row.Pass) { 'Not checked' } elseif ($row.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $resultText = if ($row.Investigate) { 'Investigate' } elseif ($null -eq $row.Pass) { 'Not checked' } elseif ($row.Pass) { '✅ Pass' } else { '❌ Fail' }
         $resultMd += "| $($row.Domain) | $($row.Classification) | $($row.Policy) | $($row.Source) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $resultText |`n"
     }
 

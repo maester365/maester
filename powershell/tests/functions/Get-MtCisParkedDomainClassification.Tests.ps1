@@ -17,12 +17,13 @@
 
     BeforeEach {
         $script:dnsResults = @{}
+        $script:dnsDefaultStatus = 'Success'
         Mock Resolve-MtDnsRecord -ModuleName Maester {
             $key = "$Type|$Name"
             if ($script:dnsResults.ContainsKey($key)) {
                 return $script:dnsResults[$key]
             }
-            return ConvertTo-TestDnsResult -Name $Name -Type $Type
+            return ConvertTo-TestDnsResult -Name $Name -Type $Type -Status $script:dnsDefaultStatus
         }
     }
 
@@ -59,6 +60,17 @@
 
         $result.Classification | Should -Be 'Parked'
         $result.SpfDeniesAll | Should -BeFalse
+    }
+
+    It 'does not treat a neutral SPF policy as proof that the domain is not sending' {
+        $script:dnsResults['TXT|uncertain.example'] = ConvertTo-TestDnsResult -Name 'uncertain.example' -Type TXT -Answers @(
+            [pscustomobject]@{ Value = 'v=spf1 ?all'; Preference = $null }
+        )
+
+        $result = Get-MtCisParkedDomainClassification -DomainName 'uncertain.example'
+
+        $result.Classification | Should -Be 'Unknown'
+        $result.IsParked | Should -BeFalse
     }
 
     It 'does not accept a parked hard-fail record with a trailing modifier' {
@@ -180,6 +192,15 @@
 
         $result.Classification | Should -Be 'Unknown'
         $result.IsParked | Should -BeFalse
+    }
+
+    It 'reports when the DNS resolver is unavailable for every lookup' {
+        $script:dnsDefaultStatus = 'NotAvailable'
+
+        $result = Get-MtCisParkedDomainClassification -DomainName 'unknown.example'
+
+        $result.Classification | Should -Be 'Unknown'
+        $result.DnsResolverUnavailable | Should -BeTrue
     }
 
     It 'leaves redirect-only SPF unknown until the redirect target is evaluated' {

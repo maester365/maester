@@ -6,6 +6,7 @@
     }
 
     BeforeEach {
+        Clear-MtDnsCache
         Mock Resolve-DnsName -ModuleName Maester {}
     }
 
@@ -39,6 +40,43 @@
         $result = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
 
         $result.Answers[0].Value | Should -Be 'v=spf1 -all'
+    }
+
+    It 'keeps an empty TXT record without discarding other answers' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            @(
+                [pscustomobject]@{ Section = 'Answer'; Type = 'TXT'; Strings = @('') }
+                [pscustomobject]@{ Section = 'Answer'; Type = 'TXT'; Strings = @('v=spf1 -all') }
+            )
+        }
+
+        $result = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
+
+        $result.Status | Should -Be 'Success'
+        $result.Answers.Count | Should -Be 2
+        $result.Answers.Value | Should -Contain ''
+        $result.Answers.Value | Should -Contain 'v=spf1 -all'
+    }
+
+    It 'caches results by case-insensitive DNS name and record type' {
+        Mock Resolve-DnsName -ModuleName Maester {
+            [pscustomobject]@{ Section = 'Answer'; Type = 'TXT'; Strings = @('v=spf1 -all') }
+        }
+
+        $first = Resolve-MtDnsRecord -Name 'Example.com.' -Type TXT
+        $second = Resolve-MtDnsRecord -Name 'example.COM' -Type TXT
+
+        $second.Answers[0].Value | Should -Be $first.Answers[0].Value
+        Should -Invoke Resolve-DnsName -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $Name -eq 'Example.com.' -and $Type -eq 'TXT'
+        }
+
+        Clear-MtDnsCache
+        $null = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
+
+        Should -Invoke Resolve-DnsName -ModuleName Maester -Exactly 2 -ParameterFilter {
+            $Type -eq 'TXT'
+        }
     }
 
     It 'returns success with no answers when the record type is absent' {
@@ -103,6 +141,7 @@ Describe 'Resolve-MtDnsRecord with Resolve-Dns' -Skip:$IsWindows {
     }
 
     BeforeEach {
+        Clear-MtDnsCache
         Mock Resolve-Dns -ModuleName Maester {}
     }
 
@@ -138,6 +177,51 @@ Describe 'Resolve-MtDnsRecord with Resolve-Dns' -Skip:$IsWindows {
         $result = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
 
         $result.Answers[0].Value | Should -Be 'v=spf1 -all'
+    }
+
+    It 'keeps an empty TXT record without discarding other answers' {
+        Mock Resolve-Dns -ModuleName Maester {
+            [pscustomobject]@{
+                HasError = $false
+                Header   = [pscustomobject]@{ ResponseCode = 'NoError' }
+                Answers  = @(
+                    [pscustomobject]@{ RecordType = 'TXT'; Text = @('') }
+                    [pscustomobject]@{ RecordType = 'TXT'; Text = @('v=spf1 -all') }
+                )
+            }
+        }
+
+        $result = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
+
+        $result.Status | Should -Be 'Success'
+        $result.Answers.Count | Should -Be 2
+        $result.Answers.Value | Should -Contain ''
+        $result.Answers.Value | Should -Contain 'v=spf1 -all'
+    }
+
+    It 'caches results by case-insensitive DNS name and record type' {
+        Mock Resolve-Dns -ModuleName Maester {
+            [pscustomobject]@{
+                HasError = $false
+                Header   = [pscustomobject]@{ ResponseCode = 'NoError' }
+                Answers  = @([pscustomobject]@{ RecordType = 'TXT'; Text = @('v=spf1 -all') })
+            }
+        }
+
+        $first = Resolve-MtDnsRecord -Name 'Example.com.' -Type TXT
+        $second = Resolve-MtDnsRecord -Name 'example.COM' -Type TXT
+
+        $second.Answers[0].Value | Should -Be $first.Answers[0].Value
+        Should -Invoke Resolve-Dns -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $Query -eq 'Example.com.' -and $QueryType -eq 'TXT'
+        }
+
+        Clear-MtDnsCache
+        $null = Resolve-MtDnsRecord -Name 'example.com' -Type TXT
+
+        Should -Invoke Resolve-Dns -ModuleName Maester -Exactly 2 -ParameterFilter {
+            $QueryType -eq 'TXT'
+        }
     }
 
     It 'distinguishes a missing DNS name from a resolver failure' {

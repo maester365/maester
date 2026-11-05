@@ -133,6 +133,8 @@
 
         Test-MtCisDmarcRecordsPublished | Should -BeTrue
         $script:resultDetail.Investigate | Should -BeTrue
+        $script:resultDetail.Result | Should -Match '\| unknown\.example \| Unknown .* \| Investigate \|'
+        $script:resultDetail.Result | Should -Not -Match '\| unknown\.example .*✅ Pass \|'
     }
 
     It 'applies an explicit parked override and requires reject policy' {

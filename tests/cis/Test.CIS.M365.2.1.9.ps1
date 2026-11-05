@@ -30,7 +30,7 @@
         Control = ('cis-m365:2.1.9', 'nist-800-53-r5:SC-8'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
-        Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech')
+        Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -88,6 +88,18 @@
         }
 
         if ($classification.Classification -eq 'Unknown') {
+            if ($classification.DnsResolverUnavailable) {
+                $dkimRecords += [PSCustomObject]@{
+                    domain         = $domain.DomainName
+                    classification = $classification.Classification
+                    pass           = 'NotSupported'
+                    reason         = "DNS resolver is unavailable, so sending use and selector records cannot be evaluated. $($classification.Reason)"
+                    exchangeStatus = 'Not determined'
+                    dkimRecord     = $null
+                }
+                continue
+            }
+
             $dkimRecords += [PSCustomObject]@{
                 domain         = $domain.DomainName
                 classification = $classification.Classification
@@ -158,7 +170,7 @@
         } elseif ($domain.DomainName -like '*.onmicrosoft.com') {
             $dkimRecord.reason = "Recommendation: Disable sending from domain"
         } elseif ($dkimRecord.dkimRecord -like '*not available') {
-            $dkimRecord.pass = 'Skipped'
+            $dkimRecord.pass = 'NotSupported'
             $dkimRecord.reason = $dkimRecord.dkimRecord
         } else {
             $dkimRecord.reason = $dkimRecord.dkimRecord
@@ -167,14 +179,21 @@
         $dkimRecords += $dkimRecord
     }
 
-if ('Failed' -in $dkimRecords.pass) {
+    if ('Failed' -in $dkimRecords.pass) {
         $testResult = $false
-    } elseif ('Investigate' -in $dkimRecords.pass) {
+    }
+    elseif ('Investigate' -in $dkimRecords.pass) {
         $testResult = $true
-    } elseif ('Passed' -notin $dkimRecords.pass) {
+    }
+    elseif ('NotSupported' -in $dkimRecords.pass -and 'Passed' -notin $dkimRecords.pass) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    }
+    elseif ('Passed' -notin $dkimRecords.pass) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
-    } else {
+    }
+    else {
         $testResult = $true
     }
 
@@ -195,6 +214,7 @@ if ('Failed' -in $dkimRecords.pass) {
         switch ($item.pass) {
             'Passed' { $itemResult = $passResult }
             'Skipped' { $itemResult = $skipResult }
+            'NotSupported' { $itemResult = $skipResult }
             'Failed' { $itemResult = $failResult }
             'Investigate' { $itemResult = '🔎 Investigate' }
         }

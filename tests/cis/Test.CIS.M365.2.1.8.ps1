@@ -138,8 +138,6 @@
     } elseif ($unchecked.Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
-    } elseif ($investigated.Count -gt 0) {
-        $testResult = $true
     } else {
         $testResult = $true
     }

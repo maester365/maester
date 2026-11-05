@@ -144,6 +144,19 @@ Describe 'CIS DKIM domain classification outcomes' {
         $script:detail.Investigate | Should -BeTrue
     }
 
+    It 'skips with NotSupported when the DNS resolver is unavailable' {
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            [PSCustomObject]@{
+                Classification         = 'Unknown'
+                DnsResolverUnavailable = $true
+                Reason                 = 'DNS resolver is unavailable.'
+            }
+        }
+
+        Test-MtCisDkim | Should -BeNullOrEmpty
+        $script:detail.SkippedBecause | Should -Be 'NotSupported'
+    }
+
     It 'fails a parked override when DKIM evidence remains' {
         Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
             $classification = if ($ParkedDomains -contains $DomainName) { 'Parked' } else { 'Sending' }

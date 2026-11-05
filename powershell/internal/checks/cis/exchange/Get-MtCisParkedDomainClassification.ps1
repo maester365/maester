@@ -55,7 +55,7 @@
         $null
     }
     $spfHardFailAtEnd = $spfRecord -match '(?i)(?:^|\s)-all\s*$'
-    $spfDoesNotAuthorizeSenders = $spfAllTerms.Count -eq 1 -and $spfAllQualifier -in @('-', '~', '?') -and $spfOtherTerms.Count -eq 0
+    $spfDoesNotAuthorizeSenders = $spfAllTerms.Count -eq 1 -and $spfAllQualifier -in @('-', '~') -and $spfOtherTerms.Count -eq 0
     $spfHasSenderMechanisms = $spfRecord -and -not $spfDoesNotAuthorizeSenders -and ($spfOtherTerms.Count -gt 0 -or $spfAllQualifier -eq '+')
 
     $domainConfigs = @($DkimSigningConfigs | Where-Object {
@@ -137,6 +137,7 @@
         DkimEvidence   = $hasDkimEvidence
         DkimSelectorRecordEvidence = $hasDkimSelectorRecordEvidence
         DkimSelectorLookupsComplete = $unknownDkimLookups.Count -eq 0
+        DnsResolverUnavailable = @($lookups.GetEnumerator() | Where-Object { $_.Value.Status -ne 'NotAvailable' }).Count -eq 0
         Reason         = $reason
     }
 }

@@ -24,6 +24,16 @@
         [string]$Type
     )
 
+    if ($null -eq $__MtSession.DnsRecordCache) {
+        $__MtSession.DnsRecordCache = @{}
+    }
+
+    $cacheKey = "$($Type.ToUpperInvariant())|$($Name.TrimEnd('.').ToLowerInvariant())"
+    if ($__MtSession.DnsRecordCache.ContainsKey($cacheKey)) {
+        Write-Verbose "DNS record exists in cache for $Type $Name - Use Clear-MtDnsCache to reset"
+        return $__MtSession.DnsRecordCache[$cacheKey]
+    }
+
     $result = [pscustomobject]@{
         Name    = $Name
         Type    = $Type
@@ -40,6 +50,7 @@
         } catch [System.Management.Automation.CommandNotFoundException] {
             $result.Status = 'NotAvailable'
             $result.Error = 'Unsupported platform, Resolve-DnsName not available'
+            $__MtSession.DnsRecordCache[$cacheKey] = $result
             return $result
         } catch {
             if ($_.FullyQualifiedErrorId -like 'DNS_ERROR_RCODE_NAME_ERROR*') {
@@ -48,12 +59,14 @@
                 $result.Status = 'Error'
                 $result.Error = "$_"
             }
+            $__MtSession.DnsRecordCache[$cacheKey] = $result
             return $result
         }
     } else {
         if (-not (Get-Command -Name 'Resolve-Dns' -ErrorAction SilentlyContinue)) {
             $result.Status = 'NotAvailable'
             $result.Error = 'Missing dependency, Resolve-Dns not available'
+            $__MtSession.DnsRecordCache[$cacheKey] = $result
             return $result
         }
 
@@ -66,12 +79,14 @@
                     $result.Status = 'Error'
                     $result.Error = $response.ErrorMessage
                 }
+                $__MtSession.DnsRecordCache[$cacheKey] = $result
                 return $result
             }
             $answers = @($response.Answers | Where-Object { "$($_.RecordType)" -eq $Type })
         } catch {
             $result.Status = 'Error'
             $result.Error = "$_"
+            $__MtSession.DnsRecordCache[$cacheKey] = $result
             return $result
         }
     }
@@ -115,10 +130,11 @@
             }
         }
 
-        if ($null -eq $value -or [string]::IsNullOrWhiteSpace([string]$value)) {
+        if ($null -eq $value -or ($Type -ne 'TXT' -and [string]::IsNullOrWhiteSpace([string]$value))) {
             $result.Status = 'Error'
             $result.Error = "The DNS resolver returned an unusable $Type answer for $Name."
             $result.Answers = [object[]]@()
+            $__MtSession.DnsRecordCache[$cacheKey] = $result
             return $result
         }
 
@@ -128,5 +144,6 @@
         }
     }
 
+    $__MtSession.DnsRecordCache[$cacheKey] = $result
     return $result
 }
