@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6N01KSW500Y1NVJ7N35ST3M",
+  "strategy": "manual-commit",
+  "branch": "claude/defenders-path-m6-1e0678",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/step-sources.yaml",
+    ".gitignore",
+    "build/steps/Find-MtStepCandidate.ps1",
+    "build/steps/README.md",
+    "build/steps/Test-MtStepSource.ps1",
+    "build/steps/Update-MtLearnMirror.ps1",
+    "build/steps/helpers/ConvertTo-MtLearnKey.ps1",
+    "build/steps/helpers/Get-MtLearnLink.ps1",
+    "build/steps/helpers/Get-MtStepSource.ps1",
+    "build/steps/helpers/Invoke-MtGit.ps1",
+    "build/steps/helpers/Read-MtLearnIndex.ps1",
+    "build/steps/helpers/Resolve-MtLearnPage.ps1",
+    "build/steps/helpers/Split-MtLearnFrontMatter.ps1",
+    "powershell/tests/general/StepTooling.Tests.ps1"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 192,
+    "cache_creation_tokens": 302842,
+    "cache_read_tokens": 22876411,
+    "output_tokens": 165220,
+    "api_call_count": 95
+  },
+  "redaction": {
+    "replacements": 544,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 11,
+      "credentialed_uri": 0,
+      "entropy": 532,
+      "key_context": 1,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
