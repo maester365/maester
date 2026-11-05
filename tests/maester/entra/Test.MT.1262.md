@@ -1,6 +1,6 @@
 High-risk service principals should not be left unremediated in Entra ID Protection.
 
-Entra ID Protection rates the risk of workload identities (service principals) and tracks a risk state for each flagged one. Signals include leaked credentials, suspicious sign-ins, suspicious API traffic and Microsoft threat intelligence. A high-risk flag only clears when an admin remediates it, dismisses it, or confirms the service principal safe. Until then the app stays exposed: the signals that triggered the flag have not been addressed, and unlike a user, a service principal can't be stopped by multifactor authentication.
+Entra ID Protection rates the risk of workload identities (service principals) and tracks a risk state for each flagged one. Signals include leaked credentials, suspicious sign-ins, suspicious API traffic and Microsoft threat intelligence. A high-risk flag only clears when an admin remediates or dismisses it. Until then the app stays exposed: the signals that triggered the flag have not been addressed, and unlike a user, a service principal can't be stopped by multifactor authentication.
 
 This check reports service principals whose risk level is **high** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a service principal's risk state.
 

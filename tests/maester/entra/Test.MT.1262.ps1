@@ -4,8 +4,8 @@
     Finds service principals that Entra ID Protection rates high risk and that nobody has remediated.
     .DESCRIPTION
     Entra ID Protection flags service principals (workload identities) it believes are compromised
-    and assigns a risk level and a risk state. A flag only clears when an admin remediates it,
-    dismisses it, or confirms it safe. This check reports service principals whose risk level is
+    and assigns a risk level and a risk state. A flag only clears when an admin remediates or
+    dismisses it. This check reports service principals whose risk level is
     high and whose risk state still shows active, unremediated risk, so an admin can act on flags
     that have been left sitting. If a reported service principal holds a privileged directory role,
     the severity is raised to High. It reads risk only; it never changes a service principal's risk state.
