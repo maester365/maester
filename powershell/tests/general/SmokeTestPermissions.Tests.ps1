@@ -9,18 +9,48 @@ Describe 'Smoke test application permissions' {
 
         $script:SetupDoc = Join-Path (Resolve-Path "$PSScriptRoot/../../..").Path '.github/workflows/maester-action-smoke-test.md'
 
-        # The scopes the setup list asks for: the bullet items of the application-permission step,
-        # each a single back-quoted scope on its own line.
+        # The bullet items of the application-permission step, and only that step: it opens with the
+        # sentence naming Get-MtGraphScope and ends where the next numbered step begins. Reading the
+        # whole document instead would count a back-quoted bullet anywhere in it as a scope.
+        $lines = @(Get-Content -Path $script:SetupDoc)
+        $script:StepStart = -1
+        $stepEnd = -1
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            if ($script:StepStart -lt 0) {
+                if ($lines[$i] -match 'default read-only scopes returned by') { $script:StepStart = $i }
+            } elseif ($lines[$i] -match '^\s*\d+\.\s') {
+                $stepEnd = $i - 1
+                break
+            }
+        }
+        if ($stepEnd -lt 0) { $stepEnd = $lines.Count - 1 }
+
+        $script:ScopeShape = '^\s*-\s+`([A-Za-z0-9.\-]+)`\s*$'
+        $script:StepBullets = @()
+        if ($script:StepStart -ge 0) {
+            $script:StepBullets = @($lines[$script:StepStart..$stepEnd] | Where-Object { $_ -match '^\s*-\s' })
+        }
+
+        # The scopes the setup list asks for: each a single back-quoted scope on its own line.
         $script:DocumentedScopes = @(
-            Get-Content -Path $script:SetupDoc |
-                ForEach-Object { if ($_ -match '^\s*-\s+`([A-Za-z0-9.\-]+)`\s*$') { $Matches[1] } }
+            $script:StepBullets | ForEach-Object { if ($_ -match $script:ScopeShape) { $Matches[1] } }
         )
 
         $script:DefaultScopes = @(Get-MtGraphScope)
     }
 
     It 'finds the application-permission list in the setup document' {
+        $script:StepStart | Should -BeGreaterOrEqual 0 -Because 'the rest of this file compares against that step'
         $script:DocumentedScopes.Count | Should -BeGreaterThan 0 -Because 'the rest of this file compares against that list'
+    }
+
+    It 'reads every bullet of the application-permission step as a scope' {
+        $unreadable = @($script:StepBullets | Where-Object { $_ -notmatch $script:ScopeShape })
+        $unreadable | Should -BeNullOrEmpty -Because (
+            "a bullet this test cannot read is a permission it cannot compare, so it would be " +
+            "granted and admin-consented without ever being checked against Get-MtGraphScope: " +
+            "write each one as a single back-quoted scope on its own line, or update this test " +
+            "with the new shape. Unreadable: $($unreadable -join ' | ')")
     }
 
     It 'documents every default scope' {
