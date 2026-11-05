@@ -113,6 +113,9 @@ function Invoke-MtTest {
     $savedConfig = $__MtSession.MaesterConfig
     $insideRun = $null -ne $savedConfig -and -not [string]::IsNullOrEmpty([Maester.Engine.MtSession]::GetCurrentTest())
     $ownsConfig = -not $insideRun -or $null -ne $Config
+    # Invoke-Maester sets the admin portal URLs at the start of each run. Outside a run, they are set for this call
+    # from the current connection; without them, the portal links that tests build are relative (#view/...).
+    if (-not $insideRun) { Initialize-MtSession }
     try {
         if ($ownsConfig) {
             $searchPath = if ($Path) { $(if (Test-Path -LiteralPath $Path -PathType Container) { $Path } else { Split-Path $Path -Parent }) } else { (Get-Location).Path }

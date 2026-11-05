@@ -208,6 +208,27 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         $row.ReasonCode | Should -Be 'InvalidConfiguration'
     }
 
+    Context 'Admin portal URLs' {
+        BeforeAll { $script:savedPortalUrl = InModuleScope Maester { $__MtSession.AdminPortalUrl } }
+        AfterAll { InModuleScope Maester -Parameters @{ Saved = $script:savedPortalUrl } { param($Saved) $__MtSession.AdminPortalUrl = $Saved } }
+
+        It 'Sets them when no run has set them' {
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            InModuleScope Maester { $__MtSession.AdminPortalUrl = @{} }
+            $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'portal') -Id 'INV.3' -Attribute "Service = 'None'"
+            $null = Invoke-MtTest -Path $file
+            InModuleScope Maester { $__MtSession.AdminPortalUrl.Entra } | Should -Be 'https://entra.microsoft.com/'
+        }
+
+        It 'Sets them again instead of keeping the ones of a finished run' {
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            InModuleScope Maester { $__MtSession.AdminPortalUrl = @{ Entra = 'https://entra.microsoft.us/' } }
+            $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'portal-again') -Id 'INV.4' -Attribute "Service = 'None'"
+            $null = Invoke-MtTest -Path $file
+            InModuleScope Maester { $__MtSession.AdminPortalUrl.Entra } | Should -Be 'https://entra.microsoft.com/'
+        }
+    }
+
     It 'Runs the error-path fixtures with the contract outcomes' {
         $expected = (Get-Content (Join-Path $script:fixtures 'expected.json') -Raw | ConvertFrom-Json).fixtures | Where-Object { $_.id -ne 'FIXTURE.0017' }
         $rows = @(Invoke-MtTest -Path $script:fixtures -Id ($expected.id) 6>$null 3>$null)
