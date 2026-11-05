@@ -43,6 +43,7 @@
     [OutputType([bool])]
     param()
 
+    # Deleted users stay in the risk report and admins cannot dismiss them, so they are not reported.
     # Active, unremediated risk states. A flag an admin has handled moves to 'remediated',
     # 'dismissed', 'confirmedSafe' or 'none'; those are intentionally excluded.
     # 'confirmedCompromised' MUST be treated as unremediated alongside 'atRisk' -- confirming a
@@ -58,7 +59,7 @@
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'identityProtection/riskyUsers' `
                 -Filter "riskLevel eq 'medium'" `
-                -Select @('id', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
+                -Select @('id', 'isDeleted', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
         )
     } catch {
         if ($_.Exception.Message -match '(?i)403|forbidden|authorization') {
@@ -69,7 +70,7 @@
     }
 
     $Unremediated = @(
-        $MediumRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState }
+        $MediumRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState -and $_.isDeleted -ne $true }
     )
     Write-Verbose "Found $($MediumRiskUsers.Count) medium-risk user(s); $($Unremediated.Count) unremediated."
 
