@@ -549,3 +549,8 @@ html:has(.mt-app) { scrollbar-width: thin; scrollbar-color: var(--mt-line) trans
     radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--mt-ink) 22%, transparent), transparent) left / 12px 100% no-repeat scroll,
     radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--mt-ink) 22%, transparent), transparent) right / 12px 100% no-repeat scroll;
 }
+
+/* The GitHub mark is black (website/public/report-icons/v1/products/README.md): white in dark mode. */
+.dark img.mt-pm[data-product="github"] {
+  filter: invert(1);
+}

@@ -1028,6 +1028,18 @@ const bars = { Critical: 4, High: 3, Medium: 2, Low: 1, Info: 0 } as Record<stri
 		padding: 0.5rem;
 		vertical-align: top;
 	}
+	/* The whole row opens the check: the ID's link covers the row. */
+	tbody tr {
+		position: relative;
+	}
+	tbody tr:hover {
+		background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+	}
+	.mt-cat__id a::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
 	.mt-cat__id {
 		font-family: var(--sl-font-mono);
 		font-size: 0.8rem;

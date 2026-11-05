@@ -19,7 +19,8 @@ const previewOnly = commandIsPreviewOnly || Boolean(test?.previewOnly) || Boolea
 const what = test ? 'check' : isCommand ? 'command' : 'page';
 const name = test?.id ?? commandName;
 // List pages (the catalog, each suite, the tags, the commands index) are tables, and the test builder is a form
-// beside its code: give them the full width.
+// beside its code: give them the full width, from the sidebar's edge. A test page has no contents list, so Starlight
+// would centre it in the space; it starts at the sidebar's edge too.
 const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags))?$/.test(id) || id === 'docs/commands' || id === 'test-builder';
 ---
 
@@ -27,10 +28,11 @@ const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags))?
 	isList && (
 		<style
 			is:inline
-			set:html={`html:root { --sl-content-width: 76rem; } .sl-markdown-content td:first-child { white-space: nowrap; } .sl-markdown-content table { width: 100%; }`}
+			set:html={`html:root { --sl-content-width: 76rem; } .sl-container { max-width: none; margin-inline: 0; } .sl-markdown-content td:first-child { white-space: nowrap; } .sl-markdown-content table { width: 100%; }`}
 		/>
 	)
 }
+{test && <style is:inline set:html={`html:root { --sl-content-width: 64rem; } .sl-container { margin-inline: 0; }`} />}
 {
 	/* A command page: room for the syntax and parameter tables (its contents list is short, so a narrower right column),
 	   and a title that fits the longest command names. */
@@ -42,7 +44,7 @@ const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags))?
 	)
 }
 
-<div class:list={['mt-title', { 'mt-title--command': isCommand, 'mt-title--long': isCommand && commandName!.length > 26 }]}>
+<div class:list={['mt-title', { 'mt-title--command': isCommand, 'mt-title--long': isCommand && commandName!.length > 26, 'mt-title--test': Boolean(test) }]}>
 	<Default />
 	{isDoc && <CopyPage />}
 </div>
@@ -131,6 +133,11 @@ const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags))?
 		font-size: clamp(1.6rem, 1rem + 1.6vw, 2.4rem);
 		line-height: 1.2;
 		overflow-wrap: anywhere;
+	}
+	/* Test titles are sentences, often two lines: smaller than a page title, so the check itself is in view. */
+	.mt-title--test :global(h1#_top) {
+		font-size: clamp(1.5rem, 1.1rem + 1vw, 2.1rem);
+		line-height: 1.2;
 	}
 	.mt-title--long :global(h1#_top) {
 		font-size: clamp(1.4rem, 0.75rem + 1.2vw, 2rem);
