@@ -12,7 +12,7 @@ The check needs the Microsoft Graph permission `SecurityEvents.Read.All`, which 
 
 #### Remediation action
 
-Open each failed improvement action in the [Microsoft Secure Score](https://security.microsoft.com/securescore) page of the Microsoft Defender portal and follow its implementation steps. If an improvement action does not apply to your tenant, or is already covered by another product, set its status to **Risk accepted**, **Resolved through third party** or **Resolved through alternate mitigation** in the Defender portal; Maester then skips it on the next run.
+Open each failed improvement action in the [Microsoft Secure Score](https://security.microsoft.com/securescore) page of the Microsoft Defender portal and follow its implementation steps. If an improvement action does not apply to your tenant, or is already covered by another product, set its status to **Risk accepted**, **Resolved through third party** or **Resolved through alternate mitigation** in the Defender portal; Maester then skips it on the next run. Improvement actions in the Device category can't be given a status there; Microsoft directs you to the matching Defender Vulnerability Management recommendation instead.
 
 #### Related links
 

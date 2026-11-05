@@ -1,4 +1,4 @@
-function Get-MtSecureScoreControlInstance {
+﻿function Get-MtSecureScoreControlInstance {
     <#
     .SYNOPSIS
     Returns one MT.1264 instance per Microsoft Secure Score control the tenant is scored on.
@@ -150,6 +150,7 @@ function Test-MtSecureScoreControl {
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
+        Cloud = ('Commercial', 'GCC', 'GCCHigh', 'DoD'),
         Service = 'Graph',
         Permission = 'Graph:Scope:SecurityEvents.Read.All',
         Lifecycle = 'Preview',

@@ -1,4 +1,4 @@
-Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
+﻿Describe 'Microsoft Secure Score improvement actions (MT.1264)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
