@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6N04HCCCFV04AJ5RKPCBYHQ",
   "strategy": "manual-commit",
   "branch": "feat/website-test-explorer",
-  "checkpoints_count": 1,
+  "checkpoints_count": 3,
   "files_touched": [
     "website/src/components/TestBuilder/index.jsx",
     "website/src/components/TestBuilder/styles.module.css",
@@ -16,25 +16,32 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 6,
-    "cache_creation_tokens": 2787,
-    "cache_read_tokens": 1082608,
-    "output_tokens": 831,
-    "api_call_count": 3
+    "input_tokens": 48,
+    "cache_creation_tokens": 15750,
+    "cache_read_tokens": 5604885,
+    "output_tokens": 7314,
+    "api_call_count": 21
   },
   "redaction": {
-    "replacements": 546,
+    "replacements": 1114,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 11,
       "credentialed_uri": 0,
-      "entropy": 534,
-      "key_context": 1,
+      "entropy": 1094,
+      "key_context": 9,
       "provider_token": 0,
       "shell_stdin": 0
     }
