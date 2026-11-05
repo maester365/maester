@@ -32,6 +32,7 @@ function Get-MtDirectoryRoleAssignment {
     [OutputType([pscustomobject])]
     param(
         # Only return assignments of these role definitions. Assignments of every role are returned when omitted.
+        # Up to three roles are read with one filtered request each; more are read in one request and filtered here.
         [guid[]]$RoleId,
 
         # The type of assignments to return. Default is both Eligible and Active.
@@ -77,8 +78,14 @@ function Get-MtDirectoryRoleAssignment {
 
     $active = $MemberStatus -ne 'Eligible'
     $eligible = $MemberStatus -ne 'Active'
-    # One request per role, or a single unfiltered request when no role is given
-    $roleFilters = @(if ($RoleId) { $RoleId | ForEach-Object { "roleDefinitionId eq '$_'" } } else { '' })
+    # One request per role for a few roles. For more, or when no role is given, a single unfiltered
+    # request: the requests run one after another, and the PIM APIs can take a second or two each, so
+    # a check asking for every administrator role (around 100) would otherwise spend minutes here.
+    $filterLocally = $RoleId.Count -gt 3
+    $roleFilters = @(if ($RoleId -and -not $filterLocally) { $RoleId | ForEach-Object { "roleDefinitionId eq '$_'" } } else { '' })
+    if ($filterLocally -and $Select -and $Select -notcontains 'roleDefinitionId') {
+        $Select = @($Select) + 'roleDefinitionId'
+    }
 
     $pim = (Get-MtLicenseInformation -Product EntraID) -in @('P2', 'Governance')
     $assignments = [System.Collections.Generic.List[object]]::new()
@@ -119,8 +126,15 @@ function Get-MtDirectoryRoleAssignment {
         }
     }
 
+    $result = $assignments.ToArray()
+    if ($filterLocally) {
+        $roleIdSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($id in $RoleId) { $null = $roleIdSet.Add([string]$id) }
+        $result = @($result | Where-Object { $roleIdSet.Contains([string]$_.roleDefinitionId) })
+    }
+
     [pscustomobject]@{
-        Assignments     = $assignments.ToArray()
+        Assignments     = $result
         EligibleChecked = $eligible -and $pim
     }
 }
