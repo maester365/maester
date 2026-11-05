@@ -213,8 +213,11 @@ const AUTHORS_SHOWN = 6;
 
 			const allProducts = this.querySelector<HTMLButtonElement>('[data-all-products]');
 			allProducts?.addEventListener('click', () => {
-				for (const item of this.querySelectorAll<HTMLElement>('[data-extra-product]')) item.hidden = false;
+				const extra = [...this.querySelectorAll<HTMLElement>('[data-extra-product]')];
+				for (const item of extra) item.hidden = false;
 				allProducts.hidden = true;
+				// The button goes away: keyboard focus moves to the first product it revealed.
+				extra[0]?.focus();
 			});
 
 			// On a page that lists checks the search filters it; elsewhere it opens All checks with the words.
