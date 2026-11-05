@@ -562,16 +562,17 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		align-items: center;
 		gap: 0.4rem 0.9rem;
 		padding: 0.7rem 0.8rem 0.7rem 1rem;
-		border-radius: 12px;
-		background: #18181b;
-		color: #fafafa;
+		border: 1px solid var(--mt-code-line);
+		border-radius: 0.75rem;
+		background: var(--mt-code-bg);
+		color: var(--mt-code-ink);
 	}
 	.mt-cl__cmdlabel {
 		font-family: var(--sl-font-mono);
 		font-size: 0.68rem;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: #a1a1aa;
+		color: var(--mt-code-muted);
 	}
 	.mt-cl__cmd code {
 		flex: 1 1 18rem;
@@ -582,14 +583,14 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		padding: 0;
 		font-family: var(--sl-font-mono);
 		font-size: 0.85rem;
-		color: #fafafa;
+		color: var(--mt-code-ink);
 	}
 	.mt-cl__cmd button {
-		border: 0;
+		border: 1px solid var(--mt-code-line);
 		border-radius: 7px;
 		padding: 0.35rem 0.75rem;
-		background: #3f3f46;
-		color: #fff;
+		background: var(--mt-code-btn);
+		color: var(--mt-code-ink);
 		font: inherit;
 		font-size: 0.8rem;
 		font-weight: 600;
@@ -598,7 +599,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 	.mt-cl__cmdnote {
 		flex-basis: 100%;
 		font-size: 0.78rem;
-		color: #a1a1aa;
+		color: var(--mt-code-muted);
 	}
 	.mt-cl__toolbar {
 		display: flex;

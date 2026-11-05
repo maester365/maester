@@ -22,6 +22,12 @@
 	--mt-new-soft: rgba(34, 197, 94, 0.12);
 	--mt-new-ink: #86efac;
 	--mt-radius: 12px;
+	/* Command boxes outside Markdown code blocks: the colours of Expressive Code's github themes. */
+	--mt-code-bg: #0d1117;
+	--mt-code-line: #3d444d;
+	--mt-code-ink: #f0f6fc;
+	--mt-code-muted: #9198a1;
+	--mt-code-btn: #212830;
 
 	--sl-font: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--sl-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -60,6 +66,11 @@
 	--mt-warn-ink: #92400e;
 	--mt-new-soft: #dcfce7;
 	--mt-new-ink: #166534;
+	--mt-code-bg: #ffffff;
+	--mt-code-line: #d1d9e0;
+	--mt-code-ink: #1f2328;
+	--mt-code-muted: #59636e;
+	--mt-code-btn: #f6f8fa;
 
 	--sl-color-accent-low: #fde8e8;
 	--sl-color-accent: #d22c31;
@@ -252,4 +263,31 @@ h1#_top {
 /* Exchange's logo fills half of its canvas (as in the report): draw it at the size of the other product icons. */
 img[src$='/products/exchange.png'] {
 	transform: scale(1.8);
+}
+
+/* The one-line note at the end of a Microsoft Zero Trust Assessment check page. */
+.mt-ms-note {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-top: 2rem !important;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid #dbe7f5;
+	border-radius: 0.75rem;
+	background: #f3f8fd;
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-2);
+}
+.mt-ms-note__logo {
+	flex: none;
+	width: 1rem;
+	height: 1rem;
+}
+.mt-ms-note a {
+	color: inherit;
+	font-weight: 600;
+}
+:root[data-theme='dark'] .mt-ms-note {
+	border-color: rgba(96, 165, 250, 0.2);
+	background: rgba(96, 165, 250, 0.07);
 }

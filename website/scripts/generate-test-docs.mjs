@@ -718,14 +718,11 @@ function renderPackTestPage(pack, test, explorer, text) {
   if (test.license.length) body.push(`| Licence | ${escapeTable(test.license.join(", "))} |`);
   if (test.tenantType.length) body.push(`| Tenant | ${escapeTable(test.tenantType.join(", "))} |`);
   body.push("", "Product, feature, area and ATT&CK are Maester's: the assessment does not record them, so Maester keeps them in the pack's `taxonomy.json`.", "", "</details>", "");
-  body.push(
-    ":::note[From Microsoft]",
-    `A check of the [${pack.name}](/docs/tests/packs/${pack.slug}) pack, written and maintained by Microsoft. Maester runs the assessment and shows the result in its report, beside Maester's own checks.`,
-    "",
-    `The overview and remediation are from Microsoft's ${pack.module || "Zero Trust Assessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}, © Microsoft Corporation, under the MIT licence.`,
-    ":::",
-    "",
-  );
+  // One line at the end: whose check it is and where its text comes from (the MIT licence asks for the notice).
+  const msLogo = '<svg class="mt-ms-note__logo" viewBox="0 0 21 21" aria-hidden="true"><rect width="10" height="10" fill="#f25022"/><rect x="11" width="10" height="10" fill="#7fba00"/><rect y="11" width="10" height="10" fill="#00a4ef"/><rect x="11" y="11" width="10" height="10" fill="#ffb900"/></svg>';
+  const moduleName = `${pack.module || "ZeroTrustAssessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}`;
+  body.push(`<p class="mt-ms-note not-content">${msLogo}<span>A Microsoft check, part of the <a href="/docs/tests/packs/${pack.slug}">${pack.name.replace(/^Microsoft /, "")}</a> pack. Text from ${moduleName}, © Microsoft, MIT licence.</span></p>`, "");
+
   const summary = description ? summarize(description) : "";
   const metaDescription = summary ? shorten(summary, 155) : shorten(`${test.title.replace(/\.$/, "")}: a ${pack.name} check, with its severity, effort and the product it is about.`, 155);
   return `---

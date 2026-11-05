@@ -187,21 +187,22 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 		gap: 0.9rem;
 		align-items: center;
 		padding: 0.7rem 1rem;
-		border-radius: 12px;
-		background: #18181b;
+		border: 1px solid var(--mt-code-line);
+		border-radius: 0.75rem;
+		background: var(--mt-code-bg);
 	}
 	.mt-fw__cmd span {
 		font-family: var(--sl-font-mono);
 		font-size: 0.68rem;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: #a1a1aa;
+		color: var(--mt-code-muted);
 	}
 	.mt-fw__cmd code {
 		background: none;
 		border: 0;
 		padding: 0;
-		color: #fafafa;
+		color: var(--mt-code-ink);
 		font-size: 0.85rem;
 	}
 	.mt-fw__toolbar {
