@@ -1,0 +1,13 @@
+i'm doing a run now and this has been runing for 5 min
+
+---
+
+Yes, fix it
+
+---
+
+can you check the zero trust implementation and compare with this
+
+---
+
+yes add it, but remember zta might not be run by a user and the vw db will not be there.can you confirm there is no dependency in our change...also CISA and CIS have their definition of which roles are privileged and we need to stay consisten with their individual definitions but the actual logic for querying graph can be shared...
