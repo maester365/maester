@@ -1,0 +1,26 @@
+The test builder form is not very usable right now. eg see attached issue. Also the form inputs don't have borders and it is not very clear. Also feels very cluttered with a lot of help text around it. how can we move some of the help away, maybe they can be a flyover from the left etc..
+
+---
+
+can you run in tlcallt so i can review
+
+---
+
+when in test build when selecting the left nav, we should bring those into this page as a flyover from the right so they can stay in context
+
+---
+
+when we show the products lets show the icons as well
+
+---
+
+when the flyover is shown it doesn't eget idismissed when i clicke wlesehere. also look at the screen it's not being formatted correctly... also for open in an ew tab show just an icon
+
+---
+
+for add and reove permission scropes show icons with plus and delete. for operating systems show icons in the seelcteors...
+for author and contriburor can we do a lookup directly aginst github with public profile
+
+---
+
+Commit it

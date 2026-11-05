@@ -3,8 +3,9 @@
   "checkpoint_id": "01M6MX2D866HG99KCQQ3Q6FTTB",
   "strategy": "manual-commit",
   "branch": "feat/website-test-explorer",
-  "checkpoints_count": 3,
+  "checkpoints_count": 6,
   "files_touched": [
+    "website/src/components/TestBuilder/GitHubPeople.jsx",
     "website/src/components/TestBuilder/generate.js",
     "website/src/components/TestBuilder/index.jsx",
     "website/src/components/TestBuilder/styles.module.css",
@@ -28,25 +29,32 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 0,
-    "cache_creation_tokens": 0,
-    "cache_read_tokens": 0,
-    "output_tokens": 0,
-    "api_call_count": 0
+    "input_tokens": 4,
+    "cache_creation_tokens": 594,
+    "cache_read_tokens": 244835,
+    "output_tokens": 420,
+    "api_call_count": 1
   },
   "redaction": {
-    "replacements": 1625,
+    "replacements": 2186,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 1596,
-      "key_context": 29,
+      "entropy": 2151,
+      "key_context": 35,
       "provider_token": 0,
       "shell_stdin": 0
     }
