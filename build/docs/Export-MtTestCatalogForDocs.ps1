@@ -14,7 +14,8 @@
     A test of a suite that implements a published benchmark also has Benchmark, from the framework file of its
     suite (tests/<suite>/frameworks/<key>.json): Framework, Version, Requirement and the requirement's own
     facts, such as the CIS level and profiles. Its Control lists the controls of other frameworks that the
-    requirement relates to. Benchmark is null for every other test. Frameworks at the top level gives the Name,
+    requirement relates to. Benchmark is null for every other test. Step lists the steps of the defender's path
+    the test verifies (powershell/assets/steps), which the goal pages of the site list. Frameworks at the top level gives the Name,
     Version and Url of each framework by Key.
 
     Packs lists the packs that ship with Maester (packs/<name>/maester-pack.json) with the tests of their catalog,
@@ -88,6 +89,7 @@ $catalog = foreach ($t in $sorted) {
         ImplementationCost = if ($t.ImplementationCost) { "$($t.ImplementationCost)" } else { '' }
         Mitre              = ConvertTo-StringArray $t.Mitre
         Control            = ConvertTo-StringArray $t.Control
+        Step               = ConvertTo-StringArray $t.Step
         Benchmark          = $t.Benchmark
         Service            = ConvertTo-StringArray $t.Service
         License            = ConvertTo-StringArray $t.License

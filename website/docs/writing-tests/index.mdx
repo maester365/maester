@@ -187,7 +187,7 @@ A value that breaks these rules, an unknown property, or a value outside the all
 message says a property or value "may come from a newer version of Maester", the test was written for a later
 release than the one you run.
 
-The attribute answers six questions about a test. Only `Id` and `Title` are required in a custom test; a test
+The attribute answers seven questions about a test. Only `Id` and `Title` are required in a custom test; a test
 that ships with Maester must also answer the others marked "Built-in tests". The
 [attribute rubric](./attribute-rubric.md) says how to choose each value.
 
@@ -197,6 +197,7 @@ that ships with Maester must also answer the others marked "Built-in tests". The
 | What is it about? | `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType` |
 | What do I fix first? | `Severity`, `UserImpact`, `ImplementationCost` |
 | What does it map to? | `Mitre`, `Control` |
+| What has to be fixed before it? | `Step` |
 | Can it run here? | `Service`, `License`, `Permission`, `TenantType`, `Cloud`, `Platform` |
 | Is it current? | `Lifecycle`, `ReplacedBy` |
 
@@ -214,6 +215,7 @@ that ships with Maester must also answer the others marked "Built-in tests". The
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | Built-in tests, unless `Severity` is `Info` | Empty | How much administrator work the recommended fix takes. |
 | `Mitre` | string[] | MITRE ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Built-in tests | None | The techniques the checked control prevents or detects. `None` cannot be combined with an ID. |
 | `Control` | string[] | `<framework-key>:<requirement-id>`, for example `cis-m365:5.1.5.1` or `nist-800-53-r5:IA-2(1)` | No | None | The requirements of frameworks the test implements or supports. The first one that a framework file knows becomes the `Benchmark` of the result. See [Mapping a test to a framework](#mapping-a-test-to-a-framework). |
+| `Step` | string[] | Step IDs from the step catalogue, written `<product>.<name>` | No | None | The steps of the [defender's path](../defenders-path/readme.mdx) the test verifies. At most three. See [Step](#step). |
 | `Service` | string[] | A name from the service registry (below), or `None` | Built-in tests | No requirement | Services that must **all** be connected. |
 | `License` | string[] | Service plan names, not product names; `&` joins plans | No | No requirement | The tenant needs **any one** element. See [License](#license). |
 | `Permission` | string[] | `<Service>:<Kind>:<Name>`; `\|` joins alternatives | No | None | The permissions the test needs. The identity needs **every** element, and **any one** alternative inside an element. Recorded on the result row; not enforced in 3.0. See [Permission](#permission). |
@@ -264,6 +266,123 @@ Tags are not how Maester classifies a test. Product, feature, area, suite and se
 `Invoke-Maester` selects by them with `-Product`, `-Feature`, `-Area`, `-Suite` and `-Severity`. The tests that
 ship with Maester carry no tags for those things. The tags they had in Maester 2.x, such as `CA` or `CIS`, still
 select the same tests; see [Selection](../configuration/run-configuration.md#selection).
+
+### Step
+
+`Step` names the steps of the [defender's path](../defenders-path/readme.mdx) that the test verifies. A step is
+one change an administrator makes, or one state the tenant must reach, and the step catalogue says what has to be
+done before it. With `Step`, the report can tell a reader that a failed check is blocked by another one, and in
+which order to fix them.
+
+```powershell
+[MaesterTest(
+    Id      = 'MT.1001',
+    Title   = 'At least one Conditional Access policy is configured with device compliance.',
+    Product = 'entra',
+    Feature = 'conditional-access',
+    Step    = 'entra.ca-require-compliant-device'
+    # ...
+)]
+```
+
+- A value is a step ID, `<product>.<name>`: a product key from the taxonomy, a dot and a lowercase kebab-case
+  name, at most 80 characters. It is stored in lowercase.
+- Usually one value, at most three. A test that checks more than three steps is several tests.
+- A test that ships with Maester must name steps that are in the catalogue, or the build fails. A custom test or a
+  pack test may name any step of the catalogue. A step the catalogue does not have stays on the row with a warning
+  and is left out of the defender's path.
+- Name a step only when a tenant set up the way Microsoft Learn describes passes the test. A test may check less
+  than the step; it is then one of the step's verifying tests. A test that fails Learn's own setup, for example
+  because it rejects a control Learn now recommends, names no step until it is fixed.
+- Tests with different definitions of done get different steps, even when they read the same setting. MT.1001
+  needs device compliance, so it names `entra.ca-require-compliant-device`. CISA MS.AAD.3.7 accepts a compliant
+  or a hybrid joined device, so it names `entra.ca-require-managed-device`. One step must never pass and fail in
+  the same run.
+- Tests in different suites that check the same thing name the same step. That is how a CIS, a CISA and a Maester
+  check of one setting fall into one place.
+- `Step` is not a tag and adds none. `Invoke-Maester -Step` and `Get-MtTest -Step` select by it.
+- Pester-format tests have no `Step`.
+
+#### Add a step to the catalogue
+
+The catalogue is in [`powershell/assets/steps`](https://github.com/maester365/maester/tree/main/powershell/assets/steps):
+`goals.json` holds the goals, and `<product>.json` the steps of one product. A step's file is named after the
+product in its ID. `steps.schema.json` describes both, so an editor checks them as you type.
+
+```json
+{
+  "Id": "intune.devices-compliant",
+  "Title": "Devices that sign in are compliant",
+  "Summary": "Most devices that sign in are enrolled in Intune and marked compliant, so requiring compliance blocks few users.",
+  "Requires": ["intune.compliance-policies"],
+  "RecommendedFirst": ["intune.automatic-enrollment"],
+  "Measure": { "Key": "devices-compliant", "MinimumShare": 95 },
+  "Sources": [
+    {
+      "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
+      "Mirror": "entra-docs-mirror",
+      "Note": "Only devices registered in Microsoft Entra ID and enrolled in Intune can be marked compliant, so unenrolled devices fail a compliant-device policy.",
+      "Reviewed": "2026-11-05"
+    }
+  ]
+}
+```
+
+| Field | Required | Rule |
+| --- | --- | --- |
+| `Id` | Yes | `<product>.<name>`. Stable once shipped, like a test ID |
+| `Title` | Yes | One line. Imperative for a change ("Assign…"), a statement for a state ("Devices that sign in are compliant") |
+| `Summary` | Yes | One sentence on what changes for users or the tenant |
+| `Requires` | No | Steps that must be done first, or the change fails or locks users out |
+| `RequiresOneOf` | No | Groups of at least two steps. Any one step in a group is enough |
+| `RecommendedFirst` | No | Steps that make this one safer or more useful. They never block |
+| `Conflicts` | No | Steps that must be off before this one can be on |
+| `OnlyWhen` | No | Conditions that must all hold, or the step is Not applicable: `hybrid-identity`, or `license:<service plan>` (plans joined with `&`) |
+| `Rollout` | No | Ordered sentences on how to switch the step on safely |
+| `Sources` | Yes | At least one. See below |
+| `Measure` | No | `{ "Key": "<measure key>", "MinimumShare": <1 to 100> }`, for a step that is a state of the tenant. The key is an entry of `powershell/assets/MaesterMeasures.psd1` |
+| `Unchecked` | When no test names the step and it has no `Measure` | One sentence on why Maester can't check it yet, naming the Zero Trust Assessment checks that cover it, if any |
+
+Each source is a Microsoft Learn page:
+
+- `Url` is the Learn URL with no locale (`https://learn.microsoft.com/entra/...`, not `.../en-us/entra/...`), as in
+  the check guides.
+- `Mirror` names the Learn mirror repository that holds the page, such as `entra-docs-mirror`.
+- `Note` says, in Maester's own words, what the page says about order, in 200 characters or less. Never copy
+  Microsoft's text.
+- `Reviewed` is the date you last read the page against the step, as `yyyy-MM-dd`.
+- A relationship that Learn does not document can cite a maintainer instead: `{ "Maintainer": "<GitHub handle>",
+  "Note": "...", "Reviewed": "..." }`. Keep these rare. The unit tests fail when they are more than 10% of the sources.
+
+A step has no severity, cost or licence of its own; those stay on its tests. Every step must belong to a goal: be a
+goal's `Step`, or a prerequisite of one. A goal in `goals.json` has an `Id` (lowercase kebab-case with no product
+prefix, because a goal often spans products), a `Title`, a `Summary` and the `Step` that achieves it. Its steps are
+not listed: they are that step and its prerequisites at any depth.
+
+`./build/Build-MaesterModule.ps1` and `powershell/tests/general/StepCatalog.Tests.ps1` check the catalogue: the
+schema, that every ID a relationship or a test names exists, that the relationships have no cycle, the conditions,
+the measures and the length of each `Note`. Each goal's page on maester.dev is built from the catalogue, so a new
+goal or step needs no page of its own.
+
+#### Keep the catalogue current
+
+The sources are read from public mirrors of Microsoft Learn that keep each page in git. The scripts in
+[`build/steps`](https://github.com/maester365/maester/tree/main/build/steps) work from them:
+
+| Script | What it does |
+| --- | --- |
+| `Update-MtLearnMirror.ps1` | Clones or updates the mirrors into `build/steps/.cache` and indexes them by URL, following Learn's redirects |
+| `Test-MtStepSource.ps1` | Lists the sources whose page changed since its `Reviewed` date, and exits 1 when any did |
+| `Find-MtStepCandidate.ps1` | Pulls the prerequisite sections and the sentences about order from the pages that check guides and sources link, for a maintainer to review |
+
+```powershell
+./build/steps/Update-MtLearnMirror.ps1
+./build/steps/Test-MtStepSource.ps1 -Step 'entra.*' -ShowDiff
+```
+
+None of them writes to the catalogue. A weekly workflow runs `Test-MtStepSource.ps1` and keeps one issue open with
+the sources that changed. Re-read each page, change the step if Learn changed what comes first, and set
+`Reviewed` to the day you read it.
 
 ## The Markdown file
 

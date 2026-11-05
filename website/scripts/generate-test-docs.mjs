@@ -13,6 +13,7 @@ import { computeContributorData, snapshotPath } from "./contributors.mjs";
 import { tagGroupFor, tagGroupNames } from "./tag-groups.mjs";
 import { summarize } from "../src/lib/summary.mjs";
 import { writeExplorerData } from "./catalog-explorer.mjs";
+import { goalPath, loadStepCatalog, stepUrl } from "./step-catalog.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
@@ -437,6 +438,7 @@ function buildInventory(catalog) {
       mitre: (test.Mitre ?? []).map(mitreLabelFor),
       benchmark: test.Benchmark ?? null,
       controls: test.Control ?? [],
+      steps: test.Step ?? [],
       tags,
       legacyTags,
       services: test.Service ?? [],
@@ -467,6 +469,20 @@ function pagePathFor(test) {
   return join(docsTestsRoot, test.suite, `${test.id}.md`);
 }
 
+// The steps of the defender's path the test verifies (its Step attribute), each linked to the goal page that lists it.
+let stepCatalog = null;
+function renderStepNote(test) {
+  if (test.steps.length === 0) return [];
+  stepCatalog ??= loadStepCatalog();
+  const links = test.steps.map((id) => {
+    const step = stepCatalog.steps.get(id);
+    if (!step?.Home) return `\`${id}\``;
+    const goals = step.Goals.map((g) => `[${jsxText(stepCatalog.goals.find((x) => x.Id === g).Title)}](${goalPath(g)})`);
+    return `[${jsxText(step.Title)}](${stepUrl(step)}) (\`${id}\`), a step of ${goals.length === 1 ? "the goal" : "the goals"} ${goals.join(", ")}`;
+  });
+  return [`**Defender's path:** this check verifies ${links.join("; ")}. See [Defender's path](/docs/defenders-path).`, ""];
+}
+
 function renderTestPage(test, contributorData) {
   const body = [];
   body.push(generatedMarker);
@@ -477,6 +493,7 @@ function renderTestPage(test, contributorData) {
   body.push(`<p class="test-part">Part of ${part.join(" · ")} · <a href="/docs/tests">All checks</a></p>`, "");
   body.push("```powershell title=\"Run this check\"", `Invoke-Maester -TestId ${test.id}${test.lifecycle === "Preview" ? " -IncludePreview" : ""}`, "```", "");
   body.push("## Overview", "", test.markdown || test.helpDescription || test.description, "");
+  body.push(...renderStepNote(test));
   body.push("## Details", "", "<details>", "<summary>Every attribute of this check</summary>", "");
   body.push("| Field | Value |", "| --- | --- |");
   body.push(`| Test ID | ${escapeTable(test.id)} |`);

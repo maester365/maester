@@ -112,6 +112,8 @@ export default defineConfig({
 								{ label: 'Connect', items: [{ autogenerate: { directory: 'docs/connect-maester' } }] },
 								{ label: 'Choose what to run', items: [{ autogenerate: { directory: 'docs/configuration' } }] },
 								{ label: 'Results', items: ['docs/export-results', 'docs/result-schema', 'docs/ca-what-if'] },
+								// The concept page, then one generated page per goal (scripts/generate-goal-pages.mjs).
+								{ label: "Defender's path", items: [{ autogenerate: { directory: 'docs/defenders-path' } }] },
 								{ label: 'Automate', items: [{ autogenerate: { directory: 'docs/monitoring' } }] },
 								{ label: 'Alerts', items: [{ autogenerate: { directory: 'docs/alerts' } }] },
 								{ label: 'Many tenants', items: [{ autogenerate: { directory: 'docs/multi-tenant' } }] },
