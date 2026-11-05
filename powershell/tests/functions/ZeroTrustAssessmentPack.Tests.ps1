@@ -246,6 +246,20 @@ Describe 'Zero Trust Assessment pack' {
             (Get-ZtaFact -Type ConfigurationPolicy -Id pol-1 -Name 'Assignments').Value | Should -Be 'Not assigned'
         }
 
+        It 'gives facts the shared keys and raw values' {
+            $raw = {
+                param([string] $Type, [string] $Id, [string] $Key)
+                (($script:Facts | Where-Object { $_.Type -eq $Type -and $_.Id -eq $Id }).Fact | Where-Object Key -EQ $Key).Raw
+            }
+            & $raw User user-1 'user.mfaRegistered' | Should -BeFalse
+            & $raw User user-1 'user.privilegedRoles' | Should -Be @('Global Administrator')
+            & $raw User user-1 'signIn.daysSince' | Should -Be 3
+            & $raw ServicePrincipal sp-1 'signIn.daysSince' | Should -Be 295
+            & $raw ServicePrincipal sp-1 'app.highPrivilegePermissions' | Should -Be @('Directory.ReadWrite.All')
+            & $raw ServicePrincipal sp-1 'app.credentialExpired' | Should -BeTrue
+            & $raw AppRegistration app-1 'app.ownerCount' | Should -Be 0
+        }
+
         It 'reads no model file as data' {
             $script:Facts.Id | Should -Not -Contain 'model'
         }

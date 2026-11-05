@@ -225,7 +225,10 @@ up as an explicit maintenance item instead of silently reaching the report. Add 
 
 `Add-MtAffectedObjectFact` (exported, so packs and custom tests can call it) records facts about an
 object while the run collects affected objects: `Name`, `Value`, `Tone` (`Risk`, `Warning`, `Good` or
-`Info`), `Source` and `AsOf`. They are kept in `$__MtSession.AffectedObjectFacts`, keyed `System|Type|Id`,
+`Info`), `Source` and `AsOf`, and optionally a `Key` and `Raw` value for code that reads facts without
+parsing their text. The shared keys (`user.mfaRegistered`, `signIn.daysSince`, `device.managed`...) are
+listed in `website/docs/writing-tests/formatting-test-results.md` under "Fact keys"; a fact is replaced by
+one with the same `Key` (or, without one, the same `Name`) from the same `Source`. They are kept in `$__MtSession.AffectedObjectFacts`, keyed `System|Type|Id`,
 and `Get-MtAffectedObject` copies them onto the record with that key. Facts never add a record: an object
 no source found is not listed, however much is known about it. The html report embeds the facts of the
 objects that have any; the CSV joins them into one `Facts` column.

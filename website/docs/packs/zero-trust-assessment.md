@@ -233,9 +233,12 @@ need attention.
 | Enterprise application | Publisher, application permissions (Tier 0 Graph permissions, those with a path to Global Administrator, are a risk), permissions consented for all users, last sign-in, client secrets and certificates, Entra roles, single sign-on |
 | App registration | Who can sign in, owners, client secrets and certificates, and the permissions and last sign-in of its enterprise application |
 | User | Member or guest, synced from on-premises, Entra roles (a permanent privileged role is a risk), MFA registration (none on a privileged user is a risk), passwordless, last sign-in |
-| Device | Operating system, join type, managed and compliant, last sign-in |
+| Device | Operating system, join type, managed, compliant, last sign-in |
 | Agent identity, blueprint and blueprint principal | Blueprint, sponsors, owners, credentials, permissions, Entra roles |
 | Intune configuration policy | Assignments, platform, settings, last change |
+
+The facts carry the shared [fact keys](../writing-tests/formatting-test-results.md#fact-keys), such as
+`user.mfaRegistered` and `signIn.daysSince`, so other reports and summaries can read them as data.
 
 Facts only describe objects that the run lists, whichever check named them. They are what the export said when
 the assessment ran, so the page says the date they come from. Anything unused for 90 days before the assessment

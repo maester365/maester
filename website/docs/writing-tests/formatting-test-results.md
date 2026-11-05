@@ -149,6 +149,34 @@ from, and `-AsOf` when that data was read, if not now.
     }
 ```
 
+#### Fact keys
+
+A fact can also carry a `Key` and a `Raw` value, for code that reads the results (a summary, an insight, another
+report) and should not have to parse text such as `2026-06-15 (143 days ago)`. `Value` stays the text people read;
+`Raw` is the same thing as data: a boolean, a number, a string, a list of strings, or a date (kept as ISO 8601 UTC
+text). `Raw` is kept only with a `Key`, and a fact without a `Key` is shown the same way.
+
+```powershell
+@{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Key = 'user.mfaRegistered'; Raw = $false }
+```
+
+Use a key from this list when one fits, so the same fact means the same thing whichever source adds it. A key is
+dotted camelCase; for a fact the list does not have, use a prefix of your own (`contoso.reviewDue`).
+
+| Key | Raw | Meaning |
+| --- | --- | --- |
+| `user.mfaRegistered` | boolean | The user has registered a method for multifactor authentication. |
+| `user.passwordless` | boolean | The user can sign in without a password. |
+| `user.privilegedRoles` | list of strings | The privileged Entra roles the user holds, permanent, activated or eligible. Empty when none. |
+| `signIn.daysSince` | number, or null | Days between the last sign-in and when the data was read (`AsOf`). Null when no sign-in was recorded. Users, apps and devices. |
+| `device.joinType` | string | `AzureAd` (Entra joined), `ServerAd` (hybrid joined) or `Workplace` (registered). |
+| `device.managed` | boolean | The device is managed by Intune or another MDM. |
+| `device.compliant` | boolean | The device meets its compliance policies. |
+| `device.os` | string | The operating system, for example `Windows` or `iOS`. |
+| `app.credentialExpired` | boolean | The app has at least one expired client secret or certificate. |
+| `app.ownerCount` | number | How many owners the app registration (or agent identity blueprint) has. |
+| `app.highPrivilegePermissions` | list of strings | The app's Tier 0 Microsoft Graph application permissions, those with a path to Global Administrator. Empty when none. |
+
 Use the `Type` and `Id` the page records for the object: `User`, `Group`, `Device`, `ServicePrincipal` and
 `ConditionalAccessPolicy` by object id, `AppRegistration` by its appId. Facts are kept only while `Invoke-Maester`
 collects affected objects, so the call does nothing in a run with `-ExcludeAffectedObjects`. The Zero Trust Assessment

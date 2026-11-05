@@ -143,7 +143,7 @@ Describe 'Get-MtHtmlReport' {
 
             $record = $singleTenant.AffectedObjects[0] | Select-Object -Property *
             $record | Add-Member -NotePropertyName Facts -NotePropertyValue @(
-                [PSCustomObject]@{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Source = 'Zero Trust Assessment'; AsOf = '2026-10-23T12:30:00Z' }
+                [PSCustomObject]@{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Key = 'user.mfaRegistered'; Raw = $false; Source = 'Zero Trust Assessment'; AsOf = '2026-10-23T12:30:00Z' }
             )
             $withFacts = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
             $withFacts | Add-Member -NotePropertyName AffectedObjects -NotePropertyValue @($record)
@@ -151,6 +151,7 @@ Describe 'Get-MtHtmlReport' {
 
             $html | Should -BeLike '*"Facts"*'
             $html | Should -BeLike '*Not registered*'
+            $html | Should -BeLike '*"Key":"user.mfaRegistered","Raw":false*'
         }
 
         It 'Should contain emergency access account config data' {

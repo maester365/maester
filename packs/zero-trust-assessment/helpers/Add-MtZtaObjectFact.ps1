@@ -162,7 +162,22 @@ function ConvertTo-MtZtaObjectFactRecord {
         if ($all.Count -le $Max) { return $all -join ', ' }
         (($all | Select-Object -First $Max) -join ', ') + ", and $($all.Count - $Max) more"
     }
-    $newFact = { param($Name, $Value, $Tone = 'Info') [pscustomobject]@{ Name = $Name; Value = $Value; Tone = $Tone } }
+    # Key and Raw follow the shared fact keys (Add-MtAffectedObjectFact), so code can read a fact without its text.
+    $newFact = {
+        param($Name, $Value, $Tone = 'Info', [string] $Key, $Raw)
+        $fact = [pscustomobject]@{ Name = $Name; Value = $Value; Tone = $Tone }
+        if ($Key) {
+            $fact | Add-Member -NotePropertyName Key -NotePropertyValue $Key
+            # -NotePropertyValue keeps a list a list.
+            $fact | Add-Member -NotePropertyName Raw -NotePropertyValue $Raw
+        }
+        $fact
+    }
+    $daysFact = {
+        param($Date, [bool] $Stale)
+        if ($Date) { & $newFact 'Last sign-in' (& $describeWhen $Date) $(if ($Stale) { 'Warning' } else { 'Info' }) 'signIn.daysSince' ([int](& $daysBefore $Date)) }
+        else { & $newFact 'Last sign-in' 'None recorded' 'Warning' 'signIn.daysSince' $null }
+    }
     $credentialFacts = {
         param($SecretList, $CertificateList)
         foreach ($kind in @(@{ Name = 'Client secrets'; Items = @($SecretList | Where-Object { $_ }) }, @{ Name = 'Certificates'; Items = @($CertificateList | Where-Object { $_ }) })) {
@@ -176,7 +191,10 @@ function ConvertTo-MtZtaObjectFactRecord {
             $tone = if ($kind.Name -eq 'Client secrets' -and $active.Count -gt 0) { 'Warning' }
             elseif ($active.Count -gt 0 -and ($active[0] - $asOf).TotalDays -le 30) { 'Warning' }
             else { 'Info' }
-            & $newFact $kind.Name ($parts -join '; ') $tone
+            # Keyed on the secrets when there are any, otherwise on the certificates, so an app has one app.credentialExpired.
+            $key = if ($kind.Name -eq 'Client secrets' -or @($SecretList | Where-Object { $_ }).Count -eq 0) { 'app.credentialExpired' } else { $null }
+            $anyExpired = @(@($SecretList) + @($CertificateList) | Where-Object { $_ } | ForEach-Object { ConvertTo-MtZtaDate $_.endDateTime } | Where-Object { $_ -and $_ -lt $asOf }).Count -gt 0
+            & $newFact $kind.Name ($parts -join '; ') $tone $key $anyExpired
         }
     }
 
@@ -201,7 +219,7 @@ function ConvertTo-MtZtaObjectFactRecord {
         }
         $label = "$name ($How)"
         if (-not ($list | Where-Object Label -EQ $label)) {
-            $list.Add([pscustomobject]@{ Label = $label; Privileged = [bool]($definition -and $definition.isPrivileged); Permanent = $How -like 'permanent*' })
+            $list.Add([pscustomobject]@{ Label = $label; Role = $name; Privileged = [bool]($definition -and $definition.isPrivileged); Permanent = $How -like 'permanent*' })
         }
     }
     # With PIM the schedule instances say how a role is held; without it only the assignments are exported.
@@ -229,11 +247,17 @@ function ConvertTo-MtZtaObjectFactRecord {
         & $addRole $member.id $member.roleDefinitionId 'eligible, through a group' $null
     }
     $roleFact = {
-        param($PrincipalId)
+        param($PrincipalId, [switch] $User)
         $roles = $null
         if (-not $rolesByPrincipal.TryGetValue([string]$PrincipalId, [ref]$roles)) { return }
         $tone = if (@($roles | Where-Object { $_.Privileged -and $_.Permanent }).Count -gt 0) { 'Risk' } else { 'Info' }
-        & $newFact 'Entra roles' (& $join @($roles | Sort-Object { -not $_.Privileged }, Label | ForEach-Object Label)) $tone
+        $text = & $join @($roles | Sort-Object { -not $_.Privileged }, Label | ForEach-Object Label)
+        if ($User) {
+            # user.privilegedRoles: the privileged roles the user holds in any way, permanent, activated or eligible.
+            & $newFact 'Entra roles' $text $tone 'user.privilegedRoles' ([string[]]@($roles | Where-Object Privileged | ForEach-Object Role | Select-Object -Unique))
+        } else {
+            & $newFact 'Entra roles' $text $tone
+        }
     }
 
     # --- Service principals: names of the resources and permissions they grant -------------------------------
@@ -279,9 +303,9 @@ function ConvertTo-MtZtaObjectFactRecord {
             $text = (@($byResource.Keys | ForEach-Object { "$($_): $(& $join @($byResource[$_]) 8)" }) -join '; ')
             if ($risky.Count -gt 0) {
                 $lead = if ($risky.Count -eq 1) { "$($risky[0]) has a path to Global Administrator" } else { "$(& $join @($risky) 4) have a path to Global Administrator" }
-                & $newFact 'Application permissions' "$lead. $text" 'Risk'
+                & $newFact 'Application permissions' "$lead. $text" 'Risk' 'app.highPrivilegePermissions' ([string[]]@($risky))
             } else {
-                & $newFact 'Application permissions' $text
+                & $newFact 'Application permissions' $text 'Info' 'app.highPrivilegePermissions' ([string[]]@())
             }
         }
 
@@ -308,10 +332,9 @@ function ConvertTo-MtZtaObjectFactRecord {
             $last = $null
             $null = $lastSignIn.TryGetValue([string]$Sp.appId, [ref]$last)
             if ($last) {
-                $stale = (& $daysBefore $last) -gt $staleDays
-                & $newFact 'Last sign-in' (& $describeWhen $last) $(if ($stale -and -not $isMicrosoft) { 'Warning' } else { 'Info' })
+                & $daysFact $last ((& $daysBefore $last) -gt $staleDays -and -not $isMicrosoft)
             } elseif (-not $isMicrosoft) {
-                & $newFact 'Last sign-in' 'None recorded' 'Warning'
+                & $daysFact $null $false
             }
         }
     }
@@ -358,7 +381,7 @@ function ConvertTo-MtZtaObjectFactRecord {
         $who = [string]$app.signInAudience
         if ($who) { $facts.Add((& $newFact 'Who can sign in' $(if ($audience.ContainsKey($who)) { $audience[$who] } else { $who }))) }
         $owners = @($app.owners | Where-Object { $_ })
-        $facts.Add((& $newFact 'Owners' $(if ($owners.Count -eq 0) { 'None' } else { [string]$owners.Count }) $(if ($owners.Count -eq 0) { 'Warning' } else { 'Info' })))
+        $facts.Add((& $newFact 'Owners' $(if ($owners.Count -eq 0) { 'None' } else { [string]$owners.Count }) $(if ($owners.Count -eq 0) { 'Warning' } else { 'Info' }) 'app.ownerCount' ([int]$owners.Count)))
         foreach ($fact in @(& $credentialFacts $app.passwordCredentials $app.keyCredentials)) { $facts.Add($fact) }
         $shared = $null
         if ($app.appId -and $appFactsByAppId.TryGetValue([string]$app.appId, [ref]$shared)) { foreach ($fact in $shared) { $facts.Add($fact) } }
@@ -378,7 +401,7 @@ function ConvertTo-MtZtaObjectFactRecord {
             if ($user.accountEnabled -eq $false) { 'disabled' }
         ) -join ', '
         $facts.Add((& $newFact 'Account' $account))
-        $role = & $roleFact $user.id
+        $role = & $roleFact $user.id -User
         if ($role) { $facts.Add($role) }
 
         $detail = $null
@@ -386,11 +409,12 @@ function ConvertTo-MtZtaObjectFactRecord {
             $privileged = [bool]$detail.isAdmin -or ($role -and $role.Tone -eq 'Risk')
             if ($detail.isMfaRegistered -eq $true) {
                 $methods = @($detail.methodsRegistered | Where-Object { $_ })
-                $facts.Add((& $newFact 'MFA' $(if ($methods.Count -gt 0) { "Registered: $(& $join $methods)" } else { 'Registered' }) 'Good'))
+                $facts.Add((& $newFact 'MFA' $(if ($methods.Count -gt 0) { "Registered: $(& $join $methods)" } else { 'Registered' }) 'Good' 'user.mfaRegistered' $true))
             } elseif ($user.accountEnabled -ne $false) {
-                $facts.Add((& $newFact 'MFA' 'Not registered' $(if ($privileged) { 'Risk' } else { 'Warning' })))
+                $facts.Add((& $newFact 'MFA' 'Not registered' $(if ($privileged) { 'Risk' } else { 'Warning' }) 'user.mfaRegistered' $false))
             }
-            if ($detail.isPasswordlessCapable -eq $true) { $facts.Add((& $newFact 'Passwordless' 'Can sign in without a password' 'Good')) }
+            if ($detail.isPasswordlessCapable -eq $true) { $facts.Add((& $newFact 'Passwordless' 'Can sign in without a password' 'Good' 'user.passwordless' $true)) }
+            elseif ($detail.isPasswordlessCapable -eq $false) { $facts.Add((& $newFact 'Passwordless' 'Not set up' 'Info' 'user.passwordless' $false)) }
         }
 
         $activity = $user.signInActivity
@@ -401,10 +425,9 @@ function ConvertTo-MtZtaObjectFactRecord {
                 ConvertTo-MtZtaDate $activity.lastNonInteractiveSignInDateTime
             ) | Where-Object { $_ } | Sort-Object -Descending
             if ($dates.Count -gt 0) {
-                $stale = (& $daysBefore $dates[0]) -gt $staleDays -and $user.accountEnabled -ne $false
-                $facts.Add((& $newFact 'Last sign-in' (& $describeWhen $dates[0]) $(if ($stale) { 'Warning' } else { 'Info' })))
+                $facts.Add((& $daysFact $dates[0] ((& $daysBefore $dates[0]) -gt $staleDays -and $user.accountEnabled -ne $false)))
             } elseif ($user.accountEnabled -ne $false) {
-                $facts.Add((& $newFact 'Last sign-in' 'None recorded' 'Warning'))
+                $facts.Add((& $daysFact $null $false))
             }
         }
         & $add 'EntraID' 'User' $user.id $facts
@@ -417,20 +440,21 @@ function ConvertTo-MtZtaObjectFactRecord {
     foreach ($device in @(Read-MtZtaExportEntity -ExportPath $ExportPath -Name 'Device')) {
         $facts = [System.Collections.Generic.List[object]]::new()
         $os = (@($device.operatingSystem, $device.operatingSystemVersion) | Where-Object { $_ }) -join ' '
-        if ($os) { $facts.Add((& $newFact 'Operating system' $os)) }
+        if ($os) { $facts.Add((& $newFact 'Operating system' $os 'Info' 'device.os' ([string]$device.operatingSystem))) }
         $trust = [string]$device.trustType
-        if ($trust) { $facts.Add((& $newFact 'Join type' $(if ($joinType.ContainsKey($trust)) { $joinType[$trust] } else { $trust }))) }
-        if ($device.isManaged -eq $true) {
-            if ($device.isCompliant -eq $true) { $facts.Add((& $newFact 'Management' 'Managed and compliant' 'Good')) }
-            else { $facts.Add((& $newFact 'Management' 'Managed, not compliant' 'Warning')) }
-        } elseif ($trust -in 'AzureAd', 'ServerAd') {
-            $facts.Add((& $newFact 'Management' 'Not managed' 'Warning'))
+        if ($trust) { $facts.Add((& $newFact 'Join type' $(if ($joinType.ContainsKey($trust)) { $joinType[$trust] } else { $trust }) 'Info' 'device.joinType' $trust)) }
+        # A registered (personal) device is often unmanaged by design; a joined one should be managed.
+        $joined = $trust -in 'AzureAd', 'ServerAd'
+        $managed = $device.isManaged -eq $true
+        $facts.Add((& $newFact 'Management' $(if ($managed) { 'Managed' } else { 'Not managed' }) $(if (-not $managed -and $joined) { 'Warning' } else { 'Info' }) 'device.managed' $managed))
+        if ($managed -or $null -ne $device.isCompliant) {
+            $compliant = $device.isCompliant -eq $true
+            $facts.Add((& $newFact 'Compliance' $(if ($compliant) { 'Compliant' } else { 'Not compliant' }) $(if ($compliant) { 'Good' } else { 'Warning' }) 'device.compliant' $compliant))
         }
         if ($device.accountEnabled -eq $false) { $facts.Add((& $newFact 'Status' 'Disabled')) }
         $last = ConvertTo-MtZtaDate $device.approximateLastSignInDateTime
         if ($last) {
-            $stale = (& $daysBefore $last) -gt $staleDays -and $device.accountEnabled -ne $false
-            $facts.Add((& $newFact 'Last sign-in' (& $describeWhen $last) $(if ($stale) { 'Warning' } else { 'Info' })))
+            $facts.Add((& $daysFact $last ((& $daysBefore $last) -gt $staleDays -and $device.accountEnabled -ne $false)))
         }
         & $add 'EntraID' 'Device' $device.id $facts
     }
@@ -463,7 +487,7 @@ function ConvertTo-MtZtaObjectFactRecord {
     foreach ($blueprint in $blueprints) {
         $facts = [System.Collections.Generic.List[object]]::new()
         $owners = @($blueprint.owners | Where-Object { $_ }).Count
-        $facts.Add((& $newFact 'Owners' $(if ($owners -eq 0) { 'None' } else { [string]$owners }) $(if ($owners -eq 0) { 'Warning' } else { 'Info' })))
+        $facts.Add((& $newFact 'Owners' $(if ($owners -eq 0) { 'None' } else { [string]$owners }) $(if ($owners -eq 0) { 'Warning' } else { 'Info' }) 'app.ownerCount' ([int]$owners)))
         $sponsors = @($blueprint.sponsors | Where-Object { $_ }).Count
         $facts.Add((& $newFact 'Sponsors' $(if ($sponsors -eq 0) { 'None' } else { [string]$sponsors }) $(if ($sponsors -eq 0) { 'Warning' } else { 'Info' })))
         $count = [int]$agentsPerBlueprint[[string]$blueprint.appId]

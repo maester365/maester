@@ -709,6 +709,34 @@ Describe 'Affected objects' {
             $facts[1].Source | Should -Be 'Other'
         }
 
+        It 'Should keep a fact''s Key and Raw value, a list as a list and a date as ISO text, and replace by Key' {
+            $inventory = Invoke-WithFactCollection {
+                param($Results)
+                Add-MtAffectedObjectFact -Type User -Id 'aaaaaaaa-0000-0000-0000-000000000001' -Source 'Test' -Fact @(
+                    @{ Name = 'MFA'; Value = 'Not registered'; Key = 'user.mfaRegistered'; Raw = $false }
+                    @{ Name = 'Entra roles'; Value = 'Global Administrator (permanent)'; Key = 'user.privilegedRoles'; Raw = @('Global Administrator') }
+                    @{ Name = 'Seen'; Value = 'Yesterday'; Key = 'contoso.lastSeen'; Raw = [datetime]'2026-10-22T08:00:00Z' }
+                    @{ Name = 'Note'; Value = 'No key, so no raw'; Raw = 42 }
+                )
+                # Same key and source, new name: replaces the first fact.
+                Add-MtAffectedObjectFact -Type User -Id 'aaaaaaaa-0000-0000-0000-000000000001' -Source 'Test' -Fact @{ Name = 'Multifactor'; Value = 'Registered'; Key = 'user.mfaRegistered'; Raw = $true }
+                Add-MtAffectedObjectFact -Type User -Id 'aaaaaaaa-0000-0000-0000-000000000001' -Source 'Test' -Fact @{ Name = 'Bad'; Value = 'x'; Key = 'Not A Key'; Raw = 1 } -WarningAction SilentlyContinue
+                Get-MtAffectedObject -MaesterResults $Results -ExcludeSessionCache
+            }
+
+            $facts = ($inventory | Where-Object Type -EQ 'User').Facts
+            $mfa = @($facts | Where-Object Key -EQ 'user.mfaRegistered')
+            $mfa.Count | Should -Be 1
+            $mfa[0].Name | Should -Be 'Multifactor'
+            $mfa[0].Raw | Should -BeTrue
+            $roles = ($facts | Where-Object Key -EQ 'user.privilegedRoles').Raw
+            , $roles | Should -BeOfType [string[]]
+            $roles | Should -Be @('Global Administrator')
+            ($facts | Where-Object Key -EQ 'contoso.lastSeen').Raw | Should -Be '2026-10-22T08:00:00Z'
+            ($facts | Where-Object Name -EQ 'Note').Raw | Should -BeNullOrEmpty
+            ($facts | Where-Object Name -EQ 'Bad').Key | Should -BeNullOrEmpty
+        }
+
         It 'Should keep no facts when the run does not collect affected objects' {
             $kept = InModuleScope Maester {
                 $previous = $__MtSession.IncludeAffectedObjects

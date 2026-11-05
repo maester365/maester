@@ -13,6 +13,9 @@ interface AffectedObjectFact {
     Name: string
     Value: string
     Tone?: string | null
+    // A shared fact key (user.mfaRegistered, signIn.daysSince...) and the value as data, for summaries that read facts.
+    Key?: string | null
+    Raw?: boolean | number | string | string[] | null
     Source?: string | null
     AsOf?: string | null
 }

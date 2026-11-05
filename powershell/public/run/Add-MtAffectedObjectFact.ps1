@@ -17,8 +17,15 @@ function Add-MtAffectedObjectFact {
     report. Facts are collected only while Invoke-Maester collects affected objects; otherwise the call does nothing.
 
     Each fact has a Name, a Value and a Tone: Risk for something to fix, Warning for something to review, Good for a
-    sign that the object is in order, and Info (the default) for anything else. Adding a fact with the same Name from
-    the same Source again replaces the earlier one.
+    sign that the object is in order, and Info (the default) for anything else.
+
+    A fact can also carry a Key and a Raw value, for code that reads the results: a summary, an insight or another
+    report. The Key names what the fact is about, from the shared list of fact keys (user.mfaRegistered,
+    signIn.daysSince, device.managed...), so the same fact from two sources means the same thing. Raw is its value as
+    data: a boolean, a number, a string, a list of strings or a date, which is kept as an ISO 8601 UTC string. Value
+    stays the text people read. Raw is kept only with a Key. A fact without a Key is shown the same way.
+
+    Adding a fact with the same Key, or without a Key the same Name, from the same Source again replaces the earlier one.
 
     The value is shown as text. Name counts rather than other people where you can: the page shows facts to everyone
     who reads the report, and -RedactUserIdentity replaces only the names of users the run knows.
@@ -32,6 +39,15 @@ function Add-MtAffectedObjectFact {
     Adds two facts to an enterprise application.
 
     .EXAMPLE
+    Add-MtAffectedObjectFact -Type User -Id $user.id -Source 'Contoso HR' -Fact @(
+        @{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Key = 'user.mfaRegistered'; Raw = $false }
+        @{ Name = 'Last sign-in'; Value = '2026-06-15 (143 days ago)'; Tone = 'Warning'; Key = 'signIn.daysSince'; Raw = 143 }
+    )
+
+    Adds facts with keys, so code can read whether the user has MFA and how long since they signed in without
+    parsing the text.
+
+    .EXAMPLE
     $records | Add-MtAffectedObjectFact -Source 'Zero Trust Assessment' -AsOf $report.ExecutedAt
 
     Adds facts to many objects at once. Each record has Type, Id and Fact properties, and optionally System.
@@ -41,6 +57,9 @@ function Add-MtAffectedObjectFact {
 
     .LINK
     https://maester.dev/docs/writing-tests/formatting-test-results#adding-facts-about-an-object
+
+    .LINK
+    https://maester.dev/docs/writing-tests/formatting-test-results#fact-keys
     #>
     [CmdletBinding()]
     [OutputType([void])]
@@ -56,7 +75,8 @@ function Add-MtAffectedObjectFact {
         [ValidateNotNullOrEmpty()]
         [string] $Id,
 
-        # The facts: hashtables or objects with Name, Value and an optional Tone (Risk, Warning, Good or Info).
+        # The facts: hashtables or objects with Name, Value, and optionally Tone (Risk, Warning, Good or Info), Key (a
+        # shared fact key such as user.mfaRegistered) and Raw (its value as data).
         [Parameter(Mandatory, ValueFromPipelineByPropertyName)]
         [AllowEmptyCollection()]
         [object[]] $Fact,
@@ -87,6 +107,22 @@ function Add-MtAffectedObjectFact {
         }
         $asOfText = if ($null -ne $AsOf) { $AsOf.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ', [cultureinfo]::InvariantCulture) } else { $null }
         $tones = @('Risk', 'Warning', 'Good', 'Info')
+        # Dotted camelCase segments: user.mfaRegistered, signIn.daysSince, app.highPrivilegePermissions.
+        $keyPattern = '^[a-z][A-Za-z0-9]*(\.[a-z][A-Za-z0-9]*)+$'
+        # Raw is kept as JSON-friendly data: a boolean, a number, a string, a list of strings, or a date as ISO text.
+        $toRaw = {
+            param($Raw, [string] $FactName)
+            if ($null -eq $Raw) { return , $null }
+            if ($Raw -is [bool] -or $Raw -is [string]) { return , $Raw }
+            if ($Raw -is [int] -or $Raw -is [long] -or $Raw -is [double] -or $Raw -is [decimal] -or $Raw -is [single]) { return , $Raw }
+            if ($Raw -is [datetime]) { return , $Raw.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ', [cultureinfo]::InvariantCulture) }
+            if ($Raw -is [datetimeoffset]) { return , $Raw.UtcDateTime.ToString('yyyy-MM-ddTHH:mm:ssZ', [cultureinfo]::InvariantCulture) }
+            if ($Raw -is [System.Collections.IEnumerable] -and $Raw -isnot [System.Collections.IDictionary]) {
+                return , [string[]]@($Raw | Where-Object { $null -ne $_ } | ForEach-Object { [string]$_ })
+            }
+            Write-Warning "Add-MtAffectedObjectFact: the Raw value of '$FactName' is a $($Raw.GetType().Name), not a boolean, number, string, list or date, so it is left out."
+            return , $null
+        }
     }
 
     process {
@@ -113,11 +149,31 @@ function Add-MtAffectedObjectFact {
             $text = ([string]$value).Trim()
             if ($text.Length -gt 300) { $text = $text.Substring(0, 297) + '...' }
 
-            $index = $list.FindIndex({ param($existing) $existing.Name -eq $name -and $existing.Source -eq $Source })
+            $factKey = [string](Get-ObjectProperty $item 'Key')
+            if ($factKey -and $factKey -cnotmatch $keyPattern) {
+                Write-Warning "Add-MtAffectedObjectFact: '$factKey' is not a fact key (dotted camelCase, such as user.mfaRegistered), so '$name' is kept without one."
+                $factKey = ''
+            }
+            # Raw only means something next to a Key, which says how to read it.
+            # Read directly: Get-ObjectProperty writes to the pipeline, which turns a one-item list into a string.
+            $rawInput = $null
+            if ($item -is [System.Collections.IDictionary]) { $rawInput = $item['Raw'] }
+            elseif ($item.PSObject.Properties['Raw']) { $rawInput = $item.PSObject.Properties['Raw'].Value }
+            $raw = $null
+            # Assigned inside the if: an if expression would unroll a list Raw again.
+            if ($factKey) { $raw = & $toRaw $rawInput $name }
+
+            $index = if ($factKey) {
+                $list.FindIndex({ param($existing) $existing.Key -ceq $factKey -and $existing.Source -eq $Source })
+            } else {
+                $list.FindIndex({ param($existing) -not $existing.Key -and $existing.Name -eq $name -and $existing.Source -eq $Source })
+            }
             $record = [PSCustomObject]@{
                 Name   = $name
                 Value  = $text
                 Tone   = $tone
+                Key    = if ($factKey) { $factKey } else { $null }
+                Raw    = $raw
                 Source = $Source
                 AsOf   = $asOfText
             }

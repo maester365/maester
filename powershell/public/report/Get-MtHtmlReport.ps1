@@ -113,7 +113,11 @@
                         $facts = @(Get-ObjectProperty $_ 'Facts' | Where-Object { $_ })
                         if ($facts.Count -gt 0) {
                             $slim.Facts = @($facts | ForEach-Object {
-                                    [PSCustomObject]@{ Name = $_.Name; Value = $_.Value; Tone = $_.Tone; Source = $_.Source; AsOf = $_.AsOf }
+                                    $fact = [ordered]@{ Name = $_.Name; Value = $_.Value; Tone = $_.Tone; Source = $_.Source; AsOf = $_.AsOf }
+                                    # Key and Raw let the report's own summaries read a fact without parsing its text.
+                                    $key = Get-ObjectProperty $_ 'Key'
+                                    if ($key) { $fact.Key = $key; $fact.Raw = $_.Raw }
+                                    [PSCustomObject]$fact
                                 })
                         }
                         [PSCustomObject]$slim
