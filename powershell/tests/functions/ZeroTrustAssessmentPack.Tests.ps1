@@ -209,41 +209,41 @@ Describe 'Zero Trust Assessment pack' {
         }
 
         It 'names an app''s Tier 0 Graph permissions as a risk' {
-            $fact = Get-ZtaFact ServicePrincipal sp-1 'Application permissions'
+            $fact = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Application permissions'
             $fact.Tone | Should -Be 'Risk'
             $fact.Value | Should -Be 'Directory.ReadWrite.All has a path to Global Administrator. Microsoft Graph: Directory.ReadWrite.All, User.Read.All'
         }
 
         It 'lists write permissions consented for all users, without openid' {
-            $fact = Get-ZtaFact ServicePrincipal sp-1 'Consented for all users'
+            $fact = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Consented for all users'
             $fact.Value | Should -Be 'Microsoft Graph: User.ReadWrite.All'
             $fact.Tone | Should -Be 'Warning'
         }
 
         It 'counts active and expired client secrets and dates sign-ins from the assessment' {
-            (Get-ZtaFact ServicePrincipal sp-1 'Client secrets').Value | Should -Be '1 active, the next expires on 2027-01-01; 1 expired'
-            $signIn = Get-ZtaFact ServicePrincipal sp-1 'Last sign-in'
+            (Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Client secrets').Value | Should -Be '1 active, the next expires on 2027-01-01; 1 expired'
+            $signIn = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Last sign-in'
             $signIn.Value | Should -Be '2026-01-01 (295 days before the assessment)'
             $signIn.Tone | Should -Be 'Warning'
         }
 
         It 'keys an app registration by its appId and gives it the app''s permissions' {
-            (Get-ZtaFact AppRegistration app-1 'Owners').Tone | Should -Be 'Warning'
-            (Get-ZtaFact AppRegistration app-1 'Who can sign in').Value | Should -Be 'Any Microsoft Entra organization'
-            (Get-ZtaFact AppRegistration app-1 'Application permissions').Tone | Should -Be 'Risk'
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Owners').Tone | Should -Be 'Warning'
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Who can sign in').Value | Should -Be 'Any Microsoft Entra organization'
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Application permissions').Tone | Should -Be 'Risk'
         }
 
         It 'names a permanent Global Administrator without MFA as a risk' {
-            (Get-ZtaFact User user-1 'Entra roles').Value | Should -Be 'Global Administrator (permanent)'
-            (Get-ZtaFact User user-1 'Entra roles').Tone | Should -Be 'Risk'
-            (Get-ZtaFact User user-1 'MFA').Tone | Should -Be 'Risk'
-            (Get-ZtaFact User user-1 'Last sign-in').Tone | Should -Be 'Info'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Entra roles').Value | Should -Be 'Global Administrator (permanent)'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Entra roles').Tone | Should -Be 'Risk'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'MFA').Tone | Should -Be 'Risk'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Last sign-in').Tone | Should -Be 'Info'
         }
 
         It 'names an unassigned Intune policy for review' {
             $record = $script:Facts | Where-Object Type -EQ 'ConfigurationPolicy'
             $record.System | Should -Be 'Intune'
-            (Get-ZtaFact ConfigurationPolicy pol-1 'Assignments').Value | Should -Be 'Not assigned'
+            (Get-ZtaFact -Type ConfigurationPolicy -Id pol-1 -Name 'Assignments').Value | Should -Be 'Not assigned'
         }
 
         It 'reads no model file as data' {
@@ -420,7 +420,8 @@ function Invoke-ZtAssessment {
             # Leave out every module folder that has the assessment, so a copy installed on this machine never
             # runs a real assessment against the tenant it last signed in to.
             $env:PSModulePath = @($script:OriginalModulePath -split [System.IO.Path]::PathSeparator | Where-Object {
-                    $_ -and -not (Test-Path -LiteralPath (Join-Path $_ 'ZeroTrustAssessment'))
+                    # A folder this account cannot read (the CI runner's /root) cannot load the module either.
+                    $_ -and -not $(try { Test-Path -LiteralPath (Join-Path $_ 'ZeroTrustAssessment') -ErrorAction Stop } catch { $false })
                 }) -join [System.IO.Path]::PathSeparator
             try {
                 $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }

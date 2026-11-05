@@ -120,6 +120,41 @@ Here's the updated test body with the graph objects that you can try out.
 
 To add support for additional types see [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/run/Add-MtTestResultDetail.ps1) and [Get-GraphObjectMarkdown](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1).
 
+### Adding facts about an object
+
+`-GraphObjects` says **which** objects a result is about: Maester lists them in the result, links them to the admin
+portal and adds them to the report's **Affected objects** page with the check that named them.
+[`Add-MtAffectedObjectFact`](../commands/Add-MtAffectedObjectFact.mdx) says **what is known** about an object: its last
+sign-in, the permissions it holds, whether its secrets have expired. The facts appear with the object when its row on
+the Affected objects page is expanded, whichever check named it.
+
+| | `Add-MtTestResultDetail -GraphObjects` | `Add-MtAffectedObjectFact` |
+| --- | --- | --- |
+| Answers | Which objects does this result concern? | What do we know about this object? |
+| Adds an object to the Affected objects page | Yes | No: facts only describe objects a check already names |
+| Shown | In the test result and on the Affected objects page | On the Affected objects page, in the JSON results and the objects files |
+| Tied to | The test that called it | The object, keyed by `System`, `Type` and `Id` |
+
+Each fact has a `Name`, a `Value` and a `Tone`: `Risk` for something to fix, `Warning` for something to review, `Good`
+for a sign that the object is in order, and `Info` (the default) for the rest. The `Source` names where the facts come
+from, and `-AsOf` when that data was read, if not now.
+
+```powershell
+    $apps = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')"
+    foreach ($app in $apps) {
+        Add-MtAffectedObjectFact -Type ServicePrincipal -Id $app.id -Source 'Contoso app inventory' -Fact @(
+            @{ Name = 'Business owner'; Value = $app.notes }
+            @{ Name = 'Last review'; Value = '2025-02-01 (over a year ago)'; Tone = 'Warning' }
+        )
+    }
+```
+
+Use the `Type` and `Id` the page records for the object: `User`, `Group`, `Device`, `ServicePrincipal` and
+`ConditionalAccessPolicy` by object id, `AppRegistration` by its appId. Facts are kept only while `Invoke-Maester`
+collects affected objects, so the call does nothing in a run with `-ExcludeAffectedObjects`. The Zero Trust Assessment
+pack uses this to add what its tenant export says about each object (see
+[Facts on the Affected objects page](../packs/zero-trust-assessment.md#facts-on-the-affected-objects-page)).
+
 ### Marking tests as Investigate
 
 The **Investigate** status is used when a test passed but the result requires manual review to confirm all scenarios were considered. This is different from a skipped test - the test ran and collected data, but the result needs human interpretation.

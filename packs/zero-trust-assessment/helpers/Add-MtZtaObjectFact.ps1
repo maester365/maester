@@ -30,6 +30,8 @@ function Add-MtZtaObjectFact {
 
     if (-not (Get-Command -Name Add-MtAffectedObjectFact -ErrorAction Ignore)) { return }
     if (-not [bool](Get-MtSetting -Name 'ZeroTrustAssessment.ObjectFacts' -Default $true)) { return }
+    # Facts are only kept while the run collects affected objects: skip reading the export otherwise.
+    if (-not (Get-MtSession).IncludeAffectedObjects) { return }
 
     $folder = if (Test-Path -LiteralPath $ReportPath -PathType Container) { $ReportPath } else { Split-Path -Path $ReportPath -Parent }
     $root = $null
@@ -63,7 +65,7 @@ function ConvertTo-MtZtaDate {
     Returns a value of the export as a UTC date, or $null.
     #>
     [CmdletBinding()]
-    [OutputType([Nullable[datetime]])]
+    [OutputType([datetime])]
     param([Parameter(Position = 0)] $Value)
 
     if ($null -eq $Value) { return $null }
@@ -162,8 +164,8 @@ function ConvertTo-MtZtaObjectFactRecord {
     }
     $newFact = { param($Name, $Value, $Tone = 'Info') [pscustomobject]@{ Name = $Name; Value = $Value; Tone = $Tone } }
     $credentialFacts = {
-        param($Passwords, $Keys)
-        foreach ($kind in @(@{ Name = 'Client secrets'; Items = @($Passwords | Where-Object { $_ }) }, @{ Name = 'Certificates'; Items = @($Keys | Where-Object { $_ }) })) {
+        param($SecretList, $CertificateList)
+        foreach ($kind in @(@{ Name = 'Client secrets'; Items = @($SecretList | Where-Object { $_ }) }, @{ Name = 'Certificates'; Items = @($CertificateList | Where-Object { $_ }) })) {
             if ($kind.Items.Count -eq 0) { continue }
             $ends = @($kind.Items | ForEach-Object { ConvertTo-MtZtaDate $_.endDateTime })
             $active = @($ends | Where-Object { $_ -and $_ -ge $asOf } | Sort-Object)

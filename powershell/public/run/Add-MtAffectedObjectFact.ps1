@@ -9,6 +9,9 @@ function Add-MtAffectedObjectFact {
     are shown with the object on the Affected objects page of the HTML report and kept in the AffectedObjects of the
     results, the JSON output and the objects files.
 
+    Add-MtTestResultDetail -GraphObjects says which objects a result is about, and adds them to the page with the check
+    that named them. Add-MtAffectedObjectFact says what is known about an object, whichever check named it.
+
     Facts only describe an object that the run already lists. They are merged into the record with the same System,
     Type and Id when the results are built, so adding facts about an object that no check names adds nothing to the
     report. Facts are collected only while Invoke-Maester collects affected objects; otherwise the call does nothing.
@@ -35,6 +38,9 @@ function Add-MtAffectedObjectFact {
 
     .LINK
     https://maester.dev/docs/commands/Add-MtAffectedObjectFact
+
+    .LINK
+    https://maester.dev/docs/writing-tests/formatting-test-results#adding-facts-about-an-object
     #>
     [CmdletBinding()]
     [OutputType([void])]
