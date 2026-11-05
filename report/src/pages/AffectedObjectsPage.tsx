@@ -117,19 +117,18 @@ function factTitle(o: AffectedObject, tone: Tone) {
         .join("\n")
 }
 
-// "Zero Trust Assessment, 23 Oct 2026": where the facts come from and when that data was read.
+// "Zero Trust Assessment, 23 Oct 2026": where a fact comes from and when that data was read.
+function factSourceLabel(fact: AffectedObjectFact) {
+    const source = fact.Source || "Unknown source"
+    const date = fact.AsOf ? new Date(fact.AsOf) : null
+    return date && !Number.isNaN(date.getTime())
+        ? `${source}, ${date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}`
+        : source
+}
+
+// The distinct source labels of an object's facts, in the order they first appear.
 function factSources(facts: AffectedObjectFact[]) {
-    const seen = new Map<string, string | null>()
-    for (const fact of facts) {
-        const source = fact.Source || "Unknown source"
-        if (!seen.has(source)) seen.set(source, fact.AsOf ?? null)
-    }
-    return [...seen.entries()].map(([source, asOf]) => {
-        const date = asOf ? new Date(asOf) : null
-        return date && !Number.isNaN(date.getTime())
-            ? `${source}, ${date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}`
-            : source
-    })
+    return [...new Set(facts.map(factSourceLabel))]
 }
 
 const referencedSources = ["GraphObjects", "Markdown"]
@@ -484,6 +483,7 @@ export default function AffectedObjectsPage() {
         const isOpen = open.has(o.key)
         const expandable = canOpen(o)
         const checks = isReferencedTab ? visibleChecks(o) : []
+        const sources = factSources(o.facts)
         const top = severities.find((s) => severityRank(s) === (o.failSeverity || o.maxSeverity))
         return [
             <tr
@@ -580,6 +580,8 @@ export default function AffectedObjectsPage() {
                                 <dl className="grid grid-cols-1 gap-x-4 gap-y-1.5 sm:grid-cols-[minmax(8rem,max-content)_minmax(0,1fr)]">
                                     {o.facts.map((fact, index) => {
                                         const tone = toTone(fact.Tone)
+                                        // With one source and date the line below the list says it; otherwise each fact does.
+                                        const ownSource = sources.length > 1 ? factSourceLabel(fact) : null
                                         return (
                                             <div key={`${fact.Name}-${index}`} className="contents">
                                                 <dt className="flex items-center gap-2 text-xs text-gray-500 dark:text-zinc-400">
@@ -587,12 +589,15 @@ export default function AffectedObjectsPage() {
                                                     <span>{fact.Name}</span>
                                                     {tone !== "Info" && <span className="sr-only">({tone})</span>}
                                                 </dt>
-                                                <dd className={cn("pl-4 text-sm leading-snug [overflow-wrap:anywhere] sm:pl-0", toneValue.get(tone))}>{fact.Value}</dd>
+                                                <dd className={cn("pl-4 text-sm leading-snug [overflow-wrap:anywhere] sm:pl-0", toneValue.get(tone))}>
+                                                    {fact.Value}
+                                                    {ownSource && <span className="ml-2 text-[11px] text-gray-400 dark:text-zinc-500">{ownSource}</span>}
+                                                </dd>
                                             </div>
                                         )
                                     })}
                                 </dl>
-                                <p className="mt-2 text-[11px] text-gray-400 dark:text-zinc-500">From {factSources(o.facts).join("; ")}</p>
+                                {sources.length === 1 && <p className="mt-2 text-[11px] text-gray-400 dark:text-zinc-500">From {sources[0]}</p>}
                             </div>
                         )}
                         {checks.map((c) => (
