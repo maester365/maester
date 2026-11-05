@@ -21,7 +21,7 @@ const name = test?.id ?? commandName;
 // List pages (the catalog, each suite, the tags, the commands index) are tables, and the test builder is a form
 // beside its code: give them the full width, from the sidebar's edge. A test page has no contents list, so Starlight
 // would centre it in the space; it starts at the sidebar's edge too.
-const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags))?$/.test(id) || id === 'docs/commands' || id === 'test-builder';
+const isList = /^docs\/tests(\/(maester|cis|cisa|asd|eidsca|orca|ad|xspm|tags|overview|attack|products\/[^/]+|frameworks\/[^/]+|packs\/[^/]+))?$/.test(id) || id === 'docs/commands' || id === 'test-builder';
 ---
 
 {

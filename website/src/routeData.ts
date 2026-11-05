@@ -20,6 +20,10 @@ export const onRequest = defineRouteMiddleware((context) => {
 		route.toc.items = [...route.toc.items, ...commandGroups().map((g) => ({ depth: 2, slug: g.id, text: g.label, children: [] }))];
 	}
 
+	// A check's page has no contents list, but its right column holds what the check maps to (catalog/CheckRail.astro,
+	// drawn by overrides/PageSidebar.astro): Starlight draws that column only for a page with a contents list.
+	if (data.maester?.kind === 'test' && !route.toc) route.toc = { minHeadingLevel: 2, maxHeadingLevel: 2, items: [] };
+
 	// The blog's list pages.
 	if (/^blog(\/\d+)?$/.test(id)) {
 		data.description = 'Releases, new checks and how-tos from the Maester team: open-source security testing for Microsoft 365, Entra, Azure and Active Directory.';
