@@ -510,6 +510,10 @@
         {
           "key": "insider-risk-management",
           "name": "Insider risk management"
+        },
+        {
+          "key": "data-classification",
+          "name": "Data classification"
         }
       ]
     },
@@ -642,6 +646,14 @@
         {
           "key": "subscriptions",
           "name": "Subscriptions"
+        },
+        {
+          "key": "network-security",
+          "name": "Network security"
+        },
+        {
+          "key": "sentinel",
+          "name": "Microsoft Sentinel"
         }
       ]
     },

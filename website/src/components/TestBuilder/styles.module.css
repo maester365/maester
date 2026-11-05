@@ -48,24 +48,6 @@
   font-weight: 600;
 }
 
-.attr {
-  font-size: 0.78rem;
-}
-
-.required,
-.optional {
-  margin-left: auto;
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ifm-color-emphasis-600);
-}
-
-.required {
-  color: var(--ifm-color-primary);
-  font-weight: 600;
-}
-
 .hint,
 .where,
 .note {
@@ -145,28 +127,6 @@ textarea.input {
 
 [data-theme="dark"] .warn {
   color: var(--ifm-color-warning-light);
-}
-
-.more {
-  margin-top: 0.5rem;
-  font-size: 0.88rem;
-}
-
-.more summary {
-  cursor: pointer;
-  color: var(--ifm-color-primary);
-  font-weight: 500;
-}
-
-.rubric {
-  margin-top: 0.5rem;
-  padding: 0.75rem 0.9rem 0.1rem;
-  border-radius: 8px;
-  background: var(--ifm-color-emphasis-100);
-}
-
-.rubric table {
-  font-size: 0.82rem;
 }
 
 .modes {
@@ -403,7 +363,10 @@ textarea.input {
   margin: 0.6rem 0 0.3rem;
 }
 
-@media (max-width: 996px) {
+/* Two columns only when the builder itself has room for them, whatever the sidebar takes. */
+.shell { container-type: inline-size; }
+
+@container (max-width: 56rem) {
   .builder {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -415,7 +378,6 @@ textarea.input {
 }
 
 /* Layout around the shadcn-style controls in ui.js. */
-.need { margin-left: auto; text-transform: uppercase; letter-spacing: 0.04em; }
 .stack { display: flex; flex-direction: column; gap: 0.5rem; }
 .picked li { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
 .token { font-family: var(--ifm-font-family-monospace); border-radius: 999px; }
@@ -453,3 +415,30 @@ textarea.input {
 
 .steps { font-size: 0.86rem; color: var(--ifm-color-emphasis-800); margin: 0 0 0.6rem; padding-left: 1.2rem; }
 .steps li { margin-bottom: 0.25rem; }
+
+/* Field heads: the label, an Optional marker and the help button. The help itself opens in a side panel. */
+.optional { font-size: 0.78rem; color: var(--ifm-color-emphasis-600); }
+.helpSlot { margin-left: auto; }
+.fieldHead { align-items: center; margin-bottom: 0.4rem; }
+.lead { font-size: 0.95rem; margin: 0 0 0.75rem; }
+.sectionHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 1rem; }
+.sectionHead h2 { margin: 0; }
+.guide { font-size: 0.92rem; }
+.withIcon { display: inline-flex; align-items: center; gap: 0.45rem; }
+.newTab { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 6px; color: var(--ifm-color-emphasis-700); }
+.newTab:hover { color: var(--ifm-color-primary); background: var(--ifm-color-emphasis-100); }
+/* A guide in the panel: headings scaled to the panel, not the page. */
+.guide h2 { font-size: 1.25rem; }
+.guide.guide h3 { font-size: 1.05rem; text-transform: none; letter-spacing: normal; color: inherit; }
+.guide h4 { font-size: 0.95rem; }
+
+/* GitHub people (Author, Contributors) */
+.people { display: flex; flex-direction: column; gap: 0.5rem; }
+.personList { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.person { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; padding: 0.15rem 0.15rem 0.15rem 0.3rem; font-size: 0.85rem; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 999px; background: var(--ifm-background-color); }
+.person img, .personAvatar { width: 20px; height: 20px; border-radius: 999px; flex: none; }
+.personHandle { color: var(--ifm-color-emphasis-700); font-size: 0.8rem; }
+.personMissing { border-color: var(--ifm-color-danger-dark); padding-left: 0.6rem; }
+.iconButton { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; padding: 0; border: 0; border-radius: 999px; background: none; color: var(--ifm-color-emphasis-700); cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.iconButton:hover { background: var(--ifm-color-emphasis-200); color: var(--ifm-font-color-base); }
+.iconButton svg { width: 0.85rem; height: 0.85rem; }

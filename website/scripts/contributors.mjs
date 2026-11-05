@@ -188,6 +188,18 @@ function buildIdentityResolver(registry, hashedAliases) {
 
 // Groups raw git identities into contributors. Returns test attributions plus
 // aggregate profile data.
+// Name particles that stay lowercase inside a name: "Robbe Van den Daele", "Stephan van Rooij".
+export const nameParticles = new Set(["van", "von", "der", "den", "de", "del", "della", "di", "da", "dos", "du", "la", "le", "bin", "ibn", "al", "el", "ter", "ten", "zu"]);
+
+// A git author name written all in lowercase ("jeremy finney") gets a capital at the start of each word but the
+// particles inside it (a last word is a surname: "Alex Le"); a name with any capital is the person's own spelling
+// and is kept. The registry's name always wins.
+export function capitalizeName(name) {
+  if (name !== name.toLowerCase()) return name;
+  const words = name.split(" ");
+  return words.map((word, i) => (i > 0 && i < words.length - 1 && nameParticles.has(word) ? word : word.replace(/^\p{L}/u, (c) => c.toUpperCase()))).join(" ");
+}
+
 export function computeContributorData(tests, { log = console.log, updateAliases = true } = {}) {
   if (!hasFullGitHistory()) {
     if (!existsSync(snapshotPath)) {
@@ -383,8 +395,9 @@ export function computeContributorData(tests, { log = console.log, updateAliases
   // Finalize profiles: display name, avatar.
   for (const profile of contributors.values()) {
     if (!profile.name) {
-      // Prefer a git name that looks like a real name (contains a space).
-      profile.name = profile.gitNames.find((name) => name.includes(" ")) ?? profile.gitNames[0] ?? profile.id;
+      // Prefer a git name that looks like a real name (contains a space), capitalized when git has it all lowercase.
+      const gitName = profile.gitNames.find((name) => name.includes(" "));
+      profile.name = gitName ? capitalizeName(gitName) : (profile.gitNames[0] ?? profile.id);
     }
     profile.initials = initialsFor(profile.name);
     profile.firstContribution = profile.firstContribution ? profile.firstContribution.slice(0, 10) : "";
