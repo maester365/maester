@@ -41,6 +41,11 @@ function Get-MtAffectedObjectFromMarkdown {
             @{ System = 'EntraID'; Type = 'User'; Regex = "UserProfileMenuBlade/~/\w+/userId/($guid)" }
             @{ System = 'EntraID'; Type = 'Group'; Regex = "GroupDetailsMenuBlade/~/\w+/groupId/($guid)" }
             @{ System = 'EntraID'; Type = 'Device'; Regex = "DeviceDetailsMenuBlade/~/\w+/objectId/($guid)" }
+            @{ System = 'EntraID'; Type = 'AgentIdentity'; Regex = "AgentIdentity\.MenuView/~/\w+/objectId/($guid)" }
+            # By appId the link opens the blueprint (an application); by objectId, its service principal.
+            @{ System = 'EntraID'; Type = 'AgentIdentityBlueprint'; Regex = "AgentBlueprintDetails\.MenuView/~/\w+/appId/($guid)" }
+            @{ System = 'EntraID'; Type = 'AgentIdentityBlueprintPrincipal'; Regex = "AgentBlueprintDetails\.MenuView/~/\w+/objectId/($guid)" }
+            @{ System = 'Intune'; Type = 'ConfigurationPolicy'; Regex = "Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackageCatalog'; Regex = "Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackage'; Regex = "EntitlementMenuBlade/~/overview/entitlementId/($guid)" }
             @{ System = 'EntraID'; Type = 'PimAlert'; Regex = "Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/([^/)\s]+)" }

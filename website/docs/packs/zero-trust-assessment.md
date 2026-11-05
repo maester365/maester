@@ -227,6 +227,32 @@ out when `ZeroTrustAssessment.EmbedReport` is `false`, when you read a report fi
 `ZeroTrustAssessmentReport.html` beside it or one folder up, and when `Invoke-Maester -RedactUserIdentity` is
 used, because Maester cannot redact the assessment's report.
 
+## Facts on the Affected objects page
+
+The assessment exports the tenant's apps, service principals, users, devices, directory roles, agent identities
+and Intune configuration policies into a `zt-export` folder next to its report. Maester reads that export and adds
+what it says about each object to the **Affected objects** page, so an app, user or device shows more than the
+checks that named it. Expand an object to see its facts. A red **risk** or amber **to review** badge says how many
+need attention.
+
+| Object | Facts |
+| --- | --- |
+| Enterprise application | Publisher, application permissions (Tier 0 Graph permissions, those with a path to Global Administrator, are a risk), permissions consented for all users, last sign-in, client secrets and certificates, Entra roles, single sign-on |
+| App registration | Who can sign in, owners, client secrets and certificates, and the permissions and last sign-in of its enterprise application |
+| User | Member or guest, synced from on-premises, Entra roles (a permanent privileged role is a risk), MFA registration (none on a privileged user is a risk), passwordless, last sign-in |
+| Device | Operating system, join type, managed, compliant, last sign-in |
+| Agent identity, blueprint and blueprint principal | Blueprint, sponsors, owners, credentials, permissions, Entra roles |
+| Intune configuration policy | Assignments, platform, settings, last change |
+
+The facts carry the shared [fact keys](../writing-tests/formatting-test-results.md#fact-keys), such as
+`user.mfaRegistered` and `signIn.daysSince`, so other reports and summaries can read them as data.
+
+Facts only describe objects that the run lists, whichever check named them. They are what the export said when
+the assessment ran, so the page says the date they come from. Anything unused for 90 days before the assessment
+is marked to review. The export is read before a temporary output folder is deleted; when you read a report you
+already have, keep the `zt-export` folder with it. To leave the facts out, set `ZeroTrustAssessment.ObjectFacts`
+to `false`.
+
 ## Settings
 
 All settings go in `GlobalSettings` of `maester-config.json`.
@@ -236,6 +262,7 @@ All settings go in `GlobalSettings` of `maester-config.json`.
 | `ZeroTrustAssessment.ReportPath` | empty | Read this report instead of running the assessment. |
 | `ZeroTrustAssessment.MaxReportAgeDays` | `7` | Refuse a report older than this. `0` turns the check off. |
 | `ZeroTrustAssessment.EmbedReport` | `true` | Embed the assessment's own HTML report in the Maester report. |
+| `ZeroTrustAssessment.ObjectFacts` | `true` | Add what the assessment's export says about each app, user, device and policy to the Affected objects page. |
 | `ZeroTrustAssessment.OutputPath` | temporary | Where the assessment writes its report and export. Kept when set. |
 | `ZeroTrustAssessment.Pillar` | `All` | Run one pillar only: `Identity`, `Devices`, `Network`, `Data`, `Infrastructure`, `SecOps` or `AI`. |
 | `ZeroTrustAssessment.Tests` | all | Run only these assessment test IDs, for example `["21770", "21771"]`. |

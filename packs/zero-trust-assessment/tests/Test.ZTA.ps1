@@ -41,6 +41,8 @@ function Get-MtZtaInstance {
         }
 
         Add-MtZtaReportAttachment -ReportPath $reportPath
+        # Facts from the assessment's tenant export for the Affected objects page (helpers/Add-MtZtaObjectFact.ps1).
+        Add-MtZtaObjectFact -ReportPath $reportPath -Report $report
         ConvertTo-MtZtaInstance -Report $report
     } finally {
         # A collection into a temporary folder leaves nothing behind: the export holds raw tenant data.
