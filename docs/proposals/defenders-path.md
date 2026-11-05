@@ -362,8 +362,8 @@ when a row in the result names a step), so every other result stays as it is.
   command that checks it. This is how `Frameworks` already lists requirements that no row checks.
 - **`Measure`** is set on a step that has one, whether or not it could be read:
   `{ "Key": "devices-compliant", "Count": 412, "Total": 580, "Share": 71, "MinimumShare": 95, "Met": false,
-  "ReadAt": "...", "ObjectCount": 168, "Objects": [{ "Type": "Device", "Id": "...", "DisplayName": "..." }],
-  "ReasonCode": null }`. `Objects` holds up to 100 of the objects that fall short. `ReasonCode` says why a measure
+  "ReadAt": "...", "Caveat": "...", "ObjectCount": 168, "Objects": [{ "Type": "Device", "Id": "...",
+  "DisplayName": "..." }], "ReasonCode": null }`. `Objects` holds up to 100 of the objects that fall short. `ReasonCode` says why a measure
   couldn't be read, with the same codes a skipped test uses.
 - **`Earlier`** is set on a step that is Not checked in this run when an earlier result in the output folder
   checked it: `{ "Status": "Done", "ExecutedAt": "...", "File": "..." }`. It is never mixed into this run's
@@ -460,9 +460,10 @@ A measure is an entry in the measure registry, `powershell/assets/MaesterMeasure
             Function    = 'Get-MtDeviceComplianceShare'
             Title       = 'Devices that sign in are compliant'
             Unit        = 'devices'
+            Caveat      = "Devices that aren't registered or joined in Microsoft Entra ID can't be counted. ..."
             Service     = 'Graph'
             License     = 'INTUNE_A'
-            Permission  = 'Graph:Scope:Device.Read.All'
+            Permission  = 'Graph:Scope:Device.Read.All | Graph:Scope:Directory.Read.All'
         }
     )
 }
@@ -473,14 +474,17 @@ A measure is an entry in the measure registry, `powershell/assets/MaesterMeasure
 - `Function` names an internal reader in `powershell/internal/services/<service>/`. It reads through the Graph
   cache and returns `Count` (the objects that meet the bar), `Total`, and `Objects` (those that fall short, as
   `Type`, `Id` and `DisplayName`). The engine keeps up to 100 of them.
+- `Caveat` is optional: one line of 200 characters or less on what the figure can't see or leaves out. The
+  engine copies it to the step's `Measure`, and the report shows it with the figure.
 - The engine works out `Share`, compares it with the step's `MinimumShare` or the run config's override, and
   writes the result to the step (section 7.2).
-- Readers write object facts with the shared keys (section 12) for the objects they list.
+- Facts attach only to objects the run lists (section 12). Readers write facts with the shared keys for the
+  objects they list once M3 puts a measure's objects on the Affected objects page.
 
 | Key | Step | Reads | Notes |
 | --- | --- | --- | --- |
-| `devices-compliant` | `intune.devices-compliant` | Entra `devices` that signed in within 30 days, by `isManaged` and `isCompliant` | The objects are the devices a compliant-device policy would block. Devices with no Entra identity can't be seen, and the result says so |
-| `mfa-registered` | `entra.mfa-registered` | `reports/authenticationMethods/userRegistrationDetails` for enabled member users | Needs Entra ID P1. Leaves out the emergency access accounts |
+| `devices-compliant` | `intune.devices-compliant` | Entra `devices` that signed in within 30 days, by `isManaged` and `isCompliant` | Needs Intune (`INTUNE_A`): only Intune marks devices compliant, and a compliance partner's devices need Intune licences too. The objects are the devices a compliant-device policy would block. Devices with no Entra identity can't be seen, and the caveat says so |
+| `mfa-capable` | `entra.mfa-registered` | `reports/authenticationMethods/userRegistrationDetails` for enabled member users, by `isMfaCapable` | Needs Entra ID P1. `isMfaCapable`, not `isMfaRegistered`, because a method the authentication methods policy doesn't allow can't complete MFA. Leaves out guests and the emergency access and directory sync accounts |
 
 Later: phishing-resistant method registration for all users (ZTA.21782 covers privileged users only),
 password writeback once a Graph API reports it, security defaults being off in tenants licensed for
@@ -516,7 +520,7 @@ same `Key` from the same `Source` replaces the earlier one. The shared keys are 
 | `device.managed`, `device.compliant` | bool | The devices behind `intune.devices-compliant`. Management and compliance are separate facts |
 | `device.joinType` | `AzureAd`, `ServerAd` or `Workplace` | Join coverage, for hybrid join and token protection |
 | `device.os` | string | Which platforms need a compliance policy |
-| `user.mfaRegistered`, `user.passwordless` | bool | The users behind `entra.mfa-registered` and the phishing-resistant steps |
+| `user.mfaRegistered`, `user.passwordless` | bool | The users behind `entra.mfa-registered` and the phishing-resistant steps. The `mfa-capable` measure counts `isMfaCapable`, which `user.mfaRegistered` doesn't cover, so M3 adds a `user.mfaCapable` key to the shared list |
 | `user.privilegedRoles` | string list | The admins step of phishing-resistant MFA, and the privileged access goal |
 | `signIn.daysSince` | int, or null when none is recorded | Leaving out stale devices and users. Counted from the fact's `AsOf`, not from now |
 
@@ -715,6 +719,8 @@ Once M1 lands, M2, M5 and M6 touch different files and can run in parallel sessi
 ## 17. Decisions
 
 The owner accepted the recommended answer to each decision on 5 November 2026, and changed decision 10 later that day.
+Three rulings on the measures followed: `devices-compliant` declares the Intune licence, because only Intune marks
+devices compliant; a registry entry may carry a `Caveat`; and the MFA measure counts `isMfaCapable`.
 
 | # | Decision | Ruling | Alternatives considered |
 | --- | --- | --- | --- |

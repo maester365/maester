@@ -8,9 +8,10 @@ function Get-MtMeasureRegistry {
     A measure is a figure the engine reads from Graph for a step that is a state of the tenant
     (docs/proposals/defenders-path.md, section 11). Steps name a measure by its Key in the step catalogue.
 
-    Returns an object with Measures, a case-sensitive dictionary of key to entry (Key, Function, Title, Unit, Service,
-    License, Permission, each list as an array), and Problems, one message for each entry that is wrong. Whether
-    the reader function exists is checked by Get-MtStepProblem, which runs in the module.
+    Returns an object with Measures, a case-sensitive dictionary of key to entry (Key, Function, Title, Unit, Caveat,
+    Service, License, Permission, each list as an array, Caveat empty when the entry has none), and Problems, one
+    message for each entry that is wrong. Whether the reader function exists is checked by Get-MtStepProblem, which
+    runs in the module.
 
     -Path reads another file, such as a fixture in the unit tests, and is not cached.
     #>
@@ -29,7 +30,7 @@ function Get-MtMeasureRegistry {
     $measures = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
     $schema = Get-MtTestSchema
     $services = Get-MtServiceRegistry
-    $keys = @('Key', 'Function', 'Title', 'Unit', 'Service', 'License', 'Permission')
+    $keys = @('Key', 'Function', 'Title', 'Unit', 'Caveat', 'Service', 'License', 'Permission')
 
     $data = $null
     try { $data = Import-PowerShellDataFile -LiteralPath $file -ErrorAction Stop }
@@ -45,6 +46,9 @@ function Get-MtMeasureRegistry {
         if ($entry['Function'] -isnot [string] -or $entry['Function'] -cnotmatch '^[A-Z][a-z]+-Mt[A-Za-z0-9]+$') { $problems.Add("${where}: Function must name a Maester function, Verb-MtNoun.") }
         foreach ($text in 'Title', 'Unit') {
             if ($entry[$text] -isnot [string] -or $entry[$text] -notmatch '^[^\r\n]+$') { $problems.Add("${where}: $text must be one line of text.") }
+        }
+        if ($entry.ContainsKey('Caveat') -and ($entry['Caveat'] -isnot [string] -or $entry['Caveat'] -notmatch '^[^\r\n]{1,200}$')) {
+            $problems.Add("${where}: Caveat must be one line of 200 characters or less.")
         }
         $service = @($entry['Service'] | Where-Object { $_ })
         if ($service.Count -eq 0) { $problems.Add("${where}: Service is required.") }
@@ -62,6 +66,7 @@ function Get-MtMeasureRegistry {
             Function   = [string]$entry['Function']
             Title      = [string]$entry['Title']
             Unit       = [string]$entry['Unit']
+            Caveat     = if ($entry['Caveat'] -is [string]) { $entry['Caveat'] } else { '' }
             Service    = [string[]]@($service)
             License    = [string[]]@($entry['License'] | Where-Object { $_ })
             Permission = [string[]]@($entry['Permission'] | Where-Object { $_ })

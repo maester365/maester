@@ -231,8 +231,8 @@
     {
       "Id": "entra.mfa-registered",
       "Title": "Enabled member users are registered for MFA",
-      "Summary": "Users already have an MFA method, so policies that ask for MFA or self-remediation don't leave them stuck.",
-      "Unchecked": "No Maester check yet. A readiness check that reports the share of users registered for MFA is planned.",
+      "Summary": "Users already have an MFA method that policy allows, so policies that ask for MFA or self-remediation don't leave them stuck.",
+      "Measure": { "Key": "mfa-capable", "MinimumShare": 95 },
       "Sources": [
         {
           "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
@@ -479,7 +479,7 @@
       "Summary": "Users can already sign in with a passkey, Windows Hello for Business, Platform SSO or a certificate on the devices they use.",
       "RequiresOneOf": [["entra.passkeys-enabled", "intune.windows-hello", "entra.certificate-based-auth", "intune.macos-platform-sso"]],
       "RecommendedFirst": ["entra.temporary-access-pass"],
-      "Unchecked": "No Maester check yet. A readiness check is planned, and the Zero Trust Assessment pack checks it (ZTA.21801) once its results can name steps.",
+      "Unchecked": "No Maester check yet. A measure is planned, and the Zero Trust Assessment pack checks it (ZTA.21801) once its results can name steps.",
       "Sources": [
         {
           "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication",

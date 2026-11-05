@@ -42,7 +42,7 @@
       "Summary": "Most devices that sign in are enrolled in Intune and marked compliant, so requiring compliance blocks few users.",
       "Requires": ["intune.compliance-policies"],
       "RecommendedFirst": ["intune.automatic-enrollment"],
-      "Unchecked": "No Maester check yet. A readiness check that reports the share of compliant devices is planned.",
+      "Measure": { "Key": "devices-compliant", "MinimumShare": 95 },
       "Sources": [
         {
           "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",

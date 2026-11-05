@@ -9,10 +9,13 @@ Describe 'The measure registry' {
         InModuleScope Maester {
             $registry = Get-MtMeasureRegistry
             $registry.Problems | Should -BeNullOrEmpty
-            $registry.Measures.Keys | Should -Be @('devices-compliant', 'mfa-registered')
+            $registry.Measures.Keys | Should -Be @('devices-compliant', 'mfa-capable')
             foreach ($measure in $registry.Measures.Values) {
                 Get-Command -Name $measure.Function -CommandType Function | Should -Not -BeNullOrEmpty
+                $measure.Caveat | Should -Not -BeNullOrEmpty
             }
+            # Only Intune marks devices compliant, also for a compliance partner's devices.
+            $registry.Measures['devices-compliant'].License | Should -Be @('INTUNE_A')
         }
     }
 }
@@ -71,18 +74,19 @@ Describe 'Get-MtDeviceComplianceShare' {
     }
 }
 
-Describe 'Get-MtMfaRegistrationShare' {
+Describe 'Get-MtMfaCapableShare' {
     BeforeAll {
         $script:report = @(
-            [pscustomobject]@{ id = 'u1'; userPrincipalName = 'ann@contoso.com'; userDisplayName = 'Ann'; userType = 'member'; isMfaRegistered = $true; isAdmin = $false }
-            [pscustomobject]@{ id = 'u2'; userPrincipalName = 'bob@contoso.com'; userDisplayName = 'Bob'; userType = 'member'; isMfaRegistered = $false; isAdmin = $false }
-            [pscustomobject]@{ id = 'u3'; userPrincipalName = 'admin@contoso.com'; userDisplayName = 'Admin'; userType = 'member'; isMfaRegistered = $false; isAdmin = $true }
-            [pscustomobject]@{ id = 'g1'; userPrincipalName = 'guest#EXT#@contoso.com'; userDisplayName = 'Guest'; userType = 'guest'; isMfaRegistered = $false; isAdmin = $false }
-            [pscustomobject]@{ id = 'x1'; userPrincipalName = 'left@contoso.com'; userDisplayName = 'Left'; userType = 'member'; isMfaRegistered = $false; isAdmin = $false }
-            [pscustomobject]@{ id = 'bg1'; userPrincipalName = 'bg1@contoso.com'; userDisplayName = 'Break glass 1'; userType = 'member'; isMfaRegistered = $false; isAdmin = $true }
-            [pscustomobject]@{ id = 'bg2'; userPrincipalName = 'bg2@contoso.com'; userDisplayName = 'Break glass 2'; userType = 'member'; isMfaRegistered = $false; isAdmin = $true }
-            [pscustomobject]@{ id = 's1'; userPrincipalName = 'Sync_SRV@contoso.onmicrosoft.com'; userDisplayName = 'On-Premises Directory Synchronization Service Account'; userType = 'member'; isMfaRegistered = $false; isAdmin = $false }
-            [pscustomobject]@{ id = 'u4'; userPrincipalName = 'cat@contoso.com'; userDisplayName = 'Cat'; userType = 'member'; isMfaRegistered = $true; isAdmin = $false }
+            [pscustomobject]@{ id = 'u1'; userPrincipalName = 'ann@contoso.com'; userDisplayName = 'Ann'; userType = 'member'; isMfaCapable = $true; isAdmin = $false }
+            # Bob registered a method the authentication methods policy no longer allows, so he can't complete MFA.
+            [pscustomobject]@{ id = 'u2'; userPrincipalName = 'bob@contoso.com'; userDisplayName = 'Bob'; userType = 'member'; isMfaRegistered = $true; isMfaCapable = $false; isAdmin = $false }
+            [pscustomobject]@{ id = 'u3'; userPrincipalName = 'admin@contoso.com'; userDisplayName = 'Admin'; userType = 'member'; isMfaCapable = $false; isAdmin = $true }
+            [pscustomobject]@{ id = 'g1'; userPrincipalName = 'guest#EXT#@contoso.com'; userDisplayName = 'Guest'; userType = 'guest'; isMfaCapable = $false; isAdmin = $false }
+            [pscustomobject]@{ id = 'x1'; userPrincipalName = 'left@contoso.com'; userDisplayName = 'Left'; userType = 'member'; isMfaCapable = $false; isAdmin = $false }
+            [pscustomobject]@{ id = 'bg1'; userPrincipalName = 'bg1@contoso.com'; userDisplayName = 'Break glass 1'; userType = 'member'; isMfaCapable = $false; isAdmin = $true }
+            [pscustomobject]@{ id = 'bg2'; userPrincipalName = 'bg2@contoso.com'; userDisplayName = 'Break glass 2'; userType = 'member'; isMfaCapable = $false; isAdmin = $true }
+            [pscustomobject]@{ id = 's1'; userPrincipalName = 'Sync_SRV@contoso.onmicrosoft.com'; userDisplayName = 'On-Premises Directory Synchronization Service Account'; userType = 'member'; isMfaCapable = $false; isAdmin = $false }
+            [pscustomobject]@{ id = 'u4'; userPrincipalName = 'cat@contoso.com'; userDisplayName = 'Cat'; userType = 'member'; isMfaCapable = $true; isAdmin = $false }
         )
     }
 
@@ -105,18 +109,18 @@ Describe 'Get-MtMfaRegistrationShare' {
             }
         }
 
-        It 'Counts the registered member users, leaving out guests, disabled, emergency access and sync accounts' {
+        It 'Counts the member users who can complete MFA, leaving out guests, disabled, emergency access and sync accounts' {
             InModuleScope Maester {
-                $result = Get-MtMfaRegistrationShare
+                $result = Get-MtMfaCapableShare
 
                 $result.Count | Should -Be 2
                 $result.Total | Should -Be 4
             }
         }
 
-        It 'Lists the users who are not registered, administrators first' {
+        It 'Lists the users who cannot complete MFA, administrators first' {
             InModuleScope Maester {
-                $result = Get-MtMfaRegistrationShare
+                $result = Get-MtMfaCapableShare
 
                 $result.Objects.Id | Should -Be @('u3', 'u2')
                 $result.Objects[0].Type | Should -Be 'User'
@@ -127,7 +131,7 @@ Describe 'Get-MtMfaRegistrationShare' {
 
         It 'Reads the whole report, so other readers share its cache entry, and only the disabled users' {
             InModuleScope Maester {
-                $null = Get-MtMfaRegistrationShare
+                $null = Get-MtMfaCapableShare
 
                 Should -Invoke Invoke-MtGraphRequest -Times 1 -Exactly -ParameterFilter {
                     $RelativeUri -eq 'reports/authenticationMethods/userRegistrationDetails' -and -not $Select -and -not $Filter -and -not $DisableCache
@@ -150,7 +154,7 @@ Describe 'Get-MtMfaRegistrationShare' {
             Mock Get-MtGroupMember { }
             Mock Get-MtRoleMember { }
 
-            $result = Get-MtMfaRegistrationShare
+            $result = Get-MtMfaCapableShare
 
             $result.Count | Should -Be 2
             $result.Total | Should -Be 8
@@ -165,7 +169,7 @@ Describe 'Get-MtMfaRegistrationShare' {
             Mock Get-MtEmergencyAccessAccount { throw 'Could not resolve configured emergency access object(s): user: gone@contoso.com (not found)' }
             Mock Get-MtRoleMember { }
 
-            { Get-MtMfaRegistrationShare } | Should -Throw '*Could not resolve configured emergency access*'
+            { Get-MtMfaCapableShare } | Should -Throw '*Could not resolve configured emergency access*'
         }
     }
 }

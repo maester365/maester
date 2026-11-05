@@ -10,8 +10,9 @@
     devices in use says whether such a policy can be turned on.
 
     Reads the enabled devices in Microsoft Entra ID that signed in within the last SignedInWithinDays days
-    (approximateLastSignInDateTime), through the Graph cache. A device counts when isCompliant is true: Intune or
-    an approved MDM sets it, and it is what a compliant-device grant checks. Devices that are not compliant are
+    (approximateLastSignInDateTime), through the Graph cache. A device counts when isCompliant is true: Intune sets
+    it, also for the devices of a compliance partner, and it is what a compliant-device grant checks. The measure
+    declares the Intune licence, so a tenant without Intune gets no figure. Devices that are not compliant are
     returned as the objects that fall short, most recent sign-in first, whether they are managed (isManaged) and
     noncompliant or not managed at all.
 
@@ -46,7 +47,8 @@
         RelativeUri     = 'devices'
         Filter          = "accountEnabled eq true and approximateLastSignInDateTime ge $since"
         # isManaged, operatingSystem and trustType are read for the object facts device.managed, device.os and
-        # device.joinType (design section 12), which this reader writes once Add-MtAffectedObjectFact takes a Key.
+        # device.joinType (design section 12). They wait for the engine to list a measure's objects on the Affected
+        # objects page: facts attach only to objects the run lists.
         Select          = 'id', 'displayName', 'approximateLastSignInDateTime', 'isCompliant', 'isManaged', 'operatingSystem', 'trustType'
         QueryParameters = @{ '$count' = 'true' }
     }

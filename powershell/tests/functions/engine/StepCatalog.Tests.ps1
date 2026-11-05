@@ -1,4 +1,4 @@
-# The step catalogue of the defender's path (docs/proposals/defenders-path.md, sections 4, 5 and 14): how
+﻿# The step catalogue of the defender's path (docs/proposals/defenders-path.md, sections 4, 5 and 14): how
 # Get-MtStepCatalog reads a catalogue folder and what it reports as a problem, how Get-MtStepProblem checks the steps
 # that tests and packs name, and how the reader treats the Step attribute.
 #
@@ -296,7 +296,7 @@ Describe 'Get-MtStepProblem' {
 @{ Measures = @(
     @{ Key = 'devices-compliant'; Function = 'Get-MtNoSuchReader'; Title = 'Devices'; Unit = 'devices'; Service = 'Graph' }
     @{ Key = 'Bad Key'; Function = 'Get-MtStepCatalog'; Title = 'T'; Unit = 'u'; Service = 'Graph' }
-    @{ Key = 'mfa-registered'; Function = 'reader'; Unit = 'users'; Service = 'NoSuchService'; Permission = 'not a permission'; Colour = 'red' }
+    @{ Key = 'mfa-registered'; Function = 'reader'; Unit = 'users'; Service = 'NoSuchService'; Permission = 'not a permission'; Colour = 'red'; Caveat = "two`nlines" }
 ) }
 "@
         $problems = Get-TestProblem @((New-FakeTest 'T.1' @('entra.a')), (New-FakeTest 'T.2' @('entra.b', 'entra.c'))) -Catalog (Get-MeasureCatalog) -Registry $registry
@@ -308,6 +308,7 @@ Describe 'Get-MtStepProblem' {
         $problems | Should -Contain "$name (mfa-registered): Service 'NoSuchService' is not in the service registry."
         $problems | Should -Contain "$name (mfa-registered): Permission 'not a permission' is not valid. Write <Service>:<Kind>:<Name>."
         $problems | Should -Contain "$name (mfa-registered): unknown key 'Colour'."
+        $problems | Should -Contain "$name (mfa-registered): Caveat must be one line of 200 characters or less."
     }
 
     It 'Counts the steps a pack names in its taxonomy.json' {

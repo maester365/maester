@@ -1,18 +1,18 @@
-﻿function Get-MtMfaRegistrationShare {
+﻿function Get-MtMfaCapableShare {
     <#
     .SYNOPSIS
-    Counts the enabled member users who are registered for multifactor authentication, for the mfa-registered
-    measure.
+    Counts the enabled member users who can complete multifactor authentication, for the mfa-capable measure.
 
     .DESCRIPTION
-    The reader of the mfa-registered measure (powershell/assets/MaesterMeasures.psd1), which decides the step
+    The reader of the mfa-capable measure (powershell/assets/MaesterMeasures.psd1), which decides the step
     entra.mfa-registered of the defender's path. User-risk and sign-in-risk policies ask users to complete MFA, and
-    a user who hasn't registered a method can't, so the share of registered users says whether those policies can
-    be turned on.
+    a user who hasn't registered a method that is allowed can't, so the share of users who can says whether those
+    policies can be turned on.
 
     Reads the authentication methods registration report (reports/authenticationMethods/userRegistrationDetails),
-    which needs Microsoft Entra ID P1, through the Graph cache. A member user counts when isMfaRegistered is true.
-    Left out of the count:
+    which needs Microsoft Entra ID P1, through the Graph cache. A member user counts when isMfaCapable is true: the
+    user has registered a strong method that the authentication methods policy allows. isMfaRegistered is not
+    enough, because it is also true for a method the policy no longer allows. Left out of the count:
 
     - disabled users, which the report also lists;
     - the emergency access accounts in the Maester configuration (EmergencyAccessAccounts), and the users in the
@@ -22,14 +22,14 @@
     A configured emergency access account that can't be found stops the reader with an error, as it does in the
     checks that read them, so the figure never counts an account that should have been left out.
 
-    Returns an object with Count (registered users), Total (the users counted) and Objects (the users who aren't
-    registered, as Type, Id and DisplayName, administrators first).
+    Returns an object with Count (users who can complete MFA), Total (the users counted) and Objects (the users who
+    can't, as Type, Id and DisplayName, administrators first).
 
     .EXAMPLE
-    Get-MtMfaRegistrationShare
+    Get-MtMfaCapableShare
 
-    Returns the number of enabled member users who are registered for MFA, apart from the emergency access and
-    directory synchronization accounts.
+    Returns the number of enabled member users who can complete MFA, apart from the emergency access and directory
+    synchronization accounts.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -55,15 +55,15 @@
     }
 
     $users = @($registrations | Where-Object { $_.userType -eq 'member' -and $_.id -and -not $excluded.Contains([string]$_.id) })
-    $notRegistered = @($users | Where-Object { $_.isMfaRegistered -ne $true })
+    $notCapable = @($users | Where-Object { $_.isMfaCapable -ne $true })
 
-    # The object facts user.mfaRegistered (design section 12), under the object ID and the UPN, are written for
-    # these users once Add-MtAffectedObjectFact takes a Key.
+    # Object facts for these users (design section 12), under the object ID and the UPN, wait for the engine to list
+    # a measure's objects on the Affected objects page: facts attach only to objects the run lists.
     [pscustomobject][ordered]@{
-        Count   = $users.Count - $notRegistered.Count
+        Count   = $users.Count - $notCapable.Count
         Total   = $users.Count
         Objects = @(
-            $notRegistered |
+            $notCapable |
                 Sort-Object -Property @{ Expression = { $_.isAdmin -eq $true }; Descending = $true }, userPrincipalName, id |
                 ForEach-Object {
                     [pscustomobject][ordered]@{
