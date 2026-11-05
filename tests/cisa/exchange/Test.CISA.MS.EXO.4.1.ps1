@@ -32,6 +32,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1598', 'T1684.002'),
         Control = 'cisa-scuba:MS.EXO.4.1',
+        Step = 'defender.dmarc-published',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'moorereason'

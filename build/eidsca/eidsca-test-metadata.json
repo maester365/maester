@@ -13,6 +13,9 @@
       "Control": [
         "nist-800-53-r5:IA-2(1)",
         "nist-800-53-r5:IA-2(2)"
+      ],
+      "Step": [
+        "entra.passkeys-enabled"
       ]
     },
     {
@@ -24,6 +27,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "T1566.002"
+      ],
+      "Step": [
+        "entra.passkeys-enabled"
       ]
     },
     {
@@ -423,6 +429,9 @@
       "ImplementationCost": "Low",
       "Mitre": [
         "None"
+      ],
+      "Step": [
+        "entra.temporary-access-pass"
       ]
     },
     {

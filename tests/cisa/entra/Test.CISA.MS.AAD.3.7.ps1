@@ -26,6 +26,7 @@
         ImplementationCost = 'High',
         Mitre = 'T1078.004',
         Control = 'cisa-scuba:MS.AAD.3.7',
+        Step = 'entra.ca-require-managed-device',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike',

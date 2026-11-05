@@ -27,6 +27,7 @@
         ImplementationCost = 'Low',
         Mitre = 'None',
         Control = ('cis-m365:5.2.2.14', 'nist-800-53-r5:AC-3'),
+        Step = 'entra.trusted-named-locations',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'JeremyFinney-lgtm'

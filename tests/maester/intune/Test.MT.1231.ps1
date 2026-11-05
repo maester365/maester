@@ -48,6 +48,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:SI-4', 'nist-800-53-r5:AC-19'),
+        Step = 'intune.compliance-device-risk',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'earbona23'

@@ -24,6 +24,7 @@ function Test-ORCA235 {
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
         Control = 'nist-800-53-r5:SI-8',
+        Step = 'defender.spf-hard-fail',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]

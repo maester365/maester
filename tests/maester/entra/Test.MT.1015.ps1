@@ -27,6 +27,7 @@
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:AC-2(11)', 'nist-800-53-r5:CM-7'),
+        Step = 'entra.ca-block-unknown-platforms',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader'

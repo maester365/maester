@@ -3,14 +3,35 @@
   "Product": "entra",
   "Steps": [
     {
-      "Id": "entra.emergency-access-excluded",
-      "Title": "Exclude emergency access accounts from Conditional Access",
-      "Summary": "Emergency access accounts can still sign in when a Conditional Access policy goes wrong.",
+      "Id": "entra.emergency-access-accounts",
+      "Title": "Keep at least two emergency access accounts with permanent Global Administrator",
+      "Summary": "Cloud-only break-glass accounts can always sign in and administer the tenant, even when every other admin role is eligible.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.21835) once its results can name steps.",
       "Sources": [
         {
           "Url": "https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access",
           "Mirror": "entra-docs-mirror",
-          "Note": "Exclude the emergency access accounts, ideally through one group, from every policy that blocks or restricts sign-in, and test that they can sign in.",
+          "Note": "Create two or more cloud-only accounts on the onmicrosoft.com domain, and in PIM give them Global Administrator as a permanent active assignment, not an eligible one.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-deployment-plan",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The plan leaves no permanent active privileged assignments except the emergency access accounts, which keep Global Administrator.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.emergency-access-excluded",
+      "Title": "Exclude emergency access accounts from Conditional Access",
+      "Summary": "Emergency access accounts can still sign in when a Conditional Access policy goes wrong.",
+      "RecommendedFirst": ["entra.emergency-access-accounts"],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Create the accounts, then exclude them, best through one group, from every enforced policy that can block or limit sign-in. Report-only policies need no exclusion.",
           "Reviewed": "2026-11-05"
         }
       ]
@@ -56,6 +77,523 @@
           "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
           "Mirror": "entra-docs-mirror",
           "Note": "A device can be marked compliant only once it is registered in Microsoft Entra ID and enrolled in Intune or a supported partner.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/conditional-access-integration/device-based-policies",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Intune's guide sets up compliance policies before device-based Conditional Access, and tests the new policy with a small group first.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.hybrid-join",
+      "Title": "Domain-joined Windows PCs are hybrid joined to Microsoft Entra ID",
+      "Summary": "Windows PCs joined to on-premises Active Directory also have a Microsoft Entra device identity that Conditional Access can use.",
+      "OnlyWhen": ["hybrid-identity"],
+      "Rollout": [
+        "Turn on hybrid join for a pilot group of varied devices first.",
+        "Then turn it on for every computer that should be hybrid joined."
+      ],
+      "Unchecked": "No check yet. Graph lists the devices that are hybrid joined, but not the domain-joined PCs that are not.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/devices/how-to-hybrid-join",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Hybrid join needs Microsoft Entra Connect syncing the computer objects with their device attributes, and the device setting that lets users register devices.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/devices/hybrid-join-plan",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Roll hybrid join out to a pilot group with targeted deployment before the whole organization.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-require-managed-device-admins",
+      "Title": "Require a compliant or hybrid joined device for administrators",
+      "Summary": "Accounts in admin roles can sign in only from a device that Intune marks compliant or that is hybrid joined.",
+      "Requires": ["entra.emergency-access-excluded"],
+      "RequiresOneOf": [["intune.compliance-policies", "entra.hybrid-join"]],
+      "Rollout": [
+        "Create the policy for the admin roles in report-only mode and review the sign-ins it would block.",
+        "Turn it on, keeping the emergency access accounts excluded."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-alt-admin-device-compliand-hybrid",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The hybrid joined option works only for devices that are already hybrid joined, and compliance needs Intune policies. Exclude emergency access accounts; start in report-only.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-require-managed-device",
+      "Title": "Require a compliant or hybrid joined device in Conditional Access",
+      "Summary": "Sign-ins from devices that are neither compliant in Intune nor hybrid joined are blocked.",
+      "Requires": ["entra.emergency-access-excluded", "entra.ca-exclude-sync-accounts"],
+      "RequiresOneOf": [["intune.devices-compliant", "entra.hybrid-join"]],
+      "RecommendedFirst": ["intune.mark-unassigned-noncompliant", "entra.ca-require-managed-device-admins"],
+      "Rollout": [
+        "Create the policy in report-only mode and review the sign-ins it would block.",
+        "Turn it on for a pilot group.",
+        "Turn it on for all users, keeping the emergency access and directory sync accounts excluded."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Either signal will do. Compliance needs devices registered and enrolled in Intune; the hybrid option covers only domain-joined Windows PCs that are hybrid joined.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-alt-all-users-compliant-hybrid-or-mfa",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The all-users template excludes the emergency access accounts and, with Connect or Cloud Sync, the directory sync accounts, and starts in report-only.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-compliance",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Organizations not ready to require managed devices for everyone can start with the policy for administrators.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.windows-devices-registered",
+      "Title": "Windows devices that sign in are registered with Microsoft Entra ID",
+      "Summary": "Windows PCs used for Microsoft 365 have a device identity, so their sign-in tokens can be bound to the device.",
+      "Unchecked": "Needs sign-in logs. Graph lists registered devices but not the Windows PCs that sign in without one.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-token-protection",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Token protection binds tokens to Windows devices that are joined, hybrid joined or registered. Sign-ins from other devices show up as unbound requests.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-block-unknown-platforms",
+      "Title": "Block access from unknown or unsupported device platforms",
+      "Summary": "Sign-ins from device platforms that Conditional Access doesn't recognize are blocked, so platform-based policies can't be sidestepped.",
+      "Requires": ["entra.emergency-access-excluded"],
+      "Rollout": [
+        "Create the policy in report-only mode and review the sign-ins it would block.",
+        "Turn it on, keeping the emergency access accounts excluded."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-unknown-unsupported",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Platform conditions read the user agent, so use this block alongside other policies. Exclude the emergency access accounts.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-token-protection-windows",
+      "Title": "Require token protection for sign-in sessions on Windows",
+      "Summary": "Exchange, SharePoint and Teams accept only device-bound sign-in tokens from Windows desktop apps, so a stolen token can't be replayed elsewhere.",
+      "Requires": ["entra.emergency-access-excluded"],
+      "RecommendedFirst": ["entra.windows-devices-registered", "entra.ca-block-unknown-platforms"],
+      "Rollout": [
+        "Create the policy in report-only mode for a pilot group, desktop apps only, for Exchange, SharePoint and Teams.",
+        "Review interactive and non-interactive sign-ins for unbound requests over a full working cycle.",
+        "Exclude unsupported device types with a device filter, then turn the policy on for users who are ready and widen it."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/deployment-guide-token-protection-windows",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Current Windows builds prompt users on unregistered devices to register. Pilot in report-only and look for unbound sign-ins before you enforce. Exclude emergency access accounts.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/deployment-guide-token-protection-windows",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Pair the policy with one that blocks unknown platforms, so a client can't avoid it by reporting a different platform.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-token-protection",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Windows and Apple devices have separate deployment guides, each with its own prerequisites. This step covers Windows.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.mfa-registered",
+      "Title": "Enabled member users are registered for MFA",
+      "Summary": "Users already have an MFA method, so policies that ask for MFA or self-remediation don't leave them stuck.",
+      "Unchecked": "No Maester check yet. A readiness check that reports the share of users registered for MFA is planned.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Users need to register for MFA before a risk policy asks them to remediate. Those who haven't stay blocked until an admin steps in.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.password-hash-sync",
+      "Title": "Turn on password hash synchronization",
+      "Summary": "Microsoft Entra ID holds hashes of synced users' passwords, so leaked credentials can be matched to those users.",
+      "OnlyWhen": ["hybrid-identity"],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/id-protection-faq",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Leaked-credential detection needs password hash sync for synced users, and only leaks found after it is on are matched, so turn it on early.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.password-writeback",
+      "Title": "Turn on password writeback",
+      "Summary": "Password changes made in Microsoft Entra ID, including risk remediation, are written back to on-premises Active Directory.",
+      "OnlyWhen": ["hybrid-identity"],
+      "Unchecked": "Microsoft Graph doesn't report whether password writeback is on.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Synced users can clear user risk with a secure password change only when password writeback is turned on.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.remediate-risky-users",
+      "Title": "Remediate the users that ID Protection already rates high risk",
+      "Summary": "Existing high-risk users are investigated, then remediated or dismissed, before risk policies start acting on them.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Investigate and clear the active risks before you turn the risk policies on.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/how-to-deploy-identity-protection",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Learn's deployment plan starts by reviewing the users and sign-ins already in the ID Protection reports.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.trusted-named-locations",
+      "Title": "Mark known networks as trusted named locations",
+      "Summary": "ID Protection treats sign-ins from the organization's own networks as less risky, which cuts false positives.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Some risk detections use trusted locations to cut false positives, so mark office and VPN ranges as trusted before sign-in risk prompts start.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-sign-in-risk",
+      "Title": "Require MFA for medium and high sign-in risk in Conditional Access",
+      "Summary": "Sign-ins that ID Protection rates medium or high risk need a fresh MFA, which also clears the sign-in risk.",
+      "Requires": ["entra.mfa-registered", "entra.emergency-access-excluded"],
+      "RecommendedFirst": ["entra.ca-exclude-sync-accounts", "entra.trusted-named-locations"],
+      "Rollout": [
+        "Create the policy in report-only mode and review the sign-ins it would affect.",
+        "Turn it on for a pilot group.",
+        "Turn it on for all users, keeping the emergency access accounts excluded.",
+        "Keep it as its own policy, with no user risk condition."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-risk-based-sign-in",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A user can't register MFA during a risky sign-in, so an unregistered user is blocked instead of prompted. Exclude emergency access accounts and service accounts.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Keep sign-in risk and user risk in separate policies. For medium and high sign-in risk, ask for MFA and reauthentication every time.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/how-to-deploy-identity-protection",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Start sign-in risk policies with a subset of users before the whole organization.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-user-risk",
+      "Title": "Require risk remediation for high user risk in Conditional Access",
+      "Summary": "Users that ID Protection rates high risk must remediate, with a secure password change or a fresh sign-in, before they get access.",
+      "Requires": ["entra.mfa-registered", "entra.password-writeback", "entra.emergency-access-excluded"],
+      "RecommendedFirst": [
+        "entra.remediate-risky-users",
+        "entra.password-hash-sync",
+        "entra.ca-exclude-sync-accounts",
+        "entra.ca-sign-in-risk"
+      ],
+      "Rollout": [
+        "Create the policy in report-only mode and review its impact, including the risk-based policy impact workbook.",
+        "Turn it on for a pilot group.",
+        "Turn it on for all users, keeping the emergency access accounts excluded.",
+        "Keep it as its own policy, with no sign-in risk condition."
+      ],
+      "Unchecked": "MT.1013 accepts only Require password change, not the Require risk remediation control that Learn now recommends, so it can't verify the step yet.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-risk-based-user",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The policy targets all users and resources, excludes emergency access accounts and service accounts, asks for risk remediation at high user risk, and starts in report-only.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Users not registered for MFA can't self-remediate and stay blocked, and synced users also need password writeback. Clear existing risk before turning the policy on.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-remediate-unblock",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Sign-in risk left unremediated raises user risk. A sign-in risk policy lets users clear it with MFA first.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-protection/id-protection-faq",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Leaked credentials set user risk to high, and for synced users the detection needs password hash sync.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.passkeys-enabled",
+      "Title": "Enable passkeys (FIDO2) in the Authentication methods policy",
+      "Summary": "Users in scope can register a passkey on a security key, in Microsoft Authenticator or with a passkey provider.",
+      "Rollout": [
+        "Enable it for a pilot group that includes admins, and watch registrations in the Authentication methods activity report.",
+        "Give admins a passkey profile that allows only device-bound passkeys.",
+        "Widen the targets group by group."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-passkeys-fido2",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Turn on Passkey (FIDO2) for the users who will register and allow self-service setup, or they can't add a passkey in Security info.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.temporary-access-pass",
+      "Title": "Enable Temporary Access Pass",
+      "Summary": "Admins can issue a time-limited pass, so a user with no MFA method can sign in and register a passwordless one.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A pass works only for users in scope of the Temporary Access Pass method, so enable it and target the users who onboard or recover with it.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.certificate-based-auth",
+      "Title": "Configure Microsoft Entra certificate-based authentication",
+      "Summary": "Users can sign in with a smart card or certificate that Microsoft Entra ID accepts as multifactor.",
+      "Unchecked": "No Maester or Zero Trust Assessment check yet.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Certificate-based authentication takes more setup than passkeys, so Learn suggests it only where it is needed.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Only multifactor certificate-based authentication is part of the phishing-resistant strength.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.phishing-resistant-registered-admins",
+      "Title": "Administrators have a phishing-resistant method registered",
+      "Summary": "Every account that holds an admin role can already sign in with a passkey, Windows Hello for Business, Platform SSO or a certificate.",
+      "RequiresOneOf": [["entra.passkeys-enabled", "intune.windows-hello", "entra.certificate-based-auth", "intune.macos-platform-sso"]],
+      "RecommendedFirst": ["entra.temporary-access-pass"],
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.21782) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A strength can be met only with methods the tenant has enabled and the user has registered. Any method in the phishing-resistant strength will do.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-admin-phish-resistant-mfa",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Admins register a phishing-resistant method before the policy is on, using a Temporary Access Pass if they have no MFA method yet.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.phishing-resistant-admins",
+      "Title": "Require phishing-resistant MFA for administrator roles",
+      "Summary": "Accounts in admin roles must sign in with a phishing-resistant method to reach any resource.",
+      "Requires": ["entra.phishing-resistant-registered-admins", "entra.emergency-access-excluded"],
+      "Rollout": [
+        "Create the policy for the admin roles in report-only mode and review the sign-ins it would block.",
+        "Turn it on for admins on Windows and iOS first, then macOS and Android.",
+        "Keep the emergency access accounts excluded."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-admin-phish-resistant-mfa",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Admins without a phishing-resistant method are locked out when the policy turns on, which can lock you out of the tenant. Exclude the emergency access accounts.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.phishing-resistant-registered-all",
+      "Title": "Users have a phishing-resistant method registered",
+      "Summary": "Users can already sign in with a passkey, Windows Hello for Business, Platform SSO or a certificate on the devices they use.",
+      "RequiresOneOf": [["entra.passkeys-enabled", "intune.windows-hello", "entra.certificate-based-auth", "intune.macos-platform-sso"]],
+      "RecommendedFirst": ["entra.temporary-access-pass"],
+      "Unchecked": "No Maester check yet. A readiness check is planned, and the Zero Trust Assessment pack checks it (ZTA.21801) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Users register a portable credential first and device-bound ones after. New users and users with no MFA method start with a Temporary Access Pass.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A strength can be met only with methods the tenant has enabled and the user has registered. Any method in the phishing-resistant strength will do.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.phishing-resistant-all",
+      "Title": "Require phishing-resistant MFA for all users",
+      "Summary": "Every user must sign in with a phishing-resistant method to reach any resource.",
+      "Requires": [
+        "entra.phishing-resistant-registered-all",
+        "entra.emergency-access-excluded",
+        "entra.ca-exclude-sync-accounts"
+      ],
+      "RecommendedFirst": ["entra.phishing-resistant-admins"],
+      "Rollout": [
+        "Create the all-users policy in report-only mode early, before registration campaigns, to see which sign-ins it would block.",
+        "Enforce it in waves, one policy per device platform, for groups of users who are ready.",
+        "Once almost every user is in a ready group, turn the all-users policy on and remove the per-platform policies."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strength-how-it-works",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A user who hasn't registered a method the strength accepts can't reach the resource, so get users registered before you enforce it.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Enforcement typically starts with admins and then reaches other users in waves by device platform, with the emergency access accounts excluded.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-mfa-strength",
+          "Mirror": "entra-docs-mirror",
+          "Note": "With Connect or Cloud Sync, exclude the Directory Synchronization Accounts role from all-user authentication strength policies.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.pim-approval-global-admin",
+      "Title": "Require approval to activate Global Administrator in PIM",
+      "Summary": "Each Global Administrator activation waits for a named approver before it takes effect.",
+      "Requires": ["entra.emergency-access-accounts"],
+      "Rollout": ["Name at least two approvers before you require approval."],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-how-to-change-default-settings",
+          "Mirror": "entra-docs-mirror",
+          "Note": "With approval on, no named approver and no active Global or Privileged Role Administrator, nobody can approve. Permanent emergency access accounts avoid that lock-out.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-deployment-plan",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The plan's example settings have another Global Administrator approve each Global Administrator activation.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.pim-notifications",
+      "Title": "Send PIM notifications for privileged roles to a monitored mailbox",
+      "Summary": "Assignments to and activations of highly privileged roles email a security mailbox as well as the default recipients.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-how-to-change-default-settings",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Each role's PIM settings can copy assignment and activation emails to extra recipients, such as a mailbox the security team watches.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.pim-eligible-roles",
+      "Title": "Make privileged role assignments eligible in PIM",
+      "Summary": "Administrators hold privileged roles as eligible assignments they activate when needed. Only the emergency access accounts stay permanently active.",
+      "Requires": ["entra.emergency-access-accounts"],
+      "RecommendedFirst": ["entra.pim-approval-global-admin", "entra.pim-notifications"],
+      "Rollout": [
+        "Pilot with a small group of admins, and check that activation, approval and notifications work as planned.",
+        "Make Global Administrator and Security Administrator assignments eligible first, then the other privileged roles.",
+        "Remove service principals from privileged roles or give them time-bound active assignments, since they can't be eligible.",
+        "If activation fails in production, make the affected assignments active again, then fix the settings."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-getting-started",
+          "Mirror": "entra-docs-mirror",
+          "Note": "For Microsoft Entra roles, configure the role settings first, then give eligible assignments, then let users activate them just in time.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access",
+          "Mirror": "entra-docs-mirror",
+          "Note": "If every Global and Privileged Role Administrator is eligible and activation needs an approver nobody can be, the tenant is locked out. Keep emergency accounts active.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-deployment-plan",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Pilot with test users, convert the most privileged roles first, and roll back by making assignments active again if activation fails.",
           "Reviewed": "2026-11-05"
         }
       ]

@@ -28,6 +28,7 @@
         ImplementationCost = 'High',
         Mitre = 'T1566.002',
         Control = 'cisa-scuba:MS.AAD.3.1',
+        Step = 'entra.phishing-resistant-all',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike'
