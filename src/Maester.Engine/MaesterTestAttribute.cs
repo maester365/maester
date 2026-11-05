@@ -70,6 +70,10 @@ public sealed class MaesterTestAttribute : Attribute
     /// <summary>Framework controls the test supports, written &lt;framework-key&gt;:&lt;control-id&gt;.</summary>
     public string[] Control { get; set; }
 
+    /// <summary>Steps of the defender's path the test verifies, written &lt;product-key&gt;.&lt;name&gt;, from the step
+    /// catalogue (powershell/assets/steps).</summary>
+    public string[] Step { get; set; }
+
     // Applicability
 
     /// <summary>Services that must all be connected, or None.</summary>

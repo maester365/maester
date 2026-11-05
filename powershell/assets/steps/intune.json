@@ -1,0 +1,63 @@
+{
+  "$schema": "./steps.schema.json",
+  "Product": "intune",
+  "Steps": [
+    {
+      "Id": "intune.compliance-policies",
+      "Title": "Assign a compliance policy for each platform in use",
+      "Summary": "Intune can mark a device compliant only when a compliance policy covers its platform.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24541 to ZTA.24547) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/compliance/overview",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Compliance policies set the rules each platform's devices must meet, and Conditional Access acts on the compliance state they produce.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.automatic-enrollment",
+      "Title": "Turn on automatic Intune enrollment for Windows",
+      "Summary": "Windows devices enroll in Intune when users join or register them in Microsoft Entra ID.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24546) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-enrollment/windows/enable-automatic-mdm",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Automatic enrollment enrolls Windows devices in Intune as they join or register with Microsoft Entra ID.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.devices-compliant",
+      "Title": "Devices that sign in are compliant",
+      "Summary": "Most devices that sign in are enrolled in Intune and marked compliant, so requiring compliance blocks few users.",
+      "Requires": ["intune.compliance-policies"],
+      "RecommendedFirst": ["intune.automatic-enrollment"],
+      "Unchecked": "No Maester check yet. A readiness check that reports the share of compliant devices is planned.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Only devices registered in Microsoft Entra ID and enrolled in Intune can be marked compliant, so unenrolled devices fail a compliant-device policy.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.mark-unassigned-noncompliant",
+      "Title": "Mark devices with no compliance policy as not compliant",
+      "Summary": "A device that no compliance policy covers can't pass Conditional Access by default.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/compliance/overview",
+          "Mirror": "intune-docs-mirror",
+          "Note": "When Conditional Access uses compliance, review the tenant setting that decides how devices with no compliance policy are marked.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    }
+  ]
+}

@@ -76,6 +76,15 @@ function Get-MtNativeTestInventory {
         Write-Warning "These tests have a Control that names the framework '$($group.Name)' and a requirement that '$($group.Group[0].Framework.File)' does not have, so it gives them no Benchmark: $references."
     }
 
+    # A Step that the step catalogue does not have is ignored, with one warning that lists the tests. The build
+    # fails on it for a built-in test (Get-MtStepProblem).
+    $unknownSteps = @(foreach ($t in $tests) {
+            foreach ($step in @($t.Step | Where-Object { $_ })) { if (-not (Get-MtStepCatalog).Steps.ContainsKey($step)) { "$($t.Id) ($step)" } }
+        })
+    if ($unknownSteps.Count -gt 0) {
+        Write-Warning "These tests name a step that the step catalogue does not have, so the step is ignored: $($unknownSteps -join ', ')."
+    }
+
     # A shim returns another test's function: ShimOf names that test, so a report can show the two as one setting.
     $byFunction = @{}
     foreach ($t in $tests) { if ($t.FunctionName -and $t.Id -and -not $byFunction.ContainsKey($t.FunctionName)) { $byFunction[$t.FunctionName] = $t.Id } }

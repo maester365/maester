@@ -692,6 +692,9 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 # <framework-key>:<control-id>, on a framework key that two suites declare, and on a test whose Control
 # names one of these frameworks and a requirement its file does not have. A test's Benchmark in the
 # catalog is the requirement its Control names, with the facts the framework file holds about it.
+# It fails too on a problem in the step catalogue (powershell/assets/steps) and on a test or pack that names a
+# step the catalogue does not have. Whether every step is named by a test is a unit test (StepCatalog.Tests.ps1),
+# because the build may be given a folder that holds only some of the tests.
 # The source module is imported in a separate runspace, so the caller's session (which may itself have
 # Maester loaded, as in the module's own tests) is not changed.
 $CatalogResult = [pscustomobject]@{ Tests = @(); Problems = @(); Suites = @{}; Version = $SourceManifest.ModuleVersion; GraphScope = @(); Taxonomy = $null }
@@ -715,6 +718,8 @@ if ($NativeTestFiles.Count -gt 0) { $CatalogRunspace = [powershell]::Create(); t
                     foreach ($message in @(Get-MtAttackTechniqueProblem -Mitre $t.Mitre)) { "$($t.File): $message" }
                 }
                 $problems = @($problems) + @(Get-MtFrameworkProblem -Test $tests -Root $TestsRoot)
+                # The step catalogue of the defender's path, and the steps the tests and the packs name.
+                $problems = @($problems) + @(Get-MtStepProblem -Test $tests -PackRoot (Join-Path (Split-Path -Path $TestsRoot -Parent) 'packs'))
                 $suites = @{}
                 foreach ($manifest in Get-ChildItem -Path $TestsRoot -Filter 'suite.json' -Recurse -File) {
                     $suite = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json

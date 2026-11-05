@@ -51,6 +51,7 @@ function Read-MtNativeTest {
         ImplementationCost   = $null
         Mitre                = @()
         Control              = @()
+        Step                 = @()
         Service              = @()
         License              = @()
         Permission           = @()
@@ -280,6 +281,13 @@ function Read-MtNativeTest {
     }
     # Control: the framework key is lowercase.
     $test.Control = @($test.Control | ForEach-Object { $parts = $_ -split ':', 2; if ($parts.Count -eq 2) { "$($parts[0].ToLowerInvariant()):$($parts[1])" } else { $_ } })
+    # Step: the steps of the defender's path the test verifies (docs/proposals/defenders-path.md, section 5), stored in
+    # lowercase like the catalogue's IDs. Whether a step exists in the catalogue is checked by the build and the
+    # inventory, not here.
+    $test.Step = @($test.Step | ForEach-Object { $_.ToLowerInvariant() } | Select-Object -Unique)
+    if ($test.Step.Count -gt 3) {
+        & $addError 'InvalidMetadata' "Property 'Step' names $($test.Step.Count) steps. A test verifies at most three; a test that checks more is several tests." $attributeLine
+    }
 
     foreach ($name in $schema.Properties.Keys) {
         $definition = $schema.Properties[$name]

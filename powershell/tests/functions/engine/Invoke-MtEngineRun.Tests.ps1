@@ -84,9 +84,9 @@ Describe 'Maester.Engine attribute types' {
         $attr.Service | Should -Be @('Graph', 'Exchange')
     }
 
-    It 'Has the 27 properties of the design' {
+    It 'Has the 28 properties of the design' {
         $expected = 'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
-        'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+        'ImplementationCost', 'Mitre', 'Control', 'Step', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
         'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
         $actual = [MaesterTestAttribute].GetProperties() | Where-Object { $_.DeclaringType -eq [MaesterTestAttribute] } | ForEach-Object Name
         $actual | Sort-Object | Should -Be ($expected | Sort-Object)

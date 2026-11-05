@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = ('cis-m365:4.1', 'nist-800-53-r5:AC-19', 'nist-800-53-r5:CM-6'),
+        Step = 'intune.mark-unassigned-noncompliant',
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'oed-metzb',

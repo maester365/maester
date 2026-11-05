@@ -28,6 +28,7 @@
       ImplementationCost = 'Medium',
       Mitre = 'T1078.004',
       Control = ('nist-800-53-r5:AC-2(11)', 'nist-800-53-r5:IA-3'),
+      Step = 'entra.ca-require-compliant-device',
       Service = 'Graph',
       License = 'AAD_PREMIUM',
       Author = 'merill',

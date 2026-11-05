@@ -28,6 +28,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Step = 'entra.emergency-access-excluded',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

@@ -1,0 +1,64 @@
+{
+  "$schema": "./steps.schema.json",
+  "Product": "entra",
+  "Steps": [
+    {
+      "Id": "entra.emergency-access-excluded",
+      "Title": "Exclude emergency access accounts from Conditional Access",
+      "Summary": "Emergency access accounts can still sign in when a Conditional Access policy goes wrong.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Exclude the emergency access accounts, ideally through one group, from every policy that blocks or restricts sign-in, and test that they can sign in.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-exclude-sync-accounts",
+      "Title": "Exclude directory sync accounts from Conditional Access",
+      "Summary": "The accounts that Microsoft Entra Connect and Cloud Sync use keep syncing when new policies apply.",
+      "OnlyWhen": ["hybrid-identity"],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-compliance",
+          "Mirror": "entra-docs-mirror",
+          "Note": "With Microsoft Entra Connect or Cloud Sync, exclude the Directory Synchronization Accounts role from policies that target all users.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "entra.ca-require-compliant-device",
+      "Title": "Require a compliant device in Conditional Access",
+      "Summary": "Sign-ins from devices that Intune does not mark compliant are blocked.",
+      "Requires": [
+        "intune.compliance-policies",
+        "intune.devices-compliant",
+        "entra.emergency-access-excluded",
+        "entra.ca-exclude-sync-accounts"
+      ],
+      "RecommendedFirst": ["intune.mark-unassigned-noncompliant"],
+      "Rollout": [
+        "Create the policy in report-only mode and review the sign-ins it would block.",
+        "Turn it on for a pilot group.",
+        "Turn it on for all users, keeping the emergency access accounts excluded."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-compliance",
+          "Mirror": "entra-docs-mirror",
+          "Note": "The policy doesn't work as intended without an Intune compliance policy. Create one first, have at least one compliant device, and start in report-only.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
+          "Mirror": "entra-docs-mirror",
+          "Note": "A device can be marked compliant only once it is registered in Microsoft Entra ID and enrolled in Intune or a supported partner.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    }
+  ]
+}

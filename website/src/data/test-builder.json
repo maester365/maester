@@ -226,6 +226,13 @@
       "required": "No",
       "description": "\"Learn more\" link.",
       "pattern": "^https://\\S+$"
+    },
+    "Step": {
+      "type": "string[]",
+      "required": "No",
+      "description": "Steps of the defender's path the test verifies, written <product-key>.<name>, for example entra.ca-require-compliant-device. A test shipped with Maester names steps of the step catalogue.",
+      "pattern": "^[a-z0-9][a-z0-9\\-]*\\.[a-z0-9][a-z0-9\\-]*$",
+      "maxLength": 80
     }
   },
   "products": [

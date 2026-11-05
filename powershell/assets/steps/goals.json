@@ -1,0 +1,11 @@
+{
+  "$schema": "./steps.schema.json",
+  "Goals": [
+    {
+      "Id": "compliant-devices",
+      "Title": "Require compliant devices",
+      "Summary": "Only devices that Intune manages and marks compliant can reach Microsoft 365.",
+      "Step": "entra.ca-require-compliant-device"
+    }
+  ]
+}
