@@ -137,6 +137,23 @@ Describe 'Get-MtHtmlReport' {
             $html | Should -BeLike '*MT.1033.0*'
         }
 
+        It 'Should embed the facts of an object, and no Facts property for objects without any' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant
+            $html | Should -Not -BeLike '*"Facts"*'
+
+            $record = $singleTenant.AffectedObjects[0] | Select-Object -Property *
+            $record | Add-Member -NotePropertyName Facts -NotePropertyValue @(
+                [PSCustomObject]@{ Name = 'MFA'; Value = 'Not registered'; Tone = 'Risk'; Key = 'user.mfaRegistered'; Raw = $false; Source = 'Zero Trust Assessment'; AsOf = '2026-10-23T12:30:00Z' }
+            )
+            $withFacts = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
+            $withFacts | Add-Member -NotePropertyName AffectedObjects -NotePropertyValue @($record)
+            $html = Get-MtHtmlReport -MaesterResults $withFacts
+
+            $html | Should -BeLike '*"Facts"*'
+            $html | Should -BeLike '*Not registered*'
+            $html | Should -BeLike '*"Key":"user.mfaRegistered","Raw":false*'
+        }
+
         It 'Should contain emergency access account config data' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
