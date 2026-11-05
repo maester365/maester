@@ -86,7 +86,9 @@ function Get-MtDirectoryRoleAssignment {
     # a check asking for every administrator role (around 100) would otherwise spend minutes here.
     $filterLocally = $RoleId.Count -gt 3
     $roleFilters = @(if ($RoleId -and -not $filterLocally) { $RoleId | ForEach-Object { "roleDefinitionId eq '$_'" } } else { '' })
-    if ($filterLocally -and $Select -and $Select -notcontains 'roleDefinitionId') {
+    # Filtering locally needs roleDefinitionId; it is removed again before returning when the caller did not select it.
+    $removeRoleDefinitionId = $filterLocally -and $Select -and $Select -notcontains 'roleDefinitionId'
+    if ($removeRoleDefinitionId) {
         $Select = @($Select) + 'roleDefinitionId'
     }
 
@@ -134,6 +136,10 @@ function Get-MtDirectoryRoleAssignment {
         $roleIdSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
         foreach ($id in $RoleId) { $null = $roleIdSet.Add([string]$id) }
         $result = @($result | Where-Object { $roleIdSet.Contains([string]$_.roleDefinitionId) })
+    }
+    if ($removeRoleDefinitionId) {
+        # The assignments are copies (see Get-Assignment), so this does not change the cached Graph objects.
+        foreach ($assignment in $result) { $assignment.PSObject.Properties.Remove('roleDefinitionId') }
     }
 
     [pscustomobject]@{

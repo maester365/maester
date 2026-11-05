@@ -114,6 +114,8 @@ Describe 'Get-MtDirectoryRoleAssignment' -Tag 'Unit' {
         $result = Get-MtDirectoryRoleAssignment -RoleId $roleIds -Select 'id'
 
         $result.Assignments.id | Should -Be 'pim-wanted'
+        # roleDefinitionId was read for the local filter only, so the caller gets what it selected.
+        $result.Assignments[0].PSObject.Properties.Name | Should -Be @('id', 'AssignmentType')
         Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
             $RelativeUri -eq 'roleManagement/directory/roleAssignmentScheduleInstances' -and
             $Filter -eq "assignmentType eq 'Assigned'" -and ($Select -join ',') -eq 'id,roleDefinitionId'
