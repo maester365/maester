@@ -22,6 +22,9 @@ else if (suiteBySlug[slug]) scope = checks.filter((t) => !t.pack && t.suite === 
 else if (check) current = check.pack ? `/docs/tests/packs/${packOf(check.pack)?.slug}` : `/docs/tests/products/${check.product}`;
 
 const on = (href: string) => (href === current ? 'page' : undefined);
+// The first ten products, so the frameworks below stay in view; all of them when the page is one of the rest.
+const PRODUCTS_SHOWN = 10;
+const showAllProducts = data.products.slice(PRODUCTS_SHOWN).some((p) => current === `/docs/tests/products/${p.key}`);
 const browse = [
 	{ href: '/docs/tests/overview', label: 'Overview', count: '', path: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
 	{ href: '/docs/tests', label: 'All checks', count: data.total.toLocaleString('en-US'), path: 'M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01' },
@@ -86,17 +89,25 @@ const AUTHORS_SHOWN = 6;
 
 	<p class="mt-cnav__h">Products</p>
 	{
-		data.products.map((p) => {
+		data.products.map((p, i) => {
 			const href = `/docs/tests/products/${p.key}`;
 			const icon = productIcon(p.key);
+			const extra = i >= PRODUCTS_SHOWN && !showAllProducts;
 			return (
-				<a href={href} class="mt-cnav__item" aria-current={on(href)}>
+				<a href={href} class="mt-cnav__item" aria-current={on(href)} data-extra-product={extra ? '1' : undefined} hidden={extra}>
 					{icon ? <img src={icon} alt="" width="16" height="16" loading="lazy" /> : <span class="mt-cnav__tile">{productInitials(p.key)}</span>}
 					<span>{p.name}</span>
 					<span class="mt-cnav__n">{p.count}</span>
 				</a>
 			);
 		})
+	}
+	{
+		data.products.length > PRODUCTS_SHOWN && !showAllProducts && (
+			<button type="button" class="mt-cnav__all" data-all-products>
+				Show all {data.products.length}
+			</button>
+		)
 	}
 
 	<p class="mt-cnav__h">Frameworks</p>
@@ -196,6 +207,12 @@ const AUTHORS_SHOWN = 6;
 			const search = this.querySelector<HTMLInputElement>('[data-search]')!;
 			const boxes = [...this.querySelectorAll<HTMLInputElement>('input[data-filter]')];
 			const clear = this.querySelector<HTMLButtonElement>('[data-clear]');
+
+			const allProducts = this.querySelector<HTMLButtonElement>('[data-all-products]');
+			allProducts?.addEventListener('click', () => {
+				for (const item of this.querySelectorAll<HTMLElement>('[data-extra-product]')) item.hidden = false;
+				allProducts.hidden = true;
+			});
 
 			// On a page that lists checks the search filters it; elsewhere it opens All checks with the words.
 			search.value = readState().q[0] ?? '';
@@ -479,6 +496,9 @@ const AUTHORS_SHOWN = 6;
 		color: var(--sl-color-text-accent);
 		cursor: pointer;
 		text-align: start;
+	}
+	.mt-cnav__item[hidden] {
+		display: none;
 	}
 	.mt-cnav__all[hidden] {
 		display: none;
