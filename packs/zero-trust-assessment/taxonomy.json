@@ -508,6 +508,7 @@
         "T1078.004"
       ],
       "AlsoCheckedBy": [
+        "CIS.M365.1.1.1",
         "CISA.MS.AAD.7.3"
       ]
     },

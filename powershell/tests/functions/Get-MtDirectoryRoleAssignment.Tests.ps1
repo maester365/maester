@@ -101,6 +101,41 @@ Describe 'Get-MtDirectoryRoleAssignment' -Tag 'Unit' {
         }
     }
 
+    It 'reads every assignment once and filters locally when asked for many roles' {
+        Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
+        $wanted = '62e90394-69f5-4237-9190-012177145e10'
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{ id = 'pim-wanted'; roleDefinitionId = '62E90394-69F5-4237-9190-012177145E10' }
+            [pscustomobject]@{ id = 'pim-other'; roleDefinitionId = 'ffffffff-ffff-ffff-ffff-ffffffffffff' }
+        } -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignmentScheduleInstances' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest { } -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleEligibilityScheduleInstances' }
+
+        $roleIds = @($wanted) + @(1..5 | ForEach-Object { [guid]::NewGuid() })
+        $result = Get-MtDirectoryRoleAssignment -RoleId $roleIds -Select 'id'
+
+        $result.Assignments.id | Should -Be 'pim-wanted'
+        # roleDefinitionId was read for the local filter only, so the caller gets what it selected.
+        $result.Assignments[0].PSObject.Properties.Name | Should -Be @('id', 'AssignmentType')
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $RelativeUri -eq 'roleManagement/directory/roleAssignmentScheduleInstances' -and
+            $Filter -eq "assignmentType eq 'Assigned'" -and ($Select -join ',') -eq 'id,roleDefinitionId'
+        }
+        Should -Invoke Invoke-MtGraphRequest -ModuleName Maester -Exactly 1 -ParameterFilter {
+            $RelativeUri -eq 'roleManagement/directory/roleEligibilityScheduleInstances' -and -not $Filter
+        }
+    }
+
+    It 'leaves the objects Graph returned unchanged' {
+        Mock -ModuleName Maester Get-MtLicenseInformation { 'P2' }
+        $cached = [pscustomobject]@{ id = 'pim-active-1'; roleDefinitionId = 'role-1'; assignmentType = 'Assigned' }
+        Mock -ModuleName Maester Invoke-MtGraphRequest { $cached }.GetNewClosure() -ParameterFilter { $RelativeUri -eq 'roleManagement/directory/roleAssignmentScheduleInstances' }
+
+        $result = Get-MtDirectoryRoleAssignment -MemberStatus Active
+
+        $result.Assignments.AssignmentType | Should -Be 'Active'
+        $cached.assignmentType | Should -Be 'Assigned'
+    }
+
     It 'uses the Graph cache unless asked not to' {
         Mock -ModuleName Maester Get-MtLicenseInformation { 'P1' }
 

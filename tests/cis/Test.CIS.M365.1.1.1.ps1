@@ -41,38 +41,11 @@
         $_.displayName -like '*Administrator*' -or $_.displayName -eq 'Global Reader'
     }
 
-    Write-Verbose 'Getting role members'
-    $assignments = @()
+    Write-Verbose 'Getting the sync status of administrative role members'
+    $users = @()
     $roleIds = @($roles.id)
     if ($roleIds.Count -gt 0) {
-        $assignments = @(Get-MtRoleMember -RoleId $roleIds)
-    }
-
-    Write-Verbose 'Filtering administrative role members for users'
-    $administrativeUsers = @($assignments | Where-Object {
-        $_.'@odata.type' -eq '#microsoft.graph.user'
-    } | Sort-Object id -Unique)
-
-    $userIds = @($administrativeUsers | ForEach-Object { [string]$_.id })
-
-    $users = @()
-    if ($userIds.Count -gt 0) {
-        Write-Verbose 'Requesting users onPremisesSyncEnabled property'
-        $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId $userIds -Select id, displayName, onPremisesSyncEnabled)
-
-        $returnedUserIds = @($users | ForEach-Object { [string]$_.id })
-        $missingUserIds = @($userIds | Where-Object { $_ -notin $returnedUserIds })
-        if ($missingUserIds.Count -gt 0) {
-            throw "Microsoft Graph did not return user details for all administrative role members. Missing user IDs: $($missingUserIds -join ', ')."
-        }
-
-        $usersMissingSyncStatus = @($users | Where-Object {
-            $_.PSObject.Properties.Name -notcontains 'onPremisesSyncEnabled'
-        })
-        if ($usersMissingSyncStatus.Count -gt 0) {
-            $missingSyncStatusIds = @($usersMissingSyncStatus | ForEach-Object { [string]$_.id })
-            throw "Microsoft Graph did not return onPremisesSyncEnabled for administrative role members: $($missingSyncStatusIds -join ', ')."
-        }
+        $users = @(Get-MtRoleUserSyncStatus -RoleId $roleIds)
     }
 
     Write-Verbose 'Filtering users for onPremisesSyncEnabled'
