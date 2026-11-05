@@ -144,7 +144,11 @@ $tests = foreach ($file in Get-ChildItem -LiteralPath $testsPath -Filter 'Test-A
 
 # The module's MIT licence: the copyright and permission notice must go with the text copied into Tests.
 $licensePath = Get-ChildItem -LiteralPath $moduleRoot -File | Where-Object Name -Match '^licen[cs]e(\.txt|\.md)?$' | Select-Object -First 1
-if (-not $licensePath) { $licensePath = Get-ChildItem -LiteralPath (Split-Path -Parent $moduleRoot) -File -ErrorAction SilentlyContinue | Where-Object Name -Match '^licen[cs]e(\.txt|\.md)?$' | Select-Object -First 1 }
+# An installed module has it beside the manifest; a clone of the repository (src/powershell) at its root.
+foreach ($folder in (Split-Path -Parent $moduleRoot), (Split-Path -Parent (Split-Path -Parent $moduleRoot))) {
+    if ($licensePath -or -not $folder) { break }
+    $licensePath = Get-ChildItem -LiteralPath $folder -File -ErrorAction SilentlyContinue | Where-Object Name -Match '^licen[cs]e(\.txt|\.md)?$' | Select-Object -First 1
+}
 if (-not $licensePath) { throw "No licence file next to $manifestPath; the catalog copies the module's text and must carry its notice." }
 $licenseLines = (Get-Content -LiteralPath $licensePath.FullName -Raw -Encoding utf8) -replace "`r`n", "`n" -split "`n"
 $indent = ($licenseLines | Where-Object { $_.Trim() } | ForEach-Object { $_.Length - $_.TrimStart().Length } | Measure-Object -Minimum).Minimum
