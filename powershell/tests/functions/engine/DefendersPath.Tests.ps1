@@ -65,9 +65,9 @@ BeforeAll {
         }
     }
     $script:rows = @(
-        (New-Row 'T.goal' 'Failed' @('entra.goal'))
-        (New-Row 'T.base' 'Passed' @('entra.base'))
-        (New-Row 'T.pol' 'Failed' @('intune.policies') -Severity 'Medium')
+        (New-Row -Id 'T.goal' -Result 'Failed' -Step @('entra.goal'))
+        (New-Row -Id 'T.base' -Result 'Passed' -Step @('entra.base'))
+        (New-Row -Id 'T.pol' -Result 'Failed' -Step @('intune.policies') -Severity 'Medium')
     )
 }
 
@@ -91,7 +91,7 @@ Describe 'Get-MtStepPrerequisite and Get-MtStepScope' {
     }
 
     It 'Scopes to the steps that rows that ran name, and their prerequisites' {
-        $rows = @((New-Row 'T.1' 'Passed' @('intune.compliant')), (New-Row 'T.2' 'NotRun' @('defender.other')), (New-Row 'T.3' 'Passed' @('not.in-catalog')))
+        $rows = @((New-Row -Id 'T.1' -Result 'Passed' -Step @('intune.compliant')), (New-Row -Id 'T.2' -Result 'NotRun' -Step @('defender.other')), (New-Row -Id 'T.3' -Result 'Passed' -Step @('not.in-catalog')))
         $scope = InModuleScope Maester -Parameters @{ R = $rows; C = $script:catalog } { Get-MtStepScope -InputObject $R -Catalog $C }
         $scope.Named | Should -Be @('intune.compliant')
         $scope.Steps | Should -Be @('intune.policies', 'intune.compliant')
@@ -100,7 +100,7 @@ Describe 'Get-MtStepPrerequisite and Get-MtStepScope' {
 
 Describe 'Get-MtResultStep' {
     It 'Returns nothing when no row that ran names a step' {
-        Get-Path -Row @((New-Row 'T.1' 'Passed' @()), (New-Row 'T.2' 'NotRun' @('entra.base'))) | Should -BeNullOrEmpty
+        Get-Path -Row @((New-Row -Id 'T.1' -Result 'Passed' -Step @()), (New-Row -Id 'T.2' -Result 'NotRun' -Step @('entra.base'))) | Should -BeNullOrEmpty
     }
 
     Context 'A run with a failed goal step, a failed prerequisite and a measure below its threshold' {
@@ -191,7 +191,7 @@ Describe 'Get-MtResultStep' {
     }
 
     It 'Is Unknown, never Not done, when a test is Investigate or a measure could not be read, and the step that needs it is Unconfirmed' {
-        $rows = @((New-Row 'T.goal' 'Failed' @('entra.goal')), (New-Row 'T.base' 'Investigate' @('entra.base')), (New-Row 'T.pol' 'Passed' @('intune.policies')))
+        $rows = @((New-Row -Id 'T.goal' -Result 'Failed' -Step @('entra.goal')), (New-Row -Id 'T.base' -Result 'Investigate' -Step @('entra.base')), (New-Row -Id 'T.pol' -Result 'Passed' -Step @('intune.policies')))
         $measure = @{ 'devices-compliant' = @{ ReasonCode = 'LicenseNotFound'; ReadAt = $null } }
         $path = Get-Path -Row $rows -Measure $measure
         $byId = @{}; foreach ($s in $path.Steps) { $byId[$s.Id] = $s }
@@ -212,7 +212,7 @@ Describe 'Get-MtResultStep' {
     }
 
     It 'Is Not applicable when every verifying test that ran was skipped as NotApplicable' {
-        $path = Get-Path -Row @((New-Row 'T.base' 'Skipped' @('entra.base') -ReasonCode 'NotApplicable'))
+        $path = Get-Path -Row @((New-Row -Id 'T.base' -Result 'Skipped' -Step @('entra.base') -ReasonCode 'NotApplicable'))
         $path.Steps[0].Status | Should -Be 'NotApplicable'
         $path.Steps[0].Reason | Should -Be 'TestsNotApplicable'
     }
@@ -220,7 +220,7 @@ Describe 'Get-MtResultStep' {
     It 'Says why a step is Not checked, and gives the Earlier status of an earlier run' {
         $inventory = @([pscustomobject]@{ Id = 'T.base'; Step = @('entra.base') })
         $lastKnown = [pscustomobject]@{ 'T.base' = [pscustomobject]@{ Result = 'Passed'; ReasonCode = $null; ExecutedAt = '2026-11-01T08:00:00.0000000+00:00'; File = 'TestResults-old.json' } }
-        $path = Get-Path -Row @((New-Row 'T.goal' 'Failed' @('entra.goal'))) -Inventory $inventory -Extra @{ MeasuresDisabled = $true; LastKnown = $lastKnown }
+        $path = Get-Path -Row @((New-Row -Id 'T.goal' -Result 'Failed' -Step @('entra.goal'))) -Inventory $inventory -Extra @{ MeasuresDisabled = $true; LastKnown = $lastKnown }
         $byId = @{}; foreach ($s in $path.Steps) { $byId[$s.Id] = $s }
         $byId['entra.base'].Status | Should -Be 'NotChecked'
         $byId['entra.base'].Reason | Should -Be 'NotSelected'
@@ -244,6 +244,7 @@ Describe 'Invoke-MtStepMeasure' {
 "@ | Set-Content -LiteralPath $registryFile
         $script:registry = InModuleScope Maester -Parameters @{ F = $registryFile } { Get-MtMeasureRegistry -Path $F }
         function New-Context {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that returns an object.')]
             param([bool] $Graph = $true, [string[]] $Plans = @('INTUNE_A'), [string[]] $Scopes = @('Directory.Read.All'))
             [pscustomobject]@{
                 Platform = 'Linux'; TenantType = 'Workforce'; Cloud = 'Commercial'; Services = [pscustomobject]@{ Graph = $Graph }
