@@ -68,7 +68,7 @@ const facts = mappedChecks.map((t) => ({
 			}
 		</div>
 	</div>
-	<script type="application/json" data-facts set:html={JSON.stringify(facts)} />
+	<script type="application/json" data-facts set:html={JSON.stringify(facts).replace(/</g, '\\u003c')} />
 </mt-attack-view>
 
 <script>

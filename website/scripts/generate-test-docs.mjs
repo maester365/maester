@@ -717,7 +717,7 @@ function renderPackTestPage(pack, test, explorer, text) {
   }
   body.push("## Overview", "", description ? nestHeadings(description) : "Microsoft has not published a description of this check yet.", "");
   if (remediation) body.push("## Remediation", "", nestHeadings(remediation), "");
-  body.push("## Run it", "", "The check runs as part of the whole assessment, with the ZeroTrustAssessment module installed:", "", "```powershell", "Install-Module ZeroTrustAssessment -Scope CurrentUser", `Invoke-Maester -Pack ${pack.code} -SkipBuiltIn`, "```", "", "Leave out `-SkipBuiltIn` to run Maester's own checks in the same run.", "");
+  body.push("## Run it", "", "The check runs as part of the whole assessment, with the ZeroTrustAssessment module installed:", "", "```powershell", "Install-Module ZeroTrustAssessment -Scope CurrentUser", "Connect-Maester", `Invoke-Maester -Pack ${pack.code} -SkipBuiltIn`, "```", "", "Leave out `-SkipBuiltIn` to run Maester's own checks in the same run.", "");
   body.push("<details>", "<summary>About this check</summary>", "", "| | |", "| --- | --- |");
   body.push(`| Severity | ${test.severity} |`);
   if (test.cost) body.push(`| Effort to fix | ${test.cost} |`);
