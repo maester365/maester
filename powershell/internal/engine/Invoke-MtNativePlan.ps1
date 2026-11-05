@@ -432,7 +432,7 @@ function ConvertTo-MtNativeRow {
     later), the 3.0 fields Source, Suite, Format, ReasonCode, ReasonDetail, ParentId, InstanceId,
     Parameters, Diagnostics and Package, and the test's attributes (test attribute design, section 3): Product (the
     key), RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control,
-    Lifecycle, ReplacedBy, Service, License and Permission. An attribute the test does not declare is null
+    Lifecycle, ReplacedBy, Service, License, Permission and Step. An attribute the test does not declare is null
     or an empty list, never left out. Tag holds the tags the author wrote, plus the instance's own.
 
     Benchmark is the requirement of a published benchmark that the test implements: the first Control of the
@@ -593,7 +593,7 @@ function Get-MtInstanceAttribute {
     Returns the attribute values a family instance sets for itself, checked against the taxonomy.
 
     .DESCRIPTION
-    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost and Mitre. Only
+    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost, Mitre and Step. Only
     values the taxonomy knows are returned: a product key or alias (as its key), a feature of that product, an
     area key, Low, Medium or High, and ATT&CK techniques of the pinned release. A value that does not pass is left
     out, so the row keeps its family's value. A Feature is checked against the instance's Product when it sets
@@ -642,6 +642,12 @@ function Get-MtInstanceAttribute {
         $value = [string](Get-MtInstanceValue -Instance $Instance -Name $name)
         if ($value -in 'Low', 'Medium', 'High') { $values[$name] = (Get-Culture).TextInfo.ToTitleCase($value.ToLowerInvariant()) }
     }
+
+    # Step: the steps of the defender's path the instance verifies, in lowercase, at most three. A step the catalogue
+    # doesn't have stays on the row and is left out of the result's Steps.
+    $step = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Step') | Where-Object { $_ } | ForEach-Object { ([string]$_).ToLowerInvariant() } |
+            Where-Object { $_.Length -le 80 -and $_ -cmatch '^[a-z0-9][a-z0-9-]*\.[a-z0-9][a-z0-9-]*$' } | Select-Object -Unique)
+    if ($step.Count) { $values.Step = [string[]]@($step | Select-Object -First 3) }
 
     $mitre = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Mitre') | Where-Object { $_ } | ForEach-Object { [string]$_ })
     if ($mitre.Count) {
@@ -694,7 +700,8 @@ function Get-MtRowAttribute {
 
     .DESCRIPTION
     RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control, Lifecycle,
-    ReplacedBy, Service, License and Permission, in that order, then Benchmark (test attribute design,
+    ReplacedBy, Service, License, Permission and Step (the steps of the defender's path it verifies), in that order,
+    then Benchmark (test attribute design,
     section 6), which is null unless a Control of the test names a requirement of a framework. Without -Test
     every field is null, which is what a Pester-format row carries.
     #>
@@ -705,10 +712,10 @@ function Get-MtRowAttribute {
     )
 
     $fields = [ordered]@{}
-    foreach ($name in 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'UserImpact', 'ImplementationCost', 'Mitre', 'Control', 'Lifecycle', 'ReplacedBy', 'Service', 'License', 'Permission') {
+    foreach ($name in 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'UserImpact', 'ImplementationCost', 'Mitre', 'Control', 'Lifecycle', 'ReplacedBy', 'Service', 'License', 'Permission', 'Step') {
         if (-not $Test) { $fields[$name] = $null; continue }
         $property = $Test.PSObject.Properties[$name]
-        $fields[$name] = if ($name -in 'RelatedProduct', 'Mitre', 'Control', 'Service', 'License', 'Permission') {
+        $fields[$name] = if ($name -in 'RelatedProduct', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'Step') {
             , [string[]]@($(if ($property) { $property.Value }) | Where-Object { $_ })
         } elseif ($property -and $property.Value) { [string]$property.Value } else { $null }
     }

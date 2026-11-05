@@ -4,7 +4,7 @@ function Resolve-MtSelection {
     Combines the run config's Selection section with the Invoke-Maester parameters (design section 7.3).
 
     .DESCRIPTION
-    -Tag, -TestId and the typed selectors (-Product, -Feature, -Area, -Severity, -Suite) replace the config
+    -Tag, -TestId and the typed selectors (-Product, -Feature, -Area, -Severity, -Suite, -Step) replace the config
     lists, and so does -Pack; -ExcludeTag, -ExcludeTestId and -ExcludeProduct add to them; the include switches are true
     when either source sets them. A product named by an alias, such as Entra ID, becomes its key, in -Product and
     -ExcludeProduct alike.
@@ -29,8 +29,10 @@ function Resolve-MtSelection {
         [Parameter()] [string[]] $Severity,
         [Parameter()] [string[]] $Suite,
         [Parameter()] [string[]] $Pack,
+        [Parameter()] [string[]] $Step,
         [Parameter()] [switch] $IncludePreview,
-        [Parameter()] [switch] $IncludeLongRunning
+        [Parameter()] [switch] $IncludeLongRunning,
+        [Parameter()] [switch] $IncludePrerequisites
     )
 
     $s = $RunConfig.Selection
@@ -52,22 +54,25 @@ function Resolve-MtSelection {
         if (-not [string]::IsNullOrWhiteSpace($item)) { & $productKey ([string]$item) }
     }
     [pscustomobject]@{
-        Tag                = @(if ($Tag) { $Tag } else { $s.Tag })
-        ExcludeTag         = @(@($s.ExcludeTag) + @($ExcludeTag) | Where-Object { $_ } | Select-Object -Unique)
-        TestId             = @(if ($TestId) { $TestId } else { $s.TestId })
-        ExcludeTestId      = @(@($s.ExcludeTestId) + @($ExcludeTestId) | Where-Object { $_ } | Select-Object -Unique)
-        Product            = [string[]]@($products)
-        ExcludeProduct     = [string[]]@($excludeProducts | Select-Object -Unique)
-        Feature            = [string[]]@(& $selector $Feature 'Feature')
-        Area               = [string[]]@(& $selector $Area 'Area')
-        Severity           = [string[]]@(& $selector $Severity 'Severity')
-        Suite              = [string[]]@(& $selector $Suite 'Suite')
-        Pack               = [string[]]@(& $selector $Pack 'Pack')
-        IncludePreview     = $IncludePreview.IsPresent -or [bool]$s.IncludePreview
-        IncludeLongRunning = $IncludeLongRunning.IsPresent -or [bool]$s.IncludeLongRunning
-        DefaultAction      = $s.DefaultAction
-        OnUnknownId        = $s.OnUnknownId
-        BuiltIn            = $s.BuiltIn
+        Tag                  = @(if ($Tag) { $Tag } else { $s.Tag })
+        ExcludeTag           = @(@($s.ExcludeTag) + @($ExcludeTag) | Where-Object { $_ } | Select-Object -Unique)
+        TestId               = @(if ($TestId) { $TestId } else { $s.TestId })
+        ExcludeTestId        = @(@($s.ExcludeTestId) + @($ExcludeTestId) | Where-Object { $_ } | Select-Object -Unique)
+        Product              = [string[]]@($products)
+        ExcludeProduct       = [string[]]@($excludeProducts | Select-Object -Unique)
+        Feature              = [string[]]@(& $selector $Feature 'Feature')
+        Area                 = [string[]]@(& $selector $Area 'Area')
+        Severity             = [string[]]@(& $selector $Severity 'Severity')
+        Suite                = [string[]]@(& $selector $Suite 'Suite')
+        Pack                 = [string[]]@(& $selector $Pack 'Pack')
+        # Steps of the defender's path are stored in lowercase.
+        Step                 = [string[]]@(& $selector $Step 'Step' | ForEach-Object { $_.ToLowerInvariant() })
+        IncludePreview       = $IncludePreview.IsPresent -or [bool]$s.IncludePreview
+        IncludeLongRunning   = $IncludeLongRunning.IsPresent -or [bool]$s.IncludeLongRunning
+        IncludePrerequisites = $IncludePrerequisites.IsPresent -or ($s.PSObject.Properties['IncludePrerequisites'] -and [bool]$s.IncludePrerequisites)
+        DefaultAction        = $s.DefaultAction
+        OnUnknownId          = $s.OnUnknownId
+        BuiltIn              = $s.BuiltIn
     }
 }
 
@@ -77,11 +82,13 @@ function Test-MtSelectorMatch {
     Checks a test against the typed selectors of a run and returns the first selector it does not match, or $null.
 
     .DESCRIPTION
-    The typed selectors are Product, Feature, Area, Severity and Suite (test attribute design, section 4).
+    The typed selectors are Product, Feature, Area, Severity, Suite (test attribute design, section 4) and Step
+    (the steps of the defender's path a test verifies).
     The values of one selector are alternatives, with '*' wildcards as for tags; different selectors must
     all match. Product matches the test's Product or any of its RelatedProduct values. A test that has no
     value for a selector in use does not match it, which is how a Pester-format test, which has no Product,
-    Feature or Area, is left out of a run that selects by one of them.
+    Feature, Area or Step, is left out of a run that selects by one of them. Step, like Product, takes a list: a test
+    matches when any of its steps does.
 
     Returns an object with Selector (the name) and Value (the selector's values), or nothing when the test
     matches every selector in use.
@@ -95,10 +102,11 @@ function Test-MtSelectorMatch {
         [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Feature,
         [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Area,
         [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Severity,
-        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Suite
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Suite,
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [string[]] $Step
     )
 
-    $values = [ordered]@{ Product = @($Product); Feature = @($Feature); Area = @($Area); Severity = @($Severity); Suite = @($Suite) }
+    $values = [ordered]@{ Product = @($Product); Feature = @($Feature); Area = @($Area); Severity = @($Severity); Suite = @($Suite); Step = @($Step) }
     foreach ($name in $values.Keys) {
         if (-not $Selection.PSObject.Properties[$name]) { continue }
         $patterns = @($Selection.$name | Where-Object { $_ })
@@ -115,14 +123,14 @@ function Test-MtSelectorMatch {
 function Test-MtSelectorInUse {
     <#
     .SYNOPSIS
-    True when a run selects by Product, Feature, Area, Severity or Suite.
+    True when a run selects by Product, Feature, Area, Severity, Suite or Step.
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
         [Parameter(Mandatory)] [pscustomobject] $Selection
     )
-    foreach ($name in 'Product', 'Feature', 'Area', 'Severity', 'Suite') {
+    foreach ($name in 'Product', 'Feature', 'Area', 'Severity', 'Suite', 'Step') {
         if ($Selection.PSObject.Properties[$name] -and @($Selection.$name | Where-Object { $_ }).Count -gt 0) { return $true }
     }
     $false

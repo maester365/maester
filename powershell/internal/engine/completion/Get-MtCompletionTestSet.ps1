@@ -57,14 +57,14 @@
     }
 
     $idName = if ($CommandName -eq 'Invoke-Maester') { 'TestId' } else { 'Id' }
-    $selectorNames = @('Product', 'ExcludeProduct', 'Feature', 'Area', 'Severity', 'Suite', 'Tag', 'ExcludeTag', $idName, 'ExcludeTestId')
+    $selectorNames = @('Product', 'ExcludeProduct', 'Feature', 'Area', 'Severity', 'Suite', 'Step', 'Tag', 'ExcludeTag', $idName, 'ExcludeTestId')
     $narrowed = @($selectorNames | Where-Object { @(& $strings $_).Count -gt 0 }).Count -gt 0
     if (-not $narrowed) { return [pscustomobject]@{ Tests = $tests.ToArray(); Narrowed = $false } }
 
     # Resolve-MtSelection turns product aliases into keys. The matching below is that of Test-MtSelectorMatch,
     # Test-MtProductExcluded and Test-MtIdMatch, written as plain loops: they run for every test on each Tab.
-    $selection = Resolve-MtSelection -RunConfig ([pscustomobject]@{ Selection = [pscustomobject]@{} }) -Product @(& $strings 'Product') -ExcludeProduct @(& $strings 'ExcludeProduct') -Feature @(& $strings 'Feature') -Area @(& $strings 'Area') -Severity @(& $strings 'Severity') -Suite @(& $strings 'Suite')
-    $selectors = @(foreach ($name in 'Product', 'Feature', 'Area', 'Severity', 'Suite') {
+    $selection = Resolve-MtSelection -RunConfig ([pscustomobject]@{ Selection = [pscustomobject]@{} }) -Product @(& $strings 'Product') -ExcludeProduct @(& $strings 'ExcludeProduct') -Feature @(& $strings 'Feature') -Area @(& $strings 'Area') -Severity @(& $strings 'Severity') -Suite @(& $strings 'Suite') -Step @(& $strings 'Step')
+    $selectors = @(foreach ($name in 'Product', 'Feature', 'Area', 'Severity', 'Suite', 'Step') {
             $patterns = @($selection.$name | Where-Object { $_ })
             if ($patterns.Count -gt 0) { [pscustomobject]@{ Name = $name; Patterns = $patterns } }
         })

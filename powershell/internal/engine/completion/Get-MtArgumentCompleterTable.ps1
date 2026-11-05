@@ -27,6 +27,7 @@
     & $row 'Invoke-Maester' 'Area' 'Area'
     & $row 'Invoke-Maester' 'Severity' 'Severity'
     & $row 'Invoke-Maester' 'Suite' 'Suite'
+    & $row 'Invoke-Maester' 'Step' 'Step'
     & $row 'Invoke-Maester' 'Tag' 'Tag'
     & $row 'Invoke-Maester' 'ExcludeTag' 'Tag'
     & $row 'Invoke-Maester' 'TestId' 'TestId'
@@ -39,6 +40,7 @@
     & $row 'Get-MtTest' 'Area' 'Area'
     & $row 'Get-MtTest' 'Severity' 'Severity'
     & $row 'Get-MtTest' 'Suite' 'Suite'
+    & $row 'Get-MtTest' 'Step' 'Step'
     & $row 'Invoke-MtTest' 'Id' 'TestId'
 
     # Writing a test: the keys the taxonomy allows, whatever tests exist.

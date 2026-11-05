@@ -102,6 +102,29 @@ function Merge-MtPartitionResult {
     if ($merged.Contains('Frameworks')) { $merged.Frameworks = @(Get-MtResultFramework -InputObject $rows) }
     $packs = @($Results | ForEach-Object { if ($_.PSObject.Properties['Packs']) { $_.Packs } } | Where-Object { $_ } | Group-Object -Property Id | ForEach-Object { $_.Group[0] })
     if ($packs.Count -gt 0) { $merged.Packs = $packs }
+    # The defender's path, ordered for the run as a whole: the measures each part read are reused (the first part
+    # that read a measure wins), and a step that is still Not checked keeps the Earlier status a part found.
+    $merged.Remove('Steps'); $merged.Remove('Goals')
+    $partSteps = @($Results | ForEach-Object { if ($_.PSObject.Properties['Steps']) { $_.Steps } } | Where-Object { $_ })
+    $measures = @{}
+    foreach ($s in $partSteps) {
+        $m = if ($s.PSObject.Properties['Measure']) { $s.Measure } else { $null }
+        if (-not $m -or -not $m.Key) { continue }
+        $read = -not $m.ReasonCode
+        if ($measures.ContainsKey([string]$m.Key) -and ($null -eq $measures[[string]$m.Key].ReasonCode -or -not $read)) { continue }
+        $measures[[string]$m.Key] = [pscustomobject]@{ Count = $m.Count; Total = $m.Total; Objects = @($m.Objects); ObjectCount = $m.ObjectCount; ReadAt = $m.ReadAt; ReasonCode = $m.ReasonCode }
+    }
+    $measureSetting = Get-MtMeasureSetting -RunConfig $(if ($first.PSObject.Properties['MaesterConfig']) { $first.MaesterConfig } else { $null })
+    $tenantContext = if ($first.PSObject.Properties['TenantContext']) { $first.TenantContext } else { $null }
+    $mergedSteps = Get-MtResultStep -InputObject $rows -Measure $measures -MeasuresDisabled:(-not $measureSetting.Enabled) -MinimumShare $measureSetting.MinimumShare -TenantContext $tenantContext
+    if ($mergedSteps) {
+        foreach ($s in @($mergedSteps.Steps | Where-Object { $_.Status -eq 'NotChecked' })) {
+            $earlier = $partSteps | Where-Object { $_.Id -eq $s.Id -and $_.PSObject.Properties['Earlier'] -and $_.Earlier } | Select-Object -First 1
+            if ($earlier) { $s.Earlier = $earlier.Earlier }
+        }
+        $merged.Steps = @($mergedSteps.Steps)
+        $merged.Goals = @($mergedSteps.Goals)
+    }
     # A part's previous result may be another part of an earlier run, which holds only some of the tests.
     $merged.Remove('Previous')
     $merged.Partitions = @($partitions)

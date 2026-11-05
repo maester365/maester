@@ -166,6 +166,7 @@ dotted camelCase; for a fact the list does not have, use a prefix of your own (`
 | Key | Raw | Meaning |
 | --- | --- | --- |
 | `user.mfaRegistered` | boolean | The user has registered a method for multifactor authentication. |
+| `user.mfaCapable` | boolean | The user has registered a strong method that the authentication methods policy allows, so can complete multifactor authentication (`isMfaCapable` in the registration report). `user.mfaRegistered` can be true when this is false. |
 | `user.passwordless` | boolean | The user can sign in without a password. |
 | `user.privilegedRoles` | list of strings | The privileged Entra roles the user holds, permanent, activated or eligible. Empty when none. |
 | `signIn.daysSince` | number, or null | Days between the last sign-in and when the data was read (`AsOf`). Null when no sign-in was recorded. Users, apps and devices. |

@@ -15,7 +15,14 @@ function Resolve-MtNativePlan {
 
     Each plan row has: Test, Disposition (Run, NotRun, Skipped or Error), ReasonCode, ReasonDetail,
     LegacySkipCode, Parameters (the bound hashtable), EffectiveParameters, TimeoutSeconds, Setting (the
-    TestSettings row), InstancePatterns (for a family selected by instance ID) and ExactlyNamed.
+    TestSettings row), InstancePatterns (for a family selected by instance ID), ExactlyNamed and Prerequisite.
+
+    -PrerequisiteStep is the second pass of -IncludePrerequisites (docs/proposals/defenders-path.md, section 8): a test
+    that names one of these steps is selected even if -TestId, the typed selectors or -Tag leave it out, and runs
+    like a test named by its exact ID, so its Preview and LongRunning exclusions are lifted. A long-running family
+    (the Zero Trust Assessment) is the exception: it still needs -IncludeLongRunning or its suite named in -Suite.
+    The exclusions (-ExcludeTestId, -ExcludeProduct, -ExcludeTag, a disabled or unlisted test) still apply.
+    Prerequisite is true on the rows it selected.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -31,6 +38,8 @@ function Resolve-MtNativePlan {
         [Parameter()] [string[]] $AutoExcludedTag = @(),
         # Parameter values that win over the config (Invoke-MtTest -Parameter), by test ID.
         [Parameter()] [hashtable] $ParameterOverride = @{},
+        # The prerequisite steps of the steps the selected tests name (-IncludePrerequisites).
+        [Parameter()] [AllowEmptyCollection()] [string[]] $PrerequisiteStep = @(),
         [Parameter()] [switch] $DryRun
     )
 
@@ -59,6 +68,7 @@ function Resolve-MtNativePlan {
         foreach ($tag in $tags.Legacy) { if ($tag -like $pattern) { return 'Legacy' } }
     }
     $legacyTagUsed = [ordered]@{}
+    $prerequisites = [System.Collections.Generic.HashSet[string]]::new([string[]]@($PrerequisiteStep | Where-Object { $_ } | ForEach-Object { $_.ToLowerInvariant() }), [System.StringComparer]::Ordinal)
 
     foreach ($t in $Test) {
         $row = [ordered]@{
@@ -73,6 +83,7 @@ function Resolve-MtNativePlan {
             Setting             = $null
             InstancePatterns    = @()
             ExactlyNamed        = $false
+            Prerequisite        = $false
         }
         $set = { param($disposition, $code, $detail, $legacy) $row.Disposition = $disposition; $row.ReasonCode = $code; $row.ReasonDetail = $detail; $row.LegacySkipCode = $legacy }
 
@@ -91,6 +102,8 @@ function Resolve-MtNativePlan {
         }
 
         $isFamily = [bool]$t.InstanceSource
+        # Reached by -IncludePrerequisites: the include selectors don't apply.
+        $viaPrerequisite = $prerequisites.Count -gt 0 -and [bool](@($t.Step) | Where-Object { $_ -and $prerequisites.Contains(([string]$_).ToLowerInvariant()) })
         $setting = Get-MtTestSetting -RunConfig $RunConfig -Id $t.Id
         $row.Setting = $setting
 
@@ -118,7 +131,7 @@ function Resolve-MtNativePlan {
             & $set 'NotRun' 'ExcludedByProduct' "Excluded by product ($($excludedBy -join ', '))."
             [pscustomobject]$row; continue
         }
-        if ($Selection.TestId.Count -gt 0) {
+        if ($Selection.TestId.Count -gt 0 -and -not $viaPrerequisite) {
             $includedBy = @(Test-MtIdMatch -Id $t.Id -Pattern $Selection.TestId)
             if (-not $includedBy -and $isFamily) {
                 $instancePatterns = @($Selection.TestId | Where-Object { $_ -like "$($t.Id).*" -and -not ($_.Contains('*') -and "$($t.Id).*" -like $_) })
@@ -133,10 +146,10 @@ function Resolve-MtNativePlan {
             $row.ExactlyNamed = [bool]($includedBy | Where-Object { -not $_.Contains('*') })
         }
 
-        # Typed selectors: Product (or RelatedProduct), Feature, Area, the effective severity and Suite.
-        if ($selectorInUse) {
+        # Typed selectors: Product (or RelatedProduct), Feature, Area, the effective severity, Suite and Step.
+        if ($selectorInUse -and -not $viaPrerequisite) {
             $severity = if ($setting -and $setting.PSObject.Properties['Severity'] -and $setting.Severity) { [string]$setting.Severity } else { [string]$t.Severity }
-            $miss = Test-MtSelectorMatch -Selection $Selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $severity -Suite $t.Suite
+            $miss = Test-MtSelectorMatch -Selection $Selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $severity -Suite $t.Suite -Step @($t.Step)
             if ($miss) {
                 & $set 'NotRun' 'NotSelected' "Not selected by -$($miss.Selector) ($($miss.Value -join ', '))."
                 [pscustomobject]$row; continue
@@ -150,10 +163,17 @@ function Resolve-MtNativePlan {
         # long-running tests run too.
         if ($t.PSObject.Properties['PackSelected'] -and $t.PackSelected) { $row.ExactlyNamed = $true }
 
+        # A prerequisite runs as if named by its exact ID, except a long-running family, which runs the whole
+        # assessment: it still needs -IncludeLongRunning (or its suite named, above).
+        if ($viaPrerequisite) {
+            $row.Prerequisite = $true
+            if (-not ($isFamily -and $t.LongRunning)) { $row.ExactlyNamed = $true }
+        }
+
         # Selection by tag: the tags of the test and its suite and, for a built-in test, its ID and its
         # Maester 2.x tags (section 5.1). A pattern that only a 2.x tag answers is noted for the warning below.
         $tags = if ($IncludeTag.Count -gt 0 -or $userExcludeTag.Count -gt 0) { Get-MtSelectionTag -Test $t } else { $null }
-        $included = $IncludeTag.Count -eq 0
+        $included = $IncludeTag.Count -eq 0 -or $viaPrerequisite
         if (-not $included) {
             foreach ($pattern in $IncludeTag) {
                 $via = & $matchTag $tags $pattern

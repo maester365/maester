@@ -22,6 +22,11 @@
     Returns an object with Count (compliant devices), Total (devices that signed in) and Objects (the devices that
     aren't compliant, as Type, Id and DisplayName).
 
+    For each device it lists, it adds the object facts device.managed, device.compliant, device.os and device.joinType
+    (design section 12) with Add-MtAffectedObjectFact, from the source 'Maester measures'. The engine puts the
+    objects of a measure on the Affected objects page, so the facts have an object to attach to. A run that doesn't
+    collect affected objects keeps no facts.
+
     .EXAMPLE
     Get-MtDeviceComplianceShare
 
@@ -47,14 +52,28 @@
         RelativeUri     = 'devices'
         Filter          = "accountEnabled eq true and approximateLastSignInDateTime ge $since"
         # isManaged, operatingSystem and trustType are read for the object facts device.managed, device.os and
-        # device.joinType (design section 12). They wait for the engine to list a measure's objects on the Affected
-        # objects page: facts attach only to objects the run lists.
+        # device.joinType (design section 12).
         Select          = 'id', 'displayName', 'approximateLastSignInDateTime', 'isCompliant', 'isManaged', 'operatingSystem', 'trustType'
         QueryParameters = @{ '$count' = 'true' }
     }
     $devices = @(Invoke-MtGraphRequest @deviceSplat | Where-Object { $null -ne $_ })
 
     $notCompliant = @($devices | Where-Object { $_.isCompliant -ne $true })
+
+    # Object facts for the devices listed, with the shared keys.
+    $joinTypes = @{ AzureAd = 'Microsoft Entra joined'; ServerAd = 'Microsoft Entra hybrid joined'; Workplace = 'Microsoft Entra registered' }
+    $facts = foreach ($device in $notCompliant) {
+        if (-not $device.id) { continue }
+        $managed = $device.isManaged -eq $true
+        $list = [System.Collections.Generic.List[object]]::new()
+        $list.Add(@{ Name = 'Management'; Value = $(if ($managed) { 'Managed' } else { 'Not managed' }); Tone = $(if ($managed) { 'Info' } else { 'Warning' }); Key = 'device.managed'; Raw = $managed })
+        $list.Add(@{ Name = 'Compliance'; Value = 'Not compliant'; Tone = 'Warning'; Key = 'device.compliant'; Raw = $false })
+        if ($device.operatingSystem) { $list.Add(@{ Name = 'Operating system'; Value = [string]$device.operatingSystem; Key = 'device.os'; Raw = [string]$device.operatingSystem }) }
+        $trust = [string]$device.trustType
+        if ($trust) { $list.Add(@{ Name = 'Join type'; Value = $(if ($joinTypes.ContainsKey($trust)) { $joinTypes[$trust] } else { $trust }); Key = 'device.joinType'; Raw = $trust }) }
+        [pscustomobject]@{ Type = 'Device'; Id = [string]$device.id; Fact = $list.ToArray() }
+    }
+    if (@($facts).Count -gt 0) { $facts | Add-MtAffectedObjectFact -Source 'Maester measures' }
 
     [pscustomobject][ordered]@{
         Count   = $devices.Count - $notCompliant.Count

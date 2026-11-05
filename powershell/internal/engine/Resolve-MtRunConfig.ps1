@@ -272,6 +272,25 @@ function Complete-MtRunConfig {
     if ($Config.Selection.OnUnknownId -notin 'Warn', 'Ignore', 'Error') {
         throw "Selection.OnUnknownId must be 'Warn', 'Ignore' or 'Error', not '$($Config.Selection.OnUnknownId)'."
     }
+    # Selection.Step and Selection.IncludePrerequisites (the defender's path) are read only when set.
+    if ($Config.Selection.PSObject.Properties['Step'] -and $null -ne $Config.Selection.Step) {
+        $Config.Selection.Step = @($Config.Selection.Step | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    }
+    # Measures: Enabled is a bool, and each MinimumShare a whole number from 1 to 100.
+    if ($Config.PSObject.Properties['Measures'] -and $null -ne $Config.Measures) {
+        $measures = $Config.Measures
+        if ($measures.PSObject.Properties['Enabled'] -and $null -ne $measures.Enabled -and $measures.Enabled -isnot [bool]) {
+            throw "Measures.Enabled must be true or false, not '$($measures.Enabled)'."
+        }
+        $shares = if ($measures.PSObject.Properties['MinimumShare']) { $measures.MinimumShare } else { $null }
+        $pairs = if ($shares -is [System.Collections.IDictionary]) { @($shares.GetEnumerator() | ForEach-Object { [pscustomobject]@{ Name = [string]$_.Key; Value = $_.Value } }) }
+        elseif ($shares) { @($shares.PSObject.Properties | ForEach-Object { [pscustomobject]@{ Name = $_.Name; Value = $_.Value } }) }
+        else { @() }
+        foreach ($pair in $pairs) {
+            $valid = ($pair.Value -is [int] -or $pair.Value -is [long]) -and $pair.Value -ge 1 -and $pair.Value -le 100
+            if (-not $valid) { throw "Measures.MinimumShare.$($pair.Name) must be a whole number from 1 to 100, not '$($pair.Value)'." }
+        }
+    }
 
     $Config | Add-Member -MemberType NoteProperty -Name 'ConfigSource' -Value $ConfigSource -Force
 

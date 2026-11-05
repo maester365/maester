@@ -4,7 +4,7 @@
     Keeps what Tab completion uses of test rows: the catalogue, a custom test inventory or a pack's test list.
 
     .DESCRIPTION
-    Each row has Id, Title, Product, RelatedProduct, Feature, Area, Severity, Suite, Control (the references and
+    Each row has Id, Title, Product, RelatedProduct, Feature, Area, Severity, Suite, Step, Control (the references and
     the requirement IDs alone, so MS.AAD.3.1 finds the test mapped to cisa-scuba:MS.AAD.3.1), Lifecycle,
     LongRunning, IsFamily, Tags (what -Tag matches, without the test's ID: its own tags, its suite's and, for a
     built-in test, its Maester 2.x tags), Source (BuiltIn, Custom or Pack), Pack, SortKey (the ID with its
@@ -47,6 +47,7 @@
             Area           = [string]$t.Area
             Severity       = [string]$t.Severity
             Suite          = [string]$t.Suite
+            Step           = [string[]]@($t.Step | Where-Object { $_ })
             Control        = $control.ToArray()
             Lifecycle      = [string]$t.Lifecycle
             LongRunning    = [bool]$t.LongRunning

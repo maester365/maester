@@ -9,6 +9,10 @@
 
     The function also supports reading Maester test results from a JSON file and exporting the flattened object to a CSV.
 
+    When the results have the defender's path (Steps), each row also has Step (the steps the test verifies),
+    Readiness (whether those steps can start: Ready, Unconfirmed or Blocked) and BlockedBy (the steps that block
+    them). They are empty for a test that names no step and for a step that is done.
+
     .PARAMETER InputObject
     Use the Maester test results from the pipeline or as an input object (JSON).
 
@@ -129,12 +133,20 @@
 
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
+        $ResultObject = $null
         if ($PSCmdlet.ParameterSetName -eq 'FromInputObject') {
-            $JsonData = $InputObject.Tests
+            $ResultObject = $InputObject
         }
 
         if ($PSCmdlet.ParameterSetName -eq 'FromFile') {
-            $JsonData = (Get-Content -Path $JsonFilePath | ConvertFrom-Json).Tests
+            $ResultObject = Get-Content -Path $JsonFilePath | ConvertFrom-Json
+        }
+        $JsonData = if ($ResultObject) { $ResultObject.Tests } else { $null }
+
+        # The steps of the defender's path, by ID, for the Step, Readiness and BlockedBy columns.
+        $StepById = @{}
+        if ($ResultObject -and $ResultObject.PSObject.Properties['Steps']) {
+            foreach ($Step in @($ResultObject.Steps)) { if ($Step -and $Step.Id) { $StepById[[string]$Step.Id] = $Step } }
         }
 
         $FlattenedResults = New-Object System.Collections.Generic.List[PSObject]
@@ -156,6 +168,9 @@
                 $TestResultDetail = $_.ResultDetail.TestResult
             }
 
+            $RowSteps = @(if ($_.PSObject.Properties['Step']) { $_.Step | Where-Object { $_ } })
+            $KnownSteps = @($RowSteps | Where-Object { $StepById.ContainsKey([string]$_) } | ForEach-Object { $StepById[[string]$_] })
+
             # Add the flattened object to the FlattenedResults list.
             $FlattenedResults.Add([PSCustomObject]@{
                     ID             = $_.ID
@@ -173,6 +188,9 @@
                     Name           = $_.Name
                     HelpUrl        = $_.HelpUrl
                     TestScriptFile = [System.IO.Path]::GetFileName($_.ScriptBlockFile)
+                    Step           = $RowSteps -join ', '
+                    Readiness      = @($KnownSteps | ForEach-Object { $_.Readiness } | Where-Object { $_ } | Select-Object -Unique) -join ', '
+                    BlockedBy      = @($KnownSteps | ForEach-Object { $_.BlockedBy } | Where-Object { $_ } | Select-Object -Unique) -join ', '
                 })
         }
 

@@ -25,6 +25,10 @@
     Returns an object with Count (users who can complete MFA), Total (the users counted) and Objects (the users who
     can't, as Type, Id and DisplayName, administrators first).
 
+    For each user it lists, it adds the object facts user.mfaCapable and user.mfaRegistered (design section 12) with
+    Add-MtAffectedObjectFact, from the source 'Maester measures', under the object ID and the user principal name,
+    so a record has them whichever way it was keyed. A run that doesn't collect affected objects keeps no facts.
+
     .EXAMPLE
     Get-MtMfaCapableShare
 
@@ -57,8 +61,20 @@
     $users = @($registrations | Where-Object { $_.userType -eq 'member' -and $_.id -and -not $excluded.Contains([string]$_.id) })
     $notCapable = @($users | Where-Object { $_.isMfaCapable -ne $true })
 
-    # Object facts for these users (design section 12), under the object ID and the UPN, wait for the engine to list
-    # a measure's objects on the Affected objects page: facts attach only to objects the run lists.
+    # Object facts for the users listed (design section 12), under the object ID and the UPN.
+    $facts = foreach ($user in $notCapable) {
+        $list = [System.Collections.Generic.List[object]]::new()
+        $list.Add(@{ Name = 'Can complete MFA'; Value = 'No: no method the policy allows is registered'; Tone = $(if ($user.isAdmin -eq $true) { 'Risk' } else { 'Warning' }); Key = 'user.mfaCapable'; Raw = $false })
+        if ($null -ne $user.isMfaRegistered) {
+            $registered = $user.isMfaRegistered -eq $true
+            $list.Add(@{ Name = 'MFA'; Value = $(if ($registered) { 'Registered' } else { 'Not registered' }); Tone = $(if ($registered) { 'Info' } else { 'Warning' }); Key = 'user.mfaRegistered'; Raw = $registered })
+        }
+        $fact = $list.ToArray()
+        [pscustomobject]@{ Type = 'User'; Id = [string]$user.id; Fact = $fact }
+        if ($user.userPrincipalName) { [pscustomobject]@{ Type = 'User'; Id = [string]$user.userPrincipalName; Fact = $fact } }
+    }
+    if (@($facts).Count -gt 0) { $facts | Add-MtAffectedObjectFact -Source 'Maester measures' }
+
     [pscustomobject][ordered]@{
         Count   = $users.Count - $notCapable.Count
         Total   = $users.Count

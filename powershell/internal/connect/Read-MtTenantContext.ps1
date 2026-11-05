@@ -63,6 +63,9 @@ function Read-MtTenantContext {
     $primaryDomain = $null
     $tenantType = 'Unknown'
     $tenantTypeSource = 'Unknown'
+    # Whether the tenant syncs identities from on-premises (the hybrid-identity condition of the defender's path).
+    # $null when the organization could not be read.
+    $hybridIdentity = $null
     if ($graphConnected) {
         try {
             $organization = @(Invoke-MtGraphRequest -RelativeUri 'organization' -ErrorAction Stop) | Select-Object -First 1
@@ -70,6 +73,8 @@ function Read-MtTenantContext {
             $primaryDomain = @($organization.verifiedDomains | Where-Object { $_.isDefault } | Select-Object -First 1).name
             $tenantType = switch ($organization.tenantType) { 'AAD' { 'Workforce' } 'CIAM' { 'External' } default { 'Unknown' } }
             if ($tenantType -ne 'Unknown') { $tenantTypeSource = 'Detected' }
+            if ($organization -and $organization.PSObject.Properties['onPremisesSyncEnabled']) { $hybridIdentity = $organization.onPremisesSyncEnabled -eq $true }
+            elseif ($organization -is [System.Collections.IDictionary] -and $organization.Contains('onPremisesSyncEnabled')) { $hybridIdentity = $organization['onPremisesSyncEnabled'] -eq $true }
         } catch {
             Write-Verbose "Could not read the organization: $($_.Exception.Message)"
         }
@@ -154,5 +159,6 @@ function Read-MtTenantContext {
         AuthType         = if ($mgContext) { [string]$mgContext.AuthType } else { $null }
         Account          = if ($mgContext) { $mgContext.Account } else { $null }
         Scopes           = if ($mgContext) { @($mgContext.Scopes) } else { @() }
+        HybridIdentity   = $hybridIdentity
     }
 }

@@ -13,7 +13,9 @@
     are listed, since selectors combine with AND; otherwise every key the taxonomy has is listed. The tooltip
     gives the number of tests. The Taxonomy* kinds list the taxonomy's keys alone, for writing a test.
 
-    Kinds: Product, TaxonomyProduct, Feature, TaxonomyFeature, Area, TaxonomyArea, Severity, Suite, Tag, TestId,
+    Step lists the steps of the defender's path that the tests name, with each step's title.
+
+    Kinds: Product, TaxonomyProduct, Feature, TaxonomyFeature, Area, TaxonomyArea, Severity, Suite, Step, Tag, TestId,
     Pack, PackId, InstalledPackId, Service, TestService, ResourceType, Mitre, Setting and Role.
     #>
     [CmdletBinding()]
@@ -173,6 +175,19 @@
                 $null = $index.Suites.TryGetValue($key, [ref] $name)
                 $tip = @($(if ($name) { $name } else { $key })) + @(& $countText $counts[$key] $set.Narrowed)
                 & $candidate $key (++$order) ($tip -join "`n") (& $label $key $name) @($(if ($name) { $name }))
+            }
+        }
+
+        'Step' {
+            $steps = (Get-MtStepCatalog).Steps
+            $set = & $testSet
+            $counts = & $tally $set.Tests { param($t) $t.Step }
+            $order = 0
+            foreach ($key in ($counts.Keys | Sort-Object)) {
+                $step = $null
+                $title = if ($steps.TryGetValue($key, [ref] $step)) { $step.Title } else { $null }
+                $tip = @($(if ($title) { $title } else { 'A step the step catalogue does not have.' })) + @(& $countText $counts[$key] $set.Narrowed)
+                & $candidate $key (++$order) ($tip -join "`n") $null @($(if ($title) { $title }))
             }
         }
 

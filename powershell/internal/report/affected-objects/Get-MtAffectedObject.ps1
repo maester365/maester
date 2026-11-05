@@ -8,6 +8,8 @@ function Get-MtAffectedObject {
     1. Structured RelatedObjects captured by Add-MtTestResultDetail (per-test attribution, strongest signal)
     2. Portal deep links parsed from result markdown (covers ad-hoc $portalLink sites and old reports)
     3. Session request caches (run-level view of every Graph/GitHub resource the run touched)
+    4. The objects that fall short of a measure of the defender's path (Steps[].Measure.Objects), with Source
+       Measure, so that the facts their readers add have an object to attach to
 
     Records are deduplicated on System/Type/Id; per-test attribution is aggregated
     into a Tests array so each object shows which checks reference it.
@@ -62,6 +64,30 @@ function Get-MtAffectedObject {
         }
     }
 
+    # Source 4: the objects of the measures. They name no test: the step's measure lists them.
+    if ($MaesterResults -and $MaesterResults.PSObject.Properties['Steps'] -and $MaesterResults.Steps) {
+        $linkTemplates = (Get-MtPortalLinkTemplate).LinkTemplates
+        foreach ($step in @($MaesterResults.Steps)) {
+            $measure = Get-ObjectProperty $step 'Measure'
+            if (-not $measure) { continue }
+            foreach ($item in @(Get-ObjectProperty $measure 'Objects')) {
+                if ($null -eq $item -or -not $item.Id -or -not $item.Type) { continue }
+                $template = switch ([string]$item.Type) { 'Device' { $linkTemplates.Devices } 'User' { $linkTemplates.Users } default { $null } }
+                $records.Add([PSCustomObject]@{
+                        System            = 'EntraID'
+                        AnchorKind        = 'Instance'
+                        Type              = [string]$item.Type
+                        Id                = [string]$item.Id
+                        DisplayName       = [string]$item.DisplayName
+                        UserPrincipalName = $null
+                        PortalLink        = if ($template) { $template -f $item.Id } else { $null }
+                        TestId            = $null
+                        Source            = 'Measure'
+                    })
+            }
+        }
+    }
+
     # Source 3: run-level cache view
     if (-not $ExcludeSessionCache) {
         foreach ($cached in @(Get-MtAffectedObjectFromCache)) {
@@ -105,7 +131,7 @@ function Get-MtAffectedObject {
     # Consolidate: one record per System/Type/Id with aggregated test attribution.
     # Structured GraphObjects records win over markdown/cache records for the same object.
     # Unknown sources rank last so a record with a missing Source never outranks a structured one.
-    $sourceRank = @{ GraphObjects = 0; Markdown = 1; GraphCache = 2; GitHubCache = 2 }
+    $sourceRank = @{ GraphObjects = 0; Markdown = 1; Measure = 1; GraphCache = 2; GitHubCache = 2 }
     # Objects passed without an id fall back to their UPN or name, otherwise distinct users would
     # merge into one object and all but the first would escape redaction.
     $identityOf = {
