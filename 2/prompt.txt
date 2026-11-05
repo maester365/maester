@@ -1,0 +1,5 @@
+The test builder form is not very usable right now. eg see attached issue. Also the form inputs don't have borders and it is not very clear. Also feels very cluttered with a lot of help text around it. how can we move some of the help away, maybe they can be a flyover from the left etc..
+
+---
+
+can you run in tlcallt so i can review

@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6MTGY3ZS9X3RXQ4VBMACM6S",
   "strategy": "manual-commit",
   "branch": "feat/website-test-explorer",
-  "checkpoints_count": 5,
+  "checkpoints_count": 7,
   "files_touched": [
     "build/docs/Export-MtTestCatalogForDocs.ps1",
     "powershell/tests/general/ContributorNames.Tests.ps1",
@@ -33,25 +33,32 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 136,
-    "cache_creation_tokens": 140402,
-    "cache_read_tokens": 12141182,
-    "output_tokens": 36265,
-    "api_call_count": 66
+    "input_tokens": 222,
+    "cache_creation_tokens": 254387,
+    "cache_read_tokens": 18158463,
+    "output_tokens": 58617,
+    "api_call_count": 108
   },
   "redaction": {
-    "replacements": 1610,
+    "replacements": 2148,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 1586,
-      "key_context": 24,
+      "entropy": 2122,
+      "key_context": 26,
       "provider_token": 0,
       "shell_stdin": 0
     }
