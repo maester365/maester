@@ -21,7 +21,14 @@ export async function loadReportData(): Promise<unknown> {
       const tests = results.Tests.filter((t) => (sample === "one" ? t.Id === "CIS.M365.1.1.1" : t.Suite === "CIS"))
       return { ...results, Tests: tests, Packs: [], InvokeCommand: sample === "one" ? "Invoke-Maester -TestId CIS.M365.1.1.1" : "Invoke-Maester -Suite CIS" }
     }
-    return withSampleExtras(results)
+    // The defender's path (Steps and Goals, and Step on the rows). ?sample=step shows a run of MT.1001 alone.
+    const { sampleRowSteps, sampleSteps, sampleStepsOne } = await import("@/lib/sampleSteps")
+    const withSteps = (tests: typeof results.Tests) => tests.map((t) => (sampleRowSteps[t.Id] ? { ...t, Step: sampleRowSteps[t.Id] } : t))
+    if (sample === "step") {
+      const tests = withSteps(results.Tests.filter((t) => t.Id === "MT.1001")).map((t) => ({ ...t, Result: "Failed" }))
+      return { ...results, Tests: tests, Packs: [], Previous: null, InvokeCommand: "Invoke-Maester -TestId MT.1001", ...sampleStepsOne }
+    }
+    return { ...withSampleExtras(results), Tests: withSteps(results.Tests), ...sampleSteps }
   }
 
   if (!embedded) {

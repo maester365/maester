@@ -10,6 +10,7 @@ import { FRAMEWORK_LABEL, REASONS, RESULT_LABEL, TACTICS, outcomeOf, requirement
 import { useReport } from "./ReportContext"
 import { Cmd, FeatureMark, Icon, Pill, ProductMark, Sev, copyText, formatDate, type IconName } from "./ui"
 import { testAsMarkdown } from "./aiText"
+import { BeforeYouFix, StepRollout, stepsOfRow } from "./path"
 
 function Fact({ icon, label, value }: { icon: IconName; label: string; value: ReactNode }) {
   if (!value) return null
@@ -61,18 +62,18 @@ export function DetailHeader({ test, inline }: { test: Row; inline?: boolean }) 
   )
 }
 
-function tabsFor(test: Row, tenants: number) {
+function tabsFor(test: Row, tenants: number, rollout: boolean) {
   const guide = splitGuide(test.Description)
   const tabs: [string, string, IconName, number | null][] = [["finding", "Finding", "finding", null]]
-  if (guide.fix || guide.about) tabs.push(["fix", "How to fix", "fix", null])
+  if (guide.fix || guide.about || rollout) tabs.push(["fix", "How to fix", "fix", null])
   if (tenants > 1) tabs.push(["tenants", "Tenants", "tenant", tenants])
   tabs.push(["details", "Details", "tag", null], ["frameworks", "Frameworks", "framework", requirementsOf(test).length], ["attack", "ATT&CK", "attack", test.Mitre.length], ["history", "History", "history", null])
   return tabs
 }
 
 export function DetailTabs({ test }: { test: Row }) {
-  const { tab, setTab, models } = useReport()
-  const tabs = tabsFor(test, models.length)
+  const { tab, setTab, model, models } = useReport()
+  const tabs = tabsFor(test, models.length, stepsOfRow(model, test).some((s) => s.Rollout.length > 0))
   const current = tabs.some(([k]) => k === tab) ? tab : "finding"
   const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return
@@ -95,7 +96,7 @@ export function DetailTabs({ test }: { test: Row }) {
 export function DetailBody({ test }: { test: Row }) {
   const { model, models, tenantIndex, selectTenant, tab } = useReport()
   const { pathname } = useLocation()
-  const tabs = tabsFor(test, models.length)
+  const tabs = tabsFor(test, models.length, stepsOfRow(model, test).some((s) => s.Rollout.length > 0))
   const current = tabs.some(([k]) => k === tab) ? tab : "finding"
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => { ref.current?.scrollTo(0, 0) }, [current, test.Id])
@@ -112,12 +113,14 @@ export function DetailBody({ test }: { test: Row }) {
       {outcome && <div className="mt-callout"><Icon name="attack" /><span><b>What an attacker could do: {outcome.title.toLowerCase()}.</b> {outcome.text}</span></div>}
       {test.ReasonCode && <div className="mt-callout warn"><span><b>{(REASONS[test.ReasonCode] || [test.ReasonCode])[0]}.</b> {test.ReasonDetail}</span></div>}
       <section><h3>What Maester found</h3>{test.Detail ? <Markdown className="mt-md">{test.Detail}</Markdown> : <p className="mt-note">The test recorded no details.</p>}</section>
+      <BeforeYouFix test={test} />
       {guide.about && <section><h3>Why it matters</h3><Markdown className="mt-md">{guide.about}</Markdown></section>}
     </>
   )
   else if (current === "fix") body = (
     <>
-      <section><h3>How to fix it</h3><Markdown className="mt-md">{guide.fix || guide.about}</Markdown></section>
+      {(guide.fix || guide.about) && <section><h3>How to fix it</h3><Markdown className="mt-md">{guide.fix || guide.about}</Markdown></section>}
+      <StepRollout test={test} />
       <section><h3>Then check it again</h3><Cmd command={`Invoke-Maester -TestId ${test.Id}`} /></section>
     </>
   )
