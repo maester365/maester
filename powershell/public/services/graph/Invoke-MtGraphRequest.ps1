@@ -87,8 +87,11 @@
         # endpoint is read from the active Graph context on every invocation, so a context switch
         # inside a single session is picked up instead of reusing a stale session value.
         [bool] $IsEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
+        # Read once, for the endpoint below and for the tenant in the cache key. An endpoint override
+        # replaces the endpoint the context would give, not the tenant the connection is to, so the
+        # tenant is read on that path as well.
+        $MgContext = Get-MgContext
         if (!$IsEndpointOverride) {
-            $MgContext = Get-MgContext
             if (-not $MgContext -or [string]::IsNullOrEmpty($MgContext.Environment)) {
                 throw "No active Microsoft Graph context. Ensure you are connected via 'Connect-Maester', or pass -GraphBaseUri to target an endpoint explicitly."
             }
@@ -120,6 +123,14 @@
         # caller that asked for PSObject, or the other way round. The suffix starts with "_[" so the affected-object
         # inventory, which strips "_[" and "_{" suffixes from cache keys, still reads the request URL.
         $cacheKeySuffix = if ($OutputType -and $OutputType -ne 'PSObject') { "_[$OutputType]" } else { '' }
+
+        # The cache lives for the session, and a session can connect to a second tenant: the same request
+        # against two tenants in one cloud produces the same uri, so without the tenant in the key the
+        # second tenant is answered with the first tenant's data and nothing in the result says so. The
+        # tenant goes in a "_{...}" suffix, not a prefix, because the affected-object inventory recovers
+        # the request url by reading a cache key up to its first "_[" or "_{": a prefix would leave every
+        # Graph entry unmatched and silently drop it from the report's affected objects.
+        if ($MgContext.TenantId) { $cacheKeySuffix += "_{$($MgContext.TenantId)}" }
 
         # The endpoint itself can carry a path, for example a reverse proxy in front of Graph. A base
         # that does not end in a slash makes its last segment look like a document, which would put
