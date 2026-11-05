@@ -93,18 +93,18 @@ const statusMark: Record<Status, string> = { Failed: "✕", Passed: "✓", Other
 
 const toneOrder: Tone[] = ["Risk", "Warning", "Good", "Info"]
 const toTone = (tone?: string | null): Tone => (toneOrder.includes(tone as Tone) ? (tone as Tone) : "Info")
-const toneDot: Record<Tone, string> = {
-    Risk: "bg-red-600",
-    Warning: "bg-amber-500",
-    Good: "bg-green-600",
-    Info: "bg-gray-300 dark:bg-zinc-600",
-}
-const toneValue: Record<Tone, string> = {
-    Risk: "text-red-700 dark:text-red-300",
-    Warning: "text-amber-800 dark:text-amber-300",
-    Good: "text-green-700 dark:text-green-300",
-    Info: "text-gray-800 dark:text-zinc-200",
-}
+const toneDot = new Map<Tone, string>([
+    ["Risk", "bg-red-600"],
+    ["Warning", "bg-amber-500"],
+    ["Good", "bg-green-600"],
+    ["Info", "bg-gray-300 dark:bg-zinc-600"],
+])
+const toneValue = new Map<Tone, string>([
+    ["Risk", "text-red-700 dark:text-red-300"],
+    ["Warning", "text-amber-800 dark:text-amber-300"],
+    ["Good", "text-green-700 dark:text-green-300"],
+    ["Info", "text-gray-800 dark:text-zinc-200"],
+])
 
 // The facts behind a "2 risks" badge, for its tooltip.
 function factTitle(o: AffectedObject, tone: Tone) {
@@ -272,8 +272,10 @@ export default function AffectedObjectsPage() {
                             a.id.localeCompare(b.id)
                     )
                 const failedChecks = checks.filter((check) => check.status === "Failed")
-                const facts = (Array.isArray(record.Facts) ? record.Facts : [])
-                    .filter((fact) => fact && fact.Name && fact.Value)
+                // Report data can hold nulls whatever the type says, so each entry is checked.
+                const rawFacts: (AffectedObjectFact | null | undefined)[] = Array.isArray(record.Facts) ? record.Facts : []
+                const facts = rawFacts
+                    .filter((fact): fact is AffectedObjectFact => Boolean(fact?.Name && fact.Value))
                     .map((fact, order) => ({ fact, order }))
                     // Risks first, then warnings, keeping the order the source gave within a tone.
                     .sort((a, b) => toneOrder.indexOf(toTone(a.fact.Tone)) - toneOrder.indexOf(toTone(b.fact.Tone)) || a.order - b.order)
@@ -578,11 +580,11 @@ export default function AffectedObjectsPage() {
                                         return (
                                             <div key={`${fact.Name}-${index}`} className="contents">
                                                 <dt className="flex items-center gap-2 text-xs text-gray-500 dark:text-zinc-400">
-                                                    <span className={cn("h-2 w-2 shrink-0 rounded-full", toneDot[tone])} aria-hidden />
+                                                    <span className={cn("h-2 w-2 shrink-0 rounded-full", toneDot.get(tone))} aria-hidden />
                                                     <span>{fact.Name}</span>
                                                     {tone !== "Info" && <span className="sr-only">({tone})</span>}
                                                 </dt>
-                                                <dd className={cn("pl-4 text-sm leading-snug [overflow-wrap:anywhere] sm:pl-0", toneValue[tone])}>{fact.Value}</dd>
+                                                <dd className={cn("pl-4 text-sm leading-snug [overflow-wrap:anywhere] sm:pl-0", toneValue.get(tone))}>{fact.Value}</dd>
                                             </div>
                                         )
                                     })}
