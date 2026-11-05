@@ -23,8 +23,9 @@ The design adds four things:
   done, Unknown, Not checked, Not applicable), whether it can start (Ready, Blocked, Unconfirmed), what blocks
   it and what it unlocks, and its place in the order. The report, the console, CSV and Markdown all read
   these. None of them works the order out again.
-- **Readiness checks.** These are new tests for prerequisites that are states rather than settings, such as the
-  share of Windows devices that are joined. They report a count and pass above a threshold.
+- **Measures.** Some prerequisites are states of the tenant, not settings: the share of devices that sign in
+  and are compliant, for example. The engine reads these figures from Graph for the steps in scope and compares
+  each with its step's threshold. A measure isn't a test. It has no severity and never changes a pass rate.
 
 A run without any test that names a step looks exactly as it does today.
 
@@ -64,7 +65,7 @@ model the framework files already use. The mapping lives on the test's `Control`
 | Step | One change or one tenant state, with an ID such as `intune.compliance-policies` |
 | Prerequisite | A step that another step requires, requires one of, or recommends first |
 | Goal | An outcome and the step that achieves it, such as "Require compliant devices". Its steps are that step and its prerequisites, followed down every level |
-| Readiness check | A test whose step is a tenant state. It reports a share and passes above a threshold |
+| Measure | A figure the engine reads from Graph for a step that is a tenant state, such as the share of compliant devices. The step is done when the figure meets its threshold |
 | Verifying tests | The tests whose `Step` names a step |
 
 The name shown to readers is "Defender's path". In the report it reads as "Defender's path · Require compliant
@@ -140,10 +141,11 @@ Each file has this shape:
 | `OnlyWhen` | no | Conditions from section 4.4. All must hold, or the step is Not applicable |
 | `Rollout` | no | Ordered sentences on how to switch it on safely |
 | `Sources` | yes | At least one. See section 4.5 |
-| `Unchecked` | when no test names the step | Why Maester cannot check it yet, in one sentence |
+| `Measure` | no | `{ "Key": "<measure key>", "MinimumShare": <1 to 100> }`. The figure that decides whether a state step is done (section 11) |
+| `Unchecked` | when no test names the step and it has no `Measure` | Why Maester can't check it yet, in one sentence |
 
 A step has no severity, cost or licence of its own. Those stay on its verifying tests, so they are never
-declared twice.
+declared twice. A measure's service, licence and permissions are in the measure registry.
 
 ### 4.3 Relationships
 
@@ -239,16 +241,16 @@ kebab-case with no product prefix, because a goal often spans products.
 
 ### 6.1 Status
 
-A step's status comes from the results of its verifying tests in this run. A test the run did not select
-counts as not run.
+A step's status comes from the results of its verifying tests in this run and, for a step with a `Measure`,
+from the figure the engine read. A test the run did not select counts as not run.
 
 | Status | Rule, checked in this order |
 | --- | --- |
 | Not applicable | An `OnlyWhen` condition is false, or every verifying test that ran was skipped as `NotApplicable` |
-| Not done | Any verifying test failed |
-| Unknown | No test failed, and at least one ended as Investigate, Error or Skipped. The reason codes are kept |
-| Done | At least one verifying test passed, and every test that ran passed |
-| Not checked | No verifying test ran. `Reason` is `NotSelected` when tests exist and `NoCheck` when none do (the step is `Unchecked`) |
+| Not done | Any verifying test failed, or the measure is below its threshold |
+| Unknown | Nothing failed, but a test ended as Investigate, Error or Skipped, or the measure couldn't be read (service not connected, no licence, missing permission). The reason codes are kept |
+| Done | Every test that ran passed and the measure, if there is one, met its threshold. At least one test or measure gave a result |
+| Not checked | No verifying test ran and no measure was read. `Reason` is `NotSelected` when tests exist, `MeasureOff` when the run config turned the measure off, and `NoCheck` when the step has neither (it is `Unchecked`) |
 
 Done means done as far as this run checked. The step record says how many of its tests ran ("1 of 2 checks
 ran"). The three statuses Not done, Unknown and Not checked never blur. Unknown says the run could not tell,
@@ -318,6 +320,7 @@ when a row in the result names a step), so every other result stays as it is.
       { "Id": "ZTA.24824", "Result": "NotRun", "ReasonCode": "NotInRun" }
     ],
     "Earlier": null,
+    "Measure": null,
     "Requires": ["intune.compliance-policies", "intune.devices-compliant", "entra.emergency-access-excluded", "entra.ca-exclude-sync-accounts"],
     "RequiresOneOf": [],
     "RecommendedFirst": ["intune.mark-unassigned-noncompliant"],
@@ -347,6 +350,11 @@ when a row in the result names a step), so every other result stays as it is.
   the step: built-in tests from the catalog, custom tests that were discovered, and pack tests from each pack's
   catalogue. A test with no row has `Result` `NotRun` and `ReasonCode` `NotInRun`. The report can then name the
   command that checks it. This is how `Frameworks` already lists requirements that no row checks.
+- **`Measure`** is set on a step that has one, whether or not it could be read:
+  `{ "Key": "devices-compliant", "Count": 412, "Total": 580, "Share": 71, "MinimumShare": 95, "Met": false,
+  "ReadAt": "...", "ObjectCount": 168, "Objects": [{ "Type": "Device", "Id": "...", "DisplayName": "..." }],
+  "ReasonCode": null }`. `Objects` holds up to 100 of the objects that fall short. `ReasonCode` says why a measure
+  couldn't be read, with the same codes a skipped test uses.
 - **`Earlier`** is set on a step that is Not checked in this run when an earlier result in the output folder
   checked it: `{ "Status": "Done", "ExecutedAt": "...", "File": "..." }`. It is never mixed into this run's
   status or counts. `Get-MtPreviousResult` gains `LastKnown`, which is the newest earlier result for each test ID
@@ -386,18 +394,23 @@ when a row in the result names a step), so every other result stays as it is.
   as Not checked with that command.
 - `Get-MtTest -Step` filters the same way. There is no goal selector, because `-Step <goal step>
   -IncludePrerequisites` selects a whole goal. No new public command is added in Phase 1.
+- Measures are not selected. After the tests, the engine reads the measure of every step in scope, so a run of
+  MT.1001 alone still shows how many devices are compliant. In the run config, `Measures.Enabled` (default
+  `true`) turns measures off, and `Measures.MinimumShare.<key>` changes a threshold.
 
 ## 9. Report
 
 Every view below is hidden when the result has no `Steps`, the same way views without data are hidden today.
 
 - **Action plan.** Opens with the defender's path: three groups of step cards in `Rank` order: Ready now, Check
-  first and Blocked. A card shows the step, its failed tests, what it unlocks ("unlocks 2 steps, 6 failed
+  first and Blocked. A card shows the step, its failed tests or its measure ("71% of devices that sign
+  in are compliant, 95% needed", with the devices that fall short), what it unlocks ("unlocks 2 steps, 6 failed
   checks"), its rollout and its sources. Below the groups, a lane for each goal in scope shows its steps in
   order with a status chip each. The existing ranked list of failed tests stays below that. A failed test whose
   step is Blocked moves after the tests that can be fixed now and shows "Blocked by …".
 - **Test page.** When the test's step has prerequisites, a "Before you fix this" panel lists each one with its
-  status and where that status came from: this run, an earlier run (with its date), or Not checked. It also gives
+  status and where that status came from: a test in this run, a measure (with its figure), an earlier run (with
+  its date), or Not checked. It also gives
   the command that checks what is missing:
   `Invoke-Maester -TestId MT.1001 -IncludePrerequisites`. The How to fix tab adds the step's rollout.
 - **Overview.** One card: Ready now, Blocked and Check first counts, with a link to the action plan.
@@ -414,21 +427,50 @@ The rule for every output: scope everything to what ran, and never infer a statu
 | --- | --- | --- | --- |
 | Full run | Groups and a lane for every goal in scope | The summary line | `Steps`, `Goals` |
 | One suite or product | Only goals with a step in scope. A step whose tests were not selected shows "Not checked in this run" and the command to include them | The line, when a step is in scope | The steps in scope, with all their tests |
-| One to three tests | No lanes. "Before you fix this" on each test page, with `Earlier` statuses and their dates | Nothing extra | The same |
+| One to three tests | No lanes. "Before you fix this" on each test page, with the measures of the prerequisites and `Earlier` statuses with their dates | Nothing extra | The same |
 | Tests that name no step (GitHub, Azure DevOps, Active Directory, most custom tests) | No change. The views stay hidden | No change | No `Steps` |
-| A verifying test that could not run (service not connected, no licence) | The step is Unknown, with the reason and the fix command, and never Not done | Counted with the tests that did not run | `Status` `Unknown` with the reason codes |
+| A verifying test that couldn't run, or a measure that couldn't be read (service not connected, no licence, missing permission) | The step is Unknown, with the reason and the fix command, and never Not done | Counted with the tests that didn't run | `Status` `Unknown` with the reason codes |
 
-## 11. Readiness checks
+## 11. Measures
 
-Seven steps in the first catalogue have no check. Two of them get readiness checks in Phase 1. Each check is a native
-test in `tests/maester/<service>/`. It reads Graph through `powershell/internal/services/<service>/` helpers,
-reports a count and a share, and lists the objects that hold the step back as affected objects. It passes when
-the share is at least its `MinimumShare` parameter (an `int`, default `95`).
+Seven steps in the first catalogue have no check. Two of them are tenant states that a figure from Graph
+settles, so in Phase 1 they get measures, not tests. The owner ruled on 5 November 2026 that readiness is a data
+point, not a test. A share of compliant devices isn't a misconfiguration and has no meaningful severity or
+ATT&CK technique, so it must not change pass rates or the test count. A measure also runs whenever its step is
+in scope, so "Before you fix this" shows a real figure even after a one-test run, where a test would have had
+to be selected.
 
-| Step | Check | Reads | Notes |
+A measure is an entry in the measure registry, `powershell/assets/MaesterMeasures.psd1`:
+
+```powershell
+@{
+    Measures = @(
+        @{
+            Key         = 'devices-compliant'
+            Function    = 'Get-MtDeviceComplianceShare'
+            Title       = 'Devices that sign in are compliant'
+            Unit        = 'devices'
+            Service     = 'Graph'
+            License     = 'INTUNE_A'
+            Permission  = 'Graph:Scope:Device.Read.All'
+        }
+    )
+}
+```
+
+- `Service`, `License` and `Permission` use the grammar of the test attributes, and the engine applies them the
+  way it gates a test. A measure whose gate fails is Unknown with the matching reason code.
+- `Function` names an internal reader in `powershell/internal/services/<service>/`. It reads through the Graph
+  cache and returns `Count` (the objects that meet the bar), `Total`, and `Objects` (those that fall short, as
+  `Type`, `Id` and `DisplayName`). The engine keeps up to 100 of them.
+- The engine works out `Share`, compares it with the step's `MinimumShare` or the run config's override, and
+  writes the result to the step (section 7.2).
+- Readers write object facts with the shared keys (section 12) for the objects they list.
+
+| Key | Step | Reads | Notes |
 | --- | --- | --- | --- |
-| `intune.devices-compliant` | Devices that sign in are compliant | `devices` that signed in within 30 days, by `isManaged` and `isCompliant` | Lists the devices that would be blocked. Devices with no Entra identity can't be seen this way, which the result says |
-| `entra.mfa-registered` | Enabled member users are registered for MFA | `reports/authenticationMethods/userRegistrationDetails` | Needs Entra ID P1. Excludes the emergency access accounts |
+| `devices-compliant` | `intune.devices-compliant` | Entra `devices` that signed in within 30 days, by `isManaged` and `isCompliant` | The objects are the devices a compliant-device policy would block. Devices with no Entra identity can't be seen, and the result says so |
+| `mfa-registered` | `entra.mfa-registered` | `reports/authenticationMethods/userRegistrationDetails` for enabled member users | Needs Entra ID P1. Leaves out the emergency access accounts |
 
 Later: phishing-resistant method registration for all users (ZTA.21782 covers privileged users only),
 password writeback once a Graph API reports it, security defaults being off in tenants licensed for
@@ -437,16 +479,15 @@ see the devices that have no identity yet. The Defender–Intune connector is pa
 MT.1098 checks that Mobile Threat Defense connectors are healthy. Whether it fails when the Defender connector
 is missing is confirmed in the expert pass.
 
-These are new MT checks. IDs are reserved on issue #697, and each goes through the duplicate review and the
-attribute review in `AGENTS.md`. Their attribute values come from the rubric, not from this design.
+A measure isn't a test: it has no ID, no row in `Tests` and no attribute review, and it plays no part in pass
+rates, frameworks or the test count. Packs can't add measures in Phase 1.
 
 ## 12. Object facts
 
 The Zero Trust facts work (`Add-MtAffectedObjectFact`, maester365/maester#2681) puts facts on
 listed objects: join type, managed and compliant for devices, MFA and passwordless for users. They are the
-drill-down behind a lane ("38 devices aren't managed"). They cannot replace readiness checks, because facts
-attach only to objects the run lists and come from the Zero Trust export only when it ran. Readiness checks
-write facts too.
+drill-down behind a lane ("38 devices aren't managed"). They can't replace measures, because facts attach
+only to objects the run lists and come from the Zero Trust export only when it ran. Measures write facts too.
 
 This design asked that work to give each fact a stable key and a raw value before the command ships, so that a
 lane's drill-down never parses display text. It did, in maester365/maester#2681: a fact has `Name`, `Value`
@@ -465,7 +506,7 @@ same `Key` from the same `Source` replaces the earlier one. The shared keys are 
 | `signIn.daysSince` | int, or null when none is recorded | Leaving out stale devices and users. Counted from the fact's `AsOf`, not from now |
 
 User facts are recorded under both the object ID and the UPN, so a record has them whichever way it was keyed.
-The readiness checks write the same keys for the objects they list.
+The measures write the same keys for the objects they list.
 
 ## 13. Keeping the catalogue current
 
@@ -498,11 +539,13 @@ checks it against the mirrors.
 - every `OnlyWhen` key is a known condition;
 - every step has a source, every `Note` is 200 characters or less, and maintainer-only sources are under 10%
   of all sources;
-- every step belongs to at least one goal, and goal IDs are unique.
+- every step belongs to at least one goal, and goal IDs are unique;
+- every `Measure` key is in the measure registry and its `MinimumShare` is from 1 to 100, and every registry
+  entry names a reader function the module has.
 
 `Get-MtStepProblem` makes these checks, plus two about the tests: every `Step` that a built-in test or a
 `packs/*/taxonomy.json` names exists, and (with `-Coverage`, over every built-in test) `Unchecked` is set exactly
-on the steps that no test names. `./build/Build-MaesterModule.ps1` fails on all of them except the `Unchecked`
+on the steps that no test names and that have no `Measure`. `./build/Build-MaesterModule.ps1` fails on all of them except the `Unchecked`
 check, because the build can run on a folder that holds only some of the tests. A run only warns about a step
 the catalogue does not have.
 
@@ -515,24 +558,24 @@ and token protection. The other four come from known Microsoft guidance and stil
 | Goal | Steps, in order | Verifying tests (draft) |
 | --- | --- | --- |
 | Foundation (under most goals) | `entra.emergency-access-excluded` · `entra.ca-exclude-sync-accounts` (only when `hybrid-identity`) | MT.1005, MT.1034 · MT.1020 |
-| `compliant-devices` Require compliant devices | `intune.compliance-policies` → `intune.automatic-enrollment` (recommended first) → `intune.devices-compliant` → `intune.mark-unassigned-noncompliant` (recommended first) → `entra.ca-require-compliant-device`. `entra.ca-require-managed-device` needs one of `intune.devices-compliant` and `entra.hybrid-join` | ZTA.24541–24543, ZTA.24545, ZTA.24547 · ZTA.24546 · new check · MT.1054, CIS.M365.4.1 · MT.1001, ZTA.24824 · CIS.M365.5.2.2.9, CISA.MS.AAD.3.7, MT.1014 |
-| `risk-policies` Risk-based Conditional Access | `entra.mfa-registered` → `entra.password-hash-sync` (only when hybrid, recommended first) → `entra.password-writeback` (only when hybrid) → `entra.remediate-risky-users` (recommended first) → `entra.ca-user-risk` and `entra.ca-sign-in-risk` → `entra.ca-risk-policies-separate` | new check · CIS.M365.5.1.8.1 · unchecked · MT.1260 · MT.1013, CIS.M365.5.2.2.6, CISA.MS.AAD.2.1 and MT.1012, CIS.M365.5.2.2.7, CISA.MS.AAD.2.3 · MT.1049 |
+| `compliant-devices` Require compliant devices | `intune.compliance-policies` → `intune.automatic-enrollment` (recommended first) → `intune.devices-compliant` → `intune.mark-unassigned-noncompliant` (recommended first) → `entra.ca-require-compliant-device`. `entra.ca-require-managed-device` needs one of `intune.devices-compliant` and `entra.hybrid-join` | ZTA.24541–24543, ZTA.24545, ZTA.24547 · ZTA.24546 · measure `devices-compliant` · MT.1054, CIS.M365.4.1 · MT.1001, ZTA.24824 · CIS.M365.5.2.2.9, CISA.MS.AAD.3.7, MT.1014 |
+| `risk-policies` Risk-based Conditional Access | `entra.mfa-registered` → `entra.password-hash-sync` (only when hybrid, recommended first) → `entra.password-writeback` (only when hybrid) → `entra.remediate-risky-users` (recommended first) → `entra.ca-user-risk` and `entra.ca-sign-in-risk` → `entra.ca-risk-policies-separate` | measure `mfa-registered` · CIS.M365.5.1.8.1 · unchecked · MT.1260 · MT.1013, CIS.M365.5.2.2.6, CISA.MS.AAD.2.1 and MT.1012, CIS.M365.5.2.2.7, CISA.MS.AAD.2.3 · MT.1049 |
 | `phishing-resistant-mfa` Phishing-resistant MFA | `entra.passkeys-enabled` and `entra.temporary-access-pass` → `entra.windows-hello` → `entra.phishing-resistant-registered` → `entra.phishing-resistant-admins` → `entra.phishing-resistant-all` | EIDSCA.AF01–AF06, ZTA.21839 · EIDSCA.AT01, AT02 · ZTA.24551 · ZTA.21782 (admins only) · CISA.MS.AAD.3.6, ZTA.21783, ZTA.21781 · CISA.MS.AAD.3.1, ASD.ISM-1872, ZTA.21784 |
 | `privileged-access` Standing privilege to PIM | `entra.emergency-access-excluded` → `entra.pim-eligible-roles` → `entra.pim-alerts` → `entra.pim-roles-used` | MT.1025–MT.1028, MT.1031, ZTA.21816, ZTA.21876 · CISA.MS.AAD.7.7 · MT.1030 |
 | `token-protection` Token protection | `entra.windows-devices-registered` → `entra.ca-token-protection` (rollout: report-only pilot) | unchecked: needs sign-in logs to see Windows sign-ins without a device identity · CIS.M365.5.2.2.16, ZTA.21941, ZTA.21786 |
 | `email-authentication` Email authentication | `exchange.spf` and `exchange.dkim` → `exchange.dmarc-monitor` → `exchange.dmarc-enforce` | CIS.M365.2.1.8, CISA.MS.EXO.2.2, ORCA.235 · CIS.M365.2.1.9, CISA.MS.EXO.3.1, ORCA.108, ORCA.108.1 · CIS.M365.2.1.10, CISA.MS.EXO.4.1, 4.3 · CISA.MS.EXO.4.2, MT.1182 |
 | `defender-device-risk` Defender risk in compliance | `defender.endpoint-onboarding` → `intune.defender-connector` → `intune.compliance-device-risk` (requires `intune.compliance-policies`) | ZTA.41045 · MT.1098, ZTA.24871 · MT.1216, MT.1231, MT.1235 |
 
-That is 34 steps over about 75 existing tests, plus the two new checks. Expect most tests to name no step:
+That is 34 steps over about 75 existing tests, plus the two measures. Expect most tests to name no step:
 antivirus settings, sharing
 settings and most EIDSCA values stand on their own. The value is concentrated where Conditional Access,
 devices and authentication meet.
 
 The first catalogue has no `Conflicts` entry yet. The obvious one is that Conditional Access policies need
 security defaults turned off. MT.1021 can't verify it, because it checks that security defaults are on and
-skips any tenant with Entra ID P1 or better, which is every tenant that uses Conditional Access. A readiness
-check, "Security defaults are off where Conditional Access is licensed", would make the conflict checkable.
-It is listed with the later checks in section 11.
+skips any tenant with Entra ID P1 or better, which is every tenant that uses Conditional Access. A measure or
+check of whether security defaults are off where Conditional Access is licensed would make the conflict
+checkable. It's listed with the later measures in section 11.
 
 Candidates for later goals come from the research: legacy authentication,
 guest access, app consent, workload credentials, hybrid hardening, SSPR, LAPS, data protection, SharePoint
@@ -545,9 +588,9 @@ Defender for Cloud Apps, third-party mail filters, Defender for Identity, Power 
 | --- | --- | --- |
 | M1 Format | Schema and loader (`Get-MtStepCatalog`, internal), the `Step` attribute in C#, the schema table and the reader, `StepCatalog.Tests.ps1`, and the compliant-devices goal as the fixture | This design |
 | M2 Catalogue | Expert pass on the seven goals against the mirrors, then `Step` on about 75 tests, plus `Step` in the Zero Trust `taxonomy.json` | M1, and the instance-attribute change on `feat/zta-taxonomy-mapping` |
-| M3 Engine | `Step` on rows, `Get-MtResultStep` (status, readiness, rank, scope), `LastKnown`, `-Step`, `-IncludePrerequisites`, `Get-MtTest -Step`, CSV and Markdown columns, the console line | M1 |
+| M3 Engine | `Step` on rows, reading the measures of the steps in scope, `Get-MtResultStep` (status, readiness, rank, scope), `LastKnown`, `-Step`, `-IncludePrerequisites`, `Get-MtTest -Step`, CSV and Markdown columns, the console line | M1 |
 | M4 Report | Action plan groups and lanes, Before you fix this, rollout in How to fix, the overview card | M3's result shape. It can start on sample data once section 7 is final |
-| M5 Readiness checks | The two checks of section 11 | M1 for `Step`. The checks can be written before it |
+| M5 Measures | The measure registry, the two readers of section 11, and `Measure` on their steps | M1 for the format. The readers can be written before it |
 | M6 Tooling | `build/steps/` scripts and the weekly workflow | M1 |
 | M7 Docs and site | `Step` in `website/docs/writing-tests/index.mdx`, a defender's path page, and one page per goal on maester.dev built by `prepare-data.mjs` | M2 |
 
@@ -555,7 +598,7 @@ Once M1 lands, M2, M5 and M6 touch different files and can run in parallel sessi
 
 ## 17. Decisions
 
-The owner accepted the recommended answer to each decision on 5 November 2026.
+The owner accepted the recommended answer to each decision on 5 November 2026, and changed decision 10 later that day.
 
 | # | Decision | Ruling | Alternatives considered |
 | --- | --- | --- | --- |
@@ -568,7 +611,7 @@ The owner accepted the recommended answer to each decision on 5 November 2026.
 | 7 | Conflicts | **Block** while the conflicting step is on, declared on the step that needs the other off | Warn only |
 | 8 | Selectors | **`-Step` and `-IncludePrerequisites`**, no goal selector, no new public command | A `Get-MtStep` command, which would add public API to keep |
 | 9 | Packs and custom tests | **May name built-in steps.** Their own catalogues come later | Built-in tests only |
-| 10 | Readiness thresholds | **A `MinimumShare` parameter, default 95** | A fixed threshold. A config key shared by all the readiness checks |
+| 10 | Prerequisites that are tenant states | **Measures: figures read from Graph for the steps in scope, with `MinimumShare` (default 95) on the step and a run config override.** Changed from tests with a `MinimumShare` parameter | New tests, which would add findings with no real severity and change pass rates |
 | 11 | Earlier statuses | **`LastKnown` per test, read only when a step in scope is Not checked** | The newest earlier run only, which says little after a one-check run |
 | 12 | Catalogue wording | **Maester's own words and a link, 200 characters at most** | Quoting Learn |
 | 13 | Mining output | **Proposals for review, and a weekly issue for changed sources** | A workflow that opens pull requests |
@@ -581,7 +624,7 @@ The owner accepted the recommended answer to each decision on 5 November 2026.
   They are the rest of Phase 1 and get a design of their own. Steps are the same unit as the planned "fix once,
   close many" groups, so that work reuses this catalogue.
 - Custom step catalogues for users and packs.
-- Measured user impact from sign-in logs and report-only results. It would feed readiness later.
+- Measured user impact from sign-in logs and report-only results. It would add measures later.
 - Goals for GitHub, Azure DevOps and Active Directory. Until they exist, those runs look as they do today.
 - A model that decides pass, fail, severity or order. Order comes from the catalogue, and every relationship
   cites its source.

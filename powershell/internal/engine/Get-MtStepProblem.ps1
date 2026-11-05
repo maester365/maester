@@ -7,10 +7,12 @@ function Get-MtStepProblem {
     Used by the catalog build, which fails on any message, and by the unit tests (docs/proposals/defenders-path.md,
     section 14). It returns:
 
-    - the problems of the catalogue itself (Get-MtStepCatalog);
+    - the problems of the catalogue itself (Get-MtStepCatalog) and of the measure registry (Get-MtMeasureRegistry);
+    - a step whose Measure names a key the registry does not have, and a registry entry whose reader function the
+      module does not have;
     - a test whose Step names a step the catalogue does not have;
-    - with -Coverage, when -Test is every built-in test: a step that no test names but has no Unchecked reason, and
-      a step that a test names but still has one;
+    - with -Coverage, when -Test is every built-in test: a step that no test names and that has no Measure but has
+      no Unchecked reason, and a step that a test names but still has one;
     - too many sources that cite a maintainer instead of Microsoft Learn (more than one in ten).
 
     The build checks a test folder that may hold only some of the tests (a fixture, in the unit tests), so it leaves
@@ -31,11 +33,25 @@ function Get-MtStepProblem {
         # The catalogue to check. Defaults to the module's.
         [Parameter()] [object] $Catalog = (Get-MtStepCatalog),
 
+        # The measure registry the catalogue's Measure keys refer to. Defaults to the module's.
+        [Parameter()] [object] $Registry = (Get-MtMeasureRegistry),
+
         # -Test is every built-in test: check that each step is named by a test or says in Unchecked why not.
         [Parameter()] [switch] $Coverage
     )
 
     $Catalog.Problems
+    $Registry.Problems
+    foreach ($measure in $Registry.Measures.Values) {
+        if (-not (Get-Command -Name $measure.Function -CommandType Function -ErrorAction SilentlyContinue)) {
+            "$([System.IO.Path]::GetFileName($Registry.Path)) ($($measure.Key)): the reader function $($measure.Function) does not exist."
+        }
+    }
+    foreach ($step in $Catalog.Steps.Values) {
+        if ($step.Measure -and -not $Registry.Measures.ContainsKey($step.Measure.Key)) {
+            "$($step.File) ($($step.Id)): Measure names '$($step.Measure.Key)', which is not in the measure registry."
+        }
+    }
 
     # Which tests name each step.
     $namedBy = @{}
@@ -67,8 +83,8 @@ function Get-MtStepProblem {
         $where = "$($step.File) ($($step.Id))"
         if ($namedBy.ContainsKey($step.Id) -and $step.Unchecked) {
             "${where}: $($namedBy[$step.Id] -join ', ') verify the step, so it must not have Unchecked."
-        } elseif (-not $namedBy.ContainsKey($step.Id) -and -not $step.Unchecked) {
-            "${where}: no test names the step. Name it in the Step attribute of the tests that verify it, or say why none can in Unchecked."
+        } elseif (-not $namedBy.ContainsKey($step.Id) -and -not $step.Measure -and -not $step.Unchecked) {
+            "${where}: no test names the step and it has no Measure. Name it in the Step attribute of the tests that verify it, give it a Measure, or say why neither can in Unchecked."
         }
     }
 

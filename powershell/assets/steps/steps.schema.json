@@ -91,8 +91,18 @@
           "minItems": 1,
           "items": { "$ref": "#/$defs/source" }
         },
+        "Measure": {
+          "description": "The figure from the measure registry (powershell/assets/MaesterMeasures.psd1) that decides whether a step that is a state of the tenant is done.",
+          "type": "object",
+          "required": ["Key", "MinimumShare"],
+          "properties": {
+            "Key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+            "MinimumShare": { "description": "The share, in percent, at which the step is done.", "type": "integer", "minimum": 1, "maximum": 100 }
+          },
+          "additionalProperties": false
+        },
         "Unchecked": {
-          "description": "Why no test verifies the step yet. Required when no built-in test names the step.",
+          "description": "Why no test or measure verifies the step yet. Required when no built-in test names the step and it has no Measure.",
           "type": "string",
           "pattern": "^[^\\r\\n]+$",
           "maxLength": 200

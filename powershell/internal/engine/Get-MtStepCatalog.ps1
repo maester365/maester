@@ -8,8 +8,9 @@ function Get-MtStepCatalog {
     The catalogue (docs/proposals/defenders-path.md, section 4) is a folder of JSON files: goals.json holds the
     goals, and <product-key>.json the steps of one product. A step is one change an administrator makes or one
     state the tenant must reach. Tests name the steps they verify with the Step attribute; the catalogue holds how
-    steps relate (Requires, RequiresOneOf, RecommendedFirst, Conflicts, OnlyWhen), how to switch each on (Rollout)
-    and the Microsoft Learn pages behind them (Sources).
+    steps relate (Requires, RequiresOneOf, RecommendedFirst, Conflicts, OnlyWhen), how to switch each on (Rollout),
+    the Microsoft Learn pages behind them (Sources) and, for a step that is a state of the tenant, the measure that
+    decides whether it is done (Measure: the Key of a measure in the measure registry and a MinimumShare).
 
     Returns an object with:
 
@@ -37,7 +38,7 @@ function Get-MtStepCatalog {
     $goals = [System.Collections.Generic.List[object]]::new()
     $stepPattern = '^[a-z0-9][a-z0-9-]*\.[a-z0-9][a-z0-9-]*$'
     $linePattern = '^[^\r\n]+$'
-    $stepKeys = @('Id', 'Title', 'Summary', 'Requires', 'RequiresOneOf', 'RecommendedFirst', 'Conflicts', 'OnlyWhen', 'Rollout', 'Sources', 'Unchecked')
+    $stepKeys = @('Id', 'Title', 'Summary', 'Requires', 'RequiresOneOf', 'RecommendedFirst', 'Conflicts', 'OnlyWhen', 'Rollout', 'Sources', 'Measure', 'Unchecked')
     $sourceKeys = @('Url', 'Mirror', 'Maintainer', 'Note', 'Reviewed')
     $goalKeys = @('Id', 'Title', 'Summary', 'Step')
     $taxonomy = Get-MtTaxonomy
@@ -165,6 +166,26 @@ function Get-MtStepCatalog {
             }
             if ($sources.Count -eq 0) { $problems.Add("${where}: a step needs at least one source.") }
 
+            # Measure: the figure that decides whether a state step is done. Whether its Key is in the measure
+            # registry is checked by Get-MtStepProblem.
+            $measure = $null
+            if ($null -ne $s['Measure']) {
+                $m = $s['Measure']
+                if ($m -isnot [System.Collections.IDictionary]) {
+                    $problems.Add("${where}: Measure must be an object with Key and MinimumShare.")
+                } else {
+                    foreach ($key in $m.Keys) { if ($key -cnotin 'Key', 'MinimumShare') { $problems.Add("${where}: Measure has the unknown key '$key'.") } }
+                    $measureKey = $m['Key']
+                    $minimum = $m['MinimumShare']
+                    $validKey = $measureKey -is [string] -and $measureKey -cmatch '^[a-z0-9][a-z0-9-]*$'
+                    $validMinimum = ($minimum -is [int] -or $minimum -is [long]) -and $minimum -ge 1 -and $minimum -le 100
+                    if (-not $validKey) { $problems.Add("${where}: Measure's Key '$measureKey' is not a measure key (lowercase kebab-case).") }
+                    if (-not $validMinimum) { $problems.Add("${where}: Measure's MinimumShare must be a whole number from 1 to 100.") }
+                    if ($validKey -and $validMinimum) { $measure = [pscustomobject][ordered]@{ Key = $measureKey; MinimumShare = [int]$minimum } }
+                }
+                if ($s['Unchecked']) { $problems.Add("${where}: the step has a Measure, so it must not have Unchecked.") }
+            }
+
             $steps[$id] = [pscustomobject][ordered]@{
                 Id               = $id
                 Product          = $fileProduct
@@ -177,6 +198,7 @@ function Get-MtStepCatalog {
                 OnlyWhen         = $onlyWhen.ToArray()
                 Rollout          = $rollout
                 Sources          = $sources.ToArray()
+                Measure          = $measure
                 Unchecked        = & $checkText $where 'Unchecked' $s['Unchecked'] 200 $false
                 File             = $name
             }

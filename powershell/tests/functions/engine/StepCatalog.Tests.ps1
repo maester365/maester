@@ -52,6 +52,16 @@ BeforeAll {
         @((Read-Catalog $files).Problems)
     }
 
+    # Writes a measure registry to TestDrive and reads it.
+    function Read-Registry {
+        param([string] $Text)
+        $file = Join-Path $TestDrive ('measures' + [guid]::NewGuid().ToString('n') + '.psd1')
+        Set-Content -LiteralPath $file -Value $Text
+        InModuleScope Maester -Parameters @{ F = $file } { Get-MtMeasureRegistry -Path $F }
+    }
+    # A registry with one valid measure, whose reader is a function the module has.
+    $script:validRegistryText = "@{ Measures = @( @{ Key = 'devices-compliant'; Function = 'Get-MtStepCatalog'; Title = 'Devices that sign in are compliant'; Unit = 'devices'; Service = 'Graph'; License = 'INTUNE_A'; Permission = 'Graph:Scope:Device.Read.All' } ) }"
+
     # The step of the base catalogue with the given ID, to change.
     function Get-Step {
         param([hashtable] $Files, [string] $Id)
@@ -193,6 +203,29 @@ Describe 'Get-MtStepCatalog' {
             $problems | Should -Contain "goals.json (other): Step names 'entra.missing', which is not in the catalogue."
         }
 
+        It 'Reads a Measure, and reports one that is wrong or sits beside Unchecked' {
+            $files = Get-BaseCatalog
+            $d = Get-Step $files 'intune.d'
+            $d.Remove('Unchecked')
+            $d.Measure = [ordered]@{ Key = 'devices-compliant'; MinimumShare = 90 }
+            $catalog = Read-Catalog $files
+            $catalog.Problems | Should -BeNullOrEmpty
+            $catalog.Steps['intune.d'].Measure.Key | Should -Be 'devices-compliant'
+            $catalog.Steps['intune.d'].Measure.MinimumShare | Should -Be 90
+            $catalog.Steps['entra.a'].Measure | Should -BeNullOrEmpty
+
+            $problems = Get-Problem {
+                param($f)
+                (Get-Step $f 'intune.d').Measure = [ordered]@{ Key = 'Devices'; MinimumShare = 0; Extra = 1 }
+                (Get-Step $f 'entra.a').Measure = 'devices-compliant'
+            }
+            $problems | Should -Contain "intune.json (intune.d): Measure has the unknown key 'Extra'."
+            $problems | Should -Contain "intune.json (intune.d): Measure's Key 'Devices' is not a measure key (lowercase kebab-case)."
+            $problems | Should -Contain "intune.json (intune.d): Measure's MinimumShare must be a whole number from 1 to 100."
+            $problems | Should -Contain 'intune.json (intune.d): the step has a Measure, so it must not have Unchecked.'
+            $problems | Should -Contain 'entra.json (entra.a): Measure must be an object with Key and MinimumShare.'
+        }
+
         It 'Reports a missing goals file and a file that is not JSON' {
             $files = Get-BaseCatalog
             $files.Remove('goals.json')
@@ -212,9 +245,19 @@ Describe 'Get-MtStepProblem' {
             param([string] $Id, [string[]] $Step)
             [pscustomobject]@{ Id = $Id; File = "/tests/Test.$Id.ps1"; Step = $Step }
         }
+        $script:registry = Read-Registry $script:validRegistryText
         function Get-TestProblem {
-            param([object[]] $Test, [string] $PackRoot)
-            InModuleScope Maester -Parameters @{ T = $Test; C = $script:catalog; P = $PackRoot } { @(Get-MtStepProblem -Test $T -Catalog $C -PackRoot $P -Coverage) }
+            param([object[]] $Test, [string] $PackRoot, [object] $Catalog = $script:catalog, [object] $Registry = $script:registry)
+            InModuleScope Maester -Parameters @{ T = $Test; C = $Catalog; P = $PackRoot; R = $Registry } { @(Get-MtStepProblem -Test $T -Catalog $C -Registry $R -PackRoot $P -Coverage) }
+        }
+        # The base catalogue with a Measure in place of Unchecked on intune.d.
+        function Get-MeasureCatalog {
+            param([string] $Key = 'devices-compliant')
+            $files = Get-BaseCatalog
+            $d = Get-Step $files 'intune.d'
+            $d.Remove('Unchecked')
+            $d.Measure = [ordered]@{ Key = $Key; MinimumShare = 95 }
+            Read-Catalog $files
         }
     }
 
@@ -229,13 +272,42 @@ Describe 'Get-MtStepProblem' {
 
     It 'Reports a step no test names that has no Unchecked, and a named step that has one' {
         $problems = Get-TestProblem @((New-FakeTest 'T.1' @('entra.a', 'intune.d')))
-        $problems | Should -Contain 'entra.json (entra.b): no test names the step. Name it in the Step attribute of the tests that verify it, or say why none can in Unchecked.'
+        $problems | Should -Contain 'entra.json (entra.b): no test names the step and it has no Measure. Name it in the Step attribute of the tests that verify it, give it a Measure, or say why neither can in Unchecked.'
         $problems | Should -Contain 'intune.json (intune.d): T.1 verify the step, so it must not have Unchecked.'
     }
 
     It 'Leaves out the Unchecked check without -Coverage, as the build does for a folder that holds only some tests' {
-        $problems = InModuleScope Maester -Parameters @{ C = $script:catalog } { @(Get-MtStepProblem -Test @() -Catalog $C) }
+        $problems = InModuleScope Maester -Parameters @{ C = $script:catalog; R = $script:registry } { @(Get-MtStepProblem -Test @() -Catalog $C -Registry $R) }
         $problems | Should -BeNullOrEmpty
+    }
+
+    It 'Counts a step with a Measure as checked' {
+        Get-TestProblem @((New-FakeTest 'T.1' @('entra.a')), (New-FakeTest 'T.2' @('entra.b', 'entra.c'))) -Catalog (Get-MeasureCatalog) |
+            Should -BeNullOrEmpty
+    }
+
+    It 'Reports a Measure key the registry does not have' {
+        Get-TestProblem @((New-FakeTest 'T.1' @('entra.a')), (New-FakeTest 'T.2' @('entra.b', 'entra.c'))) -Catalog (Get-MeasureCatalog 'mfa-registered') |
+            Should -Contain "intune.json (intune.d): Measure names 'mfa-registered', which is not in the measure registry."
+    }
+
+    It 'Reports a registry entry whose reader does not exist, and entries that are wrong' {
+        $registry = Read-Registry @"
+@{ Measures = @(
+    @{ Key = 'devices-compliant'; Function = 'Get-MtNoSuchReader'; Title = 'Devices'; Unit = 'devices'; Service = 'Graph' }
+    @{ Key = 'Bad Key'; Function = 'Get-MtStepCatalog'; Title = 'T'; Unit = 'u'; Service = 'Graph' }
+    @{ Key = 'mfa-registered'; Function = 'reader'; Unit = 'users'; Service = 'NoSuchService'; Permission = 'not a permission'; Colour = 'red' }
+) }
+"@
+        $problems = Get-TestProblem @((New-FakeTest 'T.1' @('entra.a')), (New-FakeTest 'T.2' @('entra.b', 'entra.c'))) -Catalog (Get-MeasureCatalog) -Registry $registry
+        $name = [System.IO.Path]::GetFileName($registry.Path)
+        $problems | Should -Contain "$name (devices-compliant): the reader function Get-MtNoSuchReader does not exist."
+        $problems | Should -Contain "${name}: 'Bad Key' is not a measure key (lowercase kebab-case)."
+        $problems | Should -Contain "$name (mfa-registered): Function must name a Maester function, Verb-MtNoun."
+        $problems | Should -Contain "$name (mfa-registered): Title must be one line of text."
+        $problems | Should -Contain "$name (mfa-registered): Service 'NoSuchService' is not in the service registry."
+        $problems | Should -Contain "$name (mfa-registered): Permission 'not a permission' is not valid. Write <Service>:<Kind>:<Name>."
+        $problems | Should -Contain "$name (mfa-registered): unknown key 'Colour'."
     }
 
     It 'Counts the steps a pack names in its taxonomy.json' {
