@@ -7,6 +7,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force -WarningAction SilentlyContinue
 
     function New-Source {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that returns a hashtable.')]
         param([string] $Url = 'https://learn.microsoft.com/entra/identity/example')
         [ordered]@{ Url = $Url; Note = 'Do the other step first.'; Reviewed = '2026-11-05' }
     }
@@ -205,6 +206,7 @@ Describe 'Get-MtStepProblem' {
     BeforeAll {
         $script:catalog = Read-Catalog (Get-BaseCatalog)
         function New-FakeTest {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper that returns an object.')]
             param([string] $Id, [string[]] $Step)
             [pscustomobject]@{ Id = $Id; File = "/tests/Test.$Id.ps1"; Step = $Step }
         }
