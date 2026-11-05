@@ -10,8 +10,9 @@ BeforeDiscovery {
         $handle = $null
         foreach ($line in Get-Content -LiteralPath $registry) {
             if ($line -match '^([^\s#][^:]*):\s*$') { $handle = $Matches[1]; continue }
-            if ($handle -and $line -match '^  name:\s*(.+?)\s*$') {
-                @{ Handle = $handle; Name = $Matches[1].Trim('"', "'") }
+            # The value without a comment after it: a quoted value as quoted, else up to ' #'.
+            if ($handle -and $line -match '^  name:\s*(?:"(?<q>[^"]*)"|''(?<q>[^'']*)''|(?<q>.+?))\s*(?:\s#.*)?$') {
+                @{ Handle = $handle; Name = $Matches.q.Trim() }
             }
         }
     )
@@ -42,9 +43,9 @@ Describe 'Contributor registry' {
             $word = $words[$i]
             $first = [regex]::Match($word, '\p{L}')
             if (-not $first.Success) { continue }
-            if ($i -gt 0 -and $word -cin $script:Particles) { continue }
+            if ($i -gt 0 -and $i -lt $words.Count - 1 -and $word -cin $script:Particles) { continue }
             if ([char]::IsLower($first.Value, 0)) { $word }
         }
-        @($lower) | Should -BeNullOrEmpty -Because "each word of a name starts with a capital letter, except a particle such as 'van' or 'den' inside it"
+        @($lower) | Should -BeNullOrEmpty -Because "each word of a name starts with a capital letter, except a particle such as 'van' or 'den' inside it (a last word is a surname)"
     }
 }

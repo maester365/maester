@@ -123,6 +123,8 @@ $packs = @(foreach ($manifestFile in Get-ChildItem -Path (Join-Path $repoRoot 'p
             Module        = $packCatalog.Module
             ModuleVersion = $packCatalog.ModuleVersion
             Source        = $packCatalog.Source
+            # The module's licence, which goes with the text of its tests that the site shows.
+            License       = $packCatalog.License
             Tests         = @($packCatalog.Tests)
         }
     })

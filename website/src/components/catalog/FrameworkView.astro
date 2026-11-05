@@ -10,9 +10,14 @@ const f = frameworkOf(Astro.props.framework)!;
 const byId = new Map(checks.map((t) => [t.id, t]));
 const sections = new Map<string, typeof f.requirements>();
 for (const r of f.requirements) {
-	if (!sections.has(r.section)) sections.set(r.section, []);
-	sections.get(r.section)!.push(r);
+	for (const section of r.sections) {
+		if (!sections.has(section)) sections.set(section, []);
+		sections.get(section)!.push(r);
+	}
 }
+// The anchor of a requirement listed in several sections is on its first row.
+const anchored = new Set<string>();
+const anchor = (id: string) => (anchored.has(id) ? undefined : (anchored.add(id), `req-${id}`));
 const levels = [...new Set(f.requirements.map((r) => r.level).filter(Boolean))].sort();
 const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 ---
@@ -89,7 +94,7 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 						</span>
 					</summary>
 					{reqs.map((r) => (
-						<div class="mt-fw__req" id={`req-${r.id}`} data-level={r.level} data-has={r.tests.length ? 'has' : 'gap'}>
+						<div class="mt-fw__req" id={anchor(r.id)} data-level={r.level} data-has={r.tests.length ? 'has' : 'gap'}>
 							<span class="mt-fw__rid">{r.id}</span>
 							<span>{r.level && <span class="mt-fw__lvl">{r.level}</span>}</span>
 							<span class="mt-fw__tests">
@@ -119,7 +124,13 @@ const command = f.suite ? `Invoke-Maester -Suite ${f.suite}` : '';
 			let level = '';
 			let show = '';
 			// A link to one requirement (#req-<id>) opens its section and marks it.
-			const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+			// A malformed escape in the hash (#req-100%) is no target, not an error that stops the filters below.
+			let target: HTMLElement | null = null;
+			try {
+				target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+			} catch {
+				target = null;
+			}
 			if (target?.classList.contains('mt-fw__req')) {
 				target.closest('details')?.setAttribute('open', '');
 				target.classList.add('mt-fw__req--target');

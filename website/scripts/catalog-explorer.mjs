@@ -45,7 +45,7 @@ export const frameworkConfig = {
   "cis-m365": { code: "CIS", label: "CIS Microsoft 365", suite: "cis", complete: true, section: (r) => sectionName(CIS_M365_SECTIONS, r.Id.split(".")[0]) },
   "cis-github": { code: "CIS", label: "CIS GitHub", suite: "cis", complete: false, section: (r) => sectionName(CIS_GITHUB_SECTIONS, r.Id.split(".")[0]) },
   "cisa-scuba": { code: "CISA", label: "CISA SCuBA", suite: "cisa", complete: true, section: (r) => sectionName(CISA_SERVICES, r.Id.split(".").slice(0, 2).join(".")) },
-  "essential-eight": { code: "E8", label: "Essential Eight", suite: "asd", complete: true, section: (r) => [r.Strategy].flat()[0] || "Other" },
+  "essential-eight": { code: "E8", label: "Essential Eight", suite: "asd", complete: true, section: (r) => [r.Strategy].flat().filter(Boolean) },
   ism: { code: "ISM", label: "ASD ISM", suite: "asd", complete: false, section: (r) => r.Guideline || "Other" },
 };
 
@@ -133,6 +133,7 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
       folder: pack.Folder ?? "",
       module: pack.Module ?? "",
       moduleVersion: pack.ModuleVersion ?? "",
+      license: pack.License ?? "",
       source: pack.Source ?? "",
       slug: (pack.Folder ?? pack.Id).split("/").pop(),
       count: pack.Tests.length,
@@ -193,7 +194,9 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
         id: r.Id,
         title: r.Title ?? "",
         level: r.Level ?? r.Criticality ?? "",
-        section: config.section(r),
+        // A requirement can sit in several sections (an Essential Eight control under four strategies): it is listed in
+        // each, and counted once in the framework's totals.
+        sections: [config.section(r)].flat().filter(Boolean).length ? [config.section(r)].flat().filter(Boolean) : ["Other"],
         tests: byRequirement.get(`${key}|${r.Id}`) ?? [],
       }));
       // A long list of controls Maester does not check (the ISM, NIST) lists only those it does.

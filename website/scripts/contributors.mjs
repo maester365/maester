@@ -192,13 +192,12 @@ function buildIdentityResolver(registry, hashedAliases) {
 export const nameParticles = new Set(["van", "von", "der", "den", "de", "del", "della", "di", "da", "dos", "du", "la", "le", "bin", "ibn", "al", "el", "ter", "ten", "zu"]);
 
 // A git author name written all in lowercase ("jeremy finney") gets a capital at the start of each word but the
-// particles; a name with any capital is the person's own spelling and is kept. The registry's name always wins.
+// particles inside it (a last word is a surname: "Alex Le"); a name with any capital is the person's own spelling
+// and is kept. The registry's name always wins.
 export function capitalizeName(name) {
   if (name !== name.toLowerCase()) return name;
-  return name
-    .split(" ")
-    .map((word, i) => (i > 0 && nameParticles.has(word) ? word : word.replace(/^\p{L}/u, (c) => c.toUpperCase())))
-    .join(" ");
+  const words = name.split(" ");
+  return words.map((word, i) => (i > 0 && i < words.length - 1 && nameParticles.has(word) ? word : word.replace(/^\p{L}/u, (c) => c.toUpperCase()))).join(" ");
 }
 
 export function computeContributorData(tests, { log = console.log, updateAliases = true } = {}) {

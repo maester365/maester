@@ -2,7 +2,7 @@
 // The checks of a view of the test catalog: all of them, a product's, a pack's or a suite's. Grouped by product,
 // feature, area, severity, suite or pillar, filtered by the nav (state.ts), with the Invoke-Maester command that runs
 // the same selection. Every check is in the HTML, so the list works without JavaScript and search engines see it.
-import { checks, packOf, pillarName, plural, previewLabel, productIcon, productInitials, featureIcon, severityMix, suiteInfo, type Check } from './data';
+import { checks, packOf, pillarName, plural, previewLabel, productIcon, productInitials, featureIcon, severityMix, suiteInfo, suiteMembers, channelOf, searchText, type Check } from './data';
 
 interface Props {
 	scope?: 'all' | 'product' | 'pack' | 'suite';
@@ -11,7 +11,7 @@ interface Props {
 const { scope = 'all', value = '' } = Astro.props;
 
 const list: Check[] =
-	scope === 'product' ? checks.filter((t) => t.product === value) : scope === 'pack' ? checks.filter((t) => t.pack === value) : scope === 'suite' ? checks.filter((t) => !t.pack && t.suite === value) : checks;
+	scope === 'product' ? checks.filter((t) => t.product === value) : scope === 'pack' ? checks.filter((t) => t.pack === value) : scope === 'suite' ? checks.filter((t) => !t.pack && suiteMembers(value).includes(t.suite)) : checks;
 const pack = scope === 'pack' ? packOf(value) : undefined;
 
 // The default grouping of each view, and the groupings it offers.
@@ -40,8 +40,8 @@ const total = list.length;
 const width = (n: number, of: number) => `width: ${((n / of) * 100).toFixed(2)}%`;
 
 const sourceLabel = (t: Check) => (t.pack ? packOf(t.pack)?.name ?? t.pack : suiteInfo[t.suite]?.name ?? t.suite);
-const channel = (t: Check) => [t.previewOnly && !t.pack ? 'new' : '', t.previewCheck ? 'preview' : ''].filter(Boolean).join(' ');
-const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : scope === 'suite' ? `Invoke-Maester -Suite ${value.toLowerCase()}` : scope === 'pack' ? `Invoke-Maester -Pack ${value} -SkipBuiltIn` : 'Invoke-Maester';
+const channel = channelOf;
+const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : scope === 'suite' ? `Invoke-Maester -Suite ${suiteMembers(value).join(',').toLowerCase()}` : scope === 'pack' ? `Invoke-Maester -Pack ${value} -SkipBuiltIn` : 'Invoke-Maester';
 ---
 
 <mt-catalog-list class="mt-cl not-content" data-scope={scope} data-value={value} data-default-group={defaultGroup} data-base={baseCommand}>
@@ -127,7 +127,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 					<a
 						href={`/docs/tests/${t.id}`}
 						class="mt-cl__row"
-						data-q={`${t.id} ${t.title} ${t.productName} ${t.featureName} ${t.areaName} ${t.mitre.join(' ')} ${t.category ?? ''}`.toLowerCase()}
+						data-q={searchText(t)}
 						data-severity={t.severity}
 						data-area={t.area}
 						data-cost={t.cost}
@@ -182,7 +182,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 </mt-catalog-list>
 
 <script>
-	import { onState, readState, update, writeState, FILTERS, type State } from './state';
+	import { matches, onState, readState, update, writeState, FILTERS, type State } from './state';
 
 	// The rows shown of a group before "Show all", and of the whole list when it is not grouped.
 	const GROUP_ROWS = 8;
@@ -237,25 +237,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		}
 
 		matches(row: HTMLElement, s: State) {
-			const d = row.dataset;
-			const q = (s.q[0] ?? '').toLowerCase();
-			const any = (list: string[], value = '') => list.length === 0 || list.includes(value);
-			const anyOf = (list: string[], values = '') => list.length === 0 || values.split(' ').some((v) => list.includes(v));
-			return (
-				(!q || d.q!.includes(q)) &&
-				anyOf(s.pillar, d.pillar) &&
-				any(s.severity, d.severity) &&
-				any(s.area, d.area) &&
-				any(s.cost, d.cost) &&
-				any(s.impact, d.impact) &&
-				any(s.source, d.source) &&
-				anyOf(s.channel, d.channel) &&
-				any(s.product, d.product) &&
-				any(s.feature, d.feature) &&
-				any(s.suite, d.suite) &&
-				anyOf(s.mitre, d.mitre) &&
-				anyOf(s.author, d.author)
-			);
+			return matches(s, row.dataset);
 		}
 
 		render(state: State, ui: any) {
@@ -371,6 +353,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		// a short list is run by ID; a long one runs what the other filters select, and the note says so.
 		command(s: State, shown: HTMLElement[], ui: any) {
 			const { cmd, note } = ui;
+			const copy = this.querySelector<HTMLButtonElement>('[data-copy]');
 			const scope = this.dataset.scope;
 			const parts = [this.dataset.base!];
 			const builtIn = shown.filter((r) => r.dataset.source === 'maester');
@@ -378,7 +361,20 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			const products = [...new Set([...s.product, ...s.feature.map((f) => f.split('/')[0])])].filter((p) => !(scope === 'product' && p === this.dataset.value));
 			const loose = s.cost.length + s.impact.length + s.mitre.length + s.author.length + s.q.length > 0;
 			const notes: string[] = [];
-			if (loose && builtIn.length > 0 && builtIn.length <= 25 && scope !== 'pack') {
+			const show = (text: string, runnable: boolean) => {
+				cmd.textContent = text;
+				if (copy) copy.disabled = !runnable;
+				note.textContent = notes.join(' ');
+				note.hidden = notes.length === 0;
+			};
+			// Nothing to run: no command to copy, rather than one that runs checks the page shows as none.
+			if (!shown.length) return show('No checks match these filters.', false);
+			// A pack runs as one assessment, whatever the filters; selectors would only deselect its family test.
+			if (scope === 'pack' || !builtIn.length) {
+				notes.push('The pack runs the whole assessment, with its module installed; filters choose what you read, not what runs.');
+				return show(scope === 'pack' ? parts[0] : `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`, true);
+			}
+			if (loose && builtIn.length <= 25) {
 				parts.splice(0, parts.length, `Invoke-Maester -TestId ${builtIn.map((r) => r.dataset.testId).join(',')}`);
 			} else {
 				if (s.suite.length) parts.push(`-Suite ${s.suite.map((v) => v.toLowerCase()).join(',')}`);
@@ -388,12 +384,10 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				if (s.severity.length) parts.push(`-Severity ${s.severity.join(',')}`);
 				if (loose) notes.push('Effort, impact, technique, author and search are not Invoke-Maester parameters: this runs every check the other filters select.');
 			}
-			if (s.channel.includes('preview')) parts.push('-IncludePreview');
-			if (scope !== 'pack' && packs.length && !builtIn.length) parts.splice(0, parts.length, `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`);
-			if (scope === 'pack' || (!builtIn.length && packs.length)) notes.push('The pack runs the whole assessment, with its module installed; filters choose what you read, not what runs.');
-			cmd.textContent = parts.join(' ');
-			note.textContent = notes.join(' ');
-			note.hidden = notes.length === 0;
+			// Preview checks run only when asked for.
+			if (builtIn.some((r) => (r.dataset.channel ?? '').split(' ').includes('preview'))) parts.push('-IncludePreview');
+			if (packs.length) notes.push(`This runs the built-in checks shown. The ${packs.join(', ')} pack checks run as their own assessment: Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn.`);
+			show(parts.join(' '), true);
 		}
 
 		// The filters that are not in the nav (from a link, a tile or the matrix), as chips that remove them.
@@ -595,6 +589,10 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		font-size: 0.8rem;
 		font-weight: 600;
 		cursor: pointer;
+	}
+	.mt-cl__cmd button:disabled {
+		opacity: 0.5;
+		cursor: default;
 	}
 	.mt-cl__cmdnote {
 		flex-basis: 100%;

@@ -27,6 +27,14 @@ export const suiteInfo: Record<string, { name: string; slug: string }> = {
 	XSPM: { name: 'Exposure management (XSPM)', slug: '' },
 };
 
+// The channel of a check for the filter: new in the preview, runs only with -IncludePreview, or both.
+export const channelOf = (t: Check) => [t.previewOnly && !t.pack ? 'new' : '', t.previewCheck ? 'preview' : ''].filter(Boolean).join(' ');
+// The text the catalog's search looks in.
+export const searchText = (t: Check) => `${t.id} ${t.title} ${t.productName} ${t.featureName} ${t.areaName} ${t.mitre.join(' ')} ${t.category ?? ''}`.toLowerCase();
+
+// The suites a suite's page lists: XSPM has no page, and its MT checks have their pages under Maester's.
+export const suiteMembers = (suite: string) => (suite === 'Maester' ? ['Maester', 'XSPM'] : [suite]);
+
 const pillarNames = new Map([['SecOps', 'Security operations']]);
 export const pillarName = (p: string) => pillarNames.get(p) ?? p;
 

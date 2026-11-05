@@ -49,3 +49,29 @@ export function onState(listener: (state: State) => void) {
 // Filters that narrow the checks (all but how they are grouped).
 // eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
 export const isFiltered = (state: State) => FILTERS.some((name) => name !== 'group' && state[name].length > 0);
+
+// The values of one check that the filters test, as the list writes them on its rows (data-* attributes): text in
+// lowercase for the search, and space-separated lists for the fields a check can have several of.
+export type CheckFacts = Partial<Record<'q' | 'pillar' | 'severity' | 'area' | 'cost' | 'impact' | 'source' | 'channel' | 'product' | 'feature' | 'suite' | 'mitre' | 'author', string>>;
+
+// Whether a check passes the filters: within a filter any value matches, across filters all must.
+export function matches(s: State, d: CheckFacts) {
+	const q = (s.q[0] ?? '').toLowerCase();
+	const any = (list: string[], value = '') => list.length === 0 || list.includes(value);
+	const anyOf = (list: string[], values = '') => list.length === 0 || values.split(' ').some((v) => list.includes(v));
+	return (
+		(!q || (d.q ?? '').includes(q)) &&
+		anyOf(s.pillar, d.pillar) &&
+		any(s.severity, d.severity) &&
+		any(s.area, d.area) &&
+		any(s.cost, d.cost) &&
+		any(s.impact, d.impact) &&
+		any(s.source, d.source) &&
+		anyOf(s.channel, d.channel) &&
+		any(s.product, d.product) &&
+		any(s.feature, d.feature) &&
+		any(s.suite, d.suite) &&
+		anyOf(s.mitre, d.mitre) &&
+		anyOf(s.author, d.author)
+	);
+}

@@ -1,7 +1,7 @@
 ---
 // The sidebar of the test catalog: the views (one click to a product, a framework, a pack or a suite), then, on the
 // pages that list checks, the filters. The filters change the URL (state.ts), and the list on the page follows.
-import { checks, data, packOf, productIcon, productInitials, ratingOrder, severityOrder, suiteInfo, type Check } from './data';
+import { checks, data, packOf, productIcon, productInitials, ratingOrder, severityOrder, suiteInfo, suiteMembers, type Check } from './data';
 
 interface Props {
 	id: string;
@@ -11,14 +11,17 @@ const path = `/${id}`;
 const slug = id.replace(/^docs\/tests\/?/, '');
 
 // Which checks the page lists, for the counts of the filters, and which nav entry is the page's.
-const suiteBySlug = Object.fromEntries(Object.entries(suiteInfo).map(([key, s]) => [s.slug, key]));
+// Only suites with a page of their own: XSPM has none (slug ''), and '' is the All checks page.
+const suiteBySlug = Object.fromEntries(Object.entries(suiteInfo).filter(([, s]) => s.slug).map(([key, s]) => [s.slug, key]));
 const check = checks.find((t) => t.id === slug);
 let scope: Check[] | null = null;
 let current = path;
 if (slug === '') scope = checks;
 else if (slug.startsWith('products/')) scope = checks.filter((t) => t.product === slug.slice(9));
 else if (slug.startsWith('packs/')) scope = checks.filter((t) => t.pack && packOf(t.pack)?.slug === slug.slice(6));
-else if (suiteBySlug[slug]) scope = checks.filter((t) => !t.pack && t.suite === suiteBySlug[slug]);
+else if (suiteBySlug[slug]) scope = checks.filter((t) => !t.pack && suiteMembers(suiteBySlug[slug]).includes(t.suite));
+// The ATT&CK matrix follows the filters too: its counts are of the checks that name a technique.
+else if (slug === 'attack') scope = checks.filter((t) => t.mitre.length);
 else if (check) current = check.pack ? `/docs/tests/packs/${packOf(check.pack)?.slug}` : `/docs/tests/products/${check.product}`;
 
 const on = (href: string) => (href === current ? 'page' : undefined);

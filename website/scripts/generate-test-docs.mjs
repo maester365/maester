@@ -646,7 +646,20 @@ import CatalogList from "@components/catalog/CatalogList.astro";
 ${pack.description}
 
 <CatalogList scope="pack" value=${yamlQuote(pack.code)} />
-`;
+${pack.license ? `
+## Licence
+
+The overview and remediation on the pages of these checks are from ${pack.module}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}, under this licence:
+
+<details id="licence">
+<summary>${pack.license.split("\n")[0].trim()}</summary>
+
+\`\`\`text
+${pack.license}
+\`\`\`
+
+</details>
+` : ""}`;
 }
 
 function renderFrameworkPage(framework) {
@@ -686,8 +699,8 @@ import AttackView from "@components/catalog/AttackView.astro";
 `;
 }
 
-// A check of a pack: its ratings, where Maester places it, and links to the source, which the pack's own module
-// holds (the text of the check is not in this repository).
+// A check of a pack: the overview and remediation of the pack's own module (copied into the pack's catalog.json),
+// its ratings, where Maester places it, and the module's credit and licence.
 // Markdown of the pack's own module, placed under a heading of this page: its headings move down two levels.
 function nestHeadings(markdown) {
   return markdown.replace(/^(#{1,4}) /gm, (_, hashes) => `${hashes}## `);
@@ -704,7 +717,7 @@ function renderPackTestPage(pack, test, explorer, text) {
   }
   body.push("## Overview", "", description ? nestHeadings(description) : "Microsoft has not published a description of this check yet.", "");
   if (remediation) body.push("## Remediation", "", nestHeadings(remediation), "");
-  body.push("## Run it", "", "The check runs as part of the whole assessment, with the ZeroTrustAssessment module installed:", "", "```powershell", "Install-Module ZeroTrustAssessment -Scope CurrentUser", `Invoke-Maester -Pack ${pack.code}`, "```", "");
+  body.push("## Run it", "", "The check runs as part of the whole assessment, with the ZeroTrustAssessment module installed:", "", "```powershell", "Install-Module ZeroTrustAssessment -Scope CurrentUser", `Invoke-Maester -Pack ${pack.code} -SkipBuiltIn`, "```", "", "Leave out `-SkipBuiltIn` to run Maester's own checks in the same run.", "");
   body.push("<details>", "<summary>About this check</summary>", "", "| | |", "| --- | --- |");
   body.push(`| Severity | ${test.severity} |`);
   if (test.cost) body.push(`| Effort to fix | ${test.cost} |`);
@@ -721,7 +734,7 @@ function renderPackTestPage(pack, test, explorer, text) {
   // One line at the end: whose check it is and where its text comes from (the MIT licence asks for the notice).
   const msLogo = '<svg class="mt-ms-note__logo" viewBox="0 0 21 21" aria-hidden="true"><rect width="10" height="10" fill="#f25022"/><rect x="11" width="10" height="10" fill="#7fba00"/><rect y="11" width="10" height="10" fill="#00a4ef"/><rect x="11" y="11" width="10" height="10" fill="#ffb900"/></svg>';
   const moduleName = `${pack.module || "ZeroTrustAssessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}`;
-  body.push(`<p class="mt-ms-note not-content">${msLogo}<span>A Microsoft check, part of the <a href="/docs/tests/packs/${pack.slug}">${pack.name.replace(/^Microsoft /, "")}</a> pack. Text from ${moduleName}, © Microsoft, MIT licence.</span></p>`, "");
+  body.push(`<p class="mt-ms-note not-content">${msLogo}<span>A Microsoft check, part of the <a href="/docs/tests/packs/${pack.slug}">${pack.name.replace(/^Microsoft /, "")}</a> pack. Text from ${moduleName}, © Microsoft, <a href="/docs/tests/packs/${pack.slug}#licence">MIT licence</a>.</span></p>`, "");
 
   const summary = description ? summarize(description) : "";
   const metaDescription = summary ? shorten(summary, 155) : shorten(`${test.title.replace(/\.$/, "")}: a ${pack.name} check, with its severity, effort and the product it is about.`, 155);
@@ -741,7 +754,7 @@ maester:
   severity: ${yamlQuote(test.severity)}
   product: ${yamlQuote(test.productName)}
   feature: ${yamlQuote(test.featureName)}
-  previewOnly: false
+  previewOnly: ${!releasedTests.has(test.id)}
   previewCheck: false
 ---
 
