@@ -234,6 +234,9 @@ function Write-MtRunSummary {
     Product is a key: the name comes from the result's Taxonomy, else from the taxonomy registry. The
     product with the most passed tests is first and the others follow in descending order of passed tests;
     the products whose tests were all skipped are last, by name.
+
+    When the result has the defender's path (Steps), one more line counts its steps by readiness:
+    "Defender's path: 3 ready · 2 blocked · 1 to check first".
     #>
     [CmdletBinding()]
     param(
@@ -326,6 +329,16 @@ function Write-MtRunSummary {
     $separator = if ($Console.Unicode) { '  ' } else { ', ' }
     $total = "$($MaesterResults.TotalCount) tests$(if ($duration) { ", $duration" })"
     Write-MtConsoleLine " $($text -join $separator)  $(Format-MtConsoleText "($total)" -Style Dim -Console $Console)"
+    if ($MaesterResults.PSObject.Properties['Steps'] -and @($MaesterResults.Steps).Count -gt 0) {
+        $readiness = @($MaesterResults.Steps | ForEach-Object { [string]$_.Readiness })
+        $dot = if ($Console.Unicode) { " $([char]0x00B7) " } else { ', ' }
+        $path = @(
+            "$(@($readiness | Where-Object { $_ -eq 'Ready' }).Count) ready"
+            "$(@($readiness | Where-Object { $_ -eq 'Blocked' }).Count) blocked"
+            "$(@($readiness | Where-Object { $_ -eq 'Unconfirmed' }).Count) to check first"
+        ) -join $dot
+        Write-MtConsoleLine " $(Format-MtConsoleText "Defender's path:" -Style Bold -Console $Console) $path"
+    }
     if ($ReportPath) {
         $shown = $ReportPath
         if ($Console.Hyperlink) {

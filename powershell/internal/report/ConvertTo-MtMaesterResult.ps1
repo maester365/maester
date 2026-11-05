@@ -565,13 +565,32 @@
         $runResult = if ($failed) { 'Failed' } else { 'Passed' }
     }
 
+    # The defender's path (docs/proposals/defenders-path.md, section 7.2): the steps the rows name and their
+    # prerequisites, with the measures read after the tests. Never fail the conversion over it.
+    $resultSteps = $null
+    $stepArguments = $null
+    try {
+        $measureSetting = Get-MtMeasureSetting -RunConfig $__MtSession.MaesterConfig
+        $stepArguments = @{
+            InputObject      = $mtTests
+            Measure          = if ($RunContext -and $RunContext.PSObject.Properties['Measures'] -and $RunContext.Measures) { $RunContext.Measures } else { @{} }
+            MeasuresDisabled = -not $measureSetting.Enabled
+            MinimumShare     = $measureSetting.MinimumShare
+            TenantContext    = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
+        }
+        if ($RunContext -and $RunContext.PSObject.Properties['NativeTests'] -and $RunContext.NativeTests) { $stepArguments.Inventory = @($RunContext.NativeTests) }
+        $resultSteps = Get-MtResultStep @stepArguments
+    } catch {
+        Write-Verbose "Failed to build the defender's path: $($_.Exception.Message)"
+    }
+
     # Consolidated inventory of all objects referenced by the run (RelatedObjects,
-    # result markdown deep links and the session request caches). Never fail the
+    # result markdown deep links, the objects of the measures and the session request caches). Never fail the
     # results conversion over inventory issues.
     $affectedObjects = @()
     if ($IncludeAffectedObjects.IsPresent) {
         try {
-            $affectedObjects = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = $mtTests }))
+            $affectedObjects = @(Get-MtAffectedObject -MaesterResults ([PSCustomObject]@{ Tests = $mtTests; Steps = $(if ($resultSteps) { $resultSteps.Steps } else { @() }) }))
         } catch {
             Write-Verbose "Failed to build affected objects: $($_.Exception.Message)"
         }
@@ -619,8 +638,8 @@
         ConnectionSummary = @(GetConnectionSummary)
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
         MaesterConfig     = New-MtResultConfig -RunConfig $__MtSession.MaesterConfig -Rows $mtTests -NativeRows $NativeRows
-        # Additive in result schema 2.1.
-        SchemaVersion     = '2.1'
+        # Additive in result schema 2.1, and Steps and Goals in 2.2.
+        SchemaVersion     = '2.2'
         # A string: CurrentVersion keeps its 2.x shape ([version] serialised as an object).
         CatalogVersion    = [string]$currentVersion
         TenantContext     = if ($RunContext -and $RunContext.TenantContext) { $RunContext.TenantContext } else { $null }
@@ -660,14 +679,30 @@
 
     # The previous run on the tenant, for a report that shows what changed. Never fail the conversion over it.
     # This runs before the run writes its own files, so the file at this run's output path, when the caller reuses
-    # a name such as TestResults-latest, is the previous run and is read like any other.
+    # a name such as TestResults-latest, is the previous run and is read like any other. When a step of the
+    # defender's path is Not checked, LastKnown holds the newest earlier result of each of its tests, which gives
+    # the step's Earlier status.
     if ($IncludePrevious.IsPresent -and $OutputFiles -and $OutputFiles.PSObject.Properties['OutputFolder']) {
         try {
-            $previous = Get-MtPreviousResult -Folder ([string]$OutputFiles.OutputFolder) -TenantId $tenantId
-            if ($previous) { $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Previous' -Value $previous }
+            $previousArguments = @{ Folder = [string]$OutputFiles.OutputFolder; TenantId = $tenantId }
+            $notChecked = @(if ($resultSteps) { $resultSteps.Steps | Where-Object { $_.Status -eq 'NotChecked' } })
+            if ($notChecked.Count -gt 0) { $previousArguments.LastKnownId = [string[]]@($notChecked | ForEach-Object { $_.Tests.Id } | Where-Object { $_ } | Select-Object -Unique) }
+            $previous = Get-MtPreviousResult @previousArguments
+            if ($previous) {
+                $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Previous' -Value $previous
+                if ($notChecked.Count -gt 0 -and $previous.PSObject.Properties['LastKnown'] -and $previous.LastKnown) {
+                    $resultSteps = Get-MtResultStep @stepArguments -LastKnown $previous.LastKnown
+                }
+            }
         } catch {
             Write-Verbose "Failed to read the previous result: $($_.Exception.Message)"
         }
+    }
+
+    # Steps and Goals, only when a row that ran names a step, so other results are unchanged.
+    if ($resultSteps) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Steps' -Value @($resultSteps.Steps)
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'Goals' -Value @($resultSteps.Goals)
     }
 
     # Add output files information if provided

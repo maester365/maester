@@ -164,6 +164,8 @@ Which tests run. Every key has a command-line equivalent.
 | `ExcludeTestId` | array | `[]` | Do not run these IDs (like `-ExcludeTestId`). Wins over `TestId`. |
 | `IncludePreview` | bool | `false` | Run preview tests (like `-IncludePreview`). |
 | `IncludeLongRunning` | bool | `false` | Run long-running tests (like `-IncludeLongRunning`). |
+| `Step` | array | `[]` | Run only tests that verify these steps of the defender's path (like `-Step`), for example `entra.ca-require-compliant-device` or `intune.*`. |
+| `IncludePrerequisites` | bool | `false` | Also run the tests of every prerequisite, at any depth, of the steps the selected tests name (like `-IncludePrerequisites`). Applied after the other selectors; the exclusions still apply. |
 | `OnUnknownId` | `Warn`, `Ignore`, `Error` | `Warn` | What to do when an ID you named matches no test. `Error` stops the run before any test runs. |
 
 Rules:
@@ -225,6 +227,19 @@ test, and its `Product`, `Feature`, `Area`, `Suite` and `Severity` fields say th
 
 Deselected and disabled tests still appear in the result as `NotRun` rows with a reason code. See
 [Applicability and reason codes](./applicability.md).
+
+## Measures
+
+Some steps of the defender's path are states of the tenant, such as the share of devices that sign in and are
+compliant. After the tests, Maester reads the figure of each such step in scope from Graph and compares it with the
+step's threshold. A figure is not a test: it changes no count or pass rate.
+
+| Key | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `Enabled` | bool | `true` | `false` reads no figures. Their steps show as not checked. |
+| `MinimumShare` | object | none | A threshold for a measure, by its key, a whole number from 1 to 100: `{ "devices-compliant": 90 }`. |
+
+The measures are `devices-compliant` (95% by default) and `mfa-capable` (95%).
 
 ## TestSettings
 

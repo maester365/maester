@@ -6,6 +6,10 @@
     .Description
        This markdown report can be used in GitHub actions to display the test results in a formatted way.
 
+       When the results have the defender's path (Steps), the report starts with "Do these first": the first five
+       steps that are ready, in rank order, each with its failed tests, and one line that counts the steps that are
+       blocked and those whose prerequisites need checking first.
+
     .Example
        $pesterResults = Invoke-Pester -PassThru
        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
@@ -115,12 +119,45 @@
         return $details.ToString()
     }
 
+    # The defender's path: the first five Ready steps with their failed tests, and the count of the others.
+    function GetDefendersPath() {
+        if (-not ($MaesterResults.PSObject.Properties['Steps'] -and $MaesterResults.Steps)) { return '' }
+        $steps = @($MaesterResults.Steps | Sort-Object -Property { [int]$_.Rank })
+        $ready = @($steps | Where-Object { $_.Readiness -eq 'Ready' })
+        $blocked = @($steps | Where-Object { $_.Readiness -eq 'Blocked' }).Count
+        $unconfirmed = @($steps | Where-Object { $_.Readiness -eq 'Unconfirmed' }).Count
+        $titles = @{}
+        foreach ($test in @($MaesterResults.Tests)) { if ($test.Id -and -not $titles.ContainsKey([string]$test.Id)) { $titles[[string]$test.Id] = [string]$test.Title } }
+        $text = [System.Text.StringBuilder]::new("## Do these first`n`n")
+        if ($ready.Count -eq 0) {
+            [void]$text.Append("No step of the defender's path is ready to start.`n`n")
+        }
+        $number = 0
+        foreach ($step in @($ready | Select-Object -First 5)) {
+            $number++
+            [void]$text.Append("$number. **$($step.Title)** (``$($step.Id)``)`n")
+            foreach ($t in @($step.Tests | Where-Object { $_.Result -eq 'Failed' })) {
+                $title = if ($titles.ContainsKey([string]$t.Id)) { ": $($titles[[string]$t.Id])" } else { '' }
+                [void]$text.Append("   - $($StatusIconSm['Failed']) $($t.Id)$title`n")
+            }
+            if ($step.Measure -and $null -ne $step.Measure.Share) {
+                [void]$text.Append("   - $($step.Measure.Share)% of $($step.Measure.Total) meet it, $($step.Measure.MinimumShare)% needed`n")
+            }
+        }
+        if ($number -gt 0) { [void]$text.Append("`n") }
+        $blockedText = if ($blocked -eq 1) { '1 step is blocked' } else { "$blocked steps are blocked" }
+        $checkText = if ($unconfirmed -eq 1) { '1 step has prerequisites to check first' } else { "$unconfirmed steps have prerequisites to check first" }
+        [void]$text.Append("$blockedText, and $checkText.`n`n")
+        return $text.ToString()
+    }
+
     $markdownFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.md'
     $templateMarkdown = Get-Content -Path $markdownFilePath -Raw
 
     # Execute functions first so they don't mess with the markdown template
     $textSummary = GetTestSummary
     $textDetails = GetTestDetails
+    $textDefendersPath = GetDefendersPath
 
     $templateMarkdown = $templateMarkdown -replace '%TenandId%', $MaesterResults.TenantId
     $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantName
@@ -134,6 +171,8 @@
     $templateMarkdown = $templateMarkdown -replace '%SkippedCount%', $MaesterResults.SkippedCount
     $templateMarkdown = $templateMarkdown -replace '%NotRunCount%', $MaesterResults.NotRunCount
 
+    # A literal replacement: step titles are text, not a regular expression's replacement pattern.
+    $templateMarkdown = $templateMarkdown.Replace('%DefendersPath%', $textDefendersPath)
     $templateMarkdown = $templateMarkdown -replace '%TestSummary%', $textSummary
     $templateMarkdown = $templateMarkdown -replace '%TestDetails%', $textDetails
 

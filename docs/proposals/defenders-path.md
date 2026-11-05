@@ -388,6 +388,51 @@ when a row in the result names a step), so every other result stays as it is.
 | JUnit XML | None |
 | Console | One line in the run summary when `Steps` is present: `Defender's path: 3 ready · 2 blocked · 1 to check first` |
 
+### 7.4 Choices made in M3
+
+Where the design was silent, M3 chose the simplest thing consistent with it. `website/docs/result-schema.md` documents
+the result as built.
+
+- **Reason codes.** `Reason` is also set for `NotApplicable` (`ConditionNotMet`, `TestsNotApplicable`) and `Unknown`
+  (`ConditionUnknown`, else the first reason code of the tests or the measure, or `Investigate` for a test that ended
+  as Investigate, which has no reason code). A measure that can't be read carries `ServiceNotConnected` or
+  `LicenseNotFound` as a test would, and two codes tests don't have: `PermissionNotGranted` (the Graph connection lists
+  its permissions and lacks every alternative of one; a 403 from the reader gives it too) and `MeasureError` (the
+  reader threw). `MeasureOff` is the `ReasonCode` of a measure the run config turned off.
+- **Mixed verifiers.** A test skipped as `NotApplicable` next to tests that gave a result is left out, not counted as
+  Unknown. An `OnlyWhen` condition that can't be read makes the step Unknown before any test is looked at.
+- **Readiness and Conflicts.** `BlockedBy` and `Unconfirmed` are both filled whatever the readiness, so a Blocked step
+  still lists what is left to check. A conflicting step that is Unknown or Not checked is Unconfirmed. Conflicting
+  steps are in scope (without their own prerequisites), so their status is known.
+- **Rank.** Done steps follow the Blocked group, then Not applicable steps. Within a group, the order is topological
+  over the edges between members of the group; among the steps that can come next, the highest value (own value
+  plus unlock value) wins, then the ID.
+- **Unlocks** lists the steps in scope that depend on the step directly and are not Done or Not applicable, in rank
+  order.
+- **Tests** always carry `ReasonCode` (`null` when none) and are sorted by ID with the numbers compared as numbers.
+  A family test is left out when its instances have rows.
+- **Measures.** `Share` is the whole percentage rounded down, so a step never shows 95% while it misses 95%; `Met`
+  compares `Count` and `Total` exactly. With no object to count (`Total` 0), `Share` is `null` and `Met` is false:
+  a compliant-device policy with no compliant device blocks everyone. Measures are read in `Invoke-Maester` right
+  after the tests, while affected objects are still collected, and the readers write facts for the objects they
+  list (source `Maester measures`): `device.managed`, `device.compliant`, `device.os`, `device.joinType`, and
+  `user.mfaCapable` and `user.mfaRegistered` under the object ID and the UPN. The Affected objects page lists the
+  same objects as `Steps[].Measure.Objects` (up to 100 per measure), with the source `Measure` and no test.
+- **Goals.** A goal's `Steps` are its steps in scope, in catalogue order (prerequisites first). It also has
+  `Summary`, `Unknown` and `NotChecked`, and `Status` `NotApplicable` when none of its steps applies.
+- **Earlier** comes from all the `LastKnown` entries of a step's tests, judged by the status rules without measures;
+  `ExecutedAt` and `File` are the newest entry's.
+- **Tenant context.** The tenant context did not read `onPremisesSyncEnabled`. It now records it as `HybridIdentity`
+  from the organization it already reads, with no extra request.
+- **Selection.** `-IncludePrerequisites` is a second pass of `Resolve-MtNativePlan` (`-PrerequisiteStep`): the include
+  selectors (`-TestId`, the typed selectors, `-Tag`) are lifted for tests of the prerequisites, and the exclusions
+  (`-ExcludeTestId`, `-ExcludeProduct`, `-ExcludeTag`, a disabled or unlisted test) still apply. A long-running family
+  keeps its long-running exclusion, which is how the Zero Trust family stays out without `-Suite ZTA` or
+  `-IncludeLongRunning`. `Selection.Step` and `Selection.IncludePrerequisites` get no default in the resolved config,
+  so a resolved config without them is unchanged.
+- **Priority parity.** `Get-MtTestPriority` is checked against numbers computed with the report's formula. A test on
+  the report side that compares its `priority()` with the same rows is for M4.
+
 ## 8. Selection
 
 | Parameter | Config key | Selects |

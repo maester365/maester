@@ -14,6 +14,11 @@
     second copy of the findings. The comparison is the one Compare-MtTestResult makes. A result file starts with
     its counts, ExecutedAt and TenantId, so History reads only the start of each file; only the newest file is
     read in full.
+
+    With -LastKnownId, the result also has LastKnown: for each of these test IDs, the newest earlier result that ran
+    it (Result other than NotRun), as Result, ReasonCode, ExecutedAt and File. It reads only the files History lists,
+    newest first, and stops once every ID is found. The defender's path uses it for the steps a run did not check
+    (docs/proposals/defenders-path.md, section 7.2), so a one-check run still shows what an earlier run found.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -31,7 +36,10 @@
         [Parameter()] [int] $MaxFiles = 15,
 
         # How many earlier runs History lists.
-        [Parameter()] [int] $HistoryCount = 10
+        [Parameter()] [int] $HistoryCount = 10,
+
+        # Test IDs whose newest earlier result LastKnown gives.
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [string[]] $LastKnownId
     )
 
     if (-not $Folder -or -not (Test-Path -LiteralPath $Folder -PathType Container)) { return }
@@ -98,10 +106,36 @@
             foreach ($key in $_.Counts.Keys) { $entry[$key] = $_.Counts[$key] }
             [pscustomobject]$entry
         })
-    [pscustomobject][ordered]@{
+    $out = [pscustomobject][ordered]@{
         ExecutedAt = $previous.Header.ExecutedAt.ToString('o', [cultureinfo]::InvariantCulture)
         File       = $previous.Header.File.Name
         Results    = [pscustomobject]$results
         History    = $history
     }
+
+    if ($null -ne $LastKnownId) {
+        $wanted = [System.Collections.Generic.HashSet[string]]::new([string[]]@($LastKnownId | Where-Object { $_ }), [System.StringComparer]::OrdinalIgnoreCase)
+        $lastKnown = [ordered]@{}
+        $listed = @($headers | Where-Object { $_.Counts.Contains('Total') } | Select-Object -First $HistoryCount)
+        foreach ($header in $listed) {
+            if ($wanted.Count -eq 0) { break }
+            $result = if ([object]::ReferenceEquals($header, $previous.Header)) { $previous.Result } else {
+                try { Get-Content -LiteralPath $header.File.FullName -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop } catch { $null }
+            }
+            if ($result -isnot [pscustomobject] -or -not $result.PSObject.Properties['Tests']) { continue }
+            foreach ($row in @($result.Tests)) {
+                $id = if ($row.PSObject.Properties['Id'] -and $row.Id) { [string]$row.Id } else { $null }
+                if (-not $id -or -not $wanted.Contains($id) -or [string]$row.Result -eq 'NotRun') { continue }
+                $null = $wanted.Remove($id)
+                $lastKnown[$id] = [pscustomobject][ordered]@{
+                    Result     = [string]$row.Result
+                    ReasonCode = if ($row.PSObject.Properties['ReasonCode'] -and $row.ReasonCode) { [string]$row.ReasonCode } else { $null }
+                    ExecutedAt = $header.ExecutedAt.ToString('o', [cultureinfo]::InvariantCulture)
+                    File       = $header.File.Name
+                }
+            }
+        }
+        $out | Add-Member -MemberType NoteProperty -Name 'LastKnown' -Value ([pscustomobject]$lastKnown)
+    }
+    $out
 }
