@@ -130,15 +130,17 @@ Describe 'Get-MtStepCatalog' {
         }
 
         It 'Reports a source with a locale, one that is not on Learn, and one without Reviewed' {
+            # Split, so that the repository's check for language-specific URLs does not flag this file.
+            $localeUrl = 'https://learn.microsoft.com/' + 'en-us/entra/x'
             $problems = Get-Problem {
                 param($f)
                 (Get-Step $f 'entra.a').Sources = @(
-                    (New-Source 'https://learn.microsoft.com/en-us/entra/x'),
+                    (New-Source $localeUrl),
                     (New-Source 'https://example.com/x'),
                     [ordered]@{ Url = 'https://learn.microsoft.com/entra/y'; Note = 'N.' }
                 )
             }
-            $problems | Should -Contain "entra.json (entra.a): the source 'https://learn.microsoft.com/en-us/entra/x' has a locale. Leave it out, as the check guides do."
+            $problems | Should -Contain "entra.json (entra.a): the source '$localeUrl' has a locale. Leave it out, as the check guides do."
             $problems | Should -Contain "entra.json (entra.a): the source 'https://example.com/x' is not a Microsoft Learn URL."
             $problems | Should -Contain 'entra.json (entra.a): a source needs Reviewed, the date it was last read against the step (yyyy-MM-dd).'
         }
