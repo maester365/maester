@@ -6,7 +6,7 @@ This check reports users whose risk level is **medium** and whose risk state is 
 
 If a reported user holds a privileged directory role, active or PIM-eligible, the result lists the role and the severity is raised to Medium, since even a medium-risk flag on an admin account warrants prompt investigation.
 
-The check needs the Microsoft Graph permission `IdentityRiskyUser.Read.All`, which Maester does not request by default. Without it the check is skipped. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
+The check needs the Microsoft Graph permission `IdentityRiskyUser.Read.All`, which Maester does not request by default. Without it the check is skipped. To identify privileged users, it also reads directory roles, which needs `RoleManagement.Read.Directory` or `RoleManagement.Read.All`. If those reads fail, the users are still reported with a note. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
 
 A companion check, MT.1260, reports on high-risk users. This check is about the outcome (users actually left unremediated). It is complementary to MT.1253, which checks that a Conditional Access policy requiring risk remediation is in place; one checks the control, this one checks the result.
 
