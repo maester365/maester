@@ -1,5 +1,5 @@
 // Generates the data the site is built from, which is not kept in git: the test catalog (src/data/test-catalog.json),
-// the command reference (docs/commands/*.mdx), the contributor credits (src/data/contributors.json) and the sponsors
+// the command reference (docs/commands/*.mdx), the goal pages of the defender's path (docs/defenders-path/*.md), the contributor credits (src/data/contributors.json) and the sponsors
 // (src/data/sponsors.json, public/readme/sponsors*.svg). Runs before `npm run dev` and `npm run build`.
 //
 // Each file is generated only when it is missing, so a second `npm run dev` starts at once; `npm run refresh-data`
@@ -33,6 +33,10 @@ const pwsh = (script, ...args) => ['-NoProfile', '-NonInteractive', '-File', scr
 if (missing('src/data/test-catalog.json')) {
 	run('Export the test catalog', 'pwsh', pwsh('build/docs/Export-MtTestCatalogForDocs.ps1', '-OutputPath', at('src/data/test-catalog.json')), repoRoot);
 }
+
+// The goal pages of the defender's path, from the step catalogue and the test catalog. They take no time, so they
+// are written on every run and follow any change to the catalogue.
+run('Write the goal pages', process.execPath, ['scripts/generate-goal-pages.mjs'], websiteRoot);
 
 const commandPages = () => readdirSync(at('docs/commands')).filter((name) => name.endsWith('.mdx') && name !== 'readme.mdx');
 // A failed run can leave some pages half converted and the index page (readme.mdx, kept in git) deleted. Remove the

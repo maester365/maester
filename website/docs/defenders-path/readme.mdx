@@ -1,0 +1,158 @@
+---
+title: Defender's path
+description: The order to fix things in. Which changes need others in place first, whether your tenant is ready for each one, and the Microsoft Learn pages behind it.
+sidebar:
+  label: Overview
+  order: 1
+---
+
+import GoalList from '@components/GoalList.astro';
+
+An attack path shows the route an attacker takes. The defender's path shows the order a defender has to work in:
+what has to be in place before a fix works, what a fix unlocks, and whether your tenant is ready for it.
+
+Take the check that Conditional Access requires a compliant device (MT.1001). If no Intune compliance policy
+covers your devices, turning that policy on blocks everyone. Microsoft Learn says to create the compliance
+policies first, get devices compliant, and keep the emergency access accounts out of the policy. The defender's
+path puts those steps in front of MT.1001 and tells you which of them your tenant has done.
+
+## Goals and steps
+
+A **step** is one change an administrator makes, such as "Assign a compliance policy for each platform in use",
+or one state the tenant must reach, such as "Devices that sign in are compliant". Each step has an ID written
+`<product>.<name>`, for example `intune.compliance-policies`.
+
+A **goal** is an outcome, such as "Require compliant devices", and the step that achieves it. A goal's steps are
+that step and everything it depends on, at any depth. A step can belong to several goals: excluding the
+emergency access accounts from Conditional Access comes before most of them.
+
+Tests point at the steps they verify with the [`Step` attribute](../writing-tests/index.mdx#step). Checks from
+different suites that test the same setting name the same step, so a CIS check, a CISA check and a Maester check of
+one setting fall in one place.
+
+Maester ships these goals. Each page lists the steps in order, how they relate, the tests and measures that check
+each one, how to switch it on, and the Learn pages behind it.
+
+<GoalList />
+
+## How steps relate
+
+Every relationship cites a Microsoft Learn page, described in Maester's own words.
+
+| Relationship | Meaning | Example |
+| --- | --- | --- |
+| Requires | Must be done first, or the change fails or locks users out | Requiring a compliant device requires compliance policies |
+| Requires one of | Any one step of the group is enough | A managed-device policy is met by compliant devices or by hybrid joined ones |
+| Recommended first | Works without it, but is safer after it. Never blocks | Remediate high-risk users before turning on the user-risk policy |
+| Conflicts | The other step must be off first | A step that needs another setting turned off |
+| Only when | Applies to some tenants only. Otherwise the step is Not applicable | Password writeback, only when the tenant syncs identities from on-premises |
+| Rollout | How to switch the step on safely | Report-only, a pilot group, then everyone |
+
+## Status of a step
+
+After a run, every step in scope has a status, worked out from the results of the tests that verify it and, for a
+step that has one, its measure.
+
+| Status | When |
+| --- | --- |
+| Done | Every verifying test that ran passed, and the measure met its threshold. At least one test or measure gave a result |
+| Not done | A verifying test failed, or the measure is below its threshold |
+| Unknown | Nothing failed, but a test could not decide (Investigate, Error or Skipped), or the measure could not be read, for example because a service is not connected or a licence or permission is missing |
+| Not checked | No verifying test ran and no measure was read. The step's tests were not selected, measures are turned off, or Maester has no check for the step yet |
+| Not applicable | An "only when" condition is false, or every verifying test that ran was skipped as not applicable |
+
+Done means done as far as this run checked. The report says how many of a step's tests ran ("1 of 2 checks ran").
+Unknown means the run could not tell, and Not checked means it did not look. Neither counts as Not done.
+
+## Readiness
+
+A step that is Not done, Unknown or Not checked also gets a readiness. It says whether you can start on it now.
+
+| Readiness | When |
+| --- | --- |
+| Ready | Every step it requires is Done, and every "requires one of" group has a step that is Done |
+| Blocked | A step it requires is Not done, every step of a "requires one of" group is Not done, or a conflicting step is Done. The report names the blocking steps |
+| Unconfirmed | Nothing blocks it, but a prerequisite is Unknown or Not checked. Check that prerequisite first |
+
+A prerequisite that is Not applicable counts as met. "Recommended first" never changes readiness; the report shows
+it with the recommended step's status.
+
+Steps are listed Ready first, then Unconfirmed, then Blocked. Within each group prerequisites come before the steps
+that depend on them, and a step that unlocks many failed checks comes before one that unlocks few. The defender's
+path adds no score: pass rates and the other headline numbers are unchanged.
+
+## Measures
+
+Some prerequisites are states of the tenant, not settings. "Devices that sign in are compliant" is a share of
+devices, not a misconfiguration. For these steps Maester reads a **measure**: a figure from Microsoft Graph that it
+compares with the step's threshold.
+
+| Measure | Step | What it counts |
+| --- | --- | --- |
+| `devices-compliant` | [Devices that sign in are compliant](/docs/defenders-path/compliant-devices#intune-devices-compliant) | Devices that signed in within 30 days and that Intune marks compliant. Needs Intune |
+| `mfa-capable` | [Enabled member users are registered for MFA](/docs/defenders-path/risk-policies#entra-mfa-registered) | Enabled member users who can complete MFA with a method the authentication methods policy allows. Needs Microsoft Entra ID P1 |
+
+The step is done when the share meets its `MinimumShare`, 95% for both. A measure is not a test: it has no
+severity, no result row and no effect on pass rates. Maester reads the measure of every step in scope after the
+tests, so a run of MT.1001 alone still shows how many devices are compliant, with the devices that fall short.
+
+To change a threshold or turn measures off, use the run configuration:
+
+```json title="maester-config.json"
+{
+  "Measures": {
+    "Enabled": true,
+    "MinimumShare": { "devices-compliant": 90 }
+  }
+}
+```
+
+## Run the checks of a step or a goal
+
+| Parameter | Config key | Selects |
+| --- | --- | --- |
+| `-Step` | `Selection.Step` | Tests whose `Step` matches. Takes a list, and `*` wildcards work |
+| `-IncludePrerequisites` | `Selection.IncludePrerequisites` | Adds the tests of every prerequisite of the steps that the selected tests name, at any depth |
+
+```powershell
+# The checks of every Intune step
+Invoke-Maester -Step 'intune.*'
+
+# MT.1001 and the checks of everything it depends on
+Invoke-Maester -TestId MT.1001 -IncludePrerequisites
+
+# A whole goal: its last step and its prerequisites
+Invoke-Maester -Step entra.ca-require-compliant-device -IncludePrerequisites
+
+# The tests that verify a step, without running them
+Get-MtTest -Step entra.ca-require-compliant-device
+```
+
+`-Step` and `-IncludePrerequisites` combine with the other selectors. `-IncludePrerequisites` is applied last.
+It includes prerequisite tests that are Preview or long-running, as an exact `-TestId` does. The Zero Trust
+Assessment is the exception: it runs only with `-Suite ZTA` or `-IncludeLongRunning`, because it runs the whole
+assessment. There is no goal selector, because the goal's last step with `-IncludePrerequisites` selects the goal.
+
+## Where you see it
+
+The defender's path appears when a test in the run names a step. A run without one looks as it always did.
+
+- **Report, action plan:** three groups of steps (Ready now, Check first and Blocked), then a lane for each goal
+  with a status for each step, then the ranked list of failed tests. A failed test whose step is Blocked moves
+  after the tests you can fix now and says what blocks it.
+- **Report, test page:** "Before you fix this" lists the test's prerequisites with their status and where the
+  status came from: a test in this run, a measure, an earlier run (with its date), or not checked. It gives the
+  command that checks what is missing. How to fix adds the step's rollout.
+- **Console:** one line in the run summary, for example `Defender's path: 3 ready · 2 blocked · 1 to check first`.
+- **CSV and Excel:** `Step`, `Readiness` and `BlockedBy` columns. **Markdown:** a "Do these first" list.
+- **Result JSON:** `Step` on each row, and `Steps` and `Goals` at the top level.
+
+A run of a few tests is scoped to what ran. Steps whose tests were not selected show as Not checked, with the
+command that includes them. When an earlier result in the output folder checked such a step, the report shows that
+status and its date, apart from this run's counts.
+
+## Add a step or a goal
+
+The catalogue is in [`powershell/assets/steps`](https://github.com/maester365/maester/tree/main/powershell/assets/steps).
+See [Steps of the defender's path](../writing-tests/index.mdx#step) for when a test names a step and how to add
+one.
