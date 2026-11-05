@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6MX269W7AZG6FAMGM66VHHW",
   "strategy": "manual-commit",
   "branch": "feat/website-test-explorer",
-  "checkpoints_count": 7,
+  "checkpoints_count": 8,
   "files_touched": [
     "website/src/pages/test-builder.astro"
   ],
@@ -35,14 +35,21 @@
       "compact_transcript": "/3/transcript.jsonl",
       "content_hash": "/3/content_hash.txt",
       "prompt": "/3/prompt.txt"
+    },
+    {
+      "metadata": "/4/metadata.json",
+      "transcript": "/4/full.jsonl",
+      "compact_transcript": "/4/transcript.jsonl",
+      "content_hash": "/4/content_hash.txt",
+      "prompt": "/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 226,
-    "cache_creation_tokens": 193700,
-    "cache_read_tokens": 20322927,
-    "output_tokens": 63097,
-    "api_call_count": 106,
+    "input_tokens": 230,
+    "cache_creation_tokens": 194898,
+    "cache_read_tokens": 21323210,
+    "output_tokens": 63580,
+    "api_call_count": 108,
     "subagent_tokens": {
       "input_tokens": 0,
       "cache_creation_tokens": 0,
@@ -52,15 +59,15 @@
     }
   },
   "redaction": {
-    "replacements": 2720,
+    "replacements": 3269,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 2684,
-      "key_context": 36,
+      "entropy": 3225,
+      "key_context": 44,
       "provider_token": 0,
       "shell_stdin": 0
     }
