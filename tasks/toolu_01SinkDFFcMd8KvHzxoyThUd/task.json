@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01SinkDFFcMd8KvHzxoyThUd",
+  "agent_id": "a5a0456de8461a2f0",
+  "subagent_type": "general-purpose",
+  "task_description": "Research email authentication goal",
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 267538,
+    "cache_read_tokens": 9198525,
+    "output_tokens": 67238,
+    "api_call_count": 53
+  },
+  "started_at": "2026-11-05T15:14:46.498642+11:00",
+  "completed_at": "2026-11-05T15:27:30.723492+11:00"
+}

@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_0179ooUfjjGbtgQSUbnz2Z34",
+  "agent_id": "ac414633a40258e36",
+  "subagent_type": "general-purpose",
+  "task_description": "Research privileged access goal",
+  "token_usage": {
+    "input_tokens": 136,
+    "cache_creation_tokens": 274577,
+    "cache_read_tokens": 11512757,
+    "output_tokens": 62562,
+    "api_call_count": 67
+  },
+  "started_at": "2026-11-05T15:14:46.498223+11:00",
+  "completed_at": "2026-11-05T15:27:29.618993+11:00"
+}

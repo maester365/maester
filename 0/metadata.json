@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6N0SK1H9MYNYGZA6F2KEAFJ",
+  "session_id": "f8bda74f-6c1f-4f6d-9546-cf4020f4c33b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-05T04:52:10.535501Z",
+  "branch": "claude/defenders-path-m2-8b8ecc",
+  "checkpoints_count": 5,
+  "save_step_count": 6,
+  "files_touched": [
+    "docs/proposals/defenders-path.md",
+    "powershell/assets/steps/defender.json",
+    "powershell/assets/steps/entra.json",
+    "powershell/assets/steps/goals.json",
+    "powershell/assets/steps/intune.json"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "f868b6b7ea12",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 116,
+    "cache_creation_tokens": 204499,
+    "cache_read_tokens": 17169687,
+    "output_tokens": 101809,
+    "api_call_count": 52,
+    "subagent_tokens": {
+      "input_tokens": 724,
+      "cache_creation_tokens": 829961,
+      "cache_read_tokens": 66577110,
+      "output_tokens": 363696,
+      "api_call_count": 359
+    }
+  },
+  "redaction": {
+    "replacements": 521,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 520,
+      "key_context": 1,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 6
+  }
+}

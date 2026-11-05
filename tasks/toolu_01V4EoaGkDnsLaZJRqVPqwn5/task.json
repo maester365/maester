@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01V4EoaGkDnsLaZJRqVPqwn5",
+  "agent_id": "a86bc010fe45c75f2",
+  "subagent_type": "general-purpose",
+  "task_description": "Research Defender device risk goal",
+  "token_usage": {
+    "input_tokens": 162,
+    "cache_creation_tokens": 250584,
+    "cache_read_tokens": 12592605,
+    "output_tokens": 57389,
+    "api_call_count": 80
+  },
+  "started_at": "2026-11-05T15:14:46.498066+11:00",
+  "completed_at": "2026-11-05T15:27:57.601966+11:00"
+}

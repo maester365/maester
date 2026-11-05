@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_016JBrRFKm3kRcukAEGiTxBc",
+  "agent_id": "ac89b0589ff477f81",
+  "subagent_type": "general-purpose",
+  "task_description": "Research phishing-resistant MFA goal",
+  "token_usage": {
+    "input_tokens": 158,
+    "cache_creation_tokens": 260852,
+    "cache_read_tokens": 13390485,
+    "output_tokens": 63583,
+    "api_call_count": 79
+  },
+  "started_at": "2026-11-05T15:14:46.49808+11:00",
+  "completed_at": "2026-11-05T15:27:55.973851+11:00"
+}

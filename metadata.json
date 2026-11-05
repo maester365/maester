@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6N0SK1H9MYNYGZA6F2KEAFJ",
+  "strategy": "manual-commit",
+  "branch": "claude/defenders-path-m2-8b8ecc",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "docs/proposals/defenders-path.md",
+    "powershell/assets/steps/defender.json",
+    "powershell/assets/steps/entra.json",
+    "powershell/assets/steps/goals.json",
+    "powershell/assets/steps/intune.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 116,
+    "cache_creation_tokens": 204499,
+    "cache_read_tokens": 17169687,
+    "output_tokens": 101809,
+    "api_call_count": 52,
+    "subagent_tokens": {
+      "input_tokens": 724,
+      "cache_creation_tokens": 829961,
+      "cache_read_tokens": 66577110,
+      "output_tokens": 363696,
+      "api_call_count": 359
+    }
+  },
+  "redaction": {
+    "replacements": 521,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 520,
+      "key_context": 1,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

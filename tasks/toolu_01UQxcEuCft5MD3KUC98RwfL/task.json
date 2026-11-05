@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01UQxcEuCft5MD3KUC98RwfL",
+  "agent_id": "a7a2de0e9adb4eea0",
+  "subagent_type": "general-purpose",
+  "task_description": "Research compliant devices and token protection",
+  "token_usage": {
+    "input_tokens": 176,
+    "cache_creation_tokens": 266887,
+    "cache_read_tokens": 15179104,
+    "output_tokens": 70927,
+    "api_call_count": 88
+  },
+  "started_at": "2026-11-05T15:14:46.498002+11:00",
+  "completed_at": "2026-11-05T15:29:29.391045+11:00"
+}

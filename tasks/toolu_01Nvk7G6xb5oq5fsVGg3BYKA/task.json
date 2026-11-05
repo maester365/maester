@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01Nvk7G6xb5oq5fsVGg3BYKA",
+  "agent_id": "a3f596292c9013974",
+  "subagent_type": "general-purpose",
+  "task_description": "Research risk-based Conditional Access goal",
+  "token_usage": {
+    "input_tokens": 150,
+    "cache_creation_tokens": 252182,
+    "cache_read_tokens": 12251628,
+    "output_tokens": 69943,
+    "api_call_count": 74
+  },
+  "started_at": "2026-11-05T15:14:46.498642+11:00",
+  "completed_at": "2026-11-05T15:29:14.054877+11:00"
+}
