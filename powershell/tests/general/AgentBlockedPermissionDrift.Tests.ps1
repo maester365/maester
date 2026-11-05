@@ -38,7 +38,7 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
     BeforeAll {
         $snapshotPath = Join-Path $PSScriptRoot '../../internal/generated/AgentBlockedPermissions.json'
 
-        if ($script:SnapshotMissing) {
+        if (-not (Test-Path -LiteralPath $snapshotPath)) {
             return
         }
 
@@ -47,7 +47,7 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
     }
 
     It 'Snapshot file should exist' {
-        $script:SnapshotMissing | Should -BeFalse -Because `
+        Join-Path $PSScriptRoot '../../internal/generated/AgentBlockedPermissions.json' | Should -Exist -Because `
             'AgentBlockedPermissions.json must be checked in. Run build/Update-MtAgentBlockedPermissions.ps1 to generate it.'
     }
 

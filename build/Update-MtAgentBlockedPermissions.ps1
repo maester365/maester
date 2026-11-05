@@ -77,7 +77,6 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
 
     if ($cells.Count -lt 3) {
         throw "Malformed row (expected 3 columns): $line"
-        continue
     }
 
     # Column 0: permission name (may be a markdown link like [Name](url))
@@ -89,7 +88,6 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
 
     if ([string]::IsNullOrWhiteSpace($permName)) {
         throw "Empty permission name in row: $line"
-        continue
     }
 
     # Column 1: Delegated, Column 2: Application
