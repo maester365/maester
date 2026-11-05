@@ -1,0 +1,34 @@
+Background (from the session that started this one):
+Maester is a PowerShell framework that checks Microsoft 365 security configuration. The defender's path (design accepted 5 November 2026, docs/proposals/defenders-path.md) orders fixes the way Microsoft Learn documents: what must be in place first, what a fix unlocks, and whether the tenant is ready. Tests name the step they verify with a Step attribute, and a catalogue in powershell/assets/steps holds the steps, their relationships (Requires, RequiresOneOf, RecommendedFirst, Conflicts, OnlyWhen), their rollout and their cited Learn sources. Goals group steps into lanes.
+
+Milestone M1 (draft PR maester365/maester#2683, branch feat/defenders-path) shipped the format, the loader and checks, and the compliant-devices goal with seven steps. While building M1, a Learn check showed that compliant devices must be registered and enrolled, not joined, so its readiness step is intune.devices-compliant.
+
+Owner rulings to respect: the attribute is Step, lanes are Goals, the catalogue lives in powershell/assets/steps, the wording is our own with a link, and no test re-implements another suite's check (a benchmark duplicate is a shim). A separate session has already made CIS.M365.4.1 a shim of MT.1054 on another branch, so leave that test's body alone.
+
+Task:
+Build milestone M2 of the defender's path: the step catalogue for the seven goals, checked against Microsoft Learn, with the verifying tests tagged.
+
+Read first: `docs/proposals/defenders-path.md` (sections 3–5, 14, 15 and 16), then the M1 code it builds on: `powershell/assets/steps/` (schema, `goals.json`, `entra.json`, `intune.json`), `powershell/internal/engine/Get-MtStepCatalog.ps1`, `Get-MtStepProblem.ps1`, and the tests `powershell/tests/functions/engine/StepCatalog.Tests.ps1` and `powershell/tests/general/StepCatalog.Tests.ps1`. Also follow `AGENTS.md`.
+
+Work:
+1. Expert pass. For each goal in section 15's table (compliant devices, risk policies, phishing-resistant MFA, privileged access, token protection, email authentication, Defender risk in compliance), confirm every step and every relationship against Learn. Use the public mirrors `merill/entra-docs-mirror`, `intune-docs-mirror`, `defender-docs-mirror`, `security-docs-mirror`, `purview-docs-mirror`, `teams-docs-mirror`, `sharepoint-docs-mirror`, `exchange-docs-mirror` and `windows-server-docs-mirror` (shallow clones are fine), or fetch any Learn page as Markdown with `curl -H 'Accept: text/markdown'`. Section 15 is a draft. Change steps, order or relationships where Learn says otherwise, and drop a relationship that Learn doesn't back unless you cite a maintainer source (keep those rare).
+2. Write the steps into `powershell/assets/steps/<product>.json` and the goals into `goals.json`. Every `Note` is Maester's own wording, at most 200 characters, never copied Learn text. URLs have no locale. `Reviewed` is today's date.
+3. Tag the verifying tests with `Step`. Read each test's code before tagging. Tests whose definition of done differs (a stricter or narrower setting) get separate steps, as section 5 explains for CIS 5.2.2.9 against MT.1001. Shims must carry the same `Step` as the test they call (`TestShims.Tests.ps1`).
+   - EIDSCA (`tests/eidsca`) and ORCA tests are generated. Never hand-edit them. Either add `Step` support to the generators (`build/eidsca/`, `build/orca/`) and regenerate, or leave them out and list them in your report.
+   - Steps that only the Zero Trust pack checks keep `Unchecked`, naming the ZTA IDs.
+   - Two readiness steps stay `Unchecked` because a separate session is writing their checks: `intune.devices-compliant` and `entra.mfa-registered`. Add `entra.mfa-registered` to the catalogue as a step, but don't write checks for it.
+4. Update section 15 of the design doc to match what you found, with step counts. You are the only session editing `powershell/assets/steps/` and the doc. Others are working in parallel on new readiness-check test files (M5) and on `build/steps/` tooling (M6).
+
+Done means: the seven goals are in the catalogue, `Get-MtStepProblem -Coverage` reports nothing, `./powershell/tests/pester.ps1` and `./build/Build-MaesterModule.ps1` pass, and the work is committed on your branch. Ask the user before pushing or opening a PR. It would be a draft PR for Maester 3.1, based on `feat/defenders-path`, because main is in the 3.0 code freeze from 7 November 2026. Report what changed from the draft table and why, with the Learn pages you relied on.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_dfb877c0-85e7-4697-9748-c3171aca3375
+
+---
+
+<task-notification>
+<task-id>bmtlv6kbp</task-id>
+<tool-use-id>toolu_0187bZT76UhAWYogG3LCpXHf</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/tasks/bmtlv6kbp.output</output-file>
+<status>completed</status>
+<summary>Background command "Shallow-clone five Learn mirrors into the scratchpad" completed (exit code 0)</summary>
+</task-notification>
