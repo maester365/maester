@@ -726,9 +726,7 @@ function Get-MtProductLane {
     [CmdletBinding()]
     [OutputType([string])]
     param(
-        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product,
-        # The family's related products, kept (less the new product) when the instance changes product.
-        [Parameter()] [AllowNull()] [string[]] $RelatedProduct
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product
     )
     if (-not $Product) { return 'Other' }
     Get-MtProductName -Product $Product
