@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
@@ -15,11 +15,14 @@ import {
   addByHand,
   registryChanges,
   withPrefix,
+  splitList,
   parsePermission,
 } from "./generate";
-import { Badge, Button, Checkbox, Combobox, Input, RadioCards, Select, Tabs, TabsContent } from "./ui";
+import { Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, Select, Sheet, Tabs, TabsContent } from "./ui";
+import GitHubPeople from "./GitHubPeople";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
+import { productIcon, productInitials, featureIcon } from "../../lib/report-icons.mjs";
 
 const REPO = "https://github.com/maester365/maester/blob/main/";
 const tacticName = Object.fromEntries(data.attack.tactics.map((t) => [t.id, t.name]));
@@ -48,56 +51,228 @@ function RepoFile({ path }) {
   );
 }
 
-function Field({ id, name, label, required, hint, rubric, rubricTitle, notInList, problems, children }) {
+// Only one help panel is open at a time; this holds the id of the field it belongs to.
+const HelpContext = React.createContext({ openId: null, setOpenId: () => {} });
+
+// With the form and the code side by side, the help panel covers the code column and leaves the form in view.
+// In one column it slides in at the right edge of the window.
+function useDock(open) {
+  const [place, setPlace] = useState(undefined);
+  useEffect(() => {
+    if (!open) return undefined;
+    const measure = () => {
+      const dock = document.querySelector("[data-help-dock]");
+      const form = dock && dock.previousElementSibling;
+      if (!dock || !form) return setPlace(undefined);
+      const side = dock.getBoundingClientRect().left > form.getBoundingClientRect().right;
+      setPlace(side ? { left: Math.max(0, dock.getBoundingClientRect().left - 12), width: "auto" } : undefined);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [open]);
+  return place;
+}
+
+// The guides in the sidebar open in the help panel on this page, so the form stays in view while you read them.
+// Links to other guides inside a guide open there too; anything else opens in a new tab.
+const GUIDE_LINKS = "#starlight__sidebar ul.top-level a[href]";
+const isGuide = (url) => url.origin === window.location.origin && url.pathname.startsWith("/docs/");
+const plainClick = (e) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.defaultPrevented;
+
+function useGuides(setOpenId) {
+  const [guide, setGuide] = useState(null);
+  const latest = useRef(null);
+  const openGuide = useCallback(
+    (href) => {
+      const url = new URL(href, window.location.href);
+      latest.current = url.href;
+      setGuide((g) => ({ href: url.href, title: g && g.href === url.href ? g.title : "Loading…", html: null, error: false }));
+      setOpenId("guide");
+      fetch(url.pathname)
+        .then((r) => (r.ok ? r.text() : Promise.reject(new Error(r.status))))
+        .then((text) => {
+          if (latest.current !== url.href) return;
+          const page = new DOMParser().parseFromString(text, "text/html");
+          const content = page.querySelector(".sl-markdown-content");
+          if (!content) throw new Error("No content");
+          // The styles and scripts a guide's components bring (code blocks bring their own) load once into this page.
+          content.querySelectorAll('link[rel="stylesheet"], script[src]').forEach((el) => {
+            const isLink = el.tagName === "LINK";
+            const src = new URL(el.getAttribute(isLink ? "href" : "src"), url).pathname;
+            if (!document.head.querySelector(isLink ? 'link[href="' + src + '"]' : 'script[src="' + src + '"]')) {
+              const copy = document.createElement(isLink ? "link" : "script");
+              if (isLink) {
+                copy.rel = "stylesheet";
+                copy.href = src;
+              } else {
+                copy.type = "module";
+                copy.src = src;
+              }
+              document.head.appendChild(copy);
+            }
+            el.remove();
+          });
+          content.querySelectorAll("a[href], img[src]").forEach((el) => {
+            const attr = el.tagName === "A" ? "href" : "src";
+            const raw = el.getAttribute(attr);
+            if (raw.startsWith("#")) return;
+            const target = new URL(raw, url);
+            el.setAttribute(attr, target.origin === window.location.origin ? target.pathname + target.search + target.hash : target.href);
+            if (attr === "href" && !isGuide(target)) {
+              el.setAttribute("target", "_blank");
+              el.setAttribute("rel", "noreferrer");
+            }
+          });
+          const h1 = page.querySelector("h1");
+          setGuide({ href: url.href, title: h1 ? h1.textContent.trim() : url.pathname, html: content.innerHTML, error: false });
+        })
+        .catch(() => latest.current === url.href && setGuide((g) => ({ ...g, title: "Could not load the guide", error: true })));
+    },
+    [setOpenId]
+  );
+
+  // Sidebar clicks, while the sidebar is shown beside the page (Starlight's 50rem breakpoint).
+  useEffect(() => {
+    const onClick = (e) => {
+      if (!plainClick(e) || !window.matchMedia("(min-width: 50rem)").matches) return;
+      const a = e.target.closest && e.target.closest(GUIDE_LINKS);
+      if (!a) return;
+      const url = new URL(a.href, window.location.href);
+      if (!isGuide(url)) return;
+      e.preventDefault();
+      openGuide(url.href);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [openGuide]);
+
+  return [guide, openGuide];
+}
+
+function GuidePanel({ guide, open, onClose, openGuide }) {
+  const place = useDock(open);
+  const body = useRef(null);
+  useEffect(() => {
+    // A new guide starts at the top of the panel.
+    if (body.current && body.current.parentElement) body.current.parentElement.scrollTop = 0;
+  }, [guide]);
+  const onClick = (e) => {
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (!a || !plainClick(e)) return;
+    const raw = a.getAttribute("href");
+    if (raw.startsWith("#")) {
+      e.preventDefault();
+      const target = body.current && body.current.querySelector("#" + CSS.escape(decodeURIComponent(raw.slice(1))));
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const url = new URL(a.href, window.location.href);
+    if (isGuide(url) && url.pathname !== window.location.pathname) {
+      e.preventDefault();
+      openGuide(url.href);
+    }
+  };
+  return (
+    <Sheet
+      open={open}
+      onOpenChange={(o) => !o && onClose()}
+      title={guide ? guide.title : ""}
+      style={place}
+      actions={
+        guide && (
+          <a className={styles.newTab} href={guide.href} target="_blank" rel="noreferrer" aria-label="Open the guide in a new tab" title="Open in a new tab">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            </svg>
+          </a>
+        )
+      }
+    >
+      {guide && guide.error && <p>The guide could not be loaded. Open it in a new tab instead.</p>}
+      {guide && !guide.error && !guide.html && <p className={styles.note}>Loading…</p>}
+      {guide && guide.html && <div ref={body} className={"sl-markdown-content " + styles.guide} onClick={onClick} dangerouslySetInnerHTML={{ __html: guide.html }} />}
+    </Sheet>
+  );
+}
+
+// A help panel and the button that opens it. The panel is rendered by the field itself, so it follows the form's state.
+function Help({ id, title, badge, label, children }) {
+  const { openId, setOpenId } = useContext(HelpContext);
+  const open = openId === id;
+  const place = useDock(open);
+  return (
+    <>
+      <HelpButton open={open} label={title} onClick={() => setOpenId(open ? null : id)}>
+        {label}
+      </HelpButton>
+      <Sheet open={open} onOpenChange={(o) => !o && setOpenId(null)} title={title} badge={badge} style={place}>
+        {children}
+      </Sheet>
+    </>
+  );
+}
+
+// A form field. The input and any problems are shown inline; what the attribute means, the rubric and how to
+// add a missing value open in the help panel, so the form stays short.
+function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, notInList, problems, children }) {
   const mine = problems.filter((p) => p.field === id);
+  const hasHelp = hint || guide || rubric || notInList;
   return (
     <div className={styles.field} id={"field-" + id}>
       <div className={styles.fieldHead}>
         <label className={styles.label} htmlFor={"input-" + id}>
           {label}
         </label>
-        {name && <Badge variant="outline">{name}</Badge>}
-        <Badge variant={required ? "primary" : "secondary"} className={styles.need}>
-          {required ? "Required" : "Optional"}
-        </Badge>
+        {!required && <span className={styles.optional}>Optional</span>}
+        {hasHelp && (
+          <span className={styles.helpSlot}>
+            <Help id={id} title={label} badge={name}>
+              {hint && <p className={styles.lead}>{hint}</p>}
+              {guide}
+              {rubric && (
+                <>
+                  <h3>{rubricTitle || "How to choose"}</h3>
+                  <Markdown text={rubric} />
+                </>
+              )}
+              {notInList && (
+                <>
+                  <h3>Not in the list?</h3>
+                  {notInList}
+                </>
+              )}
+            </Help>
+          </span>
+        )}
       </div>
-      {hint && <p className={styles.hint}>{hint}</p>}
       {children}
       {mine.map((p, i) => (
         <p key={i} className={p.level === "error" ? styles.error : styles.warn} role={p.level === "error" ? "alert" : undefined}>
           {p.text}
         </p>
       ))}
-      {rubric && (
-        <details className={styles.more}>
-          <summary>{rubricTitle || "How to choose: the rubric"}</summary>
-          <div className={styles.rubric}>
-            <Markdown text={rubric} />
-          </div>
-        </details>
-      )}
-      {notInList && (
-        <details className={styles.more}>
-          <summary>Not in the list?</summary>
-          <div className={styles.rubric}>{notInList}</div>
-        </details>
-      )}
     </div>
   );
 }
 
-function Checks({ id, values, options, onChange, describe }) {
+function Checks({ id, values, options, onChange, describe, iconFor }) {
   const toggle = (v) => onChange(values.includes(v) ? values.filter((x) => x !== v) : [...values, v]);
   return (
     <div className={styles.checks} id={"input-" + id}>
       {options.map((o) => (
         <Checkbox key={o} checked={values.includes(o)} onCheckedChange={() => toggle(o)}>
-          {describe ? describe(o) : o}
+          <span className={styles.withIcon}>
+            {iconFor && <OptionIcon {...iconFor(o)} />}
+            {describe ? describe(o) : o}
+          </span>
         </Checkbox>
       ))}
     </div>
   );
 }
+
+const productIconOf = (key) => ({ icon: productIcon(key), initials: productIcon(key) ? undefined : productInitials(key) });
 
 const techniqueItems = data.attack.techniques.map((t) => ({ value: t.id, label: t.id + "  " + t.name, hint: t.tactics.map((x) => tacticName[x]).join(", ") }));
 
@@ -133,8 +308,8 @@ function MitrePicker({ selected, none, onChange, onNone }) {
                       {t ? t.name : "Unknown"}
                       {t && <span className={styles.tactics}> · {t.tactics.map((x) => tacticName[x]).join(", ")}</span>}
                     </span>
-                    <Button variant="ghost" size="xs" aria-label={"Remove " + id} onClick={() => onChange(selected.filter((x) => x !== id))}>
-                      Remove
+                    <Button variant="ghost" size="icon" aria-label={"Remove " + id} title="Remove" onClick={() => onChange(selected.filter((x) => x !== id))}>
+                      <DeleteIcon />
                     </Button>
                   </li>
                 );
@@ -208,8 +383,8 @@ function PermissionBuilder({ groups, services, onChange }) {
                         <code>{text}</code>
                         {describe(text) && <span className={styles.tactics}> · {describe(text)}</span>}
                       </span>
-                      <Button variant="ghost" size="xs" aria-label={"Remove " + text} onClick={() => update(index, group.filter((x) => x !== text))}>
-                        Remove
+                      <Button variant="ghost" size="icon" aria-label={"Remove " + text} title="Remove" onClick={() => update(index, group.filter((x) => x !== text))}>
+                        <DeleteIcon />
                       </Button>
                     </li>
                   ))}
@@ -228,10 +403,12 @@ function PermissionBuilder({ groups, services, onChange }) {
                     onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
                   />
                   <Button onClick={add} disabled={!valid}>
+                    <PlusIcon />
                     {group.length ? "Add an alternative (or)" : "Add"}
                   </Button>
                   {shown.length > 1 && (
                     <Button variant="ghost" onClick={() => onChange(shown.filter((_, i) => i !== index))}>
+                      <DeleteIcon />
                       Remove requirement
                     </Button>
                   )}
@@ -243,6 +420,7 @@ function PermissionBuilder({ groups, services, onChange }) {
       })}
       <div>
         <Button onClick={() => onChange([...shown, []])} disabled={shown[shown.length - 1].length === 0}>
+          <PlusIcon />
           Add another requirement (and)
         </Button>
       </div>
@@ -322,8 +500,8 @@ function LicenseBuilder({ groups, onChange }) {
                       {known(name) && <span className={styles.tactics}> · {productSummary(known(name).products)}</span>}
                       {knownLicenses.has(name) && <span className={styles.tactics}> · Maester also counts its government and education variants</span>}
                     </span>
-                    <Button variant="ghost" size="xs" aria-label={"Remove " + name} onClick={() => update(index, group.filter((x) => x !== name))}>
-                      Remove
+                    <Button variant="ghost" size="icon" aria-label={"Remove " + name} title="Remove" onClick={() => update(index, group.filter((x) => x !== name))}>
+                      <DeleteIcon />
                     </Button>
                   </li>
                 ))}
@@ -349,6 +527,7 @@ function LicenseBuilder({ groups, onChange }) {
               </Button>
               {shown.length > 1 && (
                 <Button variant="ghost" onClick={() => onChange(shown.filter((_, i) => i !== index))}>
+                  <DeleteIcon />
                   Remove alternative
                 </Button>
               )}
@@ -358,6 +537,7 @@ function LicenseBuilder({ groups, onChange }) {
       ))}
       <div>
         <Button onClick={() => onChange([...shown, []])} disabled={shown[shown.length - 1].length === 0}>
+          <PlusIcon />
           Add an alternative (or)
         </Button>
       </div>
@@ -412,6 +592,9 @@ function CopyBlock({ text, language }) {
 export default function TestBuilder() {
   const [state, setState] = useState(exampleState);
   const [tab, setTab] = useState("ps1");
+  const [helpId, setHelpId] = useState(null);
+  const helpContext = useMemo(() => ({ openId: helpId, setOpenId: setHelpId }), [helpId]);
+  const [guide, openGuide] = useGuides(setHelpId);
   const set = (patch) => setState((s) => ({ ...s, ...patch }));
   const builtin = state.mode === "builtin";
   const P = data.properties;
@@ -462,9 +645,13 @@ export default function TestBuilder() {
     set({ product: value, feature: keepFeature ? state.feature : "", relatedProducts: state.relatedProducts.filter((r) => r !== value) });
   };
 
+  // Products show the icon the report and the test catalog use; features show theirs when they have one.
+  const iconOf = (field, key) =>
+    field === "product" ? productIconOf(key) : field === "feature" && state.product ? { icon: featureIcon(state.product, key) } : {};
+
   const registrySelect = (field, options, placeholder) => {
     const change = (value) => (field === "product" ? setProduct(value) : set({ [field]: value }));
-    const items = options.map((o) => ({ value: o.key, label: o.name ? o.name : o.key, hint: o.name ? o.key : undefined }));
+    const items = options.map((o) => ({ value: o.key, label: o.name ? o.name : o.key, hint: o.name ? o.key : undefined, ...iconOf(field, o.key) }));
     return builtin ? (
       <Select id={"input-" + field} value={state[field]} onValueChange={change} placeholder={placeholder} options={items} footer={{ value: NEW, label: "Not in the list: propose a new one" }} />
     ) : (
@@ -499,6 +686,8 @@ export default function TestBuilder() {
   ];
 
   return (
+    <HelpContext.Provider value={helpContext}>
+    <div className={styles.shell}>
     <div className={styles.builder}>
       <div className={styles.form}>
         <section className={styles.section}>
@@ -572,13 +761,12 @@ export default function TestBuilder() {
         </section>
 
         <section className={styles.section}>
-          <h2>What is it about?</h2>
-          <details className={styles.more}>
-            <summary>Rate the test, not your tenant</summary>
-            <div className={styles.rubric}>
+          <div className={styles.sectionHead}>
+            <h2>What is it about?</h2>
+            <Help id="rate-the-test" title="Rate the test, not your tenant" label="Rate the test, not your tenant">
               <Markdown text={R["Rate the test, not your tenant"]} />
-            </div>
-          </details>
+            </Help>
+          </div>
           <Field
             id="product"
             name="Product"
@@ -615,7 +803,7 @@ export default function TestBuilder() {
             rubric={R.RelatedProduct}
             problems={problems}
           >
-            <Checks id="relatedProducts" values={state.relatedProducts} options={data.products.filter((p) => p.key !== state.product).map((p) => p.key)} describe={(k) => data.products.find((p) => p.key === k).name} onChange={(v) => set({ relatedProducts: v })} />
+            <Checks id="relatedProducts" values={state.relatedProducts} options={data.products.filter((p) => p.key !== state.product).map((p) => p.key)} describe={(k) => data.products.find((p) => p.key === k).name} iconFor={productIconOf} onChange={(v) => set({ relatedProducts: v })} />
           </Field>
           <Field id="area" name="Area" label="Area" required={need("Area")} hint={P.Area.description} rubric={R.Area} problems={problems} notInList={taxonomyHelp("An area", <p>The thirteen areas are meant to cover every product. When none fits, choose the closest and say so in the pull request, or propose a new one with its description and a row in the rubric's Area table.</p>)}>
             {registrySelect("area", data.areas, "Choose an area")}
@@ -680,6 +868,22 @@ export default function TestBuilder() {
             hint="Requirements of CIS, CISA, ASD Essential Eight, the ISM, NIST SP 800-53 or any other framework that this test implements or supports. Look one up, or type your own as framework-key:requirement-id. This is the only place a test is mapped to a framework."
             rubric={R.Control}
             problems={problems}
+            guide={
+              <>
+                <h3>What to list, in order</h3>
+            <ol className={styles.steps}>
+                  <li>
+                    <strong>The requirement the test is written for.</strong> A CIS, CISA or ASD test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code> or <code>essential-eight:ISM-1504</code>.
+                  </li>
+                  <li>
+                    <strong>A CIS, CISA or ASD requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
+                  </li>
+                  <li>
+                    <strong>NIST SP 800-53 controls</strong>, at most three, when a passing result is direct evidence for them. Skip this when you already listed a <code>cisa-scuba</code> requirement: CISA publishes its NIST mapping and the result gets it from there.
+                  </li>
+                </ol>
+              </>
+            }
             notInList={
               <>
                 <p>
@@ -697,17 +901,6 @@ export default function TestBuilder() {
               </>
             }
           >
-            <ol className={styles.steps}>
-              <li>
-                <strong>The requirement the test is written for.</strong> A CIS, CISA or ASD test lists its own requirement first, such as <code>cis-m365:5.1.5.1</code> or <code>essential-eight:ISM-1504</code>.
-              </li>
-              <li>
-                <strong>A CIS, CISA or ASD requirement that asks for the same setting.</strong> Search for the setting or a test ID you know.
-              </li>
-              <li>
-                <strong>NIST SP 800-53 controls</strong>, at most three, when a passing result is direct evidence for them. Skip this when you already listed a <code>cisa-scuba</code> requirement: CISA publishes its NIST mapping and the result gets it from there.
-              </li>
-            </ol>
             {firstFramework && (
               <p className={styles.note}>
                 <code>{firstFramework}</code> is the first reference to a framework Maester has a file for, so it becomes the Benchmark of the result.
@@ -735,8 +928,8 @@ export default function TestBuilder() {
                         <code>{c}</code>
                         {item && item.hint && <span className={styles.tactics}> · {item.hint}</span>}
                       </span>
-                      <Button variant="ghost" size="xs" aria-label={"Remove " + c} onClick={() => set({ controls: state.controls.filter((x) => x !== c) })}>
-                        Remove
+                      <Button variant="ghost" size="icon" aria-label={"Remove " + c} title="Remove" onClick={() => set({ controls: state.controls.filter((x) => x !== c) })}>
+                        <DeleteIcon />
                       </Button>
                     </li>
                   );
@@ -806,7 +999,7 @@ export default function TestBuilder() {
             <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} onChange={(v) => set({ cloud: v })} />
           </Field>
           <Field id="platform" name="Platform" label="Platforms" hint={P.Platform.description} problems={problems}>
-            <Checks id="platform" values={state.platform} options={P.Platform.allowedValues} onChange={(v) => set({ platform: v })} />
+            <Checks id="platform" values={state.platform} options={P.Platform.allowedValues} iconFor={(o) => ({ glyph: osGlyph(o) })} onChange={(v) => set({ platform: v })} />
           </Field>
         </section>
 
@@ -828,11 +1021,11 @@ export default function TestBuilder() {
               <code>Exclusive</code>: {P.Exclusive.description}
             </Checkbox>
           </Field>
-          <Field id="author" name="Author" label="Author" required={need("Author")} hint={P.Author.description + " Separate several with commas. Authors are credited on the contributors page."} problems={problems}>
-            <Input id="input-author" value={state.author} placeholder="your-github-handle" onChange={(e) => set({ author: e.target.value })} />
+          <Field id="author" name="Author" label="Author" required={need("Author")} hint={P.Author.description + " Search GitHub by name or handle; the lookup reads public profiles only. Authors are credited on the contributors page."} problems={problems}>
+            <GitHubPeople id="input-author" value={splitList(state.author)} onChange={(v) => set({ author: v.join(", ") })} />
           </Field>
           <Field id="contributor" name="Contributor" label="Contributors" hint={P.Contributor.description} problems={problems}>
-            <Input id="input-contributor" value={state.contributor} onChange={(e) => set({ contributor: e.target.value })} />
+            <GitHubPeople id="input-contributor" value={splitList(state.contributor)} onChange={(v) => set({ contributor: v.join(", ") })} />
           </Field>
           {!builtin && (
             <Field id="tags" name="Tag" label="Tags" hint={P.Tag.description + " Separate with commas."} rubric={R.Tag} problems={problems}>
@@ -840,17 +1033,16 @@ export default function TestBuilder() {
             </Field>
           )}
           {builtin && (
-            <details className={styles.more}>
-              <summary>Why is there no Tag field?</summary>
-              <div className={styles.rubric}>
+            <p className={styles.note}>
+              <Help id="no-tags" title="Why is there no Tag field?" badge="Tag" label="Why is there no Tag field?">
                 <Markdown text={R.Tag} />
-              </div>
-            </details>
+              </Help>
+            </p>
           )}
         </section>
       </div>
 
-      <aside className={styles.output} aria-label="Generated test">
+      <aside className={styles.output} aria-label="Generated test" data-help-dock>
         <div className={errors.length ? styles.statusBad : styles.statusGood} role="status">
           {errors.length === 0 ? (
             <strong>Meets the rules that can be checked here.</strong>
@@ -941,5 +1133,8 @@ export default function TestBuilder() {
         </div>
       </aside>
     </div>
+    </div>
+    <GuidePanel guide={guide} open={helpId === "guide"} onClose={() => setHelpId(null)} openGuide={openGuide} />
+    </HelpContext.Provider>
   );
 }

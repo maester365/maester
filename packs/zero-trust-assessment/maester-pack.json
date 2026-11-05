@@ -15,6 +15,7 @@
   "RequiresMaester": ">=3.0",
   "Code": "ZTA",
   "Suites": ["tests"],
+  "Helpers": ["helpers"],
   "Catalog": "catalog.json",
   "Uses": {
     "Services": ["Graph"],
@@ -34,7 +35,7 @@
     "TenantWrites": [],
     "Network": [],
     "Modules": [
-      { "Name": "ZeroTrustAssessment", "MinimumVersion": "2.6.0", "Install": "User", "Process": "Child" }
+      { "Name": "ZeroTrustAssessment", "MinimumVersion": "3.1.0", "Install": "User", "Process": "Child" }
     ]
   },
   "Categories": ["Microsoft 365", "Zero Trust", "Identity", "Devices", "Network", "Data"]

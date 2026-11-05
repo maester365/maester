@@ -60,6 +60,75 @@ Describe 'Zero Trust Assessment pack' {
             @($catalog.Tests.Id | Sort-Object -Unique).Count | Should -Be $catalog.Tests.Count
             @($catalog.Tests | Where-Object { [string]::IsNullOrWhiteSpace($_.Title) }) | Should -BeNullOrEmpty
         }
+
+        It 'has the description and remediation of the tests the module documents' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            @($catalog.Tests | Where-Object { -not $_.PSObject.Properties['Description'] -or -not $_.PSObject.Properties['Remediation'] }).Id | Should -BeNullOrEmpty
+            @($catalog.Tests | Where-Object Description).Count | Should -BeGreaterThan ($catalog.Tests.Count / 2) -Because 'catalog.json is written from the module with build/zta/Update-MtZtaCatalog.ps1'
+            @($catalog.Tests | Where-Object { $_.Description -match '<!---\s*Results' -or $_.Remediation -match '%TestResult%' }).Id | Should -BeNullOrEmpty
+        }
+
+        It 'carries the module''s MIT copyright and permission notice with the text it copies' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $catalog.License | Should -Match 'Copyright \(c\) Microsoft Corporation'
+            $catalog.License | Should -Match 'Permission is hereby granted'
+        }
+
+        It 'maps every test of the catalog, and only those, in taxonomy.json' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            @($catalog.Tests.TestId | Where-Object { -not $mapping.ContainsKey([string]$_) }) | Should -BeNullOrEmpty -Because 'a test the assessment added needs a mapping: add it to taxonomy.json and run build/zta/Update-MtZtaCatalog.ps1'
+            @($mapping.Keys | Where-Object { $_ -notin @($catalog.Tests.TestId) }) | Should -BeNullOrEmpty -Because 'a test the assessment removed is left in taxonomy.json'
+        }
+
+        It 'copies the mapping into the catalog' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $stale = foreach ($entry in $catalog.Tests) {
+                $map = $mapping[[string]$entry.TestId]
+                if (-not $map) { continue }
+                if ($entry.Product -ne $map.Product -or $entry.Feature -ne $map.Feature -or $entry.Area -ne $map.Area -or (@($entry.Mitre) -join ',') -ne (@($map.Mitre) -join ',')) { $entry.Id }
+            }
+            @($stale) | Should -BeNullOrEmpty -Because 'catalog.json is written from taxonomy.json: run build/zta/Update-MtZtaCatalog.ps1'
+        }
+
+        It 'uses only keys of the taxonomy and techniques of the pinned ATT&CK release' {
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $problems = InModuleScope Maester -Parameters @{ Mapping = $mapping } {
+                param($Mapping)
+                $taxonomy = Get-MtTaxonomy
+                foreach ($id in $Mapping.Keys) {
+                    $map = $Mapping[$id]
+                    $features = $null
+                    if (-not $taxonomy.Lookup.Product.ContainsKey([string]$map.Product) -or $taxonomy.Lookup.Product[[string]$map.Product].Key -ne $map.Product) { "$id has the unknown product '$($map.Product)'."; continue }
+                    if (-not ($taxonomy.Lookup.Feature.TryGetValue($map.Product, [ref] $features) -and $features.ContainsKey([string]$map.Feature))) { "$id has the feature '$($map.Feature)', which $($map.Product) does not have." }
+                    if (-not $taxonomy.Lookup.Area.ContainsKey([string]$map.Area)) { "$id has the unknown area '$($map.Area)'." }
+                    foreach ($related in @($map.RelatedProduct | Where-Object { $_ })) {
+                        if ($related -eq $map.Product -or -not $taxonomy.Lookup.Product.ContainsKey($related)) { "$id has the related product '$related'." }
+                    }
+                    $mitre = @($map.Mitre | Where-Object { $_ })
+                    if (-not $mitre.Count) { "$id has no Mitre value; use None when no technique applies." }
+                    elseif ($mitre.Count -gt 5) { "$id lists more than five techniques." }
+                    if ($mitre -contains 'None' -and $mitre.Count -gt 1) { "$id lists None with techniques." }
+                    foreach ($problem in Get-MtAttackTechniqueProblem -Mitre $mitre) { "${id}: $problem" }
+                    foreach ($technique in $mitre) {
+                        if ($technique -match '^(T\d{4})\.\d{3}$' -and $mitre -contains $Matches[1]) { "$id lists $technique with its own technique $($Matches[1])." }
+                    }
+                }
+            }
+            @($problems) | Should -BeNullOrEmpty
+        }
+
+        It 'names only built-in tests that exist in AlsoCheckedBy' {
+            $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests
+            $repository = (Resolve-Path "$PSScriptRoot/../../..").Path
+            $known = @{}
+            foreach ($file in Get-ChildItem -Path (Join-Path $repository 'tests') -Recurse -Filter 'Test.*.ps1') { $known[$file.BaseName.Substring(5)] = $true }
+            $missing = foreach ($id in $mapping.Keys) {
+                foreach ($other in @($mapping[$id].AlsoCheckedBy | Where-Object { $_ })) { if (-not $known.ContainsKey($other)) { "$id names $other" } }
+            }
+            @($missing) | Should -BeNullOrEmpty
+        }
     }
 
     Context 'reading a report' {
@@ -87,6 +156,15 @@ Describe 'Zero Trust Assessment pack' {
             $row.Tag | Should -Contain 'ZeroTrust.Identity'
             $row.ResultDetail.TestDescription | Should -BeLike 'Blocking authentication transfer*'
             $row.ResultDetail.TestResult | Should -BeLike '*Authentication transfer is not blocked.*'
+        }
+
+        It 'places a result under the product, feature, area and techniques of the mapping' {
+            $map = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests['21828']
+            $row = $script:Rows | Where-Object Id -eq 'ZTA.21828'
+            $row.Product | Should -Be $map.Product
+            $row.Feature | Should -Be $map.Feature
+            $row.Area | Should -Be $map.Area
+            @($row.Mitre) | Should -Be @($map.Mitre)
         }
 
         It 'uses Maester wording for a skip reason both tools share' {
@@ -165,6 +243,123 @@ Describe 'Zero Trust Assessment pack' {
             $rows.Count | Should -Be 1
             $rows[0].Result | Should -Be 'Skipped'
             $rows[0].ReasonDetail | Should -BeLike '*is for tenant 22222222-2222-2222-2222-222222222222*'
+        }
+    }
+
+    Context 'facts from the export' {
+        BeforeAll {
+            . (Join-Path $script:PackRoot 'helpers/Add-MtZtaObjectFact.ps1')
+
+            # A small export in the assessment's layout: zt-export/<Entity>/<Entity>-<n>.json pages of Graph JSON.
+            $script:Export = Join-Path $TestDrive 'facts/zt-export'
+            function Write-ZtaExportPage {
+                param([string] $Name, [object[]] $Value)
+                $folder = New-Item -ItemType Directory -Path (Join-Path $script:Export $Name) -Force
+                @{ value = @($Value) } | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $folder "$Name-0.json")
+                # The model file describes the table and must not be read as data.
+                '{ "value": [ { "id": "model" } ] }' | Set-Content -LiteralPath (Join-Path $folder "$Name-model.json")
+            }
+            $tenant = '11111111-1111-1111-1111-111111111111'
+            $graph = '22222222-0000-0000-0000-000000000001'
+            Copy-Item -LiteralPath (Join-Path $script:Fixture 'ZeroTrustAssessmentReport.json') -Destination (New-Item -ItemType Directory -Path $script:Export -Force)
+            Write-ZtaExportPage ServicePrincipal @(
+                @{ id = $graph; appId = '00000003-0000-0000-c000-000000000000'; displayName = 'Microsoft Graph'; appOwnerOrganizationId = 'f8cdef31-a31e-4b4a-93e4-5f571e91255a'
+                    appRoles = @(@{ id = 'r1'; value = 'Directory.ReadWrite.All' }, @{ id = 'r2'; value = 'User.Read.All' }); appRoleAssignments = @() }
+                @{ id = 'sp-1'; appId = 'app-1'; displayName = 'Contoso sync'; appOwnerOrganizationId = $tenant; accountEnabled = $true
+                    appRoleAssignments = @(@{ resourceId = $graph; appRoleId = 'r1' }, @{ resourceId = $graph; appRoleId = 'r2' })
+                    oauth2PermissionGrants = @(@{ consentType = 'AllPrincipals'; resourceId = $graph; scope = 'openid User.ReadWrite.All' })
+                    passwordCredentials = @(@{ endDateTime = '2027-01-01T00:00:00Z' }, @{ endDateTime = '2025-01-01T00:00:00Z' }) }
+            )
+            Write-ZtaExportPage ServicePrincipalSignIn @(@{ appId = 'app-1'; lastSignInActivity = @{ lastSignInDateTime = '2026-01-01T00:00:00Z' } })
+            Write-ZtaExportPage Application @(@{ id = 'obj-1'; appId = 'app-1'; signInAudience = 'AzureADMultipleOrgs'; owners = @() })
+            Write-ZtaExportPage RoleDefinition @(@{ id = 'ga'; templateId = 'ga'; displayName = 'Global Administrator'; isPrivileged = $true })
+            Write-ZtaExportPage RoleAssignment @(@{ principalId = 'user-1'; roleDefinitionId = 'ga'; directoryScopeId = '/' })
+            Write-ZtaExportPage User @(@{ id = 'user-1'; userType = 'Member'; accountEnabled = $true; signInActivity = @{ lastSignInDateTime = '2026-10-20T00:00:00Z' } })
+            Write-ZtaExportPage UserRegistrationDetails @(@{ id = 'user-1'; isMfaRegistered = $false; isAdmin = $true })
+            Write-ZtaExportPage ConfigurationPolicy @(@{ id = 'pol-1'; platforms = 'windows10'; technologies = 'mdm'; settingCount = 3; assignments = @() })
+
+            $script:Report = [pscustomobject]@{ TenantId = $tenant; ExecutedAt = '2026-10-23T12:00:00Z' }
+            $script:Facts = @(ConvertTo-MtZtaObjectFactRecord -ExportPath $script:Export -Report $script:Report)
+            function Get-ZtaFact {
+                param([string] $Type, [string] $Id, [string] $Name)
+                ($script:Facts | Where-Object { $_.Type -eq $Type -and $_.Id -eq $Id }).Fact | Where-Object Name -EQ $Name
+            }
+        }
+
+        It 'names an app''s Tier 0 Graph permissions as a risk' {
+            $fact = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Application permissions'
+            $fact.Tone | Should -Be 'Risk'
+            $fact.Value | Should -Be 'Directory.ReadWrite.All has a path to Global Administrator. Microsoft Graph: Directory.ReadWrite.All, User.Read.All'
+        }
+
+        It 'lists write permissions consented for all users, without openid' {
+            $fact = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Consented for all users'
+            $fact.Value | Should -Be 'Microsoft Graph: User.ReadWrite.All'
+            $fact.Tone | Should -Be 'Warning'
+        }
+
+        It 'counts active and expired client secrets and dates sign-ins from the assessment' {
+            (Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Client secrets').Value | Should -Be '1 active, the next expires on 2027-01-01; 1 expired'
+            $signIn = Get-ZtaFact -Type ServicePrincipal -Id sp-1 -Name 'Last sign-in'
+            $signIn.Value | Should -Be '2026-01-01 (295 days before the assessment)'
+            $signIn.Tone | Should -Be 'Warning'
+        }
+
+        It 'keys an app registration by its appId and gives it the app''s permissions' {
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Owners').Tone | Should -Be 'Warning'
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Who can sign in').Value | Should -Be 'Any Microsoft Entra organization'
+            (Get-ZtaFact -Type AppRegistration -Id app-1 -Name 'Application permissions').Tone | Should -Be 'Risk'
+        }
+
+        It 'names a permanent Global Administrator without MFA as a risk' {
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Entra roles').Value | Should -Be 'Global Administrator (permanent)'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Entra roles').Tone | Should -Be 'Risk'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'MFA').Tone | Should -Be 'Risk'
+            (Get-ZtaFact -Type User -Id user-1 -Name 'Last sign-in').Tone | Should -Be 'Info'
+        }
+
+        It 'names an unassigned Intune policy for review' {
+            $record = $script:Facts | Where-Object Type -EQ 'ConfigurationPolicy'
+            $record.System | Should -Be 'Intune'
+            (Get-ZtaFact -Type ConfigurationPolicy -Id pol-1 -Name 'Assignments').Value | Should -Be 'Not assigned'
+        }
+
+        It 'gives facts the shared keys and raw values' {
+            $raw = {
+                param([string] $Type, [string] $Id, [string] $Key)
+                (($script:Facts | Where-Object { $_.Type -eq $Type -and $_.Id -eq $Id }).Fact | Where-Object Key -EQ $Key).Raw
+            }
+            & $raw User user-1 'user.mfaRegistered' | Should -BeFalse
+            & $raw User user-1 'user.privilegedRoles' | Should -Be @('Global Administrator')
+            & $raw User user-1 'signIn.daysSince' | Should -Be 3
+            & $raw ServicePrincipal sp-1 'signIn.daysSince' | Should -Be 295
+            & $raw ServicePrincipal sp-1 'app.highPrivilegePermissions' | Should -Be @('Directory.ReadWrite.All')
+            & $raw ServicePrincipal sp-1 'app.credentialExpired' | Should -BeTrue
+            & $raw AppRegistration app-1 'app.ownerCount' | Should -Be 0
+        }
+
+        It 'reads no model file as data' {
+            $script:Facts.Id | Should -Not -Contain 'model'
+        }
+
+        It 'adds the facts to the run when it collects affected objects, and nothing when ObjectFacts is false' {
+            $collect = {
+                param([hashtable] $Setting)
+                InModuleScope Maester { $__MtSession.IncludeAffectedObjects = $true; $__MtSession.AffectedObjectFacts = $null }
+                try {
+                    $null = Invoke-ZtaPack -Setting $Setting
+                    InModuleScope Maester { if ($__MtSession.AffectedObjectFacts) { @($__MtSession.AffectedObjectFacts.Keys) } }
+                } finally {
+                    InModuleScope Maester { $__MtSession.IncludeAffectedObjects = $false; $__MtSession.AffectedObjectFacts = $null }
+                }
+            }
+            $report = Join-Path $script:Export 'ZeroTrustAssessmentReport.json'
+
+            $keys = @(& $collect @{ 'ZeroTrustAssessment.ReportPath' = $report })
+            $keys | Should -Contain 'EntraID|User|user-1'
+            $keys | Should -Contain 'Intune|ConfigurationPolicy|pol-1'
+
+            @(& $collect @{ 'ZeroTrustAssessment.ReportPath' = $report; 'ZeroTrustAssessment.ObjectFacts' = $false }) | Should -BeNullOrEmpty
         }
     }
 
@@ -314,7 +509,12 @@ function Invoke-ZtAssessment {
         }
 
         It 'skips the family when the module is not installed' {
-            $env:PSModulePath = $script:OriginalModulePath
+            # Leave out every module folder that has the assessment, so a copy installed on this machine never
+            # runs a real assessment against the tenant it last signed in to.
+            $env:PSModulePath = @($script:OriginalModulePath -split [System.IO.Path]::PathSeparator | Where-Object {
+                    # A folder this account cannot read (the CI runner's /root) cannot load the module either.
+                    $_ -and -not $(try { Test-Path -LiteralPath (Join-Path $_ 'ZeroTrustAssessment') -ErrorAction Stop } catch { $false })
+                }) -join [System.IO.Path]::PathSeparator
             try {
                 $rows = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = '' }
             } finally {

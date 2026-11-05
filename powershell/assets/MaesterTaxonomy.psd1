@@ -108,6 +108,7 @@
                 @{ Key = 'data-loss-prevention'; Name = 'Data loss prevention' }
                 @{ Key = 'data-lifecycle-management'; Name = 'Data lifecycle management' }
                 @{ Key = 'insider-risk-management'; Name = 'Insider risk management' }
+                @{ Key = 'data-classification'; Name = 'Data classification' }
             )
         }
         @{
@@ -163,6 +164,8 @@
                 @{ Key = 'management-groups'; Name = 'Management groups' }
                 @{ Key = 'backup'; Name = 'Backup' }
                 @{ Key = 'subscriptions'; Name = 'Subscriptions' }
+                @{ Key = 'network-security'; Name = 'Network security' }
+                @{ Key = 'sentinel'; Name = 'Microsoft Sentinel' }
             )
         }
         @{

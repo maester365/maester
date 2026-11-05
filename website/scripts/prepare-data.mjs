@@ -49,8 +49,9 @@ if (refresh || commandPages().length === 0) {
 	});
 }
 
-// The test pages and the contributor credits; the site's content loader writes the test pages again on each build.
-if (missing('src/data/contributors.json')) {
+// The test pages, the contributor credits and the catalog explorer's data; the site's content loader writes the test
+// pages again on each build.
+if (missing('src/data/contributors.json') || missing('src/data/explorer.json')) {
 	run('Credit the contributors', process.execPath, ['scripts/generate-test-docs.mjs'], websiteRoot);
 }
 

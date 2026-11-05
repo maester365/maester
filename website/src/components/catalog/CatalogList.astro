@@ -1,0 +1,879 @@
+---
+// The checks of a view of the test catalog: all of them, a product's, a pack's or a suite's. Grouped by product,
+// feature, area, severity, suite or pillar, filtered by the nav (state.ts), with the Invoke-Maester command that runs
+// the same selection. Every check is in the HTML, so the list works without JavaScript and search engines see it.
+import { checks, packOf, pillarName, plural, previewLabel, productIcon, productInitials, featureIcon, severityMix, suiteInfo, suiteMembers, channelOf, searchText, type Check } from './data';
+
+interface Props {
+	scope?: 'all' | 'product' | 'pack' | 'suite';
+	value?: string;
+}
+const { scope = 'all', value = '' } = Astro.props;
+
+const list: Check[] =
+	scope === 'product' ? checks.filter((t) => t.product === value) : scope === 'pack' ? checks.filter((t) => t.pack === value) : scope === 'suite' ? checks.filter((t) => !t.pack && suiteMembers(value).includes(t.suite)) : checks;
+const pack = scope === 'pack' ? packOf(value) : undefined;
+
+// The default grouping of each view, and the groupings it offers.
+const groupings: [string, string][] =
+	scope === 'all'
+		? [['product', 'Product'], ['area', 'Area'], ['severity', 'Severity'], ['suite', 'Suite'], ['none', 'None']]
+		: scope === 'pack'
+			? [['pillar', 'Pillar'], ['category', 'Category'], ['product', 'Product'], ['severity', 'Severity'], ['none', 'None']]
+			: scope === 'product'
+				? [['feature', 'Feature'], ['area', 'Area'], ['severity', 'Severity'], ['suite', 'Suite'], ['none', 'None']]
+				: [['product', 'Product'], ['feature', 'Feature'], ['area', 'Area'], ['severity', 'Severity'], ['none', 'None']];
+const defaultGroup = groupings[0][0];
+
+// Tiles above the list: a product's features, a pack's pillars.
+const tiles =
+	scope === 'product'
+		? [...new Set(list.map((t) => t.feature))]
+				.filter(Boolean)
+				.map((f) => ({ filter: 'feature', key: `${value}/${f}`, name: list.find((t) => t.feature === f)!.featureName, icon: featureIcon(value, f), rows: list.filter((t) => t.feature === f) }))
+		: scope === 'pack'
+			? [...new Set(list.flatMap((t) => t.pillar ?? []))].map((p) => ({ filter: 'pillar', key: p, name: pillarName(p), icon: undefined, pillar: p, rows: list.filter((t) => (t.pillar ?? []).includes(p)) }))
+			: [];
+tiles.sort((a, b) => b.rows.length - a.rows.length);
+const mix = severityMix(list);
+const total = list.length;
+const width = (n: number, of: number) => `width: ${((n / of) * 100).toFixed(2)}%`;
+
+const sourceLabel = (t: Check) => (t.pack ? packOf(t.pack)?.name ?? t.pack : suiteInfo[t.suite]?.name ?? t.suite);
+const channel = channelOf;
+const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : scope === 'suite' ? `Invoke-Maester -Suite ${suiteMembers(value).join(',').toLowerCase()}` : scope === 'pack' ? `Invoke-Maester -Pack ${value} -SkipBuiltIn` : 'Invoke-Maester';
+---
+
+<mt-catalog-list class="mt-cl not-content" data-scope={scope} data-value={value} data-default-group={defaultGroup} data-base={baseCommand}>
+	{
+		pack && (
+			<div class="mt-cl__pack">
+				<p>
+					{pack.publisher === 'maester365' ? 'Ships with Maester.' : `Published by ${pack.publisher}.`} The checks are Microsoft's, from the{' '}
+					<a href={pack.source}>{pack.module}</a> module{pack.moduleVersion ? ` ${pack.moduleVersion}` : ''}: Maester runs it and shows each result in its report, beside Maester's own checks. If a check's result,
+					text or fix looks wrong, <a href={`${pack.source}/issues`}>report it to Microsoft</a>.
+				</p>
+				<a href={pack.homepage || '/docs/packs'}>About the pack →</a>
+			</div>
+		)
+	}
+
+	<div class="mt-cl__stats">
+		<div class="mt-cl__bar" role="img" aria-label={mix.map((m) => `${m.count} ${m.key}`).join(', ')}>
+			{mix.map((m) => <i class={`mt-sev-bg--${m.key.toLowerCase()}`} style={width(m.count, total)} />)}
+		</div>
+		<div class="mt-cl__legend">
+			<span>
+				<b>{total.toLocaleString('en-US')}</b> checks
+			</span>
+			{
+				mix.map((m) => (
+					<span>
+						<i class={`mt-sev-bg--${m.key.toLowerCase()}`} />
+						{m.count} {m.key}
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	{
+		tiles.length > 1 && (
+			<section class="mt-cl__tiles" aria-label={scope === 'pack' ? 'Pillars' : 'Features'}>
+				{tiles.map((tile) => {
+					const tmix = severityMix(tile.rows);
+					return (
+						<button type="button" class="mt-cl__tile" data-tile-filter={tile.filter} data-tile-value={tile.key} data-tile-pillar={(tile as any).pillar ?? ''} aria-pressed="false">
+							<span class="mt-cl__tname">
+								{tile.icon && <img src={tile.icon} alt="" width="16" height="16" loading="lazy" />}
+								<span>{tile.name}</span>
+								<span class="mt-cl__tn">{tile.rows.length}</span>
+							</span>
+							<span class="mt-cl__bar mt-cl__bar--thin">
+								{tmix.map((m) => (
+									<i class={`mt-sev-bg--${m.key.toLowerCase()}`} style={width(m.count, tile.rows.length)} />
+								))}
+							</span>
+						</button>
+					);
+				})}
+			</section>
+		)
+	}
+
+	<div class="mt-cl__cmd">
+		<span class="mt-cl__cmdlabel">Run these</span>
+		<code data-cmd>{baseCommand}</code>
+		<button type="button" data-copy>Copy</button>
+		<span class="mt-cl__cmdnote" data-cmd-note hidden></span>
+	</div>
+
+	<div class="mt-cl__toolbar">
+		<div class="mt-cl__chips" data-chips></div>
+		<span class="mt-cl__count" data-count>{plural(total, 'check')}</span>
+		<div class="mt-cl__seg" role="group" aria-label="Group by">
+			<span>Group by</span>
+			{groupings.map(([key, label]) => <button type="button" data-group={key} aria-pressed={String(key === defaultGroup)}>{label}</button>)}
+		</div>
+	</div>
+
+	<div class="mt-cl__table" data-table>
+		<div class="mt-cl__head" aria-hidden="true">
+			<span>ID</span><span>Check</span><span>{scope === 'product' ? 'Feature' : 'Product'}</span><span>Severity</span>
+		</div>
+		<div data-rows>
+			{
+				list.map((t) => (
+					<a
+						href={`/docs/tests/${t.id}`}
+						class="mt-cl__row"
+						data-q={searchText(t)}
+						data-severity={t.severity}
+						data-area={t.area}
+						data-cost={t.cost}
+						data-impact={t.impact}
+						data-source={t.pack || 'maester'}
+						data-channel={channel(t)}
+						data-product={t.product}
+						data-feature={t.feature ? `${t.product}/${t.feature}` : ''}
+						data-suite={t.pack ? '' : t.suite}
+						data-mitre={t.mitre.join(' ')}
+						data-pillar={(t.pillar ?? []).join(' ')}
+						data-author={(t.authors ?? []).join(' ')}
+						data-g-product={`${t.product}|${t.productName || 'No product'}|${productIcon(t.product) ?? ''}|${t.product ? productInitials(t.product) : ''}`}
+						data-g-feature={`${t.product}/${t.feature}|${t.featureName || 'No feature'}|${featureIcon(t.product, t.feature) ?? ''}`}
+						data-g-area={`${t.area}|${t.areaName || 'No area'}`}
+						data-g-severity={t.severity}
+						data-g-suite={`${t.pack || t.suite}|${sourceLabel(t)}`}
+						data-g-pillar={(t.pillar ?? []).map((p) => `${p}|${pillarName(p)}`).join(';') || '|No pillar'}
+						data-g-category={`${t.category ?? ''}|${t.category || 'No category'}`}
+						data-test-id={t.id}
+					>
+						<span class:list={['mt-cl__id', { 'mt-cl__id--pack': Boolean(t.pack) }]}>{t.id}</span>
+						<span class="mt-cl__title">
+							{t.title}
+							{t.pack && scope !== 'pack' && <span class="mt-cl__badge mt-cl__badge--pack">{t.pack}</span>}
+							{t.previewOnly && !t.pack && <span class="mt-cl__badge">New in {previewLabel}</span>}
+							{t.previewCheck && <span class="mt-cl__badge mt-cl__badge--mono">-IncludePreview</span>}
+						</span>
+						<span class="mt-cl__where">
+							{scope === 'product' ? (
+								t.featureName
+							) : (
+								<>
+									{productIcon(t.product) ? (
+										<img src={productIcon(t.product)} alt="" width="16" height="16" loading="lazy" />
+									) : (
+										t.product && <span class="mt-cl__ptile">{productInitials(t.product)}</span>
+									)}
+									{t.productName}
+								</>
+							)}
+						</span>
+						<span>
+							<span class={`mt-cl__sev mt-sev--${t.severity.toLowerCase()}`}>{t.severity}</span>
+						</span>
+					</a>
+				))
+			}
+		</div>
+		<p class="mt-cl__empty" data-empty hidden>No checks match. <button type="button" data-clear>Clear the filters</button></p>
+	</div>
+</mt-catalog-list>
+
+<script>
+	import { matches, onState, readState, update, writeState, FILTERS, type State } from './state';
+
+	// The rows shown of a group before "Show all", and of the whole list when it is not grouped.
+	const GROUP_ROWS = 8;
+	const FLAT_ROWS = 100;
+	const SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'Info'];
+
+	class CatalogList extends HTMLElement {
+		expanded = new Set<string>();
+
+		connectedCallback() {
+			const rowsBox = this.querySelector<HTMLElement>('[data-rows]')!;
+			const rows = [...rowsBox.querySelectorAll<HTMLAnchorElement>('.mt-cl__row')];
+			const segButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-group]')];
+			const tiles = [...this.querySelectorAll<HTMLButtonElement>('[data-tile-filter]')];
+			const cmd = this.querySelector<HTMLElement>('[data-cmd]')!;
+			const note = this.querySelector<HTMLElement>('[data-cmd-note]')!;
+			const countEl = this.querySelector<HTMLElement>('[data-count]')!;
+			const chips = this.querySelector<HTMLElement>('[data-chips]')!;
+			const empty = this.querySelector<HTMLElement>('[data-empty]')!;
+			const defaultGroup = this.dataset.defaultGroup!;
+			const scope = this.dataset.scope!;
+			const total = rows.length;
+
+			for (const b of segButtons) b.addEventListener('click', () => update({ group: b.dataset.group === defaultGroup ? [] : [b.dataset.group!] }));
+			for (const tile of tiles) {
+				tile.addEventListener('click', () => {
+					const state = readState();
+					if (tile.dataset.tilePillar) {
+						const value = tile.dataset.tilePillar;
+						const on = state.pillar.includes(value);
+						update({ pillar: on ? state.pillar.filter((p) => p !== value) : [...state.pillar, value] });
+					} else {
+						const value = tile.dataset.tileValue!;
+						const on = state.feature.includes(value);
+						update({ feature: on ? state.feature.filter((f) => f !== value) : [...state.feature, value] });
+					}
+				});
+			}
+			this.querySelector('[data-copy]')?.addEventListener('click', (e) => {
+				navigator.clipboard.writeText(cmd.textContent ?? '');
+				const button = e.currentTarget as HTMLButtonElement;
+				button.textContent = 'Copied';
+				setTimeout(() => (button.textContent = 'Copy'), 1500);
+			});
+			this.querySelector('[data-clear]')?.addEventListener('click', () => {
+				const state = readState();
+				for (const name of FILTERS) if (name !== 'group') state[name] = [];
+				writeState(state);
+			});
+
+			onState((state) => this.render(state, { rowsBox, rows, segButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
+		}
+
+		matches(row: HTMLElement, s: State) {
+			return matches(s, row.dataset);
+		}
+
+		render(state: State, ui: any) {
+			const { rowsBox, rows, segButtons, tiles, countEl, empty, defaultGroup, total } = ui;
+			const group = state.group[0] && segButtons.some((b: HTMLButtonElement) => b.dataset.group === state.group[0]) ? state.group[0] : defaultGroup;
+			for (const b of segButtons) b.setAttribute('aria-pressed', String(b.dataset.group === group));
+			for (const tile of tiles) {
+				const on = tile.dataset.tilePillar ? state.pillar.includes(tile.dataset.tilePillar) : state.feature.includes(tile.dataset.tileValue!);
+				tile.setAttribute('aria-pressed', String(on));
+			}
+
+			const shown = rows.filter((r: HTMLElement) => this.matches(r, state));
+			countEl.textContent = shown.length === total ? `${total.toLocaleString('en-US')} checks` : `${shown.length.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} checks`;
+			empty.hidden = shown.length > 0;
+
+			// Groups, largest first (severity in its own order). A check in two pillars is grouped under its first.
+			const buckets = new Map<string, { label: string; icon: string; tile: string; rows: HTMLElement[] }>();
+			for (const row of shown) {
+				const raw = group === 'none' ? '|' : group === 'severity' ? `${row.dataset.gSeverity}|${row.dataset.gSeverity}` : (row.dataset[`g${group[0].toUpperCase()}${group.slice(1)}`] ?? '|').split(';')[0];
+				const [key, label = '', icon = '', tile = ''] = raw.split('|');
+				if (!buckets.has(key)) buckets.set(key, { label, icon, tile, rows: [] });
+				buckets.get(key)!.rows.push(row);
+			}
+			const ordered = [...buckets.entries()].sort((a, b) =>
+				group === 'severity' ? SEVERITIES.indexOf(a[0]) - SEVERITIES.indexOf(b[0]) : b[1].rows.length - a[1].rows.length || a[1].label.localeCompare(b[1].label),
+			);
+
+			rowsBox.querySelectorAll('.mt-cl__ghead, .mt-cl__more').forEach((el: Element) => el.remove());
+			const fragment = document.createDocumentFragment();
+			for (const [key, bucket] of ordered) {
+				const id = `${group}:${key}`;
+				const limit = group === 'none' ? FLAT_ROWS : GROUP_ROWS;
+				const open = this.expanded.has(id) || bucket.rows.length <= limit + 2;
+				if (group !== 'none') fragment.append(this.header(group, key, bucket));
+				bucket.rows.forEach((row, i) => {
+					row.hidden = !open && i >= limit;
+					fragment.append(row);
+				});
+				if (!open) {
+					const more = document.createElement('button');
+					more.type = 'button';
+					more.className = 'mt-cl__more';
+					more.textContent = `Show all ${bucket.rows.length}${group === 'none' ? ' checks' : ''}`;
+					more.addEventListener('click', () => {
+						this.expanded.add(id);
+						this.render(readState(), ui);
+					});
+					fragment.append(more);
+				}
+			}
+			// The rows that do not match stay in the page, hidden, after the groups.
+			const matched = new Set(shown);
+			for (const row of rows) {
+				if (matched.has(row)) continue;
+				row.hidden = true;
+				fragment.append(row);
+			}
+			rowsBox.append(fragment);
+			this.command(state, shown, ui);
+			this.chips(state, ui);
+		}
+
+		header(group: string, key: string, bucket: { label: string; icon: string; tile: string; rows: HTMLElement[] }) {
+			const head = document.createElement('div');
+			head.className = 'mt-cl__ghead';
+			if (bucket.icon) {
+				const img = document.createElement('img');
+				img.src = bucket.icon;
+				img.alt = '';
+				img.width = img.height = 20;
+				head.append(img);
+			} else if (bucket.tile) {
+				const tile = document.createElement('span');
+				tile.className = 'mt-cl__ptile';
+				tile.textContent = bucket.tile;
+				head.append(tile);
+			} else if (group === 'severity') {
+				const sev = document.createElement('span');
+				sev.className = `mt-cl__sev mt-sev--${key.toLowerCase()}`;
+				sev.textContent = key;
+				head.append(sev);
+			}
+			if (group !== 'severity') {
+				const name = document.createElement('b');
+				name.textContent = bucket.label;
+				head.append(name);
+			}
+			const n = document.createElement('span');
+			n.className = 'mt-cl__gn';
+			n.textContent = String(bucket.rows.length);
+			head.append(n);
+			const bar = document.createElement('span');
+			bar.className = 'mt-cl__bar mt-cl__bar--thin mt-cl__gbar';
+			for (const s of SEVERITIES) {
+				const c = bucket.rows.filter((r) => r.dataset.severity === s).length;
+				if (!c) continue;
+				const i = document.createElement('i');
+				i.className = `mt-sev-bg--${s.toLowerCase()}`;
+				i.style.width = `${(c / bucket.rows.length) * 100}%`;
+				bar.append(i);
+			}
+			head.append(bar);
+			if (group === 'product' && key && this.dataset.scope !== 'product') {
+				const link = document.createElement('a');
+				link.href = `/docs/tests/products/${key}`;
+				link.textContent = `Open ${bucket.label} →`;
+				head.append(link);
+			}
+			return head;
+		}
+
+		// The Invoke-Maester parameters for the selection. Effort, impact, technique and text are not parameters:
+		// a short list is run by ID; a long one runs what the other filters select, and the note says so.
+		command(s: State, shown: HTMLElement[], ui: any) {
+			const { cmd, note } = ui;
+			const copy = this.querySelector<HTMLButtonElement>('[data-copy]');
+			const scope = this.dataset.scope;
+			const parts = [this.dataset.base!];
+			const builtIn = shown.filter((r) => r.dataset.source === 'maester');
+			const packs = [...new Set(shown.map((r) => r.dataset.source!).filter((v) => v !== 'maester'))];
+			const products = [...new Set([...s.product, ...s.feature.map((f) => f.split('/')[0])])].filter((p) => !(scope === 'product' && p === this.dataset.value));
+			const loose = s.cost.length + s.impact.length + s.mitre.length + s.author.length + s.q.length > 0;
+			const notes: string[] = [];
+			const show = (text: string, runnable: boolean) => {
+				cmd.textContent = text;
+				if (copy) copy.disabled = !runnable;
+				note.textContent = notes.join(' ');
+				note.hidden = notes.length === 0;
+			};
+			// Nothing to run: no command to copy, rather than one that runs checks the page shows as none.
+			if (!shown.length) return show('No checks match these filters.', false);
+			// A pack runs as one assessment, whatever the filters; selectors would only deselect its family test.
+			if (scope === 'pack' || !builtIn.length) {
+				notes.push('The pack runs the whole assessment, with its module installed; filters choose what you read, not what runs.');
+				return show(scope === 'pack' ? parts[0] : `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`, true);
+			}
+			if (loose && builtIn.length <= 25) {
+				parts.splice(0, parts.length, `Invoke-Maester -TestId ${builtIn.map((r) => r.dataset.testId).join(',')}`);
+			} else {
+				if (s.suite.length) parts.push(`-Suite ${s.suite.map((v) => v.toLowerCase()).join(',')}`);
+				if (products.length) parts.push(`-Product ${products.join(',')}`);
+				if (s.feature.length) parts.push(`-Feature ${[...new Set(s.feature.map((f) => f.split('/')[1]))].join(',')}`);
+				if (s.area.length) parts.push(`-Area ${s.area.join(',')}`);
+				if (s.severity.length) parts.push(`-Severity ${s.severity.join(',')}`);
+				if (loose) notes.push('Effort, impact, technique, author and search are not Invoke-Maester parameters: this runs every check the other filters select.');
+			}
+			// Preview checks run only when asked for.
+			if (builtIn.some((r) => (r.dataset.channel ?? '').split(' ').includes('preview'))) parts.push('-IncludePreview');
+			if (packs.length) notes.push(`This runs the built-in checks shown. The ${packs.join(', ')} pack checks run as their own assessment: Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn.`);
+			show(parts.join(' '), true);
+		}
+
+		// The filters that are not in the nav (from a link, a tile or the matrix), as chips that remove them.
+		chips(s: State, ui: any) {
+			const box = ui.chips as HTMLElement;
+			box.replaceChildren();
+			const add = (label: string, change: Partial<State>) => {
+				const chip = document.createElement('button');
+				chip.type = 'button';
+				chip.className = 'mt-cl__chip';
+				chip.textContent = `${label} ×`;
+				chip.setAttribute('aria-label', `Remove ${label}`);
+				chip.addEventListener('click', () => update(change));
+				box.append(chip);
+			};
+			const label = (attr: string, key: string) => {
+				const row = ui.rows.find((r: HTMLElement) => (r.dataset[attr] ?? '').split(';').some((v) => v.startsWith(`${key}|`)));
+				return row ? (row.dataset[attr] ?? '').split(';').find((v: string) => v.startsWith(`${key}|`))!.split('|')[1] : key;
+			};
+			for (const p of s.product) add(label('gProduct', p), { product: s.product.filter((v) => v !== p) });
+			for (const f of s.feature) add(label('gFeature', f), { feature: s.feature.filter((v) => v !== f) });
+			for (const v of s.suite) add(`Suite: ${v}`, { suite: s.suite.filter((x) => x !== v) });
+			for (const m of s.mitre) add(`ATT&CK ${m}`, { mitre: s.mitre.filter((x) => x !== m) });
+			if (s.q[0]) add(`“${s.q[0]}”`, { q: [] });
+		}
+	}
+	customElements.define('mt-catalog-list', CatalogList);
+</script>
+
+<style>
+	.mt-cl {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin-top: 0.5rem;
+		font-size: 0.875rem;
+	}
+	.mt-cl a {
+		color: var(--sl-color-text-accent);
+	}
+	.mt-cl__pack {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		padding: 0.75rem 1rem;
+		border: 1px solid #bfdbfe;
+		border-radius: 10px;
+		background: #eff6ff;
+		color: #1e3a8a;
+		line-height: 1.5;
+	}
+	.mt-cl__pack p {
+		flex: 1 1 26rem;
+		margin: 0;
+	}
+	.mt-cl__pack a {
+		color: #1d4ed8 !important;
+	}
+	:global(:root[data-theme='dark']) .mt-cl__pack {
+		border-color: #1e3a8a;
+		background: #0b1a3a;
+		color: #bfdbfe;
+	}
+	:global(:root[data-theme='dark']) .mt-cl__pack a {
+		color: #93c5fd !important;
+	}
+	.mt-cl__stats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+	}
+	.mt-cl__bar {
+		display: flex;
+		height: 10px;
+		border-radius: 5px;
+		overflow: hidden;
+		background: var(--sl-color-gray-6);
+	}
+	.mt-cl__bar--thin {
+		height: 6px;
+		border-radius: 3px;
+	}
+	.mt-cl__bar i {
+		display: block;
+	}
+	.mt-cl__legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 1.1rem;
+		color: var(--sl-color-gray-3);
+		font-size: 0.8rem;
+	}
+	.mt-cl__legend b {
+		color: var(--sl-color-white);
+	}
+	.mt-cl__legend i {
+		display: inline-block;
+		width: 9px;
+		height: 9px;
+		border-radius: 2px;
+		margin-inline-end: 0.3rem;
+	}
+	:global(.mt-sev-bg--critical) {
+		background: #b91c1c;
+	}
+	:global(.mt-sev-bg--high) {
+		background: #ea580c;
+	}
+	:global(.mt-sev-bg--medium) {
+		background: #d97706;
+	}
+	:global(.mt-sev-bg--low) {
+		background: #a1a1aa;
+	}
+	:global(.mt-sev-bg--info) {
+		background: #d4d4d8;
+	}
+	.mt-cl__tiles {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+		gap: 0.6rem;
+	}
+	.mt-cl__tile {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.65rem 0.8rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 10px;
+		background: var(--sl-color-bg);
+		font: inherit;
+		text-align: start;
+		color: var(--sl-color-white);
+		cursor: pointer;
+	}
+	.mt-cl__tile:hover {
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-cl__tile[aria-pressed='true'] {
+		border-color: var(--sl-color-accent);
+		box-shadow: 0 0 0 1px var(--sl-color-accent);
+	}
+	.mt-cl__tname {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-weight: 600;
+		font-size: 0.85rem;
+	}
+	.mt-cl__tname img {
+		width: 16px;
+		height: 16px;
+		margin: 0;
+	}
+	.mt-cl__tn {
+		margin-inline-start: auto;
+		font-family: var(--sl-font-mono);
+		font-weight: 500;
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__cmd {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem 0.9rem;
+		padding: 0.7rem 0.8rem 0.7rem 1rem;
+		border: 1px solid var(--mt-code-line);
+		border-radius: 0.75rem;
+		background: var(--mt-code-bg);
+		color: var(--mt-code-ink);
+	}
+	.mt-cl__cmdlabel {
+		font-family: var(--sl-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--mt-code-muted);
+	}
+	.mt-cl__cmd code {
+		flex: 1 1 18rem;
+		min-width: 0;
+		overflow-wrap: anywhere;
+		background: none;
+		border: 0;
+		padding: 0;
+		font-family: var(--sl-font-mono);
+		font-size: 0.85rem;
+		color: var(--mt-code-ink);
+	}
+	.mt-cl__cmd button {
+		border: 1px solid var(--mt-code-line);
+		border-radius: 7px;
+		padding: 0.35rem 0.75rem;
+		background: var(--mt-code-btn);
+		color: var(--mt-code-ink);
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.mt-cl__cmd button:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+	.mt-cl__cmdnote {
+		flex-basis: 100%;
+		font-size: 0.78rem;
+		color: var(--mt-code-muted);
+	}
+	.mt-cl__toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.6rem;
+	}
+	.mt-cl__chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.mt-cl__chip {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 999px;
+		padding: 0.15rem 0.65rem;
+		background: var(--sl-color-bg);
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+	}
+	.mt-cl__chip:hover {
+		border-color: var(--sl-color-gray-3);
+		color: var(--sl-color-white);
+	}
+	.mt-cl__count {
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__seg {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+		margin-inline-start: auto;
+		padding: 2px;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 9px;
+	}
+	.mt-cl__seg span {
+		padding: 0 0.45rem;
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__seg button {
+		border: 0;
+		border-radius: 7px;
+		padding: 0.3rem 0.6rem;
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+	}
+	.mt-cl__seg button[aria-pressed='true'] {
+		background: var(--sl-color-white);
+		color: var(--sl-color-black);
+		font-weight: 600;
+	}
+	.mt-cl__table {
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		overflow: hidden;
+	}
+	.mt-cl__head,
+	.mt-cl__row {
+		display: grid;
+		grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr) minmax(8rem, 13rem) 5.5rem;
+		gap: 1rem;
+		align-items: center;
+		padding: 0.55rem 1rem;
+	}
+	.mt-cl__head {
+		background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+		border-bottom: 1px solid var(--sl-color-gray-5);
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__row {
+		border-bottom: 1px solid var(--sl-color-gray-6);
+		color: var(--sl-color-gray-1) !important;
+		text-decoration: none;
+	}
+	.mt-cl__row:hover {
+		background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+	}
+	.mt-cl__row[hidden] {
+		display: none;
+	}
+	.mt-cl__id {
+		font-family: var(--sl-font-mono);
+		font-size: 0.78rem;
+		color: var(--sl-color-text-accent);
+		overflow-wrap: anywhere;
+	}
+	.mt-cl__id--pack {
+		color: #1d4ed8;
+	}
+	:global(:root[data-theme='dark']) .mt-cl__id--pack {
+		color: #93c5fd;
+	}
+	.mt-cl__title {
+		min-width: 0;
+	}
+	.mt-cl__badge {
+		display: inline-block;
+		margin-inline-start: 0.45rem;
+		padding: 0 0.4rem;
+		border-radius: 5px;
+		background: var(--mt-warn-soft, #fffbeb);
+		color: var(--mt-warn-ink, #92400e);
+		font-size: 0.68rem;
+		font-weight: 600;
+		vertical-align: 0.1em;
+	}
+	.mt-cl__badge--pack {
+		background: #eff6ff;
+		color: #1d4ed8;
+		font-family: var(--sl-font-mono);
+	}
+	.mt-cl__badge--mono {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-2);
+		font-family: var(--sl-font-mono);
+		font-weight: 500;
+	}
+	.mt-cl__where {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+		min-width: 0;
+	}
+	.mt-cl__where img {
+		width: 16px;
+		height: 16px;
+		margin: 0;
+		flex: none;
+		object-fit: contain;
+	}
+	.mt-cl__ptile {
+		display: inline-grid;
+		place-items: center;
+		width: 16px;
+		height: 16px;
+		flex: none;
+		border-radius: 4px;
+		background: var(--sl-color-gray-5);
+		font-size: 0.45rem;
+		font-weight: 700;
+		color: var(--sl-color-white);
+	}
+	.mt-cl__sev {
+		display: inline-block;
+		padding: 0.1rem 0.5rem;
+		border-radius: 6px;
+		font-size: 0.75rem;
+		font-weight: 600;
+	}
+	:global(.mt-sev--critical) {
+		background: #fee2e2;
+		color: #b91c1c;
+	}
+	:global(.mt-sev--high) {
+		background: #ffedd5;
+		color: #9a3412;
+	}
+	:global(.mt-sev--medium) {
+		background: #fef3c7;
+		color: #92400e;
+	}
+	:global(.mt-sev--low),
+	:global(.mt-sev--info) {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-2);
+	}
+	:global(.mt-cl__ghead) {
+		display: flex;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.8rem 1rem 0.6rem;
+		border-bottom: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-bg);
+	}
+	:global(.mt-cl__ghead:not(:first-child)) {
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	:global(.mt-cl__ghead img) {
+		width: 20px;
+		height: 20px;
+		margin: 0;
+		object-fit: contain;
+	}
+	:global(.mt-cl__ghead b) {
+		font-size: 0.95rem;
+		color: var(--sl-color-white);
+	}
+	:global(.mt-cl__gn) {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	:global(.mt-cl__gbar) {
+		width: 7rem;
+	}
+	:global(.mt-cl__ghead a) {
+		margin-inline-start: auto;
+		font-size: 0.8rem;
+		font-weight: 500;
+		text-decoration: none;
+	}
+	:global(.mt-cl__more) {
+		display: block;
+		width: 100%;
+		padding: 0.55rem 1rem;
+		border: 0;
+		border-bottom: 1px solid var(--sl-color-gray-6);
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		text-align: start;
+		color: var(--sl-color-text-accent);
+		cursor: pointer;
+	}
+	.mt-cl__empty {
+		margin: 0;
+		padding: 1.5rem 1rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__empty button {
+		border: 0;
+		background: none;
+		padding: 0;
+		font: inherit;
+		color: var(--sl-color-text-accent);
+		cursor: pointer;
+	}
+	/* Phones: each check is a card, its ID and severity on one line and its title below. */
+	@media (max-width: 40rem) {
+		.mt-cl__tiles {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.4rem;
+		}
+		.mt-cl__tile {
+			padding: 0.5rem 0.6rem;
+		}
+		.mt-cl__tname {
+			font-size: 0.78rem;
+		}
+		.mt-cl__tname img {
+			display: none;
+		}
+		.mt-cl__head {
+			display: none;
+		}
+		.mt-cl__row {
+			grid-template-columns: 1fr auto;
+			gap: 0.25rem 0.75rem;
+		}
+		.mt-cl__title {
+			grid-column: 1 / -1;
+			grid-row: 2;
+		}
+		.mt-cl__where {
+			display: none;
+		}
+		.mt-cl__seg {
+			margin-inline-start: 0;
+			flex-wrap: wrap;
+		}
+		:global(.mt-cl__gbar) {
+			display: none;
+		}
+	}
+</style>

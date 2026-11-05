@@ -117,12 +117,17 @@ function Get-MtAffectedObject {
         if ($record.DisplayName) { return "name:$($record.DisplayName)" }
         return ''
     }
+    # Facts that Add-MtAffectedObjectFact recorded during the run, keyed System|Type|Id. They describe
+    # objects the run lists: facts about an object that no source found add no record.
+    $factsByKey = $__MtSession.AffectedObjectFacts
     $inventory = $records | Group-Object -Property { "$($_.System)|$($_.Type)|$(& $identityOf $_)" } | ForEach-Object {
         $best = $_.Group | Sort-Object {
             $rank = $sourceRank[[string]$_.Source]
             if ($null -eq $rank) { [int]::MaxValue } else { $rank }
         } | Select-Object -First 1
         $uniqueId = Get-MtAffectedObjectUniqueId -System $best.System -Type $best.Type -Id (& $identityOf $best)
+        $facts = $null
+        if ($factsByKey -and $best.Id) { $null = $factsByKey.TryGetValue("$($best.System)|$($best.Type)|$($best.Id)", [ref]$facts) }
         [PSCustomObject]@{
             System            = $best.System
             AnchorKind        = $best.AnchorKind
@@ -135,6 +140,7 @@ function Get-MtAffectedObject {
             PortalLink        = ($_.Group.PortalLink | Where-Object { $_ } | Select-Object -First 1)
             Tests             = @($_.Group.TestId | Where-Object { $_ } | Select-Object -Unique)
             Sources           = @($_.Group.Source | Select-Object -Unique)
+            Facts             = @($facts | Where-Object { $_ })
         }
     }
 
