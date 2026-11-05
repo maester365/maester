@@ -8,7 +8,7 @@ Maester identifies a likely non-sending domain when it finds one SPF v1 record w
 
 Parked or non-sending domains use the CIS parked-domain requirement: a valid DMARC record with `p=reject`; rua, ruf, and pct are not required for this branch. Missing SPF, conflicting signals, DNS errors, and unresolved redirect-only SPF policies do not receive the parked exception. When only one of the sending and non-sending audit procedures passes, the result requires investigation. Selector discovery is limited to the standard Exchange Online selectors, so nonstandard DKIM selector names cannot be ruled out automatically.
 
-When some lookups are unavailable and another domain requires investigation, the result remains Investigate and lists the unavailable domains as Not checked. This is not confirmation of compliance for those domains. Known failures still take precedence; unavailable lookups without failures or investigation produce NotSupported.
+When some lookups are unavailable and another domain requires investigation, the result remains Investigate and lists the unavailable domains as Not checked. Investigation results state that compliance remains unconfirmed and direct you to review these domains instead of displaying a full-compliance banner. Known failures still take precedence; unavailable lookups without failures or investigation produce NotSupported.
 
 When DNS evidence is inconclusive but a domain is known to be parked, add its name to this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. This selects the parked audit branch; it does not waive the requirement for a valid DMARC record with `p=reject`.
 

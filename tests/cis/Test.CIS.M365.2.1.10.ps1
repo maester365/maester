@@ -141,7 +141,10 @@
         $resultMd += "| $($row.Domain) | $($row.Classification) | $($row.Policy) | $($row.Source) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $resultText |`n"
     }
 
-    if ($testResult) {
+    if ($testResult -and ($investigated.Count -gt 0 -or $unchecked.Count -gt 0)) {
+        $testResultMarkdown = "Compliance with the applicable CIS DMARC requirement remains unconfirmed. Review the domains marked Investigate or Not checked.`n`n%TestResult%"
+    }
+    elseif ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"

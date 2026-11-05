@@ -120,6 +120,8 @@
             $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
             if ($ExpectedInvestigation) {
                 $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
+                $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+                $script:resultDetail.Result | Should -Not -Match 'Well done|All accepted domains meet'
             }
         }
     }
@@ -170,6 +172,9 @@
         $script:resultDetail.Investigate | Should -BeTrue
         $script:resultDetail.Result | Should -Match '\| unknown\.example \| Unknown .* \| Investigate \|'
         $script:resultDetail.Result | Should -Not -Match '\| unknown\.example .*✅ Pass \|'
+        $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+        $script:resultDetail.Result | Should -Match 'Review the domains marked Investigate or Not checked'
+        $script:resultDetail.Result | Should -Not -Match 'Well done|All accepted domains meet'
     }
 
     It 'applies an explicit parked override and requires reject policy' {
@@ -189,5 +194,6 @@
 
         Test-MtCisDmarcRecordsPublished | Should -BeTrue
         $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'Well done\. All accepted domains meet'
     }
 }

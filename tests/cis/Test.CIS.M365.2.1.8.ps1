@@ -152,7 +152,10 @@
         $resultMd += "| $($row.Domain) | $($row.Classification) | $($row.Record) | $($row.Detail) | $resultText |`n"
     }
 
-    if ($testResult) {
+    if ($testResult -and ($investigated.Count -gt 0 -or $unchecked.Count -gt 0)) {
+        $testResultMarkdown = "Compliance with the applicable CIS SPF requirement remains unconfirmed. Review the domains marked Investigate or Not checked.`n`n%TestResult%"
+    }
+    elseif ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
     }
     else {

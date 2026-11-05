@@ -67,6 +67,7 @@
 
         Test-MtCisSpfRecordsPublished | Should -BeTrue
         $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'Well done\. All custom domains meet'
     }
 
     It 'requires the all qualifier to be the final sending-domain term' {
@@ -90,6 +91,9 @@
 
         Test-MtCisSpfRecordsPublished | Should -BeTrue
         $script:resultDetail.Investigate | Should -BeTrue
+        $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+        $script:resultDetail.Result | Should -Match 'Review the domains marked Investigate or Not checked'
+        $script:resultDetail.Result | Should -Not -Match 'Well done|All custom domains meet'
     }
 
     It 'preserves <Outcome> when another SPF lookup is unavailable' -ForEach @(
@@ -120,6 +124,8 @@
             $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
             if ($ExpectedInvestigation) {
                 $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
+                $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+                $script:resultDetail.Result | Should -Not -Match 'Well done|All custom domains meet'
             }
         }
     }
