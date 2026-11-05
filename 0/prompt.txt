@@ -1,0 +1,44 @@
+Background (from the session that started this one):
+Maester is a PowerShell framework that checks Microsoft 365 security configuration. The defender's path (design accepted 5 November 2026, docs/proposals/defenders-path.md) orders fixes the way Microsoft Learn documents: what must be in place first, what a fix unlocks, and whether the tenant is ready. Readiness checks cover prerequisites that are tenant states rather than settings. They report a count and a share and pass above a threshold, so the action plan can say whether a fix like "require compliant devices" would lock users out.
+
+Milestone M1 (draft PR maester365/maester#2683, branch feat/defenders-path) shipped the Step attribute and the catalogue, where these two steps are marked Unchecked until checks exist. Learn says devices only need to be registered in Entra and enrolled in Intune to be marked compliant, not joined, which is why the device check measures compliance among devices that sign in.
+
+Object facts: maester365/maester#2681 (not merged) adds Key/Raw to Add-MtAffectedObjectFact, with keys such as device.managed, device.compliant and user.mfaRegistered. Don't depend on it. Mention in your report where the checks would write those facts once it lands.
+
+Task:
+Build milestone M5 of the defender's path: two new readiness checks, the native Maester tests described in section 11 of `docs/proposals/defenders-path.md`.
+
+1. **Devices that sign in are compliant** (step `intune.devices-compliant`). Read Entra `devices` that signed in within the last 30 days (`approximateLastSignInDateTime`) and work out the share that are managed (`isManaged`) and compliant (`isCompliant`).
+   - Pass when the share is at least an `int` parameter `MinimumShare`, default 95.
+   - List the devices that a compliant-device policy would block as affected objects.
+   - Say in the result that devices with no Entra identity can't be seen this way.
+2. **Enabled member users are registered for MFA** (step `entra.mfa-registered`). Read `reports/authenticationMethods/userRegistrationDetails` (`isMfaRegistered`) for enabled member users.
+   - Leave out the emergency access accounts Maester already knows about. Find how other checks read them.
+   - Pass at `MinimumShare` (default 95).
+   - It needs Entra ID P1, so declare `License`.
+   - List unregistered users as affected objects.
+
+How:
+- Follow `AGENTS.md`, `.github/skills/maester-test-expert/SKILL.md`, `website/docs/writing-tests/index.mdx` and `website/docs/writing-tests/attribute-rubric.md`. Scaffold with `New-MtTest` and validate with `Get-MtTest <ID>`.
+- Before writing, do the duplicate review in `AGENTS.md`: search `tests/` and the Zero Trust pack catalog (`packs/zero-trust-assessment/catalog.json`) for checks of the same setting. ZTA.21782 covers privileged users' phishing-resistant registration only, and MT.1063 covers app owners only.
+- Put data access in `powershell/internal/services/<service>/` helpers. Never bypass the Graph cache.
+- MT IDs must be reserved on issue #697 first, using the `maester-issue-manager` agent's process. Show the user the reservation comment and get their OK before posting anything on GitHub.
+- Don't add the `Step` attribute to the new tests, and don't edit `powershell/assets/steps/` or the design doc. Another session owns those files, and this session will add `Step` and remove `Unchecked` when the branches are merged. Put the step each check verifies in your final report.
+
+Done means: both checks with their `.md` guides, `Get-MtTest <ID>` clean, `./powershell/tests/pester.ps1` passing, and the work committed on your branch. Ask the user before pushing or opening a PR. It would be a draft PR for Maester 3.1, based on `feat/defenders-path`, because main is in the 3.0 code freeze from 7 November 2026.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_dfb877c0-85e7-4697-9748-c3171aca3375
+
+---
+
+no check the other thread we did it woithout adding new test
+
+---
+
+<task-notification>
+<task-id>b4x6t237o</task-id>
+<tool-use-id>toolu_01Lws6epauMT2p5esowPGiuG</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m5-0f5456/cfe982e3-684a-4f53-a9be-613b4c761f4f/tasks/b4x6t237o.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full module unit test suite" completed (exit code 0)</summary>
+</task-notification>
