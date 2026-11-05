@@ -1,6 +1,6 @@
 Medium-risk users should not be left unremediated in Entra ID Protection.
 
-Entra ID Protection rates a user's risk and tracks a risk state for each flagged user. A medium-risk flag only clears when the risk is remediated, for example by a password reset, or when an admin dismisses it or confirms the user safe. Until then the account stays exposed: the signals that triggered the flag have not been addressed.
+Entra ID Protection rates a user's risk and tracks a risk state for each flagged user. A medium-risk flag only clears when the risk is remediated, for example by a password reset, or when an admin dismisses it or confirms the user safe. Until then the signals that triggered the flag have not been addressed. Dismissing a flag clears it but does not change the user's password, so investigate first.
 
 This check reports users whose risk level is **medium** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. Deleted users are not reported either, because they stay in the risk report and admins cannot dismiss their risk. The check reads risk only and never changes a user's risk state.
 
