@@ -1,4 +1,4 @@
-function Get-MtResultStep {
+﻿function Get-MtResultStep {
     <#
     .SYNOPSIS
     Builds the Steps and Goals of a result: the defender's path of the run, with each step's status, readiness and
@@ -35,6 +35,7 @@ function Get-MtResultStep {
 
     Returns an object with Steps and Goals, or nothing when no row that ran names a step.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'MeasuresDisabled, TenantContext, LastKnown, MaxObjects and Registry are read inside script blocks, which the rule does not follow.')]
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(

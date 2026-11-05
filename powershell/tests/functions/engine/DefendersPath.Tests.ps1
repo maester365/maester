@@ -1,4 +1,4 @@
-# The engine of the defender's path (docs/proposals/defenders-path.md, sections 6 to 12, milestone M3): the steps in
+﻿# The engine of the defender's path (docs/proposals/defenders-path.md, sections 6 to 12, milestone M3): the steps in
 # scope, their status, readiness and rank (Get-MtResultStep), the priority it ranks by (Get-MtTestPriority), the
 # measures read after the tests (Invoke-MtStepMeasure), LastKnown in the previous result, selection by -Step and
 # -IncludePrerequisites, and the CSV, Markdown and console outputs.
@@ -135,7 +135,8 @@ Describe 'Get-MtResultStep' {
 
         It 'Ranks Ready first, prerequisites before their dependents, then Done and Not applicable' {
             @($script:path.Steps.Id) | Should -Be @('intune.policies', 'intune.compliant', 'entra.goal', 'entra.base', 'entra.hybrid')
-            @($script:path.Steps.Rank) | Should -Be @(1, 2, 3, 4, 5)
+            # ForEach-Object, not .Rank: an array's own Rank property (its number of dimensions) wins over member enumeration.
+            @($script:path.Steps | ForEach-Object Rank) | Should -Be @(1, 2, 3, 4, 5)
             $byId['intune.policies'].Unlocks | Should -Be @('intune.compliant', 'entra.goal')
         }
 
