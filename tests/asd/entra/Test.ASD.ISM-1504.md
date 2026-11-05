@@ -2,7 +2,7 @@
 
 A password alone is defeated by phishing, password spray and credential stuffing. Requiring a second factor for every user on every resource is the first Essential Eight requirement for multi-factor authentication, and the baseline the phishing-resistant requirement of Maturity Level Two builds on.
 
-ASD defines which factors count, not how the policy is built, so this test runs the same check as [CIS.M365.5.2.2.2](https://maester.dev/docs/tests/CIS.M365.5.2.2.2). It looks for an enabled Conditional Access policy that targets all users and all resources and requires multi-factor authentication or an authentication strength. Policies that apply only at a certain risk level, exclude applications or are narrowed by a condition such as a platform or location do not count. Excluding emergency access accounts is expected.
+ASD defines which factors count, not how the policy is built, so this test runs the same check as [CIS.M365.5.2.2.2](https://maester.dev/docs/tests/CIS.M365.5.2.2.2). It looks for an enabled Conditional Access policy that targets all users and all resources and requires multi-factor authentication or an authentication strength. Policies that apply only at a certain risk level, exclude applications or are narrowed by a condition such as a platform or location do not count. The shared check does not assess user or group exclusions, so review those separately. Excluding emergency access accounts is expected.
 
 #### Remediation action
 

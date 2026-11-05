@@ -1,22 +1,23 @@
 ﻿function Test-MtAsdWorkstationPatchDeadline {
     <#
     .SYNOPSIS
-    Checks that an assigned Intune Windows update ring installs quality updates on workstations within one month of release.
+    Checks the configured quality-update deadline of Intune Windows update rings.
 
     .DESCRIPTION
     ISM-1695 (Essential Eight, Patch operating systems, Maturity Level One) asks that patches, updates or other
     vendor mitigations for vulnerabilities in the operating systems of workstations are applied within one
     month of release.
 
-    The check reads the Windows update rings in Intune. A ring satisfies the control when it is assigned, does
+    The check reads the Windows update rings in Intune. It passes when a ring has an inclusion assignment, does
     not pause quality updates, sets a deadline for quality updates, and the deferral period, the deadline and
-    the grace period add up to no more than the maximum number of days (30 by default). Rings that use
-    Windows Autopatch, or devices updated by another tool, are not read.
+    the grace period add up to no more than the maximum number of days (30 by default). It does not verify
+    assignment scope or the time between an update's release and installation. Rings that use Windows Autopatch,
+    or devices updated by another tool, are not read.
 
     .EXAMPLE
     Test-MtAsdWorkstationPatchDeadline
 
-    Returns true when at least one assigned update ring installs quality updates within 30 days of release.
+    Returns true when at least one update ring with an inclusion assignment has a configured total of 30 days or less.
 
     .LINK
     https://maester.dev/docs/tests/ASD.ISM-1695
@@ -40,7 +41,7 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        # The most days a quality update may take from release to forced installation: deferral, deadline and grace period together.
+        # The maximum configured total of the deferral, deadline and grace periods.
         [ValidateRange(1, 365)]
         [int] $MaximumDays = 30
     )
@@ -52,32 +53,37 @@
     }
 
     $report = foreach ($ring in $rings) {
+        $isAssigned = @($ring.assignments | Where-Object {
+                $targetType = [string] $_.target.'@odata.type'
+                $targetType -and $targetType -notmatch '(^|\.)exclusion'
+            }).Count -gt 0
         $deferral = [int]$ring.qualityUpdatesDeferralPeriodInDays
         $deadline = $ring.deadlineForQualityUpdatesInDays
         $grace = [int]$ring.deadlineGracePeriodInDays
         $total = if ($null -ne $deadline) { $deferral + [int]$deadline + $grace } else { $null }
         [pscustomobject]@{
             Name       = $ring.displayName
-            Assigned   = @($ring.assignments).Count -gt 0
+            Assigned   = $isAssigned
             Paused     = $ring.qualityUpdatesPaused -eq $true
             Deferral   = $deferral
             Deadline   = $deadline
             Grace      = $grace
             TotalDays  = $total
-            Compliant  = @($ring.assignments).Count -gt 0 -and $ring.qualityUpdatesPaused -ne $true -and $null -ne $total -and $total -le $MaximumDays
+            Compliant  = $isAssigned -and $ring.qualityUpdatesPaused -ne $true -and $null -ne $total -and $total -le $MaximumDays
         }
     }
     $testResult = @($report | Where-Object Compliant).Count -gt 0
 
-    $table = "| Update ring | Assigned | Quality updates paused | Deferral | Deadline | Grace period | Days to install |`n| --- | --- | --- | --- | --- | --- | --- |`n"
+    $table = "| Update ring | Inclusion assignment | Quality updates paused | Deferral | Deadline | Grace period | Configured total (days) |`n| --- | --- | --- | --- | --- | --- | --- |`n"
     foreach ($r in $report) {
         $table += "| $($r.Name) | $(if ($r.Assigned) { 'Yes' } else { 'No' }) | $(if ($r.Paused) { 'Yes' } else { 'No' }) | $($r.Deferral) | $(if ($null -ne $r.Deadline) { $r.Deadline } else { 'Not set' }) | $($r.Grace) | $(if ($null -ne $r.TotalDays) { $r.TotalDays } else { 'No deadline' }) |`n"
     }
     if ($testResult) {
-        $testResultMarkdown = "Well done. At least one assigned update ring installs quality updates within $MaximumDays days of release.`n`n$table"
+        $testResultMarkdown = "At least one update ring with an inclusion assignment has a configured deferral, deadline and grace period totalling $MaximumDays days or fewer.`n`n$table"
     } else {
-        $testResultMarkdown = "No assigned update ring installs quality updates within $MaximumDays days of release. Set a deadline for quality updates so that deferral, deadline and grace period add up to $MaximumDays days or fewer.`n`n$table"
+        $testResultMarkdown = "No update ring with an inclusion assignment has a quality-update deadline with deferral, deadline and grace period totalling $MaximumDays days or fewer. Set a deadline for quality updates and assign the ring to your workstations.`n`n$table"
     }
+    $testResultMarkdown += "`n`nThis checks policy configuration and inclusion assignments; it does not verify assignment coverage or exclusions, conflicts, device discovery, or actual installation times after release."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

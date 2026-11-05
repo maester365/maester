@@ -2,7 +2,7 @@
 
 Push notifications, one-time codes and SMS are relayed by adversary-in-the-middle phishing kits in real time. Passkeys (FIDO2), Windows Hello for Business and certificate-based authentication bind the sign-in to the site, so a proxied page gets nothing it can replay.
 
-ASD's assessment guide applies this requirement to unprivileged and privileged users alike, and the ASD Blueprint for Secure Cloud meets it with one Conditional Access policy for all users and all resources that requires the **Phishing-resistant MFA** authentication strength. This test runs the same check as [CISA.MS.AAD.3.1](https://maester.dev/docs/tests/CISA.MS.AAD.3.1): an enabled policy that targets all users and all resources and requires the built-in **Phishing-resistant MFA** strength, or a custom strength limited to Windows Hello for Business, passkeys (FIDO2) and certificate-based multifactor authentication.
+ASD's assessment guide applies this requirement to unprivileged and privileged users alike, and the ASD Blueprint for Secure Cloud meets it with one Conditional Access policy for all users and all resources that requires the **Phishing-resistant MFA** authentication strength. This test runs the same check as [CISA.MS.AAD.3.1](https://maester.dev/docs/tests/CISA.MS.AAD.3.1): an enabled policy that includes all users and all resources and specifies the built-in **Phishing-resistant MFA** strength, or a custom strength limited to Windows Hello for Business, passkeys (FIDO2) and certificate-based multifactor authentication. The check does not assess exclusions, narrowing conditions or alternative grant controls; review those separately to establish coverage for every sign-in.
 
 #### Remediation action
 
