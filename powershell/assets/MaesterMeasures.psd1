@@ -17,5 +17,26 @@
 #   License     service plans, any one of which is enough, as in a test's License attribute (optional)
 #   Permission  permissions the reader needs, as in a test's Permission attribute (optional)
 @{
-    Measures = @()
+    Measures = @(
+        @{
+            # Step intune.devices-compliant. No License: isCompliant can also come from an approved third-party MDM,
+            # and in a tenant without one the figure (no device is compliant) is what the step needs to show.
+            Key        = 'devices-compliant'
+            Function   = 'Get-MtDeviceComplianceShare'
+            Title      = 'Devices that sign in are compliant'
+            Unit       = 'devices'
+            Service    = 'Graph'
+            Permission = 'Graph:Scope:Device.Read.All | Graph:Scope:Directory.Read.All'
+        }
+        @{
+            # Step entra.mfa-registered. The registration report needs Microsoft Entra ID P1 and AuditLog.Read.All.
+            Key        = 'mfa-registered'
+            Function   = 'Get-MtMfaRegistrationShare'
+            Title      = 'Enabled member users are registered for MFA'
+            Unit       = 'users'
+            Service    = 'Graph'
+            License    = 'AAD_PREMIUM'
+            Permission = ('Graph:Scope:AuditLog.Read.All', 'Graph:Scope:Directory.Read.All')
+        }
+    )
 }
