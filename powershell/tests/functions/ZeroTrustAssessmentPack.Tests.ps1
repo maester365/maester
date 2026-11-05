@@ -68,6 +68,12 @@ Describe 'Zero Trust Assessment pack' {
             @($catalog.Tests | Where-Object { $_.Description -match '<!---\s*Results' -or $_.Remediation -match '%TestResult%' }).Id | Should -BeNullOrEmpty
         }
 
+        It 'carries the module''s MIT copyright and permission notice with the text it copies' {
+            $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
+            $catalog.License | Should -Match 'Copyright \(c\) Microsoft Corporation'
+            $catalog.License | Should -Match 'Permission is hereby granted'
+        }
+
         It 'maps every test of the catalog, and only those, in taxonomy.json' {
             $catalog = Get-Content (Join-Path $script:PackRoot 'catalog.json') -Raw | ConvertFrom-Json
             $mapping = (Get-Content (Join-Path $script:PackRoot 'taxonomy.json') -Raw | ConvertFrom-Json -AsHashtable).Tests

@@ -581,7 +581,7 @@ function ConvertTo-MtNativeRow {
     # A family instance can say what it is about when that differs from its family: a Zero Trust Assessment
     # result is about Entra ID, Intune or Exchange, though the family is one test.
     if ($isInstance) {
-        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product
+        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product -RelatedProduct $row.RelatedProduct
         foreach ($name in $own.Keys) { $row[$name] = $own[$name] }
     }
     [pscustomobject]$row
@@ -598,13 +598,20 @@ function Get-MtInstanceAttribute {
     area key, Low, Medium or High, and ATT&CK techniques of the pinned release. A value that does not pass is left
     out, so the row keeps its family's value. A Feature is checked against the instance's Product when it sets
     one, else against the family's.
+
+    When the instance moves the row to another product, the family's Feature belongs to the old product: it is
+    cleared unless the instance sets a feature of its own, and the new product is taken off the family's
+    RelatedProduct. Mitre follows the list rules of a built-in test: None only on its own, at most five
+    techniques, no repeats.
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Specialized.OrderedDictionary])]
     param(
         [Parameter()] [AllowNull()] [object] $Instance,
         # The family's product, used to check a Feature when the instance sets none.
-        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product,
+        # The family's related products, kept (less the new product) when the instance changes product.
+        [Parameter()] [AllowNull()] [string[]] $RelatedProduct
     )
 
     $values = [ordered]@{}
@@ -612,16 +619,20 @@ function Get-MtInstanceAttribute {
     $taxonomy = Get-MtTaxonomy
 
     $productKey = Resolve-MtProductKey -Name ([string](Get-MtInstanceValue -Instance $Instance -Name 'Product')) -Taxonomy $taxonomy
+    $productChanged = $productKey -and $productKey -ne $Product
     if ($productKey) { $values.Product = $productKey; $Product = $productKey }
 
     $related = @(@(Get-MtInstanceValue -Instance $Instance -Name 'RelatedProduct') | Where-Object { $_ } |
             ForEach-Object { Resolve-MtProductKey -Name ([string]$_) -Taxonomy $taxonomy } | Where-Object { $_ -and $_ -ne $Product } | Select-Object -Unique)
     if ($related.Count) { $values.RelatedProduct = [string[]]$related }
+    elseif ($productChanged -and $RelatedProduct -contains $Product) { $values.RelatedProduct = [string[]]@($RelatedProduct | Where-Object { $_ -ne $Product }) }
 
     $feature = [string](Get-MtInstanceValue -Instance $Instance -Name 'Feature')
     $features = $null
     if ($feature -and $Product -and $taxonomy.Lookup.Feature.TryGetValue($Product, [ref] $features) -and $features.ContainsKey($feature)) {
         $values.Feature = [string]$features[$feature].Key
+    } elseif ($productChanged) {
+        $values.Feature = $null
     }
 
     $area = [string](Get-MtInstanceValue -Instance $Instance -Name 'Area')
@@ -634,8 +645,9 @@ function Get-MtInstanceAttribute {
 
     $mitre = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Mitre') | Where-Object { $_ } | ForEach-Object { [string]$_ })
     if ($mitre.Count) {
-        $known = @($mitre | Where-Object { $_ -eq 'None' -or -not (Get-MtAttackTechniqueProblem -Mitre $_) })
-        if ($known.Count) { $values.Mitre = [string[]]$known }
+        $techniques = @($mitre | Where-Object { $_ -ne 'None' -and -not (Get-MtAttackTechniqueProblem -Mitre $_) } | Select-Object -Unique)
+        if ($techniques.Count) { $values.Mitre = [string[]]@($techniques | Select-Object -First 5) }
+        elseif ($mitre -contains 'None') { $values.Mitre = [string[]]@('None') }
     }
     $values
 }
@@ -714,7 +726,9 @@ function Get-MtProductLane {
     [CmdletBinding()]
     [OutputType([string])]
     param(
-        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product
+        [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product,
+        # The family's related products, kept (less the new product) when the instance changes product.
+        [Parameter()] [AllowNull()] [string[]] $RelatedProduct
     )
     if (-not $Product) { return 'Other' }
     Get-MtProductName -Product $Product
