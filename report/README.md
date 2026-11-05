@@ -69,12 +69,17 @@ Add one of these to the address of the development server to check other kinds o
 | `http://localhost:5173/?sample=2x` | A Maester 2.x result |
 | `http://localhost:5173/?sample=one` | A run of one test (the report shows the test itself) |
 | `http://localhost:5173/?sample=suite` | A run of the CIS suite |
+| `http://localhost:5173/?sample=step` | A run of MT.1001 alone, with the defender's path of its prerequisites ("Before you fix this") |
 | `http://localhost:5173/?sample=tenants` | A merged result of five tenants (`Merge-MtMaesterResult`), which opens on the page that compares them |
 
 ### How the report is put together
 
 - `src/lib/model.ts` turns a result into what the views use: rows with every field, counts, the ranking of
   failures, framework coverage, packs and the changes since the previous run.
+- `src/lib/defendersPath.ts` reads the result's `Steps` and `Goals` (the defender's path,
+  `docs/proposals/defenders-path.md`) into types. It is the only file that knows their shape. The report shows
+  what the engine wrote and works nothing out; a result without `Steps` shows no path. The sample's `Steps` and
+  `Goals` are in `src/lib/sampleSteps.ts`, and `src/components/report/path.tsx` has the views.
 - `src/components/report/views.ts` lists the views in the sidebar. A view is listed only when it has
   something to show, so a small run gets a short sidebar. A pack's view is built from its rows' `Fields`,
   so a new pack needs no code.

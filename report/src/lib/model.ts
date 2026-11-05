@@ -4,6 +4,7 @@
 // field hide when no row has it (see views.tsx).
 
 import { getReportAttachments, type ReportAttachment } from "@/lib/reportAttachments"
+import { readDefendersPath, type DefendersPath } from "@/lib/defendersPath"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Raw = Record<string, any>
@@ -122,6 +123,8 @@ export interface Row {
   Package: Raw | null
   Fields: Record<string, string | string[]> | null
   ShimOf: string | null
+  // The defender's path steps the test verifies (empty when it names none).
+  Step: string[]
   Parameters: { Name: string; Value: unknown; Source?: string }[]
   Description: string
   Detail: string
@@ -202,6 +205,7 @@ function normalize(t: Raw): Row {
     Package: t.Package && t.Package.Id ? t.Package : null,
     Fields: t.Fields && typeof t.Fields === "object" ? t.Fields : null,
     ShimOf: t.ShimOf ? text(t.ShimOf) : null,
+    Step: list(t.Step),
     Parameters: Array.isArray(t.Parameters) ? t.Parameters : [],
     Description: text(detail.TestDescription),
     Detail: text(detail.TestResult),
@@ -292,6 +296,8 @@ export interface Model {
   changes: { newlyFailing: Row[]; fixed: Row[]; added: Row[] }
   attachments: ReportAttachment[]
   hasAttributes: boolean
+  // The defender's path: the result's Steps and Goals, or null when it has none (lib/defendersPath.ts).
+  path: DefendersPath | null
   // A run of one to three tests is shown as the tests themselves.
   focused: boolean
 }
@@ -396,6 +402,7 @@ export function buildModel(result: Raw): Model {
     changes,
     attachments: getReportAttachments(result),
     hasAttributes,
+    path: readDefendersPath(result),
     focused: rows.length > 0 && rows.length <= 3,
   }
 }

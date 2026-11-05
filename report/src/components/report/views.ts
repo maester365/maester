@@ -27,7 +27,7 @@ export function buildViews(model: Model, extra: { affectedObjects: boolean; atta
   // Summary: the pages that cover the whole run, so the action plan, changes and affected objects are never below
   // a long list of products.
   views.push({ path: "/", group: "Summary", title: focused ? (model.rows.length === 1 ? "Result" : "Results") : "Overview", icon: "home" })
-  if (model.failing.length >= 2) views.push({ path: "/plan", group: "Summary", title: "Action plan", icon: "fix", count: model.failing.length, bad: true })
+  if (model.failing.length >= 2 || (!focused && model.path)) views.push({ path: "/plan", group: "Summary", title: "Action plan", icon: "fix", count: model.failing.length, bad: true })
   if (!focused) views.push({ path: "/tests", group: "Summary", title: "All tests", icon: "result", count: model.rows.length })
   if (!focused && model.previous && model.changes.newlyFailing.length + model.changes.fixed.length > 0) {
     views.push({ path: "/changes", group: "Summary", title: "Changes since last run", icon: "history", count: model.changes.newlyFailing.length, bad: true })

@@ -1,11 +1,13 @@
-// Every failure, ranked, with the effort and user-impact grid: start where fixes are cheap and users won't notice.
+// The defender's path first, when the result has Steps: the steps in three groups and a lane for each goal.
+// Then every failure, ranked, with the effort and user-impact grid: start where fixes are cheap and users won't notice.
 
 import { useState } from "react"
 import { Link } from "@/lib/router"
 import { SEVERITIES, priority, severityWeight } from "@/lib/model"
 import { useReport } from "@/components/report/ReportContext"
 import { FixList, Footer } from "@/components/report/lists"
-import { ProductMark } from "@/components/report/ui"
+import { ProductMark, plural } from "@/components/report/ui"
+import { GoalLanes, PathGroups, blockedStepsOf } from "@/components/report/path"
 
 const LEVELS = ["Low", "Medium", "High"]
 const SEVERITY_COLOUR: Record<string, string> = { Critical: "var(--mt-fail)", High: "var(--mt-high)", Medium: "var(--mt-warn)", Low: "var(--mt-skip)", Info: "var(--mt-info)" }
@@ -15,17 +17,37 @@ export default function ActionPlanPage() {
   const [cell, setCell] = useState<[string, string] | null>(null)
   const failing = model.failing
   const inCell = (impact: string, effort: string) => failing.filter((t) => (t.UserImpact || "Medium") === impact && (t.ImplementationCost || "Medium") === effort)
-  const list = cell ? inCell(cell[0], cell[1]).sort((a, b) => priority(b) - priority(a)) : model.ranked
+  // A small run has no lanes; its test pages carry "Before you fix this" instead.
+  const path = model.focused ? null : model.path
+  const ranked = cell ? inCell(cell[0], cell[1]).sort((a, b) => priority(b) - priority(a)) : model.ranked
+  // A failure whose step is blocked moves after the ones that can be fixed now.
+  const list = path ? [...ranked.filter((t) => !blockedStepsOf(model, t).length), ...ranked.filter((t) => blockedStepsOf(model, t).length)] : ranked
   const byProduct = model.products.map((p) => ({ p, rows: p.rows.filter((t) => t.Result === "Failed") })).filter((x) => x.rows.length).sort((a, b) => b.rows.length - a.rows.length)
   const hasLevels = failing.some((t) => t.UserImpact || t.ImplementationCost)
 
   return (
     <div className="mt-wrap">
-      <div className="mt-head">
-        <div className="mt-eyebrow">Action plan</div>
-        <h1 className="mt-h1">{failing.length} failures, ranked by what to fix first</h1>
-        <p className="mt-lead">Each test says how much its fix disrupts users and how much work it is. Start in the green corner: fixes that are cheap and that users won't notice.</p>
-      </div>
+      {path ? (
+        <>
+          <div className="mt-head">
+            <div className="mt-eyebrow">Action plan · Defender's path</div>
+            <h1 className="mt-h1">{plural(path.groups.ready.length, "step")} ready now, {path.groups.blocked.length} blocked</h1>
+            <p className="mt-lead">The order to make changes in. Each step lists what it depends on, from Microsoft Learn, so that a fix doesn't fail or lock users out because something it needs is missing.{path.groups.check.length ? ` ${plural(path.groups.check.length, "step")} to check first: this run could not tell whether they are done.` : ""}</p>
+          </div>
+          <PathGroups />
+          <GoalLanes />
+          <div className="mt-head">
+            <h2 className="mt-h2">{failing.length} failures, ranked by what to fix first</h2>
+            <p className="mt-note">Each test says how much its fix disrupts users and how much work it is. Failures whose step is blocked come last.</p>
+          </div>
+        </>
+      ) : (
+        <div className="mt-head">
+          <div className="mt-eyebrow">Action plan</div>
+          <h1 className="mt-h1">{failing.length} failures, ranked by what to fix first</h1>
+          <p className="mt-lead">Each test says how much its fix disrupts users and how much work it is. Start in the green corner: fixes that are cheap and that users won't notice.</p>
+        </div>
+      )}
       <div className="mt-grid mt-g2" style={{ alignItems: "start" }}>
         {hasLevels && (
           <div className="mt-card mt-pad mt-sec">
