@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Updates the checked-in snapshot of Microsoft Graph permissions blocked for agent identities.
 
@@ -22,7 +22,7 @@ param (
     # Raw URL of Microsoft's agent ID platform overview page.
     [string] $SourceUrl = 'https://raw.githubusercontent.com/microsoftgraph/microsoft-graph-docs-contrib/main/api-reference/v1.0/resources/agentid-platform-overview.md',
 
-    # Minimum expected row count. The table has 57 rows today.
+    # Minimum expected row count. The table has 59 rows today.
     [int] $MinimumRowCount = 50
 )
 
@@ -123,9 +123,8 @@ try {
 }
 
 # --- Build output ---
-# Note: GeneratedAt is metadata only and is excluded from the diff-detection
-# input. The workflow's git-diff step compares the Permissions array, Count,
-# SourceUrl, and SourceSha256, which change only when Microsoft's table does.
+# The snapshot holds no timestamp, so the workflow's git diff is non-empty only when
+# Microsoft's table or SourceUrl changes.
 
 $output = [ordered]@{
     SourceUrl    = $SourceUrl
