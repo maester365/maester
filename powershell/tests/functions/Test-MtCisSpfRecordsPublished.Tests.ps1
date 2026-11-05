@@ -92,6 +92,38 @@
         $script:resultDetail.Investigate | Should -BeTrue
     }
 
+    It 'preserves <Outcome> when another SPF lookup is unavailable' -ForEach @(
+        @{ Outcome = 'investigation'; Classification = 'Unknown'; Record = 'v=spf1 ~all'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedSkip = $null }
+        @{ Outcome = 'failure'; Classification = 'Sending'; Record = 'v=spf1 ?all'; ExpectedResult = $false; ExpectedInvestigation = $false; ExpectedSkip = $null }
+        @{ Outcome = 'NotSupported without investigation'; Classification = 'Sending'; Record = 'v=spf1 ~all'; ExpectedResult = $null; ExpectedInvestigation = $false; ExpectedSkip = 'NotSupported' }
+    ) {
+        $script:domains += [pscustomobject]@{ DomainName = 'unavailable.example'; InitialDomain = $false; IsCoExistenceDomain = $false }
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
+        $script:spfResults['unavailable.example'] = 'DNS lookup unavailable'
+        $script:classifications['example.com'] = [pscustomobject]@{
+            Classification = $Classification
+            SpfDeniesAll   = $false
+            Reason         = 'Mail-use evidence for this test.'
+        }
+        $script:classifications['unavailable.example'] = [pscustomobject]@{
+            Classification = 'Unknown'
+            SpfDeniesAll   = $false
+            Reason         = 'DNS lookup unavailable.'
+        }
+
+        $actual = Test-MtCisSpfRecordsPublished
+
+        $actual | Should -Be $ExpectedResult
+        $script:resultDetail.Investigate | Should -Be $ExpectedInvestigation
+        $script:resultDetail.SkippedBecause | Should -Be $ExpectedSkip
+        if ($null -eq $ExpectedSkip) {
+            $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
+            if ($ExpectedInvestigation) {
+                $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
+            }
+        }
+    }
+
     It 'investigates an indirect all policy when parked status is unknown' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 redirect=_spf.example.net' }
         $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 -all' }

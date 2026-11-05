@@ -8,6 +8,8 @@ For a parked or non-sending domain, the SPF record must explicitly use `-all`; a
 
 Missing SPF, conflicting signals, DNS errors, and unresolved redirect-only policies do not receive the parked exception. When the record passes the sending-domain rule but could fail the parked-domain rule, the result requires investigation. Selector discovery is limited to the standard Exchange Online selectors, so nonstandard DKIM selector names cannot be ruled out automatically.
 
+When some lookups are unavailable and another domain requires investigation, the result remains Investigate and lists the unavailable domains as Not checked. This is not confirmation of compliance for those domains. Known failures still take precedence; unavailable lookups without failures or investigation produce NotSupported.
+
 When DNS evidence is inconclusive but a domain is known to be parked, add its name to this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. This selects the parked audit branch; it does not waive the requirement to publish `v=spf1 -all`.
 
 #### Remediation action

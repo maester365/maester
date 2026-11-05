@@ -89,6 +89,41 @@
         }
     }
 
+    It 'preserves <Outcome> when another DMARC lookup is unavailable' -ForEach @(
+        @{ Outcome = 'investigation'; Classification = 'Unknown'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedSkip = $null }
+        @{ Outcome = 'failure'; Classification = 'Sending'; ExpectedResult = $false; ExpectedInvestigation = $false; ExpectedSkip = $null }
+        @{ Outcome = 'NotSupported without investigation'; Classification = 'Parked'; ExpectedResult = $null; ExpectedInvestigation = $false; ExpectedSkip = 'NotSupported' }
+    ) {
+        $script:domains = @(
+            [pscustomobject]@{ DomainName = 'example.com'; IsCoExistenceDomain = $false }
+            [pscustomobject]@{ DomainName = 'unavailable.example'; IsCoExistenceDomain = $false }
+        )
+        $script:registrableDomains = @{
+            'example.com'         = 'example.com'
+            'unavailable.example' = 'unavailable.example'
+        }
+        $script:dmarcResults = @{
+            'example.com'         = $script:parkedDmarcRecord
+            'unavailable.example' = 'DNS lookup unavailable'
+        }
+        $script:classifications['example.com'] = [pscustomobject]@{
+            Classification = $Classification
+            Reason         = 'Mail-use evidence for this test.'
+        }
+
+        $actual = Test-MtCisDmarcRecordsPublished
+
+        $actual | Should -Be $ExpectedResult
+        $script:resultDetail.Investigate | Should -Be $ExpectedInvestigation
+        $script:resultDetail.SkippedBecause | Should -Be $ExpectedSkip
+        if ($null -eq $ExpectedSkip) {
+            $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
+            if ($ExpectedInvestigation) {
+                $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
+            }
+        }
+    }
+
     It 'looks up the organizational domain after an invalid subdomain record and reports an invalid effective record' {
         $script:domains = @([pscustomobject]@{ DomainName = 'mail.example.com'; IsCoExistenceDomain = $false })
         $script:registrableDomains = @{ 'mail.example.com' = 'example.com' }

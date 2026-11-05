@@ -125,7 +125,7 @@
     $unchecked = @($report | Where-Object { $null -eq $_.Pass -and -not $_.Investigate })
     $failed = @($checked | Where-Object { -not $_.Pass })
     $investigated = @($report | Where-Object { $_.Investigate })
-    if ($failed.Count -eq 0 -and $unchecked.Count -gt 0) {
+    if ($failed.Count -eq 0 -and $unchecked.Count -gt 0 -and $investigated.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     }

@@ -135,7 +135,7 @@
     $investigated = @($report | Where-Object { $_.Investigate })
     if ($failed.Count -gt 0) {
         $testResult = $false
-    } elseif ($unchecked.Count -gt 0) {
+    } elseif ($unchecked.Count -gt 0 -and $investigated.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
     } else {
