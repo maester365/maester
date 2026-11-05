@@ -699,7 +699,6 @@ function renderPackTestPage(pack, test, explorer, text) {
   const description = (text?.Description ?? "").trim();
   const remediation = (text?.Remediation ?? "").trim();
   const body = [generatedMarker, ""];
-  body.push(`A check of the [${pack.name}](/docs/tests/packs/${pack.slug}) pack, written and maintained by Microsoft. Maester runs the assessment and shows the result in its report, beside Maester's own checks.`, "");
   if (test.also.length) {
     body.push(`:::note[Maester checks this too]`, `${test.also.map((id) => `[${id}](/docs/tests/${id}) (${titleById.get(id) ?? id})`).join(", ")} ${test.also.length === 1 ? "checks" : "check"} the same setting. Running both reports it twice.`, ":::", "");
   }
@@ -719,7 +718,14 @@ function renderPackTestPage(pack, test, explorer, text) {
   if (test.license.length) body.push(`| Licence | ${escapeTable(test.license.join(", "))} |`);
   if (test.tenantType.length) body.push(`| Tenant | ${escapeTable(test.tenantType.join(", "))} |`);
   body.push("", "Product, feature, area and ATT&CK are Maester's: the assessment does not record them, so Maester keeps them in the pack's `taxonomy.json`.", "", "</details>", "");
-  body.push(`<small>The overview and remediation are from Microsoft's ${pack.module || "Zero Trust Assessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}, © Microsoft Corporation, under the MIT licence.</small>`, "");
+  body.push(
+    ":::note[From Microsoft]",
+    `A check of the [${pack.name}](/docs/tests/packs/${pack.slug}) pack, written and maintained by Microsoft. Maester runs the assessment and shows the result in its report, beside Maester's own checks.`,
+    "",
+    `The overview and remediation are from Microsoft's ${pack.module || "Zero Trust Assessment"}${pack.moduleVersion ? ` ${pack.moduleVersion}` : ""}, © Microsoft Corporation, under the MIT licence.`,
+    ":::",
+    "",
+  );
   const summary = description ? summarize(description) : "";
   const metaDescription = summary ? shorten(summary, 155) : shorten(`${test.title.replace(/\.$/, "")}: a ${pack.name} check, with its severity, effort and the product it is about.`, 155);
   return `---
