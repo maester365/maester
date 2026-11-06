@@ -142,6 +142,63 @@ Describe 'CIS DKIM domain classification outcomes' {
 
         Test-MtCisDkim | Should -BeTrue
         $script:detail.Investigate | Should -BeTrue
+        $script:detail.Result | Should -Match 'Compliance .* remains unconfirmed'
+        $script:detail.Result | Should -Not -Match 'Well done|Sending domains have DKIM configured'
+    }
+
+    It 'reports a compliant domain alongside <OtherOutcome> without changing result precedence' -ForEach @(
+        @{ OtherOutcome = 'Investigate'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedUnconfirmed = $true }
+        @{ OtherOutcome = 'NotSupported'; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $true }
+        @{ OtherOutcome = 'NotApplicable'; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $false }
+        @{ OtherOutcome = 'Passed'; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $false }
+        @{ OtherOutcome = 'Failed'; ExpectedResult = $false; ExpectedInvestigation = $false; ExpectedUnconfirmed = $false }
+    ) {
+        Mock -ModuleName Maester Get-MtExo {
+            if ($Request -eq 'AcceptedDomain') {
+                return @(
+                    [PSCustomObject]@{ DomainName = 'compliant.example'; InitialDomain = $false; IsCoexistenceDomain = $false }
+                    [PSCustomObject]@{ DomainName = 'other.example'; InitialDomain = $false; IsCoexistenceDomain = $false }
+                )
+            }
+            return @()
+        }
+        Mock -ModuleName Maester Get-MtCisParkedDomainClassification {
+            $classification = 'Parked'
+            $unavailable = $false
+            $selectorEvidence = $false
+            if ($DomainName -eq 'other.example') {
+                switch ($OtherOutcome) {
+                    'Investigate' { $classification = 'Unknown' }
+                    'NotSupported' { $classification = 'Unknown'; $unavailable = $true }
+                    'NotApplicable' { $classification = 'NotSending' }
+                    'Failed' { $selectorEvidence = $true }
+                }
+            }
+            [PSCustomObject]@{
+                Classification             = $classification
+                DnsResolverUnavailable     = $unavailable
+                DkimSelectorRecordEvidence = $selectorEvidence
+                DkimSelectorLookupsComplete = $true
+                Reason                     = 'Mixed-domain test evidence.'
+            }
+        }
+
+        Test-MtCisDkim | Should -Be $ExpectedResult
+        $script:detail.Investigate | Should -Be $ExpectedInvestigation
+        $script:detail.SkippedBecause | Should -BeNullOrEmpty
+        $script:detail.Result | Should -Match '\| compliant\.example .*Pass'
+        $script:detail.Result | Should -Match '\| other\.example \|'
+        if ($ExpectedUnconfirmed) {
+            $script:detail.Result | Should -Match 'Compliance .* remains unconfirmed'
+            $script:detail.Result | Should -Match 'Review the domains marked Investigate or skipped'
+            $script:detail.Result | Should -Not -Match 'Well done|Sending domains have DKIM configured'
+        }
+        elseif ($ExpectedResult) {
+            $script:detail.Result | Should -Match 'Well done\. Sending domains have DKIM configured'
+        }
+        else {
+            $script:detail.Result | Should -Match "Your tenant's domains do not have DKIM fully deployed"
+        }
     }
 
     It 'skips with NotSupported when the DNS resolver is unavailable' {

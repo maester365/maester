@@ -6,6 +6,8 @@
     .DESCRIPTION
     Uses Resolve-DnsName on Windows and Resolve-Dns from DnsClient-PS on other platforms.
     A successful query with no answers has Status Success and an empty Answers array.
+    All lookup outcomes are cached until Clear-MtDnsCache resets the session snapshot.
+    Cached results are shared read-only objects and retain the first caller's Name spelling.
 
     .PARAMETER Name
     The DNS name to query.

@@ -199,7 +199,10 @@
 
     $portalLink = 'https://security.microsoft.com/authentication?viewid=DKIM'
 
-    if ($testResult) {
+    if ($testResult -and ('Investigate' -in $dkimRecords.pass -or 'NotSupported' -in $dkimRecords.pass)) {
+        $testResultMarkdown = "Compliance with the applicable CIS DKIM requirement remains unconfirmed. Review the domains marked Investigate or skipped because DNS lookups are unavailable.`n`n%TestResult%"
+    }
+    elseif ($testResult) {
         $testResultMarkdown = "Well done. Sending domains have DKIM configured and valid records exist, and parked domains have no known Exchange selector records.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant's domains do not have DKIM fully deployed. Review [EXO configuration]($portalLink) and DNS records.`n`n%TestResult%"

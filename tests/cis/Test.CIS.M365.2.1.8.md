@@ -6,6 +6,8 @@ Maester identifies a likely non-sending domain when it finds one SPF v1 record w
 
 For a parked or non-sending domain, the SPF record must explicitly use `-all`; a `~all` policy does not meet the parked-domain audit. For sending domains, the test follows a redirect modifier only when the record has no all mechanism, since receivers ignore the redirect in that case. Domains in the onmicrosoft.com namespace are skipped.
 
+An `exp=` modifier does not authorize senders and is ignored when classifying domain use. The audit still requires the compliant all mechanism to be the final term: `v=spf1 -all exp=why.example.com` does not meet that termination requirement.
+
 Missing SPF, conflicting signals, DNS errors, and unresolved redirect-only policies do not receive the parked exception. When the record passes the sending-domain rule but could fail the parked-domain rule, the result requires investigation. Selector discovery is limited to the standard Exchange Online selectors, so nonstandard DKIM selector names cannot be ruled out automatically.
 
 When some lookups are unavailable and another domain requires investigation, the result remains Investigate and lists the unavailable domains as Not checked. Investigation results state that compliance remains unconfirmed and direct you to review these domains instead of displaying a full-compliance banner. Known failures still take precedence; unavailable lookups without failures or investigation produce NotSupported.
