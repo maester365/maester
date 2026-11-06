@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
     function Get-PesterResultsFixture {
@@ -122,6 +122,56 @@ Describe 'ConvertTo-MtMaesterResult' {
             $result.InvestigateCount | Should -Be 1
             $result.SkippedCount | Should -Be 0
             $result.Tests[0].ResultDetail.TestResult | Should -Match 'Manual review required'
+        }
+    }
+
+    It 'Classifies a crashed Pester row as Error and a failed assertion as Failed' -ForEach @(
+        @{ Case = 'failed assertion';         ErrorId = 'PesterAssertionFailed';   Expected = 'Failed' }
+        @{ Case = 'throw on a string';        ErrorId = 'boom';                    Expected = 'Error' }
+        @{ Case = 'TimeoutException';         ErrorId = 'took too long';           Expected = 'Error' }
+        @{ Case = 'CommandNotFoundException'; ErrorId = 'CommandNotFoundException'; Expected = 'Error' }
+    ) {
+        # The classification used to match an allowlist of five exception type names on
+        # CategoryInfo.Reason, so a crash outside that list kept $test.Result, which for a crashed
+        # test is Failed, and was counted in FailedCount as a compliance failure. Measured against
+        # Pester: only a failed assertion carries FullyQualifiedErrorId 'PesterAssertionFailed'.
+        InModuleScope Maester -Parameters @{ ErrorId = $ErrorId; Expected = $Expected } {
+            param($ErrorId, $Expected)
+
+            $pesterTest = [PSCustomObject]@{
+                ExpandedName = 'MT.1068: a test that ended badly'
+                Result       = 'Failed'
+                ErrorRecord  = @([PSCustomObject]@{ FullyQualifiedErrorId = $ErrorId })
+                ScriptBlock  = [scriptblock]::Create('$true | Should -BeTrue')
+                Block        = [PSCustomObject]@{ Tag = @('MT.1068'); ExpandedName = 'MT.1068' }
+                Duration     = [TimeSpan]::FromSeconds(1)
+                Tag          = @('MT.1068')
+            }
+            $pesterResults = [PSCustomObject]@{
+                Tests             = @($pesterTest)
+                Containers        = @(
+                    [PSCustomObject]@{
+                        Blocks = @([PSCustomObject]@{ Name = 'MT.1068'; Result = 'Failed'; Tag = @('MT.1068') })
+                    }
+                )
+                Result            = 'Failed'
+                ExecutedAt        = [DateTime]::UtcNow
+                Duration          = [TimeSpan]::FromSeconds(1)
+                UserDuration      = [TimeSpan]::FromSeconds(1)
+                DiscoveryDuration = [TimeSpan]::Zero
+                FrameworkDuration = [TimeSpan]::Zero
+            }
+
+            $result = ConvertTo-MtMaesterResult -PesterResults $pesterResults
+
+            $result.Tests[0].Result | Should -Be $Expected
+            if ($Expected -eq 'Error') {
+                $result.ErrorCount | Should -Be 1
+                $result.FailedCount | Should -Be 0 -Because 'a crash is not a compliance failure and must not inflate FailedCount'
+            } else {
+                $result.FailedCount | Should -Be 1
+                $result.ErrorCount | Should -Be 0
+            }
         }
     }
 

@@ -394,14 +394,21 @@
             $result = 'Error'
         } elseif ($testResultDetail.TestInvestigate -eq $true) {
             $result = 'Investigate'
-        } elseif ((
-                $test -and
-                $test.ErrorRecord -and
-                $test.ErrorRecord.Count -gt 0 -and
-                $test.ErrorRecord[0].CategoryInfo -and
-                $test.ErrorRecord[0].CategoryInfo.Reason) -and
-            (@('RuntimeException', 'ParameterBindingValidationException', 'ParameterBindingException', 'HttpRequestException', 'TaskCanceledException') -contains $test.ErrorRecord[0].CategoryInfo.Reason )) {
-            Write-Verbose "Setting result=Error $($name) because: $($test.ErrorRecord[0].CategoryInfo.Reason)"
+        } elseif ($test -and $test.ErrorRecord -and $test.ErrorRecord.Count -gt 0 -and
+            $test.ErrorRecord[0].FullyQualifiedErrorId -ne 'PesterAssertionFailed') {
+            # A failed assertion is a compliance failure and keeps $test.Result. Anything else that
+            # threw is a defect in the test or in its environment, which is an Error: the same
+            # decision Invoke-MtNativePlan makes for the native rows on $status.
+            #
+            # This replaces an allowlist of five exception type names matched on
+            # CategoryInfo.Reason. Any crash outside that list fell through to $test.Result, which
+            # for a crashed test is Failed, so a timeout, a missing cmdlet or a failed task was
+            # counted in FailedCount as if the tenant were non-compliant. Measured against Pester:
+            # a failed assertion is the only one that carries FullyQualifiedErrorId
+            # 'PesterAssertionFailed', while 'throw' on a string, a TimeoutException and a
+            # CommandNotFoundException carry the thrown message or the type name, and the last two
+            # were not in the allowlist.
+            Write-Verbose "Setting result=Error $($name) because: $($test.ErrorRecord[0].FullyQualifiedErrorId)"
             $result = 'Error'
         } else {
             $result = $test.Result
