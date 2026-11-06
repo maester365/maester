@@ -100,7 +100,7 @@
             # objects files keep the full records.
             if ($null -ne $copy.AffectedObjects) {
                 $copy.AffectedObjects = @($copy.AffectedObjects | ForEach-Object {
-                        [PSCustomObject]@{
+                        $slim = [ordered]@{
                             System      = $_.System
                             Type        = $_.Type
                             Id          = $_.Id
@@ -109,6 +109,18 @@
                             Tests       = @($_.Tests)
                             Referenced  = [bool](@($_.Sources) | Where-Object { $_ -in 'GraphObjects', 'Markdown' })
                         }
+                        # Only objects that have facts carry the property, so a report without any stays as small as before.
+                        $facts = @(Get-ObjectProperty $_ 'Facts' | Where-Object { $_ })
+                        if ($facts.Count -gt 0) {
+                            $slim.Facts = @($facts | ForEach-Object {
+                                    $fact = [ordered]@{ Name = $_.Name; Value = $_.Value; Tone = $_.Tone; Source = $_.Source; AsOf = $_.AsOf }
+                                    # Key and Raw let the report's own summaries read a fact without parsing its text.
+                                    $key = Get-ObjectProperty $_ 'Key'
+                                    if ($key) { $fact.Key = $key; $fact.Raw = $_.Raw }
+                                    [PSCustomObject]$fact
+                                })
+                        }
+                        [PSCustomObject]$slim
                     })
             }
             # The report data lists each attachment without its content, which is written into its own element.

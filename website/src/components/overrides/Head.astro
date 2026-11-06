@@ -54,5 +54,5 @@ const jsonLd = [
 <meta property="og:image:alt" content={data.title} />
 <meta name="twitter:image" content={image} />
 {!ownImage && !isArchive && <meta name="maester:og" content={JSON.stringify(card)} />}
-{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <Analytics />
