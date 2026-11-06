@@ -29,23 +29,34 @@ installed, selected, configured and written has moved on. This page lists every 
 
    ```powershell
    # If Maester was installed with Install-PSResource (PSResourceGet)
-   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue | Uninstall-PSResource
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue |
+       Uninstall-PSResource -Scope CurrentUser
 
-   # If Maester was installed with Install-Module (PowerShellGet)
-   Get-InstalledModule -Name 'Maester' -AllVersions -ErrorAction Continue | Uninstall-Module
+   # Also run this in an elevated session if installed for all users
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue |
+       Uninstall-PSResource -Scope AllUsers
+
+   # PowerShellGet: run elevated if Maester was installed for all users
+   Get-InstalledModule -Name 'Maester' -AllVersions -AllowPrerelease -ErrorAction Continue |
+       Uninstall-Module
    ```
 
-   These commands remove all Maester versions found by each package manager, including any 3.x version
-   already installed.
+   These commands remove all Maester versions found in the selected installation scope, including previews
+   and any 3.x version already installed. Removing an AllUsers installation requires an elevated session.
+   `Uninstall-Module` has no `-Scope` parameter; it removes the installations returned by `Get-InstalledModule`.
+   Skip commands for unavailable package managers. A "not found" message can mean there is nothing left to
+   remove; resolve any uninstall errors before proceeding.
 
 3. Install 3.x using the [preview installation instructions](./preview.md#install-the-preview)
    while 3.x is in preview. Start a new PowerShell session before using it.
-4. Clean up your 2.x tests folder. Maester 3.0 doesn't need one: if the folder holds no custom tests and no
-   config changes, delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then again without
-   `-WhatIf` after you have reviewed the changes.
+4. Clean up your 2.x tests folder. Maester 3.0 doesn't need one. Before deleting it, preserve any generated
+   reports (such as `test-results`) and other files you need. If the folder holds no custom tests or config
+   changes, you can then delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then again
+   without `-WhatIf` after you have reviewed the changes.
 
-   **Updates to Custom Tests** - These apply only if you have been using custom tests or disabling bult-in tests:
-   
+   **Updates to custom tests and disabled built-in tests:** Steps 5–7 apply only if you have custom tests or
+   previously disabled built-in tests.
+
 5. If you disabled built-in tests by deleting their files in Maester 2.x, you must now disable them in
    `maester-config.json` instead.
 6. If you have Pester-format custom tests, install Pester 5.7.1 or later yourself, or convert the tests with
@@ -57,9 +68,9 @@ installed, selected, configured and written has moved on. This page lists every 
    built-in tests changed.
 10. Try your usual command with `-DryRun -PassThru` first to see what would run.
 
-:::info[Important]
+:::caution
 
-**Remove Maester 2.x before using 3.x.** - Both `Update-Module` and `Update-PSResource` leave older versions
+**Remove Maester 2.x before using 3.x.** Both `Update-Module` and `Update-PSResource` leave older versions
   installed, so updating alone does not complete the migration. (The checklist above uses removal followed by
   a fresh install.) When a script calls a function that only 2.x exports, PowerShell loads 2.x into the session
   and from then on `Invoke-Maester` runs Maester 2.x instead of the 3.x one.
@@ -72,15 +83,16 @@ installed, selected, configured and written has moved on. This page lists every 
 
 ### Staying on 2.x
 
-If you are not ready to migrate, keep 2.x installed and update it with the package manager that installed it. The
-commands below will update Maester to the latest version below the 3.0 release.
+If you are not ready to migrate, keep 2.x installed. Choose the command for the package manager that installed
+it to update within the 2.99 upper bound. For an AllUsers installation, run in an elevated session and replace
+`-Scope CurrentUser` with `-Scope AllUsers`.
 
 ```powershell
 # PowerShellGet: update within the specified 2.x upper bound
-Update-Module -Name 'Maester' -MaximumVersion 2.99
+Update-Module -Name 'Maester' -MaximumVersion 2.99 -Scope CurrentUser
 
-# PSResourceGet: update to the latest stable version below 3.0
-Update-PSResource -Name 'Maester' -Version '(,3.0)'
+# PSResourceGet: use the same inclusive upper bound, excluding 3.0 previews
+Update-PSResource -Name 'Maester' -Version '(,2.99]' -Scope CurrentUser
 ```
 
 This is an alternative to migrating, not a prerequisite for it. If you need 2.x for existing scripts while
