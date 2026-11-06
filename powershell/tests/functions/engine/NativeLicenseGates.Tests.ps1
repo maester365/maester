@@ -1,10 +1,12 @@
 BeforeDiscovery {
     # Built-in tests whose inline Get-MtLicenseInformation guard became License. Each one must be
     # skipped by the engine on an unlicensed tenant and must run on a tenant with any one of its tokens.
-    # MT.1181 had no guard: it declares Entra ID P2, which its agent risk condition needs (#2585).
+    # MT.1181 had no guard: Conditional Access for agents needs Agent 365, and its agent risk condition
+    # needs Entra ID P2 during the preview (#2585).
     $p1 = @{ License = @('AAD_PREMIUM'); Legacy = 'NotLicensedEntraIDP1' }
     $p2 = @{ License = @('AAD_PREMIUM_P2'); Legacy = 'NotLicensedEntraIDP2' }
     $p2OrGovernance = @{ License = @('AAD_PREMIUM_P2', 'Entra_Identity_Governance'); Legacy = 'NotLicensedEntraIDP2' }
+    $p2AndAgent365 = @{ License = @('AAD_PREMIUM_P2&AGENT_365'); Legacy = 'NotLicensedEntraIDP2' }
     $mdoP1 = @{ License = @('ATP_ENTERPRISE'); Legacy = 'NotLicensedMdoP1' }
     $exoDlp = @{ License = @('EXCHANGE_DLP'); Legacy = 'NotLicensedExoDlp' }
     $intune = @{ License = @('INTUNE_A'); Legacy = 'NotLicensedIntune' }
@@ -22,7 +24,7 @@ BeforeDiscovery {
         'MT.1053'          = $intune; 'MT.1096' = $intune; 'MT.1102' = $intune; 'MT.1105' = $intune
         'MT.1106'          = $p2OrGovernance; 'MT.1107' = $p2OrGovernance; 'MT.1108' = $p2OrGovernance; 'MT.1109' = $p2OrGovernance; 'MT.1110' = $p2OrGovernance
         'MT.1175'          = $exoDlp
-        'MT.1181'          = $p2
+        'MT.1181'          = $p2AndAgent365
         'MT.1187'          = $p1; 'MT.1188' = $p1; 'MT.1189' = $p1; 'MT.1190' = $p1; 'MT.1191' = $p1; 'MT.1192' = $p1; 'MT.1193' = $p1; 'MT.1194' = $p1; 'MT.1195' = $p1
     }
     $script:Cases = foreach ($id in $converted.Keys) { @{ Id = $id; License = $converted[$id].License; Legacy = $converted[$id].Legacy } }
@@ -74,11 +76,26 @@ Describe 'Licence gates of converted tests' {
     It 'Run on a tenant licensed for any one of their licences' {
         $problems = foreach ($case in $script:cases) {
             foreach ($license in $case.License) {
-                $row = Invoke-MtTest -Id $case.Id -Config (New-Config -Licenses $license)
+                # An element such as 'A&B' needs all of its tokens.
+                $row = Invoke-MtTest -Id $case.Id -Config (New-Config -Licenses ($license -split '&'))
                 if ($row.ReasonCode -eq 'LicenseNotFound') { "$($case.Id) with $($license): skipped with LicenseNotFound" }
                 elseif ("$($row.ResultDetail.TestSkipped)" -like 'NotLicensed*') { "$($case.Id) with $($license): checks its own licence ($($row.ResultDetail.TestSkipped))" }
             }
         }
         @($problems) | Should -BeNullOrEmpty
+    }
+
+    It 'Skip MT.1181 on a tenant with only one of Entra ID P2 and Agent 365' {
+        foreach ($license in 'AAD_PREMIUM_P2', 'AGENT_365') {
+            $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses $license)
+            $row.Result | Should -Be 'Skipped' -Because "the tenant has only $license"
+            $row.ReasonCode | Should -Be 'LicenseNotFound' -Because "the tenant has only $license"
+        }
+    }
+
+    It 'Run MT.1181 on a tenant with both Entra ID P2 and Agent 365' {
+        # The mocks return no Conditional Access policy, so the body runs and finds no blocking policy.
+        $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses 'AAD_PREMIUM_P2', 'AGENT_365')
+        $row.Result | Should -Be 'Failed'
     }
 }
