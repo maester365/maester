@@ -21,6 +21,7 @@ $__MtSession = @{
 	NativeReturnValue      = @{}                 # Native tests of the current run: ID -> what the test returned
 	Connections            = @()
 	DnsCache               = @()
+	DnsRecordCache         = @{}
 	ExoCache               = @{}
 	OrcaCache              = @{}
 	AIAgentInfo            = $null       # Get-MtAIAgentInfo cache: @{ Agents; Error }, Error is why no agent data is available

@@ -4,20 +4,66 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Test-MtCisDmarcRecordsPublished
 
+        $script:parkedDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
+        }
+        $script:quarantineDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'quarantine'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
+        }
+        $script:fullyCompliantDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @([pscustomobject]@{ mailAddress = 'reports@example.com' })
+            reportForensic  = @([pscustomobject]@{ mailAddress = 'forensic@example.com' })
+        }
+
         $script:domains = @()
         $script:registrableDomains = @{}
         $script:dmarcResults = @{}
+        $script:classifications = @{}
+        $script:dkimSigningConfigs = @()
 
-        Mock Get-MtExo -ModuleName Maester { $script:domains }
+        Mock Get-MtExo -ModuleName Maester {
+            if ($Request -eq 'AcceptedDomain') { return $script:domains }
+            return $script:dkimSigningConfigs
+        }
         Mock Get-MtRegistrableDomain -ModuleName Maester { $script:registrableDomains[$DomainName] }
         Mock ConvertFrom-MailAuthenticationRecordDmarc -ModuleName Maester { $script:dmarcResults[$DomainName] }
-        Mock Add-MtTestResultDetail -ModuleName Maester {}
+        Mock Get-MtCisParkedDomainClassification -ModuleName Maester {
+            $classification = if ($script:classifications.ContainsKey($DomainName)) {
+                $script:classifications[$DomainName]
+            } else {
+                [pscustomobject]@{ Classification = 'Sending'; Reason = 'Sending-domain test default.' }
+            }
+            if ($ParkedDomains -contains $DomainName) {
+                $classification.Classification = 'Parked'
+            }
+            return $classification
+        }
+        Mock Add-MtTestResultDetail -ModuleName Maester {
+            $script:resultDetail = [pscustomobject]@{ Result = $Result; Investigate = [bool]$Investigate; SkippedBecause = $SkippedBecause }
+        }
     }
 
     BeforeEach {
         $script:domains = @()
         $script:registrableDomains = @{}
         $script:dmarcResults = @{}
+        $script:classifications = @{}
+        $script:dkimSigningConfigs = @()
+        $script:resultDetail = $null
     }
 
     It 'fails a known noncompliant domain before skipping an unavailable lookup' {
@@ -43,6 +89,43 @@
         }
     }
 
+    It 'preserves <Outcome> when another DMARC lookup is unavailable' -ForEach @(
+        @{ Outcome = 'investigation'; Classification = 'Unknown'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedSkip = $null }
+        @{ Outcome = 'failure'; Classification = 'Sending'; ExpectedResult = $false; ExpectedInvestigation = $false; ExpectedSkip = $null }
+        @{ Outcome = 'NotSupported without investigation'; Classification = 'Parked'; ExpectedResult = $null; ExpectedInvestigation = $false; ExpectedSkip = 'NotSupported' }
+    ) {
+        $script:domains = @(
+            [pscustomobject]@{ DomainName = 'example.com'; IsCoExistenceDomain = $false }
+            [pscustomobject]@{ DomainName = 'unavailable.example'; IsCoExistenceDomain = $false }
+        )
+        $script:registrableDomains = @{
+            'example.com'         = 'example.com'
+            'unavailable.example' = 'unavailable.example'
+        }
+        $script:dmarcResults = @{
+            'example.com'         = $script:parkedDmarcRecord
+            'unavailable.example' = 'DNS lookup unavailable'
+        }
+        $script:classifications['example.com'] = [pscustomobject]@{
+            Classification = $Classification
+            Reason         = 'Mail-use evidence for this test.'
+        }
+
+        $actual = Test-MtCisDmarcRecordsPublished
+
+        $actual | Should -Be $ExpectedResult
+        $script:resultDetail.Investigate | Should -Be $ExpectedInvestigation
+        $script:resultDetail.SkippedBecause | Should -Be $ExpectedSkip
+        if ($null -eq $ExpectedSkip) {
+            $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
+            if ($ExpectedInvestigation) {
+                $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
+                $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+                $script:resultDetail.Result | Should -Not -Match 'Well done|All accepted domains meet'
+            }
+        }
+    }
+
     It 'looks up the organizational domain after an invalid subdomain record and reports an invalid effective record' {
         $script:domains = @([pscustomobject]@{ DomainName = 'mail.example.com'; IsCoExistenceDomain = $false })
         $script:registrableDomains = @{ 'mail.example.com' = 'example.com' }
@@ -58,5 +141,59 @@
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $Result -match 'Invalid DMARC record' -and $Result -match 'mail.example.com'
         }
+    }
+
+    It 'requires p=reject but not reporting tags for parked domains' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
+        $script:classifications = @{ 'parked.example' = [pscustomobject]@{ Classification = 'Parked'; Reason = 'No mail-use signals were found.' } }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeFalse
+    }
+
+    It 'fails a parked domain whose DMARC policy is quarantine' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:quarantineDmarcRecord }
+        $script:classifications = @{ 'parked.example' = [pscustomobject]@{ Classification = 'Parked'; Reason = 'No mail-use signals were found.' } }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeFalse
+    }
+
+    It 'investigates an unknown domain when only the parked-domain policy passes' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'unknown.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'unknown.example' = 'unknown.example' }
+        $script:dmarcResults = @{ 'unknown.example' = $script:parkedDmarcRecord }
+        $script:classifications = @{ 'unknown.example' = [pscustomobject]@{ Classification = 'Unknown'; Reason = 'DNS evidence is incomplete.' } }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeTrue
+        $script:resultDetail.Result | Should -Match '\| unknown\.example \| Unknown .* \| Investigate \|'
+        $script:resultDetail.Result | Should -Not -Match '\| unknown\.example .*✅ Pass \|'
+        $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
+        $script:resultDetail.Result | Should -Match 'Review the domains marked Investigate or Not checked'
+        $script:resultDetail.Result | Should -Not -Match 'Well done|All accepted domains meet'
+    }
+
+    It 'applies an explicit parked override and requires reject policy' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'unknown.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'unknown.example' = 'unknown.example' }
+        $script:dmarcResults = @{ 'unknown.example' = $script:quarantineDmarcRecord }
+        $script:classifications = @{ 'unknown.example' = [pscustomobject]@{ Classification = 'Unknown'; Reason = 'DNS evidence is incomplete.' } }
+
+        Test-MtCisDmarcRecordsPublished -ParkedDomains 'unknown.example' | Should -BeFalse
+    }
+
+    It 'accepts a fully compliant DMARC record when both procedures pass' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'unknown.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'unknown.example' = 'unknown.example' }
+        $script:dmarcResults = @{ 'unknown.example' = $script:fullyCompliantDmarcRecord }
+        $script:classifications = @{ 'unknown.example' = [pscustomobject]@{ Classification = 'Unknown'; Reason = 'DNS evidence is incomplete.' } }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'Well done\. All accepted domains meet'
     }
 }
