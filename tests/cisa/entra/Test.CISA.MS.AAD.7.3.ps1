@@ -34,22 +34,11 @@
     [OutputType([bool])]
     param()
 
-    $role = Get-MtRole | Where-Object {`
-        $_.id -eq "62e90394-69f5-4237-9190-012177145e10" } # Global Administrator
+    # This check reads Global Administrators only; CIS.M365.1.1.1 reads every administrative role.
+    $globalAdministratorRoleId = '62e90394-69f5-4237-9190-012177145e10'
+    $users = @(Get-MtRoleUserSyncStatus -RoleId $globalAdministratorRoleId)
 
-    $assignments = Get-MtRoleMember -roleId $role.id
-
-    $globalAdministrators = $assignments | Where-Object {`
-        $_.'@odata.type' -eq "#microsoft.graph.user"
-    }
-
-    $userIds = @($globalAdministrators.Id)
-
-    $users = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $userIds -Select id,displayName,onPremisesSyncEnabled
-
-    $result = $users | Where-Object {`
-        $_.onPremisesSyncEnabled -eq $true
-    }
+    $result = @($users | Where-Object { $_.onPremisesSyncEnabled -eq $true })
 
     $testResult = ($result|Measure-Object).Count -eq 0
 

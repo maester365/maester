@@ -32,6 +32,7 @@ function Get-MtDirectoryRoleAssignment {
     [OutputType([pscustomobject])]
     param(
         # Only return assignments of these role definitions. Assignments of every role are returned when omitted.
+        # Up to three roles are read with one filtered request each; more are read in one request and filtered here.
         [guid[]]$RoleId,
 
         # The type of assignments to return. Default is both Eligible and Active.
@@ -71,14 +72,25 @@ function Get-MtDirectoryRoleAssignment {
 
         foreach ($assignment in @(Invoke-MtGraphRequest @params)) {
             if ($null -eq $assignment) { continue }
-            $assignment | Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $AssignmentType -Force -PassThru
+            # Copy before setting AssignmentType: property names are case-insensitive, so this replaces Graph's own
+            # assignmentType, and the session cache returns these same objects to every later caller.
+            $assignment | Select-Object -Property * |
+                Add-Member -MemberType NoteProperty -Name 'AssignmentType' -Value $AssignmentType -Force -PassThru
         }
     }
 
     $active = $MemberStatus -ne 'Eligible'
     $eligible = $MemberStatus -ne 'Active'
-    # One request per role, or a single unfiltered request when no role is given
-    $roleFilters = @(if ($RoleId) { $RoleId | ForEach-Object { "roleDefinitionId eq '$_'" } } else { '' })
+    # One request per role for a few roles. For more, or when no role is given, a single unfiltered
+    # request: the requests run one after another, and the PIM APIs can take a second or two each, so
+    # a check asking for every administrator role (around 100) would otherwise spend minutes here.
+    $filterLocally = $RoleId.Count -gt 3
+    $roleFilters = @(if ($RoleId -and -not $filterLocally) { $RoleId | ForEach-Object { "roleDefinitionId eq '$_'" } } else { '' })
+    # Filtering locally needs roleDefinitionId; it is removed again before returning when the caller did not select it.
+    $removeRoleDefinitionId = $filterLocally -and $Select -and $Select -notcontains 'roleDefinitionId'
+    if ($removeRoleDefinitionId) {
+        $Select = @($Select) + 'roleDefinitionId'
+    }
 
     $pim = (Get-MtLicenseInformation -Product EntraID) -in @('P2', 'Governance')
     $assignments = [System.Collections.Generic.List[object]]::new()
@@ -119,8 +131,19 @@ function Get-MtDirectoryRoleAssignment {
         }
     }
 
+    $result = $assignments.ToArray()
+    if ($filterLocally) {
+        $roleIdSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($id in $RoleId) { $null = $roleIdSet.Add([string]$id) }
+        $result = @($result | Where-Object { $roleIdSet.Contains([string]$_.roleDefinitionId) })
+    }
+    if ($removeRoleDefinitionId) {
+        # The assignments are copies (see Get-Assignment), so this does not change the cached Graph objects.
+        foreach ($assignment in $result) { $assignment.PSObject.Properties.Remove('roleDefinitionId') }
+    }
+
     [pscustomobject]@{
-        Assignments     = $assignments.ToArray()
+        Assignments     = $result
         EligibleChecked = $eligible -and $pim
     }
 }
