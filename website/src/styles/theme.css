@@ -22,6 +22,12 @@
 	--mt-new-soft: rgba(34, 197, 94, 0.12);
 	--mt-new-ink: #86efac;
 	--mt-radius: 12px;
+	/* Command boxes outside Markdown code blocks: the colours of Expressive Code's github themes. */
+	--mt-code-bg: #0d1117;
+	--mt-code-line: #3d444d;
+	--mt-code-ink: #f0f6fc;
+	--mt-code-muted: #9198a1;
+	--mt-code-btn: #212830;
 
 	--sl-font: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 	--sl-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -60,6 +66,11 @@
 	--mt-warn-ink: #92400e;
 	--mt-new-soft: #dcfce7;
 	--mt-new-ink: #166534;
+	--mt-code-bg: #ffffff;
+	--mt-code-line: #d1d9e0;
+	--mt-code-ink: #1f2328;
+	--mt-code-muted: #59636e;
+	--mt-code-btn: #f6f8fa;
 
 	--sl-color-accent-low: #fde8e8;
 	--sl-color-accent: #d22c31;
@@ -223,6 +234,11 @@ h1#_top {
 	object-fit: cover;
 	margin: 0 !important;
 }
+/* Starlight spaces the blocks of a page apart; inside the byline that pushed the text below the avatar. */
+.test-byline > *,
+.test-byline-meta > * {
+	margin-top: 0 !important;
+}
 .test-byline-meta {
 	display: flex;
 	gap: 0.75rem;
@@ -238,3 +254,68 @@ h1#_top {
 	box-shadow: none;
 }
 
+
+/* The GitHub mark is black (public/report-icons/v1/products/README.md): white on a dark page. */
+:root[data-theme='dark'] img[src$='/products/github.svg'] {
+	filter: invert(1);
+}
+
+/* Exchange's logo fills half of its canvas (as in the report): draw it at the size of the other product icons. */
+img[src$='/products/exchange.png'] {
+	transform: scale(1.8);
+}
+
+/* The one-line note at the end of a Microsoft Zero Trust Assessment check page. */
+.mt-ms-note {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-top: 2rem !important;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid #dbe7f5;
+	border-radius: 0.75rem;
+	background: #f3f8fd;
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-2);
+}
+.mt-ms-note__logo {
+	flex: none;
+	width: 1rem;
+	height: 1rem;
+}
+.mt-ms-note a {
+	color: inherit;
+	font-weight: 600;
+}
+:root[data-theme='dark'] .mt-ms-note {
+	border-color: rgba(96, 165, 250, 0.2);
+	background: rgba(96, 165, 250, 0.07);
+}
+
+/* The React components from the Docusaurus site use its variables; map them to the Maester tokens.
+   Here rather than in site.css, so components on docs pages (the test builder) get them too. */
+:root {
+	--ifm-color-primary: var(--sl-color-accent);
+	--ifm-color-danger-dark: #b91c1c;
+	--ifm-color-danger-light: #fca5a5;
+	--ifm-color-warning-light: #fde68a;
+	--ifm-color-warning-darkest: #78350f;
+	--ifm-color-success-dark: #15803d;
+	--ifm-color-success-darkest: #14532d;
+	--ifm-background-color: var(--sl-color-black);
+	--ifm-background-surface-color: var(--mt-surface);
+	--ifm-font-color-base: var(--sl-color-white);
+	--ifm-font-family-monospace: var(--sl-font-mono);
+	--ifm-line-height-base: 1.6;
+	--ifm-heading-line-height: 1.2;
+	--ifm-navbar-height: 64px;
+	--ifm-color-emphasis-100: var(--sl-color-gray-6);
+	--ifm-color-emphasis-200: var(--sl-color-gray-5);
+	--ifm-color-emphasis-300: var(--sl-color-gray-5);
+	--ifm-color-emphasis-400: var(--sl-color-gray-4);
+	--ifm-color-emphasis-500: var(--sl-color-gray-4);
+	--ifm-color-emphasis-600: var(--sl-color-gray-3);
+	--ifm-color-emphasis-700: var(--sl-color-gray-2);
+	--ifm-color-emphasis-800: var(--sl-color-gray-1);
+	--ifm-color-emphasis-900: var(--sl-color-white);
+}

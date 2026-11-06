@@ -184,7 +184,7 @@ Describe 'Engine review fixes' {
         BeforeAll {
             function New-FamilyFile {
                 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
-                param([string] $Folder, [string] $Id, [string] $Source)
+                param([string] $Folder, [string] $Id, [string] $Source, [string] $Family = '')
                 $null = New-Item -ItemType Directory -Path $Folder -Force
                 $name = $Id -replace '[^A-Za-z0-9]', ''
                 @"
@@ -195,7 +195,7 @@ function Get-Instance$name {
 }
 
 function Test-Family$name {
-    [MaesterTest(Id = '$Id', Title = 'Attribute title', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name')]
+    [MaesterTest(Id = '$Id', Title = 'Attribute title', Severity = 'Low', Service = 'None', InstanceSource = 'Get-Instance$name'$Family)]
     [CmdletBinding()]
     param(
         # The instance, supplied by the engine.
@@ -219,6 +219,48 @@ function Test-Family$name {
             $row.Title | Should -Be 'Instance title'
             $row.Severity | Should -Be 'Critical'
             $row.Tag | Should -Contain 'FromInstance'
+        }
+
+        It 'Writes the product, feature, area, ratings and techniques an instance sets for itself' {
+            $source = "@{ Id = 'a'; Product = 'Entra ID'; Feature = 'conditional-access'; Area = 'authentication'; RelatedProduct = 'exchange'; UserImpact = 'medium'; ImplementationCost = 'High'; Mitre = @('T1110', 'T9999') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-attributes') -Id 'CONTOSO.52' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -Be 'entra'
+            $row.Feature | Should -Be 'conditional-access'
+            $row.Area | Should -Be 'authentication'
+            $row.RelatedProduct | Should -Be @('exchange')
+            $row.UserImpact | Should -Be 'Medium'
+            $row.ImplementationCost | Should -Be 'High'
+            $row.Mitre | Should -Be @('T1110')
+        }
+
+        It 'Leaves out values the taxonomy does not know, so the row keeps its family''s' {
+            $source = "@{ Id = 'a'; Product = 'not-a-product'; Feature = 'conditional-access'; Area = 'not-an-area'; UserImpact = 'Severe'; Mitre = 'T9999' }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-unknown') -Id 'CONTOSO.53' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -BeNullOrEmpty
+            $row.Feature | Should -BeNullOrEmpty
+            $row.Area | Should -BeNullOrEmpty
+            $row.UserImpact | Should -BeNullOrEmpty
+            @($row.Mitre) | Should -BeNullOrEmpty
+        }
+
+        It 'Clears the family''s feature and takes the new product off its related products when an instance changes product' {
+            $family = ", Product = 'entra', Feature = 'conditional-access', RelatedProduct = 'exchange'"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-moved') -Id 'CONTOSO.54' -Source "@{ Id = 'a'; Product = 'exchange' }" -Family $family
+            $row = Invoke-MtTest -Path $file
+            $row.Product | Should -Be 'exchange'
+            $row.Feature | Should -BeNullOrEmpty
+            @($row.RelatedProduct) | Should -Not -Contain 'exchange'
+        }
+
+        It 'Applies the list rules to an instance''s techniques: None only on its own, at most five' {
+            $source = "@{ Id = 'a'; Mitre = @('None', 'T1110', 'T1110', 'T1078', 'T1098', 'T1556', 'T1621', 'T1528') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-mitre') -Id 'CONTOSO.55' -Source $source
+            $row = Invoke-MtTest -Path $file
+            $row.Mitre | Should -Not -Contain 'None'
+            @($row.Mitre).Count | Should -Be 5
+            @($row.Mitre | Select-Object -Unique).Count | Should -Be 5
         }
 
         It 'Rejects an instance ID that ends in a newline' {

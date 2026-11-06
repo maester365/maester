@@ -1085,7 +1085,8 @@
             if (![string]::IsNullOrEmpty($out.OutputAffectedObjectsCsvFile) -and $maesterResults.AffectedObjects) {
                 $output = $maesterResults.AffectedObjects | Select-Object System, AnchorKind, Type, Id, UniqueId, DisplayName, UserPrincipalName, PortalLink,
                 @{ Name = 'Tests'; Expression = { $_.Tests -join '; ' } },
-                @{ Name = 'Sources'; Expression = { $_.Sources -join '; ' } } |
+                @{ Name = 'Sources'; Expression = { $_.Sources -join '; ' } },
+                @{ Name = 'Facts'; Expression = { @($_.Facts | Where-Object { $_ } | ForEach-Object { "$($_.Name): $($_.Value)" }) -join '; ' } } |
                     ConvertTo-Csv -NoTypeInformation
                 if ($redactNonHtml) {
                     # Piped so the replacement regex is built once, not once per row.
