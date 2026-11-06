@@ -1,6 +1,7 @@
 {
   "GlobalSettings": {
-    "EmergencyAccessAccounts": []
+    "EmergencyAccessAccounts": [],
+    "DelegatedAdminTenants": []
   },
   "TestSettings": []
 }

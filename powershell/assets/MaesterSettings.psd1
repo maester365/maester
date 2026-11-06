@@ -6,6 +6,7 @@
     SchemaVersion = '1.0'
     Settings      = @{
         EmergencyAccessAccounts = @{ Type = 'object[]'; Default = @(); Sensitive = $false; Description = 'Emergency access (break glass) accounts and groups excluded from Conditional Access checks.' }
+        DelegatedAdminTenants   = @{ Type = 'string[]'; Default = @(); Sensitive = $false; Description = 'Tenant IDs allowed to administer this tenant through Tenant Governance, GDAP or Microsoft Entra role assignments (allowlist).' }
         DataverseEnvironmentUrl = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'URL of the Dataverse environment that the Copilot Studio checks read.' }
         GitHubOrganization      = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
         GitHubApiBaseUri        = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }

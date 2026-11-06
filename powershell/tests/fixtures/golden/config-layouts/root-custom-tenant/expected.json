@@ -62,6 +62,7 @@
       "ConfigSource": "maester-config.json, Custom/maester-config.json",
       "GlobalSettings": {
         "DataverseEnvironmentUrl": "",
+        "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [
           {
             "Type": "User",
@@ -83,6 +84,7 @@
       "ConfigSource": "maester-config.json, Custom/maester-config.json, maester-config.11111111-2222-3333-4444-555555555555.json",
       "GlobalSettings": {
         "DataverseEnvironmentUrl": "",
+        "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [
           {
             "Type": "User",

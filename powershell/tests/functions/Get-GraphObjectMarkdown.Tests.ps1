@@ -22,4 +22,22 @@
         Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess |
             Should -BeLike '  - `[Require MFA`](*PolicyBlade/policyId/00000000-0000-0000-0000-000000000002)*'
     }
+
+    It 'links a <Type> object by its object id' -ForEach @(
+        @{ Type = 'ServicePrincipals'; Blade = 'ManagedAppMenuBlade/~/Overview/objectId/' }
+        @{ Type = 'AccessPackages'; Blade = 'EntitlementMenuBlade/~/overview/entitlementId/' }
+        @{ Type = 'AccessPackageCatalogs'; Blade = 'CatalogBlade/catalogId/' }
+    ) {
+        $object = [pscustomobject]@{ id = '00000000-0000-0000-0000-000000000003'; displayName = 'Payroll' }
+
+        Get-GraphObjectMarkdown -GraphObjects $object -GraphObjectType $Type -AsPlainTextLink |
+            Should -BeLike "``[Payroll``](*$($Blade)00000000-0000-0000-0000-000000000003)"
+    }
+
+    It 'detects a service principal from its odata type' {
+        $object = [pscustomobject]@{ '@odata.type' = '#microsoft.graph.servicePrincipal'; id = '00000000-0000-0000-0000-000000000004'; displayName = 'Payroll' }
+
+        Get-GraphObjectMarkdown -GraphObjects $object -AsPlainTextLink |
+            Should -BeLike '`[Payroll`](*ManagedAppMenuBlade/~/Overview/objectId/00000000-0000-0000-0000-000000000004)'
+    }
 }

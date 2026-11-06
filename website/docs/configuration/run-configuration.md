@@ -134,6 +134,7 @@ Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
 | Setting | Type | Default | Used by |
 | --- | --- | --- | --- |
 | `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `DelegatedAdminTenants` | array | none | MT.1258. The tenants allowed to administer this tenant through GDAP or Tenant Governance. See [Delegated admin tenants](./delegated-admin-tenants.md). |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
 | `GitHubOrganization` | string | | GitHub checks. |
 | `GitHubApiBaseUri` | string | `https://api.github.com` | GitHub checks. |

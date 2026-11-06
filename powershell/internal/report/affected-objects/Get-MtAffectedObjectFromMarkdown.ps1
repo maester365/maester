@@ -47,6 +47,7 @@ function Get-MtAffectedObjectFromMarkdown {
             @{ System = 'EntraID'; Type = 'AgentIdentityBlueprintPrincipal'; Regex = "AgentBlueprintDetails\.MenuView/~/\w+/objectId/($guid)" }
             @{ System = 'Intune'; Type = 'ConfigurationPolicy'; Regex = "Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackageCatalog'; Regex = "Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/($guid)" }
+            @{ System = 'EntraID'; Type = 'AccessPackageCatalogDrift'; Regex = "ReconReviewAccessDriftBlade\.ReactView/(?:[^/]+/[^/]+/)*?catalogIdentifier/($guid)" }
             @{ System = 'EntraID'; Type = 'AccessPackage'; Regex = "EntitlementMenuBlade/~/overview/entitlementId/($guid)" }
             @{ System = 'EntraID'; Type = 'PimAlert'; Regex = "Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/([^/)\s]+)" }
             @{ System = 'EntraID'; Type = 'EntraRecommendation'; Regex = "RecommendationDetails\.ReactView/recommendationId/([^/)\s]+)" }

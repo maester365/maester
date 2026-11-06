@@ -21,6 +21,7 @@ const knownTypes: Record<string, [name: string, icon: string]> = {
   DirectoryRole: ["Directory role", "directory-role"],
   AccessPackage: ["Access package", "identity-governance"],
   AccessPackageCatalog: ["Access package catalog", "identity-governance"],
+  AccessPackageCatalogDrift: ["Access package catalog drift", "identity-governance"],
   SharingPolicy: ["Sharing policy", "exchange"],
   TransportRule: ["Mail flow rule", "mail-alert"],
 }
