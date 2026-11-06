@@ -13,39 +13,34 @@ installed, selected, configured and written has moved on. This page lists every 
 
 ## Requirements
 
-- **PowerShell 7.4 or later** (the `Core` edition) on Windows, Linux or macOS. The module no longer loads in
-  Windows PowerShell 5.1.
-- **Pester is optional.** Maester no longer depends on Pester or installs it. You need Pester 5.7.1 or later only
-  if you run [Pester-format custom tests](./writing-tests/pester-format-tests.md), or if your scripts call
-  `New-PesterConfiguration`. Without Pester, a run with Pester-format tests reports them as `Error` rows with
-  reason `PesterNotAvailable` and still runs everything else.
+- **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.
+- **Pester is optional.** Maester no longer depends on Pester or installs it. You need Pester 5.7.1 or later only if you run
+  [Pester-format custom tests](./writing-tests/pester-format-tests.md), or if your scripts call `New-PesterConfiguration`. Without Pester,
+  a run with Pester-format tests reports them as `Error` rows with reason `PesterNotAvailable` and still runs everything else.
 
 ## Checklist
 
 1. Run Maester on **PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported.
-2. Remove the existing module before installing a 3.x version.
+2. Remove the existing module before installing a 3.x version. 
    Close PowerShell sessions that have Maester loaded and open a fresh session for the removal.
    Run the command for the package manager you used to install Maester, or use both if you are unsure:
 
    ```powershell
-   # If Maester was installed with Install-PSResource (PSResourceGet)
-   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue |
+   # If Maester was installed with PSResourceGet (`Install-PSResource`)
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue | 
        Uninstall-PSResource -Scope CurrentUser
 
    # Also run this in an elevated session if installed for all users
    Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue |
        Uninstall-PSResource -Scope AllUsers
 
-   # PowerShellGet: run elevated if Maester was installed for all users
+   # If Maester was installed with PowerShellGet (`Install-Module`). Run elevated if Maester was installed for all users
    Get-InstalledModule -Name 'Maester' -AllVersions -AllowPrerelease -ErrorAction Continue |
        Uninstall-Module
    ```
 
    These commands remove all Maester versions found in the selected installation scope, including previews
    and any 3.x version already installed. Removing an AllUsers installation requires an elevated session.
-   `Uninstall-Module` has no `-Scope` parameter; it removes the installations returned by `Get-InstalledModule`.
-   Skip commands for unavailable package managers. A "not found" message can mean there is nothing left to
-   remove; resolve any uninstall errors before proceeding.
 
 3. Install 3.x using the [preview installation instructions](./preview.md#install-the-preview)
    while 3.x is in preview. Start a new PowerShell session before using it.
@@ -54,8 +49,9 @@ installed, selected, configured and written has moved on. This page lists every 
    changes, you can then delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then again
    without `-WhatIf` after you have reviewed the changes.
 
-   **Updates to custom tests and disabled built-in tests:** Steps 5–7 apply only if you have custom tests or
-   previously disabled built-in tests.
+---
+
+   **Steps 5–7 apply only if you have custom tests or if you previously disabled built-in tests.**
 
 5. If you disabled built-in tests by deleting their files in Maester 2.x, you must now disable them in
    `maester-config.json` instead.
@@ -81,7 +77,7 @@ installed, selected, configured and written has moved on. This page lists every 
 
 :::
 
-### Staying on 2.x
+### Staying on Maester 2.x
 
 If you are not ready to migrate, keep 2.x installed. Choose the command for the package manager that installed
 it to update within the 2.99 upper bound. For an AllUsers installation, run in an elevated session and replace
