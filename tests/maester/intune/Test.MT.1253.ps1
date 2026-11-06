@@ -41,7 +41,7 @@
         Area = 'devices',
         ResourceType = 'Device',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Lifecycle = 'Preview',
