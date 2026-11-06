@@ -394,11 +394,16 @@
             $result = 'Error'
         } elseif ($testResultDetail.TestInvestigate -eq $true) {
             $result = 'Investigate'
-        } elseif ($test -and $test.ErrorRecord -and $test.ErrorRecord.Count -gt 0 -and
+        } elseif ($test -and $test.Result -eq 'Failed' -and
+            $test.ErrorRecord -and $test.ErrorRecord.Count -gt 0 -and
             $test.ErrorRecord[0].FullyQualifiedErrorId -ne 'PesterAssertionFailed') {
-            # A failed assertion is a compliance failure and keeps $test.Result. Anything else that
-            # threw is a defect in the test or in its environment, which is an Error: the same
-            # decision Invoke-MtNativePlan makes for the native rows on $status.
+            # Only a row Pester reports as Failed is reclassified. Pester implements a skip by
+            # throwing, so a skipped row also carries an ErrorRecord, and without the Result test
+            # above it would be read as a crash.
+            #
+            # Among failed rows, a failed assertion is a compliance failure and keeps $test.Result.
+            # Anything else that threw is a defect in the test or in its environment, which is an
+            # Error: the same decision Invoke-MtNativePlan makes for the native rows on $status.
             #
             # This replaces an allowlist of five exception type names matched on
             # CategoryInfo.Reason. Any crash outside that list fell through to $test.Result, which

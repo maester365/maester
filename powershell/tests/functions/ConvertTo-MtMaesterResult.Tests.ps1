@@ -175,6 +175,53 @@ Describe 'ConvertTo-MtMaesterResult' {
         }
     }
 
+    It 'Keeps a skipped Pester row Skipped even though Pester implements a skip by throwing' {
+        # Pester implements Set-ItResult -Skipped by throwing, so a skipped row also carries an
+        # ErrorRecord. Only rows Pester reports as Failed are candidates for reclassification.
+        InModuleScope Maester {
+            $testName = 'MT.1068: a test that skipped itself'
+            $__MtSession.TestResultDetail[$testName] = @{
+                TestTitle       = $testName
+                TestDescription = 'Skipped by the test body.'
+                TestResult      = 'Skipped'
+                TestSkipped     = 'NotConnectedAzure'
+                SkippedReason   = 'Azure is not connected.'
+                TestInvestigate = $false
+                Severity        = 'Medium'
+                Service         = 'Azure'
+            }
+
+            $pesterTest = [PSCustomObject]@{
+                ExpandedName = $testName
+                Result       = 'Skipped'
+                ErrorRecord  = @([PSCustomObject]@{ FullyQualifiedErrorId = 'PesterTestSkipped' })
+                ScriptBlock  = [scriptblock]::Create('$true | Should -BeTrue')
+                Block        = [PSCustomObject]@{ Tag = @('MT.1068'); ExpandedName = 'MT.1068' }
+                Duration     = [TimeSpan]::FromSeconds(1)
+                Tag          = @('MT.1068')
+            }
+            $pesterResults = [PSCustomObject]@{
+                Tests             = @($pesterTest)
+                Containers        = @(
+                    [PSCustomObject]@{
+                        Blocks = @([PSCustomObject]@{ Name = 'MT.1068'; Result = 'Skipped'; Tag = @('MT.1068') })
+                    }
+                )
+                Result            = 'Skipped'
+                ExecutedAt        = [DateTime]::UtcNow
+                Duration          = [TimeSpan]::FromSeconds(1)
+                UserDuration      = [TimeSpan]::FromSeconds(1)
+                DiscoveryDuration = [TimeSpan]::Zero
+                FrameworkDuration = [TimeSpan]::Zero
+            }
+
+            $result = ConvertTo-MtMaesterResult -PesterResults $pesterResults
+
+            $result.Tests[0].Result | Should -Be 'Skipped'
+            $result.ErrorCount | Should -Be 0 -Because 'a skip is not a crash'
+        }
+    }
+
     It 'Does not query PowerShell Gallery when version checks are skipped' {
         InModuleScope Maester {
             $pesterResults = [PSCustomObject]@{
