@@ -1,6 +1,7 @@
 BeforeDiscovery {
     # Built-in tests whose inline Get-MtLicenseInformation guard became License. Each one must be
     # skipped by the engine on an unlicensed tenant and must run on a tenant with any one of its tokens.
+    # MT.1181 had no guard: it declares Entra ID P2, which its agent risk condition needs (#2585).
     $p1 = @{ License = @('AAD_PREMIUM'); Legacy = 'NotLicensedEntraIDP1' }
     $p2 = @{ License = @('AAD_PREMIUM_P2'); Legacy = 'NotLicensedEntraIDP2' }
     $p2OrGovernance = @{ License = @('AAD_PREMIUM_P2', 'Entra_Identity_Governance'); Legacy = 'NotLicensedEntraIDP2' }
@@ -21,6 +22,7 @@ BeforeDiscovery {
         'MT.1053'          = $intune; 'MT.1096' = $intune; 'MT.1102' = $intune; 'MT.1105' = $intune
         'MT.1106'          = $p2OrGovernance; 'MT.1107' = $p2OrGovernance; 'MT.1108' = $p2OrGovernance; 'MT.1109' = $p2OrGovernance; 'MT.1110' = $p2OrGovernance
         'MT.1175'          = $exoDlp
+        'MT.1181'          = $p2
         'MT.1187'          = $p1; 'MT.1188' = $p1; 'MT.1189' = $p1; 'MT.1190' = $p1; 'MT.1191' = $p1; 'MT.1192' = $p1; 'MT.1193' = $p1; 'MT.1194' = $p1; 'MT.1195' = $p1
     }
     $script:Cases = foreach ($id in $converted.Keys) { @{ Id = $id; License = $converted[$id].License; Legacy = $converted[$id].Legacy } }
