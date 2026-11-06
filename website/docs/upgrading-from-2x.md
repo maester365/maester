@@ -14,14 +14,25 @@ installed, selected, configured and written has moved on. This page lists every 
 ## Checklist
 
 1. Run Maester on **PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported.
-2. Update the module, and remove Maester 2.x from the machine:
+2. Remove the existing module before installing 3.x; there is no need to update 2.x first.
+   Close PowerShell sessions that have Maester loaded and open a fresh session for the removal.
+   Run the command for the package manager you used, or both if you used both:
 
    ```powershell
-   Update-Module Maester -Force
-   Uninstall-Module Maester -MaximumVersion 2.99.99 -AllVersions
+   # Installed with Install-PSResource (PSResourceGet)
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue | Uninstall-PSResource
+
+   # Installed with Install-Module (PowerShellGet)
+   Get-InstalledModule -Name 'Maester' -AllVersions -ErrorAction Continue | Uninstall-Module
    ```
 
-   Start a new PowerShell session afterwards.
+   These commands remove all Maester versions found by each package manager, including any 3.x version
+   already installed. Skip a command if its package manager is unavailable. A "not found" message can mean
+   that manager has nothing left to remove; `-ErrorAction Continue` displays discovery errors without stopping
+   the next command. Resolve any uninstall errors before proceeding.
+
+   Then install 3.x using the [preview installation instructions](./preview.md#install-the-preview)
+   while 3.x is in preview. Start a new PowerShell session before using it.
 3. Clean up your 2.x tests folder. Maester 3.0 doesn't need one: if it holds no custom tests and no config
    changes, delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then without `-WhatIf`.
 4. If you disabled built-in tests by deleting their files, disable them in `maester-config.json` instead.
@@ -42,11 +53,30 @@ installed, selected, configured and written has moved on. This page lists every 
   if you run [Pester-format custom tests](./writing-tests/pester-format-tests.md), or if your scripts call
   `New-PesterConfiguration`. Without Pester, a run with Pester-format tests reports them as `Error` rows with
   reason `PesterNotAvailable` and still runs everything else.
-- **Remove Maester 2.x.** `Update-Module` keeps the old version installed. When a script calls a function that
+- **Remove Maester 2.x before using 3.x.** Both `Update-Module` and `Update-PSResource` leave older versions
+  installed, so updating alone does not complete the migration. The checklist above uses removal followed by
+  a fresh install. When a script calls a function that
   only 2.x exports, PowerShell loads 2.x into the session and from then on `Invoke-Maester` is the 2.x one.
   Maester 3.0 warns when 2.x is installed, and if 2.x gets loaded during a run it removes it again and marks the
-  affected row `Error` with reason `ForeignModuleLoaded`. After updating, start a new session: a loaded module
-  cannot be replaced in a running process.
+  affected row `Error` with reason `ForeignModuleLoaded`. This removes 2.x from the session, not from disk.
+  Start a new session after installing 3.x so it does not reuse the previously loaded module and engine.
+
+### Staying on 2.x
+
+If you are not ready to migrate, keep 2.x and update it with the package manager that installed it. Choose one:
+
+```powershell
+# PowerShellGet: update within the specified 2.x upper bound
+Update-Module -Name 'Maester' -MaximumVersion 2.99
+
+# PSResourceGet: update to the latest stable version below 3.0
+Update-PSResource -Name 'Maester' -Version '(,3.0)'
+```
+
+This is an alternative to migrating, not a prerequisite for it. If you need 2.x for existing scripts while
+trying 3.x, use separate environments (for example, separate machines or containers) so 2.x is not discoverable
+by the PowerShell session running 3.x. Installing both versions side by side can trigger the loading conflict
+described above; updating 2.x does not prevent it.
 
 ## The built-in tests run from the module
 
