@@ -51,12 +51,16 @@
 
     # Default values: 60 days for older forests, 180 days for newer forests
     $defaultValue = 180
-    if ($null -eq $tombstoneLifetime) {
-        $tombstoneLifetime = $defaultValue
-        $isDefault = $true
-    } else {
-        $isDefault = $false
-    }
+
+    # The unreadable value used to be replaced with $defaultValue here. That made the condition
+    # below impossible to fail and left the "Unable to retrieve" branch unreachable, so a forest
+    # whose tombstone lifetime could not be read was reported as retaining deleted objects for 180
+    # days and as meeting the recommendation, on a number this test supplied itself. Worse, the
+    # substituted 180 is only the default for newer forests; an older forest defaults to 60, so the
+    # invented value could also claim the recommendation was met when it was not.
+    #
+    # Without the substitution the branch the author wrote for that case is the one that runs, which
+    # is what the title of this check asserts: the tombstone lifetime should be retrievable.
 
     # Test passes if we successfully retrieved tombstone lifetime
     $testResult = $null -ne $tombstoneLifetime
@@ -66,8 +70,7 @@
         $result = "| Property | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Tombstone Lifetime | $tombstoneLifetime days |" + "`n"
-        $result += "| Default Value | $defaultValue days |" + "`n"
-        $result += "| Using Default | $isDefault |" + "`n"
+        $result += "| Recommended minimum | $defaultValue days |" + "`n"
         $result += "| Forest Name | $($adState.Forest.Name) |" + "`n"
 
         $recommendation = if ($tombstoneLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
