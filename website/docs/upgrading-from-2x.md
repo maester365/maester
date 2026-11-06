@@ -21,7 +21,8 @@ installed, selected, configured and written has moved on. This page lists every 
 ## Checklist
 
 1. Run Maester on **PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported.
-2. Remove the existing module before installing a 3.x version. 
+2. Remove the existing Maester versions before installing a 3.x version.
+
    Close PowerShell sessions that have Maester loaded and open a fresh session for the removal.
    Run the command for the package manager you used to install Maester, or use both if you are unsure:
 
@@ -41,6 +42,9 @@ installed, selected, configured and written has moved on. This page lists every 
 
    These commands remove all Maester versions found in the selected installation scope, including previews
    and any 3.x version already installed. Removing an AllUsers installation requires an elevated session.
+
+   **Windows users:** Run the applicable removal commands in both PowerShell 7 and Windows PowerShell 5.1, if available,
+   to remove module installations from both environments.
 
 3. Install 3.x using the [preview installation instructions](./preview.md#install-the-preview)
    while 3.x is in preview. Start a new PowerShell session before using it.
