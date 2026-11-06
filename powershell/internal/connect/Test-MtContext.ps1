@@ -25,12 +25,17 @@
         $message = "Not connected to Microsoft Graph. Please use 'Connect-Maester'. For more information, use 'Get-Help Connect-Maester'."
         $validContext = $false
     } else {
+        # Preview scopes that only the Global cloud offers cannot be granted in a national cloud, so they are not
+        # required there. A Graph environment Maester does not know, such as a custom one, is treated as national.
+        $environment = if (-not $context.Environment -or $context.Environment -eq 'Global') { 'Global' }
+        elseif ($context.Environment -in @('China', 'Germany', 'USGov', 'USGovDoD')) { $context.Environment }
+        else { 'USGov' }
         $requiredScopes = if ($context.AuthType -eq 'Delegated') {
             Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage `
-                -IncludePreview:$IncludePreview
+                -IncludePreview:$IncludePreview -Environment $environment
         } else {
             # Do not include Mail.Send for applications. Not compatible with Exchange Online RBAC for Applications
-            Get-MtGraphScope -SendTeamsMessage:$SendTeamsMessage -IncludePreview:$IncludePreview
+            Get-MtGraphScope -SendTeamsMessage:$SendTeamsMessage -IncludePreview:$IncludePreview -Environment $environment
         }
         $scopeComparison = Compare-MtGraphScope `
             -CurrentScopes $context.Scopes `

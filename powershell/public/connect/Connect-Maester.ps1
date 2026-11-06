@@ -486,7 +486,7 @@
             try {
 
                $scopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage `
-                  -Privileged:$Privileged -IncludePreview:$IncludePreview
+                  -Privileged:$Privileged -IncludePreview:$IncludePreview -Environment $Environment
 
                $connectParams = @{
                   Scopes        = $scopes

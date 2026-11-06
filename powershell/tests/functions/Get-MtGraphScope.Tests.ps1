@@ -86,4 +86,38 @@ Describe 'Get-MtGraphScope' {
         $roleManagementIndex | Should -BeLessThan $roleManagementAlertIndex
         $roleManagementAlertIndex | Should -BeLessThan $securityIdentitiesSensorsIndex
     }
+
+    It 'Includes the Global-only preview scopes with IncludePreview in the Global cloud' {
+        foreach ($scopes in @((Get-MtGraphScope -IncludePreview), (Get-MtGraphScope -IncludePreview -Environment Global))) {
+            $scopes | Should -Contain 'ConfigurationMonitoring.Read.All'
+            $scopes | Should -Contain 'CrossTenantInformation.ReadBasic.All'
+            $scopes | Should -Contain 'RemoteTenantGroups.Read.All'
+            $scopes | Should -Contain 'TenantGovernance-RelatedTenant.Read.All'
+            $scopes | Should -Contain 'TenantGovernance-Relationship.Read.All'
+        }
+    }
+
+    It 'Leaves out the Global-only preview scopes in the <Environment> cloud' -ForEach @(
+        @{ Environment = 'USGov' }
+        @{ Environment = 'USGovDoD' }
+        @{ Environment = 'China' }
+        @{ Environment = 'Germany' }
+    ) {
+        $scopes = Get-MtGraphScope -IncludePreview -Environment $Environment
+
+        $scopes | Should -Contain 'AgentIdentity.Read.All'
+        $scopes | Should -Contain 'IdentityRiskyUser.Read.All'
+        $scopes | Should -Not -Contain 'ConfigurationMonitoring.Read.All'
+        $scopes | Should -Not -Contain 'CrossTenantInformation.ReadBasic.All'
+        $scopes | Should -Not -Contain 'RemoteTenantGroups.Read.All'
+        $scopes | Should -Not -Contain 'TenantGovernance-RelatedTenant.Read.All'
+        $scopes | Should -Not -Contain 'TenantGovernance-Relationship.Read.All'
+    }
+
+    It 'Never includes the Global-only preview scopes without IncludePreview' {
+        $scopes = Get-MtGraphScope -Environment Global
+
+        $scopes | Should -Not -Contain 'ConfigurationMonitoring.Read.All'
+        $scopes | Should -Not -Contain 'TenantGovernance-Relationship.Read.All'
+    }
 }

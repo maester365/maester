@@ -105,4 +105,28 @@ Describe 'Write-MtGraphConsentHelp' {
         Should -Invoke Write-Host -ModuleName Maester -Times 0 -Exactly -ParameterFilter { $Object -match 'If you closed the sign-in window' }
         Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Object -match '^Ask a Global Administrator' }
     }
+
+    It 'Passes the cloud to Get-MtGraphScope for preview scopes in a national cloud' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('AADSTS65001: consent required'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord -Environment USGov -IncludePreview
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Object -match [regex]::Escape('Connect-MgGraph -Scopes (Get-MtGraphScope -IncludePreview -Environment USGov) -Environment USGov')
+        }
+    }
+
+    It 'Does not pass the cloud to Get-MtGraphScope without preview scopes' {
+        InModuleScope Maester {
+            $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+                [System.Exception]::new('AADSTS65001: consent required'), 'AuthFailed', 'AuthenticationError', $null)
+            $null = Write-MtGraphConsentHelp -ErrorRecord $errorRecord -Environment USGov -SendMail
+        }
+
+        Should -Invoke Write-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Object -match [regex]::Escape('Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail) -Environment USGov')
+        }
+    }
 }
