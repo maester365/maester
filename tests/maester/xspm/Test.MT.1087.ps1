@@ -128,23 +128,41 @@
 
     $Severity = "High"
 
-    if ($return -or [string]::IsNullOrEmpty($Devices)) {
+    if ([string]::IsNullOrEmpty($Devices)) {
+        # Invoke-MtGraphSecurityQuery returns nothing both when no device matches and when the query
+        # could not run at all, so an empty result on its own cannot be read as a clean fleet. This
+        # asks whether Defender has any vulnerability data for this tenant before calling it a pass.
+        # A summarize with no by clause returns exactly one row even over no input, so the count
+        # comes back either way.
+        $assessed = Invoke-MtGraphSecurityQuery -Timespan "P1D" -Query @'
+DeviceTvmSoftwareVulnerabilities
+| summarize AssessedDeviceCount = dcount(DeviceId)
+'@
+        $assessedCount = [int](($assessed | Select-Object -First 1).AssessedDeviceCount)
+        if ($assessedCount -le 0) {
+            # No device is onboarded to Defender for Endpoint, or the source could not be read.
+            # Zero exposed devices out of zero assessed devices is not a pass.
+            Add-MtTestResultDetail -SkippedBecause NotApplicable
+            return $null
+        }
+
         $testResultMarkdown = "Well done. No public exposed devices with high or critical CVE's and high changes of exploitation were found."
+        $resultMarkdown = ""
     } else {
         $testResultMarkdown = "At least one public exposed device with high or critical CVE's and high changes of exploitation was found.`n`n%TestResult%"
 
         Write-Verbose "Found $($Devices.Count) public exposed devices with high or critical CVE's and high changes of exploitation."
 
-        $result = "| DeviceName | MaxEpssScore | MaxCvssScore | CveList | PublicOpenPortList | `n"
-        $result += "| --- | --- | --- | --- | --- |`n"
+        $resultMarkdown = "| DeviceName | MaxEpssScore | MaxCvssScore | CveList | PublicOpenPortList | `n"
+        $resultMarkdown += "| --- | --- | --- | --- | --- |`n"
         foreach ($Device in $Devices) {
             $CveList = $($Device.CveList) -join ', '   # "user1, user2, user3"
             $PublicOpenPortList = $($Device.PublicOpenPortList) -join ', '   # "user1, user2, user3"
-            $result += "| $($Device.DeviceName) | $($Device.MaxEpssScore) | $($Device.MaxCvssScore) | $($CveList) | $($PublicOpenPortList) |`n"
+            $resultMarkdown += "| $($Device.DeviceName) | $($Device.MaxEpssScore) | $($Device.MaxCvssScore) | $($CveList) | $($PublicOpenPortList) |`n"
         }
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMarkdown
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity $Severity
-    $result = [string]::IsNullOrEmpty($Devices)
-    return $result
+    return [string]::IsNullOrEmpty($Devices)
 }
