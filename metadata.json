@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6V3244NGJ5Z0MCH56MRQBXB",
+  "strategy": "manual-commit",
+  "branch": "feat/zero-trust-workshop-view",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "report/src/components/report/Sidebar.tsx",
+    "report/src/lib/packNav.ts",
+    "report/src/lib/runSubject.ts",
+    "report/src/lib/zeroTrust.ts",
+    "report/src/pages/report/PackRoute.tsx",
+    "report/src/pages/report/TestsPage.tsx",
+    "report/src/styles/report.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 24259,
+    "cache_read_tokens": 3396861,
+    "output_tokens": 8110,
+    "api_call_count": 11,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 4893,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4829,
+      "key_context": 64,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
