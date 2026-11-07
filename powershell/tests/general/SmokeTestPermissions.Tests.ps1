@@ -1,4 +1,4 @@
-# The smoke test authenticates as an application, so its app registration needs an admin-consented
+﻿# The smoke test authenticates as an application, so its app registration needs an admin-consented
 # application permission for every default scope. .github/workflows/maester-action-smoke-test.md is
 # the setup list a maintainer works from, and nothing tied it to Get-MtGraphScope: a scope added to
 # the default set did not reach the list, and the smoke test failed in the demo tenant with a 403
