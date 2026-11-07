@@ -73,6 +73,26 @@ Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
         $script:TestResult | Should -Match 'atRisk'
     }
 
+    It 'escapes a tenant-controlled display name so it cannot render as a link' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id                      = 'user-1'
+                    userPrincipalName       = 'alice@contoso.com'
+                    userDisplayName         = '[Sign in again](https://phish.example)'
+                    riskLevel               = 'high'
+                    riskState               = 'atRisk'
+                    riskDetail              = 'none'
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                }
+            )
+        }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
+        $script:TestResult | Should -Not -Match '\| \[Sign in again\]\('
+        $script:TestResult | Should -Match ([regex]::Escape('\[Sign in again\]\(https://phish.example\)'))
+    }
+
     It 'fails when a high-risk user is confirmedCompromised (must not be treated as remediated)' {
         # This is the case that breaks if the check filters on riskState eq atRisk only:
         # confirmCompromised lands a user in confirmedCompromised, which is still unremediated.
@@ -206,7 +226,7 @@ Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
             $script:Severity | Should -BeNullOrEmpty
-            $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
+            $script:TestResult | Should -Match 'Global Administrator \\\(eligible\\\)'
         }
 
         It 'does not list a non-privileged role' {

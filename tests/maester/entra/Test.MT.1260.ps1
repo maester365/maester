@@ -136,15 +136,15 @@
     foreach ($Item in $Sorted) {
         $DisplayName = [string]$Item.userDisplayName
         if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-        $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-        $Upn = [System.Net.WebUtility]::HtmlEncode([string]$Item.userPrincipalName) -replace '\|', '&#124;'
+        $DisplayName = Get-MtSafeMarkdown $DisplayName
+        $Upn = Get-MtSafeMarkdown ([string]$Item.userPrincipalName)
         $State = [string]$Item.riskState
-        $Detail = [System.Net.WebUtility]::HtmlEncode([string]$Item.riskDetail) -replace '\|', '&#124;'
+        $Detail = Get-MtSafeMarkdown ([string]$Item.riskDetail)
         $Updated = if ($Item.riskLastUpdatedDateTime) {
             ($Item.riskLastUpdatedDateTime -as [datetime]).ToUniversalTime().ToString('yyyy-MM-dd')
         } else { 'Unknown' }
         $Roles = if ($PrivilegedRolesByUser.ContainsKey([string]$Item.id)) {
-            [System.Net.WebUtility]::HtmlEncode(($PrivilegedRolesByUser[[string]$Item.id] -join ', ')) -replace '\|', '&#124;'
+            Get-MtSafeMarkdown ($PrivilegedRolesByUser[[string]$Item.id] -join ', ')
         } else { 'None' }
         $Result += "`n| $DisplayName | $Upn | $State | $Detail | $Updated | $Roles |"
     }
