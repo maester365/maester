@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6VYHM720MJSYWTXD48FYSZW",
   "strategy": "manual-commit",
   "branch": "feat/website-test-explorer",
-  "checkpoints_count": 4,
+  "checkpoints_count": 5,
   "files_touched": [
     "powershell/assets/ConsoleTips.txt"
   ],
@@ -14,14 +14,21 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 64,
-    "cache_creation_tokens": 19463,
-    "cache_read_tokens": 9784231,
-    "output_tokens": 8606,
-    "api_call_count": 29,
+    "input_tokens": 70,
+    "cache_creation_tokens": 22370,
+    "cache_read_tokens": 10324937,
+    "output_tokens": 10779,
+    "api_call_count": 32,
     "subagent_tokens": {
       "input_tokens": 0,
       "cache_creation_tokens": 0,
@@ -31,15 +38,15 @@
     }
   },
   "redaction": {
-    "replacements": 4900,
+    "replacements": 5429,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 4833,
-      "key_context": 67,
+      "entropy": 5357,
+      "key_context": 72,
       "provider_token": 0,
       "shell_stdin": 0
     }
