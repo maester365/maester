@@ -1,4 +1,4 @@
-Describe 'Azure secure score and regulatory compliance' {
+﻿Describe 'Azure secure score and regulatory compliance' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
@@ -130,7 +130,7 @@ Describe 'Azure secure score and regulatory compliance' {
     Context 'Get-MtAzureSecureScore' {
         BeforeEach {
             Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
-                param($Query, $ApiVersion)
+                param($Query)
 
                 if ($Query -match 'securescores') {
                     return @([pscustomobject]@{ subscriptionId = 'sub-1'; currentScore = 44; maxScore = 55; initiative = 'ascScore' },
@@ -174,6 +174,39 @@ Describe 'Azure secure score and regulatory compliance' {
 
             @(($rows | Where-Object { $_.SubscriptionId -eq 'sub-1' }).StandardList).Count | Should -Be 1
             @(($rows | Where-Object { $_.SubscriptionId -eq 'sub-2' }).StandardList).Count | Should -Be 0
+        }
+
+        It 'asks Azure for the default initiative only, so one subscription cannot yield two rows' {
+            # The instance ID for this family is the subscription ID, so two score rows for one
+            # subscription would repeat it, and Invoke-MtNativePlan answers a repeated instance ID
+            # with a single InvalidInstanceId Error row for the WHOLE family: one extra initiative
+            # anywhere would take MT.1266 out across the estate. Score resources are per initiative,
+            # so the query has to ask for the ASC Default one by name.
+            #
+            # The mock honours the filter instead of asserting on the query text: without the
+            # name filter it answers with the two rows Azure would really return, and this test
+            # fails. That is the point of writing it this way.
+            Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
+                param($Query)
+
+                if ($Query -match 'securescores') {
+                    if ($Query -match 'name == "ascScore"') {
+                        return @([pscustomobject]@{ subscriptionId = 'sub-1'; currentScore = 44; maxScore = 55; initiative = 'ASC Default' })
+                    }
+
+                    return @([pscustomobject]@{ subscriptionId = 'sub-1'; currentScore = 44; maxScore = 55; initiative = 'ASC Default' },
+                        [pscustomobject]@{ subscriptionId = 'sub-1'; currentScore = 10; maxScore = 90; initiative = 'Custom initiative' })
+                }
+                if ($Query -match 'regulatorycompliancestandards') { return @() }
+                return @([pscustomobject]@{ subscriptionId = 'sub-1'; subscriptionName = 'Contoso Production' })
+            }
+
+            # No @(): the helper writes the list with -NoEnumerate, so @() would wrap it in a single
+            # element and the filter would see the whole list rather than its rows.
+            $rows = Get-MtAzureSecureScore
+
+            @($rows | Where-Object { $_.SubscriptionId -eq 'sub-1' }).Count | Should -Be 1 -Because 'one subscription is one instance, whatever initiatives it carries'
+            ($rows | Where-Object { $_.SubscriptionId -eq 'sub-1' }).ScorePercentage | Should -Be 80 -Because 'the default initiative is the one that counts'
         }
 
         It 'returns an empty list, not null, when there is no secure score, and asks for nothing else' {

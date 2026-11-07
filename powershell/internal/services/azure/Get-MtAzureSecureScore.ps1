@@ -1,4 +1,4 @@
-function Get-MtAzureSecureScore {
+﻿function Get-MtAzureSecureScore {
     <#
     .SYNOPSIS
     Returns one row per Azure subscription with the Microsoft Defender for Cloud secure score and the
@@ -34,10 +34,16 @@ function Get-MtAzureSecureScore {
     [OutputType([System.Collections.Generic.List[pscustomobject]])]
     param()
 
+    # The name filter is not cosmetic. Score resources are per initiative, and the instance ID for
+    # this family is the subscription ID, so a second initiative in one subscription would produce a
+    # repeated instance ID. Invoke-MtNativePlan returns a single InvalidInstanceId Error row for the
+    # whole family in that case and evaluates nothing, so one extra initiative anywhere in the estate
+    # would take MT.1266 out everywhere. 'ascScore' is the ASC Default initiative, per the Azure API.
     # properties.score.max is cast because the score arrives as a dynamic value.
     $scoreQuery = @'
 securityresources
 | where type == "microsoft.security/securescores"
+| where name == "ascScore"
 | extend currentScore = todouble(properties.score.current),
          maxScore = todouble(properties.score.max),
          initiative = tostring(properties.displayName)
