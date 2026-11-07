@@ -66,12 +66,16 @@
             continue
         }
 
+        $placement = Get-MtSecureScoreControlProduct -Service ([string]$controlProfile.service)
         [pscustomobject]@{
             Id       = $controlName
             Title    = "$($controlProfile.title)."
             Severity = Get-MtSecureScoreControlSeverity -MaxScore ([double]$controlProfile.maxScore)
+            # Each action sits under the product it is about (Entra, Exchange, Teams...), not the family's Defender.
+            Product  = $placement.Product
+            Feature  = $placement.Feature
             # The service (MDO, AzureAD, EXO...) and category (Apps, Identity...) as tags, so -Tag can pick
-            # out one product's actions. The engine does not take a Product per instance.
+            # out one service's actions.
             Tag      = @(@($controlProfile.service, $controlProfile.controlCategory) | Where-Object { $_ } | Select-Object -Unique)
             Data     = [pscustomobject]@{
                 ControlScore = $controlScore
@@ -80,6 +84,38 @@
             }
         }
     }
+}
+
+function Get-MtSecureScoreControlProduct {
+    <#
+    .SYNOPSIS
+    Maps a Secure Score control's service to the Maester product (and feature, where one fits) it is about.
+
+    .DESCRIPTION
+    Secure Score names the service that owns each improvement action (AzureAD, EXO, MS Teams...). The engine
+    places a family instance under the Product and Feature it sets, checked against the taxonomy. A service
+    with no clear product returns nothing, so the instance keeps the family's Defender product and feature.
+    Defender for Cloud Apps connectors (MDA_*) stay under Defender.
+    #>
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param(
+        [Parameter()] [AllowEmptyString()] [string] $Service
+    )
+
+    $map = @{
+        'AzureAD'     = @{ Product = 'entra' }
+        'EXO'         = @{ Product = 'exchange' }
+        'MS Teams'    = @{ Product = 'teams' }
+        'SPO'         = @{ Product = 'sharepoint' }
+        'MIP'         = @{ Product = 'purview' }
+        'FORMS'       = @{ Product = 'microsoft-365' }
+        'SWAY'        = @{ Product = 'microsoft-365' }
+        'Admincenter' = @{ Product = 'microsoft-365' }
+        'Azure ATP'   = @{ Product = 'defender'; Feature = 'defender-for-identity' }
+    }
+    if ($Service -and $map.ContainsKey($Service)) { return $map[$Service] }
+    return @{ Product = $null; Feature = $null }
 }
 
 function Get-MtSecureScoreControlSeverity {

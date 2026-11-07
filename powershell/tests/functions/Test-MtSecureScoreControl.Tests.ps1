@@ -5,6 +5,7 @@
         # The native-test functions are not exported; reach them the same way the agent tests do.
         Use-MtModuleFunction -Name Get-MtSecureScoreControlInstance
         Use-MtModuleFunction -Name Get-MtSecureScoreControlSeverity
+        Use-MtModuleFunction -Name Get-MtSecureScoreControlProduct
         Use-MtModuleFunction -Name ConvertFrom-MtSecureScoreHtml
         Use-MtModuleFunction -Name Test-MtSecureScoreControl
 
@@ -107,6 +108,16 @@
             $instance.Tag | Should -Contain 'Apps'
         }
 
+        It 'places each instance under the product its service is about' {
+            $instances = @(Get-MtSecureScoreControlInstance)
+
+            ($instances | Where-Object Id -EQ 'AdminMFAV2').Product | Should -Be 'entra'
+            ($instances | Where-Object Id -EQ 'exo_mailboxaudit').Product | Should -Be 'exchange'
+            # Defender for Office keeps the family's Defender product and Exposure Management feature.
+            ($instances | Where-Object Id -EQ 'mdo_safelinks').Product | Should -BeNullOrEmpty
+            ($instances | Where-Object Id -EQ 'mdo_safelinks').Feature | Should -BeNullOrEmpty
+        }
+
         It 'marks a control that is also an Entra recommendation, matching the name without regard to case' {
             $instances = @(Get-MtSecureScoreControlInstance)
 
@@ -188,6 +199,36 @@
             @{ MaxScore = 1; Expected = 'Low' }
         ) {
             Get-MtSecureScoreControlSeverity -MaxScore $MaxScore | Should -Be $Expected
+        }
+    }
+
+    Context 'Product' {
+        It 'maps the <Service> service to <Product> <Feature>' -ForEach @(
+            @{ Service = 'AzureAD'; Product = 'entra'; Feature = $null }
+            @{ Service = 'EXO'; Product = 'exchange'; Feature = $null }
+            @{ Service = 'MS Teams'; Product = 'teams'; Feature = $null }
+            @{ Service = 'SPO'; Product = 'sharepoint'; Feature = $null }
+            @{ Service = 'MIP'; Product = 'purview'; Feature = $null }
+            @{ Service = 'Admincenter'; Product = 'microsoft-365'; Feature = $null }
+            @{ Service = 'Azure ATP'; Product = 'defender'; Feature = 'defender-for-identity' }
+            @{ Service = 'MDO'; Product = $null; Feature = $null }
+            @{ Service = 'MDA_Okta'; Product = $null; Feature = $null }
+            @{ Service = ''; Product = $null; Feature = $null }
+        ) {
+            $placement = Get-MtSecureScoreControlProduct -Service $Service
+            $placement.Product | Should -Be $Product
+            $placement.Feature | Should -Be $Feature
+        }
+
+        It 'uses only product and feature keys that are in the Maester taxonomy' {
+            $taxonomy = Import-PowerShellDataFile "$PSScriptRoot/../../assets/MaesterTaxonomy.psd1"
+            foreach ($service in 'AzureAD', 'EXO', 'MS Teams', 'SPO', 'MIP', 'FORMS', 'SWAY', 'Admincenter', 'Azure ATP') {
+                $placement = Get-MtSecureScoreControlProduct -Service $service
+                ($taxonomy | ConvertTo-Json -Depth 10) | Should -Match ([regex]::Escape("`"$($placement.Product)`""))
+                if ($placement.Feature) {
+                    ($taxonomy | ConvertTo-Json -Depth 10) | Should -Match ([regex]::Escape("`"$($placement.Feature)`""))
+                }
+            }
         }
     }
 
