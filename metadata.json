@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6VX79MDQK6PXSY287FV0F9V",
+  "strategy": "manual-commit",
+  "branch": "fix/powershell-bom",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "powershell/tests/general/FileEncoding.Tests.ps1"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 54,
+    "cache_creation_tokens": 23068,
+    "cache_read_tokens": 3861189,
+    "output_tokens": 13014,
+    "api_call_count": 23
+  },
+  "redaction": {
+    "replacements": 529,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 524,
+      "key_context": 5,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
