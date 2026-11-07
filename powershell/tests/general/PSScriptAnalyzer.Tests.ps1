@@ -1,9 +1,22 @@
-﻿Param (
+﻿# $CommandPath is read in BeforeDiscovery, which runs before the analyzer's scope analysis and
+# which it does not follow, so it reports the parameter as unused. Suppressed with the reason
+# rather than renamed, since renaming would break anyone passing it.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'CommandPath',
+    Justification = 'Consumed by Get-ChildItem in BeforeDiscovery, which the analyzer does not follow.')]
+Param (
     [switch]
     $SkipTest,
 
     [string[]]
-    $CommandPath = @("$PSScriptRoot/../../public/", "$PSScriptRoot/../../internal/")
+    $CommandPath = @(
+        "$PSScriptRoot/../../public/",
+        "$PSScriptRoot/../../internal/",
+        # The analyzed set used to be the module's public and internal commands only, which is a
+        # quarter of the PowerShell in the tree. The shipped tests and the unit tests were never
+        # analyzed, so a rule could be green while the files users actually run went unchecked.
+        "$PSScriptRoot/../../../tests/",
+        "$PSScriptRoot/../"
+    )
 )
 
 if ($SkipTest) { return }
@@ -25,7 +38,35 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
         $jobs = for ($j = 0; $j -lt $jobCount; $j++) {
             $chunk = [string[]]@(for ($i = $j; $i -lt $files.Count; $i += $jobCount) { $files[$i] })
             Start-Job -ScriptBlock {
-                $using:chunk | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess }
+                # Rules that describe how a *command* should be written and do not apply to test code.
+                # Excluded only under a test path, so the module's own commands keep being held to them:
+                #   PSReviewUnusedParameter                     a Pester mock declares the parameters it
+                #                                               filters on, and uses the ones it needs
+                #   PSUseDeclaredVarsMoreThanAssignments        BeforeDiscovery variables are consumed by
+                #                                               -ForEach at discovery, which it cannot see
+                #   PSUseShouldProcessForStateChangingFunctions fixture builders named New-* build objects
+                #                                               in memory and change no system state
+                #   PSAvoidAssignmentToAutomaticVariable        $input as the name of a test's input fixture
+                #   PSUseSingularNouns                          would mean renaming shipped test functions
+                #                                               such as Test-MtCisGuestAccessReviews
+                #   PSAvoidUsingWriteHost                       pester.ps1 is the runner; its output is for
+                #                                               a person reading a console
+                #   PSAvoidUsingPlainTextForPassword            fires on $PasswordValidityPeriodInDays,
+                #                                               which is a number of days
+                $soloPruebas = @(
+                    'PSReviewUnusedParameter'
+                    'PSUseDeclaredVarsMoreThanAssignments'
+                    'PSUseShouldProcessForStateChangingFunctions'
+                    'PSAvoidAssignmentToAutomaticVariable'
+                    'PSUseSingularNouns'
+                    'PSAvoidUsingWriteHost'
+                    'PSAvoidUsingPlainTextForPassword'
+                )
+                $using:chunk | ForEach-Object {
+                    $exclude = @('PSAvoidTrailingWhitespace', 'PSShouldProcess')
+                    if ($_ -match '[\\/](tests)[\\/]') { $exclude += $soloPruebas }
+                    Invoke-ScriptAnalyzer -Path $_ -ExcludeRule $exclude
+                }
             }
         }
         # A job that fails only writes an error, which would leave its files unanalysed and the tests passing.
