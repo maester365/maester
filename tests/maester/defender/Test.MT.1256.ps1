@@ -1,4 +1,4 @@
-function Test-MtDefenderExploitableSoftwareVulnerability {
+﻿function Test-MtDefenderExploitableSoftwareVulnerability {
     <#
     .SYNOPSIS
     Ensure no device runs software with a high or critical vulnerability for which exploit code is
