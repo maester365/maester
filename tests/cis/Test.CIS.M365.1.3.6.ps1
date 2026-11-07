@@ -37,31 +37,33 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Requesting secure scores to get the customer lockbox setting'
-    $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled
+    Write-Verbose 'Requesting organization configuration to get the customer lockbox setting'
+    $customerLockbox = @(Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled)
+
+    if ($customerLockbox.Count -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    }
 
     Write-Verbose 'Checking if the customer lockbox feature is enabled'
     $result = $customerLockbox | Where-Object { $_.CustomerLockBoxEnabled -ne 'True' }
 
-    # Set the result to true and pass if no tenants are found with the customer lockbox feature disabled.
     $testResult = ($result | Measure-Object).Count -eq 0
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has the customer lockbox enabled:`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "Your tenant does not have the customer lockbox enabled:`n`n%TestResult%"
     }
 
-    # Prepare the markdown result table if the test fails (testResult is false).
-    if ($testResult -eq $false) {
-        $resultMd = "| Customer Lockbox |`n"
-        $resultMd += "| --- |`n"
-        foreach ($item in $customerLockbox) {
-            $itemResult = "❌ Fail"
-            if ($item.id -notin $result.id) {
-                $itemResult = "✅ Pass"
-            }
-            $resultMd += "| $($itemResult) |`n"
+    $resultMd = "| Customer Lockbox |`n"
+    $resultMd += "| --- |`n"
+    foreach ($item in $customerLockbox) {
+        $itemResult = "❌ Fail"
+        if ($item.CustomerLockBoxEnabled -eq 'True') {
+            $itemResult = "✅ Pass"
         }
+        $resultMd += "| $($itemResult) |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
