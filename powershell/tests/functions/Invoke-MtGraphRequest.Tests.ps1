@@ -208,6 +208,28 @@ Describe 'Invoke-MtGraphRequest' {
                 $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc'
             }
         }
+
+        It 'Caches the consolidated result under the original uri and nothing else' {
+            # The paging loop reads each page with the cache off, because a skip token is not always
+            # unique and a cached page can send the loop round again. Only the consolidated result
+            # belongs in the cache, under the key of the request the caller made.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'v1.0/users' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=t1' }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=t1' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page2' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=t2' }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=t2' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page3' }) }
+            }
+            $null = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' }
+
+            InModuleScope Maester {
+                @($__MtSession.GraphCache.Keys) | Should -Be @('https://graph.microsoft.com/v1.0/users')
+                @($__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users'].value).id |
+                    Should -Be @('page1', 'page2', 'page3')
+            }
+        }
     }
 
     Context 'Batching' {
@@ -230,6 +252,51 @@ Describe 'Invoke-MtGraphRequest' {
             $requests.url | Should -Be @('users', 'groups')
             # No request url may carry an absolute endpoint, or batching would pin a cloud.
             foreach ($url in $requests.url) { $url | Should -Not -Match '^https?://' }
+        }
+
+        It 'Caches a paged response in a batch under its own uri, not the last request in the batch' {
+            # The responses are completed after the loop that builds the requests has ended, so the
+            # only uri still in scope is the last one. A paged response used to be cached under it,
+            # which served one request's objects to another.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Method -eq 'POST' } {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'user1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' } }
+                        @{ id = '1'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'group1' }) } }
+                    )
+                }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'user2' }) }
+            }
+            $result = @(InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users', 'groups' })
+
+            $result.id | Should -Be @('user1', 'user2', 'group1')
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users'
+                $__MtSession.GraphCache.Keys | Should -Not -Contain 'https://graph.microsoft.com/v1.0/groups'
+                @($__MtSession.GraphCache['https://graph.microsoft.com/v1.0/users'].value).id |
+                    Should -Be @('user1', 'user2')
+            }
+        }
+
+        It 'Caches a paged response in a batch under the uri of the object it was read for' {
+            # Same defect with -UniqueId: the key must name the object the response describes.
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Method -eq 'POST' } {
+                @{ responses = @(
+                        @{ id = '0'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'a-page1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users/a/memberOf?$skiptoken=abc' } }
+                        @{ id = '1'; status = 200; body = [pscustomobject] @{ value = @([pscustomobject] @{ id = 'b-only' }) } }
+                    )
+                }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users/a/memberOf?$skiptoken=abc' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'a-page2' }) }
+            }
+            $null = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId 'a', 'b' }
+
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users/a'
+                $__MtSession.GraphCache.Keys | Should -Not -Contain 'https://graph.microsoft.com/v1.0/users/b'
+            }
         }
 
         It 'Skips a request in a batch that returns 404 and returns the rest' {
