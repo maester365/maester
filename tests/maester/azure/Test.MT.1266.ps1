@@ -1,4 +1,4 @@
-function Get-MtAzureSecureScoreInstance {
+﻿function Get-MtAzureSecureScoreInstance {
     <#
     .SYNOPSIS
     Returns one MT.1266 instance per Azure subscription Microsoft Defender for Cloud scores.
