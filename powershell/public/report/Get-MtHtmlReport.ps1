@@ -15,7 +15,8 @@
 
     Reports added with Add-MtReportAttachment are embedded in the page, each in its own element, and
     opened from a button. They are left out when RedactUserIdentity is HtmlOnly or AllOutputs, because
-    Maester cannot redact another tool's report.
+    Maester cannot redact another tool's report. JSON attachments, data that a built-in view of the report
+    reads, are kept and redacted the way the results are.
 
     .Example
     $pesterResults = Invoke-Pester -PassThru
@@ -124,18 +125,67 @@
                     })
             }
             # The report data lists each attachment without its content, which is written into its own element.
+            # Under RedactUserIdentity, JSON attachments are redacted like the results and HTML ones are left out.
             if ($null -ne $copy.Attachments) {
-                if ($RedactUserIdentity -ne 'None') {
+                $listed = @(foreach ($attachment in @($copy.Attachments | Where-Object { $_ -and $_.Content })) {
+                        if ($RedactUserIdentity -ne 'None') {
+                            if ([string](Get-ObjectProperty $attachment 'ContentType') -ne 'application/json') {
+                                $redactedAttachments.Value = $true
+                                continue
+                            }
+                            $attachment = & $redactAttachment $attachment
+                        }
+                        $attachmentContent.Add($attachment)
+                        [PSCustomObject](& $copyWithout $attachment 'Content')
+                    })
+                if ($RedactUserIdentity -ne 'None' -and $listed.Count -eq 0) {
                     $copy.Remove('Attachments')
-                    $redactedAttachments.Value = $true
                 } else {
-                    $copy.Attachments = @($copy.Attachments | Where-Object { $_ -and $_.Content } | ForEach-Object {
-                            $attachmentContent.Add($_)
-                            [PSCustomObject](& $copyWithout $_ 'Content')
-                        })
+                    $copy.Attachments = $listed
                 }
             }
             [PSCustomObject]$copy
+        }
+
+        # The user identities to redact, from the map Invoke-Maester built or from the results' AffectedObjects.
+        $replacements = @{}
+        if ($RedactUserIdentity -ne 'None') {
+            if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
+                $replacements = $UserIdentityReplacementMap
+            } else {
+                $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
+                $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
+                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
+                if (-not $hasInventory) {
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
+                }
+            }
+        }
+
+        # A copy of a JSON attachment with the same replacements as the results: decompressed, redacted, compressed again.
+        $redactAttachment = {
+            param($Attachment)
+            $item = & $copyWithout $Attachment ''
+            $compressed = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String([string]$item.Content))
+            try {
+                $gunzip = [System.IO.Compression.GZipStream]::new($compressed, [System.IO.Compression.CompressionMode]::Decompress)
+                $reader = [System.IO.StreamReader]::new($gunzip, [System.Text.Encoding]::UTF8)
+                try { $text = $reader.ReadToEnd() } finally { $reader.Dispose() }
+            } finally {
+                $compressed.Dispose()
+            }
+            $text = ConvertTo-MtRedactedReportContent -Content $text -ReplacementMap $replacements -JsonEncoded
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($text)
+            $buffer = [System.IO.MemoryStream]::new()
+            try {
+                $gzip = [System.IO.Compression.GZipStream]::new($buffer, [System.IO.Compression.CompressionLevel]::SmallestSize, $true)
+                try { $gzip.Write($bytes, 0, $bytes.Length) } finally { $gzip.Dispose() }
+                $item.Content = [System.Convert]::ToBase64String($buffer.ToArray())
+            } finally {
+                $buffer.Dispose()
+            }
+            $item.Size = $bytes.Length
+            [PSCustomObject]$item
         }
 
         $attachmentContent = [System.Collections.Generic.List[object]]::new()
@@ -151,23 +201,13 @@
         }
 
         if ($redactedAttachments.Value) {
-            Write-Warning "RedactUserIdentity: the reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
+            Write-Warning "RedactUserIdentity: the HTML reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
         }
 
         Write-Verbose "Generating HTML report."
         $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
         # Redact before escaping: escaped & < > would no longer match the replacement values.
         if ($RedactUserIdentity -ne 'None') {
-            if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
-                $replacements = $UserIdentityReplacementMap
-            } else {
-                $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
-                $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
-                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
-                if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
-                }
-            }
             $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded
         }
 

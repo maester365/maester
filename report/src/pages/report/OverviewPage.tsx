@@ -3,6 +3,7 @@
 
 import { Link } from "@/lib/router"
 import { REASONS, RESULTS, RESULT_LABEL, SEVERITIES, SEVERITY_MEANING, fixCommand, frameworkLabel, isQuickWin, maesterVersion, serviceName, severityWeight, tally, type Row } from "@/lib/model"
+import { reportHeading } from "@/lib/runSubject"
 import { useReport } from "@/components/report/ReportContext"
 import { DetailBody, DetailHeader, DetailTabs } from "@/components/report/TestDetail"
 import { FixList, Footer } from "@/components/report/lists"
@@ -32,10 +33,10 @@ function Focused() {
   const first = rows[0]
   const before = model.previous?.Results[first.Id]
   const verdict: Record<string, string> = { Passed: "It passed.", Failed: "It failed.", Investigate: "It needs a closer look.", Error: "It could not run because of an error.", Skipped: "It was skipped.", NotRun: "It did not run." }
-  const tenant = String(model.result.TenantName || "the tenant").replace(/\.$/, "")
+  const against = model.subject ? ` against ${model.subject.name}` : ""
   const lead = rows.length === 1
-    ? `You ran one test against ${tenant}. ${verdict[first.Result] || ""}${before && before !== first.Result && model.previous ? ` It ${before === "Passed" || before === "Failed" ? before.toLowerCase() : `was ${RESULT_LABEL[before]?.toLowerCase()}`} on ${formatDate(model.previous.ExecutedAt)}, so something changed since then.` : ""}`
-    : `You ran ${rows.length} tests against ${tenant}: ${RESULTS.filter((r) => model.all[r]).map((r) => `${model.all[r]} ${RESULT_LABEL[r].toLowerCase()}`).join(", ")}.`
+    ? `You ran one test${against}. ${verdict[first.Result] || ""}${before && before !== first.Result && model.previous ? ` It ${before === "Passed" || before === "Failed" ? before.toLowerCase() : `was ${RESULT_LABEL[before]?.toLowerCase()}`} on ${formatDate(model.previous.ExecutedAt)}, so something changed since then.` : ""}`
+    : `You ran ${rows.length} tests${against}: ${RESULTS.filter((r) => model.all[r]).map((r) => `${model.all[r]} ${RESULT_LABEL[r].toLowerCase()}`).join(", ")}.`
   const more: [string, string][] = []
   if (first.Feature) more.push([`Every test for ${model.featureName(first)}`, `Invoke-Maester -Feature ${first.Feature}`])
   if (first.Product && model.hasAttributes) more.push([`Every ${model.productName(first.Product)} test`, `Invoke-Maester -Product ${first.Product}`])
@@ -80,7 +81,8 @@ export default function OverviewPage() {
   const nSources = new Set(model.rows.map((t) => (t.Package ? t.Package.Id : t.Suite || t.Source))).size
   const highFailing = failing.filter((t) => severityWeight(t.Severity) >= 3 && t.Severity !== "Info").length
   const reach = all.scored ? Math.round(((all.scored - failing.filter((t) => t.Severity !== "Info").length + highFailing) / all.scored) * 100) : null
-  const severityCounts = SEVERITIES.map((s) => [s, failing.filter((t) => t.Severity === s).length] as [string, number]).filter(([, n]) => n)
+  const unrated = failing.filter((t) => !SEVERITIES.includes(t.Severity)).length
+  const severityCounts = [...SEVERITIES.map((s) => [s, failing.filter((t) => t.Severity === s).length] as [string, number]), ["Not rated", unrated] as [string, number]].filter(([, n]) => n)
   const maxSeverity = Math.max(1, ...severityCounts.map(([, n]) => n))
   const notRun = model.rows.filter((t) => t.Result === "Skipped" || t.Result === "NotRun" || t.Result === "Error")
   const reasons = new Map<string, { code: string; command: string; rows: Row[] }>()
@@ -93,21 +95,26 @@ export default function OverviewPage() {
   }
   const reasonRows = [...reasons.values()].sort((a, b) => b.rows.length - a.rows.length).slice(0, 6)
   const notRunCount = all.Skipped + all.NotRun + all.Error
+  const heading = reportHeading(model)
+  // The lead names the cause only when every test that did not run lacked a service, licence or permission.
+  const missing = ["ServiceNotConnected", "ServiceNotRegistered", "OptInServiceNotConnected", "LicenseNotFound", "NotAuthorized", "NotSupportedAppPermission"]
+  const allMissing = notRunCount > 0 && notRun.every((t) => missing.includes(t.ReasonCode || ""))
+  const why = allMissing ? " because a service, licence or permission was missing" : ""
 
   return (
     <div className="mt-wrap">
       <div className="mt-head">
-        <div className="mt-eyebrow">Security report · {formatDate(model.result.ExecutedAt, true)}</div>
-        <h1 className="mt-h1">{model.result.TenantName || "The tenant"} passed {all.rate ?? 0}% of the checks that ran</h1>
+        <div className="mt-eyebrow">{heading.eyebrow} · {formatDate(model.result.ExecutedAt, true)}</div>
+        <h1 className="mt-h1">{heading.title(all.scored ? all.rate ?? 0 : null)}</h1>
         <p className="mt-lead">
-          {plural(all.total, "test")}{model.hasAttributes ? ` from ${nSources} ${nSources === 1 ? "suite" : "suites and packs"}` : ""} ran{model.products.length ? ` against ${plural(model.products.length, "product")}` : ""}. <b>{all.Failed} failed</b>, {all.Investigate} need a closer look, and {notRunCount} did not run because a service, licence or permission was missing.
+          {plural(all.total, "test")}{model.hasAttributes ? ` from ${nSources} ${nSources === 1 ? "suite" : "suites and packs"}` : ""} ran{model.products.length ? ` against ${plural(model.products.length, "product")}` : ""}. <b>{all.Failed} failed</b>, {all.Investigate} need a closer look, and {notRunCount} did not run{why}.
           {highFailing > 0 && reach !== null ? <> Fixing the {plural(highFailing, "high-severity failure")} would take the pass rate to <b>{reach}%</b>.</> : null}
         </p>
       </div>
 
       <Kpis />
 
-      <div className="mt-hero">
+      <div className={`mt-hero${model.rated.severity && failing.length ? "" : " solo"}`}>
         <div className="mt-card mt-pad">
           <div className="mt-score">
             <Ring rate={all.rate} scored={all.scored} />
@@ -124,19 +131,19 @@ export default function OverviewPage() {
           )}
           <Trend />
         </div>
-        <div className="mt-card mt-pad mt-sec">
+        {model.rated.severity && failing.length > 0 && <div className="mt-card mt-pad mt-sec">
           <div className="mt-sechead"><h2 className="mt-h2">Failed by severity</h2>{failing.length >= 2 && <Link to="/plan">Open the action plan →</Link>}</div>
           <div className="mt-sevrows">
             {severityCounts.map(([s, n]) => (
               <button key={s} type="button" className="mt-sevrow" onClick={() => explore({ filters: { Result: ["Failed"], Severity: [s] } })}>
-                <span className={`mt-sev mt-s-${s}`}>{s}</span><span className="track"><i style={{ width: `${(n / maxSeverity) * 100}%`, background: SEVERITY_COLOUR[s] }} /></span><b className="mt-num" style={{ textAlign: "right" }}>{n}</b>
+                <span className={`mt-sev mt-s-${s.replace(/ /g, "")}`}>{s}</span><span className="track"><i style={{ width: `${(n / maxSeverity) * 100}%`, background: SEVERITY_COLOUR[s] || "var(--mt-ink-3)" }} /></span><b className="mt-num" style={{ textAlign: "right" }}>{n}</b>
               </button>
             ))}
             {!severityCounts.length && <p className="mt-note">Nothing failed.</p>}
           </div>
-          {severityCounts.length > 0 && <dl className="mt-sevdef">{severityCounts.flatMap(([s]) => [<dt key={`t${s}`}>{s}</dt>, <dd key={`d${s}`}>{SEVERITY_MEANING[s]}</dd>])}</dl>}
-          {failing.length > 0 && <p className="mt-note">{failing.filter(isQuickWin).length} of the {failing.length} failures are quick wins: little effort to fix, and users won't notice.</p>}
-        </div>
+          {severityCounts.length > 0 && <dl className="mt-sevdef">{severityCounts.filter(([s]) => SEVERITY_MEANING[s]).flatMap(([s]) => [<dt key={`t${s}`}>{s}</dt>, <dd key={`d${s}`}>{SEVERITY_MEANING[s]}</dd>])}</dl>}
+          {failing.length > 0 && model.rated.effort && <p className="mt-note">{failing.filter(isQuickWin).length} of the {failing.length} failures are quick wins: little effort to fix, and users won't notice.</p>}
+        </div>}
       </div>
 
       <PathCard />
@@ -145,7 +152,7 @@ export default function OverviewPage() {
         <section className="mt-sec">
           <div className="mt-sechead"><h2 className="mt-h2">Fix these first</h2>{failing.length > 6 && <Link to="/plan">All {failing.length} failures, ranked →</Link>}</div>
           <FixList rows={model.ranked} limit={6} />
-          <p className="mt-note">Ranked by severity, then by how little the fix costs and how little it disrupts users.</p>
+          <p className="mt-note">{model.rated.severity || model.rated.effort ? "Ranked by severity, then by how little the fix costs and how little it disrupts users." : "The tests declare no severity, so they are listed in the order they ran."}</p>
         </section>
       )}
 
@@ -194,7 +201,7 @@ export default function OverviewPage() {
           )}
           {model.packs.length > 0 && (
             <section className="mt-sec">
-              <div className="mt-sechead"><h2 className="mt-h2">Packs in this run</h2><a href="https://maester.dev/docs/packs" target="_blank" rel="noopener noreferrer">Find more packs ↗</a></div>
+              <div className="mt-sechead"><h2 className="mt-h2">Packs in this run</h2><a href="https://packs.maester.cloud/" target="_blank" rel="noopener noreferrer">Find more packs ↗</a></div>
               <div className="mt-grid" style={{ gap: 10 }}>
                 {model.packs.map((p) => {
                   const c = tally(p.rows)

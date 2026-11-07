@@ -31,6 +31,21 @@ Describe 'Add-MtReportAttachment' {
         ConvertFrom-MtTestAttachment $attachment[0].Content | Should -BeExactly $html
     }
 
+    It 'Stores JSON content with its content type' {
+        $json = '{"Schema":"maester.zero-trust-workshop/1","Pillars":[]}'
+
+        Add-MtReportAttachment -Name 'zero-trust-workshop' -Content $json -ContentType 'application/json'
+
+        $attachment = InModuleScope Maester { @($__MtSession.ReportAttachments)[0] }
+        $attachment.ContentType | Should -Be 'application/json'
+        $attachment.Name | Should -BeExactly 'zero-trust-workshop'
+        ConvertFrom-MtTestAttachment $attachment.Content | Should -BeExactly $json
+    }
+
+    It 'Accepts only HTML and JSON content types' {
+        { Add-MtReportAttachment -Name 'Report' -Content 'x' -ContentType 'text/plain' } | Should -Throw
+    }
+
     It 'Reads a file, keeping its file name' {
         $path = Join-Path $TestDrive 'ZeroTrustAssessmentReport.html'
         Set-Content -LiteralPath $path -Value '<html>report</html>' -NoNewline -Encoding utf8NoBOM
