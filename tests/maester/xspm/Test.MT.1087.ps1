@@ -131,11 +131,17 @@
     if ([string]::IsNullOrEmpty($Devices)) {
         # Invoke-MtGraphSecurityQuery returns nothing both when no device matches and when the query
         # could not run at all, so an empty result on its own cannot be read as a clean fleet. This
-        # asks whether Defender has any vulnerability data for this tenant before calling it a pass.
+        # asks whether Defender assessed anything in this tenant before calling it a pass.
         # A summarize with no by clause returns exactly one row even over no input, so the count
         # comes back either way.
+        #
+        # The source is the software INVENTORY, not DeviceTvmSoftwareVulnerabilities. That table holds
+        # vulnerabilities that were found, so an onboarded fleet with nothing vulnerable returns zero
+        # there and the check below would skip the one tenant that most deserves to pass. A device in
+        # the inventory is a device Defender Vulnerability Management assessed, whether or not it
+        # turned up anything.
         $assessed = Invoke-MtGraphSecurityQuery -Timespan "P1D" -Query @'
-DeviceTvmSoftwareVulnerabilities
+DeviceTvmSoftwareInventory
 | summarize AssessedDeviceCount = dcount(DeviceId)
 '@
         $assessedCount = [int](($assessed | Select-Object -First 1).AssessedDeviceCount)
