@@ -28,10 +28,18 @@ function Get-MtDefenderDeviceSecurityRecommendationInstance {
             $configuration.Name
         }
 
+        # Severity follows the source, as #2510 asks: Defender's own rated impact on the configuration
+        # score, 1 to 10. It goes on the instance because that is where the engine reads a family's
+        # per-instance severity (Invoke-MtNativePlan resolves config, then the instance, then the
+        # attribute); -Severity on Add-MtTestResultDetail is never reached once the attribute declares
+        # one.
+        $severity = if ($configuration.Impact -ge 8) { 'High' } elseif ($configuration.Impact -ge 4) { 'Medium' } else { 'Low' }
+
         [pscustomobject]@{
-            Id    = $configuration.ConfigurationId
-            Title = "Every device should comply with the Defender recommendation '$name'."
-            Data  = $configuration
+            Id       = $configuration.ConfigurationId
+            Title    = "Every device should comply with the Defender recommendation '$name'."
+            Severity = $severity
+            Data     = $configuration
         }
     }
 }
@@ -96,10 +104,6 @@ function Test-MtDefenderDeviceSecurityRecommendation {
     $applicable = [int]$configuration.ApplicableDeviceCount
     $testResult = $nonCompliant -eq 0
 
-    # Severity follows the source, as #2510 asks: Defender's own rated impact on the configuration
-    # score, 1 to 10.
-    $severity = if ($configuration.Impact -ge 8) { 'High' } elseif ($configuration.Impact -ge 4) { 'Medium' } else { 'Low' }
-
     $testResultMarkdown = "Defender assesses this configuration on **$applicable** device(s). "
     if ($testResult) {
         $testResultMarkdown += "All of them comply.`n`n"
@@ -132,6 +136,6 @@ function Test-MtDefenderDeviceSecurityRecommendation {
         $testResultMarkdown += "`nWell done. Every device this configuration applies to complies with it."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity $severity
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
