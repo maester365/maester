@@ -86,7 +86,7 @@ function Test-MtAzureDefenderForCloudAttackPath {
         Product = 'azure',
         Feature = 'subscriptions',
         Area = 'infrastructure',
-        ResourceType = 'Tenant',
+        ResourceType = 'AzureResource',
         Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
