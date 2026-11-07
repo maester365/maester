@@ -7,8 +7,8 @@
     risk state. A flag only clears when someone remediates it (password reset) or an admin
     dismisses or confirms-safe it. This check reports users whose risk level is high and whose
     risk state still shows active, unremediated risk, so an admin can act on flags that have been
-    left sitting. If a reported user holds a privileged directory role, the severity is raised to
-    High. It reads risk only; it never changes a user's risk state.
+    left sitting. If a reported user holds a privileged directory role, it is listed first
+    with its roles. It reads risk only; it never changes a user's risk state.
     .EXAMPLE
     Test-MtEntraUnremediatedHighRiskUser
     .LINK
@@ -76,8 +76,8 @@
         return $true
     }
 
-    # Privileged users at risk raise severity to High (#2518). Roles are only read when there is
-    # something to report, so a clean tenant makes no extra Graph calls. The role lookup is extra
+    # Privileged users at risk are listed first with their roles (#2518). Roles are only read when
+    # there is something to report, so a clean tenant makes no extra Graph calls. The role lookup is extra
     # detail: if it fails, the unremediated users are still reported, with a note.
     $PrivilegedRolesByUser = @{}
     $RoleNote = ''
@@ -129,7 +129,7 @@
 
     $Result = "Found $($Unremediated.Count) high-risk user(s) with unremediated risk."
     if ($PrivilegedCount -gt 0) {
-        $Result += " $PrivilegedCount of them hold a privileged directory role, so severity is raised to High."
+        $Result += " $PrivilegedCount of them hold a privileged directory role and are listed first."
     }
     $Result += "`n`n| User | User principal name | Risk state | Risk detail | Risk last updated | Privileged role |"
     $Result += "`n| --- | --- | --- | --- | --- | --- |"
@@ -150,10 +150,6 @@
     }
     $Result += $RoleNote
 
-    if ($PrivilegedCount -gt 0) {
-        Add-MtTestResultDetail -Result $Result -Severity 'High'
-    } else {
-        Add-MtTestResultDetail -Result $Result
-    }
+    Add-MtTestResultDetail -Result $Result
     return $false
 }

@@ -180,7 +180,7 @@ Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
             }
         }
 
-        It 'raises severity to High and lists the role when an at-risk user holds a privileged role' {
+        It 'lists the role first when an at-risk user holds a privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'user-2'; roleDefinitionId = 'role-ga'; AssignmentType = 'Active' })
@@ -189,7 +189,7 @@ Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
             }
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'High'
+            $script:Severity | Should -BeNullOrEmpty
             $script:TestResult | Should -Match 'Global Administrator'
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             # The privileged user is listed first.
@@ -205,11 +205,11 @@ Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
             }
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'High'
+            $script:Severity | Should -BeNullOrEmpty
             $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
         }
 
-        It 'does not raise severity for a non-privileged role' {
+        It 'does not list a non-privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'user-1'; roleDefinitionId = 'role-dr'; AssignmentType = 'Active' })
