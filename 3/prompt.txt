@@ -1,0 +1,19 @@
+Background (from the session that started this one):
+Maester's rule (AGENTS.md) is that a benchmark test duplicating another suite's check becomes a shim that returns that test's result, so CIS, CISA and Maester never give two answers for one setting. This duplicate turned up while building the defender's path design (docs/proposals/defenders-path.md on branch docs/defenders-path). That work tags both CIS.M365.4.1 and MT.1054 with Step = 'intune.mark-unassigned-noncompliant' and adds Step to the TestShims same-attribute list. If that branch has not merged yet, MT.1054 on main has no Step, so the shim shouldn't add one either.
+
+Task:
+Turn `tests/cis/Test.CIS.M365.4.1.ps1` into a shim of MT.1054 (`tests/maester/intune/Test.MT.1054.ps1`), following "Reviewing a test for duplicates" in `AGENTS.md` and "Tests that another suite already has" in `website/docs/writing-tests/index.mdx`.
+
+Both tests read `deviceManagement/settings` and pass when `secureByDefault` is true, so CIS 4.1 re-implements MT.1054. First read what CIS M365 4.1 asks for in its own audit guidance. If it asks for exactly that setting, the CIS test's body becomes `return <MT.1054's function>`, and it keeps its own `Id`, `Title`, `Control = ('cis-m365:4.1', ...)` and guide. Its guide must name MT.1054. Its other attributes must match MT.1054's, as `powershell/tests/general/TestShims.Tests.ps1` requires. If the benchmark asks for something different, report that and leave the test alone.
+
+Done means: `./powershell/tests/pester.ps1 -Include 'TestShims*','NativeTestAttributes*'` passes, nothing is committed, and you report the diff. Note that main is in the Maester 3.0 code freeze from 7 November 2026.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_dfb877c0-85e7-4697-9748-c3171aca3375
+
+---
+
+has this been comiited into a pr?
+
+---
+
+Own PR after freeze
