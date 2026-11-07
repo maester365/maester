@@ -90,7 +90,7 @@ function Test-MtAzureDefenderForCloudAttackPath {
         Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
-        Mitre = 'None',
+        Mitre = ('T1190', 'T1552'),
         Lifecycle = 'Preview',
         Service = 'Azure',
         InstanceSource = 'Get-MtAzureDefenderForCloudAttackPathInstance',

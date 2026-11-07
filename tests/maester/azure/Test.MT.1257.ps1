@@ -91,7 +91,7 @@ function Test-MtAzureDefenderForCloudRecommendation {
         Product = 'azure',
         Feature = 'subscriptions',
         Area = 'infrastructure',
-        ResourceType = 'Tenant',
+        ResourceType = 'AzureResource',
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
