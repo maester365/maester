@@ -1,0 +1,61 @@
+Background (from the session that started this one):
+Maester is a PowerShell framework that checks Microsoft 365 security configuration. The defender's path (design accepted 5 November 2026, docs/proposals/defenders-path.md) orders fixes the way Microsoft Learn documents. Its catalogue (powershell/assets/steps) holds steps, their relationships and cited sources. Each source has a Learn Url with no locale, a Mirror repo name, a Note in Maester's own words and a Reviewed date.
+
+The owner's Learn mirrors (built with merill/learn-mirror) crawl Learn four times a day and make one commit per changed page. That makes git history a free change feed: a cited page that changed after its Reviewed date needs a maintainer to re-read it.
+
+Milestone M1 (draft PR maester365/maester#2683, branch feat/defenders-path) shipped the format, the loader (Get-MtStepCatalog) and its checks. Owner rulings: proposals are for review only, the workflow keeps a weekly issue and never opens PRs, and the catalogue keeps our own wording, never copied text.
+
+Task:
+Build milestone M6 of the defender's path: the tooling that keeps the step catalogue current. It's described in section 13 of `docs/proposals/defenders-path.md`.
+
+Read first: section 13, the catalogue format in section 4 (especially 4.5, Sources), `powershell/assets/steps/` and `powershell/internal/engine/Get-MtStepCatalog.ps1`. Then read how `merill/learn-mirror` lays out its files (its README and one mirror repo): file paths, the front matter fields `source_path`, `original_content_git_url` and `ms.topic`, and `.learn-mirror/state.json`.
+
+Build in `build/steps/`, PowerShell 7.4+, one function or script per file with comment-based help, following `AGENTS.md`:
+1. `Update-MtLearnMirror.ps1`: clones or updates the nine public mirrors (`merill/entra-docs-mirror`, `intune-docs-mirror`, `defender-docs-mirror`, `security-docs-mirror`, `purview-docs-mirror`, `teams-docs-mirror`, `sharepoint-docs-mirror`, `exchange-docs-mirror`, `windows-server-docs-mirror`) into a cache folder that git ignores. It writes a URL-to-file index, and follows Learn's redirects for old URLs. Today 23 of the 77 Intune and Defender links in check guides are redirects, so resolve them with HTTP HEAD and cache the answers.
+2. `Find-MtStepCandidate.ps1`: for the Learn pages that check guides (`tests/**/Test.*.md`) and catalogue `Sources` link, pulls prerequisite sections and sentences ("Prerequisites", "before you", "first", "must", "won't work without", "requires") with their mirror file and line. It writes proposals as JSON for a maintainer to review. Optional model rewording, if you add it, is behind a switch and off by default. Nothing writes to the catalogue.
+3. `Test-MtStepSource.ps1`: for each catalogue source with a `Url`, finds its mirror file and lists the mirror commits to that file since `Reviewed`. It exits non-zero when any changed.
+4. `.github/workflows/step-sources.yaml`: weekly plus manual. It runs `Test-MtStepSource.ps1` and keeps one open issue that lists the steps whose sources changed, with a diff link for each. It updates the issue rather than opening new ones, needs least-privilege `permissions`, and never opens pull requests.
+5. Unit tests with no network calls, in `powershell/tests/general/`: use a small fixture git repository built in TestDrive for `Test-MtStepSource.ps1`, and fixture Markdown for the extraction.
+
+Don't edit `powershell/assets/steps/` or the design doc. Another session owns them. If the format needs a field the tooling depends on, report it instead.
+
+Done means: the scripts and the workflow work against the real mirrors (show one run of each script), `./powershell/tests/pester.ps1` passes, and the work is committed on your branch. Ask the user before pushing or opening a PR. It would be a draft PR for Maester 3.1, based on `feat/defenders-path`, because main is in the 3.0 code freeze from 7 November 2026.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_dfb877c0-85e7-4697-9748-c3171aca3375
+
+---
+
+<task-notification>
+<task-id>bremr6qxn</task-id>
+<tool-use-id>toolu_014iEN9HpA8d7u2aor5w1kVx</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m6-1e0678/a3bccbd1-a33d-465d-83f0-b81264d1f31a/tasks/bremr6qxn.output</output-file>
+<status>completed</status>
+<summary>Background command "Run Update-MtLearnMirror against the nine real mirrors" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bvv306qty</task-id>
+<tool-use-id>toolu_01JqQ9gLfZZXskbHA6EhowYf</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m6-1e0678/a3bccbd1-a33d-465d-83f0-b81264d1f31a/tasks/bvv306qty.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full module unit test suite" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b6zgusiwa</task-id>
+<tool-use-id>toolu_01AkBdo4cLHmW1Hgx9msi3E5</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m6-1e0678/a3bccbd1-a33d-465d-83f0-b81264d1f31a/tasks/b6zgusiwa.output</output-file>
+<status>completed</status>
+<summary>Monitor "full pester.ps1 run finishing" stream ended</summary>
+<event>[[37m15:44:20[96m][[37mpester.ps1[96m]   Executed [92mZeroTrustAssessmentPack.Tests.ps1[96m 341.6s 1 failed
+[32;1mResult  : [0mFailed
+[[37m15:44:20[96m][[37mpester.ps1[96m] [92m1 tests[96m out of [37m6979[96m tests failed!
+[31;1m[0m[36;1m[36;1m 285 | [0m     [36;1mthrow "$totalFailed / $totalRun tests failed!"[0m
+[31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1m1 / 6979 tests failed![0m
+pester exit 1</event>
+If this event is something the user would act on now, send a PushNotification. Routine or benign output doesn't need one.
+</task-notification>
