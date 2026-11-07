@@ -73,7 +73,7 @@ function Test-MtAzureSecureScore {
         RelatedProduct = 'defender',
         Feature = 'subscriptions',
         Area = 'infrastructure',
-        ResourceType = 'Tenant',
+        ResourceType = 'AzureResource',
         Severity = 'Medium',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
