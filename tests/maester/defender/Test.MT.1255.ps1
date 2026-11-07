@@ -1,4 +1,4 @@
-function Get-MtDefenderDeviceSecurityRecommendationInstance {
+﻿function Get-MtDefenderDeviceSecurityRecommendationInstance {
     <#
     .SYNOPSIS
     Returns one MT.1255 instance per Defender Vulnerability Management security configuration.
@@ -33,7 +33,14 @@ function Get-MtDefenderDeviceSecurityRecommendationInstance {
         # per-instance severity (Invoke-MtNativePlan resolves config, then the instance, then the
         # attribute); -Severity on Add-MtTestResultDetail is never reached once the attribute declares
         # one.
-        $severity = if ($configuration.Impact -ge 8) { 'High' } elseif ($configuration.Impact -ge 4) { 'Medium' } else { 'Low' }
+        # Left unset when the knowledge base has no impact for this configuration. The engine's
+        # precedence is config, then instance, then attribute (Invoke-MtNativePlan.ps1:467-470) and
+        # it tests the instance value for truthiness, so $null falls through to the attribute's
+        # Medium. Deriving it from a missing impact would report a failing configuration as Low.
+        $severity = if ($null -eq $configuration.Impact) { $null }
+        elseif ($configuration.Impact -ge 8) { 'High' }
+        elseif ($configuration.Impact -ge 4) { 'Medium' }
+        else { 'Low' }
 
         [pscustomobject]@{
             Id       = $configuration.ConfigurationId
@@ -115,7 +122,8 @@ function Test-MtDefenderDeviceSecurityRecommendation {
     $testResultMarkdown += "| Configuration ID | ``$($configuration.ConfigurationId)`` |`n"
     $testResultMarkdown += "| Category | $($configuration.Category) |`n"
     $testResultMarkdown += "| Subcategory | $($configuration.Subcategory) |`n"
-    $testResultMarkdown += "| Impact on configuration score | $($configuration.Impact) of 10 |`n"
+    $impactoTexto = if ($null -eq $configuration.Impact) { 'not published by the knowledge base' } else { "$($configuration.Impact) of 10" }
+    $testResultMarkdown += "| Impact on configuration score | $impactoTexto |`n"
     $testResultMarkdown += "| Applicable devices | $applicable |`n"
     $testResultMarkdown += "| Non-compliant devices | $nonCompliant |`n"
 

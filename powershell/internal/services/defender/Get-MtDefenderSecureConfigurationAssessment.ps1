@@ -1,4 +1,4 @@
-function Get-MtDefenderSecureConfigurationAssessment {
+﻿function Get-MtDefenderSecureConfigurationAssessment {
     <#
     .SYNOPSIS
     Returns one row per Defender Vulnerability Management security configuration, with how many devices
@@ -62,7 +62,10 @@ DeviceTvmSecureConfigurationAssessment
                 RiskDescription          = [string]$row.RiskDescription
                 Category                 = [string]$row.ConfigurationCategory
                 Subcategory              = [string]$row.ConfigurationSubcategory
-                Impact                   = [double]($row.ConfigurationImpact)
+                # $null, not 0, when the knowledge base has no row for this configuration: the join
+                # above is a leftouter, and [double]$null is 0, which reads as "impact 1 to 10, the
+                # lowest" rather than "not known". The caller decides what to do with the absence.
+                Impact                   = if ($null -eq $row.ConfigurationImpact -or [string]::IsNullOrWhiteSpace([string]$row.ConfigurationImpact)) { $null } else { [double]$row.ConfigurationImpact }
                 ApplicableDeviceCount    = [int]($row.ApplicableDeviceCount)
                 NonCompliantDeviceCount  = [int]($row.NonCompliantDeviceCount)
                 NonCompliantDeviceList   = @($row.NonCompliantDeviceList)
