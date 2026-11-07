@@ -38,3 +38,19 @@ To run preview tests, also grant these application permissions:
 - **AgentIdentityBlueprintPrincipal.Read.All**
 - **Application.Read.All**
 - **IdentityRiskyUser.Read.All**
+
+To run the preview Tenant Configuration Management drift test (MT.1254), also grant this application permission:
+
+- **ConfigurationMonitoring.Read.All**
+
+To run the preview Tenant Governance and GDAP relationship test (MT.1258), also grant these application permissions:
+
+- **RemoteTenantGroups.Read.All**
+- **TenantGovernance-Relationship.Read.All**
+
+Optional MT.1258 report enrichment uses **CrossTenantInformation.ReadBasic.All** for tenant names and
+**TenantGovernance-RelatedTenant.Read.All** for inbound admin-app user/application metrics. Discovery is enabled by
+default, skipped without Microsoft Entra ID Governance licensing, and can be disabled with
+`IncludeTenantDiscovery = false`. MT.1254 and MT.1258 run only in the worldwide (Global) cloud, which Commercial and GCC tenants use.
+Failures reading discovery, cross-tenant service-provider information, role details or partner metadata do not
+affect the GDAP/Tenant Governance verdict.

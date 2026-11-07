@@ -3,6 +3,7 @@
   "ConfigVersion": "",
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
+    "DelegatedAdminTenants": [],
     "DataverseEnvironmentUrl": "",
     "GitHubOrganization": ""
   },

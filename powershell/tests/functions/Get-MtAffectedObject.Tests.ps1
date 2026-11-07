@@ -107,6 +107,24 @@ Describe 'Affected objects' {
             $result.Kept | Should -Be 1
             $result.Warnings | Should -Be 0
         }
+
+        It 'Should give a <GraphObjectType> record its canonical type and portal link' -ForEach @(
+            @{ GraphObjectType = 'ServicePrincipals'; Expected = 'ServicePrincipal'; Blade = 'ManagedAppMenuBlade/~/Overview/objectId/' }
+            @{ GraphObjectType = 'AccessPackages'; Expected = 'AccessPackage'; Blade = 'EntitlementMenuBlade/~/overview/entitlementId/' }
+            @{ GraphObjectType = 'AccessPackageCatalogs'; Expected = 'AccessPackageCatalog'; Blade = 'CatalogBlade/catalogId/' }
+        ) {
+            $record = InModuleScope Maester -Parameters @{ GraphObjectType = $GraphObjectType } {
+                param($GraphObjectType)
+                ConvertTo-MtAffectedObjectRecord -GraphObjectType $GraphObjectType -GraphObjects ([PSCustomObject]@{
+                        id          = '44444444-4444-4444-4444-444444444444'
+                        displayName = 'Payroll'
+                    })
+            }
+
+            $record.Type | Should -Be $Expected
+            $record.AnchorKind | Should -Be 'Instance'
+            $record.PortalLink | Should -BeLike "*$($Blade)44444444-4444-4444-4444-444444444444"
+        }
     }
 
     Context 'Get-MtAffectedObjectFromMarkdown' {
@@ -196,6 +214,20 @@ Describe 'Affected objects' {
             $affectedObject.Type | Should -Be 'ServicePrincipal'
             $affectedObject.Id | Should -Be '55555555-5555-5555-5555-555555555555'
             $affectedObject.DisplayName | Should -Be 'Mailbox Migration Account'
+        }
+
+        It 'Should capture the catalog of an access drift link' {
+            $markdown = '| 📚 [Contoso Catalog \| \(Sales\)](https://entra.microsoft.com/#view/Microsoft_Azure_ELMAdmin/ReconReviewAccessDriftBlade.ReactView/summaryId/v1_0000/resourceId/aaaaaaaa-1111-2222-3333-444444444444/catalogIdentifier/bbbbbbbb-1111-2222-3333-444444444444/catalogName/Contoso%20Catalog%20%7C%20%28Sales%29/resourceType/group/resourceName/Sales%20Team/driftTotal~/4/driftUnauthorized~/4/driftMissing~/0 "View access drift") |'
+
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown -TestId 'MT.1255'
+            }
+
+            @($affectedObject).Count | Should -Be 1
+            $affectedObject.Type | Should -Be 'AccessPackageCatalogDrift'
+            $affectedObject.Id | Should -Be 'bbbbbbbb-1111-2222-3333-444444444444'
+            $affectedObject.DisplayName | Should -Be 'Contoso Catalog | (Sales)'
         }
 
         It 'Should capture users listed as empty links by their UPN' {
