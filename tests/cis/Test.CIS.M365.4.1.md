@@ -1,4 +1,4 @@
-﻿4.1 (L1) Ensure devices without a compliance policy are marked 'not compliant'
+4.1 (L1) Ensure devices without a compliance policy are marked 'not compliant'
 
 Compliance policies are sets of rules and conditions that are used to evaluate the configuration of managed devices. These policies can help secure organizational data and resources from devices that don't meet those configuration requirements. Managed devices must satisfy the conditions you set in your policies to be considered compliant by Intune. When combined with Conditional Access, this allows more control over how non-compliant devices are treated.
 

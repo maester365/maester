@@ -1,4 +1,4 @@
-﻿Authenticated SMTP submission (SMTP AUTH) is turned off for the whole organisation.
+Authenticated SMTP submission (SMTP AUTH) is turned off for the whole organisation.
 
 SMTP AUTH is used by scanners, applications and older mail clients to send mail. It supports both basic authentication and OAuth. When it is used with basic authentication, it cannot be protected with MFA, and it is a common target for password spray and for sending spam from a compromised mailbox.
 

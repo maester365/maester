@@ -1,4 +1,4 @@
-﻿Ensure macOS Automated Device Enrollment profiles provision a managed local administrator account with password rotation.
+Ensure macOS Automated Device Enrollment profiles provision a managed local administrator account with password rotation.
 
 **The Intune implementation of macOS LAPS is not a policy.** Unlike Windows LAPS, which is a settings catalog policy, macOS LAPS is configured on the **Automated Device Enrollment (ADE) profile** itself, on the **Account Settings** tab. There is no configuration policy or Endpoint Security profile to look for.
 

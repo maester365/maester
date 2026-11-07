@@ -1,4 +1,4 @@
-Describe 'Maester.LegacyIds.json' {
+﻿Describe 'Maester.LegacyIds.json' {
     BeforeAll {
         $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
         $legacyIdsPath = Join-Path $repoRoot 'powershell/assets/Maester.LegacyIds.json'

@@ -1,4 +1,4 @@
-﻿Verify that catch-up quick scan is disabled to avoid additional system load.
+Verify that catch-up quick scan is disabled to avoid additional system load.
 
 Enabled catchup scans may cause performance issues on mobile devices.
 

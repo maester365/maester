@@ -1,4 +1,4 @@
-function Get-MtNativeTestInventory {
+﻿function Get-MtNativeTestInventory {
     <#
     .SYNOPSIS
     Discovers native tests (Test.<ID>.ps1) under a folder and resolves what their suite adds.

@@ -1,4 +1,4 @@
-function New-MtTest {
+﻿function New-MtTest {
     <#
     .SYNOPSIS
     Creates a new Maester native test: Test.<ID>.ps1 and Test.<ID>.md.
@@ -212,9 +212,10 @@ Explain how to fix a failing result, step by step.
             return
         }
     }
-    foreach ($target in @(@{ Path = $ps1Path; Content = $ps1 }, @{ Path = $mdPath; Content = $md })) {
+    # PowerShell files are UTF-8 with a byte order mark (see the contributing guide); Markdown has none.
+    foreach ($target in @(@{ Path = $ps1Path; Content = $ps1; Encoding = 'utf8BOM' }, @{ Path = $mdPath; Content = $md; Encoding = 'utf8NoBOM' })) {
         if ($PSCmdlet.ShouldProcess($target.Path, 'Create test file')) {
-            Set-Content -LiteralPath $target.Path -Value $target.Content -Encoding utf8
+            Set-Content -LiteralPath $target.Path -Value $target.Content -Encoding $target.Encoding
             Get-Item -LiteralPath $target.Path
         }
     }

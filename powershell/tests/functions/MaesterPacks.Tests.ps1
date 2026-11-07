@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     $script:fixture = (Resolve-Path "$PSScriptRoot/../fixtures/packs/sample").Path
 

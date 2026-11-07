@@ -1,4 +1,4 @@
-# Schema of the [MaesterTest] attribute (docs/proposals/maester-3.0-test-attributes.md, section 2, and
+﻿# Schema of the [MaesterTest] attribute (docs/proposals/maester-3.0-test-attributes.md, section 2, and
 # the Maester 3.0 design, sections 3.1 and 4).
 #
 # The engine reads [MaesterTest(...)] from a test file's AST and validates it against this table;

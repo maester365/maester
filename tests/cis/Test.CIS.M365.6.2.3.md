@@ -1,4 +1,4 @@
-﻿Outlook marks messages that come from outside the organisation with an External tag.
+Outlook marks messages that come from outside the organisation with an External tag.
 
 Phishing often impersonates a colleague, with a display name that matches an internal person. A clear External tag next to the sender tells the reader that the message is from outside and gives them a prompt to be careful before clicking a link or paying an invoice.
 

@@ -1,4 +1,4 @@
-function Add-MtReportAttachment {
+﻿function Add-MtReportAttachment {
     <#
     .SYNOPSIS
     Embeds an HTML report from another tool, or data for a built-in report view, in the Maester HTML report.

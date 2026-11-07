@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Writes the Microsoft Zero Trust Workshop plan that the Zero Trust Assessment pack shows in the Maester report.
 

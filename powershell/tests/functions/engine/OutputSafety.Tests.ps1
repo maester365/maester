@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:manifest = (Resolve-Path "$PSScriptRoot/../../../Maester.psd1").Path
     Import-Module $script:manifest -Force -WarningAction SilentlyContinue
 }

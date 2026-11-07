@@ -1,4 +1,4 @@
-function Install-MtPack {
+﻿function Install-MtPack {
     <#
     .SYNOPSIS
     Installs a Maester Pack: tests, helpers and connectors that someone else publishes, checked and pinned before anything runs.

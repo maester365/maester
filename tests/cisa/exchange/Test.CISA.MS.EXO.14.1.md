@@ -1,4 +1,4 @@
-﻿A spam filter SHALL be enabled.
+A spam filter SHALL be enabled.
 
 Rationale: Spam is a constant threat as junk mail can reduce user productivity, fill up mailboxes unnecessarily, and in some cases include malicious links or attachments. Filtering out spam reduces user workload burden, prevents junk mail congestion, and reduces potentially malicious content exposure.
 

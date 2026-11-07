@@ -1,4 +1,4 @@
-function Compare-MtGraphScope {
+﻿function Compare-MtGraphScope {
     <#
     .SYNOPSIS
     Compares the scopes in a Microsoft Graph context with required Maester scopes.

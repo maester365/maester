@@ -1,4 +1,4 @@
-function Test-MtSysvolWindowsPlatform {
+﻿function Test-MtSysvolWindowsPlatform {
     <#
     .SYNOPSIS
     Determines whether the SYSVOL Windows adapter should be used.

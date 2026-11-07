@@ -1,4 +1,4 @@
-﻿High-risk users should not be left unremediated in Entra ID Protection.
+High-risk users should not be left unremediated in Entra ID Protection.
 
 Entra ID Protection rates a user's risk and tracks a risk state for each flagged user. A high-risk flag only clears when the risk is remediated, for example by a password reset, or when an admin dismisses it or confirms the user safe. Until then the account stays exposed: the signals that triggered the flag have not been addressed.
 

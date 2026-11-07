@@ -1,4 +1,4 @@
-function Resolve-MtRunConfig {
+﻿function Resolve-MtRunConfig {
     <#
     .SYNOPSIS
     Resolves the run configuration for Invoke-Maester (design section 7.3).

@@ -1,4 +1,4 @@
-function Uninstall-MtPack {
+﻿function Uninstall-MtPack {
     <#
     .SYNOPSIS
     Removes a Maester Pack from maester-packs.lock.json and the Maester config.

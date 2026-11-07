@@ -1,4 +1,4 @@
-function Add-MtZtaWorkshopPlan {
+﻿function Add-MtZtaWorkshopPlan {
     <#
     .SYNOPSIS
     Adds the Microsoft Zero Trust Workshop plan to the Maester report, for its Zero Trust plan view.

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Installs PowerShell remoting dependencies on Ubuntu runners.
 

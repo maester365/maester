@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS app protection policy requires a strong app PIN.
+Ensure at least one **assigned** iOS app protection policy requires a strong app PIN.
 
 An app protection policy applies to a phone the organization never enrolled. On such a phone the app PIN is the only gate between whoever is holding the device and the organization's mail, files and chats inside Outlook, Teams and the Office apps: there is no device passcode the organization can require, and no remote lock it can trigger.
 

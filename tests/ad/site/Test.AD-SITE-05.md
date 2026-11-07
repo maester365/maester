@@ -1,4 +1,4 @@
-﻿Sites without subnets represent incomplete configuration that can lead to:
+Sites without subnets represent incomplete configuration that can lead to:
 
 - **Client mislocation**: Computers may authenticate to incorrect DCs
 - **Replication inefficiency**: Site topology doesn't guide replication paths

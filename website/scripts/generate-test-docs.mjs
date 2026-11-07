@@ -215,7 +215,7 @@ function unique(values) {
 
 function normalizeMarkdown(markdown) {
   return markdown
-    // Test.<ID>.md files are saved with a UTF-8 BOM; it would otherwise leak into the page text.
+    // Test.<ID>.md files have no UTF-8 BOM, but a user's or an older file may; it would otherwise leak into the page text.
     .replace(/^\uFEFF/, "")
     // extractSection() below rejoins split lines with plain "\n"; leaving CRLF
     // here would make that rejoined text byte-different from this string, so

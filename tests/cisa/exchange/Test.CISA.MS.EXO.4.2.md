@@ -1,4 +1,4 @@
-﻿The DMARC message rejection option SHALL be p=reject.
+The DMARC message rejection option SHALL be p=reject.
 
 Rationale: Of the three policy options (i.e., none, quarantine, and reject), reject provides the strongest protection. Reject is the level of protection required by BOD 18-01 for FCEB departments and agencies.
 

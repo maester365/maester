@@ -1,4 +1,4 @@
-function Resolve-MtNativePlan {
+﻿function Resolve-MtNativePlan {
     <#
     .SYNOPSIS
     Decides, for every native test, whether it runs and if not why (design stages 5 and 6).

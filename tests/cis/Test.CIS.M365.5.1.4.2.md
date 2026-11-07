@@ -1,4 +1,4 @@
-﻿5.1.4.2 (L1) Ensure the maximum number of devices per user is limited
+5.1.4.2 (L1) Ensure the maximum number of devices per user is limited
 
 This setting defines the maximum number of Microsoft Entra joined or registered devices that a user can have in Microsoft Entra ID. Once this limit is reached, no additional devices can be added until existing ones are removed. Values above 100 are automatically capped at 100.
 

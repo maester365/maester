@@ -1,4 +1,4 @@
-function Invoke-MtTest {
+﻿function Invoke-MtTest {
     <#
     .SYNOPSIS
     Runs one or more Maester native tests through the engine and returns their result rows.
