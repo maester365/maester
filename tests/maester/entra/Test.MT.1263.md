@@ -4,7 +4,7 @@ Entra ID Protection rates the risk of workload identities (service principals) a
 
 This check reports service principals whose risk level is **medium** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a service principal's risk state.
 
-If a reported service principal holds a privileged directory role, active or PIM-eligible, the result lists the role and the severity is raised to High, since a compromised app with admin rights puts the whole tenant at risk.
+If a reported service principal holds a privileged directory role, active or PIM-eligible, the result lists the role and shows that entry first, since a compromised app with admin rights puts the whole tenant at risk.
 
 The check needs a Microsoft Entra Workload ID Premium licence, which the risky service principals API requires. Tenants without it skip the check as not licensed. It also needs the Microsoft Graph permission `IdentityRiskyServicePrincipal.Read.All`, which Maester does not request by default. Without it the check is skipped. To identify privileged service principals, it also reads directory roles, which needs `RoleManagement.Read.Directory` or `RoleManagement.Read.All`. If those reads fail, the service principals are still reported with a note. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
 

@@ -188,7 +188,7 @@
             }
         }
 
-        It 'raises severity to High and lists the role when an at-risk service principal holds a privileged role' {
+        It 'lists the role first when an at-risk service principal holds a privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'sp-2'; roleDefinitionId = 'role-ga'; AssignmentType = 'Active' })
@@ -197,7 +197,7 @@
             }
 
             Test-MtEntraUnremediatedMediumRiskServicePrincipal | Should -BeFalse
-            $script:Severity | Should -Be 'High'
+            $script:Severity | Should -BeNullOrEmpty
             $script:TestResult | Should -Match 'Global Administrator'
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             # The privileged service principal is listed first.
@@ -213,11 +213,11 @@
             }
 
             Test-MtEntraUnremediatedMediumRiskServicePrincipal | Should -BeFalse
-            $script:Severity | Should -Be 'High'
+            $script:Severity | Should -BeNullOrEmpty
             $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
         }
 
-        It 'does not raise severity for a non-privileged role' {
+        It 'does not list a non-privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'sp-1'; roleDefinitionId = 'role-dr'; AssignmentType = 'Active' })

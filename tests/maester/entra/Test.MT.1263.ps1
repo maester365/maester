@@ -8,7 +8,7 @@
     dismisses it. This check reports service principals whose risk level is
     medium and whose risk state still shows active, unremediated risk, so an admin can act on flags
     that have been left sitting. If a reported service principal holds a privileged directory role,
-    the severity is raised to High. It reads risk only; it never changes a service principal's risk state.
+    it is listed first with its roles. It reads risk only; it never changes a service principal's risk state.
     .EXAMPLE
     Test-MtEntraUnremediatedMediumRiskServicePrincipal
     .LINK
@@ -73,7 +73,7 @@
         return $true
     }
 
-    # Service principals at risk that hold a privileged role raise severity to High, as MT.1262 does
+    # Service principals at risk that hold a privileged role are listed first with their roles, as MT.1262 does
     # for users. Roles are only read when there is something to report. If the lookup fails, the
     # unremediated service principals are still reported, with a note.
     $PrivilegedRolesBySp = @{}
@@ -125,7 +125,7 @@
 
     $Result = "Found $($Unremediated.Count) medium-risk service principal(s) with unremediated risk."
     if ($PrivilegedCount -gt 0) {
-        $Result += " $PrivilegedCount of them hold a privileged directory role, so severity is raised to High."
+        $Result += " $PrivilegedCount of them hold a privileged directory role and are listed first."
     }
     $Result += "`n`n| Service principal | Application ID | Type | Risk state | Risk detail | Risk last updated | Privileged role |"
     $Result += "`n| --- | --- | --- | --- | --- | --- | --- |"
@@ -146,10 +146,6 @@
     }
     $Result += $RoleNote
 
-    if ($PrivilegedCount -gt 0) {
-        Add-MtTestResultDetail -Result $Result -Severity 'High'
-    } else {
-        Add-MtTestResultDetail -Result $Result
-    }
+    Add-MtTestResultDetail -Result $Result
     return $false
 }
