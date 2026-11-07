@@ -25,7 +25,7 @@
         ResourceType = 'ServicePrincipal',
         Severity = 'Medium',
         UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:IR-4'),
         Cloud = ('Commercial', 'GCC', 'GCCHigh', 'DoD'),
