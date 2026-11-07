@@ -1,4 +1,4 @@
-Describe 'Get-MtHtmlReport' {
+﻿Describe 'Get-MtHtmlReport' {
     BeforeAll {
         # The function resolves the template relative to its own location (powershell/public/report/)
         # From the test directory (powershell/tests/functions/) the template is at ../../assets/

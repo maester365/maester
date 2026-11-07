@@ -1,4 +1,4 @@
-function Test-MtCheckMT1252 {
+﻿function Test-MtCheckMT1252 {
 <#
 .SYNOPSIS
 Apps scoped with Exchange RBAC for Applications should not hold the same or a broader permission tenant-wide in Microsoft Entra ID.

@@ -1,4 +1,4 @@
-function Get-MtSuiteFramework {
+﻿function Get-MtSuiteFramework {
     <#
     .SYNOPSIS
     Reads the frameworks a suite.json declares and their framework files (test attribute design, section 6).

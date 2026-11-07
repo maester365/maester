@@ -1,4 +1,4 @@
-function Invoke-MtADManagementCommand {
+﻿function Invoke-MtADManagementCommand {
     <#
     .SYNOPSIS
     Runs an allow-listed Active Directory management operation over WSMan/PSRP.

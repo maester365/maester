@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Binary hard-fail preflight gate for the Azure AD E2E lab.
 

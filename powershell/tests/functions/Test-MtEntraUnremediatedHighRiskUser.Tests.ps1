@@ -1,4 +1,4 @@
-Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
+﻿Describe 'Entra ID Protection unremediated high-risk users (MT.1260)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

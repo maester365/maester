@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     # Built-in tests whose inline Get-MtLicenseInformation guard became License. Each one must be
     # skipped by the engine on an unlicensed tenant and must run on a tenant with any one of its tokens.
     $p1 = @{ License = @('AAD_PREMIUM'); Legacy = 'NotLicensedEntraIDP1' }

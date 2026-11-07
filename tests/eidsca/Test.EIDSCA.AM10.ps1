@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAM10 {
+﻿function Test-MtCheckEidscaAM10 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications is 'all_users'

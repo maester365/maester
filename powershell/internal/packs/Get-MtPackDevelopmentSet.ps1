@@ -1,4 +1,4 @@
-function Get-MtPackDevelopmentSet {
+﻿function Get-MtPackDevelopmentSet {
     <#
     .SYNOPSIS
     Returns the pack that holds a path, as a loader-gate row, for running a pack's tests while it is written (Invoke-MtTest -Path).

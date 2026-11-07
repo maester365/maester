@@ -1,4 +1,4 @@
-function Read-MtZtaWorkshopFile {
+﻿function Read-MtZtaWorkshopFile {
     <#
     .SYNOPSIS
     Reads a JSON file of the pack's workshop folder, or returns $null when it is not there.

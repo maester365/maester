@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     # Load only the engine DLL so these tests also run on a machine without Maester's dependencies
     # (the build-engine workflow runs them on every OS straight after checkout).
     Import-Module "$PSScriptRoot/../../../lib/Maester.Engine.dll" -Force

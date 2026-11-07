@@ -1,4 +1,4 @@
-function Read-MtPackManifest {
+﻿function Read-MtPackManifest {
     <#
     .SYNOPSIS
     Reads and validates a pack's maester-pack.json (Maester Packs design, section 4.2).

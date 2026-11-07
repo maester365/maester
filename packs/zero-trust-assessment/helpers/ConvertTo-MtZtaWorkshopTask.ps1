@@ -1,4 +1,4 @@
-function ConvertTo-MtZtaWorkshopTask {
+﻿function ConvertTo-MtZtaWorkshopTask {
     <#
     .SYNOPSIS
     Returns a workshop task in the shape the report's Zero Trust plan view reads, without empty values.

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Converts built-in Maester checks from the 2.x Pester format to native tests (Maester 3.0 design, section 14).
 
