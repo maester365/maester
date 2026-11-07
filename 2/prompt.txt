@@ -1,0 +1,19 @@
+can you review the tips? we might have new ones and old one with tags cmdlets should be discarded. also tips on thre  site like test builder, test catalog. also on using agents to write new custom test etc.. should be added.
+
+---
+
+also mention the tab completion...
+
+---
+
+Also add a teaser that says something like 'Have you tried Maester Run while you wait for the assessment? It's fun!'
+
+show me what you are goint to put
+
+---
+
+Waiting on the assessment? Maester Run is hiding in here. Hint: it’s what you wish AD was.
+
+---
+
+Commit the working tree changes with a sensible message.
