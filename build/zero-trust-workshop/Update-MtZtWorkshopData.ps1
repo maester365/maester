@@ -27,6 +27,7 @@ The branch of microsoft/zerotrustassessment to read the guidance and the mapping
 .EXAMPLE
 ./build/zero-trust-workshop/Update-MtZtWorkshopData.ps1
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Build script that reports progress to the console.')]
 [CmdletBinding()]
 param(
     [string] $OutputPath = (Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', 'packs', 'zero-trust-assessment', 'workshop'),
