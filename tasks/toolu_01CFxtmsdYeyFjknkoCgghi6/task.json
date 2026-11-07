@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01CFxtmsdYeyFjknkoCgghi6",
+  "agent_id": "ab76aebd102c8e2c2",
+  "subagent_type": "general-purpose",
+  "task_description": "ZTA workshop data + pack plumbing",
+  "token_usage": {
+    "input_tokens": 166,
+    "cache_creation_tokens": 229035,
+    "cache_read_tokens": 13455896,
+    "output_tokens": 68211,
+    "api_call_count": 82
+  },
+  "started_at": "2026-11-06T15:22:32.554094+11:00",
+  "completed_at": "2026-11-06T15:44:21.152815+11:00"
+}

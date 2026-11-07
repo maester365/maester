@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01HJ5AicBF4PyGRVjKyZPSUM",
+  "agent_id": "a51149a15f994fc46",
+  "task_description": "Variant E sunburst and journey",
+  "token_usage": {
+    "input_tokens": 42,
+    "cache_creation_tokens": 136232,
+    "cache_read_tokens": 2336773,
+    "output_tokens": 30308,
+    "api_call_count": 21
+  },
+  "started_at": "2026-11-06T10:26:42.669536+11:00",
+  "completed_at": "2026-11-06T10:31:26.371553+11:00"
+}

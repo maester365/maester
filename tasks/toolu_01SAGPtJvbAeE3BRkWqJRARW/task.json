@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01SAGPtJvbAeE3BRkWqJRARW",
+  "agent_id": "a3651f97692fc1d16",
+  "task_description": "Variant D progress table",
+  "token_usage": {
+    "input_tokens": 56,
+    "cache_creation_tokens": 141068,
+    "cache_read_tokens": 3352760,
+    "output_tokens": 35876,
+    "api_call_count": 28
+  },
+  "started_at": "2026-11-06T10:26:42.504014+11:00",
+  "completed_at": "2026-11-06T10:32:23.578449+11:00"
+}
