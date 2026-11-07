@@ -29,10 +29,25 @@ function Get-MtAzureDefenderForCloudRecommendationInstance {
             $recommendation.DisplayName
         }
 
+        # Severity follows the source, as #2510 asks. It goes on the instance because that is where the
+        # engine reads a family's per-instance severity (Invoke-MtNativePlan resolves config, then the
+        # instance, then the attribute); -Severity on Add-MtTestResultDetail is never reached once the
+        # attribute declares one.
+        # The Defender CSPM risk level is preferred when present, otherwise the recommendation's own
+        # metadata severity.
+        $source = if (-not [string]::IsNullOrWhiteSpace($recommendation.RiskLevel)) { $recommendation.RiskLevel } else { $recommendation.Severity }
+        $severity = switch -Regex ($source) {
+            '^(Critical|High)$' { 'High'; break }
+            '^Medium$'          { 'Medium'; break }
+            '^Low$'             { 'Low'; break }
+            default             { 'Medium' }
+        }
+
         [pscustomobject]@{
-            Id    = $recommendation.AssessmentKey
-            Title = "No resource should be left unhealthy for the Defender for Cloud recommendation '$name'."
-            Data  = $recommendation
+            Id       = $recommendation.AssessmentKey
+            Title    = "No resource should be left unhealthy for the Defender for Cloud recommendation '$name'."
+            Severity = $severity
+            Data     = $recommendation
         }
     }
 }
@@ -116,16 +131,6 @@ function Test-MtAzureDefenderForCloudRecommendation {
 
     $testResult = $unhealthy -eq 0
 
-    # Severity follows the source: the Defender CSPM risk level when it is present, otherwise the
-    # recommendation's own metadata severity.
-    $source = if (-not [string]::IsNullOrWhiteSpace($recommendation.RiskLevel)) { $recommendation.RiskLevel } else { $recommendation.Severity }
-    $severity = switch -Regex ($source) {
-        '^(Critical|High)$' { 'High'; break }
-        '^Medium$'          { 'Medium'; break }
-        '^Low$'             { 'Low'; break }
-        default             { 'Medium' }
-    }
-
     $testResultMarkdown = "Defender for Cloud assessed **$total** resource(s) for this recommendation. "
     if ($testResult) {
         $testResultMarkdown += "None is unhealthy.`n`n"
@@ -155,6 +160,6 @@ function Test-MtAzureDefenderForCloudRecommendation {
         $testResultMarkdown += "`nWell done. Every resource Defender for Cloud evaluated for this recommendation is healthy."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity $severity
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

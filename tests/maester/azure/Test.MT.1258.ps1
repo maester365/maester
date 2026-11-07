@@ -28,10 +28,23 @@
     foreach ($path in $attackPaths.PathList) {
         # The engine requires an instance ID matching ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$, so the ID is
         # the attack path type's GUID and the sentence Defender writes is the title.
+        # Severity follows the source, as #2510 asks. It goes on the instance because that is where the
+        # engine reads a family's per-instance severity (Invoke-MtNativePlan resolves config, then the
+        # instance, then the attribute); -Severity on Add-MtTestResultDetail is never reached once the
+        # attribute declares one.
+        # The risk level Defender assigns to the path.
+        $severity = switch -Regex ([string]$path.RiskLevel) {
+            '^(Critical|High)$' { 'High'; break }
+            '^Medium$'          { 'Medium'; break }
+            '^Low$'             { 'Low'; break }
+            default             { 'High' }
+        }
+
         [pscustomobject]@{
-            Id    = $path.AttackPathType
-            Title = "No active attack path should exist: $($path.DisplayName)"
-            Data  = $path
+            Id       = $path.AttackPathType
+            Title    = "No active attack path should exist: $($path.DisplayName)"
+            Severity = $severity
+            Data     = $path
         }
     }
 }
@@ -92,14 +105,6 @@ function Test-MtAzureDefenderForCloudAttackPath {
 
     $path = $Instance.Data
 
-    # Severity follows the source, as #2510 asks: the risk level Defender assigns to the path.
-    $severity = switch -Regex ([string]$path.RiskLevel) {
-        '^(Critical|High)$' { 'High'; break }
-        '^Medium$'          { 'Medium'; break }
-        '^Low$'             { 'Low'; break }
-        default             { 'High' }
-    }
-
     $testResultMarkdown = "Defender for Cloud reports this attack path on **$($path.PathCount)** occasion(s).`n`n"
     $testResultMarkdown += "| Property | Value |`n| --- | --- |`n"
     if (-not [string]::IsNullOrWhiteSpace($path.RiskLevel)) { $testResultMarkdown += "| Risk level | $($path.RiskLevel) |`n" }
@@ -118,6 +123,6 @@ function Test-MtAzureDefenderForCloudAttackPath {
 
     $testResultMarkdown += "`nBreak the path rather than every weakness on it. Removing the entry point's exposure, or the credential or permission that allows the step to the target, closes the whole route; Defender for Cloud lists the recommendations of this path in the Azure portal."
 
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity $severity
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $false
 }

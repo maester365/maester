@@ -32,10 +32,11 @@ Describe 'Defender for Cloud recommendations and attack paths' {
         }
 
         function Get-TestPath {
+            param([string] $RiskLevel = 'High')
             return [pscustomobject]@{
                 AttackPathType     = '563f8222-1c75-4d35-3114-588a83b45762'
                 DisplayName        = 'Internet exposed Azure VM allows lateral movement to a storage account'
-                RiskLevel          = 'High'
+                RiskLevel          = $RiskLevel
                 PathCount          = 1
                 RiskFactorList     = @('Internet exposure', 'Vulnerabilities')
                 TacticList         = @('Lateral Movement', 'Initial Access')
@@ -95,18 +96,28 @@ Describe 'Defender for Cloud recommendations and attack paths' {
             $script:SkippedBecause | Should -Be 'NotApplicable'
         }
 
-        It 'prefers the Defender CSPM risk level over the metadata severity' {
+        # The severity has to be on the instance: the engine resolves config, then the instance, then
+        # the attribute, so a -Severity passed to Add-MtTestResultDetail is never reached while the
+        # attribute declares one. Asserting it on the detail is what let this ship the wrong way round.
+        It 'puts the Defender CSPM risk level on the instance, preferred over the metadata severity' {
+            Mock -ModuleName Maester Get-MtDefenderForCloudRecommendation { @(Get-TestRecommendation -Unhealthy 1 -Severity 'Low' -RiskLevel 'Critical') }
+
+            $instance = @(Get-MtAzureDefenderForCloudRecommendationInstance)[0]
+            $instance.Severity | Should -Be 'High' -Because 'Critical maps to High and beats the Low metadata severity'
+        }
+
+        It 'falls back to the metadata severity on the instance when there is no risk level' {
+            Mock -ModuleName Maester Get-MtDefenderForCloudRecommendation { @(Get-TestRecommendation -Unhealthy 1 -Severity 'Low' -RiskLevel '') }
+
+            $instance = @(Get-MtAzureDefenderForCloudRecommendationInstance)[0]
+            $instance.Severity | Should -Be 'Low'
+        }
+
+        It 'passes no severity to Add-MtTestResultDetail, which the attribute would discard' {
             $i = [pscustomobject]@{ Data = Get-TestRecommendation -Unhealthy 1 -Severity 'Low' -RiskLevel 'Critical' }
 
             $null = Test-MtAzureDefenderForCloudRecommendation -Instance $i
-            $script:Severity | Should -Be 'High' -Because 'Critical maps to High and beats the Low metadata severity'
-        }
-
-        It 'falls back to the metadata severity when there is no risk level' {
-            $i = [pscustomobject]@{ Data = Get-TestRecommendation -Unhealthy 1 -Severity 'Low' -RiskLevel '' }
-
-            $null = Test-MtAzureDefenderForCloudRecommendation -Instance $i
-            $script:Severity | Should -Be 'Low'
+            $script:Severity | Should -BeNullOrEmpty
         }
 
         It 'emits one instance per recommendation and none when there is no assessment' {
@@ -150,11 +161,22 @@ Describe 'Defender for Cloud recommendations and attack paths' {
             $instance.Title | Should -Match 'Internet exposed Azure VM'
         }
 
+        It 'puts the path risk level on the instance, and passes none to Add-MtTestResultDetail' {
+            Mock -ModuleName Maester Get-MtDefenderForCloudAttackPath {
+                return [pscustomobject]@{ CspmEnabled = $true; PathList = @(Get-TestPath -RiskLevel 'Medium') }
+            }
+
+            $instance = @(Get-MtAzureDefenderForCloudAttackPathInstance)[0]
+            $instance.Severity | Should -Be 'Medium'
+
+            $null = Test-MtAzureDefenderForCloudAttackPath -Instance ([pscustomobject]@{ Data = Get-TestPath -RiskLevel 'Medium' })
+            $script:Severity | Should -BeNullOrEmpty
+        }
+
         It 'fails for a reported path, with its risk factors and tactics' {
             $i = [pscustomobject]@{ Data = Get-TestPath }
 
             Test-MtAzureDefenderForCloudAttackPath -Instance $i | Should -BeFalse
-            $script:Severity | Should -Be 'High'
             $script:TestResult | Should -Match 'microsoft.compute/virtualmachines'
             $script:TestResult | Should -Match 'Internet exposure, Vulnerabilities'
             $script:TestResult | Should -Match 'Lateral Movement, Initial Access'
