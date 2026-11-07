@@ -1,4 +1,4 @@
-Describe 'Checks that must not pass when their data source returns nothing' {
+﻿Describe 'Checks that must not pass when their data source returns nothing' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
@@ -40,6 +40,9 @@ Describe 'Checks that must not pass when their data source returns nothing' {
 
             Test-MtCisCustomerLockBox | Should -BeTrue
             $script:TestResult | Should -Match 'Well done'
+            # A passing tenant must not be shown a failing row under the "Well done" heading.
+            $script:TestResult | Should -Match '\| ✅ Pass \|'
+            $script:TestResult | Should -Not -Match '❌ Fail'
         }
 
         It 'fails when the lockbox is disabled' {
@@ -47,6 +50,8 @@ Describe 'Checks that must not pass when their data source returns nothing' {
 
             Test-MtCisCustomerLockBox | Should -BeFalse
             $script:TestResult | Should -Match 'does not have the customer lockbox enabled'
+            $script:TestResult | Should -Match '\| ❌ Fail \|'
+            $script:TestResult | Should -Not -Match '✅ Pass'
         }
 
         It 'renders the result table on a pass as well as on a failure' {

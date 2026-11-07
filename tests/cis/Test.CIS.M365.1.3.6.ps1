@@ -66,10 +66,11 @@
     $resultMd = "| Customer Lockbox |`n"
     $resultMd += "| --- |`n"
     foreach ($item in $usableConfig) {
-        $itemResult = "❌ Fail"
-        if ($item.id -notin $result.id) {
-            $itemResult = "✅ Pass"
-        }
+        # The projection above keeps only CustomerLockBoxEnabled, so there is no id to compare
+        # against. Reading the value directly is also what the single-column table means: an
+        # identity comparison here left both sides $null, and $null -notin $null is False, so
+        # every row rendered as a failure, including under the "Well done" heading.
+        $itemResult = if ($item.CustomerLockBoxEnabled -eq 'True') { "✅ Pass" } else { "❌ Fail" }
         $resultMd += "| $($itemResult) |`n"
     }
 
