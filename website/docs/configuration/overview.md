@@ -120,6 +120,7 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `DelegatedAdminTenants` | Allowlist the tenants that may administer your tenant through GDAP or Tenant Governance | [Delegated Admin Tenants](./delegated-admin-tenants.md) |
 | `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
 The GitHub and Dataverse settings are listed in the [run configuration reference](./run-configuration.md#globalsettings).

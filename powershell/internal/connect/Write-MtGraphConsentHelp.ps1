@@ -58,7 +58,9 @@
         if ($Privileged) { '-Privileged' }
         if ($IncludePreview) { '-IncludePreview' }
     ) -join ' '
-    $scopeCommand = "(Get-MtGraphScope $scopeSwitches)".Replace(' )', ')')
+    # Get-MtGraphScope leaves out the Global-only preview scopes in a national cloud, so it needs the cloud too.
+    $scopeEnvironmentArg = if ($IncludePreview -and $Environment -and $Environment -ne 'Global') { " -Environment $Environment" } else { '' }
+    $scopeCommand = "(Get-MtGraphScope $scopeSwitches$scopeEnvironmentArg)".Replace(' )', ')')
 
     # Keep the tenant and cloud from the failed connection so consent lands in the right place.
     $connectionArgs = @(

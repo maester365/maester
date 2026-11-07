@@ -54,4 +54,25 @@ Describe 'Test-MtContext — Microsoft Graph scopes' {
         Should -Invoke Get-MtGraphScope -ModuleName Maester -Times 1 -Exactly `
             -ParameterFilter { $IncludePreview }
     }
+
+    It 'Requires the scopes of the <Expected> cloud when connected to <Environment>' -ForEach @(
+        @{ Environment = 'USGov'; Expected = 'USGov' }
+        @{ Environment = 'USGovDoD'; Expected = 'USGovDoD' }
+        @{ Environment = 'China'; Expected = 'China' }
+        @{ Environment = 'Global'; Expected = 'Global' }
+        @{ Environment = $null; Expected = 'Global' }
+        @{ Environment = 'CustomCloud'; Expected = 'USGov' }
+    ) {
+        Mock Get-MgContext {
+            [PSCustomObject]@{ AuthType = 'Delegated'; Scopes = @('Directory.Read.All'); Environment = $Environment }
+        } -ModuleName Maester
+        Mock Get-MtGraphScope { @('Directory.Read.All') } -ModuleName Maester
+
+        InModuleScope Maester {
+            Test-MtContext -IncludePreview | Should -BeTrue
+        }
+
+        Should -Invoke Get-MtGraphScope -ModuleName Maester -Times 1 -Exactly `
+            -ParameterFilter { $IncludePreview -and $Environment -eq $Expected }
+    }
 }

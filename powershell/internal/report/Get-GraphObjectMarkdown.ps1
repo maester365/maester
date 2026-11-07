@@ -22,8 +22,8 @@
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         # If not specified, the function will try to determine the type based on the object.
         [Parameter(Mandatory = $false)]
-        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
-            'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
+        [ValidateSet('AccessPackageCatalogs', 'AccessPackages', 'AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
+            'Devices', 'Domains', 'Groups', 'IdentityProtection', 'ServicePrincipals', 'Users', 'UserRole'
             )]
         [string] $GraphObjectType,
 

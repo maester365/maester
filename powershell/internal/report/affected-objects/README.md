@@ -78,16 +78,20 @@ When a test calls `Add-MtTestResultDetail -GraphObjects ...`, the objects are co
 
 1. Explicit `-GraphObjectType` parameter, mapped to a canonical type name
    (`ConditionalAccess` → `ConditionalAccessPolicy`, `Users`/`UserRole` → `User`,
-   `Groups` → `Group`, `Devices` → `Device`) so records dedupe against source 2.
+   `Groups` → `Group`, `Devices` → `Device`, `ServicePrincipals` → `ServicePrincipal`,
+   `AccessPackages` → `AccessPackage`, `AccessPackageCatalogs` → `AccessPackageCatalog`)
+   so records dedupe against source 2.
 2. `@odata.type` sniffing per object (`#microsoft.graph.user` → `User`, etc.), using the
    shared mapping in `Get-MtPortalLinkTemplate`, plus object-only mappings for
-   `servicePrincipal`, `directoryRole` and `conditionalAccessPolicy`.
+   `directoryRole` and `conditionalAccessPolicy`.
 3. Other types are still captured: the raw `@odata.type` becomes the `Type`, and the record
    is an `Instance` if the object has an id. Unless the type is added to the catalog, the
    type filter then drops it with a warning (see below).
 
 Portal deep links come from the same shared template table (`Get-MtPortalLinkTemplate`),
 which is environment-aware via `$__MtSession.AdminPortalUrl` (Global/USGov/China clouds).
+Checks that build their own links (for example MT.1254 and MT.1255–MT.1257) read the URLs from
+that table too, so a blade change is fixed in one place.
 The records are stored per test in `$__MtSession.TestResultDetail[<test>].RelatedObjects`
 and flow into the report JSON under `Tests[n].ResultDetail.RelatedObjects`.
 
@@ -111,6 +115,7 @@ pattern acts as a type system:
 | `AgentBlueprintDetails.MenuView/~/*/objectId/{guid}`         | AgentIdentityBlueprintPrincipal |
 | `Microsoft_Intune_Workflows/PolicySummaryBlade/policyId/{guid}` | ConfigurationPolicy (Intune)   |
 | `Microsoft_Azure_ELMAdmin/CatalogBlade/catalogId/{guid}`      | AccessPackageCatalog           |
+| `ReconReviewAccessDriftBlade.ReactView/.../catalogIdentifier/{guid}` | AccessPackageCatalogDrift |
 | `EntitlementMenuBlade/~/overview/entitlementId/{guid}`        | AccessPackage                  |
 | `Microsoft_Azure_PIMCommon/AlertDetail/.../alertId/{id}`      | PimAlert                       |
 | `RecommendationDetails.ReactView/recommendationId/{id}`       | EntraRecommendation            |
@@ -202,9 +207,9 @@ After the merge, `Select-MtAffectedObjectByType` filters the inventory against t
 | `ExcludedTypes` | Recognised types that are deliberately not affected objects. Dropped silently.                                                                         |
 | Everything else | Systems absent from `KnownTypes` (`MicrosoftGraph`) pass through unchanged — their `Type` is a Graph resource path and cannot be enumerated. |
 
-Currently inventoried: `EntraID` — AccessPackage, AccessPackageCatalog, AgentIdentity,
-AgentIdentityBlueprint, AgentIdentityBlueprintPrincipal, AppRegistration, AuthenticationMethod, AuthorizationPolicy,
-ConditionalAccessPolicy, ConsentPolicy, Device, DirectoryRole, Domains, Group, ServicePrincipal, User;
+Currently inventoried: `EntraID` — AccessPackage, AccessPackageCatalog, AccessPackageCatalogDrift,
+AgentIdentity, AgentIdentityBlueprint, AgentIdentityBlueprintPrincipal, AppRegistration, AuthenticationMethod,
+AuthorizationPolicy, ConditionalAccessPolicy, ConsentPolicy, Device, DirectoryRole, Domains, Group, ServicePrincipal, User;
 `DefenderXDR` — Device; `ExchangeOnline` — SharingPolicy, TransportRule; `Intune` —
 ConfigurationPolicy; `GitHub` — GitHubOrganization, GitHubRepository, GitHubResource.
 

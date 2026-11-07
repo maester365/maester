@@ -31,6 +31,13 @@
 
     Connects to Microsoft Graph with the additional scopes required by preview tests.
 
+    .Example
+    Connect-MgGraph -Environment USGov -Scopes (Get-MtGraphScope -IncludePreview -Environment USGov)
+
+    Connects to Microsoft Graph for US Government with the preview scopes that this cloud offers. Scopes of preview
+    features that only the worldwide (Global) cloud offers, such as Tenant Governance, are left out: a national cloud
+    rejects a sign-in that requests a permission it does not publish.
+
     .LINK
     https://maester.dev/docs/commands/Get-MtGraphScope
     #>
@@ -48,7 +55,12 @@
         [switch] $Privileged,
         # If specified, the cmdlet will include scopes required by preview tests.
         [Parameter(Mandatory = $false)]
-        [switch] $IncludePreview
+        [switch] $IncludePreview,
+        # The Microsoft Graph cloud the scopes are requested in, as passed to Connect-Maester and Connect-MgGraph.
+        # Preview scopes of features that only the worldwide cloud offers are included only for Global.
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('China', 'Germany', 'Global', 'USGov', 'USGovDoD')]
+        [string] $Environment = 'Global'
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
@@ -102,8 +114,28 @@
         'IdentityRiskyUser.Read.All'
     )
 
+    # Preview scopes of APIs that Microsoft Graph documents only for the worldwide (Global) service, which GCC also
+    # uses. National clouds (US Government L4/L5, China) do not offer them, and Connect-MgGraph fails there when it
+    # requests a permission the cloud does not publish:
+    # - ConfigurationMonitoring.Read.All: Tenant Configuration Management (configurationMonitors, configurationDrifts)
+    # - RemoteTenantGroups.Read.All: remoteTenantGroups
+    # - TenantGovernance-*: governanceRelationships, relatedTenants (not in China; kept together with the feature)
+    # - CrossTenantInformation.ReadBasic.All: available everywhere, but only used with the Tenant Governance checks
+    $globalOnlyPreviewScopes = @(
+        'ConfigurationMonitoring.Read.All'
+        'CrossTenantInformation.ReadBasic.All'
+        'RemoteTenantGroups.Read.All'
+        'TenantGovernance-RelatedTenant.Read.All'
+        'TenantGovernance-Relationship.Read.All'
+    )
+
     if ($IncludePreview) {
         Write-Verbose -Message 'Adding preview scopes.'
+        if ($Environment -eq 'Global') {
+            $previewScopes = @($previewScopes + $globalOnlyPreviewScopes)
+        } else {
+            Write-Verbose -Message "Leaving out the preview scopes that are only available in the Global cloud ($Environment)."
+        }
         $scopes = @($previewScopes + $scopes)
     }
 
