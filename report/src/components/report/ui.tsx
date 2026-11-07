@@ -20,6 +20,18 @@ export function ProductMark({ product, size = "" }: { product: string | null; si
   return <span className={`mt-pm ${size}`} aria-hidden="true">{INITIALS[product] || product.slice(0, 2)}</span>
 }
 
+// The mark a pack names in its manifest's Report.Logo, drawn by the report so a pack loads no image of its own:
+// Microsoft's logo, a product's icon, or else the pack's Code.
+export function PackLogo({ logo, code }: { logo: string | null; code: string }) {
+  if (logo === "microsoft") return (
+    <span className="mt-packlogo" role="img" aria-label="Microsoft">
+      <svg viewBox="0 0 23 23" width="24" height="24" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z" /><path fill="#7fba00" d="M12 1h10v10H12z" /><path fill="#00a4ef" d="M1 12h10v10H1z" /><path fill="#ffb900" d="M12 12h10v10H12z" /></svg>
+    </span>
+  )
+  if (logo && PRODUCT_ICONS[logo]) return <span className="mt-packlogo"><ProductMark product={logo} size="lg" /></span>
+  return <span className="mt-code lg">{code}</span>
+}
+
 // One stroke icon per attribute, drawn here so the report needs no icon library for them.
 const ICON: Record<string, string> = {
   result: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6",
@@ -60,6 +72,11 @@ const ICON: Record<string, string> = {
   next: "M9 6l6 6-6 6",
   maximize: "M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5",
   restore: "M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5",
+  panel: "M4 4h16v16H4zM9 4v16",
+  info: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 8h.01",
+  list: "M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01",
+  pillar: "M4 20h16M6 20V9M10 20V9M14 20V9M18 20V9M3 9l9-5 9 5z",
+  guide: "M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4zM5 16a4 4 0 0 1 4-4h10",
 }
 export type IconName = keyof typeof ICON
 
