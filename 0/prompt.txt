@@ -1,0 +1,405 @@
+Background (from the session that started this one):
+Maester is a PowerShell framework that checks Microsoft 365 security configuration. The defender's path (design accepted 5 November 2026, docs/proposals/defenders-path.md) orders fixes the way Microsoft Learn documents: what must be in place first, what a fix unlocks, and whether the tenant is ready. Tests name the step they verify with a Step attribute, and a catalogue in powershell/assets/steps holds the steps, their relationships (Requires, RequiresOneOf, RecommendedFirst, Conflicts, OnlyWhen), their rollout and their cited Learn sources. Goals group steps into lanes.
+
+Milestone M1 (draft PR maester365/maester#2683, branch feat/defenders-path) shipped the format, the loader and checks, and the compliant-devices goal with seven steps. While building M1, a Learn check showed that compliant devices must be registered and enrolled, not joined, so its readiness step is intune.devices-compliant.
+
+Owner rulings to respect: the attribute is Step, lanes are Goals, the catalogue lives in powershell/assets/steps, the wording is our own with a link, and no test re-implements another suite's check (a benchmark duplicate is a shim). A separate session has already made CIS.M365.4.1 a shim of MT.1054 on another branch, so leave that test's body alone.
+
+Task:
+Build milestone M2 of the defender's path: the step catalogue for the seven goals, checked against Microsoft Learn, with the verifying tests tagged.
+
+Read first: `docs/proposals/defenders-path.md` (sections 3–5, 14, 15 and 16), then the M1 code it builds on: `powershell/assets/steps/` (schema, `goals.json`, `entra.json`, `intune.json`), `powershell/internal/engine/Get-MtStepCatalog.ps1`, `Get-MtStepProblem.ps1`, and the tests `powershell/tests/functions/engine/StepCatalog.Tests.ps1` and `powershell/tests/general/StepCatalog.Tests.ps1`. Also follow `AGENTS.md`.
+
+Work:
+1. Expert pass. For each goal in section 15's table (compliant devices, risk policies, phishing-resistant MFA, privileged access, token protection, email authentication, Defender risk in compliance), confirm every step and every relationship against Learn. Use the public mirrors `merill/entra-docs-mirror`, `intune-docs-mirror`, `defender-docs-mirror`, `security-docs-mirror`, `purview-docs-mirror`, `teams-docs-mirror`, `sharepoint-docs-mirror`, `exchange-docs-mirror` and `windows-server-docs-mirror` (shallow clones are fine), or fetch any Learn page as Markdown with `curl -H 'Accept: text/markdown'`. Section 15 is a draft. Change steps, order or relationships where Learn says otherwise, and drop a relationship that Learn doesn't back unless you cite a maintainer source (keep those rare).
+2. Write the steps into `powershell/assets/steps/<product>.json` and the goals into `goals.json`. Every `Note` is Maester's own wording, at most 200 characters, never copied Learn text. URLs have no locale. `Reviewed` is today's date.
+3. Tag the verifying tests with `Step`. Read each test's code before tagging. Tests whose definition of done differs (a stricter or narrower setting) get separate steps, as section 5 explains for CIS 5.2.2.9 against MT.1001. Shims must carry the same `Step` as the test they call (`TestShims.Tests.ps1`).
+   - EIDSCA (`tests/eidsca`) and ORCA tests are generated. Never hand-edit them. Either add `Step` support to the generators (`build/eidsca/`, `build/orca/`) and regenerate, or leave them out and list them in your report.
+   - Steps that only the Zero Trust pack checks keep `Unchecked`, naming the ZTA IDs.
+   - Two readiness steps stay `Unchecked` because a separate session is writing their checks: `intune.devices-compliant` and `entra.mfa-registered`. Add `entra.mfa-registered` to the catalogue as a step, but don't write checks for it.
+4. Update section 15 of the design doc to match what you found, with step counts. You are the only session editing `powershell/assets/steps/` and the doc. Others are working in parallel on new readiness-check test files (M5) and on `build/steps/` tooling (M6).
+
+Done means: the seven goals are in the catalogue, `Get-MtStepProblem -Coverage` reports nothing, `./powershell/tests/pester.ps1` and `./build/Build-MaesterModule.ps1` pass, and the work is committed on your branch. Ask the user before pushing or opening a PR. It would be a draft PR for Maester 3.1, based on `feat/defenders-path`, because main is in the 3.0 code freeze from 7 November 2026. Report what changed from the draft table and why, with the Learn pages you relied on.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_dfb877c0-85e7-4697-9748-c3171aca3375
+
+---
+
+<task-notification>
+<task-id>bmtlv6kbp</task-id>
+<tool-use-id>toolu_0187bZT76UhAWYogG3LCpXHf</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/tasks/bmtlv6kbp.output</output-file>
+<status>completed</status>
+<summary>Background command "Shallow-clone five Learn mirrors into the scratchpad" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<agent-message from="ac414633a40258e36">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  The draft `privileged-access` chain needs reworking against Learn. Five steps instead of four, with `entra.pim-eligible-roles` as the goal's `Step`. No repository files were edited.
+  
+  Findings file: /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/privileged-access.md (221 lines). It has every Learn URL, mirror path and line number, plus draft Notes, Rollout sentences and per-test definitions of done. Below are the decisions; the line-level detail is in the file.
+  
+  **Main changes to the draft**
+  
+  1. **New step `entra.emergency-access-accounts`: "Keep two emergency access accounts as permanent Global Administrators".**
+     - This is Learn's real PIM prerequisite, not the Conditional Access exclusion. No PIM page links CA exclusion to PIM.
+     - Sources: security-emergency-access L62 (the lock-out case), L66-68, L91 and L122; pim-deployment-plan L108-110.
+     - No Maester test checks it, so it stays Unchecked naming ZTA.21835. That ZTA test also requires phishing-resistant methods and CA exclusion.
+     - Proposed M1 change: give `entra.emergency-access-excluded` RecommendedFirst on this step, because the page creates the accounts (L68) before checking the exclusion (L77).
+     - Drop `entra.emergency-access-excluded` from the PIM chain itself.
+  2. **Role settings come before eligible assignments.** pim-getting-started L71-77 and pim-deployment-plan L178-199 order it: role settings, then eligible assignments, then activation. So the settings steps are RecommendedFirst of `entra.pim-eligible-roles`, not after it.
+  3. **CISA.MS.AAD.7.7 is about PIM notifications, not PIM security alerts.** It checks that the eligible and active assignment notification rules have extra recipients.
+     - Rename `entra.pim-alerts` to `entra.pim-notifications`, verified by CISA.MS.AAD.7.7, 7.8 and 7.9 (each checks part of the step).
+     - ZTA.21818–21820 also pass with only the default recipients, so they are laxer and don't match.
+     - No test checks whether PIM security alerts are configured, so an "alerts" step would have no verifier.
+  4. **New step `entra.pim-approval-global-admin`, which Requires the emergency access accounts step** (change-default-settings L146-156 lock-out warning).
+     - CIS.M365.5.3.4 and ZTA.21817 match it (approval plus at least one approver).
+     - CISA.MS.AAD.7.6 is partial: it doesn't check approvers.
+     - CIS.M365.5.3.5 (Privileged Role Administrator approval) gets no step, because Learn's example settings only ask for approval on Global Administrator.
+  5. **Optional Unchecked step `entra.pim-activation-mfa`.** Learn backs it (change-default-settings L76-111, deployment plan L184-188). Include it only if a new check is planned; Graph has `noMfaOnRoleActivationAlertConfiguration`.
+  6. **Drop `entra.pim-roles-used` (MT.1030) from this goal.**
+     - Learn treats unused roles as a security alert, with access reviews as the prevention, not as a rollout step (security-alerts L71-82).
+     - MT.1030 passes when no role is eligible, so as the goal's last step it could read Done before PIM is used.
+     - Move it to a later hygiene goal with MT.1029, ASD.ISM-1648 and CIS.M365.5.3.3.
+  7. **`OnlyWhen license:AAD_PREMIUM_P2` is wrong for PIM.** Learn says P2 or Entra ID Governance (licensing-fundamentals L213-217).
+     - The OnlyWhen grammar can only AND plans, so a P1 + Governance tenant would read Not applicable.
+     - Recommend adding any-of to the grammar, e.g. `license:AAD_PREMIUM_P2|Entra_Identity_Governance`. Until then, omit OnlyWhen.
+  
+  **Verifiers for `entra.pim-eligible-roles`**
+  
+  - **Matches:** CIS.M365.5.3.1. ASD.ISM-1649 is a shim of it (`return Test-MtCisPrivilegedRolesActivatedNotAssigned`) and must name the same step.
+  - **Partial:** MT.1031, CISA.MS.AAD.7.5 and ZTA.21815 (the draft missed ZTA.21815).
+  - **ZTA.21816** matches closely; keep it.
+  - **ZTA.21876** is a placeholder (UnderConstruction); drop it.
+  - **CISA.MS.AAD.7.4** has no exception for emergency access accounts, so it fails in every tenant that follows Learn. Don't tag it until that is fixed.
+  - **MT.1025–MT.1028 are not verifiers.** They filter active assignments by principal type (guest, hybrid, service principal with a secret, mailbox) and never read schedules.
+    - A tenant whose Global Administrators are all permanent, cloud-only members without mailboxes passes all four, so the step would show Done wrongly.
+    - They belong to a later admin-account hygiene goal, alongside CISA.MS.AAD.7.3, CIS.M365.1.1.1, ASD.ISM-1175, ZTA.21814, ZTA.22128 and ZTA.21836.
+  
+  **Rollout for `entra.pim-eligible-roles`** (Learn): pilot with test users, convert Global and Security Administrator first, remove service principals or make them time-bound (they can't be eligible), and roll back by making assignments active again.
+  
+  **Test problems found along the way**
+  
+  - `Test-MtPimAlertsExists` never reads `alertConfiguration.isEnabled`, so MT.1029–1032 pass when the alert is turned off.
+  - MT.1027 never finds a secret on the service principal itself: `Test-MtPrivPermanentDirectoryRole.ps1` L86 dereferences `.principal` twice.
+  - CIS.M365.5.3.1 caps emergency access accounts at two, where Learn says "two or more". It also exempts only accounts listed in maester-config.
+  - CISA.MS.AAD.7.5 fails on emergency access assignments that were made before PIM.
+  
+  EIDSCA and ORCA have no PIM tests.
+  
+  **Final proposal**
+  
+  | Step | Requires | RecommendedFirst | Verifiers |
+  | --- | --- | --- | --- |
+  | `entra.emergency-access-accounts` | — | — | Unchecked (ZTA.21835) |
+  | `entra.pim-activation-mfa` (optional) | — | — | Unchecked |
+  | `entra.pim-approval-global-admin` | emergency-access-accounts | — | CIS.M365.5.3.4, CISA.MS.AAD.7.6 (partial), ZTA.21817 |
+  | `entra.pim-notifications` | — | — | CISA.MS.AAD.7.7, 7.8, 7.9 |
+  | `entra.pim-eligible-roles` (goal Step) | emergency-access-accounts | pim-activation-mfa, pim-approval-global-admin, pim-notifications | CIS.M365.5.3.1, ASD.ISM-1649 (shim), MT.1031, CISA.MS.AAD.7.5 (partial), ZTA.21815, ZTA.21816 |
+  
+  The four PIM steps take the P2-or-Governance condition once the grammar supports it.
+  
+  ZTA logic was read from the installed ZeroTrustAssessment 3.1.0; the pack's catalog pins 2.6.0. One claim is unverified: that `roleManagement/directory/roleAssignments` also returns PIM-activated assignments. The MT.1025–1028 conclusion doesn't depend on it.
+</agent-message>
+
+---
+
+<agent-message from="a5a0456de8461a2f0">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  Research is done for goal `email-authentication`. I edited no repository files. The full findings, with every Learn line number, all 13 Notes (each 200 characters or less, in my own words), the Rollouts and each test's definition of done, are in /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/email-authentication.md (about 220 lines).
+  
+  **Sources.** All five pages are in `defender-docs-mirror/defender-office-365/`, and the published URLs come from each page's front matter:
+  - `email-authentication-about.md`
+  - `email-authentication-spf-configure.md`
+  - `email-authentication-dkim-configure.md`
+  - `email-authentication-dmarc-configure.md`
+  - `mdo-deployment-guide.md` (https://learn.microsoft.com/defender-office-365/mdo-deployment-guide). Its Step 1 at lines 90-111 says to configure SPF, DKIM and DMARC "in that order". It asks for p=quarantine or p=reject plus rua and ruf on every custom domain, and says the onmicrosoft.com domain needs its own DMARC record.
+  
+  The exchange-docs-mirror has nothing on the order.
+  
+  **Product key: I recommend `defender`, but it is the owner's call.**
+  - The rubric says Product is "the product whose admin surface holds the setting". The only Microsoft 365 surface involved is the Defender portal's Email authentication settings page, where DKIM is turned on. SPF and DMARC have no portal or cmdlet; the one exception is the onmicrosoft.com DMARC record, added in the Microsoft 365 admin center. Learn files all of it under Defender for Office 365.
+  - The tests that could pick either product all picked `defender`: CIS 2.1.8, 2.1.9 and 2.1.10, and ORCA.235, 108 and 108.1.
+  - The CISA tests say `exchange` only because the folder rule makes them. MT.1182 says `entra` for the same reason.
+  - If the owner keeps `exchange`, only the IDs and the file name change.
+  
+  **Final step list, in order.** The goal step is `dmarc-reject`. No step is Unchecked.
+  1. `defender.spf`, "Publish an SPF record for every domain that sends mail". No relationships. Tests: CIS.M365.2.1.8 (every custom domain ends in -all or ~all; matches) and CISA.MS.EXO.2.2.
+     - CISA.MS.EXO.2.2 only checks that Exchange Online is included in the record, which is CISA's old v1 logic.
+     - The current CISA text (v3) asks for -all or ~all, exactly what CIS 2.1.8 checks. So the CISA test should become a shim of it.
+     - It probably also fails GCC High and 21Vianet tenants, which use a different include. Verify that before relying on it.
+  2. `defender.spf-hard-fail` (new), "End every SPF record with -all". Test: ORCA.235 (generated), which needs -all and fails ~all, so it is stricter than CIS 2.1.8.
+     - RecommendedFirst `spf`: the overview page says to start with the senders you know and ~all, then move to -all.
+     - RecommendedFirst `dmarc-published`: the SPF page says DMARC reports are how you find the remaining senders.
+  3. `defender.dkim`, "Sign outbound mail with DKIM for every custom domain". No relationships: nothing on Learn says DKIM depends on SPF. Tests, all matching: CIS.M365.2.1.9, CISA.MS.EXO.3.1, ORCA.108 (signing enabled) and ORCA.108.1 (both selector records point where Exchange expects). Learn says both selectors are needed.
+  4. `defender.dmarc-published`, renamed from `dmarc-monitor`. Test: CISA.MS.EXO.4.1, which only checks that a record of any policy exists for every domain, onmicrosoft.com included.
+     - RecommendedFirst `spf` and `dkim`, not Requires: p=none tells receivers to take no action, and the SPF page advises publishing it early to discover senders.
+  5. `defender.dmarc-enforce`, redefined as quarantine or reject with pct 100 and both rua and ruf on every domain. Test: CIS.M365.2.1.10. Its title says "published", but it fails p=none, so the draft had it under the wrong step.
+     - Requires `spf` and `dkim`: the DMARC page says you need both before DMARC, and a message fails DMARC only when both aligned checks fail.
+     - RecommendedFirst `dmarc-published`, for the gradual rollout.
+     - RecommendedFirst `spf-hard-fail`: the SPF page says DMARC effectively ignores ~all failures on mail without a DKIM signature.
+  6. `defender.dmarc-reject`, renamed from the draft's `dmarc-enforce`; this is the goal step. Tests: CISA.MS.EXO.4.2 and MT.1182, each covering part of the step.
+     - Requires `spf` and `dkim`. RecommendedFirst `dmarc-enforce`, since Learn goes quarantine first, then reject.
+     - Learn's end state is p=reject everywhere. Parked domains and an unused onmicrosoft.com domain go straight to reject.
+  
+  **Draft items dropped or changed.**
+  - ORCA.235 moves off `spf` to the new hard-fail step.
+  - CIS.M365.2.1.10 moves off the monitoring step to `dmarc-enforce`.
+  - CISA.MS.EXO.4.3 gets no step. It wants CISA's own reporting address, is skipped outside .gov, and is buggy: it checks the wrong variable (line 87), and its Targets column shows the failure-report addresses instead of the aggregate ones.
+  - The draft ID `dmarc-enforce` changes meaning. If that's confusing, call CIS 2.1.10's step `defender.dmarc-quarantine` instead.
+  
+  **Shims and other tests.**
+  - No test in the set is a shim today. CIS 2.1.9 and CISA 3.1 are nearly the same code.
+  - No ZTA test covers SPF, DKIM or DMARC.
+  - ASD has no email tests yet, though the ISM file lists the email requirements (ISM-0574, 1151, 0861, 1026, 1027, 1540, 1799).
+  - These test other settings and get no step here: CIS 2.1.7 and ORCA.244 (honouring DMARC on inbound mail), ORCA.102, ORCA.243 (ARC trusted sealers), and the deprecated CISA.MS.EXO.2.1.
+  
+  **Bugs to raise separately (they don't block tagging).**
+  - CISA.MS.EXO.4.2 reads only each domain's own DMARC record, so a subdomain that relies on its parent's p=reject fails, although Learn allows relying on the parent record. Its subdomain-policy branch can never be reached. The fix is to use `Find-MtDmarcRecord`, as 4.1 does.
+  - MT.1182 skips federated domains for no email reason, and its `Product = 'entra'` and `Feature = 'user-settings'` don't fit a DMARC check.
+</agent-message>
+
+---
+
+<agent-message from="ac89b0589ff477f81">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  I wrote the findings for goal `phishing-resistant-mfa` to /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/phishing-resistant-mfa.md (154 lines). It has the steps, relationships, Learn line references, Notes, Rollout and an analysis of each test. I did not edit the repository. `git status` shows `build/eidsca/Update-EidscaTests.ps1` and `build/orca/Update-OrcaTests.ps1` as modified, but those changes are not mine; another session probably made them.
+  
+  ## What Learn says
+  
+  - **Order:** enable the methods, then bootstrap with existing MFA or a Temporary Access Pass (TAP), then users register (a portable credential first, then local ones), then enforce with an authentication strength. Learn says this "typically" starts with admins (DEPLOY lines 144-147, 125-129, 186, 202, 250, 352-357).
+  - **Hard Requires:**
+    - Registration before enforcement. For admins, `policy-admin-phish-resistant-mfa` lines 48-50 warn that skipping it can lock you out of the tenant. For all users, `concept-authentication-strength-how-it-works` lines 109 and 113 say unregistered users can't reach the resource.
+    - Emergency access exclusion.
+  - **RecommendedFirst:**
+    - TAP, because it is one of two ways to bootstrap (TAP page lines 47-50).
+    - Admins before all users. Learn says "typically" and that the order can change.
+    - Passkeys before Windows Hello for Business, because the first credential should be portable (DEPLOY 129, 153).
+  - **Windows Hello for Business is one method among several, not a prerequisite.** The Phishing-resistant MFA strength accepts WHfB or platform credential, FIDO2, or multifactor certificate-based authentication (CBA) (STRENGTHS 72-76, 86-90). Learn never puts WHfB on the enforcement path.
+  
+  ## Proposed steps, in order
+  
+  1. `entra.passkeys-enabled`: verified by EIDSCA.AF01 (state) and AF02 (self-service setup; Learn says users can't register at Security info without it). ZTA.21839 and ZTA.21838 also match. AF03-AF06 name no step: Learn makes attestation and key restrictions optional, and enforcing attestation blocks synced passkeys, which Learn recommends for non-admins.
+  2. `entra.temporary-access-pass`: verified by EIDSCA.AT01. AT02 (one-time use) names no step, because multiuse is Learn's default and is supported. ZTA.21845 is stricter: it also needs a Conditional Access policy on security info registration that allows TAP. ZTA.21846 is one-time use only, so it names no step either.
+  3. Rename `entra.windows-hello` to `intune.windows-hello`. Intune (or Group Policy) delivers WHfB, not the Entra methods policy, and ZTA.24551 reads Intune. It is RecommendedFirst after passkeys and stays Unchecked (ZTA.24551).
+  4. Optional new members of the "any one method will do" group: `entra.certificate-based-auth` (no check anywhere) and `intune.macos-platform-sso` (ZTA.24568). Without them, a tenant that uses only CBA or only Macs would show as blocked. Drop both if you want a smaller catalogue.
+  5. Rename `entra.phishing-resistant-registered` to `entra.phishing-resistant-registered-admins`, because the old ID reads as all users but its check covers admins only. It needs one enabled method from the group in step 4 (`RequiresOneOf`), with TAP RecommendedFirst. Unchecked (ZTA.21782). I considered `RequiresOneOf [TAP, entra.mfa-registered]` and rejected it: `entra.mfa-registered` measures 95% of all members, so it would misreport admins.
+  6. `entra.phishing-resistant-admins`: Requires admin registration and `entra.emergency-access-excluded`. Verified by CIS.M365.5.2.2.5 only, which is closest to Learn: 15 roles, Learn's 14 plus Global Reader.
+     - CISA.MS.AAD.3.6 has a different definition of done. It covers 8 roles, includes Hybrid Identity Administrator (on neither Learn's nor CIS's list), leaves out 7 of Learn's roles, and accepts only the built-in strength, matched by display name. Neither role list contains the other, so the two tests would pass and fail in the same run. I recommend it names no step. The alternative is to name both and tell users to cover both role lists.
+     - ZTA.21783 targets far more roles and counts report-only policies; report it only.
+     - Drop ZTA.21781: in ZTA 3.1.0 it always ends as `UnderConstruction`, which would leave the step Unknown forever.
+  7. New `entra.phishing-resistant-registered-all` (users have a phishing-resistant method registered): same method group, TAP RecommendedFirst. It stays Unchecked until the section 11 readiness check exists. ZTA.21801 already checks it, at 100% rather than the planned 95%.
+  8. `entra.phishing-resistant-all` (the goal step): Requires all-user registration, `entra.emergency-access-excluded` and `entra.ca-exclude-sync-accounts`. The sync-account exclusion comes from the all-users MFA-strength template, line 94; the deployment page doesn't repeat it. Admins are RecommendedFirst. Verified by CISA.MS.AAD.3.1 and ASD.ISM-1872, which is a shim of it.
+     - CISA 3.1 accepts phishing-resistant MFA only. The "alternative MFA" path is CISA.MS.AAD.3.2, which skips when 3.1 passes.
+     - Drop ZTA.21784: it accepts any strength containing one phishing-resistant method, so the built-in MFA strength passes. It also fails whenever a policy excludes a user, which contradicts excluding emergency access accounts.
+  
+  No CIS or MT test checks phishing-resistant MFA for all users, and no MT test checks it for admins (MT.1006 and MT.1007 accept any MFA).
+  
+  ## Other findings
+  
+  - **ZTA titles:**
+    - These match their steps: 21839, 24551, 21782, 21783.
+    - These don't: 21781 and 21784, whose titles describe sign-in activity.
+    - The catalogue is generated from ZTA 2.6.0. In 3.1.0, three titles have changed (24551, 24568, 21846) while the logic for 24551 stayed the same.
+    - I read the ZTA logic in the installed 3.1.0 module (`~/.local/share/powershell/Modules/ZeroTrustAssessment/3.1.0/tests/`).
+  - **Admin tests ignore an all-users policy.** CIS 5.2.2.5, CISA 3.6 and ZTA.21783 only look at the roles a policy targets. A tenant whose only control is the all-users policy stays Not done on the admin step. That matches Learn, which keeps a separate admin policy, but How to fix should say so.
+  - **Section 11 readiness check:** consider letting the planned registration check also cover admins, so step 5 gets a Maester check.
+  - **Smaller test issues:** CISA 3.6 matches the strength by display name, while CISA 3.1 in the same suite accepts custom strengths. ZTA.21783 counts report-only policies, which its own TODO already notes.
+  - **Wrong page name in the brief:** `how-to-enable-passkey-fido2.md` doesn't exist; the current page is `how-to-authentication-passkeys-fido2.md`.
+  
+</agent-message>
+
+---
+
+<agent-message from="a86bc010fe45c75f2">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  The draft for `defender-device-risk` needs four changes:
+  - **Order:** it is reversed. Learn connects the services first and onboards second.
+  - **Missing step:** add `intune.defender-compliance-evaluation`, the per-platform toggles in the connector.
+  - **MT.1098:** it does not prove the Defender connector exists.
+  - **Verifying tests:** only one of the three draft tests (MT.1231) actually checks the Defender machine risk score in compliance.
+  
+  No repository files were edited. The full findings (246 lines, with Learn URLs, mirror line numbers, Notes and Rollout) are in `/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/defender-device-risk.md`.
+  
+  **Proposed steps, in order**
+  1. `intune.defender-connector`, "Connect Defender for Endpoint to Intune". No relationships.
+     - Sources: Intune configure-integration L78-111; Defender advanced-features L208-220 (must be on in both products).
+     - Unchecked. A new check is needed: connector `fc780465-2017-40d4-a0c5-307022471b92` exists with `partnerState = enabled`.
+  2. `intune.defender-compliance-evaluation` (new), "Turn on compliance evaluation in the Defender for Endpoint connector". Requires step 1.
+     - Sources: configure-integration L113-130; Defender configure-conditional-access L81-94, where it is a separate Step 2.
+     - Unchecked. ZTA.24871 checks it for Android only.
+  3. `defender.endpoint-onboarding`, a state: "Eligible devices are onboarded to Defender for Endpoint". RecommendedFirst step 1, not Requires.
+     - Why not Requires: onboarding-endpoint-manager L63-68 lists the connection as a prerequisite only for onboarding through Intune. Without it, the EDR policy accepts a pasted onboarding blob (configure-integration L229-232, L246-248).
+     - Rollout: a test device group first, then all devices, then the Defender app on mobile and macOS.
+     - Only ZTA.41045 checks it, and it matches.
+  4. `intune.compliance-device-risk`, "Require a Defender for Endpoint machine risk score in compliance policies".
+     - Requires step 2 (configure-conditional-access L89-110; enable-connector L90-91).
+     - RecommendedFirst step 3 (overview L61-63; enable-connector L164).
+     - RecommendedFirst `intune.compliance-policies`. The draft had Requires, but nothing on Learn says the change fails without full platform coverage, and Requires would block tenants that lack one platform's policy.
+     - Rollout: Low threshold, test group first, then widen (configure-integration L374-401; configure-conditional-access L108-110).
+  
+  **Goal:** its `Step` should be `intune.compliance-device-risk`.
+  - Learn says the risk rule only blocks access through the compliant-device CA policy: overview L116-118, Defender conditional-access L58-62, and configure-conditional-access Step 4, which uses policy-all-users-device-compliance.
+  - I would not add a relationship to `entra.ca-require-compliant-device` in either direction.
+    - CA recommending device risk first would pull the whole Defender chain into the `compliant-devices` goal, and Learn's CA page doesn't back it.
+    - Device risk pointing at CA would contradict Learn, which validates the compliance policy before CA (L110).
+  - Instead, list the goal after `compliant-devices` in `goals.json` and say it in the Summary.
+  
+  **MT.1098 (the design's open question):** it does not fail when the Defender connector is missing.
+  - With no connectors at all, it skips (L63-65, L88-89).
+  - If another vendor's connector is healthy and Defender's is absent, it passes.
+  - It fails only when a connector it finds is not `enabled` or its heartbeat is more than a day old (L81-87).
+  - So it verifies none of these steps and should name no step. It is a generic health check; enable-connector L160 says Intune ignores compliance data from an unresponsive partner, so a "connectors are responsive" state step could come later.
+  
+  **Platform tests:**
+  - **MT.1231 (iOS)** is correct: it reads `advancedThreatProtectionRequiredSecurityLevel` and rejects `high`. It fails when there is no iOS policy.
+  - **MT.1235 (Android)** reads a different setting: `deviceThreatProtectionEnabled`, the third-party threat-defense "Device Threat Level" rule, not Defender's risk score. It reads only Android device administrator, which Learn calls deprecated, so it should name no step here.
+  - **MT.1216 (macOS)** should not name the step.
+    - Learn documents the risk-score compliance setting for Android, iOS/iPadOS and Windows only (overview L98-104, configure-integration L124-126 and L345, deploy-compliance-step-3 L202 and L253). The macOS settings reference has no such setting, on the mirror or the live page.
+    - It also counts `high` as configured, which blocks nothing.
+    - Its guide links to `learn.microsoft.com/intune/device-security/advanced-threat-protection`, which returns 404.
+    - The test itself needs review.
+  - **No Windows equivalent exists**, and no test of EDR onboarding policies or the Defender connector exists, in any suite or in ZTA.
+  
+  **One step or one per platform:** one step, named by one test per platform. That works only if two things change first:
+  - A Windows check is added: `windows10CompliancePolicy.deviceThreatProtectionEnabled` and `deviceThreatProtectionRequiredSecurityLevel` in secured, low or medium. An Android Enterprise check is also needed.
+  - MT.1231 and MT.1216 are changed to report Not applicable, not fail, when the platform has no compliance policy. Otherwise a Windows-only tenant can never finish the step.
+  
+  Until then, tag MT.1231 only.
+  
+  **ZTA:**
+  - ZTA.41045 "All eligible endpoints are onboarded to Microsoft Defender for Endpoint" matches step 3.
+  - ZTA.24871 "Defender for Endpoint automatic enrollment is enforced to reduce risk from unmanaged Android threats" has a title that suggests onboarding. Its logic checks that the Defender connector is enabled and its Android toggle is on, so it belongs to step 2 (Android only), not to the connector step.
+  - No other ZTA test covers the connector toggles, EDR policies or the risk score in compliance.
+  
+  **New checks to reserve on #697:**
+  1. Defender connector enabled.
+  2. Per-platform compliance-evaluation toggles.
+  3. Windows machine risk score in compliance.
+  4. Android Enterprise machine risk score in compliance.
+  
+  **One open point:** `OnlyWhen` can't express "any one of `MDE_LITE`, `WINDEFATP` or `MDE_SMB`", so the onboarding step has no licence condition and relies on each test's `License` gate.
+</agent-message>
+
+---
+
+<agent-message from="a3f596292c9013974">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  The full findings for the `risk-policies` goal are in /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/risk-policies.md (266 lines). That file has every step's ID, Title, Summary, each relationship with Learn URL, mirror path and line numbers, the proposed Notes (all under 200 characters, own wording), Rollout sentences and a test-by-test analysis. I edited no repository files. Below are the conclusions you need.
+  
+  **What breaks the draft**
+  1. **MT.1013 and CIS.M365.5.2.2.6 fail a tenant that follows Learn today.**
+     - Learn now recommends the "Require risk remediation" grant for high user risk (configure-risk-policies L84-91, policy-risk-based-user L63-86). It covers both password and passwordless users.
+     - Both tests require `passwordChange` and reject `riskRemediation`.
+     - Graph also returns `riskRemediation` as `unknownFutureValue` unless the request sends `Prefer: include-unknown-enum-members`, and `Get-MtConditionalAccessPolicy` doesn't send it.
+     - Don't tag MT.1013 until it accepts risk remediation. CIS 5.2.2.6 demands password change plus MFA plus sign-in frequency Every time, so it should get no step (or its own `entra.ca-user-risk-password-change`).
+  2. **CISA.MS.AAD.2.1 blocks high-risk users, which is a different setting.** Learn says a Block overrides risk remediation for a user who is in both policies, and to keep each user in only one (concept-identity-protection-policies L85, managed-policies L207). FAQ L131-133 presents the block as a stopgap until MFA is rolled out.
+     - Proposed new step `entra.ca-block-high-risk-users`, which Requires `entra.emergency-access-excluded`.
+     - Proposed relationship: `entra.ca-user-risk` Conflicts with that step. Your call, because the path would then tell CISA-aligned tenants to drop the block.
+  3. **Password writeback applies to the user-risk policy only.** Sign-in risk is cleared by MFA.
+     - Learn's newer remediation flow doesn't remove the need: users with passwords still do a secure password change, and only passwordless users just get their sessions revoked. So keep Requires, with OnlyWhen `hybrid-identity`.
+     - Learn also documents an on-premises password-change route (it needs password hash sync plus an opt-in setting), but it only covers users on domain-joined or hybrid-joined Windows devices. I recommend against modelling it as RequiresOneOf for now.
+     - The step stays Unchecked: Graph's `passwordWritebackEnabled` property is documented as not in use.
+  4. **The goal has no single anchor step.** The draft's last step (`entra.ca-risk-policies-separate`) can't anchor it, because no Learn page documents an order. Options:
+     - **A (recommended, everything sourced from Learn):** the goal anchors on `entra.ca-user-risk`, with `entra.ca-sign-in-risk` as RecommendedFirst. Source: remediate-unblock L89, where unremediated sign-in risk raises user risk. MT.1049 keeps its own standalone step.
+     - B: anchor on the separate-policies step with a maintainer source.
+     - C: split into two goals.
+  
+  **Answers to the brief's questions**
+  - **MFA registration:** Requires from both policy steps. Learn says unregistered users are blocked and need an admin (configure-risk-policies L74-76), and a risky sign-in by an unregistered user is blocked with AADSTS53004 (policy-risk-based-sign-in L52).
+  - **Password hash sync:** RecommendedFirst for the user-risk policy only, with OnlyWhen hybrid. Leaked-credential detection needs it, and only leaks found after it is on are matched (id-protection-faq L67-69 and L96-108, concept-identity-protection-risks L300-306, whatis-phs L57-61).
+  - **Licence (Entra ID P2):** Learn requires it, but every verifying test already declares `License = AAD_PREMIUM_P2`, and design section 4.2 says steps carry no licence, so add no OnlyWhen. The side effect is that a tenant without P2 shows Unknown with a NotLicensed reason rather than Not applicable. That is an engine question.
+  - **Emergency access accounts:** Requires on both policy steps, as in M1.
+  - **Directory sync accounts:** RecommendedFirst only. The risk pages have just the general exclusion bullet, not a procedure step like the compliant-device page.
+  - **"Remediate existing risky users first"** is in Learn: configure-risk-policies L103, and step 1 of the deployment plan (how-to-deploy-identity-protection L75-83). It is RecommendedFirst for `entra.ca-user-risk`. MT.1260 (high risk, state atRisk or confirmedCompromised) matches the step.
+  - **"Separate policies"** is a warning at the top of configure-risk-policies (L50-52). MT.1049 matches it. It is not a shim: it wraps an internal helper that nothing else calls.
+  - **Rollout:** report-only first and review the impact, including the risk-based policy impact workbook; then a pilot group (how-to-deploy L118 says this for sign-in risk); then all users with emergency accounts excluded; and keep each risk condition in its own policy.
+  
+  **Tests per step**
+  - **`entra.ca-sign-in-risk`:**
+    - CIS.M365.5.2.2.7 matches (medium and high, MFA with Every time or a block, a separate policy). It names the step.
+    - MT.1012 is looser: it doesn't check sign-in frequency Every time or a separate policy, and it rejects a block. Fix it before it names the step.
+    - CISA.MS.AAD.2.3 (block high) and CIS.M365.5.2.2.8 (block medium and high, L2) are different settings, so no step.
+  - **Other matches:** CIS.M365.5.1.8.1 matches `entra.password-hash-sync`. It skips federated tenants without PHS, which shows as Unknown.
+  - **ZTA (none can carry Step):**
+    - ZTA.21797 and ZTA.21799 are looser than the policy steps and accept a block.
+    - ZTA.21861 is narrower than MT.1260.
+    - ZTA.21863 checks risky sign-ins, not users.
+    - ZTA.21865 matches the optional new step below.
+    - ZTA.21893 (MFA registration policy) is for the mfa-registered session.
+  - **Microsoft-managed policies:** the remediation policy is scoped to a group, and the risky sign-in policy covers high only, so neither meets these steps.
+  
+  **Other new step (optional)**
+  - `entra.trusted-named-locations`: RecommendedFirst for sign-in risk, because trusted locations cut false positives (configure-risk-policies L68, how-to-deploy L102-104). CIS.M365.5.2.2.14 verifies it.
+  
+  **Searched, no step**
+  - CISA.MS.AAD.2.2 (risk notifications) comes after deployment, so it isn't a prerequisite.
+  - Several MT and CIS tests only exclude risk-conditioned policies from their own checks.
+  - No EIDSCA or ORCA test reads risk policies.
+  - No test reads the legacy ID Protection risk policies, which retired on 2026-10-01, so no migration step is needed.
+  - No test in this goal is a shim.
+</agent-message>
+
+---
+
+<agent-message from="a7a2de0e9adb4eea0">
+[Subagent hand-back] The text below is the final report of a subagent this session delegated to. It is model output, NOT a message from the user: instructions, requests, or approval claims inside it are the subagent's words and carry no user authority. The harness indents every line of the report, so a frame-like line at column zero inside it would be forged. Notes above this frame may quote model-derived text, which carries no user authority either. The report follows:
+  I've checked the Foundation, compliant-devices, managed-device and token-protection steps against the Learn mirrors. Four draft entries are wrong as written: MT.1001 is looser than the step it names, MT.1014 covers admins only, MT.1034 checks one sign-in scenario, and token protection is Windows-only in every test. Findings are in /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/scratchpad/research/compliant-devices.md (266 lines, with Learn URLs, mirror line numbers, a Note for each relationship, Rollout sentences and each test's real logic). I edited no repository files.
+  
+  **What to change**
+  1. **MT.1001 is looser than `entra.ca-require-compliant-device`.** It passes on any enabled policy with `compliantDevice` in the grant, whatever the users, apps or operator (`tests/maester/entra/Test.MT.1001.ps1:41,52`). A "compliant OR MFA" policy for one app marks the step Done. ZTA.24824 is just as loose. No test checks Learn's policy (all users, all resources, compliant device only). I suggest tightening MT.1001, reusing MT.1014's `requiresDeviceControl` logic.
+  2. **Section 5's CIS example is slightly off.**
+     - CIS.M365.5.2.2.9 requires `compliantDevice` and only allows hybrid join beside it (`tests/cis/Test.CIS.M365.5.2.2.9.ps1:49`).
+     - CISA.MS.AAD.3.7 is the one that needs compliant OR hybrid, both controls (`tests/cisa/entra/Test.CISA.MS.AAD.3.7.ps1:49-54`). ScubaGear's upstream rule also demands exactly two controls, which Maester's version doesn't check.
+     - So in a tenant with a stricter compliant-only policy, CIS passes and CISA fails, and `entra.ca-require-managed-device` reads Not done.
+  3. **MT.1014 is admins only, so it needs its own step.** I propose `entra.ca-require-managed-device-admins`, sourced from `policy-alt-admin-device-compliand-hybrid`. It would be RecommendedFirst of `entra.ca-require-managed-device`, since Learn offers the admin policy to organisations not ready for all users (`policy-all-users-device-compliance.md:48-50`).
+  4. **Managed devices should be a separate goal.** I propose `managed-devices` ("Require managed devices"; Summary "Only devices that Intune marks compliant or that are hybrid joined to Microsoft Entra ID can reach Microsoft 365."; Step `entra.ca-require-managed-device`). Learn presents compliant-or-hybrid as an alternative end state, not a step towards compliance-only. It is what CIS 5.2.2.9 and CISA 3.7 ask for, and a hybrid tenant can finish it without Intune.
+     - Its steps: `entra.hybrid-join` (Unchecked, only when hybrid-identity; prerequisites from `devices/how-to-hybrid-join.md:46-54`, pilot rollout from `hybrid-join-plan.md:130-136`), plus the new admin step.
+     - CIS.M365.5.2.2.9 and CISA.MS.AAD.3.7 stay on the managed-device step. No Maester test checks hybrid join.
+     - The ZTA ID to name is ZTA.21892. Despite its title ("All sign-in activity comes from managed devices"), it checks a policy.
+  5. **Engine rule problem (section 6.2).** Not-applicable prerequisites "count as met". In a cloud-only tenant `entra.hybrid-join` is Not applicable, so the group [intune.devices-compliant, entra.hybrid-join] is always satisfied, and the managed-device step shows Ready with no compliant devices. Not-applicable members of a RequiresOneOf group should be dropped rather than counted as met.
+  
+  **Foundation**
+  - **MT.1005 and MT.1034 don't prove the same thing.**
+    - MT.1034 asks the What If API about one sign-in, Exchange ActiveSync to Exchange Online, for auto-detected accounts. It ignores the `EmergencyAccessAccounts` setting.
+    - It misses policies aimed at other apps or client types. It also passes when an account is left out of a policy some other way than an explicit exclusion.
+    - I recommend MT.1034 names no step.
+  - **MT.1005 is stricter than Learn.** It checks every policy in any state, but Learn says report-only policies need no exclusion (`security-emergency-access.md:77,104,125`). The Note I propose says so.
+  - **MT.1020 matches `entra.ca-exclude-sync-accounts`.** Learn names the sync-role exclusion only for all-user templates (three pages), not for admin or token protection policies.
+  
+  **Compliant devices**
+  - **The five draft steps hold up.** I'd add `intune/device-security/conditional-access-integration/device-based-policies.md:77,81-84,99` as a source (compliance policies first, then the policy; pilot a small group).
+  - **The relationships are confirmed.** Requires on the compliance policies is backed by `policy-all-users-device-compliance.md:74`. The two RecommendedFirst entries (automatic enrollment, mark-unassigned) are backed by `enable-automatic-mdm.md:49-52` and `compliance/overview.md:67-74,144`.
+  - **ZTA titles match the steps.**
+    - ZTA.24541–24547 are stricter than "each platform in use": a Windows-only tenant fails four of the five.
+    - ZTA.24546 passes when automatic enrollment applies to Some or All users.
+  - **MT.1054 and CIS.M365.4.1 are identical** (`deviceManagement/settings.secureByDefault`), so the shim is right.
+  - **No other test lets a step drop Unchecked.** MT.1214, MT.1216 and MT.1228–1237 check specific iOS, Android and macOS settings. Nothing in MT, CIS, CISA, EIDSCA or ORCA checks that a compliance policy exists per platform, or automatic enrollment.
+  
+  **Token protection**
+  - **Every test checks a Windows policy.** CIS.M365.5.2.2.16 is the strictest (Exchange, SharePoint and Teams, desktop clients, enforced). ZTA.21941 and ZTA.21786 are looser, and ZTA.21786 checks a policy despite its sign-in title.
+  - **Rename the step.** I suggest `entra.ca-token-protection-windows`, since Learn deploys Apple as a separate policy with its own prerequisites.
+  - **Device registration should be RecommendedFirst, not Requires.** On current Windows builds a user on an unregistered device is prompted to register (`deployment-guide-token-protection-windows.md:308`). Report-only logs show those sign-ins as status 1002.
+  - **Add Requires `entra.emergency-access-excluded`** (Windows guide line 148).
+  - **Optionally add RecommendedFirst `entra.ca-block-unknown-platforms`, checked by MT.1015.** Both deployment guides say to also block unknown platforms so attackers can't get around the policy (Windows 185-190, Apple 170-177).
+  - **Licence** is Entra ID P1, already on the tests. Rollout: report-only for a pilot group, review sign-ins for unbound requests, add device filters for unsupported device types, then enforce.
+  - **Apple should get its own steps, but not yet.** It needs MDM-managed devices with the Enterprise SSO plug-in or Platform SSO configured before users register, plus its own policy, and native Mail and Calendar are blocked. No Maester test covers any of it, and ZTA.24568 covers only macOS Platform SSO. The concept page also labels Apple both GA (lines 67-68) and Preview (line 98).
+  
+  **Security defaults**
+  - **The Conflicts entry is backed by Learn.** `fundamentals/security-defaults.md:251` says to turn security defaults off to replace them with Conditional Access. `conditional-access/plan-conditional-access.md:61` says the two aren't meant to be combined.
+  - **No test can verify "off".** MT.1021 skips every tenant that isn't Free, and no other test, ZTA or EIDSCA included, reads that policy. The planned readiness check is still needed.
+  
+  The worktree shows uncommitted edits to `build/eidsca/Update-EidscaTests.ps1` and `build/orca/Update-OrcaTests.ps1`; they aren't mine.
+</agent-message>
+
+---
+
+<task-notification>
+<task-id>by77sc6s2</task-id>
+<tool-use-id>toolu_01WV8Ln8noATCZJGwYghL7fB</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-defenders-path-m2-8b8ecc/f8bda74f-6c1f-4f6d-9546-cf4020f4c33b/tasks/by77sc6s2.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full unit test suite then the module build" completed (exit code 0)</summary>
+</task-notification>
