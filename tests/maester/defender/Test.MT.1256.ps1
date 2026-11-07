@@ -41,7 +41,7 @@ function Test-MtDefenderExploitableSoftwareVulnerability {
         Feature = 'exposure-management',
         Area = 'devices',
         ResourceType = 'Device',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'T1190',
