@@ -214,7 +214,7 @@
 
             Test-MtEntraUnremediatedHighRiskServicePrincipal | Should -BeFalse
             $script:Severity | Should -BeNullOrEmpty
-            $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
+            $script:TestResult | Should -Match 'Global Administrator \\\(eligible\\\)'
         }
 
         It 'does not list a non-privileged role' {

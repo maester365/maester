@@ -133,14 +133,14 @@
         $DisplayName = [string]$Item.displayName
         if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
         $Link = Get-MtLinkServicePrincipal -ServicePrincipal ([pscustomobject]@{ id = $Item.id; appId = $Item.appId; DisplayName = $DisplayName })
-        $Type = [System.Net.WebUtility]::HtmlEncode([string]$Item.servicePrincipalType) -replace '\|', '&#124;'
+        $Type = Get-MtSafeMarkdown ([string]$Item.servicePrincipalType)
         $State = [string]$Item.riskState
-        $Detail = [System.Net.WebUtility]::HtmlEncode([string]$Item.riskDetail) -replace '\|', '&#124;'
+        $Detail = Get-MtSafeMarkdown ([string]$Item.riskDetail)
         $Updated = if ($Item.riskLastUpdatedDateTime) {
             ($Item.riskLastUpdatedDateTime -as [datetime]).ToUniversalTime().ToString('yyyy-MM-dd')
         } else { 'Unknown' }
         $Roles = if ($PrivilegedRolesBySp.ContainsKey([string]$Item.id)) {
-            [System.Net.WebUtility]::HtmlEncode(($PrivilegedRolesBySp[[string]$Item.id] -join ', ')) -replace '\|', '&#124;'
+            Get-MtSafeMarkdown ($PrivilegedRolesBySp[[string]$Item.id] -join ', ')
         } else { 'None' }
         $Result += "`n| $Link | $($Item.appId) | $Type | $State | $Detail | $Updated | $Roles |"
     }
