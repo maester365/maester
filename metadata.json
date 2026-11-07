@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6V2DV02YE2ECJHYSY4JP31N",
+  "strategy": "manual-commit",
+  "branch": "feat/zero-trust-workshop-view",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "report/src/components/report/lists.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 5913,
+    "cache_read_tokens": 2275722,
+    "output_tokens": 3130,
+    "api_call_count": 8,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 4886,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4825,
+      "key_context": 61,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
