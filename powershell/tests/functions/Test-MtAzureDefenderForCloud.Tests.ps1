@@ -1,4 +1,4 @@
-Describe 'Defender for Cloud recommendations and attack paths' {
+﻿Describe 'Defender for Cloud recommendations and attack paths' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

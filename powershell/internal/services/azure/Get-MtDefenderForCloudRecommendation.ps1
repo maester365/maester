@@ -1,4 +1,4 @@
-function Get-MtDefenderForCloudRecommendation {
+﻿function Get-MtDefenderForCloudRecommendation {
     <#
     .SYNOPSIS
     Returns one row per Microsoft Defender for Cloud recommendation across the subscriptions the

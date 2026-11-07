@@ -1,4 +1,4 @@
-function Get-MtAzureDefenderForCloudRecommendationInstance {
+﻿function Get-MtAzureDefenderForCloudRecommendationInstance {
     <#
     .SYNOPSIS
     Returns one MT.1257 instance per Microsoft Defender for Cloud recommendation.
