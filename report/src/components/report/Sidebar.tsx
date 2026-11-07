@@ -32,11 +32,8 @@ function usePrefs() {
   const [prefs, setPrefs] = useState<Prefs>(() => {
     try { const s = JSON.parse(localStorage.getItem("mt-nav") || "{}"); return { collapsed: !!s.collapsed, width: typeof s.width === "number" ? s.width : null } } catch { return { collapsed: false, width: null } }
   })
-  const update = (next: Partial<Prefs>) => setPrefs((p) => {
-    const v = { ...p, ...next }
-    try { localStorage.setItem("mt-nav", JSON.stringify(v)) } catch { /* storage refused */ }
-    return v
-  })
+  const update = (next: Partial<Prefs>) => setPrefs((p) => ({ ...p, ...next }))
+  useEffect(() => { try { localStorage.setItem("mt-nav", JSON.stringify(prefs)) } catch { /* storage refused */ } }, [prefs])
   return [prefs, update] as const
 }
 

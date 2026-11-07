@@ -15,7 +15,7 @@ export default function TestsPage() {
   const { q, filters, group } = explorer
   const dims: Dimension[] = useMemo(() => ([
     { key: "Result", icon: "result", values: (t) => [t.Result], label: (v) => RESULT_LABEL[v] || v, order: RESULT_ORDER },
-    { key: "Severity", icon: "severity", values: (t) => (t.Severity ? [t.Severity] : []), label: (v) => v, order: SEVERITIES },
+    { key: "Severity", icon: "severity", values: (t) => (SEVERITIES.includes(t.Severity) ? [t.Severity] : model.rated.severity ? ["Not rated"] : []), label: (v) => v, order: [...SEVERITIES, "Not rated"] },
     { key: "Product", icon: "product", values: (t) => (t.Product ? [t.Product] : []), label: (v) => model.productName(v) },
     { key: "Feature", icon: "feature", values: (t) => (t.Product && t.Feature ? [`${t.Product}/${t.Feature}`] : []), label: (v) => { const t = model.rows.find((r) => `${r.Product}/${r.Feature}` === v); return t ? model.featureName(t) : v } },
     { key: "Area", icon: "area", values: (t) => (t.Area ? [t.Area] : []), label: (v) => model.areaName(v) },

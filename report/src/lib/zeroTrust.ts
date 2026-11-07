@@ -184,13 +184,11 @@ export function orderedChecks(t: Task) {
   return [...t.checks].sort((a, b) => rank(a) - rank(b))
 }
 
-/** The task with the workshop doc's leftovers removed: front matter, iframes, the title and the effort lines. */
+/** The task with the workshop doc's leftovers removed: front matter, the title and the effort lines. */
+// Update-MtZtWorkshopData.ps1 strips the docs' iframes, and the Markdown renderer sanitizes what it draws.
 export function cleanDoc(md: string) {
-  // The Markdown renderer sanitizes its output; this only tidies. Iframe tags are removed until none is left, so a
-  // tag split by an earlier removal cannot survive.
-  let text = md.replace(/^---[\s\S]*?---\s*/, "").replace(/<iframe\b[\s\S]*?<\/iframe\s*>/gi, "")
-  for (let before = ""; before !== text;) { before = text; text = text.replace(/<\/?iframe\b[^>]*>?/gi, "") }
-  return text
+  return md
+    .replace(/^---[\s\S]*?---\s*/, "")
     .replace(/^\s*#\s+.*\n/, "")
     .replace(/\*\*(Implementation Effort|User Impact):\*\*.*\n/g, "")
     .trim()

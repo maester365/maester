@@ -121,7 +121,7 @@ function AboutView({ pack }: { pack: PackRows }) {
   return (
     <div className="mt-wrap">
       <Head pack={pack} title="About this pack" lead={pack.Description || undefined} />
-      <dl className="mt-kv">{rows.map(([k, v]) => [<dt key={`k${k}`}>{k}</dt>, <dd key={`v${k}`}>{v}</dd>])}</dl>
+      <dl className="mt-kv flat">{rows.map(([k, v]) => [<dt key={`k${k}`}>{k}</dt>, <dd key={`v${k}`}>{v}</dd>])}</dl>
       {pack.Homepage && /^https:\/\//i.test(pack.Homepage) && <p><a className="mt-link" href={pack.Homepage} target="_blank" rel="noopener noreferrer">The pack's page ↗</a></p>}
       <p className="mt-note">A pack's results count in this report, but never as Maester's own checks. Its menu is drawn by the report from the pack's manifest; a pack adds no code to this page.</p>
       <Footer />

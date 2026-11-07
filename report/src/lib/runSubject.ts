@@ -46,13 +46,13 @@ export function reportHeading(model: Model): Heading {
   const subject = model.subject
   if (subject) return {
     eyebrow: "Maester report",
-    title: (rate) => (rate === null ? `No check of ${subject.name} gave a pass or fail` : `${subject.name} passed ${rate}% of the checks that ran`),
+    title: (rate) => (rate === null ? `No scored check of ${subject.name} ran` : `${subject.name} passed ${rate}% of the scored checks`),
     bar: subject.name,
     holds: subject.name,
   }
   return {
     eyebrow: "Maester report",
-    title: (rate) => (rate === null ? "No check gave a pass or fail" : `${rate}% of the checks that ran passed`),
+    title: (rate) => (rate === null ? "No scored check ran" : `${rate}% of the scored checks passed`),
     bar: null,
     holds: "the systems its tests read",
   }

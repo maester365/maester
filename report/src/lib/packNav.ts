@@ -59,9 +59,32 @@ export function readNavigation(value: unknown): NavEntry[] | null {
   return entries.length ? entries : null
 }
 
+type Obj = Record<string, unknown>
+const isObj = (v: unknown): v is Obj => !!v && typeof v === "object" && !Array.isArray(v)
+const str = (v: unknown) => (typeof v === "string" && v ? v : undefined)
+const objs = (v: unknown) => (Array.isArray(v) ? v.filter(isObj) : [])
+const strs = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string" && !!x) : undefined)
+const steps = (v: unknown): GuideStep[] | undefined => (Array.isArray(v) ? objs(v).map((s) => ({ Text: str(s.Text), Command: str(s.Command) })).filter((s) => s.Text || s.Command) : undefined)
+
+// The guide is a file in the pack, checked only to be a JSON object: keep what the guide pages can draw, so a
+// malformed entry is left out instead of breaking the page.
 export function readGuide(value: unknown): PackGuide | null {
-  const g = parse<PackGuide>(value)
-  return g && typeof g === "object" && !Array.isArray(g) ? g : null
+  const g = parse<unknown>(value)
+  if (!isObj(g)) return null
+  const connect = isObj(g.Connect) ? g.Connect : null
+  const run = isObj(g.Run) ? g.Run : null
+  const app = isObj(g.AppOnly) ? g.AppOnly : null
+  return {
+    Summary: str(g.Summary),
+    Prerequisites: steps(g.Prerequisites),
+    Connect: connect ? { Steps: steps(connect.Steps), Notes: strs(connect.Notes), More: str(connect.More) } : undefined,
+    Run: run ? {
+      Commands: steps(run.Commands), Notes: strs(run.Notes), More: str(run.More),
+      Options: Array.isArray(run.Options) ? objs(run.Options).filter((o) => str(o.Name)).map((o) => ({ Name: o.Name as string, Default: o.Default === undefined || o.Default === null ? undefined : String(o.Default), Text: str(o.Text) })) : undefined,
+    } : undefined,
+    AppOnly: app ? { Supported: typeof app.Supported === "boolean" ? app.Supported : undefined, Text: str(app.Text), Command: str(app.Command), More: str(app.More), OtherRoles: strs(app.OtherRoles) } : undefined,
+    Links: Array.isArray(g.Links) ? objs(g.Links).filter((l) => str(l.Url)).map((l) => ({ Text: str(l.Text) || (l.Url as string), Url: l.Url as string })) : undefined,
+  }
 }
 
 /** The values a test has for one of its Fields: a list, one value, or none. */

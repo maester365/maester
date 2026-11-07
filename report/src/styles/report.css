@@ -778,10 +778,10 @@ button.mt-nav { width: 100%; border: 0; background: none; font: inherit; font-si
 .mt-crumbs b { color: var(--mt-ink-2); font-weight: 500; }
 
 /* A pack's About and guide pages. */
-.mt-kv { display: grid; grid-template-columns: minmax(140px, max-content) 1fr; gap: 8px 18px; margin: 0; font-size: 14px; }
-.mt-kv dt { color: var(--mt-ink-3); }
-.mt-kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.mt-kv.flat { display: grid; grid-template-columns: minmax(140px, max-content) 1fr; gap: 8px 18px; margin: 0; font-size: 14px; }
+.mt-kv.flat dt { color: var(--mt-ink-3); }
+.mt-kv.flat dd { margin: 0; min-width: 0; overflow-wrap: anywhere; text-align: left; font-weight: 400; }
 .mt-guide-steps { margin: 0; padding-left: 20px; display: grid; gap: 14px; }
 .mt-guide-steps p { margin: 0 0 6px; }
 .mt-guide-notes { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--mt-ink-2); }
-@media (max-width: 640px) { .mt-kv { grid-template-columns: 1fr; gap: 2px; } .mt-kv dd { margin-bottom: 8px; } }
+@media (max-width: 640px) { .mt-kv.flat { grid-template-columns: 1fr; gap: 2px; } .mt-kv.flat dd { margin-bottom: 8px; } }
