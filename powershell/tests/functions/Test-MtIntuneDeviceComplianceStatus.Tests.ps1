@@ -243,6 +243,31 @@
             $instances.Count | Should -Be 0
             $script:SkippedBecause | Should -Be 'NotAuthorized'
         }
+
+        It 'skips the family as NotAuthorized when the baseline read throws 403' {
+            # The helper has two failure paths. The case above is the one where it returns $null;
+            # this is the one where it lets a terminating error through, which used to reach the
+            # engine as InstanceSourceFailed rather than the skip this source documents.
+            Mock -ModuleName Maester Get-MtSecurityBaseline {
+                $respuesta = [pscustomobject]@{ StatusCode = 403 }
+                $excepcion = [System.Exception]::new('Forbidden')
+                $excepcion | Add-Member -NotePropertyName Response -NotePropertyValue $respuesta -Force
+                throw $excepcion
+            }
+
+            $instances = @(Get-MtIntuneSecurityBaselineInstance)
+            $instances.Count | Should -Be 0
+            $script:SkippedBecause | Should -Be 'NotAuthorized'
+        }
+
+        It 'does not disguise a non-permission baseline failure as a skip' {
+            # Same reasoning as the MT.1253 guard above: anything that is not 401/403 is rethrown,
+            # so a defect in the retrieval surfaces as an error instead of a silent skip.
+            Mock -ModuleName Maester Get-MtSecurityBaseline { throw 'unexpected failure' }
+
+            { Get-MtIntuneSecurityBaselineInstance } | Should -Throw
+            $script:SkippedBecause | Should -BeNullOrEmpty
+        }
     }
 
     Context 'Get-MtSecurityBaseline' {

@@ -18,7 +18,22 @@
     [OutputType([pscustomobject])]
     param()
 
-    $baselines = Get-MtSecurityBaseline
+    # Only the retrieval is guarded, and only 401/403. The helper has two failure paths: it returns
+    # $null when the response comes back with no usable ids, which the check below already covered,
+    # and it lets a terminating error through, which did not reach that check and surfaced as
+    # InstanceSourceFailed instead of the skip this function documents. Anything that is not a
+    # permission problem is still left to surface, so a real defect is never reported as a skip.
+    # Same shape as MT.1253 in this pull request.
+    try {
+        $baselines = Get-MtSecurityBaseline
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+            return
+        }
+        throw
+    }
+
     if ($null -eq $baselines) {
         Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return
