@@ -1,5 +1,6 @@
 ﻿# Guards the encoding rule in website/docs/contributing.md: every PowerShell file (.ps1, .psm1, .psd1) is UTF-8 with
-# a byte order mark, and the tools that write PowerShell files keep to it. Markdown and JSON have no byte order mark.
+# a byte order mark, every Markdown file (including each test's Test.<ID>.md guide) is UTF-8 without one, and the
+# tools that write tests keep to it.
 # PSScriptAnalyzer's PSUseBOMForUnicodeEncodedFile only sees files that contain non-ASCII text, so this test checks
 # the bytes itself.
 BeforeAll {
@@ -36,13 +37,21 @@ BeforeAll {
     }
 }
 
-Describe 'PowerShell file encoding' {
+Describe 'File encoding' {
     It 'saves every tracked PowerShell file as UTF-8 with a byte order mark' {
         $files = @(git -C $script:RepoRoot ls-files '*.ps1' '*.psm1' '*.psd1')
         $files.Count | Should -BeGreaterThan 0
         $missing = @($files | Where-Object { -not (Test-Utf8Bom -Path (Join-Path $script:RepoRoot $_)) })
         $because = "these files need a byte order mark. Fix each one with: `$c = Get-Content <path> -Raw; Set-Content <path> -Value `$c -NoNewline -Encoding utf8BOM"
         $missing | Should -BeNullOrEmpty -Because $because
+    }
+
+    It 'saves every tracked Markdown file, including each test guide, as UTF-8 without a byte order mark' {
+        $files = @(git -C $script:RepoRoot ls-files '*.md' '*.mdx')
+        $files.Count | Should -BeGreaterThan 0
+        $withBom = @($files | Where-Object { Test-Utf8Bom -Path (Join-Path $script:RepoRoot $_) })
+        $because = "Markdown has no byte order mark. Fix each one with: `$c = Get-Content <path> -Raw; Set-Content <path> -Value `$c -NoNewline -Encoding utf8NoBOM"
+        $withBom | Should -BeNullOrEmpty -Because $because
     }
 
     It 'New-MtTest writes the test with a byte order mark and the guide without one' {

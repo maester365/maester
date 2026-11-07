@@ -530,14 +530,14 @@ $(New-AttributeText -Meta $meta -Indent '    ')
                 [System.IO.File]::WriteAllText($helperTarget, $text, [System.Text.UTF8Encoding]::new($true))
                 [System.IO.File]::WriteAllText($targetPs1, $newPs1, [System.Text.UTF8Encoding]::new($true))
                 $helperMd = [System.IO.Path]::ChangeExtension($helperTarget, '.md')
-                if (Test-Path $helperMd) { Copy-Item $helperMd $targetMd } else { [System.IO.File]::WriteAllText($targetMd, $mdText, [System.Text.UTF8Encoding]::new($true)) }
+                if (Test-Path $helperMd) { Copy-Item $helperMd $targetMd } else { [System.IO.File]::WriteAllText($targetMd, $mdText, [System.Text.UTF8Encoding]::new($false)) }
                 $copied = [System.IO.File]::ReadAllText($targetMd)
-                if ($copied -notmatch '<!--- Results --->') { [System.IO.File]::WriteAllText($targetMd, $copied.TrimEnd() + "`n`n<!--- Results --->`n%TestResult%`n", [System.Text.UTF8Encoding]::new($true)) }
+                if ($copied -notmatch '<!--- Results --->') { [System.IO.File]::WriteAllText($targetMd, $copied.TrimEnd() + "`n`n<!--- Results --->`n%TestResult%`n", [System.Text.UTF8Encoding]::new($false)) }
             } else {
                 & git -C $RepoRoot mv $functionFile $targetPs1
                 [System.IO.File]::WriteAllText($targetPs1, $newPs1, [System.Text.UTF8Encoding]::new($true))
                 if (Test-Path $sourceMd) { & git -C $RepoRoot mv $sourceMd $targetMd }
-                [System.IO.File]::WriteAllText($targetMd, $mdText, [System.Text.UTF8Encoding]::new($true))
+                [System.IO.File]::WriteAllText($targetMd, $mdText, [System.Text.UTF8Encoding]::new($false))
             }
             if (-not $wrapperEdits.ContainsKey($wrapperPath)) { $wrapperEdits[$wrapperPath] = [System.Collections.Generic.List[object]]::new() }
             $wrapperEdits[$wrapperPath].Add($it)

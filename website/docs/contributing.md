@@ -186,7 +186,7 @@ The publishable Maester module is produced by a build script that consolidates t
   wrote it. The repository's `.editorconfig` and `.vscode/settings.json` set it, and
   `powershell/tests/general/FileEncoding.Tests.ps1` checks every tracked file. A script or generator that writes a
   PowerShell file must write the BOM too (`-Encoding utf8BOM`, or `[System.Text.UTF8Encoding]::new($true)`).
-  Markdown and JSON files have no BOM.
+  Markdown (including each test's `Test.<ID>.md` guide) and JSON files have no BOM; the same test checks Markdown.
 - Use approved PowerShell verbs only. Run `Get-Verb` for the authoritative list.
 - Avoid trailing whitespace. End every file with one blank line (a single trailing newline).
 - Place comment-based help inside the function body (immediately after the opening brace), not above the `function` keyword.

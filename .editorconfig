@@ -10,3 +10,7 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+# Markdown, including each test's Test.<ID>.md guide, is UTF-8 without a byte order mark.
+[*.{md,mdx}]
+charset = utf-8
