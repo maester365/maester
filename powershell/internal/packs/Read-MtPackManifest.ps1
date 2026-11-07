@@ -16,6 +16,9 @@ function Read-MtPackManifest {
       the tests always come from Suites. Guide, a JSON file that says how to install, connect and run the
       pack, is also for listings; Maester checks only that it is a JSON object and that its screenshots are
       images inside the pack.
+    - Report.Logo names a mark the report draws in the pack's page header instead of its Code.
+    - Report.Navigation is the pack's menu in the report. A malformed entry is an error; a view or key this
+      Maester does not know, and a menu more than five levels deep, are warnings.
     - A module in Uses.Modules is pinned to one exact Version and saved by Maester (Install Maester, the
       default), or is the user's own install (Install User) that the pack runs in a child process (Process
       Child), never in Maester's: Maester then neither saves nor imports it, and it may name a MinimumVersion.
@@ -58,7 +61,7 @@ function Read-MtPackManifest {
 
     $topLevel = @('$schema', 'Id', 'Guid', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
-        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner', 'Guide')
+        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner', 'Guide', 'Report')
     $strictKeys = @{
         Uses        = @('Services', 'GraphScopes', 'TenantWrites', 'Network', 'Modules')
         Connector   = @('Service', 'Platform', 'DisplayName', 'File', 'Connect', 'Test', 'Disconnect', 'Describe', 'Renew', 'OptIn', 'Permissions', 'Environment')
@@ -223,6 +226,82 @@ function Read-MtPackManifest {
                 foreach ($shot in $shots) {
                     $shotPath = if ($shot -is [pscustomobject] -and $shot.Path -is [string]) { $shot.Path }
                     if (-not $shotPath -or -not (Test-MtPackRelativePath -Path $shotPath) -or $shotPath -notmatch '\.(png|jpe?g|webp)$') { & $fail 'Each Guide screenshot needs a Path to a .png, .jpg or .webp image inside the pack.' }
+                }
+            }
+        }
+    }
+
+    # Report.Navigation: the pack's menu in the report. Each entry is a row (Title) or a section heading (Section)
+    # that opens one of the report's built-in views; any entry can hold Items, to any depth. Nothing in it runs:
+    # the report draws only its own views. A view or key this Maester does not know is a warning, so a pack
+    # written for a newer report still loads; the report leaves that entry out.
+    if ($manifest.PSObject.Properties['Report']) {
+        $reportSection = $manifest.Report
+        if ($reportSection -isnot [pscustomobject]) { & $fail 'Report must be a JSON object.' }
+        else {
+            foreach ($p in $reportSection.PSObject.Properties) {
+                if ($p.Name -notin 'Navigation', 'Logo') { $warnings.Add("Report has the key '$($p.Name)', which this version of Maester does not know. The report ignores it.") }
+            }
+            # Report.Logo names a mark the report draws itself ('microsoft', or a product key such as 'entra'), so
+            # a pack never loads an image from elsewhere. A name the report does not know shows the pack's Code.
+            if ($reportSection.PSObject.Properties['Logo'] -and ($reportSection.Logo -isnot [string] -or $reportSection.Logo -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$')) {
+                & $fail "Report.Logo must be the name of a mark the report draws, in lowercase kebab-case, such as 'microsoft'."
+            }
+            if ($reportSection.PSObject.Properties['Navigation']) {
+                $navKeys = 'Id', 'Title', 'Section', 'View', 'Attachment', 'Expand', 'GroupBy', 'Result', 'Filter', 'Page', 'Items'
+                $navViews = 'pack', 'tests', 'plan', 'attachment', 'guide', 'about'
+                $isTextList = { param($value) $null -ne $value -and @($value | Where-Object { $_ -isnot [string] -or -not $_ }).Count -eq 0 }
+                $navDepth = @{ Deepest = 0 }
+                $walk = $null
+                $walk = {
+                    param($entries, $depth, $where)
+                    if ($entries -isnot [array]) { & $fail "$where must be a list."; return }
+                    foreach ($entry in $entries) {
+                        if ($entry -isnot [pscustomobject]) { & $fail "Each entry of $where must be a JSON object."; continue }
+                        foreach ($p in $entry.PSObject.Properties) {
+                            if ($p.Name -notin $navKeys) { $warnings.Add("An entry of $where has the key '$($p.Name)', which this version of Maester does not know. The report ignores it.") }
+                        }
+                        $title = if ($entry.PSObject.Properties['Title']) { $entry.Title }
+                        $section = if ($entry.PSObject.Properties['Section']) { $entry.Section }
+                        $name = if ($title) { $title } else { $section }
+                        if (($title -and $section) -or -not ($title -is [string] -or $section -is [string]) -or -not $name) {
+                            & $fail "Each entry of $where needs a Title (a row) or a Section (a heading), not both."; continue
+                        }
+                        $view = if ($entry.PSObject.Properties['View']) { $entry.View }
+                        $hasItems = $entry.PSObject.Properties['Items'] -and $null -ne $entry.Items
+                        if (-not $view -and -not $hasItems) { & $fail "The entry '$name' of $where needs a View or Items." }
+                        if ($view -and ($view -isnot [string] -or $view -notin $navViews)) {
+                            $warnings.Add("The entry '$name' of $where uses the view '$view', which this version of Maester does not know. The report leaves it out.")
+                        }
+                        if ($view -in 'plan', 'attachment' -and -not ($entry.PSObject.Properties['Attachment'] -and $entry.Attachment -is [string] -and $entry.Attachment)) {
+                            & $fail "The entry '$name' of $where uses the $view view and needs the Attachment name."
+                        }
+                        if ($view -eq 'guide' -and -not ($entry.PSObject.Properties['Page'] -and $entry.Page -is [string] -and $entry.Page)) {
+                            & $fail "The entry '$name' of $where uses the guide view and needs a Page."
+                        }
+                        $levels = 0
+                        foreach ($key in 'Expand', 'GroupBy') {
+                            if (-not $entry.PSObject.Properties[$key]) { continue }
+                            if (-not (& $isTextList $entry.$key)) { & $fail "$key of the entry '$name' of $where must be a list of names." }
+                            else { $levels += @($entry.$key).Count }
+                        }
+                        foreach ($key in 'Id', 'Result', 'Page', 'Attachment') {
+                            if ($entry.PSObject.Properties[$key] -and $entry.$key -isnot [string]) { & $fail "$key of the entry '$name' of $where must be text." }
+                        }
+                        if ($entry.PSObject.Properties['Filter']) {
+                            if ($entry.Filter -isnot [pscustomobject] -or @($entry.Filter.PSObject.Properties | Where-Object { -not (& $isTextList $_.Value) }).Count) {
+                                & $fail "Filter of the entry '$name' of $where must map field names to a value or a list of values."
+                            }
+                        }
+                        # A heading adds no level; a row, its expanded levels and its items each do.
+                        $here = if ($title) { $depth + 1 } else { $depth }
+                        if ($here + $levels -gt $navDepth.Deepest) { $navDepth.Deepest = $here + $levels }
+                        if ($hasItems) { & $walk $entry.Items ($here + $levels) "the Items of '$name'" }
+                    }
+                }
+                & $walk $reportSection.Navigation 0 'Report.Navigation'
+                if ($navDepth.Deepest -gt 5) {
+                    $warnings.Add("Report.Navigation is $($navDepth.Deepest) levels deep. Each level indents the menu and shortens its labels; five or fewer read best.")
                 }
             }
         }
