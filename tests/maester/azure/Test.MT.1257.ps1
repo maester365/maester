@@ -150,7 +150,9 @@ function Test-MtAzureDefenderForCloudRecommendation {
     if (-not $testResult) {
         $resources = @($recommendation.UnhealthyResourceList | Where-Object { $_ })
         if ($resources.Count -gt 0) {
-            $testResultMarkdown += "`nUnhealthy resources (up to ten shown): $($resources -join ', ')`n"
+            # "up to ten shown" does not tell the reader whether ten is all of them. The total does.
+            $etiquetaRecursos = if ([int]$recommendation.UnhealthyResourceTotal -gt $resources.Count) { "$($resources.Count) of $([int]$recommendation.UnhealthyResourceTotal)" } else { 'all' }
+            $testResultMarkdown += "`nUnhealthy resources ($etiquetaRecursos): $($resources -join ', ')`n"
         }
         if (-not [string]::IsNullOrWhiteSpace($recommendation.PortalUri)) {
             $testResultMarkdown += "`n[Open this recommendation in the Azure portal]($($recommendation.PortalUri))`n"

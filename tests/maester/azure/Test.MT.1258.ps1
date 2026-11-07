@@ -112,7 +112,12 @@ function Test-MtAzureDefenderForCloudAttackPath {
     $entry = @($path.EntryPointTypeList | Where-Object { $_ })
     if ($entry.Count -gt 0) { $testResultMarkdown += "| Entry point resource type | $($entry -join ', ') |`n" }
     $target = @($path.TargetList | Where-Object { $_ })
-    if ($target.Count -gt 0) { $testResultMarkdown += "| Target | $($target -join ', ') |`n" }
+    if ($target.Count -gt 0) {
+        # The list is capped server side, so say when it is a sample. Without this the reader
+        # cannot tell ten targets from ten of thirty-seven.
+        $etiquetaDestino = if ([int]$path.TargetTotal -gt $target.Count) { "Target ($($target.Count) of $([int]$path.TargetTotal))" } else { 'Target' }
+        $testResultMarkdown += "| $etiquetaDestino | $($target -join ', ') |`n"
+    }
     $targetType = @($path.TargetTypeList | Where-Object { $_ })
     if ($targetType.Count -gt 0) { $testResultMarkdown += "| Target resource type | $($targetType -join ', ') |`n" }
 

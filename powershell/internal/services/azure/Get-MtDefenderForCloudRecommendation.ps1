@@ -35,23 +35,36 @@
     $query = @'
 securityresources
 | where type == "microsoft.security/assessments"
+// Multicloud connectors surface AWS and GCP assessments in the same table, and their counts
+// would flow into an Azure test. Native Azure resources have no Source, so the empty string is
+// kept deliberately: filtering on Source == "Azure" alone would return nothing.
+| extend origen = tostring(properties.resourceDetails.Source)
+| where origen == "" or origen =~ "Azure"
 | extend estado = tostring(properties.status.code),
          causa = tostring(properties.status.cause),
          nombre = tostring(properties.displayName),
          severidad = tostring(properties.metadata.severity),
          riesgo = tostring(properties.risk.level),
          portal = tostring(properties.links.azurePortal)
+// A risk level is per resource, so a group holds several. any() picks one at random and could
+// report Low for a key that is Critical somewhere. Ranked and maxed, the group reports its worst.
+| extend rangoRiesgo = case(riesgo =~ "Critical", 4, riesgo =~ "High", 3, riesgo =~ "Medium", 2, riesgo =~ "Low", 1, 0)
 | summarize TotalCount = count(),
             UnhealthyCount = countif(estado == "Unhealthy"),
             HealthyCount = countif(estado == "Healthy"),
             NotApplicableCount = countif(estado == "NotApplicable"),
             ExemptCount = countif(causa == "Exempt"),
             UnhealthyResourceList = make_set_if(tostring(split(id, "/")[8]), estado == "Unhealthy", 10),
+            UnhealthyResourceTotal = dcountif(tostring(split(id, "/")[8]), estado == "Unhealthy"),
+            // any() is correct for these three: they belong to the assessment definition, so they
+            // are the same on every row of the group.
             DisplayName = any(nombre),
             Severity = any(severidad),
-            RiskLevel = any(riesgo),
-            PortalUri = any(portal)
+            PortalUri = any(portal),
+            RiskRank = max(rangoRiesgo)
     by AssessmentKey = name
+| extend RiskLevel = case(RiskRank == 4, "Critical", RiskRank == 3, "High", RiskRank == 2, "Medium", RiskRank == 1, "Low", "")
+| project-away RiskRank
 | sort by UnhealthyCount desc, AssessmentKey asc
 '@
 
@@ -73,6 +86,9 @@ securityresources
                 NotApplicableCount    = [int]($row.NotApplicableCount)
                 ExemptCount           = [int]($row.ExemptCount)
                 UnhealthyResourceList = @($row.UnhealthyResourceList)
+                # The list above is capped at 10, so the caller can say "10 of 37" instead of
+                # showing a subset as if it were the whole set.
+                UnhealthyResourceTotal = [int]($row.UnhealthyResourceTotal)
             })
     }
 

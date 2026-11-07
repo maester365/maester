@@ -57,16 +57,21 @@ securityresources
          tipoEntrada = tostring(properties.entryPoint.entityType),
          nombreDestino = tostring(properties.target.entityName),
          tipoDestino = tostring(properties.target.entityType)
+// A risk level is per occurrence, so a group holds several. any() picked one at random, and it
+// picked independently for the risk factors and the tactics, so the three could describe different
+// occurrences of the same attack path type. arg_max takes all three from the one that ranks worst.
+| extend rangoRiesgo = case(riesgo =~ "Critical", 4, riesgo =~ "High", 3, riesgo =~ "Medium", 2, riesgo =~ "Low", 1, 0)
 | summarize PathCount = count(),
             DisplayName = any(nombre),
-            RiskLevel = any(riesgo),
             Partial = any(parcial),
-            RiskFactorsJson = any(factores),
-            TacticsJson = any(tacticas),
             EntryPointTypeList = make_set(tipoEntrada, 10),
             TargetList = make_set(nombreDestino, 10),
-            TargetTypeList = make_set(tipoDestino, 10)
+            // make_set is capped, so the consumer needs to know when it is showing a subset.
+            TargetTotal = dcount(nombreDestino),
+            TargetTypeList = make_set(tipoDestino, 10),
+            (RiskRank, RiskLevel, RiskFactorsJson, TacticsJson) = arg_max(rangoRiesgo, riesgo, factores, tacticas)
     by AttackPathType = tostring(properties.attackPathType)
+| project-away RiskRank
 | sort by PathCount desc, AttackPathType asc
 '@
 
@@ -92,6 +97,8 @@ securityresources
                 TacticList         = ConvertFrom-MtJsonArray -Text ([string]$row.TacticsJson)
                 EntryPointTypeList = @($row.EntryPointTypeList | Where-Object { $_ })
                 TargetList         = @($row.TargetList | Where-Object { $_ })
+                # make_set is capped at 10; this is how many distinct targets there really are.
+                TargetTotal        = [int]($row.TargetTotal)
                 TargetTypeList     = @($row.TargetTypeList | Where-Object { $_ })
             })
     }

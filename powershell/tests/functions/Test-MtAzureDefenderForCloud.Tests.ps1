@@ -183,6 +183,54 @@
         }
     }
 
+    Context 'What the queries ask Azure for' {
+        # These three aggregations happen server side, so the behaviour lives in the query text
+        # rather than in PowerShell. Each mock answers the way Azure would for a query that does
+        # ask, and the way it would for one that does not, so the case fails against the previous
+        # query instead of asserting on a string.
+
+        It 'takes the worst risk level of a group, not an arbitrary one' {
+            # `any(riesgo)` is non-deterministic by contract, so a key that is Critical on one
+            # resource could be reported Low. Ranked and maxed, the group reports its worst.
+            Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
+                if ($Query -match 'max\(rangoRiesgo\)') {
+                    return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'Critical'; PortalUri = ''; TotalCount = 2; UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
+                }
+                return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'Low'; PortalUri = ''; TotalCount = 2; UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
+            }
+
+            $fila = @(Get-MtDefenderForCloudRecommendation)[0]
+            $fila.RiskLevel | Should -Be 'Critical'
+        }
+
+        It 'leaves AWS and GCP assessments out of an Azure test' {
+            # Multicloud connectors surface their assessments in the same table. The empty Source
+            # is kept on purpose: native Azure resources have none, so filtering on "Azure" alone
+            # would return nothing at all.
+            Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
+                $conFiltro = $Query -match 'origen == "" or origen =~ "Azure"'
+                return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'High'; PortalUri = ''; TotalCount = $(if ($conFiltro) { 2 } else { 5 }); UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
+            }
+
+            $fila = @(Get-MtDefenderForCloudRecommendation)[0]
+            $fila.TotalCount | Should -Be 2 -Because 'the three AWS and GCP rows must not be counted'
+        }
+
+        It 'reports how many distinct targets there are, not just the ten it shows' {
+            # make_set is capped at 10 while PathCount counts everything, so without the total the
+            # reader cannot tell a complete list from a truncated one.
+            Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
+                if ($Query -match 'StandardCount') { return @([pscustomobject]@{ StandardCount = 1 }) }
+                return @([pscustomobject]@{ AttackPathType = 'tipo-1'; DisplayName = 'Un camino'; RiskLevel = 'High'; Partial = 'false'; RiskFactorsJson = '[]'; TacticsJson = '[]'; PathCount = 37; EntryPointTypeList = @('vm'); TargetList = @('t1','t2'); TargetTotal = 37; TargetTypeList = @('storage') })
+            }
+
+            # The function returns a wrapper with CspmEnabled and PathList, not the rows.
+            $fila = @((Get-MtDefenderForCloudAttackPath).PathList)[0]
+            $fila.TargetTotal | Should -Be 37
+            @($fila.TargetList).Count | Should -Be 2 -Because 'the list is a sample and the total says so'
+        }
+    }
+
     Context 'Get-MtDefenderForCloudAttackPath' {
         It 'reads CspmEnabled from the CloudPosture pricing tier' {
             Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
