@@ -571,3 +571,7 @@ website/src/data/sponsors.json
 website/public/readme/
 website/docs/commands/*.mdx
 !website/docs/commands/readme.mdx
+website/docs/defenders-path/*.md
+
+# Learn mirror clones and the step tooling's index (build/steps/Update-MtLearnMirror.ps1)
+build/steps/.cache/

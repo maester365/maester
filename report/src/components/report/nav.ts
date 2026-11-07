@@ -107,7 +107,7 @@ export function buildNav(model: Model, extra: NavExtras): NavModel {
 
   // The pages that cover the whole run.
   const summary: NavItem[] = [{ key: "/", title: focused ? (model.rows.length === 1 ? "Result" : "Results") : "Overview", path: "/", icon: "home" }]
-  if (model.failing.length >= 2) summary.push({ key: "/plan", title: "Action plan", path: "/plan", icon: "fix", count: model.failing.length, bad: true })
+  if (model.failing.length >= 2 || (!focused && model.path)) summary.push({ key: "/plan", title: "Action plan", path: "/plan", icon: "fix", count: model.failing.length, bad: true })
   if (!focused && model.previous && model.changes.newlyFailing.length + model.changes.fixed.length > 0) {
     summary.push({ key: "/changes", title: "Changes since last run", path: "/changes", icon: "history", count: model.changes.newlyFailing.length, bad: true })
   }

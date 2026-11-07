@@ -22,6 +22,7 @@ function Test-MtCheckEidscaAT01 {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Step = 'entra.temporary-access-pass',
         Service = 'Graph',
         Author = 'Cloud-Architekt'
     )]

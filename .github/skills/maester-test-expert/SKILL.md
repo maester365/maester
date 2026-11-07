@@ -190,6 +190,7 @@ in [Choosing the attribute values](#choosing-the-attribute-values).
 | `ImplementationCost` | string | `Low`, `Medium`, `High` | Yes, unless `Severity` is `Info` | Leave it out of an `Info` check. |
 | `Mitre` | string[] | ATT&CK technique IDs (`T1110`, `T1110.003`), or the single value `None` | Yes | At most five. Never a technique beside one of its own sub-techniques. |
 | `Control` | string[] | `<framework-key>:<requirement-id>` | CIS, CISA and ASD checks | The requirements the check implements or supports. A CIS check sets `Control = 'cis-m365:5.1.5.1'`, a CISA check `Control = 'cisa-scuba:MS.AAD.3.1'`, an ASD check `Control = 'essential-eight:ISM-1504'`; any other check may name the same requirements. The first one that a framework file knows becomes the `Benchmark` of the result. For a shipped framework the requirement must exist in its file. |
+| `Step` | string[] | Step IDs `<product>.<name>` from `powershell/assets/steps` | No | The steps of the defender's path the check verifies, at most three. See [Steps of the defender's path](#steps-of-the-defenders-path-step). |
 | `Service` | string[] | `Graph`, `Azure`, `ExchangeOnline`, `SecurityCompliance`, `SharePointOnline`, `Teams`, `Dataverse`, `AzureDevOps`, `GitHub`, `ActiveDirectory`, or `None` | Yes | All listed must be connected. Registry: `powershell/assets/MaesterServiceRegistry.psd1`. |
 | `License` | string[] | Tokens from `powershell/assets/MaesterLicenseTable.psd1`; `A&B` = both | No | Tenant needs any one element. |
 | `Permission` | string[] | `<Service>:<Kind>:<Name>`; `\|` joins alternatives | No | The permissions the check needs, for example `'Graph:Scope:Policy.Read.All'`. Every element is needed; inside an element any one alternative is enough, least privileged first. The service must be in `Service`, the kind one the service registry lists for it. Recorded; not enforced in 3.0. See "Permission" in `website/docs/writing-tests/index.mdx`. |
@@ -410,6 +411,23 @@ only when nothing applies. It is the only way a check is mapped to a framework. 
 
 The first value that names a requirement in a framework file becomes the `Benchmark` of the result, so the order
 matters. An inventory count, or a health, licensing or tidiness check, usually lists nothing.
+
+### Steps of the defender's path (`Step`)
+
+`Step` names the steps of the defender's path a check verifies: one change or one tenant state from the step
+catalogue (`powershell/assets/steps/<product>.json`), such as `entra.ca-require-compliant-device`. The catalogue
+says what has to be done before each step, citing Microsoft Learn. Look for a step whenever a check is about a
+change that Learn says needs something else in place first.
+
+- Name a step only when a tenant set up the way the step's Learn sources describe passes the check. A check that
+  rejects a control Learn now recommends names no step until it is fixed.
+- Checks with different definitions of done name different steps, even when they read the same setting. Checks in
+  different suites that test the same thing name the same step.
+- At most three. A built-in check names only steps that are in the catalogue; add a new step there, in Maester's own
+  words with a Learn URL without a locale, `Reviewed`, and `Unchecked` or `Measure` where they apply, in the same pull
+  request.
+- Rules and the catalogue format: "Step" in `website/docs/writing-tests/index.mdx` and the Step section of the
+  attribute rubric. `Get-MtTest -Step <id>` lists the checks that already name a step.
 
 ### A requirement another suite already checks (shims)
 

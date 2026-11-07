@@ -17,8 +17,8 @@
     Each upstream check becomes a Maester 3.0 native test (design sections 3 and 14):
     tests/orca/Test.ORCA.<n>.ps1 with one [MaesterTest] function, and tests/orca/Test.ORCA.<n>.md.
     Maester metadata that ORCA does not carry (severity, author, contributors and the classification
-    attributes RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost and Mitre) is
-    read from build/orca/orca-test-metadata.json. Edit that file, never the generated tests.
+    attributes RelatedProduct, Feature, Area, ResourceType, UserImpact, ImplementationCost, Mitre, Control
+    and Step) is read from build/orca/orca-test-metadata.json. Edit that file, never the generated tests.
 
 .PARAMETER Offline
     Regenerates only the native tests from the committed check files. Nothing is downloaded.
@@ -352,6 +352,7 @@ foreach ($check in $checks) {
     }
     if ($meta.Mitre) { $attribute.Add("Mitre = $(Format-OrcaList @($meta.Mitre))") }
     if ($meta.Control) { $attribute.Add("Control = $(Format-OrcaList @($meta.Control))") }
+    if ($meta.Step) { $attribute.Add("Step = $(Format-OrcaList @($meta.Step))") }
     $attribute.Add("Service = $(Format-OrcaList $services)")
     # Defender for Office 365 Plan 1 or 2. ORCA detects MDO itself and reports 'not completed' without it.
     if ($check.Services -eq 'MDO') { $attribute.Add("License = 'ATP_ENTERPRISE'") }

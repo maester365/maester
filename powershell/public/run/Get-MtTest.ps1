@@ -31,6 +31,10 @@ function Get-MtTest {
     .PARAMETER Suite
     Only tests of these suites, for example Maester, CISA or AD.
 
+    .PARAMETER Step
+    Only tests that verify these steps of the defender's path, for example entra.ca-require-compliant-device.
+    '*' wildcards are allowed (intune.*). A test matches when any of the steps in its Step attribute does.
+
     .PARAMETER Path
     A Test.<ID>.ps1 file or a folder of them to validate.
 
@@ -44,6 +48,11 @@ function Get-MtTest {
     Get-MtTest -Path ./Custom | Where-Object { -not $_.IsValid } | Select-Object -ExpandProperty Errors
 
     Shows every problem in the custom tests.
+
+    .EXAMPLE
+    Get-MtTest -Step 'intune.*' | Format-Table Id, Title, Step
+
+    Lists the tests that verify a step of the defender's path in Intune.
 
     .LINK
     https://maester.dev/docs/commands/Get-MtTest
@@ -73,6 +82,9 @@ function Get-MtTest {
         [string[]] $Suite,
 
         [Parameter()]
+        [string[]] $Step,
+
+        [Parameter()]
         [string] $Path
     )
 
@@ -85,7 +97,7 @@ function Get-MtTest {
         @(Get-MtTestCatalog)
     }
     # The typed selectors, with the same matching as Invoke-Maester.
-    $selection = Resolve-MtSelection -RunConfig ([pscustomobject]@{ Selection = [pscustomobject]@{} }) -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite
+    $selection = Resolve-MtSelection -RunConfig ([pscustomobject]@{ Selection = [pscustomobject]@{} }) -Product $Product -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Step $Step
     $selectorInUse = Test-MtSelectorInUse -Selection $selection
     foreach ($t in $tests) {
         if ($Id -and -not (Test-MtIdMatch -Id $t.Id -Pattern $Id)) { continue }
@@ -94,7 +106,7 @@ function Get-MtTest {
             $selectionTags = Get-MtSelectionTag -Test $t
             if (-not (@($selectionTags.Own) + @($selectionTags.Legacy) | Where-Object { $tg = $_; $Tag | Where-Object { $tg -like $_ } })) { continue }
         }
-        if ($selectorInUse -and (Test-MtSelectorMatch -Selection $selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $t.Severity -Suite $t.Suite)) { continue }
+        if ($selectorInUse -and (Test-MtSelectorMatch -Selection $selection -Product (@($t.Product) + @($t.RelatedProduct)) -Feature $t.Feature -Area $t.Area -Severity $t.Severity -Suite $t.Suite -Step @($t.Step))) { continue }
         $copy = [ordered]@{}
         foreach ($p in $t.PSObject.Properties) { $copy[$p.Name] = $p.Value }
         $copy.IsValid = -not ($t.Errors -and $t.Errors.Count -gt 0)

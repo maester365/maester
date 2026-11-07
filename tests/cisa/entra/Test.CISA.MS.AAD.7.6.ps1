@@ -26,6 +26,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1098.003', 'T1548.005'),
         Control = 'cisa-scuba:MS.AAD.7.6',
+        Step = 'entra.pim-approval-global-admin',
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',

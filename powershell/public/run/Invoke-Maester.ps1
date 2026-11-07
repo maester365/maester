@@ -199,6 +199,17 @@
         # Only run the tests of these suites, for example Maester, CISA, CIS, ASD, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
 
+        # Only run the tests that verify these steps of the defender's path, for example
+        # entra.ca-require-compliant-device. '*' wildcards are allowed (intune.*). A test matches when any of its steps
+        # does. Combines with the other selectors like -Feature. Get-MtTest -Step lists the tests a step has.
+        [string[]] $Step,
+
+        # Also run the tests that verify the prerequisites, at any depth, of the steps the selected tests name, so
+        # that Invoke-Maester -TestId MT.1001 -IncludePrerequisites checks everything MT.1001 depends on. Applied after
+        # the other selectors; the exclusions still apply. Preview and long-running prerequisite tests run too, except
+        # the Zero Trust Assessment family, which still needs -Suite ZTA or -IncludeLongRunning.
+        [switch] $IncludePrerequisites,
+
         # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
         # '*' wildcards are allowed. An installed pack runs only when it is named here (or turned on with
         # "Enabled": true in the config), so installing a pack never adds its tests to every run. A pack named
@@ -534,11 +545,11 @@
 
         $selection = Resolve-MtSelection -RunConfig $runConfig -Tag $Tag -ExcludeTag $ExcludeTag -TestId $TestId -ExcludeTestId $ExcludeTestId `
             -Product $Product -ExcludeProduct $ExcludeProduct -Feature $Feature -Area $Area -Severity $Severity -Suite $Suite -Pack $Pack `
-            -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning
+            -Step $Step -IncludePreview:$IncludePreview -IncludeLongRunning:$IncludeLongRunning -IncludePrerequisites:$IncludePrerequisites
         if ($SkipBuiltIn) { $selection.BuiltIn = 'None' }
         # The selectors live in $selection from here on. A test runs in a child scope of this function, so a
         # test that reads a $Severity or $Product it never set would otherwise see the value of the parameter.
-        $Product = $ExcludeProduct = $Feature = $Area = $Severity = $Suite = $Pack = $null
+        $Product = $ExcludeProduct = $Feature = $Area = $Severity = $Suite = $Pack = $Step = $null
         $Tag = $selection.Tag
         $ExcludeTag = $selection.ExcludeTag
         $IncludePreview = [switch]$selection.IncludePreview
@@ -870,6 +881,15 @@
         if ($nativeTests.Count -gt 0) {
             $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `
                     -IncludeTag @($pesterFilter.Tag) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
+            # -IncludePrerequisites, applied last: the tests of every prerequisite of the steps the selected tests name.
+            if ($selection.IncludePrerequisites) {
+                $selectedSteps = @($nativePlan | Where-Object { $_.Disposition -ne 'NotRun' -or $_.ReasonCode -eq 'DryRun' } | ForEach-Object { $_.Test.Step } | Where-Object { $_ } | Select-Object -Unique)
+                $prerequisiteSteps = @(Get-MtStepPrerequisite -Step $selectedSteps)
+                if ($prerequisiteSteps.Count -gt 0) {
+                    $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `
+                            -IncludeTag @($pesterFilter.Tag) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -PrerequisiteStep $prerequisiteSteps -DryRun:$DryRun)
+                }
+            }
         }
 
         # The services of this run: one line in the dashboard header, and the list in the scrollback.
@@ -937,6 +957,10 @@
             Superseded      = $superseded
             TenantContext   = $tenantContext
             PackSet         = @($packSet)
+            # The defender's path: every native test the engine knows (each step lists its tests from them) and the
+            # measures read after the tests.
+            NativeTests     = @($nativeTests)
+            Measures        = @{}
         }
 
         Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
@@ -956,6 +980,15 @@
                 if ($collectDashboardMessages) { $PSDefaultParameterValues = $defaultParameterValues }
                 $nativeRows = @(Invoke-MtNativePlan -Plan $nativePlan -RunConfig $runConfig -Selection $selection -Verbosity $Verbosity)
                 if ($collectDashboardMessages) { $PSDefaultParameterValues = $collectingDefaults }
+                # The measures of the defender's path steps in scope, after the tests and while affected objects are
+                # collected, so that their readers can add object facts. Never fail the run over them.
+                if (-not $DryRun) {
+                    try {
+                        $runContext.Measures = Invoke-MtStepMeasure -InputObject $nativeRows -TenantContext $tenantContext -Disabled:(-not (Get-MtMeasureSetting -RunConfig $runConfig).Enabled)
+                    } catch {
+                        Write-Verbose "The measures of the defender's path could not be read: $($_.Exception.Message)"
+                    }
+                }
             }
             $nativeTimer.Stop()
             $pesterConfig = $null

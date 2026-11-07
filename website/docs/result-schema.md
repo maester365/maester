@@ -1,6 +1,6 @@
 ---
 title: Result schema
-description: Reference for the Maester 3.0 result JSON (schema 2.1), the NUnit and JUnit XML files, and merging the results of a run split across processes.
+description: Reference for the Maester 3.0 result JSON (schema 2.2), the NUnit and JUnit XML files, and merging the results of a run split across processes.
 sidebar:
   label: Result schema
 ---
@@ -9,8 +9,9 @@ sidebar:
 
 `Invoke-Maester -PassThru` returns the result object, and `-OutputFolder` or `-OutputJsonFile` writes the same
 object as JSON. Maester 3.0 keeps the 2.x shape: every 2.x field is still there with the same name, and the new
-fields are additions. The result says which shape it has with `SchemaVersion = "2.1"`, meaning "the 2.x shape
-plus the additions on this page". A reader written for 2.x keeps working.
+fields are additions. The result says which shape it has with `SchemaVersion = "2.2"`, meaning "the 2.x shape
+plus the additions on this page". A reader written for 2.x keeps working. Schema 2.2 adds `Step` on each row and
+the defender's path (`Steps` and `Goals`); everything 2.1 has is unchanged.
 
 Two 2.x fields have other values for the tests that ship with Maester, because those tests are now described by
 typed attributes instead of a category and tags: `Block` is the name of the test's product, and `Tag` no longer
@@ -29,7 +30,7 @@ Added in 2.1:
 
 | Field | Type | Content |
 | --- | --- | --- |
-| `SchemaVersion` | string | `"2.1"`. |
+| `SchemaVersion` | string | `"2.2"` (`"2.1"` before Maester 3.1). |
 | `CatalogVersion` | string | The version of the built-in test catalog, equal to the module version. Results are comparable when this matches. |
 | `TenantContext` | object | The facts the run used to decide which tests apply (below). |
 | `Taxonomy` | object | The display names of the product, feature, area and resource type keys and of the ATT&CK techniques that the rows use (below). |
@@ -39,6 +40,13 @@ Added in 2.1:
 | `Packs` | array | The [Maester Packs](./packs/index.md) of the run, including packs that could not run (below). Only present when the run had packs. |
 | `Previous` | object | The results of the last run on the same tenant in the output folder, so a report can show what changed (below). Only present when `Invoke-Maester` found one. |
 | `Partitions` | array | Only in a result merged with `Merge-MtMaesterResult -SameRun` (see [Splitting a run](#splitting-a-run-across-processes)). |
+
+Added in 2.2:
+
+| Field | Type | Content |
+| --- | --- | --- |
+| `Steps` | array | The defender's path: each step in scope with its status, readiness and place in the order (below). Only present when a row that ran names a step. |
+| `Goals` | array | The goals that have a step in scope, with their progress (below). Present with `Steps`. |
 
 ### TenantContext
 
@@ -51,6 +59,7 @@ Added in 2.1:
 | `Services` | One property per service the run's tests need, `true` when connected. |
 | `Licenses` | `State` (`Known` or `Unknown`), `ServicePlanNames`, `ServicePlanIds`, `SkuIds`, `Source` (`Detected`, `Config` or `Unknown`). |
 | `AuthType`, `Account`, `Scopes` | From the Graph connection. |
+| `HybridIdentity` | `true` when the organization syncs identities from on-premises (`onPremisesSyncEnabled`), `false` when not, `null` when it could not be read. The `hybrid-identity` condition of the defender's path reads it. |
 
 ### Taxonomy
 
@@ -135,6 +144,58 @@ newest first, read from the start of each file, so the report can draw a trend. 
 `Merge-MtMaesterResult -SameRun` has no `Previous`, because a part's previous file may be another part of an
 earlier run; its `Frameworks` and `Packs` cover every part.
 
+When a step of the defender's path is `NotChecked`, `Previous` also has `LastKnown`: for each test of those steps,
+the newest earlier run that ran it, read only from the files `History` lists.
+
+```json
+"LastKnown": { "MT.1005": { "Result": "Passed", "ReasonCode": null, "ExecutedAt": "2026-10-20T09:00:00.0000000+11:00", "File": "TestResults-2026-10-20-090000.json" } }
+```
+
+### Steps and Goals
+
+The defender's path is the order a defender works in: what has to be in place before a fix works, and whether
+the tenant is ready for it. A test names the steps it verifies with its `Step` attribute, and the step catalogue
+that ships with Maester (`powershell/assets/steps/`) holds how steps relate and the Microsoft Learn pages behind
+them. A step is in scope when a row that ran names it, or when it is a prerequisite, at any depth, of such a step.
+The report, the console, CSV and Markdown read these lists as written.
+
+```json
+"Steps": [
+  {
+    "Id": "intune.devices-compliant", "Title": "Devices that sign in are compliant", "Summary": "...", "Product": "intune",
+    "Goals": ["compliant-devices"], "Status": "NotDone", "Reason": null, "Readiness": "Blocked",
+    "BlockedBy": ["intune.compliance-policies"], "Unconfirmed": [], "Unlocks": ["intune.mark-unassigned-noncompliant"], "Rank": 4,
+    "Tests": [],
+    "Earlier": null,
+    "Measure": { "Key": "devices-compliant", "Count": 412, "Total": 580, "Share": 71, "MinimumShare": 95, "Met": false,
+                 "ReadAt": "2026-11-06T08:00:00Z", "Caveat": "...", "ObjectCount": 168,
+                 "Objects": [{ "Type": "Device", "Id": "...", "DisplayName": "..." }], "ReasonCode": null },
+    "Requires": ["intune.compliance-policies"], "RequiresOneOf": [], "RecommendedFirst": ["intune.automatic-enrollment"],
+    "Conflicts": [], "OnlyWhen": [], "Rollout": [], "Sources": [{ "Url": "...", "Mirror": "...", "Maintainer": null, "Note": "...", "Reviewed": "2026-11-05" }]
+  }
+],
+"Goals": [
+  { "Id": "compliant-devices", "Title": "Require compliant devices", "Summary": "...", "Step": "entra.ca-require-compliant-device",
+    "Steps": ["entra.emergency-access-accounts", "..."], "Done": 3, "Applicable": 7, "Unknown": 1, "NotChecked": 2, "Status": "InProgress" }
+]
+```
+
+| Field | Content |
+| --- | --- |
+| `Status` | `Done`, `NotDone`, `Unknown`, `NotChecked` or `NotApplicable`. `NotApplicable` when an `OnlyWhen` condition is false or every test that ran was skipped as `NotApplicable`; `NotDone` when a test failed or the measure is below its threshold; `Unknown` when nothing failed but a test ended as Investigate, Error or Skipped, the measure could not be read, or a condition could not be read; `Done` when every test that ran passed and the measure met its threshold; `NotChecked` when no test ran and no measure was read. |
+| `Reason` | Why a step is `NotApplicable` (`ConditionNotMet`, `TestsNotApplicable`), `Unknown` (`ConditionUnknown`, or the first reason code of the tests or the measure, or `Investigate`) or `NotChecked` (`NotSelected` when it has tests, `MeasureOff` when the run config turned its measure off, `NoCheck` when it has neither). `null` otherwise. |
+| `Readiness` | For a step that is `NotDone`, `Unknown` or `NotChecked`: `Blocked` (a required step is `NotDone`, every step of a "one of" group is `NotDone`, or a conflicting step is `Done`), `Unconfirmed` (not blocked, but a prerequisite is `Unknown` or `NotChecked`) or `Ready`. `null` for the other steps. |
+| `BlockedBy`, `Unconfirmed` | The steps that block it, and the prerequisites still to check. |
+| `Unlocks` | The steps in scope that depend on it directly and are not yet done. |
+| `Rank` | The order every output lists steps in: Ready, Unconfirmed, Blocked, then Done and Not applicable; within each, prerequisites first, then by the urgency of the failed tests it holds up, then by ID. |
+| `Tests` | Every test Maester knows that names the step, `{ Id, Result, ReasonCode }`. A test with no row in this result has `Result` `NotRun` and `ReasonCode` `NotInRun`. |
+| `Earlier` | For a `NotChecked` step that an earlier run checked: `{ Status, ExecutedAt, File }`, from `Previous.LastKnown`. Never counted in this run's status. |
+| `Measure` | For a step that is a state of the tenant: the figure read from Graph after the tests. `Share` is the whole percentage, rounded down; `Met` compares `Count` and `Total` with `MinimumShare` exactly. `Objects` holds up to 100 of the `ObjectCount` objects that fall short; they are also on the Affected objects page, with `Measure` among their sources. `ReasonCode` says why the figure could not be read: `ServiceNotConnected`, `LicenseNotFound`, `PermissionNotGranted` (the Graph connection lacks a permission it needs), `MeasureError` (the reader failed), or `MeasureOff` (the run config turned measures off). |
+| Goal `Steps` | The goal's steps that are in scope, prerequisites first. `Done` and `Applicable` count them, leaving out those that are `NotApplicable`; `Unknown` and `NotChecked` count those. `Status` is `Done`, `NotStarted`, `InProgress`, or `NotApplicable` when no step applies. |
+
+A measure is not a test: it has no row and no effect on counts, pass rates or frameworks. `Merge-MtMaesterResult
+-SameRun` builds `Steps` and `Goals` again from the merged rows and the measures the parts read.
+
 ### MaesterConfig
 
 `MaesterConfig` is the effective run configuration after every layer was merged (see
@@ -204,6 +265,7 @@ Added in 2.1:
 | `Service` | array of strings | The services the test needs, by their names in the service registry. |
 | `License` | array of strings | The service plans the test needs; the tenant needs any one. |
 | `Permission` | array of strings | The permissions the test declares, each written `<Service>:<Kind>:<Name>`. The test needs every element; `\|` inside an element joins alternatives, any one of which is enough. Recorded; not enforced. |
+| `Step` | array of strings | The steps of the defender's path the test verifies (2.2). `[]` when it names none. |
 | `Benchmark` | object | The requirement of a published benchmark that the test implements: the first value of its `Control` attribute that a framework file knows. `null` when there is none. See [Benchmark](#benchmark). |
 | `Format` | string | `Native` or `Pester`. |
 | `ReasonCode` | string | Why the test did not run or did not produce a verdict. Empty for `Passed`, `Failed` and `Investigate`. See [Applicability and reason codes](./configuration/applicability.md#reason-codes). |

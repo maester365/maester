@@ -39,7 +39,7 @@ BeforeAll {
     # The attributes that say what a check is about, how urgent it is and where it runs. A shim declares the
     # same values as the test it calls; its own are Id, Title, Control, Author and Contributor.
     $script:sameAttributes = @('Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
-        'ImplementationCost', 'Mitre', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform', 'Lifecycle',
+        'ImplementationCost', 'Mitre', 'Step', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform', 'Lifecycle',
         'LongRunning', 'Exclusive')
 }
 

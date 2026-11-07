@@ -6,6 +6,7 @@
 import { readGuide, readNavigation, type NavEntry, type PackGuide } from "./packNav"
 import { runSubject, scrubPlaceholders, type Subject } from "./runSubject"
 import { getReportAttachments, type ReportAttachment } from "@/lib/reportAttachments"
+import { readDefendersPath, type DefendersPath } from "@/lib/defendersPath"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Raw = Record<string, any>
@@ -124,6 +125,8 @@ export interface Row {
   Package: Raw | null
   Fields: Record<string, string | string[]> | null
   ShimOf: string | null
+  // The defender's path steps the test verifies (empty when it names none).
+  Step: string[]
   Parameters: { Name: string; Value: unknown; Source?: string }[]
   Description: string
   Detail: string
@@ -210,6 +213,7 @@ function normalize(t: Raw): Row {
     Package: t.Package && t.Package.Id ? t.Package : null,
     Fields: t.Fields && typeof t.Fields === "object" ? t.Fields : null,
     ShimOf: t.ShimOf ? text(t.ShimOf) : null,
+    Step: list(t.Step),
     Parameters: Array.isArray(t.Parameters) ? t.Parameters : [],
     Description: text(detail.TestDescription),
     Detail: text(detail.TestResult),
@@ -300,6 +304,8 @@ export interface Model {
   changes: { newlyFailing: Row[]; fixed: Row[]; added: Row[] }
   attachments: ReportAttachment[]
   hasAttributes: boolean
+  // The defender's path: the result's Steps and Goals, or null when it has none (lib/defendersPath.ts).
+  path: DefendersPath | null
   /** The tenant or Active Directory domain the run read, or null for a run of local tests (lib/runSubject.ts). */
   subject: Subject
   /** Which of the attributes that rank failures any test declares: without them, the report leaves out what they rank. */
@@ -410,6 +416,7 @@ export function buildModel(result: Raw): Model {
     changes,
     attachments: getReportAttachments(result),
     hasAttributes,
+    path: readDefendersPath(result),
     subject: runSubject(result),
     rated: {
       severity: rows.some((t) => SEVERITIES.includes(t.Severity)),

@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maester.dev/schemas/steps.schema.json",
+  "title": "Maester step catalogue",
+  "description": "A file of the defender's path catalogue: goals.json, or <product-key>.json with the steps of one product. See docs/proposals/defenders-path.md, section 4.",
+  "type": "object",
+  "oneOf": [
+    { "required": ["Steps"] },
+    { "required": ["Goals"] }
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "Product": {
+      "description": "The taxonomy product key of every step in the file. The file is named after it.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "Steps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "Goals": {
+      "description": "The goals, in the order the report shows them.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/goal" }
+    }
+  },
+  "dependentRequired": { "Steps": ["Product"] },
+  "additionalProperties": false,
+  "$defs": {
+    "stepId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*\\.[a-z0-9][a-z0-9-]*$",
+      "maxLength": 80
+    },
+    "stepIds": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/stepId" },
+      "uniqueItems": true
+    },
+    "step": {
+      "type": "object",
+      "required": ["Id", "Title", "Summary", "Sources"],
+      "properties": {
+        "Id": {
+          "description": "<product-key>.<name>. Stable once shipped, like a test ID.",
+          "$ref": "#/$defs/stepId"
+        },
+        "Title": {
+          "description": "Imperative for a change, a statement for a tenant state. One line.",
+          "type": "string",
+          "pattern": "^[^\\r\\n]+$",
+          "maxLength": 100
+        },
+        "Summary": {
+          "description": "One sentence on what changes for users or the tenant.",
+          "type": "string",
+          "pattern": "^[^\\r\\n]+$",
+          "maxLength": 200
+        },
+        "Requires": {
+          "description": "Steps that must be done first, or the change fails or locks users out.",
+          "$ref": "#/$defs/stepIds"
+        },
+        "RequiresOneOf": {
+          "description": "Groups of at least two steps. Any one step of a group is enough.",
+          "type": "array",
+          "items": { "allOf": [{ "$ref": "#/$defs/stepIds" }, { "minItems": 2 }] }
+        },
+        "RecommendedFirst": {
+          "description": "Steps that make this one safer or more useful. They never block.",
+          "$ref": "#/$defs/stepIds"
+        },
+        "Conflicts": {
+          "description": "Steps that must be off before this one can be on.",
+          "$ref": "#/$defs/stepIds"
+        },
+        "OnlyWhen": {
+          "description": "Conditions that must all hold, or the step is Not applicable: hybrid-identity, or license:<service plan>.",
+          "type": "array",
+          "items": { "type": "string", "pattern": "^(hybrid-identity|license:[A-Za-z0-9_\\-]+(&[A-Za-z0-9_\\-]+)*)$" },
+          "uniqueItems": true
+        },
+        "Rollout": {
+          "description": "Ordered sentences on how to switch the step on safely.",
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[^\\r\\n]+$", "maxLength": 200 }
+        },
+        "Sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/source" }
+        },
+        "Measure": {
+          "description": "The figure from the measure registry (powershell/assets/MaesterMeasures.psd1) that decides whether a step that is a state of the tenant is done.",
+          "type": "object",
+          "required": ["Key", "MinimumShare"],
+          "properties": {
+            "Key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+            "MinimumShare": { "description": "The share, in percent, at which the step is done.", "type": "integer", "minimum": 1, "maximum": 100 }
+          },
+          "additionalProperties": false
+        },
+        "Unchecked": {
+          "description": "Why no test or measure verifies the step yet. Required when no built-in test names the step and it has no Measure.",
+          "type": "string",
+          "pattern": "^[^\\r\\n]+$",
+          "maxLength": 200
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["Note", "Reviewed"],
+      "oneOf": [
+        { "required": ["Url"] },
+        { "required": ["Maintainer"] }
+      ],
+      "properties": {
+        "Url": {
+          "description": "The Microsoft Learn page, with no locale.",
+          "type": "string",
+          "pattern": "^https://learn\\.microsoft\\.com/(?![a-z]{2}-[a-z]{2}/)[^\\s]+$"
+        },
+        "Mirror": {
+          "description": "The merill/*-docs-mirror repository that holds the page.",
+          "type": "string",
+          "pattern": "^[a-z0-9-]+-docs-mirror$"
+        },
+        "Maintainer": {
+          "description": "The GitHub handle of the maintainer who stands behind a relationship that Learn does not document.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "Note": {
+          "description": "Maester's own wording of what the source says about order. Never Microsoft's text.",
+          "type": "string",
+          "pattern": "^[^\\r\\n]+$",
+          "maxLength": 200
+        },
+        "Reviewed": {
+          "description": "When someone last read the source against the step.",
+          "type": "string",
+          "format": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "goal": {
+      "type": "object",
+      "required": ["Id", "Title", "Summary", "Step"],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "maxLength": 60
+        },
+        "Title": { "type": "string", "pattern": "^[^\\r\\n]+$", "maxLength": 100 },
+        "Summary": { "type": "string", "pattern": "^[^\\r\\n]+$", "maxLength": 200 },
+        "Step": {
+          "description": "The step that achieves the goal. The goal's steps are this step and its prerequisites, at any depth.",
+          "$ref": "#/$defs/stepId"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

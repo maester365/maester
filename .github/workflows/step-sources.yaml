@@ -1,0 +1,96 @@
+# Checks the Microsoft Learn pages that the defender's path catalogue cites (powershell/assets/steps) against the
+# Learn mirrors, and keeps one issue open (labelled step-sources) that lists the steps whose sources changed since
+# a maintainer last reviewed them, with a link to each change. Every run updates that issue; it is closed when every
+# source is current again, and the next change opens a new one. The workflow never opens pull requests: a maintainer
+# re-reads each page, updates the step if Learn changed the order, and sets the source's Reviewed date.
+# See build/steps/README.md.
+name: step-sources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 5 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: step-sources
+  cancel-in-progress: false
+
+env:
+  SOURCES_LABEL: step-sources
+  SOURCES_TITLE: "Defender's path: step sources changed on Microsoft Learn"
+
+jobs:
+  step-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            build/steps
+            powershell/assets/steps
+
+      - name: Update the Learn mirrors
+        shell: pwsh
+        run: ./build/steps/Update-MtLearnMirror.ps1 -Links Catalog | Out-Null
+
+      - name: Check the step sources
+        id: check
+        shell: pwsh
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP 'step-sources'
+          $null = ./build/steps/Test-MtStepSource.ps1 -OutputPath $out
+          $code = $LASTEXITCODE
+          if ($code -notin 0, 1) { throw "Test-MtStepSource.ps1 could not check the sources (exit code $code)." }
+          # An issue body holds at most 65,536 characters. A longer report is cut at a line and points to the artifact.
+          $body = (Get-Content -LiteralPath (Join-Path $out 'step-sources.md') -Raw).TrimEnd()
+          $footer = "`n`nFrom [this run]($env:RUN_URL) of the step-sources workflow."
+          if ($body.Length -gt 60000) {
+            $body = $body.Substring(0, $body.LastIndexOf("`n", 60000)) + "`n`nThe list is cut short here. The step-sources artifact of the run has all of it."
+          }
+          Set-Content -LiteralPath (Join-Path $env:RUNNER_TEMP 'step-sources-issue.md') -Value ($body + $footer) -Encoding utf8NoBOM
+          "needs-review=$(if ($code -eq 1) { 'true' } else { 'false' })" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          # Sources that need review are reported in the issue, not as a failed run.
+          exit 0
+
+      - name: Keep the report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: step-sources
+          path: ${{ runner.temp }}/step-sources/
+          retention-days: 30
+
+      - name: Open, update or close the step sources issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NEEDS_REVIEW: ${{ steps.check.outputs.needs-review }}
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/step-sources-issue.md"
+          issue=$(gh issue list --label "$SOURCES_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ "$NEEDS_REVIEW" = "true" ]; then
+            if [ -n "$issue" ]; then
+              gh issue edit "$issue" --body-file "$body"
+              echo "Updated issue #$issue."
+            else
+              gh label create "$SOURCES_LABEL" --color c5def5 --description "A Learn page that the step catalogue cites changed" --force
+              url=$(gh issue create --title "$SOURCES_TITLE" --body-file "$body" --label "$SOURCES_LABEL")
+              echo "Opened ${url}."
+            fi
+          elif [ -n "$issue" ]; then
+            gh issue edit "$issue" --body-file "$body"
+            gh issue close "$issue" --reason completed --comment "Every step source matches the page it was reviewed against. The next change opens a new issue."
+            echo "Closed issue #$issue."
+          else
+            echo "Every step source matches the page it was reviewed against."
+          fi

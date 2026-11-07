@@ -4,6 +4,7 @@ import { RESULT_LABEL, isQuickWin, maesterVersion, sortTests, tally, type Model,
 import { reportHeading } from "@/lib/runSubject"
 import { useReport } from "./ReportContext"
 import { FeatureMark, Pill, ProductMark, Sev } from "./ui"
+import { blockedStepsOf } from "./path"
 
 export const GROUPS: Record<string, string> = { none: "No grouping", product: "Product", area: "Area", feature: "Feature", severity: "Severity", source: "Source", result: "Result" }
 
@@ -78,6 +79,7 @@ export function FixList({ rows, limit }: { rows: Row[]; limit: number }) {
             <div className="m">
               <ProductMark product={t.Product} size="sm" /><span>{model.productName(t.Product)}</span><span>·</span><span className="mt-mono">{t.Id}</span>
               {model.changes.newlyFailing.includes(t) && <span className="mt-badge bad">New since last run</span>}
+              {blockedStepsOf(model, t).slice(0, 1).map((s) => <span key={s.Id} className="mt-badge bad" style={{ whiteSpace: "normal" }}>Blocked by: {s.BlockedBy.map((id) => model.path?.step(id)?.Title || id).join("; ")}</span>)}
             </div>
           </span>
           <span className="why">

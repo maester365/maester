@@ -1,0 +1,53 @@
+{
+  "$schema": "./steps.schema.json",
+  "Goals": [
+    {
+      "Id": "compliant-devices",
+      "Title": "Require compliant devices",
+      "Summary": "Only devices that Intune manages and marks compliant can reach Microsoft 365.",
+      "Step": "entra.ca-require-compliant-device"
+    },
+    {
+      "Id": "managed-devices",
+      "Title": "Require managed devices",
+      "Summary": "Only devices that Intune marks compliant or that are hybrid joined to Microsoft Entra ID can reach Microsoft 365.",
+      "Step": "entra.ca-require-managed-device"
+    },
+    {
+      "Id": "risk-policies",
+      "Title": "Use risk-based Conditional Access",
+      "Summary": "Users and sign-ins that ID Protection rates risky must prove themselves with MFA or a secure password change before they get in.",
+      "Step": "entra.ca-user-risk"
+    },
+    {
+      "Id": "phishing-resistant-mfa",
+      "Title": "Require phishing-resistant MFA",
+      "Summary": "Every user signs in with a passkey, Windows Hello for Business or another method that a phishing site can't replay.",
+      "Step": "entra.phishing-resistant-all"
+    },
+    {
+      "Id": "privileged-access",
+      "Title": "Replace standing admin access with PIM",
+      "Summary": "Administrators activate privileged roles when they need them, and only the emergency access accounts keep standing access.",
+      "Step": "entra.pim-eligible-roles"
+    },
+    {
+      "Id": "token-protection",
+      "Title": "Protect sign-in tokens on Windows",
+      "Summary": "Sign-in tokens for Exchange, SharePoint and Teams are bound to the Windows device they were issued to, so they can't be replayed elsewhere.",
+      "Step": "entra.ca-token-protection-windows"
+    },
+    {
+      "Id": "email-authentication",
+      "Title": "Authenticate mail from your domains",
+      "Summary": "Receivers can tell real mail from your domains from spoofed mail, and reject the spoofed mail.",
+      "Step": "defender.dmarc-reject"
+    },
+    {
+      "Id": "defender-device-risk",
+      "Title": "Use Defender device risk in compliance",
+      "Summary": "Devices that Defender for Endpoint rates risky become noncompliant, so the compliant-device Conditional Access policy blocks them.",
+      "Step": "intune.compliance-device-risk"
+    }
+  ]
+}

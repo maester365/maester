@@ -45,6 +45,7 @@ function Test-MtCaWhatIfEmergencyAccessNotBlocked {
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Step = 'entra.emergency-access-excluded',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         LongRunning,

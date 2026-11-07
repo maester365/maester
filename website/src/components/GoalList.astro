@@ -1,0 +1,31 @@
+---
+// The goals of the defender's path, in catalogue order, each linked to its generated page
+// (scripts/generate-goal-pages.mjs). Read from powershell/assets/steps at build time, which runs in website/.
+import { resolve } from 'node:path';
+import { goalPath, loadStepCatalog } from '../../scripts/step-catalog.mjs';
+
+const { goals } = loadStepCatalog(resolve(process.cwd(), '..'));
+---
+
+<table>
+	<thead>
+		<tr>
+			<th>Goal</th>
+			<th>What it achieves</th>
+			<th>Steps</th>
+		</tr>
+	</thead>
+	<tbody>
+		{
+			goals.map((goal) => (
+				<tr>
+					<td>
+						<a href={goalPath(goal.Id)}>{goal.Title}</a>
+					</td>
+					<td>{goal.Summary}</td>
+					<td>{goal.Steps.length}</td>
+				</tr>
+			))
+		}
+	</tbody>
+</table>

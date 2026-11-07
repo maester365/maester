@@ -84,8 +84,8 @@ Describe 'Invoke-Maester selection (Pester provider)' {
     Context 'Default run' {
         BeforeAll { $script:r = Invoke-MaesterRun 'Default' }
 
-        It 'Writes result schema 2.1 with the additive fields' {
-            $r.SchemaVersion | Should -Be '2.1'
+        It 'Writes result schema 2.2 with the additive fields' {
+            $r.SchemaVersion | Should -Be '2.2'
             $r.CatalogVersion | Should -BeOfType [string]
             $r.CatalogVersion | Should -Match '^\d+\.\d+'
             $r.Selection.BuiltIn | Should -Be 'None'

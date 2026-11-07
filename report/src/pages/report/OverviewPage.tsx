@@ -8,6 +8,7 @@ import { useReport } from "@/components/report/ReportContext"
 import { DetailBody, DetailHeader, DetailTabs } from "@/components/report/TestDetail"
 import { FixList, Footer } from "@/components/report/lists"
 import { AttackAreas, Checked, Kpis, Posture, Trend } from "@/components/report/overview"
+import { PathCard } from "@/components/report/path"
 import { Bar, Cmd, ProductMark, formatDate, plural } from "@/components/report/ui"
 
 const SEVERITY_COLOUR: Record<string, string> = { Critical: "var(--mt-fail)", High: "var(--mt-high)", Medium: "var(--mt-warn)", Low: "var(--mt-skip)", Info: "var(--mt-info)" }
@@ -144,6 +145,8 @@ export default function OverviewPage() {
           {failing.length > 0 && model.rated.effort && <p className="mt-note">{failing.filter(isQuickWin).length} of the {failing.length} failures are quick wins: little effort to fix, and users won't notice.</p>}
         </div>}
       </div>
+
+      <PathCard />
 
       {failing.length > 0 && (
         <section className="mt-sec">

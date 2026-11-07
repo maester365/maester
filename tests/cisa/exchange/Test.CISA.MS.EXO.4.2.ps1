@@ -26,6 +26,7 @@
         ImplementationCost = 'High',
         Mitre = ('T1566', 'T1598', 'T1684.002'),
         Control = 'cisa-scuba:MS.EXO.4.2',
+        Step = 'defender.dmarc-reject',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

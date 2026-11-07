@@ -1,0 +1,177 @@
+{
+  "$schema": "./steps.schema.json",
+  "Product": "intune",
+  "Steps": [
+    {
+      "Id": "intune.compliance-policies",
+      "Title": "Assign a compliance policy for each platform in use",
+      "Summary": "Intune can mark a device compliant only when a compliance policy covers its platform.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24541 to ZTA.24547) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/compliance/overview",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Compliance policies set the rules each platform's devices must meet, and Conditional Access acts on the compliance state they produce.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/conditional-access-integration/device-based-policies",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Device-based Conditional Access starts with compliance policies, one per platform, because the policy can only act on the status they report.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.automatic-enrollment",
+      "Title": "Turn on automatic Intune enrollment for Windows",
+      "Summary": "Windows devices enroll in Intune when users join or register them in Microsoft Entra ID.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24546) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-enrollment/windows/enable-automatic-mdm",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Automatic enrollment enrolls Windows devices in Intune as they join or register with Microsoft Entra ID.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.devices-compliant",
+      "Title": "Devices that sign in are compliant",
+      "Summary": "Most devices that sign in are enrolled in Intune and marked compliant, so requiring compliance blocks few users.",
+      "Requires": ["intune.compliance-policies"],
+      "RecommendedFirst": ["intune.automatic-enrollment"],
+      "Measure": { "Key": "devices-compliant", "MinimumShare": 95 },
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-grant",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Only devices registered in Microsoft Entra ID and enrolled in Intune can be marked compliant, so unenrolled devices fail a compliant-device policy.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.mark-unassigned-noncompliant",
+      "Title": "Mark devices with no compliance policy as not compliant",
+      "Summary": "A device that no compliance policy covers can't pass Conditional Access by default.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/compliance/overview",
+          "Mirror": "intune-docs-mirror",
+          "Note": "When Conditional Access uses compliance, review the tenant setting that decides how devices with no compliance policy are marked.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.windows-hello",
+      "Title": "Configure Windows Hello for Business on Windows devices",
+      "Summary": "Users set up a Windows Hello for Business key on their PCs and sign in with a PIN or biometric.",
+      "RecommendedFirst": ["entra.passkeys-enabled"],
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24551) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/entra/identity/authentication/how-to-deploy-phishing-resistant-passwordless-authentication",
+          "Mirror": "entra-docs-mirror",
+          "Note": "Give users a portable passkey first. They can then use it to set up Windows Hello for Business on each PC.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/solutions/passwordless",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Intune gets Windows devices ready for Windows Hello for Business by delivering its policy settings at enrollment and keeping them in place after.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.macos-platform-sso",
+      "Title": "Configure Platform SSO with the Secure Enclave key on macOS",
+      "Summary": "Mac users sign in with a hardware-bound key that counts as a phishing-resistant method.",
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks it (ZTA.24568) once its results can name steps.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-configuration/settings-catalog/configure-platform-sso-macos",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Platform SSO is set with an Intune settings catalog policy, best assigned as users enroll their Macs. Secure Enclave is the recommended method.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.defender-connector",
+      "Title": "Connect Defender for Endpoint to Intune",
+      "Summary": "Defender for Endpoint and Intune share device data, so Intune can receive the risk level Defender gives each device.",
+      "Unchecked": "No check yet. MT.1098 reports connector health, but it skips or passes when the Defender for Endpoint connector is missing.",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/microsoft-defender/configure-integration",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Turn on the Intune connection in the Defender portal's advanced features, then check that Intune shows the connection as enabled. It can take about 15 minutes.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-endpoint/advanced-features",
+          "Mirror": "defender-docs-mirror",
+          "Note": "The integration has to be on in both Defender for Endpoint and Intune before Intune can use Defender's device data.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.defender-compliance-evaluation",
+      "Title": "Turn on compliance policy evaluation in the Defender for Endpoint connector",
+      "Summary": "Compliance policies for Windows, iOS/iPadOS and Android can use the risk level that Defender for Endpoint reports for those devices.",
+      "Requires": ["intune.defender-connector"],
+      "Unchecked": "No Maester check yet. The Zero Trust Assessment pack checks the Android toggle only (ZTA.24871).",
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/microsoft-defender/configure-integration",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Once the connection shows enabled, turn on compliance policy evaluation for each platform in the connector. Each platform has its own toggle.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/defender-endpoint/configure-conditional-access",
+          "Mirror": "defender-docs-mirror",
+          "Note": "Defender's own walkthrough checks the connection and the platform's compliance toggle before it builds the compliance policy.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "Id": "intune.compliance-device-risk",
+      "Title": "Require a Defender for Endpoint machine risk score in compliance policies",
+      "Summary": "Devices that Defender for Endpoint rates above the allowed risk level are marked noncompliant.",
+      "Requires": ["intune.defender-compliance-evaluation"],
+      "RecommendedFirst": ["defender.endpoint-onboarding", "intune.compliance-policies"],
+      "Rollout": [
+        "Set the threshold to Low, the level most organizations use. High blocks nothing and only reports.",
+        "Assign the policy to a test group and confirm that its devices report the expected compliance state.",
+        "Widen the assignment. Where a compliant-device policy is on, risky devices lose access as soon as they are marked noncompliant."
+      ],
+      "Sources": [
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/mobile-threat-defense/enable-connector",
+          "Mirror": "intune-docs-mirror",
+          "Note": "A platform's compliance policies use the connector's data only while that platform's toggle is on.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/microsoft-defender/overview",
+          "Mirror": "intune-docs-mirror",
+          "Note": "Connect the services, onboard devices, then add the risk rule to compliance. Conditional Access then blocks the devices marked noncompliant.",
+          "Reviewed": "2026-11-05"
+        },
+        {
+          "Url": "https://learn.microsoft.com/intune/device-security/microsoft-defender/configure-integration",
+          "Mirror": "intune-docs-mirror",
+          "Note": "The risk score is one setting in each platform's compliance policy, so set up those policies first. Low suits most organizations; High only reports.",
+          "Reviewed": "2026-11-05"
+        }
+      ]
+    }
+  ]
+}

@@ -39,6 +39,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',
+        Step = 'entra.ca-exclude-sync-accounts',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'f-bader',

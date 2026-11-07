@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
         Control = ('cis-m365:2.1.8', 'nist-800-53-r5:SI-8'),
+        Step = 'defender.spf',
         Service = 'ExchangeOnline',
         Author = 'JeremyFinney-lgtm'
     )]

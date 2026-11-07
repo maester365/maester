@@ -13,7 +13,7 @@ Describe 'MaesterTest schema table' {
 
     It 'Declares the same type as the attribute for <_>' -ForEach @(
         'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
-        'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+        'ImplementationCost', 'Mitre', 'Control', 'Step', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
         'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
     ) {
         $map = @{ 'System.String' = 'string'; 'System.String[]' = 'string[]'; 'System.Boolean' = 'bool' }
@@ -25,7 +25,7 @@ Describe 'MaesterTest schema table' {
         # The list above is written out because -ForEach is read at discovery; this keeps it complete.
         $checked = @(
             'Id', 'Title', 'Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity', 'UserImpact',
-            'ImplementationCost', 'Mitre', 'Control', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
+            'ImplementationCost', 'Mitre', 'Control', 'Step', 'Service', 'License', 'Permission', 'TenantType', 'Cloud', 'Platform',
             'Lifecycle', 'ReplacedBy', 'LongRunning', 'Exclusive', 'InstanceSource', 'Tag', 'Author', 'Contributor', 'HelpUrl'
         )
         @($script:schema.Properties.Keys | Where-Object { $_ -notin $checked }) | Should -BeNullOrEmpty

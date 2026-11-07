@@ -27,6 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = ('cis-m365:5.2.2.7', 'nist-800-53-r5:AC-2(12)'),
+        Step = 'entra.ca-sign-in-risk',
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
         Author = 'JeremyFinney-lgtm'

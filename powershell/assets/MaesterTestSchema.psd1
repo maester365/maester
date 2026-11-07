@@ -132,6 +132,13 @@
             Pattern     = '^[a-z0-9][a-z0-9.\-]*:[^\s,]+$'
             Description = 'Requirements of frameworks the test supports, written <framework-key>:<requirement-id>, beside the benchmark it is named after.'
         }
+        Step               = @{
+            Type        = 'string[]'
+            Required    = 'No'
+            Pattern     = '^[a-z0-9][a-z0-9\-]*\.[a-z0-9][a-z0-9\-]*$'
+            MaxLength   = 80
+            Description = 'Steps of the defender''s path the test verifies, written <product-key>.<name>, for example entra.ca-require-compliant-device. A test shipped with Maester names steps of the step catalogue.'
+        }
         Service            = @{
             Type        = 'string[]'
             Required    = 'BuiltIn'

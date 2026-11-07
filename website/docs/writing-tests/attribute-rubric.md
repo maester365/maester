@@ -20,6 +20,7 @@ shows the code as you go.
 | What is it about? | `Product`, `RelatedProduct`, `Feature`, `Area`, `ResourceType` | All except `RelatedProduct` |
 | What do I fix first? | `Severity`, `UserImpact`, `ImplementationCost` | `Severity` always. The other two unless `Severity` is `Info` |
 | What does it map to? | `Mitre`, `Control` | `Mitre` (technique IDs or `None`) |
+| What has to be fixed before it? | `Step` | No |
 | Is it current? | `Lifecycle`, `ReplacedBy` | No. `Lifecycle` defaults to `Stable` |
 
 The allowed keys for `Product`, `Feature`, `Area` and `ResourceType` are in
@@ -258,6 +259,22 @@ A test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `n
   itself what a control asks to be tracked: dormant accounts for `AC-2(3)`.
 - A test that implements a CISA SCuBA policy does not list NIST controls. CISA publishes that mapping, the
   framework file carries it as `Related`, and the result gets it from there.
+
+## Step
+
+The steps of the [defender's path](../defenders-path/readme.mdx) the test verifies, written `<product>.<name>`, for
+example `entra.ca-require-compliant-device`. Optional list, at most three. The format and the step catalogue are in
+[Writing native tests](./index.mdx#step).
+
+- Name a step only when a tenant set up the way the step's Microsoft Learn sources describe passes the test. A test
+  that rejects a configuration Learn recommends names no step until it is fixed.
+- A test may check less than its step. It is then one of the step's verifying tests, and the report says how many
+  of them ran.
+- Tests with different definitions of done name different steps, even when they read the same setting. A test that
+  needs a compliant device and one that accepts a compliant or a hybrid joined device do not share a step.
+- Tests in different suites that check the same thing name the same step.
+- A built-in test names only steps that are in the catalogue. Add a new step to the catalogue, with its sources,
+  in the same pull request.
 
 ## Lifecycle and ReplacedBy
 

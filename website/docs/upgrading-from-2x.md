@@ -274,7 +274,7 @@ does that.
 
 ## Result changes
 
-The result JSON keeps its 2.x shape; the new fields are additions (`SchemaVersion` is `2.1`). See the
+The result JSON keeps its 2.x shape; the new fields are additions (`SchemaVersion` is `2.2`). See the
 [result schema](./result-schema.md). Each row now says what the test is about in typed fields (`Product`,
 `RelatedProduct`, `Feature`, `Area`, `ResourceType`, `UserImpact`, `ImplementationCost`, `Mitre`, `Control`,
 `Lifecycle`, `ReplacedBy`, `Service`, `License`, `Permission`), and the top-level `Taxonomy` gives the names of
