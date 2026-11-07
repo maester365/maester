@@ -1,4 +1,4 @@
-﻿GET /beta/roleManagement/directory/roleAssignments?$expand=principal
+GET /beta/roleManagement/directory/roleAssignments?$expand=principal
 
 #### Remediation action
 

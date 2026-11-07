@@ -1,4 +1,4 @@
-﻿The custom banned password list in Microsoft Entra password protection is enabled and contains at least one word.
+The custom banned password list in Microsoft Entra password protection is enabled and contains at least one word.
 
 Password spray attacks try a small number of likely passwords against many accounts. Global banned passwords cover common choices, but words that are specific to your organisation, such as brand names, product names, locations and project names, are not covered unless you add them to the custom list.
 

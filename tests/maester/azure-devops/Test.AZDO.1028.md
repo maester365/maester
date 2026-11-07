@@ -1,4 +1,4 @@
-﻿Creation of Team Foundation Version Control (TFVC) repositories **should be** disabled.
+Creation of Team Foundation Version Control (TFVC) repositories **should be** disabled.
 
 Rationale: Over the past several years, we added no new features to Team Foundation Version Control (TFVC). Git is the preferred version control system in Azure Repos. Furthermore, all the improvements we made in the past few years in terms of security, performance, and accessibility were only made to Git repositories.
 

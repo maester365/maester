@@ -1,4 +1,4 @@
-﻿Verify that full scan of removable drives is enabled to mitigate USB risks.
+Verify that full scan of removable drives is enabled to mitigate USB risks.
 
 Disabled removable drive scanning allows USB-based malware infections.
 

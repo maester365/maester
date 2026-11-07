@@ -1,4 +1,4 @@
-﻿Non-auto-generated (manual) replication connections bypass the Knowledge Consistency Checker (KCC) automatic topology generation. While sometimes necessary for specific scenarios, manual connections require careful management:
+Non-auto-generated (manual) replication connections bypass the Knowledge Consistency Checker (KCC) automatic topology generation. While sometimes necessary for specific scenarios, manual connections require careful management:
 
 - **Topology Bypass**: Manual connections don't benefit from automatic optimization and failover
 - **Documentation Gap**: Manual connections may lack proper documentation of their business purpose

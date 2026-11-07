@@ -1,4 +1,4 @@
-﻿OneDrive is the personal file storage of each user. When sharing from OneDrive is open, users can give files to anyone, including people outside the organization, and the owner of the file may not notice. Sensitive personal and work files then leave the tenant through links that are hard to track.
+OneDrive is the personal file storage of each user. When sharing from OneDrive is open, users can give files to anyone, including people outside the organization, and the owner of the file may not notice. Sensitive personal and work files then leave the tenant through links that are hard to track.
 
 Turning off sharing from OneDrive means users can share their OneDrive files only inside the organization. Files that must reach external people can be moved to a SharePoint site where sharing is governed by the tenant policy.
 

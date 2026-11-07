@@ -1,4 +1,4 @@
-﻿Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
+Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
 Conditional Access policy that blocks legacy authentication.
 
 Learn more:

@@ -1,4 +1,4 @@
-﻿Understanding which groups have members versus empty groups provides valuable insights into Active Directory utilization:
+Understanding which groups have members versus empty groups provides valuable insights into Active Directory utilization:
 
 - **Group Hygiene**: Empty groups may represent unused or forgotten groups that could be cleaned up
 - **Access Management**: Groups with members are actively used for access control and permissions

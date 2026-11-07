@@ -1,4 +1,4 @@
-﻿SPNs should use fully qualified domain names (FQDNs) for the host portion to ensure proper Kerberos authentication across domain boundaries and to avoid ambiguity. Non-FQDN hosts can cause:
+SPNs should use fully qualified domain names (FQDNs) for the host portion to ensure proper Kerberos authentication across domain boundaries and to avoid ambiguity. Non-FQDN hosts can cause:
 
 - **Authentication failures**: Kerberos may fail to find the correct service principal
 - **DNS resolution issues**: Short names may not resolve correctly in all contexts

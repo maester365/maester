@@ -1,4 +1,4 @@
-﻿Read-Only Domain Controllers (RODCs) are a critical security feature introduced in Windows Server 2008 designed specifically for deployment in locations where physical security cannot be guaranteed, such as branch offices. RODCs provide several security benefits:
+Read-Only Domain Controllers (RODCs) are a critical security feature introduced in Windows Server 2008 designed specifically for deployment in locations where physical security cannot be guaranteed, such as branch offices. RODCs provide several security benefits:
 
 - **Reduced attack surface**: RODCs maintain a read-only copy of the Active Directory database, preventing directory modifications from compromised locations
 - **Credential caching control**: Administrators can configure which credentials (if any) are cached on the RODC, limiting exposure if the server is compromised

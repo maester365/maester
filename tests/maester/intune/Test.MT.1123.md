@@ -1,4 +1,4 @@
-﻿Ensure at least one Intune policy enforces BitLocker **full encryption** on operating system drives.
+Ensure at least one Intune policy enforces BitLocker **full encryption** on operating system drives.
 
 BitLocker offers two encryption types, and the difference matters:
 
