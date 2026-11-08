@@ -24,7 +24,7 @@ This test compares configured root server IP addresses against the official IANA
 
 #### Related Tests
 
-- `Test-MtAdDnsRootServerIncorrectDetails` - Provides detailed information about incorrect root servers
+- **AD-DNS-04 — Root server incorrect IP details should be retrievable** — `Test-MtAdDnsRootServerIncorrectDetails` — Provides detailed information about incorrect root servers.
 
 <!--- Results --->
 %TestResult%

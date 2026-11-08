@@ -22,8 +22,8 @@ This test provides a detailed breakdown of record counts per zone, including the
 
 #### Related Tests
 
-- `Test-MtAdDnsZoneCount` - Counts zones with records
-- `Test-MtAdDnsDynamicRecordCount` - Analyzes dynamic vs static records
+- **AD-DNS-01 — DNS zone count should be retrievable** — `Test-MtAdDnsZoneCount` — Counts zones with records.
+- **AD-DNS-05 — Dynamic DNS record count should be retrievable** — `Test-MtAdDnsDynamicRecordCount` — Analyzes dynamic vs static records.
 
 <!--- Results --->
 %TestResult%

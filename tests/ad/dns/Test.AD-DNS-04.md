@@ -26,7 +26,7 @@ This test provides detailed information about each root server that has an incor
 
 #### Related Tests
 
-- `Test-MtAdDnsRootServerIncorrectCount` - Counts root servers with incorrect IPs
+- **AD-DNS-03 — Root servers with incorrect IPs should be retrievable** — `Test-MtAdDnsRootServerIncorrectCount` — Counts root servers with incorrect IPs.
 
 <!--- Results --->
 %TestResult%

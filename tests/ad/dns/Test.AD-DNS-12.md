@@ -28,7 +28,7 @@ This test provides detailed information about each AD DS SRV record, including:
 
 #### Related Tests
 
-- `Test-MtAdDnsAdSrvRecordCount` - Counts AD DS SRV records
+- **AD-DNS-11 — AD DS SRV record count should be retrievable** — `Test-MtAdDnsAdSrvRecordCount` — Counts AD DS SRV records.
 
 <!--- Results --->
 %TestResult%
