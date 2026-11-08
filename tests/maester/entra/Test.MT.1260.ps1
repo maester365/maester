@@ -84,38 +84,11 @@
     $PrivilegedRolesByUser = @{}
     $RoleNote = ''
     try {
-        $RoleDefinitions = @(
-            Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                -RelativeUri 'roleManagement/directory/roleDefinitions' `
-                -Select @('id', 'displayName')
-        )
-        $RoleDefLookup = @{}
-        foreach ($Def in $RoleDefinitions) { $RoleDefLookup[[string]$Def.id] = $Def }
-
-        # Same properties as MT.1209 and MT.1210 so the active assignments come from the Graph cache.
-        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
-        if (!$RoleAssignmentResult.EligibleChecked) {
+        $PrivilegedResult = Get-MtPrincipalPrivilegedRole -PrincipalId @($Unremediated | ForEach-Object { [string]$_.id })
+        $PrivilegedRolesByUser = $PrivilegedResult.RolesByPrincipal
+        if (!$PrivilegedResult.EligibleChecked) {
             $RoleNote = "`n`nNote: PIM-eligible role assignments were not checked because they need " +
                 'Microsoft Entra ID P2 or Governance. Only active role assignments were checked.'
-        }
-
-        $UnremediatedIds = @{}
-        foreach ($Item in $Unremediated) { $UnremediatedIds[[string]$Item.id] = $true }
-
-        foreach ($Assignment in @($RoleAssignmentResult.Assignments)) {
-            $PrincipalId = [string]$Assignment.principalId
-            if (!$UnremediatedIds.ContainsKey($PrincipalId)) { continue }
-            $RoleDef = $RoleDefLookup[[string]$Assignment.roleDefinitionId]
-            if ($null -eq $RoleDef) { continue }
-            # isPrivileged is not queryable on roleDefinitions; use Maester's role catalog, as MT.1210 does.
-            $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
-            if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
-            $RoleName = [string]$RoleDef.displayName
-            if ($Assignment.AssignmentType -eq 'Eligible') { $RoleName += ' (eligible)' }
-            if (!$PrivilegedRolesByUser.ContainsKey($PrincipalId)) {
-                $PrivilegedRolesByUser[$PrincipalId] = [System.Collections.Generic.List[string]]::new()
-            }
-            $PrivilegedRolesByUser[$PrincipalId].Add($RoleName)
         }
     } catch {
         Write-Verbose "Could not read directory role assignments: $($_.Exception.Message)"
