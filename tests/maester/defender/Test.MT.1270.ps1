@@ -34,6 +34,11 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtDefenderExploitableSoftwareVulnerability
     #>
+    # On Mitre: not T1190, which is about exploiting a public-facing application - this check
+    # never establishes that anything is reachable from outside, so it would misclassify a
+    # fleet of internal or client software. T1203 is what patching this software actually
+    # prevents on an endpoint. 'None' was wrong too: the attribute review reads the
+    # description as naming attacker behaviour, which it does.
     [MaesterTest(
         Id = 'MT.1270',
         Title = 'Devices should not run software with a publicly exploitable high or critical vulnerability.',
@@ -44,15 +49,10 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
-        # Not T1190: that technique is about exploiting a public-facing application, and this
-        # check never establishes that anything is reachable from outside, so it would
-        # misclassify a fleet of internal or client software. T1203 is what patching this
-        # software actually prevents on an endpoint. `None` was wrong too: the attribute
-        # review reads the description as naming attacker behaviour, which it does.
         Mitre = 'T1203',
-        Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'DEFENDER_XDR',
+        Lifecycle = 'Preview',
         Author = 'earbona23'
     )]
     [CmdletBinding()]

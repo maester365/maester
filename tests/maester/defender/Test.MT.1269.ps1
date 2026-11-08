@@ -93,9 +93,9 @@ function Test-MtDefenderDeviceSecurityRecommendation {
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'DEFENDER_XDR',
+        Lifecycle = 'Preview',
         InstanceSource = 'Get-MtDefenderDeviceSecurityRecommendationInstance',
         Author = 'earbona23'
     )]
