@@ -1,6 +1,6 @@
 Checks that every GPO has an allow entry for the Apply Group Policy right. A policy without application rights cannot deliver its intended settings through that right. This is a policy-health check, not a calculation of effective permissions for every user or computer.
 
-The check fails when an application entry is absent and errors when permissions are unreadable. Intentionally unused policies require review before granting access; archive or remove them if they are no longer needed.
+This check requires Windows for security-descriptor parsing; the engine skips it on Linux and macOS. On Windows, it fails when an application entry is absent and errors when permissions are unreadable. Intentionally unused policies require review before granting access; archive or remove them if they are no longer needed.
 
 #### Remediation action
 

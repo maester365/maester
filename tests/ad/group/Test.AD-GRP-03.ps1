@@ -4,7 +4,7 @@
     Checks whether groups have been modified within a configurable number of days.
 
     .DESCRIPTION
-    This test identifies groups that have not been modified since before January 1, 2020.
+    This test identifies groups whose modification date exceeds MaximumAgeDays.
     Groups that haven't been modified for an extended period may represent:
     - Unused or obsolete groups that should be reviewed for deletion
     - Legacy configurations that may no longer be needed
@@ -56,6 +56,9 @@
     $groups = $adState.Groups
 
     if ($null -eq $adState.Groups) { throw 'Group collection is unavailable.' }
+    if (@($groups | Where-Object { $null -eq $_.modifyTimeStamp }).Count -gt 0) {
+        throw 'Group modification timestamps are missing; modification age cannot be assessed completely.'
+    }
     # Modification age is a hygiene indicator, not proof of actual group usage.
     $cutoffDate = (Get-Date).AddDays(-$MaximumAgeDays)
     $staleGroups = $groups | Where-Object {

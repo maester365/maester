@@ -103,13 +103,13 @@ For LDAP, the optional partition is `Configuration` or `Schema`; omitted means t
 
 ## Tests Requiring Elevated Privileges
 
-A standard **authenticated user** (Domain User) can read most LDAP attributes on most objects via the default security descriptor. The following tests require privileges **beyond** what a standard Domain User holds by default.
+A standard **authenticated user** (Domain User) can read many LDAP attributes through default object ACLs. The following collection paths have additional access or platform requirements; whether a particular identity needs elevation depends on the effective ACLs and transport permissions.
 
-### DACL Tests (18 tests)
+### DACL checks
 
 | Tests | Required Permission | Why It Requires Elevation |
 |---|---|---|
-| AD-DACL-01 through AD-DACL-18 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` | Reading the DACL portion of `ntSecurityDescriptor` is restricted. Standard users can read the owner and group, but not the full DACL. |
+| AD-DACL-01, 02, 03, 05, 07, 09, 11, 14, 15, 17 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` | Reading a DACL requires READ_CONTROL access, which can be restricted by object ACLs. Do not infer effective access from a group name. DACL parsing also requires Windows. |
 
 ### DNS Tests (19 tests)
 
@@ -123,52 +123,56 @@ A standard **authenticated user** (Domain User) can read most LDAP attributes on
 |---|---|---|
 | AD-DC-02, AD-DC-03, AD-DC-04 | `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` | Remote CIM access for SMB server configuration and PowerShell remoting execution require elevated access. |
 
-### GPO Tests (40 tests)
+### GPO checks
 
 | Tests | Required Permission | Why It May Require Elevation |
 |---|---|---|
-| AD-GPO-01 through AD-GPO-05, AD-GPOL-01 through AD-GPOL-06, AD-GPOREP-01 through AD-GPOREP-20, AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. |
+| AD-GPO-*, AD-GPOL-*, AD-GPOREP-*, AD-GPOS-* | `ActiveDirectory:File:SYSVOL:Read` | Reading files from the `\\domain\SYSVOL` share. While Authenticated Users typically receive read access to SYSVOL, this is filesystem access separate from LDAP and may be restricted in hardened environments. Only surviving IDs in the catalog are available; merged count/detail checks no longer have separate rows. |
 
-**Summary:** 80 of 270 AD tests (30%) require privileges beyond a standard authenticated user. The remaining 190 tests can run with standard Domain User LDAP read access.
+### KDS root-key visibility
+
+AD-CFG-22 reads key metadata, never `msKds-RootKeyData`. Default key ACLs restrict visibility to privileged identities. Zero visible keys therefore reports Investigate unless complete read/list access was independently confirmed using `KeyInventoryReadAccessConfirmed`. Do not add a key based only on an empty search by a restricted reader.
+
+Use `Get-MtTest -Product ad` for the current catalog and each check's declared permissions. Static test counts or membership in a named group do not establish effective read access.
 
 ## Category Summary
 
 | Category | Tests | Required permissions |
 |---|---|---|
-| `cfg` | AD-CFG-01 through AD-CFG-24 | `ActiveDirectory:Ldap:Configuration/*:ReadProperty` |
-| `comp` | AD-COMP-01 through AD-COMP-10 | `ActiveDirectory:Ldap:computer:ReadProperty` |
-| `dacl` | AD-DACL-01 through AD-DACL-18 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` |
+| `cfg` | AD-CFG-02, 03, 06–24 | `ActiveDirectory:Ldap:Configuration/*:ReadProperty`; CFG-22 additionally needs confirmed inventory visibility for a zero-key failure |
+| `comp` | AD-COMP-01, 03–08 | `ActiveDirectory:Ldap:computer:ReadProperty`; COMP-04 also uses the DC inventory |
+| `dacl` | AD-DACL-01, 02, 03, 05, 07, 09, 11, 14, 15, 17 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` |
 | `dc` | AD-DC-01 through AD-DC-08 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty`; AD-DC-02 through AD-DC-04 also need `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read` and `ActiveDirectory:Remoting:Microsoft.PowerShell` |
 | `dcd` | AD-DCD-01 through AD-DCD-04 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty` |
-| `dcomp` | AD-DCOMP-01 through AD-DCOMP-09 | `ActiveDirectory:Ldap:computer:ReadProperty` |
+| `dcomp` | AD-DCOMP-01, 03, 04, 06, 07, 08 | Computer and DC inventory permissions; DCOMP-01/03 also read sMSA, gMSA and dMSA delegation metadata |
 | `dfsr` | AD-DFSR-01 | `ActiveDirectory:Ldap:domainDNS.distinguishedName:ReadProperty` |
 | `dns` | AD-DNS-01 through AD-DNS-19 | `ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` |
 | `dom` | AD-DOM-01 through AD-DOM-08 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
 | `doms` | AD-DOMS-01 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
-| `feat` | AD-FEAT-01 through AD-FEAT-02 | `ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty` |
+| `feat` | AD-FEAT-01 | `ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty` |
 | `fgpp` | AD-FGPP-01 through AD-FGPP-04 | `ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty` |
 | `for` | AD-FOR-01 through AD-FOR-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `fors` | AD-FORS-01 through AD-FORS-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `gchg` | AD-GCHG-01 | `ActiveDirectory:Ldap:group:ReadProperty` |
-| `gmc` | AD-GMC-01 through AD-GMC-11 | `ActiveDirectory:Ldap:group:ReadProperty`; GMC-01 also needs `ActiveDirectory:Ldap:group.member:ReadProperty` |
-| `gpo` | AD-GPO-01 through AD-GPO-05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `gpol` | AD-GPOL-01 through AD-GPOL-06 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `gporep` | AD-GPOREP-01 through AD-GPOREP-20 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gmc` | AD-GMC-01, 02, 04, 06, 08, 10 | `ActiveDirectory:Ldap:group:ReadProperty`; membership checks also need `ActiveDirectory:Ldap:group.member:ReadProperty` |
+| `gpo` | AD-GPO-01, 02, 04 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gpol` | AD-GPOL-01–05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
+| `gporep` | AD-GPOREP-01, 03, 05, 06, 07, 09, 10, 12, 14, 15, 17 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read`; ACL-dependent checks need readable security descriptors |
 | `gpos` | AD-GPOS-01 through AD-GPOS-09 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
-| `grp` | AD-GRP-01 through AD-GRP-10 | `ActiveDirectory:Ldap:group:ReadProperty` |
+| `grp` | AD-GRP-01–06, 08 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `krbtgt` | AD-KRBTGT-01 through AD-KRBTGT-03 | `ActiveDirectory:Ldap:user:ReadProperty` |
-| `msa` | AD-MSA-01 | `ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty` |
+| `msa` | AD-MSA-01 | `ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty`, `ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty`, `ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty` |
 | `ou` | AD-OU-01 through AD-OU-05 | `ActiveDirectory:Ldap:organizationalUnit:ReadProperty` |
 | `print` | AD-PRINT-01 | `ActiveDirectory:Ldap:printQueue:ReadProperty` |
 | `pwdpol` | AD-PWDPOL-01 through AD-PWDPOL-07 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
 | `repl` | AD-REPL-01 through AD-REPL-02 | `ActiveDirectory:Ldap:nTDSConnection:ReadProperty` |
-| `rootdse` | AD-ROOTDSE-01 through AD-ROOTDSE-03 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
-| `sch` | AD-SCH-01 through AD-SCH-05 | `ActiveDirectory:Ldap:attributeSchema:ReadProperty` |
+| `rootdse` | AD-ROOTDSE-01, 03 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
+| `sch` | AD-SCH-01, 03, 05 | `ActiveDirectory:Ldap:Schema/*:ReadProperty`; SCH-05 distinguishes Windows LAPS schema from legacy LAPS |
 | `site` | AD-SITE-01 through AD-SITE-05 | `ActiveDirectory:Ldap:site:ReadProperty` |
-| `spn` | AD-SPN-01 through AD-SPN-13 | `ActiveDirectory:Ldap:computer:ReadProperty`, `ActiveDirectory:Ldap:user:ReadProperty` |
+| `spn` | AD-SPN-01, 03, 05, 06, 07, 09, 11, 12 | Computer/user permissions; SPN-12 also reads domain SID, groups and group membership |
 | `sub` | AD-SUB-01 through AD-SUB-11 | `ActiveDirectory:Ldap:subnet:ReadProperty` |
-| `trust` | AD-TRUST-01 through AD-TRUST-07 | `ActiveDirectory:Ldap:trustedDomain:ReadProperty` |
-| `user` | AD-USER-01 through AD-USER-29 | `ActiveDirectory:Ldap:user:ReadProperty` |
+| `trust` | AD-TRUST-01, 02, 03, 06 | `ActiveDirectory:Ldap:trustedDomain:ReadProperty`; TRUST-06 cannot infer validation age from LDAP modification dates |
+| `user` | AD-USER-01–13, 15–29 | `ActiveDirectory:Ldap:user:ReadProperty`; USER-14 was consolidated into SPN-06 |
 
 ## Known Misleading Outcomes
 
@@ -176,19 +180,19 @@ The following behaviors can hide incomplete access. They are documented here so 
 
 ### DACL tests (AD-DACL-*)
 
-`Get-MtLdapDacl` delegates to `Invoke-MtLdapSearch` and returns an empty array when no entries match. An empty result is indistinguishable from insufficient access. Tests set `$testResult = $true` even when the array is empty, so a pass does not prove the DACL was fully read.
+Merged DACL checks reject missing or empty collected entries rather than reporting a clean inventory. A nonempty response still does not prove that every object's DACL was readable. Confirm read access to the intended scope; DACL parsing requires Windows.
 
 ### GPO tests (AD-GPO-*, AD-GPOL-*, AD-GPOREP-*, AD-GPOS-*)
 
-`Get-MtADGpoState` can return a non-null state with an empty GPO array. A non-null check therefore does not establish that GPO data was retrieved. GPO reads also depend on SMB/SYSVOL file access; an LDAP probe alone does not prove policy files were read.
+`Get-MtADGpoState` uses `$null` for failed metadata or report collection, distinct from an empty inventory. The merged version and exposed-password checks reject incomplete reports or scans, including unreadable/malformed XML. GPOREP-10 skips off Windows because its permission parsing is Windows-only. An LDAP probe alone does not prove SYSVOL access or complete collection.
 
 ### DNS tests (AD-DNS-*)
 
-If `Invoke-MtADManagementCommand` fails, the DNS category collector throws. `Get-MtADDomainState` catches the failure and leaves DNS arrays empty. The helper then skips with `NotConnectedActiveDirectoryDNS`, which does not distinguish "server has no data" from "query could not retrieve data."
+If DNS management collection fails, the category is unavailable: scoped calls return null properties, and legacy unscoped calls may omit DNS keys. Do not interpret missing DNS data as an empty, healthy inventory.
 
 ### Configuration tests (AD-CFG-*)
 
-`Get-MtLdapConfigurationContainer` catches individual query errors. The state object survives with empty arrays or null properties even when subqueries did not return data.
+Configuration searches tolerate absent optional containers, but propagate genuine query failures so the category is unavailable. The Directory Service retrieval flag distinguishes an unreadable/missing object from unset attributes. LDAP ACL filtering can still hide objects without a query error, particularly KDS keys; zero visible results alone cannot establish absence.
 
 ### Transport and cache
 

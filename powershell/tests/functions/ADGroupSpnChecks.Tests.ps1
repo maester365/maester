@@ -3,10 +3,15 @@
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     Use-MtModuleFunction -Name Test-MtAdGroupMemberDistinctGroupCount, Test-MtAdGroupMemberAccountTypeCount,
     Test-MtAdGroupMemberTrustCount, Test-MtAdUserSpnTotalCount, Test-MtAdUserSpnServiceClassCount,
-    Test-MtAdUserSpnDomainAdminCount
+    Test-MtAdUserSpnDomainAdminCount, Test-MtAdGroupStaleCount
 }
 
 Describe 'AD group and SPN checks on a collected snapshot' {
+    It 'errors rather than treating missing group modification timestamps as recent' {
+        InModuleScope Maester {
+            { Test-MtAdGroupStaleCount } | Should -Throw '*modification timestamps are missing*'
+        }
+    }
     BeforeEach {
         InModuleScope Maester {
             $script:adSpnDomainSid = 'S-1-5-21-111-222-333'

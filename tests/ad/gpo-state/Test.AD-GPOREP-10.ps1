@@ -11,6 +11,7 @@
         Product = 'ad', Feature = 'group-policy', Area = 'access-control',
         ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
+        Platform = 'Windows',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
