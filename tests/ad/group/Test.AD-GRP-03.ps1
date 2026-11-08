@@ -1,7 +1,7 @@
 ﻿function Test-MtAdGroupStaleCount {
     <#
     .SYNOPSIS
-    Counts groups that have not been modified since before 2020.
+    Checks whether groups have been modified within a configurable number of days.
 
     .DESCRIPTION
     This test identifies groups that have not been modified since before January 1, 2020.
@@ -21,12 +21,14 @@
     #>
     [MaesterTest(
         Id = 'AD-GRP-03',
-        Title = 'Stale groups count should be retrievable',
+        Title = 'Groups should be modified within the configured age',
         Product = 'ad',
         Feature = 'groups',
         Area = 'identity-lifecycle',
         ResourceType = 'Group',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:group:ReadProperty'),
@@ -34,7 +36,11 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Maximum number of days since a group's last modification.
+        [ValidateRange(1, 36500)]
+        [int] $MaximumAgeDays = 365
+    )
 
     Write-Verbose "Starting Test-MtAdGroupStaleCount"
 
@@ -49,8 +55,9 @@
 
     $groups = $adState.Groups
 
-    # Count groups last modified before 2020
-    $cutoffDate = Get-Date -Year 2020 -Month 1 -Day 1
+    if ($null -eq $adState.Groups) { throw 'Group collection is unavailable.' }
+    # Modification age is a hygiene indicator, not proof of actual group usage.
+    $cutoffDate = (Get-Date).AddDays(-$MaximumAgeDays)
     $staleGroups = $groups | Where-Object {
         $_.modifyTimeStamp -and $_.modifyTimeStamp -lt $cutoffDate
     }
@@ -59,10 +66,10 @@
     $totalCount = ($groups | Measure-Object).Count
 
     # Test passes if we successfully retrieved group data
-    $testResult = $totalCount -gt 0
+    $testResult = $totalCount -gt 0 -and $staleCount -eq 0
 
     # Generate markdown results
-    if ($testResult) {
+    if ($totalCount -gt 0) {
         $percentage = if ($totalCount -gt 0) {
             [Math]::Round(($staleCount / $totalCount) * 100, 2)
         } else {
@@ -72,11 +79,11 @@
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Total Groups | $totalCount |" + "`n"
-        $result += "| Groups Modified Before 2020 | $staleCount |" + "`n"
+        $result += "| Groups Modified Before Cutoff | $staleCount |" + "`n"
         $result += "| Stale Percentage | $percentage% |" + "`n"
-        $result += "| Cutoff Date | 2020-01-01 |" + "`n" + "`n"
+        $result += "| Cutoff Date | $($cutoffDate.ToString('yyyy-MM-dd')) |" + "`n" + "`n"
 
-        $testResultMarkdown = "Active Directory groups have been analyzed. $staleCount out of $totalCount groups ($percentage%) have not been modified since before 2020.`n`n%TestResult%"
+        $testResultMarkdown = "Active Directory groups have been analyzed. $staleCount out of $totalCount groups ($percentage%) have not been modified within $MaximumAgeDays days.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory groups. Ensure you have appropriate permissions and the Active Directory module is installed."

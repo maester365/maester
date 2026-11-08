@@ -52,6 +52,7 @@
     $distributionGroups = $groups | Where-Object { $_.GroupCategory -eq "Distribution" }
     $distributionCount = ($distributionGroups | Measure-Object).Count
     $totalCount = ($groups | Measure-Object).Count
+    $securityCount = @($groups | Where-Object { $_.GroupCategory -eq 'Security' }).Count
 
     # Test passes if we successfully retrieved group data
     $testResult = $totalCount -gt 0
@@ -67,6 +68,7 @@
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Total Groups | $totalCount |" + "`n"
+        $result += "| Security Groups | $securityCount |" + "`n"
         $result += "| Distribution Groups | $distributionCount |" + "`n"
         $result += "| Distribution Percentage | $percentage% |" + "`n" + "`n"
 
@@ -76,7 +78,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

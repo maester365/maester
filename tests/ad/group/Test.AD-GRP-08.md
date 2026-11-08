@@ -26,14 +26,11 @@ This test examines all group objects and identifies those where:
 - The `GroupScope` property equals "DomainLocal"
 - These groups can only assign permissions to resources in their own domain
 
-The test provides counts and percentages to understand the distribution of group scopes in your environment.
+The test provides domain local, global and universal counts, plus domain local percentage, to understand the distribution of group scopes.
 
 #### Related Tests
 
 - `Test-MtAdGroupDistributionCount` - Counts distribution groups (email-only)
-- `Test-MtAdGroupSecurityCount` - Counts security groups by category
-- `Test-MtAdGroupGlobalCount` - Counts global scope groups
-- `Test-MtAdGroupUniversalCount` - Counts universal scope groups
 
 <!--- Results --->
 %TestResult%

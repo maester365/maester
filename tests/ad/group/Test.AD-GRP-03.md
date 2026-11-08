@@ -1,4 +1,4 @@
-Groups that have not been modified for an extended period (in this case, before 2020) may represent:
+Groups that have not been modified for longer than `MaximumAgeDays` (default 365 days) may warrant a membership and ownership review:
 
 - **Abandoned groups**: Created for projects or purposes that no longer exist
 - **Orphaned permissions**: Groups with memberships that haven't been reviewed
@@ -21,13 +21,13 @@ Stale groups pose particular risks because:
 - Document all groups and their purposes
 - Consider implementing a group lifecycle policy with automatic expiration
 - Remove groups that are no longer needed after confirming they're not referenced
-- Update the modifyTimeStamp by reviewing group membership periodically
+- Do not make cosmetic changes merely to update the timestamp: investigate whether membership still grants appropriate access.
 
 #### How the Test Works
 
 This test retrieves all group objects from Active Directory and:
 - Examines the modifyTimeStamp property of each group
-- Counts groups where modifyTimeStamp is before January 1, 2020
+- Fails if any group was last modified before the configurable cutoff (`MaximumAgeDays` days ago)
 - Calculates the percentage of stale groups in the environment
 
 #### Related Tests

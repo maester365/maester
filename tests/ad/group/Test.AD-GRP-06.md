@@ -25,14 +25,11 @@ This test examines all group objects and identifies those where:
 - The `GroupCategory` property equals "Distribution"
 - These groups are used solely for email distribution, not access control
 
-The test provides counts and percentages to understand the distribution of group types in your environment.
+The test provides security and distribution group counts and percentages to understand group categories in your environment.
 
 #### Related Tests
 
-- `Test-MtAdGroupSecurityCount` - Counts security groups used for access control
 - `Test-MtAdGroupDomainLocalCount` - Counts domain local scope groups
-- `Test-MtAdGroupGlobalCount` - Counts global scope groups
-- `Test-MtAdGroupUniversalCount` - Counts universal scope groups
 
 <!--- Results --->
 %TestResult%

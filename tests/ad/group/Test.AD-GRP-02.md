@@ -1,13 +1,14 @@
-- Active Directory supports two primary types of directory objects for storing other objects: Organizational Units (OUs) and Containers (CNs). While both can hold groups, they serve different purposes:
-- **OUs (OU=)**: Designed for delegation, Group Policy application, and logical organization
-- **Containers (CN=)**: System containers with limited flexibility (like CN=Users, CN=Computers)
+Active Directory supports two primary types of directory objects for storing other objects: Organizational Units (OUs) and Containers (CNs). While both can hold groups, they serve different purposes:
 
-- Storing groups in containers instead of OUs creates several issues:
+  - **OUs (OU=)**: Designed for delegation, Group Policy application, and logical organization
+  - **Containers (CN=)**: System containers with limited flexibility (like CN=Users, CN=Computers)
 
-- **Delegation limitations**: Cannot easily delegate management of container contents
-- **No Group Policy**: Cannot link Group Policy Objects to containers
-- **Poor organization**: Containers lack the hierarchical flexibility of OUs
-- **Security risks**: Default containers like CN=Users are well-known targets
+Storing groups in containers instead of OUs creates several issues:
+
+  - **Delegation limitations**: Cannot easily delegate management of container contents
+  - **No Group Policy**: Cannot link Group Policy Objects to containers
+  - **Poor organization**: Containers lack the hierarchical flexibility of OUs
+  - **Security risks**: Default containers like CN=Users are well-known targets
 
 #### Control Type
 
