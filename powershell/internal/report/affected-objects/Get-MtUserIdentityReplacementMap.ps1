@@ -1,4 +1,4 @@
-function Get-MtUserIdentityReplacementMap {
+﻿function Get-MtUserIdentityReplacementMap {
     <#
     .SYNOPSIS
     Builds the map of user identity values (display name, UPN, object id) to redact from generated reports.

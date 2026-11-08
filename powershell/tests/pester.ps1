@@ -267,7 +267,7 @@ if ($hasBomRuleFailure) {
     Write-Host "`n❌ To fix PSUseBOMForUnicodeEncodedFile → Run the following script with the affected file to fix the issue`n" -ForegroundColor Yellow
     @'
 $affectedFilePath = '/path/to/maester/powershell/public/run/Invoke-Maester.ps1'
-$content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
+$content = Get-Content $affectedFilePath -Raw; Set-Content $affectedFilePath -Value $content -NoNewline -Encoding utf8BOM
 
 '@ | Out-Host
 }

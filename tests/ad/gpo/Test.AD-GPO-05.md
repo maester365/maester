@@ -1,4 +1,4 @@
-﻿Unlinked Group Policy Objects (GPOs) are policies that exist in Active Directory but are not linked to any
+Unlinked Group Policy Objects (GPOs) are policies that exist in Active Directory but are not linked to any
 site, domain, or organizational unit (OU). Even when unlinked, these GPOs still represent configuration
 artifacts that can create operational overhead and increase risk.
 

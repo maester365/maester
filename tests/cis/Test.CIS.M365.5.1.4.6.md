@@ -1,4 +1,4 @@
-﻿5.1.4.6 (L2) Ensure users are restricted from recovering BitLocker keys
+5.1.4.6 (L2) Ensure users are restricted from recovering BitLocker keys
 
 This setting determines if users can self-service recover their BitLocker key(s). Restricting non-admin users from being able to see the BitLocker key(s) for their owned devices is the recommended state.
 

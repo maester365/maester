@@ -1,4 +1,4 @@
-function ConvertFrom-MtLdapSecurityDescriptor {
+﻿function ConvertFrom-MtLdapSecurityDescriptor {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
     param(

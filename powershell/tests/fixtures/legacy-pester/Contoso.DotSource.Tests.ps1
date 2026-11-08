@@ -1,4 +1,4 @@
-# Legacy Pester fixture: BeforeAll dot-sources a helper file, the most common 2.x custom pattern.
+﻿# Legacy Pester fixture: BeforeAll dot-sources a helper file, the most common 2.x custom pattern.
 BeforeAll {
     . $PSScriptRoot/helpers/Get-ContosoPolicy.ps1
 }

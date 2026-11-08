@@ -1,4 +1,4 @@
-﻿Access to repositories in YAML pipelines should apply checks and approval before granting access.
+Access to repositories in YAML pipelines should apply checks and approval before granting access.
 
 Rationale: To enhance security, consider separating your projects, using branch policies, and adding more security measures for forks. Minimize the scope of service connections and use the most secure authentication methods.
 

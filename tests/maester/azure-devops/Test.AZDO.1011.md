@@ -1,4 +1,4 @@
-﻿Azure DevOps supports up to 1,000 projects within an organization.
+Azure DevOps supports up to 1,000 projects within an organization.
 
 Rationale: Each project consumes metadata, service endpoints, pipelines, and storage. Maintaining a large number of rarely used or abandoned projects can increase management overhead and may impact organization performance or hit the hard limit.
 

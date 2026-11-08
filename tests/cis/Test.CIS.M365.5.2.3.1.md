@@ -1,4 +1,4 @@
-﻿Microsoft Authenticator is enabled for all users and its push notifications show the application name and the geographic location of the sign-in request.
+Microsoft Authenticator is enabled for all users and its push notifications show the application name and the geographic location of the sign-in request.
 
 In an MFA fatigue attack, an attacker who has a user's password triggers repeated push prompts until the user approves one. Showing which application is signing in and from where gives the user the information needed to recognise and deny a request they did not start.
 

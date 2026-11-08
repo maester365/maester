@@ -1,4 +1,4 @@
-﻿Verify that email scanning is enabled for Exchange queues protection.
+Verify that email scanning is enabled for Exchange queues protection.
 
 Disabled email scanning allows malware to enter through Exchange message queues.
 

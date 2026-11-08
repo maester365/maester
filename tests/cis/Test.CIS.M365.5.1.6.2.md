@@ -1,4 +1,4 @@
-﻿5.1.6.2 (L1) Ensure that guest user access is restricted
+5.1.6.2 (L1) Ensure that guest user access is restricted
 
 Microsoft Entra ID, part of Microsoft Entra, allows you to restrict what external guest users can see in their organization in Microsoft Entra ID. Guest users are set to a limited permission level by default in Microsoft Entra ID, while the default for member users is the full set of user permissions.
 

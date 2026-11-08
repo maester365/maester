@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Exports the built-in Maester test catalog to JSON for the website test-docs generator.
 

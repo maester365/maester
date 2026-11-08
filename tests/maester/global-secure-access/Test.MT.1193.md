@@ -1,4 +1,4 @@
-﻿Entra Private Access application segments should target specific destinations. Broad or risky destinations break least-privilege and can cause operational problems:
+Entra Private Access application segments should target specific destinations. Broad or risky destinations break least-privilege and can cause operational problems:
 
 * **`dnsSuffix` that is a bare top-level domain** (for example `com`, `net`, `local`) - a TLD-wide catch-all. A normal scoped suffix such as `contoso.com` is the recommended resolution path and is **not** flagged.
 * **Wildcard FQDN** (for example `*.contoso.com`).

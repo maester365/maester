@@ -1,4 +1,4 @@
-﻿Sites without domain controllers may indicate:
+Sites without domain controllers may indicate:
 
 - **Authentication delays**: Clients in these sites must authenticate across the WAN to another site
 - **Single points of failure**: If the WAN link fails, clients cannot authenticate

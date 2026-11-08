@@ -1,4 +1,4 @@
-﻿The default role assignment policy does not grant users the roles that let them install Outlook add-ins.
+The default role assignment policy does not grant users the roles that let them install Outlook add-ins.
 
 An Outlook add-in can read and change mail. A malicious or over-privileged add-in, installed by a user who was persuaded to, gives an attacker access to the mailbox without a password. Restricting installation to administrators lets you review the add-in first. An add-in runs inside Outlook each time it starts (T1137.006), and one that can read mail can collect it through the Exchange APIs for someone else (T1114.002).
 

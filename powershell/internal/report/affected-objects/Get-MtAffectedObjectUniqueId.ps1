@@ -1,4 +1,4 @@
-function Get-MtAffectedObjectUniqueId {
+﻿function Get-MtAffectedObjectUniqueId {
     <#
     .SYNOPSIS
     Computes the stable unique id for the affected objects record.

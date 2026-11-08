@@ -1,4 +1,4 @@
-﻿Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for `StaleThresholdDays` (default 180) or more.
+Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for `StaleThresholdDays` (default 180) or more.
 
 **Security Risks:**
 - **Attack Vector**: Stale accounts can be compromised and reactivated by attackers

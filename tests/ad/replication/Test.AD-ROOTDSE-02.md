@@ -1,4 +1,4 @@
-﻿Understanding the SASL (Simple Authentication and Security Layer) mechanisms supported by Active Directory is crucial for authentication security:
+Understanding the SASL (Simple Authentication and Security Layer) mechanisms supported by Active Directory is crucial for authentication security:
 
 - **Security Levels**: Different mechanisms offer varying levels of security
 - **Protocol Selection**: Clients negotiate authentication based on available mechanisms

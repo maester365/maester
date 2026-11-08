@@ -78,6 +78,27 @@ Describe 'Get-MtResultPack' {
             $packs[1].Publisher | Should -Be 'contoso'
             $packs[1].Risk | Should -Be 'Medium'
             $packs[1].ReasonCode | Should -Be 'PackUnavailable'
+            $packs[1].Navigation | Should -BeNullOrEmpty
+        }
+    }
+
+    It 'Carries the pack''s menu and guide as JSON text, so the result''s depth limit never cuts them short' {
+        $root = Join-Path $TestDrive 'menu-pack'
+        $null = New-Item -ItemType Directory -Path $root
+        '{ "Summary": "Runs the assessment.", "Run": { "Commands": [{ "Command": "Invoke-Maester -Pack ZTA" }] } }' | Set-Content -LiteralPath (Join-Path $root 'guide.json')
+        InModuleScope Maester -Parameters @{ Root = $root } {
+            param($Root)
+            $deep = [pscustomobject]@{ Title = 'L4'; View = 'about' }
+            foreach ($n in 3..1) { $deep = [pscustomobject]@{ Title = "L$n"; Items = @($deep) } }
+            $manifest = [pscustomobject]@{ Code = 'ZTA'; Name = 'Zero Trust'; Guide = 'guide.json'
+                Report = [pscustomobject]@{ Navigation = @([pscustomobject]@{ Title = 'Run'; View = 'guide'; Page = 'run' }, $deep) } }
+            $set = @([pscustomobject]@{ Id = 'maester.zero-trust-assessment'; Version = '0.1.0'; BuiltIn = $true; Status = 'Ready'; ReasonCode = $null; Reason = $null; Entry = $null; Root = $Root; Manifest = $manifest })
+            $pack = @(Get-MtResultPack -PackSet $set)[0]
+            $pack.Navigation | Should -BeOfType [string]
+            $menu = $pack.Navigation | ConvertFrom-Json
+            $menu[1].Items[0].Items[0].Items[0].Title | Should -Be 'L4'
+            ($pack.Guide | ConvertFrom-Json).Run.Commands[0].Command | Should -Be 'Invoke-Maester -Pack ZTA'
+            ([pscustomobject]@{ Packs = @($pack) } | ConvertTo-Json -Depth 5 | ConvertFrom-Json).Packs[0].Navigation | Should -Be $pack.Navigation
         }
     }
 }

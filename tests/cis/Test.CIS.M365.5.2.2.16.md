@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires token protection for Exchange Online, SharePoint Online and Microsoft Teams on Windows desktop clients.
+An enabled Conditional Access policy requires token protection for Exchange Online, SharePoint Online and Microsoft Teams on Windows desktop clients.
 
 Session tokens are bearer tokens: whoever holds one can use it. Token protection binds a sign-in token to the device it was issued to, so a token copied by malware or a proxy does not work from another machine.
 

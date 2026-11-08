@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaCP01 {
+﻿function Test-MtCheckEidscaCP01 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Group owner consent for apps accessing data is 'False'

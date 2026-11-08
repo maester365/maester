@@ -1,4 +1,4 @@
-function Get-MtGitHubCacheKey {
+﻿function Get-MtGitHubCacheKey {
     <#
     .SYNOPSIS
     Internal: Builds the per-session GitHub REST cache key.

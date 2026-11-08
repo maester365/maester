@@ -1,4 +1,4 @@
-﻿SOA (Start of Authority) records contain critical zone management parameters:
+SOA (Start of Authority) records contain critical zone management parameters:
 
 - **Primary server**: The authoritative source for zone data
 - **Responsible party**: Contact information for zone administration

@@ -1,4 +1,4 @@
-﻿Understanding the distribution of GPO links across Organizational Units is important for several security reasons:
+Understanding the distribution of GPO links across Organizational Units is important for several security reasons:
 
 - **Policy Coverage**: Identifies OUs that may lack necessary security policies
 - **Compliance Assessment**: Helps ensure all organizational units receive appropriate policy coverage

@@ -1,4 +1,4 @@
-function Get-MtPackHome {
+﻿function Get-MtPackHome {
     <#
     .SYNOPSIS
     Returns the folders Maester keeps installed packs in (Maester Packs design, section 5.2).

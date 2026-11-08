@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy blocks the device code authentication flow for all users and all cloud apps.
+An enabled Conditional Access policy blocks the device code authentication flow for all users and all cloud apps.
 
 In device code phishing, an attacker starts a device code sign-in and tricks the victim into entering the code on the genuine Microsoft sign-in page. The victim completes MFA and the attacker receives valid tokens. The flow exists for devices without a keyboard, which most organisations do not use.
 

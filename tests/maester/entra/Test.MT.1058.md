@@ -1,4 +1,4 @@
-﻿Application access policies in Exchange Online help you control which applications can access which mailboxes.
+Application access policies in Exchange Online help you control which applications can access which mailboxes.
 
 Without these policies, applications with Exchange permissions can access all mailboxes in your organization.
 

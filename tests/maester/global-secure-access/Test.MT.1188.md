@@ -1,4 +1,4 @@
-﻿Every Entra Private Access (and Quick Access) application should be protected by an enabled Conditional Access policy that requires a managed device - either by targeting the application directly or via All cloud apps. This ensures private applications are only reachable from managed endpoints.
+Every Entra Private Access (and Quick Access) application should be protected by an enabled Conditional Access policy that requires a managed device - either by targeting the application directly or via All cloud apps. This ensures private applications are only reachable from managed endpoints.
 
 A policy satisfies the requirement when it grants **Require device to be marked as compliant** (Intune compliant) or **Require Microsoft Entra hybrid joined device** (`domainJoinedDevice`).
 

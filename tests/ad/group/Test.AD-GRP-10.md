@@ -1,4 +1,4 @@
-﻿Universal groups play a specific role in multi-domain Active Directory environments:
+Universal groups play a specific role in multi-domain Active Directory environments:
 
 - **Cross-domain flexibility**: Can contain users and groups from any domain in the forest
 - **Forest-wide access**: Can be used for access control across the entire forest

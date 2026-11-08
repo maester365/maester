@@ -1,4 +1,4 @@
-﻿External meeting chat lets your users read and write chat messages in meetings that are hosted by organizations you have no trusted relationship with. Messages from untrusted senders can carry phishing links or malicious files into a meeting that your users are attending.
+External meeting chat lets your users read and write chat messages in meetings that are hosted by organizations you have no trusted relationship with. Messages from untrusted senders can carry phishing links or malicious files into a meeting that your users are attending.
 
 Turning this off keeps your users out of the chat in meetings hosted by untrusted organizations. Users can still chat in meetings hosted by your organization and by trusted organizations.
 

@@ -1,4 +1,4 @@
-﻿Disabled replication connections in Active Directory can indicate several security and operational concerns:
+Disabled replication connections in Active Directory can indicate several security and operational concerns:
 
 - **Replication Failures**: Disabled connections may indicate failed or problematic replication between domain controllers
 - **Incomplete Decommissioning**: Disabled connections from decommissioned DCs that weren't properly cleaned up

@@ -1,4 +1,4 @@
-function Invoke-MtPackGitHubRequest {
+﻿function Invoke-MtPackGitHubRequest {
     <#
     .SYNOPSIS
     Calls the GitHub REST API for pack installs (Maester Packs design, section 5.1).
