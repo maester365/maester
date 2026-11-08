@@ -50,7 +50,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
         } else {
             $CurrentResult = $false
         }

@@ -34,6 +34,7 @@
 
         # Ordered: more specific patterns first. Id = first capture group.
         $patterns = @(
+            @{ System = 'EntraID'; Type = 'ConditionalAccessPolicyPlan'; Regex = "Microsoft_AAD_ConditionalAccess/PolicyPlanView\.ReactView/planId/($guid)" }
             @{ System   = 'EntraID'; Type = 'ConditionalAccessPolicy'; Regex = "Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/($guid)" }
             # The appId suffix is optional: some checks link the enterprise app by object id only.
             @{ System = 'EntraID'; Type = 'ServicePrincipal'; Regex = "ManagedAppMenuBlade/~/\w+/objectId/($guid)(?:/appId/$guid)?" }

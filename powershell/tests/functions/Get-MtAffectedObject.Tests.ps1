@@ -1277,3 +1277,28 @@ Describe 'Affected objects' {
         }
     }
 }
+
+Describe 'Conditional Access plan affected objects' {
+    It 'Keeps a rule identity while linking to its parent plan' {
+        $record = InModuleScope Maester {
+            ConvertTo-MtAffectedObjectRecord -GraphObjectType ConditionalAccess -GraphObjects ([pscustomobject]@{
+                id = '11111111-1111-1111-1111-111111111111'
+                displayName = 'Rule'
+                planId = '22222222-2222-2222-2222-222222222222'
+                sourceType = 'PolicyPlanRule'
+            })
+        }
+        $record.Type | Should -Be ConditionalAccessPolicyRule
+        $record.Id | Should -Be '11111111-1111-1111-1111-111111111111'
+        $record.AnchorKind | Should -Be Instance
+        $record.PortalLink | Should -BeLike '*PolicyPlanView.ReactView/planId/22222222-2222-2222-2222-222222222222'
+    }
+
+    It 'Recognizes a plan deep link in existing Markdown reports' {
+        $record = InModuleScope Maester {
+            Get-MtAffectedObjectFromMarkdown -Markdown '[Plan](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyPlanView.ReactView/planId/22222222-2222-2222-2222-222222222222)'
+        }
+        $record.Type | Should -Be ConditionalAccessPolicyPlan
+        $record.Id | Should -Be '22222222-2222-2222-2222-222222222222'
+    }
+}

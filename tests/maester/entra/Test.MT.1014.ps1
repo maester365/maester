@@ -101,7 +101,7 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
       $policy.conditions.applications.includeApplications -eq 'All'
     ) {
       Write-Verbose -Message "Found a Conditional Access policy requiring device compliance for admins: $($policy.displayName)"
-      $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+      $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
       $result = $true
     }
   }

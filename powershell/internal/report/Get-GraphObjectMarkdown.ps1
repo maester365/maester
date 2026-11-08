@@ -22,7 +22,7 @@
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         # If not specified, the function will try to determine the type based on the object.
         [Parameter(Mandatory = $false)]
-        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
+        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConditionalAccessPlan', 'ConsentPolicy',
             'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
             )]
         [string] $GraphObjectType,
@@ -52,7 +52,11 @@
         }
 
         if($currentGraphObjectType) {
-            $link = $markdownLinkTemplate[$currentGraphObjectType] -f $item.id
+            if ($currentGraphObjectType -eq 'ConditionalAccess' -and (Get-ObjectProperty $item 'planId')) {
+                $link = $markdownLinkTemplate.ConditionalAccessPlan -f $item.planId
+            } else {
+                $link = $markdownLinkTemplate[$currentGraphObjectType] -f $item.id
+            }
         }
         else {
             $link = "#"

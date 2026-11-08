@@ -1,0 +1,137 @@
+{
+  "@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans/$entity",
+  "id": "00000000-0000-4000-8000-000000000001",
+  "displayName": "CAPLAB-20261108 Shared scope",
+  "description": "Isolated test. Disabled test users only. Do not reuse as production policy.",
+  "owners": [
+    "00000000-0000-4000-8000-000000000002",
+    "00000000-0000-4000-8000-000000000003"
+  ],
+  "tags": [
+    "CAPLAB-20261108",
+    "Maester-compatibility"
+  ],
+  "templateId": null,
+  "createdDateTime": "2026-11-08T07:45:48.5466863Z",
+  "modifiedDateTime": "2026-11-08T07:45:48.5466863Z",
+  "deletedDateTime": null,
+  "sharedConditions": {
+    "userRiskLevels": [],
+    "signInRiskLevels": [],
+    "clientAppTypes": [
+      "all"
+    ],
+    "platforms": null,
+    "locations": null,
+    "times": null,
+    "deviceStates": null,
+    "devices": null,
+    "clientApplications": null,
+    "agents": null,
+    "actionsAndDestinations": null,
+    "applications": {
+      "includeApplications": [
+        "00000000-0000-4000-8000-000000000004"
+      ],
+      "excludeApplications": [],
+      "includeUserActions": [],
+      "includeAgentActions": [],
+      "includeAuthenticationContextClassReferences": [],
+      "applicationFilter": null
+    },
+    "users": {
+      "includeUsers": [],
+      "excludeUsers": [
+        "00000000-0000-4000-8000-000000000005"
+      ],
+      "includeGroups": [
+        "00000000-0000-4000-8000-000000000006"
+      ],
+      "excludeGroups": [],
+      "includeRoles": [],
+      "excludeRoles": [],
+      "includeGuestsOrExternalUsers": null,
+      "excludeGuestsOrExternalUsers": null
+    }
+  },
+  "rules@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules",
+  "rules": [
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "displayName": "CAPLAB-20261108 Require MFA",
+      "description": null,
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "applications": null,
+        "users": null,
+        "platforms": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "agents": null,
+        "actionsAndDestinations": null
+      },
+      "controls": {
+        "sessionControls": null,
+        "grantControls": {
+          "operator": "OR",
+          "builtInControls": [
+            "mfa"
+          ],
+          "customAuthenticationFactors": [],
+          "termsOfUse": [],
+          "authenticationStrength@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules('00000000-0000-4000-8000-000000000007')/controls/grantControls/authenticationStrength/$entity",
+          "authenticationStrength": null
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "displayName": "CAPLAB-20261108 Windows compliant",
+      "description": null,
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "applications": null,
+        "users": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "agents": null,
+        "actionsAndDestinations": null,
+        "platforms": {
+          "includePlatforms": [
+            "windows"
+          ],
+          "excludePlatforms": []
+        }
+      },
+      "controls": {
+        "sessionControls": null,
+        "grantControls": {
+          "operator": "OR",
+          "builtInControls": [
+            "compliantDevice"
+          ],
+          "customAuthenticationFactors": [],
+          "termsOfUse": [],
+          "authenticationStrength@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules('00000000-0000-4000-8000-000000000008')/controls/grantControls/authenticationStrength/$entity",
+          "authenticationStrength": null
+        }
+      }
+    }
+  ]
+}

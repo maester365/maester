@@ -22,4 +22,16 @@
         Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess |
             Should -BeLike '  - `[Require MFA`](*PolicyBlade/policyId/00000000-0000-0000-0000-000000000002)*'
     }
+    It 'Links a projected plan rule to its parent plan instead of the standalone policy blade' {
+        $rule = [pscustomobject]@{ id = 'rule-id'; displayName = 'Plan rule'; planId = 'plan-id'; sourceType = 'PolicyPlanRule' }
+        Get-GraphObjectMarkdown -GraphObjects $rule -GraphObjectType ConditionalAccess -AsPlainTextLink |
+            Should -BeLike '*PolicyPlanView.ReactView/planId/plan-id)'
+    }
+
+    It 'Links owner findings directly to the policy plan' {
+        $plan = [pscustomobject]@{ id = 'plan-id'; displayName = 'Plan' }
+        Get-GraphObjectMarkdown -GraphObjects $plan -GraphObjectType ConditionalAccessPlan -AsPlainTextLink |
+            Should -BeLike '*PolicyPlanView.ReactView/planId/plan-id)'
+    }
+
 }

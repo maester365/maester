@@ -1,0 +1,50 @@
+---
+title: Conditional Access policy plans
+description: How Maester reads policy plans, inherits conditions, and checks owner metadata.
+---
+
+Conditional Access policy plans are a Microsoft Entra preview feature. A plan contains shared targeting and one or more rules. The rules retain their own enforcement state and grant/session controls.
+
+## Inventory used by CA checks
+
+`Get-MtConditionalAccessPolicy` returns standalone policies and projected plan rules. Existing checks can read a rule's effective `conditions`, `grantControls`, `sessionControls`, and `state` at the same paths as a standalone policy. Projection does not activate rules or turn report-only configuration into protection.
+
+A projected rule keeps its real rule ID. The following metadata distinguishes it from a standalone policy:
+
+| Property | Meaning |
+| --- | --- |
+| `sourceType` | `PolicyPlanRule` |
+| `planId`, `planDisplayName` | The parent plan |
+| `planOwners` | Recorded owner IDs; no permissions are granted |
+| `sharedConditions` | The original plan conditions |
+| `ruleConditions`, `controls` | The original rule-specific configuration |
+
+The readable name includes both plan and rule names. Report links open the parent plan. A rule ID must not be looked up at the standalone `/policies/{id}` endpoint.
+
+`Get-MtConditionalAccessPolicyPlan` exposes the original plan/rule shape. Use `-MetadataOnly` when checking plan metadata without needing child rules. Both commands use the existing Graph session cache and automatic pagination. Checks report on the same snapshot and must not bypass that cache.
+
+## Conditions and errors
+
+The adapter preserves inherited targeting and accumulates inclusions and exclusions. Controls remain specific to each rule. Response annotations do not affect targeting.
+
+Some combinations cannot safely be flattened into a single condition set. Conflicting scalar/filter expressions, and guest scopes whose type/tenant unions would introduce a cross-product, terminate the inventory rather than inventing effective coverage. These errors identify the plan, rule, and condition to investigate with Entra's scenario evaluation. The adapter is configuration input for existing checks, not a replacement for Entra's sign-in engine or proof of full tenant coverage.
+
+No plans is a valid empty inventory: standalone policies continue to be evaluated. A permission error, unsupported preview API, throttled request, or malformed record must not be mistaken for no plans. Such failures propagate to the caller. `-StandaloneOnly` explicitly selects the original standalone inventory for diagnostic/export callers; security checks must not use it to hide unreadable plans.
+
+## Read permissions
+
+This integration reads configuration only and does not request write permissions. `Policy.Read.All` is the existing Maester permission used for the standalone inventory and the tested plans endpoints. Delegated identities must also satisfy the endpoint's supported Entra role requirements. Preview availability and delegated-role restrictions can cause an error even when standalone policies can be read.
+
+Microsoft currently documents `Policy.Read.ConditionalAccess` for listing plans, but that scope alone returned 403 in the isolated tenant experiment behind this change. No general scope regression or new universal permission requirement is inferred from that one-tenant result.
+
+## Owner metadata check
+
+**MT.1275** reports existing plans with no recorded owner as a low-severity hygiene finding. A tenant with no plans is **NotApplicable**, including a tenant that uses only standalone CA policies. It is a preview check; select it explicitly or include preview tests.
+
+Owner metadata grants no edit rights and has no enforcement effect. The check does not resolve owner IDs, detect inactive/deleted identities, or inspect owner-group membership. Those are separate lifecycle checks with separate directory-read requirements.
+
+## References
+
+- [Microsoft Entra policy plans](https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-policy-plans)
+- [Plans API and read permissions](https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta)
+- [Standalone policy read permissions](https://learn.microsoft.com/graph/api/conditionalaccessroot-list-policies?view=graph-rest-1.0)

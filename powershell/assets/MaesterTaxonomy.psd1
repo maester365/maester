@@ -252,6 +252,7 @@
         @{ Key = 'Device'; Description = 'Managed or registered devices.' }
         @{ Key = 'DirectoryRole'; Description = 'Directory roles and role assignments.' }
         @{ Key = 'ConditionalAccessPolicy'; Description = 'Conditional Access policies.' }
+        @{ Key = 'ConditionalAccessPolicyPlan'; Description = 'Conditional Access policy plans.' }
         @{ Key = 'Policy'; Description = 'Any other policy object, such as an anti-phishing, compliance, DLP or meeting policy.' }
         @{ Key = 'MailFlowRule'; Description = 'Exchange mail flow (transport) rules.' }
         @{ Key = 'Connector'; Description = 'Connectors, tokens and certificates that link the tenant to another service, and mail flow connectors.' }
