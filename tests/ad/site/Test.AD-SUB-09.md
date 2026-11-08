@@ -1,4 +1,4 @@
-﻿Understanding /16 network distribution helps:
+Understanding /16 network distribution helps:
 
 - **Network planning**: Identify how many major network blocks are in use
 - **Segmentation analysis**: Understand logical network boundaries

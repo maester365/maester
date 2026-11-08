@@ -1,4 +1,4 @@
-﻿AI agents should not use author (maker) authentication for their connector tools.
+AI agents should not use author (maker) authentication for their connector tools.
 
 When a connector tool uses **author authentication**, the agent accesses external services (SharePoint, SQL, Outlook, etc.) using the authors stored credentials instead of requiring the end user to authenticate. This creates a **privilege escalation** risk — the agent operates with the maker's full permissions regardless of who is chatting with it, and it bypasses separation of duties controls.
 

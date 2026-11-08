@@ -1,4 +1,4 @@
-﻿Having a detailed breakdown of fine-grained password policy settings allows you to:
+Having a detailed breakdown of fine-grained password policy settings allows you to:
 
 - **Audit security levels**: Verify that privileged accounts have stronger policies
 - **Identify misconfigurations**: Spot policies that may be incorrectly configured

@@ -28,7 +28,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1080', 'T1204.002'),
         Control = ('cis-m365:2.1.5', 'nist-800-53-r5:SI-3'),
-        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
+        Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'NZLostboy'
     )]

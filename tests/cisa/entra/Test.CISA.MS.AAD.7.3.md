@@ -1,4 +1,4 @@
-﻿Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.
+Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.
 
 Rationale: Many privileged administrative users do not need unfettered access to the tenant to perform their duties. By assigning them to roles based on least privilege, the risks associated with having their accounts compromised are reduced.
 

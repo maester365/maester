@@ -1,4 +1,4 @@
-# Legacy Pester fixture: custom tests that write report details with Add-MtTestResultDetail.
+﻿# Legacy Pester fixture: custom tests that write report details with Add-MtTestResultDetail.
 # Requires the Maester module to be imported; no tenant connection is needed.
 Describe "Contoso result details" -Tag "Contoso" {
     It "CONTOSO.7001: Writes a description and a result" -Tag "CONTOSO.7001" {

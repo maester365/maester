@@ -1,4 +1,4 @@
-﻿Expiration days for Anyone links SHALL be set to 30 days or less.
+Expiration days for Anyone links SHALL be set to 30 days or less.
 
 Rationale: Anyone links that do not expire or have excessively long expiration periods pose a persistent risk of unauthorized access. Setting an expiration of 30 days or less ensures that shared content access is time-limited.
 

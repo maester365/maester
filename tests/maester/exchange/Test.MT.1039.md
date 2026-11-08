@@ -1,4 +1,4 @@
-﻿MailTips SHOULD be enabled for end users
+MailTips SHOULD be enabled for end users
 
 Rationale: MailTips assist end users with identifying strange patterns in emails they send, helping prevent accidental data leakage and improving overall email security awareness.
 

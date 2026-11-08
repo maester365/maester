@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires MFA every time a user enrols a device in Microsoft Intune.
+An enabled Conditional Access policy requires MFA every time a user enrols a device in Microsoft Intune.
 
 Enrolling a device gives it a managed identity that other Conditional Access policies trust. If an attacker enrols a device with a stolen session, that device then satisfies the managed device requirements. Asking for a fresh MFA on every enrolment keeps the enrolment step tied to the real user.
 

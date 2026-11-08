@@ -1,4 +1,4 @@
-﻿2.1.7 (L1) Ensure that an anti-phishing policy has been created
+2.1.7 (L1) Ensure that an anti-phishing policy has been created
 
 By default, Office 365 includes built-in features that help protect users from phishing attacks. Set up anti-phishing polices to increase this protection, for example by refining settings to better detect and prevent impersonation and spoofing attacks. The default policy applies to all users within the organization and is a single view to fine-tune antiphishing protection. Custom policies can be created and configured for specific users, groups or domains within the organization and will take precedence over the default policy for the scoped users.
 

@@ -98,6 +98,7 @@ people look for packs, see [Publishing your pack](#publishing-your-pack).
 | `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
 | `Banner` | An image in the pack that the pack index shows when it features the pack. See [Banner image](#banner-image). |
 | `Guide` | A JSON file in the pack that says how to install, connect and run it, for its page on the pack index. See [The pack page](#the-pack-page). |
+| `Report.Navigation` | The pack's menu in the Maester report. See [The pack's menu in the report](#the-packs-menu-in-the-report). |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
 
 ## Banner image
@@ -170,6 +171,58 @@ paths inside the pack. Like the banner, a screenshot that really is an image of 
 binary content. Any section can end with `"More": "<https link>"` to your own documentation. The
 [Zero Trust Assessment pack's guide](https://github.com/maester365/maester/blob/main/packs/zero-trust-assessment/maester-pack.guide.json)
 is a full example.
+
+## The pack's menu in the report
+
+To show a logo in the header of the pack's page instead of its `Code`, set `Report.Logo` to a mark the report draws
+itself: `microsoft`, or a product key such as `entra` or `defender`. The report never loads an image from a pack, and
+a name it does not know shows the `Code`. The icon on the menu's rail always shows the `Code`.
+
+```json
+"Report": { "Logo": "microsoft" }
+```
+
+In the Maester report, each pack has a row on the home menu. Selecting it opens the pack's own menu beside an icon
+rail, as a resource menu does in the Azure portal. Without a `Report.Navigation` key, the menu has an overview, one
+page for each value of the first field your tests set in `Fields`, the HTML reports your tests attached, the guide's
+pages and an About page.
+
+To choose the menu yourself, list its entries. An entry is a row (`Title`) or a heading (`Section`) that opens one of
+the report's own views. Any entry can hold `Items`, to any depth:
+
+```json
+"Report": {
+  "Navigation": [
+    { "Title": "Overview", "View": "pack" },
+    { "Section": "Zero Trust plan", "Id": "plan", "View": "plan", "Attachment": "zero-trust-workshop", "Expand": ["pillars", "areas", "lanes"] },
+    { "Section": "Assessment results", "Items": [
+      { "Title": "All results", "Id": "results", "View": "tests" },
+      { "Title": "Not met", "Id": "not-met", "View": "tests", "Result": "Failed" },
+      { "Title": "By pillar", "Id": "by-pillar", "View": "tests", "GroupBy": ["Pillar", "Category"] },
+      { "Title": "Assessment report", "View": "attachment", "Attachment": "Zero Trust Assessment" }
+    ] },
+    { "Title": "About this pack", "Id": "about", "View": "about" }
+  ]
+}
+```
+
+| View | What the page shows | Keys |
+| --- | --- | --- |
+| `pack` | The pack's overview: who publishes it, how its tests did, and its results. | |
+| `tests` | The pack's results. `GroupBy` adds a menu level for each field it names: `["Pillar", "Category"]` lists each pillar, and each pillar's categories under it. | `Result`, `Filter` (field names to a value or a list of values), `GroupBy` |
+| `plan` | A JSON attachment drawn by a view the report ships. Today that is the Zero Trust Workshop plan (`maester.zero-trust-workshop/1`). `Expand` lists its levels in the menu. | `Attachment`, `Expand` |
+| `attachment` | An HTML report a test attached with `Add-MtReportAttachment`. | `Attachment` (the `-Name` you gave it) |
+| `guide` | A page of the pack's [Guide](#the-pack-page): `start` (summary, prerequisites and links), `connect` or `run`. | `Page` |
+| `about` | The pack's ID, version, publisher, status in the run and home page. | |
+
+`Id` is the entry's part of the page's link (`#/pack/<code>/<id>`); without it, the report uses the title in lower
+case with dashes. Keep it stable, so that links people share keep working.
+
+Nothing in the menu runs: the report draws only its own views, so a pack never adds code to the report people share.
+Maester refuses a manifest whose menu is malformed, such as an entry with neither a `Title` nor a `Section`, or a
+`plan` entry without its `Attachment`. A view or key it does not know is only a warning, and the report leaves that
+entry out, so a pack written for a newer Maester still loads. Maester also warns about a menu more than five levels
+deep: each level indents the menu and shortens its labels.
 
 ## Tests and helpers
 

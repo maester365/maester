@@ -1,4 +1,4 @@
-function Register-MtPackService {
+﻿function Register-MtPackService {
     <#
     .SYNOPSIS
     Adds the connectors of the packs that passed the loader gate to the service registry (Maester Packs design, section 6.3).

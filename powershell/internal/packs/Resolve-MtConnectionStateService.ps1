@@ -1,4 +1,4 @@
-function Resolve-MtConnectionStateService {
+﻿function Resolve-MtConnectionStateService {
     <#
     .SYNOPSIS
     Works out which pack service Set-, Get- or Clear-MtConnectionState acts on, and refuses another pack's service.

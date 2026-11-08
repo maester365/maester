@@ -1,4 +1,4 @@
-﻿AI agents with generative orchestration should have custom instructions.
+AI agents with generative orchestration should have custom instructions.
 
 Agents that use generative orchestration (generative actions enabled) without custom instructions rely entirely on the LLM's default behavior. This increases the risk of prompt injection attacks, off-topic or harmful responses, and uncontrolled tool invocation. Custom instructions act as a system prompt that constrains the agent's behavior.
 

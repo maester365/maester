@@ -1,4 +1,4 @@
-Describe 'Get-MtHtmlReport' {
+﻿Describe 'Get-MtHtmlReport' {
     BeforeAll {
         # The function resolves the template relative to its own location (powershell/public/report/)
         # From the test directory (powershell/tests/functions/) the template is at ../../assets/
@@ -419,6 +419,36 @@ Describe 'Get-MtHtmlReport' {
             $html | Should -Not -BeLike '*id="maester-attachment-*'
             $html | Should -Not -BeLike '*"Attachments"*'
             $warnings | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Keeps a JSON attachment and redacts it like the results (<_>)' -ForEach @('HtmlOnly', 'AllOutputs') {
+            $data = '{"Pillars":[{"Note":"Owner jane@contoso.com, Jane Doe"}]}'
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($data)
+            $buffer = [System.IO.MemoryStream]::new()
+            $gzip = [System.IO.Compression.GZipStream]::new($buffer, [System.IO.Compression.CompressionMode]::Compress, $true)
+            $gzip.Write($bytes, 0, $bytes.Length); $gzip.Dispose()
+            $jsonAttachment = [PSCustomObject]@{
+                Id = 'fedcba9876543210fedcba9876543210'; Name = 'zero-trust-workshop'; TestId = 'ZTA'
+                ContentType = 'application/json'; FileName = $null; Size = $bytes.Length; Encoding = 'gzip+base64'
+                Content = [System.Convert]::ToBase64String($buffer.ToArray())
+            }
+            $results = Get-ResultWithAttachment
+            $results.Attachments = @($attachment, $jsonAttachment)
+            $map = @{ 'jane@contoso.com' = 'user-001'; 'Jane Doe' = 'user-001' }
+
+            $html = Get-MtHtmlReport -MaesterResults $results -RedactUserIdentity $_ -UserIdentityReplacementMap $map -WarningVariable warnings -WarningAction SilentlyContinue
+
+            $html | Should -Not -BeLike "*id=`"maester-attachment-$($attachment.Id)`"*"
+            $embedded = [regex]::Match($html, "id=`"maester-attachment-$($jsonAttachment.Id)`" data-encoding=`"gzip\+base64`">([A-Za-z0-9+/=]+)<").Groups[1].Value
+            $embedded | Should -Not -BeNullOrEmpty
+            $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($embedded))
+            $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+            $text = $reader.ReadToEnd(); $reader.Dispose()
+            $text | Should -Be '{"Pillars":[{"Note":"Owner user-001, user-001"}]}'
+            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value | ConvertFrom-Json
+            @($json.Attachments).Name | Should -Be @('zero-trust-workshop')
+            $warnings | Should -Not -BeNullOrEmpty
+            $jsonAttachment.Content | Should -Be ([System.Convert]::ToBase64String($buffer.ToArray()))
         }
 
         It 'Leaves the MaesterResults passed in unchanged' {

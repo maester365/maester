@@ -1,4 +1,4 @@
-param (
+﻿param (
     # Module to Launch
     [Parameter(Mandatory = $false)]
     [string] $ModuleManifestPath = '.\powershell\*.psd1',

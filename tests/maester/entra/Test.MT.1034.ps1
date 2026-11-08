@@ -1,4 +1,4 @@
-function Get-MtCaWhatIfEmergencyAccessInstance {
+﻿function Get-MtCaWhatIfEmergencyAccessInstance {
     <#
     .SYNOPSIS
     Returns one MT.1034 instance per emergency access account (up to five).

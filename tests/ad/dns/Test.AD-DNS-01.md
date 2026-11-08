@@ -1,4 +1,4 @@
-﻿DNS zones are the primary organizational units for DNS data. Understanding how many zones contain resource records helps assess:
+DNS zones are the primary organizational units for DNS data. Understanding how many zones contain resource records helps assess:
 
 - **Infrastructure complexity**: More zones indicate a more complex DNS environment
 - **Administrative boundaries**: Zones often represent different administrative domains

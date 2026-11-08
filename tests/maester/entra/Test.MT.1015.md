@@ -1,4 +1,4 @@
-﻿Microsoft recommends blocking access for unknown or unsupported device platforms.
+Microsoft recommends blocking access for unknown or unsupported device platforms.
 
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device

@@ -27,7 +27,7 @@
         ImplementationCost = 'Medium',
         Mitre = 'None',
         Control = 'cisa-scuba:MS.EXO.16.2',
-        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
+        Service = 'None',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'

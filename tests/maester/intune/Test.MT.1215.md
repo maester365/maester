@@ -1,4 +1,4 @@
-﻿Ensure macOS devices are restricted to trusted app download locations by Gatekeeper.
+Ensure macOS devices are restricted to trusted app download locations by Gatekeeper.
 
 Gatekeeper decides which app download locations are permitted on macOS. Intune can address it two ways, and this check credits either:
 
