@@ -89,9 +89,9 @@ function Test-MtIntuneSecurityBaselineStatus {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'INTUNE_A',
+        Lifecycle = 'Preview',
         InstanceSource = 'Get-MtIntuneSecurityBaselineInstance',
         Author = 'earbona23'
     )]

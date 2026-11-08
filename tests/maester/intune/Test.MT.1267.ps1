@@ -44,9 +44,9 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'INTUNE_A',
+        Lifecycle = 'Preview',
         Author = 'earbona23'
     )]
     [CmdletBinding()]
