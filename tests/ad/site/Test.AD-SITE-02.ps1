@@ -1,30 +1,20 @@
 ﻿function Test-MtAdSiteWithoutDcCount {
     <#
     .SYNOPSIS
-    Counts the number of Active Directory sites without domain controllers.
-
+    Sites without local domain controllers meet the organization baseline.
     .DESCRIPTION
-    This test identifies sites that do not have any domain controllers deployed.
-    Sites without DCs may experience authentication delays as clients must
-    authenticate across the WAN to another site.
-
-    .EXAMPLE
-    Test-MtAdSiteWithoutDcCount
-
-    Returns $true if site and DC data is accessible.
-    The test result includes the count of sites without DCs.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdSiteWithoutDcCount
+    Uses cached Active Directory state to assess or inventory sites without local domain controllers meet the organization baseline.
     #>
     [MaesterTest(
         Id = 'AD-SITE-02',
-        Title = 'Sites without domain controllers count should be retrievable',
+        Title = 'Sites without local domain controllers meet the organization baseline',
         Product = 'ad',
         Feature = 'sites-and-subnets',
         Area = 'infrastructure',
         ResourceType = 'AdSite',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:site:ReadProperty'),
@@ -32,57 +22,20 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Site names intentionally permitted to have no local domain controller.
+        [string[]] $AllowedSitesWithoutDcs
+    )
 
-    Write-Verbose "Starting Test-MtAdSiteWithoutDcCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('DomainControllers', 'ReplicationSites')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    # Sites without a local DC can be intentional; configure their names as exceptions.
+    $state = Get-MtADDomainState -Categories @('ReplicationSites', 'DomainControllers')
+    $view = Get-MtAdSiteSubnetOverview -State $state -Sites -Controllers
+    $missing = @($view.SitesWithoutDcs | Where-Object { $AllowedSitesWithoutDcs -notcontains $_.Name })
+    $rows = @('| Site without local DC | Distinguished name |', '| --- | --- |')
+    foreach ($site in $view.SitesWithoutDcs) {
+        $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $site.Name), (Format-MtAdSiteInventoryValue $site.DistinguishedName)
     }
-
-    $sites = $adState.ReplicationSites
-    $domainControllers = $adState.DomainControllers
-
-    # Get sites with DCs
-    $sitesWithDCs = $domainControllers | Select-Object -ExpandProperty Site -Unique
-
-    # Get sites without DCs
-    $sitesWithoutDCs = $sites | Where-Object { $sitesWithDCs -notcontains $_.Name }
-    $sitesWithoutDcCount = ($sitesWithoutDCs | Measure-Object).Count
-    $totalSites = ($sites | Measure-Object).Count
-    $sitesWithDcCount = $totalSites - $sitesWithoutDcCount
-
-    # Test passes if we successfully retrieved data
-    $testResult = $totalSites -ge 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Sites | $totalSites |" + "`n"
-        $result += "| Sites with DCs | $sitesWithDcCount |" + "`n"
-        $result += "| Sites without DCs | $sitesWithoutDcCount |" + "`n"
-
-        if ($sitesWithoutDcCount -gt 0) {
-            $percentage = [Math]::Round(($sitesWithoutDcCount / $totalSites) * 100, 2)
-            $result += "| Sites without DCs % | $percentage% |" + "`n"
-
-            $siteNames = $sitesWithoutDCs | Select-Object -ExpandProperty Name | Sort-Object
-            $result += "| Sites without DCs | $($siteNames -join ', ') |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory site coverage has been analyzed. $sitesWithoutDcCount out of $totalSites site(s) do not have domain controllers.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory site information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $summary = if ($missing.Count -eq 0) { 'Well done. All sites without local DCs meet the configured organization baseline.' } else { "$($missing.Count) site(s) without local DCs are not in the allowed list; review coverage or add intentional exceptions." }
+    Add-MtTestResultDetail -Result "$summary Total sites: $($view.Sites.Count); sites with DCs: $($view.Sites.Count - $view.SitesWithoutDcs.Count); sites without DCs: $($view.SitesWithoutDcs.Count).`n`n$($rows -join "`n")"
+    return ($missing.Count -eq 0)
 }

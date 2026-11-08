@@ -1,33 +1,15 @@
-Sites without domain controllers may indicate:
+Sites without local domain controllers meet the organization baseline.
 
-- **Authentication delays**: Clients in these sites must authenticate across the WAN to another site
-- **Single points of failure**: If the WAN link fails, clients cannot authenticate
-- **Incomplete deployment**: Sites may have been created but DCs were never deployed
-- **Resource gaps**: Branch offices may lack local domain controller presence
+Compares each site to domain controller site metadata. A site without a local DC may be intentional; use AllowedSitesWithoutDcs to record permitted site names. This check replaces AD-SITE-03.
 
-Sites without DCs should be carefully evaluated to ensure they represent intentional design decisions rather than configuration gaps.
+#### Remediation action
 
-#### Control Type
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects against the organization baseline, document intentional exceptions and correct unintended configuration with the directory and network owners.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-For sites without domain controllers:
-- Consider deploying RODCs (Read-Only Domain Controllers) in branch offices
-- Ensure WAN links are reliable and have adequate bandwidth
-- Document the business justification for sites without local DCs
-- Monitor authentication traffic from these sites
-
-#### How the Test Works
-
-This test compares the list of sites with domain controllers against all sites in the domain to identify sites that have no DC presence.
-
-#### Related Tests
-
-- `Test-MtAdSiteWithoutDcDetails` - Lists the specific sites without DCs
-- `Test-MtAdSiteTotalCount` - Counts total sites in the domain
-- `Test-MtAdDcSiteCoverageCount` - Analyzes DC distribution across sites
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/designing-the-site-topology)
 
 <!--- Results --->
 %TestResult%
