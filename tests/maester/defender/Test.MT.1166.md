@@ -1,4 +1,4 @@
-﻿Checks that local admin merge is disabled to block local exclusions in the assigned Microsoft Defender Antivirus policies.
+Checks that local admin merge is disabled to block local exclusions in the assigned Microsoft Defender Antivirus policies.
 
 Local admin policy override allows privilege escalation to bypass security controls, enabling local administrators to add exclusions that weaken endpoint protection.
 

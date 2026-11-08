@@ -1,4 +1,4 @@
-﻿Active Directory sites represent the physical topology of your network and are fundamental to:
+Active Directory sites represent the physical topology of your network and are fundamental to:
 
 - **Authentication efficiency**: Clients authenticate to domain controllers in their local site
 - **Replication optimization**: Directory data replicates between sites on a controlled schedule

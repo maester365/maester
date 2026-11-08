@@ -1,4 +1,4 @@
-function Get-MtZtaInstance {
+﻿function Get-MtZtaInstance {
     <#
     .SYNOPSIS
     Returns one ZTA instance per result of the Microsoft Zero Trust Assessment.
@@ -41,6 +41,10 @@ function Get-MtZtaInstance {
         }
 
         Add-MtZtaReportAttachment -ReportPath $reportPath
+        # The Zero Trust Workshop plan for the report's Zero Trust plan view (helpers/Add-MtZtaWorkshopPlan.ps1).
+        Add-MtZtaWorkshopPlan
+        # Facts from the assessment's tenant export for the Affected objects page (helpers/Add-MtZtaObjectFact.ps1).
+        Add-MtZtaObjectFact -ReportPath $reportPath -Report $report
         ConvertTo-MtZtaInstance -Report $report
     } finally {
         # A collection into a temporary folder leaves nothing behind: the export holds raw tenant data.
@@ -131,6 +135,13 @@ function ConvertTo-MtZtaInstance {
     )
 
     $severity = @{ High = 'High'; Medium = 'Medium'; Low = 'Low' }
+    # What each assessment test is about in Maester's terms (product, feature, area, ATT&CK), from the pack's
+    # mapping, which build/zta/Update-MtZtaCatalog.ps1 writes into catalog.json.
+    $mapped = @{}
+    $catalogPath = Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath 'catalog.json'
+    if (Test-Path -LiteralPath $catalogPath) {
+        foreach ($entry in @((Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json).Tests)) { $mapped[[string]$entry.TestId] = $entry }
+    }
     $rows = @($Report.Tests | Where-Object { $_ -and $_.TestStatus -ne 'Planned' -and $_.TestSkipped -ne 'UnderConstruction' })
     $repeated = @($rows | Group-Object -Property { [string]$_.TestId } | Where-Object Count -gt 1 | ForEach-Object Name)
     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -156,6 +167,13 @@ function ConvertTo-MtZtaInstance {
                 Data   = $row
             }
             if ($severity.ContainsKey([string]$row.TestRisk)) { $instance.Severity = $severity[[string]$row.TestRisk] }
+            $entry = $mapped[[string]$row.TestId]
+            if ($entry) {
+                foreach ($name in 'Product', 'RelatedProduct', 'Feature', 'Area', 'UserImpact', 'ImplementationCost', 'Mitre') {
+                    $property = $entry.PSObject.Properties[$name]
+                    if ($property -and $property.Value) { $instance[$name] = $property.Value }
+                }
+            }
             [pscustomobject]$instance
         }
     } finally {
@@ -194,6 +212,10 @@ function Invoke-MtZtaCollection {
     $module = Get-Module -Name ZeroTrustAssessment -ListAvailable | Sort-Object -Property Version -Descending | Select-Object -First 1
     if (-not $module) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'The ZeroTrustAssessment module is not installed. Run Install-Module ZeroTrustAssessment -Scope CurrentUser, or set ZeroTrustAssessment.ReportPath to a report from an earlier run.'
+    }
+    # The module can need a newer PowerShell than Maester does (3.1.0 needs 7.6): it is listed but will not load.
+    if ($module.PowerShellVersion -and $PSVersionTable.PSVersion -lt $module.PowerShellVersion) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "ZeroTrustAssessment $($module.Version) needs PowerShell $($module.PowerShellVersion) or later, and this is PowerShell $($PSVersionTable.PSVersion). Update PowerShell, or set ZeroTrustAssessment.ReportPath to a report from an earlier run."
     }
 
     $outputPath = [string](Get-MtSetting -Name 'ZeroTrustAssessment.OutputPath' -Default '')

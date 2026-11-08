@@ -1,4 +1,4 @@
-﻿Calendar details SHALL NOT be shared with all domains.
+Calendar details SHALL NOT be shared with all domains.
 
 Rationale: Calendar details may contain information that should not be shared by default with all domains. Disabling sharing with all domains closes an avenue for data exfiltration while still allowing for legitimate use as needed.
 

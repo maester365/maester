@@ -1,4 +1,4 @@
-﻿Sending domains must publish an SPF record that ends in a hard fail (-all) or soft fail (~all). Parked or otherwise non-sending domains must publish an SPF policy that denies all senders with -all.
+Sending domains must publish an SPF record that ends in a hard fail (-all) or soft fail (~all). Parked or otherwise non-sending domains must publish an SPF policy that denies all senders with -all.
 
 SPF lists the servers that may send mail for a domain. Receiving servers use it to reject, or to mark as suspicious, mail that pretends to come from your domain. Without an SPF record, or with one that ends in a neutral or permissive qualifier, anyone can send mail that looks like it comes from you without raising a flag.
 

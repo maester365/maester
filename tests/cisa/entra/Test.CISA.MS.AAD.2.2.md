@@ -1,4 +1,4 @@
-﻿A notification SHOULD be sent to the administrator when high-risk users are detected.
+A notification SHOULD be sent to the administrator when high-risk users are detected.
 
 Rationale: Notification enables the admin to monitor the event and remediate the risk. This helps the organization proactively respond to cyber intrusions as they occur.
 

@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy blocks USB debugging.
+Ensure at least one **assigned** Android compliance policy blocks USB debugging.
 
 USB debugging exposes the Android Debug Bridge over the device's cable. On a device where it is enabled, a host the user has authorised can install and launch applications, read the data of any app built as debuggable, and drive the user interface. It is a developer feature that stays on long after whatever needed it, and the user has no reason to notice.
 

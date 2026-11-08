@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy blocks access from selected untrusted locations and excludes at least one trusted location.
+An enabled Conditional Access policy blocks access from selected untrusted locations and excludes at least one trusted location.
 
 Most organisations know where their staff sign in from. A policy that blocks all locations except the trusted ones, or the countries you operate in, stops a large share of credential attacks that come from elsewhere without any extra step for users.
 

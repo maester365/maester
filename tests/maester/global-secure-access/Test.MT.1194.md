@@ -1,4 +1,4 @@
-﻿The **baseline** security profile (priority 65000) applies to all Internet Access traffic with no Conditional Access required. Linking an enabled **threat-intelligence** policy to the baseline provides an always-on malware and phishing floor.
+The **baseline** security profile (priority 65000) applies to all Internet Access traffic with no Conditional Access required. Linking an enabled **threat-intelligence** policy to the baseline provides an always-on malware and phishing floor.
 
 The baseline is the only place that protects **non-client / remote-network** traffic, the Conditional Access **token-propagation gap**, and users **not matched** by any user-aware (CA-linked) profile. Microsoft recommends linking the threat-intelligence policy to the baseline because it applies to all users' traffic.
 

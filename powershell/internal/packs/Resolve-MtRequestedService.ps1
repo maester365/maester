@@ -1,4 +1,4 @@
-function Resolve-MtRequestedService {
+﻿function Resolve-MtRequestedService {
     <#
     .SYNOPSIS
     Checks the -Service values of Connect-Maester and Test-MtConnection: Maester's own names, or the service of an installed pack's connector.

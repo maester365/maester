@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy blocks rooted devices.
+Ensure at least one **assigned** Android compliance policy blocks rooted devices.
 
 A rooted Android device has had the boundary the platform is trusted for removed. The application sandbox no longer separates apps, so the credentials and refresh tokens that Microsoft Authenticator, Outlook and Teams keep on the device can be read by anything running with root, and verified boot no longer guarantees that the running system is the one Google signed.
 

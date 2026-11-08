@@ -1,4 +1,4 @@
-﻿At a minimum, the following alerts SHALL be enabled:
+At a minimum, the following alerts SHALL be enabled:
 - Suspicious email sending patterns detected.
 - Suspicious Connector Activity.
 - Suspicious Email Forwarding Activity.

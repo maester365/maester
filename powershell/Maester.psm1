@@ -37,6 +37,7 @@ $__MtSession = @{
 	ADCredential           = $null               # Active Directory credential retained only for the connected session
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
 	IncludeAffectedObjects  = $false              # Set by Invoke-Maester -IncludeAffectedObjects; gates per-test object capture
+	AffectedObjectFacts    = $null               # Add-MtAffectedObjectFact: System|Type|Id -> facts about an object, merged into the AffectedObjects
 	Console                = $null               # Get-MtConsoleMode result for the current Invoke-Maester run
 	PackConnections        = @{}                 # Maester Packs: service -> connection state a pack connector set with Set-MtConnectionState
 	ReportAttachments      = $null               # Add-MtReportAttachment: reports of other tools embedded in the HTML report

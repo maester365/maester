@@ -92,6 +92,26 @@ const stable = 'Install-Module Maester -Scope CurrentUser';
 		cursor: pointer;
 		flex: none;
 	}
+	/* In the docs it sits among code blocks: their colours, in both themes. */
+	.mt-install--docs .mt-install__box {
+		background: var(--mt-code-bg);
+		border-color: var(--mt-code-line);
+		border-radius: 0.75rem;
+	}
+	.mt-install--docs code {
+		color: var(--mt-code-ink);
+	}
+	.mt-install--docs .mt-install__prompt {
+		color: var(--mt-code-muted);
+	}
+	.mt-install--docs b {
+		color: var(--sl-color-accent);
+	}
+	.mt-install--docs button {
+		background: var(--mt-code-btn);
+		border: 1px solid var(--mt-code-line);
+		color: var(--mt-code-ink);
+	}
 	.mt-install__note {
 		margin: 0;
 		font-size: 0.8rem;

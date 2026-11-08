@@ -1,4 +1,4 @@
-﻿Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.
+Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.
 
 Rationale: Spam is a constant threat as junk mail can reduce user productivity, fill up mailboxes unnecessarily, and in some cases include malicious links or attachments. Moving spam messages to a separate junk or quarantine folder helps users filter out spam while still giving them the ability to review messages, as needed, in case a message is filtered incorrectly.
 

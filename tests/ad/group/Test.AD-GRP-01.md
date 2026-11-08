@@ -1,4 +1,4 @@
-﻿The AdminCount attribute is a critical Active Directory security marker that indicates a group is considered "protected" by the system. Groups with AdminCount set receive special security protections that prevent delegation of administrative privileges through inheritance. This test helps identify:
+The AdminCount attribute is a critical Active Directory security marker that indicates a group is considered "protected" by the system. Groups with AdminCount set receive special security protections that prevent delegation of administrative privileges through inheritance. This test helps identify:
 
 - **Privileged groups**: Groups that are members of protected groups like Domain Admins, Enterprise Admins, or Schema Admins
 - **Security inheritance issues**: Groups that may have broken inheritance due to AdminCount settings

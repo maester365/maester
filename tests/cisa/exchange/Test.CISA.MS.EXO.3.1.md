@@ -1,4 +1,4 @@
-﻿DKIM SHOULD be enabled for all domains.
+DKIM SHOULD be enabled for all domains.
 
 Coexistence domains related to Hybrid Configuration Wizard (HCW) are skipped.
 Production use of coexistence domains is discouraged, and additional controls, such as transport rules, should be used to restrict their use.

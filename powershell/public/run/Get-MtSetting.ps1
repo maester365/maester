@@ -1,4 +1,4 @@
-function Get-MtSetting {
+﻿function Get-MtSetting {
     <#
     .SYNOPSIS
     Returns a setting from GlobalSettings in the Maester config.

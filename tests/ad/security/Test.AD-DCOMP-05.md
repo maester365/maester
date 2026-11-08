@@ -1,4 +1,4 @@
-﻿- Detailed knowledge of operating system versions and service pack levels is essential for effective vulnerability management and security compliance. This information helps identify:
+- Detailed knowledge of operating system versions and service pack levels is essential for effective vulnerability management and security compliance. This information helps identify:
 
 **Security Risks:**
 - **Missing Service Packs**: Systems without critical updates

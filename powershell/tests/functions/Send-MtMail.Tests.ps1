@@ -1,4 +1,4 @@
-Describe 'Send-MtMail HTML encoding' {
+﻿Describe 'Send-MtMail HTML encoding' {
     BeforeEach {
         $results = [PSCustomObject]@{
             TenantName = 'Contoso & Partners'

@@ -1,4 +1,4 @@
-# The version of the next preview or release (.github/workflows/Get-NextModuleVersion.ps1). A preview is a
+﻿# The version of the next preview or release (.github/workflows/Get-NextModuleVersion.ps1). A preview is a
 # prerelease of the release it leads to, so it never uses up a release number and always sorts below its release.
 Describe 'Get-NextModuleVersion' {
     BeforeAll {

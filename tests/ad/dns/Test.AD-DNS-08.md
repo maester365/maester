@@ -1,4 +1,4 @@
-﻿DNS zone delegations transfer authority for a subdomain to different name servers. Monitoring delegations is important because:
+DNS zone delegations transfer authority for a subdomain to different name servers. Monitoring delegations is important because:
 
 - **Security boundaries**: Delegations may cross administrative or security boundaries
 - **External dependencies**: Delegations may point to external/untrusted servers
