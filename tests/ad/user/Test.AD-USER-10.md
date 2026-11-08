@@ -1,22 +1,8 @@
-Restricting where a user can log on can reduce exposure for privileged, administrative, or sensitive accounts. Measuring how often workstation restrictions are used helps assess adoption of this hardening control.
+Workstation logon restrictions are inventoried for investigation, not treated as a pass/fail baseline. Their absence alone does not prove exposure.
 
-#### Control Type
-
-**Detective**
-
-#### Security Recommendation
-
-Consider applying workstation restrictions to privileged and high-value accounts where operationally feasible. Review configured restrictions periodically to ensure they remain accurate.
-
-#### How the Test Works
-
-This test retrieves Active Directory user data from `Get-MtADDomainState` and counts accounts where `LogonWorkstations` is populated.
-
-#### Related Tests
-
-- `Test-MtAdUserDelegationAllowedCount`
-- `Test-MtAdUserDormantEnabledCount`
-- `Test-MtAdUserNeverLoggedInCount`
+#### Remediation action
+1. Review listed user restrictions with account owners in [Active Directory administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Remove obsolete restrictions and document restrictions required for sensitive accounts.
 
 <!--- Results --->
 %TestResult%
