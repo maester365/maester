@@ -348,7 +348,8 @@
             Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 5 -StateUpdates @($update)) | Should -BeNullOrEmpty
             $script:SkippedBecause | Should -Be 'Custom'
             $script:SkippedCustomReason | Should -Match $Label
-            $script:SkippedCustomReason | Should -Match 'admin@contoso.com'
+            # updatedBy is tenant data, so it goes through Get-MtSafeMarkdown; the @ comes back escaped.
+            $script:SkippedCustomReason | Should -Match 'admin\\@contoso\.com'
             $script:SkippedCustomReason | Should -Match 'Handled elsewhere'
         }
 

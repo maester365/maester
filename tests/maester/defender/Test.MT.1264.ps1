@@ -280,7 +280,7 @@ function Test-MtSecureScoreControl {
     }
     if ($latestState -and $stateNames.ContainsKey([string]$latestState.state)) {
         $reason = "This improvement action is marked as **$($stateNames[[string]$latestState.state])** ($($latestState.state)) in the Microsoft Defender portal"
-        if ($latestState.updatedBy) { $reason += " by $($latestState.updatedBy)" }
+        if ($latestState.updatedBy) { $reason += " by $(Get-MtSafeMarkdown ([string]$latestState.updatedBy))" }
         $reason += '.'
         if ($latestState.comment) { $reason += "`n`nComment: $(Get-MtSafeMarkdown ([string]$latestState.comment))" }
         $reason += "`n`nIf it applies to this tenant, change its status back to **To address** to have Maester check it again.$actionLinkMd"
