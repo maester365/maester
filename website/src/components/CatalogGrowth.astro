@@ -102,7 +102,7 @@ const growth = Math.round((total(counts.all) / Math.max(1, first.builtIn)) * 10)
 				{format(total(counts.all))} checks, and more every release.
 			</h2>
 			<p class="mt-growth__lede">
-				From {format(first.builtIn)} checks in Maester {first.label} to {format(total(counts.all))} today: {growth}× in {Math.max(1, Math.round((t1 - t0) / (365.25 * 864e5) * 10) / 10)} years. Security experts in the
+				{history.releases.length > 0 && <>From {format(first.builtIn)} checks in Maester {first.label} to {format(total(counts.all))} today: {growth}× in {Math.max(1, Math.round((t1 - t0) / (365.25 * 864e5) * 10) / 10)} years. </>}Security experts in the
 				community write the built-in checks, and anyone can publish a pack for what Maester doesn't cover yet.
 			</p>
 		</div>

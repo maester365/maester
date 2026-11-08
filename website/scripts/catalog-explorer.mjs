@@ -172,8 +172,9 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
   const communityPacks = [];
   const communityTests = [];
   for (const pack of community.packs ?? []) {
-    communityPacks.push({ id: pack.id, code: pack.code, name: pack.name, description: pack.description, publisher: pack.publisher, url: pack.url, count: pack.count, listed: pack.tests.length });
-    for (const t of pack.tests) {
+    const packTests = Array.isArray(pack.tests) ? pack.tests : [];
+    communityPacks.push({ id: pack.id, code: pack.code, name: pack.name, description: pack.description, publisher: pack.publisher, url: pack.url, count: pack.count, listed: packTests.length });
+    for (const t of packTests) {
       communityTests.push({
         id: t.id,
         title: t.title,

@@ -62,7 +62,10 @@ export async function writeCommunityPacks() {
   let data = { source: "none", generatedAt: null, packs: [] };
   try {
     const result = await read();
-    const packs = result.packs.filter(([p]) => !list(p.Badges).includes("BuiltIn")).map(([p, tests]) => pack(p, tests));
+    // An entry without a code or name is skipped rather than dropping every pack.
+    const packs = result.packs
+      .filter(([p]) => p?.Code && p?.Name && !list(p.Badges).includes("BuiltIn"))
+      .map(([p, tests]) => pack(p, tests));
     packs.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
     data = { source: result.source, generatedAt: result.generatedAt, packs };
   } catch (error) {

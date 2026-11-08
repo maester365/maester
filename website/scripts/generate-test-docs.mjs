@@ -871,8 +871,13 @@ export function main() {
   contributorData.profilesById = new Map(contributorData.profiles.map((profile) => [profile.id, profile]));
   // The explorer's data, with who wrote and improved each check (the same credits as the test pages' bylines).
   // The community packs' tests, when community-packs.mjs has read them (prepare-data.mjs runs it first).
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
-  const community = existsSync(communityPacksPath) ? JSON.parse(readFileSync(communityPacksPath, "utf8")) : { packs: [] };
+  let community = { packs: [] };
+  try {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
+    if (existsSync(communityPacksPath)) community = JSON.parse(readFileSync(communityPacksPath, "utf8"));
+  } catch (error) {
+    console.warn(`generate-test-docs: ${communityPacksPath} doesn't parse (${error.message}); listing no community packs.`);
+  }
   const explorer = writeExplorerData(catalog, releasedTests, contributorData, community);
   const testTitles = Object.fromEntries(tests.map((test) => [test.id, { title: test.title, path: `/docs/tests/${test.id}` }]));
   writeGenerated(snapshotPath, `${JSON.stringify({ profiles: contributorData.profiles, attributions: contributorData.attributions, tests: testTitles }, null, 2)}\n`, writes);

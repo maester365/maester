@@ -21,10 +21,10 @@ const git = (...args) => execFileSync("git", args, { cwd: repoRoot, encoding: "u
 
 // A stable release tag: 1.2.0 or v1.2.0, not a preview or a release candidate, and not one of the 0.0.x builds of
 // the first weeks, whose tests folder held examples as well as checks.
-const stable = /^v?(\d+)\.(\d+)(?:\.(\d+))?$/;
 const isRelease = (tag) => {
-  const [, major, minor] = tag.match(stable) ?? [];
-  return major !== undefined && (Number(major) > 0 || Number(minor) > 0);
+  const parts = tag.replace(/^v/, "").split(".");
+  if (parts.length < 2 || parts.length > 3 || !parts.every((p) => /^\d+$/.test(p))) return false;
+  return Number(parts[0]) > 0 || Number(parts[1]) > 0;
 };
 
 function countAt(tag) {

@@ -388,6 +388,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			// A pack runs as one assessment, whatever the filters; selectors would only deselect its family test.
 			if (scope === 'pack' || !builtIn.length) {
 				notes.push('The pack runs the whole assessment, with its module installed; filters choose what you read, not what runs.');
+				if (community.length) notes.push(`The ${community.join(', ')} community pack checks run on their own, once the pack is installed.`);
 				return show(scope === 'pack' ? parts[0] : `Invoke-Maester -Pack ${packs.join(',')} -SkipBuiltIn`, true);
 			}
 			if (loose && builtIn.length <= 25) {
