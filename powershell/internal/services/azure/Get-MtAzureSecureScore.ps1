@@ -117,7 +117,10 @@ resourcecontainers
         $max = [double]($row.maxScore)
         # A maximum of zero means nothing was assessed. Reporting 0% there would read as a bad score
         # rather than as no score, so the percentage stays null and the caller skips the subscription.
-        $percentage = if ($max -gt 0) { [math]::Round(($current / $max) * 100, 1) } else { $null }
+        # Not rounded: the caller compares it with the target, and 79.96 rounded to 80.0 would pass a target
+        # of 80. Round only for display. Decimal, not double: in double 57 of 100 is 56.99999999999999 and would
+        # miss a target of 57.
+        $percentage = if ($max -gt 0) { [double]([decimal]$current * 100 / [decimal]$max) } else { $null }
 
         $result.Add([pscustomobject]@{
                 SubscriptionId   = $id

@@ -107,8 +107,10 @@ function Test-MtAzureSecureScore {
         return $null
     }
 
-    $percentage = [double]$subscription.ScorePercentage
-    $testResult = $percentage -ge $MinimumScorePercentage
+    # Compare the exact percentage. The one shown is cut, not rounded, to one decimal, so a score just under the
+    # target never reads as reaching it (79.96 shows as 79.9, not 80).
+    $testResult = [double]$subscription.ScorePercentage -ge $MinimumScorePercentage
+    $percentage = [math]::Floor([double]$subscription.ScorePercentage * 10) / 10
 
     $testResultMarkdown = "The Defender for Cloud secure score of **$name** is **$percentage%**, against a target of **$MinimumScorePercentage%**.`n`n"
     $testResultMarkdown += "| Property | Value |`n| --- | --- |`n"

@@ -54,6 +54,13 @@
             Test-MtAzureSecureScore -Instance $below | Should -BeFalse
         }
 
+        It 'fails a score just under the target, and shows it under the target' {
+            $i = [pscustomobject]@{ Data = Get-TestSubscription -Percentage 79.96 }
+
+            Test-MtAzureSecureScore -Instance $i | Should -BeFalse -Because '79.96 is below a target of 80'
+            $script:TestResult | Should -Match 'is \*\*79\.9%\*\*'
+        }
+
         It 'honours a target other than the default' {
             $i = [pscustomobject]@{ Data = Get-TestSubscription -Percentage 85 }
 
@@ -149,6 +156,23 @@
             $rows = Get-MtAzureSecureScore
 
             ($rows | Where-Object { $_.SubscriptionId -eq 'sub-1' }).ScorePercentage | Should -Be 80 -Because '44 of 55 is 80%'
+        }
+
+        It 'returns the percentage unrounded, so the test compares the exact value with the target' -ForEach @(
+            @{ Current = 79.96; Max = 100; Expected = 79.96 }
+            @{ Current = 57; Max = 100; Expected = 57 }
+            @{ Current = 1; Max = 3; Expected = 100 / 3 }
+        ) {
+            Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
+                param($Query)
+                if ($Query -match 'securescores') { return @([pscustomobject]@{ subscriptionId = 'sub-1'; currentScore = $Current; maxScore = $Max; initiative = 'ascScore' }) }
+                return @()
+            }.GetNewClosure()
+
+            # No @(): the helper writes the list with -NoEnumerate.
+            $rows = Get-MtAzureSecureScore
+
+            ($rows | Where-Object { $_.SubscriptionId -eq 'sub-1' }).ScorePercentage | Should -Be $Expected
         }
 
         It 'leaves the percentage null when the maximum score is zero, rather than reporting zero per cent' {
