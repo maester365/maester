@@ -1,26 +1,13 @@
-#### Test-MtAdGpoVersionMismatchCount
+Checks whether each GPO's directory version differs from its SYSVOL GPT.INI version. A mismatch can indicate replication or policy deployment problems. The result lists both versions for mismatched policies. Incomplete SYSVOL reads or missing version fields produce an error, never a clean result.
 
- Counts the number of GPOs with a version mismatch.
+#### Remediation action
 
-#### Why This Test Matters
-- Detective control: flags GPOs that have a version mismatch which could affect policy consistency across machines.
-
-#### Control Type
-
-**Detective**
-
-#### Security Recommendation
-- Review mismatched GPOs and align versions with baseline configurations.
-
-#### How the Test Works
-- Pulls GPO state, filters HasVersionMismatch, counts total/mismatched and computes a mismatch ratio.
-
-#### Related Tests
-- `Test-MtAdGpoVersionMismatchDetails`.
+1. In **Group Policy Management**, identify the listed GPOs and compare directory and SYSVOL policy versions.
+2. Diagnose replication and GPT.INI access, then synchronize the affected policy files and directory metadata. Re-run the check after replication completes.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

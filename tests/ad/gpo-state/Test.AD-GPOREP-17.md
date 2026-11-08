@@ -1,26 +1,13 @@
-#### Test-MtAdGpoCpasswordFoundCount
+Checks all collected GPOs for both Group Policy Preferences `cpassword` values and default passwords in SYSVOL security templates. Any domain user with read access to these files can recover exposed credentials. The result lists only policy names and boolean findings, never password contents. Missing scan fields and SYSVOL errors produce an error rather than a clean pass.
 
- Counts the number of GPOs that contain a cpassword.
+#### Remediation action
 
-#### Why This Test Matters
-- Detective control: counts GPOs containing a cpassword which indicates potential credential exposure.
-
-#### Control Type
-
-**Detective**
-
-#### Security Recommendation
-- Review cpassword occurrences and rotate credentials or secure storage as needed.
-
-#### How the Test Works
-- Retrieves GPO state, filters for CpasswordFound, and reports totals and percentage of GPOs with cpasswords.
-
-#### Related Tests
-- `Test-MtAdGpoCpasswordFoundDetails`.
+1. In **Group Policy Management**, locate the listed GPOs and remove password-bearing preferences or security-template settings from SYSVOL.
+2. Rotate every credential that was stored in these files, including accounts with privileged access. Migrate to a supported secret-management mechanism and rescan all GPOs.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy Preferences and passwords](https://learn.microsoft.com/security-updates/securitybulletins/2014/ms14-025)
 
 <!--- Results --->
 %TestResult%

@@ -1,33 +1,15 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoCpasswordFoundCount {
+﻿function Test-MtAdGpoCpasswordFoundCount {
     <#
     .SYNOPSIS
-    Counts the number of GPOs that contain a cpassword.
-
+    Checks for exposed secrets in Group Policy files.
     .DESCRIPTION
-    This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-    then counts how many returned GPO reports indicate a cpassword was found.
-
-    .EXAMPLE
-    Test-MtAdGpoCpasswordFoundCount
-
-    Returns $true if GPO report data is accessible, $false otherwise.
-    The test result includes the number of GPOs with cpassword present.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoCpasswordFoundCount
+    Flags either Group Policy Preferences cpassword or security-template default passwords, including cases with only one finding type. Never includes credential values.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-17',
-        Title = 'No GPOs should contain a cpassword',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'authentication',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Critical',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
-        Mitre = 'T1552.006',
+        Id = 'AD-GPOREP-17', Title = 'No GPO should expose cpassword or default passwords',
+        Product = 'ad', Feature = 'group-policy', Area = 'authentication',
+        ResourceType = 'GroupPolicy', Severity = 'Critical', UserImpact = 'Low',
+        ImplementationCost = 'Medium', Mitre = ('T1552.001', 'T1552.006'),
         Control = ('nist-800-53-r5:IA-5(1)', 'nist-800-53-r5:SC-28'),
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
@@ -37,39 +19,30 @@ function Test-MtAdGpoCpasswordFoundCount {
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdGpoCpasswordFoundCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOReports -or $null -eq $state.GPOs) {
+        throw 'GPO secret scan reports or GPO metadata could not be collected.'
     }
-    Write-Verbose "Filtering/counting gpo cpassword found count"
-
-    $gpoReports = $gpoState.GPOReports
-    if ($null -eq $gpoReports) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO report data from Get-MtADGpoState.'
-        return $false
+    $reports = @($state.GPOReports | Where-Object { $null -ne $_ })
+    if ($reports.Count -eq 0 -or $reports.Count -ne @($state.GPOs).Count) { throw 'GPO secret scan reports are empty or do not match the GPO inventory.' }
+    $incomplete = @($reports | Where-Object {
+            $null -eq $_.CpasswordFound -or $null -eq $_.DefaultPasswordFound -or
+            $null -eq $_.Errors -or @($_.Errors).Count -gt 0
+        })
+    if ($incomplete.Count -gt 0) {
+        throw "SYSVOL secret scan incomplete for $($incomplete.Count) GPOs; check access and scan errors before claiming no exposed passwords."
     }
-
-    $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-    $totalCount = $gpoReportsArray.Count
-    $cpasswordCount = @($gpoReportsArray | Where-Object { [bool]$_.CpasswordFound }).Count
-
-    $testResult = $cpasswordCount -eq 0
-    $cpasswordPercentage = if ($totalCount -gt 0) { [Math]::Round(($cpasswordCount / $totalCount) * 100, 2) } else { 0 }
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total GPOs | $totalCount |" + "`n"
-    $result += "| GPOs with cpassword | $cpasswordCount |" + "`n"
-    $result += "| cpassword ratio | $cpasswordPercentage% |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPOs have been analyzed for cpassword usage. $cpasswordCount out of $totalCount GPO(s) contain a cpassword.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdGpoCpasswordFoundCount"
-    return $testResult
+    $cpassword = @($reports | Where-Object { $true -eq $_.CpasswordFound })
+    $defaultPassword = @($reports | Where-Object { $true -eq $_.DefaultPasswordFound })
+    $found = @($reports | Where-Object { $true -eq $_.CpasswordFound -or $true -eq $_.DefaultPasswordFound })
+    $table = "| GPO | cpassword present | Default password present |`n| --- | --- | --- |`n"
+    foreach ($report in @($found | Sort-Object Name)) {
+        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
+        $table += "| $name | $([bool]$report.CpasswordFound) | $([bool]$report.DefaultPasswordFound) |`n"
+    }
+    $pass = $found.Count -eq 0
+    $message = if ($pass) { "Well done. No cpassword or default password found in $($reports.Count) scanned GPOs." }
+    else { "$($found.Count) of $($reports.Count) GPOs expose passwords ($($cpassword.Count) with cpassword, $($defaultPassword.Count) with default passwords). Remove the secrets and rotate the affected credentials." }
+    Add-MtTestResultDetail -Result "$message`n`n$table"
+    return $pass
 }
