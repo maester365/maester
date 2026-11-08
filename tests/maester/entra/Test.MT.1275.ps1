@@ -19,7 +19,7 @@
         Product = 'entra',
         Feature = 'conditional-access',
         Area = 'identity-lifecycle',
-        ResourceType = 'ConditionalAccessPolicyPlan',
+        ResourceType = 'Policy',
         Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Medium',

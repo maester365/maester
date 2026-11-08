@@ -122,7 +122,7 @@ Describe 'Tab completion' {
 
         It 'completes the taxonomy keys for New-MtTest' {
             Get-CompletionText 'New-MtTest -Product exchange -Feature anti-' | Should -Contain 'anti-phishing'
-            Get-CompletionText 'New-MtTest -ResourceType Cond' | Should -Be @('ConditionalAccessPolicy', 'ConditionalAccessPolicyPlan')
+            Get-CompletionText 'New-MtTest -ResourceType Cond' | Should -Be @('ConditionalAccessPolicy')
             Get-CompletionText 'New-MtTest -Mitre T1078' | Should -Contain 'T1078.004'
         }
     }
