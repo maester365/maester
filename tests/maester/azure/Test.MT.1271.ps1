@@ -97,8 +97,8 @@ function Test-MtAzureDefenderForCloudRecommendation {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Lifecycle = 'Preview',
         Service = 'Azure',
+        Lifecycle = 'Preview',
         InstanceSource = 'Get-MtAzureDefenderForCloudRecommendationInstance',
         Author = 'earbona23'
     )]
