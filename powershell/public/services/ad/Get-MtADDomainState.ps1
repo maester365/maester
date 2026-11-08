@@ -495,7 +495,7 @@
             }
         }
         Schema = @{
-            Properties   = @('SchemaObjects', 'SchemaContainer', 'LapsInstalled')
+            Properties   = @('SchemaObjects', 'SchemaContainer', 'LapsInstalled', 'WindowsLapsInstalled', 'DelegatedMsaSupported')
             Dependencies = @()
             Collector    = {
                 $result = [ordered]@{}
@@ -503,6 +503,10 @@
                 $result['SchemaObjects'] = $schemaObjects
                 $result['SchemaContainer'] = $schemaObjects | Where-Object { $_.DistinguishedName -eq $protocolRootDse.SchemaNamingContext } | Select-Object -First 1
                 $result['LapsInstalled'] = [bool]($schemaObjects | Where-Object { $_.Name -eq 'ms-Mcs-AdmPwd' } | Select-Object -First 1)
+                # Schema availability only: never retrieve password attribute values.
+                $schemaNames = @($schemaObjects | ForEach-Object { if ($_.LdapDisplayName) { $_.LdapDisplayName } else { $_.Name } })
+                $result['WindowsLapsInstalled'] = ($schemaNames -contains 'msLAPS-Password') -and ($schemaNames -contains 'msLAPS-PasswordExpirationTime')
+                $result['DelegatedMsaSupported'] = $schemaNames -contains 'msDS-DelegatedManagedServiceAccount'
                 return $result
             }
         }
@@ -625,6 +629,8 @@
         SchemaContainer        = $null
         Printers               = @()
         LapsInstalled          = $false
+        WindowsLapsInstalled   = $false
+        DelegatedMsaSupported  = $false
         DaclEntries            = @()
         FineGrainedPasswordPolicies = @()
     }

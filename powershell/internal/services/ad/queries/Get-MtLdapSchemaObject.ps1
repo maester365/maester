@@ -9,6 +9,6 @@
         [string] $SchemaNamingContext
     )
 
-    $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SchemaNamingContext -Scope Subtree -Filter '(objectClass=*)' -Attributes @('distinguishedName', 'name', 'objectClass', 'whenCreated', 'objectVersion'))
-    return @($entries | ForEach-Object { [PSCustomObject]@{ DistinguishedName = [string]$_.DistinguishedName; Name = [string]$_.name; ObjectClass = @($_.objectClass | Where-Object { $null -ne $_ }); WhenCreated = $_.whenCreated; ObjectVersion = $_.objectVersion } })
+    $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SchemaNamingContext -Scope Subtree -Filter '(objectClass=*)' -Attributes @('distinguishedName', 'name', 'lDAPDisplayName', 'objectClass', 'whenCreated', 'objectVersion'))
+    return @($entries | ForEach-Object { [PSCustomObject]@{ DistinguishedName = [string]$_.DistinguishedName; Name = [string]$_.name; LdapDisplayName = [string]$_.lDAPDisplayName; ObjectClass = @($_.objectClass | Where-Object { $null -ne $_ }); WhenCreated = $_.whenCreated; ObjectVersion = $_.objectVersion } })
 }

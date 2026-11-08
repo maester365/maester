@@ -797,7 +797,9 @@ function Get-MtSysvolContent {
                 $gppXml.Add((ConvertFrom-MtSysvolGppXml -Content (& $invokeAdapter 'ReadText' $TimeoutSeconds) -RelativePath $path))
             }
             catch {
-                Write-Verbose "Could not parse SYSVOL XML file '$path': $($_.Exception.Message)"
+                # Parser/transport errors may contain file contents. Do not expose those
+                # values or return a clean scan after skipping an unreadable XML file.
+                throw "SYSVOL XML file '$path' could not be fully assessed; the password scan is incomplete."
             }
         }
         elseif ($path -match '(?i)(^|/)GptTmpl\.inf$') {
