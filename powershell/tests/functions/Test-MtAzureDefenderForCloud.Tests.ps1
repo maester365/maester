@@ -64,7 +64,7 @@
         }
     }
 
-    Context 'MT.1257 recommendations' {
+    Context 'MT.1271 recommendations' {
         It 'passes when no resource is unhealthy' {
             $i = [pscustomobject]@{ Data = Get-TestRecommendation -Unhealthy 0 -Healthy 5 }
 
@@ -129,7 +129,7 @@
         }
     }
 
-    Context 'MT.1258 attack paths' {
+    Context 'MT.1272 attack paths' {
         It 'reports the family as not licensed when Defender CSPM is off' {
             # Without the plan no attack path was ever computed, so an empty result says nothing.
             Mock -ModuleName Maester Get-MtDefenderForCloudAttackPath {

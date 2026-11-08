@@ -1,10 +1,10 @@
 ﻿function Get-MtAzureDefenderForCloudAttackPathInstance {
     <#
     .SYNOPSIS
-    Returns one MT.1258 instance per Microsoft Defender for Cloud attack path.
+    Returns one MT.1272 instance per Microsoft Defender for Cloud attack path.
 
     .DESCRIPTION
-    Instance source of the MT.1258 family. One instance per attack path, titled with the path itself,
+    Instance source of the MT.1272 family. One instance per attack path, titled with the path itself,
     which Defender for Cloud phrases as a sentence naming the entry point and the target.
 
     When Defender CSPM is not enabled on any readable subscription the source reports the family as not
@@ -81,7 +81,7 @@ function Test-MtAzureDefenderForCloudAttackPath {
     https://maester.dev/docs/commands/Test-MtAzureDefenderForCloudAttackPath
     #>
     [MaesterTest(
-        Id = 'MT.1258',
+        Id = 'MT.1272',
         Title = 'Microsoft Defender for Cloud should report no active attack path.',
         Product = 'azure',
         Feature = 'subscriptions',

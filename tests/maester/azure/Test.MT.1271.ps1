@@ -1,11 +1,11 @@
 ﻿function Get-MtAzureDefenderForCloudRecommendationInstance {
     <#
     .SYNOPSIS
-    Returns one MT.1257 instance per Microsoft Defender for Cloud recommendation.
+    Returns one MT.1271 instance per Microsoft Defender for Cloud recommendation.
 
     .DESCRIPTION
-    Instance source of the MT.1257 family. The suffix is the recommendation's assessment key
-    (MT.1257.<assessmentKey>) and the title names the recommendation, the way MT.1024 does for Entra
+    Instance source of the MT.1271 family. The suffix is the recommendation's assessment key
+    (MT.1271.<assessmentKey>) and the title names the recommendation, the way MT.1024 does for Entra
     recommendations. One instance per recommendation, never one per resource: a large estate produces
     thousands of assessment rows and only hundreds of recommendations.
 
@@ -86,7 +86,7 @@ function Test-MtAzureDefenderForCloudRecommendation {
     https://maester.dev/docs/commands/Test-MtAzureDefenderForCloudRecommendation
     #>
     [MaesterTest(
-        Id = 'MT.1257',
+        Id = 'MT.1271',
         Title = 'Resources should be healthy for the Microsoft Defender for Cloud recommendations.',
         Product = 'azure',
         Feature = 'subscriptions',
