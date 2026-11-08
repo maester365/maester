@@ -58,6 +58,6 @@
     $result += "| Effective tombstone lifetime | $effective days |`n"
     $result += "| Using the unset-attribute default (60 days) | $usingDefault |`n"
     $result += "| Forest name | $($adState.Forest.Name) |`n"
-    Add-MtTestResultDetail -Result "Well done. Tombstone lifetime was determined from the Directory Service configuration.`n`n$result"
+    Add-MtTestResultDetail -Result "Well done. Tombstone lifetime was determined from the Directory Service configuration. Coverage crosswalk: former AD-CFG-01 is included here; directory-configuration remains the single primary Feature, with forest context linked through AD-FOR-01 and AD-FOR-04.`n`n$result"
     return $true
 }

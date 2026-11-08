@@ -1,30 +1,12 @@
-SPN (Service Principal Name) suffixes simplify Service Principal Name management in complex Active Directory environments. They are important for:
+Inventories additional forest SPN suffix metadata for investigation. Review the reported values against the intended namespace and service-registration design; the suffix list is not proof that individual SPNs are valid or that a service is reachable.
 
-- **Service Authentication**: SPNs are used by Kerberos to authenticate services; suffixes provide flexibility in how services are registered
-- **Multi-Domain Services**: Organizations hosting services across multiple DNS namespaces use SPN suffixes to simplify SPN registration
-- **Service Migration**: SPN suffixes enable service migration between domains without changing service configurations
-- **Security Assessment**: Understanding SPN suffix configuration helps identify potential Kerberos authentication attack surfaces
+#### Remediation action
 
-#### Control Type
+Confirm ownership of each configured suffix before changing forest configuration. Use AD-SPN-01, AD-SPN-06 and AD-SPN-12 to assess actual computer, user and privileged-account SPNs. Do not remove a suffix based only on its count.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-Review SPN suffix configuration regularly:
-- Ensure only legitimate organizational DNS domains are configured as SPN suffixes
-- Remove unused SPN suffixes that may have been added for completed projects
-- Verify that SPN suffixes align with the organization's service hosting strategy
-- Monitor for unauthorized SPN suffix additions which could indicate compromise
-
-#### How the Test Works
-
-This test retrieves the SPN suffixes configured at the forest level using the `Get-ADForest` cmdlet. It counts the number of custom SPN suffixes and reports the configuration status. The default forest domain is available for SPN registration by default and is not counted as a custom suffix.
-
-#### Related Tests
-
-- `Test-MtAdUpnSuffixesCount` - Checks UPN suffix configuration for user authentication
-- `Test-MtAdUpnSuffixesDetails` - Provides detailed UPN suffix information
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

@@ -57,10 +57,10 @@
     $isEnabled = $recycleBinFeature[0].IsEnabled -eq $true
     $forestName = $adState.Forest.Name
     if ($isEnabled) {
-        Add-MtTestResultDetail -Result "Well done. Active Directory Recycle Bin is enabled in forest $forestName."
+        Add-MtTestResultDetail -Result "Well done. Active Directory Recycle Bin is enabled in forest $forestName. Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides optional-feature inventory. The engine supports one Feature, so these related family views are cross-linked."
         return $true
     }
 
-    Add-MtTestResultDetail -Result "Active Directory Recycle Bin is not enabled in forest $forestName. Plan and enable the Recycle Bin after checking the forest functional level."
+    Add-MtTestResultDetail -Result "Active Directory Recycle Bin is not enabled in forest $forestName. Plan and enable the Recycle Bin after checking the forest functional level. Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides the linked optional-feature inventory under a single Feature."
     return $false
 }

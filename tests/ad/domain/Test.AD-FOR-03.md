@@ -28,6 +28,10 @@ Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configur
 
 This test retrieves the tombstone lifetime from the Directory Service configuration object and reports both the configured attribute and effective value. It is an inventory check, not a pass/fail threshold for retention length. AD-CFG-01 was consolidated into this check.
 
+#### Coverage crosswalk
+
+Former AD-CFG-01 is covered here. The single primary `Feature` remains `directory-configuration`; forest context is linked through AD-FOR-01 and AD-FOR-04 rather than a second feature.
+
 #### Related links
 
 - [Microsoft ADTS: tombstone lifetime and unset-attribute default](https://learn.microsoft.com/openspecs/windows_protocols/ms-adts/1887de08-2a9e-4694-95e2-898cde411180)

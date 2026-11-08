@@ -1,72 +1,32 @@
 ﻿function Test-MtAdForestFunctionalLevel {
     <#
     .SYNOPSIS
-    Retrieves the current forest functional level.
-
+    Assesses the forest functional level against supported levels of all forest DCs.
     .DESCRIPTION
-    This test retrieves the current forest functional level which indicates the
-    features and capabilities available across all domains in the Active Directory
-    forest. Higher functional levels enable advanced forest-wide security features.
-
-    .EXAMPLE
-    Test-MtAdForestFunctionalLevel
-
-    Returns $true if forest functional level data is accessible.
-    The test result includes the current forest functional level.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdForestFunctionalLevel
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     #>
     [MaesterTest(
         Id = 'AD-FOR-01',
-        Title = 'Forest functional level should be retrievable',
+        Title = 'Forest functional level meets the highest supported common level',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdForestFunctionalLevel"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $forest = $adState.Forest
-    $functionalLevel = $forest.ForestMode
-
-    # Test passes if we successfully retrieved forest data
-    $testResult = $null -ne $functionalLevel
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Forest Functional Level | $functionalLevel |" + "`n"
-        $result += "| Forest Name | $($forest.Name) |" + "`n"
-        $result += "| Root Domain | $($forest.RootDomain) |" + "`n"
-        $result += "| Domain Count | $($forest.Domains.Count) |" + "`n"
-
-        $testResultMarkdown = "The Active Directory forest functional level has been retrieved successfully.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory forest functional level. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Forest', 'DomainControllers')
+    $assessment = Get-MtAdFunctionalLevelAssessment -State $state -Scope Forest
+    $ok = $assessment.Current -eq $assessment.Target
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } elseif ($assessment.Current -gt $assessment.Target) { 'Configured level exceeds collected DC support; verify incompatible or stale DC inventory before taking action.' } else { 'Plan forest functional level elevation after all DCs and domain functional levels support the target.' }) Current raw forest level: $($assessment.Current); highest common supported level: $($assessment.Target). Level 10 requires every forest DC on Server 2025."
+    return $ok
 }

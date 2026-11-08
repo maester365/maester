@@ -1,36 +1,15 @@
-The forest functional level determines which Active Directory features are available across all domains in the forest. Higher functional levels unlock important forest-wide security capabilities:
+Checks the forest functional level against the highest common level supported by all inventoried forest DCs, not just those in the connected domain. Raising the level enables newer forest capabilities but requires a planned compatibility and recovery assessment.
 
-- **Windows Server 2016+**: Enables features like privileged access management (PAM) across the forest
-- **Windows Server 2012 R2+**: Provides access to forest-wide authentication policies and silos
-- **Global Features**: Some features require forest-wide consistency to function
-- **Security Posture**: Running at lower levels means missing modern security features
+#### Remediation action
 
-#### Control Type
-
-**Preventive**
-
-#### Security Recommendation
-
-Aim to maintain your forest at the highest functional level supported by all domain controllers:
-
-1. **Verify Compatibility**: Ensure all DCs in all domains support the target level
-2. **Test Applications**: Verify critical applications work at the higher level
-3. **Plan Maintenance Window**: Schedule the upgrade appropriately
-4. **Document Changes**: Record the upgrade for audit and compliance purposes
-
-#### How the Test Works
-
-This test retrieves the current forest functional level from Active Directory along with basic forest information including the root domain and domain count.
-
-#### Related Tests
-
-- `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
-- `Test-MtAdForestDomainCount` - Counts domains in the forest
+1. Verify OS and supported-level evidence for every forest DC, including foreign-domain records with collection errors.
+2. Upgrade incompatible legacy DCs and raise each domain's functional level as required.
+3. Raise the forest level only when every DC and domain supports the target. Server 2025 level 10 requires 2025 DCs throughout the forest. Do not interpret an inaccessible DC as healthy or attempt to lower a level based on uncertain inventory.
 
 #### Related links
 
-- [Microsoft Learn: Active Directory Domain Services functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-functional-levels)
-- [ANSSI Active Directory checkpoints: Insufficient forest and domains functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)
+* [Microsoft: Active Directory functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-functional-levels)
+* [Microsoft: Raise domain and forest functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/raise-domain-forest-functional-levels)
 
 <!--- Results --->
 %TestResult%
