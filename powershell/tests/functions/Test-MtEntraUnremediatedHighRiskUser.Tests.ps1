@@ -73,6 +73,26 @@
         $script:TestResult | Should -Match 'atRisk'
     }
 
+    It 'escapes a tenant-controlled display name so it cannot render as a link' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id                      = 'user-1'
+                    userPrincipalName       = 'alice@contoso.com'
+                    userDisplayName         = '[Sign in again](https://phish.example)'
+                    riskLevel               = 'high'
+                    riskState               = 'atRisk'
+                    riskDetail              = 'none'
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                }
+            )
+        }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
+        $script:TestResult | Should -Not -Match '\| \[Sign in again\]\('
+        $script:TestResult | Should -Match ([regex]::Escape('\[Sign in again\]\(https://phish.example\)'))
+    }
+
     It 'fails when a high-risk user is confirmedCompromised (must not be treated as remediated)' {
         # This is the case that breaks if the check filters on riskState eq atRisk only:
         # confirmCompromised lands a user in confirmedCompromised, which is still unremediated.
@@ -180,7 +200,7 @@
             }
         }
 
-        It 'raises severity to High and lists the role when an at-risk user holds a privileged role' {
+        It 'lists the role first when an at-risk user holds a privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'user-2'; roleDefinitionId = 'role-ga'; AssignmentType = 'Active' })
@@ -189,7 +209,7 @@
             }
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'High'
+            $script:Severity | Should -BeNullOrEmpty
             $script:TestResult | Should -Match 'Global Administrator'
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             # The privileged user is listed first.
@@ -205,11 +225,11 @@
             }
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-            $script:Severity | Should -Be 'High'
-            $script:TestResult | Should -Match 'Global Administrator \(eligible\)'
+            $script:Severity | Should -BeNullOrEmpty
+            $script:TestResult | Should -Match 'Global Administrator \\\(eligible\\\)'
         }
 
-        It 'does not raise severity for a non-privileged role' {
+        It 'does not list a non-privileged role' {
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment {
                 return [pscustomobject]@{
                     Assignments     = @([pscustomobject]@{ principalId = 'user-1'; roleDefinitionId = 'role-dr'; AssignmentType = 'Active' })
