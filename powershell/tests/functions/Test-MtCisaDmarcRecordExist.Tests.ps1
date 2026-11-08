@@ -347,6 +347,10 @@ Describe 'CISA.MS.EXO.4.1 with DNS mocked' {
 }
 
 Describe 'Resolve-MtDnsTxtRecord' {
+    BeforeEach {
+        Clear-MtDnsCache
+    }
+
     Context 'with Resolve-Dns from DnsClient-PS' -Skip:$IsWindows {
         BeforeAll {
             $script:createdStub = $false
