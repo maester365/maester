@@ -28,7 +28,7 @@
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky',
-        Contributor = 'Mynster9361'
+        Contributor = ('Mynster9361', 'FiraSenax')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -65,21 +65,52 @@
         }
 
         $testResultMarkdown = "Mobile Threat Defense Connector Status:`n"
-        $testResultMarkdown += "| Name | LastHeartbeatDateTime | PartnerState |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
+        $testResultMarkdown += "| Name | LastHeartbeatDateTime | PartnerState | Reason |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- |`n"
 
         $connectorStatus = foreach ($connector in $mobileThreatDefenseConnectors) {
 
             if ($mtdConnectorInformation.ContainsKey($connector.id)) {
                 Write-Verbose ('Found {0} Connector.' -f $mtdConnectorInformation[$connector.id])
-                $testResultMarkdown += "| $($mtdConnectorInformation[$connector.id]) | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
+                $connectorName = $mtdConnectorInformation[$connector.id]
             } else {
                 Write-Verbose ('Found Unknown Third Party Mobile Threat Defense Connector: {0}' -f $connector.id)
-                $testResultMarkdown += "| $($connector.id) | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
+                $connectorName = $connector.id
             }
 
             $isConnected = $connector.partnerState -eq 'enabled'
-            $syncIsRecent = [System.Math]::Floor(((Get-Date) - [datetime]$connector.lastHeartbeatDateTime).TotalDays) -le 1
+            $reasons = @(switch ($connector.partnerState) {
+                'enabled' { break }
+                'notSetUp' { 'Setup is incomplete; device threat messages are blocked. Complete setup in Intune and with the partner, or remove an unused connector.' }
+                'unavailable' { 'The connector is deprovisioned; device threat messages are blocked. Ask the MTD partner to provision it again.' }
+                'available' { 'Setup is complete. Turn on a platform toggle to enable the connector.' }
+                'unresponsive' { 'The connector is unresponsive. After its configured unresponsiveness threshold, Intune ignores its compliance state. Check the partner service and connectivity.' }
+                'error' { 'The connector reported an error. Check the partner service for the error details.' }
+                default { 'Unrecognized connector state. Review the connector in Intune and with the partner.' }
+            })
+
+            $heartbeat = if ($connector.lastHeartbeatDateTime) { [datetime]$connector.lastHeartbeatDateTime } else { [datetime]::MinValue }
+            if ($heartbeat.Year -eq 1) {
+                $heartbeatDisplay = 'Never received'
+                $syncIsRecent = $false
+                $reasons += 'No heartbeat has been received. Complete setup and verify that the partner can communicate with Intune.'
+            } else {
+                $heartbeatDisplay = [string]$connector.lastHeartbeatDateTime
+                # Keep the existing window: at most one completed day since the heartbeat (less than 48 hours).
+                $syncIsRecent = [System.Math]::Floor(((Get-Date) - $heartbeat).TotalDays) -le 1
+                if (-not $syncIsRecent) {
+                    $reasons += "Heartbeat is outside the test's existing window (less than 48 hours). Check the partner service and connectivity."
+                }
+            }
+
+            if ($isConnected -and $syncIsRecent) {
+                $reasons = @('Enabled with a recent heartbeat.')
+            }
+
+            $nameMarkdown = Get-MtSafeMarkdown -Text $connectorName
+            $heartbeatMarkdown = Get-MtSafeMarkdown -Text $heartbeatDisplay
+            $stateMarkdown = Get-MtSafeMarkdown -Text ([string]$connector.partnerState)
+            $testResultMarkdown += "| $nameMarkdown | $heartbeatMarkdown | $stateMarkdown | $($reasons -join ' ') |`n"
             Write-Output ($isConnected -and $syncIsRecent)
         }
 
