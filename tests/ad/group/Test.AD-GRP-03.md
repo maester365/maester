@@ -32,8 +32,8 @@ This test retrieves all group objects from Active Directory and:
 
 #### Related Tests
 
-- `Test-MtAdGroupWithManagerCount` - Groups with managers are more likely to be actively maintained
-- `Test-MtAdGroupSidHistoryCount` - Stale groups may be remnants of domain migrations
+- **AD-GRP-04 — Groups with manager count should be retrievable** — `Test-MtAdGroupWithManagerCount` — Inventories ownership metadata, not actual group usage.
+- **AD-GRP-05 — Group SID History count should be retrievable** — `Test-MtAdGroupSidHistoryCount` — Reviews migration artifacts separately.
 
 <!--- Results --->
 %TestResult%

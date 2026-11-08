@@ -30,7 +30,7 @@ The test provides domain local, global and universal counts, plus domain local p
 
 #### Related Tests
 
-- `Test-MtAdGroupDistributionCount` - Counts distribution groups (email-only)
+- **AD-GRP-06 — Distribution group count should be retrievable** — `Test-MtAdGroupDistributionCount` — Inventories group category separately.
 
 <!--- Results --->
 %TestResult%

@@ -4,10 +4,10 @@
     Counts groups located in container objects (CN=) instead of Organizational Units (OU=).
 
     .DESCRIPTION
-    This test identifies groups that are stored in container objects (distinguished names starting with 'CN=')
-    rather than Organizational Units (OU=). Groups should typically be organized within OUs to allow for
-    proper delegation, Group Policy application, and logical organization. Storing groups in containers
-    like the default 'CN=Users' is considered poor practice and limits administrative flexibility.
+    This test examines each group's immediate parent distinguished-name component,
+    not the CN component naming the group itself. OUs can support consistent
+    organization and delegated administration. Group objects do not receive GPO
+    settings; group membership may instead be used for security filtering.
 
     .EXAMPLE
     Test-MtAdGroupInContainerCount
@@ -42,23 +42,28 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group inventory is unavailable; parent locations cannot be assessed.' }
+    if (@($groups | Where-Object { [string]::IsNullOrWhiteSpace($_.DistinguishedName) }).Count -gt 0) {
+        throw 'Group distinguished names are unavailable; parent locations cannot be assessed.'
+    }
 
     # Count groups in containers (CN=) vs OUs (OU=)
     $groupsInContainers = $groups | Where-Object {
-        $_.DistinguishedName -and $_.DistinguishedName -match '^CN='
+        ($_.DistinguishedName -replace '^(?:\\.|[^,])+,', '') -match '^CN='
     }
 
     $containerCount = ($groupsInContainers | Measure-Object).Count
     $totalCount = ($groups | Measure-Object).Count
-    $ouCount = $totalCount - $containerCount
+    $ouCount = @($groups | Where-Object { ($_.DistinguishedName -replace '^(?:\\.|[^,])+,', '') -match '^OU=' }).Count
+    $otherCount = $totalCount - $containerCount - $ouCount
 
     # Test passes if we successfully retrieved group data
-    $testResult = $totalCount -gt 0
+    $testResult = $null -ne $adState.Groups
 
     # Generate markdown results
     if ($testResult) {
@@ -73,6 +78,7 @@
         $result += "| Total Groups | $totalCount |" + "`n"
         $result += "| Groups in OUs (OU=) | $ouCount |" + "`n"
         $result += "| Groups in Containers (CN=) | $containerCount |" + "`n"
+        $result += "| Groups with Other Parent Types | $otherCount |" + "`n"
         $result += "| Container Percentage | $percentage% |" + "`n" + "`n"
 
         $testResultMarkdown = "Active Directory groups have been analyzed. $containerCount out of $totalCount groups ($percentage%) are located in container objects (CN=) rather than Organizational Units.`n`n%TestResult%"

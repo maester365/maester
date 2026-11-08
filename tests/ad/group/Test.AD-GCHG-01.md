@@ -33,8 +33,9 @@ The analysis helps identify trends and patterns in group management activity.
 
 #### Related Tests
 
-- `AD-GMC-02` - Reviews current privileged group membership counts and details
-- `AD-GMC-10` - Identifies empty non-privileged groups
+- **AD-GMC-02 — Distinct account types of members count should be retrievable** — `Test-MtAdGroupMemberAccountTypeCount` — Inventories member object classes, not privileged membership.
+- **AD-GMC-10 — Privileged groups with members count should be investigated** — `Test-MtAdGroupPrivilegedWithMembersCount` — Reviews privileged groups.
+- **AD-GMC-08 — Empty non-privileged group count should be investigated** — `Test-MtAdGroupEmptyNonPrivilegedCount` — Reviews empty non-privileged groups separately.
 
 <!--- Results --->
 %TestResult%

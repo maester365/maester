@@ -29,7 +29,7 @@ The test provides security and distribution group counts and percentages to unde
 
 #### Related Tests
 
-- `Test-MtAdGroupDomainLocalCount` - Counts domain local scope groups
+- **AD-GRP-08 — Domain local group count should be retrievable** — `Test-MtAdGroupDomainLocalCount` — Inventories group scope, not mail-delivery health.
 
 <!--- Results --->
 %TestResult%
