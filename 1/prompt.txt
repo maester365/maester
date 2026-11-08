@@ -1,0 +1,5 @@
+can you check what is taking power in claude? Is there a rogue process
+
+---
+
+Kill orphan

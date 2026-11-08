@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6X4J1FVDN792H0XTWH5CESM",
   "strategy": "manual-commit",
   "branch": "feat/website-catalog-growth",
-  "checkpoints_count": 2,
+  "checkpoints_count": 4,
   "files_touched": [
     ".github/workflows/build-website.yaml",
     ".gitignore",
@@ -26,25 +26,32 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 42,
-    "cache_creation_tokens": 63707,
-    "cache_read_tokens": 2083771,
-    "output_tokens": 6583,
-    "api_call_count": 19
+    "input_tokens": 60,
+    "cache_creation_tokens": 116928,
+    "cache_read_tokens": 2894808,
+    "output_tokens": 8381,
+    "api_call_count": 27
   },
   "redaction": {
-    "replacements": 525,
+    "replacements": 1051,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 524,
-      "key_context": 1,
+      "entropy": 1048,
+      "key_context": 3,
       "provider_token": 0,
       "shell_stdin": 0
     }
