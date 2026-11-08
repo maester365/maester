@@ -1,4 +1,4 @@
-﻿External content sharing in SharePoint Online decides who outside the organization can receive files and sites. If sharing is open to anyone, a link can be forwarded to people who are not known to the tenant, and content can leave the organization without an account check.
+External content sharing in SharePoint Online decides who outside the organization can receive files and sites. If sharing is open to anyone, a link can be forwarded to people who are not known to the tenant, and content can leave the organization without an account check.
 
 Restricting sharing to new and existing guests, existing guests only, or turning external sharing off, means that only people who sign in with a guest account in your directory can receive shared content. Anyone links stop working, and users keep working with their guests.
 

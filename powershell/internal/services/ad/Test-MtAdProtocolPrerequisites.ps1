@@ -1,4 +1,4 @@
-function Test-MtAdProtocolPrerequisites {
+﻿function Test-MtAdProtocolPrerequisites {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Matches the internal AD protocol prerequisite contract requested for this feature.')]
     [OutputType([PSCustomObject])]

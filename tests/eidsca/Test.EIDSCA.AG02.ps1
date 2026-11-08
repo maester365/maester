@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAG02 {
+﻿function Test-MtCheckEidscaAG02 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - General Settings - Report suspicious activity - State is 'enabled'

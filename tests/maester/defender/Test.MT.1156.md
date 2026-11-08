@@ -1,4 +1,4 @@
-﻿Verify that scanning network files is enabled despite SMB load considerations.
+Verify that scanning network files is enabled despite SMB load considerations.
 
 Disabled network file scanning creates attack vectors through shared files.
 

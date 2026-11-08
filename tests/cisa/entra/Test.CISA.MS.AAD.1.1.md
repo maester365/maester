@@ -1,4 +1,4 @@
-﻿Legacy authentication SHALL be blocked.
+Legacy authentication SHALL be blocked.
 
 Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft.
 

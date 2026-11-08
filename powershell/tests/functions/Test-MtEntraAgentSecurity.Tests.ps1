@@ -1,4 +1,4 @@
-Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
+﻿Describe 'Entra Agent ID security checks (MT.1204 - MT.1213)' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

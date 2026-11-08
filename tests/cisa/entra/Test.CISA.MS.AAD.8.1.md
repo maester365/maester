@@ -1,4 +1,4 @@
-﻿Guest users SHOULD have limited or restricted access to Azure AD directory objects.
+Guest users SHOULD have limited or restricted access to Azure AD directory objects.
 
 Rationale: Limiting the amount of object information available to guest users in the tenant, reduces malicious reconnaissance exposure, should a guest account become compromised or be created by an adversary.
 

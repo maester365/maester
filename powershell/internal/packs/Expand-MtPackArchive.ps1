@@ -1,4 +1,4 @@
-function Expand-MtPackArchive {
+﻿function Expand-MtPackArchive {
     <#
     .SYNOPSIS
     Extracts a GitHub zip archive of a repository into a folder, refusing anything a pack may not contain.

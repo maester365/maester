@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Creates the Azure virtual network and NSG for the Maester E2E lab.
 

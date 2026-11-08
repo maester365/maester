@@ -1,4 +1,4 @@
-function Set-MtConnectionState {
+﻿function Set-MtConnectionState {
     <#
     .SYNOPSIS
     Keeps the connection of a Maester Pack connector for the session, so its tests and Connect-Maester can find it.

@@ -1,4 +1,4 @@
-function Get-MtPackPolicy {
+﻿function Get-MtPackPolicy {
     <#
     .SYNOPSIS
     Returns the organisation's pack policy (Maester Packs design, section 9.7), the strictest of every source.

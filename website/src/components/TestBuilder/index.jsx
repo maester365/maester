@@ -74,9 +74,11 @@ function useDock(open) {
   return place;
 }
 
-// The guides in the sidebar open in the help panel on this page, so the form stays in view while you read them.
-// Links to other guides inside a guide open there too; anything else opens in a new tab.
-const GUIDE_LINKS = "#starlight__sidebar ul.top-level a[href]";
+// Links to the guides open in the help panel on this page, so the form stays in view while you read them: the
+// sidebar's guides, links in the page and the builder, and links in a field's help. Links to other guides inside
+// a guide open there too; anything else opens in a new tab.
+const SIDEBAR_LINKS = "#starlight__sidebar ul.top-level a[href]";
+const PAGE_LINKS = "main a[href]:not([target]), [data-help-sheet] a[href]:not([target])";
 const isGuide = (url) => url.origin === window.location.origin && url.pathname.startsWith("/docs/");
 const plainClick = (e) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.defaultPrevented;
 
@@ -132,11 +134,12 @@ function useGuides(setOpenId) {
     [setOpenId]
   );
 
-  // Sidebar clicks, while the sidebar is shown beside the page (Starlight's 50rem breakpoint).
+  // Sidebar links only while the sidebar is shown beside the page (Starlight's 50rem breakpoint); below that it is
+  // a menu over the page, and a guide opens as a page of its own.
   useEffect(() => {
     const onClick = (e) => {
-      if (!plainClick(e) || !window.matchMedia("(min-width: 50rem)").matches) return;
-      const a = e.target.closest && e.target.closest(GUIDE_LINKS);
+      if (!plainClick(e) || !e.target.closest) return;
+      const a = (window.matchMedia("(min-width: 50rem)").matches && e.target.closest(SIDEBAR_LINKS)) || e.target.closest(PAGE_LINKS);
       if (!a) return;
       const url = new URL(a.href, window.location.href);
       if (!isGuide(url)) return;
@@ -1043,11 +1046,10 @@ export default function TestBuilder() {
       </div>
 
       <aside className={styles.output} aria-label="Generated test" data-help-dock>
-        <div className={errors.length ? styles.statusBad : styles.statusGood} role="status">
-          {errors.length === 0 ? (
-            <strong>Meets the rules that can be checked here.</strong>
-          ) : (
-            <>
+        {/* Only problems are shown here; a test that meets the rules needs no banner. */}
+        <div className={styles.status} role="status" aria-live="polite">
+          {errors.length > 0 && (
+            <div className={styles.statusBad}>
               <strong>
                 {errors.length} {errors.length === 1 ? "thing" : "things"} to fix
               </strong>
@@ -1059,7 +1061,7 @@ export default function TestBuilder() {
                 ))}
                 {errors.length > 6 && <li>and {errors.length - 6} more</li>}
               </ul>
-            </>
+            </div>
           )}
         </div>
 
@@ -1128,7 +1130,7 @@ export default function TestBuilder() {
             )}
           </ol>
           <p>
-            Read more in <Link to="/docs/next/writing-tests">Writing native tests</Link> and the full <Link to="/docs/next/writing-tests/attribute-rubric">attribute rubric</Link>.
+            Read more in <Link to="/docs/writing-tests">Writing native tests</Link> and the full <Link to="/docs/writing-tests/attribute-rubric">attribute rubric</Link>.
           </p>
         </div>
       </aside>

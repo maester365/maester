@@ -1,4 +1,4 @@
-﻿The ManagedBy attribute in Active Directory specifies who is responsible for managing a group. Assigning managers to groups provides several benefits:
+The ManagedBy attribute in Active Directory specifies who is responsible for managing a group. Assigning managers to groups provides several benefits:
 
 - **Accountability**: Clear ownership for group membership decisions
 - **Delegation**: Allows non-administrators to manage specific groups

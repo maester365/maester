@@ -1,4 +1,4 @@
-﻿URL comparison with a block-list SHOULD be enabled.
+URL comparison with a block-list SHOULD be enabled.
 
 Rationale: Users may be directed to malicious websites via links in email. Blocking access to known, malicious URLs can prevent users from accessing known malicious websites.
 

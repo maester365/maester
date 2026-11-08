@@ -1,4 +1,4 @@
-# A shim is a built-in test whose body is one return of another built-in test's function: a benchmark test for a
+﻿# A shim is a built-in test whose body is one return of another built-in test's function: a benchmark test for a
 # requirement that another suite already checks (website/docs/writing-tests/index.mdx, "Tests that another suite
 # already has"). These tests find every shim and check that it is the same check as the test it calls, so the two
 # cannot drift apart without a failure here.

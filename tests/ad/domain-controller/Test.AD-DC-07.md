@@ -1,4 +1,4 @@
-﻿Knowing the operating systems running on your domain controllers is important for:
+Knowing the operating systems running on your domain controllers is important for:
 
 - **Lifecycle management**: Identifying DCs running end-of-life operating systems
 - **Security patching**: Ensuring all DCs receive security updates
