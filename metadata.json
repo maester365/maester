@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6W9V1RS3NT2MEAF1ZSNXYC5",
+  "strategy": "manual-commit",
+  "branch": "feat/report-compressed-data",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "powershell/assets/ReportTemplate.html",
+    "powershell/public/report/Get-MtHtmlReport.ps1",
+    "powershell/tests/functions/Get-MtHtmlReport.Tests.ps1",
+    "powershell/tests/functions/Invoke-Maester.Tests.ps1",
+    "report/src/lib/gzipBase64.ts",
+    "report/src/lib/reportAttachments.ts",
+    "report/src/lib/reportData.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 162,
+    "cache_creation_tokens": 168697,
+    "cache_read_tokens": 13673266,
+    "output_tokens": 45020,
+    "api_call_count": 77
+  },
+  "redaction": {
+    "replacements": 541,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 603,
+      "key_context": 4,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
