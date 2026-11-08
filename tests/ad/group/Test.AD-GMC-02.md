@@ -22,11 +22,10 @@
 - Counts unique account types (user, group, computer, foreignSecurityPrincipal)
 - Provides visibility into membership composition
 
-For performance reasons, the test analyzes members from the first 50 groups and deduplicates by SID.
+The test analyzes all collected groups, deduplicates members by SID (or distinguished name when SID is unavailable), and includes the account-type breakdown.
 
 #### Related Tests
 
-- `Test-MtAdGroupMemberAccountTypeDetails` - Detailed breakdown of account types
 - `Test-MtAdGroupMemberForeignSidCount` - Identifies foreign security principals specifically
 
 <!--- Results --->

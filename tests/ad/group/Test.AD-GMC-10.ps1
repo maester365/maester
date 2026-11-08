@@ -49,6 +49,7 @@
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
@@ -75,7 +76,11 @@
         # Check if group is privileged (adminCount = 1 or well-known RID)
         $isPrivileged = $group.adminCount -eq 1
         $rid = ($group.SID.Value -split '-')[-1]
-        $isWellKnown = $privilegedRIDs.ContainsKey($rid)
+        $sid = [string]$group.SID.Value
+        $isWellKnown = $privilegedRIDs.ContainsKey($rid) -and (
+            ($sid -match '^S-1-5-21-\d+-\d+-\d+-(512|518|519)$') -or
+            ($sid -match '^S-1-5-32-(548|549|550|551)$')
+        )
 
         if ($isPrivileged -or $isWellKnown) {
             $totalPrivileged++
@@ -101,7 +106,7 @@
                 }
             }
             catch {
-                Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
+                throw "Could not check members for group $($group.Name): $($_.Exception.Message)"
             }
         }
     }
@@ -126,6 +131,11 @@
 
         foreach ($group in $sortedWellKnown) {
             $result += "| $($group.Name) | $($group.RID) | $($group.MemberCount) |" + "`n"
+        }
+        $result += "`n### Other AdminCount-Protected Groups with Members`n`n"
+        $result += "| Group | Member Count |" + "`n| --- | --- |" + "`n"
+        foreach ($group in @($privilegedGroupsWithMembers | Where-Object { -not $_.IsWellKnown } | Sort-Object MemberCount -Descending)) {
+            $result += "| $($group.Name) | $($group.MemberCount) |" + "`n"
         }
 
         $testResultMarkdown = "Security audit found **$privilegedWithMembers** privileged groups with members out of **$totalPrivileged** total privileged groups." + "`n" + "`n"

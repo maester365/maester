@@ -47,36 +47,41 @@
 
     $groups = $adState.Groups
     $domain = $adState.Domain
-    $domainSid = $domain.DomainSID.Value
+    $domainSid = if ($domain.DomainSID.PSObject.Properties['Value']) { [string]$domain.DomainSID.Value } else { [string]$domain.DomainSID }
+    if ($null -eq $groups -or -not $domainSid) { throw 'Group or domain SID collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Collect trust members
-    # Limit to first 50 groups for performance
-    $groupsToCheck = $groups | Select-Object -First 50
+    # Assess every group; counts describe distinct SIDs and details retain all group memberships.
+    $groupsToCheck = @($groups)
     $trustMembers = @()
     $processedSids = @{}
 
-    foreach ($group in $groupsToCheck) {
-        try {
+    try {
+        foreach ($group in $groupsToCheck) {
             $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
+                $memberSid = if ($member.SID.PSObject.Properties['Value']) { [string]$member.SID.Value } else { [string]$member.SID }
                 # Check if this is a trust member (foreignSecurityPrincipal or SID doesn't match domain)
                 $isTrustMember = $false
 
                 # Check by objectClass
-                if ($member.objectClass -eq 'foreignSecurityPrincipal') {
+                if (($member.IsForeignSecurityPrincipal -or $member.objectClass -eq 'foreignSecurityPrincipal') -and $memberSid -match '^S-1-5-21-') {
                     $isTrustMember = $true
                 }
                 # Check by SID prefix (doesn't match current domain SID)
-                elseif ($member.SID.Value -and -not $member.SID.Value.StartsWith($domainSid)) {
+                elseif ($memberSid -match '^S-1-5-21-' -and -not $memberSid.StartsWith("$domainSid-")) {
                     $isTrustMember = $true
                 }
 
-                if ($isTrustMember -and -not $processedSids.ContainsKey($member.SID.Value)) {
-                    $processedSids[$member.SID.Value] = $true
+                if (($member.IsForeignSecurityPrincipal -or $member.objectClass -eq 'foreignSecurityPrincipal') -and -not $memberSid) {
+                    throw 'A foreign security principal has no SID; its domain cannot be assessed.'
+                }
+                if ($isTrustMember) {
+                    $processedSids[$memberSid] = $true
                     $trustMembers += [PSCustomObject]@{
-                        SID = $member.SID.Value
+                        SID = $memberSid
                         Name = $member.Name
                         ObjectClass = $member.objectClass
                         GroupName = $group.Name
@@ -84,14 +89,10 @@
                 }
             }
         }
-        catch {
-            Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
-        }
     }
+    finally { $protocolConnection.Dispose() }
 
-    $protocolConnection.Dispose()
-
-    $trustMemberCount = $trustMembers.Count
+    $trustMemberCount = $processedSids.Count
 
     # Test passes if we successfully retrieved member data
     $testResult = $true
@@ -101,7 +102,14 @@
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Trust Members Found | $trustMemberCount |" + "`n"
+        $result += "| Foreign domain group memberships | $($trustMembers.Count) |" + "`n"
         $result += "| Groups Analyzed | $($groupsToCheck.Count) |" + "`n"
+        if ($trustMemberCount -gt 0) {
+            $result += "`n| Group | Member | SID |" + "`n| --- | --- | --- |" + "`n"
+            foreach ($member in $trustMembers) {
+                $result += "| $($member.GroupName) | $($member.Name) | $($member.SID) |" + "`n"
+            }
+        }
 
         if ($groupsToCheck.Count -lt ($groups | Measure-Object).Count) {
             $result += "| Note | Analyzed first $($groupsToCheck.Count) of $(($groups | Measure-Object).Count) groups |" + "`n"

@@ -34,7 +34,7 @@ This test retrieves all Organizational Units from Active Directory and:
 
 - `Test-MtAdOuEmptyCount` - Provides count summary of empty OUs
 - `Test-MtAdOuStaleCount` - Identifies OUs not modified since before 2020
-- `Test-MtAdGroupEmptyNonPrivilegedDetails` - Lists empty non-privileged groups
+- `AD-GMC-10` - Lists empty non-privileged groups
 
 <!--- Results --->
 %TestResult%

@@ -21,16 +21,15 @@ Monitor and audit foreign SIDs carefully:
 
 This test analyzes group membership for foreign SIDs by:
 - Comparing member SIDs against the current domain SID
-- Identifying SIDs that don't match the local domain pattern
+- Comparing domain-account SIDs in the `S-1-5-21` namespace; well-known `S-1-5-32` and NT AUTHORITY SIDs are not foreign domains
 - Grouping foreign SIDs by their domain of origin
 - Counting unique foreign SID principals
 
-For performance reasons, the test analyzes the first 50 groups.
+The test analyzes all groups and includes group, principal, and SID details.
 
 #### Related Tests
 
 - `Test-MtAdGroupMemberTrustCount` - Count of trust members overall
-- `Test-MtAdGroupMemberTrustDetails` - Detailed view by group
 
 <!--- Results --->
 %TestResult%

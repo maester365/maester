@@ -44,25 +44,20 @@
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
     $totalGroupCount = ($groups | Measure-Object).Count
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Query members for each group to find groups with members
-    # Limit to first 100 groups for performance if there are many
-    $groupsToCheck = $groups | Select-Object -First 100
+    $groupsToCheck = @($groups)
     $groupsWithMembers = @()
 
     foreach ($group in $groupsToCheck) {
-        try {
-            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
+        $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             if ($members -and ($members | Measure-Object).Count -gt 0) {
                 $groupsWithMembers += $group
             }
-        }
-        catch {
-            Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
-        }
     }
 
     $protocolConnection.Dispose()
@@ -88,9 +83,7 @@
         $result += "| Empty Groups | $emptyGroupsCount |" + "`n"
         $result += "| Groups with Members % | $percentage% |" + "`n"
 
-        if ($groupsToCheck.Count -lt $totalGroupCount) {
-            $result += "| Note | Analyzed first $($groupsToCheck.Count) groups for performance |" + "`n"
-        }
+        $result += "| Groups Analyzed | $($groupsToCheck.Count) |" + "`n"
 
         $testResultMarkdown = "Active Directory groups have been analyzed. $groupsWithMembersCount out of $totalGroupCount groups ($percentage%) have at least one member.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -98,7 +91,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

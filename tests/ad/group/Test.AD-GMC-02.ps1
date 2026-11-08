@@ -45,29 +45,25 @@
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Collect all unique member object classes
-    # Limit to first 50 groups for performance
-    $groupsToCheck = $groups | Select-Object -First 50
+    $groupsToCheck = @($groups)
     $allMembers = @()
     $processedSids = @{}
 
     foreach ($group in $groupsToCheck) {
-        try {
-            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
+        $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Avoid duplicates by SID
-                if (-not $processedSids.ContainsKey($member.SID.Value)) {
-                    $processedSids[$member.SID.Value] = $true
+                $memberKey = if ($member.SID.Value) { [string]$member.SID.Value } else { [string]$member.DistinguishedName }
+                if (-not $processedSids.ContainsKey($memberKey)) {
+                    $processedSids[$memberKey] = $true
                     $allMembers += $member
                 }
             }
-        }
-        catch {
-            Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
-        }
     }
 
     $protocolConnection.Dispose()
@@ -87,10 +83,13 @@
         $result += "| Total Unique Members Analyzed | $totalUniqueMembers |" + "`n"
         $result += "| Distinct Account Types | $distinctTypeCount |" + "`n"
         $result += "| Account Types Found | $($distinctTypes -join ', ') |" + "`n"
-
-        if ($groupsToCheck.Count -lt ($groups | Measure-Object).Count) {
-            $result += "| Note | Analyzed first $($groupsToCheck.Count) groups for performance |" + "`n"
+        $result += "`n| Account Type | Unique Members |" + "`n"
+        $result += "| --- | --- |" + "`n"
+        foreach ($type in @($allMembers | Group-Object objectClass | Sort-Object Count -Descending)) {
+            $result += "| $($type.Name) | $($type.Count) |" + "`n"
         }
+
+        $result += "| Groups Analyzed | $($groupsToCheck.Count) |" + "`n"
 
         $testResultMarkdown = "Active Directory group member account types have been analyzed. Found $distinctTypeCount distinct account types across $totalUniqueMembers unique members.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -98,7 +97,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group member data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

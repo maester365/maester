@@ -33,8 +33,8 @@ The analysis helps identify trends and patterns in group management activity.
 
 #### Related Tests
 
-- `Test-MtAdGroupPrivilegedWithMembersDetails` - Reviews current privileged group state
-- `Test-MtAdGroupEmptyNonPrivilegedDetails` - Identifies potentially stale groups
+- `AD-GMC-02` - Reviews current privileged group membership counts and details
+- `AD-GMC-10` - Identifies empty non-privileged groups
 
 <!--- Results --->
 %TestResult%

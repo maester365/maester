@@ -46,6 +46,7 @@
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups -or -not $adState.Domain.DomainSID.Value) { throw 'Group or domain SID collection is unavailable.' }
     $domain = $adState.Domain
     $domainSid = $domain.DomainSID.Value
 
@@ -53,7 +54,7 @@
 
     # Collect foreign SID principals
     # Limit to first 50 groups for performance
-    $groupsToCheck = $groups | Select-Object -First 50
+    $groupsToCheck = @($groups)
     $foreignSidPrincipals = @()
     $processedSids = @{}
 
@@ -62,17 +63,13 @@
             $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Check if SID is foreign (doesn't start with domain SID)
-                if ($member.SID.Value -and -not $member.SID.Value.StartsWith($domainSid)) {
+                if ($member.SID.Value -match '^S-1-5-21-\d+-\d+-\d+-\d+$' -and -not $member.SID.Value.StartsWith("$domainSid-")) {
                     if (-not $processedSids.ContainsKey($member.SID.Value)) {
                         $processedSids[$member.SID.Value] = $true
 
                         # Extract domain SID prefix
                         $sidString = $member.SID.Value
-                        $domainSidPrefix = if ($sidString -match '^S-\d+-\d+-\d+-\d+-\d+') {
-                            $matches[0]
-                        } else {
-                            "Unknown"
-                        }
+                        $domainSidPrefix = $sidString -replace '-\d+$', ''
 
                         $foreignSidPrincipals += [PSCustomObject]@{
                             SID = $member.SID.Value
@@ -86,7 +83,7 @@
             }
         }
         catch {
-            Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
+            throw "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }
 
@@ -106,6 +103,12 @@
         $result += "| Distinct External Domains | $distinctDomainSids |" + "`n"
         $result += "| Groups Analyzed | $($groupsToCheck.Count) |" + "`n"
         $result += "| Current Domain SID | $domainSid |" + "`n"
+        if ($foreignSidCount -gt 0) {
+            $result += "`n| Group | Principal | Foreign SID |" + "`n| --- | --- | --- |" + "`n"
+            foreach ($principal in $foreignSidPrincipals) {
+                $result += "| $($principal.GroupName) | $($principal.Name) | $($principal.SID) |" + "`n"
+            }
+        }
 
         if ($groupsToCheck.Count -lt ($groups | Measure-Object).Count) {
             $result += "| Note | Analyzed first $($groupsToCheck.Count) of $(($groups | Measure-Object).Count) groups |" + "`n"

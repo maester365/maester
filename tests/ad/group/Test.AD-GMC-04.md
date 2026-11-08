@@ -20,14 +20,13 @@ Regularly audit trust members:
 
 This test identifies trust members by:
 - Detecting foreignSecurityPrincipal object class
-- Identifying SIDs that don't match the current domain SID pattern
+- Identifying foreign domain-account SIDs (`S-1-5-21-…`) and foreign security principal objects; built-in `S-1-5-32` and NT AUTHORITY SIDs are not automatically foreign domains
 - Counting unique trust members across groups
 
-For performance reasons, the test analyzes the first 50 groups.
+The test analyzes all groups and includes the affected group names and member SIDs in its result.
 
 #### Related Tests
 
-- `Test-MtAdGroupMemberTrustDetails` - Detailed breakdown by group
 - `Test-MtAdGroupMemberForeignSidCount` - Counts foreign SIDs specifically
 
 <!--- Results --->

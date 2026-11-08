@@ -29,7 +29,7 @@ The test categorizes groups by their status (empty privileged, empty non-privile
 
 #### Related Tests
 
-- `Test-MtAdGroupEmptyNonPrivilegedDetails` - Lists specific empty non-privileged groups
+- This check lists specific empty non-privileged groups alongside their count.
 - `Test-MtAdGroupPrivilegedWithMembersCount` - Reviews privileged groups with members
 
 <!--- Results --->

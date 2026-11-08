@@ -40,12 +40,13 @@
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
     $totalGroups = ($groups | Measure-Object).Count
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Count empty non-privileged groups
-    $emptyNonPrivilegedGroups = 0
+    $emptyNonPrivilegedGroups = @()
     $emptyPrivilegedGroups = 0
     $nonEmptyGroups = 0
 
@@ -59,14 +60,14 @@
                 if ($group.adminCount -eq 1) {
                     $emptyPrivilegedGroups++
                 } else {
-                    $emptyNonPrivilegedGroups++
+                    $emptyNonPrivilegedGroups += $group
                 }
             } else {
                 $nonEmptyGroups++
             }
         }
         catch {
-            Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
+            throw "Could not check members for group $($group.Name): $($_.Exception.Message)"
         }
     }
 
@@ -78,16 +79,20 @@
         $result = "| Category | Count |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Total Groups | $totalGroups |" + "`n"
-        $result += "| Empty Non-Privileged Groups | $emptyNonPrivilegedGroups |" + "`n"
+        $result += "| Empty Non-Privileged Groups | $($emptyNonPrivilegedGroups.Count) |" + "`n"
         $result += "| Empty Privileged Groups | $emptyPrivilegedGroups |" + "`n"
         $result += "| Groups with Members | $nonEmptyGroups |" + "`n"
 
         if ($totalGroups -gt 0) {
-            $emptyPercentage = [Math]::Round(($emptyNonPrivilegedGroups / $totalGroups) * 100, 2)
+            $emptyPercentage = [Math]::Round(($emptyNonPrivilegedGroups.Count / $totalGroups) * 100, 2)
             $result += "| Empty Non-Privileged Percentage | $emptyPercentage% |" + "`n"
         }
 
-        $testResultMarkdown = "Active Directory group analysis found **$emptyNonPrivilegedGroups** empty non-privileged groups out of **$totalGroups** total groups." + "`n" + "`n"
+        $result += "`n| Empty Non-Privileged Group | Scope | Category |" + "`n| --- | --- | --- |" + "`n"
+        foreach ($group in $emptyNonPrivilegedGroups) {
+            $result += "| $($group.Name) | $($group.GroupScope) | $($group.GroupCategory) |" + "`n"
+        }
+        $testResultMarkdown = "Active Directory group analysis found **$($emptyNonPrivilegedGroups.Count)** empty non-privileged groups out of **$totalGroups** total groups." + "`n" + "`n"
         $testResultMarkdown += "Empty non-privileged groups may be candidates for cleanup.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {

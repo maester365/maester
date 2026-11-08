@@ -24,11 +24,11 @@ This test analyzes Active Directory groups and counts:
 - Percentage of groups with members
 - Empty groups (for cleanup candidates)
 
-For performance reasons, the test analyzes the first 100 groups if there are many groups in the directory.
+The check analyzes every collected group and reports the complete group count.
 
 #### Related Tests
 
-- `Test-MtAdGroupMemberAccountTypeDetails` - Breaks down member types across groups
+- `Test-MtAdGroupMemberAccountTypeCount` - Breaks down member types across groups
 - `Test-MtAdGroupMemberTrustCount` - Identifies cross-domain trust members
 
 <!--- Results --->
