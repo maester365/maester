@@ -1,4 +1,4 @@
-**SPN mappings** are used to support legacy or non-FQDN client behavior by mapping service principal names to the correct Kerberos realm/host context. While this can improve compatibility, misconfigured SPN mappings can create security and reliability issues, such as:
+**SPN mappings** (`sPNMappings` on the Directory Service object) map service classes such as HTTP and CIFS to the HOST service class for Kerberos ticket lookup. They do not map clients to realms, and are not individual account `servicePrincipalName` values. Changes may affect service authentication.
 
 - **Authentication inconsistencies** (Kerberos vs. fallback behaviors)
 - Clients receiving **unexpected service identity** resolution
@@ -9,15 +9,14 @@
 **Operational**
 
 #### Security Recommendation
-- Keep SPN mappings **as minimal as possible**—only those required for supported legacy interoperability.
-- Periodically review and remove stale mappings tied to retired hostnames/services.
-- Validate that SPN mappings resolve to the **correct** target identities (FQDN/realm) for all required workloads.
+- Review HOST-class service mappings against the organization's supported services before making changes.
+- Do not remove a mapping solely because this inventory reports it; doing so can break Kerberos service ticket resolution.
 
 #### How the Test Works
-This test inspects the SPN mapping configuration exposed by AD, extracts the configured mappings, and provides a count/visibility metric so administrators can identify whether mappings exist that should not be present.
+This inventory reports the raw `sPNMappings` entries and count. It does not inspect account SPNs or claim that any mapping is unsafe.
 
 #### Related Tests
-- `Test-MtAdWellKnownSecurityPrincipalsCount` - Identifies additional security principal surface that should be consistent with Kerberos hardening.
+- Account-level SPN checks in `tests/ad/spn/` assess a different setting (`servicePrincipalName`).
 
 <!--- Results --->
 %TestResult%

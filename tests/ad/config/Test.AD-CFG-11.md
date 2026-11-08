@@ -1,23 +1,14 @@
-DHCP servers registered in Active Directory are authorized to provide IP addresses to clients. If unauthorized DHCP servers are registered (or legitimate servers are removed), clients may receive incorrect network settings, experience instability, or be exposed to man-in-the-middle attacks via rogue DHCP.
+This inventory counts distinct DHCP server authorization entries stored in the `dhcpServers` attribute of `dhcpClass` objects under the AD NetServices configuration container. It reports registered DNS names and IPv4 addresses, including entries whose format cannot be parsed, rather than treating a registration container as one server.
 
-#### Control Type
+A registration count does not identify an unauthorized server or prove that all DHCP servers are registered. The IPv4 value `255.0.0.1` can represent a DHCPv6 server registered without IPv4; it is not proof of an invalid server.
 
-**Operational**
+#### Remediation action
 
-#### Security Recommendation
-- Maintain a strict allowlist of approved DHCP servers and ensure only those servers are registered in AD.
-- Remove stale/unneeded DHCP server registrations as part of routine hygiene.
-- Restrict permissions for DHCP registration operations to only the DHCP administrators and automation workflows you trust.
-- Alert on any change in the number of registered DHCP servers.
+Compare each registration with the approved DHCP server inventory and investigate unexpected changes. Do not remove a registration based only on a count.
 
-#### How the Test Works
-- Searches Active Directory for directory objects representing authorized/registered DHCP servers.
-- Counts the number of such registered server objects.
-- Compares the count to an environment baseline and flags unexpected additions/removals.
+#### Related links
 
-#### Related Tests
-- [Test-MtAdWellKnownSecurityPrincipalsCount](./Test-MtAdWellKnownSecurityPrincipalsCount.md): Helps confirm AD identity integrity.
-- [Test-MtAdEnterpriseCaCount](./Test-MtAdEnterpriseCaCount.md): Complements service authorization checks for certificate infrastructure.
+- [Microsoft MS-DHCPE: DHCP authorization attribute format](https://learn.microsoft.com/openspecs/windows_protocols/ms-dhcpe/52a47b66-fe0a-47e3-b4e0-92016f69c71f)
 
 <!--- Results --->
 %TestResult%

@@ -1,25 +1,12 @@
-The **default query policy** sets baseline resource constraints for LDAP operations. If defaults are overly permissive, AD can be more vulnerable to availability attacks and performance degradation from:
+This check inventories the `Default-Query-Policy` object and any explicit `lDAPAdminLimits` values. If the object or explicit limits are absent, effective LDAP limits may still be supplied by directory defaults; absence alone is not proof that LDAP queries are unlimited.
 
-- Large/inefficient LDAP searches
-- High-frequency query patterns
-- Legitimate admin/service queries running with insufficient guardrails
+#### Remediation action
 
-Proper limits reduce the impact of both **misuse** and **mistakes**, improving DC resilience during incidents.
+Review effective LDAP query policy limits and any per-DC overrides before changing settings. Confirm that limits accommodate legitimate applications and are aligned with your organization's availability baseline.
 
-#### Control Type
+#### Related links
 
-**Operational**
-
-#### Security Recommendation
-- Review the default query policy and ensure it matches your organization’s acceptable performance envelope.
-- Keep defaults conservative, then selectively allow exceptions only where required.
-- Re-validate defaults after upgrades, migrations, or schema/config changes.
-
-#### How the Test Works
-This test retrieves the default LDAP query policy values and reports them as an analyzable metric so administrators can confirm baseline limits are configured as intended.
-
-#### Related Tests
-- `Test-MtAdLdapQueryPolicyCount` - Ensures query policy coverage/consistency across partitions.
+- [Microsoft: LDAP policies](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/view-set-ldap-policy-using-ntdsutil)
 
 <!--- Results --->
 %TestResult%

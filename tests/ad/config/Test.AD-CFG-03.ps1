@@ -37,14 +37,19 @@
 
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration) {
+        throw 'SPN mapping configuration could not be retrieved.'
     }
 
     $config = $adState.Configuration
-    $spnMappings = if ($null -ne $config) { $config.SpnMappings } else { $null }
-    $spnMappingsSafe = if ($null -ne $spnMappings) { @($spnMappings) } else { @() }
+    if ($config.PSObject.Properties.Name -contains 'DirectoryServiceRetrieved' -and $config.DirectoryServiceRetrieved -ne $true) {
+        throw 'Directory Service object could not be retrieved; SPN mappings are unknown.'
+    }
+    $spnMappings = $config.SpnMappings
+    if ($null -eq $spnMappings) {
+        throw 'SPN mapping inventory could not be retrieved.'
+    }
+    $spnMappingsSafe = @($spnMappings)
 
     $spnMappingsCount = ($spnMappingsSafe | Measure-Object).Count
     $testResult = $null -ne $config
