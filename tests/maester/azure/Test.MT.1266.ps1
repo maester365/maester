@@ -78,9 +78,9 @@ function Test-MtAzureSecureScore {
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Lifecycle = 'Preview',
         Service = 'Azure',
         Permission = 'Azure:Role:Reader | Azure:Role:Security Reader',
+        Lifecycle = 'Preview',
         InstanceSource = 'Get-MtAzureSecureScoreInstance',
         Author = 'earbona23'
     )]
