@@ -2,7 +2,7 @@ Medium-risk service principals should not be left unremediated in Entra ID Prote
 
 Entra ID Protection rates the risk of workload identities (service principals) and tracks a risk state for each flagged one. Signals include leaked credentials, suspicious sign-ins, suspicious API traffic and Microsoft threat intelligence. A medium-risk flag only clears when an admin remediates or dismisses it. Until then the signals that triggered the flag have not been addressed, and unlike a user, a service principal can't be stopped by multifactor authentication. Dismissing a flag clears it but does not remove compromised credentials, so investigate first.
 
-This check reports service principals whose risk level is **medium** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. The check reads risk only and never changes a service principal's risk state.
+This check reports service principals whose risk level is **medium** and whose risk state is still active and unremediated (`atRisk` or `confirmedCompromised`). States that represent a handled flag (`remediated`, `dismissed`, `confirmedSafe`, `none`) are not reported. Disabled service principals are still reported, because disabling only blocks sign-ins: the risk stays open until an admin dismisses or confirms it, and the credentials behind it may still need rotating. The check reads risk only and never changes a service principal's risk state.
 
 If a reported service principal holds a privileged directory role, active or PIM-eligible, the result lists the role and shows that entry first, since a compromised app with admin rights puts the whole tenant at risk.
 

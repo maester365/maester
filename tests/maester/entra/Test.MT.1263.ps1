@@ -61,6 +61,9 @@
         throw
     }
 
+    # Disabled service principals are still reported. Disabling only blocks sign-ins: the risk stays open
+    # until an admin dismisses or confirms it, and an admin can still do that while the app is disabled.
+    # riskyServicePrincipal.isEnabled is not used because it can lag the service principal's real state.
     $Unremediated = @(
         $MediumRiskServicePrincipals | Where-Object { $UnremediatedStates -contains [string]$_.riskState }
     )
