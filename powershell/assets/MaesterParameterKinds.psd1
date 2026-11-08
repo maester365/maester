@@ -1,4 +1,4 @@
-# Parameter-kind registry (Maester 3.0 design, section 3.4). [MaesterParameter(Kind = ...)] names an entry.
+﻿# Parameter-kind registry (Maester 3.0 design, section 3.4). [MaesterParameter(Kind = ...)] names an entry.
 # A kind tells a UI which picker to show and tells the engine how to validate a value and resolve a
 # display name. Packages add kinds under their own prefix. A UI falls back to a text box for a kind it
 # does not know.

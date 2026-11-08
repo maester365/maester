@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAP06 {
+﻿function Test-MtCheckEidscaAP06 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - User can join the tenant by email validation is 'false'

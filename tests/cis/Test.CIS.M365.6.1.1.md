@@ -1,4 +1,4 @@
-﻿Mailbox auditing is switched on organisation-wide in Exchange Online.
+Mailbox auditing is switched on organisation-wide in Exchange Online.
 
 Mailbox audit logs record who accessed a mailbox and what they did: logons, reads, moves, deletions and rule changes. They are the evidence that is needed to investigate a business email compromise. With auditing off for the organisation, mailbox owners, delegates and administrators leave no trace.
 

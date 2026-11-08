@@ -1,4 +1,4 @@
-﻿Knowing when built-in administrator style accounts last authenticated is critical for detecting stale privileged access and spotting suspicious activity.
+Knowing when built-in administrator style accounts last authenticated is critical for detecting stale privileged access and spotting suspicious activity.
 
 - **Unexpected use detection**: Recent logons on sensitive accounts may warrant investigation.
 - **Stale privilege cleanup**: Dormant privileged accounts should be reviewed or disabled.

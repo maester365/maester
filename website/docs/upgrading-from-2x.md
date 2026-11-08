@@ -11,42 +11,94 @@ Maester 3.0 gives Maester its own test engine. The built-in tests are no longer 
 folder: they ship inside the module and run from there. Most runs need no change at all, but the way tests are
 installed, selected, configured and written has moved on. This page lists every change that can affect you.
 
+## Requirements
+
+- **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.
+- **Pester is optional.** Maester no longer depends on Pester or installs it. You need Pester 5.7.1 or later only if you run
+  [Pester-format custom tests](./writing-tests/pester-format-tests.md), or if your scripts call `New-PesterConfiguration`. Without Pester,
+  a run with Pester-format tests reports them as `Error` rows with reason `PesterNotAvailable` and still runs everything else.
+
 ## Checklist
 
 1. Run Maester on **PowerShell 7.4 or later**. Windows PowerShell 5.1 is no longer supported.
-2. Update the module, and remove Maester 2.x from the machine:
+2. Remove the existing Maester versions before installing a 3.x version.
+
+   Close PowerShell sessions that have Maester loaded and open a fresh session for the removal.
+   Run the command for the package manager you used to install Maester, or use both if you are unsure:
 
    ```powershell
-   Update-Module Maester -Force
-   Uninstall-Module Maester -MaximumVersion 2.99.99 -AllVersions
+   # If Maester was installed with PSResourceGet (`Install-PSResource`)
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue | 
+       Uninstall-PSResource -Scope CurrentUser
+
+   # Also run this in an elevated session if installed for all users
+   Get-InstalledPSResource -Name 'Maester' -ErrorAction Continue |
+       Uninstall-PSResource -Scope AllUsers
+
+   # If Maester was installed with PowerShellGet (`Install-Module`). Run elevated if Maester was installed for all users
+   Get-InstalledModule -Name 'Maester' -AllVersions -AllowPrerelease -ErrorAction Continue |
+       Uninstall-Module
    ```
 
-   Start a new PowerShell session afterwards.
-3. Clean up your 2.x tests folder. Maester 3.0 doesn't need one: if it holds no custom tests and no config
-   changes, delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then without `-WhatIf`.
-4. If you disabled built-in tests by deleting their files, disable them in `maester-config.json` instead.
-5. If you have Pester-format custom tests, install Pester 5.7.1 or later yourself, or convert the tests with
+   These commands remove all Maester versions found in the selected installation scope, including previews
+   and any 3.x version already installed. Removing an AllUsers installation requires an elevated session.
+
+   **Windows users:** Run the applicable removal commands in both PowerShell 7 and Windows PowerShell 5.1, if available,
+   to remove module installations from both environments.
+
+3. Install 3.x using the [preview installation instructions](./preview.md#install-the-preview)
+   while 3.x is in preview. Start a new PowerShell session before using it.
+4. Clean up your 2.x tests folder. Maester 3.0 doesn't need one. Before deleting it, preserve any generated
+   reports (such as `test-results`) and other files you need. If the folder holds no custom tests or config
+   changes, you can then delete it. Otherwise run `Update-MaesterTests -Path <folder> -WhatIf`, then again
+   without `-WhatIf` after you have reviewed the changes.
+
+---
+
+   **Steps 5–7 apply only if you have custom tests or if you previously disabled built-in tests.**
+
+5. If you disabled built-in tests by deleting their files in Maester 2.x, you must now disable them in
+   `maester-config.json` instead.
+6. If you have Pester-format custom tests, install Pester 5.7.1 or later yourself, or convert the tests with
    `Convert-MtTest`.
-6. If a custom test calls a built-in `Test-Mt*` function, replace the call with `Invoke-MtTest -Id <ID>`.
-7. If you select tests with `-Tag`, your tags still work. Move to `-Product`, `-Feature`, `-Area`, `-Severity`
+7. If a custom test calls a built-in `Test-Mt*` function, replace the call with `Invoke-MtTest -Id <ID>`.
+8. If you select tests with `-Tag`, your tags still work. Move to `-Product`, `-Feature`, `-Area`, `-Severity`
    and `-Suite` when you can; see [Tags](#tags).
-8. If you read the result JSON or XML, review the [result changes](#result-changes). `Block` and `Tag` of the
+9. If you read the result JSON or XML, review the [result changes](#result-changes). `Block` and `Tag` of the
    built-in tests changed.
-9. Try your usual command with `-DryRun -PassThru` first to see what would run.
+10. Try your usual command with `-DryRun -PassThru` first to see what would run.
 
-## Requirements
+:::caution
 
-- **PowerShell 7.4 or later** (the `Core` edition) on Windows, Linux or macOS. The module no longer loads in
-  Windows PowerShell 5.1.
-- **Pester is optional.** Maester no longer depends on Pester or installs it. You need Pester 5.7.1 or later only
-  if you run [Pester-format custom tests](./writing-tests/pester-format-tests.md), or if your scripts call
-  `New-PesterConfiguration`. Without Pester, a run with Pester-format tests reports them as `Error` rows with
-  reason `PesterNotAvailable` and still runs everything else.
-- **Remove Maester 2.x.** `Update-Module` keeps the old version installed. When a script calls a function that
-  only 2.x exports, PowerShell loads 2.x into the session and from then on `Invoke-Maester` is the 2.x one.
-  Maester 3.0 warns when 2.x is installed, and if 2.x gets loaded during a run it removes it again and marks the
-  affected row `Error` with reason `ForeignModuleLoaded`. After updating, start a new session: a loaded module
-  cannot be replaced in a running process.
+**Remove Maester 2.x before using 3.x.** Both `Update-Module` and `Update-PSResource` leave older versions
+  installed, so updating alone does not complete the migration. (The checklist above uses removal followed by
+  a fresh install.) When a script calls a function that only 2.x exports, PowerShell loads 2.x into the session
+  and from then on `Invoke-Maester` runs Maester 2.x instead of the 3.x one.
+  
+  Maester 3.0 warns when 2.x is still installed. If 2.x gets loaded during a run, it removes it again and marks
+  the affected row `Error` with reason `ForeignModuleLoaded`. This removes 2.x from the session, not from disk.
+  Start a new session after installing 3.x so it does not reuse the previously loaded module and engine.
+
+:::
+
+### Staying on Maester 2.x
+
+If you are not ready to migrate, keep 2.x installed. Choose the command for the package manager that installed
+it to update within the 2.99 upper bound. For an AllUsers installation, run in an elevated session and replace
+`-Scope CurrentUser` with `-Scope AllUsers`.
+
+```powershell
+# PowerShellGet: update within the specified 2.x upper bound
+Update-Module -Name 'Maester' -MaximumVersion 2.99 -Scope CurrentUser
+
+# PSResourceGet: use the same inclusive upper bound, excluding 3.0 previews
+Update-PSResource -Name 'Maester' -Version '(,2.99]' -Scope CurrentUser
+```
+
+This is an alternative to migrating, not a prerequisite for it. If you need 2.x for existing scripts while
+trying 3.x, use separate environments (for example, separate machines or containers) so 2.x is not discoverable
+by the PowerShell session running 3.x. Installing both versions side by side can trigger the loading conflict
+described above; updating 2.x does not prevent it.
 
 ## The built-in tests run from the module
 

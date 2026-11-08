@@ -1,4 +1,4 @@
-﻿Active Directory **optional features** (and related feature flags) enable or enhance behaviors such as recoverability and directory management capabilities. Incorrectly enabled/disabled features can materially affect your security posture by:
+Active Directory **optional features** (and related feature flags) enable or enhance behaviors such as recoverability and directory management capabilities. Incorrectly enabled/disabled features can materially affect your security posture by:
 
 - Reducing your ability to recover from accidental or malicious deletion
 - Leaving legacy behaviors in place longer than necessary

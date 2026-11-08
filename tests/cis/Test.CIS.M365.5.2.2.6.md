@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy responds to high user risk by requiring MFA and a password change, with sign-in frequency set to every time.
+An enabled Conditional Access policy responds to high user risk by requiring MFA and a password change, with sign-in frequency set to every time.
 
 Microsoft Entra ID Protection marks an account as high risk when it has strong evidence that the credentials are leaked or the account is compromised. A policy that forces MFA and a password change lets the legitimate user recover automatically and gives the attacker nothing to reuse.
 

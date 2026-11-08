@@ -1,4 +1,4 @@
-﻿Every member user has registered at least one authentication method that can satisfy multifactor authentication.
+Every member user has registered at least one authentication method that can satisfy multifactor authentication.
 
 A Conditional Access policy that requires MFA only helps if users can complete it. A user who has not registered a usable method is either locked out when the policy is enforced or is excluded from it, and in both cases the account is protected by a password alone.
 

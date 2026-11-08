@@ -1,4 +1,4 @@
-﻿AI agents should not remain dormant for extended periods.
+AI agents should not remain dormant for extended periods.
 
 Published agents that have not been modified in over 180 days may have outdated configurations, stale permissions, or unpatched security settings. These agents continue to be accessible to users but may no longer reflect current organizational policies.
 

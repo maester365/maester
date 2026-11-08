@@ -197,6 +197,23 @@
                 Should -Be 2
         }
 
+        It 'still reports candidate rules when the Conditional Access policies cannot be read' {
+            $Groups = @(Get-TestDynamicGroup -Id 'candidate' `
+                    -Rule '(user.department -eq "Finance")')
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return $Groups }
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+                throw 'Insufficient privileges to complete the operation.'
+            }
+
+            Test-MtDynamicGroupUserControlledAttributes | Should -BeTrue
+            $script:Investigate | Should -BeTrue
+            $script:TestResult | Should -Match '\[Group candidate\]'
+            $script:TestResult | Should -Match 'Not available'
+            $script:TestResult | Should -Match 'could not be read'
+            $script:TestResult | Should -Match 'Insufficient privileges'
+            $script:TestResult | Should -Not -Match 'None found'
+        }
+
         It 'is skipped by the engine when Graph is disconnected' {
             # The engine gates on the [MaesterTest] Service declaration; the check no longer guards itself.
             foreach ($id in @('MT.1196')) {
@@ -281,6 +298,23 @@
 
             Test-MtDynamicGroupMemberOfRule | Should -BeFalse
             $script:TestResult | Should -Match "$SourceId`` \(unresolved\)"
+        }
+
+        It 'still fails and lists the group when the Conditional Access policies cannot be read' {
+            $SourceId = '00000000-0000-0000-0000-000000000004'
+            $Target = Get-TestDynamicGroup -Id 'target' `
+                -Rule "user.memberOf -any (group.objectId -in ['$SourceId'])"
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @($Target) }
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
+                throw 'Insufficient privileges to complete the operation.'
+            }
+
+            Test-MtDynamicGroupMemberOfRule | Should -BeFalse
+            $script:TestResult | Should -Match '\[Group target\]'
+            $script:TestResult | Should -Match 'Not available'
+            $script:TestResult | Should -Match 'could not be read'
+            $script:TestResult | Should -Match 'Insufficient privileges'
+            $script:TestResult | Should -Not -Match 'None found'
         }
 
         It 'does not confuse transitiveMemberOf with the retiring operator' {

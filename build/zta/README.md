@@ -14,6 +14,9 @@ about, or which ATT&CK techniques its control addresses, so this file does, for 
 `catalog.json`, and the pack sets them on each result, so the report and maester.dev show an assessment result
 under its product. The unit tests fail when a test of the catalog is not mapped, or a value is not in the taxonomy.
 
+The pack's `workshop` folder holds the Microsoft Zero Trust Workshop plan for the report's Zero Trust plan view.
+It is written by a script of its own; see [`build/zero-trust-workshop`](../zero-trust-workshop/README.md).
+
 To move the pack to a new version of the module, run:
 
 ```powershell

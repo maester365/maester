@@ -1,4 +1,4 @@
-﻿Knowing which directory objects contain orphaned SID ACEs helps target cleanup work where it matters most.
+Knowing which directory objects contain orphaned SID ACEs helps target cleanup work where it matters most.
 
 - **Object-focused remediation**: Grouping unresolved SIDs by object shows exactly where stale ACEs exist
 - **Audit clarity**: Makes manual DACL review easier during privileged access assessments

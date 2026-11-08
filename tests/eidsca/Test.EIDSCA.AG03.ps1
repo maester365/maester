@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAG03 {
+﻿function Test-MtCheckEidscaAG03 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - General Settings - Report suspicious activity - Included users/groups is 'all_users'

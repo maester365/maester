@@ -37,40 +37,36 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Requesting secure scores to get the customer lockbox setting'
-    $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled
+    Write-Verbose 'Requesting organization configuration to get the customer lockbox setting'
+    # A row whose CustomerLockBoxEnabled is $null means the organization configuration was not
+    # readable. Dropping those here makes the count below zero, so the check skips instead of
+    # reporting a tenant as failing on a value it never read.
+    $customerLockbox = @(Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled |
+        Where-Object { $null -ne $_.CustomerLockBoxEnabled })
 
-    $usableConfig = @($customerLockbox | Where-Object { $null -ne $_ -and $null -ne $_.CustomerLockBoxEnabled })
-    if ($usableConfig.Count -eq 0) {
-        # An empty collection filters to nothing, so the count below is zero and that is the pass.
-        # Without this guard the check reports the customer lockbox as enabled for a tenant whose
-        # organization configuration was never read.
+    if ($customerLockbox.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
 
     Write-Verbose 'Checking if the customer lockbox feature is enabled'
-    $result = $usableConfig | Where-Object { $_.CustomerLockBoxEnabled -ne 'True' }
+    $result = $customerLockbox | Where-Object { $_.CustomerLockBoxEnabled -ne 'True' }
 
-    # Set the result to true and pass if no tenants are found with the customer lockbox feature disabled.
     $testResult = ($result | Measure-Object).Count -eq 0
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has the customer lockbox enabled:`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "Your tenant does not have the customer lockbox enabled:`n`n%TestResult%"
     }
 
-    # The table is built for both outcomes. It used to be built only on failure while the
-    # -replace below consumed it either way, so a passing tenant rendered an empty table and the
-    # expression would throw under Set-StrictMode.
     $resultMd = "| Customer Lockbox |`n"
     $resultMd += "| --- |`n"
-    foreach ($item in $usableConfig) {
-        # The projection above keeps only CustomerLockBoxEnabled, so there is no id to compare
-        # against. Reading the value directly is also what the single-column table means: an
-        # identity comparison here left both sides $null, and $null -notin $null is False, so
-        # every row rendered as a failure, including under the "Well done" heading.
-        $itemResult = if ($item.CustomerLockBoxEnabled -eq 'True') { "✅ Pass" } else { "❌ Fail" }
+    foreach ($item in $customerLockbox) {
+        $itemResult = "❌ Fail"
+        if ($item.CustomerLockBoxEnabled -eq 'True') {
+            $itemResult = "✅ Pass"
+        }
         $resultMd += "| $($itemResult) |`n"
     }
 

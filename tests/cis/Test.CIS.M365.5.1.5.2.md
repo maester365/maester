@@ -1,4 +1,4 @@
-﻿5.1.5.2 (L1) Ensure the admin consent workflow is enabled
+5.1.5.2 (L1) Ensure the admin consent workflow is enabled
 
 The admin consent workflow gives admins a secure way to grant access to applications that require admin approval. When a user tries to access an application but is unable to provide consent, they can send a request for admin approval. The request is sent via email to admins who have been designated as reviewers. A reviewer takes action on the request, and the user is notified of the action.
 

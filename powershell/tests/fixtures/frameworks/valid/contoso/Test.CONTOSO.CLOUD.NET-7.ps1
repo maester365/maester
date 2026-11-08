@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkContosoCloudNet7 {
+﻿function Test-MtFixtureFrameworkContosoCloudNet7 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement NET-7 of contoso-cloud, the second framework of the suite.

@@ -26,7 +26,15 @@ param (
     [string] $Verbosity = 'None'
 )
 
-$Path = @($Path -split '\|' | Where-Object { $_ })
+# The tests run in a child scope of this script, so they can read its variables. A mock's -ParameterFilter that
+# tests an unbound parameter, such as { -not $Result }, reads the script's variable of that name instead: after the
+# first file of a batch, $result held that file's Pester run and every later filter on -not $Result failed. So the
+# script keeps its state in $__mt names and removes its parameters before the first file runs.
+$__mtPath = @($Path -split '\|' | Where-Object { $_ })
+$__mtResultFolder = $ResultFolder
+$__mtSummaryPath = $SummaryPath
+$__mtVerbosity = $Verbosity
+Remove-Variable -Name Path, ResultFolder, SummaryPath, Verbosity
 
 if (-not (Get-Module Maester)) {
     Import-Module "$PSScriptRoot/../../Maester.psd1"
@@ -34,57 +42,57 @@ if (-not (Get-Module Maester)) {
 Import-Module PSModuleDevelopment
 Import-Module Pester -RequiredVersion 5.7.1
 
-$summaries = foreach ($file in $Path) {
-    $config = New-PesterConfiguration
-    $config.TestResult.Enabled = $true
-    $config.TestResult.OutputPath = Join-Path $ResultFolder "TEST-$([System.IO.Path]::GetFileNameWithoutExtension($file)).xml"
-    $config.TestResult.OutputFormat = 'JUnitXml'
-    $config.Run.Path = $file
-    $config.Run.PassThru = $true
-    $config.Output.Verbosity = $Verbosity
-    $result = Invoke-Pester -Configuration $config
+$__mtSummaries = foreach ($__mtFile in $__mtPath) {
+    $__mtConfig = New-PesterConfiguration
+    $__mtConfig.TestResult.Enabled = $true
+    $__mtConfig.TestResult.OutputPath = Join-Path $__mtResultFolder "TEST-$([System.IO.Path]::GetFileNameWithoutExtension($__mtFile)).xml"
+    $__mtConfig.TestResult.OutputFormat = 'JUnitXml'
+    $__mtConfig.Run.Path = $__mtFile
+    $__mtConfig.Run.PassThru = $true
+    $__mtConfig.Output.Verbosity = $__mtVerbosity
+    $__mtRun = Invoke-Pester -Configuration $__mtConfig
 
-    $failures = [System.Collections.Generic.List[object]]::new()
-    $scriptAnalyzerFailures = [System.Collections.Generic.List[string]]::new()
-    foreach ($container in $result.Containers) {
-        if ($container.Result -eq 'Failed' -and $container.ErrorRecord) {
-            $failures.Add([pscustomobject]@{
-                Block   = Split-Path -Leaf $file
+    $__mtFailures = [System.Collections.Generic.List[object]]::new()
+    $__mtScriptAnalyzerFailures = [System.Collections.Generic.List[string]]::new()
+    foreach ($__mtContainer in $__mtRun.Containers) {
+        if ($__mtContainer.Result -eq 'Failed' -and $__mtContainer.ErrorRecord) {
+            $__mtFailures.Add([pscustomobject]@{
+                Block   = Split-Path -Leaf $__mtFile
                 Name    = 'Discovery or BeforeAll/AfterAll'
                 Result  = 'Failed'
-                Message = ($container.ErrorRecord | ForEach-Object { $_.DisplayErrorMessage }) -join [Environment]::NewLine
+                Message = ($__mtContainer.ErrorRecord | ForEach-Object { $_.DisplayErrorMessage }) -join [Environment]::NewLine
             })
         }
     }
-    foreach ($test in $result.Tests) {
-        if ($test.Result -notin 'Passed', 'Skipped') {
-            $failures.Add([pscustomobject]@{
-                Block   = $test.Block.ExpandedName
-                Name    = "It $($test.ExpandedName)"
-                Result  = $test.Result
-                Message = $test.ErrorRecord.DisplayErrorMessage
+    foreach ($__mtTest in $__mtRun.Tests) {
+        if ($__mtTest.Result -notin 'Passed', 'Skipped') {
+            $__mtFailures.Add([pscustomobject]@{
+                Block   = $__mtTest.Block.ExpandedName
+                Name    = "It $($__mtTest.ExpandedName)"
+                Result  = $__mtTest.Result
+                Message = $__mtTest.ErrorRecord.DisplayErrorMessage
             })
         }
-        if ($test.Result -eq 'Failed' -and $test.Tag -contains 'ScriptAnalyzerRule' -and $test.StandardOutput) {
+        if ($__mtTest.Result -eq 'Failed' -and $__mtTest.Tag -contains 'ScriptAnalyzerRule' -and $__mtTest.StandardOutput) {
             # Formatted as text here: the analyzer's records do not survive the trip through JSON. The width is set
             # because a child process with redirected output can report a console width of 0.
-            $text = $test.StandardOutput | Select-Object RuleName, Severity, ScriptName, Line, Message | Format-List | Out-String -Width 4096
-            $scriptAnalyzerFailures.Add($text.Trim())
+            $__mtText = $__mtTest.StandardOutput | Select-Object RuleName, Severity, ScriptName, Line, Message | Format-List | Out-String -Width 4096
+            $__mtScriptAnalyzerFailures.Add($__mtText.Trim())
         }
     }
 
     [pscustomobject]@{
-        Path                   = $file
-        TotalCount             = $result.TotalCount
-        FailedCount            = $result.FailedCount + $result.FailedContainersCount
-        Duration               = $result.Duration.TotalSeconds
-        Failures               = $failures.ToArray()
-        ScriptAnalyzerFailures = $scriptAnalyzerFailures.ToArray()
+        Path                   = $__mtFile
+        TotalCount             = $__mtRun.TotalCount
+        FailedCount            = $__mtRun.FailedCount + $__mtRun.FailedContainersCount
+        Duration               = $__mtRun.Duration.TotalSeconds
+        Failures               = $__mtFailures.ToArray()
+        ScriptAnalyzerFailures = $__mtScriptAnalyzerFailures.ToArray()
     }
 }
 
-if ($SummaryPath) {
-    ConvertTo-Json -InputObject @($summaries) -Depth 5 | Set-Content -LiteralPath $SummaryPath -Encoding utf8
+if ($__mtSummaryPath) {
+    ConvertTo-Json -InputObject @($__mtSummaries) -Depth 5 | Set-Content -LiteralPath $__mtSummaryPath -Encoding utf8
 } else {
-    $summaries
+    $__mtSummaries
 }

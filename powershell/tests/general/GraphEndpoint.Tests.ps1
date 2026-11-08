@@ -1,4 +1,4 @@
-Describe 'Microsoft Graph endpoints' {
+﻿Describe 'Microsoft Graph endpoints' {
     It 'does not hardcode the Global Graph endpoint outside approved fallbacks' {
         $moduleRoot = (Resolve-Path "$PSScriptRoot/../..").Path
         $sourceFiles = @(

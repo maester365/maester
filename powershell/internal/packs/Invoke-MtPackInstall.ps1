@@ -1,4 +1,4 @@
-function Invoke-MtPackInstall {
+﻿function Invoke-MtPackInstall {
     <#
     .SYNOPSIS
     Installs one pack and the packs it requires into a lock (Maester Packs design, sections 4.2 and 5).

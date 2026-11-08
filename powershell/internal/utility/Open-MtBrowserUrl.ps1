@@ -1,4 +1,4 @@
-function Open-MtBrowserUrl {
+﻿function Open-MtBrowserUrl {
     <#
     .SYNOPSIS
     Opens a URL in the default browser when the current platform supports it.

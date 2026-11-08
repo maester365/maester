@@ -1,4 +1,4 @@
-﻿Catch-all subnets (overly broad IP ranges) can cause:
+Catch-all subnets (overly broad IP ranges) can cause:
 
 - **Authentication inefficiency**: Clients may authenticate to distant DCs
 - **WAN congestion**: Unnecessary cross-site authentication traffic

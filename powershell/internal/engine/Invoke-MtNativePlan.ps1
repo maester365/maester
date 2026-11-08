@@ -437,7 +437,8 @@ function ConvertTo-MtNativeRow {
 
     Benchmark is the requirement of a published benchmark that the test implements: the first Control of the
     test that names a requirement of a framework file (test attribute design, section 6), or null. Control
-    then also holds the Related references of the requirements it names, after the test's own.
+    then also holds the Related references of the requirements it names, after the test's own. A family
+    instance that sets its own Control gets its own Benchmark (Get-MtInstanceAttribute).
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -581,7 +582,7 @@ function ConvertTo-MtNativeRow {
     # A family instance can say what it is about when that differs from its family: a Zero Trust Assessment
     # result is about Entra ID, Intune or Exchange, though the family is one test.
     if ($isInstance) {
-        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product -RelatedProduct $row.RelatedProduct
+        $own = Get-MtInstanceAttribute -Instance $Instance -Product $row.Product -RelatedProduct $row.RelatedProduct -Framework $(if (Get-MtInstanceValue -Instance $Instance -Name 'Control') { Get-MtTestFrameworkIndex -Test $test })
         foreach ($name in $own.Keys) { $row[$name] = $own[$name] }
     }
     [pscustomobject]$row
@@ -593,7 +594,7 @@ function Get-MtInstanceAttribute {
     Returns the attribute values a family instance sets for itself, checked against the taxonomy.
 
     .DESCRIPTION
-    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost and Mitre. Only
+    An instance may set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost, Mitre and Control. Only
     values the taxonomy knows are returned: a product key or alias (as its key), a feature of that product, an
     area key, Low, Medium or High, and ATT&CK techniques of the pinned release. A value that does not pass is left
     out, so the row keeps its family's value. A Feature is checked against the instance's Product when it sets
@@ -603,6 +604,13 @@ function Get-MtInstanceAttribute {
     cleared unless the instance sets a feature of its own, and the new product is taken off the family's
     RelatedProduct. Mitre follows the list rules of a built-in test: None only on its own, at most five
     techniques, no repeats.
+
+    Control names the requirements the instance implements, as a test's Control does: one value or a list of
+    <framework-key>:<requirement-id>, for example cisa-scuba:MS.AAD.3.1. The values are resolved against
+    -Framework (Resolve-MtTestBenchmark), so the row gets its own Benchmark and the Related references of the
+    requirements are added to its Control. A value that is not written <framework-key>:<id>, or that names a
+    framework of the index and a requirement its file does not have, is left out. When none is left, the row
+    keeps its family's Control and Benchmark; otherwise the instance's values replace the family's.
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Specialized.OrderedDictionary])]
@@ -611,7 +619,9 @@ function Get-MtInstanceAttribute {
         # The family's product, used to check a Feature when the instance sets none.
         [Parameter()] [AllowNull()] [AllowEmptyString()] [string] $Product,
         # The family's related products, kept (less the new product) when the instance changes product.
-        [Parameter()] [AllowNull()] [string[]] $RelatedProduct
+        [Parameter()] [AllowNull()] [string[]] $RelatedProduct,
+        # The frameworks a Control can refer to (Get-MtTestFrameworkIndex). Without it an instance's Control is ignored.
+        [Parameter()] [AllowNull()] [object] $Framework
     )
 
     $values = [ordered]@{}
@@ -648,6 +658,21 @@ function Get-MtInstanceAttribute {
         $techniques = @($mitre | Where-Object { $_ -ne 'None' -and -not (Get-MtAttackTechniqueProblem -Mitre $_) } | Select-Object -Unique)
         if ($techniques.Count) { $values.Mitre = [string[]]@($techniques | Select-Object -First 5) }
         elseif ($mitre -contains 'None') { $values.Mitre = [string[]]@('None') }
+    }
+
+    $control = @(@(Get-MtInstanceValue -Instance $Instance -Name 'Control') | Where-Object { $_ -is [string] -and $_ } | ForEach-Object {
+            # The framework key is lowercase, as Read-MtNativeTest writes a test's.
+            $key, $id = $_.Trim() -split ':', 2
+            if ($id) { "$($key.ToLowerInvariant()):$id" }
+        } | Where-Object { $_ -cmatch (Get-MtTestSchema).Properties.Control.Pattern } | Select-Object -Unique)
+    if ($control.Count -and $Framework) {
+        $resolved = Resolve-MtTestBenchmark -Control $control -Index $Framework
+        $unknown = @($resolved.Unresolved | ForEach-Object { $_.Reference })
+        $known = @($control | Where-Object { $_ -cnotin $unknown })
+        if ($known.Count) {
+            $values.Control = [string[]]@(@($known) + @($resolved.Related) | Where-Object { $_ } | Select-Object -Unique)
+            $values.Benchmark = $resolved.Benchmark
+        }
     }
     $values
 }

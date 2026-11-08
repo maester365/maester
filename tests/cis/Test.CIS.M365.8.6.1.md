@@ -1,4 +1,4 @@
-﻿8.6.1 (L1) Ensure users can report security concerns in Teams
+8.6.1 (L1) Ensure users can report security concerns in Teams
 
 User reporting settings allow a user to report a message as malicious for further analysis. This recommendation is composed of 3 different settings and all be configured to pass:
 
