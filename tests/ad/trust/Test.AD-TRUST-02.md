@@ -22,7 +22,7 @@ Intra-forest trusts (within the same forest) generally have stronger security gu
 
 #### How the Test Works
 
-This test analyzes all trust objects and identifies those where `IntraForest` is `$false`. The test returns:
+This test analyzes all LDAP trust objects and identifies those where `WITHIN_FOREST` (`0x20`) is absent. It distinguishes unknown bitmasks; this outside-forest count can include non-AD realm trusts and is not equivalent to forest trust classification. The test returns:
 
 - Total count of trusts
 - Count of inter-forest trusts
@@ -31,9 +31,9 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 #### Related Tests
 
 - `Test-MtAdTrustQuarantinedCount` - Checks if external trusts have SID filtering enabled
-- `Test-MtAdTrustNonQuarantinedDetails` - Lists external trusts without SID filtering
+- `Test-MtAdTrustQuarantinedCount` (AD-TRUST-03) - Counts and lists weak SID-filtering findings
 - `Test-MtAdTrustTotalCount` - Overall trust count
-- `Test-MtAdTrustDetails` - Detailed trust configuration
+- `Test-MtAdTrustTotalCount` (AD-TRUST-01) - Trust count and full configuration inventory
 
 <!--- Results --->
 %TestResult%

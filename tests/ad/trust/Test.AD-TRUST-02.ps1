@@ -41,14 +41,14 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory trust inventory was not returned.'
     }
 
     $trusts = $adState.Trusts
+    if ($null -eq $trusts) { throw 'Active Directory trusts were not returned.' }
 
     # Count inter-forest trusts
-    $interForestTrusts = $trusts | Where-Object { $_.IntraForest -eq $false }
+    $interForestTrusts = $trusts | Where-Object { $null -ne $_.TrustAttributes -and (([int]$_.TrustAttributes -band 0x20) -eq 0) }
     $interForestCount = ($interForestTrusts | Measure-Object).Count
     $totalCount = ($trusts | Measure-Object).Count
 
@@ -60,10 +60,11 @@
     $result += "| --- | --- |" + "`n"
     $result += "| Total Trusts | $totalCount |" + "`n"
     $result += "| Inter-Forest Trusts | $interForestCount |" + "`n"
-    $result += "| Intra-Forest Trusts | $($totalCount - $interForestCount) |" + "`n" + "`n"
+    $result += "| Within-Forest Trusts | $(($trusts | Where-Object { $null -ne $_.TrustAttributes -and ([int]$_.TrustAttributes -band 0x20) -ne 0 } | Measure-Object).Count) |" + "`n"
+    $result += "| Unknown classification | $(($trusts | Where-Object { $null -eq $_.TrustAttributes } | Measure-Object).Count) |" + "`n" + "`n"
 
     if ($interForestCount -eq 0) {
-        $testResultMarkdown = "No inter-forest trusts are configured. All trusts (if any) are within the same forest.`n`n%TestResult%"
+        $testResultMarkdown = "No outside-forest trusts were identified from available trust attributes. Review unknown classifications separately.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "There are $interForestCount inter-forest trust(s) configured. Inter-forest trusts connect to external forests and should be carefully monitored for security.`n`n%TestResult%"
     }

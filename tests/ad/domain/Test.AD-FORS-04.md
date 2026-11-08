@@ -27,7 +27,7 @@ This test retrieves cross-forest reference information from the forest configura
 #### Related Tests
 
 - `Test-MtAdTrustTotalCount` - Checks for configured domain trusts
-- `Test-MtAdTrustDetails` - Provides detailed trust configuration information
+- `AD-TRUST-01` - Provides trust counts and detailed configuration information
 
 <!--- Results --->
 %TestResult%
