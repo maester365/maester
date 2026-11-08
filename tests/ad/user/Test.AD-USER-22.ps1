@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Checks that the domain RID-500 administrator is present and not stale.
     #>
-    [MaesterTest(Id = 'AD-USER-22', Title = 'The built-in domain administrator should not have stale access or credentials', Product = 'ad', Feature = 'users', Area = 'privileged-access', ResourceType = 'User', Severity = 'Medium', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1078.002', Control = 'nist-800-53-r5:AC-2(3)', Service = 'ActiveDirectory', Permission = ('ActiveDirectory:Ldap:user:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.objectSid:ReadProperty'), Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-22',
+        Title = 'The built-in domain administrator should not have stale access or credentials',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.objectSid:ReadProperty'),
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

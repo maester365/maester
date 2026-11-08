@@ -2,7 +2,21 @@
     <# .SYNOPSIS
     Finds ordinary users beneath CN containers instead of OUs.
     #>
-    [MaesterTest(Id = 'AD-USER-19', Title = 'Ordinary users should be managed in organizational units', Product = 'ad', Feature = 'users', Area = 'identity-lifecycle', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-19',
+        Title = 'Ordinary users should be managed in organizational units',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

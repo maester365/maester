@@ -2,7 +2,21 @@
     <# .SYNOPSIS
     Checks for ordinary users with unapproved primary group IDs.
     #>
-    [MaesterTest(Id = 'AD-USER-12', Title = 'Ordinary users should use an approved primary group', Product = 'ad', Feature = 'users', Area = 'identity-lifecycle', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1078.002', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-12',
+        Title = 'Ordinary users should use an approved primary group',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

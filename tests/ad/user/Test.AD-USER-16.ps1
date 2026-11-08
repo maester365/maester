@@ -2,7 +2,21 @@
     <# .SYNOPSIS
     Checks user home, profile and logon-script paths against approved roots.
     #>
-    [MaesterTest(Id = 'AD-USER-16', Title = 'User home, profile and script paths should be approved', Product = 'ad', Feature = 'users', Area = 'access-control', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1037.003', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-16',
+        Title = 'User home, profile and script paths should be approved',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'access-control',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1037.003',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

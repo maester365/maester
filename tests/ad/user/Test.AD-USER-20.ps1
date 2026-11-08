@@ -2,7 +2,19 @@
     <# .SYNOPSIS
     Inventories user names matching configurable service account naming patterns.
     #>
-    [MaesterTest(Id = 'AD-USER-20', Title = 'Service-like user names should be reviewed', Product = 'ad', Feature = 'users', Area = 'applications', ResourceType = 'User', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-20',
+        Title = 'Service-like user names should be reviewed',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'applications',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

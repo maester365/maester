@@ -2,7 +2,19 @@
     <# .SYNOPSIS
     Inventories explicitly configured decoy account IDs for review.
     #>
-    [MaesterTest(Id = 'AD-USER-26', Title = 'Configured decoy users should be reviewed', Product = 'ad', Feature = 'users', Area = 'logging-and-detection', ResourceType = 'User', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-26',
+        Title = 'Configured decoy users should be reviewed',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'logging-and-detection',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

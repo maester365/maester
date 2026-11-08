@@ -2,7 +2,19 @@
     <# .SYNOPSIS
     Inventories users with AdminCount set for privilege review.
     #>
-    [MaesterTest(Id = 'AD-USER-11', Title = 'AdminCount users should be reviewed', Product = 'ad', Feature = 'users', Area = 'privileged-access', ResourceType = 'User', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-11',
+        Title = 'AdminCount users should be reviewed',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'privileged-access',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

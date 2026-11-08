@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Checks for enabled ordinary users missing a manager for access review.
     #>
-    [MaesterTest(Id = 'AD-USER-15', Title = 'Enabled ordinary users should have a manager', Product = 'ad', Feature = 'users', Area = 'identity-lifecycle', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'None', Control = 'nist-800-53-r5:AC-2', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-15',
+        Title = 'Enabled ordinary users should have a manager',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
+        Control = 'nist-800-53-r5:AC-2',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(
