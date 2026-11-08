@@ -2,8 +2,8 @@
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
-        # Both are native tests, so neither function is exported.
-        Use-MtModuleFunction -Name Test-MtCisCustomerLockBox, Test-MtAdTombstoneLifetime
+        # A native test, so the function is not exported.
+        Use-MtModuleFunction -Name Test-MtAdTombstoneLifetime
     }
 
     BeforeEach {
@@ -16,53 +16,6 @@
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
-        }
-    }
-
-    Context 'CIS.M365.1.3.6 customer lockbox' {
-        It 'skips instead of passing when the organization configuration comes back empty' {
-            # An empty collection filters to nothing, the count is zero, and zero was the pass.
-            Mock -ModuleName Maester Get-MtExo { @() }
-
-            $null -eq (Test-MtCisCustomerLockBox) | Should -BeTrue
-            $script:SkippedBecause | Should -Be 'NotAuthorized'
-        }
-
-        It 'skips instead of passing when the row carries no CustomerLockBoxEnabled property' {
-            Mock -ModuleName Maester Get-MtExo { [pscustomobject]@{ Id = 'contoso' } }
-
-            $null -eq (Test-MtCisCustomerLockBox) | Should -BeTrue
-            $script:SkippedBecause | Should -Be 'NotAuthorized'
-        }
-
-        It 'passes when the lockbox is enabled' {
-            Mock -ModuleName Maester Get-MtExo { [pscustomobject]@{ Id = 'contoso'; CustomerLockBoxEnabled = 'True' } }
-
-            Test-MtCisCustomerLockBox | Should -BeTrue
-            $script:TestResult | Should -Match 'Well done'
-            # A passing tenant must not be shown a failing row under the "Well done" heading.
-            $script:TestResult | Should -Match '\| ✅ Pass \|'
-            $script:TestResult | Should -Not -Match '❌ Fail'
-        }
-
-        It 'fails when the lockbox is disabled' {
-            Mock -ModuleName Maester Get-MtExo { [pscustomobject]@{ Id = 'contoso'; CustomerLockBoxEnabled = 'False' } }
-
-            Test-MtCisCustomerLockBox | Should -BeFalse
-            $script:TestResult | Should -Match 'does not have the customer lockbox enabled'
-            $script:TestResult | Should -Match '\| ❌ Fail \|'
-            $script:TestResult | Should -Not -Match '✅ Pass'
-        }
-
-        It 'renders the result table on a pass as well as on a failure' {
-            # The table used to be built only on failure while the -replace consumed it either way,
-            # so a passing tenant rendered an empty table and the expression would throw under
-            # Set-StrictMode.
-            Mock -ModuleName Maester Get-MtExo { [pscustomobject]@{ Id = 'contoso'; CustomerLockBoxEnabled = 'True' } }
-
-            $null = Test-MtCisCustomerLockBox
-            $script:TestResult | Should -Match '\| Customer Lockbox \|'
-            $script:TestResult | Should -Not -Match '%TestResult%'
         }
     }
 

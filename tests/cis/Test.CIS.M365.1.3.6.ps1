@@ -38,11 +38,7 @@
     param()
 
     Write-Verbose 'Requesting organization configuration to get the customer lockbox setting'
-    # A row whose CustomerLockBoxEnabled is $null means the organization configuration was not
-    # readable. Dropping those here makes the count below zero, so the check skips instead of
-    # reporting a tenant as failing on a value it never read.
-    $customerLockbox = @(Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled |
-        Where-Object { $null -ne $_.CustomerLockBoxEnabled })
+    $customerLockbox = @(Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled)
 
     if ($customerLockbox.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotAuthorized
