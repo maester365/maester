@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6X51F55PSZ5CWP4YF04PZR5",
   "strategy": "manual-commit",
   "branch": "feat/website-catalog-growth",
-  "checkpoints_count": 4,
+  "checkpoints_count": 8,
   "files_touched": [
     "website/scripts/catalog-explorer.mjs",
     "website/scripts/catalog-history.mjs",
@@ -26,25 +26,32 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 0,
-    "cache_creation_tokens": 0,
-    "cache_read_tokens": 0,
-    "output_tokens": 0,
-    "api_call_count": 0
+    "input_tokens": 68,
+    "cache_creation_tokens": 26980,
+    "cache_read_tokens": 3621993,
+    "output_tokens": 8337,
+    "api_call_count": 28
   },
   "redaction": {
-    "replacements": 1051,
+    "replacements": 2137,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 1048,
-      "key_context": 3,
+      "entropy": 2120,
+      "key_context": 17,
       "provider_token": 0,
       "shell_stdin": 0
     }
