@@ -1,32 +1,15 @@
-Analyzing subnet distribution by first octet provides:
+Hierarchical IPv4 prefix overview.
 
-- **Addressing scheme visibility**: Understanding IP allocation patterns
-- **Network segmentation insight**: How the network is logically divided
-- **Capacity planning**: Identifying available address space
-- **Documentation**: Supporting network topology documentation
+Reports one row per source IPv4 subnet, grouping its address by first, first two, and first three octets. It replaces AD-SUB-09 and AD-SUB-10; these address components are not claims about the configured CIDR prefix.
 
-Common patterns include using 10.x for corporate, 172.x for datacenters, etc.
+#### Remediation action
 
-#### Control Type
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-- Document the IP addressing scheme and first octet allocation
-- Plan address space to avoid conflicts during acquisitions
-- Reserve address space for future growth
-- Review addressing scheme during network architecture changes
-
-#### How the Test Works
-
-This test extracts the first octet from all IPv4 subnets and counts the distinct values.
-
-#### Related Tests
-
-- `Test-MtAdSubnetFirstTwoOctetsCount` - Analyzes /16 networks
-- `Test-MtAdSubnetFirstThreeOctetsCount` - Analyzes /24 networks
-- `Test-MtAdSubnetTotalCount` - Counts total subnets
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/designing-the-site-topology)
 
 <!--- Results --->
 %TestResult%

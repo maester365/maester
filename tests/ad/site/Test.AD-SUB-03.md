@@ -1,32 +1,15 @@
-Catch-all subnets (overly broad IP ranges) can cause:
+Broad IPv4 subnet inventory.
 
-- **Authentication inefficiency**: Clients may authenticate to distant DCs
-- **WAN congestion**: Unnecessary cross-site authentication traffic
-- **Security concerns**: Difficult to track and audit client locations
-- **Operational confusion**: Site boundaries don't reflect actual topology
+Lists actual IPv4 CIDRs with /16 or shorter prefixes for topology review; a broad subnet is not intrinsically invalid.
 
-Common catch-all subnets include 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16.
+#### Remediation action
 
-#### Control Type
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-- Replace catch-all subnets with specific, appropriately-sized subnets
-- Use /24 or smaller subnets for most locations
-- Document exceptions where catch-all subnets are intentionally used
-- Review subnet definitions during network planning
-
-#### How the Test Works
-
-This test identifies subnets with overly broad CIDR notation that could encompass multiple physical locations.
-
-#### Related Tests
-
-- `Test-MtAdSubnetNonInternalCount` - Identifies public IP subnets
-- `Test-MtAdSubnetTotalCount` - Counts total subnets
-- `Test-MtAdSiteWithoutSubnetCount` - Identifies sites without subnets
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/designing-the-site-topology)
 
 <!--- Results --->
 %TestResult%
