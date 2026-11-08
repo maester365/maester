@@ -1,0 +1,134 @@
+In the maester site i want to show the variety and alreg collection of tests that we have as a selling point for maester. in it we should take the out of the box tests as well as the count of tests across all maester packs and show how rich a collection of tests that we have. 
+
+this is to highlitht the value of the ecosystem. 
+
+come up with a way how we can represent this. I think a chart that shows the tests over time (or anything else might be good). should we thinkig of including packs in our test catalog too and have it updated daily?
+
+---
+
+by default keep each one unique. we could add a toggle that says to group the shims and alsocheckedby so we get a more real count (but use that only as a toggle).
+
+lets include the community packs in the catalog so there is one place to discover but lets highlight they come from a community pack.
+
+---
+
+<task-notification>
+<task-id>bv24080wq</task-id>
+<tool-use-id>toolu_01LsCxoCa478f6g6KHWyVmUa</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/9948f473-294e-4c13-b6e3-fb178c50639e/tasks/bv24080wq.output</output-file>
+<status>completed</status>
+<summary>Background command "cd /Users/merill/github/maester/website; python3 - &lt;&lt;'EOF'
+for p,old,new in [
+ ('scripts/community-packs.mjs','  writeFileSync(communityPacksPath,','  // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository\n  writeFileSync(communityPacksPath,'),
+ ('scripts/catalog-history.mjs','  writeFileSync(catalogHistoryPath,','  // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository\n  writeFileSync(catalogHistoryPath,'),
+ ('scripts/generate-test-docs.mjs','  const community = existsSync(communityPacksPath)','  // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository\n  const community = existsSync(communityPacksPath)'),
+]:
+    s=open(p).read(); assert old in s,p; s=s.replace(old,new,1); open(p,'w').write(s)
+EOF
+cd .. &amp;&amp; (pwsh -NoProfile -File ./powershell/tests/pester.ps1 &gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester.log 2&gt;&amp;1; echo "exit $?" &gt;&gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester.log) &amp;
+echo started" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+I don;t like the look of the chart. it needs to be alot smoother one. Can we do an area chart of the distrubution of charts for the products...
+
+---
+
+how me different mockups of the charts...
+
+---
+
+i actually prefer for the growth to show it smoothly.
+
+as for the second one. that is the one I want like an area chart like the one in the third, not sure what its called.. show me a mock
+
+---
+
+the mock chart is empty
+
+---
+
+lets remove the treemap. the other one was better.
+
+---
+
+<task-notification>
+<task-id>b8f4da8rb</task-id>
+<tool-use-id>toolu_01Y1DCSUHrL8ofYfGuRb5oGY</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/9948f473-294e-4c13-b6e3-fb178c50639e/tasks/b8f4da8rb.output</output-file>
+<status>failed</status>
+<summary>Background command "cd /Users/merill/github/maester &amp;&amp; pwsh -NoProfile -File ./powershell/tests/pester.ps1 &gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester2.log 2&gt;&amp;1; echo EXIT=$?; sed 's/\x1b\[[0-9;]*m//g' /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester2.log | grep -E "failed|without a single failure" | tail -12" failed with exit code 144</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>ba2ymskaf</task-id>
+<tool-use-id>toolu_01YUoHaM4AQiMH7HAQ564FeV</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/9948f473-294e-4c13-b6e3-fb178c50639e/tasks/ba2ymskaf.output</output-file>
+<status>failed</status>
+<summary>Background command "L=/private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester.log; until grep -q "^exit " $L; do sleep 5; done; tail -25 $L" failed with exit code 144</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bpdekaf11</task-id>
+<tool-use-id>toolu_01DmWyYh5i8uHx4zFKBhD4wQ</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/9948f473-294e-4c13-b6e3-fb178c50639e/tasks/bpdekaf11.output</output-file>
+<status>failed</status>
+<summary>Background command "L=/private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester.log; until grep -q "^exit " $L; do sleep 5; done; grep -E "Failed|Passed|Tests completed|\[-\]|exit" $L | tail -20" failed with exit code 144</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bj6ex78ct</task-id>
+<tool-use-id>toolu_01X9f7HwwncBkXsri8Mmj8U5</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/9948f473-294e-4c13-b6e3-fb178c50639e/tasks/bj6ex78ct.output</output-file>
+<status>completed</status>
+<summary>Background command "pwsh -NoProfile -File ./powershell/tests/pester.ps1 &gt; /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester3.log 2&gt;&amp;1; echo EXIT=$?; sed 's/\x1b\[[0-9;]*m//g' /private/tmp/claude-501/-Users-merill--claude-spares-spare-qE5EWv/9948f473-294e-4c13-b6e3-fb178c50639e/scratchpad/pester3.log | grep -E " failed|without a single failure|Tests Passed" | tail -12" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+run the site so i can see it
+
+---
+
+in the test catalog don't show this long line int he home page 'Install the community packs first (CLT.UA, JL.CISIOSINT.L1, JL.CISMACINT.L1, JL.CISW11INT.BL, JL.CISW11INT.L1, RKS.IA, JL.CISEDGEINT.L1, LPMS): each pack's page on packs.maester.cloud has its Install-MtPack command. This runs the built-in checks shown. The CLT.UA, JL.CISIOSINT.L1, JL.CISMACINT.L1, JL.CISW11INT.BL, JL.CISW11INT.L1, RKS.IA, ZTA, JL.CISEDGEINT.L1, LPMS pack checks run as their own assessment: Invoke-Maester -Pack CLT.UA,JL.CISIOSINT.L1,JL.CISMACINT.L1,JL.CISW11INT.BL,JL.CISW11INT.L1,RKS.IA,ZTA,JL.CISEDGEINT.L1,LPMS -SkipBuiltIn.'
+
+also move the community packs to the bottom of all the lists
+
+the home page is not showing any padding for the new chart
+
+---
+
+in the test catalog for Source insted of repeating the word community, group them under a Maester Pack heading and list the packs
+
+---
+
+the chart is not proportional, there's white space below the line chart...
+
+---
+
+lets remove this toggle 'Count a setting once when several suites check it'
+
+---
+
+this is too much text '890 checks built into Maester, and 364 from the Microsoft Zero Trust Assessment pack. Each is researched, written and refined by security experts from the Maester community: meet the contributors. Filter them in the menu, or start from the overview.
+
+The list also has 618 checks from 8 community packs, marked Community pack. Their publishers write and maintain them; install a pack with Install-MtPack to run its checks.' lets remove all that. no one wnats to know them.
+
+---
+
+lets remove this from the home page ' It never buys a say in what a check reports.'
+
+---
+
+say something like we are thankful, Maester 3.0 and the future of Maester is possible because of them. Plus say help us sustain and improve maester for the community
+
+---
+
+lets create a pr for this

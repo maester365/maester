@@ -1,0 +1,50 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6X4J1FVDN792H0XTWH5CESM",
+  "session_id": "9948f473-294e-4c13-b6e3-fb178c50639e",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T08:31:52.227087Z",
+  "branch": "feat/website-catalog-growth",
+  "checkpoints_count": 11,
+  "save_step_count": 10,
+  "files_touched": [
+    ".github/workflows/build-website.yaml",
+    ".gitignore",
+    "AGENTS.md",
+    "website/scripts/catalog-explorer.mjs",
+    "website/scripts/generate-test-docs.mjs",
+    "website/scripts/prepare-data.mjs",
+    "website/src/components/catalog/CatalogList.astro",
+    "website/src/components/catalog/CatalogNav.astro",
+    "website/src/components/catalog/data.ts",
+    "website/src/pages/index.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "71ceae70791c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 370,
+    "cache_creation_tokens": 391355,
+    "cache_read_tokens": 41984794,
+    "output_tokens": 112402,
+    "api_call_count": 168
+  },
+  "redaction": {
+    "replacements": 1080,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 1070,
+      "key_context": 10,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 11
+  }
+}
