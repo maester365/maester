@@ -128,6 +128,12 @@
     }
     $Result += $RoleNote
 
-    Add-MtTestResultDetail -Result $Result
+    # Each risky user also appears on the report's Affected objects page; the table above stays as it is.
+    $AffectedUsers = @(
+        $Sorted | ForEach-Object {
+            [pscustomobject]@{ id = [string]$_.id; displayName = [string]$_.userDisplayName; userPrincipalName = [string]$_.userPrincipalName }
+        }
+    )
+    Add-MtTestResultDetail -Result $Result -GraphObjects $AffectedUsers -GraphObjectType IdentityProtection
     return $false
 }

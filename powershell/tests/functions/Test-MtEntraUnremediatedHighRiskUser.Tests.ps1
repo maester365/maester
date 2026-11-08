@@ -11,15 +11,19 @@
         $script:SkippedBecause = $null
         $script:SkippedError = $null
         $script:Severity = $null
+        $script:GraphObjects = $null
+        $script:GraphObjectType = $null
 
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause, $SkippedError, $Severity)
+            param($Result, $SkippedBecause, $SkippedError, $Severity, $GraphObjects, $GraphObjectType)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
             $script:SkippedError = $SkippedError
             $script:Severity = $Severity
+            $script:GraphObjects = $GraphObjects
+            $script:GraphObjectType = $GraphObjectType
         }
 
         # Role lookups default to "no roles". Tests that need roles override these.
@@ -170,6 +174,37 @@
 
         Test-MtEntraUnremediatedHighRiskUser | Should -BeTrue
         $script:TestResult | Should -Match 'Well done'
+    }
+
+    It 'passes the unremediated users to the report as affected objects' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'user-1'; userPrincipalName = 'alice@contoso.com'; userDisplayName = 'Alice'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                },
+                [pscustomobject]@{
+                    id = 'user-2'; userPrincipalName = 'bob@contoso.com'; userDisplayName = 'Bob'
+                    riskLevel = 'high'; riskState = 'confirmedCompromised'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-02T00:00:00Z'
+                }
+            )
+        } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyUsers' }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
+        $script:GraphObjectType | Should -Be 'IdentityProtection'
+        @($script:GraphObjects).Count | Should -Be 2
+        @($script:GraphObjects.id) | Should -Be @('user-1', 'user-2')
+        @($script:GraphObjects.displayName) | Should -Be @('Alice', 'Bob')
+        @($script:GraphObjects.userPrincipalName) | Should -Be @('alice@contoso.com', 'bob@contoso.com')
+    }
+
+    It 'passes no affected objects when no user is left unremediated' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { return @() } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyUsers' }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeTrue
+        $script:GraphObjects | Should -BeNullOrEmpty
     }
 
     It 'skips as NotAuthorized on a 403 from Graph' {
