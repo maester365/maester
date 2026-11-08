@@ -62,21 +62,38 @@
     # Without the substitution the branch the author wrote for that case is the one that runs, which
     # is what the title of this check asserts: the tombstone lifetime should be retrievable.
 
-    # Test passes if we successfully retrieved tombstone lifetime
-    $testResult = $null -ne $tombstoneLifetime
+    # A $null lifetime is not one case but two, and only one of them is a failure to retrieve.
+    # When the Directory Service object was read and simply carries no tombstoneLifetime, the
+    # attribute is not set and Active Directory uses 60 days. That value is known, so the check
+    # reports it rather than claiming the lifetime could not be retrieved. Raised by @merill.
+    $directoryServiceRead = [bool]$adState.Configuration.DirectoryServiceRead
+    $notSetLifetime = 60
+    $isNotSet = $directoryServiceRead -and $null -eq $tombstoneLifetime
+    $effectiveLifetime = if ($isNotSet) { $notSetLifetime } else { $tombstoneLifetime }
+
+    # Test passes if the effective tombstone lifetime is known
+    $testResult = $null -ne $effectiveLifetime
 
     # Generate markdown results
     if ($testResult) {
         $result = "| Property | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
-        $result += "| Tombstone Lifetime | $tombstoneLifetime days |" + "`n"
+        $result += "| Tombstone Lifetime | $effectiveLifetime days |" + "`n"
+        if ($isNotSet) {
+            $result += "| Source | Not set on the forest, so Active Directory uses $notSetLifetime days |" + "`n"
+        }
         $result += "| Recommended minimum | $defaultValue days |" + "`n"
         $result += "| Forest Name | $($adState.Forest.Name) |" + "`n"
 
-        $recommendation = if ($tombstoneLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
+        $recommendation = if ($effectiveLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
         $result += "| Recommendation | $recommendation |" + "`n"
 
-        $testResultMarkdown = "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $tombstoneLifetime days before permanent removal.`n`n%TestResult%"
+        $lead = if ($isNotSet) {
+            "The forest does not set a tombstone lifetime, so Active Directory uses $notSetLifetime days. Deleted objects are retained for that long before permanent removal."
+        } else {
+            "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $effectiveLifetime days before permanent removal."
+        }
+        $testResultMarkdown = "$lead`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."

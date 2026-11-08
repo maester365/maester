@@ -91,6 +91,11 @@
         WellKnownSecurityPrincipals = @($wellKnown); SiteLinks = @($siteLinks); DhcpServers = @($dhcp); AuthNPolicyContainers = @($authN)
         TrustedRootCAs = @($trustedRoots); IntermediateCAs = @($intermediate); EnterpriseCAs = @($enterprise); CertificateTemplates = @($templates)
         EnrollmentTemplates = $enrollmentTemplates; CrlDistributionPoints = @($cdp); NtAuthCertificates = @($ntAuth); LdapQueryPolicies = @($policies)
+        # A $null TombstoneLifetime means two different things and callers need to tell them
+        # apart: the Directory Service object was not read at all, or it was read and carries
+        # no tombstoneLifetime attribute. The second is Active Directory's "not set", where the
+        # forest falls back to 60 days - a known value, not a failure to retrieve.
+        DirectoryServiceRead = ($null -ne $directoryService)
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }

@@ -35,9 +35,11 @@
         }
 
         It 'does not invent a lifetime of 180 days when the value is missing' {
+            # DirectoryServiceRead false: the Directory Service object was not read at all, so
+            # there is no effective lifetime to report. This is the genuine retrieval failure.
             Mock -ModuleName Maester Get-MtADDomainState {
                 [pscustomobject]@{
-                    Configuration = [pscustomobject]@{ TombstoneLifetime = $null }
+                    Configuration = [pscustomobject]@{ TombstoneLifetime = $null; DirectoryServiceRead = $false }
                     Forest        = [pscustomobject]@{ Name = 'contoso.com' }
                 }
             }
@@ -45,6 +47,24 @@
             $null = Test-MtAdTombstoneLifetime
             $script:TestResult | Should -Not -Match '180 days'
             $script:TestResult | Should -Not -Match 'Meets recommendation'
+        }
+
+        It 'reports the 60-day fallback when the attribute is not set but the object was read' {
+            # Raised by @merill on #2699: a forest that never set tombstoneLifetime is not a
+            # retrieval failure. Active Directory uses 60 days, which is a known value and below
+            # the recommendation, so the check reports it instead of saying it could not be read.
+            Mock -ModuleName Maester Get-MtADDomainState {
+                [pscustomobject]@{
+                    Configuration = [pscustomobject]@{ TombstoneLifetime = $null; DirectoryServiceRead = $true }
+                    Forest        = [pscustomobject]@{ Name = 'contoso.com' }
+                }
+            }
+
+            Test-MtAdTombstoneLifetime | Should -BeTrue
+            $script:TestResult | Should -Match '60 days'
+            $script:TestResult | Should -Match 'Not set on the forest'
+            $script:TestResult | Should -Match 'Below recommendation'
+            $script:TestResult | Should -Not -Match 'Unable to retrieve'
         }
 
         It 'passes and reports the value when the lifetime is readable' {
