@@ -1,4 +1,4 @@
-- Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
+This check inventories three separate indicators on non-domain-controller computer accounts: classic Kerberos constrained delegation (KCD) target SPNs from `msDS-AllowedToDelegateTo`, the `TrustedToAuthForDelegation` protocol-transition flag, and **presence** of an `msDS-AllowedToActOnBehalfOfOtherIdentity` resource-based constrained delegation (RBCD) descriptor. One computer can have multiple indicators. Descriptor presence neither identifies allowed principals nor proves effective delegation permissions.
 
 **Security Considerations:**
 - **Limited Scope**: Safer than unconstrained but still enables impersonation
@@ -29,14 +29,11 @@
 
 #### How the Test Works
 
-This test counts non-DC computers with the `TrustedToAuthForDelegation` flag enabled, which indicates:
-- Constrained delegation is configured
-- Protocol transition may be enabled
+The test reports separate non-DC counts for KCD target SPNs, protocol transition and RBCD descriptor presence, plus a deduplicated count and a sample of computers and KCD targets for review. A protocol-transition flag alone does not prove that a classic KCD target is configured. A present RBCD descriptor needs a separate permissions review; this test cannot resolve principals or effective access. Delegation on user or managed service accounts is outside this computer inventory.
 
 #### Related Tests
 
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
-- `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Critical non-DC unconstrained delegation
 - `Test-MtAdUserDelegationConfiguredCount` - User account delegation settings
 
 #### Related links

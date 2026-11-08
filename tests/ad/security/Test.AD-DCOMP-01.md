@@ -1,4 +1,4 @@
-- Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
+Unconstrained delegation on non-domain-controller computers exposes users' Kerberos tickets to any attacker who compromises the computer. This check fails when one or more non-DC computers have the `TrustedForDelegation` flag. DCs are counted separately but do not cause failure; percentages use only non-DC computers as the denominator.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer
@@ -35,8 +35,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 
 #### Related Tests
 
-- `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
-- `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation
+- `AD-DCOMP-03` - Reviews protocol transition on non-DC computers
 - `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
 
 #### Related links
