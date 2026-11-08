@@ -171,7 +171,7 @@
                 "$($Item.KeyId) | $($Item.Type) | $Issue |"
         }
 
-        Add-MtTestResultDetail -Result $Result -Severity 'High'
+        Add-MtTestResultDetail -Result $Result
         return $false
     } catch {
         $ErrorRecord = $_
