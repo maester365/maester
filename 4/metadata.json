@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6YGH2GQF44XMMC8ER1453K8",
+  "session_id": "8c79efeb-425a-4bc5-80ea-5adb88b3df79",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T21:20:17.41383Z",
+  "branch": "feat/website-home-chapters",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "website/public/demo/report.html",
+    "website/public/demo/views/attack-dark.webp",
+    "website/public/demo/views/attack-light.webp",
+    "website/public/demo/views/framework-dark.webp",
+    "website/public/demo/views/framework-light.webp",
+    "website/public/demo/views/overview-dark.webp",
+    "website/public/demo/views/overview-light.webp",
+    "website/public/demo/views/plan-dark.webp",
+    "website/public/demo/views/plan-light.webp",
+    "website/public/demo/views/test-dark.webp",
+    "website/public/demo/views/test-light.webp",
+    "website/public/demo/views/zta-dark.webp",
+    "website/public/demo/views/zta-light.webp",
+    "website/public/explainers/how-it-works/img/attack.webp",
+    "website/public/explainers/how-it-works/img/framework.webp",
+    "website/public/explainers/how-it-works/img/overview.webp",
+    "website/public/explainers/how-it-works/img/plan.webp",
+    "website/public/explainers/how-it-works/img/test.webp",
+    "website/public/explainers/how-it-works/img/zta.webp",
+    "website/scripts/build-demo-report.mjs",
+    "website/scripts/capture-demo-report.mjs",
+    "website/src/components/CatalogGrowth.astro",
+    "website/src/pages/index.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "9177a446aa5c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 48,
+    "cache_creation_tokens": 117837,
+    "cache_read_tokens": 3611860,
+    "output_tokens": 22755,
+    "api_call_count": 23
+  },
+  "redaction": {
+    "replacements": 528,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 524,
+      "key_context": 4,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}

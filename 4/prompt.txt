@@ -1,0 +1,23 @@
+https://patchmypc.com/blog/intune-stig-audit-what-happens-after-you-click-create
+
+Review this and create an issue ballot to build out a check that verified if a STIG template has been created. 
+
+Then maybe we need a second one to review if a atig template is failing.
+
+Actually can you review DISA AND all the stigs and let me know what they are and how%if they are applicable to maester
+
+---
+
+Status
+
+---
+
+contine
+
+---
+
+actualyl lets ignore this for now. I think what we should focus is mapping our existing tests to DISA stig framework and showing it as a new framework? thoughts?
+
+---
+
+yes, build the coverage matrix

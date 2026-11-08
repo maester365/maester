@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6YGH2GQF44XMMC8ER1453K8",
   "strategy": "manual-commit",
   "branch": "feat/website-home-chapters",
-  "checkpoints_count": 6,
+  "checkpoints_count": 10,
   "files_touched": [
     "website/public/demo/report.html",
     "website/public/demo/views/attack-dark.webp",
@@ -59,25 +59,32 @@
       "compact_transcript": "/3/transcript.jsonl",
       "content_hash": "/3/content_hash.txt",
       "prompt": "/3/prompt.txt"
+    },
+    {
+      "metadata": "/4/metadata.json",
+      "transcript": "/4/full.jsonl",
+      "compact_transcript": "/4/transcript.jsonl",
+      "content_hash": "/4/content_hash.txt",
+      "prompt": "/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 22,
-    "cache_creation_tokens": 66035,
-    "cache_read_tokens": 1785112,
-    "output_tokens": 4320,
-    "api_call_count": 11
+    "input_tokens": 70,
+    "cache_creation_tokens": 183872,
+    "cache_read_tokens": 5396972,
+    "output_tokens": 27075,
+    "api_call_count": 34
   },
   "redaction": {
-    "replacements": 2102,
+    "replacements": 2630,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 2096,
-      "key_context": 6,
+      "entropy": 2620,
+      "key_context": 10,
       "provider_token": 0,
       "shell_stdin": 0
     }
