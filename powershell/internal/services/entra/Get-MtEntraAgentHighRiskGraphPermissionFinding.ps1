@@ -3,20 +3,7 @@
     [OutputType([pscustomobject])]
     param()
 
-    $RiskPaths = @{
-        'AdministrativeUnit.ReadWrite.All'                      = 'Indirect'
-        'Application.ReadUpdate.All'                            = 'Indirect'
-        'DeviceManagementConfiguration.ReadWrite.All'          = 'Indirect'
-        'DeviceManagementRBAC.ReadWrite.All'                   = 'Indirect'
-        'Policy.ReadWrite.ConditionalAccess'                   = 'Direct'
-        'PrivilegedAccess.ReadWrite.AzureADGroup'              = 'Direct'
-        'PrivilegedAssignmentSchedule.ReadWrite.AzureADGroup'  = 'Direct'
-        'PrivilegedEligibilitySchedule.ReadWrite.AzureADGroup' = 'Indirect'
-        'RoleAssignmentSchedule.ReadWrite.Directory'           = 'Direct'
-        'RoleEligibilitySchedule.ReadWrite.Directory'          = 'Indirect'
-        'RoleManagementPolicy.ReadWrite.AzureADGroup'          = 'Indirect'
-        'RoleManagementPolicy.ReadWrite.Directory'             = 'Indirect'
-    }
+    $RiskPaths = Get-MtEntraAgentHighRiskGraphPermission
     $AgentIdentities = @(
         Invoke-MtGraphRequest -ApiVersion 'v1.0' `
             -RelativeUri 'servicePrincipals/microsoft.graph.agentIdentity' `
