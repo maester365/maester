@@ -15,7 +15,7 @@
       "TenantId": null,
       "ConfigFile": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/maester-config.json",
       "ConfigSource": "maester-config.json",
-      "CustomOverlay": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/custom/maester-config.json",
+      "CustomOverlay": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/Custom/maester-config.json",
       "UsedShippedFile": false,
       "GlobalSettings": {
         "EmergencyAccessAccounts": [
@@ -37,7 +37,7 @@
       "TenantId": "11111111-2222-3333-4444-555555555555",
       "ConfigFile": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/maester-config.11111111-2222-3333-4444-555555555555.json",
       "ConfigSource": "maester-config.11111111-2222-3333-4444-555555555555.json",
-      "CustomOverlay": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/custom/maester-config.json",
+      "CustomOverlay": "powershell/tests/fixtures/golden/config-layouts/root-custom-tenant/Custom/maester-config.json",
       "UsedShippedFile": false,
       "GlobalSettings": {
         "EmergencyAccessAccounts": [
