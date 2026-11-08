@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Detects user accounts trusted for unconstrained delegation and inventories other delegation modes.
     #>
-    [MaesterTest(Id = 'AD-USER-05', Title = 'No user should have unconstrained Kerberos delegation', Product = 'ad', Feature = 'permissions', Area = 'authentication', ResourceType = 'User', Severity = 'High', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = ('T1558', 'T1550.003'), Control = 'nist-800-53-r5:AC-6', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-05',
+        Title = 'No user should have unconstrained Kerberos delegation',
+        Product = 'ad',
+        Feature = 'permissions',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = ('T1558', 'T1550.003'),
+        Control = 'nist-800-53-r5:AC-6',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

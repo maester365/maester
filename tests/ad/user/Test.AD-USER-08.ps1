@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Detects enabled accounts with no recorded logon after their provisioning grace period.
     #>
-    [MaesterTest(Id = 'AD-USER-08', Title = 'Enabled users should not remain unused after provisioning', Product = 'ad', Feature = 'users', Area = 'identity-lifecycle', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1078.002', Control = 'nist-800-53-r5:AC-2(3)', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-08',
+        Title = 'Enabled users should not remain unused after provisioning',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

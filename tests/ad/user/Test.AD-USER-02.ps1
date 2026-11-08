@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Checks for enabled users with old recorded logon timestamps.
     #>
-    [MaesterTest(Id = 'AD-USER-02', Title = 'Enabled users should not remain dormant', Product = 'ad', Feature = 'users', Area = 'identity-lifecycle', ResourceType = 'User', Severity = 'Medium', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1078.002', Control = 'nist-800-53-r5:AC-2(3)', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-02',
+        Title = 'Enabled users should not remain dormant',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'identity-lifecycle',
+        ResourceType = 'User',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:AC-2(3)',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(

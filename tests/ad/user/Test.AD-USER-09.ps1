@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Detects users with the password-not-required account control flag.
     #>
-    [MaesterTest(Id = 'AD-USER-09', Title = 'No user should have PasswordNotRequired set', Product = 'ad', Feature = 'users', Area = 'authentication', ResourceType = 'User', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1078.002', Control = 'nist-800-53-r5:IA-5', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-09',
+        Title = 'No user should have PasswordNotRequired set',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Control = 'nist-800-53-r5:IA-5',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

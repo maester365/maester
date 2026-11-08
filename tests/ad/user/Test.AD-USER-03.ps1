@@ -4,10 +4,19 @@
     Assesses password expiration for enabled users using their effective policy and account override.
     #>
     [MaesterTest(
-        Id = 'AD-USER-03', Title = 'Enabled users should meet the selected effective password expiration policy',
-        Product = 'ad', Feature = 'users', Area = 'authentication', ResourceType = 'User',
-        Severity = 'Low', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1078.002',
-        Service = 'ActiveDirectory', Permission = ('ActiveDirectory:Ldap:user:ReadProperty', 'ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty'), Author = 'soulemike'
+        Id = 'AD-USER-03',
+        Title = 'Enabled users should meet the selected effective password expiration policy',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'Low',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty', 'ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty'),
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

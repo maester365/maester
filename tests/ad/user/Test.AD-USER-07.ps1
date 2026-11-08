@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Detects users that do not require Kerberos pre-authentication.
     #>
-    [MaesterTest(Id = 'AD-USER-07', Title = 'All users should require Kerberos pre-authentication', Product = 'ad', Feature = 'users', Area = 'authentication', ResourceType = 'User', Severity = 'High', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1558.004', Control = 'nist-800-53-r5:IA-2', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-07',
+        Title = 'All users should require Kerberos pre-authentication',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1558.004',
+        Control = 'nist-800-53-r5:IA-2',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

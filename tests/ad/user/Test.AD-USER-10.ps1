@@ -2,7 +2,19 @@
     <# .SYNOPSIS
     Inventories user accounts with logon workstation restrictions for review.
     #>
-    [MaesterTest(Id = 'AD-USER-10', Title = 'User workstation restrictions should be reviewed', Product = 'ad', Feature = 'users', Area = 'access-control', ResourceType = 'User', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-10',
+        Title = 'User workstation restrictions should be reviewed',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'access-control',
+        ResourceType = 'User',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

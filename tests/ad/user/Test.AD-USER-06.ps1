@@ -2,7 +2,22 @@
     <# .SYNOPSIS
     Detects users configured for obsolete DES-only Kerberos keys.
     #>
-    [MaesterTest(Id = 'AD-USER-06', Title = 'No user should require DES-only Kerberos keys', Product = 'ad', Feature = 'users', Area = 'authentication', ResourceType = 'User', Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1558', Control = 'nist-800-53-r5:IA-5', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
+    [MaesterTest(
+        Id = 'AD-USER-06',
+        Title = 'No user should require DES-only Kerberos keys',
+        Product = 'ad',
+        Feature = 'users',
+        Area = 'authentication',
+        ResourceType = 'User',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1558',
+        Control = 'nist-800-53-r5:IA-5',
+        Service = 'ActiveDirectory',
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
+        Author = 'soulemike'
+    )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

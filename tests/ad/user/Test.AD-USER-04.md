@@ -4,6 +4,10 @@ Reversible password encryption is effectively equivalent to storing passwords in
 
 **Detective**
 
+#### Security Recommendation
+
+Remove reversible-encryption account settings after testing legacy dependencies, inspect effective domain and fine-grained policies, and reset credentials when needed. The flag alone does not prove a password was stored reversibly.
+
 #### Remediation action
 
 Review legacy application dependencies, disable reversible password encryption on the affected accounts and effective policies, then reset affected passwords. Turning the flag off alone does not prove previously stored credential material was removed. Pilot changes where dependent authentication mechanisms may break.
@@ -14,9 +18,9 @@ This check fails when an account permits reversible password encryption and list
 
 #### Related Tests
 
-- `Test-MtAdUserKerberosDesOnlyCount`
-- `Test-MtAdUserPasswordNotRequiredCount`
-- `Test-MtAdUserNoPreAuthCount`
+- **AD-USER-06 — No user should require DES-only Kerberos keys** — `Test-MtAdUserKerberosDesOnlyCount` — Reviews weak Kerberos settings.
+- **AD-USER-09 — No user should have PasswordNotRequired set** — `Test-MtAdUserPasswordNotRequiredCount` — Reviews a separate password flag.
+- **AD-USER-07 — All users should require Kerberos pre-authentication** — `Test-MtAdUserNoPreAuthCount` — Reviews AS-REP roasting exposure.
 
 #### Related links
 
