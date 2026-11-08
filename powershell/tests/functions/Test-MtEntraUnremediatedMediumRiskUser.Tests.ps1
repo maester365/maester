@@ -257,6 +257,9 @@
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             # Matched as a regex rather than IndexOf, so the position is found whether or not the
             # escaping helper put a backslash before the @.
+            # Both users must be present first; a missing match returns Index 0 and would pass the order check.
+            $script:TestResult | Should -Match 'bob\\?@contoso\.com'
+            $script:TestResult | Should -Match 'alice\\?@contoso\.com'
             [regex]::Match($script:TestResult, 'bob\\?@contoso\.com').Index |
                 Should -BeLessThan ([regex]::Match($script:TestResult, 'alice\\?@contoso\.com').Index)
         }
