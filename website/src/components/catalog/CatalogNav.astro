@@ -1,7 +1,7 @@
 ---
 // The sidebar of the test catalog: the views (one click to a product, a framework, a pack or a suite), then, on the
 // pages that list checks, the filters. The filters change the URL (state.ts), and the list on the page follows.
-import { checks, data, packOf, productIcon, productInitials, ratingOrder, severityOrder, suiteInfo, suiteMembers, type Check } from './data';
+import { checks, data, packOf, communityPackOf, packName, productIcon, productInitials, ratingOrder, severityOrder, suiteInfo, suiteMembers, type Check } from './data';
 
 interface Props {
 	id: string;
@@ -51,7 +51,11 @@ const groups = scope && [
 	{
 		name: 'source',
 		label: 'Source',
-		values: counted(scope, (t) => [t.pack ? t.pack : 'maester']).map(([k, n]) => ({ value: k, label: k === 'maester' ? 'Built into Maester' : packOf(k)?.name ?? k, count: n })),
+		// Built into Maester, then the packs under a Maester Packs heading: those that ship with Maester, then the
+		// community packs.
+		values: counted(scope, (t) => [t.pack ? t.pack : 'maester'])
+			.sort((a, b) => Number(a[0] !== 'maester') - Number(b[0] !== 'maester') || Number(Boolean(communityPackOf(a[0]))) - Number(Boolean(communityPackOf(b[0]))))
+			.map(([k, n], i, all) => ({ value: k, label: k === 'maester' ? 'Built into Maester' : packName(k), count: n, heading: k !== 'maester' && (i === 0 || all[i - 1][0] === 'maester') ? 'Maester Packs' : undefined })),
 	},
 	{
 		name: 'channel',
@@ -166,6 +170,21 @@ const AUTHORS_SHOWN = 6;
 	</details>
 
 	{
+		data.communityPacks.length > 0 && (
+			<details class="mt-cnav__more">
+				<summary class="mt-cnav__h">Community packs</summary>
+				{data.communityPacks.map((p) => (
+					<a href={p.url} class="mt-cnav__item" title={`Published by ${p.publisher}, on packs.maester.cloud`}>
+						<span class="mt-cnav__code mt-cnav__code--community">{p.code.split('.').pop()}</span>
+						<span>{p.name} ↗</span>
+						<span class="mt-cnav__n">{p.count}</span>
+					</a>
+				))}
+			</details>
+		)
+	}
+
+	{
 		groups && (
 			<section class="mt-cnav__filters" aria-label="Filters">
 				<div class="mt-cnav__fhead">
@@ -181,6 +200,8 @@ const AUTHORS_SHOWN = 6;
 							<input type="search" class="mt-cnav__find" placeholder={`Find one of ${g.values.length} authors`} aria-label="Find an author" data-find-author />
 						)}
 						{g.values.map((v: any, i: number) => (
+							<>
+							{v.heading && <p class="mt-cnav__sub">{v.heading}</p>}
 							<label class="mt-cnav__check" data-extra={g.name === 'author' && i >= AUTHORS_SHOWN ? '1' : undefined} hidden={g.name === 'author' && i >= AUTHORS_SHOWN}>
 								<input type="checkbox" data-filter={g.name} value={v.value} />
 								{v.dot && <span class={`mt-cnav__dot mt-cnav__dot--${v.dot.toLowerCase()}`} />}
@@ -188,6 +209,7 @@ const AUTHORS_SHOWN = 6;
 								<span>{v.label}</span>
 								<span class="mt-cnav__n">{v.count}</span>
 							</label>
+							</>
 						))}
 						{g.name === 'author' && g.values.length > AUTHORS_SHOWN && (
 							<button type="button" class="mt-cnav__all" data-all-authors>
@@ -325,6 +347,12 @@ const AUTHORS_SHOWN = 6;
 		text-transform: uppercase;
 		color: var(--sl-color-gray-3);
 	}
+	.mt-cnav__sub {
+		margin: 0.6rem 0.5rem 0.2rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: var(--sl-color-gray-3);
+	}
 	.mt-cnav__item {
 		display: flex;
 		align-items: center;
@@ -394,6 +422,16 @@ const AUTHORS_SHOWN = 6;
 		border-color: #1e40af;
 		color: #93c5fd;
 		background: #172554;
+	}
+	.mt-cnav__code--community {
+		border-color: #c4b5fd;
+		color: #6d28d9;
+		background: #f5f3ff;
+	}
+	:global(:root[data-theme='dark']) .mt-cnav__code--community {
+		border-color: #5b21b6;
+		color: #c4b5fd;
+		background: #2e1065;
 	}
 	.mt-cnav__n {
 		margin-inline-start: auto;

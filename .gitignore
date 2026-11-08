@@ -568,6 +568,8 @@ website/src/data/test-catalog.json
 website/src/data/explorer.json
 website/src/data/contributors.json
 website/src/data/sponsors.json
+website/src/data/community-packs.json
+website/src/data/catalog-history.json
 website/public/readme/
 website/docs/commands/*.mdx
 !website/docs/commands/readme.mdx
