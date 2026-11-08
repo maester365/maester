@@ -11,17 +11,17 @@ Monitoring the *count* of KDS root keys helps identify:
 **Operational**
 
 #### Security Recommendation
-- Ensure one or three (or more) KDS root keys exist per forest. Exactly two keys can cause gMSA authentication failures in some sorting scenarios.
+- At least one KDS root key is required to provision gMSAs. Exactly two keys can cause gMSA authentication failures in some sorting scenarios; multiple keys are not inherently invalid.
 - If exactly two keys exist, Microsoft's recommended workaround is to create a third key. Do not remove existing keys.
 - Validate the expected number of keys for your environment and alert on deviations.
 - Restrict administrative access to actions that can modify KDS root keys.
 
 #### How the Test Works
 The test enumerates KDS root keys present in Active Directory and evaluates the count:
-- **0 keys**: gMSAs are not in use; the test is skipped.
-- **1 key**: The recommended configuration; the test passes.
+- **0 keys**: gMSA provisioning is unavailable; the test fails. This does not prove whether gMSAs are in use.
+- **1 key**: The test passes.
 - **2 keys**: Can cause gMSA authentication failures in some scenarios; the test returns Investigate.
-- **3+ keys**: Acceptable per Microsoft guidance (the workaround for the sorting issue is to add a third key); the test passes.
+- **3+ keys**: The test passes; Microsoft's workaround for the two-key sorting issue is to add a third key.
 
 #### References
 
