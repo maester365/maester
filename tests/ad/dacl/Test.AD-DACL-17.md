@@ -8,7 +8,7 @@ Inherited object type GUIDs define which descendant object classes an inheritabl
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 - Review inherited ACEs that target sensitive descendant object classes
 - Prefer precise scoping over overly broad inheritance where possible
@@ -16,13 +16,12 @@ Inherited object type GUIDs define which descendant object classes an inheritabl
 
 #### How the Test Works
 
-This test reads `$adState.DaclEntries`, filters for `InheritedObjectType` GUIDs that are not the all-zero default value, and counts the distinct GUIDs present.
+This test reads `$adState.DaclEntries`, filters for nonblank `InheritedObjectType` GUIDs other than the all-zero default, and reports total ACEs, specific targeting ACEs, distinct GUIDs and the ACE and distinct object counts for each GUID. This is an inventory for review, not evidence of unsafe inheritance by itself.
 
 #### Related Tests
 
-- `Test-MtAdDaclInheritedObjectTypeDetails` - Provides a breakdown by inherited object type GUID
 - `Test-MtAdDaclNonInheritedAceCount` - Counts ACEs that are explicitly assigned
-- `Test-MtAdDaclPrivilegedAllowAceDetails` - Shows privileged allow authorizations in DACLs
+- `Test-MtAdDaclPrivilegedAllowAceCount` - Shows privileged allow authorizations in DACLs
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 
