@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6X4J1FVDN792H0XTWH5CESM",
+  "strategy": "manual-commit",
+  "branch": "feat/website-catalog-growth",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/build-website.yaml",
+    ".gitignore",
+    "AGENTS.md",
+    "website/scripts/catalog-explorer.mjs",
+    "website/scripts/catalog-history.mjs",
+    "website/scripts/community-packs.mjs",
+    "website/scripts/generate-test-docs.mjs",
+    "website/scripts/prepare-data.mjs",
+    "website/src/components/CatalogGrowth.astro",
+    "website/src/components/catalog/CatalogList.astro",
+    "website/src/components/catalog/CatalogNav.astro",
+    "website/src/components/catalog/data.ts",
+    "website/src/pages/index.astro"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 42,
+    "cache_creation_tokens": 63707,
+    "cache_read_tokens": 2083771,
+    "output_tokens": 6583,
+    "api_call_count": 19
+  },
+  "redaction": {
+    "replacements": 525,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 524,
+      "key_context": 1,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
