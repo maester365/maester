@@ -8,19 +8,17 @@ Extended rights control specific privileged operations in Active Directory, such
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 Review principals granted extended rights and verify that those delegations are necessary, documented, and limited to the smallest practical scope.
 
 #### How the Test Works
 
-This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs whose `ActiveDirectoryRights` includes `ExtendedRight`, and reports counts across identities, objects, and object types.
+This test reads `DaclEntries` from `Get-MtADDomainState`, filters allow ACEs whose rights include `ExtendedRight` (including combined rights), reports counts across identities, objects and object types, lists counts by `ObjectType` GUID, then lists identities granted specifically named sensitive rights such as password reset or replication. A blank or all-zero GUID is counted as `All / Not specified` but is not assigned a named right. All findings are for review, not automatic failures.
 
 #### Related Tests
 
-- `Test-MtAdDaclPrivilegedExtendedRightDetails`
 - `Test-MtAdDaclPrivilegedAllowAceCount`
-- `Test-MtAdDaclPrivilegedAllowAceDetails`
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

@@ -1,7 +1,7 @@
 ﻿function Test-MtAdDaclPrivilegedAllowAceCount {
     <#
     .SYNOPSIS
-    Counts privileged allow ACEs in collected DACL data.
+    Counts privileged allow ACEs and lists affected objects in collected DACL data.
 
     .DESCRIPTION
     This test identifies allow ACEs that include high-impact Active Directory rights
@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-09',
-        Title = 'Privileged allow ACE count should be investigated',
+        Title = 'Privileged allow ACEs and affected objects should be investigated',
         Product = 'ad',
         Feature = 'permissions',
         Area = 'privileged-access',
@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = ('T1098', 'T1222.001'),
         Service = 'ActiveDirectory',
+        Platform = 'Windows',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         LongRunning,
         Author = 'soulemike'
@@ -41,13 +42,8 @@
     }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.DaclEntries) {
+        throw 'DACL data is unavailable.'
     }
     Write-Verbose "Filtering/counting dacl privileged allow ace count"
 
@@ -64,7 +60,13 @@
         )
     }
 
-    $daclEntries = @($adState.DaclEntries)
+    $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
+    if ($daclEntries.Count -eq 0) {
+        throw 'No DACL entries were collected; cannot assess privileged ACEs.'
+    }
+    if (@($daclEntries | Where-Object { [string]::IsNullOrWhiteSpace($_.ObjectDN) -or [string]::IsNullOrWhiteSpace($_.AccessControlType) -or [string]::IsNullOrWhiteSpace($_.ActiveDirectoryRights) }).Count -gt 0) {
+        throw 'DACL entries are missing object names, access control types or rights.'
+    }
     $privilegedAllowEntries = @(
         foreach ($entry in $daclEntries) {
             if ($entry.AccessControlType -ne 'Allow') {
@@ -96,6 +98,19 @@
     foreach ($right in $privilegedRights) {
         $rightCount = @($privilegedAllowEntries | Where-Object { $_.MatchedRights -contains $right }).Count
         $result += "| ACEs containing $right | $rightCount |" + "`n"
+    }
+    $result += "`n| Object Name | Object Class | ACE Count | Distinct Identities | Privileged Rights | Object DN |`n| --- | --- | --- | --- | --- | --- |`n"
+    foreach ($group in @($privilegedAllowEntries | Group-Object ObjectDN | Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, Name)) {
+        $sample = $group.Group | Select-Object -First 1
+        $objectName = ([string]$sample.ObjectName) -replace '\|', '&#124;'
+        $objectClass = ([string]$sample.ObjectClass) -replace '\|', '&#124;'
+        $objectDn = ([string]$sample.ObjectDN) -replace '\|', '&#124;'
+        $identityCount = @($group.Group | Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } | Select-Object -ExpandProperty IdentityReference -Unique).Count
+        $rights = (@($group.Group | ForEach-Object { $_.MatchedRights } | Sort-Object -Unique) -join ', ') -replace '\|', '&#124;'
+        $result += "| $objectName | $objectClass | $($group.Count) | $identityCount | $rights | $objectDn |`n"
+    }
+    if ($privilegedAllowEntries.Count -eq 0) {
+        $result += "| No privileged allow ACEs found | | 0 | 0 | | |`n"
     }
     Write-Verbose "Counts computed"
 

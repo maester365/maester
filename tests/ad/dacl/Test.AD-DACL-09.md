@@ -8,17 +8,16 @@ Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 Limit privileged rights to tightly controlled administrative groups. Investigate unexpected identities or objects that accumulate these permissions.
 
 #### How the Test Works
 
-This test reads `DaclEntries` from `Get-MtADDomainState`, filters to allow ACEs, and counts entries where `ActiveDirectoryRights` includes `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight`.
+This test reads `DaclEntries` from `Get-MtADDomainState`, filters allow ACEs for `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight`, reports aggregate counts and lists each affected object's ACE count, identities and matched rights. These rights require human review; their presence alone is not a failure.
 
 #### Related Tests
 
-- `Test-MtAdDaclPrivilegedAllowAceDetails`
 - `Test-MtAdDaclPrivilegedExtendedRightCount`
 - `Test-MtAdDaclDistinctIdentityCount`
 

@@ -8,17 +8,16 @@ Every DACL ACE references a security principal. Tracking the number of distinct 
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 Keep delegation models simple and intentional. Prefer group-based administration over direct assignment to many individual accounts or SIDs.
 
 #### How the Test Works
 
-This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `IdentityReference` values, and reports how many distinct identities appear across all collected ACEs.
+This test reads `DaclEntries` from `Get-MtADDomainState`, reports total ACEs, distinct identities and objects, and lists each identity's ACE count, distinct objects, allow ACEs and deny ACEs. These are inventory metrics, not an assertion that any particular count is safe.
 
 #### Related Tests
 
-- `Test-MtAdDaclIdentityAceDistribution`
 - `Test-MtAdDaclPrivilegedAllowAceCount`
 - `Test-MtAdDaclPrivilegedExtendedRightCount`
 
