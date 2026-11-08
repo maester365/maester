@@ -13,6 +13,9 @@
     The report omits each test's ErrorRecord, which the report doesn't display. The
     MaesterResults object passed in and the JSON results file keep it.
 
+    The results are embedded gzip-compressed and Base64-encoded, which keeps the file small. Scripts that
+    read the results should read the JSON results file rather than the HTML.
+
     Reports added with Add-MtReportAttachment are embedded in the page, each in its own element, and
     opened from a button. They are left out when RedactUserIdentity is HtmlOnly or AllOutputs, because
     Maester cannot redact another tool's report. JSON attachments, data that a built-in view of the report
@@ -206,33 +209,34 @@
 
         Write-Verbose "Generating HTML report."
         $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
-        # Redact before escaping: escaped & < > would no longer match the replacement values.
+        # Redact the JSON text before it is compressed.
         if ($RedactUserIdentity -ne 'None') {
             $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded
         }
 
-        # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
-        $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')
+        # The results are written gzip-compressed and Base64-encoded, as attachments are: the guides and
+        # results are text that compresses to about a fifth. Base64 text cannot end the script element.
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+        $buffer = [System.IO.MemoryStream]::new()
+        try {
+            $gzip = [System.IO.Compression.GZipStream]::new($buffer, [System.IO.Compression.CompressionLevel]::SmallestSize, $true)
+            try { $gzip.Write($bytes, 0, $bytes.Length) } finally { $gzip.Dispose() }
+            $data = [System.Convert]::ToBase64String($buffer.ToArray())
+        } finally {
+            $buffer.Dispose()
+        }
 
         $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
         $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
-        # Insert the test results json into the template.
-        # Locate the EndOfJson sentinel (handles both double-quote and backtick strings
-        # produced by different Vite/Rolldown versions) then walk back to the variable
-        # assignment that owns the placeholder object so the same variable name is preserved.
-        $endPattern = 'EndOfJson:(?:"EndOfJson"|`EndOfJson`)\}'
-        $endMatch = [regex]::Match($templateHtml, $endPattern)
-        $insertLocationEnd = $endMatch.Index + $endMatch.Length
-
-        # Find the last variable declaration (var/const/let NAME=) before the end marker.
-        $startMatches = [regex]::Matches($templateHtml.Substring(0, $endMatch.Index), '(?:var|const|let)\s+\w+\s*=')
-        $startMatch = $startMatches[$startMatches.Count - 1]
-        $insertLocationStart = $startMatch.Index + $startMatch.Value.Length  # position just after the '='
-
-        $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-        $outputHtml += $json
-        $outputHtml += $templateHtml.Substring($insertLocationEnd)
+        # Replace the template's data element, which holds a placeholder, with the compressed results.
+        $dataElement = [regex]::Match($templateHtml, '<script\b[^>]*\bid="maester-report-data"[^>]*>.*?</script>', 'Singleline')
+        if (-not $dataElement.Success) {
+            throw "The report template has no maester-report-data element: $htmlFilePath"
+        }
+        $outputHtml = $templateHtml.Substring(0, $dataElement.Index)
+        $outputHtml += '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip+base64">{0}</script>' -f $data
+        $outputHtml += $templateHtml.Substring($dataElement.Index + $dataElement.Length)
 
         # Each attachment is Base64 text, which cannot end the script element. The report reads it by the element's id.
         if ($attachmentContent.Count -gt 0) {
