@@ -1,4 +1,4 @@
-Describe 'Zero Trust Workshop plan' {
+﻿Describe 'Zero Trust Workshop plan' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force -WarningAction SilentlyContinue
         $script:PackRoot = (Resolve-Path "$PSScriptRoot/../../../packs/zero-trust-assessment").Path

@@ -1,4 +1,4 @@
-﻿AI agents should not be orphaned without an active owner.
+AI agents should not be orphaned without an active owner.
 
 Agents whose owners have been disabled or deleted in Entra ID lack active governance. No one is responsible for maintaining their configuration, reviewing their security settings, or responding to incidents involving the agent.
 

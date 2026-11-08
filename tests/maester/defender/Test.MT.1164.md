@@ -1,4 +1,4 @@
-﻿Checks that PUA (Potentially Unwanted Applications) protection is enabled in the assigned Microsoft Defender Antivirus policies.
+Checks that PUA (Potentially Unwanted Applications) protection is enabled in the assigned Microsoft Defender Antivirus policies.
 
 Disabled PUA protection allows Shadow IT and potentially unwanted applications to be installed on managed devices, increasing the attack surface.
 

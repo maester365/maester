@@ -1,4 +1,4 @@
-# The test builder page on maester.dev reads website/src/data/test-builder.json, which is generated from the
+﻿# The test builder page on maester.dev reads website/src/data/test-builder.json, which is generated from the
 # schema, the registries and the rubric. This test fails when one of those changed and the file was not regenerated.
 Describe 'Test builder data' {
     It 'has the Id and Control patterns of the schema written out in its code' {

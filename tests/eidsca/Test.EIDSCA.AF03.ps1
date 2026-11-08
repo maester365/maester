@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAF03 {
+﻿function Test-MtCheckEidscaAF03 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Enforce attestation is 'true'

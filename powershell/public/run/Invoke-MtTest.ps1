@@ -1,4 +1,4 @@
-function Invoke-MtTest {
+﻿function Invoke-MtTest {
     <#
     .SYNOPSIS
     Runs one or more Maester native tests through the engine and returns their result rows.
@@ -113,6 +113,18 @@ function Invoke-MtTest {
     $savedConfig = $__MtSession.MaesterConfig
     $insideRun = $null -ne $savedConfig -and -not [string]::IsNullOrEmpty([Maester.Engine.MtSession]::GetCurrentTest())
     $ownsConfig = -not $insideRun -or $null -ne $Config
+    # Invoke-Maester sets the admin portal URLs at the start of each run. Outside a run, like the config, they are
+    # set for this call from the current connection and restored afterwards; without them, the links that tests
+    # build to the portals are relative (#view/...). A cloud with no known portal URLs keeps the links relative.
+    $savedPortalUrl = $__MtSession.AdminPortalUrl
+    if (-not $insideRun) {
+        try {
+            Initialize-MtSession
+        } catch {
+            $__MtSession.AdminPortalUrl = @{}
+            Write-Verbose "The admin portal URLs could not be set, so the portal links stay relative: $($_.Exception.Message)"
+        }
+    }
     try {
         if ($ownsConfig) {
             $searchPath = if ($Path) { $(if (Test-Path -LiteralPath $Path -PathType Container) { $Path } else { Split-Path $Path -Parent }) } else { (Get-Location).Path }
@@ -133,5 +145,6 @@ function Invoke-MtTest {
         Invoke-MtNativePlan -Plan $plan -RunConfig $runConfig -Selection $selection
     } finally {
         if ($ownsConfig) { $__MtSession.MaesterConfig = $savedConfig }
+        if (-not $insideRun) { $__MtSession.AdminPortalUrl = $savedPortalUrl }
     }
 }

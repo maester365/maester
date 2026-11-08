@@ -1,4 +1,4 @@
-function Write-MtTestProgressLine {
+﻿function Write-MtTestProgressLine {
     <#
     .SYNOPSIS
     Passes a line of the ##maester protocol to Write-MtTestProgress, and says whether the line was one.

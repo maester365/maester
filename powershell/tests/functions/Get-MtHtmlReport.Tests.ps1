@@ -1,5 +1,14 @@
-Describe 'Get-MtHtmlReport' {
+﻿Describe 'Get-MtHtmlReport' {
     BeforeAll {
+        # Reads the results Get-MtHtmlReport embeds: gzip-compressed, Base64-encoded JSON in the data element.
+        function Get-ReportDataText([string] $Html) {
+            $match = [regex]::Match($Html, '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip\+base64">([A-Za-z0-9+/=]*)</script>')
+            if (-not $match.Success) { throw 'The report has no compressed maester-report-data element.' }
+            $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($match.Groups[1].Value))
+            $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+            try { $reader.ReadToEnd() } finally { $reader.Dispose() }
+        }
+
         # The function resolves the template relative to its own location (powershell/public/report/)
         # From the test directory (powershell/tests/functions/) the template is at ../../assets/
         $templatePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
@@ -128,18 +137,18 @@ Describe 'Get-MtHtmlReport' {
         It 'Should contain the tenant name in the output' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
-            $html | Should -BeLike '*Single Tenant*'
+            (Get-ReportDataText $html) | Should -BeLike '*Single Tenant*'
         }
 
         It 'Should contain the test data' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
-            $html | Should -BeLike '*MT.1033.0*'
+            (Get-ReportDataText $html) | Should -BeLike '*MT.1033.0*'
         }
 
         It 'Should embed the facts of an object, and no Facts property for objects without any' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
-            $html | Should -Not -BeLike '*"Facts"*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*"Facts"*'
 
             $record = $singleTenant.AffectedObjects[0] | Select-Object -Property *
             $record | Add-Member -NotePropertyName Facts -NotePropertyValue @(
@@ -149,41 +158,41 @@ Describe 'Get-MtHtmlReport' {
             $withFacts | Add-Member -NotePropertyName AffectedObjects -NotePropertyValue @($record)
             $html = Get-MtHtmlReport -MaesterResults $withFacts
 
-            $html | Should -BeLike '*"Facts"*'
-            $html | Should -BeLike '*Not registered*'
-            $html | Should -BeLike '*"Key":"user.mfaRegistered","Raw":false*'
+            (Get-ReportDataText $html) | Should -BeLike '*"Facts"*'
+            (Get-ReportDataText $html) | Should -BeLike '*Not registered*'
+            (Get-ReportDataText $html) | Should -BeLike '*"Key":"user.mfaRegistered","Raw":false*'
         }
 
         It 'Should contain emergency access account config data' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
-            $html | Should -BeLike '*BreakGlass1@contoso.com*'
+            (Get-ReportDataText $html) | Should -BeLike '*BreakGlass1@contoso.com*'
         }
 
         It 'Should keep user PII when RedactUserIdentity is None' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity None
 
-            $html | Should -BeLike '*user@contoso.com*'
+            (Get-ReportDataText $html) | Should -BeLike '*user@contoso.com*'
         }
 
         It 'Should default to keeping user PII' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
-            $html | Should -BeLike '*user@contoso.com*'
+            (Get-ReportDataText $html) | Should -BeLike '*user@contoso.com*'
         }
 
         It 'Should replace user PII with the object unique ID for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
 
-            $html | Should -BeLike '*object-user-001*'
-            $html | Should -Not -BeLike '*user@contoso.com*'
-            $html | Should -Not -BeLike '*11111111-1111-1111-1111-111111111111*'
+            (Get-ReportDataText $html) | Should -BeLike '*object-user-001*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*user@contoso.com*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*11111111-1111-1111-1111-111111111111*'
         }
 
         It 'Should redact the signed-in account for <_>' -ForEach @('AllOutputs', 'HtmlOnly') {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant -RedactUserIdentity $_
 
-            $html | Should -Not -BeLike '*test@contoso.com*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*test@contoso.com*'
         }
 
         It 'Should reject an unknown RedactUserIdentity value' {
@@ -197,19 +206,19 @@ Describe 'Get-MtHtmlReport' {
 
             $html = Get-MtHtmlReport -MaesterResults $withoutInventory -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap $map
 
-            $html | Should -BeLike '*object-user-001*'
-            $html | Should -Not -BeLike '*user@contoso.com*'
+            (Get-ReportDataText $html) | Should -BeLike '*object-user-001*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*user@contoso.com*'
         }
 
-        It 'Should redact a display name that the script escaping would otherwise hide' {
+        It 'Should redact a display name that holds an ampersand and angle brackets' {
             $results = $singleTenant | Select-Object -Property * -ExcludeProperty AffectedObjects
             $results.Tests = @($singleTenant.Tests | Select-Object -Property * -ExcludeProperty ResultDetail |
                     Select-Object *, @{ n = 'ResultDetail'; e = { [PSCustomObject]@{ TestResult = 'Owner: R&D <Lab> Admin' } } })
 
             $html = Get-MtHtmlReport -MaesterResults $results -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{ 'R&D <Lab> Admin' = 'object-user-002' }
 
-            $html | Should -BeLike '*Owner: object-user-002*'
-            $html | Should -Not -BeLike '*R\u0026D*'
+            (Get-ReportDataText $html) | Should -BeLike '*Owner: object-user-002*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*R\u0026D*'
         }
 
         It 'Should warn when redaction is requested but the results carry no inventory' {
@@ -255,10 +264,8 @@ Describe 'Get-MtHtmlReport' {
             $results.EndOfJson = 'EndOfJson'
 
             $html = Get-MtHtmlReport -MaesterResults ([PSCustomObject]$results)
-            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value
-            $json | Should -Not -BeNullOrEmpty
-            $json | Should -Not -Match '[<>&]'
-            $decoded = $json | ConvertFrom-Json
+            $html | Should -Not -BeLike '*alert(*'
+            $decoded = Get-ReportDataText $html | ConvertFrom-Json
             $decoded.TenantName | Should -BeExactly $payload
             if ($_) {
                 $decoded.Tenants[0].Tests[0].ResultDetail.TestResult | Should -BeExactly $payload
@@ -273,10 +280,7 @@ Describe 'Get-MtHtmlReport' {
         BeforeAll {
             # Reads the embedded results back out of the HTML, the reverse of how Get-MtHtmlReport inserts them.
             function Get-EmbeddedResult([string] $Html) {
-                # Each tenant has its own EndOfJson, so the results end at the last one.
-                $end = $Html.LastIndexOf('"EndOfJson":"EndOfJson"}') + '"EndOfJson":"EndOfJson"}'.Length
-                $start = [regex]::Matches($Html.Substring(0, $end), '(?:var|const|let)\s+\w+\s*=') | Select-Object -Last 1
-                $Html.Substring($start.Index + $start.Length, $end - $start.Index - $start.Length) | ConvertFrom-Json
+                Get-ReportDataText $Html | ConvertFrom-Json
             }
 
             function Get-SampleResultWithErrorRecord([string] $TenantName) {
@@ -308,7 +312,7 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $results
             $embedded = Get-EmbeddedResult $html
 
-            $html | Should -Not -BeLike '*/Users/someone/*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*/Users/someone/*'
             # A single test must still serialize as an array for the report.
             , $embedded.Tests | Should -BeOfType [array]
             $embedded.Tests[0].PSObject.Properties.Name | Should -Not -Contain 'ErrorRecord'
@@ -325,7 +329,7 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $merged
             $embedded = Get-EmbeddedResult $html
 
-            $html | Should -Not -BeLike '*/Users/someone/*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*/Users/someone/*'
             $embedded.Tenants.TenantName | Should -Be @('Tenant One', 'Tenant Two')
             foreach ($tenant in $embedded.Tenants) {
                 $tenant.Tests[0].PSObject.Properties.Name | Should -Not -Contain 'ErrorRecord'
@@ -354,7 +358,7 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $results
             $embedded = Get-EmbeddedResult $html
 
-            $html | Should -Not -BeLike '*/Users/someone/*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*/Users/someone/*'
             $embedded.Tenants[0].Tests[0].PSObject.Properties.Name | Should -Not -Contain 'ErrorRecord'
             $embedded.Tenants[0].Tests[0].ResultDetail.TestResult | Should -BeExactly 'Example result'
         }
@@ -399,7 +403,7 @@ Describe 'Get-MtHtmlReport' {
 
             $html | Should -BeLike ('*<script type="application/octet-stream" id="maester-attachment-{0}" data-encoding="gzip+base64">{1}</script>*' -f $attachment.Id, $attachment.Content)
             $html.IndexOf("maester-attachment-$($attachment.Id)") | Should -BeLessThan $html.LastIndexOf('</body>')
-            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value | ConvertFrom-Json
+            $json = Get-ReportDataText $html | ConvertFrom-Json
             $json.Attachments[0].Name | Should -Be 'Zero Trust Assessment report'
             $json.Attachments[0].TestId | Should -Be 'ZTA'
             $json.Attachments[0].PSObject.Properties.Name | Should -Not -Contain 'Content'
@@ -417,7 +421,7 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults (Get-ResultWithAttachment) -RedactUserIdentity $_ -UserIdentityReplacementMap @{} -WarningVariable warnings -WarningAction SilentlyContinue
 
             $html | Should -Not -BeLike '*id="maester-attachment-*'
-            $html | Should -Not -BeLike '*"Attachments"*'
+            (Get-ReportDataText $html) | Should -Not -BeLike '*"Attachments"*'
             $warnings | Should -Not -BeNullOrEmpty
         }
 
@@ -445,7 +449,7 @@ Describe 'Get-MtHtmlReport' {
             $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
             $text = $reader.ReadToEnd(); $reader.Dispose()
             $text | Should -Be '{"Pillars":[{"Note":"Owner user-001, user-001"}]}'
-            $json = [regex]::Match($html, '\{"TenantName":.*?"EndOfJson":"EndOfJson"\}').Value | ConvertFrom-Json
+            $json = Get-ReportDataText $html | ConvertFrom-Json
             @($json.Attachments).Name | Should -Be @('zero-trust-workshop')
             $warnings | Should -Not -BeNullOrEmpty
             $jsonAttachment.Content | Should -Be ([System.Convert]::ToBase64String($buffer.ToArray()))
@@ -482,8 +486,8 @@ Describe 'Get-MtHtmlReport' {
         It 'Should contain both tenant names' {
             $html = Get-MtHtmlReport -MaesterResults $merged
 
-            $html | Should -BeLike '*Tenant One*'
-            $html | Should -BeLike '*Tenant Two*'
+            (Get-ReportDataText $html) | Should -BeLike '*Tenant One*'
+            (Get-ReportDataText $html) | Should -BeLike '*Tenant Two*'
         }
 
         It 'Should not contain sample data from the template' {
@@ -495,20 +499,16 @@ Describe 'Get-MtHtmlReport' {
         It 'Should contain the Tenants key in the output' {
             $html = Get-MtHtmlReport -MaesterResults $merged
 
-            $html | Should -BeLike '*Tenants*'
+            (Get-ReportDataText $html) | Should -BeLike '*Tenants*'
         }
 
-        It 'Should produce valid single-line JSON (no newlines in data region)' {
+        It 'Embeds the results compressed, in one data element' {
             $html = Get-MtHtmlReport -MaesterResults $merged
 
-            # Find the data region — it should be on a single line (compressed JSON)
-            $tenantIdx = $html.IndexOf('"Tenant One"')
-            if ($tenantIdx -gt 0) {
-                # Get a chunk around the data
-                $start = [Math]::Max(0, $tenantIdx - 50)
-                $region = $html.Substring($start, [Math]::Min(200, $html.Length - $start))
-                $region | Should -Not -BeLike "*`n*" -Because 'JSON should be compressed to a single line'
-            }
+            ([regex]::Matches($html, 'id="maester-report-data"')).Count | Should -Be 1
+            $html | Should -Not -BeLike '*"Tenant One"*'
+            $html | Should -Not -BeLike '*EndOfJson*'
+            (Get-ReportDataText $html) | Should -BeLike '*"Tenant One"*'
         }
     }
 }

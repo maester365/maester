@@ -1,4 +1,4 @@
-﻿Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.
+Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.
 
 Rationale: Suspicious or malicious events, if not resolved promptly, may have a greater impact to users and the agency. Sending alerts to a monitored email address or SIEM system helps ensure these suspicious or malicious events are acted upon in a timely manner to limit overall impact.
 

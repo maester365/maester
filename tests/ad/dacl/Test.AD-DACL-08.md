@@ -1,4 +1,4 @@
-﻿Knowing which identities appear most frequently in DACLs helps identify central delegation patterns, inherited administrative groups, and accounts that may have accumulated permissions over time.
+Knowing which identities appear most frequently in DACLs helps identify central delegation patterns, inherited administrative groups, and accounts that may have accumulated permissions over time.
 
 - **Hotspot Detection**: Frequently occurring identities can represent broad administrative reach.
 - **Permission Hygiene**: Distribution data helps distinguish expected administrative groups from unusual direct assignments.

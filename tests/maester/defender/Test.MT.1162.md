@@ -1,4 +1,4 @@
-﻿Checks that the cloud extended timeout is configured between 30-50 seconds in the assigned Microsoft Defender Antivirus policies.
+Checks that the cloud extended timeout is configured between 30-50 seconds in the assigned Microsoft Defender Antivirus policies.
 
 Insufficient cloud timeout may prevent thorough analysis of suspicious files, allowing potentially malicious content to bypass cloud-based detection.
 

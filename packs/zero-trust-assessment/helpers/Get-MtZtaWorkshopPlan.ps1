@@ -1,4 +1,4 @@
-function Get-MtZtaWorkshopPlan {
+﻿function Get-MtZtaWorkshopPlan {
     <#
     .SYNOPSIS
     Builds the Zero Trust plan that the report's Zero Trust plan view shows, from the pack's workshop folder.

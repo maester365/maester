@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Validates runner protocol prerequisites for a single Active Directory directory server.
 

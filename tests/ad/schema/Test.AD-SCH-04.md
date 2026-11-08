@@ -1,4 +1,4 @@
-﻿Comprehensive schema information provides the foundation for understanding your Active Directory infrastructure. The schema defines:
+Comprehensive schema information provides the foundation for understanding your Active Directory infrastructure. The schema defines:
 
 - **Object classes**: What types of objects can exist (users, computers, groups)
 - **Attributes**: What properties objects can have

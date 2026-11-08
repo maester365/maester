@@ -1,4 +1,4 @@
-function Get-AzdoAdvancedSecurityEnablement {
+﻿function Get-AzdoAdvancedSecurityEnablement {
     <#
     .SYNOPSIS
     Returns the Azure DevOps Advanced Security organization enablement state.

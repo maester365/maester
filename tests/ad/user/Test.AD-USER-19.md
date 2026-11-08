@@ -1,4 +1,4 @@
-﻿Users are easier to manage when placed in organizational units (OUs) that align to administration, policy, and lifecycle requirements. Accounts stored in container paths such as `CN=Users` often indicate default placement or limited organizational structure.
+Users are easier to manage when placed in organizational units (OUs) that align to administration, policy, and lifecycle requirements. Accounts stored in container paths such as `CN=Users` often indicate default placement or limited organizational structure.
 
 - **Delegation limitations**: Containers are less flexible for delegated administration
 - **Policy design impact**: OUs are the preferred structure for policy and lifecycle management

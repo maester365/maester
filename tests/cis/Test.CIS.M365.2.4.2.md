@@ -1,4 +1,4 @@
-﻿The Strict preset security policy applies its strongest protections to the recipients selected for Exchange Online Protection and Defender for Office 365.
+The Strict preset security policy applies its strongest protections to the recipients selected for Exchange Online Protection and Defender for Office 365.
 
 Microsoft maintains the Standard and Strict preset security policies and updates them as threats change. Strict has the most aggressive settings for spam, phishing, malware, Safe Links and Safe Attachments, which suits the accounts that are most likely to be targeted and most valuable to compromise.
 

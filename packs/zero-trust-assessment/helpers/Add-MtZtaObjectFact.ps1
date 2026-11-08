@@ -1,4 +1,4 @@
-function Add-MtZtaObjectFact {
+﻿function Add-MtZtaObjectFact {
     <#
     .SYNOPSIS
     Adds facts from the Zero Trust Assessment's tenant export to the objects on Maester's Affected objects page.

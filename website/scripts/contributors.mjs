@@ -75,6 +75,7 @@ const countryPatterns = [
   [/japan|tokyo/i, "JP"],
   [/brazil|brasil/i, "BR"],
   [/south africa/i, "ZA"],
+  [/dominican republic|rep[uú]blica dominicana|santo domingo|santiago de los caballeros/i, "DO"],
 ];
 
 function flagFor(location) {

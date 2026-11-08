@@ -1,4 +1,4 @@
-﻿Managed devices SHOULD be required for authentication.
+Managed devices SHOULD be required for authentication.
 
 Rationale: The security risk of an adversary authenticating to the tenant from their own device is reduced by requiring a managed device to authenticate. Managed devices are under the provisioning and control of the agency. [OMB-22-09](https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf) states, "When authorizing users to access resources, agencies must consider at least one device-level signal alongside identity information about the authenticated user."
 

@@ -1,4 +1,4 @@
-function Get-MtZtaWorkshopValue {
+﻿function Get-MtZtaWorkshopValue {
     <#
     .SYNOPSIS
     Returns a property of an object read from the pack's workshop files, or $null when it has none.

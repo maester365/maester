@@ -238,6 +238,23 @@ The scan flags, and raises the risk of, what a reviewer should look at: binary f
 (`Invoke-Expression`, `[scriptblock]::Create`), starting processes, requests to hosts that `Uses.Network` does not
 list, and module imports that `Uses.Modules` does not list.
 
+### Mapping a pack's results to a framework
+
+A pack test maps itself to a requirement with `Control`, like any test (see
+[Benchmarks and framework files](../writing-tests/index.mdx#benchmarks-and-framework-files)). It can name a
+framework that ships with Maester, such as `cisa-scuba`, or one that the pack's own `suite.json` declares. A family
+whose instances each report on a different requirement sets `Control` on each instance instead, with the other
+attributes an instance may set (see [Families](../writing-tests/index.mdx#families-one-test-several-results)):
+
+```powershell
+foreach ($policy in $scubaResults) {
+    @{ Id = $policy.PolicyId; Title = $policy.Requirement; Control = "cisa-scuba:$($policy.PolicyId)"; Data = $policy }
+}
+```
+
+Each row then has its own `Benchmark`, and the report's framework view shows the pack's result under the
+requirement next to any Maester test that names the same one.
+
 ## Showing a long-running test's output and progress
 
 A test that runs a tool for a long time, such as an assessment in another PowerShell process, can show the person

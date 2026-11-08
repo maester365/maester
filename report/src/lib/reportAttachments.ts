@@ -1,6 +1,8 @@
 // Reports of other tools embedded with Add-MtReportAttachment. The report data lists each one; its content is
 // gzip-compressed HTML, Base64-encoded, in a <script type="application/octet-stream"> element of its own.
 
+import { decodeGzipBase64 } from "@/lib/gzipBase64"
+
 export interface ReportAttachment {
   Id: string
   Name: string
@@ -70,9 +72,8 @@ export function decodeAttachment(attachment: ReportAttachment): Promise<string> 
   if (!html) {
     html = (async () => {
       const base64 = attachmentElement(attachment)?.textContent?.trim() ?? ""
-      const compressed = await fetch(`data:application/gzip;base64,${base64}`)
-      if (!compressed.body) throw new Error("The attachment is empty.")
-      return await new Response(compressed.body.pipeThrough(new DecompressionStream("gzip"))).text()
+      if (!base64) throw new Error("The attachment is empty.")
+      return await decodeGzipBase64(base64)
     })()
     decoded.set(attachment.Id, html)
     html.catch(() => decoded.delete(attachment.Id))

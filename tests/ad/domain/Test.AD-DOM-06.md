@@ -1,4 +1,4 @@
-﻿This test provides detailed information about non-compliant domain names, helping you:
+This test provides detailed information about non-compliant domain names, helping you:
 
 - **Identify Problem Domains**: Pinpoint exactly which domains have naming issues
 - **Plan Remediation**: Understand the specific compliance violations

@@ -1,4 +1,4 @@
-﻿IPv6 subnet configuration is important for:
+IPv6 subnet configuration is important for:
 
 - **Future-proofing**: IPv6 adoption continues to grow
 - **Dual-stack environments**: Supporting both IPv4 and IPv6 clients

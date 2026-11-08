@@ -1,4 +1,4 @@
-﻿Verify that real-time scan direction is configured to monitor both incoming and outgoing files.
+Verify that real-time scan direction is configured to monitor both incoming and outgoing files.
 
 Limited scan direction may miss malware in certain file operations.
 

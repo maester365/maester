@@ -1,4 +1,4 @@
-function Get-MtSafeMarkdown {
+﻿function Get-MtSafeMarkdown {
     <#
 	.SYNOPSIS
 		Escapes text to be safe to use in markdown.

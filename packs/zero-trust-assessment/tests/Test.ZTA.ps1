@@ -1,4 +1,4 @@
-function Get-MtZtaInstance {
+﻿function Get-MtZtaInstance {
     <#
     .SYNOPSIS
     Returns one ZTA instance per result of the Microsoft Zero Trust Assessment.
