@@ -4,6 +4,8 @@ Compliance policies are sets of rules and conditions that are used to evaluate t
 
 The recommended state is **Mark devices with no compliance policy assigned as** **Not compliant**
 
+This test runs the same check as [MT.1054](https://maester.dev/docs/tests/MT.1054). The benchmark's audit reads the Intune device management settings and verifies that `secureByDefault` is `true`, which is what MT.1054 checks. The default, **Compliant** (`secureByDefault` is `false`), fails.
+
 #### Rationale
 
 Implementing this setting is a first step in adopting compliance policies for devices. When used in together with Conditional Access policies the attack surface can be reduced by forcing an action to be taken for non-compliant devices.
