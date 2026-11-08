@@ -1,4 +1,4 @@
-function Merge-MtMaesterResult {
+﻿function Merge-MtMaesterResult {
     <#
      .Synopsis
       Merges multiple MaesterResults objects into a single multi-tenant result for combined HTML reporting.

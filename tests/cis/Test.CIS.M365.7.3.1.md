@@ -1,4 +1,4 @@
-﻿7.3.1 (L2) Ensure Office 365 SharePoint infected files are disallowed for download
+7.3.1 (L2) Ensure Office 365 SharePoint infected files are disallowed for download
 
 By default, SharePoint online allows files that Defender for Office 365 has detected as infected to be downloaded.
 

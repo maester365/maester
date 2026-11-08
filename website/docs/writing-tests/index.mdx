@@ -328,13 +328,17 @@ the Maester report with `Add-MtReportAttachment`:
 Add-MtReportAttachment -Name 'Zero Trust Assessment' -Path "$outputPath/ZeroTrustAssessmentReport.html"
 ```
 
-The report lists it under **Reports** in the left menu, and shows a button with that name on its overview page and
+The report lists it near the bottom of the left menu (a pack's test's report goes in that pack's menu instead), and shows a button with that name on its overview page and
 on the test's result (on every instance of a family). Each opens the embedded report in the main panel, beside the
 Maester navigation, with a link to open it in a new browser tab. The attached report runs in a sandboxed frame
 without access to the Maester report or its data. It works offline, so the Maester report stays one
 file to share. The file is read and compressed at once, so you can delete the tool's output folder afterwards. The JSON
-results file lists the attachment's name and size, not its content, and the HTML report leaves attachments out
+results file lists the attachment's name and size, not its content, and the HTML report leaves HTML attachments out
 when `-RedactUserIdentity` is used.
+
+With `-ContentType application/json`, an attachment is data for a view built into the report, which finds it by
+its `Name` (the Zero Trust Assessment pack attaches its Zero Trust plan as `zero-trust-workshop`). It is not shown
+as a button, and under `-RedactUserIdentity` it is redacted like the results instead of being left out.
 
 ### Errors and skips
 
@@ -417,6 +421,7 @@ government, education and suite variants match too:
 | `DEFENDER_XDR` | Any Defender XDR workload (Endpoint P2, Office 365 P2, Identity or Cloud Apps) |
 | `LOCKBOX_ENTERPRISE` | Customer Lockbox |
 | `INTUNE_A` | Microsoft Intune |
+| `AGENT_365` | Microsoft Agent 365 (Agent 365 or Microsoft 365 E7) |
 
 `EXCHANGE_DLP` and `DEFENDER_XDR` are Maester's own tokens for a group of plans; every other token in the table
 is the service plan's own name.
@@ -430,6 +435,14 @@ name from Microsoft's Service plans included column nor a token of `powershell/a
 The list of Microsoft's names is `website/src/data/license-service-plans.json`, which a scheduled workflow
 refreshes from the Microsoft page every day. Only enabled subscriptions count. When the licences cannot be read (no Graph connection, or no
 permission), the licence check is not applied and the test runs.
+
+A test the tenant is not licensed for is `Skipped` with reason `LicenseNotFound`. The message names each licence
+by Microsoft's friendly name for the service plan and says what the tenant lacks, for example "This test requires
+Microsoft Entra ID P2 and Agent 365. The tenant does not have Agent 365." The names come from the same Microsoft
+page, in `powershell/assets/MaesterServicePlanNames.json`, so a custom test's plan is named too. Maester's grouping
+tokens (`AAD_PREMIUM`, `ATP_ENTERPRISE`, `EXCHANGE_DLP` and the like) describe every plan they accept instead, and a
+plan Microsoft does not list keeps its own name. When `License` has several elements, the message names what is
+missing from the element the tenant is closest to.
 
 ### Permission
 
@@ -631,6 +644,8 @@ The instance object has:
 | `Severity` | No | The instance's severity, used when the config sets none. |
 | `Tag` | No | Extra tags written to the instance's row. |
 | `Fields` | No | Facts about the instance that a report can group or filter by, as a hashtable of names to strings or arrays of strings, for example `@{ Pillar = 'Identity'; Category = 'Access control' }`. Written to the row's `Fields`; other values are left out. |
+| `Product`, `Feature`, `Area`, `RelatedProduct`, `UserImpact`, `ImplementationCost`, `Mitre` | No | What this instance is about, when that differs from its family, with the same keys as the attribute. A family that reads results from another tool, such as the Zero Trust Assessment pack, places each result under its own product this way. A value the taxonomy does not know is left out, and the row keeps the family's. |
+| `Control` | No | The requirements this instance implements, as one `<framework-key>:<requirement-id>` value or a list, for example `'cisa-scuba:MS.AAD.3.1'`. They replace the family's `Control`, and the row gets its own `Benchmark` and the requirements' `Related` references, as a test does (see [What the result gets](#what-the-result-gets)). A family that reads another tool's results per policy, such as the ScubaGear pack, maps each result to its requirement this way. A value that is not written `<framework-key>:<id>`, or that names a requirement the framework file does not have, is left out; when none is left, the row keeps the family's `Control` and `Benchmark`. |
 | `Data` | No | Anything the test needs. It is not written to the result. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
@@ -806,6 +821,10 @@ a framework that has a file and its ID is a requirement in that file.
   resolved, each once.
 
 `Get-MtTest` shows both. See [the result schema](../result-schema.md#benchmark).
+
+An instance of a [family](#families-one-test-several-results) can set its own `Control`, resolved the same way against the frameworks its
+family can name. A report lists every row that names a requirement under it, so when a pack's instance and a
+Maester test name the same requirement, both are shown.
 
 A framework is found by its key, whatever suite declares it. A custom test can name a framework that ships with
 Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`) or one that a suite in your own test folder declares. Two suites

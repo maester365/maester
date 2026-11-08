@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Deploys the Maester multi-platform, multi-forest Azure lab.
 

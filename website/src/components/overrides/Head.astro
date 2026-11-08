@@ -3,6 +3,7 @@
 // PostHog), structured data, and noindex on the frozen 2.x docs.
 import Default from '@astrojs/starlight/components/Head.astro';
 import Analytics from '../Analytics.astro';
+import { CARD_HEIGHT, CARD_WIDTH, cardUrl, defaultCard, docsCard } from '../../lib/og.mjs';
 
 const { entry, id } = Astro.locals.starlightRoute;
 // Not for search: the 2.x archive and the partials.
@@ -10,7 +11,10 @@ const isArchive = id === 'docs/2.x' || id.startsWith('docs/2.x/') || id.startsWi
 // Astro.url ends in .html at build time (build.format 'file'); the site serves every page without it.
 const url = new URL(Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1'), Astro.site);
 const data = entry.data as Record<string, any>;
-const image = typeof data.image === 'string' && data.image.startsWith('/') ? new URL(data.image, Astro.site).href : undefined;
+// A page's own image when it names one; otherwise its card (scripts/og-images.mjs renders it after the build).
+const card = isArchive ? defaultCard : docsCard(id, data);
+const ownImage = typeof data.image === 'string' && data.image.startsWith('/') ? new URL(data.image, Astro.site).href : undefined;
+const image = ownImage ?? cardUrl(card);
 const section = id.startsWith('docs/tests') ? ['Test catalog', '/docs/tests'] : id.startsWith('docs/commands') ? ['Commands', '/docs/commands'] : id.startsWith('docs/packs') ? ['Packs', '/docs/packs'] : ['Docs', '/docs/intro'];
 const jsonLd = [
 	{
@@ -43,7 +47,12 @@ const jsonLd = [
 	}
 </script>
 <Default />
-{isArchive && <meta name="robots" content="noindex" />}
-{image && <meta property="og:image" content={image} />}
-{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+{isArchive ? <meta name="robots" content="noindex" /> : <meta name="robots" content="max-image-preview:large" />}
+<meta property="og:image" content={image} />
+{!ownImage && <meta property="og:image:width" content={String(CARD_WIDTH)} />}
+{!ownImage && <meta property="og:image:height" content={String(CARD_HEIGHT)} />}
+<meta property="og:image:alt" content={data.title} />
+<meta name="twitter:image" content={image} />
+{!ownImage && !isArchive && <meta name="maester:og" content={JSON.stringify(card)} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <Analytics />

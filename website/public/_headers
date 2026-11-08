@@ -12,6 +12,10 @@
 /img/*
   Cache-Control: public, max-age=604800
 
+# Open Graph cards: pages link them with ?v=<hash>, which changes when the card does.
+/og/*
+  Cache-Control: public, max-age=604800
+
 /explainers/*
   Cache-Control: public, max-age=86400
 

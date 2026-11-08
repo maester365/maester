@@ -36,6 +36,7 @@ $__MtSession = @{
 	ADCredential           = $null               # Active Directory credential retained only for the connected session
 	ADCollectionTime       = $null               # Timestamp of last AD data collection
 	IncludeAffectedObjects  = $false              # Set by Invoke-Maester -IncludeAffectedObjects; gates per-test object capture
+	AffectedObjectFacts    = $null               # Add-MtAffectedObjectFact: System|Type|Id -> facts about an object, merged into the AffectedObjects
 	Console                = $null               # Get-MtConsoleMode result for the current Invoke-Maester run
 	PackConnections        = @{}                 # Maester Packs: service -> connection state a pack connector set with Set-MtConnectionState
 	ReportAttachments      = $null               # Add-MtReportAttachment: reports of other tools embedded in the HTML report
@@ -83,6 +84,9 @@ if (Test-Path -LiteralPath $builtInTestRoot) {
 if ($importErrors.Count -gt 0) {
 	Write-Warning "Module loaded with $($importErrors.Count) import error(s). Some functionality may be unavailable."
 }
+
+# Tab completion for the parameters listed in Get-MtArgumentCompleterTable. The build writes the same call.
+Register-MtArgumentCompleter
 
 # Safely import module manifest
 try {

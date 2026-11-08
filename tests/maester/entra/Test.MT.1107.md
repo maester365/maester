@@ -1,4 +1,4 @@
-﻿This test identifies Microsoft Entra ID Governance access packages and catalogs that contain references to deleted Entra ID groups. Deleted group references can cause access provisioning failures, broken approval workflows, and compliance violations.
+This test identifies Microsoft Entra ID Governance access packages and catalogs that contain references to deleted Entra ID groups. Deleted group references can cause access provisioning failures, broken approval workflows, and compliance violations.
 
 The test validates:
 - Groups assigned as resources in access packages still exist

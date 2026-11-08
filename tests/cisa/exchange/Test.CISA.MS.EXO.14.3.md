@@ -1,4 +1,4 @@
-﻿Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
+Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
 
 Rationale: Legitimate emails may be incorrectly filtered by spam protections. Adding allowed senders is an acceptable method of combating these false positives. Allowing an entire domain, especially a common domain like office.com, however, provides for a large number of potentially unknown users to bypass spam protections.
 

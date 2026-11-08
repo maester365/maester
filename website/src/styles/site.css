@@ -1,32 +1,5 @@
 /* Pages outside the docs: home, sponsor, contributors, manifesto, tools. Builds on theme.css. */
 
-/* The React components from the Docusaurus site use its variables; map them to the Maester tokens. */
-:root {
-	--ifm-color-primary: var(--sl-color-accent);
-	--ifm-color-danger-dark: #b91c1c;
-	--ifm-color-danger-light: #fca5a5;
-	--ifm-color-warning-light: #fde68a;
-	--ifm-color-warning-darkest: #78350f;
-	--ifm-color-success-dark: #15803d;
-	--ifm-color-success-darkest: #14532d;
-	--ifm-background-color: var(--sl-color-black);
-	--ifm-background-surface-color: var(--mt-surface);
-	--ifm-font-color-base: var(--sl-color-white);
-	--ifm-font-family-monospace: var(--sl-font-mono);
-	--ifm-line-height-base: 1.6;
-	--ifm-heading-line-height: 1.2;
-	--ifm-navbar-height: 64px;
-	--ifm-color-emphasis-100: var(--sl-color-gray-6);
-	--ifm-color-emphasis-200: var(--sl-color-gray-5);
-	--ifm-color-emphasis-300: var(--sl-color-gray-5);
-	--ifm-color-emphasis-400: var(--sl-color-gray-4);
-	--ifm-color-emphasis-500: var(--sl-color-gray-4);
-	--ifm-color-emphasis-600: var(--sl-color-gray-3);
-	--ifm-color-emphasis-700: var(--sl-color-gray-2);
-	--ifm-color-emphasis-800: var(--sl-color-gray-1);
-	--ifm-color-emphasis-900: var(--sl-color-white);
-}
-
 *,
 *::before,
 *::after {

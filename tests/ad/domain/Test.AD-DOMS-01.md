@@ -1,4 +1,4 @@
-﻿Allowed DNS suffixes control which DNS domain names can be used when joining computers to an Active Directory domain. This configuration is important for:
+Allowed DNS suffixes control which DNS domain names can be used when joining computers to an Active Directory domain. This configuration is important for:
 
 - **Domain Join Security**: Restricting allowed DNS suffixes prevents unauthorized computers from joining the domain with unexpected DNS names
 - **Namespace Consistency**: Ensures that joined computers use DNS names that align with organizational naming conventions

@@ -39,14 +39,27 @@
     $org = Get-MtGitHubOrganization
     $field = 'default_repository_permission'
     if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.3.8 and may be missing because of permissions, plan, API version, or organization type."
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization response did not include required field '$field'. This field is required to evaluate CIS.GH.1.3.8 and may be missing because of permissions, plan, API version, or organization type."
+        return $null
+    }
+
+    $actual = $org.$field
+    $recognizedValues = @('none', 'read', 'write', 'admin')
+    if ($actual -isnot [string] -or $recognizedValues -notcontains $actual) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Indeterminate: GitHub organization field '$field' must be a recognized permission string (none, read, write, or admin) to evaluate CIS.GH.1.3.8. No configuration verdict was produced."
         return $null
     }
 
     $allowedValues = @('none', 'read')
-    $actual = [string]$org.$field
     $result = $allowedValues -contains $actual
+    $resultSummary = if ($result) {
+        'Well done. Organization base permissions are limited to none or read.'
+    } else {
+        'Organization base permissions grant write or administrator access. Set Base permissions to None or Read and review explicit access grants.'
+    }
     $resultMarkdown = @"
+$resultSummary
+
 CIS.GH.1.3.8 automated evidence from ``GET /orgs/{org}``.
 
 | Field | Actual | Expected |

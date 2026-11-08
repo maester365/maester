@@ -1,4 +1,4 @@
-function Get-MtLicenseInformation {
+﻿function Get-MtLicenseInformation {
     <#
     .SYNOPSIS
         Get license information for a Microsoft 365 product.

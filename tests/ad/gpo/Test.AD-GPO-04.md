@@ -1,4 +1,4 @@
-﻿Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but are not linked to any OU, domain, or site. While they may look harmless, they can still create operational and security risk:
+Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but are not linked to any OU, domain, or site. While they may look harmless, they can still create operational and security risk:
 
 - **Resource and operational overhead**: Unused GPOs add clutter and can increase administrative effort.
 - **Accidental exposure**: An unlinked GPO can be mistakenly linked later, suddenly applying unknown settings to users or computers.

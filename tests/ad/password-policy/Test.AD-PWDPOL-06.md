@@ -1,4 +1,4 @@
-﻿Account lockout duration is a critical control for preventing brute-force attacks while maintaining usability:
+Account lockout duration is a critical control for preventing brute-force attacks while maintaining usability:
 
 - **Brute-force protection**: Lockouts prevent attackers from trying unlimited password combinations
 - **Automatic recovery**: Users can regain access after the duration expires without administrative intervention

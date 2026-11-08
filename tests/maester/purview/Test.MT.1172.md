@@ -1,4 +1,4 @@
-﻿Ensure the Microsoft 365 unified audit log is enabled so tenant activity across Exchange, SharePoint, OneDrive, Teams, Entra ID, Microsoft 365 Copilot and other workloads is captured for Microsoft Purview.
+Ensure the Microsoft 365 unified audit log is enabled so tenant activity across Exchange, SharePoint, OneDrive, Teams, Entra ID, Microsoft 365 Copilot and other workloads is captured for Microsoft Purview.
 
 The unified audit log is the **foundation** for Microsoft Purview Audit, eDiscovery, Insider Risk Management, Communication Compliance, and the DSPM for AI activity explorer. Copilot prompt/response activity is one of many signals that flow into it — along with mailbox access, file operations, admin actions, sign-ins and every other workload event.
 

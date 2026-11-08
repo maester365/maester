@@ -1,4 +1,4 @@
-﻿The `ms-ds-CreatorSid` attribute identifies which security principal created a computer account. This is valuable for:
+The `ms-ds-CreatorSid` attribute identifies which security principal created a computer account. This is valuable for:
 
 - **Audit trail**: Understanding who or what created computer accounts helps trace unauthorized additions
 - **Delegation analysis**: Identifying service accounts or users with excessive computer creation rights

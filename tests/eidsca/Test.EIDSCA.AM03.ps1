@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAM03 {
+﻿function Test-MtCheckEidscaAM03 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Require number matching for push notifications is 'enabled'

@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires all users to sign in again after at most seven days.
+An enabled Conditional Access policy requires all users to sign in again after at most seven days.
 
 Without a limit, a session can stay valid for a very long time, and a refresh token that is stolen keeps working until the user next changes password. Periodic reauthentication forces a new sign-in, and a new MFA challenge, at a predictable interval, which caps how long a stolen session is useful.
 

@@ -1,4 +1,4 @@
-Describe 'Get-MtSafeMarkdown' {
+﻿Describe 'Get-MtSafeMarkdown' {
     It 'Returns empty and null input unchanged' {
         Get-MtSafeMarkdown -Text '' | Should -BeNullOrEmpty
         Get-MtSafeMarkdown -Text $null | Should -BeNullOrEmpty

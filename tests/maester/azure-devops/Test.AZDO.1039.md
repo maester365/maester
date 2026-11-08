@@ -1,4 +1,4 @@
-﻿The GitHub Secret Protection plan **should be** automatically enabled on newly created Git repositories.
+The GitHub Secret Protection plan **should be** automatically enabled on newly created Git repositories.
 
 Rationale: Secret Protection provides push protection to prevent secret leaks before they happen, secret scanning alerts to catch existing exposures, and a security overview of your organization's risk. When automatic enablement is off, every new repository starts unprotected and has to be onboarded manually, so coverage silently degrades as the organization grows.
 

@@ -1,4 +1,4 @@
-﻿Understanding which specific sites lack domain controllers is essential for:
+Understanding which specific sites lack domain controllers is essential for:
 
 - **Capacity planning**: Identifying locations that may need DC deployment
 - **Troubleshooting**: Pinpointing sites that may experience authentication issues

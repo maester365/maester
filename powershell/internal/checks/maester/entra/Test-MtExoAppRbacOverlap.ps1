@@ -1,4 +1,4 @@
-function Test-MtExoAppRbacOverlap {
+﻿function Test-MtExoAppRbacOverlap {
     <#
     .SYNOPSIS
     Checks that apps scoped with Exchange RBAC for Applications don't also hold the same or a broader permission tenant-wide in Microsoft Entra ID.

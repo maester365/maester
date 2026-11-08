@@ -1,0 +1,211 @@
+---
+// The right column of a check's page: what the check is about (each value opens the checks that share it), the
+// framework requirements it supports, the ATT&CK techniques it defends against, the checks of another source that
+// test the same setting, and more checks of its feature.
+import { checks, data, frameworkOf, packOf, suiteInfo } from './data';
+
+interface Props {
+	id: string;
+}
+const check = checks.find((t) => t.id === Astro.props.id);
+const techniqueName = new Map(data.attack.techniques.map((t) => [t.Id, t.Name]));
+const titleOf = new Map(checks.map((t) => [t.id, t.title]));
+
+const about: { label: string; value: string; href?: string }[] = [];
+let maps: { key: string; label: string; id: string; level: string; href: string }[] = [];
+let same: string[] = [];
+let more: typeof checks = [];
+let moreHref = '';
+if (check) {
+	about.push({ label: 'Severity', value: check.severity, href: `/docs/tests?severity=${check.severity}` });
+	if (check.cost) about.push({ label: 'Effort to fix', value: check.cost, href: `/docs/tests?cost=${check.cost}` });
+	if (check.impact) about.push({ label: 'Impact on users', value: check.impact, href: `/docs/tests?impact=${check.impact}` });
+	if (check.product) about.push({ label: 'Product', value: check.productName, href: `/docs/tests/products/${check.product}` });
+	if (check.feature) about.push({ label: 'Feature', value: check.featureName, href: `/docs/tests/products/${check.product}?feature=${check.product}/${check.feature}` });
+	if (check.area) about.push({ label: 'Area', value: check.areaName, href: `/docs/tests?area=${check.area}` });
+	if (check.pack) {
+		const pack = packOf(check.pack);
+		about.push({ label: 'Pack', value: pack?.name ?? check.pack, href: pack ? `/docs/tests/packs/${pack.slug}` : undefined });
+	} else if (suiteInfo[check.suite]) {
+		about.push({ label: 'Suite', value: suiteInfo[check.suite].name, href: suiteInfo[check.suite].slug ? `/docs/tests/${suiteInfo[check.suite].slug}` : undefined });
+	}
+
+	maps = check.control.map((c) => {
+		const [key, ...rest] = c.split(':');
+		const id = rest.join(':');
+		const framework = frameworkOf(key);
+		const requirement = framework?.requirements.find((r) => r.id === id);
+		return { key, label: framework?.label ?? key, id, level: requirement?.level ?? '', href: framework ? `/docs/tests/frameworks/${key}#req-${encodeURIComponent(id)}` : '' };
+	});
+
+	// The same setting checked elsewhere: a pack check names built-in checks in AlsoCheckedBy; a built-in check lists
+	// the pack checks that name it.
+	same = check.pack ? (check.also ?? []) : checks.filter((t) => (t.also ?? []).includes(check.id)).map((t) => t.id);
+
+	if (check.feature) {
+		const all = checks.filter((t) => t.id !== check.id && t.product === check.product && t.feature === check.feature);
+		more = [...all.filter((t) => Boolean(t.pack) === Boolean(check.pack)), ...all.filter((t) => Boolean(t.pack) !== Boolean(check.pack))].slice(0, 5);
+		moreHref = `/docs/tests/products/${check.product}?feature=${check.product}/${check.feature}`;
+	}
+}
+const moreCount = check?.feature ? checks.filter((t) => t.product === check.product && t.feature === check.feature).length : 0;
+---
+
+{
+	check && (
+		<aside class="mt-rail" aria-label="About this check">
+			<section>
+				<h2>About this check</h2>
+				<dl>
+					{about.map((a) => (
+						<>
+							<dt>{a.label}</dt>
+							<dd>{a.href ? <a href={a.href}>{a.value}</a> : a.value}</dd>
+						</>
+					))}
+				</dl>
+			</section>
+
+			{maps.length > 0 && (
+				<section>
+					<h2>Maps to</h2>
+					{maps.map((m) => (
+						<a class="mt-rail__map" href={m.href || undefined}>
+							<b>{m.id}</b>
+							<span>
+								{m.label}
+								{m.level && ` · ${m.level}`}
+							</span>
+						</a>
+					))}
+				</section>
+			)}
+
+			{check.mitre.length > 0 && (
+				<section>
+					<h2>Defends against</h2>
+					{check.mitre.map((m) => (
+						<a class="mt-rail__map" href={`/docs/tests?mitre=${m}&group=product`}>
+							<b>{m}</b>
+							<span>{techniqueName.get(m) ?? ''}</span>
+						</a>
+					))}
+				</section>
+			)}
+
+			{same.length > 0 && (
+				<section>
+					<h2>{check.pack ? 'Maester checks this too' : 'Also checked by'}</h2>
+					{same.map((id) => (
+						<a class="mt-rail__check" href={`/docs/tests/${id}`}>
+							<span>{titleOf.get(id) ?? id}</span>
+							<b>{id}</b>
+						</a>
+					))}
+				</section>
+			)}
+
+			{more.length > 0 && (
+				<section>
+					<h2>
+						More in {check.featureName} · {moreCount}
+					</h2>
+					{more.map((t) => (
+						<a class="mt-rail__check" href={`/docs/tests/${t.id}`}>
+							<span>{t.title}</span>
+							<b class:list={{ 'mt-rail__pack': Boolean(t.pack) }}>{t.id}</b>
+						</a>
+					))}
+					<a class="mt-rail__all" href={moreHref}>
+						All {moreCount} →
+					</a>
+				</section>
+			)}
+		</aside>
+	)
+}
+
+<style>
+	.mt-rail {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		font-size: 0.84rem;
+	}
+	.mt-rail section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+		padding: 0.85rem 0.9rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 12px;
+		background: var(--sl-color-bg);
+	}
+	.mt-rail h2 {
+		margin: 0 0 0.15rem;
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-rail dl {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 0.35rem 0.75rem;
+		margin: 0;
+	}
+	.mt-rail dt {
+		color: var(--sl-color-gray-3);
+	}
+	.mt-rail dd {
+		margin: 0;
+		color: var(--sl-color-white);
+		min-width: 0;
+	}
+	.mt-rail a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.mt-rail dd a:hover,
+	.mt-rail a:hover span {
+		color: var(--sl-color-text-accent);
+	}
+	.mt-rail__map {
+		display: flex;
+		gap: 0.5rem;
+		align-items: baseline;
+		color: var(--sl-color-gray-2) !important;
+	}
+	.mt-rail__map b {
+		flex: none;
+		min-width: 4.5rem;
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: var(--sl-color-text-accent);
+	}
+	.mt-rail__check {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		color: var(--sl-color-gray-1) !important;
+		line-height: 1.35;
+	}
+	.mt-rail__check b {
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+		font-weight: 500;
+		color: var(--sl-color-text-accent);
+	}
+	.mt-rail__check b.mt-rail__pack {
+		color: #1d4ed8;
+	}
+	:global(:root[data-theme='dark']) .mt-rail__check b.mt-rail__pack {
+		color: #93c5fd;
+	}
+	.mt-rail__all {
+		font-size: 0.8rem;
+		color: var(--sl-color-text-accent) !important;
+	}
+</style>

@@ -1,4 +1,4 @@
-﻿Comprehensive trust documentation is essential for security operations:
+Comprehensive trust documentation is essential for security operations:
 
 - **Security Audits**: Auditors require detailed trust configuration information
 - **Incident Response**: Understanding trust relationships helps during security incidents

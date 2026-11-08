@@ -1,4 +1,4 @@
-﻿Checks if any Conditional Access policy is not targeted to any resource.
+Checks if any Conditional Access policy is not targeted to any resource.
 
 It's possible to create and even enable a Conditional Access policy without selecting any target resources - cloud apps, user actions, or authentication context. The policy is accepted and appears in the portal like any other policy, but it applies to nothing and enforces nothing.
 

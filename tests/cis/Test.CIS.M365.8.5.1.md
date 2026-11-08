@@ -1,4 +1,4 @@
-﻿Anonymous users are people who join a meeting without signing in to Microsoft Teams. If anonymous users can join, anyone who has the meeting link, or who finds it forwarded or posted in public, can attend and listen to or take part in confidential discussions.
+Anonymous users are people who join a meeting without signing in to Microsoft Teams. If anonymous users can join, anyone who has the meeting link, or who finds it forwarded or posted in public, can attend and listen to or take part in confidential discussions.
 
 Turning off anonymous join keeps meetings limited to people who have signed in. Users who must attend without an account can still be invited through a supported path, such as a guest account.
 

@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAG01 {
+﻿function Test-MtCheckEidscaAG01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - General Settings - Manage migration is one of the following values @('migrationComplete', '')

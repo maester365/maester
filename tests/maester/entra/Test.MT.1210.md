@@ -1,4 +1,4 @@
-﻿Agent Users should not have privileged directory roles or membership in role-assignable groups.
+Agent Users should not have privileged directory roles or membership in role-assignable groups.
 
 An Agent User is an Entra user account created specifically for an AI agent to access services that require user-context authentication (e.g. Teams, Exchange mailboxes, SharePoint sites). Because Agent Users represent non-human workloads, they should never be assigned Entra directory roles or added to role-assignable security groups.
 

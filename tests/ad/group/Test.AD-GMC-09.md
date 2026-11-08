@@ -1,4 +1,4 @@
-﻿Detailed visibility into empty non-privileged groups enables effective cleanup:
+Detailed visibility into empty non-privileged groups enables effective cleanup:
 
 - **Identification**: Lists specific groups that can be removed
 - **Age assessment**: Shows creation and modification dates to determine staleness

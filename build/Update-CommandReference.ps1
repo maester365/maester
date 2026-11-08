@@ -6,14 +6,49 @@
 $alt3DocusaurusVersion = "1.0.37"
 $platyPSVersion = "0.14.2"
 
-if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable | Where-Object { $_.Version -eq $alt3DocusaurusVersion })) { Install-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion -Scope CurrentUser -Force -SkipPublisherCheck }
-if (-not (Get-Module PlatyPS -ListAvailable | Where-Object { $_.Version -eq $platyPSVersion })) { Install-Module PlatyPS -RequiredVersion $platyPSVersion -Scope CurrentUser -Force -SkipPublisherCheck }
-if (-not (Get-Module Pester -ListAvailable | Where-Object { $_.Version -eq '5.7.1' })) { Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck }
+# Installs a pinned module, retrying a failed download, and stops with a message that names the
+# cause when it cannot be had at all.
+#
+# Install-Module writes a non-terminating error on a failed download, so without this the script
+# used to carry on to the Import-Module calls below and fail there instead, with
+# "The specified module 'PlatyPS' with version '0.14.2' was not loaded because no valid module file
+# was found", four steps away from the PowerShell Gallery handing the runner a source location it
+# could not use. A Gallery hiccup then reads as a problem with the branch being built.
+function Install-PinnedModule {
+    param(
+        [Parameter(Mandatory)] [string] $Name,
+        [Parameter(Mandatory)] [string] $Version,
+        [int] $Attempts = 3
+    )
+
+    $isAvailable = { [bool](Get-Module $Name -ListAvailable | Where-Object { $_.Version -eq $Version }) }
+    if (& $isAvailable) {
+        Write-Verbose "$Name $Version is already available."
+        return
+    }
+
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        try {
+            Install-Module $Name -RequiredVersion $Version -Scope CurrentUser -Force -SkipPublisherCheck -ErrorAction Stop
+        } catch {
+            Write-Warning "Attempt $attempt of $Attempts to install $Name $Version failed: $($_.Exception.Message)"
+        }
+
+        if (& $isAvailable) { return }
+        if ($attempt -lt $Attempts) { Start-Sleep -Seconds (5 * $attempt) }
+    }
+
+    throw "Could not install $Name $Version from the PowerShell Gallery after $Attempts attempts. The command reference cannot be generated without it."
+}
+
+Install-PinnedModule -Name Alt3.Docusaurus.Powershell -Version $alt3DocusaurusVersion
+Install-PinnedModule -Name PlatyPS -Version $platyPSVersion
+Install-PinnedModule -Name Pester -Version '5.7.1'
 
 Import-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion
 Import-Module PlatyPS -RequiredVersion $platyPSVersion
 Import-Module Pester -RequiredVersion 5.7.1
-Import-Module DnsClient
+if ($IsWindows) { Import-Module DnsClient }
 
 # Generate the command reference markdown
 $commandsIndexFile = "./website/docs/commands/readme.mdx"

@@ -1,4 +1,4 @@
-﻿Microsoft Purview Audit (Standard) logging SHALL be enabled.
+Microsoft Purview Audit (Standard) logging SHALL be enabled.
 
 Rationale: Responding to incidents without detailed information about activities that took place slows response actions. Enabling Microsoft Purview Audit (Standard) helps ensure agencies have visibility into user actions. Furthermore, Microsoft Purview Audit (Standard) is required for government agencies by OMB M-21-31 (referred to therein by its former name, Unified Audit Logs).
 
