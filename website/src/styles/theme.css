@@ -1,5 +1,6 @@
 /* maester.dev theme: the maester.cloud design tokens mapped onto Starlight. */
-@import '@fontsource-variable/inter';
+/* The opsz build: Inter switches to its display cut at large sizes, as SF Pro does. */
+@import '@fontsource-variable/inter/opsz.css';
 @import '@fontsource/geist-mono/400.css';
 @import '@fontsource/geist-mono/500.css';
 

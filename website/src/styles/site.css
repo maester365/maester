@@ -121,6 +121,20 @@ code {
 .site-btn--primary:hover {
 	opacity: 0.9;
 }
+/* An icon on its own in the header (GitHub, the theme): no box, quiet until hovered. */
+.site-icon-btn {
+	display: inline-grid;
+	place-items: center;
+	width: 2.1rem;
+	height: 2.1rem;
+	border-radius: 9px;
+	color: var(--sl-color-gray-3);
+	transition: color 0.2s, background 0.2s;
+}
+.site-icon-btn:hover {
+	color: var(--sl-color-white);
+	background: var(--sl-color-gray-6);
+}
 .site-btn--ghost {
 	background: transparent;
 	color: var(--sl-color-white);
