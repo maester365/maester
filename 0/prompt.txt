@@ -1,0 +1,11 @@
+lets resolve these conflicts https://github.com/maester365/maester/pull/2607
+
+---
+
+<task-notification>
+<task-id>b20iqhaor</task-id>
+<tool-use-id>toolu_0144rzrp6qPmmXwxFsei1x6r</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/10d20cf5-be5c-4f7e-b275-4e529da9ff84/tasks/b20iqhaor.output</output-file>
+<status>completed</status>
+<summary>Background command "List failing tests and recent main commits touching them" completed (exit code 0)</summary>
+</task-notification>
