@@ -3,8 +3,9 @@
   "checkpoint_id": "01M6YGH2GQF44XMMC8ER1453K8",
   "strategy": "manual-commit",
   "branch": "feat/website-home-chapters",
-  "checkpoints_count": 10,
+  "checkpoints_count": 33,
   "files_touched": [
+    "report/scripts/export-demo-data.mjs",
     "website/public/demo/report.html",
     "website/public/demo/views/attack-dark.webp",
     "website/public/demo/views/attack-light.webp",
@@ -16,6 +17,10 @@
     "website/public/demo/views/plan-light.webp",
     "website/public/demo/views/test-dark.webp",
     "website/public/demo/views/test-light.webp",
+    "website/public/demo/views/zt-board-dark.webp",
+    "website/public/demo/views/zt-board-light.webp",
+    "website/public/demo/views/zt-table-dark.webp",
+    "website/public/demo/views/zt-table-light.webp",
     "website/public/demo/views/zta-dark.webp",
     "website/public/demo/views/zta-light.webp",
     "website/public/explainers/how-it-works/img/attack.webp",
@@ -27,8 +32,11 @@
     "website/scripts/build-demo-report.mjs",
     "website/scripts/capture-demo-report.mjs",
     "website/src/components/CatalogGrowth.astro",
+    "website/src/components/ThemeToggle.astro",
     "website/src/layouts/SiteLayout.astro",
     "website/src/pages/index.astro",
+    "website/src/pages/pricing.astro",
+    "website/src/styles/site.css",
     "website/src/styles/theme.css"
   ],
   "sessions": [
@@ -66,25 +74,32 @@
       "compact_transcript": "/4/transcript.jsonl",
       "content_hash": "/4/content_hash.txt",
       "prompt": "/4/prompt.txt"
+    },
+    {
+      "metadata": "/5/metadata.json",
+      "transcript": "/5/full.jsonl",
+      "compact_transcript": "/5/transcript.jsonl",
+      "content_hash": "/5/content_hash.txt",
+      "prompt": "/5/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 70,
-    "cache_creation_tokens": 183872,
-    "cache_read_tokens": 5396972,
-    "output_tokens": 27075,
-    "api_call_count": 34
+    "input_tokens": 644,
+    "cache_creation_tokens": 600590,
+    "cache_read_tokens": 66358988,
+    "output_tokens": 183883,
+    "api_call_count": 296
   },
   "redaction": {
-    "replacements": 2630,
+    "replacements": 4374,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 2620,
-      "key_context": 10,
+      "entropy": 4328,
+      "key_context": 48,
       "provider_token": 0,
       "shell_stdin": 0
     }
