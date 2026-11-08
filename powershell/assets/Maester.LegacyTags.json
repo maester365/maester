@@ -16,11 +16,8 @@
       "Tag": "AD",
       "Replacement": "-Product ad",
       "Tests": [
-        "AD-CFG-01",
         "AD-CFG-02",
         "AD-CFG-03",
-        "AD-CFG-04",
-        "AD-CFG-05",
         "AD-CFG-06",
         "AD-CFG-07",
         "AD-CFG-08",
@@ -41,33 +38,22 @@
         "AD-CFG-23",
         "AD-CFG-24",
         "AD-COMP-01",
-        "AD-COMP-02",
         "AD-COMP-03",
         "AD-COMP-04",
         "AD-COMP-05",
         "AD-COMP-06",
         "AD-COMP-07",
         "AD-COMP-08",
-        "AD-COMP-09",
-        "AD-COMP-10",
         "AD-DACL-01",
         "AD-DACL-02",
         "AD-DACL-03",
-        "AD-DACL-04",
         "AD-DACL-05",
-        "AD-DACL-06",
         "AD-DACL-07",
-        "AD-DACL-08",
         "AD-DACL-09",
-        "AD-DACL-10",
         "AD-DACL-11",
-        "AD-DACL-12",
-        "AD-DACL-13",
         "AD-DACL-14",
         "AD-DACL-15",
-        "AD-DACL-16",
         "AD-DACL-17",
-        "AD-DACL-18",
         "AD-DC-01",
         "AD-DC-02",
         "AD-DC-03",
@@ -81,14 +67,11 @@
         "AD-DCD-03",
         "AD-DCD-04",
         "AD-DCOMP-01",
-        "AD-DCOMP-02",
         "AD-DCOMP-03",
         "AD-DCOMP-04",
-        "AD-DCOMP-05",
         "AD-DCOMP-06",
         "AD-DCOMP-07",
         "AD-DCOMP-08",
-        "AD-DCOMP-09",
         "AD-DFSR-01",
         "AD-DNS-01",
         "AD-DNS-02",
@@ -119,7 +102,6 @@
         "AD-DOM-08",
         "AD-DOMS-01",
         "AD-FEAT-01",
-        "AD-FEAT-02",
         "AD-FGPP-01",
         "AD-FGPP-02",
         "AD-FGPP-03",
@@ -135,46 +117,29 @@
         "AD-GCHG-01",
         "AD-GMC-01",
         "AD-GMC-02",
-        "AD-GMC-03",
         "AD-GMC-04",
-        "AD-GMC-05",
         "AD-GMC-06",
-        "AD-GMC-07",
         "AD-GMC-08",
-        "AD-GMC-09",
         "AD-GMC-10",
-        "AD-GMC-11",
         "AD-GPO-01",
         "AD-GPO-02",
-        "AD-GPO-03",
         "AD-GPO-04",
-        "AD-GPO-05",
         "AD-GPOL-01",
         "AD-GPOL-02",
         "AD-GPOL-03",
         "AD-GPOL-04",
         "AD-GPOL-05",
-        "AD-GPOL-06",
         "AD-GPOREP-01",
-        "AD-GPOREP-02",
         "AD-GPOREP-03",
-        "AD-GPOREP-04",
         "AD-GPOREP-05",
         "AD-GPOREP-06",
         "AD-GPOREP-07",
-        "AD-GPOREP-08",
         "AD-GPOREP-09",
         "AD-GPOREP-10",
-        "AD-GPOREP-11",
         "AD-GPOREP-12",
-        "AD-GPOREP-13",
         "AD-GPOREP-14",
         "AD-GPOREP-15",
-        "AD-GPOREP-16",
         "AD-GPOREP-17",
-        "AD-GPOREP-18",
-        "AD-GPOREP-19",
-        "AD-GPOREP-20",
         "AD-GPOS-01",
         "AD-GPOS-02",
         "AD-GPOS-03",
@@ -190,10 +155,7 @@
         "AD-GRP-04",
         "AD-GRP-05",
         "AD-GRP-06",
-        "AD-GRP-07",
         "AD-GRP-08",
-        "AD-GRP-09",
-        "AD-GRP-10",
         "AD-KRBTGT-01",
         "AD-KRBTGT-02",
         "AD-KRBTGT-03",
@@ -214,12 +176,9 @@
         "AD-REPL-01",
         "AD-REPL-02",
         "AD-ROOTDSE-01",
-        "AD-ROOTDSE-02",
         "AD-ROOTDSE-03",
         "AD-SCH-01",
-        "AD-SCH-02",
         "AD-SCH-03",
-        "AD-SCH-04",
         "AD-SCH-05",
         "AD-SITE-01",
         "AD-SITE-02",
@@ -227,18 +186,13 @@
         "AD-SITE-04",
         "AD-SITE-05",
         "AD-SPN-01",
-        "AD-SPN-02",
         "AD-SPN-03",
-        "AD-SPN-04",
         "AD-SPN-05",
         "AD-SPN-06",
         "AD-SPN-07",
-        "AD-SPN-08",
         "AD-SPN-09",
-        "AD-SPN-10",
         "AD-SPN-11",
         "AD-SPN-12",
-        "AD-SPN-13",
         "AD-SUB-01",
         "AD-SUB-02",
         "AD-SUB-03",
@@ -253,10 +207,7 @@
         "AD-TRUST-01",
         "AD-TRUST-02",
         "AD-TRUST-03",
-        "AD-TRUST-04",
-        "AD-TRUST-05",
         "AD-TRUST-06",
-        "AD-TRUST-07",
         "AD-USER-01",
         "AD-USER-02",
         "AD-USER-03",
@@ -270,7 +221,6 @@
         "AD-USER-11",
         "AD-USER-12",
         "AD-USER-13",
-        "AD-USER-14",
         "AD-USER-15",
         "AD-USER-16",
         "AD-USER-17",
@@ -289,28 +239,325 @@
       ]
     },
     {
+      "Tag": "AD-CFG-01",
+      "Tests": [
+        "AD-FOR-03"
+      ]
+    },
+    {
+      "Tag": "AD-CFG-04",
+      "Tests": [
+        "AD-FEAT-01"
+      ]
+    },
+    {
+      "Tag": "AD-CFG-05",
+      "Tests": [
+        "AD-FOR-04"
+      ]
+    },
+    {
+      "Tag": "AD-COMP-02",
+      "Tests": [
+        "AD-DCOMP-06"
+      ]
+    },
+    {
+      "Tag": "AD-COMP-09",
+      "Tests": [
+        "AD-DCOMP-01"
+      ]
+    },
+    {
+      "Tag": "AD-COMP-10",
+      "Tests": [
+        "AD-DCOMP-03"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-04",
+      "Tests": [
+        "AD-DACL-03"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-06",
+      "Tests": [
+        "AD-DACL-05"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-08",
+      "Tests": [
+        "AD-DACL-07"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-10",
+      "Tests": [
+        "AD-DACL-09"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-12",
+      "Tests": [
+        "AD-DACL-11"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-13",
+      "Tests": [
+        "AD-DACL-11"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-16",
+      "Tests": [
+        "AD-DACL-15"
+      ]
+    },
+    {
+      "Tag": "AD-DACL-18",
+      "Tests": [
+        "AD-DACL-17"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-02",
+      "Tests": [
+        "AD-DCOMP-01"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-05",
+      "Tests": [
+        "AD-DCOMP-04"
+      ]
+    },
+    {
+      "Tag": "AD-DCOMP-09",
+      "Tests": [
+        "AD-DCOMP-08"
+      ]
+    },
+    {
+      "Tag": "AD-FEAT-02",
+      "Tests": [
+        "AD-FEAT-01"
+      ]
+    },
+    {
+      "Tag": "AD-GMC-03",
+      "Tests": [
+        "AD-GMC-02"
+      ]
+    },
+    {
+      "Tag": "AD-GMC-05",
+      "Tests": [
+        "AD-GMC-04"
+      ]
+    },
+    {
+      "Tag": "AD-GMC-07",
+      "Tests": [
+        "AD-GMC-06"
+      ]
+    },
+    {
+      "Tag": "AD-GMC-09",
+      "Tests": [
+        "AD-GMC-08"
+      ]
+    },
+    {
+      "Tag": "AD-GMC-11",
+      "Tests": [
+        "AD-GMC-10"
+      ]
+    },
+    {
+      "Tag": "AD-GPO-03",
+      "Tests": [
+        "AD-GPO-02"
+      ]
+    },
+    {
+      "Tag": "AD-GPO-05",
+      "Tests": [
+        "AD-GPO-04"
+      ]
+    },
+    {
+      "Tag": "AD-GPOL-06",
+      "Tests": [
+        "AD-GPOL-03"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-02",
+      "Tests": [
+        "AD-GPOREP-01"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-04",
+      "Tests": [
+        "AD-GPOREP-03"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-08",
+      "Tests": [
+        "AD-GPOREP-07"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-11",
+      "Tests": [
+        "AD-GPOREP-10"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-13",
+      "Tests": [
+        "AD-GPOREP-12"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-16",
+      "Tests": [
+        "AD-GPOREP-15"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-18",
+      "Tests": [
+        "AD-GPOREP-17"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-19",
+      "Tests": [
+        "AD-GPOREP-17"
+      ]
+    },
+    {
+      "Tag": "AD-GPOREP-20",
+      "Tests": [
+        "AD-GPOREP-17"
+      ]
+    },
+    {
+      "Tag": "AD-GRP-07",
+      "Tests": [
+        "AD-GRP-06"
+      ]
+    },
+    {
+      "Tag": "AD-GRP-09",
+      "Tests": [
+        "AD-GRP-08"
+      ]
+    },
+    {
+      "Tag": "AD-GRP-10",
+      "Tests": [
+        "AD-GRP-08"
+      ]
+    },
+    {
+      "Tag": "AD-ROOTDSE-02",
+      "Tests": [
+        "AD-ROOTDSE-01"
+      ]
+    },
+    {
+      "Tag": "AD-SCH-02",
+      "Tests": [
+        "AD-SCH-01"
+      ]
+    },
+    {
+      "Tag": "AD-SCH-04",
+      "Tests": [
+        "AD-SCH-03"
+      ]
+    },
+    {
+      "Tag": "AD-SPN-02",
+      "Tests": [
+        "AD-SPN-01"
+      ]
+    },
+    {
+      "Tag": "AD-SPN-04",
+      "Tests": [
+        "AD-SPN-03"
+      ]
+    },
+    {
+      "Tag": "AD-SPN-08",
+      "Tests": [
+        "AD-SPN-07"
+      ]
+    },
+    {
+      "Tag": "AD-SPN-10",
+      "Tests": [
+        "AD-SPN-09"
+      ]
+    },
+    {
+      "Tag": "AD-SPN-13",
+      "Tests": [
+        "AD-SPN-12"
+      ]
+    },
+    {
+      "Tag": "AD-TRUST-04",
+      "Tests": [
+        "AD-TRUST-03"
+      ]
+    },
+    {
+      "Tag": "AD-TRUST-05",
+      "Tests": [
+        "AD-TRUST-01"
+      ]
+    },
+    {
+      "Tag": "AD-TRUST-07",
+      "Tests": [
+        "AD-TRUST-06"
+      ]
+    },
+    {
+      "Tag": "AD-USER-14",
+      "Tests": [
+        "AD-SPN-06"
+      ]
+    },
+    {
       "Tag": "AD.Computer",
       "Tests": [
         "AD-COMP-01",
-        "AD-COMP-02",
         "AD-COMP-03",
         "AD-COMP-04",
         "AD-COMP-05",
         "AD-COMP-06",
         "AD-COMP-07",
         "AD-COMP-08",
-        "AD-COMP-09",
-        "AD-COMP-10"
+        "AD-DCOMP-01",
+        "AD-DCOMP-03",
+        "AD-DCOMP-06"
       ]
     },
     {
       "Tag": "AD.Config",
       "Tests": [
-        "AD-CFG-01",
         "AD-CFG-02",
         "AD-CFG-03",
-        "AD-CFG-04",
-        "AD-CFG-05",
         "AD-CFG-06",
         "AD-CFG-07",
         "AD-CFG-08",
@@ -329,7 +576,10 @@
         "AD-CFG-21",
         "AD-CFG-22",
         "AD-CFG-23",
-        "AD-CFG-24"
+        "AD-CFG-24",
+        "AD-FEAT-01",
+        "AD-FOR-03",
+        "AD-FOR-04"
       ]
     },
     {
@@ -338,21 +588,13 @@
         "AD-DACL-01",
         "AD-DACL-02",
         "AD-DACL-03",
-        "AD-DACL-04",
         "AD-DACL-05",
-        "AD-DACL-06",
         "AD-DACL-07",
-        "AD-DACL-08",
         "AD-DACL-09",
-        "AD-DACL-10",
         "AD-DACL-11",
-        "AD-DACL-12",
-        "AD-DACL-13",
         "AD-DACL-14",
         "AD-DACL-15",
-        "AD-DACL-16",
-        "AD-DACL-17",
-        "AD-DACL-18"
+        "AD-DACL-17"
       ]
     },
     {
@@ -432,11 +674,9 @@
     {
       "Tag": "AD.GMC",
       "Tests": [
-        "AD-GMC-07",
+        "AD-GMC-06",
         "AD-GMC-08",
-        "AD-GMC-09",
-        "AD-GMC-10",
-        "AD-GMC-11"
+        "AD-GMC-10"
       ]
     },
     {
@@ -444,40 +684,28 @@
       "Tests": [
         "AD-GPO-01",
         "AD-GPO-02",
-        "AD-GPO-03",
         "AD-GPO-04",
-        "AD-GPO-05",
         "AD-GPOL-01",
         "AD-GPOL-02",
         "AD-GPOL-03",
         "AD-GPOL-04",
-        "AD-GPOL-05",
-        "AD-GPOL-06"
+        "AD-GPOL-05"
       ]
     },
     {
       "Tag": "AD.GPOState",
       "Tests": [
         "AD-GPOREP-01",
-        "AD-GPOREP-02",
         "AD-GPOREP-03",
-        "AD-GPOREP-04",
         "AD-GPOREP-05",
         "AD-GPOREP-06",
         "AD-GPOREP-07",
-        "AD-GPOREP-08",
         "AD-GPOREP-09",
         "AD-GPOREP-10",
-        "AD-GPOREP-11",
         "AD-GPOREP-12",
-        "AD-GPOREP-13",
         "AD-GPOREP-14",
         "AD-GPOREP-15",
-        "AD-GPOREP-16",
         "AD-GPOREP-17",
-        "AD-GPOREP-18",
-        "AD-GPOREP-19",
-        "AD-GPOREP-20",
         "AD-GPOS-01",
         "AD-GPOS-02",
         "AD-GPOS-03",
@@ -495,25 +723,17 @@
         "AD-GCHG-01",
         "AD-GMC-01",
         "AD-GMC-02",
-        "AD-GMC-03",
         "AD-GMC-04",
-        "AD-GMC-05",
         "AD-GMC-06",
-        "AD-GMC-07",
         "AD-GMC-08",
-        "AD-GMC-09",
         "AD-GMC-10",
-        "AD-GMC-11",
         "AD-GRP-01",
         "AD-GRP-02",
         "AD-GRP-03",
         "AD-GRP-04",
         "AD-GRP-05",
         "AD-GRP-06",
-        "AD-GRP-07",
-        "AD-GRP-08",
-        "AD-GRP-09",
-        "AD-GRP-10"
+        "AD-GRP-08"
       ]
     },
     {
@@ -553,11 +773,9 @@
       "Tests": [
         "AD-DFSR-01",
         "AD-FEAT-01",
-        "AD-FEAT-02",
         "AD-REPL-01",
         "AD-REPL-02",
         "AD-ROOTDSE-01",
-        "AD-ROOTDSE-02",
         "AD-ROOTDSE-03"
       ]
     },
@@ -565,9 +783,7 @@
       "Tag": "AD.Schema",
       "Tests": [
         "AD-SCH-01",
-        "AD-SCH-02",
         "AD-SCH-03",
-        "AD-SCH-04",
         "AD-SCH-05"
       ]
     },
@@ -575,14 +791,11 @@
       "Tag": "AD.Security",
       "Tests": [
         "AD-DCOMP-01",
-        "AD-DCOMP-02",
         "AD-DCOMP-03",
         "AD-DCOMP-04",
-        "AD-DCOMP-05",
         "AD-DCOMP-06",
         "AD-DCOMP-07",
         "AD-DCOMP-08",
-        "AD-DCOMP-09",
         "AD-KRBTGT-01",
         "AD-KRBTGT-02",
         "AD-KRBTGT-03",
@@ -614,18 +827,13 @@
       "Tag": "AD.SPN",
       "Tests": [
         "AD-SPN-01",
-        "AD-SPN-02",
         "AD-SPN-03",
-        "AD-SPN-04",
         "AD-SPN-05",
         "AD-SPN-06",
         "AD-SPN-07",
-        "AD-SPN-08",
         "AD-SPN-09",
-        "AD-SPN-10",
         "AD-SPN-11",
-        "AD-SPN-12",
-        "AD-SPN-13"
+        "AD-SPN-12"
       ]
     },
     {
@@ -634,15 +842,13 @@
         "AD-TRUST-01",
         "AD-TRUST-02",
         "AD-TRUST-03",
-        "AD-TRUST-04",
-        "AD-TRUST-05",
-        "AD-TRUST-06",
-        "AD-TRUST-07"
+        "AD-TRUST-06"
       ]
     },
     {
       "Tag": "AD.User",
       "Tests": [
+        "AD-SPN-06",
         "AD-USER-01",
         "AD-USER-02",
         "AD-USER-03",
@@ -656,7 +862,6 @@
         "AD-USER-11",
         "AD-USER-12",
         "AD-USER-13",
-        "AD-USER-14",
         "AD-USER-15",
         "AD-USER-16",
         "AD-USER-17",
