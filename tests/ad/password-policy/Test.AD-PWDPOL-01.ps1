@@ -1,78 +1,40 @@
-﻿function Test-MtAdPasswordHistoryCount {
+﻿function Test-MtAdDefaultPasswordPolicySecurity {
     <#
     .SYNOPSIS
-    Checks the password history count configured in the default domain password policy.
-
-    .DESCRIPTION
-    This test retrieves the password history count from the default domain password policy.
-    Password history determines how many previous passwords are remembered to prevent users
-    from reusing recent passwords. This is a critical security control for maintaining
-    password hygiene.
-
-    .EXAMPLE
-    Test-MtAdPasswordHistoryCount
-
-    Returns $true if the password policy is accessible, $false otherwise.
-    The test result includes the configured password history count.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdPasswordHistoryCount
+    Evaluates the normalized default domain password policy against configured safeguards.
     #>
     [MaesterTest(
-        Id = 'AD-PWDPOL-01',
-        Title = 'Password history count should be retrievable',
-        Product = 'ad',
-        Feature = 'password-policy',
-        Area = 'authentication',
-        ResourceType = 'Tenant',
-        Severity = 'Info',
-        Mitre = 'T1110.004',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty'),
-        Author = 'soulemike'
+        Id = 'AD-PWDPOL-01', Title = 'Default domain password policy should meet configured safeguards',
+        Product = 'ad', Feature = 'password-policy', Area = 'authentication', ResourceType = 'Tenant',
+        Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1110',
+        Service = 'ActiveDirectory', Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.maxPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutDuration:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutThreshold:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockOutObservationWindow:ReadProperty'), Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
-
-    Write-Verbose "Starting Test-MtAdPasswordHistoryCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Domain')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    # Get the default domain password policy
-    $passwordPolicy = $adState.Domain
-    $passwordHistoryCount = $passwordPolicy.PwdHistoryLength
-
-    # Test passes if we successfully retrieved the password policy
-    $testResult = $null -ne $passwordHistoryCount
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Password History Count | $passwordHistoryCount |" + "`n"
-        $result += "| Recommended Minimum | 24 |" + "`n"
-
-        $recommendation = if ($passwordHistoryCount -ge 24) {
-            "✅ Password history count meets or exceeds the recommended minimum of 24."
-        } else {
-            "⚠️ Password history count is below the recommended minimum of 24. Consider increasing this value to prevent password reuse."
-        }
-
-        $testResultMarkdown = "$recommendation`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    param(
+        # Select current NIST guidance or organization-defined legacy rotation.
+        [ValidateSet('CurrentNist', 'LegacyRotation')][string] $Profile = 'CurrentNist',
+        # Override profile minimum; 0 selects 15 (current) or 14 (legacy).
+        [ValidateRange(0, 255)][int] $MinimumLength = 0,
+        # Microsoft baseline password history minimum (not a NIST requirement).
+        [ValidateRange(0, 255)][int] $MinimumHistory = 24,
+        # LegacyRotation maximum password age in days.
+        [ValidateRange(1, 3650)][int] $MaximumAgeDays = 90,
+        # Microsoft baseline maximum failed logons before lockout.
+        [ValidateRange(1, 1000)][int] $MaximumLockoutThreshold = 10,
+        # Automatic lockout minimum in minutes; zero means manual unlock.
+        [ValidateRange(1, 10080)][int] $MinimumLockoutMinutes = 15,
+        # Minimum reset window in minutes.
+        [ValidateRange(1, 10080)][int] $MinimumResetMinutes = 15
+    )
+    $state = Get-MtADDomainState -Categories @('Domain')
+    if ($null -eq $state -or $null -eq $state.Domain) { throw 'Default domain password policy was not returned.' }
+    $evaluation = Test-MtAdPasswordPolicyConfiguration -Policy $state.Domain -Profile $Profile -MinimumLength $MinimumLength -MinimumHistory $MinimumHistory -MaximumAgeDays $MaximumAgeDays -MaximumLockoutThreshold $MaximumLockoutThreshold -MinimumLockoutMinutes $MinimumLockoutMinutes -MinimumResetMinutes $MinimumResetMinutes
+    $table = "| Setting | Actual | Expected | Status |`n| --- | --- | --- | --- |`n$($evaluation.Rows -join "`n")"
+    if ($evaluation.Passed) {
+        Add-MtTestResultDetail -Result "Well done. The default domain password policy meets the $Profile settings assessed here. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
     } else {
-        $testResultMarkdown = "Unable to retrieve the default domain password policy. Ensure you have appropriate permissions and the Active Directory module is installed."
+        Add-MtTestResultDetail -Result "The default domain password policy fails one or more $Profile settings; correct the listed values. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    return $evaluation.Passed
 }

@@ -1,38 +1,17 @@
-Password history is a critical security control that prevents users from reusing their recent passwords. Without adequate password history:
+Evaluates the default domain password policy's length, history, expiration, complexity, reversible encryption, lockout threshold, duration and reset window; reports minimum password age for review.
 
-* **Password cycling**: Users can quickly cycle through passwords to return to their favorite (often compromised) password
-* **Compromised credential reuse**: If a password is breached, users may inadvertently reintroduce it into the environment
-* **Weak compliance**: Many compliance frameworks require password history to prevent password reuse
+This check consolidates the former history-only AD-PWDPOL-01 with AD-PWDPOL-02 through AD-PWDPOL-07. Its `CurrentNist` default expects 15 characters (assume single factor: LDAP cannot establish MFA) and no forced periodic rotation; before applying a minimum above 14 characters, verify domain controller and client support and configure **Relax minimum password length limits** where applicable. The 24 remembered passwords and 1–10 attempts/15-minute duration and reset are separate Microsoft baseline/local criteria, **not NIST requirements**. Zero lockout duration is valid administrator unlock. Complexity is observation only under `CurrentNist`: do not disable it unless the blocklist is independently verified. The configurable `LegacyRotation` profile expects 14 characters, enabled complexity and a maximum age between 1 and 90 days; it is an organization-selected legacy profile, not earlier NIST guidance. Configure thresholds with `TestSettings[].Parameters`. LDAP cannot establish blocklist coverage, MFA, actual password strength or full NIST compliance.
 
-The recommended minimum of 24 remembered passwords ensures that users cannot reuse passwords within a reasonable timeframe, forcing them to create truly unique passwords.
+#### Remediation action
 
-#### Control Type
+1. In **Group Policy Management**, edit the effective default domain password and account lockout policy under **Computer Configuration** > **Policies** > **Windows Settings** > **Security Settings** > **Account Policies**.
+2. Correct failing settings according to your selected profile; verify password blocklisting and MFA independently and reset credentials on evidence of compromise.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-Configure the password history count to at least **24** (Microsoft and CIS recommendation). This prevents users from reusing their last 24 passwords, significantly reducing the risk of password reuse attacks.
-
-To configure this setting:
-1. Open **Active Directory Domains and Trusts** or **Group Policy Management**
-2. Navigate to the Default Domain Policy
-3. Edit: Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Password Policy
-4. Set **Enforce password history** to **24 or more**
-
-#### How the Test Works
-
-This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and extracts the `PasswordHistoryCount` value. The test reports:
-
-* Current password history count
-* Recommended minimum (24)
-* Whether the configuration meets security best practices
-
-#### Related Tests
-
-- `Test-MtAdPasswordMaxAge` - Checks maximum password age
-- `Test-MtAdPasswordMinLength` - Checks minimum password length
-- `Test-MtAdPasswordComplexityRequired` - Checks if password complexity is enforced
+* [NIST SP 800-63B password verifiers](https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#passwords)
+* [NIST SP 800-63B Rev. 3 (also discouraged arbitrary rotation)](https://pages.nist.gov/800-63-3/sp800-63b.html#reqauthtype)
+* [Microsoft account lockout policy](https://learn.microsoft.com/windows/security/threat-protection/security-policy-settings/account-lockout-policy)
 
 <!--- Results --->
 %TestResult%
