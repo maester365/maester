@@ -1,22 +1,8 @@
-Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose.
+Enabled accounts older than the configurable 30-day provisioning grace period with no recorded logon need review. A missing replicated timestamp is not definitive proof the user has never logged in.
 
-#### Control Type
-
-**Detective**
-
-#### Security Recommendation
-
-Investigate enabled accounts with no recorded logon activity. Disable or remove unused accounts and make sure future provisioning workflows include validation and cleanup steps.
-
-#### How the Test Works
-
-This test retrieves Active Directory user data from `Get-MtADDomainState`, filters to enabled users, and counts accounts where `LastLogonDate` is null.
-
-#### Related Tests
-
-- `Test-MtAdUserDormantEnabledCount`
-- `Test-MtAdUserDisabledCount`
-- `Test-MtAdUserPasswordNeverExpiresCount`
+#### Remediation action
+1. Check authoritative authentication logs and ask the owner whether provisioning is complete.
+2. Disable unnecessary accounts in [Active Directory administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
 
 <!--- Results --->
 %TestResult%

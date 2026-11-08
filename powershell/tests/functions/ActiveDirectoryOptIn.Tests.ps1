@@ -230,7 +230,14 @@ Describe 'Active Directory test source safety' {
                 Sort-Object { $_.Extent.StartOffset } |
                 Select-Object -First 1
 
-            if ($null -eq $collector) {
+            # Pure assessment/formatting helpers consume an already-collected snapshot and
+            # perform no AD operation. Native tests still require an explicit guarded read.
+            $isHelper = $adHelperFiles.FullName -contains $file.FullName
+            $transportCall = $commands | Where-Object {
+                $_.GetCommandName() -match '^(Get-MtLdap|Invoke-MtLdap|New-MtAdProtocolConnection|Invoke-MtADManagementCommand|Get-MtSysvolContent|Get-AD|Get-GPO|Get-DnsServer)' -or $_.GetCommandName() -eq 'Invoke-Command'
+            } | Select-Object -First 1
+            $sessionAccess = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.VariableExpressionAst] -and $node.VariablePath.UserPath -match '__MtSession' }, $true) | Select-Object -First 1
+            if ($null -eq $collector -and (-not $isHelper -or $null -ne $transportCall -or $null -ne $sessionAccess)) {
                 $issues += "$($file.FullName): does not call a guarded Active Directory collector."
             }
 
