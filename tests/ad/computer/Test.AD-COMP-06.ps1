@@ -23,12 +23,14 @@
     #>
     [MaesterTest(
         Id = 'AD-COMP-06',
-        Title = 'Computer default container count should be retrievable',
+        Title = 'Enabled computers should be moved out of the default Computers container',
         Product = 'ad',
         Feature = 'computers',
         Area = 'infrastructure',
         ResourceType = 'Computer',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
@@ -44,18 +46,19 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState -or $null -eq $adState.Computers) { throw 'Computer inventory is required to review the default container.' }
 
     $computers = $adState.Computers
+    if (@($computers).Count -eq 0) { throw 'Computer inventory is empty; default container placement cannot be assessed.' }
+    if (@($computers | Where-Object { $null -eq $_.Enabled -or ($_.Enabled -eq $true -and -not $_.DistinguishedName) }).Count -gt 0) {
+        throw 'Computer enabled state or distinguished name is missing; container placement cannot be assessed completely.'
+    }
 
     # Count enabled computers in the default Computers container
     $defaultContainerComputers = $computers | Where-Object {
         $_.Enabled -eq $true -and
         $_.DistinguishedName -and
-        $_.DistinguishedName -like "CN=Computers,*"
+        $_.DistinguishedName -match '^CN=(?:\\.|[^,])+,CN=Computers,DC='
     }
 
     $defaultContainerCount = ($defaultContainerComputers | Measure-Object).Count
@@ -63,10 +66,10 @@
     $totalCount = ($computers | Measure-Object).Count
 
     # Test passes if we successfully retrieved computer data
-    $testResult = $totalCount -gt 0
+    $testResult = $defaultContainerCount -eq 0
 
     # Generate markdown results
-    if ($testResult) {
+    if ($totalCount -gt 0) {
         $percentage = if ($enabledCount -gt 0) {
             [Math]::Round(($defaultContainerCount / $enabledCount) * 100, 2)
         } else {
@@ -86,6 +89,11 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
+    if ($testResult) {
+        $testResultMarkdown = "Well done. No enabled computers are in the default Computers container.`n`n$result"
+    } else {
+        $testResultMarkdown = "Enabled computers remain in the default Computers container. Move them to managed OUs so intended Group Policy applies.`n`n$result"
+    }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult

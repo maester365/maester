@@ -23,7 +23,7 @@ This test counts computer objects where the `SIDHistory` attribute is populated.
 #### Related Tests
 
 - `Test-MtAdComputerNonStandardGroup` - Identifies other migration or configuration anomalies
-- `Test-MtAdComputerDormantCount` - Finds stale accounts that may be migration remnants
+- `AD-DCOMP-06` - Finds stale accounts that may be migration remnants
 
 #### Related links
 

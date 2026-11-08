@@ -19,7 +19,7 @@ Computer account creation should be tightly controlled:
 
 #### How the Test Works
 
-This test counts computer objects that have the `ms-ds-CreatorSid` attribute populated. This attribute is typically set when:
+The cached LDAP computer collector retrieves `mS-DS-CreatorSID` as `CreatorSid`. This check reports **Investigate** because a recorded creator is not proof of an unauthorized join. It does not report a zero count when the field was not collected. This test counts enabled computer objects that have the attribute populated. This attribute is typically set when:
 - A user or service account explicitly creates a computer account
 - The creating principal has been captured in the directory
 

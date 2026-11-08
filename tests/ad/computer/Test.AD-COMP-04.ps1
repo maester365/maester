@@ -24,12 +24,14 @@
     #>
     [MaesterTest(
         Id = 'AD-COMP-04',
-        Title = 'Computer non-standard primary group count should be retrievable',
+        Title = 'Enabled computers should use standard primary groups',
         Product = 'ad',
         Feature = 'computers',
         Area = 'identity-lifecycle',
         ResourceType = 'Computer',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:computer:ReadProperty'),
@@ -48,17 +50,18 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState -or $null -eq $adState.Computers) { throw 'Computer inventory is required to assess primary groups.' }
 
     $computers = $adState.Computers
+    if (@($computers).Count -eq 0) { throw 'Computer inventory is empty; primary groups cannot be assessed.' }
+    if (@($computers | Where-Object { $null -eq $_.Enabled }).Count -gt 0) {
+        throw 'Enabled state is missing for computers; primary groups cannot be assessed completely.'
+    }
 
     # Count enabled computers with non-standard primary group
     $nonStandardGroupComputers = $computers | Where-Object {
         $_.Enabled -eq $true -and
-        $_.primaryGroupId -and
+        $null -ne $_.primaryGroupId -and
         $_.primaryGroupId -notin $standardGroupIds
     }
 
@@ -67,10 +70,13 @@
     $totalCount = ($computers | Measure-Object).Count
 
     # Test passes if we successfully retrieved computer data
-    $testResult = $totalCount -gt 0
+    if (@($computers | Where-Object { $_.Enabled -eq $true -and $null -eq $_.PrimaryGroupId }).Count -gt 0) {
+        throw 'PrimaryGroupId is missing for enabled computers; cannot assess all primary groups.'
+    }
+    $testResult = $nonStandardCount -eq 0
 
     # Generate markdown results
-    if ($testResult) {
+    if ($totalCount -gt 0) {
         $percentage = if ($enabledCount -gt 0) {
             [Math]::Round(($nonStandardCount / $enabledCount) * 100, 2)
         } else {
@@ -91,6 +97,11 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
+    if ($testResult) {
+        $testResultMarkdown = "Well done. No enabled computers have a non-standard primary group.`n`n$result"
+    } else {
+        $testResultMarkdown = "Enabled computers have non-standard primary groups. Review and restore standard group assignments where appropriate.`n`n$result"
+    }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
