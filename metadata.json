@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6W8878ZMAN722YGS4K5ZR18",
+  "strategy": "manual-commit",
+  "branch": "fix/licence-skip-message",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "powershell/assets/MaesterLicenseTable.psd1",
+    "powershell/internal/engine/Resolve-MtNativePlan.ps1",
+    "powershell/tests/functions/engine/NativeLicenseGates.Tests.ps1",
+    "website/docs/writing-tests/index.mdx",
+    "website/src/data/test-builder.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 78,
+    "cache_creation_tokens": 115505,
+    "cache_read_tokens": 4592499,
+    "output_tokens": 18993,
+    "api_call_count": 32,
+    "subagent_tokens": {
+      "input_tokens": 172,
+      "cache_creation_tokens": 539935,
+      "cache_read_tokens": 9377285,
+      "output_tokens": 59234,
+      "api_call_count": 86
+    }
+  },
+  "redaction": {
+    "replacements": 549,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 4,
+      "credentialed_uri": 0,
+      "entropy": 541,
+      "key_context": 4,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
