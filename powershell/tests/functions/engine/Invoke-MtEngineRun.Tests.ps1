@@ -39,7 +39,7 @@
         }
         function Test-Private { [CmdletBinding()] param() (Get-PrivateValue) -eq 'module-private' }
         function Test-Parameter { [CmdletBinding()] param([int] $Threshold) $Threshold -eq 5 }
-        function Test-CurrentTest { [CmdletBinding()] param() [Maester.Engine.MtSession]::GetCurrentTest() }
+        function Test-CurrentTest { [CmdletBinding()] [OutputType([string])] param() [Maester.Engine.MtSession]::GetCurrentTest() }
         function Test-ErrorPreference { [CmdletBinding()] param() Write-Error 'soft'; $true }
         function Test-Attribute {
             [MaesterTest(Id = 'FIXTURE.1', Title = 'Attribute', Tag = 'a', LongRunning, Service = ('Graph', 'Exchange'))]
