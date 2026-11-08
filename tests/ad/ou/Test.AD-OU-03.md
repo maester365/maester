@@ -1,33 +1,15 @@
-- Organizational Units that haven't been modified since before 2020 may represent:
-- Abandoned projects: OUs created for initiatives that were never completed or were abandoned
-- Outdated structure: Organizational units that no longer reflect current business structure
-- Directory clutter: Unused containers that make the directory harder to navigate
-- Potential security gaps: Stale OUs may have outdated permissions or Group Policy links
-- While stale OUs don't pose a direct security threat, they contribute to directory sprawl and can make administration more complex. They may also retain old permissions or Group Policy settings that are no longer appropriate.
+OU modification age inventory.
 
-#### Control Type
+The default review threshold is five calendar years since last modification, configurable with MaximumAgeYears. Modification age is not evidence of use, deactivation or account activity.
 
-**Detective**
+#### Remediation action
 
-#### Security Recommendation
-- Regularly review OUs that haven't been modified in several years:
-- Verify whether the OU is still needed for its original purpose
-- Check if the OU contains any objects (see `Test-MtAdOuEmptyCount`)
-- Review permissions and Group Policy links on stale OUs
-- Consider deleting or repurposing OUs that are no longer needed
-- Document the purpose of OUs to help future cleanup efforts
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
 
-#### How the Test Works
+#### Related links
 
-- This test retrieves all Organizational Units from Active Directory and:
-- Examines the last modified timestamp of each OU
-- Counts OUs that haven't been modified since before January 1, 2020
-- Lists stale OUs with their last modification date and distinguished name
-
-#### Related Tests
-- `Test-MtAdOuEmptyCount` - Identifies OUs with no objects
-- `Test-MtAdOuEmptyDetails` - Provides detailed list of empty OUs
-- `Test-MtAdGroupStaleCount` - Identifies groups not modified since before 2020
+* [Microsoft Learn: Reviewing OU Design Concepts](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts)
 
 <!--- Results --->
 %TestResult%
