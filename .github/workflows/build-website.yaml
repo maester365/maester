@@ -4,7 +4,7 @@
 # The site's generated data is not kept in git: the build exports the test catalog and the command reference from
 # the module source, credits contributors from the git history and looks up sponsors on GitHub
 # (website/scripts/prepare-data.mjs). So a merge needs no follow-up pull request, and the daily run picks up new
-# sponsors.
+# sponsors and the community packs listed on packs.maester.cloud, whose checks the test catalog and the home page count.
 #
 # Deploying needs the CLOUDFLARE_API_TOKEN secret (a token with Cloudflare Pages: Edit) and the
 # CLOUDFLARE_ACCOUNT_ID secret in the maester.dev environment. The Cloudflare Pages project, which the
@@ -26,7 +26,7 @@ on:
         type: string
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * *" # Daily, 03:17 UTC: new sponsors
+    - cron: "17 3 * * *" # Daily, 03:17 UTC: new sponsors and community packs
   push:
     branches: ["main"]
   pull_request:
