@@ -22,11 +22,11 @@
 - Counts unique account types (user, group, computer, foreignSecurityPrincipal)
 - Provides visibility into membership composition
 
-The test analyzes all collected groups, deduplicates members by SID (or distinguished name when SID is unavailable), and includes the account-type breakdown.
+The test analyzes all collected groups, deduplicates members by SID (or distinguished name when SID is unavailable), and includes the account-type breakdown. This complete membership scan is opt-in (`LongRunning`); the test does not truncate to the first 50 groups. Group-query failures are errors, not a successful empty inventory, and the protocol connection is disposed even on failure.
 
 #### Related Tests
 
-- `Test-MtAdGroupMemberForeignSidCount` - Identifies foreign security principals specifically
+- **AD-GMC-06 — Foreign SID principals count should be investigated** — `Test-MtAdGroupMemberForeignSidCount` — Inventories direct foreign domain-account SIDs separately.
 
 <!--- Results --->
 %TestResult%

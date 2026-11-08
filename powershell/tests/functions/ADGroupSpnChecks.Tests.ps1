@@ -4,6 +4,7 @@
     Use-MtModuleFunction -Name Test-MtAdGroupMemberDistinctGroupCount, Test-MtAdGroupMemberAccountTypeCount,
     Test-MtAdGroupMemberTrustCount, Test-MtAdUserSpnTotalCount, Test-MtAdUserSpnServiceClassCount,
     Test-MtAdUserSpnDomainAdminCount, Test-MtAdGroupStaleCount
+    Use-MtModuleFunction -Name Test-MtAdGroupMemberForeignSidCount, Test-MtAdGroupEmptyNonPrivilegedCount, Test-MtAdGroupPrivilegedWithMembersCount
 }
 
 Describe 'AD group and SPN checks on a collected snapshot' {
@@ -24,11 +25,14 @@ Describe 'AD group and SPN checks on a collected snapshot' {
             }
             $script:adSpnMembers = @{ $script:adSpnAdminDn = @() }
             $script:adSpnResult = ''
+            $script:adConnectionDisposed = $false
         }
 
         Mock Get-MtADDomainState -ModuleName Maester { InModuleScope Maester { $script:adSpnState } }
         Mock New-MtAdProtocolConnection -ModuleName Maester {
-            [PSCustomObject]@{} | Add-Member -MemberType ScriptMethod -Name Dispose -Value { } -PassThru
+            [PSCustomObject]@{} | Add-Member -MemberType ScriptMethod -Name Dispose -Value {
+                InModuleScope Maester { $script:adConnectionDisposed = $true }
+            } -PassThru
         }
         Mock Get-MtLdapGroupMember -ModuleName Maester -RemoveParameterType Connection {
             InModuleScope Maester -Parameters @{ GroupDn = $GroupDistinguishedName } {
@@ -52,6 +56,46 @@ Describe 'AD group and SPN checks on a collected snapshot' {
             $script:adSpnResult | Should -Match '1 out of 51 groups'
             Test-MtAdGroupMemberAccountTypeCount | Should -BeTrue
             $script:adSpnResult | Should -Match '1 distinct account types across 1 unique members'
+        }
+    }
+
+    It 'disposes the LDAP connection when a complete group scan errors' -ForEach @(
+        @{ Command = 'Test-MtAdGroupMemberDistinctGroupCount' }
+        @{ Command = 'Test-MtAdGroupMemberAccountTypeCount' }
+        @{ Command = 'Test-MtAdGroupMemberForeignSidCount' }
+        @{ Command = 'Test-MtAdGroupMemberTrustCount' }
+        @{ Command = 'Test-MtAdGroupPrivilegedWithMembersCount' }
+        @{ Command = 'Test-MtAdGroupEmptyNonPrivilegedCount' }
+    ) {
+        Mock Get-MtLdapGroupMember -ModuleName Maester -RemoveParameterType Connection { throw 'Membership read failed' }
+        InModuleScope Maester -Parameters @{ Name = $Command } {
+            $script:adSpnState.Groups[0] | Add-Member -NotePropertyName adminCount -NotePropertyValue 1 -Force
+            { & $Name } | Should -Throw '*Membership read failed*'
+            $script:adConnectionDisposed | Should -BeTrue
+        }
+    }
+
+    It 'classifies foreign domain-account SIDs without treating well-known or current-domain SIDs as foreign' {
+        InModuleScope Maester {
+            $script:adSpnMembers[$script:adSpnAdminDn] = @(
+                [pscustomobject]@{ SID = 'S-1-5-18'; Name = 'SYSTEM' }
+                [pscustomobject]@{ SID = "$script:adSpnDomainSid-1200"; Name = 'Local' }
+                [pscustomobject]@{ SID = 'S-1-5-21-444-555-666-1200'; Name = 'Foreign string' }
+                [pscustomobject]@{ SID = [pscustomobject]@{ Value = 'S-1-5-21-111-222-3334-1200' }; Name = 'Different domain sharing text prefix' }
+            )
+            Test-MtAdGroupMemberForeignSidCount | Should -BeTrue
+            $script:adSpnResult | Should -Match 'Foreign SID Principals \| 2'
+            $script:adSpnResult | Should -Not -Match '\| SYSTEM \|'
+            $script:adConnectionDisposed | Should -BeTrue
+        }
+    }
+
+    It 'accepts a string domain SID for foreign-member classification' {
+        InModuleScope Maester {
+            $script:adSpnState.Domain.DomainSID = $script:adSpnDomainSid
+            $script:adSpnMembers[$script:adSpnAdminDn] = @([pscustomobject]@{ SID = 'S-1-5-21-444-555-666-1200'; Name = 'Foreign' })
+            Test-MtAdGroupMemberForeignSidCount | Should -BeTrue
+            $script:adSpnResult | Should -Match 'Foreign SID Principals \| 1'
         }
     }
 

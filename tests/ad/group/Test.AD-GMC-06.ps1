@@ -5,10 +5,10 @@
 
     .DESCRIPTION
     This test identifies and counts security principals that have SIDs from external
-    domains or forests. Foreign SIDs are security identifiers that do not match the
-    current domain's SID pattern and represent accounts from other domains, migrated
-    accounts with SID history, or trust relationships. These are important to track
-    for security auditing and understanding cross-domain access.
+    domains or forests. This check matches domain-account objectSids outside the
+    connected domain SID prefix; it does not inspect sIDHistory or prove effective
+    cross-domain access. It includes foreign-security-principal representations and
+    other visible domain-account principals, but excludes well-known SID namespaces.
 
     .EXAMPLE
     Test-MtAdGroupMemberForeignSidCount
@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -41,38 +42,38 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
     $groups = $adState.Groups
-    if ($null -eq $groups -or -not $adState.Domain.DomainSID.Value) { throw 'Group or domain SID collection is unavailable.' }
-    $domain = $adState.Domain
-    $domainSid = $domain.DomainSID.Value
+    $domainSid = if ($adState.Domain.DomainSID -is [string]) { $adState.Domain.DomainSID } else { [string]$adState.Domain.DomainSID.Value }
+    if ($null -eq $groups -or [string]::IsNullOrWhiteSpace($domainSid)) { throw 'Group or domain SID collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Collect foreign SID principals
-    # Limit to first 50 groups for performance
+    # Assess all visible groups; LongRunning makes this complete scan opt-in.
     $groupsToCheck = @($groups)
     $foreignSidPrincipals = @()
     $processedSids = @{}
 
-    foreach ($group in $groupsToCheck) {
-        try {
+    try {
+        foreach ($group in $groupsToCheck) {
             $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
+                $memberSid = if ($member.SID -is [string]) { $member.SID } else { [string]$member.SID.Value }
                 # Check if SID is foreign (doesn't start with domain SID)
-                if ($member.SID.Value -match '^S-1-5-21-\d+-\d+-\d+-\d+$' -and -not $member.SID.Value.StartsWith("$domainSid-")) {
-                    if (-not $processedSids.ContainsKey($member.SID.Value)) {
-                        $processedSids[$member.SID.Value] = $true
+                if ($memberSid -match '^S-1-5-21-\d+-\d+-\d+-\d+$' -and -not $memberSid.StartsWith("$domainSid-")) {
+                    if (-not $processedSids.ContainsKey($memberSid)) {
+                        $processedSids[$memberSid] = $true
 
                         # Extract domain SID prefix
-                        $sidString = $member.SID.Value
+                        $sidString = $memberSid
                         $domainSidPrefix = $sidString -replace '-\d+$', ''
 
                         $foreignSidPrincipals += [PSCustomObject]@{
-                            SID = $member.SID.Value
+                            SID = $memberSid
                             DomainSID = $domainSidPrefix
                             Name = $member.Name
                             ObjectClass = $member.objectClass
@@ -82,18 +83,15 @@
                 }
             }
         }
-        catch {
-            throw "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
-        }
+    } finally {
+        $protocolConnection.Dispose()
     }
-
-    $protocolConnection.Dispose()
 
     $foreignSidCount = $foreignSidPrincipals.Count
     $distinctDomainSids = ($foreignSidPrincipals | Select-Object -ExpandProperty DomainSID -Unique | Measure-Object).Count
 
     # Test passes if we successfully retrieved member data
-    $testResult = $true
+    $testResult = $null -ne $adState.Groups
 
     # Generate markdown results
     if ($testResult) {
@@ -130,7 +128,7 @@
 
             $result += "`n**Note:** Foreign SIDs may represent:" + "`n"
             $result += "- Users/groups from trusted external domains or forests" + "`n"
-            $result += "- Migrated accounts with SID history preserved" + "`n"
+            $result += "- Visible domain-account principals outside the connected domain (objectSid, not sIDHistory)" + "`n"
             $result += "- Accounts from former domains still referenced in groups" + "`n"
         } else {
             $result += "`nNo foreign SID principals found in analyzed groups." + "`n"

@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -40,7 +41,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -54,8 +55,9 @@
     $allMembers = @()
     $processedSids = @{}
 
-    foreach ($group in $groupsToCheck) {
-        $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
+    try {
+        foreach ($group in $groupsToCheck) {
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Avoid duplicates by SID
                 $memberKey = if ($member.SID.Value) { [string]$member.SID.Value } else { [string]$member.DistinguishedName }
@@ -64,9 +66,10 @@
                     $allMembers += $member
                 }
             }
+        }
+    } finally {
+        $protocolConnection.Dispose()
     }
-
-    $protocolConnection.Dispose()
 
     # Get distinct object classes
     $distinctTypes = $allMembers | ForEach-Object { $_.objectClass } | Select-Object -Unique
@@ -74,7 +77,7 @@
     $totalUniqueMembers = $allMembers.Count
 
     # Test passes if we successfully retrieved member data
-    $testResult = $totalUniqueMembers -ge 0
+    $testResult = $null -ne $adState.Groups
 
     # Generate markdown results
     if ($testResult) {

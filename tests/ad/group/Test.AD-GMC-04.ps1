@@ -29,6 +29,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -41,7 +42,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -95,7 +96,7 @@
     $trustMemberCount = $processedSids.Count
 
     # Test passes if we successfully retrieved member data
-    $testResult = $true
+    $testResult = $null -ne $groups
 
     # Generate markdown results
     if ($testResult) {
@@ -119,7 +120,7 @@
             $result += "`n**Trust members indicate cross-domain access configurations.** These may represent:" + "`n"
             $result += "- Users or groups from trusted external domains" + "`n"
             $result += "- Foreign security principals from forest trusts" + "`n"
-            $result += "- SID history from domain migrations" + "`n"
+            $result += "- Visible objectSid references to principals outside the connected domain; sIDHistory is not inspected" + "`n"
         } else {
             $result += "`nNo trust members found in analyzed groups." + "`n"
         }

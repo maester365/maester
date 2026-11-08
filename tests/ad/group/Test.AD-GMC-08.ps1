@@ -26,6 +26,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -35,7 +36,7 @@
 
     $adState = Get-MtADDomainState -Categories @('Groups')
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -50,8 +51,8 @@
     $emptyPrivilegedGroups = 0
     $nonEmptyGroups = 0
 
-    foreach ($group in $groups) {
-        try {
+    try {
+        foreach ($group in $groups) {
             $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             $memberCount = ($members | Measure-Object).Count
 
@@ -66,14 +67,11 @@
                 $nonEmptyGroups++
             }
         }
-        catch {
-            throw "Could not check members for group $($group.Name): $($_.Exception.Message)"
-        }
+    } finally {
+        $protocolConnection.Dispose()
     }
 
-    $protocolConnection.Dispose()
-
-    $testResult = $true
+    $testResult = $null -ne $adState.Groups
 
     if ($testResult) {
         $result = "| Category | Count |" + "`n"

@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -39,7 +40,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -53,20 +54,22 @@
     $groupsToCheck = @($groups)
     $groupsWithMembers = @()
 
-    foreach ($group in $groupsToCheck) {
-        $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
+    try {
+        foreach ($group in $groupsToCheck) {
+            $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             if ($members -and ($members | Measure-Object).Count -gt 0) {
                 $groupsWithMembers += $group
             }
+        }
+    } finally {
+        $protocolConnection.Dispose()
     }
-
-    $protocolConnection.Dispose()
 
     $groupsWithMembersCount = $groupsWithMembers.Count
     $emptyGroupsCount = $totalGroupCount - $groupsWithMembersCount
 
     # Test passes if we successfully retrieved group data
-    $testResult = $totalGroupCount -gt 0
+    $testResult = $null -ne $adState.Groups
 
     # Generate markdown results
     if ($testResult) {
