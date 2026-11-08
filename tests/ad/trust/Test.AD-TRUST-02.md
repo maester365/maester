@@ -30,10 +30,8 @@ This test analyzes all LDAP trust objects and identifies those where `WITHIN_FOR
 
 #### Related Tests
 
-- `Test-MtAdTrustQuarantinedCount` - Checks if external trusts have SID filtering enabled
-- `Test-MtAdTrustQuarantinedCount` (AD-TRUST-03) - Counts and lists weak SID-filtering findings
-- `Test-MtAdTrustTotalCount` - Overall trust count
-- `Test-MtAdTrustTotalCount` (AD-TRUST-01) - Trust count and full configuration inventory
+- **AD-TRUST-03 — Applicable trusts should have strong SID filtering with no weak findings** — `Test-MtAdTrustQuarantinedCount` — Reviews SID filtering on applicable trusts.
+- **AD-TRUST-01 — Trust count and configuration should be investigated** — `Test-MtAdTrustTotalCount` — Inventories trust configuration.
 
 <!--- Results --->
 %TestResult%

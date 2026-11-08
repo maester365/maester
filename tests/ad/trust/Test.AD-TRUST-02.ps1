@@ -53,7 +53,7 @@
     $totalCount = ($trusts | Measure-Object).Count
 
     # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    $testResult = $null -ne $adState.Trusts
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"

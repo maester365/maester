@@ -76,7 +76,7 @@
     }
 
     # The safe LDAP inventory has no LastValidated field. Never infer validation from whenChanged.
-    $testResult = $true
+    $testResult = $null -ne $adState.Trusts
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"

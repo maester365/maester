@@ -28,9 +28,9 @@ This test retrieves the cached LDAP trusted-domain inventory and counts the conf
 
 #### Related Tests
 
-- `Test-MtAdTrustInterForestCount` - Identifies external/inter-forest trusts
-- `Test-MtAdTrustQuarantinedCount` - Checks for SID filtering on trusts
-- `Test-MtAdTrustStaleCount` (AD-TRUST-06) - Inventories known and unknown validation dates; safe LDAP cannot establish staleness
+- **AD-TRUST-02 — Trust inter-forest count should be investigated** — `Test-MtAdTrustInterForestCount` — Inventories inter-forest trusts.
+- **AD-TRUST-03 — Applicable trusts should have strong SID filtering with no weak findings** — `Test-MtAdTrustQuarantinedCount` — Reviews SID filtering on applicable trusts.
+- **AD-TRUST-06 — Trust validation age and unknown dates should be investigated** — `Test-MtAdTrustStaleCount` — Investigates trust validation age; safe LDAP cannot establish staleness.
 
 <!--- Results --->
 %TestResult%
