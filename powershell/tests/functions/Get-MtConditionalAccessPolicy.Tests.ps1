@@ -6,9 +6,17 @@
     $script:ruleFixture = (Get-Content "$PSScriptRoot/../fixtures/conditional-access-plans/rules.json" -Raw | ConvertFrom-Json).value
     $script:evaluatedFixture = (Get-Content "$PSScriptRoot/../fixtures/conditional-access-plans/requester-windows-resource-a.json" -Raw | ConvertFrom-Json).value
     function New-PlanFixture {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Returns a fresh in-memory fixture copy without changing external state.')]
+        [CmdletBinding()]
+        param()
+
         $script:planFixture | ConvertTo-Json -Depth 100 | ConvertFrom-Json
     }
     function New-RuleFixture {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Returns a fresh in-memory fixture copy without changing external state.')]
+        [CmdletBinding()]
+        param()
+
         $script:ruleFixture[1] | ConvertTo-Json -Depth 100 | ConvertFrom-Json
     }
 }
