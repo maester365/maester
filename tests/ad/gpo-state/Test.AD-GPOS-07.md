@@ -16,7 +16,7 @@
 - Identifies GPOs with GpoStatus AllDisabled and renders a detailed MD table of those GPOs.
 
 #### Related Tests
-- `Test-MtAdGpoAllSettingsDisabledDetails` is the current test; other related tests include state-wide counts.
+- **AD-GPOS-04 — Disabled GPO settings count should be investigated** — `Test-MtAdGpoSettingsDisabledCount` — Provides the state-wide disabled-settings count.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

@@ -15,8 +15,6 @@
 #### How the Test Works
 - Gets GPO state, filters for reports where the UserDisabled status is true and renders a details table including display name and status.
 
-#### Related Tests
-- `Test-MtAdGpoUserSettingsDisabledDetails` (self reference for template clarity).
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

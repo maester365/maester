@@ -15,8 +15,6 @@
 #### How the Test Works
 - Analyzes GPO state to extract GpoStatus ComputerDisabled details and renders a detailed table.
 
-#### Related Tests
-- `Test-MtAdGpoComputerSettingsDisabledDetails`.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

@@ -15,8 +15,6 @@
 #### How the Test Works
 - Calls Get-MtADGpoState, counts non-null GPOs in the GPOs collection, and reports a Markdown table with a single Total GPOs value.
 
-#### Related Tests
-- `Test-MtAdGpoStateTotalCount` is the primary reference.
 
 #### Related links
 - [Microsoft Learn - Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
