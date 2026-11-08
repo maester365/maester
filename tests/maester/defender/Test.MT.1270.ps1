@@ -35,7 +35,7 @@
     https://maester.dev/docs/commands/Test-MtDefenderExploitableSoftwareVulnerability
     #>
     [MaesterTest(
-        Id = 'MT.1256',
+        Id = 'MT.1270',
         Title = 'Devices should not run software with a publicly exploitable high or critical vulnerability.',
         Product = 'defender',
         Feature = 'exposure-management',

@@ -1,11 +1,11 @@
 ﻿function Get-MtDefenderDeviceSecurityRecommendationInstance {
     <#
     .SYNOPSIS
-    Returns one MT.1255 instance per Defender Vulnerability Management security configuration.
+    Returns one MT.1269 instance per Defender Vulnerability Management security configuration.
 
     .DESCRIPTION
-    Instance source of the MT.1255 family. The suffix is the configuration ID
-    (MT.1255.<configurationId>) and the title names the configuration, so each Defender recommendation
+    Instance source of the MT.1269 family. The suffix is the configuration ID
+    (MT.1269.<configurationId>) and the title names the configuration, so each Defender recommendation
     becomes its own row with its own result, the way MT.1024 does for Entra recommendations.
 
     When Defender returns no assessment at all the source emits nothing and the engine skips the family
@@ -83,7 +83,7 @@ function Test-MtDefenderDeviceSecurityRecommendation {
     https://maester.dev/docs/commands/Test-MtDefenderDeviceSecurityRecommendation
     #>
     [MaesterTest(
-        Id = 'MT.1255',
+        Id = 'MT.1269',
         Title = 'Devices should comply with the Defender Vulnerability Management security recommendations.',
         Product = 'defender',
         Feature = 'exposure-management',
