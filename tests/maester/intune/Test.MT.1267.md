@@ -1,4 +1,4 @@
-﻿Ensure the share of **non-compliant** Intune managed devices stays below a threshold you set.
+Ensure the share of **non-compliant** Intune managed devices stays below a threshold you set.
 
 Maester's other Intune checks look at how device compliance policies are *configured*. This check looks at the *outcome* Intune reports: of the devices Intune has actually evaluated, how many are non-compliant. A policy can be configured perfectly and still leave a fleet full of non-compliant devices, because devices fall out of compliance for reasons a policy cannot fix: an out-of-date OS, disk encryption switched off, a missing security agent, or a device that stopped checking in.
 

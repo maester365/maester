@@ -1,4 +1,4 @@
-﻿Ensure devices **assigned a security baseline** comply with it.
+Ensure devices **assigned a security baseline** comply with it.
 
 A security baseline is Microsoft's recommended set of hardening settings for a product (Windows, Microsoft Edge, Microsoft Defender for Endpoint and others). Assigning one is only half the job: a device can be assigned a baseline and still deviate from it, because a setting conflicts with another policy, because the device has not applied it, or because enforcement errored. Intune reports that outcome per baseline, and this check surfaces it.
 
