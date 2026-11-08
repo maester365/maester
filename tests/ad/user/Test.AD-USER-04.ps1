@@ -1,7 +1,7 @@
 ﻿function Test-MtAdUserReversibleEncryptionCount {
     <#
     .SYNOPSIS
-    Counts user accounts configured to allow reversible password encryption.
+    Fails user accounts configured to allow reversible password encryption.
 
     .DESCRIPTION
     This test identifies user accounts where password storage may allow reversible
@@ -17,13 +17,16 @@
     #>
     [MaesterTest(
         Id = 'AD-USER-04',
-        Title = 'Reversible encryption user count should be retrievable',
+        Title = 'User accounts should not allow reversible password encryption',
         Product = 'ad',
         Feature = 'users',
         Area = 'authentication',
         ResourceType = 'User',
-        Severity = 'Info',
-        Mitre = 'T1556.005',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1003.003',
+        Control = 'nist-800-53-r5:IA-5(1)',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
         Author = 'soulemike'
@@ -35,13 +38,13 @@
     Write-Verbose "Starting Test-MtAdUserReversibleEncryptionCount"
     $adState = Get-MtADDomainState -Categories @('Users')
     Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Users) {
+        throw 'User inventory is unavailable; reversible encryption cannot be assessed.'
     }
     Write-Verbose "Filtering/counting user reversible encryption count"
 
     $users = @($adState.Users)
+    Assert-MtAdUserAccountControl -Users $users
     $reversibleEncryptionUsers = @($users | Where-Object {
             $hasExplicitFlag = ($_.PSObject.Properties['ReversibleEncryption'] -and $_.ReversibleEncryption -eq $true) -or
             ($_.PSObject.Properties['AllowReversiblePasswordEncryption'] -and $_.AllowReversiblePasswordEncryption -eq $true)
@@ -56,9 +59,9 @@
     $totalCount = $users.Count
     $enabledCount = @($users | Where-Object { $_.Enabled -eq $true }).Count
 
-    $testResult = $null -ne $adState.Users
+    $testResult = $reversibleEncryptionCount -eq 0
 
-    if ($testResult) {
+    if ($null -ne $adState.Users) {
         $percentage = if ($totalCount -gt 0) {
             [Math]::Round(($reversibleEncryptionCount / $totalCount) * 100, 2)
         } else {
@@ -73,7 +76,8 @@
         $result += "| Reversible Encryption Percentage | $percentage% |" + "`n" + "`n"
     Write-Verbose "Counts computed"
 
-        $testResultMarkdown = "Active Directory user objects have been analyzed. $reversibleEncryptionCount out of $totalCount users ($percentage%) are configured for reversible password encryption behavior.`n`n%TestResult%"
+        $table = Format-MtAdUserSecurityTable $reversibleEncryptionUsers @('SamAccountName', 'Enabled', 'DistinguishedName')
+        $testResultMarkdown = "$(if ($testResult) { 'Well done. No user account permits reversible password encryption.' } else { 'User accounts permit reversible password encryption. Remove that setting, check the effective password policy and reset affected passwords after validating application dependencies.' }) This checks account configuration, not whether an existing plaintext-equivalent password was actually stored.`n`n%TestResult%`n`n$table"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user objects. Ensure you have appropriate permissions and the Active Directory module is installed."

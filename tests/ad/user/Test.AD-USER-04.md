@@ -4,13 +4,13 @@ Reversible password encryption is effectively equivalent to storing passwords in
 
 **Detective**
 
-#### Security Recommendation
+#### Remediation action
 
-Disable reversible password encryption unless it is required for a documented legacy dependency that cannot be modernized immediately. Remediate those dependencies as a priority.
+Review legacy application dependencies, disable reversible password encryption on the affected accounts and effective policies, then reset affected passwords. Turning the flag off alone does not prove previously stored credential material was removed. Pilot changes where dependent authentication mechanisms may break.
 
 #### How the Test Works
 
-This test retrieves Active Directory user data from `Get-MtADDomainState` and counts accounts with reversible-encryption-style indicators. It checks explicit reversible encryption properties when available and falls back to the relevant `userAccountControl` flag.
+This check fails when an account permits reversible password encryption and lists those accounts. It reads cached account-control data and errors when that data is unavailable. The configuration flag is not proof that a current password was actually stored reversibly; default and fine-grained policy settings are assessed separately by AD-PWDPOL-01 and AD-FGPP-01.
 
 #### Related Tests
 
