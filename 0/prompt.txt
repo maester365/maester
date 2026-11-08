@@ -1,0 +1,39 @@
+create a new issue to add to the backlog for a new test that someone could pick up. See https://ourcloudnetwork.com/entra-id-protection-now-flags-suspicious-credential-additions/
+
+suspicious credential addition conditional access policy
+
+---
+
+I deleted it. Actually restore it. what Maester should do is check if there are users with different risks that are found especially high. we should create one test for each type of risk that is found that is not dismissed (see the docs for the different types). The recommendation should be for the secops team to reiew and dismiss them. 
+
+do a review by looking at the docs and come up with a design and create the draft PRs for them
+
+---
+
+<task-notification>
+<task-id>batzkkop4</task-id>
+<tool-use-id>toolu_017pgfKSPrDKadpje8DCKxqY</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/6f2ca8bf-edc9-4816-ac8e-99c9987d4532/tasks/batzkkop4.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full module unit tests for MT.1273" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bqelwtn8t</task-id>
+<tool-use-id>toolu_01C5LXRbrBFdxm44yDF5DPwn</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/6f2ca8bf-edc9-4816-ac8e-99c9987d4532/tasks/bqelwtn8t.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the full module unit tests for MT.1274" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bq5vrfq4w</task-id>
+<tool-use-id>toolu_01SueniVvwPmNR59mVQ1YrMP</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/6f2ca8bf-edc9-4816-ac8e-99c9987d4532/tasks/bq5vrfq4w.output</output-file>
+<status>completed</status>
+<summary>Background command "Re-run both full unit suites" completed (exit code 0)</summary>
+</task-notification>
