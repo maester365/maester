@@ -1,22 +1,14 @@
-Certificate Revocation Lists (CRLs) are published at specific locations called *CRL distribution points*. These endpoints enable relying parties (including AD-integrated components) to check whether certificates have been revoked.
+Inventories CRL distribution point objects published in Active Directory.
 
-If CRL distribution points are missing, misconfigured, or reduced unexpectedly, revocation checking can fail. That can allow previously revoked certificates to remain effectively trusted longer than intended.
+Lists each object's name, distinguished name and whether a CRL attribute is present. This inventory does not decode the CRL, test its freshness, or test whether clients can reach a distribution point.
 
-Monitoring the *count* of CRL distribution points helps detect:
-- Missing distribution points after CA configuration changes
-- Unexpected additions (potentially pointing to untrusted or incorrect publishing locations)
+#### Remediation action
 
-#### Control Type
+Review unexpected CDP objects with the PKI owner. If revocation availability is in doubt, use the organization's CRL publication and client validation procedures rather than treating this inventory as a revocation health test.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-- Ensure CRL distribution points are configured to reliable, access-controlled endpoints.
-- Validate that all intended distribution points are present and reachable from relying-party networks.
-- Alert on changes to the number of distribution points—treat deviations as configuration drift.
-
-#### How the Test Works
-The test inspects AD configuration for CRL distribution point entries, counts them, and reports the current number. This provides a lightweight indicator that your revocation publication settings align with expected CA configuration.
+* [Certificate revocation lists](https://learn.microsoft.com/windows-server/identity/ad-cs/certificate-revocation-lists)
 
 <!--- Results --->
 %TestResult%
