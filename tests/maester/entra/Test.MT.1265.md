@@ -1,4 +1,4 @@
-﻿Dynamic groups should not stay in a failed rule processing state.
+Dynamic groups should not stay in a failed rule processing state.
 
 When Microsoft Entra ID can't evaluate the membership rule of a dynamic group, the group's processing
 status becomes **Processing error** (`Failed` in Microsoft Graph). Until the error is fixed, the group's
