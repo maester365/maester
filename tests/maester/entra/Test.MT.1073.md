@@ -1,4 +1,4 @@
-﻿Ensure soft and hard matching for on-premises synchronization objects is blocked
+Ensure soft and hard matching for on-premises synchronization objects is blocked
 
 When you start synchronizing with Microsoft Entra Connect, the Microsoft Entra service API checks every new incoming object and tries to find an existing object to match. There are three attributes used for this process: userPrincipalName, proxyAddresses, and sourceAnchor/immutableID. A match on userPrincipalName or proxyAddresses is known as a "soft-match." A match on sourceAnchor is known as "hard-match." For the proxyAddresses attribute, only the value with SMTP:, that is the primary email address, is used for the evaluation.
 Both, the hard-match and soft-match, tries to match objects already present and managed in Microsoft Entra ID with the new incoming objects being added that represent the same on-premises entity. If Microsoft Entra ID isn't able to find a hard-match or soft-match for the incoming object, it provisions a new object in Microsoft Entra ID directory.

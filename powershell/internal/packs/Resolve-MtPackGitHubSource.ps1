@@ -1,4 +1,4 @@
-function Resolve-MtPackGitHubSource {
+﻿function Resolve-MtPackGitHubSource {
     <#
     .SYNOPSIS
     Resolves a GitHub pack source to one commit of the named repository, and how old that content is (Maester Packs design, sections 5.4 and 5.7).

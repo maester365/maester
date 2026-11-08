@@ -1,4 +1,4 @@
-function Import-MtMaesterResult {
+﻿function Import-MtMaesterResult {
     <#
      .Synopsis
       Imports Maester test result JSON files from disk into PowerShell objects.

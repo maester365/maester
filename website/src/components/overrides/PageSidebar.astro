@@ -1,0 +1,34 @@
+---
+// The right column: a check's page shows what the check is about and maps to (catalog/CheckRail.astro); every
+// other page keeps Starlight's contents list.
+import Default from '@astrojs/starlight/components/PageSidebar.astro';
+import CheckRail from '../catalog/CheckRail.astro';
+
+const data = Astro.locals.starlightRoute.entry.data as Record<string, any>;
+const id = data.maester?.kind === 'test' ? String(data.maester.id) : '';
+---
+
+{
+	id ? (
+		<div class="mt-rail-panel">
+			<CheckRail id={id} />
+		</div>
+	) : (
+		<Default />
+	)
+}
+
+<style>
+	/* Starlight's right sidebar is fixed and as wide as the window; its contents list keeps to the sidebar's width. */
+	.mt-rail-panel {
+		display: none;
+		box-sizing: border-box;
+		max-width: var(--sl-sidebar-width);
+		padding: 1rem var(--sl-sidebar-pad-x) 2rem;
+	}
+	@media (min-width: 72rem) {
+		.mt-rail-panel {
+			display: block;
+		}
+	}
+</style>

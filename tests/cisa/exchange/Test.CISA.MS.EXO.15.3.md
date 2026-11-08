@@ -1,4 +1,4 @@
-﻿User click tracking SHOULD be enabled.
+User click tracking SHOULD be enabled.
 
 Rationale: Users may click on malicious links in emails, leading to compromise or unauthorized data disclosure. Enabling user click tracking lets agencies know if a malicious link may have been visited after the fact to help tailor a response to a potential incident.
 

@@ -1,4 +1,4 @@
-﻿Unidentified SPN service classes can represent security risks:
+Unidentified SPN service classes can represent security risks:
 
 - **Shadow IT**: Unknown services may be running without IT's knowledge or approval
 - **Misconfigurations**: Typos or incorrect SPN registrations can cause authentication issues

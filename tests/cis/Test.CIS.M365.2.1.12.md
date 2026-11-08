@@ -1,4 +1,4 @@
-﻿2.1.12 (L1) Ensure the connection filter IP allow list is not used
+2.1.12 (L1) Ensure the connection filter IP allow list is not used
 
 In Microsoft 365 organizations with Exchange Online mailboxes or standalone Exchange Online Protection (EOP) organizations without Exchange Online mailboxes, connection filtering and the default connection filter policy identify good or bad source email servers by IP addresses. The key components of the default connection filter policy are IP Allow List, IP Block List and Safe list.
 The recommended state is **IP Allow List** empty or undefined.

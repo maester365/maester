@@ -1,4 +1,4 @@
-﻿8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled
+8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled
 
 This policy setting controls chats and meetings with external unmanaged Teams users (those not managed by an organization, such as Microsoft Teams (free)).
 

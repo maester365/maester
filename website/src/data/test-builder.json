@@ -503,6 +503,10 @@
         {
           "key": "insider-risk-management",
           "name": "Insider risk management"
+        },
+        {
+          "key": "data-classification",
+          "name": "Data classification"
         }
       ]
     },
@@ -635,6 +639,14 @@
         {
           "key": "subscriptions",
           "name": "Subscriptions"
+        },
+        {
+          "key": "network-security",
+          "name": "Network security"
+        },
+        {
+          "key": "sentinel",
+          "name": "Microsoft Sentinel"
         }
       ]
     },
@@ -1177,6 +1189,7 @@
     "AAD_PREMIUM_P2",
     "AAD_WRKLDID_P1",
     "AAD_WRKLDID_P2",
+    "AGENT_365",
     "ATP_ENTERPRISE",
     "COMMUNICATIONS_DLP",
     "DEFENDER_XDR",

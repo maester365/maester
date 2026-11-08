@@ -1,4 +1,4 @@
-# Guards the repository layout described in website/docs/contributing.md#repository-layout and AGENTS.md.
+﻿# Guards the repository layout described in website/docs/contributing.md#repository-layout and AGENTS.md.
 # When a rule here fails, move or rename the file to fit the layout. Change a rule only together with the guide.
 BeforeDiscovery {
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path

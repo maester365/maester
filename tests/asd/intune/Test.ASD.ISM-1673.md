@@ -1,4 +1,4 @@
-﻿Microsoft Office macros are blocked from making Win32 API calls (ISM-1673, Essential Eight Maturity Level Two, Restrict Microsoft Office macros).
+Microsoft Office macros are blocked from making Win32 API calls (ISM-1673, Essential Eight Maturity Level Two, Restrict Microsoft Office macros).
 
 Macro malware calls the Win32 API to allocate memory, load shellcode and reach the operating system directly. Blocking those calls leaves VBA its document automation and takes away its use as a loader. This check reads the attack surface reduction rules of every Intune Windows configuration policy (Endpoint security and settings catalog policies share the same setting definitions) and passes when an assigned policy sets **Block Win32 API calls from Office macros** to **Block**. Audit and Warn only report the behaviour and do not satisfy the control.
 

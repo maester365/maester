@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Runs Maester in a session where Pester cannot be found and checks that native tests still run.
 

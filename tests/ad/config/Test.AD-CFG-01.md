@@ -1,4 +1,4 @@
-﻿The **tombstone lifetime** determines how long Active Directory retains “deleted but not yet purged” objects (for example, users, groups, and computer accounts). This directly impacts your ability to recover from:
+The **tombstone lifetime** determines how long Active Directory retains “deleted but not yet purged” objects (for example, users, groups, and computer accounts). This directly impacts your ability to recover from:
 
 - **Accidental deletions** performed by admins or during automation
 - **Incident response actions** that remove objects and later need restoration

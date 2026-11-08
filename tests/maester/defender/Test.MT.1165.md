@@ -1,4 +1,4 @@
-﻿Checks that Network Protection is enabled in block or audit mode in the assigned Microsoft Defender Antivirus policies.
+Checks that Network Protection is enabled in block or audit mode in the assigned Microsoft Defender Antivirus policies.
 
 Disabled network protection allows web-based threats and malicious IP connections, exposing endpoints to phishing sites and command-and-control traffic.
 

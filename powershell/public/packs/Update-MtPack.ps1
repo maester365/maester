@@ -1,4 +1,4 @@
-function Update-MtPack {
+﻿function Update-MtPack {
     <#
     .SYNOPSIS
     Updates installed Maester Packs to their newest release that has met the cooldown, showing what changed.

@@ -1,0 +1,233 @@
+---
+// The MITRE ATT&CK techniques the checks defend against, by tactic in the order of the matrix, shaded by how many
+// checks there are for each. The nav's filters narrow the checks counted (state.ts), and a tile opens All checks
+// filtered to that technique and the same filters.
+import { channelOf, checks, data, searchText } from './data';
+
+const ORDER = ['TA0043', 'TA0042', 'TA0001', 'TA0002', 'TA0003', 'TA0004', 'TA0005', 'TA0112', 'TA0006', 'TA0007', 'TA0008', 'TA0009', 'TA0011', 'TA0010', 'TA0040'];
+const counts = new Map<string, number>();
+for (const t of checks) for (const m of t.mitre) counts.set(m, (counts.get(m) ?? 0) + 1);
+const techniques = data.attack.techniques.filter((t) => counts.has(t.Id));
+const tactics = [...data.attack.tactics]
+	.sort((a, b) => (ORDER.indexOf(a.Id) === -1 ? 99 : ORDER.indexOf(a.Id)) - (ORDER.indexOf(b.Id) === -1 ? 99 : ORDER.indexOf(b.Id)))
+	.map((tactic) => ({
+		...tactic,
+		techniques: techniques.filter((t) => t.Tactics.includes(tactic.Id)).sort((a, b) => counts.get(b.Id)! - counts.get(a.Id)!),
+	}))
+	.filter((t) => t.techniques.length);
+const band = (n: number) => (n < 5 ? 1 : n < 15 ? 2 : n < 35 ? 3 : n < 80 ? 4 : 5);
+const mappedChecks = checks.filter((t) => t.mitre.length);
+const mapped = mappedChecks.length;
+// What the filters test of each check, for the browser to recount the tiles.
+const facts = mappedChecks.map((t) => ({
+	q: searchText(t),
+	pillar: (t.pillar ?? []).join(' '),
+	severity: t.severity,
+	area: t.area,
+	cost: t.cost,
+	impact: t.impact,
+	source: t.pack || 'maester',
+	channel: channelOf(t),
+	product: t.product,
+	feature: t.feature ? `${t.product}/${t.feature}` : '',
+	suite: t.pack ? '' : t.suite,
+	mitre: t.mitre.join(' '),
+	author: (t.authors ?? []).join(' '),
+}));
+---
+
+<mt-attack-view class="mt-att not-content" data-version={data.attack.version}>
+	<p class="mt-att__lead">
+		<span data-lead>{mapped.toLocaleString('en-US')} checks defend against {techniques.length} techniques</span> of ATT&CK {data.attack.version}. Darker means more checks; choose a tile to list them.
+	</p>
+	<p class="mt-att__empty" data-empty hidden>No check that matches the filters names an ATT&CK technique.</p>
+	<div class="mt-att__legend">
+		<span><i data-band="1"></i>1–4</span><span><i data-band="2"></i>5–14</span><span><i data-band="3"></i>15–34</span><span><i data-band="4"></i>35–79</span><span><i data-band="5"></i>80+</span>
+	</div>
+	<div class="mt-att__scroll">
+		<div class="mt-att__grid">
+			{
+				tactics.map((tactic) => (
+					<div class="mt-att__col" data-tactic={tactic.Id}>
+						<h3>
+							{tactic.Name}
+							<span>
+								{tactic.Id} · <span data-tactic-count>{tactic.techniques.length}</span>
+							</span>
+						</h3>
+						{tactic.techniques.map((t) => (
+							<a class="mt-att__tech" data-technique={t.Id} data-band={band(counts.get(t.Id)!)} href={`/docs/tests?mitre=${t.Id}&group=product`} title={`${counts.get(t.Id)} checks`}>
+								<small>
+									{t.Id} · <span data-count>{counts.get(t.Id)}</span>
+								</small>
+								{t.Name}
+							</a>
+						))}
+					</div>
+				))
+			}
+		</div>
+	</div>
+	<script type="application/json" data-facts set:html={JSON.stringify(facts).replace(/</g, '\\u003c')} />
+</mt-attack-view>
+
+<script>
+	import { matches, onState, FILTERS } from './state';
+	import type { CheckFacts } from './state';
+
+	const band = (n: number) => (n < 5 ? 1 : n < 15 ? 2 : n < 35 ? 3 : n < 80 ? 4 : 5);
+
+	class AttackView extends HTMLElement {
+		connectedCallback() {
+			const facts = JSON.parse(this.querySelector('[data-facts]')!.textContent ?? '[]') as CheckFacts[];
+			const tiles = [...this.querySelectorAll<HTMLAnchorElement>('[data-technique]')];
+			const columns = [...this.querySelectorAll<HTMLElement>('[data-tactic]')];
+			const lead = this.querySelector('[data-lead]')!;
+			const empty = this.querySelector<HTMLElement>('[data-empty]')!;
+			onState((state) => {
+				// The tiles are the techniques, so a technique filter does not hide the others; it marks its tiles.
+				const shown = facts.filter((f) => matches({ ...state, mitre: [] }, f));
+				const counts = new Map<string, number>();
+				for (const f of shown) for (const m of (f.mitre ?? '').split(' ').filter(Boolean)) counts.set(m, (counts.get(m) ?? 0) + 1);
+				// A tile keeps the filters: All checks opens with them and the technique.
+				const params = new URLSearchParams();
+				// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
+				for (const name of FILTERS) if (name !== 'mitre' && name !== 'group' && state[name].length) params.set(name, state[name].join(','));
+				for (const tile of tiles) {
+					const id = tile.dataset.technique!;
+					const n = counts.get(id) ?? 0;
+					tile.hidden = n === 0;
+					tile.dataset.band = String(band(n));
+					tile.querySelector('[data-count]')!.textContent = String(n);
+					tile.title = `${n} ${n === 1 ? 'check' : 'checks'}`;
+					tile.classList.toggle('mt-att__tech--on', state.mitre.includes(id));
+					const query = new URLSearchParams(params);
+					query.set('mitre', id);
+					query.set('group', 'product');
+					tile.href = `/docs/tests?${query.toString().replace(/%2C/g, ',')}`;
+				}
+				for (const col of columns) {
+					const visible = [...col.querySelectorAll<HTMLElement>('[data-technique]')].filter((t) => !t.hidden).length;
+					col.hidden = visible === 0;
+					col.querySelector('[data-tactic-count]')!.textContent = String(visible);
+				}
+				const techniques = counts.size;
+				lead.textContent = `${shown.length.toLocaleString('en-US')} ${shown.length === 1 ? 'check defends' : 'checks defend'} against ${techniques} ${techniques === 1 ? 'technique' : 'techniques'}`;
+				empty.hidden = shown.length > 0;
+			});
+		}
+	}
+	customElements.define('mt-attack-view', AttackView);
+</script>
+
+<style>
+	.mt-att {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+		font-size: 0.875rem;
+	}
+	.mt-att__lead {
+		margin: 0;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-att__legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		font-size: 0.78rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-att__legend span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+	.mt-att__legend i {
+		width: 12px;
+		height: 12px;
+		border-radius: 3px;
+	}
+	.mt-att__scroll {
+		overflow-x: auto;
+		padding-bottom: 0.5rem;
+	}
+	/* A column per tactic; a tactic the filters leave empty takes no column. */
+	.mt-att__grid {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(9.5rem, 1fr);
+		gap: 0.5rem;
+		align-items: start;
+	}
+	.mt-att__col {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+	.mt-att__col h3 {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		margin: 0 0 0.2rem;
+		font-size: 0.8rem;
+		line-height: 1.25;
+	}
+	.mt-att__col h3 span {
+		font-family: var(--sl-font-mono);
+		font-size: 0.68rem;
+		font-weight: 500;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-att__tech {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 0.45rem 0.55rem;
+		border-radius: 7px;
+		font-size: 0.78rem;
+		line-height: 1.25;
+		text-decoration: none;
+	}
+	.mt-att__tech[hidden],
+	.mt-att__col[hidden] {
+		display: none;
+	}
+	.mt-att__tech--on {
+		outline: 2px solid var(--sl-color-white);
+		outline-offset: 1px;
+	}
+	.mt-att__empty {
+		margin: 0;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-att__tech:hover {
+		outline: 2px solid var(--sl-color-white);
+		outline-offset: -2px;
+	}
+	.mt-att__tech small {
+		font-family: var(--sl-font-mono);
+		font-size: 0.66rem;
+		opacity: 0.85;
+	}
+	[data-band='1'] {
+		background: #fde2e2;
+		color: #7f1d1d !important;
+	}
+	[data-band='2'] {
+		background: #f9b4b4;
+		color: #7f1d1d !important;
+	}
+	[data-band='3'] {
+		background: #ef6b6e;
+		color: #fff !important;
+	}
+	[data-band='4'] {
+		background: #d22c31;
+		color: #fff !important;
+	}
+	[data-band='5'] {
+		background: #8f1c22;
+		color: #fff !important;
+	}
+</style>

@@ -1,4 +1,4 @@
-﻿2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled
+2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled
 
 Exchange Online Protection (EOP) is Microsoft's cloud-based filtering service that protects organizations against spam, malware, and other email threats. EOP is included in all Microsoft 365 organizations with Exchange Online mailboxes.
 

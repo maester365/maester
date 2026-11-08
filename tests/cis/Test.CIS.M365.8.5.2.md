@@ -1,4 +1,4 @@
-﻿Anonymous users are people who join a meeting without signing in to Microsoft Teams, and dial-in callers join by phone. If either can start a meeting, it can begin without anyone from the organization present, so nobody who is responsible for the meeting is there to control it.
+Anonymous users are people who join a meeting without signing in to Microsoft Teams, and dial-in callers join by phone. If either can start a meeting, it can begin without anyone from the organization present, so nobody who is responsible for the meeting is there to control it.
 
 When the setting is off, anonymous users and dial-in callers wait in the lobby until someone from your organization, a guest, or a user from a trusted organization starts the meeting. The setting only has an effect when anonymous users can join meetings and **Who can bypass the lobby** is set to **Everyone**.
 
