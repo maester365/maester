@@ -8,7 +8,7 @@ If a reported user holds a privileged directory role, active or PIM-eligible, th
 
 The check needs the Microsoft Graph permission `IdentityRiskyUser.Read.All`, which Maester does not request by default. Without it the check is skipped. Connect with `Connect-Maester -IncludePreview`, or grant the permission to the app registration that runs Maester.
 
-A companion check, MT.1261, is planned to report on medium-risk users. This check is about the outcome (users actually left unremediated). It is complementary to MT.1267, which checks that a Conditional Access policy requiring risk remediation is in place; one checks the control, this one checks the result.
+A companion check, MT.1261, is planned to report on medium-risk users. This check is about the outcome (users actually left unremediated). It is complementary to MT.1253, which checks that a Conditional Access policy requiring risk remediation is in place; one checks the control, this one checks the result.
 
 #### Remediation action
 
