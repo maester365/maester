@@ -27,11 +27,20 @@ function Test-MtAdFineGrainedPasswordPolicySecurity {
     Evaluates fine-grained password policy security settings and effective usage in separate result rows.
     #>
     [MaesterTest(
-        Id = 'AD-FGPP-01', Title = 'Fine-grained password policies should meet configured safeguards and be in use',
-        Product = 'ad', Feature = 'password-policy', Area = 'authentication', ResourceType = 'Policy',
-        Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1110',
-        Service = 'ActiveDirectory', Permission = ('ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty', 'ActiveDirectory:Ldap:user:ReadProperty'),
-        InstanceSource = 'Get-MtAdFineGrainedPolicyAssessmentInstance', Author = 'soulemike'
+        Id = 'AD-FGPP-01',
+        Title = 'Fine-grained password policies should meet configured safeguards and be in use',
+        Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Policy',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1110',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty', 'ActiveDirectory:Ldap:user:ReadProperty'),
+        InstanceSource = 'Get-MtAdFineGrainedPolicyAssessmentInstance',
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

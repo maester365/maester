@@ -4,10 +4,19 @@
     Evaluates the normalized default domain password policy against configured safeguards.
     #>
     [MaesterTest(
-        Id = 'AD-PWDPOL-01', Title = 'Default domain password policy should meet configured safeguards',
-        Product = 'ad', Feature = 'password-policy', Area = 'authentication', ResourceType = 'Tenant',
-        Severity = 'High', UserImpact = 'Medium', ImplementationCost = 'Medium', Mitre = 'T1110',
-        Service = 'ActiveDirectory', Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.maxPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutDuration:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutThreshold:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockOutObservationWindow:ReadProperty'), Author = 'soulemike'
+        Id = 'AD-PWDPOL-01',
+        Title = 'Default domain password policy should meet configured safeguards',
+        Product = 'ad',
+        Feature = 'password-policy',
+        Area = 'authentication',
+        ResourceType = 'Tenant',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1110',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:domainDNS.pwdHistoryLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.maxPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdAge:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.minPwdLength:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.pwdProperties:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutDuration:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockoutThreshold:ReadProperty', 'ActiveDirectory:Ldap:domainDNS.lockOutObservationWindow:ReadProperty'),
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
