@@ -1,4 +1,4 @@
-﻿Verify that full scan of mapped network drives is disabled for performance.
+Verify that full scan of mapped network drives is disabled for performance.
 
 Full scan on mapped drives can cause significant performance issues.
 

@@ -1,4 +1,4 @@
-﻿Ensure Microsoft Purview sensitivity labels are published to users and at least one published label is scoped to **files**, so Microsoft 365 Copilot honors and inherits labels onto AI-generated content.
+Ensure Microsoft Purview sensitivity labels are published to users and at least one published label is scoped to **files**, so Microsoft 365 Copilot honors and inherits labels onto AI-generated content.
 
 Microsoft 365 Copilot only:
 

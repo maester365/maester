@@ -36,6 +36,22 @@ const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic
 	</nav>
 </div>
 
+<style is:global>
+	/* The docs header lets the page show through, blurred, as it scrolls under: a tint of the nav colour and a
+	   faint edge instead of a solid bar. Browsers without backdrop-filter get the solid colour. */
+	header.header {
+		background-color: var(--sl-color-bg-nav);
+		border-bottom-color: color-mix(in srgb, var(--sl-color-hairline-shade) 55%, transparent);
+	}
+	@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+		header.header {
+			background-color: color-mix(in srgb, var(--sl-color-bg-nav) 72%, transparent);
+			-webkit-backdrop-filter: saturate(180%) blur(14px);
+			backdrop-filter: saturate(180%) blur(14px);
+		}
+	}
+</style>
+
 <style>
 	.mt-header {
 		display: flex;

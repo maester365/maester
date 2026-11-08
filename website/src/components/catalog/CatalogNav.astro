@@ -1,0 +1,533 @@
+---
+// The sidebar of the test catalog: the views (one click to a product, a framework, a pack or a suite), then, on the
+// pages that list checks, the filters. The filters change the URL (state.ts), and the list on the page follows.
+import { checks, data, packOf, productIcon, productInitials, ratingOrder, severityOrder, suiteInfo, suiteMembers, type Check } from './data';
+
+interface Props {
+	id: string;
+}
+const { id } = Astro.props;
+const path = `/${id}`;
+const slug = id.replace(/^docs\/tests\/?/, '');
+
+// Which checks the page lists, for the counts of the filters, and which nav entry is the page's.
+// Only suites with a page of their own: XSPM has none (slug ''), and '' is the All checks page.
+const suiteBySlug = Object.fromEntries(Object.entries(suiteInfo).filter(([, s]) => s.slug).map(([key, s]) => [s.slug, key]));
+const check = checks.find((t) => t.id === slug);
+let scope: Check[] | null = null;
+let current = path;
+if (slug === '') scope = checks;
+else if (slug.startsWith('products/')) scope = checks.filter((t) => t.product === slug.slice(9));
+else if (slug.startsWith('packs/')) scope = checks.filter((t) => t.pack && packOf(t.pack)?.slug === slug.slice(6));
+else if (suiteBySlug[slug]) scope = checks.filter((t) => !t.pack && suiteMembers(suiteBySlug[slug]).includes(t.suite));
+// The ATT&CK matrix follows the filters too: its counts are of the checks that name a technique.
+else if (slug === 'attack') scope = checks.filter((t) => t.mitre.length);
+else if (check) current = check.pack ? `/docs/tests/packs/${packOf(check.pack)?.slug}` : `/docs/tests/products/${check.product}`;
+
+const on = (href: string) => (href === current ? 'page' : undefined);
+// The first ten products, so the frameworks below stay in view; all of them when the page is one of the rest.
+const PRODUCTS_SHOWN = 10;
+const showAllProducts = data.products.slice(PRODUCTS_SHOWN).some((p) => current === `/docs/tests/products/${p.key}`);
+const browse = [
+	{ href: '/docs/tests/overview', label: 'Overview', count: '', path: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z' },
+	{ href: '/docs/tests', label: 'All checks', count: data.total.toLocaleString('en-US'), path: 'M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01' },
+	{ href: '/docs/tests/attack', label: 'MITRE ATT&CK', count: String(data.attack.techniques.length), path: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4' },
+];
+
+const counted = (list: Check[], key: (t: Check) => string[], order?: string[]) => {
+	const map = new Map<string, number>();
+	for (const t of list) for (const v of key(t)) if (v) map.set(v, (map.get(v) ?? 0) + 1);
+	const entries = [...map.entries()];
+	return order ? entries.sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0])) : entries.sort((a, b) => b[1] - a[1]);
+};
+const areaName = new Map(data.areas.map((a) => [a.key, a.name]));
+const personName = new Map(data.people.map((p) => [p.id, p.name]));
+const personAvatar = new Map(data.people.map((p) => [p.id, p.avatar]));
+const groups = scope && [
+	{ name: 'severity', label: 'Severity', values: counted(scope, (t) => [t.severity], severityOrder).map(([k, n]) => ({ value: k, label: k, count: n, dot: k })) },
+	{ name: 'area', label: 'Area', values: counted(scope, (t) => [t.area]).map(([k, n]) => ({ value: k, label: areaName.get(k) ?? k, count: n })) },
+	{ name: 'cost', label: 'Effort to fix', values: counted(scope, (t) => [t.cost], ratingOrder).map(([k, n]) => ({ value: k, label: k, count: n })) },
+	{ name: 'impact', label: 'Impact on users', values: counted(scope, (t) => [t.impact], ratingOrder).map(([k, n]) => ({ value: k, label: k, count: n })) },
+	{
+		name: 'source',
+		label: 'Source',
+		values: counted(scope, (t) => [t.pack ? t.pack : 'maester']).map(([k, n]) => ({ value: k, label: k === 'maester' ? 'Built into Maester' : packOf(k)?.name ?? k, count: n })),
+	},
+	{
+		name: 'channel',
+		label: 'Channel',
+		values: [
+			{ value: 'new', label: 'New in the preview', count: scope.filter((t) => t.previewOnly && !t.pack).length },
+			{ value: 'preview', label: 'Runs with -IncludePreview', count: scope.filter((t) => t.previewCheck).length },
+		].filter((v) => v.count),
+	},
+	{
+		name: 'author',
+		label: 'Author',
+		values: counted(scope, (t) => t.authors ?? []).map(([k, n]) => ({ value: k, label: personName.get(k) ?? k, count: n, avatar: personAvatar.get(k) ?? '' })),
+	},
+].filter((g) => g.values.length > 1 || (g.name === 'channel' && g.values.length));
+// The author list is long: the first few show, and a box finds the rest.
+const AUTHORS_SHOWN = 6;
+---
+
+<mt-catalog-nav class="mt-cnav" data-list={scope ? '1' : ''}>
+	<label class="mt-cnav__search">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.5-4.5"></path></svg>
+		<input type="search" placeholder={`Search ${data.total.toLocaleString('en-US')} checks`} aria-label="Search checks" data-search />
+	</label>
+
+	<p class="mt-cnav__h">Browse</p>
+	{
+		browse.map((b) => (
+			<a href={b.href} class="mt-cnav__item" aria-current={on(b.href)}>
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path d={b.path} />
+				</svg>
+				<span>{b.label}</span>
+				<span class="mt-cnav__n">{b.count}</span>
+			</a>
+		))
+	}
+
+	<p class="mt-cnav__h">Products</p>
+	{
+		data.products.map((p, i) => {
+			const href = `/docs/tests/products/${p.key}`;
+			const icon = productIcon(p.key);
+			const extra = i >= PRODUCTS_SHOWN && !showAllProducts;
+			return (
+				<a href={href} class="mt-cnav__item" aria-current={on(href)} data-extra-product={extra ? '1' : undefined} hidden={extra}>
+					{icon ? <img src={icon} alt="" width="16" height="16" loading="lazy" /> : <span class="mt-cnav__tile">{productInitials(p.key)}</span>}
+					<span>{p.name}</span>
+					<span class="mt-cnav__n">{p.count}</span>
+				</a>
+			);
+		})
+	}
+	{
+		data.products.length > PRODUCTS_SHOWN && !showAllProducts && (
+			<button type="button" class="mt-cnav__all" data-all-products>
+				Show all {data.products.length}
+			</button>
+		)
+	}
+
+	<p class="mt-cnav__h">Frameworks</p>
+	{
+		data.frameworks.map((f) => {
+			const href = `/docs/tests/frameworks/${f.key}`;
+			return (
+				<a href={href} class="mt-cnav__item" aria-current={on(href)} title={f.complete ? `${f.covered} of ${f.total} requirements have a check` : `${f.covered} requirements have a check`}>
+					<span class="mt-cnav__code">{f.code}</span>
+					<span>{f.label}</span>
+					<span class="mt-cnav__n">{f.complete ? `${f.covered}/${f.total}` : f.covered}</span>
+				</a>
+			);
+		})
+	}
+
+	{
+		data.packs.length > 0 && (
+			<>
+				<p class="mt-cnav__h">Packs</p>
+				{data.packs.map((p) => {
+					const href = `/docs/tests/packs/${p.slug}`;
+					return (
+						<a href={href} class="mt-cnav__item" aria-current={on(href)} title={p.publisher ? `Published by ${p.publisher}` : undefined}>
+							<span class="mt-cnav__code mt-cnav__code--pack">{p.code}</span>
+							<span>{p.name.replace(/^Microsoft /, '')}</span>
+							<span class="mt-cnav__n">{p.count}</span>
+						</a>
+					);
+				})}
+			</>
+		)
+	}
+
+	<details class="mt-cnav__more" open={Boolean(suiteBySlug[slug]) || slug === 'tags'}>
+		<summary class="mt-cnav__h">Suites</summary>
+		{
+			data.suites
+				.filter((s) => suiteInfo[s.key]?.slug)
+				.map((s) => {
+					const href = `/docs/tests/${suiteInfo[s.key].slug}`;
+					return (
+						<a href={href} class="mt-cnav__item" aria-current={on(href)}>
+							<span>{suiteInfo[s.key].name}</span>
+							<span class="mt-cnav__n">{s.count}</span>
+						</a>
+					);
+				})
+		}
+		<a href="/docs/tests/tags" class="mt-cnav__item" aria-current={on('/docs/tests/tags')}>
+			<span>Tags from 2.x</span>
+		</a>
+	</details>
+
+	{
+		groups && (
+			<section class="mt-cnav__filters" aria-label="Filters">
+				<div class="mt-cnav__fhead">
+					<span>Filter</span>
+					<button type="button" data-clear hidden>
+						Clear
+					</button>
+				</div>
+				{groups.map((g) => (
+					<fieldset class="mt-cnav__group" data-group={g.name}>
+						<legend class="mt-cnav__h">{g.label}</legend>
+						{g.name === 'author' && (
+							<input type="search" class="mt-cnav__find" placeholder={`Find one of ${g.values.length} authors`} aria-label="Find an author" data-find-author />
+						)}
+						{g.values.map((v: any, i: number) => (
+							<label class="mt-cnav__check" data-extra={g.name === 'author' && i >= AUTHORS_SHOWN ? '1' : undefined} hidden={g.name === 'author' && i >= AUTHORS_SHOWN}>
+								<input type="checkbox" data-filter={g.name} value={v.value} />
+								{v.dot && <span class={`mt-cnav__dot mt-cnav__dot--${v.dot.toLowerCase()}`} />}
+								{v.avatar !== undefined && (v.avatar ? <img class="mt-cnav__avatar" src={v.avatar} alt="" width="18" height="18" loading="lazy" /> : <span class="mt-cnav__avatar" />)}
+								<span>{v.label}</span>
+								<span class="mt-cnav__n">{v.count}</span>
+							</label>
+						))}
+						{g.name === 'author' && g.values.length > AUTHORS_SHOWN && (
+							<button type="button" class="mt-cnav__all" data-all-authors>
+								Show all {g.values.length}
+							</button>
+						)}
+					</fieldset>
+				))}
+			</section>
+		)
+	}
+</mt-catalog-nav>
+
+<script>
+	import { onState, readState, toggle, update, writeState, isFiltered, FILTERS } from './state';
+
+	class CatalogNav extends HTMLElement {
+		connectedCallback() {
+			const isList = this.dataset.list === '1';
+			const search = this.querySelector<HTMLInputElement>('[data-search]')!;
+			const boxes = [...this.querySelectorAll<HTMLInputElement>('input[data-filter]')];
+			const clear = this.querySelector<HTMLButtonElement>('[data-clear]');
+
+			const allProducts = this.querySelector<HTMLButtonElement>('[data-all-products]');
+			allProducts?.addEventListener('click', () => {
+				const extra = [...this.querySelectorAll<HTMLElement>('[data-extra-product]')];
+				for (const item of extra) item.hidden = false;
+				allProducts.hidden = true;
+				// The button goes away: keyboard focus moves to the first product it revealed.
+				extra[0]?.focus();
+			});
+
+			// On a page that lists checks the search filters it; elsewhere it opens All checks with the words.
+			search.value = readState().q[0] ?? '';
+			let timer = 0;
+			search.addEventListener('input', () => {
+				if (!isList) return;
+				clearTimeout(timer);
+				timer = window.setTimeout(() => update({ q: search.value.trim() ? [search.value.trim()] : [] }), 120);
+			});
+			search.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' && !isList && search.value.trim()) location.href = `/docs/tests?q=${encodeURIComponent(search.value.trim())}`;
+			});
+			// "/" focuses the search, as on the report.
+			document.addEventListener('keydown', (e) => {
+				const target = e.target as HTMLElement;
+				if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(target.tagName) && !target.isContentEditable) {
+					e.preventDefault();
+					search.focus();
+				}
+			});
+
+			for (const box of boxes) box.addEventListener('change', () => toggle(box.dataset.filter as (typeof FILTERS)[number], box.value, box.checked));
+
+			// Authors: the first few, all of them, or those whose name matches the box; a ticked author always shows.
+			const authorGroup = this.querySelector<HTMLElement>('[data-group="author"]');
+			const find = this.querySelector<HTMLInputElement>('[data-find-author]');
+			const all = this.querySelector<HTMLButtonElement>('[data-all-authors]');
+			let showAll = false;
+			const showAuthors = () => {
+				const q = (find?.value ?? '').trim().toLowerCase();
+				for (const label of authorGroup?.querySelectorAll<HTMLLabelElement>('label') ?? []) {
+					const box = label.querySelector('input')!;
+					const text = label.textContent!.toLowerCase();
+					label.hidden = !box.checked && (q ? !text.includes(q) && !box.value.toLowerCase().includes(q) : !showAll && label.dataset.extra === '1');
+				}
+				if (all) all.hidden = showAll || Boolean(q);
+			};
+			find?.addEventListener('input', showAuthors);
+			all?.addEventListener('click', () => {
+				showAll = true;
+				showAuthors();
+			});
+			clear?.addEventListener('click', () => {
+				const state = readState();
+				for (const name of FILTERS) if (name !== 'group') state[name] = [];
+				writeState(state);
+			});
+
+			onState((state) => {
+				for (const box of boxes) box.checked = state[box.dataset.filter as (typeof FILTERS)[number]].includes(box.value);
+				if (document.activeElement !== search) search.value = state.q[0] ?? '';
+				if (clear) clear.hidden = !isFiltered(state);
+				showAuthors();
+			});
+		}
+	}
+	customElements.define('mt-catalog-nav', CatalogNav);
+</script>
+
+<style>
+	.mt-cnav {
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+		font-size: 0.875rem;
+	}
+	.mt-cnav__search {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+		padding: 0.4rem 0.65rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 9px;
+		color: var(--sl-color-gray-3);
+		background: var(--sl-color-bg);
+	}
+	.mt-cnav__search:focus-within {
+		border-color: var(--sl-color-accent);
+	}
+	.mt-cnav__search svg {
+		width: 15px;
+		height: 15px;
+		flex: none;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+	}
+	.mt-cnav__search input {
+		width: 100%;
+		border: 0;
+		outline: 0;
+		background: none;
+		font: inherit;
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__h {
+		margin: 1rem 0.5rem 0.3rem;
+		padding: 0;
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cnav__item {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.3rem 0.5rem;
+		border-radius: 7px;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+		line-height: 1.3;
+	}
+	.mt-cnav__item:hover {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__item[aria-current='page'] {
+		background: var(--sl-color-accent-low);
+		color: var(--sl-color-text-accent);
+		font-weight: 600;
+	}
+	.mt-cnav__item svg {
+		width: 16px;
+		height: 16px;
+		flex: none;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.8;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.mt-cnav__item img {
+		width: 16px;
+		height: 16px;
+		flex: none;
+		object-fit: contain;
+		margin: 0;
+	}
+	.mt-cnav__tile {
+		display: grid;
+		place-items: center;
+		width: 16px;
+		height: 16px;
+		flex: none;
+		border-radius: 4px;
+		background: var(--sl-color-gray-5);
+		font-size: 0.45rem;
+		font-weight: 700;
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__code {
+		flex: none;
+		min-width: 1.75rem;
+		padding: 0 0.2rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 4px;
+		font-family: var(--sl-font-mono);
+		font-size: 0.6rem;
+		font-weight: 600;
+		text-align: center;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-cnav__code--pack {
+		border-color: #93c5fd;
+		color: #1d4ed8;
+		background: #eff6ff;
+	}
+	:global(:root[data-theme='dark']) .mt-cnav__code--pack {
+		border-color: #1e40af;
+		color: #93c5fd;
+		background: #172554;
+	}
+	.mt-cnav__n {
+		margin-inline-start: auto;
+		font-family: var(--sl-font-mono);
+		font-size: 0.72rem;
+		color: var(--sl-color-gray-3);
+	}
+	.mt-cnav__item[aria-current='page'] .mt-cnav__n {
+		color: inherit;
+	}
+	.mt-cnav__more summary {
+		cursor: pointer;
+		list-style: none;
+	}
+	.mt-cnav__more summary::-webkit-details-marker {
+		display: none;
+	}
+	.mt-cnav__more summary::after {
+		content: ' ›';
+	}
+	.mt-cnav__more[open] summary::after {
+		content: ' ⌄';
+	}
+	.mt-cnav__filters {
+		margin-top: 1.1rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--sl-color-gray-5);
+	}
+	.mt-cnav__fhead {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		padding: 0 0.5rem;
+		font-weight: 600;
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__fhead button {
+		border: 0;
+		background: none;
+		padding: 0;
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 500;
+		color: var(--sl-color-text-accent);
+		cursor: pointer;
+	}
+	.mt-cnav__group {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		min-width: 0;
+	}
+	.mt-cnav__group legend {
+		margin-top: 0.9rem;
+	}
+	.mt-cnav__check {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.2rem 0.5rem;
+		border-radius: 6px;
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+	}
+	.mt-cnav__check:hover {
+		background: var(--sl-color-gray-6);
+	}
+	.mt-cnav__check input {
+		width: 15px;
+		height: 15px;
+		margin: 0;
+		flex: none;
+		accent-color: var(--sl-color-accent);
+	}
+	.mt-cnav__avatar {
+		width: 18px;
+		height: 18px;
+		flex: none;
+		margin: 0;
+		border-radius: 999px;
+		background: var(--sl-color-gray-5);
+		object-fit: cover;
+	}
+	.mt-cnav__check[hidden] {
+		display: none;
+	}
+	.mt-cnav__find {
+		box-sizing: border-box;
+		width: calc(100% - 1rem);
+		margin: 0 0.5rem 0.3rem;
+		padding: 0.3rem 0.55rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 7px;
+		background: var(--sl-color-bg);
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-white);
+	}
+	.mt-cnav__all {
+		margin: 0.15rem 0.5rem 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		font-size: 0.8rem;
+		color: var(--sl-color-text-accent);
+		cursor: pointer;
+		text-align: start;
+	}
+	.mt-cnav__item[hidden] {
+		display: none;
+	}
+	.mt-cnav__all[hidden] {
+		display: none;
+	}
+	.mt-cnav__dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 2px;
+		flex: none;
+	}
+	.mt-cnav__dot--critical {
+		background: #b91c1c;
+	}
+	.mt-cnav__dot--high {
+		background: #ea580c;
+	}
+	.mt-cnav__dot--medium {
+		background: #d97706;
+	}
+	.mt-cnav__dot--low {
+		background: #a1a1aa;
+	}
+	.mt-cnav__dot--info {
+		background: #d4d4d8;
+	}
+</style>

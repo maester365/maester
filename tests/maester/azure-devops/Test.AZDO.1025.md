@@ -1,4 +1,4 @@
-﻿Enable Shell Task Validation to prevent code injection.
+Enable Shell Task Validation to prevent code injection.
 
 Rationale: Code injection through arguments parameters should be prevented.
 

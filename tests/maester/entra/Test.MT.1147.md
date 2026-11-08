@@ -1,4 +1,4 @@
-﻿Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.
+Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.
 
 The krbtgt_AzureAD account is a sensitive identity used by Microsoft's cloud services for Microsoft Entra Kerberos scenarios. Microsoft recommends keeping a clear separation between cloud and on-premises environments and not synchronizing this account to Entra ID. Synchronizing an on-premises krbtgt_AzureAD account creates an unnecessary privilege escalation path between the environments.
 

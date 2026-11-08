@@ -54,7 +54,7 @@
   outline: none;
 }
 .item[data-highlighted], .item[data-selected="true"] { background: var(--ifm-color-emphasis-200); }
-.item[data-disabled], .item[data-disabled="true"] { opacity: 0.55; cursor: default; }
+.item[data-disabled=""], .item[data-disabled="true"] { opacity: 0.55; cursor: default; }
 .itemMain { display: flex; flex-direction: column; min-width: 0; }
 .itemHint { font-size: 0.76rem; color: var(--ifm-color-emphasis-700); }
 .itemCheck { position: absolute; right: 0.6rem; display: inline-flex; }
@@ -131,3 +131,57 @@
 .button-primary { color: #fff; background: var(--ifm-color-primary); }
 [data-theme="dark"] .button-primary { color: #1b1b1d; }
 .button-primary:hover:not(:disabled) { filter: brightness(1.08); }
+
+/* Help panel */
+.sheet {
+  position: fixed;
+  z-index: 250;
+  top: var(--sl-nav-height, 4rem);
+  right: 0;
+  bottom: 0;
+  width: min(30rem, 100vw);
+  display: flex;
+  flex-direction: column;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-surface-color);
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  box-shadow: -16px 0 40px rgb(0 0 0 / 18%);
+  outline: none;
+  animation: sheetIn 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes sheetIn { from { transform: translateX(2rem); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .sheet { animation: none; } }
+.sheetHead { display: flex; align-items: center; gap: 0.6rem; padding: 0.9rem 0.9rem 0.9rem 1.25rem; border-bottom: 1px solid var(--ifm-color-emphasis-300); }
+.sheetTitle { font-size: 1.05rem; margin: 0; }
+.sheetClose { margin-left: auto; width: 2rem; padding: 0; }
+.sheetBody { flex: 1; overflow-y: auto; padding: 1rem 1.25rem 2rem; font-size: 0.9rem; }
+.sheetBody h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ifm-color-emphasis-700); margin: 1.5rem 0 0.5rem; }
+.sheetBody table { font-size: 0.82rem; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-700);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+.helpButton:hover { color: var(--ifm-color-primary); background: var(--ifm-color-emphasis-100); }
+.helpButton:focus-visible { outline: none; border-color: var(--ifm-color-primary); }
+.helpButtonOn { color: var(--ifm-color-primary); background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent); }
+.sheetActions { margin-left: auto; display: inline-flex; gap: 0.4rem; font-size: 0.82rem; }
+.sheetActions + .sheetClose { margin-left: 0; }
+
+/* Product and feature icons in options */
+.withIcon { display: inline-flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.optionIcon { flex: none; width: 16px; height: 16px; object-fit: contain; }
+.optionTile { flex: none; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; font-size: 0.55rem; font-weight: 700; line-height: 1; color: var(--ifm-color-emphasis-800); background: var(--ifm-color-emphasis-200); }
+.button-icon { width: 2rem; height: 2rem; padding: 0; flex: none; }
+.button .icon { opacity: 0.85; }

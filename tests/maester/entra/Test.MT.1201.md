@@ -1,4 +1,4 @@
-﻿Agent Users should have an existing Agent Identity.
+Agent Users should have an existing Agent Identity.
 
 An Agent User is the Entra user account paired with an Agent Identity. Some agents need this
 second account to access systems that require a user account. The two accounts should share the

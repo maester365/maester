@@ -1,4 +1,4 @@
-﻿Repositories in the organization **should be** allowed to use GitHub Copilot code review.
+Repositories in the organization **should be** allowed to use GitHub Copilot code review.
 
 Rationale: Copilot code review acts as an automated reviewer that comments on changed code before a human reviewer signs off, catching bugs, code quality issues, and maintainability concerns earlier. Allowing it organization wide means the review layer is available consistently rather than being blocked at the top level, which reduces the chance that changes merge with minimal review coverage.
 

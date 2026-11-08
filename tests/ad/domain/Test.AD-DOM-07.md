@@ -1,4 +1,4 @@
-﻿NetBIOS names are still used in many Windows networking scenarios, even though DNS is the primary name resolution method. Non-compliant NetBIOS names can cause:
+NetBIOS names are still used in many Windows networking scenarios, even though DNS is the primary name resolution method. Non-compliant NetBIOS names can cause:
 
 - **Legacy Application Issues**: Older applications may not handle non-standard characters
 - **WINS Problems**: Windows Internet Name Service may have trouble with invalid names

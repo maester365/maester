@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force
     $script:fixtures = (Resolve-Path "$PSScriptRoot/../../fixtures/error-paths").Path
 
@@ -206,6 +206,45 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         $row = Invoke-MtTest -Path $file -Parameter @{ Limit = 50 }
         $row.Result | Should -Be 'Error'
         $row.ReasonCode | Should -Be 'InvalidConfiguration'
+    }
+
+    Context 'Admin portal URLs' {
+        BeforeAll {
+            $script:savedPortalUrl = InModuleScope Maester { $__MtSession.AdminPortalUrl }
+            # The test lists one group, so its result holds a link to that group in the Entra admin center.
+            $script:groupBody = 'Add-MtTestResultDetail -Result ''%TestResult%'' -GraphObjects @([pscustomobject]@{ id = ''g1''; displayName = ''Group 1'' }) -GraphObjectType Groups; $true'
+            $script:groupLink = '#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/g1)'
+        }
+        AfterAll { InModuleScope Maester -Parameters @{ Saved = $script:savedPortalUrl } { param($Saved) $__MtSession.AdminPortalUrl = $Saved } }
+
+        It 'Builds absolute links when no run has set the URLs' {
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            InModuleScope Maester { $__MtSession.AdminPortalUrl = @{} }
+            $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'portal') -Id 'INV.3' -Attribute "Service = 'None'" -Body $script:groupBody
+            $row = Invoke-MtTest -Path $file
+            $row.ResultDetail.TestResult | Should -BeLike "*(https://entra.microsoft.com/$script:groupLink*"
+            InModuleScope Maester { $__MtSession.AdminPortalUrl.Entra } | Should -BeNullOrEmpty
+        }
+
+        It 'Uses the current connection, then restores the URLs that a run has set' {
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            InModuleScope Maester { $__MtSession.AdminPortalUrl = @{ Entra = 'https://entra.microsoft.us/' } }
+            $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'portal-run') -Id 'INV.4' -Attribute "Service = 'None'" -Body $script:groupBody
+            $row = Invoke-MtTest -Path $file
+            $row.ResultDetail.TestResult | Should -BeLike "*(https://entra.microsoft.com/$script:groupLink*"
+            InModuleScope Maester { $__MtSession.AdminPortalUrl.Entra } | Should -Be 'https://entra.microsoft.us/'
+        }
+
+        It 'Runs the tests with relative links when the URLs cannot be set' {
+            Mock -ModuleName Maester Get-MgContext { return $null }
+            Mock -ModuleName Maester Get-MtAdminPortalUrl { throw "Cannot validate argument on parameter 'Environment'." }
+            InModuleScope Maester { $__MtSession.AdminPortalUrl = @{ Entra = 'https://entra.microsoft.us/' } }
+            $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'portal-unknown') -Id 'INV.5' -Attribute "Service = 'None'" -Body $script:groupBody
+            $row = Invoke-MtTest -Path $file
+            $row.Result | Should -Be 'Passed'
+            $row.ResultDetail.TestResult | Should -BeLike "*($script:groupLink*"
+            InModuleScope Maester { $__MtSession.AdminPortalUrl.Entra } | Should -Be 'https://entra.microsoft.us/'
+        }
     }
 
     It 'Runs the error-path fixtures with the contract outcomes' {

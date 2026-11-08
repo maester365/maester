@@ -1,4 +1,4 @@
-﻿Azure Artifacts provides 2 GiB of free storage for each organization. Once your organization reaches the maximum storage limit, you will not be able to publish new artifacts. To continue, you can either delete some of your existing artifacts or increase your storage limit.
+Azure Artifacts provides 2 GiB of free storage for each organization. Once your organization reaches the maximum storage limit, you will not be able to publish new artifacts. To continue, you can either delete some of your existing artifacts or increase your storage limit.
 
 Rationale: The storage limit should not be reached; hitting it blocks artifact publication.
 

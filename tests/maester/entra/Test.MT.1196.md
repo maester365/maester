@@ -1,4 +1,4 @@
-﻿Dynamic group membership rules should use attributes that only trusted people and systems can
+Dynamic group membership rules should use attributes that only trusted people and systems can
 change.
 
 Dynamic groups can grant access to applications, Microsoft 365 resources, Azure resources, and

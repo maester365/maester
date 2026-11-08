@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkContosoBl110 {
+﻿function Test-MtFixtureFrameworkContosoBl110 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement 1.10 of contoso-baseline, as CONTOSO.BL.1.10.EXT does.

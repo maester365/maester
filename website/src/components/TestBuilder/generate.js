@@ -8,7 +8,7 @@ const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 // run time. A unit test (TestBuilderData.Tests.ps1) fails when they differ from the schema.
 const ID_PATTERN = /^(?=.*[0-9.\-])[A-Za-z][A-Za-z0-9]*([.\-][A-Za-z0-9_]+)*$/;
 const CONTROL_PATTERN = /^[a-z0-9][a-z0-9.\-]*:[^\s,]+$/;
-const HANDLE = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
+export const HANDLE = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
 
 export const emptyState = {
   mode: "builtin",

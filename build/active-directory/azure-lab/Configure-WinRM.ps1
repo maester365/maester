@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Configures WinRM HTTPS and Negotiate for a Windows host.
 

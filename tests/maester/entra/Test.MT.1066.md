@@ -1,4 +1,4 @@
-﻿# Conditional Access policies should not reference non-existent users, groups, or roles
+# Conditional Access policies should not reference non-existent users, groups, or roles
 
 This test checks if there are any Conditional Access policies that reference non-existent users, groups, or roles.
 

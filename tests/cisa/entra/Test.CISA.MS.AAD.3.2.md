@@ -1,4 +1,4 @@
-﻿If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users.
+If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users.
 
 Rationale: This is a stopgap security policy to help protect the tenant if phishing-resistant MFA has not been enforced. This policy requires MFA enforcement, thus reducing single-form authentication risk.
 

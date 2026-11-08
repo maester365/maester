@@ -15,12 +15,19 @@ Each assessment result is one row, `ZTA.<assessment test ID>` (for example `ZTA.
 assessment's title, risk level (as the severity), description, remediation steps and findings. Results are tagged
 `ZeroTrust` and `ZeroTrust.<pillar>` (`ZeroTrust.Identity`, `ZeroTrust.Devices` and so on).
 
+Maester also places each result under the product, feature and security area it is about, such as Entra ID and
+Conditional Access, and lists the MITRE ATT&CK techniques its control addresses, so assessment results appear
+beside Maester's own checks in the report's product, area and ATT&CK views. The assessment does not record these,
+so Maester keeps the mapping in the pack's `taxonomy.json`.
+
 The pack's ID is `maester.zero-trust-assessment`. It needs no `Install-MtPack`: it is part of the Maester module,
 and `Get-MtPack` lists it.
 
 ## Run it
 
-Install the assessment's module once, connect Maester to the tenant, then name the pack:
+Install the assessment's module once, connect Maester to the tenant, then name the pack. ZeroTrustAssessment 3.1.0 needs
+PowerShell 7.6 or later (Maester itself runs on 7.4); on an older PowerShell the pack is skipped and says so.
+
 
 ```powershell
 Install-Module ZeroTrustAssessment -Scope CurrentUser
@@ -211,7 +218,7 @@ Maester's step can then connect any way it likes, including OIDC, as long as it 
 ## The assessment's own report
 
 The Maester report embeds the HTML report the assessment wrote, with its pillar dashboards and charts. Open it
-with the **Zero Trust Assessment** button on the report's overview, under **Reports** in the left menu, or on any
+with the **Zero Trust Assessment** button on the report's overview, under **Assessment report** in the pack's menu, or on any
 ZTA result. It opens inside the Maester report, with an option to open it in a new browser tab, and works
 offline, so the Maester report stays a single file to share.
 
@@ -219,6 +226,76 @@ The embedded report is compressed: a 10 MB assessment report adds about 2 MB to 
 out when `ZeroTrustAssessment.EmbedReport` is `false`, when you read a report file that has no
 `ZeroTrustAssessmentReport.html` beside it or one folder up, and when `Invoke-Maester -RedactUserIdentity` is
 used, because Maester cannot redact the assessment's report.
+
+## Zero Trust plan
+
+The report's **Zero Trust plan** view shows the [Microsoft Zero Trust Workshop](https://zerotrust.microsoft.com)
+plan for the tenant. Each pillar (Identity, Devices, Data, Network, Infrastructure, Security Operations and AI) is
+split into functional areas and swimlanes, and each task has its phase, priority, effort, user impact, licence,
+dependencies and Microsoft's guidance. A task shows the status of the checks that measure it, so you can see which
+parts of the plan are done, which fail and which no check covers yet. The pillars the run has results for are marked.
+
+Open it from the pack's menu: select **Microsoft Zero Trust Assessment** in the report's left menu, then a pillar
+under **Zero Trust plan**. Expand a pillar to go straight to one of its functional areas, and an area to go to one
+swimlane.
+
+The view opens on **Swimlanes**: one functional area at a time, with its swimlanes as rows and the workshop's phases
+(First, Then, Next) as columns. **Table** lists every task in the pillar, grouped by functional area and swimlane,
+and can be sorted and filtered. Select a task in either view to see its checks and guidance in a panel on the right.
+
+A task's checks come from three places:
+
+- the assessment tests Microsoft maps to the task;
+- Maester's built-in tests that check the same setting as one of those assessment tests;
+- Maester tests that Maester maps to the task itself, with a note where it checks more than the workshop asks.
+
+Maester also adds a few tasks the workshop does not have, such as hardening Microsoft Entra Connect sync. They are
+marked as Maester's. Run Maester's own tests with the pack (`Invoke-Maester -Pack ZTA`) to see their status.
+
+The plan ships with the pack, so the view works offline. Set `ZeroTrustAssessment.WorkshopPlan` to `false` to
+leave it out. With `Invoke-Maester -RedactUserIdentity` the plan is kept, redacted like the results.
+
+Zero Trust Workshop content © Microsoft; guidance and check mapping from
+[microsoft/zerotrustassessment](https://github.com/microsoft/zerotrustassessment), MIT licence.
+
+### Add a Maester test to a task, or refresh the plan
+
+Maester's additions are kept by hand in the pack's `workshop/maester.json`: list the built-in tests that measure a
+workshop task under its task ID, or add a task under `ExtraTasks`. The rest of the folder is generated from the
+workshop site and the assessment's repository:
+
+```powershell
+./build/zero-trust-workshop/Update-MtZtWorkshopData.ps1
+```
+
+[`build/zero-trust-workshop/README.md`](https://github.com/maester365/maester/blob/main/build/zero-trust-workshop/README.md)
+has the file formats and the rules the unit tests check.
+
+## Facts on the Affected objects page
+
+The assessment exports the tenant's apps, service principals, users, devices, directory roles, agent identities
+and Intune configuration policies into a `zt-export` folder next to its report. Maester reads that export and adds
+what it says about each object to the **Affected objects** page, so an app, user or device shows more than the
+checks that named it. Expand an object to see its facts. A red **risk** or amber **to review** badge says how many
+need attention.
+
+| Object | Facts |
+| --- | --- |
+| Enterprise application | Publisher, application permissions (Tier 0 Graph permissions, those with a path to Global Administrator, are a risk), permissions consented for all users, last sign-in, client secrets and certificates, Entra roles, single sign-on |
+| App registration | Who can sign in, owners, client secrets and certificates, and the permissions and last sign-in of its enterprise application |
+| User | Member or guest, synced from on-premises, Entra roles (a permanent privileged role is a risk), MFA registration (none on a privileged user is a risk), passwordless, last sign-in |
+| Device | Operating system, join type, managed, compliant, last sign-in |
+| Agent identity, blueprint and blueprint principal | Blueprint, sponsors, owners, credentials, permissions, Entra roles |
+| Intune configuration policy | Assignments, platform, settings, last change |
+
+The facts carry the shared [fact keys](../writing-tests/formatting-test-results.md#fact-keys), such as
+`user.mfaRegistered` and `signIn.daysSince`, so other reports and summaries can read them as data.
+
+Facts only describe objects that the run lists, whichever check named them. They are what the export said when
+the assessment ran, so the page says the date they come from. Anything unused for 90 days before the assessment
+is marked to review. The export is read before a temporary output folder is deleted; when you read a report you
+already have, keep the `zt-export` folder with it. To leave the facts out, set `ZeroTrustAssessment.ObjectFacts`
+to `false`.
 
 ## Settings
 
@@ -229,6 +306,8 @@ All settings go in `GlobalSettings` of `maester-config.json`.
 | `ZeroTrustAssessment.ReportPath` | empty | Read this report instead of running the assessment. |
 | `ZeroTrustAssessment.MaxReportAgeDays` | `7` | Refuse a report older than this. `0` turns the check off. |
 | `ZeroTrustAssessment.EmbedReport` | `true` | Embed the assessment's own HTML report in the Maester report. |
+| `ZeroTrustAssessment.WorkshopPlan` | `true` | Add the Zero Trust Workshop plan, with the status of each task, to the Maester report. |
+| `ZeroTrustAssessment.ObjectFacts` | `true` | Add what the assessment's export says about each app, user, device and policy to the Affected objects page. |
 | `ZeroTrustAssessment.OutputPath` | temporary | Where the assessment writes its report and export. Kept when set. |
 | `ZeroTrustAssessment.Pillar` | `All` | Run one pillar only: `Identity`, `Devices`, `Network`, `Data`, `Infrastructure`, `SecOps` or `AI`. |
 | `ZeroTrustAssessment.Tests` | all | Run only these assessment test IDs, for example `["21770", "21771"]`. |

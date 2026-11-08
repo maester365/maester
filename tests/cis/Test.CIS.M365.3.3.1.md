@@ -1,4 +1,4 @@
-﻿At least one sensitivity label policy is published, so users can apply sensitivity labels to their files and email.
+At least one sensitivity label policy is published, so users can apply sensitivity labels to their files and email.
 
 Sensitivity labels classify content and can add encryption, markings and access restrictions that stay with a file when it leaves your tenant. A label that is not published to users cannot be applied, so a tenant without a published policy has no consistent way to say which content is confidential.
 

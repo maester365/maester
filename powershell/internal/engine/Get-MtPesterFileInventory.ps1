@@ -1,4 +1,4 @@
-function Get-MtPesterFileInventory {
+﻿function Get-MtPesterFileInventory {
     <#
     .SYNOPSIS
     Lists the It blocks of Pester test files by reading their AST, without running them.

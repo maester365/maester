@@ -1,4 +1,4 @@
-﻿Microsoft Authenticator functionality on companion applications, such as Outlook, is disabled.
+Microsoft Authenticator functionality on companion applications, such as Outlook, is disabled.
 
 When this feature is on, a user can approve a sign-in request from within a companion app on the same phone that is used to sign in. Approving on the device that started the request weakens the separation between the first factor and the second factor, and a compromised app or device can then complete both.
 

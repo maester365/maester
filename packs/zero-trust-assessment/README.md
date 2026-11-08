@@ -12,6 +12,16 @@ Each result is one row, `ZTA.<assessment test ID>` (for example `ZTA.21770`), wi
 level (as the severity), description, remediation steps and findings. Results are tagged `ZeroTrust` and
 `ZeroTrust.<pillar>` (`ZeroTrust.Identity`, `ZeroTrust.Devices` and so on).
 
+Maester also places each result under the product, feature and security area it is about, such as Entra ID and
+Conditional Access, and lists the MITRE ATT&CK techniques its control addresses, so assessment results appear
+beside Maester's own checks in the report's product, area and ATT&CK views. The assessment does not record these,
+so Maester keeps the mapping in the pack's `taxonomy.json`.
+
+The report also gets a **Zero Trust plan** view: the [Microsoft Zero Trust Workshop](https://zerotrust.microsoft.com)
+plan, pillar by pillar, with each task showing the status of the assessment tests and Maester tests that measure it.
+The plan is in the pack's `workshop` folder; see [`build/zero-trust-workshop`](../../build/zero-trust-workshop/README.md).
+Zero Trust Workshop content © Microsoft; guidance and check mapping from microsoft/zerotrustassessment, MIT licence.
+
 ## Report an issue with a test
 
 Microsoft writes and maintains the assessment's tests. If a test's result, text or remediation looks wrong, raise
@@ -20,7 +30,9 @@ running the pack from Maester go to [maester365/maester](https://github.com/maes
 
 ## Run it
 
-Install the assessment's module once, connect Maester to the tenant, then name the pack:
+Install the assessment's module once, connect Maester to the tenant, then name the pack. ZeroTrustAssessment 3.1.0 needs
+PowerShell 7.6 or later (Maester itself runs on 7.4); on an older PowerShell the pack is skipped and says so.
+
 
 ```powershell
 Install-Module ZeroTrustAssessment -Scope CurrentUser

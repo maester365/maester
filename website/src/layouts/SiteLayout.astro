@@ -64,7 +64,7 @@ const ogImage = image ? new URL(image, Astro.site).href : cardUrl(card);
 		<meta name="twitter:image" content={ogImage} />
 		{!noindex && <meta name="robots" content="max-image-preview:large" />}
 		{!image && !noindex && <meta name="maester:og" content={JSON.stringify(card)} />}
-		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 		<script is:inline>
 			// The same theme setting as the docs (Starlight keeps it in localStorage as starlight-theme).
 			(function () {
