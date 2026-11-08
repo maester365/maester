@@ -263,6 +263,61 @@ function Test-Family$name {
             @($row.Mitre | Select-Object -Unique).Count | Should -Be 5
         }
 
+        It 'Gives an instance that names a requirement its own Benchmark and the requirement''s Related references' {
+            $source = "@{ Id = 'a'; Control = 'CISA-SCUBA:MS.AAD.3.1' }, @{ Id = 'b'; Control = @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:AC-2') }, @{ Id = 'c' }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-control') -Id 'CONTOSO.56' -Source $source -Family ", Control = 'cisa-scuba:MS.AAD.2.1'"
+            $rows = @{}; foreach ($row in @(Invoke-MtTest -Path $file)) { $rows[$row.Id] = $row }
+
+            $rows['CONTOSO.56.a'].Benchmark.Framework | Should -Be 'cisa-scuba'
+            $rows['CONTOSO.56.a'].Benchmark.Requirement | Should -Be 'MS.AAD.3.1'
+            $rows['CONTOSO.56.a'].Benchmark.Criticality | Should -Be 'SHALL'
+            $rows['CONTOSO.56.a'].Control[0] | Should -BeExactly 'cisa-scuba:MS.AAD.3.1'
+            $rows['CONTOSO.56.a'].Control | Should -Contain 'nist-800-53-r5:IA-2(1)'
+            $rows['CONTOSO.56.a'].Control | Should -Not -Contain 'cisa-scuba:MS.AAD.2.1'
+
+            $rows['CONTOSO.56.b'].Benchmark.Requirement | Should -Be 'MS.AAD.1.1'
+            $rows['CONTOSO.56.b'].Control | Should -Be @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:AC-2', 'nist-800-53-r5:CM-7')
+
+            # An instance that sets no Control keeps its family's.
+            $rows['CONTOSO.56.c'].Benchmark.Requirement | Should -Be 'MS.AAD.2.1'
+            $rows['CONTOSO.56.c'].Control | Should -Contain 'cisa-scuba:MS.AAD.2.1'
+        }
+
+        It 'Keeps the family''s Control and Benchmark when an instance names only requirements that are not known' {
+            $source = "@{ Id = 'a'; Control = @('cisa-scuba:MS.NOPE.9.9', 'not a control', 'cisa-scuba:') }"
+            $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-control-unknown') -Id 'CONTOSO.57' -Source $source -Family ", Control = 'cisa-scuba:MS.AAD.2.1'"
+            $row = Invoke-MtTest -Path $file
+            $row.Benchmark.Requirement | Should -Be 'MS.AAD.2.1'
+            $row.Control | Should -Contain 'cisa-scuba:MS.AAD.2.1'
+            $row.Control | Should -Not -Contain 'cisa-scuba:MS.NOPE.9.9'
+        }
+
+        It 'Resolves an instance''s Control against a framework its own suite declares' {
+            $folder = Join-Path $TestDrive 'family-suite-framework'
+            $file = New-FamilyFile -Folder $folder -Id 'CONTOSO.58' -Source "@{ Id = 'a'; Control = 'fx-pack:P-1' }, @{ Id = 'b'; Control = 'fx-pack:P-9' }"
+            $null = New-Item -ItemType Directory -Path (Join-Path $folder 'frameworks') -Force
+            '{ "Id": "ContosoPack", "Frameworks": [ { "Key": "fx-pack", "Version": "1" } ] }' | Set-Content (Join-Path $folder 'suite.json')
+            '{ "Framework": "fx-pack", "Requirements": [ { "Id": "P-1", "Level": "L1", "Related": [ "nist-800-53-r5:AC-3" ] } ] }' | Set-Content (Join-Path $folder 'frameworks/fx-pack.json')
+            $rows = @{}; foreach ($row in @(Invoke-MtTest -Path $folder 3>$null)) { $rows[$row.Id] = $row }
+
+            $rows['CONTOSO.58.a'].Benchmark.Framework | Should -Be 'fx-pack'
+            $rows['CONTOSO.58.a'].Benchmark.Level | Should -Be 'L1'
+            $rows['CONTOSO.58.a'].Control | Should -Be @('fx-pack:P-1', 'nist-800-53-r5:AC-3')
+            $rows['CONTOSO.58.b'].Benchmark | Should -BeNullOrEmpty
+            @($rows['CONTOSO.58.b'].Control) | Should -BeNullOrEmpty
+        }
+
+        It 'Resolves an instance''s Control against the shipped frameworks for a family that was not discovered in the session' {
+            InModuleScope Maester {
+                $index = Get-MtTestFrameworkIndex -Test ([pscustomobject]@{ File = 'tests/maester/entra/Test.MT.9999.ps1' })
+                $index.ByKey.ContainsKey('cisa-scuba') | Should -BeTrue
+                $own = Get-MtInstanceAttribute -Instance @{ Id = 'a'; Control = 'cisa-scuba:MS.AAD.3.1' } -Framework $index
+                $own.Benchmark.Requirement | Should -Be 'MS.AAD.3.1'
+                # The index is built once for the shipped frameworks.
+                [object]::ReferenceEquals($index, (Get-MtTestFrameworkIndex -Test $null)) | Should -BeTrue
+            }
+        }
+
         It 'Rejects an instance ID that ends in a newline' {
             $file = New-FamilyFile -Folder (Join-Path $TestDrive 'family-newline') -Id 'CONTOSO.51' -Source '[pscustomobject]@{ Id = "c`n" }'
             $row = Invoke-MtTest -Path $file
