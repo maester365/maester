@@ -8,8 +8,9 @@
     Score snapshot, not from the full secureScoreControlProfiles catalog: the catalog lists every control
     Microsoft has (including ones for products the tenant does not use), while the snapshot lists only the
     controls the tenant is actually scored on. Each control is joined to its profile for the title, the
-    maximum points and the remediation. The suffix is the control name (MT.1264.<controlName>) and the
-    severity comes from the control's maximum points.
+    maximum points and the remediation. The suffix is the control name (MT.1264.<controlName>), made a
+    valid instance ID by ConvertTo-MtSecureScoreInstanceId when it is not one, and the severity comes from the
+    control's maximum points.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -49,15 +50,23 @@
         Write-Verbose "MT.1264: could not read Entra recommendations, so no result notes the overlap with MT.1024. $($_.Exception.Message)"
     }
 
+    # Instance IDs must match ^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$ and be unique, or the engine errors the whole
+    # family. Control names are Microsoft's, so one with a space or another character would break every result.
+    $usedIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($controlScore in @($snapshot.controlScores)) {
         $controlName = [string]$controlScore.controlName
         $controlProfile = $profileLookup[$controlName]
         if ($controlProfile.deprecated) { continue }
+        $instanceId = ConvertTo-MtSecureScoreInstanceId -ControlName $controlName -UsedId $usedIds
+        if (-not $instanceId) {
+            Write-Verbose "MT.1264: skipped a Secure Score control with no usable name ('$controlName')."
+            continue
+        }
         # A scored control with no profile has no maximum to compare against. Keep it as an instance so
         # the test reports it as an error instead of dropping it from the results.
         if ($null -eq $controlProfile) {
             [pscustomobject]@{
-                Id       = $controlName
+                Id       = $instanceId
                 Title    = "$controlName."
                 Severity = 'Medium'
                 Tag      = @(@($controlScore.controlCategory) | Where-Object { $_ })
@@ -68,7 +77,7 @@
 
         $placement = Get-MtSecureScoreControlProduct -Service ([string]$controlProfile.service)
         [pscustomobject]@{
-            Id       = $controlName
+            Id       = $instanceId
             Title    = "$($controlProfile.title)."
             Severity = Get-MtSecureScoreControlSeverity -MaxScore ([double]$controlProfile.maxScore)
             # Each action sits under the product it is about (Entra, Exchange, Teams...), not the family's Defender.
@@ -84,6 +93,37 @@
             }
         }
     }
+}
+
+function ConvertTo-MtSecureScoreInstanceId {
+    <#
+    .SYNOPSIS
+    Turns a Secure Score control name into an instance ID the engine accepts, unique within the family.
+
+    .DESCRIPTION
+    Most control names (mdo_safelinks, AdminMFAV2) are valid IDs and are returned unchanged. A character outside
+    A-Z, a-z, 0-9, '.', '_' and '-' becomes '-', leading characters that are not a letter or digit are dropped and
+    the result is cut to 128 characters. A name that collides with one already used gets -2, -3... Returns
+    nothing for a name with no letter or digit. Adds the returned ID to UsedId.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)] [AllowEmptyString()] [string] $ControlName,
+        [Parameter(Mandatory)] [AllowEmptyCollection()] [System.Collections.Generic.HashSet[string]] $UsedId
+    )
+
+    $id = ($ControlName -replace '[^A-Za-z0-9._-]', '-') -replace '^[^A-Za-z0-9]+', ''
+    if (-not $id) { return }
+    if ($id.Length -gt 128) { $id = $id.Substring(0, 128) }
+    $candidate = $id
+    $n = 1
+    while (-not $UsedId.Add($candidate)) {
+        $n++
+        $suffix = "-$n"
+        $candidate = $id.Substring(0, [Math]::Min($id.Length, 128 - $suffix.Length)) + $suffix
+    }
+    $candidate
 }
 
 function Get-MtSecureScoreControlProduct {
@@ -203,7 +243,7 @@ function Test-MtSecureScoreControl {
     $controlScore = $Instance.Data.ControlScore
     $controlProfile = $Instance.Data.Profile
     if ($null -eq $controlProfile) {
-        throw "Secure Score control '$($Instance.Id)' is in the tenant's score but has no control profile, so its maximum points could not be read."
+        throw "Secure Score control '$($controlScore.controlName)' is in the tenant's score but has no control profile, so its maximum points could not be read."
     }
     $score = [double]$controlScore.score
     $maxScore = [double]$controlProfile.maxScore
