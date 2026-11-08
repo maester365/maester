@@ -1,14 +1,29 @@
-Run only the Conditional Access tests with Invoke-Maester -Tag CA.
+Run only the Conditional Access tests with Invoke-Maester -Product entra -Feature conditional-access.
+Run the high-impact checks first: Invoke-Maester -Severity Critical, High.
+Run one benchmark with -Suite: Invoke-Maester -Suite cis, or -Suite cisa, asd.
+Press Tab after -Product, -Feature, -Suite or -TestId to list the values. Each list narrows to the others.
+New-MtTest completes -Product, -Feature, -Area and -Mitre with Tab, from the keys Maester allows.
+Leave a product out with -ExcludeProduct, for example Invoke-Maester -ExcludeProduct exchange.
 Run one test with Invoke-Maester -TestId MT.1001. Wildcards work too: -TestId 'CISA.MS.AAD.*'.
 See what would run, and why other tests would not, with Invoke-Maester -DryRun.
 Connect more services with Connect-Maester -Service All, or name them: -Service Graph, Teams.
 Set severities, turn tests off and pass parameters to tests in maester-config.json.
 Add -IncludeAffectedObjects to list the users, groups and apps each finding refers to.
+Waiting on the assessment? Maester Run is hiding in here. Hint: it's what you wish AD was.
 Add -IncludePreview and -IncludeLongRunning to run the tests that are left out by default.
 Choose the panels of this dashboard with Output.DashboardPanels in maester-config.json.
-Get-MtTest lists every test with its product, severity and tags, without connecting to a tenant.
-Write your own test with New-MtTest -Id CONTOSO.1001 -Title '...'.
+Get-MtTest lists every test with its product, severity and benchmark, without connecting to a tenant.
+Browse every check, with what it tests and how to fix it, in the test catalog: maester.dev/docs/tests.
+Pick a test's attributes with the rubric beside each one, and get the code: maester.dev/test-builder.
+Write your own test with New-MtTest -Id CONTOSO.1001 -Title '...', or start it in maester.dev/test-builder.
+Check a custom test with Get-MtTest -Path ./custom, and run it alone with Invoke-MtTest -Path.
+Have a Pester-format custom test from Maester 2.x? Convert-MtTest turns it into a native test.
+Let an AI agent write your custom test: point it at maester.dev/llms.txt so it knows how Maester tests work.
+Every page of maester.dev is Markdown at its URL plus .md, ready to paste into an AI chat.
+The maester-test-expert skill on GitHub teaches Copilot and Claude Code to write and review Maester tests.
+Add tests for other products with Maester Packs: Install-MtPack, then Invoke-Maester -Pack <code>.
 Send the results by mail or to Teams with -MailRecipient or -TeamChannelWebhookUri.
 Use -OutputMode Plain for output without colour or symbols, and -OutputMode Stream for lines only.
 Run Maester on a schedule in GitHub Actions or Azure DevOps: see maester.dev/docs/monitoring.
 Create the app for unattended runs, with its permissions granted, in one line: New-MtMaesterApp.
+Many tenants? Merge-MtMaesterResult and Get-MtHtmlReport build one report with a tenant picker.
