@@ -5,21 +5,21 @@
 # licence gate gives the same verdict as the guards it replaces. A tenant has a token when any of its
 # enabled SKUs (capabilityStatus Enabled) contains one of the ServicePlanIds or is one of the SkuIds.
 # A token not listed here (custom or ported tests) is matched literally against the tenant's service
-# plan names. DisplayName is what the licence skip message shows instead of the token ("This test requires
-# <DisplayName>."), so it must describe every ID the token matches, not only its namesake plan: a token that
-# accepts P1 or P2 says so. A token that is exactly one plan uses that plan's name from Microsoft's licensing
-# service plan reference, tidied up. LegacySkipCode is the 2.x -SkippedBecause code written to ResultDetail.
+# plan names. The licence skip message names a token by Microsoft's friendly name for that service plan
+# (MaesterServicePlanNames.json, generated from Microsoft's licensing reference). DisplayName overrides it only
+# for a token that accepts more than its namesake plan, or is not a service plan at all, so the message describes
+# every ID the token matches. LegacySkipCode is the 2.x -SkippedBecause code written to ResultDetail.
 @{
     SchemaVersion = '1.0'
     Tokens        = @{
         # Entra ID P1 or better (2.x: Get-MtLicenseInformation EntraID is not Free).
         AAD_PREMIUM               = @{ DisplayName = 'Microsoft Entra ID P1 or P2'; ServicePlanIds = @('41781fb2-bc02-4b7c-bd55-b576c07bb09d', 'eec0eb4f-6444-4f95-aba0-50c24d67f998', 'e866a266-3cff-43a3-acca-0c90a7e00c8b'); LegacySkipCode = 'NotLicensedEntraIDP1' }
-        AAD_PREMIUM_P2            = @{ DisplayName = 'Microsoft Entra ID P2'; ServicePlanIds = @('eec0eb4f-6444-4f95-aba0-50c24d67f998'); LegacySkipCode = 'NotLicensedEntraIDP2' }
-        Entra_Identity_Governance = @{ DisplayName = 'Microsoft Entra ID Governance'; ServicePlanIds = @('e866a266-3cff-43a3-acca-0c90a7e00c8b'); LegacySkipCode = 'NotLicensedEntraIDGovernance' }
+        AAD_PREMIUM_P2            = @{ ServicePlanIds = @('eec0eb4f-6444-4f95-aba0-50c24d67f998'); LegacySkipCode = 'NotLicensedEntraIDP2' }
+        Entra_Identity_Governance = @{ ServicePlanIds = @('e866a266-3cff-43a3-acca-0c90a7e00c8b'); LegacySkipCode = 'NotLicensedEntraIDGovernance' }
         # Workload ID P1 or P2.
         AAD_WRKLDID_P1            = @{ DisplayName = 'Microsoft Entra Workload ID P1 or P2'; ServicePlanIds = @('84c289f0-efcb-486f-8581-07f44fc9efad', '7dc0e92d-bf15-401d-907e-0884efe7c760'); LegacySkipCode = 'NotLicensedEntraWorkloadID' }
-        AAD_WRKLDID_P2            = @{ DisplayName = 'Microsoft Entra Workload ID P2'; ServicePlanIds = @('7dc0e92d-bf15-401d-907e-0884efe7c760'); LegacySkipCode = 'NotLicensedEntraWorkloadID' }
-        EOP_ENTERPRISE            = @{ DisplayName = 'Exchange Online Protection'; ServicePlanIds = @('326e2b78-9d27-42c9-8509-46c827743a17'); SkuIds = @('326e2b78-9d27-42c9-8509-46c827743a17'); LegacySkipCode = 'NotLicensedEop' }
+        AAD_WRKLDID_P2            = @{ ServicePlanIds = @('7dc0e92d-bf15-401d-907e-0884efe7c760'); LegacySkipCode = 'NotLicensedEntraWorkloadID' }
+        EOP_ENTERPRISE            = @{ ServicePlanIds = @('326e2b78-9d27-42c9-8509-46c827743a17'); SkuIds = @('326e2b78-9d27-42c9-8509-46c827743a17'); LegacySkipCode = 'NotLicensedEop' }
         # Exchange Online DLP: Exchange Online Plan 2 (incl. GOV), the DLP plan, or Microsoft 365 Business Premium.
         EXCHANGE_DLP              = @{
             DisplayName    = 'Exchange Online DLP (Exchange Online Plan 2, the DLP add-on or Microsoft 365 Business Premium)'
@@ -28,12 +28,12 @@
             LegacySkipCode = 'NotLicensedExoDlp'
         }
         # Microsoft Communications DLP: DLP for Teams chat and channel messages.
-        COMMUNICATIONS_DLP        = @{ DisplayName = 'Microsoft Communications DLP'; ServicePlanIds = @('6dc145d6-95dd-4191-b9c3-185575ee6f6b'); LegacySkipCode = 'NotLicensedCommunicationsDlp' }
+        COMMUNICATIONS_DLP        = @{ ServicePlanIds = @('6dc145d6-95dd-4191-b9c3-185575ee6f6b'); LegacySkipCode = 'NotLicensedCommunicationsDlp' }
         # Defender for Office 365 Plan 2 (incl. GOV).
-        THREAT_INTELLIGENCE       = @{ DisplayName = 'Microsoft Defender for Office 365 Plan 2'; ServicePlanIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); SkuIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdo' }
+        THREAT_INTELLIGENCE       = @{ ServicePlanIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); SkuIds = @('8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdo' }
         # Defender for Office 365 Plan 1 or Plan 2 (incl. GOV).
         ATP_ENTERPRISE            = @{ DisplayName = 'Microsoft Defender for Office 365 Plan 1 or Plan 2'; ServicePlanIds = @('f20fedf3-f3c3-43c3-8267-2bfdd51c0939', '493ff600-6a2b-4db6-ad37-a7d4eb214516', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '900018f1-0cdb-4ecb-94d4-90281760fdc6'); LegacySkipCode = 'NotLicensedMdoP1' }
-        M365_ADVANCED_AUDITING    = @{ DisplayName = 'Microsoft 365 Advanced Auditing'; ServicePlanIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); SkuIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); LegacySkipCode = 'NotLicensedAdvAudit' }
+        M365_ADVANCED_AUDITING    = @{ ServicePlanIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); SkuIds = @('2f442157-a11c-46b9-ae5b-6e39ff4e5849'); LegacySkipCode = 'NotLicensedAdvAudit' }
         # Any Exchange Online mailbox licence.
         EXCHANGE_S_STANDARD       = @{
             DisplayName    = 'an Exchange Online licence'
@@ -43,14 +43,13 @@
         }
         # Any Defender XDR workload: Endpoint P2, Office 365 P2, Identity or Cloud Apps.
         DEFENDER_XDR              = @{ DisplayName = 'a Microsoft Defender XDR workload (Endpoint P2, Office 365 P2, Identity or Cloud Apps)'; ServicePlanIds = @('871d91ec-ec1a-452b-a83f-bd76c7d770ef', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '14ab5db5-e6c4-4b20-b4bc-13e36fd2227f', '2e2ddb96-6af9-4b1d-a3f0-d6ecfd22edb2'); SkuIds = @('871d91ec-ec1a-452b-a83f-bd76c7d770ef', '8e0c0a52-6a6c-4d40-8370-dd62790dcd70', '14ab5db5-e6c4-4b20-b4bc-13e36fd2227f', '2e2ddb96-6af9-4b1d-a3f0-d6ecfd22edb2'); LegacySkipCode = 'NotLicensedDefenderXDR' }
-        LOCKBOX_ENTERPRISE        = @{ DisplayName = 'Customer Lockbox'; ServicePlanIds = @('9f431833-0334-42de-a7dc-70aa40db46db', '3ec18638-bd4c-4d3b-8905-479ed636b83e'); LegacySkipCode = 'NotLicensedCustomerLockbox' }
+        LOCKBOX_ENTERPRISE        = @{ ServicePlanIds = @('9f431833-0334-42de-a7dc-70aa40db46db', '3ec18638-bd4c-4d3b-8905-479ed636b83e'); LegacySkipCode = 'NotLicensedCustomerLockbox' }
         INTUNE_A                  = @{
-            DisplayName    = 'Microsoft Intune'
             ServicePlanIds = @('c1ec4a95-1f05-45b3-a911-aa3fa01094f5', 'd216f254-796f-4dab-bbfa-710686e646b9', '3e170737-c728-4eae-bbb9-3f3360f7184c', 'da24caf9-af8e-485c-b7c8-e73336da2693',
                 '2b317a4a-77a6-4188-9437-b68a77b4e2c6', '2c21e77a-e0d6-4570-b38a-7ff2dc17d2ca', 'b4288abe-01be-47d9-ad20-311d6e83fc24', 'e6025b08-2fa5-4313-bd0a-7e5ffca32958')
             LegacySkipCode = 'NotLicensedIntune'
         }
         # Microsoft Agent 365: the Agent 365 product, or Microsoft 365 E7, which includes it. 2.x had no code for it.
-        AGENT_365                 = @{ DisplayName = 'Microsoft Agent 365'; ServicePlanIds = @('d0ce5ebb-9db0-491f-b780-8973a1d815fe'); SkuIds = @('796a6fb4-740b-4d36-bf56-9c12ca7fa069', '9a18296a-025f-4e37-9ffa-30bf8d1ce775'); LegacySkipCode = 'Custom' }
+        AGENT_365                 = @{ ServicePlanIds = @('d0ce5ebb-9db0-491f-b780-8973a1d815fe'); SkuIds = @('796a6fb4-740b-4d36-bf56-9c12ca7fa069', '9a18296a-025f-4e37-9ffa-30bf8d1ce775'); LegacySkipCode = 'Custom' }
     }
 }

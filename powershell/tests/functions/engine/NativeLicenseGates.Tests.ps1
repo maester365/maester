@@ -88,17 +88,17 @@ Describe 'Licence skip message' {
             @{ Name = 'one licence, missing'; License = @('AAD_PREMIUM_P2'); Has = @('UNRELATED_PLAN')
                 Detail = 'This test requires Microsoft Entra ID P2. The tenant does not have it.'; Legacy = 'NotLicensedEntraIDP2' }
             @{ Name = 'two licences together, neither held'; License = @('AAD_PREMIUM_P2&AGENT_365'); Has = @('UNRELATED_PLAN')
-                Detail = 'This test requires Microsoft Entra ID P2 and Microsoft Agent 365. The tenant has neither.'; Legacy = 'NotLicensedEntraIDP2' }
+                Detail = 'This test requires Microsoft Entra ID P2 and Agent 365. The tenant has neither.'; Legacy = 'NotLicensedEntraIDP2' }
             @{ Name = 'two licences together, only the first held'; License = @('AAD_PREMIUM_P2&AGENT_365'); Has = @('AAD_PREMIUM_P2')
-                Detail = 'This test requires Microsoft Entra ID P2 and Microsoft Agent 365. The tenant does not have Microsoft Agent 365.'; Legacy = 'Custom' }
+                Detail = 'This test requires Microsoft Entra ID P2 and Agent 365. The tenant does not have Agent 365.'; Legacy = 'Custom' }
             @{ Name = 'two licences together, only the second held'; License = @('AAD_PREMIUM_P2&AGENT_365'); Has = @('AGENT_365')
-                Detail = 'This test requires Microsoft Entra ID P2 and Microsoft Agent 365. The tenant does not have Microsoft Entra ID P2.'; Legacy = 'NotLicensedEntraIDP2' }
+                Detail = 'This test requires Microsoft Entra ID P2 and Agent 365. The tenant does not have Microsoft Entra ID P2.'; Legacy = 'NotLicensedEntraIDP2' }
             @{ Name = 'two licences together, the missing one with a 2.x code'; License = @('AGENT_365&INTUNE_A'); Has = @('AGENT_365')
-                Detail = 'This test requires Microsoft Agent 365 and Microsoft Intune. The tenant does not have Microsoft Intune.'; Legacy = 'NotLicensedIntune' }
+                Detail = 'This test requires Agent 365 and Microsoft Intune. The tenant does not have Microsoft Intune.'; Legacy = 'NotLicensedIntune' }
             @{ Name = 'two alternatives, neither held'; License = @('AAD_PREMIUM_P2', 'Entra_Identity_Governance'); Has = @('UNRELATED_PLAN')
-                Detail = 'This test requires Microsoft Entra ID P2 or Microsoft Entra ID Governance. The tenant has neither.'; Legacy = 'NotLicensedEntraIDP2' }
+                Detail = 'This test requires Microsoft Entra ID P2 or Entra Identity Governance. The tenant has neither.'; Legacy = 'NotLicensedEntraIDP2' }
             @{ Name = 'alternatives that join licences, partly held'; License = @('INTUNE_A', 'AAD_PREMIUM_P2&AGENT_365'); Has = @('AAD_PREMIUM_P2')
-                Detail = 'This test requires one of: Microsoft Intune; or Microsoft Entra ID P2 and Microsoft Agent 365. The tenant has Microsoft Entra ID P2 but not Microsoft Agent 365.'; Legacy = 'Custom' }
+                Detail = 'This test requires one of: Microsoft Intune; or Microsoft Entra ID P2 and Agent 365. The tenant has Microsoft Entra ID P2 but not Agent 365.'; Legacy = 'Custom' }
             @{ Name = 'a plan the licence table does not have'; License = @('CONTOSO_PLAN'); Has = @('UNRELATED_PLAN')
                 Detail = 'This test requires CONTOSO_PLAN. The tenant does not have it.'; Legacy = 'Custom' }
             @{ Name = 'a table licence with a plan it does not have'; License = @('AAD_PREMIUM_P2&CONTOSO_PLAN'); Has = @('AAD_PREMIUM_P2')
@@ -140,10 +140,38 @@ Describe 'Licence skip message' {
         $met | Should -BeTrue
     }
 
-    It 'Gives every licence token a friendly name' {
-        $table = Import-PowerShellDataFile "$PSScriptRoot/../../../assets/MaesterLicenseTable.psd1"
-        $unnamed = @($table.Tokens.Keys | Where-Object { -not $table.Tokens[$_].DisplayName })
-        $unnamed | Should -BeNullOrEmpty
+    It 'Gives every licence token a friendly name, from Microsoft or the table' {
+        $unnamed = InModuleScope Maester {
+            $table = Get-MtLicenseTable
+            $names = Get-MtServicePlanName
+            @($table.Tokens.Keys | Where-Object { -not $table.Tokens[$_].DisplayName -and -not $names.ContainsKey($_) })
+        }
+        $unnamed | Should -BeNullOrEmpty -Because 'a token that is a service plan takes Microsoft''s name; a grouping token needs a DisplayName'
+    }
+
+    It 'Names a plan the licence table does not have by Microsoft''s friendly name' {
+        $result = InModuleScope Maester {
+            $test = [pscustomobject]@{ Platform = @(); TenantType = @(); Cloud = @(); Service = @(); UnregisteredServices = @(); License = @('MCOEV') }
+            $context = [pscustomobject]@{
+                Platform = 'Linux'; TenantType = 'Workforce'; Cloud = 'Global'; Services = [pscustomobject]@{}
+                Licenses = [pscustomobject]@{ State = 'Known'; ServicePlanNames = @('UNRELATED_PLAN'); ServicePlanIds = @(); SkuIds = @() }
+            }
+            Test-MtApplicability -Test $test -TenantContext $context -Enforce @{ Service = $false; License = $true; TenantType = $false; Cloud = $false }
+        }
+        $expected = (Get-Content "$PSScriptRoot/../../../assets/MaesterServicePlanNames.json" -Raw | ConvertFrom-Json).plans.MCOEV
+        $expected | Should -Not -BeNullOrEmpty
+        $result.ReasonDetail | Should -Be "This test requires $expected. The tenant does not have it."
+    }
+
+    It 'Keeps the module''s plan names in step with the website''s copy of Microsoft''s reference' {
+        # Both files are written by website/scripts/update-license-service-plans.mjs from the same page.
+        $website = Get-Content "$PSScriptRoot/../../../../website/src/data/license-service-plans.json" -Raw | ConvertFrom-Json
+        $module = (Get-Content "$PSScriptRoot/../../../assets/MaesterServicePlanNames.json" -Raw | ConvertFrom-Json).plans
+        $stale = @(foreach ($plan in $website.plans) {
+                if ($plan[1] -and $module.($plan[0]) -cne $plan[1]) { $plan[0] }
+            })
+        $stale | Should -BeNullOrEmpty -Because 'run node website/scripts/update-license-service-plans.mjs to write both files'
+        @($module.PSObject.Properties).Count | Should -Be @($website.plans | Where-Object { $_[1] }).Count
     }
 
     It 'Writes the message and the 2.x code to the result row' {
@@ -162,7 +190,7 @@ function Test-ContosoLicence {
         $row = Invoke-MtTest -Path $folder -Config $config 6>$null 3>$null
         $row.Result | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'LicenseNotFound'
-        $row.ReasonDetail | Should -Be 'This test requires Microsoft Entra ID P2 and Microsoft Agent 365. The tenant does not have Microsoft Agent 365.'
+        $row.ReasonDetail | Should -Be 'This test requires Microsoft Entra ID P2 and Agent 365. The tenant does not have Agent 365.'
         $row.ResultDetail.TestSkipped | Should -Be 'Custom'
     }
 }

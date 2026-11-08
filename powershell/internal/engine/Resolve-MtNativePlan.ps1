@@ -394,8 +394,9 @@ function Get-MtLicenseSkipReason {
     .SYNOPSIS
     Builds the skip message and the 2.x skip code for an unmet License, from Get-MtLicenseRequirementGap rows.
     .DESCRIPTION
-    Licences are named by their DisplayName in the licence table; a token the table does not have (a custom
-    test's plan name) keeps its own name. One element reads "requires X and Y"; several read "requires X or Y",
+    Licences are named by Microsoft's friendly name for the service plan (assets/MaesterServicePlanNames.json,
+    generated from Microsoft's licensing reference). The licence table's DisplayName overrides it for Maester's
+    grouping tokens, which accept more than one plan; a plan Microsoft does not list keeps its own name. One element reads "requires X and Y"; several read "requires X or Y",
     or "requires one of: X; or Y and Z" when an element joins licences.
 
     What the tenant lacks, kept to one short sentence:
@@ -413,10 +414,18 @@ function Get-MtLicenseSkipReason {
     )
 
     $table = Get-MtLicenseTable
+    $planNames = Get-MtServicePlanName
     $entryOf = { param($token) foreach ($key in $table.Tokens.Keys) { if ($key -eq $token) { return $table.Tokens[$key] } } }
+    # The table's DisplayName overrides Microsoft's name for Maester's grouping tokens; every other token is a
+    # service plan and takes Microsoft's friendly name; a plan Microsoft does not list keeps its own name.
     $namesOf = {
         param([string[]] $Tokens)
-        foreach ($token in $Tokens) { $entry = & $entryOf $token; if ($entry -and $entry.DisplayName) { $entry.DisplayName } else { $token } }
+        foreach ($token in $Tokens) {
+            $entry = & $entryOf $token
+            if ($entry -and $entry.DisplayName) { $entry.DisplayName }
+            elseif ($planNames.ContainsKey($token)) { $planNames[$token] }
+            else { $token }
+        }
     }
     $join = {
         param([string[]] $Names, [string] $Word)
@@ -460,6 +469,25 @@ function Get-MtLicenseSkipReason {
         if ($entry -and $entry.LegacySkipCode) { $legacy = $entry.LegacySkipCode; break }
     }
     [pscustomobject]@{ Detail = "This test requires $required. $lacks"; LegacySkipCode = $legacy }
+}
+
+function Get-MtServicePlanName {
+    <#
+    .SYNOPSIS
+    Returns Microsoft's friendly name for each service plan name (assets/MaesterServicePlanNames.json), as a
+    hashtable, whose keys are case-insensitive. Cached for the session.
+    #>
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param()
+    if (-not $script:__MtServicePlanNames) {
+        $names = @{}
+        $path = Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterServicePlanNames.json'
+        $data = Get-Content -Path $path -Raw | ConvertFrom-Json
+        foreach ($plan in $data.plans.PSObject.Properties) { $names[$plan.Name] = [string]$plan.Value }
+        $script:__MtServicePlanNames = $names
+    }
+    $script:__MtServicePlanNames
 }
 
 function Get-MtLicenseTable {

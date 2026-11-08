@@ -437,10 +437,12 @@ refreshes from the Microsoft page every day. Only enabled subscriptions count. W
 permission), the licence check is not applied and the test runs.
 
 A test the tenant is not licensed for is `Skipped` with reason `LicenseNotFound`. The message names each licence
-by the `DisplayName` the table gives its token (a plan the table does not have keeps its own name) and says what
-the tenant lacks, for example "This test requires Microsoft Entra ID P2 and Microsoft Agent 365. The tenant does
-not have Microsoft Agent 365." When `License` has several elements, the message names what is missing from the
-element the tenant is closest to.
+by Microsoft's friendly name for the service plan and says what the tenant lacks, for example "This test requires
+Microsoft Entra ID P2 and Agent 365. The tenant does not have Agent 365." The names come from the same Microsoft
+page, in `powershell/assets/MaesterServicePlanNames.json`, so a custom test's plan is named too. Maester's grouping
+tokens (`AAD_PREMIUM`, `ATP_ENTERPRISE`, `EXCHANGE_DLP` and the like) describe every plan they accept instead, and a
+plan Microsoft does not list keeps its own name. When `License` has several elements, the message names what is
+missing from the element the tenant is closest to.
 
 ### Permission
 
