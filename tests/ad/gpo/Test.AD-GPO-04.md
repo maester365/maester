@@ -8,7 +8,7 @@ Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but
 
 **Detective**
 
-#### Security Recommendation
+#### Remediation action
 
 After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:
 
@@ -29,7 +29,7 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 
 - `Test-MtAdGpoTotalCount` - Counts the total number of GPOs
 - `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
-- `Test-MtAdGpoCreatedBefore2020Count` - Identifies potentially outdated GPOs
+- `AD-GPO-02` - Checks modification age and shows creation and modification dates
 
 <!--- Results --->
 %TestResult%

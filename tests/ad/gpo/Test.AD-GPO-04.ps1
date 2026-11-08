@@ -18,7 +18,7 @@
     #>
     [MaesterTest(
         Id = 'AD-GPO-04',
-        Title = 'Unlinked GPO count should be compliant',
+        Title = 'GPOs should have at least one link',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'infrastructure',
@@ -41,9 +41,8 @@
     $gpoState = Get-MtADGpoState
 
     # If unable to retrieve GPO data, skip the test
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $gpoState -or $null -eq $gpoState.GPOs -or $null -eq $gpoState.GPOLinks) {
+        throw 'GPO metadata or domain, OU and site links were not retrieved; unlinked GPOs cannot be assessed.'
     }
 
     $gpos = $gpoState.GPOs
@@ -55,6 +54,9 @@
     $gpLinks = $gpoState.GPOLinks
     if ($gpLinks) {
         foreach ($linkObject in $gpLinks) {
+            if ($null -ne $linkObject.GpoGuid) {
+                $null = $linkedGpoIds.Add(([string]$linkObject.GpoGuid).Trim('{}'))
+            }
             $gPLinkValue = $linkObject.gPLink
             if ([string]::IsNullOrWhiteSpace($gPLinkValue)) {
                 continue
@@ -74,7 +76,8 @@
     # Identify unlinked/orphaned GPOs by comparing the GPO IDs against collected link targets.
     $unlinkedGpos = @()
     foreach ($gpo in $gpos) {
-        $gpoId = if ($null -ne $gpo.Id) { [string]$gpo.Id } else { $null }
+        $gpoId = if ($null -ne $gpo.Id) { ([string]$gpo.Id).Trim('{}') } else { $null }
+        if (-not $gpoId) { throw 'A GPO has no identifier; its links cannot be assessed.' }
 
         # Optional fallback: some environments may surface unlinked wording in GpoStatus.
         $statusText = if ($null -ne $gpo.GpoStatus) { [string]$gpo.GpoStatus } else { $null }
@@ -116,11 +119,19 @@
     $result += "| Linked GPOs | $linkedCount |" + "`n"
     $result += "| Unlinked GPOs | $unlinkedCount |" + "`n"
     if ($unlinkedCount -gt 0 -and $sampleNamesText) {
-        $result += "| Sample Unlinked GPOs | $sampleNamesText |" + "`n"
+        $safeNames = $sampleNamesText.Replace('|', '&#124;') -replace '[\r\n]+', ' '
+        $result += "| Sample Unlinked GPOs | $safeNames |" + "`n"
+    }
+    $result += "`n| Unlinked GPO | Created | Modified |`n| --- | --- | --- |`n"
+    foreach ($gpo in ($unlinkedGpos | Sort-Object DisplayName)) {
+        $name = ([string]$gpo.DisplayName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+        $created = if ($null -ne $gpo.CreationTime) { ([datetime]$gpo.CreationTime).ToString('yyyy-MM-dd HH:mm:ss') } else { 'Unknown' }
+        $modified = if ($null -ne $gpo.ModificationTime) { ([datetime]$gpo.ModificationTime).ToString('yyyy-MM-dd HH:mm:ss') } else { 'Unknown' }
+        $result += "| $name | $created | $modified |`n"
     }
 
     if ($testResult) {
-        $testResultMarkdown = "✅ Unlinked/orphaned GPOs have not been found. Active Directory Group Policy Objects have been analyzed successfully.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. All GPOs have at least one link.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "⚠️ Unlinked/orphaned GPOs were found. These GPOs consume resources while providing no effective policy, and they can be accidentally linked later, applying unknown settings. After verification, remove or remediate unlinked GPOs.`n`n%TestResult%"
     }

@@ -25,7 +25,7 @@ This test retrieves Active Directory GPO state from `Get-MtADGpoState` (using `$
 - `Test-MtAdGpoTotalCount` - Counts total GPO inventory
 - `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
 - `Test-MtAdGpoUnlinkedCount` - Identifies GPOs not linked anywhere
-- `Test-MtAdGpoUnlinkedDetails` - Shows unlinked GPO details
+- `AD-GPO-04` - Shows unlinked GPO counts and details
 
 <!--- Results --->
 %TestResult%

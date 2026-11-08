@@ -31,7 +31,7 @@ It then:
 - `Test-MtAdGpoTotalCount` - Total GPO inventory
 - `Test-MtAdGpoUnlinkedCount` - GPOs not linked anywhere
 - `Test-MtAdGpoCreatedBefore2020Count` - Potentially legacy GPOs
-- `Test-MtAdGpoChangedBefore2020Count` - Potentially stale GPOs
+- `AD-GPO-02` - Potentially stale GPOs, based on configurable modification age
 
 <!--- Results --->
 %TestResult%
