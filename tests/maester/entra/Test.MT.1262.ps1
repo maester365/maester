@@ -146,6 +146,13 @@
     }
     $Result += $RoleNote
 
-    Add-MtTestResultDetail -Result $Result
+    # Each risky service principal also appears on the report's Affected objects page; the table above stays as it is.
+    # There is no GraphObjectType for service principals, so the type comes from @odata.type.
+    $AffectedServicePrincipals = @(
+        $Sorted | ForEach-Object {
+            [pscustomobject]@{ id = [string]$_.id; displayName = [string]$_.displayName; '@odata.type' = '#microsoft.graph.servicePrincipal' }
+        }
+    )
+    Add-MtTestResultDetail -Result $Result -GraphObjects $AffectedServicePrincipals
     return $false
 }

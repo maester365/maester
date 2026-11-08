@@ -11,16 +11,20 @@
         $script:SkippedBecause = $null
         $script:SkippedError = $null
         $script:Severity = $null
+        $script:GraphObjects = $null
+        $script:GraphObjectType = $null
 
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Get-MtLinkServicePrincipal { return "[$($ServicePrincipal.DisplayName)](link)" }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause, $SkippedError, $Severity)
+            param($Result, $SkippedBecause, $SkippedError, $Severity, $GraphObjects, $GraphObjectType)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
             $script:SkippedError = $SkippedError
             $script:Severity = $Severity
+            $script:GraphObjects = $GraphObjects
+            $script:GraphObjectType = $GraphObjectType
         }
 
         # Role lookups default to "no roles". Tests that need roles override these.
@@ -144,6 +148,37 @@
         Test-MtEntraUnremediatedHighRiskServicePrincipal | Should -BeFalse
         $script:TestResult | Should -Match '\(unnamed\)'
         $script:TestResult | Should -Match 'Unknown'
+    }
+
+    It 'passes the unremediated service principals to the report as affected objects' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'sp-1'; appId = 'app-1'; displayName = 'Alpha App'; servicePrincipalType = 'Application'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                },
+                [pscustomobject]@{
+                    id = 'sp-2'; appId = 'app-2'; displayName = 'Bravo App'; servicePrincipalType = 'Application'
+                    riskLevel = 'high'; riskState = 'confirmedCompromised'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-02T00:00:00Z'
+                }
+            )
+        } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyServicePrincipals' }
+
+        Test-MtEntraUnremediatedHighRiskServicePrincipal | Should -BeFalse
+        $script:GraphObjectType | Should -BeNullOrEmpty
+        @($script:GraphObjects).Count | Should -Be 2
+        @($script:GraphObjects.id) | Should -Be @('sp-1', 'sp-2')
+        @($script:GraphObjects.displayName) | Should -Be @('Alpha App', 'Bravo App')
+        @($script:GraphObjects | ForEach-Object { $_.'@odata.type' }) | Should -Be @('#microsoft.graph.servicePrincipal', '#microsoft.graph.servicePrincipal')
+    }
+
+    It 'passes no affected objects when no service principal is left unremediated' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { return @() } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyServicePrincipals' }
+
+        Test-MtEntraUnremediatedHighRiskServicePrincipal | Should -BeTrue
+        $script:GraphObjects | Should -BeNullOrEmpty
     }
 
     It 'skips as NotAuthorized on a 403 from Graph' {
