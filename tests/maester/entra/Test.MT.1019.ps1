@@ -42,8 +42,9 @@
 Microsoft recommends blocking or limiting access to SharePoint, OneDrive, and Exchange content from unmanaged devices.
 
 See [Use application enforced restrictions for unmanaged devices - Microsoft Learn](https://aka.ms/CATemplatesAppRestrictions)'
-    $testResult = "These Conditional Access policies enforce restrictions for unmanaged devices:`n`n"
+    $testResult = "These Conditional Access policies enforce restrictions for unmanaged devices:`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.conditions.users.includeUsers -eq 'All' `
@@ -53,7 +54,7 @@ See [Use application enforced restrictions for unmanaged devices - Microsoft Lea
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+            $matchingPolicies.Add($policy)
         } else {
             $CurrentResult = $false
         }
@@ -64,6 +65,6 @@ See [Use application enforced restrictions for unmanaged devices - Microsoft Lea
         $testResult = 'There was no Conditional Access policy enforcing restrictions for unmanaged devices.'
     }
 
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
     return $result
 }

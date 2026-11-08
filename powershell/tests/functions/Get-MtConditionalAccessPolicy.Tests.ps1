@@ -1,5 +1,9 @@
 ﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    InModuleScope Maester {
+        $script:PlanReportingPreviousPortalUrl = $__MtSession.AdminPortalUrl
+        $__MtSession.AdminPortalUrl = @{ Entra = 'https://entra.microsoft.com/' }
+    }
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     Use-MtModuleFunction -Name ConvertTo-MtConditionalAccessPolicy, Merge-MtConditionalAccessCondition, Test-MtCaDeviceComplianceExists
     $script:planFixture = Get-Content "$PSScriptRoot/../fixtures/conditional-access-plans/plan.json" -Raw | ConvertFrom-Json
@@ -241,4 +245,62 @@ Describe 'Plan inventory transport uses cached paging' {
         $second[1].rules[0].id | Should -Be rule-b
         Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 4 -Exactly
     }
+}
+
+Describe 'Plan rule reporting through the actual device-compliance check' {
+    BeforeEach {
+        Mock Invoke-MtGraphRequest -ModuleName Maester { throw "Unexpected endpoint: $RelativeUri" }
+        Mock Invoke-MtGraphRequest -ModuleName Maester { @() } -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/policies' }
+        Mock Invoke-MtGraphRequest -ModuleName Maester { $script:planFixture } -ParameterFilter { $RelativeUri -eq 'identity/conditionalAccess/plans' }
+        $script:reportRules = $script:ruleFixture | ConvertTo-Json -Depth 100 | ConvertFrom-Json
+        foreach ($rule in $script:reportRules) {
+            $rule.state = 'enabled'
+            $rule.controls.grantControls.builtInControls = @('compliantDevice')
+        }
+        $nonMatchingRule = New-RuleFixture
+        $nonMatchingRule.id = '00000000-0000-4000-8000-000000000009'
+        $nonMatchingRule.state = 'enabled'
+        $nonMatchingRule.controls.grantControls.builtInControls = @('mfa')
+        $script:reportRules += $nonMatchingRule
+        Mock Invoke-MtGraphRequest -ModuleName Maester { $script:reportRules } -ParameterFilter { $RelativeUri -like 'identity/conditionalAccess/plans/*/rules' }
+    }
+
+    It 'Keeps two matching rules from one plan distinct, attributed and linked to their parent' {
+        $report = InModuleScope Maester {
+            $previousCollection = $__MtSession.IncludeAffectedObjects
+            $previousDetails = $__MtSession.TestResultDetail
+            $previousTest = [Maester.Engine.MtSession]::EnterTest('MT.1001')
+            try {
+                $__MtSession.IncludeAffectedObjects = $true
+                $__MtSession.TestResultDetail = @{}
+                $passed = Test-MtCaDeviceComplianceExists
+                $detail = $__MtSession.TestResultDetail['MT.1001']
+                $inventory = @(Get-MtAffectedObject -ExcludeSessionCache -MaesterResults ([pscustomobject]@{
+                    Tests = @([pscustomobject]@{ Id = 'MT.1001'; ResultDetail = $detail })
+                }))
+                [pscustomobject]@{ Passed = $passed; Detail = $detail; Inventory = $inventory }
+            } finally {
+                $__MtSession.IncludeAffectedObjects = $previousCollection
+                $__MtSession.TestResultDetail = $previousDetails
+                [Maester.Engine.MtSession]::ExitTest($previousTest)
+            }
+        }
+
+        $report.Passed | Should -BeTrue
+        @($report.Detail.RelatedObjects).Count | Should -Be 2
+        $report.Detail.RelatedObjects.Id | Sort-Object | Should -Be @($script:ruleFixture.id | Sort-Object)
+        $report.Detail.TestResult | Should -Not -Match '%TestResult%|PolicyBlade/policyId|00000000-0000-4000-8000-000000000009'
+        $report.Inventory.Count | Should -Be 2
+        $report.Inventory.UniqueId | Select-Object -Unique | Should -HaveCount 2
+        foreach ($record in $report.Inventory) {
+            $record.Type | Should -Be ConditionalAccessPolicyRule
+            $record.Tests | Should -Be @('MT.1001')
+            $record.Sources | Should -Contain GraphObjects
+            $record.PortalLink | Should -BeLike "*PolicyPlanView.ReactView/planId/$($script:planFixture.id)"
+        }
+    }
+}
+
+AfterAll {
+    InModuleScope Maester { $__MtSession.AdminPortalUrl = $script:PlanReportingPreviousPortalUrl }
 }

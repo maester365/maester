@@ -19,7 +19,7 @@ A projected rule keeps its real rule ID. The following metadata distinguishes it
 | `sharedConditions` | The original plan conditions |
 | `ruleConditions`, `controls` | The original rule-specific configuration |
 
-The readable name includes both plan and rule names. Report links open the parent plan. A rule ID must not be looked up at the standalone `/policies/{id}` endpoint.
+The readable name includes both plan and rule names. Checks pass matching rules as structured result objects so affected-object reports preserve each rule ID and its test attribution. Report links open the parent plan. What If results are associated with plans by rule ID using the cached plan inventory; their evaluation fields are preserved. A rule ID must not be looked up at the standalone `/policies/{id}` endpoint.
 
 `Get-MtConditionalAccessPolicyPlan` exposes the original plan/rule shape. Use `-MetadataOnly` when checking plan metadata without needing child rules. Both commands use the existing Graph session cache and automatic pagination. Checks report on the same snapshot and must not bypass that cache.
 
@@ -33,7 +33,9 @@ No plans is a valid empty inventory: standalone policies continue to be evaluate
 
 ## Read permissions
 
-This integration reads configuration only and does not request write permissions. `Policy.Read.All` is the existing Maester permission used for the standalone inventory and the tested plans endpoints. Delegated identities must also satisfy the endpoint's supported Entra role requirements. Preview availability and delegated-role restrictions can cause an error even when standalone policies can be read.
+This integration reads configuration only and does not request write permissions. `Policy.Read.All` is the existing Maester permission used for the standalone inventory and the tested plans endpoints. For delegated access, Microsoft documents **Conditional Access Administrator** as the least privileged supported built-in Entra role for listing plans; an appropriate custom role is also supported. The Graph permission alone does not grant this role.
+
+This affects existing CA checks: the combined collector now requests plans as well as standalone policies. A delegated caller who previously could read standalone policies may receive a plan-read authorization error, even with `Policy.Read.All`. Such an error propagates to the check rather than silently returning standalone-only coverage. Preview availability can also prevent a plans request from succeeding.
 
 Microsoft currently documents `Policy.Read.ConditionalAccess` for listing plans, but that scope alone returned 403 in the isolated tenant experiment behind this change. No general scope regression or new universal permission requirement is inferred from that one-tenant result.
 

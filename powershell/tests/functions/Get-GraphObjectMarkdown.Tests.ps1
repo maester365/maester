@@ -1,6 +1,10 @@
 ﻿Describe 'Get-GraphObjectMarkdown' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+        InModuleScope Maester {
+            $script:PlanReportingPreviousPortalUrl = $__MtSession.AdminPortalUrl
+            $__MtSession.AdminPortalUrl = @{ Entra = 'https://entra.microsoft.com/' }
+        }
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Get-GraphObjectMarkdown
     }
@@ -34,4 +38,44 @@
             Should -BeLike '*PolicyPlanView.ReactView/planId/plan-id)'
     }
 
+
+    It 'Preserves distinct rule identities through a Markdown-only custom table' {
+        $objects = InModuleScope Maester {
+            $planId = '00000000-0000-4000-8000-000000000001'
+            $rules = @(
+                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000007'; displayName = 'Same [name] | rule'; planId = $planId; sourceType = 'PolicyPlanRule' }
+                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000008'; displayName = 'Same [name] | rule'; planId = $planId; sourceType = 'PolicyPlanRule' }
+            )
+            $markdown = "| Policy | Finding |`n| --- | --- |`n"
+            foreach ($rule in $rules) {
+                $markdown += "| $(Get-GraphObjectMarkdown -GraphObjects $rule -GraphObjectType ConditionalAccess -AsPlainTextLink) | Review |`n"
+            }
+            Get-MtAffectedObject -ExcludeSessionCache -MaesterResults ([pscustomobject]@{
+                Tests = @([pscustomobject]@{ Id = 'MT.1184'; ResultDetail = @{ TestResult = $markdown } })
+            })
+        }
+        @($objects).Count | Should -Be 2
+        $objects.Id | Sort-Object | Should -Be @('00000000-0000-4000-8000-000000000007', '00000000-0000-4000-8000-000000000008')
+        foreach ($record in $objects) {
+            $record.Type | Should -Be ConditionalAccessPolicyRule
+            $record.DisplayName | Should -Be 'Same [name] | rule'
+            $record.Tests | Should -Be @('MT.1184')
+            $record.PortalLink | Should -BeLike '*PolicyPlanView.ReactView/planId/00000000-0000-4000-8000-000000000001'
+        }
+    }
+
+    It 'Keeps an ordinary plan link as a plan record' {
+        $objects = InModuleScope Maester {
+            $plan = [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000001'; displayName = 'Plan' }
+            $markdown = Get-GraphObjectMarkdown -GraphObjects $plan -GraphObjectType ConditionalAccessPlan
+            Get-MtAffectedObjectFromMarkdown -Markdown $markdown -TestId 'MT.1275'
+        }
+        @($objects).Count | Should -Be 1
+        $objects.Type | Should -Be ConditionalAccessPolicyPlan
+        $objects.Id | Should -Be '00000000-0000-4000-8000-000000000001'
+    }
+}
+
+AfterAll {
+    InModuleScope Maester { $__MtSession.AdminPortalUrl = $script:PlanReportingPreviousPortalUrl }
 }

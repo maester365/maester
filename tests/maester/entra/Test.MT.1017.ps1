@@ -46,8 +46,9 @@
 Microsoft recommends disabling browser persistence for users accessing the tenant from an unmanaged device.
 
 See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)'
-    $testResult = "These Conditional Access policies enforce a non-persistent browser session:`n`n"
+    $testResult = "These Conditional Access policies enforce a non-persistent browser session:`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         if (-not $AllDevices.IsPresent) {
@@ -88,7 +89,7 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+            $matchingPolicies.Add($policy)
         } else {
             $CurrentResult = $false
         }
@@ -99,6 +100,6 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         $testResult = 'There was no Conditional Access policy enforcing non persistent browser session for non-corporate devices.'
     }
 
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
     return $result
 }

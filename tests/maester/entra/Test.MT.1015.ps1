@@ -41,8 +41,9 @@
 Microsoft recommends blocking access for unknown or unsupported device platforms.
 
 See [Block access for unknown or unsupported device platform - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device)'
-    $testResult = "These Conditional Access policies block access for unknown or unsupported device platforms:`n`n"
+    $testResult = "These Conditional Access policies block access for unknown or unsupported device platforms:`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.grantControls.builtInControls -eq 'block' `
@@ -50,7 +51,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+            $matchingPolicies.Add($policy)
         } else {
             $CurrentResult = $false
         }
@@ -60,7 +61,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
     if ($result -eq $false) {
         $testResult = 'There was no Conditional Access policy blocking access for unknown or unsupported device platforms.'
     }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
 
     return $result
 }

@@ -6,8 +6,13 @@
     .DESCRIPTION
     Reads the beta plans and rules endpoints through Maester's Graph session cache. Rules are kept in their
     original Graph shape, including controls and rule-specific conditions. Shared conditions and owners stay
-    on the parent plan. Empty plans inventories return no objects; failed reads terminate instead of hiding plans.
-    This preview API requires CA read access. Policy.Read.All is sufficient; write permissions are not required.
+    on the parent plan. Empty plan inventories return no objects; failed reads terminate instead of hiding plans.
+    This preview API accepts Policy.Read.All; write permissions are not required.
+    Delegated callers also need a supported Microsoft Entra role: Conditional Access Administrator is the least
+    privileged built-in role supported for listing plans; an appropriate custom role is also supported.
+    Policy.Read.All alone is not sufficient for every delegated caller. Existing CA checks read plans through
+    the combined inventory, so callers who can read standalone policies may now encounter a plan-read error.
+    See https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta
 
     .PARAMETER MetadataOnly
     Reads only plan metadata and does not request child rules. Useful for accountability checks.

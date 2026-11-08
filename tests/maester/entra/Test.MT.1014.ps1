@@ -77,8 +77,9 @@ Microsoft recommends requiring device compliance for administrators that are mem
 * User Administrator
 
 See [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)'
-  $testResult = "These Conditional Access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
+  $testResult = "These Conditional Access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n%TestResult%"
 
+  $matchingPolicies = [System.Collections.Generic.List[object]]::new()
   $result = $false
   foreach ($policy in $policies) {
     $PolicyIncludesAllRoles = $true
@@ -101,7 +102,7 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
       $policy.conditions.applications.includeApplications -eq 'All'
     ) {
       Write-Verbose -Message "Found a Conditional Access policy requiring device compliance for admins: $($policy.displayName)"
-      $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+      $matchingPolicies.Add($policy)
       $result = $true
     }
   }
@@ -109,7 +110,7 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
   if ($result -eq $false) {
     $testResult = 'There was no Conditional Access policy requiring compliant or Microsoft Entra hybrid joined device for administrators.'
   }
-  Add-MtTestResultDetail -Description $testDescription -Result $testResult
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
 
   return $result
 }

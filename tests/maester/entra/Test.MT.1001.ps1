@@ -39,26 +39,27 @@
 
   $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
+  $matchingPolicies = [System.Collections.Generic.List[object]]::new()
   $result = $false
 
   $testDescription = '
 It is recommended to have at least one Conditional Access policy that enforces the use of a compliant device.
 
 See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device)'
-  $testResult = "These Conditional Access policies enforce the use of a compliant device :`n`n"
+  $testResult = "These Conditional Access policies enforce the use of a compliant device :`n`n%TestResult%"
 
   foreach ($policy in $policies) {
     if ($policy.grantControls.builtInControls -contains 'compliantDevice') {
       Write-Verbose -Message "Found a Conditional Access policy requiring device compliance: $($policy.displayName)"
       $result = $true
-      $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+      $matchingPolicies.Add($policy)
     }
   }
 
   if ($result -eq $false) {
     $testResult = 'There was no Conditional Access policy requiring device compliance.'
   }
-  Add-MtTestResultDetail -Description $testDescription -Result $testResult
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
 
   return $result
 }

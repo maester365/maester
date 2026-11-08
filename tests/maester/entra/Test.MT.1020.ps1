@@ -49,7 +49,7 @@
     param ()
 
     $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all Conditional Access policies scoped to all cloud apps.'
-    $testResult = "The following Conditional Access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
+    $testResult = "The following Conditional Access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n%TestResult%"
 
     $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
     $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
@@ -88,6 +88,7 @@
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $true
     foreach ($policy in ( $policies | Sort-Object -Property displayName ) ) {
         if ( $policy.conditions.applications.includeApplications -ne 'All' ) {
@@ -156,7 +157,7 @@
                 # Directory synchronization accounts are not excluded
                 $CurrentResult = $false
                 $result = $false
-                $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+                $matchingPolicies.Add($policy)
             }
         }
 
@@ -167,6 +168,6 @@
         $testResult = 'All Conditional Access policies scoped to all cloud apps exclude the directory synchronization accounts.'
     }
 
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
     return $result
 }

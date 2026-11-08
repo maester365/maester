@@ -11,6 +11,11 @@
     Owners are metadata only. Disabled and report-only rules retain their states and are not promoted to enabled.
     An empty plan inventory is valid. A failed read or an unsafe condition combination terminates the inventory
     instead of presenting partial data as complete. Reading requires CA read access, not write permissions.
+    Delegated callers also need a supported Microsoft Entra role: Conditional Access Administrator is the least
+    privileged built-in role supported for listing plans; an appropriate custom role is also supported.
+    Policy.Read.All alone is not sufficient for every delegated caller. Existing CA checks read plans through
+    the combined inventory, so callers who can read standalone policies may now encounter a plan-read error.
+    See https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta
 
     .PARAMETER StandaloneOnly
     Returns only standalone policies, without reading the preview plans endpoint. This is an explicit inventory

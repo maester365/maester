@@ -44,8 +44,9 @@ Legacy authentication is an unsecure method to authenticate. This function check
 Conditional Access policy that blocks legacy authentication.
 
 See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)'
-    $testResult = "These Conditional Access policies block legacy authentication for Exchange Active Sync:`n`n"
+    $testResult = "These Conditional Access policies block legacy authentication for Exchange Active Sync:`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.grantControls.builtInControls -contains 'block' -and
@@ -56,7 +57,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
         ) {
             $result = $true
             $currentResult = $true
-            $testResult += "$(Get-GraphObjectMarkdown -GraphObjects $policy -GraphObjectType ConditionalAccess)"
+            $matchingPolicies.Add($policy)
         } else {
             $currentResult = $false
         }
@@ -67,6 +68,6 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
         $testResult = 'There was no Conditional Access policy blocking legacy authentication for Exchange Active Sync.'
     }
 
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
     return $result
 }

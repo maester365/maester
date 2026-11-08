@@ -13,6 +13,9 @@
     `[name](url "title")`), the display name is captured too, with markdown escapes such as
     `\(` and `\_` removed. The matched URL is kept as the record's PortalLink.
 
+    Plan-rule links can carry a ConditionalAccessPolicyRule:<rule-id> title. For those links the rule ID
+    identifies the affected object while the unchanged plan URL remains its PortalLink.
+
     Links with an empty target whose text is a user principal name (`[user@contoso.com]()`, as the
     Entra recommendation checks write them) are captured as users keyed by that UPN.
     #>
@@ -67,7 +70,7 @@
         # a javascript: url into a link that would otherwise match a portal pattern.
         # The name may contain one level of brackets ("[RaviK] - Policy") and the url may be followed
         # by a link title (`[name](url "title")`).
-        $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"[^"]*")?\)|(?<url>https://[^\s)\]]+)'
+        $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"(?<title>[^"]*)")?\)|(?<url>https://[^\s)\]]+)'
         # Markdown backslash escapes (\( \_ \* ...) that result markdown adds around display names.
         $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>])'
 
@@ -84,11 +87,19 @@
                     $displayName = $link.Groups['name'].Value -replace $markdownEscape, '$1'
                 }
 
+                $type = $pattern.Type
+                $id = $match.Groups[1].Value
+                if ($type -eq 'ConditionalAccessPolicyPlan' -and
+                    $link.Groups['title'].Value -match "^ConditionalAccessPolicyRule:($guid)$") {
+                    $type = 'ConditionalAccessPolicyRule'
+                    $id = $Matches[1]
+                }
+
                 $records.Add([PSCustomObject]@{
                         System      = $pattern.System
                         AnchorKind  = 'Instance'
-                        Type        = $pattern.Type
-                        Id          = $match.Groups[1].Value
+                        Type        = $type
+                        Id          = $id
                         DisplayName = $displayName
                         PortalLink  = $url
                         TestId      = $TestId
