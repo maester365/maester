@@ -15,6 +15,22 @@ function slugify(text) {
 		.replace(/[\s_]+/g, '-');
 }
 
+// Consolidated checks retain the published URLs of their retired IDs. The tag table
+// is generated from explicit native replacements, not a heuristic test-name match.
+export function retiredTestRedirects(catalog, legacyTags, publishedTests, exists) {
+
+	const current = new Set(catalog.Tests.map((test) => test.Id));
+	const rules = [];
+	for (const entry of legacyTags.Tags) {
+		if (!Object.hasOwn(publishedTests, entry.Tag) || current.has(entry.Tag) || entry.Tests.length !== 1) continue;
+		const target = entry.Tests[0];
+		if (!current.has(target) || !exists(`/docs/tests/${target}`)) continue;
+		rules.push([`/docs/tests/${entry.Tag}`, `/docs/tests/${target}`]);
+		rules.push([`/docs/next/tests/${entry.Tag}`, `/docs/tests/${target}`]);
+	}
+	return rules;
+}
+
 export function buildRedirects(dist) {
 	const exists = (path) => existsSync(join(dist, `${path}.html`)) || existsSync(join(dist, path, 'index.html'));
 	const rules = [];
@@ -29,6 +45,8 @@ export function buildRedirects(dist) {
 	// Maester 2.x documented each test's function as a command. In 3.0 those are tests: send each to its test.
 	const catalog = JSON.parse(readFileSync(join(websiteRoot, 'src/data/test-catalog.json'), 'utf8'));
 	const versions = JSON.parse(readFileSync(join(websiteRoot, 'src/data/versions.json'), 'utf8'));
+	const legacyTags = JSON.parse(readFileSync(join(websiteRoot, '../powershell/assets/Maester.LegacyTags.json'), 'utf8'));
+	for (const [from, to] of retiredTestRedirects(catalog, legacyTags, versions.tests, exists)) add(from, to);
 	const testByFunction = new Map(catalog.Tests.filter((t) => t.FunctionName).map((t) => [t.FunctionName, t.Id]));
 	for (const name of Object.keys(versions.commands)) {
 		if (exists(`/docs/commands/${name}`)) continue;
@@ -133,4 +151,3 @@ export function redirects() {
 		},
 	};
 }
-

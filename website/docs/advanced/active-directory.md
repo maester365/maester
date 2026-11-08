@@ -139,20 +139,20 @@ Use `Get-MtTest -Product ad` for the current catalog and each check's declared p
 
 | Category | Tests | Required permissions |
 |---|---|---|
-| `cfg` | AD-CFG-02, 03, 06–24 | `ActiveDirectory:Ldap:Configuration/*:ReadProperty`; CFG-22 additionally needs confirmed inventory visibility for a zero-key failure |
+| `cfg` | AD-CFG-02, 03, 06–13, 15, 20–23 | `ActiveDirectory:Ldap:Configuration/*:ReadProperty`; CFG-22 additionally needs confirmed inventory visibility for a zero-key failure |
 | `comp` | AD-COMP-01, 03–08 | `ActiveDirectory:Ldap:computer:ReadProperty`; COMP-04 also uses the DC inventory |
 | `dacl` | AD-DACL-01, 02, 03, 05, 07, 09, 11, 14, 15, 17 | `ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl` |
-| `dc` | AD-DC-01 through AD-DC-08 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty`; AD-DC-02 through AD-DC-04 also need `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read` and `ActiveDirectory:Remoting:Microsoft.PowerShell` |
-| `dcd` | AD-DCD-01 through AD-DCD-04 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty` |
+| `dc` | AD-DC-01–05, 07 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty`; AD-DC-02 through AD-DC-04 also need `ActiveDirectory:Cim:root\Microsoft\Windows\SMB:MSFT_SmbServerConfiguration:Read` and `ActiveDirectory:Remoting:Microsoft.PowerShell` |
+| `dcd` | AD-DCD-01, 03, 04 | `ActiveDirectory:Ldap:nTDSDSA:ReadProperty`; port inventory is explicitly not a live listener measurement |
 | `dcomp` | AD-DCOMP-01, 03, 04, 06, 07, 08 | Computer and DC inventory permissions; DCOMP-01/03 also read sMSA, gMSA and dMSA delegation metadata |
 | `dfsr` | AD-DFSR-01 | `ActiveDirectory:Ldap:domainDNS.distinguishedName:ReadProperty` |
 | `dns` | AD-DNS-01 through AD-DNS-19 | `ActiveDirectory:Cim:root\MicrosoftDNS:MicrosoftDNS_Zone:Read`, `ActiveDirectory:Remoting:Microsoft.PowerShell` |
-| `dom` | AD-DOM-01 through AD-DOM-08 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
+| `dom` | AD-DOM-01–05, 07 | Domain attributes; functional-level checks also need DC computer metadata |
 | `doms` | AD-DOMS-01 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
 | `feat` | AD-FEAT-01 | `ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty` |
-| `fgpp` | AD-FGPP-01 through AD-FGPP-04 | `ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty` |
+| `fgpp` | AD-FGPP-01 | PSO and user resultant-policy read access; an empty visible policy list is not proof that none exist |
 | `for` | AD-FOR-01 through AD-FOR-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
-| `fors` | AD-FORS-01 through AD-FORS-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
+| `fors` | AD-FORS-01, 03, 04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `gchg` | AD-GCHG-01 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `gmc` | AD-GMC-01, 02, 04, 06, 08, 10 | `ActiveDirectory:Ldap:group:ReadProperty`; membership checks also need `ActiveDirectory:Ldap:group.member:ReadProperty` |
 | `gpo` | AD-GPO-01, 02, 04 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
@@ -162,17 +162,27 @@ Use `Get-MtTest -Product ad` for the current catalog and each check's declared p
 | `grp` | AD-GRP-01–06, 08 | `ActiveDirectory:Ldap:group:ReadProperty` |
 | `krbtgt` | AD-KRBTGT-01 through AD-KRBTGT-03 | `ActiveDirectory:Ldap:user:ReadProperty` |
 | `msa` | AD-MSA-01 | `ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty`, `ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty`, `ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty` |
-| `ou` | AD-OU-01 through AD-OU-05 | `ActiveDirectory:Ldap:organizationalUnit:ReadProperty` |
+| `ou` | AD-OU-01–04 | OU attributes; direct-child inventory also reads visible directory objects |
 | `print` | AD-PRINT-01 | `ActiveDirectory:Ldap:printQueue:ReadProperty` |
-| `pwdpol` | AD-PWDPOL-01 through AD-PWDPOL-07 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
+| `pwdpol` | AD-PWDPOL-01 | Default domain password and lockout policy attributes |
 | `repl` | AD-REPL-01 through AD-REPL-02 | `ActiveDirectory:Ldap:nTDSConnection:ReadProperty` |
 | `rootdse` | AD-ROOTDSE-01, 03 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
 | `sch` | AD-SCH-01, 03, 05 | `ActiveDirectory:Ldap:Schema/*:ReadProperty`; SCH-05 distinguishes Windows LAPS schema from legacy LAPS |
-| `site` | AD-SITE-01 through AD-SITE-05 | `ActiveDirectory:Ldap:site:ReadProperty` |
+| `site` | AD-SITE-01, 02, 04 | Site/DC inventory; SITE-04 also covers subnet-to-site associations formerly in SUB-01/02/11 |
 | `spn` | AD-SPN-01, 03, 05, 06, 07, 09, 11, 12 | Computer/user permissions; SPN-12 also reads domain SID, groups and group membership |
-| `sub` | AD-SUB-01 through AD-SUB-11 | `ActiveDirectory:Ldap:subnet:ReadProperty` |
+| `sub` | AD-SUB-03, 04, 06, 08 | `ActiveDirectory:Ldap:subnet:ReadProperty`; shared association checks are under SITE-04 |
 | `trust` | AD-TRUST-01, 02, 03, 06 | `ActiveDirectory:Ldap:trustedDomain:ReadProperty`; TRUST-06 cannot infer validation age from LDAP modification dates |
-| `user` | AD-USER-01–13, 15–29 | `ActiveDirectory:Ldap:user:ReadProperty`; USER-14 was consolidated into SPN-06 |
+| `user` | AD-USER-01–13, 15, 16, 19, 20, 22, 26 | User attributes; USER-03 also reads effective policy and USER-22 the domain SID. USER-05 is in the delegation folder and includes former 28/29; USER-14 is covered by SPN-06 |
+
+### Password-policy and lifecycle interpretation
+
+PWDPOL-01 assesses the connected domain's configured default policy; FGPP-01 assesses individual visible PSOs and their resultant-policy usage. `CurrentNist` uses a 15-character password-only minimum and no forced periodic expiration. History and lockout thresholds are separately sourced Microsoft/local safeguards, not proof of NIST compliance. Composition is observed, not a recommendation to disable it without a verified password blocklist. LDAP does not prove blocklist enforcement, MFA, actual password strength, or compromise-triggered resets.
+
+`PolicyInventoryReadAccessConfirmed` is operator-provided. Null/empty `msDS-ResultantPSO` cannot by itself distinguish the default policy from unreadable effective-policy data. Live confirmation that this computed attribute is returned by the targeted DC is still required.
+
+Disabled-account and OU age checks use recorded modification age, not a disable date or proof of actual use. Protected system and RODC/hybrid krbtgt identities are excluded from disabled-account cleanup. RID-500 recent-use checks account for `lastLogonTimestamp` replication lag rather than treating it as exact all-DC logon evidence.
+
+Domain functional-level checks use only DCs scoped to the connected domain; forest checks use the whole forest inventory. Windows Server 2025 is level 10; Server 2019/2022 share level 7 with Server 2016. Unknown or inaccessible foreign-domain computer metadata stays explicit, not a healthy OS result. LDAP/LDAPS port fields are not measured listener states.
 
 ## Known Misleading Outcomes
 

@@ -19,6 +19,14 @@ Existing exported AD collectors also distinguish collection failure from an empt
 
 AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-inventory access has been independently confirmed with `KeyInventoryReadAccessConfirmed`. Do not create keys solely because a restricted identity returned an empty inventory.
 
+### Second AD review batch
+
+Password checks now consolidate under AD-PWDPOL-01 (default domain policy) and AD-FGPP-01 (individual PSOs and visible usage). The configurable `CurrentNist` profile defaults to 15 characters and no forced periodic expiration; `LegacyRotation` is an organization-selected alternative, not earlier NIST guidance. The checks observe composition and explicitly require a verified blocklist before any decision to remove complexity rules. Visibility confirmation is separate from the selected profile.
+
+USER lifecycle checks now use explicit criteria, retention/idle periods, manager exclusions and approved absolute path roots. Empty approved-path lists approve no absolute paths; relative NETLOGON scripts remain manual review. Protected disabled system identities are not cleanup findings. SITE-04 absorbs SUB-01, SUB-02 and SUB-11 while retaining both directions of the association assessment. USER-05 moves to the delegation folder and includes former USER-28/29. The engine still has one `Feature`; cross-feature coverage is explained in details and linked guides instead of adding an unsupported secondary feature.
+
+Shared exported collector results gained raw domain/forest functional-level values, stable FSMO owner DNs, normalized policy booleans/interval semantics, user resultant-policy and protected-account metadata, and DC OS/build evidence. DCs in other domains may have unknown computer metadata on a restricted connection; their collection errors remain per record. Previously hard-coded LDAP/LDAPS port values are now null with a not-measured annotation. Custom tests must not treat these null fields as healthy values.
+
 ## Requirements
 
 - **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.
