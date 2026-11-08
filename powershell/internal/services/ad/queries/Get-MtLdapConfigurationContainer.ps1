@@ -55,6 +55,8 @@
     $siteLinks = @($rawSiteLinks | ForEach-Object {
         $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
         $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
+        $transport = if ([string]$_.DistinguishedName -match '(?i),CN=(IP|SMTP),CN=Inter-Site Transports,') { $matches[1].ToUpperInvariant() } else { $null }
+        $_ | Add-Member -NotePropertyName TransportName -NotePropertyValue $transport -Force
         $_
     })
 
