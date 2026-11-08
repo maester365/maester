@@ -1,4 +1,4 @@
-﻿Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services (ISM-1175, Essential Eight Maturity Level One). This also supports ISM-0445: privileged human users are assigned a dedicated privileged user account to be used solely for duties requiring privileged access.
+Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services (ISM-1175, Essential Eight Maturity Level One). This also supports ISM-0445: privileged human users are assigned a dedicated privileged user account to be used solely for duties requiring privileged access.
 
 When the same account reads email, browses the web and administers the tenant, every phishing message and every malicious link reaches an administrator. A separate, unlicensed account for privileged duties keeps the role away from the inbox. ASD's assessment guide tests the email part of this control by listing the privileged accounts that have an email address.
 

@@ -1,4 +1,4 @@
-﻿The `HomeDirectory` attribute points users to network-based storage locations. While useful in legacy environments, it can reveal older provisioning patterns and dependencies on file servers.
+The `HomeDirectory` attribute points users to network-based storage locations. While useful in legacy environments, it can reveal older provisioning patterns and dependencies on file servers.
 
 - **Legacy infrastructure visibility**: Identifies users tied to mapped-drive style home folders
 - **Access control review**: Highlights centralized storage paths that may contain sensitive data

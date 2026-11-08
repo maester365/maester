@@ -1,4 +1,4 @@
-function Get-MtConnectionState {
+﻿function Get-MtConnectionState {
     <#
     .SYNOPSIS
     Returns what a Maester Pack connector kept with Set-MtConnectionState, or nothing when it is not connected.

@@ -1,6 +1,8 @@
 // Generates the data the site is built from, which is not kept in git: the test catalog (src/data/test-catalog.json),
-// the command reference (docs/commands/*.mdx), the contributor credits (src/data/contributors.json) and the sponsors
-// (src/data/sponsors.json, public/readme/sponsors*.svg). Runs before `npm run dev` and `npm run build`.
+// the community packs listed on packs.maester.cloud (src/data/community-packs.json), the checks each release shipped
+// (src/data/catalog-history.json), the command reference (docs/commands/*.mdx), the contributor credits
+// (src/data/contributors.json) and the sponsors (src/data/sponsors.json, public/readme/sponsors*.svg). Runs before
+// `npm run dev` and `npm run build`.
 //
 // Each file is generated only when it is missing, so a second `npm run dev` starts at once; `npm run refresh-data`
 // (--refresh) regenerates them all, for example after changing a test or a command's help. The catalog and the
@@ -34,6 +36,11 @@ if (missing('src/data/test-catalog.json')) {
 	run('Export the test catalog', 'pwsh', pwsh('build/docs/Export-MtTestCatalogForDocs.ps1', '-OutputPath', at('src/data/test-catalog.json')), repoRoot);
 }
 
+// Read before the explorer's data, which lists their tests.
+const communityMissing = missing('src/data/community-packs.json');
+if (communityMissing) run('Read the community packs', process.execPath, ['scripts/community-packs.mjs'], websiteRoot);
+if (missing('src/data/catalog-history.json')) run('Count the checks of each release', process.execPath, ['scripts/catalog-history.mjs'], websiteRoot);
+
 const commandPages = () => readdirSync(at('docs/commands')).filter((name) => name.endsWith('.mdx') && name !== 'readme.mdx');
 // A failed run can leave some pages half converted and the index page (readme.mdx, kept in git) deleted. Remove the
 // pages, so the next run generates them again, and put back the index page as it was before the run, edits included.
@@ -51,7 +58,7 @@ if (refresh || commandPages().length === 0) {
 
 // The test pages, the contributor credits and the catalog explorer's data; the site's content loader writes the test
 // pages again on each build.
-if (missing('src/data/contributors.json') || missing('src/data/explorer.json')) {
+if (communityMissing || missing('src/data/contributors.json') || missing('src/data/explorer.json')) {
 	run('Credit the contributors', process.execPath, ['scripts/generate-test-docs.mjs'], websiteRoot);
 }
 

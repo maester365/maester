@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Writes the data file of the test builder page on maester.dev.
 

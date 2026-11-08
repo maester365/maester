@@ -1,4 +1,4 @@
-function Write-MtGitHubSecretsManualInstruction {
+﻿function Write-MtGitHubSecretsManualInstruction {
     <#
     .SYNOPSIS
     Prints the manual GitHub Actions secrets setup instructions used as a fallback by

@@ -10,6 +10,8 @@
 
     By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (`Test.*.ps1`) are found anywhere under the path and Pester-format custom tests (`*.Tests.ps1`) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
+    Invoke-Maester checks that Microsoft Graph is connected only when the run needs it: when a selected test declares the Graph service, when the run includes Pester-format tests (which do not declare their services), or when the results are sent by mail or to a Teams channel with -TeamId and -TeamChannelId. A run of tests that read nothing from Graph, such as Active Directory tests or a pack that reads a results file, needs no -SkipGraphConnect.
+
     -Product, -Feature, -Area, -Severity and -Suite select tests by their typed attributes. Each takes a list: the values of one selector are alternatives, and different selectors must all match. They combine the same way with -Tag and -TestId. -ExcludeProduct leaves out the tests of a product and wins over every selector. The tags of Maester 2.x, such as CA or CIS, still select the same built-in tests.
 
     .PARAMETER ExcludeProduct
@@ -123,10 +125,10 @@
     .EXAMPLE
     ```powershell
     Connect-Maester -Service ActiveDirectory
-    Invoke-Maester -Product ad -SkipGraphConnect
+    Invoke-Maester -Product ad
     ```
 
-    Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
+    Explicitly connect to Active Directory, then run the Active Directory tests. They do not use Microsoft Graph, so no Graph connection is needed.
 
     .EXAMPLE
     Invoke-Maester -Pack ZTA
@@ -303,8 +305,9 @@
         # To get the Webhook Uri, right-click on the channel in Teams and select 'Workflow'. Create a workflow using the 'Post to a channel when a webhook request is received' template. Use the value after 'complete.'
         [string] $TeamChannelWebhookUri,
 
-        # Skip the graph connection check.
-        # This is used for running tests that does not require a Graph connection.
+        # Skip the Microsoft Graph connection check. Invoke-Maester checks the connection only when a selected test
+        # declares the Graph service, the run includes Pester-format tests, or the results are sent by mail or Teams.
+        # Use this switch when you connect to Graph yourself, or to run Pester-format tests that do not use Graph.
         [switch] $SkipGraphConnect,
 
         # Do not send the run events to api.maester.dev: a random installation ID, a hash of the
@@ -567,16 +570,19 @@
 
         $EffectiveIncludePreview = 'Preview' -notin @($ExcludeTag)
 
+        # The Graph connection is checked only when the run needs it. Sending the results needs it whatever
+        # tests run, so that is checked now; the tests are checked once the plan is resolved (Test-MtGraphRequired).
+        $graphChecked = $false
         if ($SkipGraphConnect) {
             if (-not $NonInteractive.IsPresent) {
                 Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
             }
-        } else {
+        } elseif ($isMail -or $isTeamsChannelMessage) {
             Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage `
                 -IncludePreview:$EffectiveIncludePreview | Out-Null
+            $graphChecked = $true
         }
 
-        # Initialize MtSession after Graph connected.
         Initialize-MtSession
 
         if ($isWebUri) {
@@ -870,6 +876,19 @@
         if ($nativeTests.Count -gt 0) {
             $nativePlan = @(Resolve-MtNativePlan -Test $nativeTests -Selection $selection -RunConfig $runConfig -TenantContext $tenantContext `
                     -IncludeTag @($pesterFilter.Tag) -ExcludeTag $nativeExcludeTag -AutoExcludedTag @($autoExcludedTag) -DryRun:$DryRun)
+        }
+
+        # A run whose tests read nothing from Graph (Active Directory, or a pack that reads a results file) needs
+        # no Graph connection. Pester-format tests do not declare their services, so a run with them is checked.
+        if (-not $SkipGraphConnect -and -not $graphChecked -and (Test-MtGraphRequired -Plan $nativePlan -PesterTest:($pesterRunPath.Count -gt 0))) {
+            try {
+                Test-MtContext -IncludePreview:$EffectiveIncludePreview | Out-Null
+            } catch {
+                # Give the screen back first: the error must be readable.
+                Stop-MtConsoleOutput -Message (@($mtDashboardWarnings) + @($mtDashboardErrors))
+                Reset-MtProgressView
+                throw
+            }
         }
 
         # The services of this run: one line in the dashboard header, and the list in the scrollback.

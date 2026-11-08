@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkFxm1 {
+﻿function Test-MtFixtureFrameworkFxm1 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names a requirement of fx-missing, which has no framework file.

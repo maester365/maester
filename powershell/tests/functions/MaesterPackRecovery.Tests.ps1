@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     foreach ($SourceFile in @('Get-MtPackDigest', 'Invoke-MtPackInstall', 'Save-MtPackModule', 'Get-MtPackHome', 'Read-MtPackLock', 'Resolve-MtPackLockPath', 'Get-MtPackCandidate', 'ConvertFrom-MtPackSource', 'Get-MtBuiltInPack')) {
         . "$PSScriptRoot/../../internal/packs/$SourceFile.ps1"
     }

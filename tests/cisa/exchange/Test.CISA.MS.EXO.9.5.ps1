@@ -27,7 +27,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1204.002', 'T1566.001'),
         Control = 'cisa-scuba:MS.EXO.9.5',
-        Service = ('ExchangeOnline', 'SecurityCompliance'),
+        Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]
     [CmdletBinding()]

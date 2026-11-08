@@ -1,4 +1,4 @@
-﻿1.3.4 (L1) Ensure 'User owned apps and services' is restricted
+1.3.4 (L1) Ensure 'User owned apps and services' is restricted
 
 By default, users can install add-ins in their Microsoft Word, Excel, and PowerPoint applications, allowing data access within the application.
 

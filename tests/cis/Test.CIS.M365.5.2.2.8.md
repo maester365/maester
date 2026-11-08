@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy blocks access when the sign-in risk is medium or high.
+An enabled Conditional Access policy blocks access when the sign-in risk is medium or high.
 
 Asking a risky sign-in for MFA still leaves the account open to an attacker who can complete the prompt, for example by relaying it. Blocking sign-ins that Microsoft Entra ID Protection rates medium or high stops them before a session exists, and users with a genuine need are sent to the helpdesk.
 

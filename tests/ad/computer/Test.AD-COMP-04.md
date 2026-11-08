@@ -1,4 +1,4 @@
-﻿Computer accounts should use standard primary group IDs. Non-standard primary groups may indicate:
+Computer accounts should use standard primary group IDs. Non-standard primary groups may indicate:
 
 - **Misconfiguration**: Computers accidentally assigned to incorrect groups
 - **Custom security configurations**: Potential deviations from security baselines

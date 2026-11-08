@@ -1,4 +1,4 @@
-function Read-MtNativeTest {
+﻿function Read-MtNativeTest {
     <#
     .SYNOPSIS
     Reads a native test file (Test.<ID>.ps1) from its AST and validates its [MaesterTest] metadata.

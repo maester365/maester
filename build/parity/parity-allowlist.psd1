@@ -1,4 +1,4 @@
-@{
+﻿@{
     # Parity allow-list for build/parity/Compare-MtTestResult.ps1.
     #
     # Encodes the intended result differences between Maester 2.x and 3.0 listed in

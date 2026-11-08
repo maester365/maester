@@ -1,4 +1,4 @@
-# Benchmarks and framework files (docs/proposals/maester-3.0-test-attributes.md, section 6): the Frameworks a
+﻿# Benchmarks and framework files (docs/proposals/maester-3.0-test-attributes.md, section 6): the Frameworks a
 # suite.json declares, the framework files beside it, the Control that maps a test to a requirement, Benchmark and
 # Control on a test, on its rows and in the catalog, what the catalog build rejects, and what a run does with a
 # custom suite whose framework file is wrong.

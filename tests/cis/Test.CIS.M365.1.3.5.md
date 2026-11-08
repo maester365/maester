@@ -1,4 +1,4 @@
-﻿1.3.5 (L1) Ensure internal phishing protection for Forms is enabled
+1.3.5 (L1) Ensure internal phishing protection for Forms is enabled
 
 Microsoft Forms can be used for phishing attacks by asking personal or sensitive information and collecting the results. Microsoft 365 has built-in protection that will proactively scan for phishing attempt in forms such personal information request.
 

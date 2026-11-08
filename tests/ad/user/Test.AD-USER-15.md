@@ -1,4 +1,4 @@
-﻿The `Manager` attribute is frequently used in governance workflows, approval chains, and identity lifecycle processes. Missing or inconsistent manager data can weaken access review quality.
+The `Manager` attribute is frequently used in governance workflows, approval chains, and identity lifecycle processes. Missing or inconsistent manager data can weaken access review quality.
 
 - **Governance readiness**: Supports manager-based approval and review processes
 - **Data quality insight**: Shows how complete identity metadata is across the domain

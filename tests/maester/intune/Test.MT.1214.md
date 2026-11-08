@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** macOS compliance policy requires System Integrity Protection.
+Ensure at least one **assigned** macOS compliance policy requires System Integrity Protection.
 
 System Integrity Protection (SIP) is a macOS kernel-level protection that prevents even the root user from modifying protected system files, directories and processes, or attaching a debugger to system binaries. It is enabled by default on macOS.
 

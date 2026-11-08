@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Removes the rows of tests/maester-config.json for checks that are now native tests.
 

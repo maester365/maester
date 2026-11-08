@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprints should pass only explicitly selected delegated scopes and application roles to their child Agent Identities.
+Agent Identity Blueprints should pass only explicitly selected delegated scopes and application roles to their child Agent Identities.
 
 The `allAllowed` inheritance pattern gives every child Agent Identity all permissions granted to the Blueprint for a resource, without requiring separate consent. It also applies permissions granted to the Blueprint in the future. This can give existing and future Agent Identities broader access than intended and increases the impact of an unnecessary or high-risk permission assignment.
 

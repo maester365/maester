@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     $maesterTestsPath = Join-Path $repoRoot 'tests/maester'
 

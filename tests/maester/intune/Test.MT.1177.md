@@ -1,4 +1,4 @@
-﻿Ensure at least one Intune LAPS policy is configured to **back up local admin passwords to Microsoft Entra ID**.
+Ensure at least one Intune LAPS policy is configured to **back up local admin passwords to Microsoft Entra ID**.
 
 Windows LAPS (Local Administrator Password Solution) automatically rotates and backs up local administrator passwords on managed devices. Without LAPS, local admin accounts often share the same password across all devices — if one device is compromised, an attacker can move laterally to every other device using the same credentials.
 

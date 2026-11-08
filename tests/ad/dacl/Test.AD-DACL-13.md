@@ -1,4 +1,4 @@
-﻿Privileged extended rights in Active Directory can authorize sensitive operations that go beyond standard read or write permissions.
+Privileged extended rights in Active Directory can authorize sensitive operations that go beyond standard read or write permissions.
 
 - **Privilege escalation risk**: Rights such as password reset or replication access can enable takeover paths
 - **Delegation review**: Extended rights are often assigned during admin delegation and may persist longer than intended

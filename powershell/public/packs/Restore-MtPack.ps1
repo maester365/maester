@@ -1,4 +1,4 @@
-function Restore-MtPack {
+﻿function Restore-MtPack {
     <#
     .SYNOPSIS
     Installs exactly the packs and modules that maester-packs.lock.json records, on a new computer or in a pipeline.

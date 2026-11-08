@@ -1,4 +1,4 @@
-﻿Inherited object type detail helps explain where inheritable ACEs are intended to apply.
+Inherited object type detail helps explain where inheritable ACEs are intended to apply.
 
 - **Scoping transparency**: Reveals which descendant object classes are targeted most often
 - **Delegation review**: Helps validate whether inherited permissions are narrowly or broadly applied

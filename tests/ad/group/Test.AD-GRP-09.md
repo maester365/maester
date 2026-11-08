@@ -1,4 +1,4 @@
-﻿Global groups are the most commonly used group type for organizing users in Active Directory:
+Global groups are the most commonly used group type for organizing users in Active Directory:
 
 - **User organization**: Used to organize users by role, department, or function
 - **Forest-wide usage**: Can be used across the entire forest for access control

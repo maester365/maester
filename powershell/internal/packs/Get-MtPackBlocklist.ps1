@@ -1,4 +1,4 @@
-function Get-MtPackBlocklist {
+﻿function Get-MtPackBlocklist {
     <#
     .SYNOPSIS
     Returns the signed pack blocklist, fetched with a short timeout and cached for an hour (Maester Packs design, section 9.8).

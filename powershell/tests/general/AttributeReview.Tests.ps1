@@ -1,4 +1,4 @@
-# Unit tests for build/review/Invoke-MtAttributeReview.ps1, the script behind the attribute-review workflow.
+﻿# Unit tests for build/review/Invoke-MtAttributeReview.ps1, the script behind the attribute-review workflow.
 # No test here calls the Claude API: Invoke-WebRequest is mocked.
 
 BeforeDiscovery {
