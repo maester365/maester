@@ -24,6 +24,7 @@
             AllowedToDelegateTo = [string[]]@($_.'msDS-AllowedToDelegateTo' | Where-Object { $null -ne $_ })
             HasResourceBasedConstrainedDelegation = $null -ne $_.'msDS-AllowedToActOnBehalfOfOtherIdentity'
             CreatorSid = $_.'mS-DS-CreatorSID'
+            'mS-DS-CreatorSID' = $_.'mS-DS-CreatorSID'
             PrimaryGroupId = $_.primaryGroupID; Sid = $_.objectSid; UserAccountControl = [int]$_.userAccountControl
             IsCriticalSystemObject = if ($null -ne $_.isCriticalSystemObject) { [bool]$_.isCriticalSystemObject } else { $null }; ManagedBy = [string]$_.managedBy; SidHistory = @($_.sIDHistory | Where-Object { $null -ne $_ })
         }

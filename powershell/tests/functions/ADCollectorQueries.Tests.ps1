@@ -84,6 +84,20 @@ Describe 'AD query normalization for consolidated checks' {
         }
     }
 
+    It 'retains the actual creator SID attribute alongside its compatibility alias' {
+        Mock -ModuleName Maester Invoke-MtLdapSearch -RemoveParameterType Connection {
+            [pscustomobject]@{ name = 'Computer'; 'mS-DS-CreatorSID' = [pscustomobject]@{ Value = 'S-1-5-11' } }
+        }
+        InModuleScope Maester {
+            $connection = [System.DirectoryServices.Protocols.LdapConnection]::new('localhost')
+            try {
+                $computer = @(Get-MtLdapComputer -Connection $connection -SearchBase 'DC=example,DC=com')[0]
+                $computer.'mS-DS-CreatorSID'.Value | Should -Be 'S-1-5-11'
+                $computer.CreatorSid.Value | Should -Be $computer.'mS-DS-CreatorSID'.Value
+            } finally { $connection.Dispose() }
+        }
+    }
+
     It 'distinguishes a missing Directory Service object from unset attributes' {
         InModuleScope Maester {
             $connection = [System.DirectoryServices.Protocols.LdapConnection]::new('localhost')
