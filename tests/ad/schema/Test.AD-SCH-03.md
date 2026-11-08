@@ -35,8 +35,7 @@ This test retrieves `objectVersion` from the schema container, maps it to a Wind
 
 #### Related Tests
 
-- `Test-MtAdSchemaModificationYearCount` (AD-SCH-01) - Shows schema object creation years and details
-- `Test-MtAdDomainFunctionalLevel` - Shows domain functional level
+- **AD-SCH-01 — Schema creation years and objects should be investigated** — `Test-MtAdSchemaModificationYearCount` — Reviews schema creation years and objects.
 
 <!--- Results --->
 %TestResult%

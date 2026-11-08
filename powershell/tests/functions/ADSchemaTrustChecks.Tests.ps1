@@ -60,14 +60,22 @@ Describe 'Merged AD schema, RootDSE, service-account and trust checks' {
         $script:detail.Text | Should -Not -Match '\| attrOne \| CN=attrOne'
     }
 
-    It 'requires the collected Windows LAPS flag and does not accept legacy schema alone' {
+    It 'requires a complete schema pair rather than a solitary legacy password attribute' {
         Test-MtAdLapsInstalledStatus | Should -BeFalse
-        $script:detail.Text | Should -Match 'Legacy LAPS presence alone is insufficient'
+        $script:detail.Text | Should -Match 'Neither Windows LAPS nor legacy Microsoft LAPS has a complete schema pair'
         $script:state.WindowsLapsInstalled = $true
         $script:state.SchemaObjects += [PSCustomObject]@{ Name = 'ms-LAPS-Password'; LdapDisplayName = 'msLAPS-Password' }
         $script:state.SchemaObjects += [PSCustomObject]@{ Name = 'ms-LAPS-PasswordExpirationTime'; LdapDisplayName = 'msLAPS-PasswordExpirationTime' }
         Test-MtAdLapsInstalledStatus | Should -BeTrue
-        $script:detail.Text | Should -Match 'Both Windows LAPS schema attributes are present'
+        $script:detail.Text | Should -Match 'At least one complete LAPS schema pair is present'
+    }
+
+    It 'retains legacy Microsoft LAPS readiness without claiming Windows LAPS deployment' {
+        $script:state.SchemaObjects += [PSCustomObject]@{ LdapDisplayName = 'ms-Mcs-AdmPwdExpirationTime' }
+        Test-MtAdLapsInstalledStatus | Should -BeTrue
+        $script:detail.Text | Should -Match 'Legacy Microsoft LAPS schema pair complete \| True'
+        $script:detail.Text | Should -Match 'Windows LAPS schema pair complete \| False'
+        $script:detail.Text | Should -Match 'not proof that passwords are managed or rotating'
     }
 
     It 'shows DIGEST-MD5 as advertised, not as a successful authentication' {
@@ -88,12 +96,13 @@ Describe 'Merged AD schema, RootDSE, service-account and trust checks' {
         $script:detail.Text | Should -Match 'delegated \| dMSA \| 2'
     }
 
-    It 'fails on a missing KRBTGT account and respects a configured password-age threshold' {
+    It 'reports a missing KRBTGT account as unavailable and respects a configured password-age threshold' {
         Test-MtAdKrbtgtPasswordLastSet | Should -BeFalse
         Test-MtAdKrbtgtPasswordLastSet -MaxPasswordAgeDays 240 | Should -BeTrue
         $script:state.Users = @()
-        Test-MtAdKrbtgtPasswordLastSet | Should -BeFalse
-        $script:detail.Text | Should -Match 'KRBTGT account not found'
+        Test-MtAdKrbtgtPasswordLastSet | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
+        $script:detail.Text | Should -Match 'KRBTGT was not found in the visible user inventory'
     }
 
     It 'merges trust count and all configuration details as investigation' {

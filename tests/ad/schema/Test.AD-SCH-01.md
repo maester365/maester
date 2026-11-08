@@ -31,7 +31,7 @@ This test retrieves all schema objects and analyzes their creation dates to iden
 
 #### Related Tests
 
-- `Test-MtAdSchemaVersionEntryCount` (AD-SCH-03) - Shows the current schema version and every classSchema definition
+- **AD-SCH-03 — Schema version and class definitions should be investigated** — `Test-MtAdSchemaVersionEntryCount` — Reviews schema version and class definitions.
 
 <!--- Results --->
 %TestResult%
