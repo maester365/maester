@@ -8,19 +8,18 @@ Conflict objects with `CNF` markers typically originate from replication or nami
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 Investigate conflict objects and confirm whether they are expected remnants, still referenced, or safe to clean up. Review their permissions before remediation to understand any delegated access that may still exist.
 
 #### How the Test Works
 
-This test retrieves `$adState.DaclEntries`, searches for `CNF` within `ObjectDN`, deduplicates matching distinguished names, and reports the number of unique conflict objects and associated DACL entries.
+This test retrieves `$adState.DaclEntries`, finds escaped conflict markers (`\0ACNF:`) in `ObjectDN`, and reports unique conflict objects, associated ACE counts, and each affected object's DN, class and ACE count. This is an inventory for review, not a pass/fail judgement on conflict objects.
 
 #### Related Tests
 
-- `Test-MtAdDaclConflictObjectDetails`
 - `Test-MtAdDaclDistinctObjectCount`
-- `Test-MtAdDaclDenyAceDetails`
+- `Test-MtAdDaclDenyAceCount`
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

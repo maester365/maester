@@ -8,17 +8,16 @@ Deny ACEs are powerful because they can override allow permissions and create ac
 
 **Operational**
 
-#### Security Recommendation
+#### Remediation action
 
 Review deny ACE usage carefully. Ensure each deny entry is intentional, documented, and still required. Excessive or poorly understood deny entries can create administrative confusion and mask broader permission issues.
 
 #### How the Test Works
 
-This test retrieves `$adState.DaclEntries`, filters entries where `AccessControlType` contains `Deny`, and reports the total deny ACE count along with the number of affected objects.
+This test retrieves `$adState.DaclEntries`, filters entries where `AccessControlType` is `Deny` (the collector's normalized value), reports total ACEs, deny ACEs and affected objects, and lists deny ACE counts for each object and identity. Deny ACEs are not automatically misconfigurations; review their intent.
 
 #### Related Tests
 
-- `Test-MtAdDaclDenyAceDetails`
 - `Test-MtAdDaclDistinctObjectCount`
 - `Test-MtAdDaclOuObjectCount`
 
