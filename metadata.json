@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6X4J1FVDN792H0XTWH5CESM",
   "strategy": "manual-commit",
   "branch": "feat/website-catalog-growth",
-  "checkpoints_count": 19,
+  "checkpoints_count": 23,
   "files_touched": [
     ".github/workflows/build-website.yaml",
     ".gitignore",
@@ -54,32 +54,39 @@
       "compact_transcript": "/4/transcript.jsonl",
       "content_hash": "/4/content_hash.txt",
       "prompt": "/4/prompt.txt"
+    },
+    {
+      "metadata": "/5/metadata.json",
+      "transcript": "/5/full.jsonl",
+      "compact_transcript": "/5/transcript.jsonl",
+      "content_hash": "/5/content_hash.txt",
+      "prompt": "/5/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 464,
-    "cache_creation_tokens": 578088,
-    "cache_read_tokens": 48947855,
-    "output_tokens": 125523,
-    "api_call_count": 208,
+    "input_tokens": 504,
+    "cache_creation_tokens": 703374,
+    "cache_read_tokens": 51336090,
+    "output_tokens": 161871,
+    "api_call_count": 225,
     "subagent_tokens": {
-      "input_tokens": 0,
-      "cache_creation_tokens": 0,
-      "cache_read_tokens": 0,
-      "output_tokens": 0,
-      "api_call_count": 0
+      "input_tokens": 472,
+      "cache_creation_tokens": 1785045,
+      "cache_read_tokens": 26116999,
+      "output_tokens": 339337,
+      "api_call_count": 236
     }
   },
   "redaction": {
-    "replacements": 3228,
+    "replacements": 3756,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 6,
       "credentialed_uri": 0,
-      "entropy": 3196,
-      "key_context": 26,
+      "entropy": 3722,
+      "key_context": 28,
       "provider_token": 0,
       "shell_stdin": 0
     }
