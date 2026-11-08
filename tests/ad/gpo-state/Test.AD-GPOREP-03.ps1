@@ -8,8 +8,12 @@
     [MaesterTest(
         Id = 'AD-GPOREP-03',
         Title = 'GPOs should permit Authenticated Users where required',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Info',
+        Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'

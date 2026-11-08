@@ -6,9 +6,15 @@
     Counts disabled links and lists their target policies and containers for review.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-12', Title = 'Review disabled GPO links',
-        Product = 'ad', Feature = 'group-policy', Area = 'infrastructure',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
+        Id = 'AD-GPOREP-12',
+        Title = 'Review disabled GPO links',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'infrastructure',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]

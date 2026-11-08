@@ -6,9 +6,15 @@
     Lists deny ACE findings for review; deny entries can be intentional.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-07', Title = 'Review GPOs with deny access entries',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
+        Id = 'AD-GPOREP-07',
+        Title = 'Review GPOs with deny access entries',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]

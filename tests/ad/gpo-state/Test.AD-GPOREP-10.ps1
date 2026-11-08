@@ -7,9 +7,17 @@
     of an application right, not the full effective access of every target principal.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-10', Title = 'GPOs should have an Apply Group Policy allow entry',
-        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
-        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
+        Id = 'AD-GPOREP-10',
+        Title = 'GPOs should have an Apply Group Policy allow entry',
+        Product = 'ad',
+        Feature = 'group-policy',
+        Area = 'access-control',
+        ResourceType = 'GroupPolicy',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Platform = 'Windows',
         Author = 'soulemike'
