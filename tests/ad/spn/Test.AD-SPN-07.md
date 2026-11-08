@@ -25,7 +25,7 @@ This test retrieves all user objects with SPNs, extracts the service class from 
 
 #### Related Tests
 
-- `Test-MtAdUserSpnServiceClassUsage` - Detailed breakdown of service class usage
+- This check includes a per-service-class usage breakdown.
 - `Test-MtAdUserSpnTotalCount` - Total count of user SPNs
 - `Test-MtAdComputerSpnServiceClassCount` - Computer account service classes
 

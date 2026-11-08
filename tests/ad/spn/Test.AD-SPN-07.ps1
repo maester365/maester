@@ -59,7 +59,8 @@
 
     $serviceClassCount = ($serviceClasses | Measure-Object).Count
     $totalSpnCount = ($allSpns | Measure-Object).Count
-    $usersWithSpns = ($users | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
+    if ($null -eq $users) { throw 'User collection is unavailable.' }
+    $usersWithSpns = @($users | Where-Object { @($_.servicePrincipalName | Where-Object { $_ }).Count -gt 0 }).Count
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $true
@@ -74,6 +75,10 @@
 
         if ($serviceClassCount -gt 0) {
             $result += "| Service Classes | $($serviceClasses -join ', ') |" + "`n"
+            $result += "`n| Service Class | SPN Count |" + "`n| --- | --- |" + "`n"
+            foreach ($class in @($allSpns | Where-Object { $_ -match '^[^/]+' } | ForEach-Object { ($_ -split '/')[0] } | Group-Object | Sort-Object Count -Descending)) {
+                $result += "| $($class.Name) | $($class.Count) |" + "`n"
+            }
         }
 
         $testResultMarkdown = "Active Directory user SPN service class analysis found $serviceClassCount distinct service classes across $totalSpnCount SPNs.`n`n%TestResult%"

@@ -25,7 +25,7 @@ This test retrieves all computer objects from Active Directory, extracts their S
 
 #### Related Tests
 
-- `Test-MtAdComputerSpnServiceClassUsage` - Shows usage breakdown of each service class
+- This check includes a per-service-class usage breakdown.
 - `Test-MtAdComputerSpnUnknownCount` - Identifies unrecognized SPN service classes
 - `Test-MtAdUserSpnServiceClassCount` - Counts distinct service classes on user accounts
 

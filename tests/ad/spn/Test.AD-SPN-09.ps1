@@ -97,6 +97,7 @@
     $unknownCount = ($unknownServiceClasses | Measure-Object).Count
     $totalServiceClasses = ($serviceClasses | Measure-Object).Count
     $totalSpnCount = ($allSpns | Measure-Object).Count
+    if ($null -eq $users) { throw 'User collection is unavailable.' }
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $true
@@ -113,6 +114,14 @@
             $percentage = [Math]::Round(($unknownCount / $totalServiceClasses) * 100, 2)
             $result += "| Unknown Percentage | $percentage% |" + "`n"
             $result += "| Unknown Classes | $($unknownServiceClasses -join ', ') |" + "`n"
+            $result += "`n| User | Unknown SPN |" + "`n| --- | --- |" + "`n"
+            foreach ($user in $users) {
+                foreach ($spn in @($user.servicePrincipalName)) {
+                    if (($spn -split '/')[0] -in $unknownServiceClasses) {
+                        $result += "| $($user.SamAccountName) | $spn |" + "`n"
+                    }
+                }
+            }
         }
 
         $testResultMarkdown = "Active Directory user SPN analysis found $unknownCount unknown service classes out of $totalServiceClasses total.`n`n%TestResult%"

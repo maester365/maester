@@ -73,10 +73,12 @@
         }
     }
 
-    $totalSpns = ($spnData | Measure-Object).Count
+    if ($null -eq $computers) { throw 'Computer collection is unavailable.' }
+    $totalSpns = @($computers | ForEach-Object { $_.servicePrincipalName } | Where-Object { $_ }).Count
+    $parsedSpns = @($spnData).Count
     $nonFqdnSpns = $spnData | Where-Object { -not $_.IsFqdn }
     $nonFqdnCount = ($nonFqdnSpns | Measure-Object).Count
-    $fqdnCount = $totalSpns - $nonFqdnCount
+    $fqdnCount = $parsedSpns - $nonFqdnCount
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $true
@@ -86,6 +88,7 @@
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Total SPNs | $totalSpns |" + "`n"
+        $result += "| SPNs with unparsed host format | $($totalSpns - $parsedSpns) |" + "`n"
         $result += "| FQDN Hosts | $fqdnCount |" + "`n"
         $result += "| Non-FQDN Hosts | $nonFqdnCount |" + "`n"
 

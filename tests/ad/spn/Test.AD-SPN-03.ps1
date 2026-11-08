@@ -96,6 +96,7 @@
     $unknownCount = ($unknownServiceClasses | Measure-Object).Count
     $totalServiceClasses = ($serviceClasses | Measure-Object).Count
     $totalSpnCount = ($allSpns | Measure-Object).Count
+    if ($null -eq $computers) { throw 'Computer collection is unavailable.' }
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $totalSpnCount -ge 0
@@ -112,6 +113,14 @@
             $percentage = [Math]::Round(($unknownCount / $totalServiceClasses) * 100, 2)
             $result += "| Unknown Percentage | $percentage% |" + "`n"
             $result += "| Unknown Classes | $($unknownServiceClasses -join ', ') |" + "`n"
+            $result += "`n| Computer | Unknown SPN |" + "`n| --- | --- |" + "`n"
+            foreach ($computer in $computers) {
+                foreach ($spn in @($computer.servicePrincipalName)) {
+                    if (($spn -split '/')[0] -in $unknownServiceClasses) {
+                        $result += "| $($computer.Name) | $spn |" + "`n"
+                    }
+                }
+            }
         }
 
         $testResultMarkdown = "Active Directory computer SPN analysis found $unknownCount unknown service classes out of $totalServiceClasses total.`n`n%TestResult%"
@@ -120,7 +129,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory computer SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

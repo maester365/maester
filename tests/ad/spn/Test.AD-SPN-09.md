@@ -26,7 +26,7 @@ This test compares discovered user SPN service classes against a database of kno
 
 #### Related Tests
 
-- `Test-MtAdUserSpnUnknownDetails` - Detailed information about unknown user SPNs
+- This check includes the user and raw SPN for each unknown service class.
 - `Test-MtAdComputerSpnUnknownCount` - Unknown SPNs on computer accounts
 - `Test-MtAdUserSpnServiceClassCount` - All user SPN service classes
 
