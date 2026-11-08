@@ -45,10 +45,11 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         # Not T1190: that technique is about exploiting a public-facing application, and this
-        # check only establishes that vulnerable software is installed, never that it is
-        # reachable from outside. Mapping it would misclassify a fleet of internal or client
-        # software. Reported by @coderabbitai on #2695.
-        Mitre = 'None',
+        # check never establishes that anything is reachable from outside, so it would
+        # misclassify a fleet of internal or client software. T1203 is what patching this
+        # software actually prevents on an endpoint. `None` was wrong too: the attribute
+        # review reads the description as naming attacker behaviour, which it does.
+        Mitre = 'T1203',
         Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'DEFENDER_XDR',

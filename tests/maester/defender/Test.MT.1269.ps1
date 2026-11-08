@@ -128,12 +128,14 @@ function Test-MtDefenderDeviceSecurityRecommendation {
     $testResultMarkdown += "| Non-compliant devices | $nonCompliant |`n"
 
     if (-not [string]::IsNullOrWhiteSpace($configuration.Description)) {
-        $testResultMarkdown += "`n$($configuration.Description)`n"
+        # The knowledge base text is rendered as Markdown, so it is escaped like any other
+        # value the report does not author itself.
+        $testResultMarkdown += "`n$(Get-MtSafeMarkdown $configuration.Description)`n"
     }
 
     if (-not $testResult) {
         if (-not [string]::IsNullOrWhiteSpace($configuration.RiskDescription)) {
-            $testResultMarkdown += "`n**Risk.** $($configuration.RiskDescription)`n"
+            $testResultMarkdown += "`n**Risk.** $(Get-MtSafeMarkdown $configuration.RiskDescription)`n"
         }
         $devices = @($configuration.NonCompliantDeviceList | Where-Object { $_ })
         if ($devices.Count -gt 0) {
