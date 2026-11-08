@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6X51F55PSZ5CWP4YF04PZR5",
   "strategy": "manual-commit",
   "branch": "feat/website-catalog-growth",
-  "checkpoints_count": 8,
+  "checkpoints_count": 13,
   "files_touched": [
     "website/scripts/catalog-explorer.mjs",
     "website/scripts/catalog-history.mjs",
@@ -33,25 +33,39 @@
       "compact_transcript": "/2/transcript.jsonl",
       "content_hash": "/2/content_hash.txt",
       "prompt": "/2/prompt.txt"
+    },
+    {
+      "metadata": "/3/metadata.json",
+      "transcript": "/3/full.jsonl",
+      "compact_transcript": "/3/transcript.jsonl",
+      "content_hash": "/3/content_hash.txt",
+      "prompt": "/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 68,
-    "cache_creation_tokens": 26980,
-    "cache_read_tokens": 3621993,
-    "output_tokens": 8337,
-    "api_call_count": 28
+    "input_tokens": 112,
+    "cache_creation_tokens": 108899,
+    "cache_read_tokens": 5491322,
+    "output_tokens": 11280,
+    "api_call_count": 44,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
   },
   "redaction": {
-    "replacements": 2137,
+    "replacements": 7566,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 2120,
-      "key_context": 17,
+      "entropy": 7477,
+      "key_context": 89,
       "provider_token": 0,
       "shell_stdin": 0
     }
