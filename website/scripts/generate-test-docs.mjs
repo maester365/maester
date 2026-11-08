@@ -873,6 +873,7 @@ export function main() {
   // The community packs' tests, when community-packs.mjs has read them (prepare-data.mjs runs it first).
   let community = { packs: [] };
   try {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
     if (existsSync(communityPacksPath)) {
       // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
       const parsed = JSON.parse(readFileSync(communityPacksPath, "utf8"));
