@@ -2,10 +2,7 @@
     # The native tests that read the permission summary of Get-MtADGpoState. Finding is the GPO permission
     # profile (see New-TestGpo) that the test must flag.
     $script:permissionTests = @(
-        @{ Id = 'AD-GPOREP-01'; Command = 'Test-MtAdGpoNoPermissionsCount'; Finding = 'EmptyDacl' }
-        @{ Id = 'AD-GPOREP-02'; Command = 'Test-MtAdGpoNoPermissionsDetails'; Finding = 'EmptyDacl' }
-        @{ Id = 'AD-GPOREP-03'; Command = 'Test-MtAdGpoNoAuthenticatedUsersCount'; Finding = 'DomainComputers' }
-        @{ Id = 'AD-GPOREP-04'; Command = 'Test-MtAdGpoNoAuthenticatedUsersDetails'; Finding = 'DomainComputers' }
+        # The consolidated 01/03 checks are covered by ADGpoReports.Tests.ps1.
         @{ Id = 'AD-GPOREP-05'; Command = 'Test-MtAdGpoNoEnterpriseDcCount'; Finding = 'NoEnterpriseDc' }
         @{ Id = 'AD-GPOREP-06'; Command = 'Test-MtAdGpoNoDomainComputersCount'; Finding = 'NoComputerAccess' }
         @{ Id = 'AD-GPOREP-09'; Command = 'Test-MtAdGpoInheritedPermissionsCount'; Finding = 'Inherited' }
@@ -16,8 +13,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     # Check functions that became native tests are not exported.
-    Use-MtModuleFunction -Name Test-MtAdGpoNoPermissionsCount, Test-MtAdGpoNoPermissionsDetails,
-    Test-MtAdGpoNoAuthenticatedUsersCount, Test-MtAdGpoNoAuthenticatedUsersDetails, Test-MtAdGpoNoEnterpriseDcCount,
+    Use-MtModuleFunction -Name Test-MtAdGpoNoEnterpriseDcCount,
     Test-MtAdGpoNoDomainComputersCount, Test-MtAdGpoInheritedPermissionsCount
 
     $script:domainSid = 'S-1-5-21-1111111111-2222222222-3333333333'

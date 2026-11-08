@@ -1,33 +1,14 @@
 ﻿function Test-MtAdGpoDenyAceCount {
     <#
     .SYNOPSIS
-    Counts GPO reports that include a Deny ACE.
-
+    Inventories GPOs with explicit deny entries.
     .DESCRIPTION
-    This test retrieves GPO state data and counts how many GPO reports indicate that
-    a Deny ACE is present.
-
-    .EXAMPLE
-    Test-MtAdGpoDenyAceCount
-
-    Returns $true when no GPO reports include a Deny ACE, otherwise $false.
-    The test result includes a markdown table with the count.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoDenyAceCount
+    Lists deny ACE findings for review; deny entries can be intentional.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-07',
-        Title = 'GPOs with deny ACE count should be retrievable',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'access-control',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Medium',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPOREP-07', Title = 'Review GPOs with deny access entries',
+        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
+        ResourceType = 'GroupPolicy', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
@@ -35,100 +16,18 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdGpoDenyAceCount"
-    $gpoState = $null
-    $gpoState = Get-MtADGpoState
-Write-Verbose "Retrieved AD state"
-
-if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOReports) { throw 'GPO permission reports could not be collected.' }
+    $reports = @($state.GPOReports | Where-Object { $null -ne $_ })
+    if ($reports.Count -eq 0) { throw 'No GPO permission reports were collected.' }
+    $found = @($reports | Where-Object { $true -eq $_.HasDenyAce })
+    $unknown = @($reports | Where-Object { $null -eq $_.HasDenyAce })
+    $table = "| GPO | Deny ACE |`n| --- | --- |`n"
+    foreach ($report in @($found + $unknown | Sort-Object Name)) {
+        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
+        $status = if ($null -eq $report.HasDenyAce) { 'Not evaluated' } else { 'Present' }
+        $table += "| $name | $status |`n"
     }
-    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
-        return $null
-    }
-    Write-Verbose "Filtering/counting gpo deny ace count"
-
-    $gpoReports = $null
-    if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
-        $gpoReports = $gpoState.GPOReports
-    }
-    elseif ($gpoState.PSObject.Properties.Name -contains 'GpoReports') {
-        $gpoReports = $gpoState.GpoReports
-    }
-    else {
-        $gpoReports = @()
-        foreach ($gpo in @($gpoState.GPOs)) {
-            foreach ($prop in @('GpoReports', 'GPOReports', 'GpoReport', 'GPOReport')) {
-                if ($gpo.PSObject.Properties.Name -contains $prop -and $null -ne $gpo.$prop) {
-                    $value = $gpo.$prop
-                    if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string])) {
-                        $gpoReports += @($value)
-                    }
-                    else {
-                        $gpoReports += $value
-                    }
-                }
-            }
-        }
-    }
-
-    if ($null -eq $gpoReports) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve GPO reports from Get-MtADGpoState.'
-        return $false
-    }
-
-    $gpoReports = @($gpoReports)
-    $reportsWithDenyAce = @(
-        foreach ($report in $gpoReports) {
-            $hasDenyAce = $null
-            if ($report.PSObject.Properties.Name -contains 'HasDenyAce') {
-                $hasDenyAce = $report.HasDenyAce
-            }
-
-            if ($hasDenyAce -eq $true) {
-                $report
-            }
-        }
-    )
-
-    $denyAceCount = ($reportsWithDenyAce | Measure-Object).Count
-    $testResult = $denyAceCount -eq 0
-
-    $sampleLimit = 5
-    $sampleGpo = $reportsWithDenyAce | Select-Object -First $sampleLimit
-    $sampleNames = @($sampleGpo | ForEach-Object {
-        $name = $null
-        if ($_.PSObject.Properties.Name -contains 'Name') { $name = $_.Name }
-        if ([string]::IsNullOrWhiteSpace($name)) { $name = '' }
-        $name
-    }) | Where-Object { $_ }
-    $sampleNamesText = ($sampleNames -join ', ')
-    if ($denyAceCount -gt $sampleLimit -and $sampleNamesText) {
-        $sampleNamesText += " (showing first $sampleLimit)"
-    }
-
-    $resultTable = "| Metric | Value |" + "`n"
-    $resultTable += "| --- | --- |" + "`n"
-    $resultTable += "| Total GPO Reports | $([int]($gpoReports | Measure-Object).Count) |" + "`n"
-    $resultTable += "| GPO Reports With Deny ACE | $denyAceCount |" + "`n"
-    if ($denyAceCount -gt 0 -and $sampleNamesText) {
-        $resultTable += "| Sample GPO Reports | $sampleNamesText |" + "`n"
-    }
-
-    if ($testResult) {
-        $recommendation = '✅ No GPO reports include a Deny ACE.'
-    }
-    else {
-        $recommendation = "⚠️ GPO reports include a Deny ACE ($denyAceCount). Deny ACEs can override expected permissions and require careful review."
-    }
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "$recommendation`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdGpoDenyAceCount"
-    return $testResult
+    Add-MtTestResultDetail -Result "Review deny ACEs on $($found.Count) of $($reports.Count) GPOs; $($unknown.Count) could not be evaluated.`n`n$table" -Investigate
+    return $true
 }

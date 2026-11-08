@@ -1,32 +1,15 @@
-﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
-function Test-MtAdGpoNoApplyGroupPolicyAceCount {
+﻿function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     <#
     .SYNOPSIS
-    Counts the number of GPOs missing the "Apply Group Policy" ACE.
-
+    Checks that every GPO has an Apply Group Policy allow entry.
     .DESCRIPTION
-    This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-    then analyzes each GPO report for whether it has an ACE granting the "Apply Group Policy" right.
-
-    .EXAMPLE
-    Test-MtAdGpoNoApplyGroupPolicyAceCount
-
-    Returns $true if GPO report data is accessible, $false otherwise.
-    The test result includes the count of GPOs without the required "Apply Group Policy" ACE.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoNoApplyGroupPolicyAceCount
+    Fails when a GPO has no Apply Group Policy allow entry. This checks the presence
+    of an application right, not the full effective access of every target principal.
     #>
     [MaesterTest(
-        Id = 'AD-GPOREP-10',
-        Title = 'GPO no-apply Group Policy ACE count should be investigated',
-        Product = 'ad',
-        Feature = 'group-policy',
-        Area = 'access-control',
-        ResourceType = 'GroupPolicy',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
+        Id = 'AD-GPOREP-10', Title = 'GPOs should have an Apply Group Policy allow entry',
+        Product = 'ad', Feature = 'group-policy', Area = 'access-control',
+        ResourceType = 'GroupPolicy', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'None', Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
         Author = 'soulemike'
     )]
@@ -34,42 +17,20 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdGpoNoApplyGroupPolicyAceCount"
-    $gpoState = Get-MtADGpoState
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADGpoState
+    if ($null -eq $state -or $null -eq $state.GPOReports) { throw 'GPO permission reports could not be collected.' }
+    $reports = @($state.GPOReports | Where-Object { $null -ne $_ })
+    if ($reports.Count -eq 0) { throw 'No GPO permission reports were collected.' }
+    $missing = @($reports | Where-Object { $false -eq $_.HasApplyGroupPolicyAce })
+    $unknown = @($reports | Where-Object { $null -eq $_.HasApplyGroupPolicyAce })
+    if ($unknown.Count -gt 0) { throw 'GPO application permissions could not be evaluated for every policy.' }
+    $table = "| GPO | Apply Group Policy ACE |`n| --- | --- |`n"
+    foreach ($report in @($missing + $unknown | Sort-Object Name)) {
+        $name = [System.Net.WebUtility]::HtmlEncode([string]$report.Name) -replace '\|', '&#124;'
+        $status = if ($null -eq $report.HasApplyGroupPolicyAce) { 'Not evaluated' } else { 'Not present' }
+        $table += "| $name | $status |`n"
     }
-    if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core') {
-        Add-MtTestResultDetail -SkippedBecause NotSupported
-        return $null
-    }
-    Write-Verbose "Filtering/counting gpo no apply group policy ace count"
-
-    $gpoReports = $gpoState.GPOReports
-    if ($null -eq $gpoReports) {
-        Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO report data from Get-MtADGpoState.'
-        return $false
-    }
-
-    $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-
-    $gpoCount = $gpoReportsArray.Count
-    $noApplyAceCount = @($gpoReportsArray | Where-Object { $_.HasApplyGroupPolicyAce -eq $false }).Count
-
-    $testResult = $true
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total GPOs | $gpoCount |" + "`n"
-    $result += "| GPOs missing Apply Group Policy ACE | $noApplyAceCount |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory GPOs have been analyzed for Apply Group Policy permissions. $noApplyAceCount out of $gpoCount GPO(s) are missing the required ACE.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceCount"
-    return $testResult
+    $message = if ($missing.Count -eq 0) { 'Well done. Every GPO has an Apply Group Policy allow entry.' } else { "Grant appropriate application rights or archive intentionally unused policies: $($missing.Count) of $($reports.Count) GPOs have no Apply Group Policy allow entry." }
+    Add-MtTestResultDetail -Result "$message`n`n$table"
+    return ($missing.Count -eq 0)
 }

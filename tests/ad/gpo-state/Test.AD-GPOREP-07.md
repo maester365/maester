@@ -1,26 +1,13 @@
-#### Control Type
+Inventories Group Policy objects with deny access entries. Deny ACEs override allow entries, but can also be intentional. Policies with unreadable security descriptors are listed as not evaluated.
 
-**Detective**
+#### Remediation action
 
-#### Test-MtAdGpoDenyAceCount
-
- Counts GPO reports that include a Deny ACE.
-
-#### Why This Test Matters
-- Detective control: checks for Deny ACEs in GPO reports which can override permissions.
-
-#### Security Recommendation
-- Review or remove Deny ACEs to ensure proper permission handling.
-
-#### How the Test Works
-- Aggregates GPO reports, counts those with HasDenyAce true, and reports totals and a sample of affected GPOs.
-
-#### Related Tests
-- `Test-MtAdGpoDenyAceDetails`.
+1. In **Group Policy Management**, inspect the listed GPOs under **Delegation** > **Advanced**.
+2. Confirm each deny entry is required and does not prevent intended policy application; remove unintended entries after reviewing inheritance and scope.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%

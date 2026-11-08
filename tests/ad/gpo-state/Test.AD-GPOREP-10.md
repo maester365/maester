@@ -1,26 +1,15 @@
-#### Test-MtAdGpoNoApplyGroupPolicyAceCount
+Checks that every GPO has an allow entry for the Apply Group Policy right. A policy without application rights cannot deliver its intended settings through that right. This is a policy-health check, not a calculation of effective permissions for every user or computer.
 
- Counts the number of GPOs missing the "Apply Group Policy" ACE.
+The check fails when an application entry is absent and errors when permissions are unreadable. Intentionally unused policies require review before granting access; archive or remove them if they are no longer needed.
 
-#### Why This Test Matters
-- Detective control: counts GPOs missing the Apply Group Policy ACE which governs policy application.
+#### Remediation action
 
-#### Control Type
-
-**Operational**
-
-#### Security Recommendation
-- Ensure the ACE is present on necessary GPOs or document why it is absent.
-
-#### How the Test Works
-- Evaluates GPO reports for HasApplyGroupPolicyAce, counts missing ACE occurrences, and provides a sample list.
-
-#### Related Tests
-- `Test-MtAdGpoNoApplyGroupPolicyAceDetails`.
+1. In **Group Policy Management**, inspect the listed GPO's **Scope** > **Security Filtering** and **Delegation** > **Advanced** settings.
+2. Grant Apply Group Policy only to principals that should receive the policy. Document intentionally unused policies and investigate unreadable permissions.
 
 #### Related links
-- [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 
-- ANSSI checkpoint: https://www.anssi.gouv.fr/
+
+* [Group Policy overview](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview)
 
 <!--- Results --->
 %TestResult%
