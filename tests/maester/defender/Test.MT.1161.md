@@ -1,4 +1,4 @@
-﻿Checks that the cloud block level is set to High or higher in the assigned Microsoft Defender Antivirus policies.
+Checks that the cloud block level is set to High or higher in the assigned Microsoft Defender Antivirus policies.
 
 A low cloud block level reduces proactive threat blocking capabilities, allowing more suspicious files to execute without cloud-based analysis.
 

@@ -1,4 +1,4 @@
-﻿At least one IP-based named location with address ranges exists and is marked as trusted.
+At least one IP-based named location with address ranges exists and is marked as trusted.
 
 Named locations give Conditional Access a way to tell your offices and known egress addresses from the rest of the internet. Marked as trusted, they feed Microsoft Entra ID Protection and let policies relax or tighten requirements by network.
 

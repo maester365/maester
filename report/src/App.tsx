@@ -1,4 +1,8 @@
-import { useLocation } from "@/lib/router"
+import { useEffect } from "react"
+import { useLocation, useNavigate } from "@/lib/router"
+import { WORKSHOP_ATTACHMENT } from "@/lib/zeroTrust"
+import { walkItems } from "@/components/report/nav"
+import { useNav } from "@/components/report/Sidebar"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { TenantProvider } from "@/context/TenantContext"
 import { ReportProvider } from "@/components/report/ReportContext"
@@ -10,7 +14,8 @@ import TestsPage from "@/pages/report/TestsPage"
 import ProductPage from "@/pages/report/ProductPage"
 import FrameworkPage from "@/pages/report/FrameworkPage"
 import AttackPage from "@/pages/report/AttackPage"
-import PackPage from "@/pages/report/PackPage"
+import PackRoute from "@/pages/report/PackRoute"
+import ZeroTrustPage from "@/pages/report/ZeroTrustPage"
 import ChangesPage from "@/pages/report/ChangesPage"
 import RunPage from "@/pages/report/RunPage"
 import TenantsPage from "@/pages/report/TenantsPage"
@@ -26,6 +31,20 @@ function decode(value: string) {
   try { return decodeURIComponent(value) } catch { return value }
 }
 
+// A link from before the pack menu (#/zero-trust/<pillar>[/table]) opens the same pillar in the pack's menu. A
+// result whose pack has no plan in its menu shows the plan here.
+function ZeroTrustRedirect({ pathname }: { pathname: string }) {
+  const { nav } = useNav()
+  const navigate = useNavigate()
+  const [, , pillar = "", mode = ""] = pathname.split("/")
+  let base: string | undefined
+  for (const h of nav.hubs) for (const { item } of walkItems(h.items)) if (!base && item.page?.view === "plan" && item.page.attachment === WORKSHOP_ATTACHMENT) base = item.page.planPath
+  useEffect(() => {
+    if (base) navigate(`${base}${pillar ? `/${pillar}` : ""}${mode === "table" ? "#table" : ""}`, { replace: true })
+  }, [base]) // eslint-disable-line react-hooks/exhaustive-deps
+  return base ? null : <ZeroTrustPage base="/zero-trust" pillarId={decode(pillar)} areaId={mode === "table" ? "" : decode(mode)} />
+}
+
 // The page a route names. Any other path is the overview (an old #/<test id> link opens that test over it).
 function Page({ pathname }: { pathname: string }) {
   const [, first = "", second = ""] = pathname.split("/")
@@ -36,7 +55,8 @@ function Page({ pathname }: { pathname: string }) {
     case "product": return <ProductPage productKey={decode(second)} />
     case "framework": return <FrameworkPage frameworkKey={decode(second)} />
     case "attack": return <AttackPage />
-    case "pack": return <PackPage packId={decode(second)} />
+    case "pack": return <PackRoute />
+    case "zero-trust": return <ZeroTrustRedirect pathname={pathname} />
     case "changes": return <ChangesPage />
     case "run": case "settings": return <RunPage />
     case "system": return <div className="mt-wrap"><SystemPage /></div>

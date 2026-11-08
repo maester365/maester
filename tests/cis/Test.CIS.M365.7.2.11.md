@@ -1,4 +1,4 @@
-﻿7.2.11 (L1) Ensure the SharePoint default sharing link permission is set
+7.2.11 (L1) Ensure the SharePoint default sharing link permission is set
 
 This setting configures the permission that is selected by default for sharing link from a SharePoint site.
 

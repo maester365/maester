@@ -1,4 +1,4 @@
-﻿Restrict setting a maximum Personal Access Token (PAT) lifespan **should be** enabled.
+Restrict setting a maximum Personal Access Token (PAT) lifespan **should be** enabled.
 
 #### Prerequisites
 

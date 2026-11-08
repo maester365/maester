@@ -1,4 +1,4 @@
-﻿SMBv1 (Server Message Block version 1) is an outdated protocol with significant security vulnerabilities:
+SMBv1 (Server Message Block version 1) is an outdated protocol with significant security vulnerabilities:
 
 - **EternalBlue exploit**: Used in WannaCry and NotPetya ransomware attacks
 - **No encryption**: SMBv1 traffic is not encrypted

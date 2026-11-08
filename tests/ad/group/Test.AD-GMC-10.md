@@ -1,4 +1,4 @@
-﻿Privileged groups with members require continuous monitoring as they provide administrative access:
+Privileged groups with members require continuous monitoring as they provide administrative access:
 
 - **Privileged access**: Members have elevated permissions in the domain
 - **Attack surface**: More members increases the risk of credential compromise

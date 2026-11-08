@@ -1,4 +1,4 @@
-function Connect-MtAdTarget {
+﻿function Connect-MtAdTarget {
     [CmdletBinding()]
     param(
         [object]$ActiveDirectoryForest,

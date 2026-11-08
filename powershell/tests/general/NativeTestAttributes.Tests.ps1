@@ -1,4 +1,4 @@
-# The mechanical half of the attribute rubric (website/docs/writing-tests/attribute-rubric.md): every built-in
+﻿# The mechanical half of the attribute rubric (website/docs/writing-tests/attribute-rubric.md): every built-in
 # test declares what it is about, how urgent a failure is and what it maps to, with keys from the taxonomy
 # registry. Whether a value is the right one is a judgement; the attribute-review workflow and the reviewer check
 # that. Custom tests are not checked here.

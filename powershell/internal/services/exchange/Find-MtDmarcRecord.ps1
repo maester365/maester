@@ -1,4 +1,4 @@
-function Find-MtDmarcRecord {
+﻿function Find-MtDmarcRecord {
     <#
     .SYNOPSIS
     Finds the DMARC record that applies to a domain, walking up to its parent domains when needed.

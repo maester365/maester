@@ -1,4 +1,4 @@
-﻿The email one-time passcode (Email OTP) authentication method is disabled in the Microsoft Entra authentication methods policy.
+The email one-time passcode (Email OTP) authentication method is disabled in the Microsoft Entra authentication methods policy.
 
 Email OTP sends a passcode to an email address, and Microsoft Entra uses it to sign in B2B guest users who cannot authenticate with another method. Whoever controls or intercepts that inbox can sign in as the guest, and the inbox of an external user is outside your control. A phished or compromised mailbox then gives access to the resources the guest can reach.
 

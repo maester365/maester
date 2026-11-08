@@ -1,4 +1,4 @@
-function Get-MtEntraRecommendationInstance {
+﻿function Get-MtEntraRecommendationInstance {
     <#
     .SYNOPSIS
     Returns one MT.1024 instance per Entra recommendation of the tenant.

@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS app protection policy acts on the device threat level.
+Ensure at least one **assigned** iOS app protection policy acts on the device threat level.
 
 A device compliance policy can refuse a jailbroken iPhone, but it only evaluates a device the organization **enrolled**. On an unenrolled phone the equivalent signal reaches the organization through the app protection policy: a mobile threat defense partner such as Microsoft Defender reports a threat level for the device, and the policy decides what the managed app does about it.
 

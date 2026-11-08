@@ -1,4 +1,4 @@
-﻿When a caller dials in by phone, the call is a PSTN (phone network) participant. If that caller can bypass the lobby, they join the meeting without an organizer or a presenter approving them first. A caller who has the dial-in number and conference ID could then join a meeting directly.
+When a caller dials in by phone, the call is a PSTN (phone network) participant. If that caller can bypass the lobby, they join the meeting without an organizer or a presenter approving them first. A caller who has the dial-in number and conference ID could then join a meeting directly.
 
 Requiring dial-in callers to wait in the lobby means the organizer or a presenter sees who is calling and can admit only the expected people.
 

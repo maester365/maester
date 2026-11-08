@@ -1,4 +1,4 @@
-﻿Organization members cannot create public or private repositories.
+Organization members cannot create public or private repositories.
 
 Limiting repository creation makes ownership and access easier to review and reduces the risk of code or data being exposed through an unmanaged repository. Members who need a new repository may need an owner, administrator, or approved internal process to create it.
 

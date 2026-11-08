@@ -1,4 +1,4 @@
-function Get-MtDirectoryRoleAssignment {
+﻿function Get-MtDirectoryRoleAssignment {
     <#
     .SYNOPSIS
     Returns Entra directory role assignments, active and PIM-eligible.

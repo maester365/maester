@@ -1,4 +1,4 @@
-﻿A detailed breakdown of SPN service classes on user accounts enables:
+A detailed breakdown of SPN service classes on user accounts enables:
 
 - **Risk prioritization**: Identify high-value targets like database services
 - **Service inventory**: Understand what services run under user credentials

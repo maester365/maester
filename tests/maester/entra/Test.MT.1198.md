@@ -1,4 +1,4 @@
-﻿This test checks if any app registration uses a certificate that was issued with an excessive validity period.
+This test checks if any app registration uses a certificate that was issued with an excessive validity period.
 
 Certificates are the recommended alternative to client secrets, but a certificate that is valid for several years reintroduces the risk it was meant to remove: a stolen private key stays usable for the entire remaining validity period, and long-lived credentials are rarely rotated or reviewed.
 

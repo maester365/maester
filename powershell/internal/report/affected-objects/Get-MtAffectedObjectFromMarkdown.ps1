@@ -1,4 +1,4 @@
-function Get-MtAffectedObjectFromMarkdown {
+﻿function Get-MtAffectedObjectFromMarkdown {
     <#
     .SYNOPSIS
     Extracts object records from test result markdown by matching known portal deep-link patterns.

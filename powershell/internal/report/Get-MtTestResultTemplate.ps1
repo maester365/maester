@@ -1,4 +1,4 @@
-function Get-MtTestResultTemplate {
+﻿function Get-MtTestResultTemplate {
     [CmdletBinding()]
     param(
         [Parameter()]

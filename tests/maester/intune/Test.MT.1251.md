@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android app protection policy requires Play Integrity device attestation.
+Ensure at least one **assigned** Android app protection policy requires Play Integrity device attestation.
 
 A rooted Android phone has had the platform guarantees that the whole app protection model rests on removed. The app sandbox no longer separates the managed apps from everything else on the device, so the app PIN, the encrypted app data and the blocked data transfer all become settings enforced by code that another process can read and modify.
 

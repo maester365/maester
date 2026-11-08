@@ -1,4 +1,4 @@
-function Save-MtPackModule {
+﻿function Save-MtPackModule {
     <#
     .SYNOPSIS
     Saves the PowerShell Gallery modules a pack declares, and returns the pinned module closure for the lock file (Maester Packs design, section 4.2).

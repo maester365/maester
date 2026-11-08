@@ -1,4 +1,4 @@
-﻿If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
+If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
 
 Rationale: This policy helps protect the tenant when Microsoft Authenticator is used by showing user context information, which helps reduce MFA phishing compromises.
 

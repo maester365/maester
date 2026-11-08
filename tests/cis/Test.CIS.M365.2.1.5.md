@@ -1,4 +1,4 @@
-﻿2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled
+2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled
 
 Safe Attachments for SharePoint, OneDrive, and Microsoft Teams scans these services for malicious files.
 

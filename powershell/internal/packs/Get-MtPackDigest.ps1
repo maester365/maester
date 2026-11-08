@@ -1,4 +1,4 @@
-function Get-MtPackDigest {
+﻿function Get-MtPackDigest {
     <#
     .SYNOPSIS
     Computes the content digest of a pack or module folder (Maester Packs design, section 5.2).

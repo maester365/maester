@@ -1,4 +1,4 @@
-﻿System-preferred multifactor authentication is enabled and applies to all users.
+System-preferred multifactor authentication is enabled and applies to all users.
 
 With the feature on, Microsoft Entra ID prompts for the most secure method the user has registered and that is allowed, rather than the method the user picked last or a weaker default. Users who registered both an authenticator app and SMS are asked to use the app, which resists interception and phishing better.
 

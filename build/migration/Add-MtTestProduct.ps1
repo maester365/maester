@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     One-time migration: writes the Product property into the [MaesterTest] attribute of every built-in test.
 

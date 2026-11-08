@@ -1,4 +1,4 @@
-﻿Creating shared Bookings pages is limited to selected users, or Microsoft Bookings is turned off for the organisation.
+Creating shared Bookings pages is limited to selected users, or Microsoft Bookings is turned off for the organisation.
 
 A shared Bookings page publishes a scheduling page on the internet that lets outsiders book time with staff and shows availability. Anyone can create one by default, so pages that disclose staff names and calendars, or that are used for phishing with a trusted Microsoft domain, can appear without IT knowing.
 

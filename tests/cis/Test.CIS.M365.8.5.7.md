@@ -1,4 +1,4 @@
-﻿Giving or requesting control lets a participant take over the screen or a shared application of another participant. If external participants can do this, a guest from another organization can gain control of a presenter's desktop or content during a meeting.
+Giving or requesting control lets a participant take over the screen or a shared application of another participant. If external participants can do this, a guest from another organization can gain control of a presenter's desktop or content during a meeting.
 
 Turning this off means external participants can't give or request control of shared content. External participants who are allowed to present can still share their own screen, which the **Who can present** setting controls. Control of your organization's shared screens stays with participants from your organization.
 

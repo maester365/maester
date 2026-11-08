@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Creates and promotes one Windows domain controller for the Azure lab.
 

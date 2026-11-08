@@ -1,4 +1,4 @@
-﻿This test checks if all owners of app registrations have Multi-Factor Authentication (MFA) registered. App registration owners without MFA pose a significant security risk as credential stuffing attacks can lead to privileged access and potential privilege escalation or data loss.
+This test checks if all owners of app registrations have Multi-Factor Authentication (MFA) registered. App registration owners without MFA pose a significant security risk as credential stuffing attacks can lead to privileged access and potential privilege escalation or data loss.
 
 ## Why This Matters
 

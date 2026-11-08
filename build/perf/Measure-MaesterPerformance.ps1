@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Benchmarks Maester 2.x (PowerShell Gallery, Pester runner) against Maester 3.x (this checkout, native engine).
 

@@ -1,4 +1,4 @@
-﻿Checks that signature checking before scan is enabled for zero-day protection in the assigned Microsoft Defender Antivirus policies.
+Checks that signature checking before scan is enabled for zero-day protection in the assigned Microsoft Defender Antivirus policies.
 
 Scans with outdated signatures may miss recent threats and zero-day attacks, leaving endpoints exposed to newly discovered vulnerabilities.
 

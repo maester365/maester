@@ -1,4 +1,4 @@
-function Get-MtPack {
+﻿function Get-MtPack {
     <#
     .SYNOPSIS
     Lists the Maester Packs this folder runs: those that ship with Maester and those in maester-packs.lock.json, with whether each can run.
