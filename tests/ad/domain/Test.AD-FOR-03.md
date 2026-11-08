@@ -5,9 +5,7 @@ The tombstone lifetime determines how long deleted Active Directory objects are 
 - **Backup Recovery**: Aligns with backup retention strategies for directory recovery
 - **Compliance**: Some regulations require specific retention periods for directory data
 
-**Default Values**:
-- **180 days**: Default for forests created on Windows Server 2003 SP1 and later
-- **60 days**: Default for older forests (Windows 2000/2003 RTM)
+When `tombstoneLifetime` is **not set**, Active Directory uses an effective **60 days** even in an upgraded forest. Newer forests can have an explicitly configured 180-day value; this check distinguishes the stored attribute from the effective value.
 
 #### Control Type
 
@@ -15,7 +13,7 @@ The tombstone lifetime determines how long deleted Active Directory objects are 
 
 #### Security Recommendation
 
-- **Minimum 180 Days**: Maintain at least 180 days for adequate recovery time
+- Choose a retention period appropriate to the recovery and replication window. Do not assume an unset attribute means 180 days.
 - **Align with Backups**: Ensure tombstone lifetime matches or exceeds backup retention
 - **Monitor Changes**: Track any modifications to this critical setting
 - **Document**: Record the current setting and any business requirements
@@ -28,7 +26,11 @@ Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configur
 
 #### How the Test Works
 
-This test retrieves the tombstone lifetime from the Directory Service configuration object and reports the current value along with recommendations.
+This test retrieves the tombstone lifetime from the Directory Service configuration object and reports both the configured attribute and effective value. It is an inventory check, not a pass/fail threshold for retention length. AD-CFG-01 was consolidated into this check.
+
+#### Related links
+
+- [Microsoft ADTS: tombstone lifetime and unset-attribute default](https://learn.microsoft.com/openspecs/windows_protocols/ms-adts/1887de08-2a9e-4694-95e2-898cde411180)
 
 #### Related Tests
 

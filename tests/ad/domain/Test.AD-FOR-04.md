@@ -29,7 +29,7 @@ Enable-ADOptionalFeature -Identity "Recycle Bin Feature" -Scope ForestOrConfigur
 
 #### How the Test Works
 
-This test checks the optional features in Active Directory to determine if the Recycle Bin Feature is enabled and reports its status.
+This test fails if the Recycle Bin Feature exists but is not enabled, passes if enabled, and errors if the feature cannot be uniquely identified or its status was not retrieved. It does not treat successful enumeration as evidence of protection. AD-CFG-05 was consolidated into this check; AD-FEAT-01 inventories all optional features and their enabled scopes separately.
 
 #### Related Tests
 

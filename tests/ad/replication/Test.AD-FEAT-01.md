@@ -1,33 +1,12 @@
-Active Directory optional features extend the base functionality of AD and can significantly impact security capabilities:
+This inventory shows which Active Directory optional features are available and which are enabled, including their enabled scopes. It combines the former feature-count and enabled-feature-detail inventories (AD-CFG-04 and AD-FEAT-02). A feature's existence does not mean it has been enabled.
 
-- **Recycle Bin**: Critical for recovering accidentally or maliciously deleted objects
-- **Privileged Access Management (PAM)**: Enables time-based group membership for just-in-time access
-- **Feature Awareness**: Understanding available features helps assess security posture
+#### Remediation action
 
-Knowing which optional features are available helps administrators understand the full capabilities of their Active Directory environment and identify opportunities to enhance security.
+Review feature names and enabled scopes against your forest's intended configuration before changing any optional feature. Enabling an optional feature may be irreversible. To evaluate whether the Recycle Bin is enabled, use AD-FOR-04; this inventory does not give its status a separate pass/fail result.
 
-#### Control Type
+#### Related links
 
-**Operational**
-
-#### Security Recommendation
-
-- Enable the Active Directory Recycle Bin if not already enabled
-- Consider PAM for privileged access scenarios
-- Regularly review available optional features
-- Keep domain and forest functional levels current to access newer features
-- Document enabled optional features and their configuration
-
-#### How the Test Works
-
-This test retrieves all Active Directory optional features and counts:
-- Total number of optional features available
-- List of feature names
-
-#### Related Tests
-
-- `Test-MtAdOptionalFeatureEnabledDetails` - Provides detailed information about enabled features
-- `Test-MtAdRecycleBinStatus` - Checks if the Recycle Bin is enabled
+- [Microsoft: enable the Active Directory Recycle Bin](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/advanced-ad-ds-management-using-active-directory-administrative-center--level-200-)
 
 <!--- Results --->
 %TestResult%
