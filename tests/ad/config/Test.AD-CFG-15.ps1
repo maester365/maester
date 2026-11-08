@@ -7,10 +7,17 @@
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Existing public test function name is preserved.')]
     [MaesterTest(
-        Id = 'AD-CFG-15', Title = 'CA certificate inventory', Product = 'ad',
-        Feature = 'certificate-services', Area = 'infrastructure', ResourceType = 'CertificateAuthority',
-        Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'), Author = 'soulemike'
+        Id = 'AD-CFG-15',
+        Title = 'CA certificate inventory',
+        Product = 'ad',
+        Feature = 'certificate-services',
+        Area = 'infrastructure',
+        ResourceType = 'CertificateAuthority',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

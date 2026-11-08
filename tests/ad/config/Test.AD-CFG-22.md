@@ -10,6 +10,14 @@ Monitoring the *count* of KDS root keys helps identify:
 
 **Operational**
 
+#### Security Recommendation
+
+Confirm complete inventory access independently before interpreting an empty or two-key result. Protect key administration and use Microsoft's third-key workaround only for two keys known to exist; do not delete existing keys.
+
+#### Related Tests
+
+- **AD-MSA-01 — Managed service account count should be investigated** — `Test-MtAdManagedServiceAccountCount` — Inventories managed accounts, including gMSAs whose password infrastructure depends on KDS root keys.
+
 #### Remediation action
 - Verify that the assessment identity can list the Master Root Keys container and read every key's metadata. Default key ACLs restrict visibility to privileged identities; a successful LDAP search with zero results does not establish absence.
 - `KeyInventoryReadAccessConfirmed` defaults to `false`. Set it to `true` in this check's `TestSettings[].Parameters` only after independently auditing complete read/list access for the identity and target used by this run. This is operator confirmation, not an automated permission probe. Never assume completeness solely from a group name or a successful connection.

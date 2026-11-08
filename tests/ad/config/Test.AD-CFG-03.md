@@ -16,7 +16,7 @@
 This inventory reports the raw `sPNMappings` entries and count. It does not inspect account SPNs or claim that any mapping is unsafe.
 
 #### Related Tests
-- Account-level SPN checks in `tests/ad/spn/` assess a different setting (`servicePrincipalName`).
+- **AD-SPN-01 — Computer SPN service class count should be retrievable** — `Test-MtAdComputerSpnServiceClassCount` — Inventories account-level computer SPNs, a different setting (`servicePrincipalName`).
 
 <!--- Results --->
 %TestResult%

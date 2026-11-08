@@ -6,10 +6,17 @@
     Reports all site links and counts per transport for administrator review, without inferring transport from cost or interval.
     #>
     [MaesterTest(
-        Id = 'AD-CFG-23', Title = 'Site link transport inventory', Product = 'ad',
-        Feature = 'sites-and-subnets', Area = 'infrastructure', ResourceType = 'AdSite',
-        Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'), Author = 'soulemike'
+        Id = 'AD-CFG-23',
+        Title = 'Site link transport inventory',
+        Product = 'ad',
+        Feature = 'sites-and-subnets',
+        Area = 'infrastructure',
+        ResourceType = 'AdSite',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

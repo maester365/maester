@@ -6,10 +6,17 @@
     Cross-references template CNs with published template names and lists missing references for review without judging security of templates.
     #>
     [MaesterTest(
-        Id = 'AD-CFG-13', Title = 'Certificate template publication inventory', Product = 'ad',
-        Feature = 'certificate-services', Area = 'infrastructure', ResourceType = 'CertificateAuthority',
-        Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'), Author = 'soulemike'
+        Id = 'AD-CFG-13',
+        Title = 'Certificate template publication inventory',
+        Product = 'ad',
+        Feature = 'certificate-services',
+        Area = 'infrastructure',
+        ResourceType = 'CertificateAuthority',
+        Severity = 'Info',
+        Mitre = 'None',
+        Service = 'ActiveDirectory',
+        Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
