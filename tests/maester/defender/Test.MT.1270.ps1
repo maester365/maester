@@ -44,7 +44,11 @@
         Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
-        Mitre = 'T1190',
+        # Not T1190: that technique is about exploiting a public-facing application, and this
+        # check only establishes that vulnerable software is installed, never that it is
+        # reachable from outside. Mapping it would misclassify a fleet of internal or client
+        # software. Reported by @coderabbitai on #2695.
+        Mitre = 'None',
         Lifecycle = 'Preview',
         Service = 'Graph',
         License = 'DEFENDER_XDR',
@@ -88,11 +92,16 @@
         }
         $software = @($summary.TopSoftwareList | Where-Object { $_ })
         if ($software.Count -gt 0) {
-            $testResultMarkdown += "`nSoftware (up to ten shown): $($software -join ', ')`n"
+            # Software names come from the tenant's inventory, so they are escaped before they
+            # reach Markdown: a name carrying link syntax would otherwise render as a link.
+            $safeSoftware = @($software | ForEach-Object { Get-MtSafeMarkdown $_ })
+            $testResultMarkdown += "`nSoftware (up to ten shown): $($safeSoftware -join ', ')`n"
         }
         $devices = @($summary.TopDeviceList | Where-Object { $_ })
         if ($devices.Count -gt 0) {
-            $testResultMarkdown += "`nDevices (up to ten shown): $($devices -join ', ')`n"
+            # Device names are tenant-controlled too.
+            $safeDevices = @($devices | ForEach-Object { Get-MtSafeMarkdown $_ })
+            $testResultMarkdown += "`nDevices (up to ten shown): $($safeDevices -join ', ')`n"
         }
 
         $testResultMarkdown += "`nPatch or remove the software listed. Exploit code for these vulnerabilities is already public, so the window between disclosure and attack has closed."

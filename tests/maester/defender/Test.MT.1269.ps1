@@ -137,7 +137,10 @@ function Test-MtDefenderDeviceSecurityRecommendation {
         }
         $devices = @($configuration.NonCompliantDeviceList | Where-Object { $_ })
         if ($devices.Count -gt 0) {
-            $testResultMarkdown += "`nNon-compliant devices (up to ten shown): $($devices -join ', ')`n"
+            # Device names are tenant-controlled, so they are escaped before reaching Markdown.
+            # Same class as the finding @coderabbitai raised on MT.1270 in this PR.
+            $safeDevices = @($devices | ForEach-Object { Get-MtSafeMarkdown $_ })
+            $testResultMarkdown += "`nNon-compliant devices (up to ten shown): $($safeDevices -join ', ')`n"
         }
         $testResultMarkdown += "`nRemediate the configuration on the devices listed, or accept the risk in the Defender portal so it stops being reported."
     } else {
