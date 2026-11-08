@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS compliance policy requires a minimum operating system version.
+Ensure at least one **assigned** iOS compliance policy requires a minimum operating system version.
 
 Apple ships security fixes only in the current iOS release. A device left on an older major version keeps every browser engine and kernel vulnerability that release carried, including the ones Apple has published as actively exploited, and nothing in Intune makes the user install the update.
 

@@ -1,4 +1,4 @@
-# Taxonomy registry for the classification attributes of [MaesterTest]:
+﻿# Taxonomy registry for the classification attributes of [MaesterTest]:
 # Product, RelatedProduct, Feature, Area and ResourceType.
 #
 # A test shipped with Maester must use keys from this file. A custom test may use any value.

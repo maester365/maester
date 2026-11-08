@@ -1,4 +1,4 @@
-﻿An enabled Conditional Access policy requires multifactor authentication for the privileged directory roles, in all cloud apps.
+An enabled Conditional Access policy requires multifactor authentication for the privileged directory roles, in all cloud apps.
 
 Administrator accounts can change identity, mail and security configuration for the whole organisation. A password alone is enough for an attacker who phished or sprayed it. Requiring MFA at sign-in for these roles makes a stolen password insufficient.
 

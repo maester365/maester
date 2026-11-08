@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Regenerates the Maester 2.x golden fixtures (tags and blocks, selection, config layouts).
 

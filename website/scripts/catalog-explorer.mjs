@@ -1,5 +1,6 @@
-// The data of the test catalog explorer (src/components/catalog/): every check, the built-in tests and the tests of
-// the packs that ship with Maester, with the taxonomy, the frameworks by requirement and the ATT&CK release, in one
+// The data of the test catalog explorer (src/components/catalog/): every check, the built-in tests, the tests of
+// the packs that ship with Maester and those of the community packs listed on packs.maester.cloud (community-packs.mjs,
+// marked community: true, with a url to their page there), with the taxonomy, the frameworks by requirement and the ATT&CK release, in one
 // file the explorer's components read: src/data/explorer.json, which git ignores. generate-test-docs.mjs writes it,
 // with the pages, from src/data/test-catalog.json and the framework files of the suites.
 
@@ -89,7 +90,8 @@ function loadFrameworkFiles() {
 
 // Writes src/data/explorer.json. releasedTests is the set of test IDs of the stable release (versions.json);
 // contributors is the credit data of contributors.mjs (attributions by test ID, and profiles).
-export function writeExplorerData(catalog, releasedTests, contributors = { attributions: {}, profiles: [] }) {
+// community is the data of community-packs.mjs (src/data/community-packs.json), or none.
+export function writeExplorerData(catalog, releasedTests, contributors = { attributions: {}, profiles: [] }, community = { packs: [] }) {
   const attributions = new Map(Object.entries(contributors.attributions ?? {}));
   const creditsOf = (id) => {
     const credit = attributions.get(id);
@@ -165,14 +167,47 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
     }
   }
 
-  const tests = [...builtIn, ...packTests]
+  // The community packs: their tests are listed with the others, marked as a community pack's, and link to their page
+  // on packs.maester.cloud. A pack the index lists without its tests is counted on the home page only.
+  const communityPacks = [];
+  const communityTests = [];
+  for (const pack of community.packs ?? []) {
+    const packTests = Array.isArray(pack.tests) ? pack.tests : [];
+    communityPacks.push({ id: pack.id, code: pack.code, name: pack.name, description: pack.description, publisher: pack.publisher, url: pack.url, count: pack.count, listed: packTests.length });
+    for (const t of packTests) {
+      communityTests.push({
+        id: t.id,
+        title: t.title,
+        suite: pack.code,
+        pack: pack.code,
+        community: true,
+        url: t.url,
+        product: t.product,
+        feature: "",
+        area: "",
+        severity: severityOrder.includes(t.severity) ? t.severity : "Info",
+        impact: "",
+        cost: "",
+        mitre: [],
+        control: [],
+        authors: [],
+        previewOnly: false,
+        previewCheck: false,
+        pillar: t.pillar,
+        category: t.category,
+      });
+    }
+  }
+
+  const tests = [...builtIn, ...packTests, ...communityTests]
     .map((t) => ({
       ...t,
       productName: productNames.get(t.product) ?? t.product,
       featureName: featureNames.get(`${t.product}/${t.feature}`) ?? t.feature,
       areaName: areaNames.get(t.area) ?? t.area,
     }))
-    .sort((a, b) => severityOrder.indexOf(a.severity) - severityOrder.indexOf(b.severity) || a.id.localeCompare(b.id, undefined, { numeric: true }));
+    // Community pack checks after Maester's own, in every list.
+    .sort((a, b) => Number(Boolean(a.community)) - Number(Boolean(b.community)) || severityOrder.indexOf(a.severity) - severityOrder.indexOf(b.severity) || a.id.localeCompare(b.id, undefined, { numeric: true }));
 
   // Each framework by requirement, with the checks that name it in Control.
   const files = loadFrameworkFiles();
@@ -224,19 +259,22 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
     return map;
   };
   const productCounts = count((t) => t.product);
+  // Products are ranked by Maester's own checks: community pack checks are counted, but don't move a product up.
+  const ownCounts = count((t) => (t.community ? "" : t.product));
   const featureCounts = count((t) => (t.feature ? `${t.product}/${t.feature}` : ""));
   const products = taxonomy.Products.filter((p) => productCounts.has(p.Key))
     .map((p) => ({
       key: p.Key,
       name: p.Name,
       count: productCounts.get(p.Key),
+      own: ownCounts.get(p.Key) ?? 0,
       features: taxonomy.Features.filter((f) => f.Product === p.Key && featureCounts.has(`${p.Key}/${f.Key}`)).map((f) => ({
         key: f.Key,
         name: f.Name,
         count: featureCounts.get(`${p.Key}/${f.Key}`),
       })),
     }))
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => b.own - a.own || b.count - a.count);
   const areaCounts = count((t) => t.area);
   const areas = taxonomy.Areas.filter((a) => areaCounts.has(a.Key))
     .map((a) => ({ key: a.Key, name: a.Name, count: areaCounts.get(a.Key) }))
@@ -254,11 +292,13 @@ export function writeExplorerData(catalog, releasedTests, contributors = { attri
     $comment: "Written by website/scripts/catalog-explorer.mjs. Do not edit.",
     total: tests.length,
     builtIn: builtIn.length,
+    community: communityTests.length,
     products,
     areas,
     severities: severityOrder.map((s) => ({ key: s, count: tests.filter((t) => t.severity === s).length })).filter((s) => s.count),
     suites: [...count((t) => (t.pack ? "" : t.suite)).entries()].sort((a, b) => b[1] - a[1]).map(([key, n]) => ({ key, count: n })),
     packs,
+    communityPacks,
     people,
     frameworks,
     attack: { version: attack.Version ?? "", tactics: attack.Tactics ?? [], techniques: attack.Techniques ?? [] },

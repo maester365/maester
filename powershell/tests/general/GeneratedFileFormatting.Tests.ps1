@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:RepoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     $script:TempRoot = Join-Path $script:RepoRoot ".tmp-generated-file-formatting-tests-$([guid]::NewGuid())"
     $null = New-Item -Path $script:TempRoot -ItemType Directory -Force

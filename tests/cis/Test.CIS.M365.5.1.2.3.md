@@ -1,4 +1,4 @@
-﻿5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'
+5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'
 
 Non-privileged users can create tenants in the Microsoft Entra ID and Microsoft Entra administration portal under "Manage tenant". The creation of a tenant is recorded in the Audit log as category "DirectoryManagement" and activity "Create Company". By default, the user who creates a Microsoft Entra tenant is automatically assigned the Global Administrator role. The newly created tenant doesn't inherit any settings or configurations.
 

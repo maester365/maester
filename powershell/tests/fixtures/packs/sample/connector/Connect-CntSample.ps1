@@ -1,4 +1,4 @@
-function Connect-CntSample {
+﻿function Connect-CntSample {
     <#
     .SYNOPSIS
     Connects to the sample service: keeps the settings it was given.

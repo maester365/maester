@@ -1,4 +1,4 @@
-# Guards the names in the contributor registry (website/contributors/contributors.yml), which maester.dev shows on
+﻿# Guards the names in the contributor registry (website/contributors/contributors.yml), which maester.dev shows on
 # /contributors and in the byline of every test page. A name is written as the person writes it: each word starts
 # with a capital letter, except the particles inside a name ("Robbe Van den Daele", "Stephan van Rooij"), and a
 # name that is the person's GitHub handle is written as the handle is.

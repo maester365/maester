@@ -1,4 +1,4 @@
-function Test-MtAdDaclPlatformSupported {
+﻿function Test-MtAdDaclPlatformSupported {
     <#
     .SYNOPSIS
         Returns whether the current platform supports Active Directory DACL queries.

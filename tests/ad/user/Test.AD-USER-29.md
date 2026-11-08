@@ -1,4 +1,4 @@
-﻿Delegation details on user accounts help defenders quickly identify high-risk service identities and prioritize cleanup.
+Delegation details on user accounts help defenders quickly identify high-risk service identities and prioritize cleanup.
 
 - **Risk prioritization**: Unconstrained delegation is usually more dangerous than protocol transition alone.
 - **Account review**: User-based service accounts with SPNs and delegation need strong justification.

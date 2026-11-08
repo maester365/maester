@@ -1,4 +1,4 @@
-﻿User-defined variables should not be able to override system variables or variables not defined by the pipeline author.
+User-defined variables should not be able to override system variables or variables not defined by the pipeline author.
 
 Rationale: Only those variables explicitly marked as "Settable at queue time" can be set by user.
 

@@ -1,4 +1,4 @@
-﻿Enabled user accounts that have not logged on for more than the configured threshold (default 90 days) are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target.
+Enabled user accounts that have not logged on for more than the configured threshold (default 90 days) are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target.
 
 #### Control Type
 

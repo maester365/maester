@@ -1,4 +1,4 @@
-function Get-MtAffectedObject {
+﻿function Get-MtAffectedObject {
     <#
     .SYNOPSIS
     Builds a consolidated affected objects of all objects involved in a Maester test run.

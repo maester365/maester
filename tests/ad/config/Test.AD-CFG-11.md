@@ -1,4 +1,4 @@
-﻿DHCP servers registered in Active Directory are authorized to provide IP addresses to clients. If unauthorized DHCP servers are registered (or legitimate servers are removed), clients may receive incorrect network settings, experience instability, or be exposed to man-in-the-middle attacks via rogue DHCP.
+DHCP servers registered in Active Directory are authorized to provide IP addresses to clients. If unauthorized DHCP servers are registered (or legitimate servers are removed), clients may receive incorrect network settings, experience instability, or be exposed to man-in-the-middle attacks via rogue DHCP.
 
 #### Control Type
 

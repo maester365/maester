@@ -1,4 +1,4 @@
-﻿Disable Node 6 tasks.
+Disable Node 6 tasks.
 
 Rationale: Node.js 6 reached end-of-life in April 2019 and no longer receives security patches. Pipeline tasks that use the Node 6 execution handler run on an unpatched, unsupported runtime, which may expose the pipeline to known vulnerabilities.
 

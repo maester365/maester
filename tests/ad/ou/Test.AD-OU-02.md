@@ -1,4 +1,4 @@
-﻿- The structure of Organizational Units at the domain root level reveals important information about your Active Directory organization and management approach.
+- The structure of Organizational Units at the domain root level reveals important information about your Active Directory organization and management approach.
 - Directory hierarchy: A large number of root-level OUs may indicate a flat structure that lacks organizational depth
 - Management complexity: Many root-level OUs can make the directory harder to navigate and manage
 - Delegation planning: Understanding root-level OUs helps with planning administrative delegation boundaries

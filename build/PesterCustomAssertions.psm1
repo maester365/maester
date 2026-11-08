@@ -1,4 +1,4 @@
-#Requires -Module Pester
+﻿#Requires -Module Pester
 
 ## This module could probably use some clean up and performance optimization
 

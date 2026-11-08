@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Writes the framework files of the ASD suite from the ISM OSCAL release.
 

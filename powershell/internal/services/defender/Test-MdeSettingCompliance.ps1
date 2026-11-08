@@ -1,4 +1,4 @@
-function Test-MdeSettingCompliance {
+﻿function Test-MdeSettingCompliance {
     <#
     .SYNOPSIS
         Tests compliance for a specific MDE setting value
