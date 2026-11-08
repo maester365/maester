@@ -18,6 +18,8 @@ Microsoft Exchange related permissions that should be secured by application acc
 
 Exchange application access policies should be configured for all applications with Exchange permissions.
 
+This check requires a `RestrictAccess` policy for each application. A `DenyAccess` policy only denies access to mailboxes in its scope; it does not restrict access to mailboxes outside that scope and does not satisfy this check.
+
 ### Remediation action
 
 Follow the steps below to create an application access policy in Exchange Online that restricts the application's access to mailboxes in a specific distribution group.

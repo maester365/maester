@@ -72,7 +72,8 @@
 
     # Get application access policies
     try {
-        $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop
+        $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop |
+            Where-Object { $_.AccessRight -eq 'RestrictAccess' }
     } catch {
         if ($_.Exception.Message -like "*couldn't be found*") {
             Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies were found.'
