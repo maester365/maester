@@ -89,6 +89,7 @@ function Test-MtAzureDefenderForCloudRecommendation {
         Id = 'MT.1271',
         Title = 'Resources should be healthy for the Microsoft Defender for Cloud recommendations.',
         Product = 'azure',
+        RelatedProduct = 'defender',
         Feature = 'subscriptions',
         Area = 'infrastructure',
         ResourceType = 'AzureResource',
@@ -151,8 +152,10 @@ function Test-MtAzureDefenderForCloudRecommendation {
         $resources = @($recommendation.UnhealthyResourceList | Where-Object { $_ })
         if ($resources.Count -gt 0) {
             # "up to ten shown" does not tell the reader whether ten is all of them. The total does.
-            $etiquetaRecursos = if ([int]$recommendation.UnhealthyResourceTotal -gt $resources.Count) { "$($resources.Count) of $([int]$recommendation.UnhealthyResourceTotal)" } else { 'all' }
-            $testResultMarkdown += "`nUnhealthy resources ($etiquetaRecursos): $($resources -join ', ')`n"
+            $resourceLabel = if ([int]$recommendation.UnhealthyResourceTotal -gt $resources.Count) { "$($resources.Count) of $([int]$recommendation.UnhealthyResourceTotal)" } else { 'all' }
+            # Resource names come from the tenant, so they are escaped before reaching Markdown.
+            $safeResources = @($resources | ForEach-Object { Get-MtSafeMarkdown $_ })
+            $testResultMarkdown += "`nUnhealthy resources ($resourceLabel): $($safeResources -join ', ')`n"
         }
         if (-not [string]::IsNullOrWhiteSpace($recommendation.PortalUri)) {
             $testResultMarkdown += "`n[Open this recommendation in the Azure portal]($($recommendation.PortalUri))`n"

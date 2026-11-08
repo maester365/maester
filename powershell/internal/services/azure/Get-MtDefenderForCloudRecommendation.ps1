@@ -38,30 +38,30 @@ securityresources
 // Multicloud connectors surface AWS and GCP assessments in the same table, and their counts
 // would flow into an Azure test. Native Azure resources have no Source, so the empty string is
 // kept deliberately: filtering on Source == "Azure" alone would return nothing.
-| extend origen = tostring(properties.resourceDetails.Source)
-| where origen == "" or origen =~ "Azure"
-| extend estado = tostring(properties.status.code),
+| extend source = tostring(properties.resourceDetails.Source)
+| where source == "" or source =~ "Azure"
+| extend status = tostring(properties.status.code),
          causa = tostring(properties.status.cause),
-         nombre = tostring(properties.displayName),
-         severidad = tostring(properties.metadata.severity),
-         riesgo = tostring(properties.risk.level),
+         displayName = tostring(properties.displayName),
+         severity = tostring(properties.metadata.severity),
+         risk = tostring(properties.risk.level),
          portal = tostring(properties.links.azurePortal)
 // A risk level is per resource, so a group holds several. any() picks one at random and could
 // report Low for a key that is Critical somewhere. Ranked and maxed, the group reports its worst.
-| extend rangoRiesgo = case(riesgo =~ "Critical", 4, riesgo =~ "High", 3, riesgo =~ "Medium", 2, riesgo =~ "Low", 1, 0)
+| extend riskRank = case(risk =~ "Critical", 4, risk =~ "High", 3, risk =~ "Medium", 2, risk =~ "Low", 1, 0)
 | summarize TotalCount = count(),
-            UnhealthyCount = countif(estado == "Unhealthy"),
-            HealthyCount = countif(estado == "Healthy"),
-            NotApplicableCount = countif(estado == "NotApplicable"),
+            UnhealthyCount = countif(status == "Unhealthy"),
+            HealthyCount = countif(status == "Healthy"),
+            NotApplicableCount = countif(status == "NotApplicable"),
             ExemptCount = countif(causa == "Exempt"),
-            UnhealthyResourceList = make_set_if(tostring(split(id, "/")[8]), estado == "Unhealthy", 10),
-            UnhealthyResourceTotal = dcountif(tostring(split(id, "/")[8]), estado == "Unhealthy"),
+            UnhealthyResourceList = make_set_if(tostring(split(id, "/")[8]), status == "Unhealthy", 10),
+            UnhealthyResourceTotal = dcountif(tostring(split(id, "/")[8]), status == "Unhealthy"),
             // any() is correct for these three: they belong to the assessment definition, so they
             // are the same on every row of the group.
-            DisplayName = any(nombre),
-            Severity = any(severidad),
+            DisplayName = any(displayName),
+            Severity = any(severity),
             PortalUri = any(portal),
-            RiskRank = max(rangoRiesgo)
+            RiskRank = max(riskRank)
     by AssessmentKey = name
 | extend RiskLevel = case(RiskRank == 4, "Critical", RiskRank == 3, "High", RiskRank == 2, "Medium", RiskRank == 1, "Low", "")
 | project-away RiskRank

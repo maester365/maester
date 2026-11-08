@@ -49,27 +49,27 @@ securityresources
     $pathQuery = @'
 securityresources
 | where type == "microsoft.security/attackpaths"
-| extend nombre = tostring(properties.displayName),
-         riesgo = tostring(properties.riskLevel),
+| extend displayName = tostring(properties.displayName),
+         risk = tostring(properties.riskLevel),
          parcial = tostring(properties.isPartialAttackPath),
-         factores = tostring(properties.riskFactors),
-         tacticas = tostring(properties.mITRETacticsAndTechniques.tactics),
+         riskFactors = tostring(properties.riskFactors),
+         tactics = tostring(properties.mITRETacticsAndTechniques.tactics),
          tipoEntrada = tostring(properties.entryPoint.entityType),
-         nombreDestino = tostring(properties.target.entityName),
+         targetName = tostring(properties.target.entityName),
          tipoDestino = tostring(properties.target.entityType)
 // A risk level is per occurrence, so a group holds several. any() picked one at random, and it
 // picked independently for the risk factors and the tactics, so the three could describe different
 // occurrences of the same attack path type. arg_max takes all three from the one that ranks worst.
-| extend rangoRiesgo = case(riesgo =~ "Critical", 4, riesgo =~ "High", 3, riesgo =~ "Medium", 2, riesgo =~ "Low", 1, 0)
+| extend riskRank = case(risk =~ "Critical", 4, risk =~ "High", 3, risk =~ "Medium", 2, risk =~ "Low", 1, 0)
 | summarize PathCount = count(),
-            DisplayName = any(nombre),
+            DisplayName = any(displayName),
             Partial = any(parcial),
             EntryPointTypeList = make_set(tipoEntrada, 10),
-            TargetList = make_set(nombreDestino, 10),
+            TargetList = make_set(targetName, 10),
             // make_set is capped, so the consumer needs to know when it is showing a subset.
-            TargetTotal = dcount(nombreDestino),
+            TargetTotal = dcount(targetName),
             TargetTypeList = make_set(tipoDestino, 10),
-            (RiskRank, RiskLevel, RiskFactorsJson, TacticsJson) = arg_max(rangoRiesgo, riesgo, factores, tacticas)
+            (RiskRank, RiskLevel, RiskFactorsJson, TacticsJson) = arg_max(riskRank, risk, riskFactors, tactics)
     by AttackPathType = tostring(properties.attackPathType)
 | project-away RiskRank
 | sort by PathCount desc, AttackPathType asc
@@ -77,13 +77,6 @@ securityresources
 
     Write-Verbose 'Querying Defender for Cloud attack paths...'
     $rows = @(Invoke-MtAzureResourceGraphRequest -Query $pathQuery)
-
-    # The arrays arrive as JSON text because Azure Resource Graph has no mv-apply.
-    function ConvertFrom-MtJsonArray {
-        param([string] $Text)
-        if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
-        try { return @($Text | ConvertFrom-Json) } catch { return @() }
-    }
 
     $paths = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($row in $rows) {

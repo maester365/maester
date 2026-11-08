@@ -190,10 +190,10 @@
         # query instead of asserting on a string.
 
         It 'takes the worst risk level of a group, not an arbitrary one' {
-            # `any(riesgo)` is non-deterministic by contract, so a key that is Critical on one
+            # `any(risk)` is non-deterministic by contract, so a key that is Critical on one
             # resource could be reported Low. Ranked and maxed, the group reports its worst.
             Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
-                if ($Query -match 'max\(rangoRiesgo\)') {
+                if ($Query -match 'max\(riskRank\)') {
                     return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'Critical'; PortalUri = ''; TotalCount = 2; UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
                 }
                 return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'Low'; PortalUri = ''; TotalCount = 2; UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
@@ -208,7 +208,7 @@
             # is kept on purpose: native Azure resources have none, so filtering on "Azure" alone
             # would return nothing at all.
             Mock -ModuleName Maester Invoke-MtAzureResourceGraphRequest {
-                $conFiltro = $Query -match 'origen == "" or origen =~ "Azure"'
+                $conFiltro = $Query -match 'source == "" or source =~ "Azure"'
                 return @([pscustomobject]@{ AssessmentKey = 'k1'; DisplayName = 'Una recomendacion'; Severity = 'Medium'; RiskLevel = 'High'; PortalUri = ''; TotalCount = $(if ($conFiltro) { 2 } else { 5 }); UnhealthyCount = 1; HealthyCount = 1; NotApplicableCount = 0; ExemptCount = 0; UnhealthyResourceList = @('r1'); UnhealthyResourceTotal = 1 })
             }
 
