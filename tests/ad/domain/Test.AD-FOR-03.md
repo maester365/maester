@@ -38,8 +38,8 @@ Former AD-CFG-01 is covered here. The single primary `Feature` remains `director
 
 #### Related Tests
 
-- `Test-MtAdRecycleBinStatus` - Checks if the AD Recycle Bin is enabled
-- `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level (required for Recycle Bin)
+- **AD-FOR-04 — Active Directory Recycle Bin should be enabled** — `Test-MtAdRecycleBinStatus` — Reviews Recycle Bin status.
+- **AD-FOR-01 — Forest functional level meets the highest supported common level** — `Test-MtAdForestFunctionalLevel` — Reviews the forest functional level.
 
 <!--- Results --->
 %TestResult%

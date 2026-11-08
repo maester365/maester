@@ -25,9 +25,9 @@
         Feature = 'directory-configuration',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
-        ImplementationCost = 'Medium',
+        ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty', 'ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
@@ -56,11 +56,20 @@
 
     $isEnabled = $recycleBinFeature[0].IsEnabled -eq $true
     $forestName = $adState.Forest.Name
+    $scopes = @($recycleBinFeature[0].EnabledScopes) -join ', '
+    $scopeText = if ($scopes) { [System.Net.WebUtility]::HtmlEncode($scopes).Replace('|', '&#124;') } else { 'None recorded' }
+    $result = "| Property | Value |`n| --- | --- |`n"
+    $result += "| Forest | $([System.Net.WebUtility]::HtmlEncode([string]$forestName).Replace('|', '&#124;')) |`n"
+    $result += "| Forest functional level | $($adState.Forest.ForestMode) |`n"
+    $result += "| Recycle Bin enabled | $isEnabled |`n"
+    $result += "| Enabled scopes | $scopeText |`n"
+    $result += "| Status | $(if ($isEnabled) { 'Enabled' } else { 'Not enabled' }) |`n"
+    $context = 'Recycle Bin preserves deleted-object attributes for recovery without an authoritative restore. Enablement is irreversible and can increase directory database size; review retention and recovery requirements. The feature flag does not prove backup or recovery readiness.'
     if ($isEnabled) {
-        Add-MtTestResultDetail -Result "Well done. Active Directory Recycle Bin is enabled in forest $forestName. Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides optional-feature inventory. The engine supports one Feature, so these related family views are cross-linked."
+        Add-MtTestResultDetail -Result "Well done. Active Directory Recycle Bin is enabled in forest $forestName. $context Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides optional-feature inventory.`n`n$result"
         return $true
     }
 
-    Add-MtTestResultDetail -Result "Active Directory Recycle Bin is not enabled in forest $forestName. Plan and enable the Recycle Bin after checking the forest functional level. Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides the linked optional-feature inventory under a single Feature."
+    Add-MtTestResultDetail -Result "Active Directory Recycle Bin is not enabled in forest $forestName. Plan and enable the Recycle Bin after checking functional-level prerequisites. $context Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides the linked optional-feature inventory.`n`n$result"
     return $false
 }
