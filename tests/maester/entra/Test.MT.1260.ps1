@@ -28,9 +28,10 @@
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:IR-4'),
+        Cloud = ('Commercial', 'GCC', 'GCCHigh', 'DoD'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
-        Permission = 'Graph:Scope:IdentityRiskyUser.Read.All',
+        Permission = ('Graph:Scope:IdentityRiskyUser.Read.All', 'Graph:Scope:RoleManagement.Read.Directory|Graph:Scope:RoleManagement.Read.All'),
         Lifecycle = 'Preview',
         Author = 'Dfrank77'
     )]
@@ -38,6 +39,7 @@
     [OutputType([bool])]
     param()
 
+    # Deleted users stay in the risk report and admins cannot dismiss them, so they are not reported.
     # Active, unremediated risk states. A flag an admin has handled moves to 'remediated',
     # 'dismissed', 'confirmedSafe' or 'none'; those are intentionally excluded.
     # 'confirmedCompromised' MUST be treated as unremediated alongside 'atRisk' -- confirming a
@@ -54,7 +56,7 @@
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'identityProtection/riskyUsers' `
                 -Filter "riskLevel eq 'high'" `
-                -Select @('id', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
+                -Select @('id', 'isDeleted', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
         )
     } catch {
         if ($_.Exception.Message -match '(?i)403|forbidden|authorization') {
@@ -65,7 +67,7 @@
     }
 
     $Unremediated = @(
-        $HighRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState }
+        $HighRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState -and $_.isDeleted -ne $true }
     )
     Write-Verbose "Found $($HighRiskUsers.Count) high-risk user(s); $($Unremediated.Count) unremediated."
 

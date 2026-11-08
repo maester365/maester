@@ -157,6 +157,21 @@
         $script:TestResult | Should -Match 'Found 1 high-risk'
     }
 
+    It 'does not report a deleted user, whose risk an admin cannot dismiss' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'user-5'; isDeleted = $true; userPrincipalName = 'erin@contoso.com'; userDisplayName = 'Erin'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-05T00:00:00Z'
+                }
+            )
+        }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeTrue
+        $script:TestResult | Should -Match 'Well done'
+    }
+
     It 'skips as NotAuthorized on a 403 from Graph' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw '403 Forbidden: Authorization_RequestDenied' }
 
