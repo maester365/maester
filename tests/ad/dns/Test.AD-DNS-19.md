@@ -1,4 +1,4 @@
-﻿Detailed information about networks with reverse lookup zones enables:
+Detailed information about networks with reverse lookup zones enables:
 
 - **Network inventory**: Complete list of networks with reverse DNS
 - **Security auditing**: Verification that only authorized networks are configured

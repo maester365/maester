@@ -1,4 +1,4 @@
-﻿- SID History is an attribute used during Active Directory domain migrations to maintain access to resources in the source domain:
+- SID History is an attribute used during Active Directory domain migrations to maintain access to resources in the source domain:
 - Groups with SID History are important to monitor because persistent SID History on groups can indicate:
 - **Incomplete migrations**: Groups that were migrated but never fully transitioned
 - **Security risks**: SIDs from untrusted or decommissioned domains may grant unintended access

@@ -1,4 +1,4 @@
-function Convert-MtTest {
+﻿function Convert-MtTest {
     <#
     .SYNOPSIS
     Converts custom Pester-format Maester tests to the native format (Test.<ID>.ps1 and Test.<ID>.md).
@@ -214,8 +214,8 @@ function Convert-MtTest {
             }
             if ($PSCmdlet.ShouldProcess($target, "Write native test $id")) {
                 $null = New-Item -ItemType Directory -Path $OutputPath -Force
-                Set-Content -LiteralPath $target -Value $content -Encoding utf8
-                Set-Content -LiteralPath $targetMd -Value $markdown -Encoding utf8
+                Set-Content -LiteralPath $target -Value $content -Encoding utf8BOM
+                Set-Content -LiteralPath $targetMd -Value $markdown -Encoding utf8NoBOM
                 $check = Read-MtNativeTest -Path $target
                 if ($check.Errors.Count -gt 0) { $status = 'NeedsReview'; $notes.Add("Validation: $(($check.Errors | ForEach-Object { $_.Message }) -join ' ')") }
             }

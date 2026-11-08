@@ -1,4 +1,4 @@
-﻿SMBv3.1.1 is the latest version of the Server Message Block protocol and includes important security enhancements:
+SMBv3.1.1 is the latest version of the Server Message Block protocol and includes important security enhancements:
 
 - **Pre-authentication integrity**: Prevents man-in-the-middle attacks
 - **AES-128-GCM encryption**: Stronger encryption for SMB traffic

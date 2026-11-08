@@ -1,4 +1,4 @@
-﻿**LDAP query policies** define resource limits for directory queries (for example, controlling maximum result sizes and query behaviors). Weak or missing limits can enable **resource exhaustion** against AD through:
+**LDAP query policies** define resource limits for directory queries (for example, controlling maximum result sizes and query behaviors). Weak or missing limits can enable **resource exhaustion** against AD through:
 
 - Expensive or unbounded queries
 - Large searches that degrade DC performance

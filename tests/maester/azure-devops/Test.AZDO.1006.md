@@ -1,4 +1,4 @@
-﻿External guest access to Azure DevOps **should be** a controlled process.
+External guest access to Azure DevOps **should be** a controlled process.
 
 Rationale: External guest access can introduce potential security risks if not managed properly.
 

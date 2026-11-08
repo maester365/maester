@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Invokes Azure VM Run Command with enhanced diagnostics following the vm-guest-management skill patterns.
 

@@ -1,4 +1,4 @@
-﻿1.1.3 (L1) Ensure that between two and four global admins are designated
+1.1.3 (L1) Ensure that between two and four global admins are designated
 
 Between two and four Global Administrators should be designated in the tenant. Ideally, these accounts will not have licenses assigned to them which supports additional controls found in this benchmark.
 

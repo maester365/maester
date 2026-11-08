@@ -1,4 +1,4 @@
-﻿Restrict creation of global Personal Access Tokens (PATs) **should be** enabled.
+Restrict creation of global Personal Access Tokens (PATs) **should be** enabled.
 
 #### Prerequisites
 

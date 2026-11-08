@@ -1,4 +1,4 @@
-function Get-NextModuleVersion {
+﻿function Get-NextModuleVersion {
     <#
     .SYNOPSIS
         Works out the version of the next Maester release or preview.

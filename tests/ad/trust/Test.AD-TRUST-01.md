@@ -1,4 +1,4 @@
-﻿Domain trusts are critical security boundaries in Active Directory environments. Understanding the number and configuration of trusts is essential for:
+Domain trusts are critical security boundaries in Active Directory environments. Understanding the number and configuration of trusts is essential for:
 
 - **Security Assessment**: Knowing how many external entities can authenticate in your environment
 - **Attack Surface Management**: Each trust represents a potential attack vector that needs monitoring

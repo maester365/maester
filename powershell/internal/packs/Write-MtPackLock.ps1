@@ -1,4 +1,4 @@
-function Write-MtPackLock {
+﻿function Write-MtPackLock {
     <#
     .SYNOPSIS
     Writes maester-packs.lock.json, sorted so that a change shows as a small diff in a pull request.

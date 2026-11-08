@@ -1,4 +1,4 @@
-Describe 'Test-MtAppRegistrationCredentialExpiry' {
+﻿Describe 'Test-MtAppRegistrationCredentialExpiry' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

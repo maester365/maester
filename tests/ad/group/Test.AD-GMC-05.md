@@ -1,4 +1,4 @@
-﻿Understanding which specific groups contain trust members is critical for security management:
+Understanding which specific groups contain trust members is critical for security management:
 
 - **Privileged Access**: Trust members in privileged groups (Administrators, Domain Admins) represent significant risk
 - **Access Path Analysis**: Knowing which groups contain external members helps trace access paths

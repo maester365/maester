@@ -1,4 +1,4 @@
-function Get-MtPackCandidate {
+﻿function Get-MtPackCandidate {
     <#
     .SYNOPSIS
     Fetches a pack into a staging folder and validates it, without running any of it (Maester Packs design, sections 5.1 to 5.4).

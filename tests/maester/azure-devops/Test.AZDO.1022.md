@@ -1,4 +1,4 @@
-﻿Azure DevOps pipelines should not automatically build on every pull request and commit from a GitHub repository.
+Azure DevOps pipelines should not automatically build on every pull request and commit from a GitHub repository.
 
 Rationale: Code should not be automatically built from GitHub.
 

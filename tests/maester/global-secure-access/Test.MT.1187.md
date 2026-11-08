@@ -1,4 +1,4 @@
-﻿The Microsoft 365 traffic forwarding profile routes Microsoft 365 traffic (Exchange Online, SharePoint Online, Teams) through Global Secure Access. Enabling it is the lowest-risk entry point to Global Secure Access and is included with Microsoft Entra ID P1.
+The Microsoft 365 traffic forwarding profile routes Microsoft 365 traffic (Exchange Online, SharePoint Online, Teams) through Global Secure Access. Enabling it is the lowest-risk entry point to Global Secure Access and is included with Microsoft Entra ID P1.
 
 Enabling the Microsoft 365 profile unlocks:
 

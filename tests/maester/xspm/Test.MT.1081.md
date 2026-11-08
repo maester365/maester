@@ -1,4 +1,4 @@
-﻿Microsoft strongly recommends avoiding the use of synchronized identities to manage Microsoft 365 or Microsoft Entra environments for [protecting against on-premises attacks](https://learn.microsoft.com/entra/architecture/protect-m365-from-on-premises-attacks).
+Microsoft strongly recommends avoiding the use of synchronized identities to manage Microsoft 365 or Microsoft Entra environments for [protecting against on-premises attacks](https://learn.microsoft.com/entra/architecture/protect-m365-from-on-premises-attacks).
 
 ### How to fix
 

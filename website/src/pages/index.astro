@@ -5,6 +5,8 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import Explainer from '../components/Explainer.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import PronunciationButton from '../components/PronunciationButton.astro';
+import CatalogGrowth from '../components/CatalogGrowth.astro';
+import explorer from '../data/explorer.json';
 import catalog from '../data/test-catalog.json';
 import contributors from '../data/contributors.json';
 import sponsors from '../data/sponsors.json';
@@ -16,6 +18,8 @@ import { previewLabel } from '../lib/versions.mjs';
 const tests = (catalog.Tests as any[]).filter((t) => t.Lifecycle !== 'Deprecated');
 const builtIn = tests.length;
 const zta = (ztaCatalog.Tests as unknown[]).length;
+// Community pack checks on packs.maester.cloud, by the packs' own counts (community-packs.mjs).
+const community = explorer.communityPacks.reduce((n, p) => n + p.count, 0);
 const bySuite = (suite: string) => tests.filter((t) => t.Suite === suite).length;
 const stats = await getStats();
 const format = (n: number) => n.toLocaleString('en-US');
@@ -30,8 +34,6 @@ const suites = [
 	{ code: 'AD', name: 'Active Directory', desc: 'Read-only checks for your on-premises domains: GPOs, DACLs, Kerberos, trusts and more.', count: bySuite('AD'), href: '/docs/tests/ad' },
 	{ code: 'ASD', name: 'ASD Essential Eight', desc: "The Australian Signals Directorate's Essential Eight and ISM controls.", count: bySuite('ASD'), href: '/docs/tests/asd' },
 ];
-
-const products = ['Entra ID', 'Conditional Access', 'Intune', 'Exchange Online', 'Defender', 'Teams', 'SharePoint', 'Purview', 'Azure', 'Azure DevOps', 'GitHub', 'Copilot Studio', 'Fabric', 'Active Directory'];
 
 const steps = [
 	{ n: '1', title: 'Install', code: 'Install-Module Maester', text: 'One PowerShell module. The checks ship inside it.' },
@@ -150,7 +152,7 @@ const jsonLd = {
 	<section class="stats">
 		<div class="wrap stats__grid">
 			<div><strong>{compact(stats.downloads, true)}</strong><span>PowerShell Gallery downloads</span></div>
-			<div><strong>{format(builtIn + zta)}</strong><span>Checks: {format(builtIn)} built in + {zta} Zero Trust</span></div>
+			<div><strong>{format(builtIn + zta + community)}</strong><span>Checks: {format(builtIn + zta)} in Maester + {format(community)} from community packs</span></div>
 			<div><strong>{compact(stats.stars)}</strong><span>GitHub stars</span></div>
 			<div><strong>{contributors.profiles.length}+</strong><span>Contributors</span></div>
 		</div>
@@ -216,6 +218,8 @@ const jsonLd = {
 			}
 		</div>
 	</section>
+
+	<CatalogGrowth />
 
 	<section class="wrap section">
 		<p class="eyebrow">Coverage</p>
@@ -307,17 +311,12 @@ Invoke-Maester -Pack ZTA</pre>
 	</section>
 
 	<section class="wrap section">
-		<h2 class="h2-sm">Checks for the services you actually run.</h2>
-		<div class="chips chips--lg">{products.map((p) => <span class="chip">{p}</span>)}</div>
-	</section>
-
-	<section class="wrap section">
 		<div class="sponsors">
 			<div class="row-head">
 				<div>
 					<p class="eyebrow">Sponsors</p>
 					<h2 class="h2-sm">Maester is free because these sponsors pay for the work.</h2>
-					<p class="muted">Sponsorship pays for maintainer time and the test tenants every check is proven against. It never buys a say in what a check reports.</p>
+					<p class="muted">We're thankful to every sponsor: Maester 3.0, and the future of Maester, are possible because of them. Sponsorship pays for maintainer time and the test tenants every check is proven against. Become a sponsor to help us sustain and improve Maester for the community.</p>
 				</div>
 				<div class="chips">
 					<a class="btn btn--primary" href="/sponsor">Become a sponsor</a>

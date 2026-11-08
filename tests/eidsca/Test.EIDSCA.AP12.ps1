@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAP12 {
+﻿function Test-MtCheckEidscaAP12 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to create Tenants is 'false'

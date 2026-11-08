@@ -1,4 +1,4 @@
-# The ASD checks that run another suite's test, and the helpers the ASD checks read through. Graph is mocked.
+﻿# The ASD checks that run another suite's test, and the helpers the ASD checks read through. Graph is mocked.
 
 BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force -WarningAction SilentlyContinue }
 

@@ -1,4 +1,4 @@
-param
+﻿param
 (
     # Directory used to base all relative paths
     [Parameter(Mandatory = $false)]

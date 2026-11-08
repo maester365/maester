@@ -1,4 +1,4 @@
-﻿Eligible and Active highly privileged role assignments SHALL trigger an alert.
+Eligible and Active highly privileged role assignments SHALL trigger an alert.
 
 Rationale: Closely monitor assignment of the highest privileged roles for signs of compromise. Send assignment alerts to enable the security monitoring team to detect compromise attempts.
 

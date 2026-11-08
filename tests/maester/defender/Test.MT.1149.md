@@ -1,4 +1,4 @@
-﻿Verify that behavior monitoring is enabled - prerequisite for EDR capabilities.
+Verify that behavior monitoring is enabled - prerequisite for EDR capabilities.
 
 Disabled behavior monitoring reduces ability to detect zero-day threats and advanced persistent threats.
 

@@ -1,4 +1,4 @@
-function Get-MtPackTestInventory {
+﻿function Get-MtPackTestInventory {
     <#
     .SYNOPSIS
     Returns the native tests of the packs in a pack set, as the engine plans them (Maester Packs design, sections 4.4 and 5.5).

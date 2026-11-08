@@ -1,4 +1,4 @@
-﻿Security logs SHALL be sent to the agency's security operations center for monitoring.
+Security logs SHALL be sent to the agency's security operations center for monitoring.
 
 Rationale: The security risk of not having visibility into cyber attacks is reduced by collecting logs in the agency’s centralized security detection infrastructure. This makes security events available for auditing, query, and incident response.
 

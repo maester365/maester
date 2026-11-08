@@ -1,4 +1,4 @@
-﻿Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles.
+Agent Identities and Blueprint Principals should not be assigned privileged Entra directory roles.
 
 Assigning Entra ID directory roles (such as *Global Administrator*, *Privileged Role Administrator*, *Application Administrator*, or *Agent ID Administrator*) directly to Agent Identities or Blueprint Principals allows an AI agent or service principal to modify directory objects, credentials, or tenant configurations.
 

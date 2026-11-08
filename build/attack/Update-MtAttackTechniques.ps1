@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Regenerates powershell/assets/MaesterAttackTechniques.json from one MITRE ATT&CK Enterprise release.
 

@@ -1,4 +1,4 @@
-﻿Detailed information about DNS delegations is essential for:
+Detailed information about DNS delegations is essential for:
 
 - **Security auditing**: Understanding what subdomains are delegated and to whom
 - **Dependency mapping**: Knowing which external servers are trusted
