@@ -1,75 +1,34 @@
 ﻿function Test-MtAdDomainFunctionalLevel {
     <#
     .SYNOPSIS
-    Retrieves the current domain functional level.
-
+    Assesses the connected domain functional level against its scoped DC support.
     .DESCRIPTION
-    This test retrieves the current domain functional level which indicates the
-    features and capabilities available in the Active Directory domain. Higher
-    functional levels enable advanced security features and should be used when possible.
-
-    .EXAMPLE
-    Test-MtAdDomainFunctionalLevel
-
-    Returns $true if domain functional level data is accessible.
-    The test result includes the current domain functional level.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdDomainFunctionalLevel
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     #>
     [MaesterTest(
         Id = 'AD-DOM-01',
-        Title = 'Domain functional level should be retrievable',
+        Title = 'Domain functional level meets the highest supported common level',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'High',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:domainDNS.name:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:computer:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdDomainFunctionalLevel"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Domain')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    if ($null -eq $adState.Domain) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $domain = $adState.Domain
-    $functionalLevel = $domain.DomainMode
-
-    # Test passes if we successfully retrieved domain data
-    $testResult = $null -ne $functionalLevel
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Domain Functional Level | $functionalLevel |" + "`n"
-        $result += "| Domain Name | $($domain.Name) |" + "`n"
-        $result += "| Domain SID | $($domain.DomainSID) |" + "`n"
-
-        $testResultMarkdown = "The Active Directory domain functional level has been retrieved successfully.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory domain functional level. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Domain', 'DomainControllers')
+    if (-not $state) { throw 'Domain snapshot unavailable.' }
+    $scope = [pscustomobject]@{ Domain = $state.Domain; DomainControllers = @(Get-MtAdDomainControllersInScope -State $state) }
+    $assessment = Get-MtAdFunctionalLevelAssessment -State $scope -Scope Domain
+    $ok = $assessment.Current -eq $assessment.Target
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } elseif ($assessment.Current -gt $assessment.Target) { 'Configured level exceeds collected DC support; verify incompatible or stale DC inventory before taking action.' } else { 'Raise the domain functional level after planning DC upgrades.' }) Current raw level: $($assessment.Current); highest common supported level: $($assessment.Target). Level 7 supports 2016/2019/2022 DCs; level 10 requires all 2025 DCs."
+    return $ok
 }

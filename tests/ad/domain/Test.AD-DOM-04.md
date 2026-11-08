@@ -1,37 +1,12 @@
-RIDs (Relative Identifiers) are essential for creating unique Security Identifiers (SIDs) for every user, group, and computer in Active Directory. Each domain has a finite pool of approximately 1 billion RIDs:
+Reports the RID Manager object's 64-bit available-pool upper and lower allocation boundaries. Their difference is an inventory indicator, not a measured sum of remaining DC-local RID pools. Missing or malformed boundaries are an error, not a passing result.
 
- * **SID Exhaustion**: Running out of RIDs would prevent creation of any new security principals
- * **Business Impact**: New users, groups, or computers could not be created
- * **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
+#### Remediation action
 
-#### Control Type
+Review the inventory with Active Directory administrators. Confirm missing metadata and assess actual requirements before changing configuration.
 
-**Operational**
+#### Related links
 
-#### Security Recommendation
-
-Monitor RID consumption regularly:
-
- * **Normal Usage**: Most domains use only a small fraction of available RIDs over their lifetime
- * **High Consumption**: Rapid RID consumption may indicate:
-  * Excessive computer account creation/deletion cycles
-  * Automated provisioning scripts creating many accounts
-  * Security issues like computer account flooding attacks
- * **Threshold Alerting**: Set alerts when RID usage exceeds 50% (very conservative) or 75%
-
-If RID consumption is unexpectedly high:
-1. Investigate the source of high account creation
-2. Review computer join policies and scripts
-3. Consider implementing stricter controls on account creation
-
-#### How the Test Works
-
-This test retrieves the RID available pool from Active Directory and calculates the remaining RIDs. The RID pool is a 64-bit value where the high 32 bits represent the total pool and the low 32 bits represent used RIDs.
-
-#### Related Tests
-
-- `Test-MtAdDomainControllerCount` - Counts domain controllers (RID masters)
-- `Test-MtAdMachineAccountQuota` - Checks machine account creation limits
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

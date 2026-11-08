@@ -1,30 +1,20 @@
 ﻿function Test-MtAdMachineAccountQuota {
     <#
     .SYNOPSIS
-    Retrieves the ms-DS-MachineAccountQuota value for the domain.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test retrieves the machine account quota which determines how many computer
-    accounts a standard user can create in the domain. The default value is 10, which
-    may allow unauthorized computer joins if not properly restricted.
-
-    .EXAMPLE
-    Test-MtAdMachineAccountQuota
-
-    Returns $true if machine account quota data is accessible.
-    The test result includes the current quota value.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdMachineAccountQuota
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     #>
     [MaesterTest(
         Id = 'AD-DOM-02',
-        Title = 'Machine account quota should be retrievable',
+        Title = 'Machine account quota is zero',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'access-control',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1136.002',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:domainDNS.ms-DS-MachineAccountQuota:ReadProperty'),
@@ -34,49 +24,10 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdMachineAccountQuota"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Domain')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $domain = $adState.Domain
-
-    # Get machine account quota from the collected domain object
-    $machineAccountQuota = $domain.MsDsMachineAccountQuota
-
-    # Default is 10 if not explicitly set
-    if ($null -eq $machineAccountQuota) {
-        $machineAccountQuota = 10
-        $usingDefault = $true
-    } else {
-        $usingDefault = $false
-    }
-
-    # Test passes if we successfully retrieved domain data
-    $testResult = $null -ne $domain
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Machine Account Quota | $machineAccountQuota |" + "`n"
-        $result += "| Default Value | 10 |" + "`n"
-        $result += "| Using Default | $usingDefault |" + "`n"
-        $result += "| Domain | $($domain.Name) |" + "`n"
-
-        $testResultMarkdown = "The machine account quota determines how many computer accounts a standard user can create in the domain.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve machine account quota. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Domain')
+    if (-not $state.Domain -or $null -eq $state.Domain.MsDsMachineAccountQuota) { throw 'Machine account quota was not collected; the documented default of 10 cannot be substituted for missing data.' }
+    $quota = [int]$state.Domain.MsDsMachineAccountQuota
+    $ok = $quota -eq 0
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } else { 'Set ms-DS-MachineAccountQuota to 0 and delegate computer creation explicitly.' }) Observed quota: $quota; documented AD default: 10; matches documented default: $($quota -eq 10)."
+    return $ok
 }
