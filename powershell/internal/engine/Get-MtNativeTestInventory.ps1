@@ -163,6 +163,9 @@ function Complete-MtNativeTest {
         if ($resolved.Related.Count -gt 0) { $Test.Control = @(@($Test.Control) + @($resolved.Related) | Where-Object { $_ } | Select-Object -Unique) }
         foreach ($miss in $resolved.Unresolved) { $Framework.Unresolved.Add([pscustomobject]@{ Id = $Test.Id; Reference = $miss.Reference; Framework = $miss.Framework }) }
     }
+    # A family's instances can name requirements of their own, and they exist only at run time: keep the
+    # frameworks this test could name for them (Get-MtTestFrameworkIndex).
+    if ($Framework -and $Test.InstanceSource -and $Test.File) { Register-MtTestFrameworkIndex -File $Test.File -Index $Framework }
 
     $Test | Add-Member -NotePropertyMembers ([ordered]@{
             Source       = $source

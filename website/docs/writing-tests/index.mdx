@@ -636,6 +636,7 @@ The instance object has:
 | `Tag` | No | Extra tags written to the instance's row. |
 | `Fields` | No | Facts about the instance that a report can group or filter by, as a hashtable of names to strings or arrays of strings, for example `@{ Pillar = 'Identity'; Category = 'Access control' }`. Written to the row's `Fields`; other values are left out. |
 | `Product`, `Feature`, `Area`, `RelatedProduct`, `UserImpact`, `ImplementationCost`, `Mitre` | No | What this instance is about, when that differs from its family, with the same keys as the attribute. A family that reads results from another tool, such as the Zero Trust Assessment pack, places each result under its own product this way. A value the taxonomy does not know is left out, and the row keeps the family's. |
+| `Control` | No | The requirements this instance implements, as one `<framework-key>:<requirement-id>` value or a list, for example `'cisa-scuba:MS.AAD.3.1'`. They replace the family's `Control`, and the row gets its own `Benchmark` and the requirements' `Related` references, as a test does (see [What the result gets](#what-the-result-gets)). A family that reads another tool's results per policy, such as the ScubaGear pack, maps each result to its requirement this way. A value that is not written `<framework-key>:<id>`, or that names a requirement the framework file does not have, is left out; when none is left, the row keeps the family's `Control` and `Benchmark`. |
 | `Data` | No | Anything the test needs. It is not written to the result. |
 
 Each instance row carries `ParentId` (the family's ID) and `InstanceId`. When the family does not produce
@@ -811,6 +812,10 @@ a framework that has a file and its ID is a requirement in that file.
   resolved, each once.
 
 `Get-MtTest` shows both. See [the result schema](../result-schema.md#benchmark).
+
+An instance of a [family](#families-one-test-several-results) can set its own `Control`, resolved the same way against the frameworks its
+family can name. A report lists every row that names a requirement under it, so when a pack's instance and a
+Maester test name the same requirement, both are shown.
 
 A framework is found by its key, whatever suite declares it. A custom test can name a framework that ships with
 Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`) or one that a suite in your own test folder declares. Two suites
