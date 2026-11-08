@@ -5,6 +5,10 @@ Disabled GPO links represent a potential security and operational concern in Act
 - **Audit Challenges**: Disabled links create confusion during security audits about which policies are actually enforced
 - **Compliance Risks**: Unintentionally disabled links can result in non-compliance with security baselines
 
+#### Control Type
+
+**Operational**
+
 #### Security Recommendation
 
 Regularly review disabled GPO links and either:
@@ -26,9 +30,9 @@ The gPLink attribute is parsed to determine the state of each link.
 
 #### Related Tests
 
-- `Test-MtAdGpoEnforcedCount` - Counts enforced GPO links
-- `Test-MtAdGpoLinkedCount` - Counts distinct GPOs with links
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs with no links
+- **AD-GPOL-04 — Enforced GPO link count should be retrievable** — `Test-MtAdGpoEnforcedCount` — Counts enforced GPO links.
+- **AD-GPOL-01 — GPO linked count should be investigated** — `Test-MtAdGpoLinkedCount` — Counts distinct GPOs with links.
+- **AD-GPO-04 — GPOs should have at least one link** — `Test-MtAdGpoUnlinkedCount` — Identifies GPOs with no links.
 
 <!--- Results --->
 %TestResult%

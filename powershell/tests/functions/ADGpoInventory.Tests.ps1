@@ -13,7 +13,10 @@ Describe 'AD GPO modification age and link inventories' {
                     ModificationTime = [datetime]'2026-01-01'
                 })
             GPOLinks = @([pscustomobject]@{ GpoGuid = '11111111-1111-1111-1111-111111111111' })
-            LinkContainers = @([pscustomobject]@{ ObjectClass = @('organizationalUnit'); DistinguishedName = 'OU=Pilot|test,DC=example,DC=com'; GpLink = '' })
+            LinkContainers = @(
+                [pscustomobject]@{ ObjectClass = @('domainDNS'); DistinguishedName = 'DC=example,DC=com'; GpLink = '' }
+                [pscustomobject]@{ ObjectClass = @('organizationalUnit'); DistinguishedName = 'OU=Pilot|test,DC=example,DC=com'; GpLink = '' }
+            )
             SiteContainers = @()
         }
         Mock -ModuleName Maester Get-MtADGpoState { $script:state }

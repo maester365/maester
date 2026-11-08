@@ -78,6 +78,7 @@
 
     # Domain root
     $domainObj = $gpoState.LinkContainers | Where-Object { @($_.ObjectClass) -contains 'domainDNS' } | Select-Object -First 1
+    if ($null -eq $domainObj) { throw 'Domain-root GPO link metadata was not returned.' }
     if ($null -ne $domainObj -and -not (Test-MtGpoLinkPresent -gPLinkValue $domainObj.GpLink)) {
         $unlinkedDomains = @($domainObj)
     }
@@ -119,7 +120,8 @@
     $unlinkedCountSites = @($unlinkedSites).Count
 
     $totalUnlinkedTargets = $unlinkedCountOus + $unlinkedCountDomains + $unlinkedCountSites
-    $testResult = $true
+    # Investigate reports successful collection, not compliance with a link baseline.
+    $testResult = $null -ne $gpoState.LinkContainers -and $null -ne $gpoState.SiteContainers
 
     # Sample unlinked targets
     $sampleLimit = 5

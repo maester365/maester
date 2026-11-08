@@ -27,9 +27,9 @@ This test retrieves Organizational Units (OUs) from Active Directory using:
 
 #### Related Tests
 
-- `Test-MtAdGpoEnforcedCount` - Counts enforced (inheritance-blocking) link entries
-- `Test-MtAdGpoLinkedCount` - Counts GPOs actively linked to apply settings
-- `Test-MtAdGpoUnlinkedCount` - Identifies unlinked/orphaned GPOs
+- **AD-GPOL-04 — Enforced GPO link count should be retrievable** — `Test-MtAdGpoEnforcedCount` — Counts enforced link entries; enforcement and blocked inheritance are distinct settings.
+- **AD-GPOL-01 — GPO linked count should be investigated** — `Test-MtAdGpoLinkedCount` — Counts GPOs actively linked to apply settings.
+- **AD-GPO-04 — GPOs should have at least one link** — `Test-MtAdGpoUnlinkedCount` — Identifies unlinked/orphaned GPOs.
 
 <!--- Results --->
 %TestResult%

@@ -8,6 +8,10 @@ Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but
 
 **Detective**
 
+#### Security Recommendation
+
+Audit unlinked policies and confirm their purpose before archiving or removing them; an unlinked GPO is not necessarily malicious or unused forever.
+
 #### Remediation action
 
 After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:
@@ -23,13 +27,13 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 
 1. Uses the cached list of GPOs (`$gpoState.GPOs`).
 2. Extracts GPO link references from the collected `GPOLinks` (via `gPLink`).
-3. Counts GPOs whose IDs are not referenced by any collected `gPLink` entry.
+3. Counts GPOs whose IDs are not referenced by any collected `gPLink` entry. Incomplete link collection cannot establish that a policy is unlinked or that an inventory is clean.
 
 #### Related Tests
 
-- `Test-MtAdGpoTotalCount` - Counts the total number of GPOs
-- `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked
-- `AD-GPO-02` - Checks modification age and shows creation and modification dates
+- **AD-GPO-01 — GPO inventory should be investigated** — `Test-MtAdGpoTotalCount` — Inventories all GPOs.
+- **AD-GPOL-01 — GPO linked count should be investigated** — `Test-MtAdGpoLinkedCount` — Inventories linked GPOs.
+- **AD-GPO-02 — GPOs should be modified within the configured age limit** — `Test-MtAdGpoStale` — Reviews GPO modification age.
 
 <!--- Results --->
 %TestResult%

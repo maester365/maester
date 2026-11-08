@@ -6,6 +6,10 @@ An OU can inherit policy from its parent or domain without a direct link. A dire
 
 **Operational**
 
+#### Security Recommendation
+
+Investigate direct-link gaps before adding links; confirm whether inheritance already supplies the intended policy and document justified exceptions.
+
 #### Remediation action
 
 In **Group Policy Management**, review targets without direct links:
@@ -28,9 +32,8 @@ This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 
 #### Related Tests
 
-- `Test-MtAdGpoUnlinkedCount` - Identifies GPOs that are not linked to any location
-- `Test-MtAdGpoLinkedCount` - Counts distinct GPOs that are actively linked
-- `AD-GPO-04` - Returns counts and details of unlinked GPOs
+- **AD-GPO-04 — GPOs should have at least one link** — `Test-MtAdGpoUnlinkedCount` — Identifies unlinked GPOs.
+- **AD-GPOL-01 — GPO linked count should be investigated** — `Test-MtAdGpoLinkedCount` — Inventories linked GPOs.
 
 <!--- Results --->
 %TestResult%
