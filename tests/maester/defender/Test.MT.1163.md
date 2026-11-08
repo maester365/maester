@@ -1,4 +1,4 @@
-﻿Checks that the signature update interval is configured between 1-4 hours in the assigned Microsoft Defender Antivirus policies.
+Checks that the signature update interval is configured between 1-4 hours in the assigned Microsoft Defender Antivirus policies.
 
 Infrequent signature updates reduce detection of the latest threats, leaving endpoints vulnerable to newly discovered malware and exploits.
 

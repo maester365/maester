@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Reviews the rubric attributes of new and changed Maester tests with a reviewer model.
 

@@ -1,4 +1,4 @@
-﻿AI agents should not use MCP server tools without review.
+AI agents should not use MCP server tools without review.
 
 Model Context Protocol (MCP) tools extend agent capabilities by connecting to external servers. These integrations introduce supply chain risks — if an MCP server is compromised, tools-poisoned or untrusted, it could provide malicious instructions, exfiltrate data, or execute unauthorized actions through the agent.
 

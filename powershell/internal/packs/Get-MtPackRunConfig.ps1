@@ -1,4 +1,4 @@
-function Get-MtPackRunConfig {
+﻿function Get-MtPackRunConfig {
     <#
     .SYNOPSIS
     Returns the run config that a pack command reads its PackPolicy and Packs from: the one beside the pack lock, or $null.

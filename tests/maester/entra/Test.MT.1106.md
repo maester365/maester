@@ -1,4 +1,4 @@
-﻿This test identifies Microsoft Entra ID Governance access package catalog resources that reference stale or invalid roles, deleted service principals, or non-existent SharePoint sites. When applications or sites are reconfigured or deleted, catalogs often retain "ghost roles" that cause provisioning failures.
+This test identifies Microsoft Entra ID Governance access package catalog resources that reference stale or invalid roles, deleted service principals, or non-existent SharePoint sites. When applications or sites are reconfigured or deleted, catalogs often retain "ghost roles" that cause provisioning failures.
 
 The test validates:
 - Service principals referenced by applications are active and accessible

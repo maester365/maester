@@ -1,6 +1,8 @@
-﻿1.3.6 (L2) Ensure the customer lockbox feature is enabled
+1.3.6 (L2) Ensure the customer lockbox feature is enabled
 
 Customer Lockbox is a security feature that provides an additional layer of control and transparency to customer data in Microsoft 365. It offers an approval process for Microsoft support personnel to access organization data and creates an audited trail to meet compliance requirements.
+
+This check reads `CustomerLockBoxEnabled` from the Exchange Online organization configuration. If no configuration is returned, the check is skipped as `NotAuthorized` rather than reporting that Customer Lockbox is enabled. For returned configuration, the results table shows whether the setting is enabled.
 
 #### Rationale
 

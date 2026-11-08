@@ -1,4 +1,4 @@
-﻿Delegation on user accounts can be especially risky because user identities are often easier to misuse than computer accounts. Service accounts configured for delegation can become powerful lateral movement pivots.
+Delegation on user accounts can be especially risky because user identities are often easier to misuse than computer accounts. Service accounts configured for delegation can become powerful lateral movement pivots.
 
 - **Lateral movement risk**: Delegation can expand the blast radius of compromise.
 - **Privilege abuse**: User-based services with delegation deserve special scrutiny.

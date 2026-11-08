@@ -1,4 +1,4 @@
-function Test-MtCheckEidscaAV01 {
+﻿function Test-MtCheckEidscaAV01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Voice call - State is 'disabled'

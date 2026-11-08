@@ -1,4 +1,4 @@
-﻿This test checks if the Android Enterprise account connection is valid and has recently synchronized. The Android Enterprise connection is required to synchronize Android enterprise apps and allow device enrollment with Microsoft Intune.
+This test checks if the Android Enterprise account connection is valid and has recently synchronized. The Android Enterprise connection is required to synchronize Android enterprise apps and allow device enrollment with Microsoft Intune.
 
 #### Remediation action
 

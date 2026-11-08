@@ -1,4 +1,4 @@
-﻿Detailed information about incorrect root server configurations is essential for:
+Detailed information about incorrect root server configurations is essential for:
 
 - **Rapid remediation**: Knowing exactly which servers are misconfigured enables quick fixes
 - **Root cause analysis**: Understanding the scope helps identify how the misconfiguration occurred

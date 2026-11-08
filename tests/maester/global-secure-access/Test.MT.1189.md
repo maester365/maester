@@ -1,4 +1,4 @@
-﻿Global Secure Access traffic forwarding profiles (Microsoft 365, Internet, and Private Access) can be scoped to specific users and groups. Microsoft does **not** support nested group membership for this assignment - a user must be a **direct** member of the assigned group to receive the profile (and therefore the Global Secure Access client routing). A nested assignment group silently leaves part of the intended population without the profile.
+Global Secure Access traffic forwarding profiles (Microsoft 365, Internet, and Private Access) can be scoped to specific users and groups. Microsoft does **not** support nested group membership for this assignment - a user must be a **direct** member of the assigned group to receive the profile (and therefore the Global Secure Access client routing). A nested assignment group silently leaves part of the intended population without the profile.
 
 #### Remediation action:
 

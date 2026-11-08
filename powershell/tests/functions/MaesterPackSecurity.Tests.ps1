@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     # Exercise the real shared boundaries without importing tenant connections or the built-in test catalogue.
     foreach ($SourceFile in @('Get-MtPackDigest', 'Expand-MtPackArchive', 'Get-MtPackPolicy', 'Get-MtPackBlocklist', 'Resolve-MtPackGitHubSource', 'Invoke-MtPackGitHubRequest', 'Get-MtPackHome', 'Read-MtPackManifest')) {
         . "$PSScriptRoot/../../internal/packs/$SourceFile.ps1"

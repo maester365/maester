@@ -1,4 +1,4 @@
-﻿5.1.5.4 (L1) Ensure password lifetime for applications does not exceed 180 days
+5.1.5.4 (L1) Ensure password lifetime for applications does not exceed 180 days
 
 In Microsoft Entra ID, applications and service principals can authenticate using password credentials (also referred to as client secrets). This setting enforces a tenant-wide maximum lifetime for new password credentials added to any application registration or service principal. When enabled, any client secret created must have an expiration date that falls within the configured maximum, which for this recommendation is 180 days or less. The policy is implemented through the default app management policy and applies to all applications unless scoped exceptions are configured.
 

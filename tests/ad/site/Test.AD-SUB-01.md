@@ -1,4 +1,4 @@
-﻿Subnets are the foundation of Active Directory site assignment:
+Subnets are the foundation of Active Directory site assignment:
 
 - **Client location**: Subnets determine which site a client belongs to
 - **Authentication routing**: Directs clients to the nearest domain controller

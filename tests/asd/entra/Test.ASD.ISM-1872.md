@@ -1,4 +1,4 @@
-﻿Multi-factor authentication used for authenticating human users of online services is phishing-resistant (ISM-1872, Essential Eight Maturity Level Two).
+Multi-factor authentication used for authenticating human users of online services is phishing-resistant (ISM-1872, Essential Eight Maturity Level Two).
 
 Push notifications, one-time codes and SMS are relayed by adversary-in-the-middle phishing kits in real time. Passkeys (FIDO2), Windows Hello for Business and certificate-based authentication bind the sign-in to the site, so a proxied page gets nothing it can replay.
 

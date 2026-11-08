@@ -1,4 +1,4 @@
-function Get-MtZtaInstance {
+﻿function Get-MtZtaInstance {
     <#
     .SYNOPSIS
     Returns one ZTA instance per result of the Microsoft Zero Trust Assessment.
@@ -41,6 +41,8 @@ function Get-MtZtaInstance {
         }
 
         Add-MtZtaReportAttachment -ReportPath $reportPath
+        # The Zero Trust Workshop plan for the report's Zero Trust plan view (helpers/Add-MtZtaWorkshopPlan.ps1).
+        Add-MtZtaWorkshopPlan
         # Facts from the assessment's tenant export for the Affected objects page (helpers/Add-MtZtaObjectFact.ps1).
         Add-MtZtaObjectFact -ReportPath $reportPath -Report $report
         ConvertTo-MtZtaInstance -Report $report

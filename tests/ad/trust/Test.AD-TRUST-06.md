@@ -1,4 +1,4 @@
-﻿Stale trusts (those not validated for extended periods) indicate potential issues:
+Stale trusts (those not validated for extended periods) indicate potential issues:
 
 - **Decommissioned Domains**: The target domain may no longer exist
 - **Connectivity Issues**: Network problems preventing trust validation

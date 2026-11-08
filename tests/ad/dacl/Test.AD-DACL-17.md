@@ -1,4 +1,4 @@
-﻿Inherited object type GUIDs define which descendant object classes an inheritable ACE targets.
+Inherited object type GUIDs define which descendant object classes an inheritable ACE targets.
 
 - **Delegation scope visibility**: Helps show how precisely ACE inheritance is scoped
 - **Privilege impact analysis**: Broad inheritance can extend powerful rights to many child objects

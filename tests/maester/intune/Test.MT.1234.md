@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android compliance policy requires a recent security patch level.
+Ensure at least one **assigned** Android compliance policy requires a recent security patch level.
 
 Android publishes a **security patch level**, a date, that says which monthly security bulletin a device has received. It is the only practical way to tell whether a phone carries the fixes for the kernel and media vulnerabilities Google has published, because the Android version alone does not say: two phones on the same release can be a year apart in patches, which is routine on devices whose manufacturer has stopped shipping updates.
 

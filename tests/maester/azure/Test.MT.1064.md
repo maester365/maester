@@ -1,4 +1,4 @@
-﻿By default, all Entra ID security principals can create new management groups. This introduces governance and security risks, as it allows any user to create a new management group and link subscriptions to it without oversight.
+By default, all Entra ID security principals can create new management groups. This introduces governance and security risks, as it allows any user to create a new management group and link subscriptions to it without oversight.
 
 To prevent this, Azure provides a setting that enforces write permission requirements for the creation of new management groups. This ensures that only authorized users can manage the structure of your management group hierarchy.
 
