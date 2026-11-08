@@ -1,4 +1,4 @@
-This check inventories three separate indicators on non-domain-controller computer accounts: classic Kerberos constrained delegation (KCD) target SPNs from `msDS-AllowedToDelegateTo`, the `TrustedToAuthForDelegation` protocol-transition flag, and **presence** of an `msDS-AllowedToActOnBehalfOfOtherIdentity` resource-based constrained delegation (RBCD) descriptor. One computer can have multiple indicators. Descriptor presence neither identifies allowed principals nor proves effective delegation permissions.
+This check inventories three separate indicators on non-domain-controller computers and sMSA, gMSA and dMSA accounts: classic Kerberos constrained delegation (KCD) target SPNs from `msDS-AllowedToDelegateTo`, the `TrustedToAuthForDelegation` protocol-transition flag, and **presence** of an `msDS-AllowedToActOnBehalfOfOtherIdentity` resource-based constrained delegation (RBCD) descriptor. One account can have multiple indicators. Descriptor presence neither identifies allowed principals nor proves effective delegation permissions.
 
 **Security Considerations:**
 - **Limited Scope**: Safer than unconstrained but still enables impersonation
@@ -29,7 +29,7 @@ This check inventories three separate indicators on non-domain-controller comput
 
 #### How the Test Works
 
-The test reports separate non-DC counts for KCD target SPNs, protocol transition and RBCD descriptor presence, plus a deduplicated count and a sample of computers and KCD targets for review. A protocol-transition flag alone does not prove that a classic KCD target is configured. A present RBCD descriptor needs a separate permissions review; this test cannot resolve principals or effective access. Delegation on user or managed service accounts is outside this computer inventory.
+The test reports device and managed-account populations separately, then combined non-DC account counts for KCD targets, protocol transition and RBCD descriptor presence. Indicator percentages use this combined population. DC identity comes from the DC inventory, not a claimed primary group. A present RBCD descriptor needs a separate permissions review; this test cannot resolve principals or effective access. Delegation on ordinary user accounts remains outside this inventory.
 
 #### Related Tests
 

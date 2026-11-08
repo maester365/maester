@@ -1,4 +1,6 @@
-Unconstrained delegation on non-domain-controller computers exposes users' Kerberos tickets to any attacker who compromises the computer. This check fails when one or more non-DC computers have the `TrustedForDelegation` flag. DCs are counted separately but do not cause failure; percentages use only non-DC computers as the denominator.
+Unconstrained delegation on non-domain-controller computers or managed service accounts exposes users' Kerberos tickets. This check fails when a non-DC computer, sMSA, gMSA or dMSA has the `TrustedForDelegation` flag. Managed accounts are reported separately; the device percentage still uses only non-DC computers as its denominator.
+
+Only the collected DC server inventory establishes DC identity: `serverReference` DN, or DNS fallback when that reference is unavailable. Primary groups 516 and 521 alone never exclude a computer. Unexpected DC primary-group claims are counted for review under AD-COMP-04.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer
@@ -35,7 +37,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 
 #### Related Tests
 
-- `AD-DCOMP-03` - Reviews protocol transition on non-DC computers
+- `AD-DCOMP-03` - Reviews KCD, protocol transition and RBCD descriptor presence on non-DC computers and managed accounts
 - `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
 
 #### Related links

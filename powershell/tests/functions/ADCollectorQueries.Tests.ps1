@@ -25,7 +25,7 @@ Describe 'AD query normalization for consolidated checks' {
 
     It 'collects all three managed service account classes without requesting passwords' {
         Mock -ModuleName Maester Invoke-MtLdapSearch -RemoveParameterType Connection {
-            [pscustomobject]@{ name = 'Delegated'; objectClass = @('computer', 'msDS-DelegatedManagedServiceAccount'); 'msDS-DelegatedMSAState' = 2 }
+            [pscustomobject]@{ name = 'Delegated'; objectClass = @('computer', 'msDS-DelegatedManagedServiceAccount'); 'msDS-DelegatedMSAState' = 2; userAccountControl = 17301504; 'msDS-AllowedToDelegateTo' = @('HTTP/managed'); 'msDS-AllowedToActOnBehalfOfOtherIdentity' = [byte[]]@(1, 2, 3) }
         }
         InModuleScope Maester {
             $connection = [System.DirectoryServices.Protocols.LdapConnection]::new('localhost')
@@ -33,6 +33,10 @@ Describe 'AD query normalization for consolidated checks' {
                 $accounts = @(Get-MtLdapServiceAccount -Connection $connection -SearchBase 'DC=example,DC=com')
                 $accounts[0].ObjectClass | Should -Contain 'msDS-DelegatedManagedServiceAccount'
                 $accounts[0].DelegatedMsaState | Should -Be 2
+                $accounts[0].TrustedForDelegation | Should -BeTrue
+                $accounts[0].TrustedToAuthForDelegation | Should -BeTrue
+                $accounts[0].AllowedToDelegateTo | Should -Contain 'HTTP/managed'
+                $accounts[0].HasResourceBasedConstrainedDelegation | Should -BeTrue
             }
             finally { $connection.Dispose() }
         }

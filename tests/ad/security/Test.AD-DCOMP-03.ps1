@@ -6,7 +6,7 @@
     .DESCRIPTION
     Inventories classic Kerberos constrained delegation target SPNs, the
     TrustedToAuthForDelegation protocol-transition flag, and presence of an RBCD
-    security descriptor on non-DC computer objects. RBCD presence does not
+    security descriptor on non-DC computers and sMSA, gMSA and dMSA objects. RBCD presence does not
     identify allowed principals or establish effective access. These categories
     can overlap and do not include delegation configured on user accounts.
 
@@ -26,7 +26,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-03',
-        Title = 'Non-DC computer constrained delegation should be investigated',
+        Title = 'Non-DC computer and managed account constrained delegation should be investigated',
         Product = 'ad',
         Feature = 'computers',
         Area = 'authentication',
@@ -34,7 +34,7 @@
         Severity = 'Info',
         Mitre = ('T1558', 'T1550.003'),
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -42,10 +42,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdComputerNonDcConstrainedDelegationCount"
-    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers')
+    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers', 'ServiceAccounts')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState -or $null -eq $adState.Computers -or $null -eq $adState.DomainControllers) {
+    if ($null -eq $adState -or $null -eq $adState.Computers -or $null -eq $adState.DomainControllers -or $null -eq $adState.ServiceAccounts) {
         throw 'Computer and domain controller inventories are required to review constrained delegation.'
     }
     Write-Verbose "Filtering/counting computer non dc constrained delegation count"
@@ -56,22 +56,13 @@
         throw 'Computer and domain controller inventories must not be empty when reviewing constrained delegation.'
     }
 
-    # Match DC computer DNs to serverReference first. The primary group also
-    # identifies writable DCs (516) and RODCs (521). DNS names also identify
-    # DCs; a name alone is used only when the DC has no reference or DNS name.
-    $dcReferences = @($domainControllers | Where-Object { $_.ServerReference } | ForEach-Object { $_.ServerReference })
-    $dcDnsNames = @($domainControllers | Where-Object { $_.DnsHostName } | ForEach-Object { $_.DnsHostName })
-    $dcWithoutReference = @($domainControllers | Where-Object { -not $_.ServerReference })
+    # Device inventory stays separate from managed accounts; both are assessed for delegation.
     $nonDcComputers = @($computers | Where-Object {
-            $computer = $_
-            $isDc = $computer.PrimaryGroupId -in @(516, 521) -or $dcReferences -contains $computer.DistinguishedName
-            if (-not $isDc -and $computer.DnsHostName) { $isDc = $dcDnsNames -contains $computer.DnsHostName }
-            if (-not $isDc -and -not $computer.DnsHostName -and $computer.Name) {
-                $isDc = @($dcWithoutReference | Where-Object { -not $_.DnsHostName -and $_.Name -eq $computer.Name }).Count -gt 0
-            }
-            -not $isDc
+            -not (Test-MtAdDomainControllerAccount -Account $_ -DomainControllers $domainControllers)
         })
-    if (@($nonDcComputers | Where-Object {
+    $managedAccounts = @($adState.ServiceAccounts)
+    $nonDcAccounts = @($nonDcComputers) + @($managedAccounts)
+    if (@($nonDcAccounts | Where-Object {
                 -not $_.PSObject.Properties['AllowedToDelegateTo'] -or $null -eq $_.AllowedToDelegateTo -or
                 -not $_.PSObject.Properties['HasResourceBasedConstrainedDelegation'] -or $null -eq $_.HasResourceBasedConstrainedDelegation -or
                 -not $_.PSObject.Properties['TrustedToAuthForDelegation'] -or $null -eq $_.TrustedToAuthForDelegation
@@ -79,29 +70,31 @@
         throw 'Required delegation fields are missing from the non-DC computer inventory; a zero count cannot be trusted.'
     }
 
-    $classicKcd = @($nonDcComputers | Where-Object { @($_.AllowedToDelegateTo).Count -gt 0 })
-    $protocolTransition = @($nonDcComputers | Where-Object { $_.TrustedToAuthForDelegation -eq $true })
-    $rbcdPresent = @($nonDcComputers | Where-Object { $_.HasResourceBasedConstrainedDelegation -eq $true })
-    $reviewComputers = @($nonDcComputers | Where-Object {
+    $classicKcd = @($nonDcAccounts | Where-Object { @($_.AllowedToDelegateTo).Count -gt 0 })
+    $protocolTransition = @($nonDcAccounts | Where-Object { $_.TrustedToAuthForDelegation -eq $true })
+    $rbcdPresent = @($nonDcAccounts | Where-Object { $_.HasResourceBasedConstrainedDelegation -eq $true })
+    $reviewComputers = @($nonDcAccounts | Where-Object {
             @($_.AllowedToDelegateTo).Count -gt 0 -or $_.TrustedToAuthForDelegation -eq $true -or $_.HasResourceBasedConstrainedDelegation -eq $true
         })
     $totalNonDcComputers = $nonDcComputers.Count
+    $totalNonDcAccounts = $nonDcAccounts.Count
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Non-DC Computers | $totalNonDcComputers |" + "`n"
-    $result += "| Non-DC Computers with Classic KCD Target SPNs | $($classicKcd.Count) |`n"
-    $result += "| Non-DC Computers with Protocol Transition Flag | $($protocolTransition.Count) |`n"
-    $result += "| Non-DC Computers with RBCD Descriptor Present | $($rbcdPresent.Count) |`n"
-    $result += "| Distinct Non-DC Computers with One or More Indicators | $($reviewComputers.Count) |`n"
-    if ($totalNonDcComputers -gt 0) {
-        $percentage = [Math]::Round(($reviewComputers.Count / $totalNonDcComputers) * 100, 2)
-        $result += "| Percentage of Non-DC Computers with an Indicator | $percentage% |`n"
+    $result += "| Managed Service Accounts | $($managedAccounts.Count) |`n"
+    $result += "| Non-DC Accounts with Classic KCD Target SPNs | $($classicKcd.Count) |`n"
+    $result += "| Non-DC Accounts with Protocol Transition Flag | $($protocolTransition.Count) |`n"
+    $result += "| Non-DC Accounts with RBCD Descriptor Present | $($rbcdPresent.Count) |`n"
+    $result += "| Distinct Non-DC Accounts with One or More Indicators | $($reviewComputers.Count) |`n"
+    if ($totalNonDcAccounts -gt 0) {
+        $percentage = [Math]::Round(($reviewComputers.Count / $totalNonDcAccounts) * 100, 2)
+        $result += "| Percentage of Non-DC Accounts with an Indicator | $percentage% |`n"
     }
 
     if ($reviewComputers.Count -gt 0) {
-        $result += "`n**Non-DC Computers to Review (Top 10):**`n`n"
-        $result += "| Computer | Classic KCD Target SPNs | Protocol Transition Flag | RBCD Descriptor Present |`n| --- | --- | --- | --- |`n"
+        $result += "`n**Non-DC Accounts to Review (Top 10):**`n`n"
+        $result += "| Account | Classic KCD Target SPNs | Protocol Transition Flag | RBCD Descriptor Present |`n| --- | --- | --- | --- |`n"
         foreach ($computer in $reviewComputers | Select-Object -First 10) {
             $name = [string]$computer.Name -replace '\|', '\|' -replace '[\r\n]', ' '
             $spns = [string](@($computer.AllowedToDelegateTo) -join ', ') -replace '\|', '\|' -replace '[\r\n]', ' '
@@ -114,7 +107,7 @@
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Review non-DC classic KCD target SPNs, protocol transition and RBCD descriptor presence. RBCD presence does not identify allowed principals or prove effective access; categories can overlap.`n`n%TestResult%"
+    $testResultMarkdown = "Review non-DC computer and managed service account classic KCD target SPNs, protocol transition and RBCD descriptor presence. RBCD presence does not identify allowed principals or prove effective access; categories can overlap.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Investigate

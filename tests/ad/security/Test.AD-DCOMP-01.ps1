@@ -7,6 +7,7 @@
     Unconstrained delegation allows a service to impersonate a user to any other service.
     This is a high-risk configuration on non-domain-controller computers. Domain
     controllers are reported separately but excluded from the assessed population.
+    Managed service accounts are also assessed and reported separately from device percentages.
 
     Security Risk:
     - Unconstrained delegation allows full impersonation of authenticated users
@@ -24,7 +25,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DCOMP-01',
-        Title = 'Non-DC computers should not have unconstrained delegation',
+        Title = 'Non-DC computers and managed service accounts should not have unconstrained delegation',
         Product = 'ad',
         Feature = 'computers',
         Area = 'authentication',
@@ -35,7 +36,7 @@
         Mitre = ('T1558', 'T1550.003'),
         Control = 'nist-800-53-r5:AC-6',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:computer:ReadProperty', 'ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -43,10 +44,10 @@
     param()
 
     Write-Verbose "Starting Test-MtAdComputerUnconstrainedDelegationCount"
-    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers')
+    $adState = Get-MtADDomainState -Categories @('Computers', 'DomainControllers', 'ServiceAccounts')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState -or $null -eq $adState.Computers -or $null -eq $adState.DomainControllers) {
+    if ($null -eq $adState -or $null -eq $adState.Computers -or $null -eq $adState.DomainControllers -or $null -eq $adState.ServiceAccounts) {
         throw 'Computer and domain controller inventories are required to assess unconstrained delegation.'
     }
     Write-Verbose "Filtering/counting computer unconstrained delegation count"
@@ -57,21 +58,12 @@
         throw 'Computer and domain controller inventories must not be empty when assessing delegation.'
     }
 
-    # DCs are identified by primary group, serverReference DN or matching DNS
-    # host name. Name alone is used only when the DC has neither reference nor DNS.
-    $dcReferences = @($domainControllers | Where-Object { $_.ServerReference } | ForEach-Object { $_.ServerReference })
-    $dcDnsNames = @($domainControllers | Where-Object { $_.DnsHostName } | ForEach-Object { $_.DnsHostName })
-    $dcWithoutReference = @($domainControllers | Where-Object { -not $_.ServerReference })
+    # Only the collected server inventory establishes DC identity, never a claimed primary group.
     $nonDcComputers = @($computers | Where-Object {
-            $computer = $_
-            $isDc = $computer.PrimaryGroupId -in @(516, 521) -or $dcReferences -contains $computer.DistinguishedName
-            if (-not $isDc -and $computer.DnsHostName) { $isDc = $dcDnsNames -contains $computer.DnsHostName }
-            if (-not $isDc -and -not $computer.DnsHostName -and $computer.Name) {
-                $isDc = @($dcWithoutReference | Where-Object { -not $_.DnsHostName -and $_.Name -eq $computer.Name }).Count -gt 0
-            }
-            -not $isDc
+            -not (Test-MtAdDomainControllerAccount -Account $_ -DomainControllers $domainControllers)
         })
-    if (@($nonDcComputers | Where-Object { $null -eq $_.TrustedForDelegation }).Count -gt 0) {
+    $managedAccounts = @($adState.ServiceAccounts)
+    if (@(@($nonDcComputers) + @($managedAccounts) | Where-Object { $null -eq $_.TrustedForDelegation }).Count -gt 0) {
         throw 'Unconstrained delegation flag is missing for non-DC computers.'
     }
 
@@ -83,10 +75,12 @@
     $nonDcUnconstrained = @($nonDcComputers | Where-Object { $_.TrustedForDelegation -eq $true })
     $dcUnconstrainedCount = $unconstrainedCount - $nonDcUnconstrained.Count
     $nonDcUnconstrainedCount = $nonDcUnconstrained.Count
+    $managedUnconstrained = @($managedAccounts | Where-Object { $_.TrustedForDelegation -eq $true })
+    $unverifiedDcGroups = @($nonDcComputers | Where-Object { $_.PrimaryGroupId -in 516, 521 })
 
     $totalComputers = @($computers).Count
     $totalNonDcComputers = $nonDcComputers.Count
-    $testResult = $nonDcUnconstrainedCount -eq 0
+    $testResult = $nonDcUnconstrainedCount -eq 0 -and $managedUnconstrained.Count -eq 0
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -95,6 +89,9 @@
     $result += "| Domain Controllers with Unconstrained Delegation | $dcUnconstrainedCount |" + "`n"
     $result += "| Non-DC Computers with Unconstrained Delegation | $nonDcUnconstrainedCount |" + "`n"
     $result += "| Total Non-DC Computers | $totalNonDcComputers |" + "`n"
+    $result += "| Managed Service Accounts | $($managedAccounts.Count) |`n"
+    $result += "| Managed Service Accounts with Unconstrained Delegation | $($managedUnconstrained.Count) |`n"
+    $result += "| Non-DC Computers Claiming DC Primary Groups | $($unverifiedDcGroups.Count) |`n"
     $percentage = if ($totalNonDcComputers -gt 0) { [Math]::Round(($nonDcUnconstrainedCount / $totalNonDcComputers) * 100, 2) } else { 0 }
     $result += "| Non-DC Percentage with Unconstrained Delegation | $percentage% |" + "`n"
     if (-not $testResult) {
@@ -104,10 +101,16 @@
             $os = [string]$computer.OperatingSystem -replace '\|', '\|' -replace '[\r\n]', ' '
             $result += "| $name | $os |`n"
         }
+        $result += "`n| Managed Account with Unconstrained Delegation |`n| --- |`n"
+        foreach ($account in $managedUnconstrained) {
+            $name = ([string]$account.Name).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+            $result += "| $name |`n"
+        }
     }
     Write-Verbose "Counts computed"
 
-    $summary = if ($testResult) { 'Well done. No non-DC computers have unconstrained delegation.' } else { 'Non-DC computers with unconstrained delegation were found. Migrate their services to constrained delegation and remove unconstrained delegation.' }
+    $summary = if ($testResult) { 'Well done. No non-DC computers or managed service accounts have unconstrained delegation.' } else { 'Non-DC computers or managed service accounts with unconstrained delegation were found. Migrate their services to constrained delegation and remove unconstrained delegation.' }
+    if ($unverifiedDcGroups.Count -gt 0) { $summary += " $($unverifiedDcGroups.Count) computer(s) claim a DC primary group without inventory evidence; review AD-COMP-04. They were not excluded." }
     $testResultMarkdown = "$summary`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
