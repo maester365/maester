@@ -18,7 +18,7 @@ helps you get that approval. It has three parts:
 3. [Common questions](#common-questions) that come up in these conversations, with honest answers.
 
 :::tip[Run Maester first]
-The strongest argument is your own tenant. Run Maester once (see [Getting started](getting-started.md)) and quote
+The strongest argument is your own tenant. Run Maester once (see [Getting started](getting-started.mdx)) and quote
 your own numbers: how many Critical and High failures there are, and two or three examples from the list below that
 you actually found.
 :::
@@ -42,7 +42,7 @@ changed.
 | **There is no record when you need it.** Audit logging or mailbox auditing is off. | Logs are only looked at after an incident. | You cannot tell what an attacker did, or meet breach-notification and legal obligations. | [CIS.M365.3.1.1](/docs/tests/CIS.M365.3.1.1), [CISA.MS.EXO.13.1](/docs/tests/CISA.MS.EXO.13.1) |
 | **Anyone can send email as you.** DMARC is missing or not enforced on a domain. | Mail still flows normally. | Invoice fraud and phishing that appears to come from your own domain. | [MT.1182](/docs/tests/MT.1182) |
 | **Applications hold powerful, long-lived secrets.** A service principal with a client secret holds a permanent privileged role. | Apps are created by projects and rarely reviewed by security. | A leaked secret gives an attacker admin rights without any user sign-in or MFA. | [MT.1027](/docs/tests/MT.1027), [MT.1057](/docs/tests/MT.1057) |
-| **An integration stops working.** An app registration's certificate or secret expires. | The expiry date is in the portal, but nobody is watching it. | An outage of a business process that depends on the app. | [MT.1199](/docs/tests/MT.1199) |
+| **An integration stops working.** An app registration's certificate or secret expires. | The expiry date is in the portal, but nobody is watching it. | An outage of a business process that depends on the app. | [MT.1199](/docs/tests/MT.1199) (long-running: add `-IncludeLongRunning`) |
 | **Files are shared with anyone.** External sharing is opened up for one project and left open. | Sharing settings are changed in a different admin centre from the rest of security. | Sensitive documents reachable by people outside the organisation. | [CIS.M365.7.2.3](/docs/tests/CIS.M365.7.2.3) |
 | **A new phishing technique works.** Device code sign-in is allowed for everyone. | It is on by default and rarely needed. | Phishing that captures a signed-in session, including MFA. | [CIS.M365.5.2.2.12](/docs/tests/CIS.M365.5.2.2.12) |
 
@@ -94,7 +94,7 @@ system / a failed audit].
 
 **What we propose**
 
-- Run Maester every day against our Microsoft 365 environment. It only reads our settings; it does not change them.
+- Run Maester every day against our Microsoft 365 environment. It reads our settings; it does not change them.
 - Send the results to [the security team / IT operations]. Serious findings are raised as [tickets / alerts].
 - Report a short summary to [this group] every [month / quarter].
 
@@ -208,10 +208,15 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 
 - An identity with read access to Microsoft Graph. `Get-MtGraphScope` lists the exact permissions; by default they are
   all read-only (`*.Read.All` and similar).
-- Optional, only if we turn them on: `Mail.Send` to email the report (`-SendMail`), and read-write scopes needed to
-  read Global Administrator assignments in PIM (`-Privileged`). [We will / will not use these.]
-- For the Exchange Online, Teams and SharePoint tests: [a reader role such as Global Reader / the roles listed in the
+- Optional, only if we turn them on: `Mail.Send` to email the report (`-SendMail`), and
+  `ReportSettings.ReadWrite.All` (`-Privileged`). With that permission, test MT.1076 turns off the tenant's report
+  obfuscation setting while it reads a usage report, then turns it back on. If restoring the setting fails, Maester
+  only writes a warning, and the setting stays off until an admin restores it. [We will / will not use these.]
+- For the Exchange Online and Teams tests: [a reader role such as Global Reader / the roles listed in the
   monitoring guide].
+- For the SharePoint tests: an app registration with `AllSites.FullControl` (delegated) or `Sites.FullControl.All`
+  (unattended). The tests only read, but the permission would allow changes, so treat this identity as privileged.
+  [We will / will not run the SharePoint tests.]
 - Unattended runs use [a workload identity with federated credentials / a managed identity / a certificate], with no
   stored secret [where possible]. See [Monitoring with Maester](monitoring/readme.mdx).
 
@@ -220,11 +225,17 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 - Runs in [our GitHub Actions / Azure DevOps / Azure Automation / an admin workstation], in [region / environment].
 - Results (HTML, JSON, optional CSV and Excel) are written to [storage location], with access limited to [group].
   They describe our security configuration and should be classified as [classification].
-- User identities can be removed from the outputs with `-RedactUserIdentity`. The list of affected objects is
-  collected only with `-IncludeAffectedObjects`.
+- User identities can be removed from every output with `-RedactUserIdentity AllOutputs`. `HtmlOnly` redacts only
+  the HTML report, so the JSON, CSV and other machine-readable outputs keep the real identifiers. Redaction is best
+  effort and can miss names in free text.
+- By default the results include the list of affected objects (the users, policies and apps behind each finding).
+  `-ExcludeAffectedObjects` leaves it out.
 - Results are sent only where we configure them: [email recipients / a Teams channel / none].
-- Telemetry: by default each run sends one usage event, with our tenant ID, to the Maester project's analytics
-  service. We will turn this off with `-DisableTelemetry`. [Yes / No]
+- Telemetry: by default each run sends a start and an end event to `api.maester.dev`, run by the Maester
+  maintainers. They hold a hash of our tenant ID and the number of tests that passed, failed or were skipped, never
+  which tests or what they found. For now each run also sends a legacy usage event, which holds our tenant ID, to
+  PostHog. See [What telemetry does Maester send?](faq.md#what-telemetry-does-maester-send). We will turn both off
+  with `-DisableTelemetry`. [Yes / No]
 - With `-SkipVersionCheck` the module makes no calls to check for a newer version.
 
 **Supply chain**
@@ -239,7 +250,7 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 
 | Risk | Mitigation |
 | --- | --- |
-| The monitoring identity is compromised and used to read the tenant's configuration | Read-only permissions, [federated credential / certificate in Key Vault], sign-in monitoring on the identity, Conditional Access for workload identities [if licensed] |
+| The monitoring identity is compromised and used to read the tenant's configuration | Read-only Graph permissions (plus the SharePoint and optional permissions above, if used), [federated credential / certificate in Key Vault], sign-in monitoring on the identity, Conditional Access for workload identities [if licensed] |
 | Reports disclose our security weaknesses | Access-controlled storage, redaction of user identities, retention of [N days] |
 | A malicious or faulty module release | Version pinning, review before upgrade, [internal repository] |
 | False assurance from passing tests | Maester tests configuration only; it complements, and does not replace, [penetration testing / SIEM / audit] |
@@ -272,8 +283,9 @@ configuration and runs in your own environment, the operational risk of a fault 
 fails or a test that reports the wrong result, which you can turn off.
 
 **Will it change anything in our tenant?**
-No. By default Maester asks only for read permissions. The optional permissions (sending mail, reading PIM
-assignments) are off unless you ask for them.
+Not by default: Maester asks only for read permissions. Two optional permissions are off unless you ask for them:
+sending mail, and `-Privileged`, which lets one test turn off report obfuscation while it runs and then turn it back
+on. The SharePoint tests need a full-control SharePoint permission, although they only read.
 
 **How much work is it?**
 A first report takes about fifteen minutes. Scheduled monitoring takes a few hours to set up with one of the
@@ -281,4 +293,4 @@ A first report takes about fifteen minutes. Scheduled monitoring takes a few hou
 
 **We will get hundreds of failures on the first run.**
 That is normal, and it is the reason to start. Fix Critical and High first, record the findings you accept as
-exceptions with a reason, and report the trend. See [Getting started](getting-started.md#step-3-fix-what-matters-first).
+exceptions with a reason, and report the trend. See [Getting started](getting-started.mdx#step-3-fix-what-matters-first).

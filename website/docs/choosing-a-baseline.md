@@ -15,7 +15,7 @@ run.
 | Suite | Source | What it checks | `-Suite` |
 | --- | --- | --- | --- |
 | [Maester](/docs/tests/maester) | The Maester community | Entra ID, Conditional Access, privileged access, app registrations, Exchange, Teams, Defender, Intune, Azure DevOps, AI agents and more. Written from real attacks and misconfigurations seen in tenants. | `Maester` |
-| [CIS](/docs/tests/cis) | [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) and CIS GitHub Benchmark | The benchmark's automatable recommendations. Each test's title starts with its level, **(L1)** or **(L2)**. | `CIS` |
+| [CIS](/docs/tests/cis) | [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) and CIS GitHub Benchmark | The benchmark's automatable recommendations. Each result names its recommendation and its level, L1 or L2. | `CIS` |
 | [CISA](/docs/tests/cisa) | [CISA SCuBA](https://github.com/cisagov/ScubaGear) Secure Configuration Baselines | The automatable SCuBA policies for Entra ID, Exchange Online and SharePoint Online. Each requirement carries its NIST SP 800-53 references. | `CISA` |
 | [ASD](/docs/tests/asd) | [ASD Essential Eight maturity model](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model) and [Information security manual](https://www.cyber.gov.au/ism) (ISM) | Entra ID and Intune settings for the Essential Eight requirements and ISM controls that can be read from Microsoft 365, such as phishing-resistant MFA, just-in-time administration and Office macro hardening. Each result names its ISM control and, for Essential Eight, the maturity level and mitigation strategy. | `ASD` |
 | [EIDSCA](/docs/tests/eidsca) | [Entra ID Security Config Analyzer](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense) | Entra ID tenant settings (authorisation, consent, authentication methods, password protection) against recommended values. | `EIDSCA` |
@@ -48,8 +48,9 @@ Start from what your organisation has to show, not from the suites. Most organis
 
 Several suites check the same setting from their own source. For example, blocking legacy authentication is
 checked by [MT.1009](/docs/tests/MT.1009), [CIS.M365.5.2.2.3](/docs/tests/CIS.M365.5.2.2.3) and the CISA
-suite. That is expected: each result reports against its own framework. If you need only one view, run the suite
-that matches your requirement and fill gaps from the others with `-TestId`.
+suite. That is expected: each result reports against its own framework. If you need one framework view, run its
+suite. To add tests from other suites, run them in a separate invocation with `-TestId` and without `-Suite`: the
+selectors must all match, so `-Suite CIS -TestId MT.1009` runs nothing.
 
 ## Make your choice the default
 

@@ -3,6 +3,8 @@ title: Getting started
 description: Your first Maester run, how to read the report, and how to go from a one-off check to continuous monitoring.
 ---
 
+import InstallCommand from '@components/InstallCommand.astro';
+
 # Getting started
 
 This page takes you from nothing to a first report in about fifteen minutes, then shows the steps most teams take
@@ -19,22 +21,27 @@ By default Maester asks only for read permissions. It does not change anything i
 
 ## Step 1: Run your first report
 
+Install Maester, then connect and run it:
+
+<InstallCommand />
+
 ```powershell
-Install-Module Maester -Scope CurrentUser
 Connect-Maester
 Invoke-Maester
 ```
 
-`Connect-Maester` connects to Microsoft Graph. That is enough for the Entra ID tests and most of the others. To
-include Exchange Online, Teams, SharePoint and the other Microsoft 365 services, connect to all of them:
+`Connect-Maester` connects to Microsoft Graph. That is enough for the Entra ID tests and most of the others. The
+Exchange Online, Teams and SharePoint tests need their own PowerShell modules, and SharePoint also needs an app
+registration whose client ID you pass with `-SharePointClientId`. [Installation](installation.mdx#optional-modules-and-permissions)
+covers both. Then connect to all the services:
 
 ```powershell
-Connect-Maester -Service All
+Connect-Maester -Service All -SharePointClientId '<Client ID>'
 Invoke-Maester
 ```
 
 Tests for a service you have not connected to are reported as **Skipped**, with the reason, so you can tell which
-results are missing and why. See [Installation](installation.mdx) and [Connect-Maester](connect-maester/readme.md).
+results are missing and why. See [Connect-Maester](connect-maester/readme.md).
 
 ## Step 2: Read the report
 
@@ -46,8 +53,9 @@ of these results:
 | **Passed** | The setting matches what the test expects. |
 | **Failed** | The setting does not match. The test explains why and how to fix it. |
 | **Investigate** | Maester found something a person should look at; it cannot decide on its own. |
-| **Skipped** | The test did not run, for example because a service is not connected or a licence is missing. |
-| **Error** | The test could not finish, for example because of a missing permission. |
+| **Skipped** | The test did not run, for example because a service is not connected, a licence is missing or a permission was not granted. |
+| **Error** | The test could not finish, for example because a service returned an unexpected error. |
+| **Not run** | The test was left out of this run, for example because your configuration turned it off. The reason is shown. |
 
 Each failed test links to its own page on this site, with the background, the fix and the references.
 
@@ -80,10 +88,7 @@ emergency access (break glass) accounts, which many Conditional Access tests dep
     "EmergencyAccessAccounts": [
       { "Type": "User", "UserPrincipalName": "BreakGlass1@contoso.com" }
     ]
-  },
-  "TestSettings": [
-    { "Id": "MT.1089", "Enabled": false, "Reason": "Accepted risk, see ticket SEC-123" }
-  ]
+  }
 }
 ```
 
@@ -91,6 +96,17 @@ Then run Maester from that folder, or pass it with `-Path`:
 
 ```powershell
 Invoke-Maester -Path ./maester
+```
+
+When you have decided to accept a failure, add a `TestSettings` row for that test with your reason. Add one only
+for a decision that has been made, because the test then stops checking that setting:
+
+```json
+{
+  "TestSettings": [
+    { "Id": "<test ID>", "Enabled": false, "Reason": "<the decision and where it is recorded, for example RISK-042>" }
+  ]
+}
 ```
 
 See [Configure Maester](configuration/overview.md) and [Emergency access accounts](configuration/emergency-access-accounts.md).
