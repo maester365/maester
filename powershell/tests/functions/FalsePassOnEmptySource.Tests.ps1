@@ -49,10 +49,13 @@
             $script:TestResult | Should -Not -Match 'Meets recommendation'
         }
 
-        It 'reports the 60-day fallback when the attribute is not set but the object was read' {
-            # Raised by @merill on #2699: a forest that never set tombstoneLifetime is not a
-            # retrieval failure. Active Directory uses 60 days, which is a known value and below
-            # the recommendation, so the check reports it instead of saying it could not be read.
+        It 'does not pass on an inferred 60 days when the attribute is absent' {
+            # @merill asked for the "not set" case to say Active Directory then uses 60 days, and
+            # it does. @coderabbitai then pointed out that seeing the object is not proof the
+            # attribute was readable: an account without read access to tombstoneLifetime gets the
+            # object back with the attribute omitted, which is identical to it not being set. So
+            # the 60 days is explained, both causes are named, and the check still does not pass -
+            # inferring a value it never read is the false pass this file exists to prevent.
             Mock -ModuleName Maester Get-MtADDomainState {
                 [pscustomobject]@{
                     Configuration = [pscustomobject]@{ TombstoneLifetime = $null; DirectoryServiceRead = $true }
@@ -60,11 +63,10 @@
                 }
             }
 
-            Test-MtAdTombstoneLifetime | Should -BeTrue
+            Test-MtAdTombstoneLifetime | Should -BeFalse
             $script:TestResult | Should -Match '60 days'
-            $script:TestResult | Should -Match 'Not set on the forest'
-            $script:TestResult | Should -Match 'Below recommendation'
-            $script:TestResult | Should -Not -Match 'Unable to retrieve'
+            $script:TestResult | Should -Match 'cannot read the attribute'
+            $script:TestResult | Should -Not -Match 'Meets recommendation'
         }
 
         It 'passes and reports the value when the lifetime is readable' {

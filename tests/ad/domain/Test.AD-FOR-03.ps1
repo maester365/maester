@@ -62,41 +62,39 @@
     # Without the substitution the branch the author wrote for that case is the one that runs, which
     # is what the title of this check asserts: the tombstone lifetime should be retrievable.
 
-    # A $null lifetime is not one case but two, and only one of them is a failure to retrieve.
-    # When the Directory Service object was read and simply carries no tombstoneLifetime, the
-    # attribute is not set and Active Directory uses 60 days. That value is known, so the check
-    # reports it rather than claiming the lifetime could not be retrieved. Raised by @merill.
+    # A $null lifetime has two causes and LDAP does not let us tell them apart. @merill asked
+    # for the "not set" case to report the 60 days Active Directory then uses, and that is
+    # worth saying. But @coderabbitai is right that seeing the Directory Service object is not
+    # proof the attribute was readable: an account without read access to tombstoneLifetime
+    # gets the object back with the attribute omitted, which is byte-for-byte what "not set"
+    # looks like. Passing on a value inferred from that would be the same false pass this
+    # check exists to remove, so the reading is reported and the check still does not pass.
     $directoryServiceRead = [bool]$adState.Configuration.DirectoryServiceRead
     $notSetLifetime = 60
-    $isNotSet = $directoryServiceRead -and $null -eq $tombstoneLifetime
-    $effectiveLifetime = if ($isNotSet) { $notSetLifetime } else { $tombstoneLifetime }
+    $isAbsent = $directoryServiceRead -and $null -eq $tombstoneLifetime
 
-    # Test passes if the effective tombstone lifetime is known
-    $testResult = $null -ne $effectiveLifetime
+    # Passes only when the forest actually returned a lifetime.
+    $testResult = $null -ne $tombstoneLifetime
 
     # Generate markdown results
     if ($testResult) {
         $result = "| Property | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
-        $result += "| Tombstone Lifetime | $effectiveLifetime days |" + "`n"
-        if ($isNotSet) {
-            $result += "| Source | Not set on the forest, so Active Directory uses $notSetLifetime days |" + "`n"
-        }
+        $result += "| Tombstone Lifetime | $tombstoneLifetime days |" + "`n"
         $result += "| Recommended minimum | $defaultValue days |" + "`n"
         $result += "| Forest Name | $($adState.Forest.Name) |" + "`n"
 
-        $recommendation = if ($effectiveLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
+        $recommendation = if ($tombstoneLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
         $result += "| Recommendation | $recommendation |" + "`n"
 
-        $lead = if ($isNotSet) {
-            "The forest does not set a tombstone lifetime, so Active Directory uses $notSetLifetime days. Deleted objects are retained for that long before permanent removal."
-        } else {
-            "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $effectiveLifetime days before permanent removal."
-        }
-        $testResultMarkdown = "$lead`n`n%TestResult%"
+        $testResultMarkdown = "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $tombstoneLifetime days before permanent removal.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."
+        $testResultMarkdown = if ($isAbsent) {
+            "The Directory Service object was read, but it carries no ``tombstoneLifetime``. That is either because the forest never set one - in which case Active Directory uses $notSetLifetime days, below the 180-day recommendation - or because this account cannot read the attribute. Active Directory returns the object with the attribute omitted in both cases, so the two cannot be told apart from here, and this check does not report a lifetime it did not read. Grant read access to ``tombstoneLifetime`` on CN=Directory Service,CN=Windows NT,CN=Services to settle which it is."
+        } else {
+            "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."
+        }
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
