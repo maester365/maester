@@ -907,6 +907,10 @@
       "description": "Conditional Access policies."
     },
     {
+      "key": "ConditionalAccessPolicyPlan",
+      "description": "Conditional Access policy plans."
+    },
+    {
       "key": "Policy",
       "description": "Any other policy object, such as an anti-phishing, compliance, DLP or meeting policy."
     },
