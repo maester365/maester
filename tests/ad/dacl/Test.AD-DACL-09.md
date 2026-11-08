@@ -1,4 +1,4 @@
-Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight` can enable high-impact control over Active Directory objects. These permissions are commonly involved in privilege escalation and persistence paths.
+Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight` can enable high-impact control over Active Directory objects, depending on their scope, object type, principal and inherited permissions. Their presence merits review, not automatic revocation.
 
 - **GenericAll**: Grants broad control over the object.
 - **WriteDacl / WriteOwner**: Enables permission tampering or ownership takeover.
@@ -7,6 +7,10 @@ Allow ACEs that grant `GenericAll`, `WriteDacl`, `WriteOwner`, or `ExtendedRight
 #### Control Type
 
 **Operational**
+
+#### Security Recommendation
+
+Review the grantee, targeted object and scope of privileged allow ACEs; remove only unauthorized grants after checking inherited and effective access.
 
 #### Remediation action
 
@@ -18,8 +22,8 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters allow ACEs for
 
 #### Related Tests
 
-- `Test-MtAdDaclPrivilegedExtendedRightCount`
-- `Test-MtAdDaclDistinctIdentityCount`
+- **AD-DACL-11 — ExtendedRight delegations and identities should be investigated** — `Test-MtAdDaclPrivilegedExtendedRightCount` — Reviews ExtendedRight delegations.
+- **AD-DACL-07 — DACL identity counts and ACE distribution should be investigated** — `Test-MtAdDaclDistinctIdentityCount` — Inventories DACL identities and ACE distribution.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

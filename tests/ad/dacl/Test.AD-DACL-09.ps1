@@ -86,7 +86,7 @@
         }
     )
 
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

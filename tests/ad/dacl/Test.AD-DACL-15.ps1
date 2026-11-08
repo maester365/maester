@@ -65,7 +65,7 @@
             Group-Object -Property IdentityReference
     ).Count
 
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = '| Metric | Value |' + "`n"
     $result += '| --- | --- |' + "`n"

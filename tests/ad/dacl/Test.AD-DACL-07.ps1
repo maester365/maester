@@ -74,7 +74,7 @@
         Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
         Select-Object -First 1
 
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

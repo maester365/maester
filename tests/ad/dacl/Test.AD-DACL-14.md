@@ -20,9 +20,9 @@ This test reads `$adState.DaclEntries` and counts entries where `IsInherited` is
 
 #### Related Tests
 
-- `Test-MtAdDaclDenyAceCount` - Counts deny ACEs in DACLs
-- `Test-MtAdDaclPrivilegedAllowAceCount` - Counts privileged allow authorizations
-- `Test-MtAdDaclUnresolvedSidCount` - Identifies stale SID references in ACEs
+- **AD-DACL-05 — Deny ACEs and affected identities should be investigated** — `Test-MtAdDaclDenyAceCount` — Counts deny ACEs in DACLs.
+- **AD-DACL-09 — Privileged allow ACEs and affected objects should be investigated** — `Test-MtAdDaclPrivilegedAllowAceCount` — Counts privileged allow authorizations.
+- **AD-DACL-15 — Unresolved SID counts and affected objects should be investigated** — `Test-MtAdDaclUnresolvedSidCount` — Identifies stale SID references in ACEs.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

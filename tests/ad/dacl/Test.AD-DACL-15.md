@@ -8,6 +8,10 @@ Unresolved SIDs in DACLs often indicate deleted users or groups, stale migration
 
 **Operational**
 
+#### Security Recommendation
+
+Resolve raw SIDs against migration and translation records before deleting ACEs; an unresolved name does not prove the identity has been deleted.
+
 #### Remediation action
 
 - Investigate unresolved SID ACEs and determine whether they can be removed
@@ -20,8 +24,7 @@ This test reads `$adState.DaclEntries`, counts entries with an `IdentityReferenc
 
 #### Related Tests
 
-- `Test-MtAdDaclDistinctIdentityCount` - Counts distinct identities present in ACEs
-- `Test-MtAdDaclDistinctIdentityCount` - Shows ACE distribution across identities
+- **AD-DACL-07 — DACL identity counts and ACE distribution should be investigated** — `Test-MtAdDaclDistinctIdentityCount` — Inventories DACL identities and ACE distribution.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

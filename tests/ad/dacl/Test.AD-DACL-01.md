@@ -18,9 +18,9 @@ This test retrieves `$adState.DaclEntries`, extracts the `ObjectDN` value from e
 
 #### Related Tests
 
-- `Test-MtAdDaclOuObjectCount`
-- `Test-MtAdDaclConflictObjectCount`
-- `Test-MtAdDaclDenyAceCount`
+- **AD-DACL-02 — OU DACL entry count should be investigated** — `Test-MtAdDaclOuObjectCount` — Inventories OU DACL entries.
+- **AD-DACL-03 — Conflict objects and their DACL entries should be investigated** — `Test-MtAdDaclConflictObjectCount` — Reviews conflict-object DACL entries.
+- **AD-DACL-05 — Deny ACEs and affected identities should be investigated** — `Test-MtAdDaclDenyAceCount` — Reviews deny ACEs separately.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

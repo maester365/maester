@@ -8,6 +8,10 @@ Extended rights control specific privileged operations in Active Directory, such
 
 **Operational**
 
+#### Security Recommendation
+
+Verify that principals granted extended rights need the specific control-access operations on the affected object types; GUID counts alone do not establish abuse.
+
 #### Remediation action
 
 Review principals granted extended rights and verify that those delegations are necessary, documented, and limited to the smallest practical scope.
@@ -18,7 +22,7 @@ This test reads `DaclEntries` from `Get-MtADDomainState`, filters allow ACEs who
 
 #### Related Tests
 
-- `Test-MtAdDaclPrivilegedAllowAceCount`
+- **AD-DACL-09 — Privileged allow ACEs and affected objects should be investigated** — `Test-MtAdDaclPrivilegedAllowAceCount` — Reviews privileged allow ACEs.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

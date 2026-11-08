@@ -64,7 +64,7 @@
 
     $conflictObjectCount = ($conflictObjectDns | Measure-Object).Count
     $conflictAceCount = ($conflictEntries | Measure-Object).Count
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
