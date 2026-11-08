@@ -76,13 +76,13 @@ Describe 'AD configuration, forest and optional-feature checks' {
 
     It 'fails for zero KDS root keys rather than assuming gMSAs are unused' {
         $script:state.Configuration.KdsRootKeys = @()
-        Test-MtAdKdsRootKeysCount | Should -BeFalse
+        Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true | Should -BeFalse
         $script:detail | Should -Match 'No KDS root keys'
     }
 
     It 'investigates the documented two-key case with a single boolean return' {
         $script:state.Configuration.KdsRootKeys += [PSCustomObject]@{ 'msKds-CreateTime' = [datetime]'2025-01-01' }
-        Test-MtAdKdsRootKeysCount | Should -BeTrue
+        Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true | Should -BeTrue
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $Investigate }
         $script:detail | Should -Not -Match 'Recommended Count'
     }
@@ -90,5 +90,20 @@ Describe 'AD configuration, forest and optional-feature checks' {
     It 'does not silently omit a KDS key with unavailable creation metadata' {
         $script:state.Configuration.KdsRootKeys += [PSCustomObject]@{ Name = 'Unreadable metadata' }
         { Test-MtAdKdsRootKeysCount } | Should -Throw '*inventory is incomplete*'
+    }
+
+    It 'investigates zero visible keys unless complete read access was confirmed' {
+        $script:state.Configuration.KdsRootKeys = @()
+        Test-MtAdKdsRootKeysCount | Should -BeTrue
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly 1 -ParameterFilter { $Investigate }
+        $script:detail | Should -Match 'not proof that keys are missing'
+        $script:detail | Should -Not -Match 'create a third'
+    }
+
+    It 'does not recommend another key from an unconfirmed two-key inventory' {
+        $script:state.Configuration.KdsRootKeys += [PSCustomObject]@{ 'msKds-CreateTime' = [datetime]'2025-01-01' }
+        Test-MtAdKdsRootKeysCount | Should -BeTrue
+        $script:detail | Should -Match 'complete inventory is not confirmed'
+        $script:detail | Should -Not -Match 'create a third'
     }
 }

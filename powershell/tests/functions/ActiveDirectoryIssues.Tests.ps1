@@ -18,7 +18,7 @@ Describe 'AD-CFG-22: KDS root key count' {
             }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $result = Test-MtAdKdsRootKeysCount
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
             $result | Should -BeFalse
         }
     }
@@ -35,7 +35,7 @@ Describe 'AD-CFG-22: KDS root key count' {
                 }
             }
 
-            $result = Test-MtAdKdsRootKeysCount
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
             $result | Should -Be $true
         }
     }
@@ -54,7 +54,7 @@ Describe 'AD-CFG-22: KDS root key count' {
             }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $result = Test-MtAdKdsRootKeysCount
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
             $result | Should -BeTrue
             Assert-MockCalled Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate -eq $true } -Exactly 1
         }

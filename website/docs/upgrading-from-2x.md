@@ -11,6 +11,14 @@ Maester 3.0 gives Maester its own test engine. The built-in tests are no longer 
 folder: they ship inside the module and run from there. Most runs need no change at all, but the way tests are
 installed, selected, configured and written has moved on. This page lists every change that can affect you.
 
+## Active Directory check consolidation
+
+Overlapping AD count/detail checks now produce one combined result. Historical inclusion **and exclusion** tags map to the surviving check. This preserves exclusion mapping but can broaden what an old exclusion suppresses: `-ExcludeTag AD-GPOREP-19` now excludes Critical **AD-GPOREP-17**, including both the `cpassword` and default-password checks. Audit existing exclusions and retain them only when excluding the entire merged control is intended. The native replacements are recorded in `build/golden/native-test-replacements.psd1`; this does not automatically migrate ID-based `TestSettings` rows.
+
+Existing exported AD collectors also distinguish collection failure from an empty inventory. The `GPOs` or `GPOReports` fields returned by `Get-MtADGpoState` can be `$null` when collection fails; an empty array is not an equivalent error signal. Custom tests must check for `$null` before calculating a clean result. Device inventory excludes managed service account classes; managed-account delegation remains covered by AD-DCOMP-01 and AD-DCOMP-03 through the separate ServiceAccounts collection.
+
+AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-inventory access has been independently confirmed with `KeyInventoryReadAccessConfirmed`. Do not create keys solely because a restricted identity returned an empty inventory.
+
 ## Requirements
 
 - **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.

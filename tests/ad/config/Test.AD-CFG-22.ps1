@@ -7,7 +7,8 @@
     KDS root keys are required for Group Managed Service Accounts (gMSA). This test
     checks the number of KDS root keys configured in the domain.
 
-    - Zero keys means gMSA provisioning cannot work; the test fails.
+    - Zero visible keys fails only when inventory read access is operator-confirmed;
+      otherwise it needs investigation because keys may be hidden by directory ACLs.
     - One key supports gMSA operations; the test passes.
     - Exactly two keys can cause gMSA authentication failures in some scenarios;
       the test returns Investigate per Microsoft guidance.
@@ -39,7 +40,10 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Confirm that this run's identity has audited read/list access to the complete KDS key inventory.
+        [bool] $KeyInventoryReadAccessConfirmed = $false
+    )
 
     Write-Verbose "Starting Test-MtAdKdsRootKeysCount"
 
@@ -70,9 +74,13 @@
     # Build the metric table once so both result paths can include it
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
-    $result += "| KDS Root Keys (gMSA) | $kdsRootKeysCount |" + "`n"
-    # No keys means gMSA provisioning is unavailable; this does not prove gMSAs are unused.
+    $result += "| Visible KDS Root Keys (gMSA) | $kdsRootKeysCount |" + "`n"
+    $result += "| Complete inventory read access confirmed by operator | $KeyInventoryReadAccessConfirmed |" + "`n"
     if ($kdsRootKeysCount -eq 0) {
+        if (-not $KeyInventoryReadAccessConfirmed) {
+            Add-MtTestResultDetail -Result "No KDS root keys are visible to this identity. Directory ACLs can hide existing keys; this is not proof that keys are missing. Verify read/list access before provisioning any key.`n`n$result" -Investigate
+            return $true
+        }
         Add-MtTestResultDetail -Result "No KDS root keys were found. gMSA provisioning requires a KDS root key; review whether gMSAs are planned or already in use.`n`n$result"
         return $false
     }
@@ -80,6 +88,10 @@
     # A nonzero count establishes presence, not a universal recommended key count.
     # Two keys triggers an Investigate result per the Microsoft article
     if ($kdsRootKeysCount -eq 2) {
+        if (-not $KeyInventoryReadAccessConfirmed) {
+            Add-MtTestResultDetail -Result "Two KDS root keys are visible, but the complete inventory is not confirmed. Verify access and the actual key count before considering the documented two-key issue; do not create another key based on a partial inventory.`n`n$result" -Investigate
+            return $true
+        }
         $testResultMarkdown = "⚠️ Exactly two KDS root keys exist. In some scenarios this can cause gMSA authentication failures. Microsoft's recommended workaround is to create a third KDS root key. Do not remove existing keys. See [Microsoft documentation](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/gmsa-auth-failures-multiple-keys) for details.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
