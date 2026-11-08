@@ -1,4 +1,4 @@
-﻿The **default query policy** sets baseline resource constraints for LDAP operations. If defaults are overly permissive, AD can be more vulnerable to availability attacks and performance degradation from:
+The **default query policy** sets baseline resource constraints for LDAP operations. If defaults are overly permissive, AD can be more vulnerable to availability attacks and performance degradation from:
 
 - Large/inefficient LDAP searches
 - High-frequency query patterns

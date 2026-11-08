@@ -1,4 +1,4 @@
-﻿Trial Teams tenants are tenants that have only trial licenses and no purchased licenses. They are short-lived, easy to create and often used for spam and phishing. If your organization can communicate with accounts in trial tenants, users can receive messages and meeting invitations from senders that have little accountability.
+Trial Teams tenants are tenants that have only trial licenses and no purchased licenses. They are short-lived, easy to create and often used for spam and phishing. If your organization can communicate with accounts in trial tenants, users can receive messages and meeting invitations from senders that have little accountability.
 
 Blocking trial tenants keeps external communication limited to organizations that have purchased licenses. Users in your organization can still communicate with all other allowed external organizations.
 

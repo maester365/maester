@@ -28,6 +28,7 @@
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:AC-2(13)'),
         Service = 'Graph',
+        License = 'AAD_PREMIUM_P2&AGENT_365',
         Author = 'ExeqZ'
     )]
     [CmdletBinding()]

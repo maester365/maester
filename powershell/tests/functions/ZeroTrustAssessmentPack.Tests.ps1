@@ -1,4 +1,4 @@
-Describe 'Zero Trust Assessment pack' {
+﻿Describe 'Zero Trust Assessment pack' {
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force -WarningAction SilentlyContinue
         $script:PackRoot = (Resolve-Path "$PSScriptRoot/../../../packs/zero-trust-assessment").Path
@@ -20,9 +20,14 @@ Describe 'Zero Trust Assessment pack' {
 
         $script:Rows = Invoke-ZtaPack
 
-        # The attachments the last run added, or nothing on a Maester version without Add-MtReportAttachment.
+        # The HTML attachments the last run added, or nothing on a Maester version without Add-MtReportAttachment.
+        # -ContentType application/json returns the data attachments (the Zero Trust plan) instead.
         function Get-ZtaAttachment {
-            InModuleScope Maester { @($__MtSession.ReportAttachments | Where-Object { $_ }) }
+            param([string] $ContentType = 'text/html')
+            InModuleScope Maester -Parameters @{ ContentType = $ContentType } {
+                param($ContentType)
+                @($__MtSession.ReportAttachments | Where-Object { $_ -and $_.ContentType -eq $ContentType })
+            }
         }
         function Clear-ZtaAttachment {
             InModuleScope Maester { $__MtSession.ReportAttachments = $null }
@@ -204,6 +209,19 @@ Describe 'Zero Trust Assessment pack' {
 
             $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.ReportPath' = (Join-Path $TestDrive 'zt'); 'ZeroTrustAssessment.EmbedReport' = $false }
             Get-ZtaAttachment | Should -BeNullOrEmpty
+        }
+
+        It 'attaches the Zero Trust plan as JSON, and nothing when WorkshopPlan is false' {
+            if (-not $script:CanAttach) { Set-ItResult -Skipped -Because 'this Maester has no Add-MtReportAttachment' }
+            Clear-ZtaAttachment
+            $null = Invoke-ZtaPack
+            $plan = @(Get-ZtaAttachment -ContentType 'application/json')
+            $plan.Count | Should -Be 1
+            $plan[0].Name | Should -Be 'zero-trust-workshop'
+
+            Clear-ZtaAttachment
+            $null = Invoke-ZtaPack -Setting @{ 'ZeroTrustAssessment.WorkshopPlan' = $false }
+            Get-ZtaAttachment -ContentType 'application/json' | Should -BeNullOrEmpty
         }
 
         It 'skips the family when the report is missing' {

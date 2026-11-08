@@ -1,4 +1,4 @@
-﻿Privileged access to systems and their resources is disabled after 45 days of inactivity (ISM-1648, Essential Eight Maturity Level Two).
+Privileged access to systems and their resources is disabled after 45 days of inactivity (ISM-1648, Essential Eight Maturity Level Two).
 
 An administrator account nobody uses is an account nobody watches. Its password ages, its owner may have moved on, and a sign-in on it is unlikely to be questioned. This check lists the users with an active or eligible assignment to a directory role that Microsoft Entra marks as privileged, directly or through a role-assignable group, and reads the last sign-in of each. An enabled account fails when its most recent interactive or non-interactive sign-in is older than 45 days (the `InactiveDays` parameter), or when it has never signed in and was created before that. Emergency access accounts named in the Maester configuration (`EmergencyAccessAccounts`) are left out, because they are meant to stay unused.
 

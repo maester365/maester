@@ -1,4 +1,4 @@
-﻿Automatic revocation of leaked Personal Access Tokens **should be** enabled.
+Automatic revocation of leaked Personal Access Tokens **should be** enabled.
 
 #### Prerequisites
 

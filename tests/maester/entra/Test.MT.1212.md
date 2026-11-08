@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprint Principals that expose application roles should require
+Agent Identity Blueprint Principals that expose application roles should require
 an explicit assignment before another identity can use them.
 
 Application roles control which applications or agents can access capabilities

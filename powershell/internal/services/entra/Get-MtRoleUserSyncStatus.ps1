@@ -1,4 +1,4 @@
-function Get-MtRoleUserSyncStatus {
+﻿function Get-MtRoleUserSyncStatus {
     <#
     .SYNOPSIS
     Returns the users that hold any of the given directory roles, with whether each is synced from on-premises.

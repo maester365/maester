@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:manifest = (Resolve-Path "$PSScriptRoot/../../../Maester.psd1").Path
     $script:folder = Join-Path $TestDrive 'suite/Custom'
     $null = New-Item -ItemType Directory -Path $script:folder -Force

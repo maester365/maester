@@ -1,4 +1,4 @@
-﻿5.1.5.3 (L2) Ensure password addition is blocked for applications
+5.1.5.3 (L2) Ensure password addition is blocked for applications
 
 In Microsoft Entra ID, applications and service principals can authenticate using either certificate credentials or password credentials (also referred to as client secrets). This setting enforces a tenant-wide restriction that prevents new password credentials from being added to any application registration or service principal. The policy is implemented through the default app management policy and applies to all applications unless scoped exceptions are configured.
 

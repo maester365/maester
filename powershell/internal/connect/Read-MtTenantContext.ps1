@@ -1,4 +1,4 @@
-function Read-MtTenantContext {
+﻿function Read-MtTenantContext {
     <#
     .SYNOPSIS
     Reads the tenant context in steps, and says after each step what it found.

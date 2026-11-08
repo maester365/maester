@@ -1,4 +1,4 @@
-function Test-MtPackContent {
+﻿function Test-MtPackContent {
     <#
     .SYNOPSIS
     Validates a pack folder and scans it locally, without running any of it (Maester Packs design, sections 4.3 and 9.6).

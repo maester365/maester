@@ -1,6 +1,8 @@
 // Reports of other tools embedded with Add-MtReportAttachment. The report data lists each one; its content is
 // gzip-compressed HTML, Base64-encoded, in a <script type="application/octet-stream"> element of its own.
 
+import { decodeGzipBase64 } from "@/lib/gzipBase64"
+
 export interface ReportAttachment {
   Id: string
   Name: string
@@ -16,11 +18,22 @@ function attachmentElement(attachment: ReportAttachment) {
   return document.getElementById(elementIdPrefix + attachment.Id)
 }
 
-/** The attachments of a result whose content is in this page (the dev server and imported JSON have none). */
+// An attachment is a page (text/html, the default) or data a built-in view reads (application/json).
+const isData = (attachment: ReportAttachment) => /json/i.test(attachment.ContentType || "")
+
+/** The attached pages of a result whose content is in this page (the dev server and imported JSON have none). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getReportAttachments(testResults: any): ReportAttachment[] {
   const attachments: ReportAttachment[] = Array.isArray(testResults?.Attachments) ? testResults.Attachments : []
-  return attachments.filter((attachment) => attachment?.Id && attachment.Name && attachmentElement(attachment))
+  return attachments.filter((attachment) => attachment?.Id && attachment.Name && !isData(attachment) && attachmentElement(attachment))
+}
+
+/** The data attachment of this name, such as the Zero Trust plan, when its content is in this page. The dev
+ * server's samples name theirs with an Id that starts with "dev:" and have no content element. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getDataAttachment(testResults: any, name: string): ReportAttachment | undefined {
+  const attachments: ReportAttachment[] = Array.isArray(testResults?.Attachments) ? testResults.Attachments : []
+  return attachments.find((a) => a?.Id && a.Name === name && isData(a) && ((import.meta.env.DEV && a.Id.startsWith("dev:")) || attachmentElement(a)))
 }
 
 /** The report route that shows an attachment in the main panel. */
@@ -53,14 +66,14 @@ export function getTestAttachments(testResults: any, test: { Id?: string; Parent
 
 const decoded = new Map<string, Promise<string>>()
 
+/** The attachment's content as text, decompressed once and kept. */
 export function decodeAttachment(attachment: ReportAttachment): Promise<string> {
   let html = decoded.get(attachment.Id)
   if (!html) {
     html = (async () => {
       const base64 = attachmentElement(attachment)?.textContent?.trim() ?? ""
-      const compressed = await fetch(`data:application/gzip;base64,${base64}`)
-      if (!compressed.body) throw new Error("The attachment is empty.")
-      return await new Response(compressed.body.pipeThrough(new DecompressionStream("gzip"))).text()
+      if (!base64) throw new Error("The attachment is empty.")
+      return await decodeGzipBase64(base64)
     })()
     decoded.set(attachment.Id, html)
     html.catch(() => decoded.delete(attachment.Id))

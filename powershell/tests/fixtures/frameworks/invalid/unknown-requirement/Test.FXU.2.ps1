@@ -1,4 +1,4 @@
-function Test-MtFixtureFrameworkFxu2 {
+﻿function Test-MtFixtureFrameworkFxu2 {
     <#
     .SYNOPSIS
     Framework fixture: its Control names requirement R9 of fx-unknown, which the framework file does not have.

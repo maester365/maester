@@ -1,4 +1,4 @@
-function Test-MtEidscaAP08 {
+﻿function Test-MtEidscaAP08 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - User consent assignments match the restricted or Microsoft recommended baseline is set to '0'

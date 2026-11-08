@@ -218,7 +218,7 @@ Maester's step can then connect any way it likes, including OIDC, as long as it 
 ## The assessment's own report
 
 The Maester report embeds the HTML report the assessment wrote, with its pillar dashboards and charts. Open it
-with the **Zero Trust Assessment** button on the report's overview, under **Reports** in the left menu, or on any
+with the **Zero Trust Assessment** button on the report's overview, under **Assessment report** in the pack's menu, or on any
 ZTA result. It opens inside the Maester report, with an option to open it in a new browser tab, and works
 offline, so the Maester report stays a single file to share.
 
@@ -226,6 +226,50 @@ The embedded report is compressed: a 10 MB assessment report adds about 2 MB to 
 out when `ZeroTrustAssessment.EmbedReport` is `false`, when you read a report file that has no
 `ZeroTrustAssessmentReport.html` beside it or one folder up, and when `Invoke-Maester -RedactUserIdentity` is
 used, because Maester cannot redact the assessment's report.
+
+## Zero Trust plan
+
+The report's **Zero Trust plan** view shows the [Microsoft Zero Trust Workshop](https://zerotrust.microsoft.com)
+plan for the tenant. Each pillar (Identity, Devices, Data, Network, Infrastructure, Security Operations and AI) is
+split into functional areas and swimlanes, and each task has its phase, priority, effort, user impact, licence,
+dependencies and Microsoft's guidance. A task shows the status of the checks that measure it, so you can see which
+parts of the plan are done, which fail and which no check covers yet. The pillars the run has results for are marked.
+
+Open it from the pack's menu: select **Microsoft Zero Trust Assessment** in the report's left menu, then a pillar
+under **Zero Trust plan**. Expand a pillar to go straight to one of its functional areas, and an area to go to one
+swimlane.
+
+The view opens on **Swimlanes**: one functional area at a time, with its swimlanes as rows and the workshop's phases
+(First, Then, Next) as columns. **Table** lists every task in the pillar, grouped by functional area and swimlane,
+and can be sorted and filtered. Select a task in either view to see its checks and guidance in a panel on the right.
+
+A task's checks come from three places:
+
+- the assessment tests Microsoft maps to the task;
+- Maester's built-in tests that check the same setting as one of those assessment tests;
+- Maester tests that Maester maps to the task itself, with a note where it checks more than the workshop asks.
+
+Maester also adds a few tasks the workshop does not have, such as hardening Microsoft Entra Connect sync. They are
+marked as Maester's. Run Maester's own tests with the pack (`Invoke-Maester -Pack ZTA`) to see their status.
+
+The plan ships with the pack, so the view works offline. Set `ZeroTrustAssessment.WorkshopPlan` to `false` to
+leave it out. With `Invoke-Maester -RedactUserIdentity` the plan is kept, redacted like the results.
+
+Zero Trust Workshop content © Microsoft; guidance and check mapping from
+[microsoft/zerotrustassessment](https://github.com/microsoft/zerotrustassessment), MIT licence.
+
+### Add a Maester test to a task, or refresh the plan
+
+Maester's additions are kept by hand in the pack's `workshop/maester.json`: list the built-in tests that measure a
+workshop task under its task ID, or add a task under `ExtraTasks`. The rest of the folder is generated from the
+workshop site and the assessment's repository:
+
+```powershell
+./build/zero-trust-workshop/Update-MtZtWorkshopData.ps1
+```
+
+[`build/zero-trust-workshop/README.md`](https://github.com/maester365/maester/blob/main/build/zero-trust-workshop/README.md)
+has the file formats and the rules the unit tests check.
 
 ## Facts on the Affected objects page
 
@@ -262,6 +306,7 @@ All settings go in `GlobalSettings` of `maester-config.json`.
 | `ZeroTrustAssessment.ReportPath` | empty | Read this report instead of running the assessment. |
 | `ZeroTrustAssessment.MaxReportAgeDays` | `7` | Refuse a report older than this. `0` turns the check off. |
 | `ZeroTrustAssessment.EmbedReport` | `true` | Embed the assessment's own HTML report in the Maester report. |
+| `ZeroTrustAssessment.WorkshopPlan` | `true` | Add the Zero Trust Workshop plan, with the status of each task, to the Maester report. |
 | `ZeroTrustAssessment.ObjectFacts` | `true` | Add what the assessment's export says about each app, user, device and policy to the Affected objects page. |
 | `ZeroTrustAssessment.OutputPath` | temporary | Where the assessment writes its report and export. Kept when set. |
 | `ZeroTrustAssessment.Pillar` | `All` | Run one pillar only: `Identity`, `Devices`, `Network`, `Data`, `Infrastructure`, `SecOps` or `AI`. |

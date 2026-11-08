@@ -1,4 +1,4 @@
-﻿Restrict creation of new Azure DevOps organizations **should be** enabled.
+Restrict creation of new Azure DevOps organizations **should be** enabled.
 
 #### Prerequisites
 

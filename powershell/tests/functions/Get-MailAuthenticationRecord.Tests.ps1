@@ -1,4 +1,4 @@
-Describe 'Get-MailAuthenticationRecord' {
+﻿Describe 'Get-MailAuthenticationRecord' {
     BeforeEach {
         Clear-MtDnsCache
 

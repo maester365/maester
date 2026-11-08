@@ -1,4 +1,4 @@
-﻿Dormant (stale) computer accounts—enabled accounts that haven't authenticated for more than the configured threshold (default 90 days)—pose significant security risks:
+Dormant (stale) computer accounts—enabled accounts that haven't authenticated for more than the configured threshold (default 90 days)—pose significant security risks:
 
 - **Attack vector**: Attackers can exploit dormant accounts that may have weak or unchanged passwords
 - **Shadow IT**: These may represent forgotten test systems, VMs, or decommissioned hardware still in the directory

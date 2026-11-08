@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Makes the repository's labels match .github/labels.json.
 

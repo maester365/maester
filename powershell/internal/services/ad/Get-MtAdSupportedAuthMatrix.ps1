@@ -1,4 +1,4 @@
-function Get-MtAdSupportedAuthMatrix {
+﻿function Get-MtAdSupportedAuthMatrix {
     [CmdletBinding()]
     [OutputType([System.Collections.Specialized.OrderedDictionary])]
     param()

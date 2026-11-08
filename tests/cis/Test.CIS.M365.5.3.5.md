@@ -1,4 +1,4 @@
-﻿Activating the Privileged Role Administrator role in Privileged Identity Management needs approval from at least one other person.
+Activating the Privileged Role Administrator role in Privileged Identity Management needs approval from at least one other person.
 
 Privileged Role Administrator can manage role assignments and PIM settings, which means that it can give itself, or anyone, any other role, and can weaken the approval requirements on other roles. Treating it like Global Administrator closes that route around the approval for other roles.
 

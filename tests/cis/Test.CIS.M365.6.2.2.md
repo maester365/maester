@@ -1,4 +1,4 @@
-﻿No mail flow rule sets the spam confidence level to -1 for mail from specific sender domains.
+No mail flow rule sets the spam confidence level to -1 for mail from specific sender domains.
 
 A spam confidence level of -1 tells Exchange Online to deliver the message without spam filtering. If the rule matches a sender domain, anyone who can spoof that domain, or who compromises it, sends mail straight to your users, with the same trust as an internal sender.
 

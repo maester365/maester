@@ -1,4 +1,4 @@
-﻿Service accounts often run business-critical workloads and commonly receive exceptions such as long-lived credentials, SPNs, or privileged access. Naming-pattern reviews help defenders quickly identify accounts that deserve deeper validation.
+Service accounts often run business-critical workloads and commonly receive exceptions such as long-lived credentials, SPNs, or privileged access. Naming-pattern reviews help defenders quickly identify accounts that deserve deeper validation.
 
 - **Exposure reduction**: Find accounts likely used by services before attackers do.
 - **Privilege review**: Verify service accounts are not over-privileged.

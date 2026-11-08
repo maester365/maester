@@ -1,4 +1,4 @@
-﻿7.2.2 (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
+7.2.2 (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
 
 Entra ID B2B provides authentication and management of guests. Authentication happens via one-time passcode when they don't already have a work or school account or a Microsoft account. Integration with SharePoint and OneDrive allows for more granular control of how guest user accounts are managed in the organization's AAD, unifying a similar guest experience already deployed in other Microsoft 365 services such as Teams.
 

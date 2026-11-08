@@ -1,4 +1,4 @@
-﻿Account lockout threshold is one of the most important defenses against brute-force attacks:
+Account lockout threshold is one of the most important defenses against brute-force attacks:
 
 * **Prevents automated attacks**: Limits the number of passwords an attacker can try
 * **Detects attacks**: Lockout events can trigger alerts for security monitoring
