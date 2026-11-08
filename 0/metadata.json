@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6WD10PJBN5SGSRR904FSFMQ",
+  "session_id": "e6b273c5-ee3b-414a-bdc6-67a806b9df7c",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T01:40:37.838832Z",
+  "branch": "pr2712",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "powershell/internal/services/azure/Get-MtAzureSecureScore.ps1",
+    "powershell/tests/functions/Test-MtAzureSecureScore.Tests.ps1",
+    "tests/maester/azure/Test.MT.1266.ps1"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "5b1314aa004d",
+  "checkpoint_transcript_start": 1024,
+  "transcript_lines_at_start": 1024,
+  "compact_transcript_start": 141,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "redaction": {
+    "replacements": 558,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 6,
+      "credentialed_uri": 0,
+      "entropy": 545,
+      "key_context": 7,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 16
+  }
+}
