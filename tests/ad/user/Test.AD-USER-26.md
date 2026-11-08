@@ -1,27 +1,8 @@
-Accounts with names that look especially attractive to attackers can be useful as deliberate decoys, but they can also reflect risky naming practices or forgotten identities that warrant review.
+Only account SIDs, distinguished names or sAMAccountNames explicitly supplied in `AccountIds` are treated as decoys. Without configured IDs this check is not applicable; unknown IDs error. Attractive words in a name are never proof of a decoy.
 
-- **Threat detection support**: Decoy-style names can be monitored for malicious interaction.
-- **Naming hygiene**: Identifies user names likely to draw attacker attention.
-- **Access review**: Confirms whether these accounts are intentional and documented.
-
-#### Control Type
-
-**Operational**
-
-#### Security Recommendation
-
-- Document whether identified accounts are real users, service accounts, or deception assets.
-- Apply strong monitoring to any deliberate honey pot or lure account.
-- Disable or clean up misleading accounts that no longer serve a purpose.
-
-#### How the Test Works
-
-This test counts non-system user accounts whose names match attractive terms such as `admin`, `root`, `test`, `backup`, or `sql`.
-
-#### Related Tests
-
-- `Test-MtAdUserHoneyPotDetails`
-- `Test-MtAdUserBuiltInAdminEnabledDetails`
+#### Remediation action
+1. Identify authorized decoy accounts and configure their IDs; review the accounts in [AD administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Confirm alert coverage for attempted authentication separately; this test does not test monitoring.
 
 <!--- Results --->
 %TestResult%

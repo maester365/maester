@@ -1,97 +1,22 @@
 ﻿function Test-MtAdUserHoneyPotCount {
-    <#
-    .SYNOPSIS
-    Counts potential honey pot style user accounts.
-
-    .DESCRIPTION
-    This test identifies user accounts with names that may be intentionally
-    attractive to attackers, such as accounts containing terms like admin,
-    root, test, backup, or sql. These names can indicate decoy accounts,
-    monitoring traps, or simply risky naming patterns that deserve review.
-
-    .EXAMPLE
-    Test-MtAdUserHoneyPotCount
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserHoneyPotCount
+    <# .SYNOPSIS
+    Inventories explicitly configured decoy account IDs for review.
     #>
-    [MaesterTest(
-        Id = 'AD-USER-26',
-        Title = 'Honey pot user count should be investigated',
-        Product = 'ad',
-        Feature = 'users',
-        Area = 'logging-and-detection',
-        ResourceType = 'User',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
-        Author = 'soulemike'
-    )]
+    [MaesterTest(Id = 'AD-USER-26', Title = 'Configured decoy users should be reviewed', Product = 'ad', Feature = 'users', Area = 'logging-and-detection', ResourceType = 'User', Severity = 'Info', Mitre = 'None', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
-
-    Write-Verbose "Starting Test-MtAdUserHoneyPotCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user honey pot count"
-
-    $users = $adState.Users
-
-    $honeyPotPatterns = @(
-        @{ Name = 'admin'; Regex = '(^|[-_.])(admin|administrator)([-_.]|$)' },
-        @{ Name = 'root'; Regex = '(^|[-_.])root([-_.]|$)' },
-        @{ Name = 'test'; Regex = '(^|[-_.])(test|temp)([-_.]|$)' },
-        @{ Name = 'backup'; Regex = '(^|[-_.])backup([-_.]|$)' },
-        @{ Name = 'sql'; Regex = '(^|[-_.])(sql|dba|oracle)([-_.]|$)' }
+    param(
+        # Explicit decoy SIDs, distinguished names or sAMAccountNames; names alone never imply decoys.
+        [string[]] $AccountIds = @()
     )
 
-    $potentialHoneyPots = foreach ($user in $users) {
-        $sidValue = [string]$user.SID
-        if ($sidValue -match '-500$|-(501|502)$' -or $user.isCriticalSystemObject -eq $true) {
-            continue
-        }
-
-        $candidateValues = @($user.SamAccountName, $user.Name) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-        $matchesFound = foreach ($pattern in $honeyPotPatterns) {
-            if ($candidateValues | Where-Object { $_ -match $pattern.Regex }) {
-                $pattern
-            }
-        }
-        if ($matchesFound.Count -gt 0) {
-            [PSCustomObject]@{
-                SamAccountName = $user.SamAccountName
-                Name           = $user.Name
-                Enabled        = $user.Enabled
-                MatchCount     = $matchesFound.Count
-                MatchTypes     = ($matchesFound.Name -join ', ')
-            }
-        }
+    if (-not $AccountIds.Count) { Add-MtTestResultDetail -SkippedBecause NotApplicable; return $false }
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    $found = @($state.Users | Where-Object { $AccountIds -contains $_.SamAccountName -or $AccountIds -contains $_.DistinguishedName -or $AccountIds -contains [string]$_.SID -or $AccountIds -contains [string]$_.SID.Value })
+    foreach ($id in $AccountIds) {
+        if (-not @($found | Where-Object { $id -eq $_.SamAccountName -or $id -eq $_.DistinguishedName -or $id -eq [string]$_.SID -or $id -eq [string]$_.SID.Value }).Count) { throw "Configured decoy account not found: $id" }
     }
-
-    $potentialHoneyPots = @($potentialHoneyPots | Sort-Object SamAccountName -Unique)
-    $totalCount = ($potentialHoneyPots | Measure-Object).Count
-    $enabledCount = (@($potentialHoneyPots | Where-Object { $_.Enabled -eq $true }) | Measure-Object).Count
-
-    $testResult = $true
-
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total Users Reviewed | $((@($users) | Measure-Object).Count) |" + "`n"
-    $result += "| Potential Honey Pot Users | $totalCount |" + "`n"
-    $result += "| Enabled Potential Honey Pot Users | $enabledCount |" + "`n"
-    Write-Verbose "Counts computed"
-
-    $testResultMarkdown = "Active Directory users were reviewed for potential honey pot naming patterns.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    Write-Verbose "Completed Test-MtAdUserHoneyPotCount"
-
-    return $testResult
+    Add-MtTestResultDetail -Result "Review $($found.Count) explicitly configured decoy identities and confirm monitoring/ownership. Account names alone were not used as evidence.`n`n$(Format-MtAdUserSecurityTable $found @('SamAccountName', 'Enabled', 'LastLogonDate', 'DistinguishedName'))" -Investigate
+    return $true
 }
