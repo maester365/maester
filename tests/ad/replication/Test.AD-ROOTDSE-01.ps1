@@ -9,8 +9,8 @@
     (Directory Service Agent) publishes the supported SASL mechanisms which
     clients use to negotiate authentication.
 
-    Common SASL mechanisms include:
-    - GSSAPI: Kerberos-based authentication (most secure)
+    Common SASL mechanism identifiers include:
+    - GSSAPI: Kerberos-based authentication
     - GSS-SPNEGO: Negotiate authentication
     - EXTERNAL: External authentication
     - DIGEST-MD5: Digest authentication
@@ -56,7 +56,7 @@
     $saslMechanisms = $rootDse.SupportedSASLMechanisms
     $mechanismCount = if ($saslMechanisms) { ($saslMechanisms | Measure-Object).Count } else { 0 }
 
-    $testResult = $true
+    $testResult = $null -ne $rootDse
 
     $result = "| Property | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -74,7 +74,7 @@
         $result += "| $mechanism | $description |`n"
     }
 
-    $testResultMarkdown = "The connected domain controller advertises these SASL mechanisms in RootDSE. Advertisement does not establish whether a bind succeeds or which clients use each mechanism.`n`n%TestResult%"
+    $testResultMarkdown = "Active Directory domain controllers publish supportedSASLMechanisms in RootDSE. These are the values visible in the current LDAP session; RFC 4513 allows them to vary after TLS or other session-state changes. Compare them with the environment's required mechanisms. This inventory does not establish whether a bind succeeds, which clients use a mechanism, or that every DC meets the environment's authentication requirements.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Investigate

@@ -28,8 +28,8 @@ This test checks the Root DSE isSynchronized attribute and reports:
 
 #### Related Tests
 
-- `Test-MtAdDisabledReplicationConnectionCount` - Checks for disabled replication connections
-- `Test-MtAdNonAutoReplicationConnectionCount` - Identifies manual replication connections
+- **AD-REPL-01 — No replication connections should be disabled** — `Test-MtAdDisabledReplicationConnectionCount` — Checks for disabled replication connections.
+- **AD-REPL-02 — Non-auto replication connection count should be investigated** — `Test-MtAdNonAutoReplicationConnectionCount` — Identifies manual replication connections.
 
 <!--- Results --->
 %TestResult%
