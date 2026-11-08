@@ -92,6 +92,22 @@
         $script:TestResult | Should -Match 'confirmedCompromised'
     }
 
+    It 'still reports a disabled high-risk service principal (disabling does not close the risk)' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'sp-9'; appId = 'app-9'; displayName = 'Disabled App'; servicePrincipalType = 'Application'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'; isEnabled = $false
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                }
+            )
+        }
+
+        Test-MtEntraUnremediatedHighRiskServicePrincipal | Should -BeFalse
+        $script:TestResult | Should -Match 'Disabled App'
+        @($script:GraphObjects.id) | Should -Be @('sp-9')
+    }
+
     It 'passes when the only high-risk service principals are already remediated or dismissed' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             return @(
