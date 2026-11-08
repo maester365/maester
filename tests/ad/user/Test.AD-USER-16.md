@@ -1,27 +1,8 @@
-The `HomeDirectory` attribute points users to network-based storage locations. While useful in legacy environments, it can reveal older provisioning patterns and dependencies on file servers.
+HomeDirectory, ProfilePath and absolute ScriptPath entries are checked against `ApprovedPathPrefixes` (empty by default, so all populated absolute paths are unapproved). Prefix matching is case-insensitive and respects path-component boundaries. Parent traversal is rejected; relative NETLOGON scripts require review, not automatic failure. This check **does not inspect file or share ACLs**.
 
-- **Legacy infrastructure visibility**: Identifies users tied to mapped-drive style home folders
-- **Access control review**: Highlights centralized storage paths that may contain sensitive data
-- **Modernization planning**: Helps quantify remaining on-premises file service dependencies
-
-#### Control Type
-
-**Detective**
-
-#### Security Recommendation
-
-- Review home directory locations for proper ACLs and ownership controls
-- Confirm the attribute is still required for active users
-- Retire obsolete mappings and legacy storage dependencies where feasible
-
-#### How the Test Works
-
-This test counts user objects where the `HomeDirectory` attribute contains a non-empty value.
-
-#### Related Tests
-
-- `Test-MtAdUserProfilePathCount` - Finds roaming profile dependencies
-- `Test-MtAdUserScriptPathCount` - Identifies legacy logon automation
+#### Remediation action
+1. Verify affected home, profile and logon-script roots with their owners in [AD administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Correct untrusted paths and approve only reviewed roots using `ApprovedPathPrefixes`. Inspect ACLs separately.
 
 <!--- Results --->
 %TestResult%

@@ -1,80 +1,23 @@
 ﻿function Test-MtAdUserHomeDirectoryCount {
-    <#
-    .SYNOPSIS
-    Counts users with a home directory configured in Active Directory.
-
-    .DESCRIPTION
-    This test identifies user objects where the HomeDirectory attribute is populated.
-    Home directories can indicate legacy file storage models, mapped drive usage, or
-    sensitive data locations tied directly to account provisioning. Knowing how many
-    accounts use this attribute helps assess operational dependencies and cleanup needs.
-
-    .EXAMPLE
-    Test-MtAdUserHomeDirectoryCount
-
-    Returns $true if user data is accessible, $false otherwise.
-    The test result includes the count of users with a home directory configured.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserHomeDirectoryCount
+    <# .SYNOPSIS
+    Checks user home, profile and logon-script paths against approved roots.
     #>
-    [MaesterTest(
-        Id = 'AD-USER-16',
-        Title = 'User home directory count should be retrievable',
-        Product = 'ad',
-        Feature = 'users',
-        Area = 'infrastructure',
-        ResourceType = 'User',
-        Severity = 'Info',
-        Mitre = 'None',
-        Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
-        Author = 'soulemike'
-    )]
+    [MaesterTest(Id = 'AD-USER-16', Title = 'User home, profile and script paths should be approved', Product = 'ad', Feature = 'users', Area = 'access-control', ResourceType = 'User', Severity = 'Low', UserImpact = 'Low', ImplementationCost = 'Medium', Mitre = 'T1037.003', Service = 'ActiveDirectory', Permission = 'ActiveDirectory:Ldap:user:ReadProperty', Author = 'soulemike')]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Case-insensitive approved UNC or absolute path roots; empty means no absolute paths approved.
+        [string[]] $ApprovedPathPrefixes = @()
+    )
 
-    Write-Verbose "Starting Test-MtAdUserHomeDirectoryCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user home directory count"
-
-    $users = $adState.Users
-    $usersWithHomeDirectory = $users | Where-Object {
-        -not [string]::IsNullOrWhiteSpace($_.HomeDirectory)
-    }
-
-    $homeDirectoryCount = ($usersWithHomeDirectory | Measure-Object).Count
-    $totalCount = ($users | Measure-Object).Count
-    $testResult = $totalCount -gt 0
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($homeDirectoryCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Users with Home Directory | $homeDirectoryCount |" + "`n"
-        $result += "| Home Directory Percentage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory users have been analyzed. $homeDirectoryCount out of $totalCount users ($percentage%) have the HomeDirectory attribute populated.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory users. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserHomeDirectoryCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    $found = @(Get-MtAdUserPathFindings -Users @($state.Users) -ApprovedPathPrefixes $ApprovedPathPrefixes)
+    $failed = @($found | Where-Object { $_.Finding -ne 'Relative NETLOGON script: review (not failed)' })
+    $review = @($found | Where-Object { $_.Finding -eq 'Relative NETLOGON script: review (not failed)' })
+    $table = Format-MtAdUserSecurityTable $found @('SamAccountName', 'Field', 'Path', 'Finding')
+    if ($failed.Count) { Add-MtTestResultDetail -Result "Found $($failed.Count) unapproved or traversal paths; $($review.Count) relative NETLOGON scripts require review. Approve trusted roots or correct affected account paths. Path approval does not verify share or file ACLs.`n`n$table" }
+    elseif ($review.Count) { Add-MtTestResultDetail -Result "Relative NETLOGON scripts for $($review.Count) users need a manual review; no unapproved absolute paths were found. ACL security has not been assessed.`n`n$table" -Investigate }
+    else { Add-MtTestResultDetail -Result 'Well done. No unapproved home, profile or absolute logon-script paths were found. File and share ACLs are not assessed.' }
+    return ($failed.Count -eq 0)
 }
