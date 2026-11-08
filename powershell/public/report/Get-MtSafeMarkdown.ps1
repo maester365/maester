@@ -51,12 +51,17 @@
     # markdown syntax or part of an autolink literal; it runs once, so the backslashes it
     # adds are never escaped again. The second handles the one autolink form that contains
     # no such character: GFM links a bare `www.host`, so the dot after `www` is escaped
-    # too. It cannot double-escape, because it only ever matches a dot.
+    # too. It cannot double-escape, because it only ever matches a dot. There is
+    # deliberately no word boundary before `www`: GFM accepts `_` immediately before the
+    # `www.`, and `_` is a word character, so `\bwww` does not match `_www.` - the first
+    # pass escapes the underscore, the renderer consumes that backslash, and the link comes
+    # back. Escaping the dot in any `www.` is harmless: in `awww.host`, which GFM does not
+    # autolink anyway, the extra backslash is consumed by the renderer.
     #
     # `:` and `@` are not markdown syntax. They are here because the report renders with
     # `gfm: true`, so `https://host`, `ftp://host`, `mailto:a@b` and a bare `a@b` in a
     # tenant-controlled name each render as a live link without them. A plain `contoso.com`
     # is deliberately left alone: GFM does not autolink it, and escaping every dot would be
     # noise in the JSON output for no gain.
-    ($Text -replace '([\\`*_\[\]()!|<>~:@])', '\$1') -replace '(?<=\bwww)\.', '\.'
+    ($Text -replace '([\\`*_\[\]()!|<>~:@])', '\$1') -replace '(?<=www)\.', '\.'
 }

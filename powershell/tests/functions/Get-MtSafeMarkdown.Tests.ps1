@@ -34,6 +34,19 @@
         # today, but a backslash the renderer consumes costs nothing, and this does
         # not depend on that staying true.
         @{ Text = 'WWW.contoso.com'; Expected = 'WWW\.contoso.com' }
+        # GFM accepts `_` immediately before the `www.`, and `_` is a word character, so a
+        # word boundary before `www` does not match `_www.`: the first pass escapes the
+        # underscore, the renderer consumes that backslash, and the autolink comes back.
+        # Reported by @SamErde on #2715 with a Marked + DOMPurify reproduction.
+        @{ Text = '_www.phish.example/login'; Expected = '\_www\.phish.example/login' }
+        @{ Text = 'a_www.phish.example/login'; Expected = 'a\_www\.phish.example/login' }
+        # The other characters GFM accepts in that position, for the same reason.
+        @{ Text = '*www.phish.example'; Expected = '\*www\.phish.example' }
+        @{ Text = '~www.phish.example'; Expected = '\~www\.phish.example' }
+        @{ Text = '(www.phish.example'; Expected = '\(www\.phish.example' }
+        # Over-escaped on purpose: GFM does not autolink `awww.`, but the backslash is
+        # consumed by the renderer, so covering it costs nothing and keeps the rule simple.
+        @{ Text = 'awww.host'; Expected = 'awww\.host' }
     ) {
         Get-MtSafeMarkdown $Text | Should -BeExactly $Expected
     }
