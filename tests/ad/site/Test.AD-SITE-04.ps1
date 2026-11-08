@@ -1,30 +1,20 @@
 ﻿function Test-MtAdSiteWithoutSubnetCount {
     <#
     .SYNOPSIS
-    Counts the number of Active Directory sites without subnet associations.
-
+    Site and subnet association health.
     .DESCRIPTION
-    This test identifies sites that do not have any subnets assigned to them.
-    Sites without subnets cannot be used for client site assignment, which
-    may result in clients authenticating to incorrect DCs.
-
-    .EXAMPLE
-    Test-MtAdSiteWithoutSubnetCount
-
-    Returns $true if site and subnet data is accessible.
-    The test result includes the count of sites without subnets.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdSiteWithoutSubnetCount
+    Uses cached Active Directory state to assess or inventory site and subnet association health.
     #>
     [MaesterTest(
         Id = 'AD-SITE-04',
-        Title = 'Sites without subnet associations count should be retrievable',
+        Title = 'Site and subnet association health',
         Product = 'ad',
         Feature = 'sites-and-subnets',
         Area = 'infrastructure',
         ResourceType = 'AdSite',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:site:ReadProperty', 'ActiveDirectory:Ldap:subnet:ReadProperty'),
@@ -34,59 +24,18 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdSiteWithoutSubnetCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('ReplicationSites', 'Subnets')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADDomainState -Categories @('ReplicationSites', 'Subnets')
+    $view = Get-MtAdSiteSubnetOverview -State $state -Sites -Subnets
+    $rows = @('| Unassociated site | Distinguished name |', '| --- | --- |')
+    foreach ($site in $view.SitesWithoutSubnets) {
+        $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $site.Name), (Format-MtAdSiteInventoryValue $site.DistinguishedName)
     }
-
-    $sites = $adState.ReplicationSites
-    $subnets = $adState.Subnets
-
-    # Get sites with subnets
-    $sitesWithSubnets = $subnets | Where-Object { $_.SiteObject } | Select-Object -ExpandProperty SiteObject -Unique
-    $sitesWithSubnetNames = $sitesWithSubnets | ForEach-Object {
-        # SiteObject is a DN like "CN=SiteName,CN=Sites,CN=Configuration,DC=..."
-        ($_ -split ',')[0] -replace '^CN=', ''
+    $rows += '', '| Orphaned subnet (missing or unknown site) | Subnet DN | SiteObject DN |', '| --- | --- | --- |'
+    foreach ($subnet in $view.OrphanedSubnets) {
+        $rows += '| {0} | {1} | {2} |' -f (Format-MtAdSiteInventoryValue $subnet.Name), (Format-MtAdSiteInventoryValue $subnet.DistinguishedName), (Format-MtAdSiteInventoryValue $subnet.SiteObject)
     }
-
-    # Get sites without subnets
-    $sitesWithoutSubnets = $sites | Where-Object { $sitesWithSubnetNames -notcontains $_.Name }
-    $sitesWithoutSubnetCount = ($sitesWithoutSubnets | Measure-Object).Count
-    $totalSites = ($sites | Measure-Object).Count
-    $sitesWithSubnetCount = $totalSites - $sitesWithoutSubnetCount
-
-    # Test passes if we successfully retrieved data
-    $testResult = $totalSites -ge 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Sites | $totalSites |" + "`n"
-        $result += "| Sites with Subnets | $sitesWithSubnetCount |" + "`n"
-        $result += "| Sites without Subnets | $sitesWithoutSubnetCount |" + "`n"
-
-        if ($sitesWithoutSubnetCount -gt 0) {
-            $percentage = [Math]::Round(($sitesWithoutSubnetCount / $totalSites) * 100, 2)
-            $result += "| Sites without Subnets % | $percentage% |" + "`n"
-
-            $siteNames = $sitesWithoutSubnets | Select-Object -ExpandProperty Name | Sort-Object
-            $result += "| Sites without Subnets | $($siteNames -join ', ') |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory site subnet associations have been analyzed. $sitesWithoutSubnetCount out of $totalSites site(s) do not have subnets assigned.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory site information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $healthy = $view.SitesWithoutSubnets.Count -eq 0 -and $view.OrphanedSubnets.Count -eq 0
+    $summary = if ($healthy) { 'Well done. All sites and subnets have valid associations.' } else { 'Review sites without subnets and subnets without a valid site association.' }
+    Add-MtTestResultDetail -Result "$summary Sites: $($view.Sites.Count); subnets: $($view.Subnets.Count); sites with subnets: $($view.SitesWithSubnets.Count); sites without subnets: $($view.SitesWithoutSubnets.Count); orphaned subnets: $($view.OrphanedSubnets.Count).`n`n$($rows -join "`n")"
+    return $healthy
 }
