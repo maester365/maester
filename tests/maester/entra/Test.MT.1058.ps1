@@ -75,7 +75,11 @@
         $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop |
             Where-Object { $_.AccessRight -eq 'RestrictAccess' }
     } catch {
-        if ($_.Exception.Message -like "*couldn't be found*") {
+        # Exchange REST preserves the server exception type even when its message is localized.
+        $remoteException = $_.Exception.Data['RemoteException']
+        $policyNotFound = $remoteException -and $remoteException.PSObject.Properties['TypeName'] -and
+            $remoteException.TypeName -eq 'Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException'
+        if ($policyNotFound -or $_.Exception.Message -like "*couldn't be found*") {
             Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies were found.'
             $appAccessPolicies = $null
         } else {

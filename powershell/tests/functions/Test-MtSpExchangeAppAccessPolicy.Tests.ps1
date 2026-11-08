@@ -106,6 +106,35 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         { Test-MtSpExchangeAppAccessPolicy } | Should -Throw '*Access denied*'
     }
 
+    It 'Handles the localized Exchange REST response when no policies exist' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            $exception = [System.Exception]::new('Der Vorgang konnte nicht ausgeführt werden, weil das Objekt nicht gefunden wurde.')
+            $exception.Data['RemoteException'] = [pscustomobject]@{
+                TypeName = 'Microsoft.Exchange.Configuration.Tasks.ManagementObjectNotFoundException'
+            }
+            throw $exception
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -BeLike '*Contoso Mail App*'
+    }
+
+    It 'Keeps compatibility with the English no-policies response' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy { throw "The object couldn't be found." }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+    }
+
+    It 'Does not swallow other structured Exchange REST errors' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            $exception = [System.Exception]::new('Zugriff verweigert.')
+            $exception.Data['RemoteException'] = [pscustomobject]@{ TypeName = 'SomeOtherServerException' }
+            throw $exception
+        }
+
+        { Test-MtSpExchangeAppAccessPolicy } | Should -Throw '*Zugriff verweigert*'
+    }
+
     It 'Propagates Graph errors instead of treating unreadable assignments as empty' {
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
             $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
