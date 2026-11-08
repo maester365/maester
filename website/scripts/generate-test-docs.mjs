@@ -873,10 +873,14 @@ export function main() {
   // The community packs' tests, when community-packs.mjs has read them (prepare-data.mjs runs it first).
   let community = { packs: [] };
   try {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
-    if (existsSync(communityPacksPath)) community = JSON.parse(readFileSync(communityPacksPath, "utf8"));
+    if (existsSync(communityPacksPath)) {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename -- a file of this repository
+      const parsed = JSON.parse(readFileSync(communityPacksPath, "utf8"));
+      if (!Array.isArray(parsed?.packs)) throw new Error("it has no packs list");
+      community = parsed;
+    }
   } catch (error) {
-    console.warn(`generate-test-docs: ${communityPacksPath} doesn't parse (${error.message}); listing no community packs.`);
+    console.warn(`generate-test-docs: ${communityPacksPath} isn't usable (${error.message}); listing no community packs.`);
   }
   const explorer = writeExplorerData(catalog, releasedTests, contributorData, community);
   const testTitles = Object.fromEntries(tests.map((test) => [test.id, { title: test.title, path: `/docs/tests/${test.id}` }]));
