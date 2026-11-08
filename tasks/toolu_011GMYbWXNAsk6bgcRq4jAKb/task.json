@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_011GMYbWXNAsk6bgcRq4jAKb",
+  "agent_id": "a3827b37b9a5f771d",
+  "subagent_type": "general-purpose",
+  "task_description": "Review remaining mid-size PRs",
+  "token_usage": {
+    "input_tokens": 74,
+    "cache_creation_tokens": 158935,
+    "cache_read_tokens": 4398037,
+    "output_tokens": 15596,
+    "api_call_count": 37
+  },
+  "started_at": "2026-11-08T12:04:10.831951+11:00",
+  "completed_at": "2026-11-08T12:08:21.942333+11:00"
+}

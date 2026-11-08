@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_014JpcSFosA7sgmYV9ejV5Dm",
+  "agent_id": "ab58a52122d669653",
+  "subagent_type": "general-purpose",
+  "task_description": "Triage large conflicting PRs",
+  "token_usage": {
+    "input_tokens": 84,
+    "cache_creation_tokens": 154625,
+    "cache_read_tokens": 5253995,
+    "output_tokens": 19122,
+    "api_call_count": 42
+  },
+  "started_at": "2026-11-08T12:04:10.831968+11:00",
+  "completed_at": "2026-11-08T12:10:21.477365+11:00"
+}

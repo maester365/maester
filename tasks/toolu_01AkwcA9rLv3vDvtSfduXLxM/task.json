@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01AkwcA9rLv3vDvtSfduXLxM",
+  "agent_id": "aa96a99bb1a3c63fb",
+  "subagent_type": "general-purpose",
+  "task_description": "Review Azure/Defender/Intune PRs",
+  "token_usage": {
+    "input_tokens": 74,
+    "cache_creation_tokens": 173777,
+    "cache_read_tokens": 5067183,
+    "output_tokens": 17343,
+    "api_call_count": 37
+  },
+  "started_at": "2026-11-08T12:04:10.831917+11:00",
+  "completed_at": "2026-11-08T12:09:03.510194+11:00"
+}

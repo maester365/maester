@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_019h6DUGDAeMK4oYBPb6AZXG",
+  "agent_id": "a401fb0bc6a672879",
+  "subagent_type": "general-purpose",
+  "task_description": "Review risk-family test PRs",
+  "token_usage": {
+    "input_tokens": 32,
+    "cache_creation_tokens": 147067,
+    "cache_read_tokens": 1876718,
+    "output_tokens": 12507,
+    "api_call_count": 16
+  },
+  "started_at": "2026-11-08T12:04:10.831904+11:00",
+  "completed_at": "2026-11-08T12:07:06.705006+11:00"
+}
