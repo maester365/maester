@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     $expectations = @(
         @{
@@ -19,7 +19,8 @@ BeforeDiscovery {
         }
         @{
             Path     = 'build/Update-CommandReference.ps1'
-            Pattern  = 'Install-Module Pester -RequiredVersion 5\.7\.1'
+            # Doc generation installs through a retry helper that takes the version as a parameter.
+            Pattern  = "Install-PinnedModule -Name Pester -Version '5\.7\.1'"
             Because  = 'doc generation should install the supported Pester version when missing'
         }
         @{

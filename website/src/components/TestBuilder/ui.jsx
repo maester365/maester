@@ -252,7 +252,7 @@ const Close = () => (
 
 // A click elsewhere on the page closes the panel, except on what opens or switches it (a help button or a sidebar
 // guide), which would otherwise close it and open it again, and inside a dropdown, which renders outside the panel.
-const KEEP_OPEN = "[data-help-trigger], #starlight__sidebar ul.top-level a, [data-radix-popper-content-wrapper]";
+const KEEP_OPEN = '[data-help-trigger], #starlight__sidebar ul.top-level a, main a[href^="/docs/"], [data-radix-popper-content-wrapper]';
 const keepOpenFor = (e) => {
   const target = e.detail && e.detail.originalEvent ? e.detail.originalEvent.target : e.target;
   if (target && target.closest && target.closest(KEEP_OPEN)) e.preventDefault();
@@ -264,7 +264,7 @@ export function Sheet({ open, onOpenChange, title, badge, actions, style, childr
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange} modal={false}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Content className={ui.sheet} style={style} onPointerDownOutside={keepOpenFor} onFocusOutside={(e) => e.preventDefault()} onOpenAutoFocus={(e) => e.preventDefault()}>
+        <DialogPrimitive.Content data-help-sheet className={ui.sheet} style={style} onPointerDownOutside={keepOpenFor} onFocusOutside={(e) => e.preventDefault()} onOpenAutoFocus={(e) => e.preventDefault()}>
           <div className={ui.sheetHead}>
             <DialogPrimitive.Title className={ui.sheetTitle}>{title}</DialogPrimitive.Title>
             {badge && <Badge variant="outline">{badge}</Badge>}

@@ -1,4 +1,4 @@
-﻿The presenter role controls who can share their screen or content in a meeting. If every participant can take over the presenter role, anyone who joins can share content with the whole meeting, including malicious files, links and screens that show confidential information.
+The presenter role controls who can share their screen or content in a meeting. If every participant can take over the presenter role, anyone who joins can share content with the whole meeting, including malicious files, links and screens that show confidential information.
 
 Limiting the presenter role to organizers and co-organizers keeps control of shared content with the people who run the meeting. Everyone else joins as an attendee. The policy sets the default for new meetings, and an organizer can still change who can present in the meeting options of a particular meeting.
 

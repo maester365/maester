@@ -1,4 +1,4 @@
-function Get-MtSession {
+﻿function Get-MtSession {
     <#
     .SYNOPSIS
     Gets the current Maester session information which includes the current Graph base uri and other details.

@@ -1,4 +1,4 @@
-﻿The smart lockout duration is not shorter than the recommended minimum.
+The smart lockout duration is not shorter than the recommended minimum.
 
 When smart lockout triggers, the account is locked for the configured duration. A very short duration lets an attacker resume guessing almost immediately, which cancels the benefit of the threshold.
 

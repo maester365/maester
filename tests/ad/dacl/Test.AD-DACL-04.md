@@ -1,4 +1,4 @@
-﻿High-level counts are useful, but remediation usually requires object-level detail. This test helps administrators pinpoint each conflict object present in the DACL dataset and understand how many ACEs are attached to it.
+High-level counts are useful, but remediation usually requires object-level detail. This test helps administrators pinpoint each conflict object present in the DACL dataset and understand how many ACEs are attached to it.
 
 - **Shows the exact conflict objects** found in DACL analysis
 - **Supports cleanup validation** by exposing object class and DN

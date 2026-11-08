@@ -1,4 +1,4 @@
-function Resolve-SPFRecord {
+﻿function Resolve-SPFRecord {
     <#
     .SYNOPSIS
         Returns a list of all IP addresses from an SPF record.

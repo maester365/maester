@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** Android app protection policy blocks screen capture of organization data.
+Ensure at least one **assigned** Android app protection policy blocks screen capture of organization data.
 
 A screenshot is a copy of organization data that leaves through **none** of the data transfer paths a policy restricts. It lands in the device gallery, which on a personal phone is usually syncing to a personal cloud account, and it is readable by any app the user has granted storage or screen-recording access to.
 

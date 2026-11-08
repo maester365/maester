@@ -11,7 +11,16 @@ import {
 
 type ReportLocation = { pathname: string; hash: string }
 type Destination = string | { pathname: string; hash?: string }
-type NavigateOptions = { replace?: boolean }
+type NavigateOptions = { replace?: boolean; keepScroll?: boolean }
+
+// A move within a page (another area of the same plan) keeps the reader's place; the Shell asks once.
+let keepScroll = false
+export const peekKeepScroll = () => keepScroll
+export function takeKeepScroll() {
+  const k = keepScroll
+  keepScroll = false
+  return k
+}
 
 interface RouterContextValue {
   location: ReportLocation
@@ -40,6 +49,7 @@ export function HashRouter({ children }: { children: ReactNode }) {
   const navigate = useCallback((destination: Destination, options?: NavigateOptions) => {
     const next = typeof destination === "string" ? destination : `${destination.pathname}${destination.hash || ""}`
     const normalized = next.startsWith("/") ? next : `/${next}`
+    keepScroll = !!options?.keepScroll
 
     if (options?.replace) {
       window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${normalized}`)

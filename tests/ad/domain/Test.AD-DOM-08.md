@@ -1,4 +1,4 @@
-﻿This test provides detailed information about NetBIOS naming violations, helping you:
+This test provides detailed information about NetBIOS naming violations, helping you:
 
 - **Identify Specific Issues**: See exactly which characters or length issues exist
 - **Plan Corrections**: Understand what needs to change to achieve compliance

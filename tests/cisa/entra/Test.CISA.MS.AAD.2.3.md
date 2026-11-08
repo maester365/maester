@@ -1,4 +1,4 @@
-﻿Sign-ins detected as high risk SHALL be blocked.
+Sign-ins detected as high risk SHALL be blocked.
 
 Rationale: Blocking high-risk sign-ins may prevent compromised accounts from accessing the tenant.
 

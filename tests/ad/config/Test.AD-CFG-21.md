@@ -1,4 +1,4 @@
-﻿NTAuth certificates determine which Certification Authorities (CAs) are trusted to issue certificates for domain authentication scenarios (commonly smart card / certificate-based logon).
+NTAuth certificates determine which Certification Authorities (CAs) are trusted to issue certificates for domain authentication scenarios (commonly smart card / certificate-based logon).
 
 An increase in NTAuth certificates can mean additional CAs are now trusted—expanding the trust boundary and potentially enabling an attacker to obtain a certificate from an unintended CA.
 

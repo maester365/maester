@@ -1,4 +1,4 @@
-﻿5.1.5.1 (L2) Ensure user consent to apps accessing company data on their behalf is not allowed
+5.1.5.1 (L2) Ensure user consent to apps accessing company data on their behalf is not allowed
 
 Control when end users and group owners are allowed to grant consent to applications, and when they will be required to request administrator review and approval. Allowing users to grant apps access to data helps them acquire useful applications and be productive but can represent a risk in some situations if it's not monitored and controlled carefully.
 

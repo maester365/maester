@@ -1,4 +1,4 @@
-﻿A DMARC policy SHALL be published for every second-level domain.
+A DMARC policy SHALL be published for every second-level domain.
 
 Rationale: Without a DMARC policy available for each domain, recipients may improperly handle SPF and DKIM failures, possibly enabling spoofed emails to reach end users' mailboxes. Publishing DMARC records at the second-level domain protects the second-level domains and all subdomains.
 

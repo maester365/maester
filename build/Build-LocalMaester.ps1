@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Builds, validates, and imports the local Maester module.
 

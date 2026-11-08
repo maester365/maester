@@ -4,7 +4,7 @@
 # The site's generated data is not kept in git: the build exports the test catalog and the command reference from
 # the module source, credits contributors from the git history and looks up sponsors on GitHub
 # (website/scripts/prepare-data.mjs). So a merge needs no follow-up pull request, and the daily run picks up new
-# sponsors.
+# sponsors and the community packs listed on packs.maester.cloud, whose checks the test catalog and the home page count.
 #
 # Deploying needs the CLOUDFLARE_API_TOKEN secret (a token with Cloudflare Pages: Edit) and the
 # CLOUDFLARE_ACCOUNT_ID secret in the maester.dev environment. The Cloudflare Pages project, which the
@@ -26,7 +26,7 @@ on:
         type: string
   workflow_dispatch:
   schedule:
-    - cron: "17 3 * * *" # Daily, 03:17 UTC: new sponsors
+    - cron: "17 3 * * *" # Daily, 03:17 UTC: new sponsors and community packs
   push:
     branches: ["main"]
   pull_request:
@@ -93,10 +93,35 @@ jobs:
       - name: "\U0001F4E6 Install dependencies"
         run: npm ci
 
-      # The test catalog export imports the source module, which needs this module.
+      # The PowerShell modules the build needs, by the pinned versions in the files that pin them. On a hit the
+      # PowerShell Gallery is not contacted at all, which is the point: the Gallery handing a runner a source
+      # location it cannot use has failed this job with an error four steps removed from the cause.
+      - name: Restore the PowerShell modules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.local/share/powershell/Modules
+          key: pwsh-modules-${{ runner.os }}-${{ hashFiles('build/Update-CommandReference.ps1', '.github/workflows/build-website.yaml') }}
+          restore-keys: pwsh-modules-${{ runner.os }}-
+
+      # The test catalog export imports the source module, which needs this module. Retried, because a failed
+      # download here is a Gallery problem rather than a problem with the change being built.
       - name: Install Microsoft.Graph.Authentication
         shell: pwsh
-        run: Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $available = { [bool](Get-Module Microsoft.Graph.Authentication -ListAvailable |
+                  Where-Object { $_.Version -ge [version]'2.27.0' }) }
+          if (& $available) { 'Already available.'; exit 0 }
+          foreach ($attempt in 1..3) {
+              try {
+                  Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Scope CurrentUser -Repository PSGallery -Force
+              } catch {
+                  Write-Host "::warning::Attempt $attempt of 3 failed: $($_.Exception.Message)"
+              }
+              if (& $available) { exit 0 }
+              if ($attempt -lt 3) { Start-Sleep -Seconds (5 * $attempt) }
+          }
+          throw 'Could not install Microsoft.Graph.Authentication from the PowerShell Gallery after 3 attempts.'
 
       # The Open Graph cards rendered by earlier builds, by their hash (scripts/og-images.mjs): a build renders only
       # the cards of the pages that changed.

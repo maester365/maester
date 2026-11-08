@@ -1,4 +1,4 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $moduleRoot = "$PSScriptRoot/../.."
     # Using Import-PowerShellDataFile over Test-ModuleManifest as it's easier to navigate
     $manifest = Import-PowerShellDataFile -Path (Join-Path -Path $moduleRoot -ChildPath 'Maester.psd1')

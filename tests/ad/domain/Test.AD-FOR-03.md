@@ -1,4 +1,4 @@
-﻿The tombstone lifetime determines how long deleted Active Directory objects are retained in the database before being permanently removed:
+The tombstone lifetime determines how long deleted Active Directory objects are retained in the database before being permanently removed:
 
 - **Accidental Deletion Recovery**: Longer lifetimes provide more time to recover accidentally deleted objects
 - **Replication Stability**: Ensures deleted objects replicate to all DCs before being purged

@@ -1,4 +1,4 @@
-﻿Guests who sign in with a one-time verification code prove access by reading an email sent to their address. If the verification is not repeated for a long time, a guest whose mailbox or account has been compromised keeps access to shared SharePoint content without a new check.
+Guests who sign in with a one-time verification code prove access by reading an email sent to their address. If the verification is not repeated for a long time, a guest whose mailbox or account has been compromised keeps access to shared SharePoint content without a new check.
 
 Requiring guests to verify again every 15 days or less limits how long a stale or compromised guest account keeps working. Guests sign in again with a new code each time, which is a small extra step for them.
 

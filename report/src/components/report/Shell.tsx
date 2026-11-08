@@ -3,11 +3,15 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { useTheme } from "@/components/ThemeProvider"
-import { Link, useLocation, useNavigate } from "@/lib/router"
-import { getAttachmentPath } from "@/lib/reportAttachments"
+import { Link, takeKeepScroll, useLocation, useNavigate } from "@/lib/router"
+import { buildPlan, loadWorkshop, workshopAttachment, WORKSHOP_ATTACHMENT, type Plan, type Workshop } from "@/lib/zeroTrust"
+import type { Model } from "@/lib/model"
+import type { NavEntry } from "@/lib/packNav"
+import { reportHeading } from "@/lib/runSubject"
 import { useReport } from "./ReportContext"
 import { TestSheet } from "./TestDetail"
-import { buildViews, type ViewDef } from "./views"
+import { buildNav, locate } from "./nav"
+import { Crumbs, NavContext, Sidebar, useNavPages } from "./Sidebar"
 import { failuresCsv, failuresMarkdown, summaryMarkdown, tenantsMarkdown } from "./aiText"
 import claudeIcon from "@/assets/ai-icons/claude.svg"
 import chatgptIcon from "@/assets/ai-icons/chatgpt.svg"
@@ -48,91 +52,12 @@ function AskAi({ onClose }: { onClose: () => void }) {
     </>
   )
 }
-import { Flame, Icon, Pill, ProductMark, Toaster, copyText, formatDate, tenantLogo } from "./ui"
+import { Flame, Icon, Pill, Toaster, copyText, formatDate, tenantLogo } from "./ui"
 import { tenantInitials, tenantName } from "@/lib/tenants"
 
-// The tenants of a merged result, under All tenants. A long list shows the first few and leaves the rest to the
-// tenants page and the switcher.
-const SIDEBAR_TENANTS = 8
-
-function TenantNav({ onNavigate }: { onNavigate: () => void }) {
-  const { models, tenantIndex, selectTenant } = useReport()
-  const { pathname } = useLocation()
-  return (
-    <>
-      {models.slice(0, SIDEBAR_TENANTS).map((m, i) => {
-        const name = tenantName(m, i)
-        const on = i === tenantIndex && pathname !== "/tenants"
-        return (
-          <a key={i} href="#/" className={`mt-nav${on ? " on" : ""}`} aria-current={on ? "page" : undefined}
-            onClick={(e) => { e.preventDefault(); onNavigate(); selectTenant(i, "/") }}>
-            <span className="mt-tav" aria-hidden="true">{tenantInitials(name)}</span><span className="lbl">{name}</span>
-            <span className="ct bad">{m.all.Failed}</span>
-          </a>
-        )
-      })}
-      {models.length > SIDEBAR_TENANTS && <Link to="/tenants" className="mt-nav" onClick={onNavigate}><span className="lbl mt-muted">{models.length - SIDEBAR_TENANTS} more tenants</span></Link>}
-    </>
-  )
-}
-
-// Groups the reader folded, remembered in this browser only.
-function useFolded() {
-  const [folded, setFolded] = useState<string[]>(() => { try { return JSON.parse(localStorage.getItem("mt-nav-folded") || "[]") } catch { return [] } })
-  const toggle = (g: string) => setFolded((f) => {
-    const next = f.includes(g) ? f.filter((x) => x !== g) : [...f, g]
-    try { localStorage.setItem("mt-nav-folded", JSON.stringify(next)) } catch { /* storage refused */ }
-    return next
-  })
-  return [folded, toggle] as const
-}
-
-function Sidebar({ views, open, onNavigate }: { views: ViewDef[]; open: boolean; onNavigate: () => void }) {
-  const { pathname } = useLocation()
-  const { model, multi, tenantIndex } = useReport()
-  const [folded, toggle] = useFolded()
-  const groups = [...new Set(views.map((v) => v.group))]
-  const isOn = (v: ViewDef) => (v.path === "/" ? pathname === "/" : pathname === v.path || pathname.startsWith(v.path + "/"))
-  return (
-    <nav className={`mt-side${open ? " open" : ""}`} aria-label="Report views">
-      {groups.map((g) => {
-        const list = views.filter((v) => v.group === g)
-        // Only the longer lists fold; the selected view stays in sight in a folded group.
-        const foldable = g === "Products" || g === "Frameworks" || g === "Packs" || g === "Reports"
-        const shut = foldable && folded.includes(g)
-        const shown = shut ? list.filter(isOn) : list
-        const failed = list.reduce((n, v) => n + (v.bad && v.count ? v.count : 0), 0)
-        // With several tenants, the selected tenant's views sit under its name.
-        const title = multi && g === "Summary" ? tenantName(model, tenantIndex) : g
-        return (
-          <div key={g} className="mt-navgroup">
-            {foldable ? (
-              <button type="button" className="mt-navhead" aria-expanded={!shut} onClick={() => toggle(g)}>
-                <span>{title}</span>{shut && failed > 0 && <span className="ct bad">{failed}</span>}<Icon name="chevron" className={`mt-ai mt-fold${shut ? " shut" : ""}`} />
-              </button>
-            ) : <h4>{title}</h4>}
-            {shown.map((v) => {
-              const on = isOn(v)
-              return (
-                <Link key={v.path} to={v.path} className={`mt-nav${on ? " on" : ""}`} aria-current={on ? "page" : undefined} onClick={onNavigate}>
-                  {v.product ? <ProductMark product={v.product} size="sm" /> : v.code ? <span className="mt-code">{v.code}</span> : v.icon ? <Icon name={v.icon} /> : null}
-                  <span className="lbl">{v.title}</span>
-                  {/* A list of failures with none shows a tick, so a zero does not read as an empty view. */}
-                  {v.count !== undefined && (v.bad && !v.count ? <span className="ct ok" aria-label="No failures"><Icon name="check" /></span> : <span className={`ct${v.bad && v.count ? " bad" : ""}`}>{v.count}</span>)}
-                </Link>
-              )
-            })}
-            {g === "Tenants" && <TenantNav onNavigate={onNavigate} />}
-            {g === "Packs" && !shut && <a className="add" href="https://maester.dev/docs/packs" target="_blank" rel="noopener noreferrer">+ Add a pack to the next run</a>}
-          </div>
-        )
-      })}
-    </nav>
-  )
-}
-
-function SearchPalette({ views, onClose }: { views: ViewDef[]; onClose: () => void }) {
+function SearchPalette({ onClose }: { onClose: () => void }) {
   const { model, openTest } = useReport()
+  const views = useNavPages()
   const navigate = useNavigate()
   const [q, setQ] = useState("")
   const [sel, setSel] = useState(0)
@@ -140,7 +65,7 @@ function SearchPalette({ views, onClose }: { views: ViewDef[]; onClose: () => vo
   useEffect(() => { input.current?.focus() }, [])
   const items = useMemo(() => {
     const query = q.toLowerCase().trim()
-    const v = views.filter((x) => !query || x.title.toLowerCase().includes(query)).slice(0, query ? 5 : 8).map((x) => ({ kind: "view" as const, key: x.path, title: x.title, sub: x.group, result: "" }))
+    const v = views.filter((x) => !query || `${x.title} ${x.sub}`.toLowerCase().includes(query)).slice(0, query ? 6 : 8).map((x) => ({ kind: "view" as const, key: x.path, title: x.title, sub: x.sub, result: "" }))
     const t = query ? model.rows.filter((r) => `${r.Id} ${r.Title} ${r.Mitre.join(" ")} ${r.Control.join(" ")}`.toLowerCase().includes(query)).slice(0, 12).map((r) => ({ kind: "test" as const, key: r.Id, title: r.Title, sub: r.Id, result: r.Result })) : []
     return [...v, ...t]
   }, [q, views, model])
@@ -188,6 +113,29 @@ function Popover({ title, children, onClose, left }: { title: string; children: 
   )
 }
 
+// The attachment names of the plans the packs' menus list, and the workshop plan a pack's default menu lists.
+function planNames(model: Model) {
+  const names = new Set<string>([WORKSHOP_ATTACHMENT])
+  const walk = (es: NavEntry[]) => { for (const e of es) { if (e.View === "plan" && e.Attachment) names.add(e.Attachment); if (e.Items) walk(e.Items) } }
+  for (const p of model.packs) if (p.Navigation) walk(p.Navigation)
+  return [...names].filter((n) => workshopAttachment(model, n))
+}
+
+/** The plans in this result, built with its results once each is read, so the menu can list their pillars. */
+function usePlans(model: Model): Map<string, Plan> {
+  const names = useMemo(() => planNames(model), [model])
+  const [workshops, setWorkshops] = useState<Map<string, Workshop>>(() => new Map())
+  useEffect(() => {
+    let live = true
+    for (const n of names) {
+      const a = workshopAttachment(model, n)
+      if (a) loadWorkshop(a).then((w) => { if (live) setWorkshops((m) => (m.get(n) === w ? m : new Map(m).set(n, w))) }, () => { /* the plan page says why */ })
+    }
+    return () => { live = false }
+  }, [names, model])
+  return useMemo(() => new Map([...workshops].filter(([n]) => names.includes(n)).map(([n, w]) => [n, buildPlan(w, model)])), [workshops, names, model])
+}
+
 export function Shell({ children, flush }: { children: ReactNode; flush?: boolean }) {
   const { model, models, multi, tenantIndex, selectTenant } = useReport()
   const { resolvedTheme, setTheme } = useTheme()
@@ -198,12 +146,18 @@ export function Shell({ children, flush }: { children: ReactNode; flush?: boolea
   const onTenants = pathname === "/tenants"
   const close = () => setOverlay("")
   const r = model.result
+  const heading = reportHeading(model)
 
-  const views = useMemo(() => buildViews(model, {
+  const plans = usePlans(model)
+  const nav = useMemo(() => buildNav(model, {
     affectedObjects: Array.isArray(r.AffectedObjects) && r.AffectedObjects.length > 0,
-    attachments: model.attachments.map((a) => ({ title: a.Name, path: getAttachmentPath(a) })),
     tenants: models.length,
-  }), [model, models, r])
+    plans,
+  }), [model, models, r, plans])
+  const here = useMemo(() => locate(nav, pathname), [nav, pathname])
+  const navState = useMemo(() => ({ nav, here, plans }), [nav, here, plans])
+  const collapseRef = useRef<(() => void) | null>(null)
+  const narrow = () => typeof matchMedia === "function" && matchMedia("(max-width: 900px)").matches
 
   // A merged result of several tenants opens on the page that compares them.
   useEffect(() => {
@@ -216,12 +170,12 @@ export function Shell({ children, flush }: { children: ReactNode; flush?: boolea
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
   }, [])
-  useEffect(() => { document.getElementById("report-main")?.scrollTo(0, 0); window.scrollTo(0, 0) }, [pathname])
+  useEffect(() => { if (takeKeepScroll()) return; document.getElementById("report-main")?.scrollTo(0, 0); window.scrollTo(0, 0) }, [pathname])
 
   return (
     <div className="mt-app">
       <header className="mt-top">
-        <button type="button" className="mt-btn icon mt-menu-btn" onClick={() => setNavOpen((o) => !o)} aria-label="Open navigation" aria-expanded={navOpen}><Icon name="menu" /></button>
+        <button type="button" className="mt-btn icon mt-menu-btn" onClick={() => (narrow() ? setNavOpen((o) => !o) : collapseRef.current?.())} aria-label="Show or hide the menu" title="Show or hide the menu  [" aria-expanded={navOpen}><Icon name="menu" /></button>
         <Link to="/" className="mt-brand" aria-label="Maester report home"><Flame />Maester <small>Report</small></Link>
         <div className="mt-tenant">
           {multi ? (
@@ -229,7 +183,7 @@ export function Shell({ children, flush }: { children: ReactNode; flush?: boolea
               {onTenants ? <><Icon name="tenant" /><b>All tenants</b><span className="mt-badge">{models.length}</span></> : <><span className="mt-tav" aria-hidden="true">{tenantInitials(tenantName(model, tenantIndex))}</span><b>{tenantName(model, tenantIndex)}</b></>}
               <Icon name="chevron" />
             </button>
-          ) : <b>{r.TenantName || r.TenantId || "Tenant"}</b>}
+          ) : heading.bar && <b>{heading.bar}</b>}
           {r.ExecutedAt && !onTenants && <span>{formatDate(r.ExecutedAt)}</span>}
         </div>
         <div className="mt-grow" />
@@ -239,12 +193,15 @@ export function Shell({ children, flush }: { children: ReactNode; flush?: boolea
         {!onTenants && tenantLogo(r) && <img className="mt-logo mt-hide-sm" src={tenantLogo(r)} alt={String(r.TenantName || "Organisation")} />}
         <button type="button" className="mt-btn icon" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} aria-label="Switch between light and dark"><Icon name="moon" /></button>
       </header>
-      <div className="mt-shell">
-        <Sidebar views={views} open={navOpen} onNavigate={() => setNavOpen(false)} />
-        <main id="report-main" className={`mt-main${flush ? " flush" : ""}`}>{children}</main>
-      </div>
+      <NavContext.Provider value={navState}>
+        <div className="mt-shell">
+          <Sidebar drawer={navOpen} onNavigate={() => setNavOpen(false)} collapseRef={collapseRef} />
+          {navOpen && <div className="mt-navscrim" onClick={() => setNavOpen(false)} />}
+          <main id="report-main" className={`mt-main${flush ? " flush" : ""}`}><Crumbs flush={flush} />{children}</main>
+        </div>
+        {overlay === "search" && <SearchPalette onClose={close} />}
+      </NavContext.Provider>
       <TestSheet />
-      {overlay === "search" && <SearchPalette views={views} onClose={close} />}
       {overlay === "tenant" && (
         <Popover title="Switch tenant" onClose={close} left>
           <div className="opt">

@@ -1,4 +1,4 @@
-﻿A DLP solution SHALL be used.
+A DLP solution SHALL be used.
 
 Rationale: Users may inadvertently disclose sensitive information to unauthorized individuals. A DLP solution may detect the presence of sensitive information in Exchange Online and block access to unauthorized entities.
 
