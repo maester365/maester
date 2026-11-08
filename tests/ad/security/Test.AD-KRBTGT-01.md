@@ -31,7 +31,7 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 - Password last set date
 - Days since last password change
 - Whether password age exceeds `MaxPasswordAgeDays` (default 180)
-- Account status (should be disabled)
+- Account status (reported for context; this check only evaluates password age)
 
 #### Related Tests
 

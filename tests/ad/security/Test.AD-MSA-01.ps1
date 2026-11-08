@@ -7,7 +7,9 @@
     Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provide
     automatic password management and simplified service principal name (SPN) management
     for services running on domain-joined computers. This test counts the number of
-    MSAs and gMSAs in the domain.
+    sMSAs, gMSAs and delegated MSAs (dMSAs) in the domain. dMSA schema and
+    setup support were introduced with Windows Server 2025; inventory presence
+    alone does not demonstrate successful password management or migration.
 
     Security Benefits of MSAs:
     - Automatic password rotation (every 30 days for gMSAs)
@@ -34,7 +36,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:msDS-ManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount:ReadProperty', 'ActiveDirectory:Ldap:msDS-DelegatedManagedServiceAccount:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -46,22 +48,24 @@
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory service account inventory was not returned.'
     }
     Write-Verbose "Filtering/counting managed service account count"
 
     $serviceAccounts = $adState.ServiceAccounts
 
-    $msaCount = ($serviceAccounts | Measure-Object).Count
+    if ($null -eq $serviceAccounts) { throw 'Active Directory service accounts were not returned.' }
+    $msaCount = @($serviceAccounts).Count
 
     # Distinguish between MSA and gMSA if possible
-    $groupMSAs = $serviceAccounts | Where-Object { $_.ObjectClass -contains 'msDS-GroupManagedServiceAccount' -or $_.ServiceAccountType -eq 'GroupManagedServiceAccount' }
-    $standaloneMSAs = $serviceAccounts | Where-Object { $_.ObjectClass -contains 'msDS-ManagedServiceAccount' -or $_.ServiceAccountType -eq 'ManagedServiceAccount' }
+    $delegatedMSAs = @($serviceAccounts | Where-Object { $_.ObjectClass -contains 'msDS-DelegatedManagedServiceAccount' })
+    $groupMSAs = @($serviceAccounts | Where-Object { $_.ObjectClass -contains 'msDS-GroupManagedServiceAccount' -and $_.ObjectClass -notcontains 'msDS-DelegatedManagedServiceAccount' })
+    $standaloneMSAs = @($serviceAccounts | Where-Object { $_.ObjectClass -contains 'msDS-ManagedServiceAccount' -and $_.ObjectClass -notcontains 'msDS-GroupManagedServiceAccount' -and $_.ObjectClass -notcontains 'msDS-DelegatedManagedServiceAccount' })
 
     $gmsaCount = ($groupMSAs | Measure-Object).Count
     $standaloneCount = ($standaloneMSAs | Measure-Object).Count
-    $undeterminedCount = $msaCount - $gmsaCount - $standaloneCount
+    $delegatedCount = $delegatedMSAs.Count
+    $undeterminedCount = $msaCount - $gmsaCount - $standaloneCount - $delegatedCount
 
     $testResult = $true
 
@@ -70,19 +74,20 @@
     $result += "| Total Managed Service Accounts | $msaCount |" + "`n"
     $result += "| Group Managed Service Accounts (gMSA) | $gmsaCount |" + "`n"
     $result += "| Standalone Managed Service Accounts | $standaloneCount |" + "`n"
+    $result += "| Delegated Managed Service Accounts (dMSA) | $delegatedCount |" + "`n"
     if ($undeterminedCount -gt 0) {
         $result += "| Undetermined Type | $undeterminedCount |" + "`n"
     }
 
     if ($msaCount -gt 0) {
         $result += "`n**Managed Service Accounts:**" + "`n" + "`n"
-        $result += "| Account Name | Type | Enabled |" + "`n"
+        $result += "| Account Name | Type | Delegated MSA state |" + "`n"
         $result += "| --- | --- | --- |" + "`n"
 
         foreach ($msa in $serviceAccounts | Select-Object -First 20) {
-            $type = if ($groupMSAs -contains $msa) { 'gMSA' } elseif ($standaloneMSAs -contains $msa) { 'MSA' } else { 'Unknown' }
-            $enabled = if ($null -ne $msa.Enabled) { $msa.Enabled } else { 'N/A' }
-            $result += "| $($msa.Name) | $type | $enabled |" + "`n"
+            $type = if ($delegatedMSAs -contains $msa) { 'dMSA' } elseif ($groupMSAs -contains $msa) { 'gMSA' } elseif ($standaloneMSAs -contains $msa) { 'sMSA' } else { 'Unknown' }
+            $state = if ($type -eq 'dMSA' -and $null -ne $msa.DelegatedMsaState) { $msa.DelegatedMsaState } else { 'N/A' }
+            $result += "| $($msa.Name) | $type | $state |" + "`n"
         }
 
         if ($msaCount -gt 20) {

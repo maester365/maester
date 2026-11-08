@@ -49,8 +49,7 @@
     Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory user inventory was not returned.'
     }
     Write-Verbose "Filtering/counting krbtgt password last set"
 
@@ -59,7 +58,7 @@
 
     if ($null -eq $krbtgt) {
         Add-MtTestResultDetail -Result "KRBTGT account not found in Active Directory."
-        return $null
+        return $false
     }
 
     $passwordLastSet = $krbtgt.PasswordLastSet
