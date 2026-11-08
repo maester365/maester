@@ -42,11 +42,12 @@ This test identifies enabled computers that:
 
 Provides counts and lists affected computers.
 
+This is the canonical stale enabled computer inventory. Results require owner review and are not proof that every inactive computer account is compromised.
+
 #### Related Tests
 
-- This is the canonical stale enabled computer inventory; it reports Investigate rather than failing when stale accounts need owner review.
-- `Test-MtAdComputerDisabledCount` - Disabled computer analysis
-- `Test-MtAdUserDormantEnabledCount` - Stale user account check
+- **AD-COMP-01 — Computer disabled count should be retrievable** — `Test-MtAdComputerDisabledCount` — Inventories disabled computers separately.
+- **AD-USER-02 — Enabled users should not remain dormant** — `Test-MtAdUserDormantEnabledCount` — Reviews user dormancy separately.
 
 #### Related links
 

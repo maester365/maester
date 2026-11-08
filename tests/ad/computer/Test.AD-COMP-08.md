@@ -31,8 +31,8 @@ This test groups all enabled computers by their parent container and calculates:
 
 #### Related Tests
 
-- `Test-MtAdComputerOUCount` - Counts the total number of OUs with computers
-- `Test-MtAdComputerInDefaultContainer` - Identifies potential OU structure gaps
+- **AD-COMP-07 — Computer OU count should be retrievable** — `Test-MtAdComputerOUCount` — Reports distinct parent locations.
+- **AD-COMP-06 — Enabled computers should be moved out of the default Computers container** — `Test-MtAdComputerInDefaultContainer` — Reviews the default container.
 
 <!--- Results --->
 %TestResult%

@@ -40,11 +40,12 @@ This test extracts DNS zones from computer `dNSHostName` attributes and:
 - Lists all zones in use
 - Identifies computers without DNS host names
 
+Zone counts and percentages are shown in this check; host names with no DNS suffix are counted separately. These host-name suffixes do not prove the state of DNS server zones or DNSSEC deployment.
+
 #### Related Tests
 
-- `Test-MtAdComputerDnsHostNameCount` - DNS host name coverage
-- Zone counts and percentages are shown in this check; host names with no DNS suffix are counted separately.
-- `Test-MtAdDnsZoneCount` - DNS server zone analysis
+- **AD-DCOMP-07 — Computer DNS host name count should be investigated** — `Test-MtAdComputerDnsHostNameCount` — Inventories computer DNS host names.
+- **AD-DNS-01 — DNS zone count should be retrievable** — `Test-MtAdDnsZoneCount` — Inventories DNS zones separately.
 
 <!--- Results --->
 %TestResult%

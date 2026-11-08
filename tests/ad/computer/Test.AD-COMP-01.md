@@ -24,8 +24,7 @@ The test returns informational results to help you assess the scope of disabled 
 
 #### Related Tests
 
-- `AD-DCOMP-06` - Identifies enabled computers that haven't logged on recently
-- `Test-MtAdComputerInDefaultContainer` - Finds computers in the default container (another hygiene indicator)
+- **AD-COMP-06 — Enabled computers should be moved out of the default Computers container** — `Test-MtAdComputerInDefaultContainer` — Reviews default-container placement independently of account status.
 
 <!--- Results --->
 %TestResult%

@@ -40,10 +40,15 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
 
     if ($null -eq $adState -or $null -eq $adState.Computers) {
-        throw 'Computer inventory is required to review disabled accounts.'
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Computer inventory is unavailable; disabled accounts cannot be assessed.'
+        return
     }
 
     $computers = $adState.Computers
+    if (@($computers | Where-Object { $null -eq $_.Enabled }).Count -gt 0) {
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Computer enabled state is unavailable; disabled-account counts cannot be established.'
+        return
+    }
 
     # Count disabled and total computers
     $disabledComputers = $computers | Where-Object { $_.Enabled -eq $false }
@@ -51,7 +56,7 @@
     $totalCount = ($computers | Measure-Object).Count
     $enabledCount = $totalCount - $disabledCount
 
-    $testResult = $totalCount -gt 0
+    $testResult = $null -ne $adState.Computers
 
     # Generate markdown results
     if ($testResult) {

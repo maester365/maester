@@ -37,8 +37,7 @@ This test counts computers with the `TrustedForDelegation` flag enabled and cate
 
 #### Related Tests
 
-- `AD-DCOMP-03` - Reviews KCD, protocol transition and RBCD descriptor presence on non-DC computers and managed accounts
-- `Test-MtAdUserDelegationConfiguredCount` - Reviews user account delegation
+- **AD-DCOMP-03 — Non-DC computer and managed account constrained delegation should be investigated** — `Test-MtAdComputerNonDcConstrainedDelegationCount` — Reviews constrained delegation separately.
 
 #### Related links
 

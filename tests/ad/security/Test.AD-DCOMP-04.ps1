@@ -58,7 +58,7 @@
     $computersWithOs = ($computers | Where-Object { $_.operatingSystem } | Measure-Object).Count
     $computersWithoutOs = $totalComputers - $computersWithOs
 
-    $testResult = $true
+    $testResult = $null -ne $adState.Computers
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
@@ -66,7 +66,6 @@
     $result += "| Distinct Operating Systems | $osCount |" + "`n"
     $result += "| Computers with OS Data | $computersWithOs |" + "`n"
     $result += "| Computers without OS Data | $computersWithoutOs |" + "`n"
-    $result += "| Computers with Unknown OS | $computersWithoutOs |" + "`n"
 
     if ($osCount -gt 0) {
         $result += "`n**Operating Systems in Use:**" + "`n" + "`n"

@@ -39,11 +39,11 @@ This test analyzes computer objects in Active Directory and:
 - Shows distribution percentages
 - Identifies computers without OS data
 
+Unknown OS values are counted explicitly; OS service pack and patch state are not available in the current collector. This inventory does not establish deployment or patch health.
+
 #### Related Tests
 
-- Unknown OS values are counted explicitly; OS service pack and patch state are not available in the current collector.
-- `Test-MtAdComputerStaleEnabledCount` - Identifies stale computer accounts
-- `Test-MtAdDcOperatingSystemDetails` - Domain Controller OS distribution
+- **AD-DCOMP-06 — No enabled computers should be stale beyond the configured threshold** — `Test-MtAdComputerStaleEnabledCount` — Reviews enabled-computer staleness.
 
 <!--- Results --->
 %TestResult%

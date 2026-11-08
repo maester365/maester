@@ -57,7 +57,7 @@
     $computersWithDns = ($computers | Where-Object { $_.dNSHostName } | Measure-Object).Count
     $totalComputers = ($computers | Measure-Object).Count
 
-    $testResult = $true
+    $testResult = $null -ne $adState.Computers
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"

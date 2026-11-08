@@ -84,7 +84,7 @@
     It 'counts unknown operating systems without suggesting OS support or patch status' {
         Test-MtAdComputerOperatingSystemCount | Should -BeTrue
         $script:Details.Investigate | Should -BeTrue
-        $script:Details.Text | Should -BeLike '*| Computers with Unknown OS | 1 |*'
+        $script:Details.Text | Should -BeLike '*| Computers without OS Data | 1 |*'
         $script:Details.Text | Should -BeLike '*| Unknown OS | 1 | 33.33% of all computers |*'
     }
 
@@ -96,9 +96,9 @@
     }
 
     It 'does not report missing CreatorSid collection as zero CreatorSids' {
-        Test-MtAdComputerCreatorSidCount | Should -BeFalse
-        $script:Details.Investigate | Should -BeTrue
-        $script:Details.Text | Should -BeLike '*CreatorSid is not collected*'
+        Test-MtAdComputerCreatorSidCount | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
+        $script:Details.Text | Should -BeLike '*mS-DS-CreatorSID LDAP attribute*'
     }
 
     It 'fails when an enabled computer is a child of the default Computers container' {
@@ -109,9 +109,9 @@
 
     It 'counts optional CreatorSid metadata rather than treating its presence as a security failure' {
         foreach ($computer in $script:AdComputerState.Computers) {
-            $computer | Add-Member -NotePropertyName CreatorSid -NotePropertyValue $null
+            $computer | Add-Member -NotePropertyName 'mS-DS-CreatorSID' -NotePropertyValue $null
         }
-        $script:AdComputerState.Computers[1].CreatorSid = 'S-1-5-21-1-2-3-1100'
+        $script:AdComputerState.Computers[1].'mS-DS-CreatorSID' = 'S-1-5-21-1-2-3-1100'
         Test-MtAdComputerCreatorSidCount | Should -BeTrue
         $script:Details.Investigate | Should -BeTrue
         $script:Details.Text | Should -BeLike '*| Computers with CreatorSid | 1 |*'

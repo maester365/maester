@@ -27,8 +27,8 @@ This test examines the `primaryGroupId` attribute of all enabled computer accoun
 
 #### Related Tests
 
-- `Test-MtAdComputerSidHistoryCount` - Identifies computers with migration artifacts
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
+- **AD-COMP-05 — Computer SID History count should be retrievable** — `Test-MtAdComputerSidHistoryCount` — Inventories migration-related SIDs.
+- **AD-COMP-07 — Computer OU count should be retrievable** — `Test-MtAdComputerOUCount` — Inventories computer placement.
 
 <!--- Results --->
 %TestResult%
