@@ -67,7 +67,7 @@
     $delegatedCount = $delegatedMSAs.Count
     $undeterminedCount = $msaCount - $gmsaCount - $standaloneCount - $delegatedCount
 
-    $testResult = $true
+    $testResult = $null -ne $adState.ServiceAccounts
 
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
