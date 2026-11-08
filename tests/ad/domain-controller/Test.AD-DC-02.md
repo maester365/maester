@@ -36,8 +36,8 @@ This test queries the SMB server configuration on each domain controller to chec
 
 #### Related Tests
 
-- `Test-MtAdDcSmbSigningEnabledCount` - SMB signing configuration
-- `Test-MtAdDcSmbv311EnabledCount` - SMBv3.1.1 protocol status
+- **AD-DC-04 — SMB signing should be enabled on all domain controllers** — `Test-MtAdDcSmbSigningEnabledCount` — Reviews SMB signing separately.
+- **AD-DC-03 — SMBv3.1.1 enabled count should be retrievable** — `Test-MtAdDcSmbv311EnabledCount` — Inventories SMBv3.1.1 support.
 
 <!--- Results --->
 %TestResult%
