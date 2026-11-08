@@ -52,8 +52,9 @@
     $allSpns = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
 
     $totalSpnCount = ($allSpns | Measure-Object).Count
-    $usersWithSpns = ($users | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
+    $usersWithSpns = @($users | Where-Object { @($_.servicePrincipalName | Where-Object { $_ }).Count -gt 0 }).Count
     $totalUsers = ($users | Measure-Object).Count
+    if ($null -eq $users) { throw 'User collection is unavailable.' }
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $true

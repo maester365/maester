@@ -20,7 +20,7 @@ This test counts user objects whose `SamAccountName` or `Name` matches common se
 
 #### Related Tests
 
-- `Test-MtAdUserSpnSetCount` - Identifies service accounts through SPN usage
+- `AD-SPN-06` - Identifies service accounts through SPN usage
 - `Test-MtAdUserAdminCountCount` - Highlights service accounts that may also be protected or privileged
 
 <!--- Results --->

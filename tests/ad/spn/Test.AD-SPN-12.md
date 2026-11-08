@@ -22,11 +22,11 @@ If domain admin accounts have SPNs:
 
 #### How the Test Works
 
-This test identifies domain administrator accounts (using the well-known RID 500) and checks if they have any SPNs configured. Any SPNs found on these accounts are flagged as critical security risks.
+This test identifies the Domain Admins group by its domain SID and RID 512, resolves direct and nested user members plus users whose primary group ID is 512 (not represented by the group's `member` attribute), and checks all of their raw SPNs. RID 500 alone identifies the built-in Administrator account, not the Domain Admins group. An unresolved membership is an error, not a pass.
 
 #### Related Tests
 
-- `Test-MtAdUserSpnDomainAdminDetails` - Detailed SPN information for domain admins
+- This check includes account-level SPN counts for Domain Admins members.
 - `Test-MtAdUserSpnTotalCount` - Overall user SPN count
 - `Test-MtAdUserSpnServiceClassCount` - Service classes on user accounts
 

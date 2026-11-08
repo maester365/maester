@@ -21,7 +21,7 @@ This test counts user objects where the `AdminCount` attribute equals `1`.
 #### Related Tests
 
 - `Test-MtAdUserNonStandardPrimaryGroupCount` - Finds users with unusual group membership baselines
-- `Test-MtAdUserSpnSetCount` - Identifies potentially high-value service accounts
+- `AD-SPN-06` - Identifies accounts with SPNs
 
 <!--- Results --->
 %TestResult%
