@@ -4,8 +4,8 @@
     Ensure users can report security concerns in Teams
 
     .DESCRIPTION
-    Checks that users can report security concerns in Teams, and that reported Teams items and email messages
-    go only to the organization's reporting mailbox and not to Microsoft.
+    Checks that users can report security concerns in Teams and that configured report destinations use
+    the organization's reporting mailbox.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.6.1, E5 L1)
 
     .EXAMPLE
@@ -43,20 +43,11 @@
 
     $messagingPolicy = Get-CsTeamsMessagingPolicy -Identity Global
     $reportPolicy = @(Get-MtExo -Request ReportSubmissionPolicy) | Select-Object -First 1
-    $reportRules = @(Get-MtExo -Request ReportSubmissionRule) | Where-Object { $_ }
-
-    $ruleAddresses = @(
-        $reportRules |
-            Where-Object { $_.State -eq 'Enabled' } |
-            ForEach-Object { $_.SentTo } |
-            Where-Object { -not [string]::IsNullOrWhiteSpace("$($_)") }
-    )
     $destinationValues = [ordered]@{
-        ReportJunkAddresses                = @($reportPolicy.ReportJunkAddresses)
-        ReportNotJunkAddresses             = @($reportPolicy.ReportNotJunkAddresses)
-        ReportPhishAddresses               = @($reportPolicy.ReportPhishAddresses)
-        'Report submission rule (SentTo)' = $ruleAddresses
-        ReportChatMessageAddresses         = @($reportPolicy.ReportChatMessageAddresses)
+        ReportJunkAddresses        = @($reportPolicy.ReportJunkAddresses)
+        ReportNotJunkAddresses     = @($reportPolicy.ReportNotJunkAddresses)
+        ReportPhishAddresses       = @($reportPolicy.ReportPhishAddresses)
+        ReportChatMessageAddresses = @($reportPolicy.ReportChatMessageAddresses)
     }
     $reportingMailbox = @(
         $destinationValues.Values |

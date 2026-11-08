@@ -9,8 +9,12 @@
         if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
             Set-Item -Path "function:global:$name" -Value {
                 [CmdletBinding()]
-                param([string] $Identity)
+                param(
+                    [string] $Identity,
+                    [string[]] $SettingNames
+                )
                 $null = $Identity
+                $null = $SettingNames
             }
             $script:stubs += $name
         }
@@ -214,29 +218,21 @@ Describe 'Test-MtCisTeamsReportSecurityConcerns' {
             ReportNotJunkAddresses                      = @('soc@contoso.com')
             ReportPhishAddresses                        = @('soc@contoso.com')
         }
-        $script:Rules = @([pscustomobject]@{ Name = 'DefaultReportSubmissionRule'; State = 'Enabled'; SentTo = @('soc@contoso.com') })
         Mock -ModuleName Maester Add-MtTestResultDetail { param($Result) $script:Result = $Result }
         Mock -ModuleName Maester Get-CsTeamsMessagingPolicy { $script:MessagingPolicy }
         Mock -ModuleName Maester Get-MtExo -ParameterFilter { $Request -eq 'ReportSubmissionPolicy' } { $script:Policy }
-        Mock -ModuleName Maester Get-MtExo -ParameterFilter { $Request -eq 'ReportSubmissionRule' } { $script:Rules }
+        Mock -ModuleName Maester Get-MtExo -ParameterFilter { $Request -eq 'ReportSubmissionRule' } {}
     }
 
     It 'passes when reports go only to the reporting mailbox' {
         Test-MtCisTeamsReportSecurityConcerns | Should -BeTrue
+        Should -Invoke Get-MtExo -ModuleName Maester -ParameterFilter { $Request -eq 'ReportSubmissionRule' } -Times 0 -Exactly
     }
 
     It 'fails when reported messages are also sent to Microsoft' {
         $script:Policy.EnableReportToMicrosoft = $true
         Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
         $script:Result | Should -Match 'EnableReportToMicrosoft \| True \| False \| ❌ Fail'
-    }
-
-    It 'fails when the report submission rule is missing or disabled' {
-        $script:Rules = @([pscustomobject]@{ Name = 'DefaultReportSubmissionRule'; State = 'Disabled'; SentTo = @('soc@contoso.com') })
-        Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
-
-        $script:Rules = @()
-        Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
     }
 
     It 'fails when Teams reporting is not set' {
@@ -252,10 +248,10 @@ Describe 'Test-MtCisTeamsReportSecurityConcerns' {
     }
 
     It 'fails when a reporting destination differs from the single mailbox' {
-        $script:Rules[0].SentTo = @('triage@contoso.com')
+        $script:Policy.ReportChatMessageAddresses = @('triage@contoso.com')
 
         Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
-        $script:Result | Should -Match 'Report submission rule \(SentTo\) \| triage@contoso.com \| soc@contoso.com \| ❌ Fail'
+        $script:Result | Should -Match 'ReportChatMessageAddresses \| triage@contoso.com \| soc@contoso.com \| ❌ Fail'
     }
 
     It 'fails when no report submission policy is returned' {

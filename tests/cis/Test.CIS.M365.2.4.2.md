@@ -2,7 +2,7 @@ The Strict preset security policy applies its strongest protections to the recip
 
 Executives, finance staff and administrators are the usual targets of spear phishing and whaling. Microsoft maintains the Standard and Strict preset security policies and updates them as threats change. Strict has the most aggressive settings for spam, phishing, malware, spoofing, impersonation, Safe Links and Safe Attachments, which suits the accounts that are most likely to be targeted and most valuable to compromise.
 
-The test reads the Strict preset rules for Exchange Online Protection and for Defender for Office 365. Each rule must be on and have at least one recipient target, following the CIS PowerShell audit procedure. The test does not verify that the selected recipients include priority accounts. To ensure those accounts are covered, add a group containing them to each rule. Microsoft Defender for Office 365 licences are required.
+The test reads the Strict preset rules for Exchange Online Protection and Defender for Office 365. Each rule must be enabled and have at least one recipient condition: `SentTo`, `SentToMemberOf` or `RecipientDomainIs`. This follows the CIS PowerShell audit procedure; it does not verify whether those targets include every priority account or evaluate rule exceptions, so review the target values and membership separately. Preset security policies can't target user tags, so use a group that contains the priority accounts. Microsoft Defender for Office 365 licences are required.
 
 #### Remediation action
 

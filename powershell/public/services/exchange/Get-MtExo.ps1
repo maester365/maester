@@ -62,7 +62,6 @@
         "TeamsProtectionPolicy"          = "Get-TeamsProtectionPolicy"
         "TeamsProtectionPolicyRule"      = "Get-TeamsProtectionPolicyRule"
         "ReportSubmissionPolicy"         = "Get-ReportSubmissionPolicy"
-        "ReportSubmissionRule"           = "Get-ReportSubmissionRule"
         "EXOMailbox"                     = "Get-EXOMailbox -ResultSize 'Unlimited'"
         "EXOSharedMailbox"               = "Get-EXOMailbox -RecipientTypeDetails 'SharedMailbox' -ResultSize 'Unlimited'"
         "ArcConfig"                      = "Get-ArcConfig"

@@ -2,7 +2,7 @@ Users can report security concerns in Microsoft Teams, and reported items go onl
 
 User reporting lets people flag suspicious Teams messages quickly, so the security team can act on phishing and malicious content. Reported items can contain sensitive or personal information, and reports can include messages that are threatening or harassing, so they should stay inside the organization and be reviewed by staff who can route them to the right team, such as Human Resources. Sending reports to Microsoft should follow company policy.
 
-CIS requires three settings: **Report a security concern** in the Teams Global messaging policy, **Monitor reported items in Microsoft Teams** in the Microsoft Defender portal, and reported items sent to **My reporting mailbox only**. The test reads `Get-CsTeamsMessagingPolicy -Identity Global`, the report submission policy and the report submission rule. Reporting must be on, Teams and email reports must go to the reporting mailbox and not to Microsoft (`ReportChatMessageEnabled` and `EnableReportToMicrosoft` are `False`), and the reporting mailbox must be set in the policy and in an enabled report submission rule. Microsoft Defender for Office 365 Plan 1 or Plan 2, or Microsoft Defender XDR, licences are required.
+CIS requires **Report a security concern** in the Teams Global messaging policy, **Monitor reported items in Microsoft Teams** in the Microsoft Defender portal, and reported items sent to **My reporting mailbox only**. The test reads `Get-CsTeamsMessagingPolicy -Identity Global` and the report submission policy. Reporting must be on, Teams and email reports must go to the same reporting mailbox and not to Microsoft (`ReportChatMessageEnabled` and `EnableReportToMicrosoft` are `False`). Microsoft Defender for Office 365 Plan 1 or Plan 2, or Microsoft Defender XDR, licences are required.
 
 #### Remediation action
 
@@ -41,10 +41,7 @@ $params = @{
     ReportPhishAddresses = $usersub
 }
 Set-ReportSubmissionPolicy @params
-New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPolicy DefaultReportSubmissionPolicy -SentTo $usersub
 ```
-
-If the report submission rule already exists, use `Set-ReportSubmissionRule -Identity DefaultReportSubmissionRule -SentTo $usersub` to configure its recipient. If the rule is disabled, enable it with `Enable-ReportSubmissionRule -Identity DefaultReportSubmissionRule`.
 
 #### Related links
 
