@@ -294,7 +294,7 @@ function Test-Family$name {
 
         It 'Resolves an instance''s Control against a framework its own suite declares' {
             $folder = Join-Path $TestDrive 'family-suite-framework'
-            $file = New-FamilyFile -Folder $folder -Id 'CONTOSO.58' -Source "@{ Id = 'a'; Control = 'fx-pack:P-1' }, @{ Id = 'b'; Control = 'fx-pack:P-9' }"
+            $null = New-FamilyFile -Folder $folder -Id 'CONTOSO.58' -Source "@{ Id = 'a'; Control = 'fx-pack:P-1' }, @{ Id = 'b'; Control = 'fx-pack:P-9' }"
             $null = New-Item -ItemType Directory -Path (Join-Path $folder 'frameworks') -Force
             '{ "Id": "ContosoPack", "Frameworks": [ { "Key": "fx-pack", "Version": "1" } ] }' | Set-Content (Join-Path $folder 'suite.json')
             '{ "Framework": "fx-pack", "Requirements": [ { "Id": "P-1", "Level": "L1", "Related": [ "nist-800-53-r5:AC-3" ] } ] }' | Set-Content (Join-Path $folder 'frameworks/fx-pack.json')
