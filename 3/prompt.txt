@@ -1,0 +1,1 @@
+Dont' we get the friendly names from the service plan markdown file? (or even from Graph API??)
