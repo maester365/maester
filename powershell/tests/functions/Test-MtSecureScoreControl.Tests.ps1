@@ -6,6 +6,7 @@
         Use-MtModuleFunction -Name Get-MtSecureScoreControlInstance
         Use-MtModuleFunction -Name Get-MtSecureScoreControlSeverity
         Use-MtModuleFunction -Name Get-MtSecureScoreControlProduct
+        Use-MtModuleFunction -Name ConvertTo-MtSecureScoreInstanceId
         Use-MtModuleFunction -Name ConvertFrom-MtSecureScoreHtml
         Use-MtModuleFunction -Name Test-MtSecureScoreControl
 
@@ -141,6 +142,62 @@
 
             $instances.Count | Should -Be 3
             $instances.Data.InMt1024 | Should -Not -Contain $true
+        }
+
+        It 'turns a control name that is not a valid instance ID into one, so the family still runs' {
+            $script:Snapshot.value[0].controlScores = @(
+                (Get-FakeControlScore -Name 'mdo_safelinks' -Score 9),
+                (Get-FakeControlScore -Name '_Turn on audit (EXO)' -Score 0)
+            )
+            $script:Profiles = @((Get-FakeControlProfile -Id 'mdo_safelinks' -MaxScore 9), (Get-FakeControlProfile -Id '_Turn on audit (EXO)' -MaxScore 3))
+
+            $instances = @(Get-MtSecureScoreControlInstance)
+
+            $instances.Id | Should -Be @('mdo_safelinks', 'Turn-on-audit--EXO-')
+            foreach ($id in $instances.Id) { $id | Should -Match '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\z' }
+            ($instances | Where-Object Id -EQ 'Turn-on-audit--EXO-').Title | Should -Be 'Title of _Turn on audit (EXO).'
+        }
+
+        It 'keeps instance IDs unique when two control names map to the same ID' {
+            $script:Snapshot.value[0].controlScores = @((Get-FakeControlScore -Name 'a b' -Score 0), (Get-FakeControlScore -Name 'a-b' -Score 0), (Get-FakeControlScore -Name 'A_B' -Score 0))
+            $script:Profiles = @((Get-FakeControlProfile -Id 'a b'), (Get-FakeControlProfile -Id 'a-b'), (Get-FakeControlProfile -Id 'A_B'))
+
+            $instances = @(Get-MtSecureScoreControlInstance)
+
+            $instances.Id | Should -Be @('a-b', 'a-b-2', 'A_B')
+        }
+
+        It 'cuts a long control name to the 128 characters an instance ID allows' {
+            $long = 'x' * 200
+            $script:Snapshot.value[0].controlScores = @((Get-FakeControlScore -Name $long -Score 0), (Get-FakeControlScore -Name ($long + 'y') -Score 0))
+            $script:Profiles = @((Get-FakeControlProfile -Id $long), (Get-FakeControlProfile -Id ($long + 'y')))
+
+            $instances = @(Get-MtSecureScoreControlInstance)
+
+            $instances[0].Id.Length | Should -Be 128
+            $instances[1].Id | Should -Be (('x' * 126) + '-2')
+        }
+
+        It 'skips a control whose name has no letter or digit' {
+            $script:Snapshot.value[0].controlScores = @((Get-FakeControlScore -Name 'mdo_safelinks' -Score 9), (Get-FakeControlScore -Name ' -- ' -Score 0))
+
+            $instances = @(Get-MtSecureScoreControlInstance)
+
+            $instances.Id | Should -Be @('mdo_safelinks')
+        }
+
+        It 'runs the whole family when a control name is not a valid instance ID' {
+            $script:Snapshot.value[0].controlScores = @((Get-FakeControlScore -Name 'mdo_safelinks' -Score 9), (Get-FakeControlScore -Name 'Turn on audit' -Score 0))
+            $script:Profiles = @((Get-FakeControlProfile -Id 'mdo_safelinks' -MaxScore 9), (Get-FakeControlProfile -Id 'Turn on audit' -MaxScore 3))
+
+            # Offline run: Graph forced connected through the run config, licences Unknown (never a skip).
+            Mock -ModuleName Maester Get-MtShippedMaesterConfig { [pscustomobject]@{} }
+            $runConfig = [pscustomobject]@{ Environment = [pscustomobject]@{ Services = [pscustomobject]@{ Graph = $true } } }
+            Push-Location $TestDrive
+            try { $rows = @(Invoke-MtTest -Id 'MT.1264' -Config $runConfig 3>$null 6>$null) } finally { Pop-Location }
+
+            $rows.ReasonCode | Should -Not -Contain 'InvalidInstanceId'
+            $rows.Id | Should -Contain 'MT.1264.Turn-on-audit'
         }
 
         It 'keeps a scored control that has no profile so the test reports it as an error' {
