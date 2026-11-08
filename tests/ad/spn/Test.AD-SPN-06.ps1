@@ -42,7 +42,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -57,7 +57,7 @@
     if ($null -eq $users) { throw 'User collection is unavailable.' }
 
     # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    $testResult = $null -ne $adState.Users
 
     # Generate markdown results
     if ($testResult) {

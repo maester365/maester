@@ -30,10 +30,10 @@ This check includes former AD-USER-14. The engine supports one `Feature`, so the
 
 #### Related Tests
 
-- `Test-MtAdUserSpnServiceClassCount` - Counts distinct service classes on users
-- `Test-MtAdUserSpnDomainAdminCount` - Identifies SPNs on domain admin accounts
-- `AD-SPN-01` - Computer-account SPN service-class inventory
-- `AD-USER-20` - User/service-account pattern inventory and its SPN crosswalk
+- **AD-SPN-07 — User SPN service class count should be investigated** — `Test-MtAdUserSpnServiceClassCount` — Inventories service classes on users.
+- **AD-SPN-12 — No domain admin accounts should have SPNs configured** — `Test-MtAdUserSpnDomainAdminCount` — Checks privileged user SPNs.
+- **AD-SPN-01 — Computer SPN service class count should be retrievable** — `Test-MtAdComputerSpnServiceClassCount` — Inventories computer-account SPN classes.
+- **AD-USER-20 — Service-like user names should be reviewed** — `Test-MtAdUserKnownServiceAccountCount` — Inventories naming patterns independently of SPNs.
 
 <!--- Results --->
 %TestResult%

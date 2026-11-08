@@ -1,4 +1,4 @@
-Domain administrator accounts with SPNs represent the **highest possible Kerberoasting risk**:
+Domain administrator accounts with SPNs represent serious Kerberoasting exposure:
 
 - **Maximum privileges**: Domain admins have unrestricted access to the entire domain
 - **Golden ticket risk**: Compromising a domain admin can lead to complete domain compromise
@@ -26,9 +26,8 @@ This test identifies the Domain Admins group by its domain SID and RID 512, reso
 
 #### Related Tests
 
-- This check includes account-level SPN counts for Domain Admins members.
-- `Test-MtAdUserSpnTotalCount` - Overall user SPN count
-- `Test-MtAdUserSpnServiceClassCount` - Service classes on user accounts
+- **AD-SPN-06 — User SPN total count should be investigated** — `Test-MtAdUserSpnTotalCount` — Inventories all user SPNs.
+- **AD-SPN-07 — User SPN service class count should be investigated** — `Test-MtAdUserSpnServiceClassCount` — Inventories user-account service classes.
 
 #### Related links
 

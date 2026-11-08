@@ -26,9 +26,8 @@ This test compares discovered SPN service classes against a database of known SP
 
 #### Related Tests
 
-- This check includes the computer and raw SPN for each unknown service class.
-- `Test-MtAdComputerSpnServiceClassCount` - Counts all distinct service classes
-- `Test-MtAdUserSpnUnknownCount` - Identifies unknown SPNs on user accounts
+- **AD-SPN-01 — Computer SPN service class count should be retrievable** — `Test-MtAdComputerSpnServiceClassCount` — Counts all discovered computer SPN classes.
+- **AD-SPN-09 — User SPN unknown service class count should be investigated** — `Test-MtAdUserSpnUnknownCount` — Reviews user-account SPN classes absent from the known list.
 
 <!--- Results --->
 %TestResult%
