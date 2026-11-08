@@ -208,12 +208,14 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 
 - An identity with read access to Microsoft Graph. `Get-MtGraphScope` lists the exact permissions; by default they are
   all read-only (`*.Read.All` and similar).
-- Optional, only if we turn them on: `Mail.Send` to email the report (`-SendMail`), and
+- Optional, only if we turn them on: `Mail.Send` to email the report (`-SendMail`), `ChannelMessage.Send` to post
+  it to Teams through Microsoft Graph (`-SendTeamsMessage`; posting through a Teams webhook needs no permission), and
   `ReportSettings.ReadWrite.All` (`-Privileged`). With that permission, test MT.1076 turns off the tenant's report
   obfuscation setting while it reads a usage report, then turns it back on. If restoring the setting fails, Maester
   only writes a warning, and the setting stays off until an admin restores it. [We will / will not use these.]
 - For the Exchange Online and Teams tests: [a reader role such as Global Reader / the roles listed in the
-  monitoring guide].
+  monitoring guide]. Unattended Exchange Online runs also need the `Exchange.ManageAsApp` application permission,
+  limited by an Exchange role such as View-Only Configuration.
 - For the SharePoint tests: an app registration with `AllSites.FullControl` (delegated) or `Sites.FullControl.All`
   (unattended). The tests only read, but the permission would allow changes, so treat this identity as privileged.
   [We will / will not run the SharePoint tests.]
@@ -225,9 +227,11 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 - Runs in [our GitHub Actions / Azure DevOps / Azure Automation / an admin workstation], in [region / environment].
 - Results (HTML, JSON, optional CSV and Excel) are written to [storage location], with access limited to [group].
   They describe our security configuration and should be classified as [classification].
-- User identities can be removed from every output with `-RedactUserIdentity AllOutputs`. `HtmlOnly` redacts only
+- User identities can be replaced in every output with `-RedactUserIdentity AllOutputs`. `HtmlOnly` redacts only
   the HTML report, so the JSON, CSV and other machine-readable outputs keep the real identifiers. Redaction is best
-  effort and can miss names in free text.
+  effort and can miss names in free text. It is pseudonymisation, not anonymisation: each user is replaced by a token
+  derived from an unsalted hash of their identity, so anyone who can guess a user's user principal name or object ID
+  can confirm it. See [Hiding user identities from reports](export-results.md#hiding-user-identities-from-reports).
 - By default the results include the list of affected objects (the users, policies and apps behind each finding).
   `-ExcludeAffectedObjects` leaves it out.
 - Results are sent only where we configure them: [email recipients / a Teams channel / none].
