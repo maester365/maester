@@ -37,7 +37,9 @@ maester.dev), `report/` (React app that builds the HTML report template).
   `powershell/internal/generated/`, and the native `tests/eidsca/Test.EIDSCA.*` and
   `tests/orca/Test.ORCA.*` files the generators in `build/eidsca/` and `build/orca/`
   write. Edit the PowerShell source, comment-based help or generator templates and let
-  automation regenerate. `powershell/assets/ConsoleContributors.json` (the dashboard's
+  automation regenerate. `powershell/assets/MaesterServicePlanNames.json` (Microsoft's friendly name for each
+  licence service plan) is written with `website/src/data/license-service-plans.json` by
+  `website/scripts/update-license-service-plans.mjs`. `powershell/assets/ConsoleContributors.json` (the dashboard's
   Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
   the website's contributor data.
 - Never commit the website data that each build generates: the command pages in `website/docs/commands/`
