@@ -41,7 +41,7 @@ This test analyzes computer objects in Active Directory and:
 
 #### Related Tests
 
-- `Test-MtAdComputerOperatingSystemDetails` - Detailed OS and service pack information
+- Unknown OS values are counted explicitly; OS service pack and patch state are not available in the current collector.
 - `Test-MtAdComputerStaleEnabledCount` - Identifies stale computer accounts
 - `Test-MtAdDcOperatingSystemDetails` - Domain Controller OS distribution
 

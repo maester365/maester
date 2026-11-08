@@ -44,9 +44,8 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review operating systems.'
     }
     Write-Verbose "Filtering/counting computer operating system count"
 
@@ -67,6 +66,7 @@
     $result += "| Distinct Operating Systems | $osCount |" + "`n"
     $result += "| Computers with OS Data | $computersWithOs |" + "`n"
     $result += "| Computers without OS Data | $computersWithoutOs |" + "`n"
+    $result += "| Computers with Unknown OS | $computersWithoutOs |" + "`n"
 
     if ($osCount -gt 0) {
         $result += "`n**Operating Systems in Use:**" + "`n" + "`n"
@@ -76,12 +76,17 @@
         $sortedGroups = $osGroups | Sort-Object -Property Count -Descending
         foreach ($group in $sortedGroups) {
             $percentage = if ($computersWithOs -gt 0) { [Math]::Round(($group.Count / $computersWithOs) * 100, 2) } else { 0 }
-            $result += "| $($group.Name) | $($group.Count) | $percentage% |" + "`n"
+            $osName = [string]$group.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $result += "| $osName | $($group.Count) | $percentage% |" + "`n"
         }
+    }
+    if ($computersWithoutOs -gt 0) {
+        $unknownPercentage = if ($totalComputers -gt 0) { [Math]::Round(($computersWithoutOs / $totalComputers) * 100, 2) } else { 0 }
+        $result += "| Unknown OS | $computersWithoutOs | $unknownPercentage% of all computers |`n"
     }
     Write-Verbose "Counts computed"
 
-    $testResultMarkdown = "Domain computer operating system diversity has been analyzed.`n`n%TestResult%"
+    $testResultMarkdown = "Review the operating system inventory, including computers with unknown OS. OS service pack is not collected; this inventory cannot determine patch or support status.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Investigate

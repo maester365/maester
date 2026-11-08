@@ -44,7 +44,7 @@ Provides counts and lists affected computers.
 
 #### Related Tests
 
-- `Test-MtAdComputerDormantCount` - Dormant computer identification
+- This is the canonical stale enabled computer inventory; it reports Investigate rather than failing when stale accounts need owner review.
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis
 - `Test-MtAdUserDormantEnabledCount` - Stale user account check
 
