@@ -1,32 +1,20 @@
 ﻿function Test-MtAdDcNonGlobalCatalogCount {
     <#
     .SYNOPSIS
-    Counts domain controllers that are not configured as Global Catalogs.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test identifies domain controllers that are not serving as Global Catalogs.
-    Global Catalogs maintain a partial replica of all objects in the forest, enabling
-    forest-wide searches and authentication for users from other domains. In a single-domain
-    environment, all DCs should be GCs. In multi-domain forests, proper GC placement
-    is critical for authentication and directory searches.
-
-    .EXAMPLE
-    Test-MtAdDcNonGlobalCatalogCount
-
-    Returns $true if DC data is accessible.
-    The test result includes the count of DCs with and without Global Catalog role.
-
-    .LINK
-    https://maester.dev/docs/commands/Test-MtAdDcNonGlobalCatalogCount
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     #>
     [MaesterTest(
         Id = 'AD-DCD-04',
-        Title = 'Non-Global Catalog DC count should be retrievable',
+        Title = 'Forest has at least one Global Catalog',
         Product = 'ad',
         Feature = 'domain-controllers',
         Area = 'infrastructure',
         ResourceType = 'DomainController',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:nTDSDSA:ReadProperty', 'ActiveDirectory:Ldap:crossRef:ReadProperty'),
@@ -36,56 +24,13 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdDcNonGlobalCatalogCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('DomainControllers', 'Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $domainControllers = $adState.DomainControllers
-    $dcCount = ($domainControllers | Measure-Object).Count
-
-    # Count GCs vs non-GCs
-    $globalCatalogs = $domainControllers | Where-Object { $_.IsGlobalCatalog -eq $true }
-    $gcCount = ($globalCatalogs | Measure-Object).Count
-    $nonGcCount = $dcCount - $gcCount
-
-    # Get forest info to determine if multi-domain
-    $forestDomainCount = ($adState.Forest.Domains | Measure-Object).Count
-    $isMultiDomain = $forestDomainCount -gt 1
-
-    # Test passes if we successfully retrieved DC data
-    $testResult = $dcCount -gt 0
-
-    # Generate markdown results
-    $result = "| Metric | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total Domain Controllers | $dcCount |" + "`n"
-    $result += "| Global Catalog Servers | $gcCount |" + "`n"
-    $result += "| Non-Global Catalog DCs | $nonGcCount |" + "`n"
-    $result += "| Forest Domain Count | $forestDomainCount |" + "`n"
-
-    if ($nonGcCount -gt 0) {
-        $nonGcDCs = $domainControllers | Where-Object { $_.IsGlobalCatalog -eq $false }
-        $result += "| Non-GC DC Names | $($nonGcDCs.Name -join ', ') |" + "`n"
-
-        if ($isMultiDomain) {
-            $testResultMarkdown = "ℹ️ **Multi-Domain Forest**: $nonGcCount domain controller(s) are not Global Catalogs. In multi-domain environments, proper GC placement is critical. Ensure each site has at least one GC for optimal authentication performance.`n`n%TestResult%"
-        } else {
-            $testResultMarkdown = "⚠️ **Single-Domain Environment**: $nonGcCount domain controller(s) are not Global Catalogs. In single-domain forests, all DCs should typically be GCs for optimal performance and redundancy.`n`n%TestResult%"
-        }
-    } else {
-        $testResultMarkdown = "✅ **Optimal Configuration**: All $dcCount domain controller(s) are configured as Global Catalogs.`n`n%TestResult%"
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('DomainControllers', 'Forest')
+    if (-not $state.Forest -or @($state.Forest.Domains).Count -eq 0 -or $null -eq $state.DomainControllers) { throw 'Forest domains or DC inventory unavailable.' }
+    $controllers = @($state.DomainControllers)
+    if ($controllers.Count -eq 0 -or @($controllers | Where-Object { $null -eq $_.IsGlobalCatalog }).Count -gt 0) { throw 'Incomplete GC status or empty DC inventory.' }
+    $catalogs = @($controllers | Where-Object { $_.IsGlobalCatalog -eq $true })
+    $nonCatalogs = @($controllers | Where-Object { $_.IsGlobalCatalog -eq $false })
+    $ok = $catalogs.Count -gt 0
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. At least one forest Global Catalog is inventoried.' } else { 'Designate and verify at least one forest Global Catalog.' }) GC: $($catalogs.Count); non-GC: $($nonCatalogs.Count). Non-GC DCs are not automatically a failure: the Infrastructure Master placement exception depends on forest topology and Recycle Bin state. This does not prove site reachability."
+    return $ok
 }
