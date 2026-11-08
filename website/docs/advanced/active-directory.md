@@ -154,7 +154,7 @@ Use `Get-MtTest -Product ad` for the current catalog and each check's declared p
 | `for` | AD-FOR-01 through AD-FOR-04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `fors` | AD-FORS-01, 03, 04 | `ActiveDirectory:Ldap:crossRef:ReadProperty` |
 | `gchg` | AD-GCHG-01 | `ActiveDirectory:Ldap:group:ReadProperty` |
-| `gmc` | AD-GMC-01, 02, 04, 06, 08, 10 | `ActiveDirectory:Ldap:group:ReadProperty`; membership checks also need `ActiveDirectory:Ldap:group.member:ReadProperty` |
+| `gmc` | AD-GMC-01, 02, 04, 06, 08, 10 | Group and member read access; complete member scans 01/02/04/06/08 are LongRunning and require `-IncludeLongRunning` or an exact test-ID selection |
 | `gpo` | AD-GPO-01, 02, 04 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `gpol` | AD-GPOL-01–05 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read` |
 | `gporep` | AD-GPOREP-01, 03, 05, 06, 07, 09, 10, 12, 14, 15, 17 | `ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty`, `ActiveDirectory:File:SYSVOL:Read`; ACL-dependent checks need readable security descriptors |
@@ -167,7 +167,7 @@ Use `Get-MtTest -Product ad` for the current catalog and each check's declared p
 | `pwdpol` | AD-PWDPOL-01 | Default domain password and lockout policy attributes |
 | `repl` | AD-REPL-01 through AD-REPL-02 | `ActiveDirectory:Ldap:nTDSConnection:ReadProperty` |
 | `rootdse` | AD-ROOTDSE-01, 03 | `ActiveDirectory:Ldap:domainDNS:ReadProperty` |
-| `sch` | AD-SCH-01, 03, 05 | `ActiveDirectory:Ldap:Schema/*:ReadProperty`; SCH-05 distinguishes Windows LAPS schema from legacy LAPS |
+| `sch` | AD-SCH-01, 03, 05 | `ActiveDirectory:Ldap:Schema/*:ReadProperty`; SCH-05 reports both LAPS variants and passes if either schema pair is complete, not merely if a password attribute exists |
 | `site` | AD-SITE-01, 02, 04 | Site/DC inventory; SITE-04 also covers subnet-to-site associations formerly in SUB-01/02/11 |
 | `spn` | AD-SPN-01, 03, 05, 06, 07, 09, 11, 12 | Computer/user permissions; SPN-12 also reads domain SID, groups and group membership |
 | `sub` | AD-SUB-03, 04, 06, 08 | `ActiveDirectory:Ldap:subnet:ReadProperty`; shared association checks are under SITE-04 |
@@ -183,6 +183,8 @@ PWDPOL-01 assesses the connected domain's configured default policy; FGPP-01 ass
 Disabled-account and OU age checks use recorded modification age, not a disable date or proof of actual use. Protected system and RODC/hybrid krbtgt identities are excluded from disabled-account cleanup. RID-500 recent-use checks account for `lastLogonTimestamp` replication lag rather than treating it as exact all-DC logon evidence.
 
 Domain functional-level checks use only DCs scoped to the connected domain; forest checks use the whole forest inventory. Windows Server 2025 is level 10; Server 2019/2022 share level 7 with Server 2016. Unknown or inaccessible foreign-domain computer metadata stays explicit, not a healthy OS result. LDAP/LDAPS port fields are not measured listener states.
+
+Native test errors are recorded per test and do not stop report generation. Missing required inventory or a missing visible KRBTGT account is an **Error**, not a failed password-age baseline. A known password age still produces pass/fail; investigation inventories report **Investigate**, not compliance. Custom tests can read the actual `mS-DS-CreatorSID` computer attribute; the former `CreatorSid` projection remains as a compatibility alias.
 
 ## Known Misleading Outcomes
 
