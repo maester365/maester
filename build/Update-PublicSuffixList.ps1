@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Refreshes the cached public suffix list used by Get-MtRegistrableDomain.
 

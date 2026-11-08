@@ -4,6 +4,15 @@ param([string] $ModulePath = "$PSScriptRoot/../../Maester.psd1")
 
 BeforeAll {
     Import-Module $ModulePath -Force
+
+    # Reads the results Get-MtHtmlReport embeds: gzip-compressed, Base64-encoded JSON in the data element.
+    function Get-ReportDataText([string] $Html) {
+        $match = [regex]::Match($Html, '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip\+base64">([A-Za-z0-9+/=]*)</script>')
+        if (-not $match.Success) { throw 'The report has no compressed maester-report-data element.' }
+        $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($match.Groups[1].Value))
+        $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+        try { $reader.ReadToEnd() } finally { $reader.Dispose() }
+    }
 }
 
 Describe 'Partial repository coverage through native execution and exports' {
@@ -182,6 +191,7 @@ Describe 'Partial repository coverage through native execution and exports' {
         $row.ResultDetail.TestResult | Should -Match '\| fixture-repo \| 3 \| 1 \| 90123456789 \|'
         foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             ($content -match 'fixture-repo|other-repo') | Should -BeTrue
             ($content -match 'do not match') | Should -BeTrue
             ($content -match 'Sensitive server text|synthetic-never-network|9876543210123|GitHubPartialResponse') | Should -BeFalse
@@ -342,6 +352,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         }
         foreach ($path in $jsonPath, $htmlPath) {
             $content = Get-Content $path -Raw
+            if ($path -eq $htmlPath) { $content = Get-ReportDataText $content }
             $content.Contains('fixture-owner-one') | Should -BeTrue
             $content.Contains('fixture-owner-two') | Should -BeTrue
             $content | Should -Not -Match '9876543210123|synthetic-never-network'
@@ -364,6 +375,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $result.AffectedObjects.Type | Should -Contain 'GitHubOrganization'
         foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             if ($Mode -eq 'AllOutputs' -or ($Mode -eq 'HtmlOnly' -and $extension -eq 'html')) {
                 $content | Should -Not -Match 'fixture-owner-one|fixture-owner-two|TestResultRedacted'
                 $content | Should -Match 'object-[a-f0-9]{16}'
@@ -404,6 +416,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $row.ResultDetail.TestResult | Should -Match 'fixture-owner-one'
         foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             $content | Should -Not -Match 'fixture-owner-one|90123456789|GitHubPartialResponse|TestResultRedacted'
             $content | Should -Match 'object-[a-f0-9]{16}'
         }
@@ -416,6 +429,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $null = Invoke-Maester -Config $script:config -TestId CIS.GH.1.2.3 -SkipGraphConnect -NonInteractive -DisableTelemetry -SkipVersionCheck -NoLogo -OutputFolder $folder -OutputFolderFileName result -RedactUserIdentity AllOutputs -IncludeAffectedObjects
         foreach ($extension in 'json', 'html') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             $content | Should -Match 'object-first'
             $content | Should -Not -Match 'object-second'
         }
@@ -442,6 +456,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         $row.ResultDetail.TestResult | Should -Match '\| fixture-repo \| 3 \| 1 \| 3 \|'
         foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             $content | Should -Not -Match '\| fixture-repo \| 3 \| 1 \| 3 \||TestResultRedacted'
             $content | Should -Match '\| fixture-repo \| 3 \| 1 \| object-[a-f0-9]{16} \|'
         }
@@ -456,6 +471,7 @@ Describe 'GitHub deletion verdicts through the native engine and HTTP fixtures' 
         ($captured | Out-String) | Should -Not -Match '9876543210123|synthetic-never-network'
         foreach ($path in $jsonPath, $htmlPath) {
             $content = Get-Content $path -Raw
+            if ($path -eq $htmlPath) { $content = Get-ReportDataText $content }
             $content | Should -Not -Match '9876543210123|synthetic-never-network'
             $content | Should -Match 'GitHubDeletionPolicy'
             $content | Should -Match 'redacted'

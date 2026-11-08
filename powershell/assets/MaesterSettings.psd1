@@ -1,4 +1,4 @@
-# Settings registry (Maester 3.0 design, section 7.3). GlobalSettings in the run config may set any key;
+﻿# Settings registry (Maester 3.0 design, section 7.3). GlobalSettings in the run config may set any key;
 # the registry records the type, default and sensitivity of the settings Maester itself reads. Keys that
 # are not listed pass through, so test packs can use Namespace.Key. A sensitive setting is redacted in
 # the results.

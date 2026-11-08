@@ -181,7 +181,12 @@ The publishable Maester module is produced by a build script that consolidates t
 - Use the One True Brace Style (OTBS): the opening brace goes on the same line as the statement.
 - Use Pascal Case for all variable and parameter names.
 - Use 4-space indentation. No tabs.
-- Save all `.ps1` and `.psm1` files as UTF-8 with BOM (`utf8BOM`).
+- Save all `.ps1`, `.psm1` and `.psd1` files as UTF-8 with BOM (`utf8BOM`). Maester runs only on PowerShell 7, which reads
+  UTF-8 either way, so this is a consistency rule: one encoding for every PowerShell file, whichever editor or tool
+  wrote it. The repository's `.editorconfig` and `.vscode/settings.json` set it, and
+  `powershell/tests/general/FileEncoding.Tests.ps1` checks every tracked file. A script or generator that writes a
+  PowerShell file must write the BOM too (`-Encoding utf8BOM`, or `[System.Text.UTF8Encoding]::new($true)`).
+  Markdown (including each test's `Test.<ID>.md` guide) and JSON files have no BOM; the same test checks Markdown.
 - Use approved PowerShell verbs only. Run `Get-Verb` for the authoritative list.
 - Avoid trailing whitespace. End every file with one blank line (a single trailing newline).
 - Place comment-based help inside the function body (immediately after the opening brace), not above the `function` keyword.
@@ -313,13 +318,13 @@ When generating the EIDSCA commands and tests, manual verification should be per
 
 ## Common Pester test failures and how to fix
 
-### PSUseBOMForUnicodeEncodedFile
+### PSUseBOMForUnicodeEncodedFile, or a file without a BOM
 
 The quick fix for this is to run this script. Make sure you give the right path to the affected file.
 
 ```powershell
 $affectedFilePath = '/path/to/maester/powershell/public/run/Invoke-Maester.ps1'
-$content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
+$content = Get-Content $affectedFilePath -Raw; Set-Content $affectedFilePath -Value $content -NoNewline -Encoding utf8BOM
 ```
 
 ## Contributing to Maester docs and blog posts
@@ -371,8 +376,11 @@ Guides are Markdown files in `./website/docs`. A file's path is its URL: `docs/m
   [Starlight's components](https://starlight.astro.build/components/using-components/).
 - The pages under `Commands` are generated from each command's comment-based help: edit the `.ps1` file, not the page.
 - The test pages are built from each test's `[MaesterTest]` attribute and `Test.<ID>.md`: edit those, not the
-  website. `npm run export-catalog` refreshes `website/src/data/test-catalog.json` from your local tests (it needs
-  PowerShell 7 and the `Microsoft.Graph.Authentication` module).
+  website.
+- The first `npm start` or `npm run build` generates the test catalog and the command pages from your local
+  source, which needs PowerShell 7 and the `Microsoft.Graph.Authentication` module. After changing a test or a
+  command's help, run `npm run refresh-data` to see the change. These files aren't committed: maester.dev is built
+  from the source each time a change is merged.
 
 #### Stable and preview
 

@@ -1,4 +1,4 @@
-﻿An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
+An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Publishing an SPF policy for each agency domain mitigates forged `FROM` fields by providing a means for recipients to detect emails spoofed in this way. SPF is required for FCEB departments and agencies by Binding Operational Directive (BOD) 18-01, "Enhance Email and Web Security".
 

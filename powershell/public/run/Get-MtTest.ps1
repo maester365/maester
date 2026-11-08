@@ -1,4 +1,4 @@
-function Get-MtTest {
+﻿function Get-MtTest {
     <#
     .SYNOPSIS
     Lists Maester native tests and their metadata without connecting to a tenant.

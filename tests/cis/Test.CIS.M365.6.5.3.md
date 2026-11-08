@@ -1,4 +1,4 @@
-﻿6.5.3 (L2) Ensure additional storage providers are restricted in Outlook on the web
+6.5.3 (L2) Ensure additional storage providers are restricted in Outlook on the web
 
 This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services.
 

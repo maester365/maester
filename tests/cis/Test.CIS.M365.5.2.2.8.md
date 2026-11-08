@@ -1,10 +1,10 @@
-﻿An enabled Conditional Access policy blocks access when the sign-in risk is medium or high.
+An enabled Conditional Access policy blocks access when the sign-in risk is medium or high.
 
 Asking a risky sign-in for MFA still leaves the account open to an attacker who can complete the prompt, for example by relaying it. Blocking sign-ins that Microsoft Entra ID Protection rates medium or high stops them before a session exists, and users with a genuine need are sent to the helpdesk.
 
 The policy needs Microsoft Entra ID P2 licences. Expect some false positives, so involve the helpdesk before enabling it.
 
-User and group exclusions are not evaluated by this test. Application exclusions are also not evaluated when the policy targets all apps; verify exclusions are documented and reviewed annually. A condition that narrows the policy is reported unless the check is about that condition.
+User and group exclusions are not evaluated by this test. The CIS procedure calls for break-glass accounts to be excluded and any exclusions to be documented and reviewed annually. Application exclusions are evaluated and must be empty for the test to pass. A condition that narrows the policy is reported unless the check is about that condition.
 
 #### Remediation action
 

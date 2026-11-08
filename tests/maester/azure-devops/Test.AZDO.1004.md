@@ -1,4 +1,4 @@
-﻿Externally sourced package versions **should be** manually approved for internal use to prevent malicious packages from a public registry being inadvertently consumed.
+Externally sourced package versions **should be** manually approved for internal use to prevent malicious packages from a public registry being inadvertently consumed.
 
 Rationale: Previously, Azure Artifacts feeds presented package versions from all of its upstream sources. This includes package versions that were originally pushed to an Azure Artifacts feed (internally sourced) and package versions from common public repositories like npmjs.com, NuGet.org, Maven Central, and PyPI (externally sourced).
 

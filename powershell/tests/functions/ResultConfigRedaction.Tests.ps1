@@ -1,5 +1,14 @@
 ﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+
+    # Reads the results Get-MtHtmlReport embeds: gzip-compressed, Base64-encoded JSON in the data element.
+    function Get-ReportDataText([string] $Html) {
+        $match = [regex]::Match($Html, '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip\+base64">([A-Za-z0-9+/=]*)</script>')
+        if (-not $match.Success) { throw 'The report has no compressed maester-report-data element.' }
+        $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($match.Groups[1].Value))
+        $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+        try { $reader.ReadToEnd() } finally { $reader.Dispose() }
+    }
 }
 
 Describe 'Sensitive settings in result configuration' {
@@ -63,6 +72,7 @@ Describe 'Sensitive settings in result configuration' {
         $row[0].ReasonCode | Should -Be 'ServiceNotConnected'
         foreach ($path in $jsonPath, $htmlPath) {
             $content = Get-Content $path -Raw
+            if ($path -eq $htmlPath) { $content = Get-ReportDataText $content }
             $content | Should -Not -Match 'fixture-private|123456789|234567891|345678912|456789123'
             $content | Should -Match 'FixtureSensitive'
             $content | Should -Match 'redacted'
@@ -78,7 +88,7 @@ Describe 'Sensitive settings in result configuration' {
         }
         $result.TotalCount | Should -Be 0
         $json = $result | ConvertTo-Json -Depth 30
-        $html = Get-MtHtmlReport -MaesterResults $result
+        $html = Get-ReportDataText (Get-MtHtmlReport -MaesterResults $result)
         foreach ($content in $json, $html) {
             $content | Should -Not -Match 'fixture-private|123456789|234567891|345678912|456789123'
             $content | Should -Match 'FixtureSensitive'

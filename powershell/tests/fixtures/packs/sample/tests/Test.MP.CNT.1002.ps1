@@ -1,4 +1,4 @@
-function Test-CntSampleAlwaysTrue {
+﻿function Test-CntSampleAlwaysTrue {
     <#
     .SYNOPSIS
     A pack test that needs no connection.

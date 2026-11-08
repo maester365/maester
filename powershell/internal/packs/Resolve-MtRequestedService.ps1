@@ -1,4 +1,4 @@
-function Resolve-MtRequestedService {
+﻿function Resolve-MtRequestedService {
     <#
     .SYNOPSIS
     Checks the -Service values of Connect-Maester and Test-MtConnection: Maester's own names, or the service of an installed pack's connector.
@@ -33,22 +33,4 @@ function Resolve-MtRequestedService {
         throw "'$name' is not a service Maester knows. Use one of: $(@($BuiltIn) + $packNames -join ', '). A service of a Maester Pack is available once the pack is installed (Get-MtConnector lists them)."
     }
     [pscustomobject]@{ BuiltIn = [string[]]$own.ToArray(); Pack = [string[]]$pack.ToArray() }
-}
-
-function Get-MtServiceCompletion {
-    <#
-    .SYNOPSIS
-    Tab completion for -Service: Maester's own names, then the services of the packs this session has read.
-    #>
-    [CmdletBinding()]
-    [OutputType([System.Management.Automation.CompletionResult])]
-    param(
-        [Parameter(Mandatory)] [string[]] $BuiltIn,
-        [Parameter()] [AllowEmptyString()] [string] $WordToComplete = ''
-    )
-    $registry = (Get-MtServiceRegistry).Services
-    $names = @($BuiltIn) + @($registry.Keys | Where-Object { $registry[$_].ContainsKey('Pack') } | Sort-Object)
-    foreach ($n in ($names | Where-Object { $_ -like "$WordToComplete*" })) {
-        [System.Management.Automation.CompletionResult]::new($n, $n, 'ParameterValue', $n)
-    }
 }

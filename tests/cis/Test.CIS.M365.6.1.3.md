@@ -1,4 +1,4 @@
-﻿No account is configured to bypass mailbox audit logging.
+No account is configured to bypass mailbox audit logging.
 
 Audit bypass is meant for service accounts that generate a lot of noise, such as a monitoring or journaling account. Anything such an account does in any mailbox is not logged. An attacker or a malicious administrator with an account on the bypass list can read and change mail with no record in the audit log.
 

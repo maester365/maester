@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Code freeze for Maester 3.0:** from 7 November 2026 we will only merge bug fixes while we get ready to release Maester 3.0 next week. New features and new tests opened after that will be reviewed after the release.
+
 <!-- 
 Thank you; we really appreciate your contributions! 🤗 We will try to review your pull request as soon as possible. Please make sure that the pull request is limited to one type of change (docs, feature, fix, etc.) and keep it as focused as possible. You can always create multiple focused PRs instead of opening a huge one.
 -->

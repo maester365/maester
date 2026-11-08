@@ -1,4 +1,4 @@
-﻿Checks if at least one policy is targeting the Device Code condition.
+Checks if at least one policy is targeting the Device Code condition.
 
 Organizations should block or limit device code flow because it can be exploited in phishing attacks, such as those conducted by the Storm-2372 group.
 Attackers leverage this authentication method to trick users into entering device codes on malicious websites, granting unauthorized access to accounts.

@@ -5,6 +5,7 @@ import '../styles/theme.css';
 import '../styles/site.css';
 import Analytics from '../components/Analytics.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import { CARD_HEIGHT, CARD_WIDTH, cardPath, cardUrl, defaultCard } from '../lib/og.mjs';
 
 interface Props {
 	title: string;
@@ -16,7 +17,7 @@ interface Props {
 	/** Keep the page out of search engines (lists that only repeat other pages' titles). */
 	noindex?: boolean;
 }
-const { title, description, image = '/img/maester-social-card.jpg', wide = false, jsonLd, noindex = false } = Astro.props;
+const { title, description, image, wide = false, jsonLd, noindex = false } = Astro.props;
 // Astro.url ends in .html at build time (build.format 'file'); the site serves pages without it.
 const pagePath = Astro.url.pathname.replace(/(index)?\.html$/, '').replace(/\/$/, '') || '/';
 const canonical = pagePath === '/' ? 'https://maester.dev/' : new URL(pagePath, Astro.site).href;
@@ -30,6 +31,11 @@ const nav = [
 	{ label: 'Maester Cloud ↗', href: 'https://maester.cloud' },
 ];
 const path = pagePath;
+// A page's own image when it passes one; otherwise its card (scripts/og-images.mjs renders it after the build). The
+// home page's card is the site's own; the pages kept out of search share it.
+const section = pagePath.startsWith('/blog') ? 'Blog' : pagePath.startsWith('/contributors') ? 'Contributors' : pagePath === '/sponsor' ? 'Sponsor' : undefined;
+const card = pagePath === '/' ? { ...defaultCard, path: 'index' } : noindex ? defaultCard : { path: cardPath(pagePath), label: section, title, description };
+const ogImage = image ? new URL(image, Astro.site).href : cardUrl(card);
 ---
 
 <!doctype html>
@@ -41,15 +47,24 @@ const path = pagePath;
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonical} />
 		{noindex && <meta name="robots" content="noindex" />}
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/site.webmanifest" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:type" content="website" />
-		<meta property="og:image" content={new URL(image, Astro.site).href} />
+		<meta property="og:image" content={ogImage} />
+		{!image && <meta property="og:image:width" content={String(CARD_WIDTH)} />}
+		{!image && <meta property="og:image:height" content={String(CARD_HEIGHT)} />}
+		<meta property="og:image:alt" content={title} />
 		<meta name="twitter:card" content="summary_large_image" />
-		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+		<meta name="twitter:image" content={ogImage} />
+		{!noindex && <meta name="robots" content="max-image-preview:large" />}
+		{!image && !noindex && <meta name="maester:og" content={JSON.stringify(card)} />}
+		{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 		<script is:inline>
 			// The same theme setting as the docs (Starlight keeps it in localStorage as starlight-theme).
 			(function () {

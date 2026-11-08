@@ -15,6 +15,7 @@
   "RequiresMaester": ">=3.0",
   "Code": "ZTA",
   "Suites": ["tests"],
+  "Helpers": ["helpers"],
   "Catalog": "catalog.json",
   "Uses": {
     "Services": ["Graph"],
@@ -34,8 +35,27 @@
     "TenantWrites": [],
     "Network": [],
     "Modules": [
-      { "Name": "ZeroTrustAssessment", "MinimumVersion": "2.6.0", "Install": "User", "Process": "Child" }
+      { "Name": "ZeroTrustAssessment", "MinimumVersion": "3.1.0", "Install": "User", "Process": "Child" }
     ]
   },
-  "Categories": ["Microsoft 365", "Zero Trust", "Identity", "Devices", "Network", "Data"]
+  "Categories": ["Microsoft 365", "Zero Trust", "Identity", "Devices", "Network", "Data"],
+  "Report": {
+    "Logo": "microsoft",
+    "Navigation": [
+      { "Title": "Overview", "View": "pack" },
+      { "Section": "Zero Trust plan", "Id": "plan", "View": "plan", "Attachment": "zero-trust-workshop", "Expand": ["pillars", "areas", "lanes"] },
+      { "Section": "Assessment results", "Items": [
+        { "Title": "All results", "Id": "results", "View": "tests" },
+        { "Title": "Not met", "Id": "not-met", "View": "tests", "Result": "Failed" },
+        { "Title": "By pillar", "Id": "by-pillar", "View": "tests", "GroupBy": ["Pillar", "Category"] },
+        { "Title": "Assessment report", "View": "attachment", "Attachment": "Zero Trust Assessment" }
+      ] },
+      { "Section": "Set up", "Items": [
+        { "Title": "Get started", "Id": "start", "View": "guide", "Page": "start" },
+        { "Title": "Connect", "Id": "connect", "View": "guide", "Page": "connect" },
+        { "Title": "Run", "Id": "run", "View": "guide", "Page": "run" }
+      ] },
+      { "Title": "About this pack", "Id": "about", "View": "about" }
+    ]
+  }
 }

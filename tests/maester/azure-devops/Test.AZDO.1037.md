@@ -1,4 +1,4 @@
-﻿Personal Access Token creation **should be** restricted at the organization level.
+Personal Access Token creation **should be** restricted at the organization level.
 
 Rationale: Restricting PAT creation reduces the risk of long-lived credentials being used to access your Azure DevOps organization. Existing personal access tokens remain valid until expiration when the policy is enabled.
 

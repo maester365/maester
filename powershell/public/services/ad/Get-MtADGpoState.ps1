@@ -1,4 +1,4 @@
-function Get-MtADGpoState {
+﻿function Get-MtADGpoState {
     <#
     .SYNOPSIS
     Collects Active Directory Group Policy state information.

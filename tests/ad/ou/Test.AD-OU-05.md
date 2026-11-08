@@ -1,4 +1,4 @@
-﻿Understanding which specific Organizational Units are empty is essential for directory maintenance and cleanup efforts. This detailed view helps administrators:
+Understanding which specific Organizational Units are empty is essential for directory maintenance and cleanup efforts. This detailed view helps administrators:
 
 - **Plan cleanup activities**: Identify specific OUs that can be evaluated for deletion
 - **Assess creation dates**: Determine if empty OUs are recent (possibly in use) or old (likely abandoned)

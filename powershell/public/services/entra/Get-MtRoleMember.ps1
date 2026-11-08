@@ -1,4 +1,4 @@
-function Get-MtRoleMember {
+﻿function Get-MtRoleMember {
     <#
     .Synopsis
     Returns all the members of a role.
@@ -41,21 +41,10 @@ function Get-MtRoleMember {
     https://maester.dev/docs/commands/Get-MtRoleMember
     #>
 
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'ArgumentCompleter requires the full script block signature, even when only wordToComplete is used.')]
     [CmdletBinding(DefaultParameterSetName = 'RoleName')]
     param(
         # The name of the role to get members for.
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
-        [ArgumentCompleter({
-                param($commandName, $parameterName, $wordToComplete)
-                Initialize-MtRoleDefinition
-                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
-                $roleNames |
-                Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
-                Sort-Object | ForEach-Object {
-                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                }
-            })]
         [ValidateScript({
                 Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)

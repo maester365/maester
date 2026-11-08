@@ -1,4 +1,4 @@
-﻿Detailed SRV record information is critical for:
+Detailed SRV record information is critical for:
 
 - **Troubleshooting**: Understanding which servers provide which services
 - **Security auditing**: Verifying only authorized servers are advertised

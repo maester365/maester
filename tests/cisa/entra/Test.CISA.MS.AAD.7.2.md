@@ -1,4 +1,4 @@
-﻿Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
+Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
 Rationale: Many privileged administrative users do not need unfettered access to the tenant to perform their duties. By assigning them to roles based on least privilege, the risks associated with having their accounts compromised are reduced.
 

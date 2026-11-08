@@ -1,4 +1,4 @@
-﻿Ensure a Microsoft Purview retention policy is configured for the **Microsoft Copilot** location to govern how Microsoft 365 Copilot prompts and AI-generated responses are retained or deleted.
+Ensure a Microsoft Purview retention policy is configured for the **Microsoft Copilot** location to govern how Microsoft 365 Copilot prompts and AI-generated responses are retained or deleted.
 
 Copilot interactions (the user prompt + the AI response) are stored in the user's Exchange mailbox in a hidden folder and are subject to Purview retention. Without a retention policy targeting the Microsoft Copilot location:
 

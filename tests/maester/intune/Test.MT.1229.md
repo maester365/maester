@@ -1,4 +1,4 @@
-﻿Ensure at least one **assigned** iOS compliance policy requires a strong device passcode.
+Ensure at least one **assigned** iOS compliance policy requires a strong device passcode.
 
 The passcode is what stands between someone holding the device and everything on it. On a managed iPhone that is corporate mail, Teams conversations, and the Microsoft Authenticator app, which is the second factor for the signed-in user. A phone with no passcode, or with a four digit simple passcode, hands all of that to whoever picks it up, and a stolen phone is the most ordinary way a mobile device is lost to someone else.
 

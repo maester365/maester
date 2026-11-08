@@ -1,4 +1,4 @@
-Describe 'Active Directory DACL tests read AccessControlType as the collector emits it' {
+﻿Describe 'Active Directory DACL tests read AccessControlType as the collector emits it' {
     BeforeAll {
         Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"

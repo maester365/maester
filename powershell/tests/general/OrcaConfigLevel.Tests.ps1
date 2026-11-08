@@ -1,4 +1,4 @@
-# ORCA226/227 (and the other multi-policy checks) call SetResult with
+﻿# ORCA226/227 (and the other multi-policy checks) call SetResult with
 # [ORCAConfigLevel]::Informational. Without that enum member the argument is null
 # and the check crashes. https://github.com/maester365/maester/issues/2101
 BeforeAll {

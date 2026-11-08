@@ -1,4 +1,4 @@
-function Update-MtPackConfig {
+﻿function Update-MtPackConfig {
     <#
     .SYNOPSIS
     Adds, changes or removes a pack's entry in the Packs section of a maester-config.json (Maester Packs design, section 5.2).

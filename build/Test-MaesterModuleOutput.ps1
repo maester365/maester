@@ -142,6 +142,14 @@ if (-not (& $ImportedModule { Get-Command Invoke-MtEngineRun -ErrorAction Silent
 }
 Write-Host '   Verified: engine DLL loaded (attribute types and scheduler)'
 
+# Tab completion is registered by the consolidated Maester.psm1 and reads Maester.TestCatalog.json directly. Checked
+# before anything loads the catalog, so the first completion takes that path.
+foreach ($check in @(@{ Line = 'Invoke-Maester -Product exo'; Expected = 'exchange' }, @{ Line = 'Invoke-Maester -TestId MT.100'; Expected = 'MT.1005' })) {
+    $completions = @((TabExpansion2 -inputScript $check.Line -cursorColumn $check.Line.Length).CompletionMatches | ForEach-Object CompletionText)
+    if ($completions -notcontains $check.Expected) { throw "Tab completion of '$($check.Line)' did not offer $($check.Expected): $($completions -join ', ')" }
+}
+Write-Host '   Verified: tab completion of product keys and test IDs'
+
 # The shipped catalog reads back with the same gates as the source: an empty list must stay empty, or every
 # test would look platform-, tenant- or cloud-restricted.
 $catalogRows = @(& $ImportedModule { Get-MtTestCatalog })

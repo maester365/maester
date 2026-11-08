@@ -1,4 +1,4 @@
-﻿Empty groups that are not privileged (no adminCount) represent directory clutter that should be addressed:
+Empty groups that are not privileged (no adminCount) represent directory clutter that should be addressed:
 
 - **Directory hygiene**: Unused groups create noise and confusion in access management
 - **Audit complexity**: Empty groups increase the surface area for security audits

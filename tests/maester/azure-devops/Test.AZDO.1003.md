@@ -1,4 +1,4 @@
-﻿Public projects **should be** disabled.
+Public projects **should be** disabled.
 
 Rationale: When you choose public visibility, anyone on the internet can view your project. With private visibility, only users you give access to can view your project.
 
