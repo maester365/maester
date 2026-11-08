@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6W9V1RS3NT2MEAF1ZSNXYC5",
   "strategy": "manual-commit",
   "branch": "feat/report-compressed-data",
-  "checkpoints_count": 4,
+  "checkpoints_count": 9,
   "files_touched": [
     "powershell/assets/ReportTemplate.html",
     "powershell/public/report/Get-MtHtmlReport.ps1",
@@ -20,25 +20,32 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 162,
-    "cache_creation_tokens": 168697,
-    "cache_read_tokens": 13673266,
-    "output_tokens": 45020,
-    "api_call_count": 77
+    "input_tokens": 274,
+    "cache_creation_tokens": 580998,
+    "cache_read_tokens": 34378533,
+    "output_tokens": 70419,
+    "api_call_count": 127
   },
   "redaction": {
-    "replacements": 541,
+    "replacements": 1071,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 603,
-      "key_context": 4,
+      "entropy": 1129,
+      "key_context": 8,
       "provider_token": 0,
       "shell_stdin": 0
     }
