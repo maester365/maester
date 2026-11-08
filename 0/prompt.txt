@@ -1,0 +1,27 @@
+Background (from the session that started this one):
+Maester 3.0 supports Maester Packs. Two CISA packs live in their own repositories: maester365/maester-pack-scubagear (code SCUBA.M365, rows `MP.SCUBA.M365.MS.AAD.3.1` and so on, one per ScubaGear policy) and maester365/maester-pack-scubagoggles (code SCUBA.GWS, Google Workspace). Both are family tests whose instance source reads a ScubaResults file. Maester's built-in CISA suite (`tests/cisa`, framework file `tests/cisa/frameworks/cisa-scuba.json`) already maps its tests to `cisa-scuba` requirements through the `Control` attribute. The goal is that ScubaGear pack rows can name the same requirements, so the framework view shows CISA's own result next to Maester's for each policy. ScubaGoggles has no framework file yet, so this mainly serves ScubaGear for now.
+
+Task:
+Let a family test's instances set their own `Control` (a framework requirement such as `cisa-scuba:MS.AAD.3.1`), so pack rows map to frameworks the way built-in tests do.
+
+Today `Control` is resolved only during discovery: `Get-MtNativeTestInventory` (`powershell/internal/engine/Get-MtNativeTestInventory.ps1`, around line 160) calls `Resolve-MtTestBenchmark` (`powershell/internal/engine/Get-MtSuiteFramework.ps1`) to build `Benchmark` and add the requirement's `Related` references. Instances only exist at run time (`Expand-MtTestFamily` in `powershell/internal/engine/Invoke-MtNativePlan.ps1`). `Get-MtInstanceAttribute` (same file, around line 590) lets an instance set Product, RelatedProduct, Feature, Area, UserImpact, ImplementationCost and Mitre, but not Control.
+
+Steps:
+1. Accept `Control` on an instance (a string or a list of `<framework-key>:<id>` values). Resolve it when the family expands, with `Resolve-MtTestBenchmark` against the loaded frameworks (`Get-MtLoadedFramework` / `Get-MtFrameworkIndex`). The row gets its own `Benchmark`, and its `Control` gets the `Related` references. An unknown reference keeps the family's values, the same way the other instance attributes fall back.
+2. Check how the HTML report and the framework/benchmark views group rows by requirement. When a pack row and a built-in test name the same requirement, show both under it; don't pick one.
+3. Update the family docs (`website/docs/writing-tests/` and the pack docs in `website/docs/packs/writing-a-pack.md`) to list `Control` among the attributes an instance may set.
+4. Add unit tests next to the existing instance-attribute tests, then run `./powershell/tests/pester.ps1`. New `.ps1` files must be UTF-8 with a byte order mark (`FileEncoding.Tests.ps1`).
+
+Done means a PR-ready branch with the change, its tests and the docs. Don't push or open a PR without asking.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_628c8cab-288a-4400-b08f-8aaa55c26aba
+
+---
+
+<task-notification>
+<task-id>b0ozyb6ln</task-id>
+<tool-use-id>toolu_018dd7D2cvVToVP2BrEeQGHz</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-upbeat-noyce-5d587a/f5b1f9dd-1ad4-41b7-a0ab-8c2677af0d69/tasks/b0ozyb6ln.output</output-file>
+<status>completed</status>
+<summary>Background command "cd /Users/merill/github/maester/.claude/worktrees/upbeat-noyce-5d587a; pwsh -NoProfile -File ./powershell/tests/pester.ps1 -ThrottleLimit 4 &gt; /private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-upbeat-noyce-5d587a/f5b1f9dd-1ad4-41b7-a0ab-8c2677af0d69/scratchpad/pester.log 2&gt;&amp;1; echo exit=$?" completed (exit code 0)</summary>
+</task-notification>
