@@ -34,7 +34,7 @@
     https://maester.dev/docs/commands/Test-MtIntuneDeviceComplianceStatus
     #>
     [MaesterTest(
-        Id = 'MT.1253',
+        Id = 'MT.1267',
         Title = 'Non-compliant Intune managed devices should be below the configured threshold.',
         Product = 'intune',
         Feature = 'device-compliance',

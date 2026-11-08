@@ -62,7 +62,7 @@
         }
     }
 
-    Context 'Test-MtIntuneDeviceComplianceStatus (MT.1253)' {
+    Context 'Test-MtIntuneDeviceComplianceStatus (MT.1267)' {
         It 'passes when the non-compliant share is at or below the threshold' {
             Mock -ModuleName Maester Get-MtManagedDeviceCompliance {
                 return @((Get-TestDeviceSet -ComplianceState 'compliant' -Count 19) + (Get-TestDevice -ComplianceState 'noncompliant'))
@@ -190,7 +190,7 @@
         }
     }
 
-    Context 'Test-MtIntuneSecurityBaselineStatus (MT.1254)' {
+    Context 'Test-MtIntuneSecurityBaselineStatus (MT.1268)' {
         It 'passes when every evaluated device is secure' {
             $instance = [pscustomobject]@{ Data = (Get-TestBaseline -Secure 25) }
 
@@ -220,7 +220,7 @@
         }
     }
 
-    Context 'Get-MtIntuneSecurityBaselineInstance (MT.1254 instance source)' {
+    Context 'Get-MtIntuneSecurityBaselineInstance (MT.1268 instance source)' {
         It 'emits one instance per deployed baseline and leaves undeployed ones out' {
             Mock -ModuleName Maester Get-MtSecurityBaseline {
                 return @(
@@ -261,7 +261,7 @@
         }
 
         It 'does not disguise a non-permission baseline failure as a skip' {
-            # Same reasoning as the MT.1253 guard above: anything that is not 401/403 is rethrown,
+            # Same reasoning as the MT.1267 guard above: anything that is not 401/403 is rethrown,
             # so a defect in the retrieval surfaces as an error instead of a silent skip.
             Mock -ModuleName Maester Get-MtSecurityBaseline { throw 'unexpected failure' }
 

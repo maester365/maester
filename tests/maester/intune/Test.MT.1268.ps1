@@ -1,11 +1,11 @@
 ﻿function Get-MtIntuneSecurityBaselineInstance {
     <#
     .SYNOPSIS
-    Returns one MT.1254 instance per assigned Intune security baseline.
+    Returns one MT.1268 instance per assigned Intune security baseline.
 
     .DESCRIPTION
-    Instance source of the MT.1254 family. The suffix is the security baseline's template ID
-    (MT.1254.<templateId>) and the title names the baseline. Only baselines that are actually deployed to
+    Instance source of the MT.1268 family. The suffix is the security baseline's template ID
+    (MT.1268.<templateId>) and the title names the baseline. Only baselines that are actually deployed to
     devices are emitted: a baseline template with no reporting device is not an assigned baseline and must
     not surface as a passing result.
 
@@ -23,7 +23,7 @@
     # and it lets a terminating error through, which did not reach that check and surfaced as
     # InstanceSourceFailed instead of the skip this function documents. Anything that is not a
     # permission problem is still left to surface, so a real defect is never reported as a skip.
-    # Same shape as MT.1253 in this pull request.
+    # Same shape as MT.1267 in this pull request.
     try {
         $baselines = Get-MtSecurityBaseline
     } catch {
@@ -79,7 +79,7 @@ function Test-MtIntuneSecurityBaselineStatus {
     https://maester.dev/docs/commands/Test-MtIntuneSecurityBaselineStatus
     #>
     [MaesterTest(
-        Id = 'MT.1254',
+        Id = 'MT.1268',
         Title = 'Devices assigned a security baseline should comply with it.',
         Product = 'intune',
         Feature = 'endpoint-security',
