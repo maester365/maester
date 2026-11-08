@@ -72,6 +72,6 @@
         $name = ([string]$feature.Name).Replace('|', '&#124;')
         $result += "| $name | $($feature.IsEnabled) | $scopeText |`n"
     }
-    Add-MtTestResultDetail -Result "Optional features and their enabled scopes are listed for review. AD-FOR-04 separately checks whether Recycle Bin is enabled.`n`n$result" -Investigate
+    Add-MtTestResultDetail -Result "Optional features and their enabled scopes are listed for review. Coverage crosswalk: former AD-CFG-04 and AD-FEAT-02 are included here under the single directory-configuration Feature. AD-FOR-04 separately checks whether Recycle Bin is enabled and links this inventory.`n`n$result" -Investigate
     return $true
 }

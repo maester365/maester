@@ -111,14 +111,14 @@
     Write-Verbose "Counts computed"
 
     if ($staleCount -eq 0) {
-        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd'))."
+        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd')). Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related device inventory."
         $testResultMarkdown = "$analysisSummary`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
         return $true
     } else {
-        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed. Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related inventory.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
