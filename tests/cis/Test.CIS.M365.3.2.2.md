@@ -12,7 +12,7 @@ The test requires the Teams workload with **TeamsLocation** including **All**, w
 2. Go to **Solutions** > **Data loss prevention** > [**Policies**](https://purview.microsoft.com/datalossprevention/policies) and edit **Default policy for Teams**. If it is absent, edit another suitable policy or create a new one.
 3. For the policy's administrative-unit scope, select **Full directory**. If the existing policy's scope cannot be changed, have an unrestricted DLP administrator create a new policy with **Full directory** selected. **All accounts** within an administrative unit does not cover the full directory.
 4. Under **Locations**, turn on **Teams chat and channel messages** and apply it to **All accounts**. Review any excluded accounts or groups and retain only exceptions permitted by the organization.
-5. On **Customized advanced DLP rules**, turn on **Default Teams DLP policy rule** or an organization-specific rule that protects the required data, such as credit card numbers and personally identifiable information.
+5. On **Customized advanced DLP rules**, if no suitable rule exists, select **Create rule**, configure conditions for the required data and appropriate actions, and save the rule. Turn on **Default Teams DLP policy rule** or an organization-specific rule that protects the required data, such as credit card numbers and personally identifiable information.
 6. Set the policy mode to **Turn it on right away**, review the settings, and submit the policy. Verify that its mode is **On** in the portal (**Enable** in PowerShell).
 
 #### Related links
