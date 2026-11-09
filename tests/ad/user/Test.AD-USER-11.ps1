@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserAdminCountCount {
     <# .SYNOPSIS
     Inventories users with AdminCount set for privilege review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-11
+    Review AdminCount users for privilege manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-11
     #>
     [MaesterTest(
         Id = 'AD-USER-11',

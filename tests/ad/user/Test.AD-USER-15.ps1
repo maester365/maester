@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserManagerSetCount {
     <# .SYNOPSIS
     Checks for enabled ordinary users missing a manager for access review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-15
+    Assess enabled ordinary users for missing manager assignments.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-15
     #>
     [MaesterTest(
         Id = 'AD-USER-15',

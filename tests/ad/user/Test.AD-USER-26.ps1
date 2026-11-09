@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserHoneyPotCount {
     <# .SYNOPSIS
     Inventories explicitly configured decoy account IDs for review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-26
+    Review configured decoy account IDs manually; absent configuration may be skipped.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-26
     #>
     [MaesterTest(
         Id = 'AD-USER-26',

@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserKnownServiceAccountCount {
     <# .SYNOPSIS
     Inventories user names matching configurable service account naming patterns.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-20
+    Review names matching service-account patterns manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-20
     #>
     [MaesterTest(
         Id = 'AD-USER-20',

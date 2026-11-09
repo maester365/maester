@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserInContainerCount {
     <# .SYNOPSIS
     Finds ordinary users beneath CN containers instead of OUs.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-19
+    Assess whether ordinary users are managed in OUs rather than CN containers.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-19
     #>
     [MaesterTest(
         Id = 'AD-USER-19',

@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserSidHistoryCount {
     <# .SYNOPSIS
     Checks whether any users retain unapproved migrated SID history.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-13
+    Assess user accounts for unapproved migrated SID history.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-13
     #>
     [MaesterTest(
         Id = 'AD-USER-13',

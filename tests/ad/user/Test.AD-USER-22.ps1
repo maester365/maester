@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserBuiltInAdminCount {
     <# .SYNOPSIS
     Checks that the domain RID-500 administrator is present and not stale.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-22
+    Assess the RID-500 administrator for stale access or credentials.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-22
     #>
     [MaesterTest(
         Id = 'AD-USER-22',

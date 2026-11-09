@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserNonStandardPrimaryGroupCount {
     <# .SYNOPSIS
     Checks for ordinary users with unapproved primary group IDs.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-12
+    Assess ordinary users for unapproved primary group IDs.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-12
     #>
     [MaesterTest(
         Id = 'AD-USER-12',

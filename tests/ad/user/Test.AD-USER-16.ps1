@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserHomeDirectoryCount {
     <# .SYNOPSIS
     Checks user home, profile and logon-script paths against approved roots.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-16
+    Assess user home, profile and script paths against approved roots.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-16
     #>
     [MaesterTest(
         Id = 'AD-USER-16',
