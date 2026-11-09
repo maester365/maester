@@ -269,6 +269,8 @@ The Azure DevOps security tests (AZDO.*) use the community [`ADOPS`](https://www
 
 `Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'` requests an Azure DevOps token from an existing Az context and passes it to `Connect-ADOPS -OAuthToken`. Without an Az context, it uses interactive `Connect-ADOPS`. With `-Service Azure,AzureDevOps`, one call connects Azure and then reuses that sign-in for Azure DevOps.
 
+If token acquisition fails, the connection fails without falling back to interactive sign-in. Refresh or select the intended Azure context, or use `Connect-ADOPS -Organization 'contoso'` directly for interactive sign-in.
+
 #### Reuse an Azure sign-in
 
 If you already have an authenticated Azure context, you can also request the Azure DevOps token and pass it to `Connect-ADOPS` directly. The resource must be Azure DevOps, not the default Azure Resource Manager resource.
