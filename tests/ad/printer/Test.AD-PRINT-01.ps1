@@ -4,6 +4,11 @@
     Published printer inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory published printer inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-PRINT-01
+    Review published printers manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-PRINT-01
     #>
     [MaesterTest(
         Id = 'AD-PRINT-01',
