@@ -13,7 +13,7 @@ The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly 
 3. In the **Resource review** box (labelled **Review access to a resource type** in newer portal versions), select **Select**.
 4. On **Review Type**, set **Select what to review** to **Teams + Groups**, **Review Scope** to **All Microsoft 365 groups with guest users** and **Scope** to **Guest users only**, then select **Next: Reviews**.
 5. On **Reviews**, set:
-   - **Select reviewers** to **Group members** or **Selected users and groups** (the portal may list **Group owner(s)** instead of **Group members**). Assign at least one reviewer and make sure guests do not review themselves.
+   - **Select reviewers** to **Group members** or **Selected users and groups** (the portal may list **Group owner(s)** instead of **Group members**). Assign at least one reviewer and make sure guests do not review themselves. If you choose **Group owner(s)**, also assign fallback reviewers, because a group without an owner has no reviewer and, with the removal setting below, its guests could lose access without being reviewed.
    - **Duration (in days)** to **14** or less.
    - **Review recurrence** to **Monthly** or more frequent.
    - **Start date** so the review becomes active before the next audit date.
@@ -21,7 +21,9 @@ The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly 
 6. On **Settings**, turn on **Auto apply results to resource**, set **If reviewers don't respond** to **Remove access**, and turn on **Justification required**, **E-mail notifications** and **Reminders**. Select **Next: Review + Create**.
 7. Select **Create**.
 
-To create or update the review with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`.
+**Scope limits:** **All Microsoft 365 groups with guest users** does not include dynamic groups or role-assignable groups, and the review does not cover guests who have access through security groups or applications. Create separate access reviews for those if you need them.
+
+To create or update the review with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`. The `scope` cannot be changed by an update, so create a new review if the existing one targets the wrong scope.
 
 #### Related links
 

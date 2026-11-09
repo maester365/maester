@@ -25,7 +25,7 @@ Each of the six roles needs an active review that covers users and groups, repea
 
 **Warning:** Be careful with **If reviewers don't respond** on Global Administrator reviews. A misconfiguration can remove roles from break-glass accounts. Tell reviewers what break-glass accounts are so they do not remove them by mistake.
 
-To create or update the reviews with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`.
+To create or update the reviews with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`. The `scope` cannot be changed by an update, so create a new review if an existing one targets the wrong role or excludes groups.
 
 #### Related links
 
