@@ -3,7 +3,7 @@
   "checkpoint_id": "01M710786Z860FPYCCHA5A1TKY",
   "strategy": "manual-commit",
   "branch": "fix/mt1098-trellix-id",
-  "checkpoints_count": 2,
+  "checkpoints_count": 8,
   "files_touched": [
     "powershell/tests/functions/Test-MtMobileThreatDefenseConnectors.Tests.ps1",
     "tests/maester/intune/Test.MT.1098.ps1"
@@ -22,25 +22,32 @@
       "compact_transcript": "/1/transcript.jsonl",
       "content_hash": "/1/content_hash.txt",
       "prompt": "/1/prompt.txt"
+    },
+    {
+      "metadata": "/2/metadata.json",
+      "transcript": "/2/full.jsonl",
+      "compact_transcript": "/2/transcript.jsonl",
+      "content_hash": "/2/content_hash.txt",
+      "prompt": "/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 28,
-    "cache_creation_tokens": 60347,
-    "cache_read_tokens": 1583880,
-    "output_tokens": 3498,
-    "api_call_count": 13
+    "input_tokens": 138,
+    "cache_creation_tokens": 195072,
+    "cache_read_tokens": 8432935,
+    "output_tokens": 23110,
+    "api_call_count": 59
   },
   "redaction": {
-    "replacements": 1653,
+    "replacements": 2240,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 6,
       "credentialed_uri": 0,
-      "entropy": 1629,
-      "key_context": 18,
+      "entropy": 2251,
+      "key_context": 25,
       "provider_token": 0,
       "shell_stdin": 0
     }

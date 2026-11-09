@@ -1,0 +1,25 @@
+review
+
+---
+
+cant you use lokka mcp with elapora tenant and get the trellix connector id
+
+---
+
+Yes, add it
+
+---
+
+Done, retry
+
+---
+
+i ran but no output
+
+---
+
+74873197-ffec-4dfc-9816-db65f34c7cb9 notSetUp
+
+---
+
+yes open PR and add a note in the other thread
