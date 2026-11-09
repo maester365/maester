@@ -1,0 +1,23 @@
+can we provide that as a reploy
+
+---
+
+This jeremy's PR right. The whole thread is confusing can you give me the final summary in simple language
+
+---
+
+do the CIS docs provide guidance on checking parked domains
+
+---
+
+lets add parkeddomains as a parameter. I think we should remove the MT lookup for domains because if there are network issues checking these the tests could fail. Does that mean it strips away a lot of code written by jeremy
+
+---
+
+remove this one. Since this is a behaviour change, it’ll go in after the 3.0 freeze.
+
+go ahead and post it and I'll merge it
+
+---
+
+go ahead and push the update to 2673 that we wanted to make
