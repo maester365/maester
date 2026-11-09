@@ -1,0 +1,234 @@
+---
+// Pricing: Maester itself is free wherever it runs; Maester Cloud is the paid option. The Cloud plans and prices live
+// on maester.cloud/pricing, so this page names only the starting price and links there.
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const free = [
+	{
+		label: 'Your desktop',
+		title: 'Run it on your own machine.',
+		body: 'Install the module, connect to your tenant and get the full report in one run. Windows, macOS and Linux.',
+		points: [
+			'Every check and the full HTML report',
+			'CIS, CISA SCuBA, Zero Trust Assessment, ASD Essential Eight and more',
+			'Community packs, and checks you write yourself',
+			'Your data never leaves your machine',
+			'Community support on Discord and GitHub',
+			'Open source under the MIT licence',
+		],
+		cta: { label: 'Install Maester', href: '/docs/installation' },
+	},
+	{
+		label: 'GitHub Actions and automation',
+		title: 'Run it every day in your own pipeline.',
+		body: 'GitHub Actions, Azure DevOps, Azure Automation, Azure Container Apps, GitLab or Bitbucket: Maester runs on a schedule wherever PowerShell does.',
+		points: [
+			'Daily runs on a schedule you set',
+			'Templates, Bicep and Terraform deployments',
+			'Email, Teams and Slack alerts when a check fails',
+			'A report kept with every run',
+			'Many tenants from one layered configuration',
+			'Your schedule, your storage',
+		],
+		cta: { label: 'Set up automation', href: '/docs/monitoring' },
+	},
+];
+---
+
+<SiteLayout
+	title="Pricing"
+	description="Maester is free on your desktop, in GitHub Actions and in your own automation. Maester Cloud runs it securely in Azure with simplified deployment and run history, from $99 a month."
+	wide
+>
+	<header class="head">
+		<p class="eyebrow">Pricing</p>
+		<h1>Maester is free. Wherever you run it.</h1>
+		<p class="sub">
+			Every check, every pack and the full report are free and open source. Run Maester on your desktop, in GitHub Actions or
+			in your own automation. When you want it run for you, there's Maester Cloud.
+		</p>
+	</header>
+
+	<section class="plans" aria-label="Ways to run Maester">
+		{
+			free.map((p) => (
+				<article class="plan">
+					<p class="eyebrow">{p.label}</p>
+					<p class="price">
+						<strong>Free</strong>
+						<span>forever</span>
+					</p>
+					<h2>{p.title}</h2>
+					<p class="body">{p.body}</p>
+					<ul>
+						{p.points.map((point) => <li>{point}</li>)}
+					</ul>
+					<a class="site-btn site-btn--ghost" href={p.cta.href}>
+						{p.cta.label}
+					</a>
+				</article>
+			))
+		}
+		<article class="plan plan--cloud">
+			<p class="eyebrow">Maester Cloud</p>
+			<p class="price">
+				<span>From</span>
+				<strong>$99</strong>
+				<span>/ month</span>
+			</p>
+			<h2>Run it in your own Azure subscription.</h2>
+			<p class="body">The $99 plan deploys Maester Cloud into your own Azure subscription, then does the running for you, with nothing to script or schedule. The Azure resources it uses are billed to your
+				subscription separately. Active Directory checks need a domain controller, so run those with Maester itself.
+			</p>
+			<ul>
+				<li>Runs securely in your Azure subscription</li>
+				<li>Your report data never leaves the Azure region you choose</li>
+				<li>Simplified deployment</li>
+				<li>Run history for every tenant</li>
+				<li>Track each finding through to resolution</li>
+				<li>Drift detection between runs</li>
+				<li>Every tenant in one place</li>
+				<li>Alerts when something changes</li>
+				<li>Formal support</li>
+				<li>Your subscription keeps Maester free</li>
+			</ul>
+			<a class="site-btn site-btn--primary" href="https://maester.cloud/pricing">See Maester Cloud pricing</a>
+		</article>
+	</section>
+
+	<p class="note">
+		Maester Cloud's managed runs use Maester 2.3 for now, so Maester Packs and checks new in 3.0 aren't included yet. Active Directory checks need a domain controller, so run those with Maester itself. <a href="/sponsor">Other ways to support Maester</a>
+	</p>
+	<p class="note note--small">
+		Want to compare other ways to run Maester? The community has built{' '}
+		<a href="/docs/community-projects#open-source">open-source</a> and{' '}
+		<a href="/docs/community-projects#commercial-products-and-services">commercial</a> alternatives to Maester Cloud.{' '}
+		<a href="/docs/community-projects">See the community projects</a>
+	</p>
+</SiteLayout>
+
+<style>
+	.head {
+		text-align: center;
+		max-width: 46rem;
+		margin: clamp(1.5rem, 5vw, 3.5rem) auto clamp(2rem, 5vw, 3.5rem);
+	}
+	.eyebrow {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--mt-ember-strong, #d22c31);
+		margin: 0;
+	}
+	h1 {
+		font-size: clamp(2.3rem, 5.5vw, 3.75rem);
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		line-height: 1.07;
+		text-wrap: balance;
+		margin: 1rem 0 0;
+	}
+	.sub {
+		font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+		line-height: 1.5;
+		color: var(--sl-color-gray-2);
+		margin: 1rem auto 0;
+		text-wrap: pretty;
+	}
+	.plans {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+	.plan {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		border: 1px solid var(--mt-line);
+		border-radius: 20px;
+		background: var(--mt-surface);
+		padding: 1.5rem;
+	}
+	.plan h2 {
+		font-size: 1.2rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		line-height: 1.25;
+		margin: 0;
+	}
+	.price {
+		display: flex;
+		align-items: baseline;
+		gap: 0.35rem;
+		margin: 0.25rem 0 0;
+		color: var(--sl-color-gray-3);
+		font-size: 0.9rem;
+	}
+	.price strong {
+		font-size: 2.25rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+	}
+	.body {
+		color: var(--sl-color-gray-2);
+		font-size: 0.95rem;
+		line-height: 1.5;
+		margin: 0;
+	}
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0.25rem 0 0.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+		font-size: 0.9rem;
+	}
+	li {
+		display: flex;
+		gap: 0.5rem;
+		line-height: 1.4;
+	}
+	li::before {
+		content: '✓';
+		color: var(--mt-pass);
+		font-weight: 600;
+	}
+	.plan .site-btn {
+		margin-top: auto;
+		justify-content: center;
+		text-align: center;
+	}
+	/* Maester Cloud: the dark card, whatever the page's theme. */
+	.plan--cloud {
+		--sl-color-white: #f5f5f7;
+		--sl-color-black: #09090b;
+		--sl-color-gray-2: #a1a1a6;
+		--sl-color-gray-3: #86868b;
+		color: #f5f5f7;
+		border-color: #3d2326;
+		background: radial-gradient(120% 80% at 50% 120%, #4a1418 0%, #161617 65%);
+	}
+	.plan--cloud .eyebrow {
+		color: #ff6b6f;
+	}
+	.note {
+		max-width: 46rem;
+		margin: 2.5rem auto 1rem;
+		text-align: center;
+		color: var(--sl-color-gray-3);
+		font-size: 0.9rem;
+		line-height: 1.6;
+	}
+	.note--small {
+		margin-top: 0;
+		font-size: 0.82rem;
+	}
+	@media (max-width: 52rem) {
+		.plans {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+</style>
