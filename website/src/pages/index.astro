@@ -7,24 +7,17 @@ import InstallCommand from '../components/InstallCommand.astro';
 import PronunciationButton from '../components/PronunciationButton.astro';
 import CatalogGrowth from '../components/CatalogGrowth.astro';
 import explorer from '../data/explorer.json';
-import catalog from '../data/test-catalog.json';
 import contributors from '../data/contributors.json';
 import sponsors from '../data/sponsors.json';
 import media from '../data/media.json';
-import ztaCatalog from '../../../packs/zero-trust-assessment/catalog.json';
+import { builtIn, community, format, tests, zta } from '../lib/check-counts';
 import { compact, getStats } from '../lib/stats.mjs';
 import { previewLabel } from '../lib/versions.mjs';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-const tests = (catalog.Tests as any[]).filter((t) => t.Lifecycle !== 'Deprecated');
-const builtIn = tests.length;
-const zta = (ztaCatalog.Tests as unknown[]).length;
-// Community pack checks on packs.maester.cloud, by the packs' own counts (community-packs.mjs).
-const community = explorer.communityPacks.reduce((n, p) => n + p.count, 0);
 const bySuite = (suite: string) => tests.filter((t) => t.Suite === suite).length;
 const stats = await getStats();
-const format = (n: number) => n.toLocaleString('en-US');
 
 const suites = [
 	{ code: 'CIS', name: 'CIS Microsoft 365 Foundations', desc: 'The CIS benchmark for Microsoft 365, mapped requirement by requirement, with its level and profile.', count: bySuite('CIS'), href: '/docs/tests/cis' },
