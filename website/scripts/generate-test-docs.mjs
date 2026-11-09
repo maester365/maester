@@ -62,6 +62,14 @@ const suiteConfig = {
     overview:
       "These tests verify Microsoft 365 tenant configuration against the [Essential Eight](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight) and the [Information security manual (ISM)](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism), both published by the Australian Signals Directorate (ASD). You may know them as the ACSC Essential Eight and the ACSC ISM: the Australian Cyber Security Centre (ACSC) is part of ASD. The Essential Eight maturity model (November 2023) sets requirements at Maturity Level One to Three, and ASD maps each requirement to an ISM control, so each test is named after the ISM control it checks: ASD.ISM-1504 checks ISM-1504. A few tests check ISM controls outside the Essential Eight, such as ASD.ISM-1403.",
   },
+  disa: {
+    label: "DISA",
+    title: "DISA STIG Tests",
+    sidebarLabel: "🇺🇸 DISA STIGs",
+    description: "DISA Security Technical Implementation Guide (STIG) rules for Microsoft Entra ID and Intune implemented as Maester tests.",
+    overview:
+      "These tests verify Microsoft 365 tenant configuration against the [Security Technical Implementation Guides (STIGs)](https://public.cyber.mil/stigs/) that the US Defense Information Systems Agency (DISA) publishes for Microsoft Entra ID, the Intune MDM service (desktop and mobile) and the Intune service (desktop). Each test is named after the STIG rule it checks: DISA.V-270233 checks rule V-270233. Where another suite already checks the same setting, the DISA test runs that test with DISA's values. Rules that need a person to confirm a process, such as alerting the ISSO when accounts change, have no test. Some rules are DoD-specific, such as the DoD Notice and Consent Banner, and fail outside DoD by design.",
+  },
   cis: {
     label: "CIS",
     title: "CIS Benchmark Tests",
@@ -555,7 +563,7 @@ ${body.join("\n")}`;
 
 function renderSuiteIndex(suite) {
   const config = suiteConfig[suite];
-  const key = new Map([["maester", "Maester"], ["eidsca", "EIDSCA"], ["cisa", "CISA"], ["asd", "ASD"], ["cis", "CIS"], ["orca", "ORCA"], ["ad", "AD"]]).get(suite) ?? suite;
+  const key = new Map([["maester", "Maester"], ["eidsca", "EIDSCA"], ["cisa", "CISA"], ["asd", "ASD"], ["disa", "DISA"], ["cis", "CIS"], ["orca", "ORCA"], ["ad", "AD"]]).get(suite) ?? suite;
   return `---
 title: ${yamlQuote(config.title)}
 slug: docs/tests/${suite}

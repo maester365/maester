@@ -48,6 +48,9 @@ export const frameworkConfig = {
   "cisa-scuba": { code: "CISA", label: "CISA SCuBA", suite: "cisa", complete: true, section: (r) => sectionName(CISA_SERVICES, r.Id.split(".").slice(0, 2).join(".")) },
   "essential-eight": { code: "E8", label: "Essential Eight", suite: "asd", complete: true, section: (r) => [r.Strategy].flat().filter(Boolean) },
   ism: { code: "ISM", label: "ASD ISM", suite: "asd", complete: false, section: (r) => r.Guideline || "Other" },
+  "disa-stig-entra-id": { code: "STIG", label: "DISA STIG Entra ID", suite: "disa", complete: true, section: (r) => r.Category || "Other" },
+  "disa-stig-intune-mdm": { code: "STIG", label: "DISA STIG Intune MDM", suite: "disa", complete: true, section: (r) => r.Category || "Other" },
+  "disa-stig-intune-desktop": { code: "STIG", label: "DISA STIG Intune Desktop", suite: "disa", complete: true, section: (r) => r.Category || "Other" },
 };
 
 // A GitHub avatar at the size the nav shows it (github.com/<handle>.png serves the full image otherwise).

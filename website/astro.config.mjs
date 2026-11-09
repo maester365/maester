@@ -134,6 +134,7 @@ export default defineConfig({
 										{ label: 'CIS', link: '/docs/tests/cis' },
 										{ label: 'CISA SCuBA', link: '/docs/tests/cisa' },
 										{ label: 'ASD Essential Eight', link: '/docs/tests/asd' },
+										{ label: 'DISA STIGs', link: '/docs/tests/disa' },
 										{ label: 'Entra ID SCA (EIDSCA)', link: '/docs/tests/eidsca' },
 										{ label: 'ORCA', link: '/docs/tests/orca' },
 										{ label: 'Active Directory', link: '/docs/tests/ad' },
