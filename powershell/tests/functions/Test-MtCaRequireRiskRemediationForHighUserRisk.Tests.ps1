@@ -120,8 +120,8 @@ Describe 'MT.1253 risk remediation policy coverage' {
 
     It 'Rejects a policy that is <Condition>' -ForEach @(
         @{ Condition = 'report-only' }, @{ Condition = 'limited to a group' },
-        @{ Condition = 'limited to an application' }, @{ Condition = 'missing high risk' },
-        @{ Condition = 'password-change only' }
+        @{ Condition = 'limited to an application' }, @{ Condition = 'excluding an application' },
+        @{ Condition = 'missing high risk' }, @{ Condition = 'password-change only' }
     ) {
         InModuleScope Maester -Parameters @{ Condition = $Condition } {
             param($Condition)
@@ -129,6 +129,7 @@ Describe 'MT.1253 risk remediation policy coverage' {
                 'report-only' { $script:riskPolicy.state = 'enabledForReportingButNotEnforced' }
                 'limited to a group' { $script:riskPolicy.conditions.users.includeUsers = @(); $script:riskPolicy.conditions.users.includeGroups = @('group') }
                 'limited to an application' { $script:riskPolicy.conditions.applications.includeApplications = @('app') }
+                'excluding an application' { $script:riskPolicy.conditions.applications.excludeApplications = @('app') }
                 'missing high risk' { $script:riskPolicy.conditions.userRiskLevels = @('medium') }
                 'password-change only' { $script:riskPolicy.grantControls.builtInControls = @('passwordChange') }
             }

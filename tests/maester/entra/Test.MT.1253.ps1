@@ -12,7 +12,7 @@
 
     The check passes when at least one enabled Conditional Access policy:
     - includes all users, excluding only emergency access accounts and the guest/external-user selector,
-    - targets all resources,
+    - targets all resources and excludes none,
     - is scoped to the high user risk level (and to every lower level named by MinimumUserRiskLevel), and
     - requires the riskRemediation grant control.
 

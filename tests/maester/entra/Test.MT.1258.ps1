@@ -453,7 +453,7 @@
         }
     }
     if ($allowlistedWithAccess.Count -gt 0) {
-        $testResultMarkdown += "`n`n✅ $(if ($allowlistedWithAccess.Count -eq 1) { '1 allowlisted tenant is' } else { "$($allowlistedWithAccess.Count) allowlisted tenants are" }) not listed: $(@($allowlistedWithAccess | ForEach-Object { & $tenantLabel $_ }) -join ', ')."
+        $testResultMarkdown += "`n`n✅ $(if ($allowlistedWithAccess.Count -eq 1) { '1 allowlisted tenant has access and is' } else { "$($allowlistedWithAccess.Count) allowlisted tenants have access and are" }) not shown in the Tenant Governance and GDAP tables: $(@($allowlistedWithAccess | ForEach-Object { & $tenantLabel $_ }) -join ', ')."
     }
     if ($allowlistedWithoutAccess.Count -gt 0) {
         $allowlistedList = @($allowlistedWithoutAccess | ForEach-Object { & $tenantLabel $_ }) -join ', '
@@ -538,7 +538,10 @@
                 $firstChange = & $findFirstChange $tenantId
                 if ($firstChange.Found) { "📝 First recorded change: $($firstChange.Text)" }
             )
-            $supportUrl = if ($partner.supportUrl -and "$($partner.supportUrl)" -match '^https?://') { "$($partner.supportUrl)".Replace(')', '%29') } else { $null }
+            $supportUri = $null
+            $supportUrl = if ($partner.supportUrl -and [uri]::TryCreate("$($partner.supportUrl)".Trim(), [System.UriKind]::Absolute, [ref]$supportUri) -and $supportUri.Scheme -in 'http', 'https') {
+                $supportUri.AbsoluteUri.Replace(')', '%29').Replace('|', '%7C')
+            } else { $null }
             $support = @(
                 if ($partner.supportTelephones) { "📞 $(Get-MtSafeMarkdown (@($partner.supportTelephones) -join ', '))" }
                 if ($partner.supportEmails) { "✉️ $(Get-MtSafeMarkdown (@($partner.supportEmails) -join ', '))" }

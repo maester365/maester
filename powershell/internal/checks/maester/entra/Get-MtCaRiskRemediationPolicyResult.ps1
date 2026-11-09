@@ -8,7 +8,7 @@ function Get-MtCaRiskRemediationPolicyResult {
     requirement is met. A policy qualifies when it:
     - is enabled,
     - includes all users, excluding only emergency access accounts and the guest/external-user selector,
-    - targets all resources,
+    - targets all resources and excludes none,
     - is scoped to every user risk level from MinimumUserRiskLevel up to high, and
     - requires the riskRemediation grant control.
 
@@ -60,7 +60,7 @@ function Get-MtCaRiskRemediationPolicyResult {
             $excludedFromAll = {
                 param([string] $Property)
                 @($userPolicies | ForEach-Object { @($_.conditions.users.$Property | Where-Object { $_ -and $_ -ne 'GuestsOrExternalUsers' } | Select-Object -Unique) } |
-                        Group-Object | Where-Object { $_.Count -eq $userPolicies.Count } | ForEach-Object { $_.Name })
+                    Group-Object | Where-Object { $_.Count -eq $userPolicies.Count } | ForEach-Object { $_.Name })
             }
             $emergencyUserIds = & $excludedFromAll 'excludeUsers'
             $emergencyGroupIds = & $excludedFromAll 'excludeGroups'
@@ -78,17 +78,18 @@ function Get-MtCaRiskRemediationPolicyResult {
         $unapprovedGroups = @($users.excludeGroups | Where-Object { $_ -and $_ -notin $emergencyGroupIds })
         $excludedRoles = @($users.excludeRoles | Where-Object { $_ })
         $checks = [ordered]@{
-            'Enabled'                       = $policy.state -eq 'enabled'
-            'All users'                     = @($policy.conditions.users.includeUsers) -contains 'All'
-            'Only approved user exclusions' = ($unapprovedUsers.Count + $unapprovedGroups.Count + $excludedRoles.Count) -eq 0
-            'All resources'                 = @($policy.conditions.applications.includeApplications) -contains 'All'
+            'Enabled'                                     = $policy.state -eq 'enabled'
+            'All users'                                   = @($policy.conditions.users.includeUsers) -contains 'All'
+            'Only approved user exclusions'               = ($unapprovedUsers.Count + $unapprovedGroups.Count + $excludedRoles.Count) -eq 0
+            'All resources'                               = (@($policy.conditions.applications.includeApplications) -contains 'All') -and
+            @($policy.conditions.applications.excludeApplications | Where-Object { $_ }).Count -eq 0
             "User risk $($requiredRiskLevels -join ', ')" = $missingRiskLevels.Count -eq 0
         }
         $failed = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         $exclusionCount = @($policy.conditions.users.excludeUsers | Where-Object { $_ }).Count +
-            @($policy.conditions.users.excludeGroups | Where-Object { $_ }).Count +
-            @($policy.conditions.users.excludeRoles | Where-Object { $_ }).Count +
-            $(if ($users.excludeGuestsOrExternalUsers) { 1 } else { 0 })
+        @($policy.conditions.users.excludeGroups | Where-Object { $_ }).Count +
+        @($policy.conditions.users.excludeRoles | Where-Object { $_ }).Count +
+        $(if ($users.excludeGuestsOrExternalUsers) { 1 } else { 0 })
 
         [pscustomobject]@{
             Policy         = $policy

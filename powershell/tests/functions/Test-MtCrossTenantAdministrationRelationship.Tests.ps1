@@ -341,8 +341,8 @@ Describe 'MT.1258 GDAP and Tenant Governance assessment with optional enrichment
                 )
                 $null = Test-MtCrossTenantAdministrationRelationship
                 Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter {
-                    $Result -like '*First recorded change (audit log)*' -and $Result -like '*admin@contoso.com*' -and
-                    $Result -notlike '*attacker@contoso.com*' -and $Result -notlike '*Approved by*'
+                    $Result -like '*First recorded change (audit log)*' -and $Result -like '*admin\@contoso.com*' -and
+                    $Result -notlike '*attacker\@contoso.com*' -and $Result -notlike '*Approved by*'
                 }
             }
         }
@@ -361,7 +361,7 @@ Describe 'MT.1258 GDAP and Tenant Governance assessment with optional enrichment
             InModuleScope Maester {
                 $script:auditEvents = @(& $script:newAuditEvent 'success' 'admin@contoso.com' $null)
                 { $null = Test-MtCrossTenantAdministrationRelationship } | Should -Not -Throw
-                Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*admin@contoso.com*on an unknown date*' }
+                Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*admin\@contoso.com*on an unknown date*' }
             }
         }
 

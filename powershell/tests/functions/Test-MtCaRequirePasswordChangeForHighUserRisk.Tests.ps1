@@ -9,8 +9,8 @@ Describe 'MT.1013 password change for high user risk' {
                 id = 'policy-pw'; displayName = 'Password change'; state = 'enabled'
                 grantControls = @{ builtInControls = @('passwordChange') }
                 conditions = @{
-                    users = @{ includeUsers = @('All'); excludeUsers = @(); excludeGroups = @(); excludeRoles = @() }
-                    applications = @{ includeApplications = @('All') }
+                    users          = @{ includeUsers = @('All'); excludeUsers = @(); excludeGroups = @(); excludeRoles = @() }
+                    applications   = @{ includeApplications = @('All') }
                     userRiskLevels = @('high')
                 }
             }
@@ -18,8 +18,8 @@ Describe 'MT.1013 password change for high user risk' {
                 id = 'policy-rr'; displayName = 'Risk remediation'; state = 'enabled'
                 grantControls = @{ builtInControls = @('riskRemediation') }
                 conditions = @{
-                    users = @{ includeUsers = @('All'); excludeUsers = @(); excludeGroups = @(); excludeRoles = @() }
-                    applications = @{ includeApplications = @('All') }
+                    users          = @{ includeUsers = @('All'); excludeUsers = @(); excludeGroups = @(); excludeRoles = @() }
+                    applications   = @{ includeApplications = @('All') }
                     userRiskLevels = @('high')
                 }
             }

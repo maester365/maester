@@ -45,7 +45,7 @@ Without an allowlist, every tenant identified through an in-scope relationship f
 
 The report includes:
 
-* **Tenant Governance:** inbound relationships that are not terminated, with any pending termination flagged, policy roles, provisioned applications, creation time and approval information where available.
+* **Tenant Governance:** inbound relationships that are not terminated, with any pending termination flagged, policy roles, provisioned applications, creation time, an admin-approval indicator and the first recorded change from the audit log, where available.
 * **GDAP and informational CSP partners:** GDAP remote groups, visible roles and partner metadata. Legacy DAP roles and partners without GDAP evidence are explicitly informational.
 * **Service providers in cross-tenant access settings:** informational entries only, including former governance tenants with a leftover mark.
 * **Related tenants with inbound admin app sign-ins:** optional informational metrics, including activity from allowlisted tenants.
@@ -68,7 +68,7 @@ To disable the optional requests:
 }
 ```
 
-The assessment needs `Directory.Read.All`, `TenantGovernance-Relationship.Read.All` and `RemoteTenantGroups.Read.All`. Optional enrichment uses `TenantGovernance-RelatedTenant.Read.All` for discovery, `CrossTenantInformation.ReadBasic.All` for tenant names, `Policy.Read.All` for service-provider information, `RoleManagement.Read.Directory` (or `RoleManagement.Read.All`) for role details, and `AuditLog.Read.All` for approval history. These scopes are included in `Get-MtGraphScope -IncludePreview`. Unavailable enrichment is reported without changing the assessment.
+The assessment needs `Directory.Read.All`, `TenantGovernance-Relationship.Read.All` and `RemoteTenantGroups.Read.All`. Optional enrichment uses `TenantGovernance-RelatedTenant.Read.All` for discovery, `CrossTenantInformation.ReadBasic.All` for tenant names, `Policy.Read.All` for service-provider information, `RoleManagement.Read.Directory` (or `RoleManagement.Read.All`) for role details, and `AuditLog.Read.All` for the first recorded change. These scopes are included in `Get-MtGraphScope -IncludePreview`. Unavailable enrichment is reported without changing the assessment.
 
 #### Remediation action
 
