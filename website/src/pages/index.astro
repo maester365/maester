@@ -59,15 +59,16 @@ const platforms = [
 	{ name: 'Teams and Slack', href: '/docs/alerts/teams' },
 ];
 
-// The Zero Trust Assessment pack, then the largest community packs on packs.maester.cloud, so the cards follow the
-// pack catalog as it grows.
+// Four community packs from packs.maester.cloud, in this order; the Zero Trust Assessment pack has a tile of its own.
+// A pack the site no longer lists is left out.
 const communityPacks = [...explorer.communityPacks].sort((a, b) => b.count - a.count);
 const intunePacks = communityPacks.filter((p) => /\bCIS\b.*\bIntune\b/i.test(`${p.name} ${p.description}`));
 const intuneChecks = intunePacks.reduce((n, p) => n + p.count, 0);
-const packs = [
-	{ badges: ['Official', 'Ships with Maester'], name: 'Microsoft Zero Trust Assessment', desc: "Run Microsoft's Zero Trust Assessment from Maester and see every result next to Maester's own checks.", tests: zta, by: 'maester365', href: '/docs/packs/zero-trust-assessment' },
-	...communityPacks.slice(0, 3).map((p) => ({ badges: ['Community pack'], name: p.name, desc: p.description, tests: p.count, by: p.publisher, href: p.url })),
-];
+const featuredPacks = ['JL.CISW11INT.L1', 'CLT.UA', 'LPMS', 'RKS.IA'];
+const packs = featuredPacks
+	.map((code) => communityPacks.find((p) => p.code === code))
+	.filter((p) => p !== undefined)
+	.map((p) => ({ name: p.name, desc: p.description, tests: p.count, by: p.publisher, href: p.url, banner: (p as { banner?: string }).banner ?? '' }));
 
 // The views of the real report (public/demo/report.html, sample data for Contoso), captured by
 // scripts/capture-demo-report.mjs.
@@ -248,7 +249,8 @@ const jsonLd = {
 					{
 						packs.map((p) => (
 							<a class="card pack" href={p.href}>
-								<span class="mono muted">{p.badges.join(' · ')} · {format(p.tests)} checks</span>
+								{p.banner && <img class="pack__banner" src={p.banner} alt="" width="1200" height="630" loading="lazy" decoding="async" />}
+								<span class="mono muted">Community pack · {format(p.tests)} checks</span>
 								<strong>{p.name}</strong>
 								<span class="muted">{p.desc}</span>
 								<span class="mono muted pack__by">by {p.by}</span>
@@ -257,39 +259,56 @@ const jsonLd = {
 					}
 				</div>
 			</section>
-			<section class="tile tile--grey tile--half">
-				<p class="chapter">Write your own</p>
-				<h2>Write your policies as tests.</h2>
-				<p class="sub">One PowerShell function. Maester runs it with everything else and puts it in the same report.</p>
-				<div class="ctas">
-					<a class="more" href="/docs/writing-tests/first-custom-test">Write your first test</a>
-					<a class="more" href="/test-builder">Test builder</a>
-				</div>
-				<pre class="peek"><span class="blue">function</span> Test-CT1001 &#123;
-    [MaesterTest(Id = <span class="green">'CT.1001'</span>,
-        Title = <span class="green">'Only admins can invite guests'</span>)]
-    param()
-    $policy = Invoke-MtGraphRequest -RelativeUri <span class="green">'policies/authorizationPolicy'</span>
-    $policy.allowInvitesFrom -in <span class="green">'adminsAndGuestInviters'</span>, <span class="green">'none'</span>
-&#125;</pre>
-			</section>
-			<section class="tile tile--white tile--half tile--edge">
+			<section class="tile tile--grey tile--wide zta-tile">
 				<p class="chapter">Zero Trust Assessment</p>
 				<h2>Microsoft's assessment, in your Maester report.</h2>
 				<p class="sub">The pack ships with Maester. One command runs both, and the plan turns the results into work.</p>
 				<div class="ctas">
-					<a class="more" href="/docs/packs/zero-trust-assessment">How the pack works</a>
+					<a class="pill-btn" href="/docs/packs/zero-trust-assessment">How the pack works</a>
 					<a class="more" href={`${demoUrl}#/pack/zta/plan/identity`} target="_blank" rel="noopener">See the plan</a>
+					<a class="more" href="https://microsoft.github.io/zerotrustassessment/demo" target="_blank" rel="noopener">Microsoft's demo report</a>
 				</div>
-				<pre class="peek"><span class="blue">Invoke-Maester</span> -Pack ZTA
-
-  <span class="green">✓</span> {format(builtIn + zta)} checks · {zta} from the Zero Trust Assessment
-  Report: ./test-results/index.html</pre>
+				<div class="zta-stage">
+					<pre class="peek zta-cmd"><span class="blue">Invoke-Maester</span> -Pack ZTA</pre>
+					<a class="zta-shot" href="https://microsoft.github.io/zerotrustassessment/demo" target="_blank" rel="noopener" aria-label="Open Microsoft's Zero Trust Assessment demo report">
+						<img class="mt-light-only" src="/img/zta/zta-demo-light.webp" alt="Microsoft's Zero Trust Assessment report: test results for each pillar and Sankey charts of the authentication methods privileged users and all users have registered" width="1920" height="1222" loading="lazy" decoding="async" />
+						<img class="mt-dark-only" src="/img/zta/zta-demo-dark.webp" alt="Microsoft's Zero Trust Assessment report: test results for each pillar and Sankey charts of the authentication methods privileged users and all users have registered" width="1920" height="1222" loading="lazy" decoding="async" />
+					</a>
+				</div>
+			</section>
+			<section class="tile tile--white tile--wide code-tile">
+				<div class="code-tile__text">
+					<p class="chapter">Security config as code</p>
+					<h2>Define your security config as code.</h2>
+					<p class="sub">Write each policy as a Maester test: one PowerShell function that says how your tenant must be set up. Maester runs it with everything else and puts it in the same report.</p>
+					<ul class="code-points">
+						<li><strong>Policies in a repository.</strong> <span class="muted">Every rule your tenant must follow, versioned and reviewed like any other code.</span></li>
+						<li><strong>Regression tests for your tenant.</strong> <span class="muted">Run them after every change, by hand, from a pipeline or after Terraform, and see at once what a change broke.</span></li>
+						<li><strong>Guardrails for AI agents.</strong> <span class="muted">When an agent changes your configuration, it runs your Maester tests to check its own work, and keeps running them to watch for drift.</span></li>
+					</ul>
+					<div class="ctas">
+						<a class="more" href="/docs/writing-tests/first-custom-test">Write your first test</a>
+						<a class="more" href="/test-builder">Test builder</a>
+					</div>
+				</div>
+				<pre class="peek code-tile__code"><span class="blue">function</span> Test-CT1001 &#123;
+    [MaesterTest(Id = <span class="green">'CT.1001'</span>,
+        Title = <span class="green">'Our licensing groups are not empty'</span>)]
+    param()
+    <span class="muted-code"># The groups that assign licences in this tenant</span>
+    <span class="blue">foreach</span> ($name <span class="blue">in</span> <span class="green">'LIC-M365-E5'</span>, <span class="green">'LIC-Copilot'</span>, <span class="green">'LIC-Intune-Suite'</span>) &#123;
+        $group = Invoke-MtGraphRequest <span class="green">'groups'</span> -Filter <span class="green">"displayName eq '$name'"</span>
+        <span class="blue">if</span> (-not $group) &#123; <span class="blue">return</span> $false &#125;
+        $count = Invoke-MtGraphRequest <span class="green">"groups/$($group.id)/transitiveMembers/`$count"</span>
+        <span class="blue">if</span> ($count -eq 0) &#123; <span class="blue">return</span> $false &#125;
+    &#125;
+    $true
+&#125;</pre>
 			</section>
 		</div>
 
 		<!-- 04 What's new -->
-		<section class="tile tile--white tile--short" id="new">
+		<section class="tile tile--grey tile--short" id="new">
 			<p class="chapter"><b>04</b>New in {previewLabel}</p>
 			<h2>Maester {previewLabel}. Rebuilt to run faster and say more.</h2>
 			<p class="sub">A test engine of its own, checks that ship in the module, and a reason for every skip.</p>
@@ -303,7 +322,7 @@ const jsonLd = {
 		</section>
 
 		<!-- 05 Community -->
-		<section class="tile tile--grey" id="community">
+		<section class="tile tile--white" id="community">
 			<p class="chapter"><b>05</b>Community</p>
 			<h2>Built in the open by {contributors.profiles.length}+ contributors.</h2>
 			<p class="sub">Security practitioners, Microsoft MVPs and Microsoft engineers write the checks.</p>
@@ -702,9 +721,6 @@ const jsonLd = {
 	.tile h2 {
 		font-size: clamp(2.1rem, 5vw, 3.5rem);
 		max-width: 20ch;
-	}
-	.tile--half h2 {
-		font-size: clamp(1.85rem, 3.4vw, 2.5rem);
 	}
 	.sub {
 		font-size: clamp(1.1rem, 1.8vw, 1.35rem);
@@ -1206,7 +1222,7 @@ const jsonLd = {
 			display: none;
 		}
 	}
-	/* Extend: one wide tile, then two half tiles side by side. */
+	/* Extend: Packs, the Zero Trust Assessment and config as code, each a full-width tile. */
 	.split-tiles {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1217,18 +1233,24 @@ const jsonLd = {
 		grid-column: 1 / -1;
 		min-height: 0;
 	}
-	.tile--half {
-		min-height: 36rem;
-		padding-bottom: 0;
-	}
-	.tile--edge {
-		background: var(--tile-grey);
-	}
 	.packs {
 		display: grid;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.75rem;
 		max-width: 75rem;
+	}
+	/* The banner fills the top of the card, edge to edge (the card's padding is 1.25rem by 1.35rem). */
+	.pack {
+		overflow: hidden;
+	}
+	.pack__banner {
+		width: calc(100% + 2.7rem);
+		max-width: none;
+		height: auto;
+		aspect-ratio: 1200 / 630;
+		object-fit: cover;
+		margin: -1.25rem -1.35rem 0.4rem;
+		border-bottom: 1px solid var(--mt-line);
 	}
 	.pack:hover {
 		border-color: var(--sl-color-gray-4);
@@ -1261,11 +1283,89 @@ const jsonLd = {
 		top: 0;
 		translate: 0 0;
 	}
-	.tile--half .ctas {
-		margin-bottom: 2.5rem;
+	/* Zero Trust: the command, then Microsoft's own report rising from the bottom of the tile. */
+	.zta-tile {
+		padding-bottom: 0;
+	}
+	.zta-stage {
+		width: min(72rem, 100%);
+		margin-top: 2rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.zta-cmd {
+		margin: 0 0 1.5rem;
+		border-bottom: 1px solid #2e2e33;
+		border-radius: 16px;
+		width: min(38rem, 100%);
+	}
+	.zta-shot {
+		display: block;
+		max-height: 40rem;
+		width: 100%;
+		border: 1px solid var(--sl-color-gray-5);
+		border-bottom: 0;
+		border-radius: 16px 16px 0 0;
+		overflow: hidden;
+		box-shadow: 0 -10px 40px -20px rgb(0 0 0 / 0.35);
+	}
+	.zta-shot img {
+		vertical-align: top;
+		width: 100%;
+		height: auto;
+	}
+	/* Config as code: the points beside the function. */
+	.code-tile {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+		gap: 2.5rem;
+		align-items: end;
+		text-align: start;
+		padding-bottom: 0;
+		padding-inline: clamp(1rem, 5vw, 4.5rem);
+		min-height: 0;
+	}
+	.code-tile__text {
+		align-self: center;
+		padding-bottom: 2.5rem;
+	}
+	.code-tile__text > * {
+		margin-inline: 0;
+		text-align: start;
+	}
+	.code-tile h2 {
+		font-size: clamp(2rem, 4vw, 3rem);
+	}
+	.code-tile .ctas {
+		justify-content: flex-start;
+	}
+	.code-points {
+		list-style: none;
+		padding: 0;
+		margin: 1.5rem 0 0;
+		display: grid;
+		gap: 0.9rem;
+		max-width: 36rem;
+	}
+	.code-points li {
+		display: grid;
+		gap: 0.15rem;
+	}
+	.code-tile__code {
+		width: 100%;
+		justify-self: end;
+	}
+	@media (max-width: 52rem) {
+		.code-tile {
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 	.peek .green {
 		color: #86efac;
+	}
+	.peek .muted-code {
+		color: #a1a1aa;
 	}
 	.peek .blue {
 		color: #93c5fd;
@@ -1274,9 +1374,6 @@ const jsonLd = {
 		.split-tiles,
 		.packs {
 			grid-template-columns: minmax(0, 1fr);
-		}
-		.tile--half {
-			min-height: 0;
 		}
 	}
 
