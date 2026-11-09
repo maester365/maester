@@ -4,13 +4,13 @@
     Checks DKIM for domains that send email and verifies parked domains have no DKIM records.
 
     .DESCRIPTION
-    Sending domains require DKIM to be enabled with a valid Exchange status. Parked domains must not publish DKIM records. Initial (MOERA) and coexistence domains are excluded, as Microsoft automatically signs outbound mail for those domains. Ambiguous domain-use evidence is reported for investigation.
+    Domains require DKIM to be enabled with a valid Exchange status. Domains listed in the ParkedDomains parameter must not publish DKIM records instead. Initial (MOERA) and coexistence domains are excluded, as Microsoft automatically signs outbound mail for those domains.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.9, L1)
 
     .EXAMPLE
     Test-MtCisDkim
 
-    Returns true if every sending domain has DKIM enabled with Exchange status Valid and every parked domain has no known Exchange selector records. Initial and coexistence domains are excluded. Domains classified as not sending are out of scope; ambiguous domains require investigation.
+    Returns true if every domain has DKIM enabled with Exchange status Valid, and every domain listed in ParkedDomains has no selector1 or selector2 DKIM record. Initial and coexistence domains are excluded.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisDkim
@@ -38,7 +38,7 @@
         # Selector-name for the DKIM record to test..
         [string]$Selector = 'selector1',
 
-        # Domains explicitly confirmed as parked; any published selector record still fails the audit.
+        # Domains that are not used to send email. They must not publish DKIM records.
         [string[]]$ParkedDomains = @()
     )
 
@@ -60,52 +60,32 @@
             continue
         }
 
-        $classification = Get-MtCisParkedDomainClassification -DomainName $domain.DomainName -DkimSigningConfigs $dkimSigningConfigs -ParkedDomains $ParkedDomains
-        if ($classification.Classification -eq 'Parked') {
-            $hasDkimSelectorRecord = $classification.DkimSelectorRecordEvidence
-            $selectorLookupsComplete = $classification.DkimSelectorLookupsComplete
-            $dkimRecords += [PSCustomObject]@{
-                domain         = $domain.DomainName
-                classification = $classification.Classification
-                pass           = if ($hasDkimSelectorRecord) { 'Failed' } elseif (-not $selectorLookupsComplete) { 'Investigate' } else { 'Passed' }
-                reason         = if ($hasDkimSelectorRecord) { "Parked domain has a published standard DKIM selector record that must be removed. $($classification.Reason)" } elseif (-not $selectorLookupsComplete) { "Standard DKIM selector DNS lookups did not complete, so record absence could not be confirmed. $($classification.Reason)" } else { "Parked domain has no published standard DKIM selector records. $($classification.Reason)" }
-                exchangeStatus = if ($selectorLookupsComplete) { 'Not applicable' } else { 'Not determined' }
-                dkimRecord     = $null
-            }
-            continue
-        }
-
-        if ($classification.Classification -eq 'NotSending') {
-            $dkimRecords += [PSCustomObject]@{
-                domain         = $domain.DomainName
-                classification = $classification.Classification
-                pass           = 'Skipped'
-                reason         = "The CIS DKIM audit applies to domains configured to send email. $($classification.Reason)"
-                exchangeStatus = 'Not applicable'
-                dkimRecord     = $null
-            }
-            continue
-        }
-
-        if ($classification.Classification -eq 'Unknown') {
-            if ($classification.DnsResolverUnavailable) {
-                $dkimRecords += [PSCustomObject]@{
-                    domain         = $domain.DomainName
-                    classification = $classification.Classification
-                    pass           = 'NotSupported'
-                    reason         = "DNS resolver is unavailable, so sending use and selector records cannot be evaluated. $($classification.Reason)"
-                    exchangeStatus = 'Not determined'
-                    dkimRecord     = $null
+        if (Test-MtCisParkedDomain -DomainName $domain.DomainName -ParkedDomains $ParkedDomains) {
+            # CIS: don't publish DKIM records for a parked domain. Exchange Online uses selector1 and selector2.
+            $selectorLookups = foreach ($selectorName in 'selector1', 'selector2') {
+                foreach ($recordType in 'CNAME', 'TXT') {
+                    Resolve-MtDnsRecord -Name "$selectorName._domainkey.$($domain.DomainName)" -Type $recordType
                 }
-                continue
             }
+            $hasSelectorRecord = @($selectorLookups | Where-Object { @($_.Answers).Count -gt 0 }).Count -gt 0
+            $incompleteLookups = @($selectorLookups | Where-Object { $_.Status -notin @('Success', 'NXDomain') })
+            $resolverUnavailable = @($selectorLookups | Where-Object { $_.Status -ne 'NotAvailable' }).Count -eq 0
 
+            $pass, $reason = if ($hasSelectorRecord) {
+                'Failed', 'Listed as parked, but a selector1 or selector2 DKIM record is published. Remove it.'
+            } elseif ($resolverUnavailable) {
+                'NotSupported', 'Listed as parked, but DNS lookups are not available here, so the DKIM records could not be checked.'
+            } elseif ($incompleteLookups.Count -gt 0) {
+                'Investigate', 'Listed as parked, but some DKIM selector lookups failed, so it could not be confirmed that no record is published.'
+            } else {
+                'Passed', 'Listed as parked, and no selector1 or selector2 DKIM record is published.'
+            }
             $dkimRecords += [PSCustomObject]@{
                 domain         = $domain.DomainName
-                classification = $classification.Classification
-                pass           = 'Investigate'
-                reason         = "Sending use could not be established; the domain was not classified as parked. $($classification.Reason)"
-                exchangeStatus = 'Not determined'
+                classification = 'Parked'
+                pass           = $pass
+                reason         = $reason
+                exchangeStatus = 'Not applicable'
                 dkimRecord     = $null
             }
             continue
@@ -118,9 +98,9 @@
         if (-not $dkimSigningConfig) {
             $dkimRecord = [PSCustomObject]@{
                 domain     = $domain.DomainName
-                classification = $classification.Classification
+                classification = 'Sending'
                 pass       = 'Failed'
-                reason     = 'No DkimSigningConfig found for a domain classified as sending'
+                reason     = 'No DkimSigningConfig found. Add the domain to ParkedDomains if it does not send email.'
                 exchangeStatus = 'Not configured'
                 dkimRecord = $null
             }
@@ -153,7 +133,7 @@
         $dkimRecord | Add-Member -MemberType NoteProperty -Name 'pass' -Value 'Failed'
         $dkimRecord | Add-Member -MemberType NoteProperty -Name 'reason' -Value ''
         $dkimRecord | Add-Member -MemberType NoteProperty -Name 'exchangeStatus' -Value $dkimSigningConfig.Status
-        $dkimRecord | Add-Member -MemberType NoteProperty -Name 'classification' -Value $classification.Classification
+        $dkimRecord | Add-Member -MemberType NoteProperty -Name 'classification' -Value 'Sending'
 
         if (-not $dkimSigningConfig.enabled) {
             $dkimRecord.pass = 'Failed'

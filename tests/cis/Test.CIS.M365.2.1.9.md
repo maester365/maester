@@ -12,15 +12,13 @@ There should be no impact of setting up DKIM however, organizations should ensur
 
 >Note: Initial (MOERA, e.g. `contoso.onmicrosoft.com`) and coexistence (`*.mail.onmicrosoft.com`) domains are excluded from this check, as Microsoft automatically signs outbound mail for those domains.
 
-For domains classified as sending, the check requires Exchange DKIM to be enabled and its status to be **Valid**. A likely sending domain has an SPF sender-authorizing mechanism, an Exchange DKIM signing configuration, or a selector1/selector2 DKIM CNAME/TXT record.
+The check requires Exchange DKIM to be enabled and its status to be **Valid** for every domain except the parked domains you list.
 
-Maester classifies a domain as not sending when its single SPF v1 record has only a non-authorizing `-all` or `~all` mechanism and no Exchange DKIM signing configuration or selector1/selector2 records are found. An SPF record ending in `?all` is inconclusive and does not establish that the domain is unused. A domain is classified as parked only when it also has no usable MX route (or a null MX) and no A, AAAA, or CNAME record at the domain apex. This classification does not use `AcceptedDomain.SendingFromDomainDisabled`.
+Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so list your parked domains, the ones that never send email, in this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. Every other domain gets the sending-domain audit.
 
-For a confirmed parked domain, CIS requires that DKIM records are not published; the check passes only when no standard selector1/selector2 CNAME or TXT records are found. An Exchange DKIM signing configuration without a published selector record does not fail this parked-domain criterion. A domain with no sending signals but with receiving or other apex DNS records is outside the sending-domain audit scope. Domains with missing or conflicting evidence are marked for investigation rather than automatically treated as parked. Any known standard selector record fails the parked check even if another selector lookup failed. Incomplete selector lookups report investigation only when no selector record is known; passing requires all four selector1/selector2 CNAME/TXT lookups to return Success or NXDOMAIN with no records found. Selector discovery is limited to the standard Exchange Online selectors, so nonstandard DKIM selector names cannot be ruled out automatically.
+For a parked domain, CIS asks that DKIM records are not published. The check passes when none of the selector1/selector2 CNAME or TXT records exist, and fails when one does. If some of those lookups fail, the domain is marked for investigation; if DNS lookups are not available at all, it is skipped. Only the standard Exchange Online selectors are checked.
 
-When any domain requires investigation or has unavailable DNS lookups, a result table states that compliance remains unconfirmed instead of displaying a full-compliance banner. Known failures still take precedence, and domains explicitly excluded from the audit do not prevent confirmed in-scope domains from passing.
-
-When DNS evidence is inconclusive but a domain is known to be parked, add its name to this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. This selects the parked audit branch; any published standard selector record still fails the check.
+When a parked domain needs investigation or was skipped because DNS lookups are unavailable, the result says compliance is unconfirmed instead of showing a full-compliance banner. Known failures still take precedence.
 
 #### Remediation action
 

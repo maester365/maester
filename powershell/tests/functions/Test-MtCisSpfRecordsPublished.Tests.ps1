@@ -6,16 +6,9 @@
 
         Mock Get-MtExo -ModuleName Maester {
             if ($Request -eq 'AcceptedDomain') { return $script:domains }
-            return $script:dkimSigningConfigs
+            return @()
         }
         Mock ConvertFrom-MailAuthenticationRecordSpf -ModuleName Maester { $script:spfResults[$DomainName] }
-        Mock Get-MtCisParkedDomainClassification -ModuleName Maester {
-            $classification = $script:classifications[$DomainName]
-            if ($ParkedDomains -contains $DomainName) {
-                $classification.Classification = 'Parked'
-            }
-            return $classification
-        }
         Mock Add-MtTestResultDetail -ModuleName Maester {
             $script:resultDetail = [pscustomobject]@{
                 Result         = $Result
@@ -27,130 +20,80 @@
 
     BeforeEach {
         $script:domains = @([pscustomobject]@{ DomainName = 'example.com'; InitialDomain = $false; IsCoExistenceDomain = $false })
-        $script:dkimSigningConfigs = @()
         $script:spfResults = @{}
-        $script:classifications = @{}
         $script:resultDetail = $null
     }
 
     It 'requires a hard-fail SPF record for a parked domain' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Parked'
-            SpfDeniesAll   = $false
-            Reason         = 'No sending or receiving signals were found.'
-        }
 
-        Test-MtCisSpfRecordsPublished | Should -BeFalse
-        $script:resultDetail.Result | Should -Match 'parked/non-sending audit requires an SPF record'
+        Test-MtCisSpfRecordsPublished -ParkedDomains 'example.com' | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'CIS requires v=spf1 -all'
+        $script:resultDetail.Result | Should -Match '\| example\.com \| Parked \|'
     }
 
-    It 'accepts a hard-fail SPF record for a parked domain' {
-        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 -all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Parked'
-            SpfDeniesAll   = $true
-            Reason         = 'No sending or receiving signals were found.'
-        }
+    It 'accepts <Record> for a parked domain' -ForEach @(
+        @{ Record = 'v=spf1 -all' }
+        @{ Record = 'V=SPF1   -ALL ' }
+        @{ Record = 'v=spf1 exp=why.example.com -all' }
+    ) {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
+
+        Test-MtCisSpfRecordsPublished -ParkedDomains 'Example.com.' | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeFalse
+    }
+
+    It 'rejects <Record> for a parked domain' -ForEach @(
+        @{ Record = 'v=spf1 include:spf.protection.outlook.com -all' }
+        @{ Record = 'v=spf1 redirect=_spf.example.net' }
+        @{ Record = 'v=spf1 -all exp=why.example.com' }
+    ) {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
+        $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 -all' }
+
+        Test-MtCisSpfRecordsPublished -ParkedDomains 'example.com' | Should -BeFalse
+    }
+
+    It 'applies the sending-domain rule to a domain that is not listed' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
 
         Test-MtCisSpfRecordsPublished | Should -BeTrue
         $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match '\| example\.com \| Sending \|'
     }
 
     It 'keeps the soft-fail rule for sending domains' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 include:spf.example.net ~all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Sending'
-            SpfDeniesAll   = $false
-            Reason         = 'An SPF sending mechanism was found.'
-        }
 
         Test-MtCisSpfRecordsPublished | Should -BeTrue
-        $script:resultDetail.Investigate | Should -BeFalse
         $script:resultDetail.Result | Should -Match 'Well done\. All custom domains meet'
     }
 
     It 'requires the all qualifier to be the final sending-domain term' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 include:spf.example.net -all include:vendor.example' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Sending'
-            SpfDeniesAll   = $false
-            Reason         = 'An SPF sending mechanism was found.'
-        }
 
         Test-MtCisSpfRecordsPublished | Should -BeFalse
     }
 
-    It 'investigates when a soft-fail record passes only the sending-domain rule' {
-        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Unknown'
-            SpfDeniesAll   = $false
-            Reason         = 'Mail use is inconclusive.'
-        }
+    It 'follows a redirect for a sending domain' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 redirect=_spf.example.net' }
+        $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 include:spf.protection.outlook.com -all' }
 
         Test-MtCisSpfRecordsPublished | Should -BeTrue
-        $script:resultDetail.Investigate | Should -BeTrue
-        $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
-        $script:resultDetail.Result | Should -Match 'Review the domains marked Investigate or Not checked'
-        $script:resultDetail.Result | Should -Not -Match 'Well done|All custom domains meet'
     }
 
-    It 'preserves <Outcome> when another SPF lookup is unavailable' -ForEach @(
-        @{ Outcome = 'investigation'; Classification = 'Unknown'; Record = 'v=spf1 ~all'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedSkip = $null }
-        @{ Outcome = 'failure'; Classification = 'Sending'; Record = 'v=spf1 ?all'; ExpectedResult = $false; ExpectedInvestigation = $false; ExpectedSkip = $null }
-        @{ Outcome = 'NotSupported without investigation'; Classification = 'Sending'; Record = 'v=spf1 ~all'; ExpectedResult = $null; ExpectedInvestigation = $false; ExpectedSkip = 'NotSupported' }
+    It 'returns <Outcome> when another SPF lookup is unavailable' -ForEach @(
+        @{ Outcome = 'a failure'; Record = 'v=spf1 ?all'; ExpectedResult = $false; ExpectedSkip = $null }
+        @{ Outcome = 'NotSupported'; Record = 'v=spf1 ~all'; ExpectedResult = $null; ExpectedSkip = 'NotSupported' }
     ) {
         $script:domains += [pscustomobject]@{ DomainName = 'unavailable.example'; InitialDomain = $false; IsCoExistenceDomain = $false }
         $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
         $script:spfResults['unavailable.example'] = 'DNS lookup unavailable'
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = $Classification
-            SpfDeniesAll   = $false
-            Reason         = 'Mail-use evidence for this test.'
-        }
-        $script:classifications['unavailable.example'] = [pscustomobject]@{
-            Classification = 'Unknown'
-            SpfDeniesAll   = $false
-            Reason         = 'DNS lookup unavailable.'
-        }
 
-        $actual = Test-MtCisSpfRecordsPublished
-
-        $actual | Should -Be $ExpectedResult
-        $script:resultDetail.Investigate | Should -Be $ExpectedInvestigation
+        Test-MtCisSpfRecordsPublished | Should -Be $ExpectedResult
         $script:resultDetail.SkippedBecause | Should -Be $ExpectedSkip
         if ($null -eq $ExpectedSkip) {
             $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
-            if ($ExpectedInvestigation) {
-                $script:resultDetail.Result | Should -Match '\| example\.com \| Unknown .* \| Investigate \|'
-                $script:resultDetail.Result | Should -Match 'Compliance .* remains unconfirmed'
-                $script:resultDetail.Result | Should -Not -Match 'Well done|All custom domains meet'
-            }
         }
-    }
-
-    It 'investigates an indirect all policy when parked status is unknown' {
-        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 redirect=_spf.example.net' }
-        $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 -all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Unknown'
-            SpfDeniesAll   = $false
-            Reason         = 'The SPF redirect target is inconclusive.'
-        }
-
-        Test-MtCisSpfRecordsPublished | Should -BeTrue
-        $script:resultDetail.Investigate | Should -BeTrue
-    }
-
-    It 'applies a parked override but still requires hard fail' {
-        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
-        $script:classifications['example.com'] = [pscustomobject]@{
-            Classification = 'Unknown'
-            SpfDeniesAll   = $false
-            Reason         = 'Mail use is inconclusive.'
-        }
-
-        Test-MtCisSpfRecordsPublished -ParkedDomains 'example.com' | Should -BeFalse
     }
 }
