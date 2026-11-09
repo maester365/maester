@@ -96,8 +96,8 @@ const story = media.stories.find((s) => s.approved);
 // Maester and Maester Cloud side by side, for the comparison near the end of the page.
 const compare = [
 	{ what: 'Checks, packs and report', core: 'Every one', cloud: 'The same, every one' },
-	{ what: 'Where it runs', core: 'Your desktop, GitHub Actions or your own pipelines', cloud: 'Securely in Azure' },
-	{ what: 'Your data', core: 'Stays on your machine or in your own pipeline', cloud: 'Never leaves the Azure region you choose' },
+	{ what: 'Where it runs', core: 'Your desktop, GitHub Actions or your own pipelines', cloud: 'Securely in your own Azure subscription' },
+	{ what: 'Your data', core: 'Stays on your machine or in your own pipeline', cloud: 'Report data never leaves the Azure region you choose' },
 	{ what: 'Setup', core: 'You install, schedule and store the reports', cloud: 'Simplified deployment, nothing to script' },
 	{ what: 'Run history', core: 'One report per run', cloud: 'Every run, for every tenant' },
 	{ what: 'Fixing findings', core: 'Compare one report with the next yourself', cloud: 'Track each finding through to resolution' },
@@ -151,39 +151,41 @@ const jsonLd = {
 			</div>
 			<p class="fine">Runs on Windows, macOS and Linux · Nothing leaves your tenant</p>
 
-			<div class="stage showcase" aria-label="The Maester report" data-demo={demoUrl} data-captions={JSON.stringify(Object.fromEntries(reportViews.map((v) => [v.name, v.caption])))}>
-				<div class="showcase__bar" role="tablist" aria-label="Views of the report">
-					<span class="showcase__pill" aria-hidden="true"></span>
-					{
-						reportViews.map((v, i) => (
-							<button type="button" role="tab" id={`view-${v.name}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : -1} aria-controls="showcase-frame" data-view={v.name} data-hash={v.hash}>
-								{v.label}
-								<span class="showcase__progress" aria-hidden="true"></span>
+			{reportViews.length > 0 && (
+				<div class="stage showcase" aria-label="The Maester report" data-demo={demoUrl} data-captions={JSON.stringify(Object.fromEntries(reportViews.map((v) => [v.name, v.caption])))}>
+					<div class="showcase__bar" role="tablist" aria-label="Views of the report">
+						<span class="showcase__pill" aria-hidden="true"></span>
+						{
+							reportViews.map((v, i) => (
+								<button type="button" role="tab" id={`view-${v.name}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : -1} aria-controls="showcase-frame" data-view={v.name} data-hash={v.hash}>
+									{v.label}
+									<span class="showcase__progress" aria-hidden="true"></span>
+								</button>
+							))
+						}
+						<span class="showcase__tools">
+							<button type="button" class="showcase__tool" data-fullscreen aria-label="Show the report full screen" title="Full screen">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
 							</button>
-						))
-					}
-					<span class="showcase__tools">
-						<button type="button" class="showcase__tool" data-fullscreen aria-label="Show the report full screen" title="Full screen">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
-						</button>
-						<a class="showcase__tool" href={demoUrl} target="_blank" rel="noopener" data-open aria-label="Open the live report in a new tab" title="Open in a new tab">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
-						</a>
-					</span>
+							<a class="showcase__tool" href={demoUrl} target="_blank" rel="noopener" data-open aria-label="Open the live report in a new tab" title="Open in a new tab">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
+							</a>
+						</span>
+					</div>
+					<div class="showcase__frame" id="showcase-frame" role="tabpanel" aria-label="Report view">
+						{
+							reportViews.map((v, i) => (
+								<div data-panel={v.name} class={i === 0 ? 'is-active' : 'is-after'} aria-hidden={i === 0 ? undefined : 'true'} inert={i !== 0}>
+									<img class="mt-light-only" src={`/demo/views/${v.name}-light.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+									<img class="mt-dark-only" src={`/demo/views/${v.name}-dark.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+								</div>
+							))
+						}
+						<button type="button" class="showcase__exit" data-exit-fullscreen hidden>Exit full screen</button>
+					</div>
+					<p class="showcase__caption">{reportViews[0]?.caption}</p>
 				</div>
-				<div class="showcase__frame" id="showcase-frame" role="tabpanel" aria-label="Report view">
-					{
-						reportViews.map((v, i) => (
-							<div data-panel={v.name} class={i === 0 ? 'is-active' : 'is-after'} aria-hidden={i === 0 ? undefined : 'true'} inert={i !== 0}>
-								<img class="mt-light-only" src={`/demo/views/${v.name}-light.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
-								<img class="mt-dark-only" src={`/demo/views/${v.name}-dark.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
-							</div>
-						))
-					}
-					<button type="button" class="showcase__exit" data-exit-fullscreen hidden>Exit full screen</button>
-				</div>
-				<p class="showcase__caption">{reportViews[0]?.caption}</p>
-			</div>
+			)}
 		</section>
 
 		<!-- Proof -->
@@ -454,135 +456,139 @@ const jsonLd = {
 			setTimeout(() => (button.textContent = 'Copy'), 1500);
 		});
 	}
-	// The report showcase: a tab per view of the report. It moves through the views by itself while it is on screen
-	// (the line under the tab shows when the next one comes), pauses while the pointer is over it, and stops for
-	// good once the reader picks a view. The pill behind the tabs and the pages slide to the new view.
 	const header = document.querySelector<HTMLElement>('.site-header');
-	const showcase = document.querySelector<HTMLElement>('.showcase')!;
-	const bar = showcase.querySelector<HTMLElement>('.showcase__bar')!;
-	const pill = showcase.querySelector<HTMLElement>('.showcase__pill')!;
-	const tabs = [...showcase.querySelectorAll<HTMLButtonElement>('[data-view]')];
-	const panels = [...showcase.querySelectorAll<HTMLElement>('[data-panel]')];
-	const caption = showcase.querySelector<HTMLElement>('.showcase__caption');
-	const captions: Record<string, string> = JSON.parse(showcase.dataset.captions ?? '{}');
-	const open = showcase.querySelector<HTMLAnchorElement>('[data-open]');
-	const frame = showcase.querySelector<HTMLElement>('.showcase__frame')!;
-	const demo = showcase.dataset.demo ?? '/demo/report';
-	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	let current = 0;
+	function initShowcase() {
+		// The report showcase: a tab per view of the report. It moves through the views by itself while it is on screen
+		// (the line under the tab shows when the next one comes), pauses while the pointer is over it, and stops for
+		// good once the reader picks a view. The pill behind the tabs and the pages slide to the new view.
+		const showcase = document.querySelector<HTMLElement>('.showcase');
+		if (!showcase?.querySelector('[data-view]')) return;
+		const bar = showcase.querySelector<HTMLElement>('.showcase__bar')!;
+		const pill = showcase.querySelector<HTMLElement>('.showcase__pill')!;
+		const tabs = [...showcase.querySelectorAll<HTMLButtonElement>('[data-view]')];
+		const panels = [...showcase.querySelectorAll<HTMLElement>('[data-panel]')];
+		const caption = showcase.querySelector<HTMLElement>('.showcase__caption');
+		const captions: Record<string, string> = JSON.parse(showcase.dataset.captions ?? '{}');
+		const open = showcase.querySelector<HTMLAnchorElement>('[data-open]');
+		const frame = showcase.querySelector<HTMLElement>('.showcase__frame')!;
+		const demo = showcase.dataset.demo ?? '/demo/report';
+		const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let current = 0;
 
-	const placePill = () => {
-		const tab = tabs[current];
-		pill.style.setProperty('--x', `${tab.offsetLeft}px`);
-		pill.style.setProperty('--y', `${tab.offsetTop}px`);
-		pill.style.setProperty('--w', `${tab.offsetWidth}px`);
-		pill.style.setProperty('--h', `${tab.offsetHeight}px`);
-	};
-	// The next view's images load while this one shows, so the slide never reveals an empty page.
-	const preload = (index: number) => {
-		for (const img of panels[index % panels.length].querySelectorAll('img')) img.loading = 'eager';
-	};
+		const placePill = () => {
+			const tab = tabs[current];
+			pill.style.setProperty('--x', `${tab.offsetLeft}px`);
+			pill.style.setProperty('--y', `${tab.offsetTop}px`);
+			pill.style.setProperty('--w', `${tab.offsetWidth}px`);
+			pill.style.setProperty('--h', `${tab.offsetHeight}px`);
+		};
+		// The next view's images load while this one shows, so the slide never reveals an empty page.
+		const preload = (index: number) => {
+			for (const img of panels[index % panels.length].querySelectorAll('img')) img.loading = 'eager';
+		};
 
-	const show = (next: number, forward = next > current) => {
-		if (next === current) return;
-		const from = panels[current];
-		const to = panels[next];
-		// The incoming page starts on the side it comes from, without animating there.
-		for (const p of panels) p.classList.remove('is-moving');
-		to.classList.remove('is-before', 'is-after');
-		to.classList.add(forward ? 'is-after' : 'is-before');
-		void to.offsetWidth;
-		from.classList.add('is-moving');
-		to.classList.add('is-moving');
-		from.classList.replace('is-active', forward ? 'is-before' : 'is-after');
-		to.classList.remove('is-before', 'is-after');
-		to.classList.add('is-active');
-		for (const p of panels) {
-			const active = p === to;
-			p.inert = !active;
-			if (active) p.removeAttribute('aria-hidden');
-			else p.setAttribute('aria-hidden', 'true');
-		}
-		tabs.forEach((t, i) => {
-			t.setAttribute('aria-selected', String(i === next));
-			t.tabIndex = i === next ? 0 : -1;
-		});
-		current = next;
-		placePill();
-		// On a phone the tabs scroll sideways: keep the selected one in view.
-		if (bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: tabs[next].offsetLeft - 8, behavior: still ? 'auto' : 'smooth' });
-		preload(next + 1);
-		const view = tabs[next].dataset.view ?? '';
-		if (caption) {
-			caption.textContent = captions[view] ?? '';
-			if (!still) caption.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'ease-out' });
-		}
-		if (open) open.href = `${demo}#${tabs[next].dataset.hash}`;
-	};
+		const show = (next: number, forward = next > current) => {
+			if (next === current) return;
+			const from = panels[current];
+			const to = panels[next];
+			// The incoming page starts on the side it comes from, without animating there.
+			for (const p of panels) p.classList.remove('is-moving');
+			to.classList.remove('is-before', 'is-after');
+			to.classList.add(forward ? 'is-after' : 'is-before');
+			void to.offsetWidth;
+			from.classList.add('is-moving');
+			to.classList.add('is-moving');
+			from.classList.replace('is-active', forward ? 'is-before' : 'is-after');
+			to.classList.remove('is-before', 'is-after');
+			to.classList.add('is-active');
+			for (const p of panels) {
+				const active = p === to;
+				p.inert = !active;
+				if (active) p.removeAttribute('aria-hidden');
+				else p.setAttribute('aria-hidden', 'true');
+			}
+			tabs.forEach((t, i) => {
+				t.setAttribute('aria-selected', String(i === next));
+				t.tabIndex = i === next ? 0 : -1;
+			});
+			current = next;
+			placePill();
+			// On a phone the tabs scroll sideways: keep the selected one in view.
+			if (bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: tabs[next].offsetLeft - 8, behavior: still ? 'auto' : 'smooth' });
+			preload(next + 1);
+			const view = tabs[next].dataset.view ?? '';
+			if (caption) {
+				caption.textContent = captions[view] ?? '';
+				if (!still) caption.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'ease-out' });
+			}
+			if (open) open.href = `${demo}#${tabs[next].dataset.hash}`;
+		};
 
-	// The reader takes over: no more moving on by itself.
-	const choose = (index: number) => {
-		showcase.classList.remove('is-auto');
-		show(index);
-	};
-	tabs.forEach((tab, i) => {
-		tab.addEventListener('click', () => choose(i));
-		tab.addEventListener('keydown', (event) => {
-			const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-			const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : step ? (current + step + tabs.length) % tabs.length : -1;
-			if (index < 0) return;
-			event.preventDefault();
-			choose(index);
-			tabs[index].focus();
-		});
-		// The progress line under the tab runs for the time each view shows; when it fills, the next view comes.
-		tab.querySelector('.showcase__progress')!.addEventListener('animationend', () => {
-			if (showcase.classList.contains('is-auto') && i === current) show((current + 1) % tabs.length, true);
-		});
-	});
-
-	// Full screen: the frame fills the screen with the view it shows. Where a browser can't (iPhone Safari), the
-	// live report opens at that view in a tab of its own instead.
-	const fullscreen = showcase.querySelector<HTMLButtonElement>('[data-fullscreen]');
-	fullscreen?.addEventListener('click', () => {
-		if (frame.requestFullscreen && document.fullscreenEnabled) {
+		// The reader takes over: no more moving on by itself.
+		const choose = (index: number) => {
 			showcase.classList.remove('is-auto');
-			frame.requestFullscreen().catch(() => window.open(open?.href ?? demo, '_blank', 'noopener'));
-		} else window.open(open?.href ?? demo, '_blank', 'noopener');
-	});
-	showcase.querySelector('[data-exit-fullscreen]')?.addEventListener('click', () => document.exitFullscreen?.());
-	document.addEventListener('fullscreenchange', () => {
-		const exit = showcase.querySelector<HTMLElement>('[data-exit-fullscreen]');
-		if (exit) exit.hidden = document.fullscreenElement !== frame;
-	});
-
-	bar.classList.add('has-pill');
-	placePill();
-	new ResizeObserver(placePill).observe(bar);
-
-	if (!still) {
-		showcase.classList.add('is-auto', 'is-paused');
-		const pause = (paused: boolean) => showcase.classList.toggle('is-paused', paused);
-		let inView = false;
-		let hovered = false;
-		new IntersectionObserver(
-			([entry]) => {
-				inView = entry.isIntersecting;
-				if (inView) preload(current + 1);
-				pause(!inView || hovered);
-			},
-			{ threshold: 0.4 },
-		).observe(frame);
-		showcase.addEventListener('pointerenter', (event) => {
-			if (event.pointerType !== 'mouse') return;
-			hovered = true;
-			pause(true);
+			show(index);
+		};
+		tabs.forEach((tab, i) => {
+			tab.addEventListener('click', () => choose(i));
+			tab.addEventListener('keydown', (event) => {
+				const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+				const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : step ? (current + step + tabs.length) % tabs.length : -1;
+				if (index < 0) return;
+				event.preventDefault();
+				choose(index);
+				tabs[index].focus();
+			});
+			// The progress line under the tab runs for the time each view shows; when it fills, the next view comes.
+			tab.querySelector('.showcase__progress')!.addEventListener('animationend', () => {
+				if (showcase.classList.contains('is-auto') && i === current) show((current + 1) % tabs.length, true);
+			});
 		});
-		showcase.addEventListener('pointerleave', () => {
-			hovered = false;
-			pause(!inView);
+
+		// Full screen: the frame fills the screen with the view it shows. Where a browser can't (iPhone Safari), the
+		// live report opens at that view in a tab of its own instead.
+		const fullscreen = showcase.querySelector<HTMLButtonElement>('[data-fullscreen]');
+		fullscreen?.addEventListener('click', () => {
+			if (frame.requestFullscreen && document.fullscreenEnabled) {
+				showcase.classList.remove('is-auto');
+				frame.requestFullscreen().catch(() => window.open(open?.href ?? demo, '_blank', 'noopener'));
+			} else window.open(open?.href ?? demo, '_blank', 'noopener');
 		});
+		showcase.querySelector('[data-exit-fullscreen]')?.addEventListener('click', () => document.exitFullscreen?.());
+		document.addEventListener('fullscreenchange', () => {
+			const exit = showcase.querySelector<HTMLElement>('[data-exit-fullscreen]');
+			if (exit) exit.hidden = document.fullscreenElement !== frame;
+		});
+
+		bar.classList.add('has-pill');
+		placePill();
+		new ResizeObserver(placePill).observe(bar);
+
+		if (!still) {
+			showcase.classList.add('is-auto', 'is-paused');
+			const pause = (paused: boolean) => showcase.classList.toggle('is-paused', paused);
+			let inView = false;
+			let hovered = false;
+			new IntersectionObserver(
+				([entry]) => {
+					inView = entry.isIntersecting;
+					if (inView) preload(current + 1);
+					pause(!inView || hovered);
+				},
+				{ threshold: 0.4 },
+			).observe(frame);
+			showcase.addEventListener('pointerenter', (event) => {
+				if (event.pointerType !== 'mouse') return;
+				hovered = true;
+				pause(true);
+			});
+			showcase.addEventListener('pointerleave', () => {
+				hovered = false;
+				pause(!inView);
+			});
+		}
 	}
+	initShowcase();
 
 	// Anchored tiles stop below the sticky site header.
 	const setHeader = () => document.documentElement.style.setProperty('--mt-header-h', `${header?.offsetHeight ?? 60}px`);
@@ -1042,6 +1048,15 @@ const jsonLd = {
 		}
 		.showcase__bar button[role='tab'] {
 			flex: none;
+		}
+		/* The tabs scroll; the full-screen and open buttons stay in reach at the end of the bar. */
+		.showcase__tools {
+			position: sticky;
+			inset-inline-end: -0.5rem;
+			z-index: 2;
+			margin-inline-end: -0.5rem;
+			padding-inline: 0.25rem 0.5rem;
+			background: var(--mt-canvas);
 		}
 	}
 	.showcase__caption {

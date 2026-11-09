@@ -118,6 +118,8 @@ const results = loadResults(dataPath);
 delete results.TenantLogos;
 const tenantId = results.TenantId;
 const demoTenantId = '6f1a2b3c-4d5e-4f60-8a7b-9c0d1e2f3a4b';
+// A sample without a TenantId has nothing to replace. A GUID can appear in any case, so the match ignores case.
+const tenantIdPattern = tenantId ? new RegExp(String(tenantId).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi') : null;
 // Every personal address becomes a demo persona; addresses that name a role or a test object stay. The map is shared,
 // so an address gets the same persona in the result and in every attachment.
 const personas = ['alex.wilber', 'lee.gu', 'nestor.wilke', 'megan.bowen', 'isaiah.langer', 'diego.siciliani', 'lidia.holloway', 'lynne.robbins', 'miriam.graham', 'johanna.lorenz', 'joni.sherman', 'pradeep.gupta', 'patti.fernandez', 'christie.cline', 'grady.archie', 'henrietta.mueller'];
@@ -128,7 +130,7 @@ const leftoverPattern = /elapora|pora\.onmicrosoft|merill|kalwani|sonnadara|atay
 
 /** The text with the demo tenant's names, domains, people and ID replaced; fails if any is left. */
 function scrub(text, what) {
-	let s = text.replaceAll(tenantId, demoTenantId);
+	let s = tenantIdPattern ? text.replace(tenantIdPattern, demoTenantId) : text;
 	for (const [pattern, value] of replacements) s = s.replace(pattern, value);
 	s = s.replace(/\b([A-Za-z0-9._#-]+)@(contoso(?:\.mail)?(?:\.onmicrosoft)?\.com)\b/g, (match, local, domain) => {
 		if (roleAddress.test(local)) return match;
@@ -136,7 +138,7 @@ function scrub(text, what) {
 		if (!addresses.has(key)) addresses.set(key, personas[addresses.size % personas.length] + (addresses.size >= personas.length ? String(Math.floor(addresses.size / personas.length) + 1) : ''));
 		return `${addresses.get(key)}@${domain}`;
 	});
-	const leftover = s.match(leftoverPattern) ?? s.match(new RegExp(tenantId, 'i'));
+	const leftover = s.match(leftoverPattern) ?? (tenantIdPattern ? s.match(new RegExp(tenantIdPattern.source, 'i')) : null);
 	if (leftover) {
 		const at = leftover.index ?? 0;
 		throw new Error(`${what} still names the demo tenant: ${leftover[0]} (…${s.slice(Math.max(0, at - 60), at + 60)}…)`);
@@ -157,6 +159,9 @@ const attachments = attachArgs.map((arg, i) => {
 		base64: gzipSync(Buffer.from(content, 'utf8'), { level: 9 }).toString('base64'),
 	};
 });
+const ids = attachments.map((a) => a.meta.Id);
+const duplicate = ids.find((id, i) => ids.indexOf(id) !== i);
+if (duplicate) throw new Error(`Two --attach names give the attachment ID "${duplicate}"; rename one so each link opens its own attachment.`);
 if (attachments.length) results.Attachments = [...(results.Attachments ?? []).filter((a) => !attachments.some((x) => x.meta.Name === a?.Name)), ...attachments.map((a) => a.meta)];
 const json = scrub(JSON.stringify(results), 'The sample');
 

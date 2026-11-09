@@ -4,7 +4,7 @@
 // It also refreshes the dark captures the how-it-works explainer already uses.
 import { chromium } from 'playwright';
 import sharp from 'sharp';
-import { copyFileSync, existsSync } from 'node:fs';
+import { copyFileSync, existsSync, rmSync } from 'node:fs';
 
 const base = process.argv[2] ?? 'http://localhost:4321';
 // Each view is a route of the report; `scroll` names an element to bring to the top first, and `click` a button to
@@ -29,6 +29,8 @@ for (const theme of ['light', 'dark']) {
 		await page.goto(`${base}/demo/report.html#${view.hash}`, { waitUntil: 'networkidle' });
 		await page.waitForTimeout(1200);
 		if (view.optional && !(await page.locator('iframe').count())) {
+			// Remove an earlier capture, so the home page doesn't show a view the demo no longer has.
+			rmSync(new URL(`../public/demo/views/${view.name}-${theme}.webp`, import.meta.url).pathname, { force: true });
 			console.log(`Skipped ${view.name}: the demo report has no such page.`);
 			continue;
 		}
