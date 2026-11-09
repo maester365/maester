@@ -1,4 +1,5 @@
-// How many checks Maester has, counted once for every page that says so (the home page and the pricing page), so the
+// How many checks Maester has, counted once for every page that says so (the home page, the pricing page and the
+// explainer video, through pages/explainers/counts.js.ts), so the
 // numbers can't disagree. The catalogs are written before each build by scripts/prepare-data.mjs, and the
 // build-website workflow builds on every push to main and once a day, which picks up new community packs.
 import explorer from '../data/explorer.json';

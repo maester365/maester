@@ -9,7 +9,7 @@
 // command reference need PowerShell 7 and the Microsoft.Graph.Authentication module. The build-website workflow
 // runs this in a fresh checkout, so every deploy of maester.dev is built from the source of that commit.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const websiteRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -64,14 +64,4 @@ if (communityMissing || missing('src/data/contributors.json') || missing('src/da
 
 if (missing('src/data/sponsors.json') || missing('public/readme/sponsors.svg')) {
 	run('Look up the sponsors', process.execPath, ['scripts/sponsors.mjs'], websiteRoot);
-}
-
-// The check counts the explainer videos show in their terminal (public/explainers/how-it-works), counted the way
-// src/lib/check-counts.ts counts them for the pages. Written on every run: it is cheap, and the catalog may be new.
-{
-	const tests = JSON.parse(readFileSync(at('src/data/test-catalog.json'), 'utf8')).Tests.filter((t) => t.Lifecycle !== 'Deprecated');
-	const zta = JSON.parse(readFileSync(at('../packs/zero-trust-assessment/catalog.json'), 'utf8')).Tests.length;
-	const counts = { builtIn: tests.length, zta, core: tests.length + zta };
-	mkdirSync(at('public/explainers/_shared'), { recursive: true });
-	writeFileSync(at('public/explainers/_shared/counts.js'), `// Written by scripts/prepare-data.mjs. Do not edit.\nwindow.__counts = ${JSON.stringify(counts)};\n`);
 }

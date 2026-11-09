@@ -552,8 +552,6 @@ build/active-directory/azure-lab/LabConfig.json
 website/public/explainers/_shared/gsap.min.js
 website/public/explainers/_shared/fonts/
 website/public/explainers/_shared/hyperframe.runtime.js
-# The check counts the explainers show, written by website/scripts/prepare-data.mjs
-website/public/explainers/_shared/counts.js
 website/dist/
 
 # Astro
