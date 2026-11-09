@@ -101,17 +101,16 @@
                 } else {
                     "``$Id`` (unresolved)"
                 }
-            }) -join '<br>'
+            }) -join '; '
         if (!$SourceLinks) { $SourceLinks = 'None parsed' }
         $CaText = 'Not available'
         if (-not $CaReadError) {
             $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
                 -Reference $CaReferences -GroupId $Group.id
         }
-        $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
-        $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
+        $Rule = ConvertTo-MtMarkdownCodeSpan -Text $Group.membershipRule -TableCell
         $Result += "`n| $GroupLink | $SourceLinks | $($Group.membershipRuleProcessingState) | "
-        $Result += "$(@($Group.assignedLicenses).Count) | $CaText | <code>$Rule</code> |"
+        $Result += "$(@($Group.assignedLicenses).Count) | $CaText | $Rule |"
     }
     if ($CaReadError) {
         $CaMessage = $CaReadError.Exception.Message -replace "`r?`n", ' '

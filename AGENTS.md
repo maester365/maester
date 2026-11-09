@@ -43,9 +43,10 @@ maester.dev), `report/` (React app that builds the HTML report template).
   Featured contributor list) is written by `./build/Update-ConsoleContributors.ps1` from
   the website's contributor data.
 - Never commit the website data that each build generates: the command pages in `website/docs/commands/`
-  (everything but `readme.mdx`), `website/src/data/test-catalog.json`, `contributors.json` and `sponsors.json`.
-  They are ignored by git. `website/scripts/prepare-data.mjs` writes them from the module source, the git
-  history and GitHub before `npm run dev` and `npm run build`; `npm run refresh-data` writes them again.
+  (everything but `readme.mdx`), `website/src/data/test-catalog.json`, `contributors.json`, `sponsors.json`,
+  `community-packs.json` and `catalog-history.json`. They are ignored by git. `website/scripts/prepare-data.mjs`
+  writes them from the module source, the git history, GitHub and packs.maester.cloud before `npm run dev` and
+  `npm run build`; `npm run refresh-data` writes them again.
   The build-website workflow builds and deploys maester.dev from main, so a merge needs no follow-up PR.
 - A test is mapped to a framework in one place: the `Control` attribute, `<framework-key>:<requirement-id>`. A
   CIS test carries `Control = 'cis-m365:5.1.5.1'`, a CISA test `Control = 'cisa-scuba:MS.AAD.3.1'`, and any other

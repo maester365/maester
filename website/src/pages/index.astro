@@ -5,20 +5,19 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import Explainer from '../components/Explainer.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import PronunciationButton from '../components/PronunciationButton.astro';
-import catalog from '../data/test-catalog.json';
+import CatalogGrowth from '../components/CatalogGrowth.astro';
+import explorer from '../data/explorer.json';
 import contributors from '../data/contributors.json';
 import sponsors from '../data/sponsors.json';
 import media from '../data/media.json';
-import ztaCatalog from '../../../packs/zero-trust-assessment/catalog.json';
+import { builtIn, community, format, tests, zta } from '../lib/check-counts';
 import { compact, getStats } from '../lib/stats.mjs';
 import { previewLabel } from '../lib/versions.mjs';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
-const tests = (catalog.Tests as any[]).filter((t) => t.Lifecycle !== 'Deprecated');
-const builtIn = tests.length;
-const zta = (ztaCatalog.Tests as unknown[]).length;
 const bySuite = (suite: string) => tests.filter((t) => t.Suite === suite).length;
 const stats = await getStats();
-const format = (n: number) => n.toLocaleString('en-US');
 
 const suites = [
 	{ code: 'CIS', name: 'CIS Microsoft 365 Foundations', desc: 'The CIS benchmark for Microsoft 365, mapped requirement by requirement, with its level and profile.', count: bySuite('CIS'), href: '/docs/tests/cis' },
@@ -29,9 +28,8 @@ const suites = [
 	{ code: 'MT', name: 'Maester checks', desc: 'Checks written by the community for what the frameworks miss: Conditional Access, apps, Intune and more.', count: bySuite('Maester') + bySuite('XSPM'), href: '/docs/tests/maester' },
 	{ code: 'AD', name: 'Active Directory', desc: 'Read-only checks for your on-premises domains: GPOs, DACLs, Kerberos, trusts and more.', count: bySuite('AD'), href: '/docs/tests/ad' },
 	{ code: 'ASD', name: 'ASD Essential Eight', desc: "The Australian Signals Directorate's Essential Eight and ISM controls.", count: bySuite('ASD'), href: '/docs/tests/asd' },
+	{ code: 'PACKS', name: 'Community packs', desc: 'Checks from community packs on packs.maester.cloud, among them the CIS Intune benchmarks for Windows, macOS, iOS and Edge.', count: community, href: 'https://packs.maester.cloud' },
 ];
-
-const products = ['Entra ID', 'Conditional Access', 'Intune', 'Exchange Online', 'Defender', 'Teams', 'SharePoint', 'Purview', 'Azure', 'Azure DevOps', 'GitHub', 'Copilot Studio', 'Fabric', 'Active Directory'];
 
 const steps = [
 	{ n: '1', title: 'Install', code: 'Install-Module Maester', text: 'One PowerShell module. The checks ship inside it.' },
@@ -61,27 +59,55 @@ const platforms = [
 	{ name: 'Teams and Slack', href: '/docs/alerts/teams' },
 ];
 
-const packs = [
-	{ badges: ['Official', 'Ships with Maester'], name: 'Microsoft Zero Trust Assessment', desc: "Run Microsoft's Zero Trust Assessment from Maester and see every result next to Maester's own checks.", tests: zta, by: 'maester365' },
-	{ badges: ['Module pack'], name: 'Least Privileged MSGraph', desc: 'Checks that service principals hold only the Graph permissions their real API activity needs.', tests: 5, by: 'Mynster9361' },
-	{ badges: ['Script pack'], name: 'RKSolutions Intune Anomalies', desc: 'Finds devices that miss protection, drift out of compliance or fall out of management.', tests: 8, by: 'royklo' },
-];
+// Four community packs from packs.maester.cloud, in this order; the Zero Trust Assessment pack has a tile of its own.
+// A pack the site no longer lists is left out.
+const communityPacks = [...explorer.communityPacks].sort((a, b) => b.count - a.count);
+const intunePacks = communityPacks.filter((p) => /\bCIS\b.*\bIntune\b/i.test(`${p.name} ${p.description}`));
+const intuneChecks = intunePacks.reduce((n, p) => n + p.count, 0);
+const featuredPacks = ['JL.CISW11INT.L1', 'CLT.UA', 'LPMS', 'RKS.IA'];
+const packs = featuredPacks
+	.map((code) => communityPacks.find((p) => p.code === code))
+	.filter((p) => p !== undefined)
+	.map((p) => ({ name: p.name, desc: p.description, tests: p.count, by: p.publisher, href: p.url, banner: (p as { banner?: string }).banner ?? '' }));
 
 // The views of the real report (public/demo/report.html, sample data for Contoso), captured by
 // scripts/capture-demo-report.mjs.
 const reportViews = [
 	{ name: 'overview', hash: '/', label: 'Overview', alt: 'The Maester report overview: 57% of checks passed, failures by severity, and the checks to fix first', caption: 'One page that says how your tenant is doing, what changed since the last run, and what to fix first.' },
 	{ name: 'plan', hash: '/plan', label: 'Action plan', alt: 'The action plan: every failed check ranked by severity, user impact and effort', caption: 'Every failure ranked by severity, user impact and effort, with the quick wins marked.' },
-	{ name: 'test', hash: '/CIS.M365.1.1.1', label: 'A finding', alt: 'A failed check opened: what an attacker could do, what Maester found, and how to fix it', caption: 'Each finding says what an attacker could do, shows what Maester found, and how to fix it.' },
-	{ name: 'framework', hash: '/framework/cis-m365', label: 'Frameworks', alt: 'Coverage of the CIS Microsoft 365 benchmark, requirement by requirement', caption: 'Coverage of CIS, CISA SCuBA, the Essential Eight and NIST, requirement by requirement.' },
+	{ name: 'test', hash: '/CIS.M365.1.1.1', label: 'A finding', alt: 'A failed check opened in a panel: what an attacker could do, what Maester found, and how to fix it', caption: 'A finding opens beside the list: what an attacker could do, what Maester found, and how to fix it.' },
+	{ name: 'framework', hash: '/framework/cis-m365', label: 'Frameworks', alt: 'Coverage of the CIS Microsoft 365 benchmark, requirement by requirement, with the frameworks menu open beside it', caption: 'Coverage of CIS, CISA SCuBA, the Essential Eight and NIST, requirement by requirement.' },
 	{ name: 'attack', hash: '/attack', label: 'MITRE ATT&CK', alt: 'The MITRE ATT&CK techniques that failed checks leave open', caption: 'The attack techniques each gap leaves open, mapped to MITRE ATT&CK.' },
-	{ name: 'zta', hash: '/pack/maester.zero-trust-assessment', label: 'Zero Trust', alt: "Microsoft's Zero Trust Assessment results inside the Maester report", caption: "Microsoft's Zero Trust Assessment, in the same report." },
-];
+	{ name: 'zt-board', hash: '/pack/zta/plan/identity', label: 'Zero Trust plan', alt: "The Zero Trust plan for Identity as a board: swimlanes as rows, the workshop's First, Then and Next phases as columns, each task coloured by what the run found", caption: "Microsoft's Zero Trust workshop as a plan: each task in its swimlane and phase, coloured by what this run found." },
+	{ name: 'zt-table', hash: '/pack/zta/plan/identity#table', label: 'Plan as a table', alt: 'The same Zero Trust plan as a table, grouped by functional area and swimlane, with status, phase, priority, checks, effort and user impact', caption: 'The same plan as a table: status, phase, priority, effort and licence for every task.' },
+	{ name: 'zt-report', hash: '/reports/zero-trust-assessment', label: 'Zero Trust report', alt: "Microsoft's own Zero Trust Assessment report, with its Sankey chart of results by pillar, opened inside the Maester report", caption: "Microsoft's own Zero Trust Assessment report, Sankey chart and all, one click away in the same file." },
+	{ name: 'zta', hash: '/pack/zta', label: 'Zero Trust results', alt: "Microsoft's Zero Trust Assessment results by pillar, inside the Maester report", caption: "Microsoft's Zero Trust Assessment results by pillar, beside Maester's own checks." },
+// A view shows once scripts/capture-demo-report.mjs has captured it (the build runs from website/).
+].filter((v) => existsSync(join(process.cwd(), 'public', 'demo', 'views', `${v.name}-light.webp`)));
 
 const story = media.stories.find((s) => s.approved);
+// The demo report: the host serves public/demo/report.html at /demo/report; the dev server only by its file name.
+// Maester and Maester Cloud side by side, for the comparison near the end of the page.
+const compare = [
+	{ what: 'Checks, packs and report', core: 'Every one', cloud: 'The checks in Maester 2.3 for now, plus your Zero Trust Assessment results. Packs and checks new in 3.0 aren\'t in managed runs yet, and Active Directory checks run with Maester itself' },
+	{ what: 'Where it runs', core: 'Your desktop, GitHub Actions or your own pipelines', cloud: 'Securely in your own Azure subscription' },
+	{ what: 'Your data', core: 'Stays on your machine or in your own pipeline', cloud: 'Report data never leaves the Azure region you choose' },
+	{ what: 'Setup', core: 'You install, schedule and store the reports', cloud: 'Simplified deployment, nothing to script' },
+	{ what: 'Run history', core: 'One report per run', cloud: 'Every run, for every tenant' },
+	{ what: 'Fixing findings', core: 'Compare one report with the next yourself', cloud: 'Track each finding through to resolution' },
+	{ what: 'Drift', core: 'Drift checks against a baseline you keep', cloud: 'Changes between runs, detected for you' },
+	{ what: 'Tenants', core: 'One tenant per run', cloud: 'Every tenant in one place' },
+	{ what: 'Alerts', core: 'Email and Teams alerts you set up', cloud: 'Built in' },
+	{ what: 'Support', core: 'The community on Discord and GitHub', cloud: 'Formal support' },
+	{ what: 'Price', core: 'Free', cloud: 'From $99 a month, plus the Azure resources it uses' },
+	{ what: 'Supports Maester', core: 'Contribute checks or sponsor the maintainers', cloud: 'Your subscription keeps Maester and its checks free for everyone' },
+];
+const demoUrl = import.meta.env.DEV ? '/demo/report.html' : '/demo/report';
 const avatars = contributors.profiles.filter((p: any) => p.avatar).slice(0, 18);
 const featured = (sponsors as any).featured ?? [];
 const backers = (sponsors as any).backers ?? [];
+// The maintainers and test writers who take GitHub sponsorships.
+const people = [...((sponsors as any).maintainers ?? []), ...((sponsors as any).testAuthors ?? [])].filter((p: any) => p.sponsorUrl && p.avatar);
 
 const jsonLd = {
 	'@context': 'https://schema.org',
@@ -102,272 +128,336 @@ const jsonLd = {
 	description={`Test your Microsoft 365, Entra, Azure and Active Directory security every day, in one run. ${format(builtIn)} built-in checks across CIS, CISA SCuBA, EIDSCA and ORCA, plus Microsoft's Zero Trust Assessment. Free and open source.`}
 	jsonLd={jsonLd}
 >
-	<div class="banner">
-		<span class="dot"></span>Maester {previewLabel} preview: a new test engine, Maester Packs and Microsoft's Zero Trust Assessment.
-		<a href="/blog/maester-3-0">Read the launch post →</a>
-	</div>
+	<div class="tiles">
+		<!-- What it is: the hero, and the report it writes, as views to flip through. -->
+		<section class="tile tile--white hero" id="what">
+			<a href="https://github.com/maester365/maester" class="chip"><span class="dot dot--pass"></span>Open source · MIT · Free forever</a>
+			<h1>Test your Microsoft 365 <span class="ember">security</span>, every day, in one run.</h1>
+			<p class="sub">
+				Maester<span class="say"><PronunciationButton /></span> checks Entra, Azure, Exchange, Teams and Active Directory against CIS, CISA, Microsoft's Zero Trust Assessment and more, and writes a report you can act on.
+			</p>
+			<div class="cta-row">
+				<InstallCommand variant="hero" />
+			</div>
+			<div class="ctas">
+				<a class="pill-btn" href="/docs/installation">Quickstart</a>
+				<a class="more" href={demoUrl} target="_blank" rel="noopener">Try the live demo</a>
+			</div>
+			<p class="fine">Runs on Windows, macOS and Linux · Nothing leaves your tenant</p>
 
-	<section class="hero wrap">
-		<a href="https://github.com/maester365/maester" class="chip"><span class="dot dot--pass"></span>Open source · MIT · Free forever</a>
-		<h1>Test your Microsoft 365 <span class="ember">security</span>, every day, in one run.</h1>
-		<p class="lede">
-			Maester<span class="say"><PronunciationButton /></span> is the open-source security test framework for Microsoft 365, Entra, Azure and Active Directory. Run {format(builtIn)} built-in checks across CIS, CISA SCuBA, EIDSCA and ORCA, add Microsoft's Zero Trust Assessment, and automate it in your pipeline.
-		</p>
-		<div class="cta-row">
-			<InstallCommand variant="hero" />
-			<a class="btn btn--primary" href="/docs/installation">Quickstart →</a>
-			<a class="btn btn--ghost" href="/docs/tests">Browse the {format(builtIn)} checks</a>
-		</div>
-		<p class="fine">Runs on Windows, macOS and Linux · Nothing leaves your tenant</p>
-	</section>
-
-	<section class="wrap showcase" aria-label="The Maester report" data-captions={JSON.stringify(Object.fromEntries(reportViews.map((v) => [v.name, v.caption])))}>
-		<div class="showcase__bar" role="tablist" aria-label="Views of the report">
-			<span class="showcase__pill" aria-hidden="true"></span>
-			{
-				reportViews.map((v, i) => (
-					<button type="button" role="tab" id={`view-${v.name}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : -1} aria-controls="showcase-frame" data-view={v.name} data-hash={v.hash}>
-						{v.label}
-						<span class="showcase__progress" aria-hidden="true"></span>
-					</button>
-				))
-			}
-			<a class="showcase__live" href="/demo/report" target="_blank" rel="noopener">Open the live report ↗</a>
-		</div>
-		<div class="showcase__frame" id="showcase-frame" role="tabpanel" aria-label="Report view">
-			{
-				reportViews.map((v, i) => (
-					<div data-panel={v.name} class={i === 0 ? 'is-active' : 'is-after'} aria-hidden={i === 0 ? undefined : 'true'} inert={i !== 0}>
-						<img class="mt-light-only" src={`/demo/views/${v.name}-light.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
-						<img class="mt-dark-only" src={`/demo/views/${v.name}-dark.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+			{reportViews.length > 0 && (
+				<div class="stage showcase" aria-label="The Maester report" data-demo={demoUrl} data-captions={JSON.stringify(Object.fromEntries(reportViews.map((v) => [v.name, v.caption])))}>
+					<div class="showcase__bar" role="tablist" aria-label="Views of the report">
+						<span class="showcase__pill" aria-hidden="true"></span>
+						{
+							reportViews.map((v, i) => (
+								<button type="button" role="tab" id={`view-${v.name}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? undefined : -1} aria-controls="showcase-frame" data-view={v.name} data-hash={v.hash}>
+									{v.label}
+									<span class="showcase__progress" aria-hidden="true"></span>
+								</button>
+							))
+						}
+						<span class="showcase__tools">
+							<button type="button" class="showcase__tool" data-fullscreen aria-label="Show the report full screen" title="Full screen">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+							</button>
+							<a class="showcase__tool" href={demoUrl} target="_blank" rel="noopener" data-open aria-label="Open the live report in a new tab" title="Open in a new tab">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
+							</a>
+						</span>
 					</div>
-				))
-			}
-		</div>
-		<p class="showcase__caption">{reportViews[0].caption}</p>
-	</section>
-
-	<section class="stats">
-		<div class="wrap stats__grid">
-			<div><strong>{compact(stats.downloads, true)}</strong><span>PowerShell Gallery downloads</span></div>
-			<div><strong>{format(builtIn + zta)}</strong><span>Checks: {format(builtIn)} built in + {zta} Zero Trust</span></div>
-			<div><strong>{compact(stats.stars)}</strong><span>GitHub stars</span></div>
-			<div><strong>{contributors.profiles.length}+</strong><span>Contributors</span></div>
-		</div>
-	</section>
-
-	<section class="wrap section" id="how-it-works">
-		<p class="eyebrow">How it works</p>
-		<h2>From install to a report in five minutes.</h2>
-		<p class="lede-sm">Install the module, connect to your tenant, run it, with Microsoft's Zero Trust Assessment in the same pass. Watch the whole run.</p>
-		<Explainer slug="how-it-works" heading={false} />
-		<ol class="steps">
-			{steps.map((s) => <li><span class="mono muted">{s.n}</span><strong>{s.title}</strong><code>{s.code}</code></li>)}
-		</ol>
-	</section>
-
-	{
-		story && (
-			<section class="wrap section">
-				<p class="eyebrow">In production</p>
-				<h2>{story.headline}</h2>
-				<p class="lede-sm">{story.summary}</p>
-				<div class="story">
-					<figure class="story__clip">
-						<blockquote>“{story.quote}”</blockquote>
-						<figcaption>
-							<span class="avatar">{story.person.initials}</span>
-							<span>
-								<strong>{story.person.name}</strong>
-								<br />
-								<span class="muted">{story.person.role}</span>
-							</span>
-							<a class="btn btn--primary" href={story.video}>Watch the episode ↗</a>
-						</figcaption>
-					</figure>
-					<div class="story__side">
-						<div class="facts">{story.facts.map((f) => <div class="card"><strong>{f.value}</strong><span>{f.label}</span></div>)}</div>
-						{story.quotes.map((q) => <blockquote class="card">“{q}”<span class="muted">{story.person.name}</span></blockquote>)}
+					<div class="showcase__frame" id="showcase-frame" role="tabpanel" aria-label="Report view">
+						{
+							reportViews.map((v, i) => (
+								<div data-panel={v.name} class={i === 0 ? 'is-active' : 'is-after'} aria-hidden={i === 0 ? undefined : 'true'} inert={i !== 0}>
+									<img class="mt-light-only" src={`/demo/views/${v.name}-light.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+									<img class="mt-dark-only" src={`/demo/views/${v.name}-dark.webp`} alt={v.alt} width="1600" height="1000" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+								</div>
+							))
+						}
+						<button type="button" class="showcase__exit" data-exit-fullscreen hidden>Exit full screen</button>
 					</div>
+					<p class="showcase__caption">{reportViews[0]?.caption}</p>
 				</div>
-			</section>
-		)
-	}
+			)}
+		</section>
 
-	<section class="wrap section">
-		<div class="row-head">
-			<div>
-				<p class="eyebrow">Watch and listen</p>
-				<h2 class="h2-sm">Maester on Entra.Chat</h2>
+		<!-- Proof -->
+		<section class="proof" aria-label="Maester in numbers">
+			<div class="proof__grid">
+				<div><strong>{compact(stats.downloads, true)}</strong><span>PowerShell Gallery downloads</span></div>
+				<div><strong>{format(builtIn + zta + community)}</strong><span>Checks</span></div>
+				<div><strong>{compact(stats.stars)}</strong><span>GitHub stars</span></div>
+				<div><strong>{contributors.profiles.length}+</strong><span>Contributors</span></div>
 			</div>
-			<a href="https://entra.chat">All episodes →</a>
-		</div>
-		<div class="grid grid--4">
-			{
-				media.episodes.map((e) => (
-					<a class="card episode" href={e.url}>
-						<div class="episode__poster" style={`--tint:${e.tint}`}>
-							<div class="episode__top"><span class="mono">EP {e.n}</span><span class="mono pill">{e.length}</span></div>
-							<strong>{e.hook}</strong>
-						</div>
-						<div class="episode__body"><span class="episode__title">{e.title}</span><span class="muted">{e.who} · {e.date}</span></div>
-					</a>
-				))
-			}
-		</div>
-	</section>
+		</section>
 
-	<section class="wrap section">
-		<p class="eyebrow">Coverage</p>
-		<h2>One run. Every framework your auditors ask about.</h2>
-		<p class="lede-sm">Each check names the requirement it implements, so one report answers CIS, CISA and Microsoft's own guidance at once. Every check is also mapped to MITRE ATT&amp;CK techniques and NIST SP 800-53 controls.</p>
-		<div class="grid grid--4">
-			{
-				suites.map((s) => (
-					<a class="card suite" href={s.href}>
-						<span class="suite__top"><span class="mono muted">{s.code}</span>{s.isNew && <span class="chip chip--sm chip--ember">New in 3.0</span>}</span>
-						<strong>{s.name}</strong>
-						<span class="suite__desc">{s.desc}</span>
-						<span class="suite__count">{format(s.count)} <span class="muted">checks →</span></span>
-					</a>
-				))
-			}
-		</div>
-	</section>
-
-	<section class="wrap section">
-		<div class="zta">
-			<div>
-				<p class="eyebrow ember">Microsoft Zero Trust Assessment</p>
-				<h2 class="h2-sm">Microsoft's Zero Trust Assessment, inside your Maester report.</h2>
-				<p>The Zero Trust Assessment pack ships with Maester. It runs Microsoft's assessment in its own PowerShell session and puts all {zta} results next to Maester's checks, in one report and one pipeline.</p>
-				<a class="btn btn--ghost" href="/docs/packs/zero-trust-assessment">How the pack works →</a>
+		<!-- 01 The checks -->
+		<section class="tile tile--ink mt-dark-tile" id="checks">
+			<p class="chapter"><b>01</b>The checks</p>
+			<h2>{format(builtIn + zta + community)} checks. Every framework your auditors ask about.</h2>
+			<p class="sub">Each check names the requirement it implements, so one report answers CIS, CISA, Microsoft's Zero Trust Assessment, MITRE ATT&amp;CK and NIST at once.</p>
+			<div class="ctas">
+				<a class="pill-btn" href="/docs/tests">Browse the checks</a>
+				<a class="more" href="/docs/tests/frameworks">How checks map to frameworks</a>
 			</div>
-			<pre class="term"><span class="muted"># Run Maester and the Zero Trust Assessment together</span>
-Invoke-Maester -Pack ZTA</pre>
-		</div>
-	</section>
-
-
-	<section class="wrap section">
-		<p class="eyebrow">New in {previewLabel}</p>
-		<h2>What's new in Maester {previewLabel}.</h2>
-		<div class="grid grid--3">
-			{whatsNew.map((w) => <div class="card"><strong>{w.title}</strong><span class="muted">{w.body}</span></div>)}
-		</div>
-		<p><a href="/blog/maester-3-0">Read what changed in 3.0 →</a> · <a href="/docs/preview">Get the preview →</a></p>
-	</section>
-
-	<section class="wrap section">
-		<p class="eyebrow">Automate</p>
-		<h2>Run it every day, wherever you already deploy.</h2>
-		<div class="chips chips--lg">{platforms.map((p) => <a class="chip" href={p.href}>{p.name}</a>)}</div>
-	</section>
-
-	<section class="wrap section">
-		<div class="row-head">
-			<div>
-				<p class="eyebrow">Maester Packs</p>
-				<h2>Extend Maester with packs.</h2>
-			</div>
-			<a href="https://packs.maester.cloud">Browse all packs ↗</a>
-		</div>
-		<div class="grid grid--3">
-			{
-				packs.map((p) => (
-					<div class="card pack">
-						<span class="chips">{p.badges.map((b) => <span class="chip chip--sm">{b}</span>)}</span>
-						<strong>{p.name}</strong>
-						<span class="muted">{p.desc}</span>
-						<span class="mono muted">{p.tests} checks · {p.by}</span>
-					</div>
-				))
-			}
-		</div>
-	</section>
-
-	<section class="wrap section split">
-		<div>
-			<p class="eyebrow">Write your own</p>
-			<h2 class="h2-sm">Write your policies as tests.</h2>
-			<p>A Maester test is one PowerShell function with an attribute that says what it checks. Maester finds it, runs it with the built-in checks and puts it in the same report.</p>
-			<p><a href="/docs/writing-tests/first-custom-test">Write your first test →</a> · <a href="/test-builder">Test builder →</a></p>
-		</div>
-		<pre class="term"><span class="blue">function</span> Test-CT1001 &#123;
-    [MaesterTest(
-        Id       = <span class="green">'CT.1001'</span>,
-        Title    = <span class="green">'Only admins and guest inviters can invite guests'</span>,
-        Severity = <span class="green">'Medium'</span>,
-        Service  = <span class="green">'Graph'</span>
-    )]
-    param()
-    $policy = Invoke-MtGraphRequest -RelativeUri <span class="green">'policies/authorizationPolicy'</span>
-    $policy.allowInvitesFrom -in <span class="green">'adminsAndGuestInviters'</span>, <span class="green">'none'</span>
-&#125;</pre>
-	</section>
-
-	<section class="wrap section">
-		<h2 class="h2-sm">Checks for the services you actually run.</h2>
-		<div class="chips chips--lg">{products.map((p) => <span class="chip">{p}</span>)}</div>
-	</section>
-
-	<section class="wrap section">
-		<div class="sponsors">
-			<div class="row-head">
-				<div>
-					<p class="eyebrow">Sponsors</p>
-					<h2 class="h2-sm">Maester is free because these sponsors pay for the work.</h2>
-					<p class="muted">Sponsorship pays for maintainer time and the test tenants every check is proven against. It never buys a say in what a check reports.</p>
-				</div>
-				<div class="chips">
-					<a class="btn btn--primary" href="/sponsor">Become a sponsor</a>
-					<a class="btn btn--ghost" href="/sponsor#maintainers">Sponsor a maintainer</a>
-				</div>
-			</div>
-			<div class="logos">
+			<div class="frameworks">
 				{
-					featured.map((s: any) => (
-						<a class="logo-card" href={s.url} title={s.name}>
-							<img src={s.logo} alt={s.name} class="mt-light-only" loading="lazy" />
-							<img src={s.logoDark ?? s.logo} alt={s.name} class="mt-dark-only" loading="lazy" />
+					suites.map((s) => (
+						<a class="fw" href={s.href} title={s.desc}>
+							<b>{format(s.count)}</b>
+							{s.name}
 						</a>
 					))
 				}
-				<a class="logo-card logo-card--open" href="/sponsor">Your logo here →</a>
+			</div>
+			<div class="stage stage--left">
+				<CatalogGrowth bare />
+			</div>
+		</section>
+
+		<!-- 02 How it works -->
+		<section class="tile tile--grey" id="how">
+			<p class="chapter"><b>02</b>How it works</p>
+			<h2>From install to a report in five minutes.</h2>
+			<p class="sub">Then run it every night from the pipeline you already have.</p>
+			<div class="stage stage--left">
+				<Explainer slug="how-it-works" heading={false} />
+				<ol class="steps">
+					{steps.map((s) => <li><span class="mono muted">{s.n}</span><strong>{s.title}</strong><code>{s.code}</code></li>)}
+				</ol>
+				<p class="runs">
+					Runs in {platforms.slice(0, -2).map((p, i, list) => <>{i > 0 && (i === list.length - 1 ? ' and ' : ', ')}<a href={p.href}>{p.name}</a></>)}, and sends results to <a href="/docs/alerts/email">email</a>, <a href="/docs/alerts/teams">Teams and Slack</a>.
+				</p>
+			</div>
+		</section>
+
+		<!-- 03 Extend -->
+		<div class="split-tiles" id="extend">
+			<section class="tile tile--white tile--wide">
+				<p class="chapter"><b>03</b>Maester Packs</p>
+				<h2>Need a check Maester doesn't have? Add a pack.</h2>
+				<p class="sub">
+					Packs add checks from Microsoft and the community, in the same report.{' '}
+					{intuneChecks > 0 && <>The community's CIS Intune benchmark packs add {format(intuneChecks)} device checks on their own, one for each setting.</>}
+				</p>
+				<div class="ctas">
+					<a class="pill-btn" href="https://packs.maester.cloud">Browse packs</a>
+					<a class="more" href="/docs/packs">How packs work</a>
+				</div>
+				<div class="stage packs">
+					{
+						packs.map((p) => (
+							<a class="card pack" href={p.href}>
+								{p.banner && <img class="pack__banner" src={p.banner} alt="" width="1200" height="630" loading="lazy" decoding="async" />}
+								<span class="mono muted">Community pack · {format(p.tests)} checks</span>
+								<strong>{p.name}</strong>
+								<span class="muted">{p.desc}</span>
+								<span class="mono muted pack__by">by {p.by}</span>
+							</a>
+						))
+					}
+				</div>
+			</section>
+			<section class="tile tile--grey tile--wide zta-tile">
+				<p class="chapter">Zero Trust Assessment</p>
+				<h2>Microsoft's assessment, in your Maester report.</h2>
+				<p class="sub">The pack ships with Maester. One command runs both, and the plan turns the results into work.</p>
+				<div class="ctas">
+					<a class="pill-btn" href="/docs/packs/zero-trust-assessment">How the pack works</a>
+					<a class="more" href={`${demoUrl}#/pack/zta/plan/identity`} target="_blank" rel="noopener">See the plan</a>
+					<a class="more" href="https://microsoft.github.io/zerotrustassessment/demo" target="_blank" rel="noopener">Microsoft's demo report</a>
+				</div>
+				<div class="zta-stage">
+					<pre class="peek zta-cmd"><span class="blue">Invoke-Maester</span> -Pack ZTA</pre>
+					<a class="zta-shot" href="https://microsoft.github.io/zerotrustassessment/demo" target="_blank" rel="noopener" aria-label="Open Microsoft's Zero Trust Assessment demo report">
+						<img class="mt-light-only" src="/img/zta/zta-demo-light.webp" alt="Microsoft's Zero Trust Assessment report: test results for each pillar and Sankey charts of the authentication methods privileged users and all users have registered" width="1920" height="1222" loading="lazy" decoding="async" />
+						<img class="mt-dark-only" src="/img/zta/zta-demo-dark.webp" alt="Microsoft's Zero Trust Assessment report: test results for each pillar and Sankey charts of the authentication methods privileged users and all users have registered" width="1920" height="1222" loading="lazy" decoding="async" />
+					</a>
+				</div>
+			</section>
+			<section class="tile tile--white tile--wide code-tile">
+				<div class="code-tile__text">
+					<p class="chapter">Security config as code</p>
+					<h2>Define your security config as code.</h2>
+					<p class="sub">Write each policy as a Maester test: one PowerShell function that says how your tenant must be set up. Maester runs it with everything else and puts it in the same report.</p>
+					<ul class="code-points">
+						<li><strong>Policies in a repository.</strong> <span class="muted">Every rule your tenant must follow, versioned and reviewed like any other code.</span></li>
+						<li><strong>Regression tests for your tenant.</strong> <span class="muted">Run them after every change, by hand, from a pipeline or after Terraform, and see at once what a change broke.</span></li>
+						<li><strong>Guardrails for AI agents.</strong> <span class="muted">When an agent changes your configuration, it runs your Maester tests to check its own work, and keeps running them to watch for drift.</span></li>
+					</ul>
+					<div class="ctas">
+						<a class="more" href="/docs/writing-tests/first-custom-test">Write your first test</a>
+						<a class="more" href="/test-builder">Test builder</a>
+					</div>
+				</div>
+				<pre class="peek code-tile__code"><span class="blue">function</span> Test-CT1001 &#123;
+    [MaesterTest(Id = <span class="green">'CT.1001'</span>,
+        Title = <span class="green">'Our licensing groups are not empty'</span>)]
+    param()
+    <span class="muted-code"># The groups that assign licences in this tenant</span>
+    <span class="blue">foreach</span> ($name <span class="blue">in</span> <span class="green">'LIC-M365-E5'</span>, <span class="green">'LIC-Copilot'</span>, <span class="green">'LIC-Intune-Suite'</span>) &#123;
+        $group = Invoke-MtGraphRequest <span class="green">'groups'</span> -Filter <span class="green">"displayName eq '$name'"</span>
+        <span class="blue">if</span> (-not $group) &#123; <span class="blue">return</span> $false &#125;
+        $count = Invoke-MtGraphRequest <span class="green">"groups/$($group.id)/transitiveMembers/`$count"</span>
+        <span class="blue">if</span> ($count -eq 0) &#123; <span class="blue">return</span> $false &#125;
+    &#125;
+    $true
+&#125;</pre>
+			</section>
+		</div>
+
+		<!-- 04 What's new -->
+		<section class="tile tile--grey tile--short" id="new">
+			<p class="chapter"><b>04</b>New in {previewLabel}</p>
+			<h2>Maester {previewLabel}. Rebuilt to run faster and say more.</h2>
+			<p class="sub">A test engine of its own, checks that ship in the module, and a reason for every skip.</p>
+			<div class="ctas">
+				<a class="pill-btn" href="/blog/maester-3-0">Read the launch post</a>
+				<a class="more" href="/docs/preview">Get the preview</a>
+			</div>
+			<div class="stage stage--left grid grid--3">
+				{whatsNew.slice(0, 3).map((w) => <div class="card"><strong>{w.title}</strong><span class="muted">{w.body}</span></div>)}
+			</div>
+		</section>
+
+		<!-- 05 Community -->
+		<section class="tile tile--white" id="community">
+			<p class="chapter"><b>05</b>Community</p>
+			<h2>Built in the open by {contributors.profiles.length}+ contributors.</h2>
+			<p class="sub">Security practitioners, Microsoft MVPs and Microsoft engineers write the checks.</p>
+			<div class="faces">{avatars.map((p: any) => <a href={`/contributors/${p.id.toLowerCase()}`} title={p.name}><img src={p.avatar} alt={p.name} loading="lazy" width="40" height="40" /></a>)}</div>
+			<div class="ctas">
+				<a class="pill-btn" href="https://discord.maester.dev">Join the Discord</a>
+				<a class="more" href="/contributors">Meet the contributors</a>
+			</div>
+			{
+				story && (
+					<figure class="stage story">
+						<blockquote>“{story.quote}”</blockquote>
+						<figcaption>
+							{story.person.name}, {story.person.role} · <a class="more" href={story.video}>Watch the episode</a>
+						</figcaption>
+					</figure>
+				)
+			}
+			<div class="stage stage--left community">
+				<div class="card">
+					<span class="eyebrow">Listen</span>
+					<strong>Maester on Entra.Chat</strong>
+					<div class="episodes">
+						{
+							media.episodes.slice(0, 3).map((e) => (
+								<a class="episode" href={e.url}>
+									<span class="mono muted">EP {e.n} · {e.length}</span>
+									<span>{e.title}</span>
+								</a>
+							))
+						}
+					</div>
+					<a class="more" href="https://entra.chat">All episodes</a>
+				</div>
+				<div class="card">
+					<span class="eyebrow">Contribute</span>
+					<strong>Add a check or write a pack.</strong>
+					<span class="muted">Ask questions on Discord, add a check to the catalog, or publish a pack for what Maester doesn't cover yet.</span>
+					<a class="more" href="/docs/contributing">Contribute</a>
+					<a class="more" href="/manifesto">Read the manifesto</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Maester or Maester Cloud -->
+		<section class="tile tile--ink tile--cloud mt-dark-tile" id="cloud">
+			<p class="chapter">Maester or Maester Cloud</p>
+			<h2>Same checks. You choose who runs them.</h2>
+			<p class="sub">Maester is free and you run it yourself. Maester Cloud runs it for you, securely in Azure, and keeps every run.</p>
+			<div class="stage compare" role="table" aria-label="Maester compared with Maester Cloud">
+				<div class="compare__row compare__row--head" role="row">
+					<span role="columnheader"></span>
+					<span role="columnheader">
+						<strong>Maester</strong>
+						<em>Free, open source</em>
+					</span>
+					<span role="columnheader">
+						<strong>Maester Cloud</strong>
+						<em>From $99 / month</em>
+					</span>
+				</div>
+				{
+					compare.map((r) => (
+						<div class="compare__row" role="row">
+							<span role="rowheader">{r.what}</span>
+							<span role="cell">{r.core}</span>
+							<span role="cell">{r.cloud}</span>
+						</div>
+					))
+				}
+			</div>
+			<div class="ctas">
+				<a class="pill-btn" href="https://maester.cloud">Explore Maester Cloud</a>
+				<a class="more" href="/pricing">Compare pricing</a>
+			</div>
+		</section>
+
+		<!-- Sponsors -->
+		<section class="tile tile--white tile--short" id="sponsors">
+			<p class="chapter">Sponsors</p>
+			<h2>Thank you, sponsors.</h2>
+			<p class="sub">Maester is free because of the people and companies who pay for it. There are three ways to support it.</p>
+			<div class="stage stage--left sponsors">
+				<div class="card">
+					<span class="eyebrow">Maester Cloud supporters</span>
+					<strong>Subscribe to Maester Cloud.</strong>
+					<span class="muted">Teams that subscribe to Maester Cloud, the hosted product, fund the open-source core: the engine, the checks and the report everyone uses for free.</span>
+					<div class="ctas ctas--card">
+						<a class="more" href="https://maester.cloud/supporters">Meet the supporters</a>
+						<a class="more" href="https://maester.cloud">Become a supporter</a>
+					</div>
+				</div>
+				<div class="card">
+					<span class="eyebrow">Company sponsors</span>
+					<strong>Sponsor Merill to work on Maester.</strong>
+					<span class="muted">Companies that sponsor Merill, Maester's creator, buy him the time to build and maintain Maester.</span>
+					<div class="logos">
+						{
+							featured.map((s: any) => (
+								<a class="logo-card" href={s.url} title={s.name}>
+									<img src={s.logo} alt={s.name} class="mt-light-only" loading="lazy" />
+									<img src={s.logoDark ?? s.logo} alt={s.name} class="mt-dark-only" loading="lazy" />
+								</a>
+							))
+						}
+						<a class="logo-card logo-card--open" href="https://github.com/sponsors/merill">Your logo here</a>
+					</div>
+					<a class="more" href="https://github.com/sponsors/merill">Sponsor as a company</a>
+				</div>
+				<div class="card">
+					<span class="eyebrow">GitHub Sponsors</span>
+					<strong>Sponsor a maintainer or test writer.</strong>
+					<span class="muted">The maintainers and the people who write the checks take sponsorships on GitHub. Pick the person whose work you rely on.</span>
+					<div class="backers">
+						{
+							people.map((p: any) => (
+								<a href={p.sponsorUrl} title={`Sponsor ${p.name}`}>
+									<img src={p.avatar} alt={p.name} loading="lazy" width="36" height="36" />
+								</a>
+							))
+						}
+					</div>
+					<a class="more" href="/sponsor">Choose who to sponsor</a>
+				</div>
 			</div>
 			{
 				backers.length > 0 && (
-					<div class="backers">
-						<span class="eyebrow">Backers</span>
-						{backers.map((b: any) => <a href={`https://github.com/${b.github}`} title={b.name}><img src={b.avatar} alt={b.name} loading="lazy" width="32" height="32" /></a>)}
+					<div class="thanks">
+						<span class="muted">Thanks to everyone sponsoring on GitHub</span>
+						<div class="backers">{backers.slice(0, 24).map((b: any) => <a href={`https://github.com/${b.github}`} title={b.name}><img src={b.avatar} alt={b.name} loading="lazy" width="28" height="28" /></a>)}</div>
 					</div>
 				)
 			}
-		</div>
-	</section>
-
-	<section class="wrap section">
-		<div class="cloud">
-			<div>
-				<p class="eyebrow">Maester Cloud</p>
-				<h2 class="h2-sm">Need history, drift and every tenant in one place?</h2>
-				<p>Maester Cloud keeps your results over time, shows what changed between runs and alerts you when it does. Your subscription also keeps the Maester core open and free.</p>
-			</div>
-			<a class="btn btn--light" href="https://maester.cloud">Explore Maester Cloud ↗</a>
-		</div>
-	</section>
-
-	<section class="wrap section community">
-		<p class="eyebrow">Community</p>
-		<h2>Built in the open by {contributors.profiles.length}+ contributors.</h2>
-		<p class="lede-sm center">Maester is written by security practitioners, Microsoft MVPs and Microsoft engineers. Ask questions on Discord, add a check to the catalog, or write a pack.</p>
-		<div class="faces">{avatars.map((p: any) => <a href={`/contributors/${p.id.toLowerCase()}`} title={p.name}><img src={p.avatar} alt={p.name} loading="lazy" width="40" height="40" /></a>)}</div>
-		<div class="chips center">
-			<a class="btn btn--primary" href="https://discord.maester.dev">Join the Discord</a>
-			<a class="btn btn--ghost" href="/contributors">Meet the contributors</a>
-			<a class="btn btn--ghost" href="/manifesto">Read the manifesto</a>
-		</div>
-	</section>
+		</section>
+	</div>
 </SiteLayout>
 
 <script>
@@ -378,125 +468,319 @@ Invoke-Maester -Pack ZTA</pre>
 			setTimeout(() => (button.textContent = 'Copy'), 1500);
 		});
 	}
-	// The report showcase: a tab per view of the report. It moves through the views by itself while it is on screen
-	// (the line under the tab shows when the next one comes), pauses while the pointer is over it, and stops for
-	// good once the reader picks a view. The pill behind the tabs and the pages slide to the new view.
-	const showcase = document.querySelector<HTMLElement>('.showcase')!;
-	const bar = showcase.querySelector<HTMLElement>('.showcase__bar')!;
-	const pill = showcase.querySelector<HTMLElement>('.showcase__pill')!;
-	const tabs = [...showcase.querySelectorAll<HTMLButtonElement>('[data-view]')];
-	const panels = [...showcase.querySelectorAll<HTMLElement>('[data-panel]')];
-	const caption = showcase.querySelector<HTMLElement>('.showcase__caption');
-	const captions: Record<string, string> = JSON.parse(showcase.dataset.captions ?? '{}');
-	const live = showcase.querySelector<HTMLAnchorElement>('.showcase__live');
-	const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-	let current = 0;
+	const header = document.querySelector<HTMLElement>('.site-header');
+	function initShowcase() {
+		// The report showcase: a tab per view of the report. It moves through the views by itself while it is on screen
+		// (the line under the tab shows when the next one comes), pauses while the pointer is over it, and stops for
+		// good once the reader picks a view. The pill behind the tabs and the pages slide to the new view.
+		const showcase = document.querySelector<HTMLElement>('.showcase');
+		if (!showcase?.querySelector('[data-view]')) return;
+		const bar = showcase.querySelector<HTMLElement>('.showcase__bar')!;
+		const pill = showcase.querySelector<HTMLElement>('.showcase__pill')!;
+		const tabs = [...showcase.querySelectorAll<HTMLButtonElement>('[data-view]')];
+		const panels = [...showcase.querySelectorAll<HTMLElement>('[data-panel]')];
+		const caption = showcase.querySelector<HTMLElement>('.showcase__caption');
+		const captions: Record<string, string> = JSON.parse(showcase.dataset.captions ?? '{}');
+		const open = showcase.querySelector<HTMLAnchorElement>('[data-open]');
+		const frame = showcase.querySelector<HTMLElement>('.showcase__frame')!;
+		const demo = showcase.dataset.demo ?? '/demo/report';
+		const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let current = 0;
 
-	const placePill = () => {
-		const tab = tabs[current];
-		pill.style.setProperty('--x', `${tab.offsetLeft}px`);
-		pill.style.setProperty('--y', `${tab.offsetTop}px`);
-		pill.style.setProperty('--w', `${tab.offsetWidth}px`);
-		pill.style.setProperty('--h', `${tab.offsetHeight}px`);
-	};
-	// The next view's images load while this one shows, so the slide never reveals an empty page.
-	const preload = (index: number) => {
-		for (const img of panels[index % panels.length].querySelectorAll('img')) img.loading = 'eager';
-	};
+		const placePill = () => {
+			const tab = tabs[current];
+			pill.style.setProperty('--x', `${tab.offsetLeft}px`);
+			pill.style.setProperty('--y', `${tab.offsetTop}px`);
+			pill.style.setProperty('--w', `${tab.offsetWidth}px`);
+			pill.style.setProperty('--h', `${tab.offsetHeight}px`);
+		};
+		// The next view's images load while this one shows, so the slide never reveals an empty page.
+		const preload = (index: number) => {
+			for (const img of panels[index % panels.length].querySelectorAll('img')) img.loading = 'eager';
+		};
 
-	const show = (next: number, forward = next > current) => {
-		if (next === current) return;
-		const from = panels[current];
-		const to = panels[next];
-		// The incoming page starts on the side it comes from, without animating there.
-		for (const p of panels) p.classList.remove('is-moving');
-		to.classList.remove('is-before', 'is-after');
-		to.classList.add(forward ? 'is-after' : 'is-before');
-		void to.offsetWidth;
-		from.classList.add('is-moving');
-		to.classList.add('is-moving');
-		from.classList.replace('is-active', forward ? 'is-before' : 'is-after');
-		to.classList.remove('is-before', 'is-after');
-		to.classList.add('is-active');
-		for (const p of panels) {
-			const active = p === to;
-			p.inert = !active;
-			if (active) p.removeAttribute('aria-hidden');
-			else p.setAttribute('aria-hidden', 'true');
-		}
-		tabs.forEach((t, i) => {
-			t.setAttribute('aria-selected', String(i === next));
-			t.tabIndex = i === next ? 0 : -1;
+		const show = (next: number, forward = next > current) => {
+			if (next === current) return;
+			const from = panels[current];
+			const to = panels[next];
+			// The incoming page starts on the side it comes from, without animating there.
+			for (const p of panels) p.classList.remove('is-moving');
+			to.classList.remove('is-before', 'is-after');
+			to.classList.add(forward ? 'is-after' : 'is-before');
+			void to.offsetWidth;
+			from.classList.add('is-moving');
+			to.classList.add('is-moving');
+			from.classList.replace('is-active', forward ? 'is-before' : 'is-after');
+			to.classList.remove('is-before', 'is-after');
+			to.classList.add('is-active');
+			for (const p of panels) {
+				const active = p === to;
+				p.inert = !active;
+				if (active) p.removeAttribute('aria-hidden');
+				else p.setAttribute('aria-hidden', 'true');
+			}
+			tabs.forEach((t, i) => {
+				t.setAttribute('aria-selected', String(i === next));
+				t.tabIndex = i === next ? 0 : -1;
+			});
+			current = next;
+			placePill();
+			// On a phone the tabs scroll sideways: keep the selected one in view.
+			if (bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: tabs[next].offsetLeft - 8, behavior: still ? 'auto' : 'smooth' });
+			preload(next + 1);
+			const view = tabs[next].dataset.view ?? '';
+			if (caption) {
+				caption.textContent = captions[view] ?? '';
+				if (!still) caption.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'ease-out' });
+			}
+			if (open) open.href = `${demo}#${tabs[next].dataset.hash}`;
+		};
+
+		// The reader takes over: no more moving on by itself.
+		const choose = (index: number) => {
+			showcase.classList.remove('is-auto');
+			show(index);
+		};
+		tabs.forEach((tab, i) => {
+			tab.addEventListener('click', () => choose(i));
+			tab.addEventListener('keydown', (event) => {
+				const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+				const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : step ? (current + step + tabs.length) % tabs.length : -1;
+				if (index < 0) return;
+				event.preventDefault();
+				choose(index);
+				tabs[index].focus();
+			});
+			// The progress line under the tab runs for the time each view shows; when it fills, the next view comes.
+			tab.querySelector('.showcase__progress')!.addEventListener('animationend', () => {
+				if (showcase.classList.contains('is-auto') && i === current) show((current + 1) % tabs.length, true);
+			});
 		});
-		current = next;
+
+		// Full screen: the frame fills the screen with the view it shows. Where a browser can't (iPhone Safari), the
+		// live report opens at that view in a tab of its own instead.
+		const fullscreen = showcase.querySelector<HTMLButtonElement>('[data-fullscreen]');
+		fullscreen?.addEventListener('click', () => {
+			if (frame.requestFullscreen && document.fullscreenEnabled) {
+				showcase.classList.remove('is-auto');
+				frame.requestFullscreen().catch(() => window.open(open?.href ?? demo, '_blank', 'noopener'));
+			} else window.open(open?.href ?? demo, '_blank', 'noopener');
+		});
+		showcase.querySelector('[data-exit-fullscreen]')?.addEventListener('click', () => document.exitFullscreen?.());
+		document.addEventListener('fullscreenchange', () => {
+			const exit = showcase.querySelector<HTMLElement>('[data-exit-fullscreen]');
+			if (exit) exit.hidden = document.fullscreenElement !== frame;
+		});
+
+		bar.classList.add('has-pill');
 		placePill();
-		// On a phone the tabs scroll sideways: keep the selected one in view.
-		if (bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: tabs[next].offsetLeft - 8, behavior: still ? 'auto' : 'smooth' });
-		preload(next + 1);
-		const view = tabs[next].dataset.view ?? '';
-		if (caption) {
-			caption.textContent = captions[view] ?? '';
-			if (!still) caption.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'ease-out' });
+		new ResizeObserver(placePill).observe(bar);
+
+		if (!still) {
+			showcase.classList.add('is-auto', 'is-paused');
+			const pause = (paused: boolean) => showcase.classList.toggle('is-paused', paused);
+			let inView = false;
+			let hovered = false;
+			new IntersectionObserver(
+				([entry]) => {
+					inView = entry.isIntersecting;
+					if (inView) preload(current + 1);
+					pause(!inView || hovered);
+				},
+				{ threshold: 0.4 },
+			).observe(frame);
+			showcase.addEventListener('pointerenter', (event) => {
+				if (event.pointerType !== 'mouse') return;
+				hovered = true;
+				pause(true);
+			});
+			showcase.addEventListener('pointerleave', () => {
+				hovered = false;
+				pause(!inView);
+			});
 		}
-		if (live) live.href = `/demo/report#${tabs[next].dataset.hash}`;
-	};
-
-	// The reader takes over: no more moving on by itself.
-	const choose = (index: number) => {
-		showcase.classList.remove('is-auto');
-		show(index);
-	};
-	tabs.forEach((tab, i) => {
-		tab.addEventListener('click', () => choose(i));
-		tab.addEventListener('keydown', (event) => {
-			const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-			const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : step ? (current + step + tabs.length) % tabs.length : -1;
-			if (index < 0) return;
-			event.preventDefault();
-			choose(index);
-			tabs[index].focus();
-		});
-		// The progress line under the tab runs for the time each view shows; when it fills, the next view comes.
-		tab.querySelector('.showcase__progress')!.addEventListener('animationend', () => {
-			if (showcase.classList.contains('is-auto') && i === current) show((current + 1) % tabs.length, true);
-		});
-	});
-
-	bar.classList.add('has-pill');
-	placePill();
-	new ResizeObserver(placePill).observe(bar);
-
-	if (!still) {
-		showcase.classList.add('is-auto', 'is-paused');
-		const pause = (paused: boolean) => showcase.classList.toggle('is-paused', paused);
-		let inView = false;
-		let hovered = false;
-		new IntersectionObserver(
-			([entry]) => {
-				inView = entry.isIntersecting;
-				if (inView) preload(current + 1);
-				pause(!inView || hovered);
-			},
-			{ threshold: 0.4 },
-		).observe(showcase.querySelector('.showcase__frame')!);
-		showcase.addEventListener('pointerenter', (event) => {
-			if (event.pointerType !== 'mouse') return;
-			hovered = true;
-			pause(true);
-		});
-		showcase.addEventListener('pointerleave', () => {
-			hovered = false;
-			pause(!inView);
-		});
 	}
+	initShowcase();
+
+	// Anchored tiles stop below the sticky site header.
+	const setHeader = () => document.documentElement.style.setProperty('--mt-header-h', `${header?.offsetHeight ?? 60}px`);
+	setHeader();
+	if (header) new ResizeObserver(setHeader).observe(header);
 </script>
 
 <style>
+	/* The page is a stack of chapters, each a tile of its own tone with a gap between them, so where one ends and the
+	   next begins is plain: white (the page), grey and ink. Ink tiles are dark in both themes. */
+	.tiles {
+		--tile-white: #ffffff;
+		--tile-grey: #f5f5f7;
+		--tile-ink: #161617;
+		--tile-gap: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: var(--tile-gap);
+		padding-bottom: var(--tile-gap);
+	}
+	/* Apple's text greys: softer than Starlight's zinc, so a page of large type doesn't read as harsh. */
+	:global(:root[data-theme='light']) .tiles {
+		--sl-color-white: #1d1d1f;
+		--sl-color-gray-2: #424245;
+		--sl-color-gray-3: #6e6e73;
+		color: #1d1d1f;
+	}
+	:global(:root[data-theme='dark']) .tiles {
+		--tile-white: var(--mt-ground);
+		--tile-grey: #1c1c1e;
+		--tile-ink: #1f1012;
+	}
+	.tile {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		min-height: 40rem;
+		padding: clamp(3.5rem, 8vw, 5.5rem) 1rem clamp(3rem, 7vw, 4.5rem);
+		scroll-margin-top: var(--mt-header-h, 3.8rem);
+		overflow: hidden;
+	}
+	.tile--white {
+		background: var(--tile-white);
+	}
+	.tile--grey {
+		background: var(--tile-grey);
+	}
+	.tile--short {
+		min-height: 0;
+	}
+	/* Ink tiles carry the dark theme's colours whatever the page's theme is. */
+	.mt-dark-tile {
+		--sl-color-white: #f5f5f7;
+		--sl-color-black: #09090b;
+		--sl-color-gray-2: #a1a1a6;
+		--sl-color-gray-3: #86868b;
+		--sl-color-gray-4: #52525b;
+		--sl-color-gray-5: #3f3f46;
+		--sl-color-gray-6: #27272a;
+		--sl-color-bg: var(--tile-ink);
+		--mt-line: #2e2e33;
+		--mt-surface: #141416;
+		--mt-canvas: #0f0f11;
+		background: var(--tile-ink);
+		color: #f5f5f7;
+		color-scheme: dark;
+	}
+	:global(:root[data-theme='dark']) .mt-dark-tile {
+		--mt-line: #3d2326;
+		--mt-surface: #2a1618;
+	}
+	.tile--cloud {
+		min-height: 30rem;
+		justify-content: center;
+		background: radial-gradient(120% 90% at 50% 120%, #4a1418 0%, var(--tile-ink) 60%);
+	}
 	.wrap {
 		max-width: 75rem;
 		margin: 0 auto;
 		padding-inline: 1rem;
 	}
+
+
+	/* Each tile's header: a label, one big line, one sentence and at most two calls to action. */
+	.chapter {
+		display: flex;
+		gap: 0.6rem;
+		align-items: center;
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--mt-ember-strong, #d22c31);
+		margin: 0;
+	}
+	.mt-dark-tile .chapter {
+		color: #ff6b6f;
+	}
+	.chapter b {
+		font-weight: 500;
+		color: var(--sl-color-gray-3);
+	}
+	.tile h1,
+	.tile h2 {
+		text-wrap: balance;
+		letter-spacing: -0.015em;
+		line-height: 1.07;
+		font-weight: 600;
+		margin: 1rem auto 0;
+	}
+	.tile h1 {
+		font-size: clamp(2.5rem, 6.5vw, 4.75rem);
+		max-width: 16ch;
+		margin-top: 1.5rem;
+	}
+	.tile h2 {
+		font-size: clamp(2.1rem, 5vw, 3.5rem);
+		max-width: 20ch;
+	}
+	.sub {
+		font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+		line-height: 1.45;
+		color: var(--sl-color-gray-2);
+		max-width: 40rem;
+		margin: 1rem auto 0;
+		text-wrap: pretty;
+	}
+	.ctas {
+		display: flex;
+		gap: 0.6rem 1.5rem;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-top: 1.6rem;
+	}
+	.pill-btn {
+		display: inline-flex;
+		align-items: center;
+		background: #d22c31;
+		color: #fff;
+		font-weight: 600;
+		font-size: 1rem;
+		padding: 0.7rem 1.35rem;
+		border-radius: 99px;
+		text-decoration: none;
+		transition: background 0.2s;
+	}
+	.pill-btn:hover {
+		background: #b8242a;
+		color: #fff;
+	}
+	.more {
+		color: #d22c31;
+		font-weight: 500;
+		font-size: 1rem;
+		text-decoration: none;
+	}
+	.more::after {
+		content: ' ›';
+	}
+	.more:hover {
+		text-decoration: underline;
+	}
+	.mt-dark-tile .more,
+	:global(:root[data-theme='dark']) .more {
+		color: #ff6b6f;
+	}
+	:global(:root[data-theme='dark']) .chapter {
+		color: #ff6b6f;
+	}
+	.stage {
+		width: min(75rem, 100%);
+		margin-top: clamp(2.5rem, 5vw, 3.5rem);
+	}
+	.stage--left {
+		text-align: start;
+	}
+
 	.mono {
 		font-family: var(--sl-font-mono);
 	}
@@ -506,48 +790,12 @@ Invoke-Maester -Pack ZTA</pre>
 	.ember {
 		color: var(--mt-ember);
 	}
-	.ember-2 {
-		color: #ff8a8d;
-	}
 	.eyebrow {
 		font-family: var(--sl-font-mono);
-		font-size: 0.75rem;
+		font-size: 0.72rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--sl-color-gray-3);
-		margin: 0 0 0.75rem;
-	}
-	h2 {
-		font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-		letter-spacing: -0.03em;
-		line-height: 1.1;
-		margin: 0 0 0.9rem;
-		max-width: 48rem;
-	}
-	.h2-sm {
-		font-size: clamp(1.5rem, 3vw, 2.1rem);
-	}
-	.lede-sm {
-		font-size: 1.05rem;
-		color: var(--sl-color-gray-2);
-		max-width: 46rem;
-		margin: 0 0 2rem;
-	}
-	.center {
-		margin-inline: auto;
-		text-align: center;
-		justify-content: center;
-	}
-	.banner {
-		border-bottom: 1px solid color-mix(in srgb, var(--mt-ember) 25%, transparent);
-		background: color-mix(in srgb, var(--mt-ember) 8%, transparent);
-		padding: 0.6rem 1rem;
-		text-align: center;
-		font-size: 0.875rem;
-	}
-	.banner a {
-		font-weight: 600;
-		margin-inline-start: 0.4rem;
 	}
 	.dot {
 		display: inline-block;
@@ -573,49 +821,6 @@ Invoke-Maester -Pack ZTA</pre>
 		background: var(--sl-color-black);
 		white-space: nowrap;
 	}
-	.chip--sm {
-		font-size: 0.75rem;
-		padding: 0.15rem 0.55rem;
-	}
-	.chip--ember {
-		border-color: color-mix(in srgb, var(--mt-ember) 35%, transparent);
-		color: var(--mt-ember);
-	}
-	.chips {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		align-items: center;
-	}
-	.chips--lg .chip {
-		border-radius: 10px;
-		padding: 0.6rem 0.9rem;
-		font-size: 0.9rem;
-		font-weight: 500;
-		color: var(--sl-color-white);
-	}
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		border-radius: 10px;
-		padding: 0.8rem 1.1rem;
-		font-weight: 600;
-		font-size: 0.95rem;
-		text-decoration: none;
-		white-space: nowrap;
-	}
-	.btn--primary {
-		background: var(--sl-color-white);
-		color: var(--sl-color-black);
-	}
-	.btn--ghost {
-		border: 1px solid var(--mt-line);
-		color: var(--sl-color-white);
-	}
-	.btn--light {
-		background: #fff;
-		color: #111113;
-	}
 	.card {
 		border: 1px solid var(--mt-line);
 		border-radius: 16px;
@@ -626,16 +831,15 @@ Invoke-Maester -Pack ZTA</pre>
 		gap: 0.5rem;
 		color: var(--sl-color-white);
 		text-decoration: none;
+		text-align: start;
 	}
-	a.card:hover {
-		border-color: var(--sl-color-gray-4);
+	.card .muted {
+		font-size: 0.9rem;
+		line-height: 1.5;
 	}
 	.grid {
 		display: grid;
 		gap: 1rem;
-	}
-	.grid--4 {
-		grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 	}
 	.grid--3 {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -645,41 +849,11 @@ Invoke-Maester -Pack ZTA</pre>
 			grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
 		}
 	}
-	.section {
-		padding-block: 3.5rem;
-	}
-	.row-head {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-end;
-		gap: 1rem;
-		flex-wrap: wrap;
-		margin-bottom: 1.25rem;
-	}
-	.row-head a {
-		font-weight: 600;
-	}
 
-	/* Hero */
+	/* What it is */
 	.hero {
-		text-align: center;
-		padding-block: 5rem 2.5rem;
-	}
-	.hero h1 {
-		text-wrap: balance;
-		font-size: clamp(2.5rem, 6vw, 4.25rem);
-		line-height: 1.04;
-		letter-spacing: -0.035em;
-		font-weight: 700;
-		margin: 1.5rem auto 1.25rem;
-		max-width: 58rem;
-	}
-	.lede {
-		font-size: 1.2rem;
-		line-height: 1.6;
-		color: var(--sl-color-gray-2);
-		max-width: 48rem;
-		margin: 0 auto 2rem;
+		min-height: 0;
+		padding-bottom: 3rem;
 	}
 	.say {
 		display: inline-block;
@@ -688,52 +862,19 @@ Invoke-Maester -Pack ZTA</pre>
 	}
 	.cta-row {
 		display: flex;
-		align-items: center;
-		gap: 0.75rem;
 		justify-content: center;
-		flex-wrap: wrap;
-		margin-bottom: 1.25rem;
+		margin-top: 1.75rem;
 	}
-	/* The install command and the two buttons: one height, one row. */
-	.cta-row .btn {
-		height: 3rem;
-		box-sizing: border-box;
+	.hero .ctas {
+		margin-top: 1.25rem;
 	}
 	.fine {
 		font-size: 0.85rem;
 		color: var(--sl-color-gray-3);
+		margin: 1rem 0 0;
 	}
 
-	.term {
-		background: #18181b;
-		color: #e4e4e7;
-		border-radius: 12px;
-		font-family: var(--sl-font-mono);
-		font-size: 0.82rem;
-		line-height: 1.7;
-		padding: 1.1rem 1.25rem;
-		overflow-x: auto;
-		margin: 0;
-		white-space: pre-wrap;
-		overflow-wrap: anywhere;
-	}
-	.term .muted {
-		color: #a1a1aa;
-	}
-	.term .green {
-		color: #86efac;
-	}
-	.term .red {
-		color: #ff8a8d;
-	}
-	.term .blue {
-		color: #93c5fd;
-	}
-
-	/* Report showcase */
-	.showcase {
-		margin-bottom: 1rem;
-	}
+	/* The report: views to flip through, full screen if you like. */
 	.showcase__bar {
 		position: relative;
 		display: flex;
@@ -746,7 +887,7 @@ Invoke-Maester -Pack ZTA</pre>
 		background: var(--mt-canvas);
 		padding: 0.5rem;
 	}
-	.showcase__bar button {
+	.showcase__bar button[role='tab'] {
 		position: relative;
 		z-index: 1;
 		overflow: hidden;
@@ -761,20 +902,19 @@ Invoke-Maester -Pack ZTA</pre>
 		cursor: pointer;
 		transition: color 0.3s ease;
 	}
-	.showcase__bar button:hover,
+	.showcase__bar button[role='tab']:hover,
 	.showcase__bar button[aria-selected='true'] {
 		color: var(--sl-color-white);
 	}
-	/* Before the script places the pill, the selected tab has its own background. */
 	.showcase__bar:not(.has-pill) button[aria-selected='true'] {
 		background: var(--sl-color-black);
 		border-color: var(--mt-line);
 	}
-	.showcase__bar button:focus-visible {
+	.showcase__bar button:focus-visible,
+	.showcase__tool:focus-visible {
 		outline: 2px solid var(--sl-color-accent);
 		outline-offset: 2px;
 	}
-	/* The pill behind the selected tab, which slides to the next one. */
 	.showcase__pill {
 		position: absolute;
 		top: 0;
@@ -793,7 +933,6 @@ Invoke-Maester -Pack ZTA</pre>
 	.showcase__bar:not(.has-pill) .showcase__pill {
 		display: none;
 	}
-	/* The line under the selected tab fills while its view shows, then the next view comes. */
 	.showcase__progress {
 		position: absolute;
 		left: 0.7rem;
@@ -818,25 +957,26 @@ Invoke-Maester -Pack ZTA</pre>
 			transform: scaleX(1);
 		}
 	}
-	@media (max-width: 40rem) {
-		.showcase__bar {
-			flex-wrap: nowrap;
-			overflow-x: auto;
-			scrollbar-width: none;
-		}
-		.showcase__bar button {
-			flex: none;
-		}
-		.showcase__live {
-			display: none;
-		}
-	}
-	.showcase__live {
+	.showcase__tools {
 		margin-inline-start: auto;
-		font-size: 0.85rem;
-		font-weight: 600;
-		padding: 0.45rem 0.6rem;
-		text-decoration: none;
+		display: inline-flex;
+		gap: 0.25rem;
+	}
+	.showcase__tool {
+		display: inline-grid;
+		place-items: center;
+		width: 2.1rem;
+		height: 2.1rem;
+		border-radius: 8px;
+		border: 1px solid transparent;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+	}
+	.showcase__tool:hover {
+		color: var(--sl-color-white);
+		border-color: var(--mt-line);
+		background: var(--sl-color-black);
 	}
 	.showcase__frame {
 		position: relative;
@@ -848,7 +988,6 @@ Invoke-Maester -Pack ZTA</pre>
 		box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.45);
 		aspect-ratio: 16 / 10;
 	}
-	/* The views lie on top of each other; the one showing slides out as the next slides in. */
 	.showcase__frame > div {
 		grid-area: 1 / 1;
 		height: 100%;
@@ -874,10 +1013,59 @@ Invoke-Maester -Pack ZTA</pre>
 		object-fit: cover;
 		object-position: top left;
 	}
+	/* Full screen: the frame fills the screen and the view shows whole. */
+	.showcase__frame:fullscreen {
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+	.showcase__frame:fullscreen img {
+		object-fit: contain;
+		object-position: center top;
+	}
+	.showcase__exit {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		z-index: 2;
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 600;
+		padding: 0.4rem 0.75rem;
+		border-radius: 99px;
+		border: 1px solid var(--mt-line);
+		background: color-mix(in srgb, var(--sl-color-black) 85%, transparent);
+		color: var(--sl-color-white);
+		cursor: pointer;
+	}
+	.showcase__frame:not(:fullscreen) .showcase__exit {
+		display: none;
+	}
 	@media (prefers-reduced-motion: reduce) {
 		.showcase__pill,
 		.showcase__frame > .is-moving {
 			transition: none;
+		}
+	}
+	@media (max-width: 40rem) {
+		.showcase__bar {
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			scrollbar-width: none;
+		}
+		.showcase__bar button[role='tab'] {
+			flex: none;
+		}
+		/* The tabs scroll; the full-screen and open buttons stay in reach at the end of the bar. */
+		.showcase__tools {
+			position: sticky;
+			inset-inline-end: -0.5rem;
+			z-index: 2;
+			margin-inline-end: -0.5rem;
+			padding-inline: 0.25rem 0.5rem;
+			background: var(--mt-canvas);
 		}
 	}
 	.showcase__caption {
@@ -887,10 +1075,70 @@ Invoke-Maester -Pack ZTA</pre>
 		margin: 1rem auto 0;
 		max-width: 44rem;
 	}
+
+	/* Proof */
+	.proof {
+		background: var(--tile-grey);
+		padding: 2.5rem 1rem;
+	}
+	.proof__grid {
+		max-width: 75rem;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.5rem;
+		text-align: center;
+	}
+	.proof strong {
+		display: block;
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		letter-spacing: -0.015em;
+		line-height: 1.1;
+	}
+	.proof span {
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-3);
+	}
+	@media (max-width: 40rem) {
+		.proof__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	/* The checks */
+	.frameworks {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
+		margin-top: 2rem;
+		max-width: 60rem;
+	}
+	.fw {
+		display: inline-flex;
+		gap: 0.45rem;
+		align-items: baseline;
+		border: 1px solid var(--mt-line);
+		background: var(--mt-surface);
+		border-radius: 99px;
+		padding: 0.45rem 0.9rem;
+		font-size: 0.9rem;
+		color: var(--sl-color-white);
+		text-decoration: none;
+	}
+	.fw:hover {
+		border-color: var(--sl-color-gray-4);
+	}
+	.fw b {
+		color: var(--mt-ember);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* How it works */
 	.steps {
 		list-style: none;
 		padding: 0;
-		margin: 1.5rem 0 0;
+		margin: 1rem 0 0;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
 		gap: 0.75rem;
@@ -901,7 +1149,8 @@ Invoke-Maester -Pack ZTA</pre>
 		gap: 0.6rem;
 		border: 1px solid var(--mt-line);
 		border-radius: 12px;
-		padding: 0.7rem 0.9rem;
+		background: var(--mt-surface);
+		padding: 0.8rem 0.9rem;
 		font-size: 0.9rem;
 	}
 	.steps code {
@@ -909,231 +1158,308 @@ Invoke-Maester -Pack ZTA</pre>
 		font-size: 0.78rem;
 		color: var(--mt-ember);
 	}
+	.runs {
+		margin: 1.25rem 0 0;
+		color: var(--sl-color-gray-2);
+		text-align: center;
+	}
 
-	/* Stats */
-	.stats {
-		border-block: 1px solid var(--mt-line);
-		background: var(--mt-canvas);
-		margin-top: 3rem;
+	/* Maester or Maester Cloud: a two-column comparison on the dark tile. */
+	.compare {
+		max-width: 56rem;
+		border: 1px solid var(--mt-line);
+		border-radius: 20px;
+		background: color-mix(in srgb, #000 30%, transparent);
+		overflow: hidden;
+		text-align: start;
 	}
-	.stats__grid {
+	.compare__row {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-		gap: 1.5rem;
-		padding-block: 2rem;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1fr);
+		gap: 1rem;
+		padding: 0.9rem 1.4rem;
+		border-top: 1px solid var(--mt-line);
+		font-size: 0.95rem;
+		line-height: 1.4;
 	}
-	.stats__grid div {
-		display: flex;
-		flex-direction: column;
+	.compare__row--head {
+		border-top: 0;
+		padding-block: 1.2rem;
 	}
-	.stats__grid strong {
-		font-size: 2.1rem;
-		letter-spacing: -0.03em;
+	.compare__row--head strong {
+		display: block;
+		font-size: 1.15rem;
+		font-weight: 600;
 	}
-	.stats__grid span {
-		font-size: 0.875rem;
+	.compare__row--head em {
+		font-style: normal;
+		font-size: 0.85rem;
 		color: var(--sl-color-gray-3);
 	}
-
-	/* Story */
-	.story {
-		display: flex;
-		gap: 1.25rem;
-		flex-wrap: wrap;
+	.compare [role='rowheader'] {
+		color: var(--sl-color-gray-3);
 	}
-	.story__clip {
-		flex: 3 1 30rem;
-		margin: 0;
-		border-radius: 18px;
-		background: radial-gradient(120% 90% at 85% 10%, rgba(210, 44, 49, 0.35), rgba(9, 9, 11, 0) 55%), #09090b;
-		color: #fafafa;
-		padding: clamp(1.25rem, 3vw, 2rem);
+	.compare [role='cell'] {
+		color: var(--sl-color-gray-2);
+	}
+	.compare [role='cell']:last-child {
+		color: var(--sl-color-white);
+	}
+	.compare [role='columnheader']:last-child strong {
+		color: #ff8a8d;
+	}
+	@media (max-width: 40rem) {
+		.compare__row {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: 0.35rem 1rem;
+			padding-inline: 1rem;
+		}
+		.compare [role='rowheader'] {
+			grid-column: 1 / -1;
+			font-size: 0.8rem;
+		}
+		.compare__row--head > span:first-child {
+			display: none;
+		}
+	}
+	/* Extend: Packs, the Zero Trust Assessment and config as code, each a full-width tile. */
+	.split-tiles {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--tile-gap);
+		scroll-margin-top: var(--mt-header-h, 3.8rem);
+	}
+	.tile--wide {
+		grid-column: 1 / -1;
+		min-height: 0;
+	}
+	.packs {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.75rem;
+		max-width: 75rem;
+	}
+	/* The banner fills the top of the card, edge to edge (the card's padding is 1.25rem by 1.35rem). */
+	.pack {
+		overflow: hidden;
+	}
+	.pack__banner {
+		width: calc(100% + 2.7rem);
+		max-width: none;
+		height: auto;
+		aspect-ratio: 1200 / 630;
+		object-fit: cover;
+		margin: -1.25rem -1.35rem 0.4rem;
+		border-bottom: 1px solid var(--mt-line);
+	}
+	.pack:hover {
+		border-color: var(--sl-color-gray-4);
+	}
+	.pack__by {
+		margin-top: auto;
+		padding-top: 0.25rem;
+	}
+	@media (max-width: 64rem) {
+		.packs {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	.peek {
+		margin: auto 0 0;
+		width: min(34rem, 100%);
+		background: #18181b;
+		color: #e4e4e7;
+		border: 1px solid #2e2e33;
+		border-bottom: 0;
+		border-radius: 16px 16px 0 0;
+		font-family: var(--sl-font-mono);
+		font-size: 0.8rem;
+		line-height: 1.75;
+		padding: 1.25rem 1.4rem 1.5rem;
+		text-align: start;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		position: relative;
+		top: 0;
+		translate: 0 0;
+	}
+	/* Zero Trust: the command, then Microsoft's own report rising from the bottom of the tile. */
+	.zta-tile {
+		padding-bottom: 0;
+	}
+	.zta-stage {
+		width: min(72rem, 100%);
+		margin-top: 2rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		gap: 2rem;
-		min-height: 20rem;
+		align-items: center;
 	}
-	.story__clip blockquote {
+	.zta-cmd {
+		margin: 0 0 1.5rem;
+		border-bottom: 1px solid #2e2e33;
+		border-radius: 16px;
+		width: min(38rem, 100%);
+	}
+	.zta-shot {
+		display: block;
+		max-height: 40rem;
+		width: 100%;
+		border: 1px solid var(--sl-color-gray-5);
+		border-bottom: 0;
+		border-radius: 16px 16px 0 0;
+		overflow: hidden;
+		box-shadow: 0 -10px 40px -20px rgb(0 0 0 / 0.35);
+	}
+	.zta-shot img {
+		vertical-align: top;
+		width: 100%;
+		height: auto;
+	}
+	/* Config as code: the points beside the function. */
+	.code-tile {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+		gap: 2.5rem;
+		align-items: end;
+		text-align: start;
+		padding-bottom: 0;
+		padding-inline: clamp(1rem, 5vw, 4.5rem);
+		min-height: 0;
+	}
+	.code-tile__text {
+		align-self: center;
+		padding-bottom: 2.5rem;
+	}
+	.code-tile__text > * {
+		margin-inline: 0;
+		text-align: start;
+	}
+	.code-tile h2 {
+		font-size: clamp(2rem, 4vw, 3rem);
+	}
+	.code-tile .ctas {
+		justify-content: flex-start;
+	}
+	.code-points {
+		list-style: none;
+		padding: 0;
+		margin: 1.5rem 0 0;
+		display: grid;
+		gap: 0.9rem;
+		max-width: 36rem;
+	}
+	.code-points li {
+		display: grid;
+		gap: 0.15rem;
+	}
+	.code-tile__code {
+		width: 100%;
+		justify-self: end;
+	}
+	@media (max-width: 52rem) {
+		.code-tile {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	.peek .green {
+		color: #86efac;
+	}
+	.peek .muted-code {
+		color: #a1a1aa;
+	}
+	.peek .blue {
+		color: #93c5fd;
+	}
+	@media (max-width: 52rem) {
+		.split-tiles,
+		.packs {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
+	/* Community */
+	.story {
+		max-width: 52rem;
+		margin-bottom: 0;
+	}
+	.story blockquote {
 		margin: 0;
-		font-size: clamp(1.4rem, 2.6vw, 2.1rem);
-		line-height: 1.22;
+		font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+		line-height: 1.25;
 		letter-spacing: -0.02em;
 		font-weight: 600;
 	}
-	.story__clip figcaption {
+	.story figcaption {
+		margin-top: 0.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	.faces {
 		display: flex;
-		gap: 0.8rem;
-		align-items: center;
+		justify-content: center;
 		flex-wrap: wrap;
+		margin: 1.75rem auto 0;
+		padding-inline-start: 8px;
 	}
-	.story__clip .btn {
-		margin-inline-start: auto;
-	}
-	.avatar {
-		width: 40px;
-		height: 40px;
+	.faces a {
+		margin-inline-start: -8px;
+		border: 2px solid var(--tile-grey);
 		border-radius: 99px;
-		background: #27272a;
-		display: grid;
-		place-items: center;
-		font-weight: 700;
 	}
-	.story__side {
-		flex: 2 1 20rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.8rem;
+	.faces img,
+	.backers img {
+		border-radius: 99px;
+		display: block;
 	}
-	.facts {
+	.community {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 0.75rem;
 	}
-	.facts strong {
-		font-size: 1.5rem;
+	.community .card strong {
+		font-size: 1.15rem;
 	}
-	.facts span {
-		font-size: 0.8rem;
-		color: var(--sl-color-gray-3);
+	.community .more {
+		font-size: 0.95rem;
 	}
-	.story__side blockquote {
-		margin: 0;
-		font-size: 1rem;
+	.episodes {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 0.25rem 0 0.5rem;
 	}
-
-	/* Episodes */
 	.episode {
-		padding: 0;
-		overflow: hidden;
-		gap: 0;
-	}
-	.episode__poster {
-		aspect-ratio: 16 / 9;
-		background: radial-gradient(90% 90% at 90% 0%, rgba(var(--tint), 0.45), transparent 60%), #09090b;
-		color: #fafafa;
-		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-	}
-	.episode__poster strong {
-		font-size: 1.2rem;
-		letter-spacing: -0.02em;
-		line-height: 1.2;
-	}
-	.episode__top {
-		display: flex;
-		justify-content: space-between;
-		font-size: 0.72rem;
-		color: #a1a1aa;
-	}
-	.pill {
-		background: rgba(0, 0, 0, 0.4);
-		border-radius: 5px;
-		padding: 0.1rem 0.4rem;
-		color: #fafafa;
-	}
-	.episode__body {
-		padding: 0.9rem 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.3rem;
-		font-size: 0.82rem;
-	}
-	.episode__title {
+		gap: 0.1rem;
 		font-size: 0.9rem;
-		font-weight: 600;
-		line-height: 1.4;
+		color: var(--sl-color-white);
+		text-decoration: none;
+		line-height: 1.35;
 	}
-
-	/* Suites */
-	.suite {
-		min-height: 11rem;
+	.episode:hover span:last-child {
+		text-decoration: underline;
 	}
-	.suite__top {
-		display: flex;
-		justify-content: space-between;
-		font-size: 0.75rem;
-	}
-	.suite strong {
-		font-size: 1.05rem;
-	}
-	.suite__desc {
-		font-size: 0.875rem;
-		color: var(--sl-color-gray-2);
-		flex: 1;
-	}
-	.suite__count {
-		font-size: 0.85rem;
-		font-weight: 600;
-	}
-
-	/* ZTA, Cloud, sponsors */
-	.zta {
-		border: 1px solid color-mix(in srgb, var(--mt-ember) 25%, transparent);
-		background: color-mix(in srgb, var(--mt-ember) 5%, transparent);
-		border-radius: 20px;
-		padding: clamp(1.5rem, 4vw, 3rem);
-		display: flex;
-		gap: 2.5rem;
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	.zta > div {
-		flex: 1 1 24rem;
-	}
-	.zta p {
-		color: var(--sl-color-gray-2);
-	}
-	.zta .term {
-		flex: 1 1 22rem;
-	}
-	.card .muted {
-		font-size: 0.875rem;
-	}
-	.split {
-		display: flex;
-		gap: 2.5rem;
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	.split > div {
-		flex: 1 1 22rem;
-	}
-	.split p {
-		color: var(--sl-color-gray-2);
-	}
-	.split .term {
-		flex: 1.4 1 26rem;
-	}
-	.sponsors {
-		border: 1px solid var(--mt-line);
-		border-radius: 20px;
-		background: var(--mt-canvas);
-		padding: clamp(1.5rem, 4vw, 2.75rem);
-	}
-	.sponsors .muted {
-		max-width: 40rem;
+	.episode .mono {
+		font-size: 0.72rem;
 	}
 	.logos {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-		gap: 0.75rem;
-		margin: 1.5rem 0;
+		grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+		gap: 0.5rem;
+		margin: 0.5rem 0;
 	}
 	.logo-card {
-		height: 6rem;
+		height: 3.5rem;
 		border: 1px solid var(--mt-line);
-		border-radius: 14px;
+		border-radius: 10px;
 		background: var(--sl-color-black);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 1rem 1.5rem;
+		padding: 0.5rem 0.75rem;
 	}
 	.logo-card img {
-		max-height: 3rem;
+		max-height: 2rem;
 		max-width: 100%;
 		object-fit: contain;
 	}
@@ -1141,58 +1467,66 @@ Invoke-Maester -Pack ZTA</pre>
 		border-style: dashed;
 		color: var(--sl-color-gray-3);
 		font-weight: 600;
-		font-size: 0.9rem;
+		font-size: 0.8rem;
 		text-decoration: none;
 	}
 	.backers {
 		display: flex;
+		gap: 0.35rem;
+		flex-wrap: wrap;
+		margin-bottom: 0.25rem;
+	}
+	.sponsors {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+	.sponsors .card strong {
+		font-size: 1.15rem;
+	}
+	.sponsors .more {
+		font-size: 0.95rem;
+	}
+	.sponsors .card > .more {
+		margin-top: auto;
+		padding-top: 0.5rem;
+	}
+	.sponsors .logos {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.sponsors .backers img {
+		width: 36px;
+		height: 36px;
+	}
+	.ctas--card {
+		justify-content: flex-start;
+		margin-top: auto;
+		padding-top: 0.5rem;
+	}
+	.thanks {
+		display: flex;
+		flex-direction: column;
 		align-items: center;
 		gap: 0.6rem;
-		flex-wrap: wrap;
+		margin-top: 2rem;
+		font-size: 0.9rem;
 	}
-	.backers .eyebrow {
-		margin: 0 0.5rem 0 0;
-	}
-	.backers img,
-	.faces img {
-		border-radius: 99px;
-		display: block;
-	}
-	.cloud {
-		background: #111113;
-		color: #fafafa;
-		border-radius: 20px;
-		padding: clamp(1.75rem, 5vw, 3.5rem);
-		display: flex;
-		gap: 2rem;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: space-between;
-	}
-	.cloud > div {
-		flex: 1 1 26rem;
-	}
-	.cloud p {
-		color: #d4d4d8;
-	}
-	.cloud .eyebrow {
-		color: #a1a1aa;
-	}
-	.community {
-		text-align: center;
-	}
-	.community h2 {
-		margin-inline: auto;
-	}
-	.faces {
-		display: flex;
+	.thanks .backers {
 		justify-content: center;
-		flex-wrap: wrap;
-		margin: 0 auto 1.75rem;
 	}
-	.faces a {
-		margin-inline-start: -8px;
-		border: 2px solid var(--sl-color-black);
-		border-radius: 99px;
+	.thanks .backers img {
+		width: 28px;
+		height: 28px;
+	}
+	@media (max-width: 60rem) {
+		.sponsors,
+		.community {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 40rem) {
+		.tile {
+			min-height: 0;
+		}
 	}
 </style>
