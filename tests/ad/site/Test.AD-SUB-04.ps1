@@ -4,6 +4,11 @@
     IPv6 subnet prefix inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory ipv6 subnet prefix inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SUB-04
+    Review IPv6 subnet prefixes manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-SUB-04
     #>
     [MaesterTest(
         Id = 'AD-SUB-04',

@@ -4,6 +4,11 @@
     Site inventory for review.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory site inventory for review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SITE-01
+    Review the site inventory manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-SITE-01
     #>
     [MaesterTest(
         Id = 'AD-SITE-01',

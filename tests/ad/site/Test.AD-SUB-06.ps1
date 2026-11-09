@@ -4,6 +4,11 @@
     IPv4 prefixes outside RFC1918 inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory ipv4 prefixes outside rfc1918 inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SUB-06
+    Review IPv4 prefixes outside RFC1918 manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-SUB-06
     #>
     [MaesterTest(
         Id = 'AD-SUB-06',

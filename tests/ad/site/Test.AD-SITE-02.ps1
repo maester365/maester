@@ -4,6 +4,11 @@
     Sites without local domain controllers meet the organization baseline.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory sites without local domain controllers meet the organization baseline.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SITE-02
+    Assess sites without local domain controllers against the configured baseline.
+    .LINK
+    https://maester.dev/docs/tests/AD-SITE-02
     #>
     [MaesterTest(
         Id = 'AD-SITE-02',

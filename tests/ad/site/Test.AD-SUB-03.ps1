@@ -4,6 +4,11 @@
     Broad IPv4 subnet inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory broad ipv4 subnet inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SUB-03
+    Review broad IPv4 subnet prefixes manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-SUB-03
     #>
     [MaesterTest(
         Id = 'AD-SUB-03',

@@ -4,6 +4,11 @@
     Site and subnet association health.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory site and subnet association health.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SITE-04
+    Assess site and subnet association health.
+    .LINK
+    https://maester.dev/docs/tests/AD-SITE-04
     #>
     [MaesterTest(
         Id = 'AD-SITE-04',

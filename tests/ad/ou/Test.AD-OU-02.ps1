@@ -4,6 +4,11 @@
     Root-level OU inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory root-level ou inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-OU-02
+    Review root-level OU inventory manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-OU-02
     #>
     [MaesterTest(
         Id = 'AD-OU-02',

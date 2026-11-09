@@ -4,6 +4,11 @@
     OUs with no selected visible direct children inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory ous with no selected visible direct children inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-OU-04
+    Review OUs with no selected visible direct children manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-OU-04
     #>
     [MaesterTest(
         Id = 'AD-OU-04',

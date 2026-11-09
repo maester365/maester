@@ -4,6 +4,11 @@
     OU modification age inventory.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory ou modification age inventory.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-OU-03
+    Review OU modification ages manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-OU-03
     #>
     [MaesterTest(
         Id = 'AD-OU-03',

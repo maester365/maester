@@ -4,6 +4,11 @@
     OU names are unique across the hierarchy.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory ou names are unique across the hierarchy.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-OU-01
+    Assess whether OU names are unique across the hierarchy.
+    .LINK
+    https://maester.dev/docs/tests/AD-OU-01
     #>
     [MaesterTest(
         Id = 'AD-OU-01',

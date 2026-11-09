@@ -4,6 +4,11 @@
     Hierarchical IPv4 prefix overview.
     .DESCRIPTION
     Uses cached Active Directory state to assess or inventory hierarchical ipv4 prefix overview.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-SUB-08
+    Review hierarchical IPv4 subnet prefixes manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-SUB-08
     #>
     [MaesterTest(
         Id = 'AD-SUB-08',
