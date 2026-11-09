@@ -22,7 +22,7 @@
     [OutputType([bool])]
     param(
         # CurrentNist does not require periodic rotation; LegacyRotation enforces it.
-        [ValidateSet('CurrentNist', 'LegacyRotation')][string] $Profile = 'CurrentNist',
+        [Alias('Profile')][ValidateSet('CurrentNist', 'LegacyRotation')][string] $ConfigurationProfile = 'CurrentNist',
         # Maximum allowed age in days for organization-selected LegacyRotation.
         [ValidateRange(1, 3650)][int] $MaximumAgeDays = 90,
         # Confirm complete access to PSOs and computed user resultant-policy attributes.
@@ -64,8 +64,8 @@
             throw "MaxPwdAge is missing or invalid for effective policy of '$($user.Name)'."
         }
         $age = [math]::Abs($policy.MaxPwdAge.TotalDays)
-        $valid = if ($Profile -eq 'CurrentNist') { $age -eq 0 } else { -not $user.PasswordNeverExpires -and $age -gt 0 -and $age -le $MaximumAgeDays }
-        if ($Profile -eq 'CurrentNist' -and $user.PasswordNeverExpires) { $overrideReview = $true }
+        $valid = if ($ConfigurationProfile -eq 'CurrentNist') { $age -eq 0 } else { -not $user.PasswordNeverExpires -and $age -gt 0 -and $age -le $MaximumAgeDays }
+        if ($ConfigurationProfile -eq 'CurrentNist' -and $user.PasswordNeverExpires) { $overrideReview = $true }
         if (-not $valid) { $passed = $false }
         $policyName = if ([string]::IsNullOrWhiteSpace($dn)) { 'Default domain' } else { $policy.Name }
         $status = if ($valid) { 'Pass' } else { 'Fail' }
@@ -73,13 +73,13 @@
     }
     $table = $lines -join "`n"
     if (-not $passed) {
-        Add-MtTestResultDetail -Result "Some visible enabled users do not meet the $Profile password expiration policy criterion. Correct the effective PSO/default policy; do not set per-account PasswordNeverExpires merely to satisfy CurrentNist. Review account overrides separately. Unconfirmed default-policy rows do not hide known failures.`n`n$table"
+        Add-MtTestResultDetail -Result "Some visible enabled users do not meet the $ConfigurationProfile password expiration policy criterion. Correct the effective PSO/default policy; do not set per-account PasswordNeverExpires merely to satisfy CurrentNist. Review account overrides separately. Unconfirmed default-policy rows do not hide known failures.`n`n$table"
         return $false
     }
     if ($unknownDefault -or $overrideReview -or -not $PolicyInventoryReadAccessConfirmed) {
         Add-MtTestResultDetail -Result "Review unconfirmed default-policy visibility or per-account PasswordNeverExpires overrides separately. CurrentNist is satisfied through the effective policy, not account overrides; this is not proof of complete policy coverage.`n`n$table" -Investigate
         return $true
     }
-    Add-MtTestResultDetail -Result "Well done. Visible enabled users meet the $Profile effective password expiration criterion; this does not verify compromise response or MFA.`n`n$table"
+    Add-MtTestResultDetail -Result "Well done. Visible enabled users meet the $ConfigurationProfile effective password expiration criterion; this does not verify compromise response or MFA.`n`n$table"
     return $true
 }

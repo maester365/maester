@@ -46,7 +46,7 @@ function Test-MtAdFineGrainedPasswordPolicySecurity {
     [OutputType([bool])]
     param(
         # Select the current NIST guidance or an organization-defined legacy rotation profile.
-        [ValidateSet('CurrentNist', 'LegacyRotation')][string] $Profile = 'CurrentNist',
+        [Alias('Profile')][ValidateSet('CurrentNist', 'LegacyRotation')][string] $ConfigurationProfile = 'CurrentNist',
         # Override the profile minimum length; 0 selects 15 (CurrentNist) or 14 (LegacyRotation).
         [ValidateRange(0, 255)][int] $MinimumLength = 0,
         # Minimum history for Microsoft baseline and local policy; this is not a NIST requirement.
@@ -97,7 +97,7 @@ function Test-MtAdFineGrainedPasswordPolicySecurity {
                 $null -eq $policy.MsDsPasswordSettingsPrecedence) {
                 throw 'A fine-grained password policy is missing its name, DN or precedence.'
             }
-            $evaluation = Test-MtAdPasswordPolicyConfiguration -Policy $policy -Profile $Profile -MinimumLength $MinimumLength -MinimumHistory $MinimumHistory -MaximumAgeDays $MaximumAgeDays -MaximumLockoutThreshold $MaximumLockoutThreshold -MinimumLockoutMinutes $MinimumLockoutMinutes -MinimumResetMinutes $MinimumResetMinutes
+            $evaluation = Test-MtAdPasswordPolicyConfiguration -Policy $policy -Profile $ConfigurationProfile -MinimumLength $MinimumLength -MinimumHistory $MinimumHistory -MaximumAgeDays $MaximumAgeDays -MaximumLockoutThreshold $MaximumLockoutThreshold -MinimumLockoutMinutes $MinimumLockoutMinutes -MinimumResetMinutes $MinimumResetMinutes
             if (-not $evaluation.Passed) { $passed = $false }
             foreach ($row in $evaluation.Rows) {
                 $lines.Add("| $($policy.Name) | $($policy.DistinguishedName) | $($policy.MsDsPasswordSettingsPrecedence) $($row.Substring(1))") | Out-Null
@@ -105,10 +105,10 @@ function Test-MtAdFineGrainedPasswordPolicySecurity {
         }
         $table = $lines -join "`n"
         if (-not $passed) {
-            Add-MtTestResultDetail -Result "One or more visible PSOs fail the $Profile security settings. Correct the listed values; this High-severity row does not score inventory or usage.`n`n$table"
+            Add-MtTestResultDetail -Result "One or more visible PSOs fail the $ConfigurationProfile security settings. Correct the listed values; this High-severity row does not score inventory or usage.`n`n$table"
             return $false
         }
-        Add-MtTestResultDetail -Result "Well done. All $($policies.Count) visible PSOs meet the $Profile security settings assessed here. This does not prove complete NIST compliance or PSO usage.`n`n$table"
+        Add-MtTestResultDetail -Result "Well done. All $($policies.Count) visible PSOs meet the $ConfigurationProfile security settings assessed here. This does not prove complete NIST compliance or PSO usage.`n`n$table"
         return $true
     }
 

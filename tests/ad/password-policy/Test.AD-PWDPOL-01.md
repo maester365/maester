@@ -2,6 +2,8 @@ Evaluates the default domain password policy's length, history, expiration, comp
 
 This check consolidates the former history-only AD-PWDPOL-01 with AD-PWDPOL-02 through AD-PWDPOL-07. Its `CurrentNist` default expects 15 characters (assume single factor: LDAP cannot establish MFA) and no forced periodic rotation; before applying a minimum above 14 characters, verify domain controller and client support and configure **Relax minimum password length limits** where applicable. The 24 remembered passwords and 1–10 attempts/15-minute duration and reset are separate Microsoft baseline/local criteria, **not NIST requirements**. Zero lockout duration is valid administrator unlock. Complexity is observation only under `CurrentNist`: do not disable it unless the blocklist is independently verified. The configurable `LegacyRotation` profile expects 14 characters, enabled complexity and a maximum age between 1 and 90 days; it is an organization-selected legacy profile, not earlier NIST guidance. Configure thresholds with `TestSettings[].Parameters`. LDAP cannot establish blocklist coverage, MFA, actual password strength or full NIST compliance.
 
+Set `ConfigurationProfile` in `TestSettings[].Parameters` to select the profile. The former `Profile` name remains a direct PowerShell-call alias only; native configuration and `Invoke-MtTest -Parameter` require the canonical name.
+
 #### Control Type
 
 **Operational**

@@ -1,10 +1,8 @@
 ﻿BeforeAll {
-    $root = (Resolve-Path (Join-Path $PSScriptRoot '../../..')).Path
-    foreach ($name in @('ConvertTo-MtAdConfigurationInventoryCell', 'Get-MtAdConfigurationInventory', 'Get-MtAdCertificateInventory', 'Get-MtAdConfigurationInventorySiteLinkTransport', 'Invoke-MtAdConfigurationInventoryReport')) {
-        . (Join-Path $root "powershell/internal/checks/ad/ad/$name.ps1")
-    }
-    function Get-MtADDomainState { param($Categories) }
-    function Add-MtTestResultDetail { param($Result, [switch]$Investigate) }
+    Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
+    Use-MtModuleFunction -Name ConvertTo-MtAdConfigurationInventoryCell, Get-MtAdConfigurationInventory,
+    Get-MtAdCertificateInventory, Get-MtAdConfigurationInventorySiteLinkTransport, Invoke-MtAdConfigurationInventoryReport
 }
 
 Describe 'AD configuration inventory batch' {
@@ -50,22 +48,24 @@ Describe 'AD configuration inventory batch' {
     }
 
     It 'includes unknown published names instead of silently omitting them' {
-        Mock Get-MtADDomainState { [pscustomobject]@{ Configuration = [pscustomobject]@{ CertificateTemplates = @([pscustomobject]@{ Name = 'Known'; displayName = 'Known' }); EnrollmentTemplates = @('Known', 'Unknown'); EnterpriseCAs = @([pscustomobject]@{ Name = 'CA'; certificateTemplates = @('Known', 'Unknown') }) } } }
-        Mock Add-MtTestResultDetail { param($Result, $Investigate) $null = ($script:detail = $Result) }
+        Mock Get-MtADDomainState -ModuleName Maester { [pscustomobject]@{ Configuration = [pscustomobject]@{ CertificateTemplates = @([pscustomobject]@{ Name = 'Known'; displayName = 'Known' }); EnrollmentTemplates = @('Known', 'Unknown'); EnterpriseCAs = @([pscustomobject]@{ Name = 'CA'; certificateTemplates = @('Known', 'Unknown') }) } } }
+        Mock Add-MtTestResultDetail -ModuleName Maester { $script:detail = $Result }
         Invoke-MtAdConfigurationInventoryReport -Kind Templates | Should -BeTrue
         $script:detail | Should -Match 'unknown template'
         $script:detail | Should -Match 'published names without a template object: 1'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
     It 'reports a valid empty optional certificate container as an inventory' {
-        Mock Get-MtADDomainState { [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(); TrustedRootCAs = @(); IntermediateCAs = @() } } }
-        Mock Add-MtTestResultDetail { param($Result, $Investigate) $null = ($script:detail = $Result) }
+        Mock Get-MtADDomainState -ModuleName Maester { [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(); TrustedRootCAs = @(); IntermediateCAs = @() } } }
+        Mock Add-MtTestResultDetail -ModuleName Maester { $script:detail = $Result }
         Invoke-MtAdConfigurationInventoryReport -Kind Certificates | Should -BeTrue
         $script:detail | Should -Match 'public certificate entries: 0'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
     It 'does not mistake a missing published template list for an empty one' {
-        Mock Get-MtADDomainState { [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(); CertificateTemplates = @() } } }
+        Mock Get-MtADDomainState -ModuleName Maester { [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(); CertificateTemplates = @() } } }
         { Invoke-MtAdConfigurationInventoryReport -Kind Templates } | Should -Throw '*EnrollmentTemplates data is unavailable*'
     }
 }

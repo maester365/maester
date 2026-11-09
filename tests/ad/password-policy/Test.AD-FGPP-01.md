@@ -4,6 +4,8 @@ This check replaces AD-FGPP-02 (distinct values), AD-FGPP-03 (settings) and AD-F
 
 The default `CurrentNist` profile checks 15-character minimum (single-factor assumption; LDAP does not establish MFA), no forced periodic rotation, reversible encryption off, Microsoft password history at least 24, and configurable lockout threshold 1–10, duration 15 minutes (or zero for administrator unlock), and reset window 15 minutes. Before applying a minimum above 14 characters, verify that domain controllers and clients support the required Windows minimum-length policy configuration (including **Relax minimum password length limits** where applicable). Minimum password age and complexity are reported as observations under this profile; do not disable existing composition rules until a password blocklist has been verified. `LegacyRotation` instead defaults to 14 characters, enabled complexity and maximum age 1–90 days; this is an **organization-selected legacy profile, not a prior NIST requirement**. Thresholds can be overridden in `TestSettings[].Parameters`. `PolicyInventoryReadAccessConfirmed` is an operator confirmation, not proof inferred from LDAP or an automatic permission check. This partial LDAP assessment cannot verify the password blocklist, MFA enforcement, actual password strength, or complete NIST compliance.
 
+Set `ConfigurationProfile` in `TestSettings[].Parameters` to select the profile. The former `Profile` name remains a direct PowerShell-call alias only; native configuration and `Invoke-MtTest -Parameter` require the canonical name.
+
 #### Control Type
 
 **Operational**

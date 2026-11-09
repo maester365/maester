@@ -22,7 +22,7 @@
     [OutputType([bool])]
     param(
         # Select current NIST guidance or organization-defined legacy rotation.
-        [ValidateSet('CurrentNist', 'LegacyRotation')][string] $Profile = 'CurrentNist',
+        [Alias('Profile')][ValidateSet('CurrentNist', 'LegacyRotation')][string] $ConfigurationProfile = 'CurrentNist',
         # Override profile minimum; 0 selects 15 (current) or 14 (legacy).
         [ValidateRange(0, 255)][int] $MinimumLength = 0,
         # Microsoft baseline password history minimum (not a NIST requirement).
@@ -38,12 +38,12 @@
     )
     $state = Get-MtADDomainState -Categories @('Domain')
     if ($null -eq $state -or $null -eq $state.Domain) { throw 'Default domain password policy was not returned.' }
-    $evaluation = Test-MtAdPasswordPolicyConfiguration -Policy $state.Domain -Profile $Profile -MinimumLength $MinimumLength -MinimumHistory $MinimumHistory -MaximumAgeDays $MaximumAgeDays -MaximumLockoutThreshold $MaximumLockoutThreshold -MinimumLockoutMinutes $MinimumLockoutMinutes -MinimumResetMinutes $MinimumResetMinutes
+    $evaluation = Test-MtAdPasswordPolicyConfiguration -Policy $state.Domain -Profile $ConfigurationProfile -MinimumLength $MinimumLength -MinimumHistory $MinimumHistory -MaximumAgeDays $MaximumAgeDays -MaximumLockoutThreshold $MaximumLockoutThreshold -MinimumLockoutMinutes $MinimumLockoutMinutes -MinimumResetMinutes $MinimumResetMinutes
     $table = "| Setting | Actual | Expected | Status |`n| --- | --- | --- | --- |`n$($evaluation.Rows -join "`n")"
     if ($evaluation.Passed) {
-        Add-MtTestResultDetail -Result "Well done. The default domain password policy meets the $Profile settings assessed here. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
+        Add-MtTestResultDetail -Result "Well done. The default domain password policy meets the $ConfigurationProfile settings assessed here. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
     } else {
-        Add-MtTestResultDetail -Result "The default domain password policy fails one or more $Profile settings; correct the listed values. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
+        Add-MtTestResultDetail -Result "The default domain password policy fails one or more $ConfigurationProfile settings; correct the listed values. Complexity under CurrentNist is observational; separately verify the password blocklist and MFA.`n`n$table"
     }
     return $evaluation.Passed
 }

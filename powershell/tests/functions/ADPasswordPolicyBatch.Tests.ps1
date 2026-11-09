@@ -3,7 +3,7 @@
     . "$PSScriptRoot/../../internal/checks/ad/ad/Test-MtAdPasswordPolicyConfiguration.ps1"
     . "$PSScriptRoot/../../internal/checks/ad/ad/Get-MtAdPasswordPolicyUsage.ps1"
 
-    function New-MockPasswordPolicy {
+    function Get-MockPasswordPolicy {
         param([int] $Length = 15, [int] $Age = 0)
         [pscustomobject]@{
             DistinguishedName = 'CN=Policy,CN=Password Settings Container,DC=example,DC=org'
@@ -22,7 +22,7 @@ Describe 'Native AD password policy outcomes' {
             $script:settingsInstance = [pscustomobject]@{ Data = [pscustomobject]@{ Kind = 'Settings' } }
             $script:usageInstance = [pscustomobject]@{ Data = [pscustomobject]@{ Kind = 'Usage' } }
         }
-        $script:policy = New-MockPasswordPolicy
+        $script:policy = Get-MockPasswordPolicy
         $script:state = [pscustomobject]@{
             Domain = $script:policy
             FineGrainedPasswordPolicies = @($script:policy)
@@ -99,6 +99,39 @@ Describe 'Native AD password policy outcomes' {
         InModuleScope Maester { Test-MtAdUserEffectivePasswordExpiration -Profile LegacyRotation -PolicyInventoryReadAccessConfirmed $true | Should -BeTrue }
     }
 
+    It 'uses the renamed profile parameter and preserves the direct-call alias without changing the automatic variable' {
+        $script:policy.MaxPwdAge = [timespan]::FromDays(90)
+        $script:policy.ComplexityEnabled = $true
+        InModuleScope Maester {
+            $originalProfile = $PROFILE
+            foreach ($command in 'Test-MtAdFineGrainedPasswordPolicySecurity', 'Test-MtAdDefaultPasswordPolicySecurity', 'Test-MtAdUserEffectivePasswordExpiration') {
+                $parameters = @{ ConfigurationProfile = 'LegacyRotation' }
+                if ($command -ne 'Test-MtAdDefaultPasswordPolicySecurity') { $parameters.PolicyInventoryReadAccessConfirmed = $true }
+                & $command @parameters | Should -BeTrue
+                $parameters.Remove('ConfigurationProfile')
+                $parameters.Profile = 'LegacyRotation'
+                & $command @parameters | Should -BeTrue
+            }
+            $PROFILE | Should -Be $originalProfile
+        }
+    }
+
+    It 'discovers the canonical profile parameter with unchanged default and allowed values' {
+        foreach ($id in 'AD-FGPP-01', 'AD-PWDPOL-01', 'AD-USER-03') {
+            $test = Get-MtTest -Id $id
+            $parameter = @($test.Parameters | Where-Object Name -EQ 'ConfigurationProfile')
+            $parameter.Count | Should -Be 1 -Because $id
+            $parameter[0].Default | Should -Be 'CurrentNist'
+            $parameter[0].AllowedValues | Should -Be @('CurrentNist', 'LegacyRotation')
+            InModuleScope Maester -Parameters @{ Metadata = $test } {
+                param($Metadata)
+                $binding = ConvertTo-MtTestParameter -Test $Metadata -ConfigValue @{ ConfigurationProfile = 'LegacyRotation' }
+                $binding.Error | Should -BeNullOrEmpty
+                $binding.Bound.ConfigurationProfile | Should -Be 'LegacyRotation'
+            }
+        }
+    }
+
     It 'does not assume an unconfirmed empty resultant DN means default domain' {
         $script:state.Users[0].ResultantPasswordPolicyDN = $null
         InModuleScope Maester { Test-MtAdUserEffectivePasswordExpiration | Should -BeTrue }
@@ -130,37 +163,37 @@ Describe 'Native AD password policy outcomes' {
 
 Describe 'Normalized AD password-policy batch' {
     It 'assesses current profile without decoding FGPP PwdProperties or requiring composition rules' {
-        $result = Test-MtAdPasswordPolicyConfiguration -Policy (New-MockPasswordPolicy)
+        $result = Test-MtAdPasswordPolicyConfiguration -Policy (Get-MockPasswordPolicy)
         $result.Passed | Should -BeTrue
         ($result.Rows -join ' ') | Should -Match 'Observe'
     }
 
     It 'assesses explicit legacy defaults independently from current NIST' {
-        $result = Test-MtAdPasswordPolicyConfiguration -Policy (New-MockPasswordPolicy -Length 14 -Age 90) -Profile LegacyRotation
+        $result = Test-MtAdPasswordPolicyConfiguration -Policy (Get-MockPasswordPolicy -Length 14 -Age 90) -Profile LegacyRotation
         $result.Passed | Should -BeFalse
-        (Test-MtAdPasswordPolicyConfiguration -Policy (New-MockPasswordPolicy -Length 14 -Age 90) -Profile LegacyRotation -Fields @('MinPwdLength', 'MaxPwdAge')).Passed | Should -BeTrue
+        (Test-MtAdPasswordPolicyConfiguration -Policy (Get-MockPasswordPolicy -Length 14 -Age 90) -Profile LegacyRotation -Fields @('MinPwdLength', 'MaxPwdAge')).Passed | Should -BeTrue
     }
 
     It 'accepts zero lockout duration as manual administrator unlock' {
-        $policy = New-MockPasswordPolicy
+        $policy = Get-MockPasswordPolicy
         $policy.LockoutDuration = [timespan]::Zero
         (Test-MtAdPasswordPolicyConfiguration -Policy $policy).Passed | Should -BeTrue
     }
 
     It 'does not turn a missing field into a false or zero' {
-        $policy = New-MockPasswordPolicy
+        $policy = Get-MockPasswordPolicy
         $policy.ComplexityEnabled = $null
         { Test-MtAdPasswordPolicyConfiguration -Policy $policy } | Should -Throw '*ComplexityEnabled*'
     }
 
     It 'uses actual computed resultant policy rather than direct targets' {
-        $policy = New-MockPasswordPolicy
+        $policy = Get-MockPasswordPolicy
         $users = @([pscustomobject]@{ Name = 'Alex'; Enabled = $true; ResultantPasswordPolicyDN = $policy.DistinguishedName })
         (Get-MtAdPasswordPolicyUsage -Users $users -Policies @($policy)).Counts[$policy.DistinguishedName] | Should -Be 1
     }
 
     It 'rejects missing and unknown resultant policy attributes' {
-        $policy = New-MockPasswordPolicy
+        $policy = Get-MockPasswordPolicy
         { Get-MtAdPasswordPolicyUsage -Users @([pscustomobject]@{ Name = 'Alex'; Enabled = $true }) -Policies @($policy) } | Should -Throw '*ResultantPasswordPolicyDN*'
         { Get-MtAdPasswordPolicyUsage -Users @([pscustomobject]@{ Name = 'Alex'; Enabled = $true; ResultantPasswordPolicyDN = 'CN=unknown' }) -Policies @($policy) } | Should -Throw '*absent*'
     }
