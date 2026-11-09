@@ -3,14 +3,18 @@
   "checkpoint_id": "01M6ZVZZVFME9WPCFQNNP0QTDK",
   "strategy": "manual-commit",
   "branch": "feat/website-shared-header",
-  "checkpoints_count": 5,
+  "checkpoints_count": 6,
   "files_touched": [
     "website/public/img/zta/zta-demo-dark.webp",
     "website/public/img/zta/zta-demo-light.webp",
+    "website/scripts/catalog-explorer.mjs",
+    "website/scripts/community-packs.mjs",
+    "website/src/components/overrides/Head.astro",
     "website/src/components/overrides/Header.astro",
     "website/src/layouts/SiteLayout.astro",
     "website/src/pages/index.astro",
-    "website/src/styles/site.css"
+    "website/src/styles/site.css",
+    "website/src/styles/theme.css"
   ],
   "sessions": [
     {
@@ -19,25 +23,32 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 76,
-    "cache_creation_tokens": 28822,
-    "cache_read_tokens": 6565255,
-    "output_tokens": 15179,
-    "api_call_count": 34
+    "input_tokens": 122,
+    "cache_creation_tokens": 182385,
+    "cache_read_tokens": 9986438,
+    "output_tokens": 79958,
+    "api_call_count": 56
   },
   "redaction": {
-    "replacements": 547,
+    "replacements": 1072,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 6,
       "credentialed_uri": 0,
-      "entropy": 531,
-      "key_context": 10,
+      "entropy": 1055,
+      "key_context": 11,
       "provider_token": 0,
       "shell_stdin": 0
     }
