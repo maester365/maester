@@ -10,13 +10,13 @@
     understand the composition of group memberships in the directory.
 
     .EXAMPLE
-    Test-MtAdGroupMemberAccountTypeCount
+    Invoke-MtTest -Id AD-GMC-02
 
     Returns $true if group member data is accessible, $false otherwise.
     The test result includes the count of distinct account types found.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGroupMemberAccountTypeCount
+    https://maester.dev/docs/tests/AD-GMC-02
     #>
     [MaesterTest(
         Id = 'AD-GMC-02',
@@ -41,7 +41,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory group inventory is unavailable; member account types cannot be assessed.'
         return $null
     }
 
