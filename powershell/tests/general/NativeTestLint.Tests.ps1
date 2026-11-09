@@ -64,6 +64,7 @@ Describe 'Native built-in tests' {
         # instances need a premium licence) keep their own check.
         $allowed = @(
             'MT.1024' # Entra recommendations: only the premium recommendation instances need Entra ID P2.
+            'MT.1273' # User risk detections: only the premium detection types need Entra ID P2.
         )
         $problems = foreach ($f in $script:files | Where-Object Function) {
             if ($f.Test.Id -in $allowed) { continue }
