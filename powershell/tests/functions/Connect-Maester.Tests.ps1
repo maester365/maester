@@ -25,13 +25,18 @@
             param([string]$Organization, [string]$TenantId, [string]$OAuthToken)
             $null = $PSBoundParameters
         }
+        'Invoke-ADOPSRestMethod' = {
+            [CmdletBinding()]
+            param([string]$Uri, [string]$Method)
+            $null = $PSBoundParameters
+        }
         'Connect-IPPSSession' = {
             [CmdletBinding()]
             param([string]$ConnectionUri, [string]$AzureADAuthorizationEndpointUri, [string]$UserPrincipalName, [switch]$BypassMailboxAnchoring, [switch]$ShowBanner)
             $null = $PSBoundParameters
         }
     }
-    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Get-AzAccessToken','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Connect-ADOPS','Disconnect-ADOPS','Get-ADOPSConnection') {
+    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Get-AzAccessToken','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Connect-ADOPS','Disconnect-ADOPS','Get-ADOPSConnection','Invoke-ADOPSRestMethod') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             $stubBody = if ($stubBodies.ContainsKey($cmd)) { $stubBodies[$cmd] } else { { } }
             New-Item -Path "function:global:$cmd" -Value $stubBody | Out-Null
@@ -664,6 +669,27 @@ Describe 'Connect-Maester Azure DevOps' {
             InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
             Test-MtConnection -Service AzureDevOps | Should -BeFalse
             $script:adoOrganization | Should -BeNullOrEmpty
+        }
+
+        It 'Clears the previous organization when configuration is <ConfigProblem>' -ForEach @(
+            @{ ConfigProblem = 'missing an organization'; ConfigContent = '{"GlobalSettings":{}}' }
+            @{ ConfigProblem = 'invalid JSON'; ConfigContent = '{invalid' }
+        ) {
+            $ConfigContent | Set-Content ./maester-config.json
+            $script:adoOrganization = 'old-org'
+            Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' }
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+
+            Connect-Maester -Service AzureDevOps -ErrorAction SilentlyContinue
+
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            $script:adoOrganization | Should -BeNullOrEmpty
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
         }
 
         It 'Reports the actual failure when <MissingCommand> is unavailable despite ADOPS being installed' -ForEach @(

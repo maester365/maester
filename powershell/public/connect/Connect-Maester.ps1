@@ -667,16 +667,26 @@
       # A failed reconnect must not leave a previous successful probe visible.
       $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
       try {
+         $adoModule = Get-Module -Name ADOPS
+         $adoAvailable = $adoModule -or (Get-Module -Name ADOPS -ListAvailable)
+         if ($adoAvailable) {
+            if (-not $adoModule) {
+               Import-Module -Name ADOPS -Global -ErrorAction Stop
+            }
+            # Reset persisted state before config discovery too: a missing or invalid config
+            # must not revive the old organization when the next run resets its probe cache.
+            Disconnect-ADOPS -ErrorAction Stop
+         }
          # A connector may have discovered config before the tenant was known. Refresh that
          # config for this tenant, while preserving any config supplied by a test run.
-         if ([string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and (
+         if ($adoAvailable -and [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and (
                $null -eq $__MtSession.MaesterConfig -or
                [object]::ReferenceEquals($__MtSession.MaesterConfig, $__MtSession.ConnectionConfig))) {
             $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -TenantId $TenantId -WarningAction SilentlyContinue
             $__MtSession.ConnectionConfig = $__MtSession.MaesterConfig
          }
          $organization = if (-not [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization)) { $AzureDevOpsOrganization.Trim() } else { Get-MtSetting -Name 'AzureDevOpsOrganization' }
-         if (-not (Get-Module -Name ADOPS) -and -not (Get-Module -Name ADOPS -ListAvailable)) {
+         if (-not $adoAvailable) {
             $azureDevOpsProblem = @{
                Message  = 'The ADOPS PowerShell module is not installed, so Maester cannot connect to Azure DevOps. Run: Install-Module ADOPS -Scope CurrentUser'
                Category = [System.Management.Automation.ErrorCategory]::NotInstalled
@@ -689,13 +699,6 @@
             }
             Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
          } else {
-            if (-not (Get-Module -Name ADOPS)) {
-               Import-Module -Name ADOPS -Global -ErrorAction Stop
-            }
-            # ADOPS persists the organization. A failed sign-in must not revive the previous
-            # organization when Invoke-Maester resets its per-run connection probe.
-            Disconnect-ADOPS -ErrorAction Stop
-
             $connectAdoParams = @{ Organization = $organization; ErrorAction = 'Stop' }
             if ($TenantId) {
                $connectAdoParams['TenantId'] = $TenantId
