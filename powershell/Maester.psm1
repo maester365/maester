@@ -20,6 +20,7 @@ $__MtSession = @{
 	NativeTestInfo         = @{}                 # Native tests of the current run: ID -> function name and Markdown
 	NativeReturnValue      = @{}                 # Native tests of the current run: ID -> what the test returned
 	Connections            = @()
+	ConnectionConfig       = $null             # Reference to config discovered by a connector, not an explicit run config.
 	DnsCache               = @()
 	ExoCache               = @{}
 	OrcaCache              = @{}

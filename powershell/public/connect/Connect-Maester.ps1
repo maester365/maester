@@ -667,8 +667,13 @@
       # A failed reconnect must not leave a previous successful probe visible.
       $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
       try {
-         if ([string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and $null -eq $__MtSession.MaesterConfig) {
+         # A connector may have discovered config before the tenant was known. Refresh that
+         # config for this tenant, while preserving any config supplied by a test run.
+         if ([string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and (
+               $null -eq $__MtSession.MaesterConfig -or
+               [object]::ReferenceEquals($__MtSession.MaesterConfig, $__MtSession.ConnectionConfig))) {
             $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -TenantId $TenantId -WarningAction SilentlyContinue
+            $__MtSession.ConnectionConfig = $__MtSession.MaesterConfig
          }
          $organization = if (-not [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization)) { $AzureDevOpsOrganization.Trim() } else { Get-MtSetting -Name 'AzureDevOpsOrganization' }
          if (-not (Get-Module -Name ADOPS) -and -not (Get-Module -Name ADOPS -ListAvailable)) {

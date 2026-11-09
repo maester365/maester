@@ -480,6 +480,7 @@ Describe 'Connect-Maester Azure DevOps' {
         Push-Location $TestDrive
         InModuleScope Maester {
             $__MtSession.MaesterConfig = $null
+            $__MtSession.ConnectionConfig = $null
             $__MtSession.AzureDevOpsConnectionCache = $null
         }
         $script:connectionSummaryRows = $null
@@ -499,6 +500,7 @@ Describe 'Connect-Maester Azure DevOps' {
         $env:MAESTER_CONFIG = $script:savedConfigEnvironment
         InModuleScope Maester {
             $__MtSession.MaesterConfig = $null
+            $__MtSession.ConnectionConfig = $null
             $__MtSession.AzureDevOpsConnectionCache = $null
         }
         Remove-Item -LiteralPath (Join-Path $TestDrive 'maester-config.json') -ErrorAction SilentlyContinue
@@ -558,6 +560,72 @@ Describe 'Connect-Maester Azure DevOps' {
             }
             Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
             Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'contoso' }
+        }
+
+        It 'Applies the tenant organization when GitHub connects <Sequence>' -ForEach @(
+            @{ Sequence = 'in a prior call' }
+            @{ Sequence = 'in the same call' }
+        ) {
+            '{"GlobalSettings":{"GitHubOrganization":"test-org","AzureDevOpsOrganization":"base-org"}}' | Set-Content ./maester-config.json
+            $tenantFile = Join-Path $TestDrive 'maester-config.11111111-2222-3333-4444-555555555555.json'
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"tenant-org"}}' | Set-Content $tenantFile
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [pscustomobject]@{ Content = '{"login":"testuser","state":"active","role":"admin","enabled_repositories":"all"}'; StatusCode = 200 }
+            }
+            $savedToken = $env:MAESTER_GITHUB_TOKEN
+            try {
+                $env:MAESTER_GITHUB_TOKEN = 'test-token'
+                if ($Sequence -eq 'in a prior call') {
+                    Connect-MtGitHub
+                    Connect-Maester -Service AzureDevOps -TenantId '11111111-2222-3333-4444-555555555555'
+                } else {
+                    Connect-Maester -Service GitHub,AzureDevOps -TenantId '11111111-2222-3333-4444-555555555555'
+                }
+
+                InModuleScope Maester { $__MtSession.GitHubConnection.Connected | Should -BeTrue }
+                Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly
+                Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                    $Organization -eq 'tenant-org' -and $TenantId -eq '11111111-2222-3333-4444-555555555555'
+                }
+            } finally {
+                $env:MAESTER_GITHUB_TOKEN = $savedToken
+                Remove-Item -LiteralPath $tenantFile
+            }
+        }
+
+        It 'Preserves an explicit run configuration supplied as <ConfigKind>' -ForEach @(
+            @{ ConfigKind = 'an object' }
+            @{ ConfigKind = 'a file' }
+        ) {
+            $tenantFile = Join-Path $TestDrive 'maester-config.11111111-2222-3333-4444-555555555555.json'
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"tenant-org"}}' | Set-Content $tenantFile
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"explicit-org"}}' | Set-Content ./maester-config.json
+            try {
+                Connect-Maester -Service AzureDevOps -TenantId '11111111-2222-3333-4444-555555555555'
+                InModuleScope Maester -Parameters @{ ConfigKind = $ConfigKind; ConfigPath = (Join-Path $TestDrive 'maester-config.json') } {
+                    param($ConfigKind, $ConfigPath)
+                    $config = if ($ConfigKind -eq 'a file') { $ConfigPath } else { @{ GlobalSettings = @{ AzureDevOpsOrganization = 'explicit-org' } } }
+                    $__MtSession.MaesterConfig = Resolve-MtRunConfig -Config $config
+                }
+                Connect-Maester -Service AzureDevOps -TenantId '11111111-2222-3333-4444-555555555555'
+                Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'explicit-org' }
+            } finally {
+                Remove-Item -LiteralPath $tenantFile
+            }
+        }
+
+        It 'Discovers the new tenant organization when reconnecting' {
+            $tenantFiles = @('maester-config.11111111-2222-3333-4444-555555555555.json', 'maester-config.aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.json')
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"first-org"}}' | Set-Content $tenantFiles[0]
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"second-org"}}' | Set-Content $tenantFiles[1]
+            try {
+                Connect-Maester -Service AzureDevOps -TenantId '11111111-2222-3333-4444-555555555555'
+                Connect-Maester -Service AzureDevOps -TenantId 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+                Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'first-org' }
+                Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'second-org' }
+            } finally {
+                Remove-Item -LiteralPath $tenantFiles
+            }
         }
 
         It 'Uses an explicit tenant for both token acquisition and ADOPS' {
