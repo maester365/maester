@@ -59,8 +59,20 @@ Describe 'Test-MtCisZAP' {
     It 'lists the exclusions for review' {
         $script:Rules = @([pscustomobject]@{ ExceptIfSentTo = @('research@contoso.com'); ExceptIfSentToMemberOf = $null; ExceptIfRecipientDomainIs = @('research.contoso.com') })
         Test-MtCisZAP | Should -BeTrue
-        $script:Result | Should -Match 'ExceptIfSentTo \| research@contoso.com'
+        $script:Result | Should -Match 'ExceptIfSentTo \| research\\?@contoso\.com'
         $script:Result | Should -Match 'ExceptIfRecipientDomainIs \| research.contoso.com'
+    }
+
+    It 'escapes tenant-controlled Markdown in policy names and exclusions' {
+        $script:Policies = @([pscustomobject]@{ Name = '![x](https://example.com)'; ZapEnabled = $true })
+        $participant = 'research@contoso.com|[link](https://example.com)'
+        $script:Rules = @([pscustomobject]@{ ExceptIfSentTo = @($participant); ExceptIfSentToMemberOf = $null; ExceptIfRecipientDomainIs = $null })
+
+        Test-MtCisZAP | Should -BeTrue
+        $safeName = Get-MtSafeMarkdown -Text '![x](https://example.com)'
+        $safeParticipant = Get-MtSafeMarkdown -Text $participant
+        $script:Result | Should -Match ([regex]::Escape("| $safeName | True | ✅ Pass |"))
+        $script:Result | Should -Match ([regex]::Escape("| ExceptIfSentTo | $safeParticipant |"))
     }
 }
 
@@ -244,14 +256,23 @@ Describe 'Test-MtCisTeamsReportSecurityConcerns' {
         $script:Policy.ReportChatMessageAddresses = @()
 
         Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
-        $script:Result | Should -Match 'ReportChatMessageAddresses \| Not set \| soc@contoso.com \| ❌ Fail'
+        $script:Result | Should -Match 'ReportChatMessageAddresses \| Not set \| soc\\?@contoso\.com \| ❌ Fail'
     }
 
     It 'fails when a reporting destination differs from the single mailbox' {
         $script:Policy.ReportChatMessageAddresses = @('triage@contoso.com')
 
         Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
-        $script:Result | Should -Match 'ReportChatMessageAddresses \| triage@contoso.com \| soc@contoso.com \| ❌ Fail'
+        $script:Result | Should -Match 'ReportChatMessageAddresses \| triage\\?@contoso\.com \| soc\\?@contoso\.com \| ❌ Fail'
+    }
+
+    It 'escapes tenant-controlled Markdown in reporting destinations' {
+        $destination = 'triage@contoso.com|[link](https://example.com)'
+        $script:Policy.ReportChatMessageAddresses = @($destination)
+
+        Test-MtCisTeamsReportSecurityConcerns | Should -BeFalse
+        $safeDestination = Get-MtSafeMarkdown -Text $destination
+        $script:Result | Should -Match ([regex]::Escape("| ReportChatMessageAddresses | $safeDestination |"))
     }
 
     It 'fails when no report submission policy is returned' {

@@ -93,7 +93,9 @@
     $result += "| --- | --- | --- | --- |`n"
     foreach ($check in $checks) {
         $displayValue = if ($null -eq $check.Value -or "$($check.Value)" -eq '') { 'Not set' } else { $check.Value }
-        $result += "| $($check.Setting) | $displayValue | $($check.Expected) | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $safeValue = Get-MtSafeMarkdown -Text "$displayValue"
+        $safeExpected = Get-MtSafeMarkdown -Text "$($check.Expected)"
+        $result += "| $($check.Setting) | $safeValue | $safeExpected | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($return) {

@@ -65,7 +65,8 @@
     $resultMd = "| Policy | Zero-hour auto purge (ZAP) | Result |`n"
     $resultMd += "| --- | --- | --- |`n"
     foreach ($policy in $policies) {
-        $resultMd += "| $($policy.Name) | $($policy.ZapEnabled) | $(if ($policy.ZapEnabled -eq $true) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $safeName = Get-MtSafeMarkdown -Text "$($policy.Name)"
+        $resultMd += "| $safeName | $($policy.ZapEnabled) | $(if ($policy.ZapEnabled -eq $true) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
     if ($policies.Count -eq 0) {
         $resultMd += "| Not found | | ❌ Fail |`n"
@@ -76,7 +77,8 @@
         $resultMd += "| Exclusion | Participants |`n"
         $resultMd += "| --- | --- |`n"
         foreach ($exclusion in $exclusions) {
-            $resultMd += "| $($exclusion.Exception) | $($exclusion.Values) |`n"
+            $safeValues = Get-MtSafeMarkdown -Text "$($exclusion.Values)"
+            $resultMd += "| $($exclusion.Exception) | $safeValues |`n"
         }
     }
     else {
