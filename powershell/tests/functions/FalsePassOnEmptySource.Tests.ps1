@@ -21,8 +21,8 @@
 
     Context 'AD-FOR-03 tombstone lifetime' {
         It 'fails with the unable-to-retrieve message when the lifetime cannot be read' {
-            # The value used to be replaced with 180, which made the condition impossible to fail
-            # and reported a forest as retaining deleted objects for 180 days on an invented number.
+            # An unreadable lifetime must not be substituted with a default: the comparison would
+            # then be impossible to fail and the result would report an invented number.
             Mock -ModuleName Maester Get-MtADDomainState {
                 [pscustomobject]@{
                     Configuration = [pscustomobject]@{ TombstoneLifetime = $null }
@@ -50,12 +50,8 @@
         }
 
         It 'does not pass on an inferred 60 days when the attribute is absent' {
-            # @merill asked for the "not set" case to say Active Directory then uses 60 days, and
-            # it does. @coderabbitai then pointed out that seeing the object is not proof the
-            # attribute was readable: an account without read access to tombstoneLifetime gets the
-            # object back with the attribute omitted, which is identical to it not being set. So
-            # the 60 days is explained, both causes are named, and the check still does not pass -
-            # inferring a value it never read is the false pass this file exists to prevent.
+            # Seeing the Directory Service object is not proof the attribute was readable, so an
+            # absent attribute must not be read as 'not set' and passed on the 60-day default.
             Mock -ModuleName Maester Get-MtADDomainState {
                 [pscustomobject]@{
                     Configuration = [pscustomobject]@{ TombstoneLifetime = $null; DirectoryServiceRead = $true }

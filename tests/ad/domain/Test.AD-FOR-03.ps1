@@ -52,23 +52,13 @@
     # Default values: 60 days for older forests, 180 days for newer forests
     $defaultValue = 180
 
-    # The unreadable value used to be replaced with $defaultValue here. That made the condition
-    # below impossible to fail and left the "Unable to retrieve" branch unreachable, so a forest
-    # whose tombstone lifetime could not be read was reported as retaining deleted objects for 180
-    # days and as meeting the recommendation, on a number this test supplied itself. Worse, the
-    # substituted 180 is only the default for newer forests; an older forest defaults to 60, so the
-    # invented value could also claim the recommendation was met when it was not.
-    #
-    # Without the substitution the branch the author wrote for that case is the one that runs, which
-    # is what the title of this check asserts: the tombstone lifetime should be retrievable.
+    # The lifetime is never substituted with a default. A value this check supplies itself would
+    # make the comparison below impossible to fail, and 180 is only the default for newer forests.
 
-    # A $null lifetime has two causes and LDAP does not let us tell them apart. @merill asked
-    # for the "not set" case to report the 60 days Active Directory then uses, and that is
-    # worth saying. But @coderabbitai is right that seeing the Directory Service object is not
-    # proof the attribute was readable: an account without read access to tombstoneLifetime
-    # gets the object back with the attribute omitted, which is byte-for-byte what "not set"
-    # looks like. Passing on a value inferred from that would be the same false pass this
-    # check exists to remove, so the reading is reported and the check still does not pass.
+    # A $null lifetime has two causes LDAP does not distinguish: the forest never set the
+    # attribute, or this account cannot read it. Both return the object with the attribute
+    # omitted, so the check reports what 'not set' would mean without claiming it retrieved a
+    # value.
     $directoryServiceRead = [bool]$adState.Configuration.DirectoryServiceRead
     $notSetLifetime = 60
     $isAbsent = $directoryServiceRead -and $null -eq $tombstoneLifetime
