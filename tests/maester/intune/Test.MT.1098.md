@@ -1,6 +1,6 @@
 This test verifies the health of Intune Mobile Threat Defense Connectors, including Microsoft Defender for Endpoint.
 
-Each connector must be enabled and have a heartbeat less than 48 hours old (the existing check allows at most one completed day). The result table explains unhealthy states and reports a missing or year-1 heartbeat as **Never received**.
+Each connector must be enabled and have a heartbeat in the last 48 hours. The result table explains unhealthy states and reports a missing or year-1 heartbeat as **Never received**.
 
 A connector in `notSetUp` has not completed setup and blocks device threat messages. A connector in `available` has completed setup but needs a platform toggle enabled. Neither state satisfies this health check. An `unresponsive` connector needs attention because Intune ignores its compliance state once the configured unresponsiveness threshold is reached.
 

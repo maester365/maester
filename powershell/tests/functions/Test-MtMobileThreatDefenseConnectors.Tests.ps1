@@ -67,7 +67,7 @@ Describe 'Test-MtMobileThreatDefenseConnectors' {
         $script:Connector.lastHeartbeatDateTime = '2026-11-05T12:00:00Z'
 
         Test-MtMobileThreatDefenseConnectors | Should -BeFalse
-        $script:Result | Should -BeLike '*Heartbeat is outside the test*'
+        $script:Result | Should -BeLike '*No heartbeat in the last 48 hours*'
     }
 
     It 'Preserves the existing heartbeat boundary at <Hours> hours' -ForEach @(

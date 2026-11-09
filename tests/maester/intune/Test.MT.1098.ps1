@@ -96,10 +96,10 @@
                 $reasons += 'No heartbeat has been received. Complete setup and verify that the partner can communicate with Intune.'
             } else {
                 $heartbeatDisplay = [string]$connector.lastHeartbeatDateTime
-                # Keep the existing window: at most one completed day since the heartbeat (less than 48 hours).
+                # At most one completed day since the heartbeat, so less than 48 hours.
                 $syncIsRecent = [System.Math]::Floor(((Get-Date) - $heartbeat).TotalDays) -le 1
                 if (-not $syncIsRecent) {
-                    $reasons += "Heartbeat is outside the test's existing window (less than 48 hours). Check the partner service and connectivity."
+                    $reasons += 'No heartbeat in the last 48 hours. Check the partner service and connectivity.'
                 }
             }
 
