@@ -135,6 +135,7 @@ Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
 | --- | --- | --- | --- |
 | `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
+| `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
 | `GitHubOrganization` | string | | GitHub checks. |
 | `GitHubApiBaseUri` | string | `https://api.github.com` | GitHub checks. |
 | `GitHubApiVersion` | string | `2022-11-28` | GitHub checks. |
