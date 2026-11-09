@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6ZMC7SNXKWGQCG2BJQ9RVMZ",
+  "session_id": "4c4a743c-19c4-4445-879a-37960b1fea43",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-09T07:46:47.405231Z",
+  "branch": "feat/website-pricing-video-polish",
+  "checkpoints_count": 34,
+  "save_step_count": 34,
+  "files_touched": [
+    "website/src/layouts/SiteLayout.astro",
+    "website/src/lib/check-counts.ts",
+    "website/src/pages/index.astro",
+    "website/src/pages/pricing.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-fable-5-1",
+  "turn_id": "8c11f1cf9345",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 424,
+    "cache_creation_tokens": 246834,
+    "cache_read_tokens": 34894647,
+    "output_tokens": 75662,
+    "api_call_count": 175
+  },
+  "redaction": {
+    "replacements": 624,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 590,
+      "key_context": 34,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 34
+  }
+}

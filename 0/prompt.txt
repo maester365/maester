@@ -1,0 +1,168 @@
+in the pricing page change 'Run it in your own Azure subscription.
+The $99 plan deploys Maester Cloud into your own Azure subscription, then does the running for you, with nothing to script or schedule. The Azure resources it uses are billed to your subscription separately. Active Directory checks need a domain controller, so run those with Maester itself.' to say hosted and self-hosted options. 
+
+also remove this
+
+Maester Cloud's managed runs use Maester 2.3 for now, so Maester Packs and checks new in 3.0 aren't included yet. Active Directory checks need a domain controller, so run those with Maester itself. Other ways to support Maester
+
+change 'Runs securely in your Azure subscription' to say isolated resource group for each customer (or something alon the lines)...
+
+---
+
+lets add a header that says Manifesto and have it link to https://maester.cloud/manifesto
+
+---
+
+don't add this icon - ↗
+
+---
+
+also in both the free optiosn call out the Maester manifesto and link to the manifesto page...
+
+---
+
+run it locally and show me
+
+---
+
+make the automation ina different shading...
+
+---
+
+in the first column show the total maester core tests and the community packs count of tests. make sure we sync with the count available in the home page. we need to make sure each build or on some other schedle it keeps being updated..
+
+---
+
+i dot like that shading... it's too dark...
+
+---
+
+lets remove teh get started button in the top tirhg of hte header
+
+---
+
+remove 'See the community projects'
+
+---
+
+the setup automation button and its background are the same color
+
+---
+
+in the how it works video the first eight seconds should have some transitions or ullustrations. if someone does not have audio it wil looks like nothing is happpening..
+
+---
+
+show the logos of all the products...
+
+---
+
+the buttons in the first two are not legibly
+
+---
+
+that's too dark, is there a secondary color
+
+---
+
+i dont' like teh gray button
+
+---
+
+make this header a little funny.
+
+Maester is free. Wherever you run it.
+
+like surpsirse or somethign like that...
+
+---
+
+call out our mission
+
+---
+
+in the paid one make this better...
+
+Your subscription keeps Maester free
+
+---
+
+maybe show it in a different border or highlight...
+
+---
+
+review this list, make it shorter and only list the ket items that will make people want to pay for maester cloud. 
+
+<pasted_content id="9495">
+* n isolated resource group for each customer
+* Your report data never leaves the Azure region you choose
+* Simplified deployment
+* Run history for every tenant
+* Track each finding through to resolution
+* Drift detection between runs
+* Every tenant in one place
+* Alerts when something changes
+* Formal support
+</pasted_content id="9495">
+
+---
+
+lets remove this Every tenant in one place
+
+---
+
+Add ;Maester MCP and more...' (or sometigne loke that)
+
+---
+
+in the last one what is the name of the button we give. make it something desirable to click
+
+---
+
+when the mouse moves over it do an animation or someting likethat and a satifysing animation on click
+
+---
+
+not that is not good enough. go look up the best animiations and design for buttons and click. something like confetti but mayeve even better
+
+---
+
+looks better but the button seems to be moving araound.. remove that
+
+---
+
+in the remotion video the logo shown is not the maester logo
+
+---
+
+the word Open Srouce and Free are not in upper case
+
+---
+
+the command for ZTA should be:
+
+Invoke-Maester -Pack ZTA
+
+---
+
+Yes, fix both
+
+---
+
+review the maester docs and selling point everywhere. instead of open source (eg in the video) we should say the most comprehensive way. call you the tests are written by the experts in the Microsfot community.
+
+---
+
+say something like Maester sets the bar for Microsoft 365 cloud security posture.
+
+---
+
+actually revert that last change and lets leave it as open source etc...
+
+---
+
+in the video say open source and the ost comprehensive way...
+
+---
+
+lets comit and push a pr
