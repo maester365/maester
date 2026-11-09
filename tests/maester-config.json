@@ -4,7 +4,8 @@
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
     "DataverseEnvironmentUrl": "",
-    "GitHubOrganization": ""
+    "GitHubOrganization": "",
+    "AzureDevOpsOrganization": ""
   },
   "TestSettings": []
 }

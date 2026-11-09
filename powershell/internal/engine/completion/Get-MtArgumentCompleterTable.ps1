@@ -57,7 +57,7 @@
 
     # Connections: each command's own service names (as its Resolve-MtRequestedService call has them), then the
     # services of pack connectors.
-    & $row 'Connect-Maester' 'Service' 'Service' @('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')
+    & $row 'Connect-Maester' 'Service' 'Service' @('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')
     & $row 'Test-MtConnection' 'Service' 'Service' @('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')
     & $row 'Get-MtConnector' 'Service' 'Service'
 

@@ -69,7 +69,7 @@
         }
 
         Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-        $script:TestResult | Should -Match 'alice@contoso.com'
+        $script:TestResult | Should -Match 'alice\\?@contoso\.com'
         $script:TestResult | Should -Match 'atRisk'
     }
 
@@ -90,7 +90,7 @@
 
         Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
         $script:TestResult | Should -Not -Match '\| \[Sign in again\]\('
-        $script:TestResult | Should -Match ([regex]::Escape('\[Sign in again\]\(https://phish.example\)'))
+        $script:TestResult | Should -Match ([regex]::Escape('\[Sign in again\]\(https\://phish.example\)'))
     }
 
     It 'fails when a high-risk user is confirmedCompromised (must not be treated as remediated)' {
@@ -111,7 +111,7 @@
         }
 
         Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-        $script:TestResult | Should -Match 'bob@contoso.com'
+        $script:TestResult | Should -Match 'bob\\?@contoso\.com'
         $script:TestResult | Should -Match 'confirmedCompromised'
     }
 
@@ -152,8 +152,8 @@
         }
 
         Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-        $script:TestResult | Should -Match 'alice@contoso.com'
-        $script:TestResult | Should -Not -Match 'carol@contoso.com'
+        $script:TestResult | Should -Match 'alice\\?@contoso\.com'
+        $script:TestResult | Should -Not -Match 'carol\\?@contoso\.com'
         $script:TestResult | Should -Match 'Found 1 high-risk'
     }
 
@@ -213,7 +213,10 @@
             $script:TestResult | Should -Match 'Global Administrator'
             $script:TestResult | Should -Match '1 of them hold a privileged directory role'
             # The privileged user is listed first.
-            $script:TestResult.IndexOf('bob@contoso.com') | Should -BeLessThan $script:TestResult.IndexOf('alice@contoso.com')
+            # Matched as a regex rather than IndexOf, so the position is found whether or not the
+            # escaping helper put a backslash before the @.
+            [regex]::Match($script:TestResult, 'bob\\?@contoso\.com').Index |
+                Should -BeLessThan ([regex]::Match($script:TestResult, 'alice\\?@contoso\.com').Index)
         }
 
         It 'treats a PIM-eligible privileged role as privileged' {
@@ -255,7 +258,7 @@
             Mock -ModuleName Maester Get-MtDirectoryRoleAssignment { throw 'Forbidden' }
 
             Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
-            $script:TestResult | Should -Match 'alice@contoso.com'
+            $script:TestResult | Should -Match 'alice\\?@contoso\.com'
             $script:TestResult | Should -Match 'privileged users were not identified'
             $script:Severity | Should -BeNullOrEmpty
         }
