@@ -10,10 +10,10 @@ The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly 
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Expand **ID Governance**, select [**Access reviews**](https://entra.microsoft.com/#view/Microsoft_AAD_ERM/DashboardBlade/~/Controls/menuId/) and select **New access review**.
-3. In the **Resource review** box, select **Select**.
+3. In the **Resource review** box (labelled **Review access to a resource type** in newer portal versions), select **Select**.
 4. On **Review Type**, set **Select what to review** to **Teams + Groups**, **Review Scope** to **All Microsoft 365 groups with guest users** and **Scope** to **Guest users only**, then select **Next: Reviews**.
 5. On **Reviews**, set:
-   - **Select reviewers** to **Group members** or **Selected users and groups**. Assign at least one reviewer and make sure guests do not review themselves.
+   - **Select reviewers** to **Group members** or **Selected users and groups** (the portal may list **Group owner(s)** instead of **Group members**). Assign at least one reviewer and make sure guests do not review themselves.
    - **Duration (in days)** to **14** or less.
    - **Review recurrence** to **Monthly** or more frequent.
    - **Start date** so the review becomes active before the next audit date.
@@ -21,7 +21,7 @@ The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly 
 6. On **Settings**, turn on **Auto apply results to resource**, set **If reviewers don't respond** to **Remove access**, and turn on **Justification required**, **E-mail notifications** and **Reminders**. Select **Next: Review + Create**.
 7. Select **Create**.
 
-To create or update the review with the Microsoft Graph API, send a `POST` (or a `PATCH` to the review's `id`) to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above.
+To create or update the review with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`.
 
 #### Related links
 
