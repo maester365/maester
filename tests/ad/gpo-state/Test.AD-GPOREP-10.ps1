@@ -5,6 +5,11 @@
     .DESCRIPTION
     Fails when a GPO has no Apply Group Policy allow entry. This checks the presence
     of an application right, not the full effective access of every target principal.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-10
+    Assess whether every GPO has an Apply Group Policy allow entry.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-10
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-10',

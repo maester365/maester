@@ -4,6 +4,11 @@
     Checks for mismatched Active Directory and SYSVOL GPO versions.
     .DESCRIPTION
     Lists policies with differing directory and GPT.INI versions; incomplete scans are errors.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-15
+    Assess GPO directory and SYSVOL version mismatches.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-15
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-15',

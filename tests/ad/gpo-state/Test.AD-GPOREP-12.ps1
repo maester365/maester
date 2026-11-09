@@ -4,6 +4,11 @@
     Inventories disabled GPO links.
     .DESCRIPTION
     Counts disabled links and lists their target policies and containers for review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-12
+    Review disabled GPO links and their target containers manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-12
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-12',

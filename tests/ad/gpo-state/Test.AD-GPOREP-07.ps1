@@ -4,6 +4,11 @@
     Inventories GPOs with explicit deny entries.
     .DESCRIPTION
     Lists deny ACE findings for review; deny entries can be intentional.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-07
+    Review GPO deny entries manually; they are not necessarily misconfigurations.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-07
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-07',

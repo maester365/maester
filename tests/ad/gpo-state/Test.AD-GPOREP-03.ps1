@@ -4,6 +4,11 @@
     Checks GPO permissions for Authenticated Users.
     .DESCRIPTION
     Lists GPOs without an Authenticated Users allow entry and those with unreadable permissions.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-03
+    Assess Authenticated Users allow entries; review unreadable GPOs separately.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-03
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-03',

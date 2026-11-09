@@ -4,6 +4,11 @@
     Checks whether any GPO has an empty permissions list.
     .DESCRIPTION
     Counts GPOs with no DACL entries and lists affected and unreadable GPOs.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-01
+    Assess GPOs for empty permission lists; review unreadable permissions separately.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-01
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-01',

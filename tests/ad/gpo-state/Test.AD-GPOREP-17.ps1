@@ -4,6 +4,11 @@
     Checks for exposed secrets in Group Policy files.
     .DESCRIPTION
     Flags either Group Policy Preferences cpassword or security-template default passwords, including cases with only one finding type. Never includes credential values.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOREP-17
+    Assess GPO files for cpassword and security-template default passwords.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOREP-17
     #>
     [MaesterTest(
         Id = 'AD-GPOREP-17',
