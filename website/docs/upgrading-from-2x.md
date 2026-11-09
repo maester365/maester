@@ -21,6 +21,8 @@ AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-in
 
 ### Second AD review batch
 
+The additional convention review restores native `.EXAMPLE`/`.LINK` help and preserves accurate explanatory sections and visual status indicators. COMP-01 remains a lifecycle inventory and reports unknown enabled states separately. DCD-04 now defaults to inventory; configure `AssessmentMode = 'AllGlobalCatalogs'` for an all-DCs-as-GCs policy or `MinimumForestCatalog` for the prior minimum availability baseline. FOR-03's configurable 180-day advisory is informational and retains the correct 60-day unset-attribute behavior.
+
 Live validation corrected snapshot-shape and RID-decoding regressions: ordered-dictionary inventories are now accepted, empty retrieved collections remain distinct from failed collection, and RID low-word extraction no longer casts a signed hexadecimal mask. AD-DC-07 and AD-FOR-01 exclude other-domain DCs from their connected-domain support assessment. AD-FOR-01 does not establish forest-wide upgrade eligibility; every domain must be validated before changing the forest level.
 
 The review follow-up restores accurate guide sections and complete related-test identities. AD-SCH-05 covers both Windows and legacy Microsoft LAPS schema pairs without claiming deployment or rotation. AD-FOR-04 has Low severity and Low implementation cost, with enabled scopes and forest context retained in its result. Complete member scans AD-GMC-01/02/04/06/08 are now LongRunning; use `-IncludeLongRunning` or select the exact test ID when that inventory is required. Missing required data produces a per-test Error while reports continue to generate.

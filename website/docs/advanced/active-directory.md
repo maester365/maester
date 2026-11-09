@@ -188,6 +188,12 @@ AD snapshots are ordered dictionaries. The inventory checks distinguish dictiona
 
 Native test errors are recorded per test and do not stop report generation. Missing required inventory or a missing visible KRBTGT account is an **Error**, not a failed password-age baseline. A known password age still produces pass/fail; investigation inventories report **Investigate**, not compliance. Custom tests can read the actual `mS-DS-CreatorSID` computer attribute; the former `CreatorSid` projection remains as a compatibility alias.
 
+COMP-01 inventories known-enabled, known-disabled and unknown-state computers separately. Unknown status does not mean enabled and does not abort the remaining lifecycle inventory; no zero-disabled-account baseline is imposed.
+
+DCD-04 defaults to `AssessmentMode = 'Inventory'`, reporting per-controller GC status for investigation. Its optional `AllGlobalCatalogs` mode fails known non-GCs, while `MinimumForestCatalog` preserves the at-least-one-GC availability check. Unknown statuses cannot satisfy either policy mode. All-GC placement is an organizational choice, not a universal AD requirement.
+
+FOR-03 reports configured and effective tombstone lifetime and a configurable `RecommendedMinimumDays` advisory (default 180 days). The advisory is for review, not an automatic retention-policy failure. An unset `tombstoneLifetime` still means 60 effective days, not the explicitly configured 180-day value common in newer forests.
+
 ## Known Misleading Outcomes
 
 The following behaviors can hide incomplete access. They are documented here so operators do not misinterpret empty or partial results as proof of a clean configuration.
