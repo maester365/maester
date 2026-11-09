@@ -61,6 +61,7 @@
       "TenantId": null,
       "ConfigSource": "maester-config.json, Custom/maester-config.json",
       "GlobalSettings": {
+        "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
         "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [
@@ -83,6 +84,7 @@
       "TenantId": "11111111-2222-3333-4444-555555555555",
       "ConfigSource": "maester-config.json, Custom/maester-config.json, maester-config.11111111-2222-3333-4444-555555555555.json",
       "GlobalSettings": {
+        "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
         "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [

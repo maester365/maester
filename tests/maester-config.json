@@ -5,7 +5,8 @@
     "EmergencyAccessAccounts": [],
     "DelegatedAdminTenants": [],
     "DataverseEnvironmentUrl": "",
-    "GitHubOrganization": ""
+    "GitHubOrganization": "",
+    "AzureDevOpsOrganization": ""
   },
   "TestSettings": []
 }
