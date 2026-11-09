@@ -13,8 +13,8 @@ We don't review or endorse these projects, and we haven't tested them ourselves.
 
 | Project | By | What it does |
 | --- | --- | --- |
-| [DriftMaester](https://github.com/jflieben/DriftMaester) | Jos Lieben | Deploys Maester to Azure Automation with one command. It runs on a schedule, keeps the history in Blob Storage, flags drift and regressions, and emails the report. |
 | [azd-maester](https://github.com/nathanmcnulty/azd-maester) | Nathan McNulty | Azure Developer CLI templates that run Maester with managed identities on [Azure Automation](https://github.com/nathanmcnulty/azd-maester-azureautomation), [Azure Functions](https://github.com/nathanmcnulty/azd-maester-functionapp), [Azure Container Apps jobs](https://github.com/nathanmcnulty/azd-maester-containerappjob) or [Azure DevOps](https://github.com/nathanmcnulty/azd-maester-azuredevops). |
+| [DriftMaester](https://github.com/jflieben/DriftMaester) | Jos Lieben | Deploys Maester to Azure Automation with one command. It runs on a schedule, keeps the history in Blob Storage, flags drift and regressions, and emails the report. |
 | [Kickstarter: Maester & UTCM Dashboard](https://github.com/fortytwoservices/kickstarter-maester-and-utcm) | Fortytwo | An Azure Web App that runs Maester daily and lets you browse the reports by date. It adds drift detection through Unified Tenant Configuration Management (UTCM), baselines, webhooks and a remediation board. |
 | [Maester-O365](https://github.com/adrian207/Maester-O365) | Adrian Johnson | A GitHub template that runs Maester every day with workload identity federation, so no secret is stored. One script sets up the app and secrets. |
 | [terraform-azure-maester-deployment](https://github.com/hlokensgard/terraform-azure-maester-deployment) | [hlokensgard](https://github.com/hlokensgard) | A Terraform module that deploys Maester to Azure Automation, with an optional web app to view the report. |
