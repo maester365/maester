@@ -671,6 +671,33 @@ Describe 'Connect-Maester Azure DevOps' {
             $script:adoOrganization | Should -BeNullOrEmpty
         }
 
+        It 'Clears the previous organization when token acquisition fails' {
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'old-org' } }
+            $script:adoOrganization = 'old-org'
+            Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = @{ Id = 'user' }; Tenant = @{ Id = 'tenant' } } }
+            Mock Get-AzAccessToken -ModuleName Maester { throw 'token failed' }
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+            # A surviving session must pass the probe so a request failure cannot hide it.
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
+
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'new-org'
+
+            $row = $script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps'
+            $row.Status | Should -Be 'Failed'
+            $row.Details | Should -Be 'token failed'
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            # A new run clears the probe cache; neither the probe nor ADOPS may recover the old organization.
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            InModuleScope Maester { Get-ADOPSConnection } | Should -BeNullOrEmpty
+            $script:adoOrganization | Should -BeNullOrEmpty
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 1 -Exactly
+        }
+
         It 'Keeps a verified ADOPS session when the configuration names no organization' {
             # No organization means nothing to connect to, so a session from Connect-ADOPS is kept and reported,
             # not torn down. Test-MtConnection verifies it first, so the summary names the organization the tests read.

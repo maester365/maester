@@ -704,6 +704,9 @@
                Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
             }
          } else {
+            # ADOPS persists the organization. A failed token request or sign-in must not revive
+            # the previous organization when Invoke-Maester resets its per-run connection probe.
+            Disconnect-ADOPS -ErrorAction Stop
             $connectAdoParams = @{ Organization = $organization; ErrorAction = 'Stop' }
             if ($TenantId) {
                $connectAdoParams['TenantId'] = $TenantId
@@ -726,9 +729,6 @@
                Write-Verbose 'No Az context found. Connect-ADOPS signs in interactively.'
             }
 
-            # ADOPS persists the organization. A failed sign-in must not revive the previous
-            # organization when Invoke-Maester resets its per-run connection probe.
-            Disconnect-ADOPS -ErrorAction Stop
             $adoConnection = Connect-ADOPS @connectAdoParams
             # Test-MtConnection caches its Azure DevOps probe, so let it check the new connection.
             $__MtSession.AzureDevOpsConnectionCache = $null
