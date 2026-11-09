@@ -49,7 +49,7 @@
         'e8611ab8-c189-46e8-94e1-60213ab1f814' = 'Privileged Role Administrator'
     }
     $reviews = Invoke-MtGraphRequest -RelativeUri 'identityGovernance/accessReviews/definitions'
-    $roleReviews = @($reviews | Where-Object { (@($_.scope.resourceScopes.query) -join ' ') -match 'roleDefinitions' })
+    $roleReviews = @($reviews | Where-Object { (@($_.scope.resourceScopes.query) -join ' ') -match '/directory/roleDefinitions/' })
 
     $report = foreach ($review in $roleReviews) {
         $resourceQuery = @($review.scope.resourceScopes.query) -join ' '

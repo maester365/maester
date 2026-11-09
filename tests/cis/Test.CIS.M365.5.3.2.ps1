@@ -41,7 +41,11 @@
 
     Write-Verbose 'Getting access review definitions...'
     $reviews = Invoke-MtGraphRequest -RelativeUri 'identityGovernance/accessReviews/definitions'
-    $guestReviews = @($reviews | Where-Object { $_.scope.query -match "userType eq 'Guest'" -or (@($_.scope.principalScopes.query) -join ' ') -match "userType eq 'Guest'" })
+    $guestReviews = @($reviews | Where-Object {
+            $_.scope.query -match "userType eq 'Guest'" -or
+            (@($_.scope.resourceScopes.query) -join ' ') -match "userType eq 'Guest'" -or
+            (@($_.scope.principalScopes.query) -join ' ') -match "userType eq 'Guest'"
+        })
 
     $report = foreach ($review in $guestReviews) {
         $settings = $review.settings
