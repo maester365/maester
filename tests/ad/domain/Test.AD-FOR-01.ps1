@@ -4,6 +4,11 @@
     Assesses the forest functional level against connected-domain DC support.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-FOR-01
+    Assess forest functional level against connected-domain DC support.
+    .LINK
+    https://maester.dev/docs/tests/AD-FOR-01
     #>
     [MaesterTest(
         Id = 'AD-FOR-01',

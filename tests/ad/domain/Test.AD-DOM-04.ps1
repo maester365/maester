@@ -4,6 +4,11 @@
     Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOM-04
+    Review RID Manager available pool boundaries manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOM-04
     #>
     [MaesterTest(
         Id = 'AD-DOM-04',

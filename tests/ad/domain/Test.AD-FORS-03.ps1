@@ -4,6 +4,11 @@
     Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-FORS-03
+    Review the forest SPN suffix inventory manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-FORS-03
     #>
     [MaesterTest(
         Id = 'AD-FORS-03',

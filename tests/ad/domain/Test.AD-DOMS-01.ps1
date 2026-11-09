@@ -4,6 +4,11 @@
     Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOMS-01
+    Review the retrieved allowed DNS suffix count manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOMS-01
     #>
     [MaesterTest(
         Id = 'AD-DOMS-01',

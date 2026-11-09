@@ -14,6 +14,7 @@ When `tombstoneLifetime` is **not set**, Active Directory uses an effective **60
 #### Security Recommendation
 
 - Choose a retention period appropriate to the recovery and replication window. Do not assume an unset attribute means 180 days.
+- The configurable `RecommendedMinimumDays` advisory defaults to 180 days as an organization-selected review value, not a universal Microsoft requirement. Change it to match your approved recovery and replication policy.
 - **Align with Backups**: Ensure tombstone lifetime matches or exceeds backup retention
 - **Monitor Changes**: Track any modifications to this critical setting
 - **Document**: Record the current setting and any business requirements
@@ -26,7 +27,7 @@ Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configur
 
 #### How the Test Works
 
-This test retrieves the tombstone lifetime from the Directory Service configuration object and reports both the configured attribute and effective value. It is an inventory check, not a pass/fail threshold for retention length. AD-CFG-01 was consolidated into this check.
+This test reports configured and effective lifetime, unset-default use, the advisory minimum and a visual meets/below-advisory indicator. It always reports **Investigate** when that inventory is available; advisory comparison does not create a retention pass/fail threshold. A missing Directory Service object or invalid lifetime remains Error. AD-CFG-01 was consolidated into this check.
 
 #### Coverage crosswalk
 

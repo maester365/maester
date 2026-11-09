@@ -4,6 +4,11 @@
     Checks forest domain NetBIOS names and lists any invalid names.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOM-07
+    Assess forest domain NetBIOS names for valid syntax.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOM-07
     #>
     [MaesterTest(
         Id = 'AD-DOM-07',

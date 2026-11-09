@@ -4,6 +4,11 @@
     Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOM-02
+    Assess whether the connected domain machine account quota is zero.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOM-02
     #>
     [MaesterTest(
         Id = 'AD-DOM-02',

@@ -4,6 +4,11 @@
     Lists alternate forest UPN suffixes and their count for review.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-FORS-01
+    Review the alternate forest UPN suffix inventory manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-FORS-01
     #>
     [MaesterTest(
         Id = 'AD-FORS-01',

@@ -4,6 +4,11 @@
     Assesses the connected domain functional level against its scoped DC support.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOM-01
+    Assess the domain functional level against the supported DC level.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOM-01
     #>
     [MaesterTest(
         Id = 'AD-DOM-01',

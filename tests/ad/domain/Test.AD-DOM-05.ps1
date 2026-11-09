@@ -4,6 +4,11 @@
     Checks forest domain DNS names and lists any invalid names.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DOM-05
+    Assess forest domain DNS names for valid syntax.
+    .LINK
+    https://maester.dev/docs/tests/AD-DOM-05
     #>
     [MaesterTest(
         Id = 'AD-DOM-05',
