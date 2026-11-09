@@ -93,7 +93,6 @@ Describe 'MT.1254 Tenant Configuration Management drift' {
         @{ Condition = 'the runs cannot be read'; Note = '*runs could not be read*' }
     ) {
         InModuleScope Maester -Parameters @{ Condition = $Condition; Note = $Note } {
-            param($Condition, $Note)
             switch ($Condition) {
                 'the monitor is inactive' { $script:monitor.status = 'inactive'; $script:monitor.inactivationReason = 'Missing permissions' }
                 'the last run failed' { $script:runs[0].runStatus = 'failed' }
@@ -206,7 +205,6 @@ Describe 'MT.1254 monitor instances' {
         @{ Code = 401 }, @{ Code = 403 }
     ) {
         InModuleScope Maester -Parameters @{ Code = $Code } {
-            param($Code)
             Mock Invoke-MtGraphRequest {
                 throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Denied', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$Code))
             }

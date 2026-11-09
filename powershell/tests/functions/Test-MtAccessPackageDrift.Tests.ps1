@@ -12,10 +12,10 @@ Describe 'MT.1255 and MT.1256 complete governed group classification' {
                 @{ id = $script:driftGroupId; isAssignableToRole = $true }
             )
             $script:driftSummaries = @(@{
-                resource = @{ identifier = $script:driftGroupId; type = 'group'; displayName = 'Drifted privileged group'; catalogId = 'catalog-1' }
-                driftCounts = @{ unauthorized = 1; missing = 0; total = 1 }
-                details = @()
-            })
+                    resource    = @{ identifier = $script:driftGroupId; type = 'group'; displayName = 'Drifted privileged group'; catalogId = 'catalog-1' }
+                    driftCounts = @{ unauthorized = 1; missing = 0; total = 1 }
+                    details     = @()
+                })
             Mock Invoke-MtGraphRequest {
                 switch ($RelativeUri) {
                     'identityGovernance/insights/accessDriftSummary' { $script:driftSummaries }
@@ -133,7 +133,7 @@ Describe 'MT.1255 and MT.1256 complete governed group classification' {
             $script:missingGroupIds = @($script:allGroupIds[-3..-1])
             $script:driftSummaries = @()
             $script:groupResponses = @($script:allGroupIds | Where-Object { $_ -notin $script:missingGroupIds } |
-                    ForEach-Object { @{ id = $_; isAssignableToRole = $true } })
+                ForEach-Object { @{ id = $_; isAssignableToRole = $true } })
             Mock Invoke-MtGraphRequest {
                 $script:allGroupIds | ForEach-Object { @{ originId = $_; originSystem = 'AadGroup' } }
             } -ParameterFilter { $RelativeUri -eq 'identityGovernance/entitlementManagement/catalogs/catalog-1/resources' }
@@ -174,7 +174,6 @@ Describe 'MT.1255 and MT.1256 complete governed group classification' {
         @{ Status = 403 }, @{ Status = 503 }
     ) {
         InModuleScope Maester -Parameters @{ Status = $Status } {
-            param($Status)
             $script:groupResponses = @($script:groupResponses[0])
             Mock Invoke-MtGraphRequest {
                 throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Group lookup failed', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]$Status))
@@ -249,10 +248,10 @@ Describe 'MT.1257 governed application drift' {
                 @{ originId = '11111111-1111-1111-1111-111111111111'; originSystem = 'AadGroup' }
             )
             $script:driftSummaries = @(@{
-                resource = @{ identifier = $script:appId; type = 'application'; displayName = 'Payroll'; catalogId = 'catalog-1' }
-                driftCounts = @{ unauthorized = 2; missing = 0; total = 2 }
-                details = @()
-            })
+                    resource    = @{ identifier = $script:appId; type = 'application'; displayName = 'Payroll'; catalogId = 'catalog-1' }
+                    driftCounts = @{ unauthorized = 2; missing = 0; total = 2 }
+                    details     = @()
+                })
             Mock Invoke-MtGraphRequest {
                 switch ($RelativeUri) {
                     'identityGovernance/insights/accessDriftSummary' { $script:driftSummaries }
