@@ -113,11 +113,11 @@
     if ($appsWithExchangePermissionsCount -eq 0) {
         $testResultMarkdown = 'Well done. No applications with Exchange permissions were found.'
     } elseif ($result) {
-        $testResultMarkdown = "Well done. All **$appsWithExchangePermissionsCount** applications with Exchange permissions have Exchange application access policies configured."
+        $testResultMarkdown = "Well done. All **$appsWithExchangePermissionsCount** applications with Exchange permissions have matching RestrictAccess policies configured."
     } else {
-        $testResultMarkdown = "Found **$appsWithExchangePermissionsCount** applications with Exchange permissions. **$invalidCount** application(s) do not have Exchange application access policies configured."
+        $testResultMarkdown = "Found **$appsWithExchangePermissionsCount** applications with Exchange permissions. **$invalidCount** application(s) do not have a matching RestrictAccess policy configured."
 
-        $missingPoliciesMarkdown = "`n`n### Applications Missing Exchange Application Access Policies`n`n"
+        $missingPoliciesMarkdown = "`n`n### Applications Missing Matching RestrictAccess Policies`n`n"
         $missingPoliciesMarkdown += "| Application | Application ID | Exchange Permissions |`n"
         $missingPoliciesMarkdown += "| --- | --- | --- |`n"
 
@@ -130,7 +130,7 @@
     }
 
     if ($appsWithPolicies.Count -gt 0 -and $invalidCount -gt 0) {
-        $testResultMarkdown += "`n`n**Applications with access policies configured:** $($appsWithPolicies.Count)"
+        $testResultMarkdown += "`n`n**Applications with matching RestrictAccess policies configured:** $($appsWithPolicies.Count)"
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
