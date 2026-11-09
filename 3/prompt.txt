@@ -1,0 +1,83 @@
+make the top menu docs section include the links from the otp menu of the home page. also make the Packs link take the user to the packs.maester.cloud site.. show it running locally so i can review. 
+
+in this secjtion 'Microsoft's assessment, in your Maester report.
+The pack ships with Maester. One command runs both, and the plan turns the results into work.' make it full width and show  asection of https://microsoft.github.io/zerotrustassessment/demo with the sankey chart and the microsoft logo etc..
+
+In write your policies sey something like use maester do define your security config as code and mention about using maester tests for regression including when using agentic ai to make changes to the config, let the agents monitor them..
+
+---
+
+in the docs site the big search box in th emiddle is distracting. let make it to just a search icon on the right
+
+---
+
+when we go to docs. can we keep the sam top header and show the docs links as a second row at the bottom. show me how it will look...
+
+---
+
+lets remove Packs, Blog from the second menu
+
+---
+
+lets make the top manu of the docs section the exact same as in the main menu (centered) and with the same icons on the right. the mmove search and preview ddrop down to the second tow
+
+---
+
+now lets move the second row to also be centered or alteast aligned with the top menu
+
+---
+
+lets move Packs to be shown just before maester Cloud.
+
+---
+
+in the browse packs section in the home page don't show zero trust assessment since it has it's won row. instead show the other ones in this order: CIS Windows 11 Intune L1, User Attributes, Least Privileged MSGraph and Intune Anomolies. Maybe we show their image as well from the packs site..
+
+---
+
+remove this line from the command:   ✓ 1,254 checks · 364 from the Zero Trust Assessment
+  Report: ./test-results/index.html
+
+---
+
+for define yous ecurity config as code use a better example. onw that would be specific and unique to each tenant. the one that is there right now is very generic ad is actualy an ootb one. 
+
+maybe a check for critical groups (where they list some critical groups) used for licensing and should have count more than 0 (or sometihgn else like that)
+
+---
+
+that ap is not right, it should ge tthe count of transitive members in the group
+
+---
+
+we should check if the group exists too, if somenot deletes it tit should fail.
+
+---
+
+why is there a flicker when clicking the menu items and moving between pages
+
+---
+
+in the second menu add entries for the following: Write your own test (pick a shorter word or two), Contributing, 
+
+also at teh bottom the two navigation buttons are very huge (see attached). can we make them fit in better..
+
+---
+
+the Write tests should link to writing-tests/first-custom-test.html
+
+---
+
+can we imporve this area its not aligned well and is also touching the border at teh bottom
+
+---
+
+can we make the second row line up with the docs section so they are left aligned..
+
+---
+
+what i meant is left aligned and under the Docs menu item in the first row. So that Logo statnds out to th eleft
+
+---
+
+thats better lets push it through.

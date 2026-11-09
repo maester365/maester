@@ -3,12 +3,13 @@
   "checkpoint_id": "01M6ZVZZVFME9WPCFQNNP0QTDK",
   "strategy": "manual-commit",
   "branch": "feat/website-shared-header",
-  "checkpoints_count": 7,
+  "checkpoints_count": 23,
   "files_touched": [
     "website/public/img/zta/zta-demo-dark.webp",
     "website/public/img/zta/zta-demo-light.webp",
     "website/scripts/catalog-explorer.mjs",
     "website/scripts/community-packs.mjs",
+    "website/src/components/SiteHeaderBar.astro",
     "website/src/components/overrides/Head.astro",
     "website/src/components/overrides/Header.astro",
     "website/src/layouts/SiteLayout.astro",
@@ -37,25 +38,32 @@
       "compact_transcript": "/2/transcript.jsonl",
       "content_hash": "/2/content_hash.txt",
       "prompt": "/2/prompt.txt"
+    },
+    {
+      "metadata": "/3/metadata.json",
+      "transcript": "/3/full.jsonl",
+      "compact_transcript": "/3/transcript.jsonl",
+      "content_hash": "/3/content_hash.txt",
+      "prompt": "/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 122,
-    "cache_creation_tokens": 182385,
-    "cache_read_tokens": 9986438,
-    "output_tokens": 79958,
-    "api_call_count": 56
+    "input_tokens": 548,
+    "cache_creation_tokens": 472006,
+    "cache_read_tokens": 54794674,
+    "output_tokens": 180532,
+    "api_call_count": 249
   },
   "redaction": {
-    "replacements": 1597,
+    "replacements": 2222,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 6,
       "credentialed_uri": 0,
-      "entropy": 1579,
-      "key_context": 12,
+      "entropy": 2188,
+      "key_context": 28,
       "provider_token": 0,
       "shell_stdin": 0
     }
