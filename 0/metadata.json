@@ -1,0 +1,143 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6Z29KATBXSQCZE6QK6JQG80",
+  "session_id": "9bc9d96b-2b79-4851-80f9-ab9184d1fb1a",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-09T02:30:46.381095Z",
+  "branch": "feat/website-test-explorer",
+  "checkpoints_count": 5,
+  "save_step_count": 1,
+  "files_touched": [
+    ".github/workflows/build-website.yaml",
+    "build/Update-CommandReference.ps1",
+    "build/zero-trust-workshop/README.md",
+    "build/zero-trust-workshop/Update-MtZtWorkshopData.ps1",
+    "build/zta/README.md",
+    "packs/zero-trust-assessment/README.md",
+    "packs/zero-trust-assessment/helpers/Add-MtZtaWorkshopPlan.ps1",
+    "packs/zero-trust-assessment/helpers/ConvertTo-MtZtaWorkshopTask.ps1",
+    "packs/zero-trust-assessment/helpers/Get-MtZtaWorkshopPlan.ps1",
+    "packs/zero-trust-assessment/helpers/Get-MtZtaWorkshopValue.ps1",
+    "packs/zero-trust-assessment/helpers/Read-MtZtaWorkshopFile.ps1",
+    "packs/zero-trust-assessment/maester-pack.guide.json",
+    "packs/zero-trust-assessment/maester-pack.json",
+    "packs/zero-trust-assessment/tests/Test.ZTA.ps1",
+    "packs/zero-trust-assessment/workshop/ai.json",
+    "packs/zero-trust-assessment/workshop/data.json",
+    "packs/zero-trust-assessment/workshop/devices.json",
+    "packs/zero-trust-assessment/workshop/icons.json",
+    "packs/zero-trust-assessment/workshop/identity.json",
+    "packs/zero-trust-assessment/workshop/infrastructure.json",
+    "packs/zero-trust-assessment/workshop/maester.json",
+    "packs/zero-trust-assessment/workshop/network.json",
+    "packs/zero-trust-assessment/workshop/security-operations.json",
+    "powershell/assets/ReportTemplate.html",
+    "powershell/internal/packs/Read-MtPackManifest.ps1",
+    "powershell/internal/report/Get-MtResultPack.ps1",
+    "powershell/public/report/Get-MtHtmlReport.ps1",
+    "powershell/public/run/Add-MtReportAttachment.ps1",
+    "powershell/tests/functions/Add-MtReportAttachment.Tests.ps1",
+    "powershell/tests/functions/Get-MtHtmlReport.Tests.ps1",
+    "powershell/tests/functions/MaesterPacks.Tests.ps1",
+    "powershell/tests/functions/ResultReportData.Tests.ps1",
+    "powershell/tests/functions/ZeroTrustAssessmentPack.Tests.ps1",
+    "powershell/tests/functions/ZeroTrustWorkshopPlan.Tests.ps1",
+    "powershell/tests/general/PesterVersionPinning.Tests.ps1",
+    "report/src/App.tsx",
+    "report/src/components/report/Shell.tsx",
+    "report/src/components/report/Sidebar.tsx",
+    "report/src/components/report/ZeroTrustBoard.tsx",
+    "report/src/components/report/lists.tsx",
+    "report/src/components/report/nav.ts",
+    "report/src/components/report/overview.tsx",
+    "report/src/components/report/ui.tsx",
+    "report/src/components/report/views.ts",
+    "report/src/lib/featureIcons.ts",
+    "report/src/lib/model.ts",
+    "report/src/lib/packNav.ts",
+    "report/src/lib/reportAttachments.ts",
+    "report/src/lib/router.tsx",
+    "report/src/lib/runSubject.ts",
+    "report/src/lib/sampleExtras.ts",
+    "report/src/lib/sampleZeroTrust.ts",
+    "report/src/lib/tenants.ts",
+    "report/src/lib/zeroTrust.ts",
+    "report/src/pages/report/OverviewPage.tsx",
+    "report/src/pages/report/PackPage.tsx",
+    "report/src/pages/report/PackRoute.tsx",
+    "report/src/pages/report/TestsPage.tsx",
+    "report/src/pages/report/ZeroTrustPage.tsx",
+    "report/src/styles/report.css",
+    "report/vite.config.ts",
+    "website/README.md",
+    "website/astro.config.mjs",
+    "website/docs/packs/writing-a-pack.md",
+    "website/docs/packs/zero-trust-assessment.md",
+    "website/docs/writing-tests/index.mdx",
+    "website/public/report-icons/v1/products/README.md",
+    "website/public/schemas/maester-pack-1.0.json",
+    "website/src/lib/report-icons.mjs"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "739bcb36c2ee",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "redaction": {
+    "replacements": 5429,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 5357,
+      "key_context": 72,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01EJnKMTjfXth99vRYQSH4kr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "typesafe:typesafe-ai"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "cd871d87c860",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 140,
+        "end": 141,
+        "entry_ids": [
+          "516c2896-5a14-44db-a70b-6a7fe1216c0f"
+        ],
+        "tool_use_id": "toolu_01EJnKMTjfXth99vRYQSH4kr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01EJnKMTjfXth99vRYQSH4kr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: typesafe:typesafe-ai",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 97
+  }
+}
