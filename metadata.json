@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6ZMCAHJY0D59FTR22E6SVF3",
   "strategy": "manual-commit",
   "branch": "feat/website-pricing-video-polish",
-  "checkpoints_count": 40,
+  "checkpoints_count": 41,
   "files_touched": [
     ".gitignore",
     "website/public/explainers/how-it-works/audio/mix.mp3",
@@ -40,25 +40,39 @@
       "compact_transcript": "/3/transcript.jsonl",
       "content_hash": "/3/content_hash.txt",
       "prompt": "/3/prompt.txt"
+    },
+    {
+      "metadata": "/4/metadata.json",
+      "transcript": "/4/full.jsonl",
+      "compact_transcript": "/4/transcript.jsonl",
+      "content_hash": "/4/content_hash.txt",
+      "prompt": "/4/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 6,
-    "cache_creation_tokens": 1748,
-    "cache_read_tokens": 484895,
-    "output_tokens": 353,
-    "api_call_count": 2
+    "input_tokens": 16,
+    "cache_creation_tokens": 4215,
+    "cache_read_tokens": 1140541,
+    "output_tokens": 1639,
+    "api_call_count": 7,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
   },
   "redaction": {
-    "replacements": 4014,
+    "replacements": 5161,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
-      "credential_value": 6,
-      "credentialed_uri": 0,
-      "entropy": 3908,
-      "key_context": 102,
+      "credential_value": 82,
+      "credentialed_uri": 2,
+      "entropy": 4972,
+      "key_context": 107,
       "provider_token": 0,
       "shell_stdin": 0
     }
