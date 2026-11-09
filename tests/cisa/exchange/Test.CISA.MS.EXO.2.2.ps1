@@ -4,12 +4,12 @@
     Checks state of SPF records for all exo domains
 
     .DESCRIPTION
-    An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
+    An SPF policy SHALL be published for each sending domain, and fail or redirect non-approved senders.
 
     .EXAMPLE
     Test-MtCisaSpfDirective
 
-    Returns true if SPF record exists and has at least one directive
+    Returns true if each sending domain has an SPF fail-all mechanism or redirect modifier
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpfDirective
@@ -45,29 +45,29 @@
         $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed" -ErrorAction Ignore
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value "" -ErrorAction Ignore
 
-        $directives = ($spfRecord.spfLookups | Where-Object {$_.Include}).SPFSourceDomain | Select-Object -Unique
+        $terms = @($spfRecord.spfRecord.terms)
+        $hasFailAll = @($terms | Where-Object {
+            $_.mechanism -eq 'all' -and $_.qualifier -in @('-', '~')
+        }).Count -gt 0
+        $hasRedirect = @($terms | Where-Object { $_.modifier -eq 'redirect' }).Count -gt 0
 
-        $check = "spf.protection.outlook.com" -in $directives -or "outlook.com" -in $directives
-
-        if(($directives|Measure-Object).Count -ge 1 -and $check){
-            $spfRecord.pass = "Passed"
-            $spfRecord.reason = "1+ mechanism targets"
-        }elseif($domain.IsCoexistenceDomain){
+        if ($domain.IsCoexistenceDomain) {
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = "coexistence domain"
-        }elseif(($directives|Measure-Object).Count -ge 1 -and -not $check){
-            $spfRecord.reason = "No Exchange Online directive"
-        }elseif($spfRecord.spfRecord -like "*not available"){
+        }
+        elseif ($hasFailAll -or $hasRedirect) {
+            $spfRecord.pass = "Passed"
+            $spfRecord.reason = if ($hasFailAll) { 'Fail-all mechanism' } else { 'Redirect modifier' }
+        }
+        elseif ($spfRecord.spfRecord -is [string] -and $spfRecord.spfRecord -like "*not available") {
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = $spfRecord.spfRecord
-        }elseif($spfRecord.spfRecord.GetType().Name -eq "SPFRecord"){
-            if($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
-                $spfRecord.pass = "Skipped"
-                $spfRecord.reason = "Redirect modifier"
-            }
-        }else{
-            #$spfRecord.reason = "No mechanism targets"
-            $spfRecord.reason = "Failure to obtain record"
+        }
+        elseif ($spfRecord.spfRecord -is [string]) {
+            $spfRecord.reason = $spfRecord.spfRecord
+        }
+        else {
+            $spfRecord.reason = "No -all, ~all, or redirect mechanism"
         }
 
         #Hacky sort, doesn't handle IPv6
@@ -81,17 +81,19 @@
 
     if("Failed" -in $spfRecords.pass){
         $testResult = $false
-    }elseif("Failed" -notin $spfRecords.pass -and "Passed" -notin $spfRecords.pass){
+    }
+    elseif ("Failed" -notin $spfRecords.pass -and "Passed" -notin $spfRecords.pass) {
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
-    }else{
+    }
+    else {
         $testResult = $true
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have at least 1 directives with specific mechanism targets, review authorized senders for accuracy.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. All sending domains have an SPF policy that fails or redirects non-approved senders.`n`n%TestResult%"
     }else{
-        $testResultMarkdown = "Not all Exchange Online accepted domains designate Exchange Online as approved sender.`n`n%TestResult%"
+        $testResultMarkdown = "One or more sending domains do not have an SPF policy that fails or redirects non-approved senders.`n`n%TestResult%"
     }
 
     $passResult = "✅ Pass"

@@ -35,9 +35,13 @@
 
     $spoTenant = Get-MtSpo
 
-    # Only applicable when sharing allows external users: ExternalUserSharingOnly (1) or ExternalUserAndGuestSharing (2)
-    if ($spoTenant.SharingCapability -notin @("ExternalUserSharingOnly", "ExternalUserAndGuestSharing")) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "External sharing does not allow new or anonymous guests. Verification code reauthentication is not applicable."
+    # SCuBA applies this policy when sharing is Anyone, New and existing guests, or Existing guests.
+    if ($spoTenant.SharingCapability -notin @(
+        "ExternalUserAndGuestSharing",
+        "ExternalUserSharingOnly",
+        "ExistingExternalUserSharingOnly"
+    )) {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }
 
