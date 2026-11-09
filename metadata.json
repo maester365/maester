@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6ZVZZVFME9WPCFQNNP0QTDK",
   "strategy": "manual-commit",
   "branch": "feat/website-shared-header",
-  "checkpoints_count": 26,
+  "checkpoints_count": 27,
   "files_touched": [
     "website/public/img/zta/zta-demo-dark.webp",
     "website/public/img/zta/zta-demo-light.webp",
@@ -52,6 +52,13 @@
       "compact_transcript": "/4/transcript.jsonl",
       "content_hash": "/4/content_hash.txt",
       "prompt": "/4/prompt.txt"
+    },
+    {
+      "metadata": "/5/metadata.json",
+      "transcript": "/5/full.jsonl",
+      "compact_transcript": "/5/transcript.jsonl",
+      "content_hash": "/5/content_hash.txt",
+      "prompt": "/5/prompt.txt"
     }
   ],
   "token_usage": {
@@ -62,15 +69,15 @@
     "api_call_count": 249
   },
   "redaction": {
-    "replacements": 2794,
+    "replacements": 3941,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
-      "credential_value": 12,
-      "credentialed_uri": 0,
-      "entropy": 2742,
-      "key_context": 40,
+      "credential_value": 88,
+      "credentialed_uri": 2,
+      "entropy": 3806,
+      "key_context": 45,
       "provider_token": 0,
       "shell_stdin": 0
     }
