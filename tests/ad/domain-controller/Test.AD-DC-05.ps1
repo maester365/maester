@@ -32,7 +32,12 @@
         $rows += "| $role | $($placement.Owners[$role]) |"
     }
     $holderCount = @($placement.Owners.Values | Select-Object -Unique).Count
-    $details = "Recorded roles: $($placement.Owners.Count); distinct owner DNs: $holderCount.`n`n$($rows -join "`n")"
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. FSMO owners meet recommended placement.' } else { 'Review FSMO role placement: ' + ($placement.Issues -join '; ') })`n`n$details`n`nRole owner distribution does not establish physical redundancy or DC reachability."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Recorded roles' = $placement.Owners.Count
+        'Distinct owner DNs' = $holderCount
+        'Placement issues' = $placement.Issues.Count
+    })
+    $findings = if ($ok) { '' } else { "`n`n#### Placement findings`n`n" + (@($placement.Issues | ForEach-Object { '- ' + (Format-MtAdSiteInventoryValue $_) }) -join "`n") }
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. FSMO owners meet recommended placement.' } else { 'Review FSMO role placement.' })$findings`n`n$metrics`n`n$($rows -join "`n")`n`nRole owner distribution does not establish physical redundancy or DC reachability."
     return $ok
 }

@@ -25,5 +25,8 @@
     $state = Get-MtADDomainState -Categories @('Forest')
     if (-not $state.Forest -or $null -eq $state.Forest.SPNSuffixes) { throw 'Forest SPN suffixes not collected.' }
     $suffixes = @($state.Forest.SPNSuffixes)
-    Add-MtTestResultDetail -Result "Configured SPN suffix count: $($suffixes.Count); values: $($suffixes -join ', '). Review registered namespaces; this is not a count of SPNs or their owners." -Investigate
+    $rows = @('| Configured SPN suffix |', '| --- |')
+    foreach ($suffix in $suffixes) { $rows += '| {0} |' -f (Format-MtAdSiteInventoryValue $suffix) }
+    if ($suffixes.Count -eq 0) { $rows += '| None configured |' }
+    Add-MtTestResultDetail -Result "Review registered SPN namespaces. This is not a count of SPNs or their owners.`n`n| Metric | Value |`n| --- | --- |`n| Configured SPN suffix count | $($suffixes.Count) |`n`n$($rows -join "`n")" -Investigate
 }

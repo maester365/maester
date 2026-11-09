@@ -25,5 +25,8 @@
     $state = Get-MtADDomainState -Categories @('Domain')
     if (-not $state.Domain -or $null -eq $state.Domain.AllowedDnsSuffixes) { throw 'Allowed DNS suffix inventory unavailable.' }
     $suffixes = @($state.Domain.AllowedDnsSuffixes)
-    Add-MtTestResultDetail -Result "Allowed DNS suffixes (computer DNS namespace identifiers): $($suffixes.Count). Values: $($suffixes -join ', '). This attribute does not grant or deny permission to join a domain." -Investigate
+    $rows = @('| Allowed computer DNS suffix |', '| --- |')
+    foreach ($suffix in $suffixes) { $rows += '| {0} |' -f (Format-MtAdSiteInventoryValue $suffix) }
+    if ($suffixes.Count -eq 0) { $rows += '| None configured |' }
+    Add-MtTestResultDetail -Result "Review allowed computer DNS namespace identifiers. This attribute does not grant or deny permission to join a domain.`n`n| Metric | Value |`n| --- | --- |`n| Allowed DNS suffix count | $($suffixes.Count) |`n`n$($rows -join "`n")" -Investigate
 }

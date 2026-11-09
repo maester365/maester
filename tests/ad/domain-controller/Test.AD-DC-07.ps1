@@ -42,6 +42,13 @@
     $old = @($releases | Where-Object { $_ -lt $MinimumSupportedRelease })
     $ok = $old.Count -eq 0
     $distinctReleases = @($releases | Sort-Object -Unique)
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. All inventoried connected-domain DCs meet the minimum OS release.' } else { 'Upgrade connected-domain DCs below the minimum supported OS release.' }) Domain: $($state.Domain.DnsRoot); baseline: Server $MinimumSupportedRelease; assessed DCs: $($controllers.Count); other-domain DCs excluded: $excludedCount; distinct releases: $($distinctReleases.Count).`n`n$($rows -join "`n")`n`nOther domains require separate assessment. Directory OS inventory does not measure patch installation or support contracts."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Domain assessed' = $state.Domain.DnsRoot
+        'Minimum Windows Server release' = $MinimumSupportedRelease
+        'Assessed DCs' = $controllers.Count
+        'Other-domain DCs excluded' = $excludedCount
+        'Distinct OS releases' = $distinctReleases.Count
+    })
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. All inventoried connected-domain DCs meet the minimum OS release.' } else { 'Upgrade connected-domain DCs below the minimum supported OS release.' })`n`n$metrics`n`n$($rows -join "`n")`n`nOther domains require separate assessment. Directory OS inventory does not measure patch installation or support contracts."
     return $ok
 }

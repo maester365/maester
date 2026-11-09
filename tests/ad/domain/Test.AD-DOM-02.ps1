@@ -28,6 +28,12 @@
     if (-not $state.Domain -or $null -eq $state.Domain.MsDsMachineAccountQuota) { throw 'Machine account quota was not collected; the documented default of 10 cannot be substituted for missing data.' }
     $quota = [int]$state.Domain.MsDsMachineAccountQuota
     $ok = $quota -eq 0
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } else { 'Set ms-DS-MachineAccountQuota to 0 and delegate computer creation explicitly.' }) Observed quota: $quota; documented AD default: 10; matches documented default: $($quota -eq 10)."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Observed ms-DS-MachineAccountQuota' = $quota
+        'Required quota' = 0
+        'Documented AD default' = 10
+        'Matches documented default' = $quota -eq 10
+    })
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } else { 'Set ms-DS-MachineAccountQuota to 0 and delegate computer creation explicitly.' })`n`n$metrics"
     return $ok
 }

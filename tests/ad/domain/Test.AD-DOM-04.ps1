@@ -29,5 +29,10 @@
     $upper = $pool -shr 32
     $lower = $pool -band 4294967295UL
     if ($upper -eq 0 -or $lower -gt $upper) { throw "Invalid RID Manager pool boundaries: $upper / $lower." }
-    Add-MtTestResultDetail -Result "RID Manager pool upper bound: $upper; next allocation boundary: $lower; difference: $($upper - $lower). Review RID consumption and allocation; this is not a measured count of unused DC-local RID pools." -Investigate
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'RID Manager pool upper bound' = $upper
+        'Next allocation boundary' = $lower
+        'Boundary difference' = $upper - $lower
+    })
+    Add-MtTestResultDetail -Result "Review RID consumption and allocation. These boundaries are not a measured count of unused DC-local RID pools.`n`n$metrics" -Investigate
 }

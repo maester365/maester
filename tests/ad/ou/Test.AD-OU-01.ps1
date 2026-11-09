@@ -26,10 +26,11 @@
 
     $ous = @(Get-MtAdOrganizationalUnitOverview -State (Get-MtADDomainState -Categories @('OrganizationalUnits')))
     $duplicates = @($ous | Group-Object Name | Where-Object Count -gt 1)
-    $rows = @('| Repeated OU name | Distinguished names |', '| --- | --- |')
+    $rows = @('| Repeated OU name | Distinguished name |', '| --- | --- |')
     foreach ($group in $duplicates) {
-        $dns = (@($group.Group | ForEach-Object { Format-MtAdSiteInventoryValue $_.DistinguishedName }) -join '; ')
-        $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $group.Name), $dns
+        foreach ($ou in $group.Group) {
+            $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $group.Name), (Format-MtAdSiteInventoryValue $ou.DistinguishedName)
+        }
     }
     $ok = $duplicates.Count -eq 0
     $summary = if ($ok) { 'Well done. OU names are unique in the organization hierarchy.' } else { 'Review repeated OU names across the hierarchy and rename where appropriate for administrator clarity.' }

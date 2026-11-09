@@ -101,7 +101,7 @@ Describe 'Native USER security outcomes' {
         $script:batchState.Users[0] | Add-Member -NotePropertyName LastLogonDate -NotePropertyValue (Get-Date).AddDays(-60)
         InModuleScope Maester { Test-MtAdUserBuiltInAdminCount | Should -BeTrue }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
-        $script:batchDetail | Should -Match '90 days'
+        $script:batchDetail | Should -Match '\| Conservative replication lag allowance \(days\) \| 90 \|'
     }
 }
 

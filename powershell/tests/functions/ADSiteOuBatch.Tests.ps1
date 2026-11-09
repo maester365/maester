@@ -43,19 +43,19 @@ Describe 'AD site, subnet, OU and printer checks with <Representation> state' -F
         $script:detail.Text | Should -Match 'East, HQ \| site \| CN=Sites'
         $script:detail.Text | Should -Match 'CN=Sites,CN=Configuration'
         Test-MtAdSiteWithoutSubnetCount | Should -BeTrue
-        $script:detail.Text | Should -Match 'sites with subnets: 1'
-        $script:detail.Text | Should -Match 'orphaned subnets: 0'
+        $script:detail.Text | Should -Match '\| Sites with subnets \| 1 \|'
+        $script:detail.Text | Should -Match '\| Orphaned subnets \| 0 \|'
     }
 
     It 'counts a subnet pointing to an unknown DN as orphaned instead of as a site association' {
         $script:state.Subnets[0].SiteObject = 'CN=Unknown,CN=Sites,CN=Configuration,DC=example'
         Test-MtAdSiteWithoutSubnetCount | Should -BeFalse
-        $script:detail.Text | Should -Match 'sites with subnets: 0'
-        $script:detail.Text | Should -Match 'orphaned subnets: 1'
+        $script:detail.Text | Should -Match '\| Sites with subnets \| 0 \|'
+        $script:detail.Text | Should -Match '\| Orphaned subnets \| 1 \|'
         $script:detail.Text | Should -Match 'CN=Unknown'
         $script:state.Subnets[0].SiteObject = $null
         Test-MtAdSiteWithoutSubnetCount | Should -BeFalse
-        $script:detail.Text | Should -Match 'orphaned subnets: 1'
+        $script:detail.Text | Should -Match '\| Orphaned subnets \| 1 \|'
     }
 
     It 'does not pass a missing category or an incomplete DC site assignment' {
@@ -71,7 +71,7 @@ Describe 'AD site, subnet, OU and printer checks with <Representation> state' -F
     It 'accepts a retrieved empty subnet collection but not a missing one' {
         $script:state.Subnets = @()
         Test-MtAdSiteWithoutSubnetCount | Should -BeFalse
-        $script:detail.Text | Should -Match 'subnets: 0'
+        $script:detail.Text | Should -Match '\| Subnets \| 0 \|'
     }
 
     It 'allows intentionally DC-less sites but flags uncovered names by default' {
@@ -103,6 +103,8 @@ Describe 'AD site, subnet, OU and printer checks with <Representation> state' -F
         Test-MtAdOuOverlappingNameCount | Should -BeFalse
         $script:detail.Text | Should -Match 'Dev&#124;Ops'
         $script:detail.Text | Should -Not -Match '<br>'
+        $script:detail.Text | Should -Match '\| Dev&#124;Ops \| OU=Dev\\,Ops,DC=example \|'
+        $script:detail.Text | Should -Match '\| Dev&#124;Ops \| OU=Dev&#124;Ops,OU=Other,DC=example \|'
     }
 
     It 'lists root OUs, validates missing modification dates and honors the calendar-year threshold' {

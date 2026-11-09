@@ -50,7 +50,18 @@
     # Respect a configured domain interval larger than the parameter's conservative default.
     $ambiguous = $account.Enabled -eq $true -and ($idle -eq 'Unknown' -or ($idle -is [int] -and $idle -ge $MinimumIdleDays -and $idle -lt ($MinimumIdleDays + $effectiveLagDays)))
     $failed = $passwordAge -gt $MaximumPasswordAgeDays -or ($account.Enabled -eq $true -and $idle -is [int] -and $idle -lt $MinimumIdleDays)
-    $detail = "RID-500: $($account.SamAccountName); enabled: $($account.Enabled); last replicated logon: $lastLogon; days since logon: $idle; password age: $passwordAge days; password never expires: $($account.PasswordNeverExpires). Conservative replication lag allowance: $effectiveLagDays days (domain interval and parameter maximum); this is not an exact all-DC last-logon audit."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'RID-500 account' = $account.SamAccountName
+        'Account enabled' = $account.Enabled
+        'Last replicated logon' = $lastLogon
+        'Days since recorded logon' = $idle
+        'Minimum idle period (days)' = $MinimumIdleDays
+        'Password age (days)' = $passwordAge
+        'Maximum password age (days)' = $MaximumPasswordAgeDays
+        'Password never expires' = $account.PasswordNeverExpires
+        'Conservative replication lag allowance (days)' = $effectiveLagDays
+    })
+    $detail = "`n`n$metrics`n`nThe replication lag allowance uses the domain interval and parameter maximum. This is not an exact all-DC last-logon audit."
     if ($failed) { Add-MtTestResultDetail -Result "Review recent RID-500 usage or rotate its old password after checking break-glass procedures. $detail" }
     elseif ($ambiguous) { Add-MtTestResultDetail -Result "RID-500 usage is ambiguous near the idle threshold; corroborate with DC logon records. $detail" -Investigate }
     else { Add-MtTestResultDetail -Result "Well done. No stale RID-500 password or confirmed recent enabled-account usage was found. $detail" }

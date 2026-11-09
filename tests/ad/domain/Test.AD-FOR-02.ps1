@@ -25,5 +25,7 @@
     $state = Get-MtADDomainState -Categories @('Forest')
     if (-not $state.Forest -or $null -eq $state.Forest.Domains) { throw 'Forest domains not collected.' }
     $domains = @($state.Forest.Domains)
-    Add-MtTestResultDetail -Result "Forest domain count: $($domains.Count); domains: $($domains -join ', '). Review the domain topology; the number alone is not a finding." -Investigate
+    $rows = @('| Forest domain |', '| --- |')
+    foreach ($domain in $domains) { $rows += '| {0} |' -f (Format-MtAdSiteInventoryValue $domain) }
+    Add-MtTestResultDetail -Result "Review the forest domain topology. The number of domains alone is not a finding.`n`n| Metric | Value |`n| --- | --- |`n| Forest domain count | $($domains.Count) |`n`n$($rows -join "`n")" -Investigate
 }

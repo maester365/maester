@@ -29,6 +29,12 @@
     $scope = [pscustomobject]@{ Domain = $state.Domain; DomainControllers = @(Get-MtAdDomainControllersInScope -State $state) }
     $assessment = Get-MtAdFunctionalLevelAssessment -State $scope -Scope Domain
     $ok = $assessment.Current -eq $assessment.Target
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } elseif ($assessment.Current -gt $assessment.Target) { 'Configured level exceeds collected DC support; verify incompatible or stale DC inventory before taking action.' } else { 'Raise the domain functional level after planning DC upgrades.' }) Current raw level: $($assessment.Current); highest common supported level: $($assessment.Target). Level 7 supports 2016/2019/2022 DCs; level 10 requires all 2025 DCs."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Domain assessed' = $state.Domain.DnsRoot
+        'Current domain functional level (raw)' = $assessment.Current
+        'Highest common supported level' = $assessment.Target
+        'Assessed DCs' = @($scope.DomainControllers).Count
+    })
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done.' } elseif ($assessment.Current -gt $assessment.Target) { 'Configured level exceeds collected DC support. Verify incompatible or stale DC inventory before taking action.' } else { 'Raise the domain functional level after planning DC upgrades.' })`n`n$metrics`n`nLevel 7 supports 2016/2019/2022 DCs. Level 10 requires every DC in the domain to run Windows Server 2025."
     return $ok
 }

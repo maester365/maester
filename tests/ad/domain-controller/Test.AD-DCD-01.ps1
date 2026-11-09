@@ -36,5 +36,11 @@
     $ldapsKnown = @($controllers | Where-Object { $null -ne $_.SslPort })
     $ldapNonstandard = @($ldapKnown | Where-Object { $_.LdapPort -ne 389 })
     $ldapsNonstandard = @($ldapsKnown | Where-Object { $_.SslPort -ne 636 })
-    Add-MtTestResultDetail -Result "LDAP (389): known $($ldapKnown.Count), unknown $($controllers.Count - $ldapKnown.Count), nonstandard $($ldapNonstandard.Count). LDAPS (636): known $($ldapsKnown.Count), unknown $($controllers.Count - $ldapsKnown.Count), nonstandard $($ldapsNonstandard.Count).`n`n$($rows -join "`n")`n`nAdvertised metadata does not prove listening ports, TLS certificate validity or network reachability." -Investigate
+    $counts = @(
+        '| Protocol | Standard port | Known metadata | Unknown metadata | Nonstandard metadata |'
+        '| --- | --- | --- | --- | --- |'
+        "| LDAP | 389 | $($ldapKnown.Count) | $($controllers.Count - $ldapKnown.Count) | $($ldapNonstandard.Count) |"
+        "| LDAPS | 636 | $($ldapsKnown.Count) | $($controllers.Count - $ldapsKnown.Count) | $($ldapsNonstandard.Count) |"
+    )
+    Add-MtTestResultDetail -Result "Review LDAP and LDAPS port metadata.`n`n$($counts -join "`n")`n`n$($rows -join "`n")`n`nAdvertised metadata does not prove listening ports, TLS certificate validity or network reachability." -Investigate
 }

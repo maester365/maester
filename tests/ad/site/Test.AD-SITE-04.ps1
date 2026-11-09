@@ -36,6 +36,13 @@
     }
     $healthy = $view.SitesWithoutSubnets.Count -eq 0 -and $view.OrphanedSubnets.Count -eq 0
     $summary = if ($healthy) { 'Well done. All sites and subnets have valid associations.' } else { 'Review sites without subnets and subnets without a valid site association.' }
-    Add-MtTestResultDetail -Result "$summary Sites: $($view.Sites.Count); subnets: $($view.Subnets.Count); sites with subnets: $($view.SitesWithSubnets.Count); sites without subnets: $($view.SitesWithoutSubnets.Count); orphaned subnets: $($view.OrphanedSubnets.Count).`n`n$($rows -join "`n")"
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Sites' = $view.Sites.Count
+        'Subnets' = $view.Subnets.Count
+        'Sites with subnets' = $view.SitesWithSubnets.Count
+        'Sites without subnets' = $view.SitesWithoutSubnets.Count
+        'Orphaned subnets' = $view.OrphanedSubnets.Count
+    })
+    Add-MtTestResultDetail -Result "$summary`n`n$metrics`n`n$($rows -join "`n")"
     return $healthy
 }

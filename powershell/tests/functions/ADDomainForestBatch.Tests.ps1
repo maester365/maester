@@ -36,7 +36,7 @@ Describe 'Native AD domain and forest results' {
             SupportedLevelValue = 7; IsGlobalCatalog = $true
         }
         InModuleScope Maester { Test-MtAdForestFunctionalLevel | Should -BeTrue }
-        $script:batchDetail | Should -Match 'other-domain DCs excluded: 1'
+        $script:batchDetail | Should -Match '\| Other-domain DCs excluded \| 1 \|'
         $script:batchState.DomainControllers.Count | Should -Be 2
         $script:batchState.DomainControllers[1].ServerReference = 'CN=child,CN=Domain Controllers,DC=example,DC=com'
         InModuleScope Maester {
@@ -74,7 +74,7 @@ Describe 'Native AD domain and forest results' {
             Test-MtAdDcOperatingSystemCount | Should -BeTrue
             Test-MtAdForestFunctionalLevel | Should -BeTrue
         }
-        $script:batchDetail | Should -Match 'other-domain DCs excluded: 1'
+        $script:batchDetail | Should -Match '\| Other-domain DCs excluded \| 1 \|'
         $script:batchState.DomainControllers[1].ServerReference = 'CN=foreign,CN=Domain Controllers,DC=example,DC=com'
         InModuleScope Maester {
             { Test-MtAdDcOperatingSystemCount } | Should -Throw '*foreign*'
@@ -85,14 +85,24 @@ Describe 'Native AD domain and forest results' {
     It 'decodes the live RID Manager pool without casting a signed hexadecimal mask' {
         $script:batchState.Domain | Add-Member -NotePropertyName RIDAvailablePool -NotePropertyValue '4611686014132428208'
         InModuleScope Maester { Test-MtAdRidsRemaining }
-        $script:batchDetail | Should -Match 'upper bound: 1073741823; next allocation boundary: 7600'
+        $script:batchDetail | Should -Match '\| RID Manager pool upper bound \| 1073741823 \|'
+        $script:batchDetail | Should -Match '\| Next allocation boundary \| 7600 \|'
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
+    }
+
+    It 'renders quota values as separate metric rows without changing the baseline' {
+        $script:batchState.Domain | Add-Member -NotePropertyName MsDsMachineAccountQuota -NotePropertyValue 0
+        InModuleScope Maester { Test-MtAdMachineAccountQuota | Should -BeTrue }
+        $script:batchDetail | Should -Match '\| Matches documented default \| False \|'
+        $script:batchState.Domain.MsDsMachineAccountQuota = 10
+        InModuleScope Maester { Test-MtAdMachineAccountQuota | Should -BeFalse }
+        $script:batchDetail | Should -Match '\| Observed ms-DS-MachineAccountQuota \| 10 \|'
     }
 
     It 'fails when there is no GC, passes with one GC, and errors when status is unknown' {
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $false
         InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount | Should -BeFalse }
-        $script:batchDetail | Should -Match 'non-GC: 1'
+        $script:batchDetail | Should -Match '\| Non-Global Catalog DCs \| 1 \|'
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $true
         InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount | Should -BeTrue }
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $null
@@ -104,7 +114,8 @@ Describe 'Native AD domain and forest results' {
         $script:batchState.DomainControllers[0] | Add-Member -NotePropertyName SslPort -NotePropertyValue $null
         $script:batchState.DomainControllers[0] | Add-Member -NotePropertyName PortEvidence -NotePropertyValue 'Not measured'
         InModuleScope Maester { Test-MtAdDcNonStandardLdapPortCount }
-        $script:batchDetail | Should -Match 'LDAP \(389\).*LDAPS \(636\)'
+        $script:batchDetail | Should -Match '\| LDAP \| 389 \| 0 \| 1 \| 0 \|'
+        $script:batchDetail | Should -Match '\| LDAPS \| 636 \| 0 \| 1 \| 0 \|'
         $script:batchDetail | Should -Match '\| root.example.com \| Unknown \| Unknown \| Not measured \|'
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
@@ -133,9 +144,19 @@ Describe 'Native AD domain and forest results' {
         $script:batchState.DomainControllers[0] | Add-Member -NotePropertyName DistinguishedName -NotePropertyValue $owner
         $script:batchState.DomainControllers[0] | Add-Member -NotePropertyName IsReadOnly -NotePropertyValue $false
         InModuleScope Maester { Test-MtAdDcAllFsmoRolesCount | Should -BeTrue }
-        $script:batchDetail | Should -Match 'distinct owner DNs: 1'
+        $script:batchDetail | Should -Match '\| Distinct owner DNs \| 1 \|'
         $script:batchDetail | Should -Match '\| Schema \| CN=NTDS Settings'
         $script:batchDetail | Should -Match '\| Infrastructure \| CN=NTDS Settings'
+        $otherOwner = "CN=NTDS Settings,CN=OTHER,CN=Servers,CN=Site,CN=Sites,CN=Configuration,$root"
+        $script:batchState.DomainControllers += [pscustomobject]@{
+            DistinguishedName = $otherOwner
+            ServerReference = "CN=OTHER,OU=Domain Controllers,$root"
+            IsReadOnly = $false
+            IsGlobalCatalog = $true
+        }
+        $script:batchState.Domain.RidOwnerDistinguishedName = $otherOwner
+        InModuleScope Maester { Test-MtAdDcAllFsmoRolesCount | Should -BeFalse }
+        $script:batchDetail | Should -Match '(?m)^- RID Master is not on the connected domain PDC\.'
     }
 }
 

@@ -36,6 +36,12 @@
         $rows += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $site.Name), (Format-MtAdSiteInventoryValue $site.DistinguishedName)
     }
     $summary = if ($missing.Count -eq 0) { 'Well done. All sites without local DCs meet the configured organization baseline.' } else { "$($missing.Count) site(s) without local DCs are not in the allowed list; review coverage or add intentional exceptions." }
-    Add-MtTestResultDetail -Result "$summary Total sites: $($view.Sites.Count); sites with DCs: $($view.Sites.Count - $view.SitesWithoutDcs.Count); sites without DCs: $($view.SitesWithoutDcs.Count).`n`n$($rows -join "`n")"
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Total sites' = $view.Sites.Count
+        'Sites with DCs' = $view.Sites.Count - $view.SitesWithoutDcs.Count
+        'Sites without DCs' = $view.SitesWithoutDcs.Count
+        'Sites without DCs outside the allowed list' = $missing.Count
+    })
+    Add-MtTestResultDetail -Result "$summary`n`n$metrics`n`n$($rows -join "`n")"
     return ($missing.Count -eq 0)
 }

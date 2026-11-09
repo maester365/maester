@@ -31,6 +31,11 @@
     $catalogs = @($controllers | Where-Object { $_.IsGlobalCatalog -eq $true })
     $nonCatalogs = @($controllers | Where-Object { $_.IsGlobalCatalog -eq $false })
     $ok = $catalogs.Count -gt 0
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. At least one forest Global Catalog is inventoried.' } else { 'Designate and verify at least one forest Global Catalog.' }) GC: $($catalogs.Count); non-GC: $($nonCatalogs.Count). Non-GC DCs are not automatically a failure: the Infrastructure Master placement exception depends on forest topology and Recycle Bin state. This does not prove site reachability."
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'Inventoried forest DCs' = $controllers.Count
+        'Global Catalog DCs' = $catalogs.Count
+        'Non-Global Catalog DCs' = $nonCatalogs.Count
+    })
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. At least one forest Global Catalog is inventoried.' } else { 'Designate and verify at least one forest Global Catalog.' })`n`n$metrics`n`nNon-GC DCs are not automatically a failure: the Infrastructure Master placement exception depends on forest topology and Recycle Bin state. This does not prove site reachability."
     return $ok
 }
