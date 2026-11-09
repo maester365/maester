@@ -25,9 +25,19 @@
         if ($PropertyPath -match '\.(includeGuestsOrExternalUsers|excludeGuestsOrExternalUsers)$') {
             $sharedTypes = @(([string]$Shared.guestOrExternalUserTypes -split ',') | Sort-Object -Unique) -join ','
             $ruleTypes = @(([string]$Rule.guestOrExternalUserTypes -split ',') | Sort-Object -Unique) -join ','
-            $sharedTenants = $Shared.externalTenants | ConvertTo-Json -Depth 100 -Compress
-            $ruleTenants = $Rule.externalTenants | ConvertTo-Json -Depth 100 -Compress
-            if ($sharedTypes -ne $ruleTypes -and $sharedTenants -ne $ruleTenants) {
+            # Tenant membership is a set, independent of member order, duplicate IDs or JSON key order.
+            # Keep a missing scope distinct from both all and an empty enumerated scope.
+            $tenantScopes = foreach ($condition in @($Shared, $Rule)) {
+                if ($null -eq $condition.externalTenants) {
+                    'absent'
+                } else {
+                    [ordered]@{
+                        membershipKind = $condition.externalTenants.membershipKind
+                        members = @($condition.externalTenants.members | Sort-Object -Unique)
+                    } | ConvertTo-Json -Depth 100 -Compress
+                }
+            }
+            if ($sharedTypes -ne $ruleTypes -and $tenantScopes[0] -ne $tenantScopes[1]) {
                 throw "Cannot safely combine guest types and tenant sets at '$PropertyPath' without broadening the targeting."
             }
         }

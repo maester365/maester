@@ -125,6 +125,35 @@ Describe 'Plan rule projection' {
         ($rule | ConvertTo-Json -Depth 100 -Compress) | Should -Be $beforeRule
     }
 
+    It 'Projects a rule without reading sibling rule payloads' {
+        $result = InModuleScope Maester -Parameters @{ Plan = (New-PlanFixture); Rule = (New-RuleFixture) } {
+            param($Plan, $Rule)
+            $script:ProjectionSiblingReads = 0
+            $Plan.PSObject.Properties.Remove('rules')
+            $Plan | Add-Member -MemberType ScriptProperty -Name rules -Value {
+                $script:ProjectionSiblingReads++
+                @([pscustomobject]@{ id = 'unrelated-rule' })
+            }
+            try {
+                $policy = ConvertTo-MtConditionalAccessPolicy -Plan $Plan -Rule $Rule
+                [pscustomobject]@{ Reads = $script:ProjectionSiblingReads; Policy = $policy }
+            } finally {
+                Remove-Variable ProjectionSiblingReads -Scope Script
+            }
+        }
+        $result.Reads | Should -Be 0
+        $result.Policy.id | Should -Be $script:ruleFixture[1].id
+        $result.Policy.conditions.users.excludeUsers | Should -Be $script:planFixture.sharedConditions.users.excludeUsers
+    }
+
+    It 'Keeps shared conditions independent of the cached parent after projection' {
+        $plan = New-PlanFixture
+        $before = $plan | ConvertTo-Json -Depth 100 -Compress
+        $policy = ConvertTo-MtConditionalAccessPolicy -Plan $plan -Rule (New-RuleFixture)
+        $policy.sharedConditions.users.excludeUsers[0] = 'changed-in-result'
+        ($plan | ConvertTo-Json -Depth 100 -Compress) | Should -Be $before
+    }
+
     It 'Preserves a rule state of <State>' -ForEach @(
         @{ State = 'enabled' }, @{ State = 'disabled' }, @{ State = 'enabledForReportingButNotEnforced' }
     ) {
@@ -186,6 +215,46 @@ Describe 'Plan rule projection' {
         $shared = @{ users = @{ includeGuestsOrExternalUsers = @{ guestOrExternalUserTypes = 'internalGuest'; externalTenants = @{ membershipKind = 'enumerated'; members = @('tenant-a') } } } }
         $rule = @{ users = @{ includeGuestsOrExternalUsers = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest'; externalTenants = @{ membershipKind = 'enumerated'; members = @('tenant-b') } } } }
         { Merge-MtConditionalAccessCondition -Shared $shared -Rule $rule } | Should -Throw '*without broadening*'
+    }
+
+    It 'Merges equivalent tenant sets independently of order for <Scope>' -ForEach @(
+        @{ Scope = 'includeGuestsOrExternalUsers' }
+        @{ Scope = 'excludeGuestsOrExternalUsers' }
+    ) {
+        $shared = @{ guestOrExternalUserTypes = 'internalGuest'; externalTenants = [ordered]@{ membershipKind = 'enumerated'; members = @('tenant-a', 'tenant-b') } }
+        $rule = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest'; externalTenants = [ordered]@{ members = @('TENANT-B', 'tenant-a', 'tenant-a'); membershipKind = 'enumerated' } }
+        $beforeShared = $shared | ConvertTo-Json -Depth 100 -Compress
+        $beforeRule = $rule | ConvertTo-Json -Depth 100 -Compress
+        $result = Merge-MtConditionalAccessCondition -Shared $shared -Rule $rule -PropertyPath "conditions.users.$Scope"
+        $result.guestOrExternalUserTypes | Should -Be 'internalGuest,b2bCollaborationGuest'
+        $result.externalTenants.members | Should -Be @('tenant-a', 'tenant-b')
+        ($shared | ConvertTo-Json -Depth 100 -Compress) | Should -Be $beforeShared
+        ($rule | ConvertTo-Json -Depth 100 -Compress) | Should -Be $beforeRule
+    }
+
+    It 'Keeps absent, all and enumerated tenant scopes distinct for <Scope>' -ForEach @(
+        @{ Scope = 'includeGuestsOrExternalUsers' }
+        @{ Scope = 'excludeGuestsOrExternalUsers' }
+    ) {
+        foreach ($pair in @(
+            @{ Shared = $null; Rule = @{ membershipKind = 'all' } }
+            @{ Shared = $null; Rule = @{ membershipKind = 'enumerated'; members = @() } }
+            @{ Shared = @{ membershipKind = 'all' }; Rule = @{ membershipKind = 'enumerated'; members = @() } }
+            @{ Shared = @{ membershipKind = 'enumerated'; members = @('tenant-a') }; Rule = @{ membershipKind = 'enumerated'; members = @() } }
+            @{ Shared = @{ membershipKind = 'enumerated'; members = @('tenant-a') }; Rule = @{ membershipKind = 'enumerated'; members = @('tenant-b') } }
+        )) {
+            $shared = @{ guestOrExternalUserTypes = 'internalGuest'; externalTenants = $pair.Shared }
+            $rule = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest'; externalTenants = $pair.Rule }
+            { Merge-MtConditionalAccessCondition -Shared $shared -Rule $rule -PropertyPath "conditions.users.$Scope" } | Should -Throw '*without broadening*'
+        }
+    }
+
+    It 'Merges different guest types when both tenant scopes are all' {
+        $shared = @{ guestOrExternalUserTypes = 'internalGuest'; externalTenants = @{ membershipKind = 'all' } }
+        $rule = @{ guestOrExternalUserTypes = 'b2bCollaborationGuest'; externalTenants = @{ membershipKind = 'all' } }
+        $result = Merge-MtConditionalAccessCondition -Shared $shared -Rule $rule -PropertyPath 'conditions.users.includeGuestsOrExternalUsers'
+        $result.externalTenants.membershipKind | Should -Be all
+        $result.guestOrExternalUserTypes | Should -Be 'internalGuest,b2bCollaborationGuest'
     }
 
     It 'Does not mistake Graph response annotations for targeting conflicts' {

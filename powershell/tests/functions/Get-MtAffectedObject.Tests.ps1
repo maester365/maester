@@ -190,11 +190,7 @@ Describe 'Affected objects' {
             # literal backslash on the affected-objects page. This drives the whole set through
             # both sides rather than naming a few characters, so adding one to the helper without
             # adding it here fails this case instead of reaching the page.
-            # Every character Get-MtSafeMarkdown escapes, except '[' and ']'. Those two are left out
-            # for a reason that is not the unescape pattern: $linkPattern admits at most one level of
-            # brackets in a name, so an escaped bracket breaks the link match before the unescape is
-            # ever reached. That is a pre-existing limit of the link pattern and is unchanged here.
-            $chars = @('\', '`', '*', '_', '(', ')', '!', '|', '<', '>', '~', ':', '@')
+            $chars = @('\', '`', '*', '_', '[', ']', '(', ')', '!', '|', '<', '>', '~', ':', '@')
             foreach ($c in $chars) {
                 $nombre = InModuleScope Maester -Parameters @{ C = $c } {
                     param($C)

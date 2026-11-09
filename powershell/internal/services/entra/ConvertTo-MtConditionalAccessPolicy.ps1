@@ -21,7 +21,8 @@
     if ($Rule.state -notin @('enabled', 'disabled', 'enabledForReportingButNotEnforced')) {
         throw "Conditional Access rule '$($Rule.id)' has an unsupported state '$($Rule.state)'."
     }
-    $parent = $Plan | ConvertTo-Json -Depth 100 | ConvertFrom-Json -AsHashtable
+    # Copy only inherited targeting; serializing the sibling rules for each projection is quadratic.
+    $sharedConditions = ConvertTo-Json -InputObject $Plan.sharedConditions -Depth 100 | ConvertFrom-Json -AsHashtable
     $copy = $Rule | ConvertTo-Json -Depth 100 | ConvertFrom-Json -AsHashtable
     if (-not $copy.controls -or (-not $copy.controls.grantControls -and -not $copy.controls.sessionControls)) {
         throw "Conditional Access rule '$($Rule.id)' has no supported enforcement controls."
@@ -29,7 +30,7 @@
     $copy['@odata.type'] = '#microsoft.graph.conditionalAccessPolicyRule'
     $copy['ruleConditions'] = $copy.conditions
     try {
-        $copy['conditions'] = Merge-MtConditionalAccessCondition -Shared $parent.sharedConditions -Rule $copy.conditions
+        $copy['conditions'] = Merge-MtConditionalAccessCondition -Shared $sharedConditions -Rule $copy.conditions
     } catch {
         throw "Cannot evaluate rule '$($Rule.id)' in plan '$($Plan.id)': $($_.Exception.Message)"
     }
@@ -39,7 +40,7 @@
     $copy['planId'] = $Plan.id
     $copy['planDisplayName'] = $Plan.displayName
     $copy['planOwners'] = @($Plan.owners)
-    $copy['sharedConditions'] = $parent.sharedConditions
+    $copy['sharedConditions'] = $sharedConditions
     $copy['sourceType'] = 'PolicyPlanRule'
     return [pscustomobject]$copy
 }

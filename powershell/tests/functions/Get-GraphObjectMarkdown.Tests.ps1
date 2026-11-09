@@ -41,12 +41,19 @@
     }
 
 
-    It 'Preserves distinct rule identities through a Markdown-only custom table' {
-        $objects = InModuleScope Maester {
+    It 'Preserves distinct rule identities for <DisplayName> through a Markdown-only table' -ForEach @(
+        @{ DisplayName = 'Same [name] | rule' }
+        @{ DisplayName = 'Rule ] review' }
+        @{ DisplayName = 'Rule [ review' }
+        @{ DisplayName = '[Plan: [Prod] Access] [Rule: MFA]' }
+        @{ DisplayName = 'Back\slash [Plan: [Prod]] [Rule: MFA] ]' }
+    ) {
+        $objects = InModuleScope Maester -Parameters @{ DisplayName = $DisplayName } {
+            param($DisplayName)
             $planId = '00000000-0000-4000-8000-000000000001'
             $rules = @(
-                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000007'; displayName = 'Same [name] | rule'; planId = $planId; sourceType = 'PolicyPlanRule' }
-                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000008'; displayName = 'Same [name] | rule'; planId = $planId; sourceType = 'PolicyPlanRule' }
+                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000007'; displayName = $DisplayName; planId = $planId; sourceType = 'PolicyPlanRule' }
+                [pscustomobject]@{ id = '00000000-0000-4000-8000-000000000008'; displayName = $DisplayName; planId = $planId; sourceType = 'PolicyPlanRule' }
             )
             $markdown = "| Policy | Finding |`n| --- | --- |`n"
             foreach ($rule in $rules) {
@@ -60,7 +67,7 @@
         $objects.Id | Sort-Object | Should -Be @('00000000-0000-4000-8000-000000000007', '00000000-0000-4000-8000-000000000008')
         foreach ($record in $objects) {
             $record.Type | Should -Be ConditionalAccessPolicyRule
-            $record.DisplayName | Should -Be 'Same [name] | rule'
+            $record.DisplayName | Should -Be $DisplayName
             $record.Tests | Should -Be @('MT.1184')
             $record.PortalLink | Should -BeLike '*PolicyPlanView.ReactView/planId/00000000-0000-4000-8000-000000000001'
         }
