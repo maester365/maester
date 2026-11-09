@@ -15,7 +15,7 @@ Describe 'Test-MtMobileThreatDefenseConnectors' {
         Mock -ModuleName Maester Get-Date { [datetime]'2026-11-08T12:00:00Z' }
         Mock -ModuleName Maester Invoke-MtGraphRequest { $script:Connector }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause, $SkippedCustomReason)
+            param($Result)
             $script:Result = $Result
         }
     }
