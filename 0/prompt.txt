@@ -1,0 +1,7 @@
+i have a neat idea for maeester to scan a tenant and generate custom tests based on what is critical for that specifiec tenant. for rexample acan intune config, groups used for licensing and groups used in CA policies (plus any other key config). we can write a skill or generate static tests and these will become unique to a tenant without the user having to think of critical aspects. We will need to do some research of some critical things. e.g. if ehy have federation then that is one. thing to monitor like what domain and what config they have can be coded into the test so if it ever changes they are notified.
+
+come up with an overall design for this
+
+---
+
+create a draft pr and also open an issue with what the idea is. be expressive with diagrams in the issues if needed...
