@@ -15,7 +15,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:domainDNS.rIDAvailablePool:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:rIDManager.rIDAvailablePool:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
@@ -27,7 +27,7 @@
     if ($null -eq $raw) { throw 'RID Manager rIDAvailablePool is unavailable; it is not a domain-root property.' }
     $pool = [uint64]$raw
     $upper = $pool -shr 32
-    $lower = $pool -band [uint64]0xFFFFFFFF
+    $lower = $pool -band 4294967295UL
     if ($upper -eq 0 -or $lower -gt $upper) { throw "Invalid RID Manager pool boundaries: $upper / $lower." }
     Add-MtTestResultDetail -Result "RID Manager pool upper bound: $upper; next allocation boundary: $lower; difference: $($upper - $lower). Review RID consumption and allocation; this is not a measured count of unused DC-local RID pools." -Investigate
 }

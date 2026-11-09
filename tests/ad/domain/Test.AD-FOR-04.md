@@ -42,7 +42,7 @@ Verify functional-level prerequisites and retention/storage requirements, then e
 #### Related Tests
 
 - **AD-FOR-03 — Tombstone lifetime should be retrievable** — `Test-MtAdTombstoneLifetime` — Inventories tombstone lifetime.
-- **AD-FOR-01 — Forest functional level meets the highest supported common level** — `Test-MtAdForestFunctionalLevel` — Reviews the forest functional level.
+- **AD-FOR-01 — Forest functional level meets connected-domain DC support** — `Test-MtAdForestFunctionalLevel` — Reviews the forest level against connected-domain DC support.
 
 <!--- Results --->
 %TestResult%

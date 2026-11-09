@@ -182,7 +182,9 @@ PWDPOL-01 assesses the connected domain's configured default policy; FGPP-01 ass
 
 Disabled-account and OU age checks use recorded modification age, not a disable date or proof of actual use. Protected system and RODC/hybrid krbtgt identities are excluded from disabled-account cleanup. RID-500 recent-use checks account for `lastLogonTimestamp` replication lag rather than treating it as exact all-DC logon evidence.
 
-Domain functional-level checks use only DCs scoped to the connected domain; forest checks use the whole forest inventory. Windows Server 2025 is level 10; Server 2019/2022 share level 7 with Server 2016. Unknown or inaccessible foreign-domain computer metadata stays explicit, not a healthy OS result. LDAP/LDAPS port fields are not measured listener states.
+AD-DOM-01, AD-DC-07 and AD-FOR-01 assess DC support using only the connected domain's controllers. AD-FOR-01 still reads the forest's configured level, but its scoped result is not proof of forest-wide upgrade eligibility; assess every other domain before raising it. The shared forest inventory remains intact for topology and other forest-wide checks. Windows Server 2025 is level 10; Server 2019/2022 share level 7 with Server 2016. Unknown in-scope metadata remains an error, while other-domain DCs are excluded and counted in these scoped results. LDAP/LDAPS port fields are not measured listener states.
+
+AD snapshots are ordered dictionaries. The inventory checks distinguish dictionary keys from object properties and accept retrieved empty subnet/printer collections; null or missing required data still produces Error. RID pool decoding reads the RID Manager object and uses an unsigned 32-bit mask.
 
 Native test errors are recorded per test and do not stop report generation. Missing required inventory or a missing visible KRBTGT account is an **Error**, not a failed password-age baseline. A known password age still produces pass/fail; investigation inventories report **Investigate**, not compliance. Custom tests can read the actual `mS-DS-CreatorSID` computer attribute; the former `CreatorSid` projection remains as a compatibility alias.
 

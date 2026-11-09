@@ -1,4 +1,4 @@
-Checks the forest functional level against the highest common level supported by all inventoried forest DCs, not just those in the connected domain. Raising the level enables newer forest capabilities but requires a planned compatibility and recovery assessment.
+Checks the configured forest functional level against the common level supported by DCs in the connected domain. DCs in other domains are excluded from this connection-scoped assessment and counted in the result. A match is not proof that every forest domain has been assessed or that the forest can be raised to another level.
 
 The forest level governs forest-wide directory capabilities. Running below the supported level can defer use of newer features, but this check does not verify whether any particular feature has been enabled.
 
@@ -16,7 +16,7 @@ Test application compatibility, schedule a maintenance window and document the c
 
 #### How the Test Works
 
-Compares the forest's configured functional level with the highest common level supported by DCs across every forest domain. Unknown OS metadata or failed collection in another domain must not be counted as healthy support.
+Reads the forest-level value, scopes the shared DC inventory to the connected domain, then compares that value with the scoped DCs' supported levels. Other-domain metadata failures do not block this scoped result and are not treated as healthy support. Missing or inconsistent metadata for an in-scope DC still produces an error. Before changing the forest level, separately verify all other domains, DCs, domain functional levels and application dependencies.
 
 #### Related Tests
 

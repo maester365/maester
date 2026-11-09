@@ -7,14 +7,12 @@
         [switch] $Controllers
     )
 
-    foreach ($category in @(@{ Required = $Sites; Name = 'ReplicationSites' }, @{ Required = $Subnets; Name = 'Subnets' }, @{ Required = $Controllers; Name = 'DomainControllers' })) {
-        if ($category.Required -and ($null -eq $State -or $null -eq $State.PSObject.Properties[$category.Name] -or $null -eq $State.($category.Name))) {
-            throw "Active Directory $($category.Name) data is unavailable."
-        }
-    }
-
-    $siteEntries = if ($Sites) { @($State.ReplicationSites) } else { @() }
-    $subnetEntries = if ($Subnets) { @($State.Subnets) } else { @() }
+    $siteEntries = @()
+    $subnetEntries = @()
+    $controllerEntries = @()
+    if ($Sites) { $siteEntries = Get-MtAdStateCollection -State $State -Name ReplicationSites }
+    if ($Subnets) { $subnetEntries = Get-MtAdStateCollection -State $State -Name Subnets }
+    if ($Controllers) { $controllerEntries = Get-MtAdStateCollection -State $State -Name DomainControllers }
     $siteByDn = @{}
     foreach ($site in $siteEntries) {
         if ([string]::IsNullOrWhiteSpace($site.DistinguishedName) -or [string]::IsNullOrWhiteSpace($site.Name)) {
@@ -40,7 +38,7 @@
 
     $withDc = @{}
     if ($Controllers) {
-        foreach ($dc in @($State.DomainControllers)) {
+        foreach ($dc in $controllerEntries) {
             if ([string]::IsNullOrWhiteSpace($dc.Site) -or [string]::IsNullOrWhiteSpace($dc.SiteDistinguishedName)) {
                 throw 'A domain controller has missing Site or SiteDistinguishedName metadata; site coverage cannot be determined.'
             }

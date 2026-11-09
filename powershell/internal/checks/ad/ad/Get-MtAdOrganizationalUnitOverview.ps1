@@ -3,24 +3,19 @@
     [OutputType([object[]], [pscustomobject])]
     param([Parameter(Mandatory)] $State, [switch] $IncludeChildren)
 
-    if ($null -eq $State -or $null -eq $State.PSObject.Properties['OrganizationalUnits'] -or $null -eq $State.OrganizationalUnits) {
-        throw 'Active Directory OrganizationalUnits data is unavailable.'
-    }
-    $ous = @($State.OrganizationalUnits)
+    $ous = Get-MtAdStateCollection -State $State -Name OrganizationalUnits
     foreach ($ou in $ous) {
         if ([string]::IsNullOrWhiteSpace($ou.DistinguishedName) -or [string]::IsNullOrWhiteSpace($ou.Name)) {
             throw 'An organizational unit has missing Name or DistinguishedName metadata.'
         }
     }
     if (-not $IncludeChildren) { return $ous }
-    foreach ($category in @('Users', 'Groups', 'Computers')) {
-        if ($null -eq $State.PSObject.Properties[$category] -or $null -eq $State.$category) {
-            throw "Active Directory $category data is unavailable."
-        }
-    }
+    $users = Get-MtAdStateCollection -State $State -Name Users
+    $groups = Get-MtAdStateCollection -State $State -Name Groups
+    $computers = Get-MtAdStateCollection -State $State -Name Computers
     # An escaped comma is part of an RDN, not a DN component separator.
     $children = @{}
-    foreach ($object in @($ous) + @($State.Users) + @($State.Groups) + @($State.Computers)) {
+    foreach ($object in @($ous) + @($users) + @($groups) + @($computers)) {
         $dn = [string]$object.DistinguishedName
         if ([string]::IsNullOrWhiteSpace($dn)) { throw 'A directory object has missing DistinguishedName metadata.' }
         $parent = $dn -replace '^(?:\\.|[^,])+,', ''

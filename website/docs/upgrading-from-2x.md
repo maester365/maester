@@ -21,6 +21,8 @@ AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-in
 
 ### Second AD review batch
 
+Live validation corrected snapshot-shape and RID-decoding regressions: ordered-dictionary inventories are now accepted, empty retrieved collections remain distinct from failed collection, and RID low-word extraction no longer casts a signed hexadecimal mask. AD-DC-07 and AD-FOR-01 exclude other-domain DCs from their connected-domain support assessment. AD-FOR-01 does not establish forest-wide upgrade eligibility; every domain must be validated before changing the forest level.
+
 The review follow-up restores accurate guide sections and complete related-test identities. AD-SCH-05 covers both Windows and legacy Microsoft LAPS schema pairs without claiming deployment or rotation. AD-FOR-04 has Low severity and Low implementation cost, with enabled scopes and forest context retained in its result. Complete member scans AD-GMC-01/02/04/06/08 are now LongRunning; use `-IncludeLongRunning` or select the exact test ID when that inventory is required. Missing required data produces a per-test Error while reports continue to generate.
 
 Password checks now consolidate under AD-PWDPOL-01 (default domain policy) and AD-FGPP-01 (individual PSOs and visible usage). The configurable `CurrentNist` profile defaults to 15 characters and no forced periodic expiration; `LegacyRotation` is an organization-selected alternative, not earlier NIST guidance. The checks observe composition and explicitly require a verified blocklist before any decision to remove complexity rules. Visibility confirmation is separate from the selected profile.

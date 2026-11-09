@@ -6,13 +6,18 @@
         'Test-MtAdSubnetCatchAllCount', 'Test-MtAdSubnetIpv6Count', 'Test-MtAdSubnetNonInternalCount',
         'Test-MtAdSubnetFirstOctetCount', 'Test-MtAdOuOverlappingNameCount', 'Test-MtAdOuAtDomainRootCount',
         'Test-MtAdOuStaleCount', 'Test-MtAdOuEmptyCount', 'Test-MtAdPrinterTotalCount'
+        'Get-MtAdStateCollection'
     )
 }
 
-Describe 'AD site, subnet, OU and printer consolidated checks' {
+Describe 'AD site, subnet, OU and printer checks with <Representation> state' -ForEach @(
+    @{ Representation = 'Object' }
+    @{ Representation = 'Hashtable' }
+    @{ Representation = 'OrderedDictionary' }
+) {
     BeforeEach {
         $script:detail = $null
-        $script:state = [PSCustomObject]@{
+        $fixture = [ordered]@{
             ReplicationSites = @([PSCustomObject]@{ Name = 'East, HQ'; DistinguishedName = 'CN=East\, HQ,CN=Sites,CN=Configuration,DC=example'; ObjectClass = @('site') })
             Subnets = @([PSCustomObject]@{ Name = '10.0.0.0/8'; DistinguishedName = 'CN=10.0.0.0/8,CN=Subnets'; SiteObject = 'cn=EAST\, HQ,cn=sites,cn=configuration,dc=example' })
             DomainControllers = @([PSCustomObject]@{ Name = 'dc1'; Site = 'East, HQ'; SiteDistinguishedName = 'cn=EAST\, HQ,cn=sites,dc=example' })
@@ -22,6 +27,11 @@ Describe 'AD site, subnet, OU and printer consolidated checks' {
             Groups = @()
             Computers = @()
             Printers = @([PSCustomObject]@{ Name = 'P|1'; ServerName = 'server'; Location = 'Floor 1'; Description = 'Shared' })
+        }
+        $script:state = switch ($Representation) {
+            'Object' { [PSCustomObject]$fixture }
+            'Hashtable' { [hashtable]$fixture }
+            'OrderedDictionary' { $fixture }
         }
         Mock Get-MtADDomainState -ModuleName Maester { $script:state }
         Mock Add-MtTestResultDetail -ModuleName Maester { param($Result, [switch]$Investigate) $script:detail = [PSCustomObject]@{ Text = $Result; Investigate = $Investigate.IsPresent } }
@@ -51,7 +61,8 @@ Describe 'AD site, subnet, OU and printer consolidated checks' {
     It 'does not pass a missing category or an incomplete DC site assignment' {
         $script:state.Subnets = $null
         { Test-MtAdSiteWithoutSubnetCount } | Should -Throw '*Subnets*unavailable*'
-        $script:state.PSObject.Properties.Remove('Subnets')
+        if ($script:state -is [System.Collections.IDictionary]) { $script:state.Remove('Subnets') }
+        else { $script:state.PSObject.Properties.Remove('Subnets') }
         { Test-MtAdSiteWithoutSubnetCount } | Should -Throw '*Subnets*unavailable*'
         $script:state.DomainControllers[0].Site = $null
         { Test-MtAdSiteWithoutDcCount } | Should -Throw '*missing Site or SiteDistinguishedName metadata*'
@@ -117,5 +128,34 @@ Describe 'AD site, subnet, OU and printer consolidated checks' {
         Test-MtAdPrinterTotalCount | Should -BeTrue
         $script:detail.Investigate | Should -BeTrue
         $script:detail.Text | Should -Match 'P&#124;1 \| server \| Floor 1 \| Shared'
+    }
+
+    It 'accepts retrieved empty subnet and printer collections as inventories' {
+        $script:state.Subnets = @()
+        foreach ($command in 'Test-MtAdSubnetCatchAllCount', 'Test-MtAdSubnetIpv6Count', 'Test-MtAdSubnetNonInternalCount', 'Test-MtAdSubnetFirstOctetCount') {
+            & $command | Should -BeTrue
+            $script:detail.Investigate | Should -BeTrue
+        }
+        $script:state.Printers = @()
+        Test-MtAdPrinterTotalCount | Should -BeTrue
+        $script:detail.Text | Should -Match '0 published printer'
+    }
+
+    It 'preserves an empty collection as a non-null array value' {
+        $script:state.Subnets = @()
+        $collection = Get-MtAdStateCollection -State $script:state -Name Subnets
+        ($null -eq $collection) | Should -BeFalse
+        $collection.Count | Should -Be 0
+    }
+
+    It 'retains errors for null inventory instead of turning failed collection into an empty result' {
+        $script:state.OrganizationalUnits = $null
+        { Test-MtAdOuOverlappingNameCount } | Should -Throw '*OrganizationalUnits data is unavailable*'
+        $script:state.ReplicationSites = $null
+        { Test-MtAdSiteTotalCount } | Should -Throw '*ReplicationSites data is unavailable*'
+        $script:state.Subnets = $null
+        { Test-MtAdSubnetCatchAllCount } | Should -Throw '*Subnets data is unavailable*'
+        $script:state.Printers = $null
+        { Test-MtAdPrinterTotalCount } | Should -Throw '*Printers data is unavailable*'
     }
 }

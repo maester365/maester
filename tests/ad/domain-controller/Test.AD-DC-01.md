@@ -17,7 +17,7 @@ Counts distinct site DNs on inventoried DC objects and identifies missing site m
 #### Related Tests
 
 - **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories connected-domain controllers.
-- **AD-DC-07 — Forest DC operating systems meet the minimum supported release** — `Test-MtAdDcOperatingSystemCount` — Reviews DC operating system support.
+- **AD-DC-07 — Connected-domain DC operating systems meet the minimum supported release** — `Test-MtAdDcOperatingSystemCount` — Reviews connected-domain DC operating system support.
 - **AD-SITE-02 — Sites without local domain controllers meet the organization baseline** — `Test-MtAdSiteWithoutDcCount` — Reviews site coverage.
 
 #### Related links

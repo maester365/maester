@@ -20,7 +20,7 @@ Compares the connected domain's functional level with the highest common support
 
 #### Related Tests
 
-- **AD-FOR-01 — Forest functional level meets the highest supported common level** — `Test-MtAdForestFunctionalLevel` — Reviews the forest functional level.
+- **AD-FOR-01 — Forest functional level meets connected-domain DC support** — `Test-MtAdForestFunctionalLevel` — Reviews the forest level against connected-domain DC support.
 - **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories domain controllers.
 
 #### Related links

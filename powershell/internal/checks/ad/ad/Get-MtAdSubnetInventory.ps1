@@ -3,11 +3,8 @@
     [OutputType([object[]])]
     param([Parameter(Mandatory)] $State)
 
-    if ($null -eq $State -or $null -eq $State.PSObject.Properties['Subnets'] -or $null -eq $State.Subnets) {
-        throw 'Active Directory Subnets data is unavailable.'
-    }
-
-    $entries = foreach ($subnet in @($State.Subnets)) {
+    $subnets = Get-MtAdStateCollection -State $State -Name Subnets
+    $entries = foreach ($subnet in $subnets) {
         $cidr = [string]$subnet.Name
         if ([string]::IsNullOrWhiteSpace($subnet.DistinguishedName)) {
             throw "Subnet '$cidr' has missing DistinguishedName metadata."

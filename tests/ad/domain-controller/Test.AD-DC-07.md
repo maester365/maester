@@ -1,4 +1,4 @@
-Checks every inventoried forest DC against the configurable minimum Windows Server release (default 2022). Reports each DC's directory OS name, OS version and classified release alongside counts and the baseline decision. Missing or conflicting OS metadata is an error. Directory metadata does not verify patch installation or contractual support.
+Checks inventoried DCs in the connected domain against the configurable minimum Windows Server release (default 2022). Reports each assessed DC's directory OS name, OS version and classified release alongside counts and the baseline decision. DCs belonging to other domains are excluded and counted separately; assess those domains with their own connections. Missing or conflicting OS metadata for an in-scope DC remains an error. Directory metadata does not verify patch installation or contractual support.
 
 Older DC operating systems can constrain directory capabilities and upgrade planning. Release classification helps prioritize review but cannot establish security-update state or Microsoft's current lifecycle status.
 
@@ -12,7 +12,7 @@ Plan replacement or upgrade of DCs below the chosen minimum with AD administrato
 
 #### How the Test Works
 
-Classifies each forest DC using its directory OS name and version, then checks the release against the configurable minimum. Unknown or contradictory OS evidence is an error, not evidence of compliance.
+Scopes the shared DC inventory to the connected domain's distinguished name (with exact DNS-root fallback), then classifies only those DCs using directory OS name and version. Other-domain lookup failures do not fail this scoped assessment. Unknown or contradictory in-scope OS evidence remains an error, not evidence of compliance; the collector's forest inventory is not modified.
 
 #### Related Tests
 

@@ -23,8 +23,7 @@
     param()
 
     $state = Get-MtADDomainState -Categories @('Printers')
-    if ($null -eq $state -or $null -eq $state.PSObject.Properties['Printers'] -or $null -eq $state.Printers) { throw 'Active Directory Printers data is unavailable.' }
-    $printers = @($state.Printers)
+    $printers = Get-MtAdStateCollection -State $state -Name Printers
     $rows = @('| Printer | Server | Location | Description |', '| --- | --- | --- | --- |')
     foreach ($printer in $printers) {
         $rows += '| {0} | {1} | {2} | {3} |' -f (Format-MtAdSiteInventoryValue $printer.Name), (Format-MtAdSiteInventoryValue $printer.ServerName), (Format-MtAdSiteInventoryValue $printer.Location), (Format-MtAdSiteInventoryValue $printer.Description)

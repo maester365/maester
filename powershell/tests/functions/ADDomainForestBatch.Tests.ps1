@@ -28,18 +28,22 @@ Describe 'Native AD domain and forest results' {
         Mock -ModuleName Maester Add-MtTestResultDetail { $script:batchDetail = $Result; return }
     }
 
-    It 'fails DOM-01 and FOR-01 at level 10 when an inventoried 2022 DC supports only level 7' {
+    It 'excludes other-domain DCs and fails DOM-01 and FOR-01 only on incompatible connected-domain support' {
         $script:batchState.DomainControllers += [pscustomobject]@{
             Name = 'child'; DnsHostName = 'child.child.example.com'
             ServerReference = 'CN=child,CN=Domain Controllers,DC=child,DC=example,DC=com'
             OperatingSystem = 'Windows Server 2022'; OperatingSystemVersion = '10.0 (20348)'
             SupportedLevelValue = 7; IsGlobalCatalog = $true
         }
-        InModuleScope Maester { Test-MtAdForestFunctionalLevel | Should -BeFalse }
-        $script:batchDetail | Should -Match 'exceeds collected DC support'
+        InModuleScope Maester { Test-MtAdForestFunctionalLevel | Should -BeTrue }
+        $script:batchDetail | Should -Match 'other-domain DCs excluded: 1'
+        $script:batchState.DomainControllers.Count | Should -Be 2
         $script:batchState.DomainControllers[1].ServerReference = 'CN=child,CN=Domain Controllers,DC=example,DC=com'
-        InModuleScope Maester { Test-MtAdDomainFunctionalLevel | Should -BeFalse }
-        $script:batchDetail | Should -Match 'exceeds collected DC support'
+        InModuleScope Maester {
+            Test-MtAdDomainFunctionalLevel | Should -BeFalse
+            Test-MtAdForestFunctionalLevel | Should -BeFalse
+        }
+        $script:batchDetail | Should -Match 'exceeds connected-domain DC support'
         $script:batchState.Domain.DomainLevelValue = 7
         $script:batchState.Forest.ForestLevelValue = 7
         InModuleScope Maester {
@@ -59,14 +63,30 @@ Describe 'Native AD domain and forest results' {
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
-    It 'rejects unknown forest DC OS instead of claiming compliance with the 2022 baseline' {
+    It 'excludes foreign-domain lookup errors but rejects unknown connected-domain OS metadata' {
         $script:batchState.DomainControllers += [pscustomobject]@{
             Name = 'foreign'; DnsHostName = 'foreign.child.example.com'
             ServerReference = 'CN=foreign,CN=Domain Controllers,DC=child,DC=example,DC=com'
             OperatingSystem = $null; OperatingSystemVersion = $null
             CollectionError = 'Foreign computer lookup failed'
         }
-        InModuleScope Maester { { Test-MtAdDcOperatingSystemCount } | Should -Throw '*foreign*' }
+        InModuleScope Maester {
+            Test-MtAdDcOperatingSystemCount | Should -BeTrue
+            Test-MtAdForestFunctionalLevel | Should -BeTrue
+        }
+        $script:batchDetail | Should -Match 'other-domain DCs excluded: 1'
+        $script:batchState.DomainControllers[1].ServerReference = 'CN=foreign,CN=Domain Controllers,DC=example,DC=com'
+        InModuleScope Maester {
+            { Test-MtAdDcOperatingSystemCount } | Should -Throw '*foreign*'
+            { Test-MtAdForestFunctionalLevel } | Should -Throw '*foreign*'
+        }
+    }
+
+    It 'decodes the live RID Manager pool without casting a signed hexadecimal mask' {
+        $script:batchState.Domain | Add-Member -NotePropertyName RIDAvailablePool -NotePropertyValue '4611686014132428208'
+        InModuleScope Maester { Test-MtAdRidsRemaining }
+        $script:batchDetail | Should -Match 'upper bound: 1073741823; next allocation boundary: 7600'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
     It 'fails when there is no GC, passes with one GC, and errors when status is unknown' {
