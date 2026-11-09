@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserNeverLoggedInCount {
     <# .SYNOPSIS
     Detects enabled accounts with no recorded logon after their provisioning grace period.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-08
+    Assess enabled accounts without logons after the provisioning grace period.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-08
     #>
     [MaesterTest(
         Id = 'AD-USER-08',

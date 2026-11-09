@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserDormantEnabledCount {
     <# .SYNOPSIS
     Checks for enabled users with old recorded logon timestamps.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-02
+    Assess enabled users for stale recorded logon timestamps; investigate incomplete data.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-02
     #>
     [MaesterTest(
         Id = 'AD-USER-02',

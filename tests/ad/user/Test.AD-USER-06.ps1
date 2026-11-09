@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserKerberosDesOnlyCount {
     <# .SYNOPSIS
     Detects users configured for obsolete DES-only Kerberos keys.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-06
+    Assess whether any users require obsolete DES-only Kerberos keys.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-06
     #>
     [MaesterTest(
         Id = 'AD-USER-06',

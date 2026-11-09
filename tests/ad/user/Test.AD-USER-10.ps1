@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserWorkstationRestrictionCount {
     <# .SYNOPSIS
     Inventories user accounts with logon workstation restrictions for review.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-10
+    Review user logon workstation restrictions manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-10
     #>
     [MaesterTest(
         Id = 'AD-USER-10',

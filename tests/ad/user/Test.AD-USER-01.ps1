@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserDisabledCount {
     <# .SYNOPSIS
     Checks whether disabled ordinary users have exceeded the retention period.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-01
+    Assess disabled ordinary users against the retention period.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-01
     #>
     [MaesterTest(
         Id = 'AD-USER-01',

@@ -2,6 +2,11 @@
     <#
     .SYNOPSIS
     Assesses password expiration for enabled users using their effective policy and account override.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-03
+    Assess enabled user password expiration; investigate missing effective policy data.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-03
     #>
     [MaesterTest(
         Id = 'AD-USER-03',

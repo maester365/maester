@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserPasswordNotRequiredCount {
     <# .SYNOPSIS
     Detects users with the password-not-required account control flag.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-09
+    Assess PasswordNotRequired flags; investigate incomplete account data.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-09
     #>
     [MaesterTest(
         Id = 'AD-USER-09',

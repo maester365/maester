@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserDelegationAllowedCount {
     <# .SYNOPSIS
     Detects user accounts trusted for unconstrained delegation and inventories other delegation modes.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-05
+    Assess unconstrained delegation and review other delegation modes.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-05
     #>
     [MaesterTest(
         Id = 'AD-USER-05',

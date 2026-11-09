@@ -1,6 +1,11 @@
 ﻿function Test-MtAdUserNoPreAuthCount {
     <# .SYNOPSIS
     Detects users that do not require Kerberos pre-authentication.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-USER-07
+    Assess whether all users require Kerberos pre-authentication.
+    .LINK
+    https://maester.dev/docs/tests/AD-USER-07
     #>
     [MaesterTest(
         Id = 'AD-USER-07',
