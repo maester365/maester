@@ -664,27 +664,32 @@
    $azureDevOpsProblem = $null
    if ($Service -contains 'AzureDevOps') {
       Write-Verbose 'Connecting to Azure DevOps'
-      $organization = if (-not [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization)) { $AzureDevOpsOrganization } else { Get-MtSetting -Name 'AzureDevOpsOrganization' }
-      if (-not (Get-Module -Name ADOPS) -and -not (Get-Module -Name ADOPS -ListAvailable)) {
-         $azureDevOpsProblem = @{
-            Message  = 'The ADOPS PowerShell module is not installed, so Maester cannot connect to Azure DevOps. Run: Install-Module ADOPS -Scope CurrentUser'
-            Category = [System.Management.Automation.ErrorCategory]::NotInstalled
+      # A failed reconnect must not leave a previous successful probe visible.
+      $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+      try {
+         if ([string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and $null -eq $__MtSession.MaesterConfig) {
+            $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -TenantId $TenantId -WarningAction SilentlyContinue
          }
-         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
-      } elseif ([string]::IsNullOrWhiteSpace($organization)) {
-         $azureDevOpsProblem = @{
-            Message  = 'No Azure DevOps organization specified. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json.'
-            Category = [System.Management.Automation.ErrorCategory]::InvalidArgument
-         }
-         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
-      } else {
-         try {
-            if (-not (Get-Module -Name ADOPS)) {
-               # Some Azure DevOps checks call APIs that ADOPS loads only when insecure APIs are allowed at import.
-               Import-Module -Name ADOPS -ArgumentList $true -Global -ErrorAction Stop
-            } else {
-               Write-Verbose 'Using the ADOPS module that is already imported. Import it with -ArgumentList $true to allow the APIs some Azure DevOps checks need.'
+         $organization = if (-not [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization)) { $AzureDevOpsOrganization.Trim() } else { Get-MtSetting -Name 'AzureDevOpsOrganization' }
+         if (-not (Get-Module -Name ADOPS) -and -not (Get-Module -Name ADOPS -ListAvailable)) {
+            $azureDevOpsProblem = @{
+               Message  = 'The ADOPS PowerShell module is not installed, so Maester cannot connect to Azure DevOps. Run: Install-Module ADOPS -Scope CurrentUser'
+               Category = [System.Management.Automation.ErrorCategory]::NotInstalled
             }
+            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
+         } elseif ([string]::IsNullOrWhiteSpace($organization)) {
+            $azureDevOpsProblem = @{
+               Message  = 'No Azure DevOps organization specified. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json.'
+               Category = [System.Management.Automation.ErrorCategory]::InvalidArgument
+            }
+            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
+         } else {
+            if (-not (Get-Module -Name ADOPS)) {
+               Import-Module -Name ADOPS -Global -ErrorAction Stop
+            }
+            # ADOPS persists the organization. A failed sign-in must not revive the previous
+            # organization when Invoke-Maester resets its per-run connection probe.
+            Disconnect-ADOPS -ErrorAction Stop
 
             $connectAdoParams = @{ Organization = $organization; ErrorAction = 'Stop' }
             if ($TenantId) {
@@ -692,7 +697,7 @@
             }
             $azContext = if (Get-Command -Name Get-AzContext -ErrorAction SilentlyContinue) { Get-AzContext -ErrorAction SilentlyContinue }
             if ($azContext) {
-               # Reuse the Az sign-in (managed identity, workload identity federation or Connect-AzAccount) instead of a second prompt.
+               # ADOPS still verifies organization access when given an OAuth token.
                Write-Verbose "Getting an Azure DevOps access token from the Az context of '$($azContext.Account.Id)'"
                $tokenParams = @{ ResourceUrl = '499b84ac-1321-427f-aa17-267ca6975798'; ErrorAction = 'Stop' }
                $tokenTenant = if ($TenantId) { $TenantId } elseif ($azContext.Tenant.Id) { $azContext.Tenant.Id }
@@ -713,13 +718,13 @@
             $__MtSession.AzureDevOpsConnectionCache = $null
             $adoIdentity = if ($adoConnection -is [System.Collections.IDictionary]) { $adoConnection['Identity'] }
             Add-ConnectionResult -Name 'Azure DevOps' -Status 'Connected' -Details (@($organization, $adoIdentity | Where-Object { $_ }) -join ', ')
-         } catch [Management.Automation.CommandNotFoundException] {
-            Write-Verbose "A command the Azure DevOps connection needs is missing: $($_.Exception.Message)"
-            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
-         } catch {
-            Write-Verbose "Failed to connect to Azure DevOps: $($_.Exception.Message)"
-            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Failed' -Details (Get-ErrorSummary $_)
          }
+      } catch [Management.Automation.CommandNotFoundException] {
+         Write-Verbose "A command the Azure DevOps connection needs is missing: $($_.Exception.Message)"
+         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
+      } catch {
+         Write-Verbose "Failed to connect to Azure DevOps: $($_.Exception.Message)"
+         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Failed' -Details (Get-ErrorSummary $_)
       }
    }
 

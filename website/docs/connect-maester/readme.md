@@ -240,7 +240,19 @@ Install-Module ADOPS -Scope CurrentUser
 Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization <your-organization>
 ```
 
-Azure DevOps is not included in `-Service All` and must be named explicitly. `Connect-Maester` imports `ADOPS` with the unsupported APIs that some tests need enabled. If an Az context exists (for example after `Connect-Maester -Service Azure` or `Connect-AzAccount`), it passes that context's access token to `Connect-ADOPS`. Otherwise `Connect-ADOPS` signs you in interactively. You can set the organization once with `AzureDevOpsOrganization` in `maester-config.json` instead of passing `-AzureDevOpsOrganization`.
+Azure DevOps is not included in `-Service All` and must be named explicitly. If an Az context exists (for example after `Connect-Maester -Service Azure` or `Connect-AzAccount`), Maester requests an Azure DevOps token and passes it to `Connect-ADOPS`. Otherwise `Connect-ADOPS` signs you in interactively. ADOPS verifies access to the organization.
+
+Instead of passing `-AzureDevOpsOrganization`, add the organization to `GlobalSettings` in `maester-config.json`. Maester discovers the config when connecting, even before the first test run:
+
+```json
+{
+  "GlobalSettings": {
+    "AzureDevOpsOrganization": "contoso"
+  }
+}
+```
+
+Connecting replaces the current ADOPS session, so a failed sign-in does not retain the previous organization. Use `Disconnect-Maester` to disconnect ADOPS and clear Maester's connection status.
 
 If `ADOPS` is not installed, `Connect-Maester` warns you and still connects the other services you asked for. If Azure DevOps was the only service you asked for, it writes an error. You can still connect with `Connect-ADOPS -Organization <your-organization>` yourself.
 

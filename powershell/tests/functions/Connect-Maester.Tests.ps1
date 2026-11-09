@@ -31,7 +31,7 @@
             $null = $PSBoundParameters
         }
     }
-    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Get-AzAccessToken','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Connect-ADOPS') {
+    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Get-AzAccessToken','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Connect-ADOPS','Disconnect-ADOPS','Get-ADOPSConnection') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             $stubBody = if ($stubBodies.ContainsKey($cmd)) { $stubBodies[$cmd] } else { { } }
             New-Item -Path "function:global:$cmd" -Value $stubBody | Out-Null
@@ -475,15 +475,33 @@ Describe 'Connect-Maester connection summary' {
 
 Describe 'Connect-Maester Azure DevOps' {
     BeforeEach {
+        $script:savedConfigEnvironment = $env:MAESTER_CONFIG
+        $env:MAESTER_CONFIG = $null
+        Push-Location $TestDrive
+        InModuleScope Maester {
+            $__MtSession.MaesterConfig = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
         $script:connectionSummaryRows = $null
         Mock Write-MtConnectionSummary -ModuleName Maester { $script:connectionSummaryRows = @($Summary) }
         Mock Connect-MgGraph -ModuleName Maester {}
         Mock Get-MgContext -ModuleName Maester { [pscustomobject]@{ Account = 'admin@contoso.com'; TenantId = '00000000-0000-0000-0000-000000000001' } }
-        Mock Get-MtSetting -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'AzureDevOpsOrganization' }
         Mock Get-AzContext -ModuleName Maester { $null }
         Mock Get-AzAccessToken -ModuleName Maester { throw 'Get-AzAccessToken should not be called without an Az context.' }
         Mock Connect-ADOPS -ModuleName Maester { @{ Identity = 'admin@contoso.com'; TenantId = 'NotSpecified'; Organization = $Organization } }
+        Mock Disconnect-ADOPS -ModuleName Maester {}
+        Mock Get-ADOPSConnection -ModuleName Maester { $null }
         Mock Import-Module -ModuleName Maester {} -ParameterFilter { $Name -contains 'ADOPS' }
+    }
+
+    AfterEach {
+        Pop-Location
+        $env:MAESTER_CONFIG = $script:savedConfigEnvironment
+        InModuleScope Maester {
+            $__MtSession.MaesterConfig = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+        Remove-Item -LiteralPath (Join-Path $TestDrive 'maester-config.json') -ErrorAction SilentlyContinue
     }
 
     Context 'When the ADOPS module is installed but not imported' {
@@ -492,11 +510,11 @@ Describe 'Connect-Maester Azure DevOps' {
             Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS'; Version = '2.0.0' } } -ParameterFilter { $Name -contains 'ADOPS' -and $ListAvailable }
         }
 
-        It 'Imports ADOPS with insecure APIs allowed and signs in interactively without an Az context' {
+        It 'Imports optional ADOPS and signs in interactively without an Az context' {
             Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
 
             Should -Invoke Import-Module -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
-                $Name -contains 'ADOPS' -and $ArgumentList[0] -eq $true -and $Global
+                $Name -contains 'ADOPS' -and $Global -and -not $ArgumentList
             }
             Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
                 $Organization -eq 'contoso' -and -not $PSBoundParameters.ContainsKey('OAuthToken')
@@ -506,11 +524,15 @@ Describe 'Connect-Maester Azure DevOps' {
             $row.Details | Should -Be 'contoso, admin@contoso.com'
         }
 
-        It 'Passes the token of an existing Az context to Connect-ADOPS' {
+        It 'Passes a <TokenKind> token from an existing Az context to Connect-ADOPS' -ForEach @(
+            @{ TokenKind = 'SecureString' }
+            @{ TokenKind = 'string' }
+        ) {
             Mock Get-AzContext -ModuleName Maester {
                 [pscustomobject]@{ Account = [pscustomobject]@{ Id = 'spn@contoso.com' }; Tenant = [pscustomobject]@{ Id = '11111111-1111-1111-1111-111111111111' } }
             }
-            Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = [System.Net.NetworkCredential]::new('', 'ado-token').SecurePassword } }
+            $token = if ($TokenKind -eq 'SecureString') { [System.Net.NetworkCredential]::new('', 'ado-token').SecurePassword } else { 'ado-token' }
+            Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = $token } }
 
             Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
 
@@ -523,11 +545,70 @@ Describe 'Connect-Maester Azure DevOps' {
         }
 
         It 'Reads the organization from maester-config.json when -AzureDevOpsOrganization is omitted' {
-            Mock Get-MtSetting -ModuleName Maester { 'fabrikam' } -ParameterFilter { $Name -eq 'AzureDevOpsOrganization' }
+            '{"GlobalSettings":{"AzureDevOpsOrganization":"fabrikam"}}' | Set-Content ./maester-config.json
 
             Connect-Maester -Service AzureDevOps
 
             Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'fabrikam' }
+        }
+
+        It 'Prefers an explicit organization to the loaded config' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [pscustomobject]@{ GlobalSettings = [pscustomobject]@{ AzureDevOpsOrganization = 'fabrikam' } }
+            }
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'contoso' }
+        }
+
+        It 'Uses an explicit tenant for both token acquisition and ADOPS' {
+            Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = @{ Id = 'user' }; Tenant = @{ Id = 'old-tenant' } } }
+            Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = 'ado-token' } }
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso' -TenantId 'requested-tenant'
+            Should -Invoke Get-AzAccessToken -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $TenantId -eq 'requested-tenant' }
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $TenantId -eq 'requested-tenant' -and $OAuthToken -eq 'ado-token' }
+        }
+
+        It 'Reuses the Azure sign-in established in the same call' {
+            $script:azureSignedIn = $false
+            Mock Connect-AzAccount -ModuleName Maester { $script:azureSignedIn = $true }
+            Mock Get-AzContext -ModuleName Maester {
+                if ($script:azureSignedIn) { [pscustomobject]@{ Account = @{ Id = 'user' }; Tenant = @{ Id = 'tenant' } } }
+            }
+            Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = 'ado-token' } }
+            Connect-Maester -Service AzureDevOps,Azure -AzureDevOpsOrganization 'contoso'
+            Should -Invoke Connect-AzAccount -ModuleName Maester -Times 1 -Exactly
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $OAuthToken -eq 'ado-token' }
+        }
+
+        It 'Invalidates a positive connection probe when reconnecting fails' {
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'old-org' } }
+            $script:adoOrganization = 'old-org'
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+            Mock Connect-ADOPS -ModuleName Maester { throw 'sign-in failed' }
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'new-org'
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps').Status | Should -Be 'Failed'
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 1 -Exactly
+            # A new run clears the probe cache; the provider must no longer expose the old org either.
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            $script:adoOrganization | Should -BeNullOrEmpty
+        }
+
+        It 'Allows a fresh connection probe after a successful retry' {
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = 'NotConnected' }
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache | Should -BeNullOrEmpty }
+        }
+
+        It 'Reuses an already imported ADOPS module' {
+            Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' -and -not $ListAvailable }
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
+            Should -Invoke Import-Module -ModuleName Maester -Times 0 -Exactly -ParameterFilter { $Name -contains 'ADOPS' }
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly
         }
 
         It 'Records a failed sign-in and still connects the other services' {
