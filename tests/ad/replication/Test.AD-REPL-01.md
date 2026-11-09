@@ -29,7 +29,7 @@ This test retrieves all Active Directory replication connections and counts:
 
 #### Related Tests
 
-- `Test-MtAdNonAutoReplicationConnectionCount` - Identifies manually created replication connections
+- **AD-REPL-02 — Non-auto replication connection count should be investigated** — `Test-MtAdNonAutoReplicationConnectionCount` — Identifies manually created replication connections.
 
 <!--- Results --->
 %TestResult%

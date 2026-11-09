@@ -23,7 +23,7 @@
 3. **Monitor for anomalies**:
    - Unexpected password changes
    - Unusual authentication patterns
-   - KRBTGT account being enabled (it should always be disabled)
+   - KRBTGT account being enabled (investigated separately under AD-KRBTGT-03)
 
 #### How the Test Works
 
@@ -31,12 +31,14 @@ This test retrieves the KRBTGT account from Active Directory and checks:
 - Password last set date
 - Days since last password change
 - Whether password age exceeds `MaxPasswordAgeDays` (default 180)
-- Account status (should be disabled)
+- Account status (reported for context; this check only evaluates password age)
+
+If the user inventory or KRBTGT account is missing, the check produces **Error**, not a finding that the password age failed. A missing `PasswordLastSet` on a visible account does not establish a recent password change and fails the age check. Rotation during incident response requires a planned two-stage procedure; do not assume that an arbitrary ten-hour interval fits every ticket policy.
 
 #### Related Tests
 
-- `Test-MtAdKrbtgtLastLogon` - Verifies KRBTGT has no interactive logons
-- `Test-MtAdKrbtgtNonStandardUacCount` - Validates KRBTGT has standard UAC settings
+- **AD-KRBTGT-02 — KRBTGT last logon should be investigated** — `Test-MtAdKrbtgtLastLogon` — Reviews KRBTGT last logon separately.
+- **AD-KRBTGT-03 — KRBTGT should have standard UAC settings (disabled account)** — `Test-MtAdKrbtgtNonStandardUacCount` — Reviews KRBTGT UAC settings.
 
 #### Related links
 

@@ -1,8 +1,4 @@
-The `Manager` attribute is frequently used in governance workflows, approval chains, and identity lifecycle processes. Missing or inconsistent manager data can weaken access review quality.
-
-- **Governance readiness**: Supports manager-based approval and review processes
-- **Data quality insight**: Shows how complete identity metadata is across the domain
-- **Operational control**: Helps identify where HR or provisioning integrations may be incomplete
+Enabled ordinary users missing a manager can be omitted from manager-led identity reviews. Built-in and protected accounts are excluded; configure `ExcludedUsers` for documented exceptions.
 
 #### Control Type
 
@@ -10,18 +6,19 @@ The `Manager` attribute is frequently used in governance workflows, approval cha
 
 #### Security Recommendation
 
-- Populate manager data for workforce identities where appropriate
-- Validate synchronization from authoritative systems such as HR platforms
-- Use complete manager relationships to strengthen approval and certification processes
+Keep manager records accurate for ordinary enabled identities when governance depends on manager-led reviews; document legitimate exceptions.
 
 #### How the Test Works
 
-This test counts user objects where the `Manager` attribute contains a non-empty value.
+The test checks the manager attribute on enabled ordinary users, excluding built-in/protected users and configured `ExcludedUsers`. It cannot establish whether a populated manager relationship is correct.
 
 #### Related Tests
 
-- `Test-MtAdUserHomeDirectoryCount` - Highlights legacy user provisioning attributes
-- `Test-MtAdUserProfilePathCount` - Identifies additional operational dependencies
+- **AD-USER-19 — Ordinary users should be managed in organizational units** — `Test-MtAdUserInContainerCount` — Reviews placement for delegated management.
+
+#### Remediation action
+1. Verify ownership and populate the manager attribute through [AD administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Document account types for which no manager is appropriate.
 
 <!--- Results --->
 %TestResult%

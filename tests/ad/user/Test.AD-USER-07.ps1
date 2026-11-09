@@ -1,80 +1,37 @@
 ﻿function Test-MtAdUserNoPreAuthCount {
-    <#
-    .SYNOPSIS
-    Counts user accounts that do not require Kerberos pre-authentication.
-
-    .DESCRIPTION
-    This test identifies user accounts with pre-authentication disabled. These accounts
-    are more exposed to AS-REP roasting attacks because an attacker can request Kerberos
-    material without proving knowledge of the password first.
-
+    <# .SYNOPSIS
+    Detects users that do not require Kerberos pre-authentication.
     .EXAMPLE
-    Test-MtAdUserNoPreAuthCount
-
+    Invoke-MtTest -Id AD-USER-07
+    Assess whether all users require Kerberos pre-authentication.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserNoPreAuthCount
+    https://maester.dev/docs/tests/AD-USER-07
     #>
     [MaesterTest(
         Id = 'AD-USER-07',
-        Title = 'No pre-authentication user count should be retrievable',
+        Title = 'All users should require Kerberos pre-authentication',
         Product = 'ad',
         Feature = 'users',
         Area = 'authentication',
         ResourceType = 'User',
-        Severity = 'Info',
+        Severity = 'High',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1558.004',
+        Control = 'nist-800-53-r5:IA-2',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdUserNoPreAuthCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user no pre auth count"
-
-    $users = @($adState.Users)
-    $noPreAuthUsers = @($users | Where-Object {
-            ($_.PSObject.Properties['DoesNotRequirePreAuth'] -and $_.DoesNotRequirePreAuth -eq $true) -or
-            ($_.PSObject.Properties['userAccountControl'] -and ($_.userAccountControl -band 0x400000))
-        })
-
-    $noPreAuthCount = $noPreAuthUsers.Count
-    $totalCount = $users.Count
-    $enabledCount = @($users | Where-Object { $_.Enabled -eq $true }).Count
-
-    $testResult = $null -ne $adState.Users
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($noPreAuthCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Enabled Users | $enabledCount |" + "`n"
-        $result += "| Users Without Pre-Authentication | $noPreAuthCount |" + "`n"
-        $result += "| No Pre-Authentication Percentage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory user objects have been analyzed. $noPreAuthCount out of $totalCount users ($percentage%) do not require Kerberos pre-authentication.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory user objects. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserNoPreAuthCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    Assert-MtAdUserAccountControl -Users @($state.Users)
+    $found = @($state.Users | Where-Object { $_.DoesNotRequirePreAuth -eq $true -or ($null -ne $_.UserAccountControl -and (([int64]$_.UserAccountControl -band 0x400000) -ne 0)) })
+    if ($found.Count) { Add-MtTestResultDetail -Result "Found $($found.Count) users exposed to AS-REP roasting. Require Kerberos pre-authentication after validating dependencies.`n`n$(Format-MtAdUserSecurityTable $found @('SamAccountName', 'Enabled', 'DistinguishedName'))" }
+    else { Add-MtTestResultDetail -Result 'Well done. All users require Kerberos pre-authentication.' }
+    return ($found.Count -eq 0)
 }

@@ -10,17 +10,20 @@ Every DACL ACE references a security principal. Tracking the number of distinct 
 
 #### Security Recommendation
 
+Review identities with unexpectedly broad or repeated delegation, considering each principal's legitimate role and the affected objects.
+
+#### Remediation action
+
 Keep delegation models simple and intentional. Prefer group-based administration over direct assignment to many individual accounts or SIDs.
 
 #### How the Test Works
 
-This test reads `DaclEntries` from `Get-MtADDomainState`, extracts unique `IdentityReference` values, and reports how many distinct identities appear across all collected ACEs.
+This test reads `DaclEntries` from `Get-MtADDomainState`, reports total ACEs, distinct identities and objects, and lists each identity's ACE count, distinct objects, allow ACEs and deny ACEs. These are inventory metrics, not an assertion that any particular count is safe.
 
 #### Related Tests
 
-- `Test-MtAdDaclIdentityAceDistribution`
-- `Test-MtAdDaclPrivilegedAllowAceCount`
-- `Test-MtAdDaclPrivilegedExtendedRightCount`
+- **AD-DACL-09 — Privileged allow ACEs and affected objects should be investigated** — `Test-MtAdDaclPrivilegedAllowAceCount` — Reviews privileged allow ACEs.
+- **AD-DACL-11 — ExtendedRight delegations and identities should be investigated** — `Test-MtAdDaclPrivilegedExtendedRightCount` — Reviews ExtendedRight delegations.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

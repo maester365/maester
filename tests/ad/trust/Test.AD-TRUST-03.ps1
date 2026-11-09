@@ -23,13 +23,16 @@
     #>
     [MaesterTest(
         Id = 'AD-TRUST-03',
-        Title = 'Trust quarantined count should be investigated',
+        Title = 'Applicable trusts should have strong SID filtering with no weak findings',
         Product = 'ad',
         Feature = 'trusts',
         Area = 'external-access',
         ResourceType = 'Trust',
-        Severity = 'Info',
+        Severity = 'High',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
         Mitre = 'T1134.005',
+        Control = ('nist-800-53-r5:AC-4', 'nist-800-53-r5:SC-7'),
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:trustedDomain:ReadProperty'),
         Author = 'soulemike'
@@ -45,11 +48,11 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory trust inventory was not returned.'
     }
 
     $trusts = $adState.Trusts
+    if ($null -eq $trusts) { throw 'Active Directory trusts were not returned.' }
 
     # Derive trust classification and SID filtering status from trustAttributes bitmask
     # trustAttributes bits:
@@ -62,37 +65,25 @@
     #   2 = UPLEVEL (Windows 2000+ AD domain)
     #   3 = MIT (Kerberos realm) — SID filtering does not apply
     #   4 = DCE
-    foreach ($trust in $trusts) {
-        $trustAttributes = [int]$trust.TrustAttributes
-        $trustType = [int]$trust.TrustType
-
-        $isForest   = ($trustAttributes -band 0x8) -ne 0
-        $isExternal = -not $isForest -and -not ($trustAttributes -band 0x20) -and ($trustType -in 1,2)
-        $isMit      = ($trustType -eq 3)
-
-        # SID filtering weakness:
-        # - External trusts: weak if QUARANTINED_DOMAIN (0x4) is NOT set
-        # - Forest trusts: weak if TREAT_AS_EXTERNAL (0x40) IS set (SID history enabled)
-        # - MIT trusts: excluded from evaluation
-        $sidFilteringWeak = ($isExternal -and -not ($trustAttributes -band 0x4)) -or
-                            ($isForest -and ($trustAttributes -band 0x40))
-
-        $trust | Add-Member -NotePropertyName IsForest -NotePropertyValue $isForest -Force
-        $trust | Add-Member -NotePropertyName IsExternal -NotePropertyValue $isExternal -Force
-        $trust | Add-Member -NotePropertyName IsMit -NotePropertyValue $isMit -Force
-        $trust | Add-Member -NotePropertyName SidFilteringWeak -NotePropertyValue $sidFilteringWeak -Force
-    }
-
-    # Only evaluate external/forest trusts for SID filtering weakness
-    # Intra-forest trusts do not support quarantine; MIT trusts are excluded
-    $evaluatedTrusts = $trusts | Where-Object { $_.IsExternal -or $_.IsForest }
-    $strongTrusts = $evaluatedTrusts | Where-Object { -not $_.SidFilteringWeak }
+    # Only external Windows trusts and forest trusts have applicable flags.
+    $evaluatedTrusts = @($trusts | Where-Object {
+        $bits = [int]$_.TrustAttributes
+        $null -ne $_.TrustAttributes -and $null -ne $_.TrustType -and ($bits -band 0x400) -eq 0 -and
+        ((($bits -band 0x8) -ne 0) -or (($bits -band 0x20) -eq 0 -and [int]$_.TrustType -in 1, 2))
+    })
+    $strongTrusts = @($evaluatedTrusts | Where-Object {
+        $bits = [int]$_.TrustAttributes
+        if (($bits -band 0x8) -ne 0) { ($bits -band 0x40) -eq 0 }
+        else { ($bits -band 0x4) -ne 0 }
+    })
     $strongCount = ($strongTrusts | Measure-Object).Count
     $evaluatedCount = ($evaluatedTrusts | Measure-Object).Count
     $totalCount = ($trusts | Measure-Object).Count
 
-    # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    # A missing bitmask is not evidence of a protected trust.
+    $unknownCount = @($trusts | Where-Object { $null -eq $_.TrustAttributes -or $null -eq $_.TrustType }).Count
+    $pimCount = @($trusts | Where-Object { $null -ne $_.TrustAttributes -and ([int]$_.TrustAttributes -band 0x400) -ne 0 }).Count
+    $testResult = $strongCount -eq $evaluatedCount -and $unknownCount -eq 0
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"
@@ -101,20 +92,43 @@
     $result += "| Evaluated Trusts (External/Forest) | $evaluatedCount |" + "`n"
     $result += "| Strong SID Filtering | $strongCount |" + "`n"
     $result += "| Weak SID Filtering | $($evaluatedCount - $strongCount) |" + "`n" + "`n"
+    $result += "| Unknown Trust Attributes or Type | $unknownCount |" + "`n"
+    $result += "| PIM Trusts Excluded (manual review) | $pimCount |" + "`n"
+    $weakTrusts = @($evaluatedTrusts | Where-Object {
+        $bits = [int]$_.TrustAttributes
+        if (($bits -band 0x8) -ne 0) { ($bits -band 0x40) -ne 0 }
+        else { ($bits -band 0x4) -eq 0 }
+    })
+    if ($weakTrusts.Count -gt 0) {
+        $result += "`n**Trusts with weak SID filtering:**`n`n"
+        $result += "| Target | Direction | Type | Reason |`n| --- | --- | --- | --- |`n"
+        foreach ($trust in $weakTrusts) {
+            $reason = if (([int]$trust.TrustAttributes -band 0x8) -ne 0) { 'Forest trust: TREAT_AS_EXTERNAL set (SID history permitted)' } else { 'External trust: QUARANTINED_DOMAIN not set' }
+            $result += "| $($trust.TrustPartner) | $($trust.Direction) | $($trust.TrustTypeName) | $reason |`n"
+        }
+    }
+    if ($unknownCount -gt 0) {
+        $result += "`n**Trusts with unknown configuration:**`n`n| Target | Direction |`n| --- | --- |`n"
+        foreach ($trust in ($trusts | Where-Object { $null -eq $_.TrustAttributes -or $null -eq $_.TrustType })) {
+            $result += "| $($trust.TrustPartner) | $($trust.Direction) |`n"
+        }
+    }
 
     if ($totalCount -eq 0) {
         $testResultMarkdown = "No trusts are configured in this domain.`n`n%TestResult%"
+    } elseif ($unknownCount -gt 0) {
+        $testResultMarkdown = "Trust SID filtering cannot be confirmed: $unknownCount trust(s) lack trust attributes or type. Review the missing data and any weak trusts listed in the count.`n`n%TestResult%"
     } elseif ($evaluatedCount -eq 0) {
-        $testResultMarkdown = "No external or forest trusts are configured. Only intra-forest or MIT trusts exist, which are not evaluated for SID filtering.`n`n%TestResult%"
-    } elseif ($strongCount -eq 0) {
+        $testResultMarkdown = "No non-PIM external or forest trusts are eligible for this SID-filtering check. Within-forest and MIT trusts are excluded; review $pimCount PIM trust(s) under their separate filtering rules.`n`n%TestResult%"
+    } elseif ($strongCount -eq 0 -and $evaluatedCount -gt 0) {
         $testResultMarkdown = "No external/forest trusts have strong SID filtering. Consider enabling SID filtering on external trusts and disabling SID history on forest trusts to prevent privilege escalation attacks.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "$strongCount external/forest trust(s) have strong SID filtering. This helps prevent privilege escalation attacks across trust boundaries.`n`n%TestResult%"
+        $testResultMarkdown = "$(if ($testResult) { 'Well done.' } else { 'Review weak filtering.' }) $strongCount of $evaluatedCount external/forest trust(s) have strong SID filtering.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

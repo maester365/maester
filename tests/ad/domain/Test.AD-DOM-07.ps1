@@ -1,30 +1,25 @@
 ﻿function Test-MtAdNetbiosNameStandardCompliance {
     <#
     .SYNOPSIS
-    Checks if NetBIOS names comply with naming standards.
-
+    Checks forest domain NetBIOS names and lists any invalid names.
     .DESCRIPTION
-    This test verifies that NetBIOS names in the forest comply with standard naming
-    conventions. Non-compliant NetBIOS names can cause issues with legacy applications,
-    WINS resolution, and some network services.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdNetbiosNameStandardCompliance
-
-    Returns $true if NetBIOS name compliance data is accessible.
-    The test result includes the count of non-compliant NetBIOS names.
-
+    Invoke-MtTest -Id AD-DOM-07
+    Assess forest domain NetBIOS names for valid syntax.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdNetbiosNameStandardCompliance
+    https://maester.dev/docs/tests/AD-DOM-07
     #>
     [MaesterTest(
         Id = 'AD-DOM-07',
-        Title = 'NetBIOS name standard compliance should be retrievable',
+        Title = 'Forest domain NetBIOS names have valid syntax',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:domainDNS:ReadProperty'),
@@ -34,61 +29,14 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdNetbiosNameStandardCompliance"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Domain')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADDomainState -Categories @('Forest')
+    $findings = @(Get-MtAdDomainNameFindings -Forest $state.Forest -Kind Netbios)
+    $ok = $findings.Count -eq 0
+    $rows = @('| Forest domain DN | NetBIOS name | Syntax |', '| --- | --- | --- |')
+    foreach ($partition in @($state.Forest.DomainPartitions)) {
+        $invalid = @($findings | Where-Object { $_ -ceq "$($partition.NetBIOSName) ($($partition.DistinguishedName))" }).Count -gt 0
+        $rows += "| $($partition.DistinguishedName) | $($partition.NetBIOSName) | $(if ($invalid) { 'Invalid' } else { 'Valid' }) |"
     }
-
-    $domain = $adState.Domain
-
-    # Collect NetBIOS names from domain and forest
-    $netbiosNames = @()
-    if ($domain.NetBIOSName) {
-        $netbiosNames += $domain.NetBIOSName
-    }
-
-    # NetBIOS name pattern: 1-15 chars, alphanumeric and some special chars
-    # Should not contain: \ / : * ? " < > |
-    $validNetbiosPattern = '^[A-Za-z0-9!@#$%^&''()\-_\.+\{\}~]{1,15}$'
-
-    $nonCompliantNames = @()
-    foreach ($name in $netbiosNames) {
-        if ($name -notmatch $validNetbiosPattern) {
-            $nonCompliantNames += $name
-        }
-    }
-
-    $nonCompliantCount = $nonCompliantNames.Count
-    $totalNames = $netbiosNames.Count
-
-    # Test passes if we successfully analyzed NetBIOS names
-    $testResult = $totalNames -gt 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total NetBIOS Names | $totalNames |" + "`n"
-        $result += "| Non-Compliant Names | $nonCompliantCount |" + "`n"
-        $result += "| Compliant Names | $($totalNames - $nonCompliantCount) |" + "`n"
-
-        if ($nonCompliantCount -gt 0) {
-            $result += "| Non-Compliant Names | $($nonCompliantNames -join ', ') |" + "`n"
-        }
-
-        $testResultMarkdown = "NetBIOS name compliance has been checked. $nonCompliantCount out of $totalNames NetBIOS name(s) are non-compliant.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve NetBIOS name information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. Forest domain NetBIOS names pass syntax validation.' } else { 'Review invalid forest domain NetBIOS names and plan a supported migration.' }) Forest domains: $($state.Forest.DomainPartitions.Count); invalid: $($findings.Count).`n`n$($rows -join "`n")"
+    return $ok
 }

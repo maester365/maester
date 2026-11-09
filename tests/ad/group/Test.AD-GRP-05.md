@@ -28,8 +28,8 @@
 
 #### Related Tests
 
-- `Test-MtAdGroupStaleCount` - Groups with SID History may also be stale if migration was long ago
-- `Test-MtAdGroupAdminCount` - Privileged groups with SID History require special attention
+- **AD-GRP-03 — Groups should be modified within the configured age** — `Test-MtAdGroupStaleCount` — Reviews modification age, not migration completion.
+- **AD-GRP-01 — Group AdminCount should be retrievable** — `Test-MtAdGroupAdminCount` — Inventories protected-group markers.
 
 #### Related links
 

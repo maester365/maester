@@ -1,24 +1,18 @@
 ﻿function Test-MtAdSubnetIpv6Count {
     <#
     .SYNOPSIS
-    Counts the number of IPv6 subnets configured in Active Directory.
-
+    IPv6 subnet prefix inventory.
     .DESCRIPTION
-    This test retrieves the count of IPv6 subnets configured in Active Directory.
-    IPv6 subnets are used for client site assignment in IPv6-enabled networks.
-
+    Uses cached Active Directory state to assess or inventory ipv6 subnet prefix inventory.
     .EXAMPLE
-    Test-MtAdSubnetIpv6Count
-
-    Returns $true if subnet data is accessible.
-    The test result includes the count of IPv6 subnets.
-
+    Invoke-MtTest -Id AD-SUB-04
+    Review IPv6 subnet prefixes manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdSubnetIpv6Count
+    https://maester.dev/docs/tests/AD-SUB-04
     #>
     [MaesterTest(
         Id = 'AD-SUB-04',
-        Title = 'IPv6 subnets count should be retrievable',
+        Title = 'IPv6 subnet prefix inventory',
         Product = 'ad',
         Feature = 'sites-and-subnets',
         Area = 'infrastructure',
@@ -33,58 +27,10 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdSubnetIpv6Count"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Subnets')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $subnets = $adState.Subnets
-    $totalSubnets = ($subnets | Measure-Object).Count
-
-    # Identify IPv6 subnets (contain colons or are IPv6 format)
-    $ipv6Subnets = $subnets | Where-Object {
-        $_.Name -match ':' -or $_.Name -match '^[0-9a-fA-F]{1,4}:'
-    }
-    $ipv6Count = ($ipv6Subnets | Measure-Object).Count
-    $ipv4Count = $totalSubnets - $ipv6Count
-
-    # Test passes if we successfully retrieved data
-    $testResult = $totalSubnets -ge 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Subnets | $totalSubnets |" + "`n"
-        $result += "| IPv4 Subnets | $ipv4Count |" + "`n"
-        $result += "| IPv6 Subnets | $ipv6Count |" + "`n"
-
-        if ($ipv6Count -gt 0) {
-            $result += "`n### IPv6 Subnets" + "`n" + "`n"
-            $result += "| Subnet | Site |" + "`n"
-            $result += "| --- | --- |" + "`n"
-
-            foreach ($subnet in ($ipv6Subnets | Sort-Object Name)) {
-                $siteName = if ($subnet.SiteObject) {
-                    ($subnet.SiteObject -split ',')[0] -replace '^CN=', ''
-                } else { "Unassigned" }
-                $result += "| $($subnet.Name) | $siteName |" + "`n"
-            }
-        }
-
-        $testResultMarkdown = "Active Directory IPv6 subnet analysis has been performed. $ipv6Count IPv6 subnet(s) were found.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory subnet information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $view = Get-MtAdSubnetInventory -State (Get-MtADDomainState -Categories @('Subnets'))
+    $ipv6 = @($view | Where-Object { -not $_.IsIpv4 })
+    $rows = @('| IPv6 CIDR | Prefix length | SiteObject DN |', '| --- | --- | --- |')
+    foreach ($entry in $ipv6) { $rows += '| {0} | {1} | {2} |' -f (Format-MtAdSiteInventoryValue $entry.Cidr), $entry.Prefix, (Format-MtAdSiteInventoryValue $entry.Subnet.SiteObject) }
+    Add-MtTestResultDetail -Result "Review $($ipv6.Count) IPv6 subnet(s) out of $($view.Count) subnets.`n`n$($rows -join "`n")" -Investigate
+    return $true
 }

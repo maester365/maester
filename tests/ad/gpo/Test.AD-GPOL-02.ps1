@@ -5,6 +5,11 @@
 
     .DESCRIPTION
     Runs the shared check Test-MtAdGpoDisabledLinkCount.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-GPOL-02
+    Run the disabled-link inventory through the native test engine.
+    .LINK
+    https://maester.dev/docs/tests/AD-GPOL-02
     #>
     [MaesterTest(
         Id = 'AD-GPOL-02',

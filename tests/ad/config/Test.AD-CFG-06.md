@@ -1,25 +1,43 @@
-**LDAP query policies** define resource limits for directory queries (for example, controlling maximum result sizes and query behaviors). Weak or missing limits can enable **resource exhaustion** against AD through:
+This inventory counts LDAP query policy objects in the Directory Service Query Policies container. Counting policies alone cannot establish effective LDAP limits: directory defaults and per-controller policy assignments also matter.
 
-- Expensive or unbounded queries
-- Large searches that degrade DC performance
-- Increased likelihood of availability-impacting denial-of-service (DoS)
+LDAP query policies define resource limits for directory requests. Appropriate limits help protect DC availability against:
 
-This test helps ensure your directory query surface is bounded, making it harder for both accidental misconfigurations and malicious users to overwhelm AD.
+- Expensive queries that consume CPU or memory.
+- Large searches or excessive concurrent work that delay legitimate requests.
+- Accidental application workloads or malicious queries that can cause resource exhaustion.
+
+The count provides configuration visibility, not evidence that those risks are mitigated. A missing explicit policy or limit is not proof that queries are unlimited, because directory defaults may apply.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Set LDAP query policies to enforce practical limits aligned with your operational needs.
-- Ensure policies are applied consistently across relevant directory contexts/partitions.
-- Combine with access controls: even with good limits, ensure only authorized clients can perform heavy queries.
+
+Periodically review the configured policies and their assignments against directory workload and availability requirements. A policy count is not a target; avoid creating policies solely to increase it.
+
+- Inspect actual `lDAPAdminLimits`, including supported page-size and query-duration limits, using the Microsoft LDAP-policy guidance below.
+- Verify which query policy each relevant domain controller uses; a policy object can exist without being the effective policy on every DC.
+- Align supported limits with legitimate application workloads and monitor latency, resource use and failures before tightening them.
+- Combine resource limits with least-privilege access, workload monitoring and application query design. Do not assume a count of policy objects validates access controls.
 
 #### How the Test Works
-This test reads LDAP query policy configuration from AD and produces a count/visibility metric indicating where query policies are present and/or set according to your expected baseline.
+
+The test counts the LDAP query policy objects returned from the Directory Service Query Policies container. It does not evaluate the limits in those policies, determine which policy a domain controller uses, or measure effective limits.
 
 #### Related Tests
-- `Test-MtAdDefaultQueryPolicy` - Validates the baseline LDAP query limits.
+
+- **AD-CFG-07 — Default query policy should be retrievable** — `Test-MtAdDefaultQueryPolicy` — Inventories the explicit default policy limits without establishing effective per-DC settings.
+
+#### Remediation action
+
+Review the policy values and policy assignments against your DC workload requirements. Investigate unexpected changes; do not add policies merely to meet a count.
+
+Use `ntdsutil`'s **LDAP policies** context to inspect current settings on the intended server before making an approved change. Pilot changes with application owners and confirm effective behavior independently of this inventory count.
+
+#### Related links
+
+- [Microsoft: LDAP policies](https://learn.microsoft.com/troubleshoot/windows-server/active-directory/view-set-ldap-policy-using-ntdsutil)
 
 <!--- Results --->
 %TestResult%

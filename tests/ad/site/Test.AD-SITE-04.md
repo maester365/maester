@@ -1,11 +1,8 @@
-Sites without subnet associations cannot be used for client site assignment:
+Site and subnet association health.
 
-- **Authentication inefficiency**: Clients may authenticate to distant DCs
-- **Replication issues**: Site topology may not reflect actual network boundaries
-- **Configuration gaps**: Sites may have been created incompletely
-- **Client confusion**: Computers cannot determine their site membership
+Includes site and subnet counts, sites with and without subnet associations, and subnets whose SiteObject is missing or does not match an existing full site DN. This check covers the inventory formerly reported by AD-SUB-01, AD-SUB-02 and AD-SUB-11.
 
-Every site that should be used for client location must have at least one subnet assigned.
+Sites used for client location need accurate subnet associations. Unmapped or misassociated subnets can send clients to unintended DCs; an intentionally unused site need not have a subnet assignment.
 
 #### Control Type
 
@@ -13,20 +10,23 @@ Every site that should be used for client location must have at least one subnet
 
 #### Security Recommendation
 
-- Assign appropriate subnets to all production sites
-- Remove sites that are no longer needed
-- Ensure subnet assignments accurately reflect network boundaries
-- Review site-subnet mappings during network changes
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects against the organization baseline, document intentional exceptions and correct unintended configuration with the directory and network owners.
+
+Map production client networks to the appropriate sites and reassess assignments after network changes. Verify whether sites without subnets are intentionally inactive before removing them.
 
 #### How the Test Works
 
-This test analyzes subnet-to-site associations to identify sites that have no subnets assigned to them.
+Correlates subnet `SiteObject` full distinguished names with existing site DNs, reporting mapped and unmapped subnet counts alongside site association coverage. It does not assume that merely matching a site name is a valid association.
 
 #### Related Tests
 
-- `Test-MtAdSiteWithoutSubnetDetails` - Lists sites without subnet associations
-- `Test-MtAdSubnetWithoutSiteCount` - Identifies orphaned subnets
-- `Test-MtAdSiteTotalCount` - Counts total sites in the domain
+- **AD-SITE-01 — Site inventory for review** — `Test-MtAdSiteTotalCount` — Inventories all sites.
+- **AD-SUB-08 — Hierarchical IPv4 prefix overview** — `Test-MtAdSubnetFirstOctetCount` — Inventories IPv4 prefix hierarchy.
+
+#### Related links
+
+* [Microsoft Learn: Active Directory design guidance](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/designing-the-site-topology)
 
 <!--- Results --->
 %TestResult%

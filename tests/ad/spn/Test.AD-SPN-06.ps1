@@ -42,7 +42,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -52,11 +52,12 @@
     $allSpns = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
 
     $totalSpnCount = ($allSpns | Measure-Object).Count
-    $usersWithSpns = ($users | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
+    $usersWithSpns = @($users | Where-Object { @($_.servicePrincipalName | Where-Object { $_ }).Count -gt 0 }).Count
     $totalUsers = ($users | Measure-Object).Count
+    if ($null -eq $users) { throw 'User collection is unavailable.' }
 
     # Test passes if we successfully retrieved SPN data
-    $testResult = $true
+    $testResult = $null -ne $adState.Users
 
     # Generate markdown results
     if ($testResult) {
@@ -71,7 +72,7 @@
             $result += "| Users with SPNs Percentage | $percentage% |" + "`n"
         }
 
-        $testResultMarkdown = "Active Directory user SPN analysis found $totalSpnCount SPNs across $usersWithSpns user accounts.`n`n%TestResult%"
+        $testResultMarkdown = "Active Directory user SPN analysis found $totalSpnCount SPNs across $usersWithSpns user accounts. Coverage crosswalk: this check includes former AD-USER-14. Its primary feature is service-principal-names; the engine supports one Feature, so user-account context is linked through AD-USER-20 and AD-SPN-12 rather than a second feature.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."

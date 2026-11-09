@@ -10,13 +10,13 @@
     understand the composition of group memberships in the directory.
 
     .EXAMPLE
-    Test-MtAdGroupMemberAccountTypeCount
+    Invoke-MtTest -Id AD-GMC-02
 
     Returns $true if group member data is accessible, $false otherwise.
     The test result includes the count of distinct account types found.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGroupMemberAccountTypeCount
+    https://maester.dev/docs/tests/AD-GMC-02
     #>
     [MaesterTest(
         Id = 'AD-GMC-02',
@@ -28,6 +28,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        LongRunning = $true,
         Permission = ('ActiveDirectory:Ldap:group:ReadProperty', 'ActiveDirectory:Ldap:group.member:ReadProperty'),
         Author = 'soulemike'
     )]
@@ -40,37 +41,35 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory group inventory is unavailable; member account types cannot be assessed.'
         return $null
     }
 
     $groups = $adState.Groups
+    if ($null -eq $groups) { throw 'Group collection is unavailable.' }
 
     $protocolConnection = New-MtAdProtocolConnection -ProtocolEvidence $adState.ProtocolEvidence
 
     # Collect all unique member object classes
-    # Limit to first 50 groups for performance
-    $groupsToCheck = $groups | Select-Object -First 50
+    $groupsToCheck = @($groups)
     $allMembers = @()
     $processedSids = @{}
 
-    foreach ($group in $groupsToCheck) {
-        try {
+    try {
+        foreach ($group in $groupsToCheck) {
             $members = @(Get-MtLdapGroupMember -Connection $protocolConnection -GroupDistinguishedName $group.DistinguishedName)
             foreach ($member in $members) {
                 # Avoid duplicates by SID
-                if (-not $processedSids.ContainsKey($member.SID.Value)) {
-                    $processedSids[$member.SID.Value] = $true
+                $memberKey = if ($member.SID.Value) { [string]$member.SID.Value } else { [string]$member.DistinguishedName }
+                if (-not $processedSids.ContainsKey($memberKey)) {
+                    $processedSids[$memberKey] = $true
                     $allMembers += $member
                 }
             }
         }
-        catch {
-            Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
-        }
+    } finally {
+        $protocolConnection.Dispose()
     }
-
-    $protocolConnection.Dispose()
 
     # Get distinct object classes
     $distinctTypes = $allMembers | ForEach-Object { $_.objectClass } | Select-Object -Unique
@@ -78,7 +77,7 @@
     $totalUniqueMembers = $allMembers.Count
 
     # Test passes if we successfully retrieved member data
-    $testResult = $totalUniqueMembers -ge 0
+    $testResult = $null -ne $adState.Groups
 
     # Generate markdown results
     if ($testResult) {
@@ -87,10 +86,13 @@
         $result += "| Total Unique Members Analyzed | $totalUniqueMembers |" + "`n"
         $result += "| Distinct Account Types | $distinctTypeCount |" + "`n"
         $result += "| Account Types Found | $($distinctTypes -join ', ') |" + "`n"
-
-        if ($groupsToCheck.Count -lt ($groups | Measure-Object).Count) {
-            $result += "| Note | Analyzed first $($groupsToCheck.Count) groups for performance |" + "`n"
+        $result += "`n| Account Type | Unique Members |" + "`n"
+        $result += "| --- | --- |" + "`n"
+        foreach ($type in @($allMembers | Group-Object objectClass | Sort-Object Count -Descending)) {
+            $result += "| $($type.Name) | $($type.Count) |" + "`n"
         }
+
+        $result += "| Groups Analyzed | $($groupsToCheck.Count) |" + "`n"
 
         $testResultMarkdown = "Active Directory group member account types have been analyzed. Found $distinctTypeCount distinct account types across $totalUniqueMembers unique members.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -98,7 +100,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group member data. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

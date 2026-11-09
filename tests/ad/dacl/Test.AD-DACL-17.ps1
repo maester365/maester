@@ -1,7 +1,7 @@
 ﻿function Test-MtAdDaclInheritedObjectTypeCount {
     <#
     .SYNOPSIS
-    Counts inherited object types referenced by Active Directory DACL entries.
+    Counts inherited object type GUIDs and lists their ACE distribution.
 
     .DESCRIPTION
     This test analyzes DACL entries from Get-MtADDomainState -Categories @('DaclEntries') and counts distinct
@@ -19,7 +19,7 @@
     #>
     [MaesterTest(
         Id = 'AD-DACL-17',
-        Title = 'Inherited object type count should be investigated',
+        Title = 'Inherited object type counts and details should be investigated',
         Product = 'ad',
         Feature = 'permissions',
         Area = 'access-control',
@@ -27,6 +27,7 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
+        Platform = 'Windows',
         Permission = ('ActiveDirectory:Ldap:*.ntSecurityDescriptor:ReadControl'),
         LongRunning,
         Author = 'soulemike'
@@ -42,17 +43,18 @@
     }
     $adState = Get-MtADDomainState -Categories @('DaclEntries')
     Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-    if ($null -eq $adState.DaclEntries) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'DACL data is unavailable.'
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.DaclEntries) {
+        throw 'DACL data is unavailable.'
     }
     Write-Verbose "Filtering/counting dacl inherited object type count"
 
     $daclEntries = @($adState.DaclEntries | Where-Object { $null -ne $_ })
+    if ($daclEntries.Count -eq 0) {
+        throw 'No DACL entries were collected; cannot assess inheritance targeting.'
+    }
+    if (@($daclEntries | Where-Object { [string]::IsNullOrWhiteSpace($_.ObjectDN) }).Count -gt 0) {
+        throw 'DACL entries are missing object distinguished names.'
+    }
     $filteredEntries = @(
         $daclEntries | Where-Object {
             $inheritedObjectType = [string]$_.InheritedObjectType
@@ -66,13 +68,22 @@
             Group-Object -Property InheritedObjectType
     ).Count
 
-    $testResult = $true
+    $testResult = $null -ne $adState.DaclEntries
 
     $result = '| Metric | Value |' + "`n"
     $result += '| --- | --- |' + "`n"
     $result += "| Total DACL Entries | $($daclEntries.Count) |" + "`n"
     $result += "| ACEs with Specific InheritedObjectType | $($filteredEntries.Count) |" + "`n"
     $result += "| Distinct InheritedObjectType GUIDs | $distinctInheritedObjectTypeCount |" + "`n"
+    $result += "`n| InheritedObjectType | ACE Count | Distinct ObjectDN Count |`n| --- | --- | --- |`n"
+    foreach ($group in @($filteredEntries | Group-Object InheritedObjectType | Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, Name)) {
+        $inheritedObjectType = ([string]$group.Name) -replace '\|', '&#124;'
+        $objects = @($group.Group | Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } | Select-Object -ExpandProperty ObjectDN -Unique).Count
+        $result += "| $inheritedObjectType | $($group.Count) | $objects |`n"
+    }
+    if ($filteredEntries.Count -eq 0) {
+        $result += "| No specific inherited object type GUIDs found | 0 | 0 |`n"
+    }
     Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL inheritance targets were analyzed. $distinctInheritedObjectTypeCount distinct inherited object type GUID(s) were referenced across $($filteredEntries.Count) ACE(s).`n`n%TestResult%"

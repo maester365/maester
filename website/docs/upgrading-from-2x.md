@@ -11,6 +11,28 @@ Maester 3.0 gives Maester its own test engine. The built-in tests are no longer 
 folder: they ship inside the module and run from there. Most runs need no change at all, but the way tests are
 installed, selected, configured and written has moved on. This page lists every change that can affect you.
 
+## Active Directory check consolidation
+
+Overlapping AD count/detail checks now produce one combined result. Historical inclusion **and exclusion** tags map to the surviving check. This preserves exclusion mapping but can broaden what an old exclusion suppresses: `-ExcludeTag AD-GPOREP-19` now excludes Critical **AD-GPOREP-17**, including both the `cpassword` and default-password checks. Audit existing exclusions and retain them only when excluding the entire merged control is intended. The native replacements are recorded in `build/golden/native-test-replacements.psd1`; this does not automatically migrate ID-based `TestSettings` rows.
+
+Existing exported AD collectors also distinguish collection failure from an empty inventory. The `GPOs` or `GPOReports` fields returned by `Get-MtADGpoState` can be `$null` when collection fails; an empty array is not an equivalent error signal. Custom tests must check for `$null` before calculating a clean result. Device inventory excludes managed service account classes; managed-account delegation remains covered by AD-DCOMP-01 and AD-DCOMP-03 through the separate ServiceAccounts collection.
+
+AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-inventory access has been independently confirmed with `KeyInventoryReadAccessConfirmed`. Do not create keys solely because a restricted identity returned an empty inventory.
+
+### Second AD review batch
+
+The additional convention review restores native `.EXAMPLE`/`.LINK` help and preserves accurate explanatory sections and visual status indicators. COMP-01 remains a lifecycle inventory and reports unknown enabled states separately. DCD-04 now defaults to inventory; configure `AssessmentMode = 'AllGlobalCatalogs'` for an all-DCs-as-GCs policy or `MinimumForestCatalog` for the prior minimum availability baseline. FOR-03's configurable 180-day advisory is informational and retains the correct 60-day unset-attribute behavior.
+
+Live validation corrected snapshot-shape and RID-decoding regressions: ordered-dictionary inventories are now accepted, empty retrieved collections remain distinct from failed collection, and RID low-word extraction no longer casts a signed hexadecimal mask. AD-DC-07 and AD-FOR-01 exclude other-domain DCs from their connected-domain support assessment. AD-FOR-01 does not establish forest-wide upgrade eligibility; every domain must be validated before changing the forest level.
+
+The review follow-up restores accurate guide sections and complete related-test identities. AD-SCH-05 covers both Windows and legacy Microsoft LAPS schema pairs without claiming deployment or rotation. AD-FOR-04 has Low severity and Low implementation cost, with enabled scopes and forest context retained in its result. Complete member scans AD-GMC-01/02/04/06/08 are now LongRunning; use `-IncludeLongRunning` or select the exact test ID when that inventory is required. Missing required data produces a per-test Error while reports continue to generate.
+
+Password checks now consolidate under AD-PWDPOL-01 (default domain policy) and AD-FGPP-01 (individual PSOs and visible usage). The configurable `CurrentNist` profile defaults to 15 characters and no forced periodic expiration; `LegacyRotation` is an organization-selected alternative, not earlier NIST guidance. The checks observe composition and explicitly require a verified blocklist before any decision to remove complexity rules. Visibility confirmation is separate from the selected profile.
+
+USER lifecycle checks now use explicit criteria, retention/idle periods, manager exclusions and approved absolute path roots. Empty approved-path lists approve no absolute paths; relative NETLOGON scripts remain manual review. Protected disabled system identities are not cleanup findings. SITE-04 absorbs SUB-01, SUB-02 and SUB-11 while retaining both directions of the association assessment. USER-05 moves to the delegation folder and includes former USER-28/29. The engine still has one `Feature`; cross-feature coverage is explained in details and linked guides instead of adding an unsupported secondary feature.
+
+Shared exported collector results gained raw domain/forest functional-level values, stable FSMO owner DNs, normalized policy booleans/interval semantics, user resultant-policy and protected-account metadata, and DC OS/build evidence. DCs in other domains may have unknown computer metadata on a restricted connection; their collection errors remain per record. Previously hard-coded LDAP/LDAPS port values are now null with a not-measured annotation. Custom tests must not treat these null fields as healthy values.
+
 ## Requirements
 
 - **PowerShell 7.4 or later** (the `Core` edition) on Linux, macOS, or Windows. The module no longer loads in Windows PowerShell 5.1.

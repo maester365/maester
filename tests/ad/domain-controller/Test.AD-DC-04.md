@@ -36,8 +36,8 @@ This test queries the SMB server configuration on each domain controller to chec
 
 #### Related Tests
 
-- `Test-MtAdDcSmbv1EnabledCount` - SMBv1 protocol status
-- `Test-MtAdDcSmbv311EnabledCount` - SMBv3.1.1 protocol status
+- **AD-DC-02 — SMBv1 should be disabled on all domain controllers** — `Test-MtAdDcSmbv1EnabledCount` — Reviews SMBv1 exposure.
+- **AD-DC-03 — SMBv3.1.1 enabled count should be retrievable** — `Test-MtAdDcSmbv311EnabledCount` — Inventories SMBv3.1.1 support.
 
 <!--- Results --->
 %TestResult%

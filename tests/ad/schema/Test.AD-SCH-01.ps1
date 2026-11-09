@@ -1,26 +1,23 @@
 ﻿function Test-MtAdSchemaModificationYearCount {
     <#
     .SYNOPSIS
-    Counts the number of years with Active Directory schema modifications.
+    Counts the number of years with Active Directory schema object creation.
 
     .DESCRIPTION
-    This test analyzes the Active Directory schema to identify how many different years
-    have had schema modifications. Schema changes indicate when the directory has been
-    extended with new object classes or attributes, which is typically done during
-    domain upgrades or application installations.
+    This test groups schema objects by whenCreated. It describes creation years,
+    not subsequent schema object edits or an audit history of changes.
 
     .EXAMPLE
     Test-MtAdSchemaModificationYearCount
 
-    Returns $true if schema data is accessible, $false otherwise.
-    The test result includes the count of years with schema modifications.
+    Reports creation-year counts and schema objects grouped by creation year.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdSchemaModificationYearCount
     #>
     [MaesterTest(
         Id = 'AD-SCH-01',
-        Title = 'Schema modification year count should be retrievable',
+        Title = 'Schema creation years and objects should be investigated',
         Product = 'ad',
         Feature = 'schema',
         Area = 'infrastructure',
@@ -42,45 +39,29 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory schema inventory was not returned.'
     }
 
     $schemaObjects = $adState.SchemaObjects
+    if ($null -eq $schemaObjects) { throw 'Active Directory schema objects were not returned.' }
 
-    # Count unique years with schema modifications
-    $yearsWithModifications = $schemaObjects | Where-Object { $_.whenCreated } |
-        ForEach-Object { $_.whenCreated.Year } |
-        Sort-Object -Unique
-
-    $yearCount = ($yearsWithModifications | Measure-Object).Count
-
-    # Test passes if we successfully retrieved schema data
-    $testResult = $null -ne $schemaObjects
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Schema Objects | $(($schemaObjects | Measure-Object).Count) |" + "`n"
-        $result += "| Years with Modifications | $yearCount |" + "`n"
-        $result += "| First Schema Change | $(($yearsWithModifications | Sort-Object | Select-Object -First 1)) |" + "`n"
-        $result += "| Most Recent Schema Change | $(($yearsWithModifications | Sort-Object | Select-Object -Last 1)) |" + "`n" + "`n"
-
-        $result += "**Years with Schema Modifications:**" + "`n" + "`n"
-        $result += "| Year |" + "`n"
-        $result += "| --- |" + "`n"
-        foreach ($year in ($yearsWithModifications | Sort-Object)) {
-            $result += "| $year |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory schema has been modified across $yearCount different years.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory schema information. Ensure you have appropriate permissions and the Active Directory module is installed."
+    $datedObjects = @($schemaObjects | Where-Object { $null -ne $_.WhenCreated })
+    $years = @($datedObjects | Group-Object { $_.WhenCreated.Year } | Sort-Object Name)
+    $result = "| Metric | Value |`n| --- | --- |`n"
+    $result += "| Total schema objects | $(@($schemaObjects).Count) |`n"
+    $result += "| Objects with creation date | $($datedObjects.Count) |`n"
+    $result += "| Creation years | $($years.Count) |`n`n"
+    $result += "| Year | Object count |`n| --- | --- |`n"
+    foreach ($year in $years) {
+        $result += "| $($year.Name) | $($year.Count) |`n"
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $result += "`n**Schema objects by creation year:**`n`n| Year | Object name | Distinguished name |`n| --- | --- | --- |`n"
+    foreach ($object in ($datedObjects | Sort-Object WhenCreated, Name)) {
+        $result += "| $($object.WhenCreated.Year) | $($object.Name) | $($object.DistinguishedName) |`n"
+    }
+    if ($datedObjects.Count -lt @($schemaObjects).Count) {
+        $result += "`n$(@($schemaObjects).Count - $datedObjects.Count) object(s) lack a creation date and are excluded from the year breakdown."
+    }
+    Add-MtTestResultDetail -Result "Schema object creation dates span $($years.Count) year(s). Creation dates do not reveal subsequent schema edits.`n`n$result" -Investigate
+    return $true
 }

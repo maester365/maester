@@ -36,9 +36,8 @@
 
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration -or $null -eq $adState.Configuration.ActivationObjects) {
+        throw 'Activation object inventory could not be retrieved.'
     }
 
     $config = $adState.Configuration
@@ -60,6 +59,6 @@
         $testResultMarkdown = "Unable to retrieve Active Directory configuration. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

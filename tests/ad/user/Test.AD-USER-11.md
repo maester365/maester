@@ -1,8 +1,4 @@
-The `AdminCount` attribute is commonly set on protected and privileged accounts. These users often inherit AdminSDHolder protections and may retain elevated access or restricted ACL inheritance.
-
-- **Privilege visibility**: Highlights accounts that may be administrative or formerly administrative
-- **Delegation impact**: Protected accounts behave differently from standard users
-- **Security review**: Helps identify users that warrant stronger monitoring and change control
+Accounts with `AdminCount=1` require human review; this flag can persist after privileged group removal and is not proof of current administrator rights.
 
 #### Control Type
 
@@ -10,18 +6,20 @@ The `AdminCount` attribute is commonly set on protected and privileged accounts.
 
 #### Security Recommendation
 
-- Review each account with `AdminCount = 1` to confirm it still requires elevated protections
-- Validate that privileged accounts are intentionally assigned and documented
-- Investigate stale or unexpected protected users and remove unnecessary privileged group membership
+Review protected-user membership and ACL inheritance before clearing stale protection. `AdminCount` alone is not proof of current privilege.
 
 #### How the Test Works
 
-This test counts user objects where the `AdminCount` attribute equals `1`.
+The test inventories users with `AdminCount=1` for human privilege review; the marker may persist after privileged group removal.
 
 #### Related Tests
 
-- `Test-MtAdUserNonStandardPrimaryGroupCount` - Finds users with unusual group membership baselines
-- `Test-MtAdUserSpnSetCount` - Identifies potentially high-value service accounts
+- **AD-USER-12 — Ordinary users should use an approved primary group** — `Test-MtAdUserNonStandardPrimaryGroupCount` — Reviews primary-group exceptions.
+- **AD-SPN-12 — No domain admin accounts should have SPNs configured** — `Test-MtAdUserSpnDomainAdminCount` — Reviews SPNs on Domain Admins members.
+
+#### Remediation action
+1. Review group membership and inherited permissions in [AD administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
+2. Remove unnecessary privileges; clear stale protection only after validating the account is no longer protected.
 
 <!--- Results --->
 %TestResult%

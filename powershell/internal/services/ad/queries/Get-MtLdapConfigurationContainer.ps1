@@ -55,10 +55,21 @@
     $siteLinks = @($rawSiteLinks | ForEach-Object {
         $replInterval = if ($null -ne $_.replInterval) { [int]$_.replInterval } else { $null }
         $_ | Add-Member -NotePropertyName ReplicationFrequencyInMinutes -NotePropertyValue $replInterval -Force
+        $transport = if ([string]$_.DistinguishedName -match '(?i),CN=(IP|SMTP),CN=Inter-Site Transports,') { $matches[1].ToUpperInvariant() } else { $null }
+        $_ | Add-Member -NotePropertyName TransportName -NotePropertyValue $transport -Force
         $_
     })
 
-    $dhcp = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=NetServices,CN=Services' -Scope OneLevel -Filter '(|(objectClass=dhcpClass)(objectClass=dhcpServer)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('serviceBindingInformation', 'keywords'))
+    $dhcpObjects = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=NetServices,CN=Services' -Scope OneLevel -Filter '(objectClass=dhcpClass)' -Attributes ($commonAttributes + @('dhcpServers'))
+    # MS-DHCPE: authorization entries are dhcpServers values, not one server per object.
+    $dhcp = @(foreach ($registration in @($dhcpObjects | ForEach-Object { $_.dhcpServers } | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Sort-Object -Unique)) {
+        $match = [regex]::Match([string]$registration, '^i(?<ip>[^$]+)\$rcn=(?<relative>[^$]*)\$f(?<flags>[^$]*)\$s(?<server>[^$]*)\$$', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        [pscustomobject]@{
+            DnsName = if ($match.Success) { $match.Groups['server'].Value } else { 'Unknown (unrecognized registration format)' }
+            IPAddress = if ($match.Success) { $match.Groups['ip'].Value } else { $null }
+            RegistrationParsed = $match.Success
+        }
+    })
 
     $authN = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=AuthN Policy Configuration,CN=Services' -Scope Subtree -Filter '(objectClass=*)' -Attributes ($commonAttributes + @('msDS-ServiceAllowedToAuthenticateFrom', 'msDS-ServiceAllowedToAuthenticateTo'))
 
@@ -77,13 +88,13 @@
 
     $policies = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Query Policies,CN=Directory Service,CN=Windows NT,CN=Services' -Scope OneLevel -Filter '(objectClass=queryPolicy)' -Attributes ($commonAttributes + @('lDAPAdminLimits'))
 
-    $directoryService = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Directory Service,CN=Windows NT,CN=Services' -Scope Base -Filter '(objectClass=nTDSService)' -Attributes @('tombstoneLifetime', 'dSHeuristics', 'sPNMappings') | Select-Object -First 1
+    $directoryService = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Directory Service,CN=Windows NT,CN=Services' -Scope Base -Filter '(objectClass=*)' -Attributes @('distinguishedName', 'tombstoneLifetime', 'dSHeuristics', 'sPNMappings') | Select-Object -First 1
 
     # Use safe search so a NoSuchObject error (common when KDS has never been used) returns @()
     # rather than throwing and nulling the entire Configuration category
     $kds = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Master Root Keys,CN=Group Key Distribution Service,CN=Services' -Scope OneLevel -Filter '(objectClass=msKds-ProvRootKey)' -Attributes ($commonAttributes + @('msKds-CreateTime', 'msKds-DomainID'))
 
-    $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Microsoft SPP,CN=Services' -Scope OneLevel -Filter '(|(objectClass=msImaging-PSP)(objectClass=serviceConnectionPoint))' -Attributes ($commonAttributes + @('keywords', 'serviceBindingInformation'))
+    $activation = Invoke-ConfigurationSearchSafe -RelativeSearchBase 'CN=Activation Objects,CN=Microsoft SPP,CN=Services' -Scope OneLevel -Filter '(objectClass=msSPP-ActivationObject)' -Attributes $commonAttributes
 
     $enrollmentTemplates = [string[]]@($enterprise | ForEach-Object { @($_.certificateTemplates) } | Sort-Object -Unique)
 
@@ -92,8 +103,9 @@
         TrustedRootCAs = @($trustedRoots); IntermediateCAs = @($intermediate); EnterpriseCAs = @($enterprise); CertificateTemplates = @($templates)
         EnrollmentTemplates = $enrollmentTemplates; CrlDistributionPoints = @($cdp); NtAuthCertificates = @($ntAuth); LdapQueryPolicies = @($policies)
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
+        DirectoryServiceRetrieved = $null -ne $directoryService
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
-        SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
+        SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { $null }
         KdsRootKeys = @($kds); ActivationObjects = @($activation)
     }
 }

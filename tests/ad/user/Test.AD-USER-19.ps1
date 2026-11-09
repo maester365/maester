@@ -1,87 +1,42 @@
 ﻿function Test-MtAdUserInContainerCount {
-    <#
-    .SYNOPSIS
-    Counts users located in container objects instead of OUs.
-
-    .DESCRIPTION
-    This test identifies user objects whose distinguished name indicates they are
-    stored beneath a container path (CN=) rather than an organizational unit (OU=).
-    Users in default or custom containers can be harder to manage consistently because
-    containers do not support the same delegation and Group Policy design patterns as OUs.
-
+    <# .SYNOPSIS
+    Finds ordinary users beneath CN containers instead of OUs.
     .EXAMPLE
-    Test-MtAdUserInContainerCount
-
-    Returns $true if user data is accessible, $false otherwise.
-    The test result includes the count of users located in container objects.
-
+    Invoke-MtTest -Id AD-USER-19
+    Assess whether ordinary users are managed in OUs rather than CN containers.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserInContainerCount
+    https://maester.dev/docs/tests/AD-USER-19
     #>
     [MaesterTest(
         Id = 'AD-USER-19',
-        Title = 'User in container count should be retrievable',
+        Title = 'Ordinary users should be managed in organizational units',
         Product = 'ad',
         Feature = 'users',
-        Area = 'infrastructure',
+        Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdUserInContainerCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user in container count"
-
-    $users = $adState.Users
-    $usersInContainers = $users | Where-Object {
-        $_.DistinguishedName -and (
-            $_.DistinguishedName -like "CN=*,CN=Users,*" -or
-            $_.DistinguishedName -match '^CN=[^,]+,CN='
-        )
-    }
-
-    $defaultUsersContainerCount = ($usersInContainers | Where-Object {
-        $_.DistinguishedName -like "CN=*,CN=Users,*"
-    } | Measure-Object).Count
-    $containerCount = ($usersInContainers | Measure-Object).Count
-    $totalCount = ($users | Measure-Object).Count
-    $testResult = $totalCount -gt 0
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($containerCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Users in CN=Users | $defaultUsersContainerCount |" + "`n"
-        $result += "| Users in Container Paths | $containerCount |" + "`n"
-        $result += "| Container Percentage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory users have been analyzed. $containerCount out of $totalCount users ($percentage%) are located in container paths such as CN=Users instead of OUs.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory users. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserInContainerCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    $found = @($state.Users | Where-Object {
+        if (-not (Test-MtAdUserOrdinaryIdentity $_)) { return $false }
+        $dn = [string]$_.DistinguishedName
+        if ([string]::IsNullOrWhiteSpace($dn)) { throw "Distinguished name missing for $($_.SamAccountName)." }
+        # A comma escaped with backslash is part of an RDN, not a DN separator.
+        $parts = [regex]::Split($dn, '(?<!\\)(?:\\\\)*,')
+        @($parts | Select-Object -Skip 1 | Where-Object { $_ -match '^CN=' }).Count -gt 0
+    })
+    if ($found.Count) { Add-MtTestResultDetail -Result "Found $($found.Count) ordinary users in CN containers. Review policy/delegation requirements and move eligible users to managed OUs.`n`n$(Format-MtAdUserSecurityTable $found @('SamAccountName', 'DistinguishedName'))" }
+    else { Add-MtTestResultDetail -Result 'Well done. Ordinary users are not stored under CN containers.' }
+    return ($found.Count -eq 0)
 }

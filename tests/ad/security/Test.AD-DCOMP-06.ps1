@@ -8,9 +8,8 @@
     compromised and reactivated by attackers. This test identifies enabled
     computers that have not authenticated to the domain for the configured threshold or more.
 
-    Because nearly every domain has at least one stale enabled computer, this
-    test returns an Investigate result (rather than Pass/Fail) so the count
-    and details are surfaced for review without causing a failing audit.
+    An enabled computer with no recorded logon or a last logon before the threshold
+    is flagged for review. The result is Investigate when such computers exist.
 
     Security Risk:
     - Stale enabled accounts can be reactivated and used for lateral movement
@@ -53,17 +52,12 @@
     $adState = Get-MtADDomainState -Categories @('Computers')
     Write-Verbose "Retrieved AD state"
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $adState) { throw 'Computer inventory is required to assess stale accounts.' }
     Write-Verbose "Filtering/counting computer stale enabled count"
 
     $computers = $adState.Computers
-    if ($null -eq $computers) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
+    if ($null -eq $computers) { throw 'Computer inventory is required to assess stale accounts.' }
+    if (@($computers).Count -eq 0) { throw 'Computer inventory is empty; stale accounts cannot be assessed.' }
     $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
 
     # Find enabled computers that haven't logged on for the configured threshold or more.
@@ -105,7 +99,9 @@
         $sortedStale = $staleEnabledComputers | Sort-Object -Property lastLogonDate | Select-Object -First 10
         foreach ($comp in $sortedStale) {
             $lastLogon = if ($comp.lastLogonDate) { $comp.lastLogonDate.ToString('yyyy-MM-dd') } else { 'Never' }
-            $result += "| $($comp.Name) | $lastLogon | $($comp.operatingSystem) |" + "`n"
+            $name = [string]$comp.Name -replace '\|', '\|' -replace '[\r\n]', ' '
+            $os = [string]$comp.OperatingSystem -replace '\|', '\|' -replace '[\r\n]', ' '
+            $result += "| $name | $lastLogon | $os |" + "`n"
         }
 
         if ($staleCount -gt 10) {
@@ -115,17 +111,17 @@
     Write-Verbose "Counts computed"
 
     if ($staleCount -eq 0) {
-        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd'))."
+        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd')). Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related device inventory."
         $testResultMarkdown = "$analysisSummary`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
         return $true
     } else {
-        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed. Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related inventory.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
         Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
-        return $null
+        return $false
     }
 }

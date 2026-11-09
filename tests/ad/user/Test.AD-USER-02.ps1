@@ -1,104 +1,44 @@
 ﻿function Test-MtAdUserDormantEnabledCount {
-    <#
-    .SYNOPSIS
-    Counts enabled user accounts that have been dormant beyond the configured threshold.
-
-    .DESCRIPTION
-    This test identifies enabled user accounts whose last recorded logon date is older
-    than the configured threshold. Dormant enabled accounts increase risk because they may be forgotten,
-    retain privileges, and become attractive targets for unauthorized access.
-
+    <# .SYNOPSIS
+    Checks for enabled users with old recorded logon timestamps.
     .EXAMPLE
-    Test-MtAdUserDormantEnabledCount
-
+    Invoke-MtTest -Id AD-USER-02
+    Assess enabled users for stale recorded logon timestamps; investigate incomplete data.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserDormantEnabledCount
+    https://maester.dev/docs/tests/AD-USER-02
     #>
     [MaesterTest(
         Id = 'AD-USER-02',
-        Title = 'Dormant enabled user count should be retrievable',
+        Title = 'Enabled users should not remain dormant',
         Product = 'ad',
         Feature = 'users',
         Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Info',
+        Severity = 'Medium',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'T1078.002',
         Control = 'nist-800-53-r5:AC-2(3)',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        # Number of days without a logon before an enabled account is considered dormant.
-        [ValidateRange(1, 3650)]
+        # Number of days since the recorded logon after which an enabled account is dormant.
+        [ValidateRange(15, 3650)]
         [int] $DormantThresholdDays = 90
     )
 
-    Write-Verbose "Starting Test-MtAdUserDormantEnabledCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user dormant enabled count"
-
-    $thresholdDays = $DormantThresholdDays
-    $thresholdDate = (Get-Date).AddDays(-$thresholdDays)
-    $users = @($adState.Users)
-    $enabledUsers = @($users | Where-Object { $_.Enabled -eq $true })
-    $dormantUsers = @($enabledUsers | Where-Object {
-            $null -ne $_.LastLogonDate -and $_.LastLogonDate -lt $thresholdDate
-        })
-
-    $dormantCount = $dormantUsers.Count
-    $enabledCount = $enabledUsers.Count
-    $totalCount = $users.Count
-
-    $testResult = $null -ne $adState.Users
-
-    if ($testResult) {
-        $percentage = if ($enabledCount -gt 0) {
-            [Math]::Round(($dormantCount / $enabledCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Enabled Users | $enabledCount |" + "`n"
-        $result += "| Dormant Enabled Users (>$thresholdDays days) | $dormantCount |" + "`n"
-        $result += "| Dormant Percentage (of enabled) | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory user objects have been analyzed. $dormantCount out of $enabledCount enabled users ($percentage%) have not logged on in more than $thresholdDays days.`n`n%TestResult%"
-        if ($dormantCount -eq 0) {
-            $datedEnabledUsers = $enabledUsers | Where-Object { $null -ne $_.LastLogonDate }
-            $undatedEnabledCount = $enabledCount - $datedEnabledUsers.Count
-            $oldestLastLogonDate = $datedEnabledUsers |
-                Sort-Object -Property LastLogonDate |
-                Select-Object -First 1 -ExpandProperty LastLogonDate
-
-            if ($null -eq $oldestLastLogonDate) {
-                $testResultMarkdown += "`n`nThere are $enabledCount enabled users. None have a recorded last logon date, so dormant status cannot be determined from available data."
-            } else {
-                $oldestLastLogonDate = [datetime]$oldestLastLogonDate
-                $oldestLastLogon = $oldestLastLogonDate.ToString('yyyy-MM-dd')
-                $daysUntilThreshold = [Math]::Max(1, [Math]::Ceiling(($oldestLastLogonDate.AddDays($thresholdDays) - (Get-Date)).TotalDays))
-                $undatedNote = if ($undatedEnabledCount -gt 0) { " $undatedEnabledCount enabled user(s) have no recorded logon date and are not counted in this analysis." } else { "" }
-                $testResultMarkdown += "`n`nThere are $enabledCount enabled users. The oldest last logon date is $oldestLastLogon. No users currently exceed the dormant threshold of $thresholdDays days. The oldest user would reach the threshold in $daysUntilThreshold days.$undatedNote"
-            }
-        }
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory user objects. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserDormantEnabledCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    if (@($state.Users | Where-Object { $null -eq $_.Enabled }).Count -gt 0) { throw 'User enabled state is missing; dormancy scope cannot be established.' }
+    $old = @($state.Users | Where-Object { $_.Enabled -eq $true -and $null -ne $_.LastLogonDate -and [datetime]$_.LastLogonDate -lt (Get-Date).AddDays(-$DormantThresholdDays) })
+    $unknown = @($state.Users | Where-Object { $_.Enabled -eq $true -and $null -eq $_.LastLogonDate })
+    $table = Format-MtAdUserSecurityTable -Rows $old -Columns @('SamAccountName', 'LastLogonDate', 'DistinguishedName')
+    if ($old.Count) { Add-MtTestResultDetail -Result "Found $($old.Count) enabled users with a recorded logon older than $DormantThresholdDays days. Review and disable unneeded identities; $($unknown.Count) enabled users lack a logon date and need separate review. Replicated lastLogonTimestamp can lag by about 14 days.`n`n$table" }
+    elseif ($unknown.Count) { Add-MtTestResultDetail -Result "No old logons found, but $($unknown.Count) enabled users lack a recorded logon date. Review them before treating this as clean." -Investigate }
+    else { Add-MtTestResultDetail -Result "Well done. No enabled user has a recorded logon older than $DormantThresholdDays days (replicated timestamps can lag)." }
+    return ($old.Count -eq 0)
 }

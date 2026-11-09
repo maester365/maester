@@ -1,4 +1,4 @@
-Linked Group Policy Objects (GPOs) are actively applying settings to users and/or computers across your Active Directory environment.
+Linked Group Policy Objects (GPOs) have enabled links to targets, but linking alone does not prove that their settings apply to users or computers; inheritance, filtering and policy status also matter.
 
 For security assessments, it is important to understand the scope of actively linked (and therefore applying) policies. This test helps you:
 
@@ -22,16 +22,15 @@ This test retrieves GPO state from Active Directory using **Get-MtADGpoState** (
 
 It then:
 
-1. Parses `gPLink` values to identify **enabled** (0) and **enforced** (2) link entries.
-2. Counts distinct GPO GUIDs that have at least one enabled link.
+1. Parses `gPLink` values to identify enabled and enforced link entries.
+2. Counts distinct GPO GUIDs that have at least one enabled link; incomplete collection cannot establish effective coverage.
 3. Compares linked GPO count vs total GPO count and reports both metrics in Markdown.
 
 #### Related Tests
 
-- `Test-MtAdGpoTotalCount` - Total GPO inventory
-- `Test-MtAdGpoUnlinkedCount` - GPOs not linked anywhere
-- `Test-MtAdGpoCreatedBefore2020Count` - Potentially legacy GPOs
-- `Test-MtAdGpoChangedBefore2020Count` - Potentially stale GPOs
+- **AD-GPO-01 — GPO inventory should be investigated** — `Test-MtAdGpoTotalCount` — Inventories all GPOs.
+- **AD-GPO-04 — GPOs should have at least one link** — `Test-MtAdGpoUnlinkedCount` — Identifies unlinked GPOs.
+- **AD-GPO-02 — GPOs should be modified within the configured age limit** — `Test-MtAdGpoStale` — Reviews GPO modification age.
 
 <!--- Results --->
 %TestResult%

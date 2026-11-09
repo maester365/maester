@@ -39,8 +39,7 @@ This test identifies privileged groups (those with adminCount = 1 or well-known 
 
 #### Related Tests
 
-- `Test-MtAdGroupPrivilegedWithMembersDetails` - Lists privileged groups with member details
-- `Test-MtAdGroupEmptyNonPrivilegedCount` - Reviews non-privileged empty groups
+- **AD-GMC-08 — Empty non-privileged group count should be investigated** — `Test-MtAdGroupEmptyNonPrivilegedCount` — Reviews empty unprotected groups separately.
 
 <!--- Results --->
 %TestResult%

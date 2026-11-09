@@ -1,7 +1,7 @@
 ﻿function Test-MtAdOptionalFeatureCount {
     <#
     .SYNOPSIS
-    Retrieves the count of Active Directory optional features.
+    Inventories available and enabled Active Directory optional features.
 
     .DESCRIPTION
     Active Directory optional features provide additional functionality beyond the
@@ -23,7 +23,7 @@
     #>
     [MaesterTest(
         Id = 'AD-FEAT-01',
-        Title = 'Optional feature count should be investigated',
+        Title = 'Optional features and enabled scopes should be investigated',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'infrastructure',
@@ -42,28 +42,36 @@
 
     $adState = Get-MtADDomainState -Categories @('OptionalFeatures')
 
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.OptionalFeatures) {
+        throw 'Optional-feature inventory could not be retrieved.'
     }
 
     $optionalFeatures = $adState.OptionalFeatures
-    $featureCount = ($optionalFeatures | Measure-Object).Count
-
-    $testResult = $true
-
-    $result = "| Property | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| Total Optional Features | $featureCount |" + "`n"
-
-    if ($featureCount -gt 0) {
-        $result += "| Available Features | $(($optionalFeatures | ForEach-Object { $_.Name }) -join ', ') |" + "`n"
+    $featureCount = @($optionalFeatures).Count
+    foreach ($feature in $optionalFeatures) {
+        if ($feature.PSObject.Properties.Name -notcontains 'IsEnabled' -or $null -eq $feature.IsEnabled) {
+            throw "Enabled status could not be retrieved for optional feature '$($feature.Name)'."
+        }
     }
-
-    $testResultMarkdown = "Active Directory optional features have been enumerated. These features extend AD capabilities beyond base functionality.`n`n%TestResult%"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-
-    return $testResult
+    $enabledFeatures = @($optionalFeatures | Where-Object { $_.IsEnabled -eq $true })
+    $result = "| Metric | Value |`n| --- | --- |`n"
+    $result += "| Available optional features | $featureCount |`n"
+    $result += "| Enabled optional features | $($enabledFeatures.Count) |`n`n"
+    $result += "| Feature | Enabled | Enabled scopes |`n| --- | --- | --- |`n"
+    foreach ($feature in $optionalFeatures) {
+        $scopeText = 'None'
+        if ($feature.PSObject.Properties.Name -notcontains 'EnabledScopes') {
+            throw "Enabled scopes were not collected for optional feature '$($feature.Name)'."
+        }
+        if ($null -eq $feature.EnabledScopes) {
+            throw "Enabled scopes could not be retrieved for optional feature '$($feature.Name)'."
+        }
+        if (@($feature.EnabledScopes).Count -gt 0) {
+            $scopeText = (@($feature.EnabledScopes) | ForEach-Object { ([string]$_).Replace('|', '&#124;') }) -join '<br>'
+        }
+        $name = ([string]$feature.Name).Replace('|', '&#124;')
+        $result += "| $name | $($feature.IsEnabled) | $scopeText |`n"
+    }
+    Add-MtTestResultDetail -Result "Optional features and their enabled scopes are listed for review. Coverage crosswalk: former AD-CFG-04 and AD-FEAT-02 are included here under the single directory-configuration Feature. AD-FOR-04 separately checks whether Recycle Bin is enabled and links this inventory.`n`n$result" -Investigate
+    return $true
 }

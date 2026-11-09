@@ -1,78 +1,90 @@
-﻿function Test-MtAdUserPasswordNeverExpiresCount {
+﻿function Test-MtAdUserEffectivePasswordExpiration {
     <#
     .SYNOPSIS
-    Counts enabled user accounts with passwords set to never expire.
-
-    .DESCRIPTION
-    This test identifies enabled user accounts where password expiration has been
-    disabled. Non-expiring passwords can weaken password hygiene and are often used for
-    legacy or service accounts that require stronger compensating controls.
-
+    Assesses password expiration for enabled users using their effective policy and account override.
     .EXAMPLE
-    Test-MtAdUserPasswordNeverExpiresCount
-
+    Invoke-MtTest -Id AD-USER-03
+    Assess enabled user password expiration; investigate missing effective policy data.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserPasswordNeverExpiresCount
+    https://maester.dev/docs/tests/AD-USER-03
     #>
     [MaesterTest(
         Id = 'AD-USER-03',
-        Title = 'Non-expiring password user count should be retrievable',
+        Title = 'Enabled users should meet the selected effective password expiration policy',
         Product = 'ad',
         Feature = 'users',
         Area = 'authentication',
         ResourceType = 'User',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
         Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:user:ReadProperty', 'ActiveDirectory:Ldap:msDS-PasswordSettings:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # CurrentNist does not require periodic rotation; LegacyRotation enforces it.
+        [Alias('Profile')][ValidateSet('CurrentNist', 'LegacyRotation')][string] $ConfigurationProfile = 'CurrentNist',
+        # Maximum allowed age in days for organization-selected LegacyRotation.
+        [ValidateRange(1, 3650)][int] $MaximumAgeDays = 90,
+        # Confirm complete access to PSOs and computed user resultant-policy attributes.
+        [bool] $PolicyInventoryReadAccessConfirmed = $false
+    )
 
-    Write-Verbose "Starting Test-MtAdUserPasswordNeverExpiresCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
+    $state = Get-MtADDomainState -Categories @('Domain', 'FineGrainedPasswordPolicies', 'Users')
+    if ($null -eq $state -or $null -eq $state.Domain -or $null -eq $state.Users -or $null -eq $state.FineGrainedPasswordPolicies) {
+        throw 'Domain, user or PSO inventory was not returned.'
     }
-    Write-Verbose "Filtering/counting user password never expires count"
-
-    $users = @($adState.Users)
-    $enabledUsers = @($users | Where-Object { $_.Enabled -eq $true })
-    $nonExpiringUsers = @($enabledUsers | Where-Object { $_.PasswordNeverExpires -eq $true })
-
-    $nonExpiringCount = $nonExpiringUsers.Count
-    $enabledCount = $enabledUsers.Count
-    $totalCount = $users.Count
-
-    $testResult = $null -ne $adState.Users
-
-    if ($testResult) {
-        $percentage = if ($enabledCount -gt 0) {
-            [Math]::Round(($nonExpiringCount / $enabledCount) * 100, 2)
-        } else {
-            0
+    $users = @($state.Users)
+    $policies = @($state.FineGrainedPasswordPolicies)
+    $usage = Get-MtAdPasswordPolicyUsage -Users $users -Policies $policies
+    if ($usage.EnabledCount -eq 0) {
+        Add-MtTestResultDetail -Result 'No enabled users were visible; effective password expiration cannot be established.' -Investigate
+        return $true
+    }
+    $policyByDn = @{}
+    foreach ($policy in $policies) { $policyByDn[[string]$policy.DistinguishedName] = $policy }
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $lines.Add('| User | Effective policy | NeverExpires override | Max age | Status |') | Out-Null
+    $lines.Add('| --- | --- | --- | --- | --- |') | Out-Null
+    $passed = $true
+    $unknownDefault = $false
+    $overrideReview = $false
+    foreach ($user in $users) {
+        if (-not $user.Enabled) { continue }
+        if ($null -eq $user.PSObject.Properties['PasswordNeverExpires'] -or $null -eq $user.PasswordNeverExpires) {
+            throw "PasswordNeverExpires is missing for enabled user '$($user.Name)'."
         }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Enabled Users | $enabledCount |" + "`n"
-        $result += "| Enabled Users with Password Never Expires | $nonExpiringCount |" + "`n"
-        $result += "| Non-Expiring Percentage (of enabled) | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory user objects have been analyzed. $nonExpiringCount out of $enabledCount enabled users ($percentage%) have non-expiring passwords.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory user objects. Ensure you have appropriate permissions and the Active Directory module is installed."
+        $dn = [string]$user.ResultantPasswordPolicyDN
+        if ([string]::IsNullOrWhiteSpace($dn) -and -not $PolicyInventoryReadAccessConfirmed) {
+            $unknownDefault = $true
+            $lines.Add("| $($user.Name) | Unconfirmed default-policy visibility | $($user.PasswordNeverExpires) | Unknown | Investigate |") | Out-Null
+            continue
+        }
+        $policy = if ([string]::IsNullOrWhiteSpace($dn)) { $state.Domain } else { $policyByDn[$dn] }
+        if ($null -eq $policy -or $null -eq $policy.PSObject.Properties['MaxPwdAge'] -or $null -eq $policy.MaxPwdAge -or $policy.MaxPwdAge -isnot [timespan]) {
+            throw "MaxPwdAge is missing or invalid for effective policy of '$($user.Name)'."
+        }
+        $age = [math]::Abs($policy.MaxPwdAge.TotalDays)
+        $valid = if ($ConfigurationProfile -eq 'CurrentNist') { $age -eq 0 } else { -not $user.PasswordNeverExpires -and $age -gt 0 -and $age -le $MaximumAgeDays }
+        if ($ConfigurationProfile -eq 'CurrentNist' -and $user.PasswordNeverExpires) { $overrideReview = $true }
+        if (-not $valid) { $passed = $false }
+        $policyName = if ([string]::IsNullOrWhiteSpace($dn)) { 'Default domain' } else { $policy.Name }
+        $status = if ($valid) { 'Pass' } else { 'Fail' }
+        $lines.Add("| $($user.Name) | $policyName | $($user.PasswordNeverExpires) | $age days | $status |") | Out-Null
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserPasswordNeverExpiresCount"
-
-    return $testResult
+    $table = $lines -join "`n"
+    if (-not $passed) {
+        Add-MtTestResultDetail -Result "Some visible enabled users do not meet the $ConfigurationProfile password expiration policy criterion. Correct the effective PSO/default policy; do not set per-account PasswordNeverExpires merely to satisfy CurrentNist. Review account overrides separately. Unconfirmed default-policy rows do not hide known failures.`n`n$table"
+        return $false
+    }
+    if ($unknownDefault -or $overrideReview -or -not $PolicyInventoryReadAccessConfirmed) {
+        Add-MtTestResultDetail -Result "Review unconfirmed default-policy visibility or per-account PasswordNeverExpires overrides separately. CurrentNist is satisfied through the effective policy, not account overrides; this is not proof of complete policy coverage.`n`n$table" -Investigate
+        return $true
+    }
+    Add-MtTestResultDetail -Result "Well done. Visible enabled users meet the $ConfigurationProfile effective password expiration criterion; this does not verify compromise response or MFA.`n`n$table"
+    return $true
 }

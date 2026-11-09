@@ -1,7 +1,7 @@
 ﻿function Test-MtAdGpoEnforcedCount {
     <#
     .SYNOPSIS
-    Counts enforced GPO links (links that block inheritance).
+    Inventories enforced GPO links, which override blocked inheritance.
 
     .DESCRIPTION
     This test retrieves Active Directory GPO link state information using Get-MtADGpoState and then counts
@@ -13,7 +13,7 @@
     .EXAMPLE
     Test-MtAdGpoEnforcedCount
 
-    Returns $true when no enforced GPO links are detected, $false when enforced GPO links exist.
+    Reports Investigate when enforced-link inventory is available, regardless of count.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoEnforcedCount
@@ -40,11 +40,15 @@
     $gpoState = Get-MtADGpoState
 
     if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'GPO state is unavailable; enforced-link counts cannot be determined.'
         return $null
     }
 
     $gpoLinks = $gpoState.GPOLinks
+    if ($null -eq $gpoLinks) {
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'GPO link inventory is unavailable; enforced-link counts cannot be determined.'
+        return
+    }
 
     $totalLinks = if ($null -ne $gpoLinks) { ($gpoLinks | Measure-Object).Count } else { 0 }
 
@@ -64,8 +68,8 @@
 
     $enforcedPercentage = if ($totalLinks -gt 0) { [math]::Round(($enforcedCount / $totalLinks) * 100, 2) } else { 0 }
 
-    # Security intent: flag environments that use enforced links (they override inheritance blocking).
-    $testResult = $enforcedCount -eq 0
+    # Enforcement can be intentional; this inventory requires review, not a failure.
+    $testResult = $null -ne $gpoState.GPOLinks
 
     $resultTable = "| Metric | Value |" + "`n"
     $resultTable += "| --- | --- |" + "`n"
@@ -73,8 +77,8 @@
     $resultTable += "| Enforced GPO link entries | $enforcedCount |" + "`n"
     $resultTable += "| Enforced link ratio | $enforcedPercentage% |" + "`n"
 
-    if ($testResult) {
-        $recommendation = "✅ No enforced GPO links (inheritance-blocking links) were detected. Active Directory Group Policy Objects have been analyzed successfully."
+    if ($enforcedCount -eq 0) {
+        $recommendation = 'No enforced GPO links were detected in the visible inventory. Review link and inheritance design against the intended policy scope.'
     }
     else {
         $recommendation = "⚠️ Enforced GPO links were detected ($enforcedCount). Enforced links override inheritance blocking at child OUs, so they can significantly impact security posture. Review and use enforced links sparingly for critical policies that must apply everywhere."
@@ -83,6 +87,6 @@
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
     return $testResult
 }

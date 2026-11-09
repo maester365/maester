@@ -21,7 +21,7 @@
     #>
     [MaesterTest(
         Id = 'AD-TRUST-06',
-        Title = 'Trust stale count should be investigated',
+        Title = 'Trust validation age and unknown dates should be investigated',
         Product = 'ad',
         Feature = 'trusts',
         Area = 'external-access',
@@ -46,24 +46,24 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory trust inventory was not returned.'
     }
 
     $trusts = $adState.Trusts
+    if ($null -eq $trusts) { throw 'Active Directory trusts were not returned.' }
     $totalCount = ($trusts | Measure-Object).Count
 
     # Define stale threshold
     $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
 
     # Count stale trusts (those not validated within the configured threshold)
-    $staleTrusts = $trusts | Where-Object {
-        $null -ne $_.LastValidated -and $_.LastValidated -lt $staleThreshold
-    }
+    $staleTrusts = @($trusts | Where-Object {
+        $null -ne $_.LastValidated -and [datetime]$_.LastValidated -lt $staleThreshold
+    })
     $staleCount = ($staleTrusts | Measure-Object).Count
 
     # Count trusts with unknown validation status (null LastValidated)
-    $unknownTrusts = $trusts | Where-Object { $null -eq $_.LastValidated }
+    $unknownTrusts = @($trusts | Where-Object { $null -eq $_.LastValidated })
     $unknownCount = ($unknownTrusts | Measure-Object).Count
     $mostRecentValidation = $trusts |
         Where-Object { $null -ne $_.LastValidated } |
@@ -75,8 +75,8 @@
         $mostRecentValidation = $mostRecentValidation.ToString('yyyy-MM-dd')
     }
 
-    # Test passes if we successfully retrieved trust data
-    $testResult = $true
+    # The safe LDAP inventory has no LastValidated field. Never infer validation from whenChanged.
+    $testResult = $null -ne $adState.Trusts
 
     # Generate markdown results
     $result = "| Metric | Value |" + "`n"
@@ -84,18 +84,35 @@
     $result += "| Total Trusts | $totalCount |" + "`n"
     $result += "| Stale Trusts (>$StaleThresholdDays days) | $staleCount |" + "`n"
     $result += "| Unknown Validation Status | $unknownCount |" + "`n"
-    $result += "| Valid Trusts | $($totalCount - $staleCount - $unknownCount) |" + "`n" + "`n"
+    $result += "| Known dates within threshold | $($totalCount - $staleCount - $unknownCount) |" + "`n" + "`n"
+    if ($totalCount -gt 0) {
+        $result += "| Target | Direction | Type | Last validated | Days since validation | Assessment |`n"
+        $result += "| --- | --- | --- | --- | --- | --- |`n"
+        foreach ($trust in ($trusts | Sort-Object TrustPartner)) {
+            if ($null -eq $trust.LastValidated) {
+                $date = 'Unknown'
+                $days = 'Unknown'
+                $assessment = 'Cannot assess from LDAP inventory'
+            } else {
+                $validated = [datetime]$trust.LastValidated
+                $date = $validated.ToString('yyyy-MM-dd')
+                $days = [Math]::Floor(((Get-Date) - $validated).TotalDays)
+                $assessment = if ($validated -lt $staleThreshold) { 'Older than threshold' } else { 'Within threshold' }
+            }
+            $result += "| $($trust.TrustPartner) | $($trust.Direction) | $($trust.TrustTypeName) | $date | $days | $assessment |`n"
+        }
+    }
 
     if ($totalCount -eq 0) {
         $testResultMarkdown = "No trusts are configured in this domain. The analysis would change if one or more trusts were created.`n`n%TestResult%"
     } elseif ($staleCount -eq 0 -and $unknownCount -eq $totalCount) {
-        $testResultMarkdown = "No stale trusts detected. None of the $totalCount configured trusts has a recorded validation date, so staleness cannot be determined from available data.`n`n%TestResult%"
+        $testResultMarkdown = "Validation age is unknown for all $totalCount configured trusts. The safe LDAP inventory has no persisted last-validation timestamp; no stale-trust assertion can be made. Do not substitute trust object modification time.`n`n%TestResult%"
     } elseif ($staleCount -eq 0 -and $unknownCount -gt 0) {
-        $testResultMarkdown = "No stale trusts detected. $unknownCount trust(s) have an unknown validation status. The remaining $($totalCount - $unknownCount) configured trust(s) have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "No dated trust exceeds $StaleThresholdDays days, but $unknownCount trust(s) have no recorded validation date and cannot be assessed. The most recent known validation date was $mostRecentValidation.`n`n%TestResult%"
     } elseif ($staleCount -eq 0) {
-        $testResultMarkdown = "All $totalCount configured trusts have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "All $totalCount trusts with known validation dates fall within $StaleThresholdDays days. The most recent recorded date was $mostRecentValidation.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Found $staleCount stale trust(s) that have not been validated for more than $StaleThresholdDays days. These trusts should be reviewed and removed if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = "Found $staleCount trust(s) with a recorded validation date older than $StaleThresholdDays days; $unknownCount trust(s) remain unassessable. Review the dated records and verify trusts independently.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

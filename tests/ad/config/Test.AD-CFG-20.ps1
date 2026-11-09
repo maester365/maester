@@ -1,25 +1,18 @@
 ﻿function Test-MtAdCrlDistributionPointsCount {
     <#
     .SYNOPSIS
-    Counts the CRL distribution points configured in Active Directory.
-
+    Inventories Active Directory CRL distribution point objects.
     .DESCRIPTION
-    This test retrieves the count of CRL (Certificate Revocation List) distribution points
-    configured in the Active Directory Public Key Services container. CRL distribution points
-    are essential for publishing certificate revocation information.
-
+    Reports object names, distinguished names and whether a CRL value was published; it does not assess reachability or revocation health.
     .EXAMPLE
-    Test-MtAdCrlDistributionPointsCount
-
-    Returns $true if CRL distribution point data is accessible, $false otherwise.
-    The test result includes the count of CRL distribution points.
-
+    Invoke-MtTest -Id AD-CFG-20
+    Review CRL distribution point metadata manually; this does not check reachability.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdCrlDistributionPointsCount
+    https://maester.dev/docs/tests/AD-CFG-20
     #>
     [MaesterTest(
         Id = 'AD-CFG-20',
-        Title = 'CRL distribution points count should be retrievable',
+        Title = 'CRL distribution point inventory',
         Product = 'ad',
         Feature = 'certificate-services',
         Area = 'infrastructure',
@@ -34,37 +27,5 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdCrlDistributionPointsCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Configuration')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $config = $adState.Configuration
-    $cdpObjects = $config.CrlDistributionPoints
-    $cdpCount = ($cdpObjects | Measure-Object).Count
-
-    # Test passes if we successfully retrieved the data
-    $testResult = $null -ne $cdpObjects
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| CRL Distribution Points | $cdpCount |" + "`n"
-
-        $testResultMarkdown = "Active Directory CRL distribution points have been analyzed. $cdpCount CRL distribution point(s) found.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve CRL distribution point information from Active Directory. Ensure you have appropriate permissions."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    return Invoke-MtAdConfigurationInventoryReport -Kind CDP
 }

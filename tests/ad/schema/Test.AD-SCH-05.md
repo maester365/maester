@@ -1,16 +1,6 @@
-The Local Administrator Password Solution (LAPS) is a critical security tool that:
+Checks whether a **complete Windows LAPS or legacy Microsoft LAPS schema pair** is present in Active Directory. Windows LAPS uses `msLAPS-Password` and `msLAPS-PasswordExpirationTime`; legacy Microsoft LAPS uses `ms-Mcs-AdmPwd` and `ms-Mcs-AdmPwdExpirationTime`. Either complete pair satisfies schema readiness. The result identifies both partial pairs so a missing partner attribute cannot masquerade as readiness.
 
-- **Manages local admin passwords**: Automatically rotates passwords on domain-joined computers
-- **Prevents lateral movement**: Eliminates shared local administrator passwords
-- **Secure storage**: Stores passwords securely in Active Directory attributes
-- **Access control**: Controls who can retrieve local administrator passwords
-- **Audit trail**: Logs password access for compliance
-
-Without LAPS, organizations commonly face these risks:
-- **Pass-the-hash attacks**: Attackers use shared local credentials to move laterally
-- **Persistent access**: Compromised local accounts provide ongoing access
-- **Credential stuffing**: Shared passwords reused across multiple systems
-- **Compliance failures**: Many frameworks require unique local admin passwords
+LAPS helps prevent lateral movement from shared local administrator passwords by allowing unique, rotated passwords. **Schema readiness is not deployment proof**: a passing result does not establish that clients use LAPS, rotation works, permissions are restricted or access is audited. The check reads schema *names* (`lDAPDisplayName`) only, never password values; `msLAPS-Password` and `ms-Mcs-AdmPwd` are secrets and must not be collected.
 
 #### Control Type
 
@@ -18,23 +8,24 @@ Without LAPS, organizations commonly face these risks:
 
 #### Security Recommendation
 
-Deploy LAPS across your entire domain:
+Choose the supported LAPS implementation for the environment, complete its schema attributes and separately configure password policy, read permissions and monitoring. Prefer Windows LAPS when migrating a legacy deployment; do not assume a schema extension itself rotates any password.
 
-1. **Install LAPS**: Download from Microsoft and extend the AD schema
-2. **Group Policy**: Configure password rotation policies (recommended: every 30 days)
-3. **Access controls**: Limit who can read the ms-Mcs-AdmPwd attribute
-4. **Monitoring**: Alert on password retrieval events
-5. **Legacy LAPS**: Consider upgrading to Windows LAPS (built into Windows 11/Server 2022)
+#### Remediation action
+
+1. [Extend the Active Directory schema for Windows LAPS](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-windows-server-active-directory#update-the-windows-server-active-directory-schema), or complete the schema for an approved legacy Microsoft LAPS deployment.
+2. Verify both attributes of the selected implementation are present, then separately deploy LAPS policy, access controls, auditing and password rotation to applicable devices.
 
 #### How the Test Works
 
-This test checks for the presence of LAPS schema attributes (ms-Mcs-AdmPwd) to determine if LAPS has been installed and configured in the Active Directory environment.
+The check examines the collected schema attribute names for each complete pair. It reports which Windows LAPS and legacy LAPS names are present or missing; either complete pair passes, but a partial pair alone does not.
 
 #### Related Tests
 
-- `Test-MtAdComputerUnconstrainedDelegationCount` - Check for delegation risks
-- `Test-MtAdUserPasswordNeverExpiresCount` - Identify password policy gaps
-- `Test-MtAdPasswordComplexityRequired` - Verify password policies
+- **AD-SCH-03 — Schema version and class definitions should be investigated** — `Test-MtAdSchemaVersionEntryCount` — Reviews version and class definitions separately from LAPS readiness.
+
+Schema readiness supports the LAPS prerequisites for NIST SP 800-53 Rev. 5 **IA-5** (authenticator management), but does not alone demonstrate password management is operating. AC-6(2), concerning use of non-privileged accounts for nonsecurity functions, is not assessed by this check.
+
+Microsoft has deprecated legacy Microsoft LAPS and recommends migration to Windows LAPS. A legacy-only pass preserves visibility of an existing implementation; it is not an endorsement of a new legacy deployment or proof that migration is complete.
 
 <!--- Results --->
 %TestResult%

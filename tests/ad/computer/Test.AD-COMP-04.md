@@ -23,12 +23,12 @@ The standard primary groups for computers are:
 
 #### How the Test Works
 
-This test examines the `primaryGroupId` attribute of all enabled computer accounts and identifies those where the value is not 515, 516, or 521.
+This test examines the `primaryGroupId` attribute of all enabled computer accounts. Non-DC devices must use 515. Groups 516 and 521 are accepted only for accounts identified in the collected DC server inventory, never because the account claims that group. A non-DC device claiming a DC group is listed as a finding; missing inventory or primary-group data produces Error.
 
 #### Related Tests
 
-- `Test-MtAdComputerSidHistoryCount` - Identifies computers with migration artifacts
-- `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
+- **AD-COMP-05 — Computer SID History count should be retrievable** — `Test-MtAdComputerSidHistoryCount` — Inventories migration-related SIDs.
+- **AD-COMP-07 — Computer OU count should be retrievable** — `Test-MtAdComputerOUCount` — Inventories computer placement.
 
 <!--- Results --->
 %TestResult%

@@ -1,27 +1,18 @@
 ﻿function Test-MtAdCrossForestReferencesCount {
     <#
     .SYNOPSIS
-    Retrieves the count of cross-forest references configured in the forest.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test retrieves the count of cross-forest references in the Active Directory forest.
-    Cross-forest references are objects that represent security principals from trusted external forests.
-    These references enable authentication and authorization across forest boundaries.
-    Understanding cross-forest references is important for assessing the security posture
-    of multi-forest environments and identifying potential trust relationships.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdCrossForestReferencesCount
-
-    Returns $true if cross-forest reference data is accessible.
-    The test result includes the count of configured cross-forest references.
-
+    Invoke-MtTest -Id AD-FORS-04
+    Review the forest cross-reference inventory manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdCrossForestReferencesCount
+    https://maester.dev/docs/tests/AD-FORS-04
     #>
     [MaesterTest(
         Id = 'AD-FORS-04',
-        Title = 'Cross-forest references count should be retrievable',
+        Title = 'Forest cross-reference inventory for review',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'external-access',
@@ -36,45 +27,8 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdCrossForestReferencesCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $forest = $adState.Forest
-    $crossForestReferences = $forest.CrossForestReferences
-    $referenceCount = ($crossForestReferences | Measure-Object).Count
-
-    # Test passes if we successfully retrieved forest data
-    $testResult = $null -ne $crossForestReferences
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Cross-Forest Reference Count | $referenceCount |" + "`n"
-        $result += "| Forest Name | $($forest.Name) |" + "`n"
-        $result += "| Root Domain | $($forest.RootDomain) |" + "`n"
-
-        if ($referenceCount -gt 0) {
-            $result += "`n**Note:** Cross-forest references exist. Review these references to ensure they represent legitimate trust relationships." + "`n"
-        } else {
-            $result += "`n**Note:** No cross-forest references found. This is expected in single-forest environments." + "`n"
-        }
-
-        $testResultMarkdown = "The Active Directory forest cross-forest references have been analyzed successfully.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory cross-forest reference information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Forest')
+    if (-not $state.Forest -or $null -eq $state.Forest.CrossForestReferences) { throw 'Forest cross-reference inventory not collected.' }
+    $refs = @($state.Forest.CrossForestReferences)
+    Add-MtTestResultDetail -Result "Cross-reference metadata entries: $($refs.Count). CrossRefs describe naming contexts; they do not establish trust, principal access or cross-forest authentication. Review trust objects separately." -Investigate
 }

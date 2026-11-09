@@ -5,9 +5,7 @@ The tombstone lifetime determines how long deleted Active Directory objects are 
 - **Backup Recovery**: Aligns with backup retention strategies for directory recovery
 - **Compliance**: Some regulations require specific retention periods for directory data
 
-**Default Values**:
-- **180 days**: Default for forests created on Windows Server 2003 SP1 and later
-- **60 days**: Default for older forests (Windows 2000/2003 RTM)
+When `tombstoneLifetime` is **not set**, Active Directory uses an effective **60 days** even in an upgraded forest. Newer forests can have an explicitly configured 180-day value; this check distinguishes the stored attribute from the effective value.
 
 #### Control Type
 
@@ -15,7 +13,8 @@ The tombstone lifetime determines how long deleted Active Directory objects are 
 
 #### Security Recommendation
 
-- **Minimum 180 Days**: Maintain at least 180 days for adequate recovery time
+- Choose a retention period appropriate to the recovery and replication window. Do not assume an unset attribute means 180 days.
+- The configurable `RecommendedMinimumDays` advisory defaults to 180 days as an organization-selected review value, not a universal Microsoft requirement. Change it to match your approved recovery and replication policy.
 - **Align with Backups**: Ensure tombstone lifetime matches or exceeds backup retention
 - **Monitor Changes**: Track any modifications to this critical setting
 - **Document**: Record the current setting and any business requirements
@@ -28,12 +27,20 @@ Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configur
 
 #### How the Test Works
 
-This test retrieves the tombstone lifetime from the Directory Service configuration object and reports the current value along with recommendations.
+This test reports configured and effective lifetime, unset-default use, the advisory minimum and a visual meets/below-advisory indicator. It always reports **Investigate** when that inventory is available; advisory comparison does not create a retention pass/fail threshold. A missing Directory Service object or invalid lifetime remains Error. AD-CFG-01 was consolidated into this check.
+
+#### Coverage crosswalk
+
+Former AD-CFG-01 is covered here. The single primary `Feature` remains `directory-configuration`; forest context is linked through AD-FOR-01 and AD-FOR-04 rather than a second feature.
+
+#### Related links
+
+- [Microsoft ADTS: tombstone lifetime and unset-attribute default](https://learn.microsoft.com/openspecs/windows_protocols/ms-adts/1887de08-2a9e-4694-95e2-898cde411180)
 
 #### Related Tests
 
-- `Test-MtAdRecycleBinStatus` - Checks if the AD Recycle Bin is enabled
-- `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level (required for Recycle Bin)
+- **AD-FOR-04 — Active Directory Recycle Bin should be enabled** — `Test-MtAdRecycleBinStatus` — Reviews Recycle Bin status.
+- **AD-FOR-01 — Forest functional level meets connected-domain DC support** — `Test-MtAdForestFunctionalLevel` — Reviews the forest level against connected-domain DC support.
 
 <!--- Results --->
 %TestResult%

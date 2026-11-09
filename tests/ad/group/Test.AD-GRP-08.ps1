@@ -43,7 +43,7 @@
 
     # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory inventory is unavailable; the declared service gate is handled by the engine.'
         return $null
     }
 
@@ -53,6 +53,8 @@
     $domainLocalGroups = $groups | Where-Object { $_.GroupScope -eq "DomainLocal" }
     $domainLocalCount = ($domainLocalGroups | Measure-Object).Count
     $totalCount = ($groups | Measure-Object).Count
+    $globalCount = @($groups | Where-Object { $_.GroupScope -eq 'Global' }).Count
+    $universalCount = @($groups | Where-Object { $_.GroupScope -eq 'Universal' }).Count
 
     # Test passes if we successfully retrieved group data
     $testResult = $totalCount -gt 0
@@ -69,6 +71,8 @@
         $result += "| --- | --- |" + "`n"
         $result += "| Total Groups | $totalCount |" + "`n"
         $result += "| Domain Local Groups | $domainLocalCount |" + "`n"
+        $result += "| Global Groups | $globalCount |" + "`n"
+        $result += "| Universal Groups | $universalCount |" + "`n"
         $result += "| Domain Local Percentage | $percentage% |" + "`n" + "`n"
 
         $testResultMarkdown = "Active Directory group objects have been analyzed. $domainLocalCount out of $totalCount groups ($percentage%) are domain local groups (resources in local domain only).`n`n%TestResult%"
@@ -77,7 +81,7 @@
         $testResultMarkdown = "Unable to retrieve Active Directory group objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

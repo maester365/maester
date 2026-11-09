@@ -1,15 +1,12 @@
-Global Catalogs (GCs) maintain a partial replica of all objects in the Active Directory forest, enabling:
+Inventories each forest DC's Global Catalog status by default. Set `AssessmentMode` in `TestSettings[].Parameters` to choose `Inventory`, `AllGlobalCatalogs`, or `MinimumForestCatalog`.
 
-- **Forest-wide searches**: Users can search for objects across all domains in the forest
-- **Universal group membership caching**: Required for authentication when universal groups are used
-- **Efficient authentication**: Users can be authenticated even when their home domain's DC is unavailable
+- **Inventory** (default): reports GC, non-GC and unknown states as **Investigate** without imposing a placement baseline.
+- **AllGlobalCatalogs**: passes only when every inventoried DC is a GC; unknown status is Error, and any known non-GC is a failure.
+- **MinimumForestCatalog**: preserves the optional minimum-availability baseline of at least one forest GC; unknown status is Error.
 
-In a **single-domain environment**, all domain controllers should be Global Catalogs for optimal performance and redundancy. There's no downside to making all DCs GCs when there's only one domain.
+The Low priority and remediation attributes describe the optional policy failures. Inventory mode makes no pass/fail claim. Requiring all DCs to be GCs is an organizational choice, not a universal AD requirement.
 
-In a **multi-domain forest**, proper Global Catalog placement is critical:
-- Each site should have at least one GC for optimal authentication performance
-- Too few GCs can cause authentication delays and failures
-- Too many GCs can increase replication traffic
+Global Catalogs hold a partial replica of forest objects for directory searches and universal-group-related authentication. Placement requirements vary by site topology and application needs; a configured GC flag alone does not prove service health.
 
 #### Control Type
 
@@ -17,29 +14,21 @@ In a **multi-domain forest**, proper Global Catalog placement is critical:
 
 #### Security Recommendation
 
-1. **Single-domain forests**: Configure all DCs as Global Catalogs
-2. **Multi-domain forests**: Ensure each site has at least one GC, preferably in the same site as the users
-3. **Monitor GC health**: Regularly verify GCs are functioning properly
-4. **Plan for GC failure**: Ensure redundant GC coverage for business-critical sites
-5. **Universal group considerations**: If not using universal groups, GC requirements may be reduced, but GCs still provide benefits for directory searches
+Verify GC metadata, then plan GC placement and availability for the domain/site topology in Active Directory Sites and Services. Account for the Infrastructure Master placement exception in multi-domain domains that do not have all-GC DCs and have Recycle Bin disabled. A configured GC flag does not prove connectivity or service health. Check actual GC replication and client reachability independently.
 
 #### How the Test Works
 
-This test retrieves all domain controllers and identifies which are configured as Global Catalogs. The test reports:
-
-- Total number of domain controllers
-- Number of DCs configured as Global Catalogs
-- Number of DCs not configured as Global Catalogs
-- Names of non-GC DCs (if any exist)
-- Forest domain count to provide context for the configuration
-
-The test provides different guidance based on whether the forest is single-domain or multi-domain.
+Reports controller name, site and status with visual indicators, plus GC, non-GC and unknown counts. Inventory mode accepts incomplete per-controller status for investigation but still errors on missing/empty DC inventory. Policy modes require known statuses before evaluating their selected rule. The shared forest scope is unchanged.
 
 #### Related Tests
 
-- `Test-MtAdDcReadOnlyCount` - Analyzes RODC deployment
-- `Test-MtAdDcSiteCoverageCount` - Analyzes DC distribution across sites
-- `Test-MtAdForestDomainCount` - Determines the number of domains in the forest
+- **AD-DCD-03 — Read-only DC inventory for review** — `Test-MtAdDcReadOnlyCount` — Inventories read-only DCs.
+- **AD-DC-01 — Site DNs containing DC objects for review** — `Test-MtAdDcSiteCoverageCount` — Inventories DC site DNs.
+- **AD-FOR-02 — Forest domain inventory for review** — `Test-MtAdForestDomainCount` — Inventories forest domains.
+
+#### Related links
+
+* [Microsoft: Plan Global Catalog server placement](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/planning-global-catalog-server-placement)
 
 <!--- Results --->
 %TestResult%

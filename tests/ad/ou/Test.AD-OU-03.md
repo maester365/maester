@@ -1,33 +1,32 @@
-- Organizational Units that haven't been modified since before 2020 may represent:
-- Abandoned projects: OUs created for initiatives that were never completed or were abandoned
-- Outdated structure: Organizational units that no longer reflect current business structure
-- Directory clutter: Unused containers that make the directory harder to navigate
-- Potential security gaps: Stale OUs may have outdated permissions or Group Policy links
-- While stale OUs don't pose a direct security threat, they contribute to directory sprawl and can make administration more complex. They may also retain old permissions or Group Policy settings that are no longer appropriate.
+OU modification age inventory.
+
+The default review threshold is five calendar years since last modification, configurable with MaximumAgeYears. Modification age is not evidence of use, deactivation or account activity.
+
+An old OU modification timestamp is a prompt to inspect its purpose, delegation and policy links, not proof that the OU is unused or abandoned. A frequently used OU may have unchanged attributes for years.
 
 #### Control Type
 
 **Detective**
 
 #### Security Recommendation
-- Regularly review OUs that haven't been modified in several years:
-- Verify whether the OU is still needed for its original purpose
-- Check if the OU contains any objects (see `Test-MtAdOuEmptyCount`)
-- Review permissions and Group Policy links on stale OUs
-- Consider deleting or repurposing OUs that are no longer needed
-- Document the purpose of OUs to help future cleanup efforts
+
+1. Review the objects in **Active Directory Sites and Services** or **Active Directory Users and Computers**, as appropriate.
+2. Review the reported objects with the directory and network owners; update any outdated configuration only after checking intended topology and dependencies.
+
+Check OU contents, ACLs, GPO links and the responsible owner before deciding whether cleanup is warranted. Document useful but rarely modified OUs rather than deleting them based on age alone.
 
 #### How the Test Works
 
-- This test retrieves all Organizational Units from Active Directory and:
-- Examines the last modified timestamp of each OU
-- Counts OUs that haven't been modified since before January 1, 2020
-- Lists stale OUs with their last modification date and distinguished name
+Compares visible OU last-modification timestamps with the configurable `MaximumAgeYears` calendar-year review threshold and reports matching OUs. It does not measure access, child activity or last use.
 
 #### Related Tests
-- `Test-MtAdOuEmptyCount` - Identifies OUs with no objects
-- `Test-MtAdOuEmptyDetails` - Provides detailed list of empty OUs
-- `Test-MtAdGroupStaleCount` - Identifies groups not modified since before 2020
+
+- **AD-OU-04 — OUs with no selected visible direct children inventory** — `Test-MtAdOuEmptyCount` — Inventories OUs without selected visible children.
+- **AD-GRP-03 — Groups should be modified within the configured age** — `Test-MtAdGroupStaleCount` — Reviews group modification age separately.
+
+#### Related links
+
+* [Microsoft Learn: Reviewing OU Design Concepts](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/reviewing-ou-design-concepts)
 
 <!--- Results --->
 %TestResult%

@@ -16,7 +16,7 @@
 - Counts GPOs whose GpoStatus maps to a disabled state and reports totals and ratios.
 
 #### Related Tests
-- `Test-MtAdGpoAllSettingsDisabledDetails` and `Test-MtAdGpoSettingsDisabledCount`.
+- **AD-GPOS-07 — All disabled GPO settings details should be investigated** — `Test-MtAdGpoAllSettingsDisabledDetails` — Provides details for all disabled GPO settings.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

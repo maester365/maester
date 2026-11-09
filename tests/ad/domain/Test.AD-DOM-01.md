@@ -1,8 +1,6 @@
-The domain functional level determines which Active Directory features are available in your domain. Higher functional levels unlock important security capabilities:
+Checks that the connected domain's functional level equals the highest common level supported by its DCs. A lower level prevents use of newer directory capabilities; a level above collected DC support requires investigation of incompatible or stale inventory.
 
-- **Windows Server 2016+**: Enables features like privileged access management (PAM), temporary group membership, and enhanced authentication policies
-- **Windows Server 2012 R2+**: Provides access to claims-based authentication and compound authentication
-- **Security Posture**: Running at lower functional levels means missing modern security features that protect against contemporary attack vectors
+Higher functional levels enable capabilities such as privileged access management and authentication policies. Raising the level requires checking application compatibility as well as the DC operating systems; the configured level alone does not establish which features have been deployed.
 
 #### Control Type
 
@@ -10,26 +8,26 @@ The domain functional level determines which Active Directory features are avail
 
 #### Security Recommendation
 
-Aim to maintain your domain at the highest functional level supported by your domain controllers. Before raising the functional level:
+1. Verify the connected domain's DC inventory and operating-system releases; do not mix in other forest domains.
+2. Plan upgrades of legacy DCs and review application compatibility and recovery requirements.
+3. Raise the domain functional level only after every DC supports it. Windows Server 2025 uses level 10; Server 2016/2019/2022 use level 7. Missing or conflicting metadata must be resolved first.
 
-1. Verify all domain controllers are running a Windows Server version that supports the target level
-2. Test applications for compatibility with the higher functional level
-3. Plan the upgrade during a maintenance window
-4. Document the change and communicate to stakeholders
+Schedule and document the change with directory administrators after testing dependent applications.
 
 #### How the Test Works
 
-This test retrieves the current domain functional level from Active Directory and displays it along with basic domain information. The test is informational and helps you understand your current security capabilities.
+Compares the connected domain's functional level with the highest common supported level of its in-scope DCs. Missing or inconsistent DC OS evidence is not treated as a supported release; this is no longer an informational readout of the current level alone.
 
 #### Related Tests
 
-- `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level
-- `Test-MtAdDomainControllerCount` - Counts domain controllers in the domain
+- **AD-FOR-01 — Forest functional level meets connected-domain DC support** — `Test-MtAdForestFunctionalLevel` — Reviews the forest level against connected-domain DC support.
+- **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories domain controllers.
 
 #### Related links
 
-- [Microsoft Learn: Active Directory Domain Services functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-functional-levels)
-- [ANSSI Active Directory checkpoints: Insufficient forest and domains functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)
+* [Microsoft: Active Directory functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-functional-levels)
+* [Microsoft: Raise domain and forest functional levels](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/raise-domain-forest-functional-levels)
+* [ANSSI: Insufficient forest and domain functional levels](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_functional_level)
 
 <!--- Results --->
 %TestResult%

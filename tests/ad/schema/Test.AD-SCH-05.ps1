@@ -1,19 +1,18 @@
 ﻿function Test-MtAdLapsInstalledStatus {
     <#
     .SYNOPSIS
-    Checks whether Local Administrator Password Solution (LAPS) is installed in Active Directory.
+    Checks whether Windows or legacy Microsoft LAPS schema attributes are present.
 
     .DESCRIPTION
-    This test checks if the Local Administrator Password Solution (LAPS) schema extensions
-    are present in Active Directory. LAPS is a Microsoft solution that manages local
-    administrator passwords on domain-joined computers, storing them securely in AD
-    and automatically rotating them on a scheduled basis.
+    This test inventories both complete LAPS schema pairs: Windows LAPS and legacy
+    Microsoft LAPS. Either complete pair satisfies this schema-readiness assessment.
+    Legacy artifacts remain visible even after migration. Schema presence alone does
+    not prove deployment, permissions, policy, encryption or password rotation.
 
     .EXAMPLE
     Test-MtAdLapsInstalledStatus
 
-    Returns $true if LAPS is installed, $false if not installed or unable to determine.
-    The test result includes LAPS installation status.
+    Returns $true when either complete LAPS schema pair is present.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtAdLapsInstalledStatus
@@ -21,7 +20,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-SCH-05',
-        Title = 'LAPS should be installed in Active Directory',
+        Title = 'Windows or legacy Microsoft LAPS schema should be ready in Active Directory',
         Product = 'ad',
         Feature = 'schema',
         Area = 'privileged-access',
@@ -30,7 +29,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1078.003', 'T1550.002'),
-        Control = ('nist-800-53-r5:IA-5', 'nist-800-53-r5:AC-6(2)'),
+        Control = 'nist-800-53-r5:IA-5',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:Schema/*:ReadProperty'),
         Author = 'soulemike'
@@ -41,50 +40,31 @@
 
     Write-Verbose "Starting Test-MtAdLapsInstalledStatus"
 
-    # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState -Categories @('Schema')
-
-    # If unable to retrieve AD data, skip the test
     if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+        throw 'Active Directory schema inventory was not returned.'
+    }
+    if ($null -eq $adState.SchemaObjects) { throw 'Active Directory schema objects were not returned.' }
+    $names = @($adState.SchemaObjects | ForEach-Object { $_.LdapDisplayName })
+    $passwordPresent = $names -contains 'msLAPS-Password'
+    $expirationPresent = $names -contains 'msLAPS-PasswordExpirationTime'
+    $legacyPresent = $names -contains 'ms-Mcs-AdmPwd'
+    $legacyExpirationPresent = $names -contains 'ms-Mcs-AdmPwdExpirationTime'
+    $windowsReady = $passwordPresent -and $expirationPresent
+    $legacyReady = $legacyPresent -and $legacyExpirationPresent
+
+    $result = "| Schema attribute | Present |`n| --- | --- |`n"
+    $result += "| msLAPS-Password | $passwordPresent |`n"
+    $result += "| msLAPS-PasswordExpirationTime | $expirationPresent |`n"
+    $result += "| Legacy ms-Mcs-AdmPwd | $legacyPresent |`n"
+    $result += "| Legacy ms-Mcs-AdmPwdExpirationTime | $legacyExpirationPresent |`n"
+    $result += "| Windows LAPS schema pair complete | $windowsReady |`n"
+    $result += "| Legacy Microsoft LAPS schema pair complete | $legacyReady |`n"
+    if ($windowsReady -or $legacyReady) {
+        Add-MtTestResultDetail -Result "Well done. At least one complete LAPS schema pair is present. Both variants are listed, including legacy artifacts. Validate policy, client configuration, access permissions and current per-device expiration data separately; schema readiness is not proof that passwords are managed or rotating.`n`n$result"
+        return $true
     }
 
-    # Check LAPS installation status
-    $lapsInstalled = $adState.LapsInstalled
-
-    # Test passes if LAPS is installed (compliance test)
-    $testResult = $lapsInstalled -eq $true
-
-    # Generate markdown results
-    $result = "| Property | Value |" + "`n"
-    $result += "| --- | --- |" + "`n"
-    $result += "| LAPS Installed | $(if ($lapsInstalled) { "Yes" } else { "No" }) |" + "`n"
-    $result += "| Status | $(if ($lapsInstalled) { "✅ Compliant" } else { "❌ Not Installed" }) |" + "`n" + "`n"
-
-    if ($lapsInstalled) {
-        $result += "**LAPS Schema Attributes:**" + "`n" + "`n"
-        $result += "The following LAPS attributes are present in the schema:" + "`n" + "`n"
-        $result += "| Attribute | Description |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| ms-Mcs-AdmPwd | Stores the local administrator password |" + "`n"
-        $result += "| ms-Mcs-AdmPwdExpirationTime | Stores the password expiration timestamp |" + "`n"
-
-        $testResultMarkdown = "✅ Local Administrator Password Solution (LAPS) is installed and configured in Active Directory. Local administrator passwords are being managed and rotated automatically.`n`n%TestResult%"
-    } else {
-        $result += "**Recommendation:**" + "`n" + "`n"
-        $result += "LAPS is not installed. Consider deploying LAPS to improve security by:" + "`n"
-        $result += "- Automatically rotating local administrator passwords" + "`n"
-        $result += "- Storing passwords securely in Active Directory" + "`n"
-        $result += "- Preventing lateral movement using shared local credentials" + "`n" + "`n"
-        $result += "Download LAPS from: https://www.microsoft.com/download/details.aspx?id=46899"
-
-        $testResultMarkdown = "❌ Local Administrator Password Solution (LAPS) is not installed. Local administrator passwords may be shared across multiple systems, creating a security risk.`n`n%TestResult%"
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result "Neither Windows LAPS nor legacy Microsoft LAPS has a complete schema pair. Verify the intended deployment and schema extension. Partial or absent schema attributes do not demonstrate readiness; this check does not read password values.`n`n$result"
+    return $false
 }

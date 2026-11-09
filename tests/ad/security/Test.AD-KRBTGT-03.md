@@ -39,8 +39,8 @@ This test retrieves the KRBTGT account and:
 
 #### Related Tests
 
-- `Test-MtAdKrbtgtPasswordLastSet` - Checks KRBTGT password age
-- `Test-MtAdKrbtgtLastLogon` - Verifies no interactive logons
+- **AD-KRBTGT-01 — KRBTGT password age should not exceed the configured maximum** — `Test-MtAdKrbtgtPasswordLastSet` — Checks KRBTGT password age.
+- **AD-KRBTGT-02 — KRBTGT last logon should be investigated** — `Test-MtAdKrbtgtLastLogon` — Investigates the KRBTGT last-logon value; this alone does not verify absence of interactive logons.
 
 <!--- Results --->
 %TestResult%

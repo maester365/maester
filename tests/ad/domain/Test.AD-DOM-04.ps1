@@ -1,25 +1,18 @@
 ﻿function Test-MtAdRidsRemaining {
     <#
     .SYNOPSIS
-    Retrieves the number of remaining RIDs (Relative Identifiers) in the domain.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test retrieves the count of available RIDs in the Active Directory domain.
-    RIDs are used to generate unique SIDs for new security principals. Running out
-    of RIDs would prevent the creation of new users, groups, or computers.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdRidsRemaining
-
-    Returns $true if RID data is accessible.
-    The test result includes the number of remaining RIDs.
-
+    Invoke-MtTest -Id AD-DOM-04
+    Review RID Manager available pool boundaries manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdRidsRemaining
+    https://maester.dev/docs/tests/AD-DOM-04
     #>
     [MaesterTest(
         Id = 'AD-DOM-04',
-        Title = 'RIDs remaining should be retrievable',
+        Title = 'RID Manager available pool boundaries for review',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
@@ -27,61 +20,24 @@
         Severity = 'Info',
         Mitre = 'None',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:domainDNS.rIDAvailablePool:ReadProperty'),
+        Permission = ('ActiveDirectory:Ldap:rIDManager.rIDAvailablePool:ReadProperty'),
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdRidsRemaining"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Domain')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $domain = $adState.Domain
-
-    # Get RID available pool from the collected domain object
-    $ridsRemaining = $domain.RIDAvailablePool
-
-    # RID pool is a 64-bit value where high 32 bits are total and low 32 bits are used
-    # Calculate remaining RIDs
-    if ($null -ne $ridsRemaining) {
-        $totalRIDs = [math]::Floor($ridsRemaining / [math]::Pow(2, 32))
-        $usedRIDs = $ridsRemaining -band 0xFFFFFFFF
-        $availableRIDs = $totalRIDs - $usedRIDs
-    } else {
-        $availableRIDs = $null
-    }
-
-    # Test passes if we successfully retrieved domain data (RID pool is optional)
-    $testResult = $null -ne $domain
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Available RIDs | $availableRIDs |" + "`n"
-        $result += "| Total RIDs | $totalRIDs |" + "`n"
-        $result += "| Used RIDs | $usedRIDs |" + "`n"
-        $result += "| Domain | $($domain.Name) |" + "`n"
-
-        $percentageUsed = if ($totalRIDs -gt 0) { [Math]::Round(($usedRIDs / $totalRIDs) * 100, 2) } else { 0 }
-        $result += "| Percentage Used | $percentageUsed% |" + "`n"
-
-        $testResultMarkdown = "The RID pool status has been retrieved. There are $availableRIDs RIDs remaining in the domain.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve RID information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Domain')
+    $raw = $state.Domain.RIDAvailablePool
+    if ($null -eq $raw) { throw 'RID Manager rIDAvailablePool is unavailable; it is not a domain-root property.' }
+    $pool = [uint64]$raw
+    $upper = $pool -shr 32
+    $lower = $pool -band 4294967295UL
+    if ($upper -eq 0 -or $lower -gt $upper) { throw "Invalid RID Manager pool boundaries: $upper / $lower." }
+    $metrics = Format-MtAdSummaryTable -Values ([ordered]@{
+        'RID Manager pool upper bound' = $upper
+        'Next allocation boundary' = $lower
+        'Boundary difference' = $upper - $lower
+    })
+    Add-MtTestResultDetail -Result "Review RID consumption and allocation. These boundaries are not a measured count of unused DC-local RID pools.`n`n$metrics" -Investigate
 }

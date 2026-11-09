@@ -1,30 +1,25 @@
 ﻿function Test-MtAdDomainNameStandardCompliance {
     <#
     .SYNOPSIS
-    Checks if domain names comply with RFC standards.
-
+    Checks forest domain DNS names and lists any invalid names.
     .DESCRIPTION
-    This test verifies that domain names in the forest comply with RFC 1123 and RFC 952
-    naming standards. Non-compliant domain names can cause DNS resolution issues,
-    certificate problems, and compatibility issues with various applications.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdDomainNameStandardCompliance
-
-    Returns $true if domain name compliance data is accessible.
-    The test result includes the count of non-compliant domain names.
-
+    Invoke-MtTest -Id AD-DOM-05
+    Assess forest domain DNS names for valid syntax.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdDomainNameStandardCompliance
+    https://maester.dev/docs/tests/AD-DOM-05
     #>
     [MaesterTest(
         Id = 'AD-DOM-05',
-        Title = 'Domain name standard compliance should be retrievable',
+        Title = 'Forest domain DNS names have valid syntax',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty'),
@@ -34,65 +29,14 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdDomainNameStandardCompliance"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    $state = Get-MtADDomainState -Categories @('Forest')
+    $findings = @(Get-MtAdDomainNameFindings -Forest $state.Forest -Kind Dns)
+    $ok = $findings.Count -eq 0
+    $rows = @('| Forest domain DN | DNS root | Syntax |', '| --- | --- | --- |')
+    foreach ($partition in @($state.Forest.DomainPartitions)) {
+        $invalid = @($findings | Where-Object { $_ -ceq "$($partition.DnsRoot) ($($partition.DistinguishedName))" }).Count -gt 0
+        $rows += "| $($partition.DistinguishedName) | $($partition.DnsRoot) | $(if ($invalid) { 'Invalid' } else { 'Valid' }) |"
     }
-
-    $forest = $adState.Forest
-    $domains = $forest.Domains
-
-    # RFC 1123 compliant domain name pattern
-    # Allows letters, digits, and hyphens; must start with letter or digit
-    $validDomainNamePattern = '^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$'
-
-    $nonCompliantDomains = @()
-    foreach ($domain in $domains) {
-        # Split domain into labels and check each
-        $labels = $domain -split '\.'
-        $isCompliant = $true
-        foreach ($label in $labels) {
-            if ($label -notmatch $validDomainNamePattern -or $label.Length -gt 63) {
-                $isCompliant = $false
-                break
-            }
-        }
-        if (-not $isCompliant) {
-            $nonCompliantDomains += $domain
-        }
-    }
-
-    $nonCompliantCount = $nonCompliantDomains.Count
-    $totalDomains = $domains.Count
-
-    # Test passes if we successfully analyzed domain names
-    $testResult = $totalDomains -gt 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Domains | $totalDomains |" + "`n"
-        $result += "| Non-Compliant Domains | $nonCompliantCount |" + "`n"
-        $result += "| Compliant Domains | $($totalDomains - $nonCompliantCount) |" + "`n"
-
-        if ($nonCompliantCount -gt 0) {
-            $result += "| Non-Compliant Domain Names | $($nonCompliantDomains -join ', ') |" + "`n"
-        }
-
-        $testResultMarkdown = "Domain name RFC compliance has been checked. $nonCompliantCount out of $totalDomains domain(s) have non-compliant names.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve domain information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. Forest domain DNS names pass syntax validation.' } else { 'Review invalid forest domain DNS names and plan a supported migration.' }) Forest domains: $($state.Forest.DomainPartitions.Count); invalid: $($findings.Count).`n`n$($rows -join "`n")"
+    return $ok
 }

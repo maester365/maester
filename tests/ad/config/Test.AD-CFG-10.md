@@ -1,23 +1,26 @@
-Well-known security principals are built-in identities with special meaning in Active Directory (for example, principals that Windows and AD components rely on for system behavior). Unexpected changes to these principals can indicate tampering, malicious SID/object replacement, or unauthorized directory modification.
+This check inventories objects in the WellKnown Security Principals configuration container. The number of entries can differ across versions and forests; neither 27 nor 33 is a universal baseline. A count alone does not identify malicious principals.
 
 #### Control Type
 
 **Operational**
 
 #### Security Recommendation
-- Validate that only the expected well-known principals exist (default is **27** for typical configurations).
-- Restrict permissions to the container(s) holding well-known principals so only AD administrators can modify them.
-- Audit changes by enabling directory change auditing and reviewing security event logs for modifications.
-- Investigate any deviation immediately as a potential sign of directory tampering.
+
+Review unexpected identities and SIDs against a forest- and version-appropriate reference. Restrict changes to authorized administrators and use directory auditing to investigate suspected unauthorized modifications.
 
 #### How the Test Works
-- Locates the AD container(s) that store well-known security principal objects.
-- Enumerates those objects and counts how many are present.
-- Compares the count to the expected baseline (default **27**) and flags any unexpected values.
 
-#### Related Tests
-- [Test-MtAdAdActivationObjectsCount](./Test-MtAdAdActivationObjectsCount.md): Detects unexpected AD configuration objects that can reflect tampering.
-- [Test-MtAdTrustedRootCaCount](./Test-MtAdTrustedRootCaCount.md): Identifies unauthorized trust anchors that can undermine authentication integrity.
+The test enumerates and counts objects in the WellKnown Security Principals configuration container. It does not compare the count with a fixed expected value or classify entries as malicious.
+
+
+
+#### Remediation action
+
+Review the identity and SID of any unexpected entry against an appropriate forest-specific reference before changing the directory. Investigate suspected unauthorized changes in directory audit logs.
+
+#### Related links
+
+- [Microsoft: special identity groups and their directory locations](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/understand-special-identities-groups)
 
 <!--- Results --->
 %TestResult%

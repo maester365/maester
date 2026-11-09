@@ -1,4 +1,4 @@
-Enabled user accounts that have not logged on for more than the configured threshold (default 90 days) are a common sign of weak identity hygiene. Forgotten but still-enabled accounts can retain access, group memberships, and password material that attackers may target.
+Enabled users with a recorded logon older than the configurable 90-day threshold are dormant. Replicated `lastLogonTimestamp` can lag by approximately 14 days; missing timestamps need separate review.
 
 #### Control Type
 
@@ -6,22 +6,20 @@ Enabled user accounts that have not logged on for more than the configured thres
 
 #### Security Recommendation
 
-Investigate dormant enabled accounts and disable or remove those that are no longer needed. For exceptions such as break-glass or low-use service accounts, apply stronger controls and document ownership.
+Investigate dormant enabled accounts with their owners before disabling them; document exceptions for emergency and low-use accounts.
 
 #### How the Test Works
 
-This test retrieves Active Directory user data from `Get-MtADDomainState`, filters to enabled users, and counts accounts where `LastLogonDate` is older than `DormantThresholdDays` (default 90 days). The output shows the number and percentage of dormant enabled users.
+The test compares the recorded replicated logon timestamp for enabled users with `DormantThresholdDays` (default 90). Replication lag and absent timestamps prevent this result from proving the exact last logon.
 
 #### Related Tests
 
-- `Test-MtAdUserDisabledCount`
-- `Test-MtAdUserNeverLoggedInCount`
-- `Test-MtAdUserPasswordNeverExpiresCount`
+- **AD-USER-01 — Disabled users should be removed after the retention period** — `Test-MtAdUserDisabledCount` — Reviews retained disabled accounts.
+- **AD-USER-08 — Enabled users should not remain unused after provisioning** — `Test-MtAdUserNeverLoggedInCount` — Reviews accounts without recorded logons.
 
-#### Related links
-
-- [Microsoft Defender for Identity: Remove stale Active Directory accounts](https://learn.microsoft.com/defender-for-identity/security-posture-assessments/accounts#remove-stale-active-directory-accounts)
-- [ANSSI Active Directory checkpoints: Dormant accounts](https://www.cert.ssi.gouv.fr/uploads/ad_checklist.html#vuln_user_accounts_dormant)
+#### Remediation action
+1. Confirm actual use against domain-controller logon records before changing an account.
+2. Disable unused identities through [Active Directory administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center) after owner approval.
 
 <!--- Results --->
 %TestResult%

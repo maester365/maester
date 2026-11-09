@@ -20,12 +20,14 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [MaesterTest(
         Id = 'AD-FOR-04',
-        Title = 'Recycle Bin status should be retrievable',
+        Title = 'Active Directory Recycle Bin should be enabled',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'infrastructure',
         ResourceType = 'Tenant',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Low',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:crossRef:ReadProperty', 'ActiveDirectory:Ldap:msDS-OptionalFeature:ReadProperty'),
@@ -40,52 +42,34 @@
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState -Categories @('Forest', 'OptionalFeatures')
 
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.OptionalFeatures) {
+        throw 'Unable to retrieve optional features; Recycle Bin status cannot be determined.'
     }
 
-    $forest = $adState.Forest
-    $optionalFeatures = $adState.OptionalFeatures
-
-    # Check if Recycle Bin optional feature is enabled
-    $recycleBinFeature = $optionalFeatures | Where-Object { $_.Name -eq "Recycle Bin Feature" }
-    $isEnabled = $false
-
-    if ($recycleBinFeature) {
-        $isEnabled = $recycleBinFeature.IsEnabled
+    $recycleBinFeature = @($adState.OptionalFeatures | Where-Object { $_.Name -eq 'Recycle Bin Feature' })
+    if ($recycleBinFeature.Count -ne 1) {
+        throw 'Unable to identify exactly one Recycle Bin Feature in the optional-feature inventory. Verify directory access and the forest configuration.'
+    }
+    if ($null -eq $recycleBinFeature[0].IsEnabled) {
+        throw 'Recycle Bin enabled status could not be retrieved.'
     }
 
-    # Test passes if we successfully retrieved Recycle Bin status
-    $testResult = $null -ne $recycleBinFeature -or $optionalFeatures.Count -gt 0
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Recycle Bin Enabled | $isEnabled |" + "`n"
-        $result += "| Forest Name | $($forest.Name) |" + "`n"
-        $result += "| Forest Functional Level | $($forest.ForestMode) |" + "`n"
-
-        $statusMessage = if ($isEnabled) { "✅ Enabled - Deleted objects can be recovered from the Recycle Bin" } else { "⚠️ Disabled - Deleted objects can only be recovered through tombstone reanimation or backup restore" }
-        $result += "| Status | $statusMessage |" + "`n"
-
-        # Check if forest level supports Recycle Bin (requires Windows Server 2008 R2 or higher)
-        $supportedLevels = @("Windows2008R2Forest", "Windows2012Forest", "Windows2012R2Forest", "Windows2016Forest", "Windows2025Forest")
-        $forestLevelSupported = $supportedLevels -contains $forest.ForestMode
-
-        if (-not $isEnabled -and -not $forestLevelSupported) {
-            $result += "| Note | Forest functional level must be Windows Server 2008 R2 or higher to enable Recycle Bin |" + "`n"
-        }
-
-        $testResultMarkdown = "The Active Directory Recycle Bin status has been retrieved. The Recycle Bin is currently $(if($isEnabled){'ENABLED'}else{'DISABLED'}).`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Recycle Bin status. Ensure you have appropriate permissions and the Active Directory module is installed."
+    $isEnabled = $recycleBinFeature[0].IsEnabled -eq $true
+    $forestName = $adState.Forest.Name
+    $scopes = @($recycleBinFeature[0].EnabledScopes) -join ', '
+    $scopeText = if ($scopes) { [System.Net.WebUtility]::HtmlEncode($scopes).Replace('|', '&#124;') } else { 'None recorded' }
+    $result = "| Property | Value |`n| --- | --- |`n"
+    $result += "| Forest | $([System.Net.WebUtility]::HtmlEncode([string]$forestName).Replace('|', '&#124;')) |`n"
+    $result += "| Forest functional level | $($adState.Forest.ForestMode) |`n"
+    $result += "| Recycle Bin enabled | $isEnabled |`n"
+    $result += "| Enabled scopes | $scopeText |`n"
+    $result += "| Status | $(if ($isEnabled) { 'Enabled' } else { 'Not enabled' }) |`n"
+    $context = 'Recycle Bin preserves deleted-object attributes for recovery without an authoritative restore. Enablement is irreversible and can increase directory database size; review retention and recovery requirements. The feature flag does not prove backup or recovery readiness.'
+    if ($isEnabled) {
+        Add-MtTestResultDetail -Result "Well done. Active Directory Recycle Bin is enabled in forest $forestName. $context Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides optional-feature inventory.`n`n$result"
+        return $true
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result "Active Directory Recycle Bin is not enabled in forest $forestName. Plan and enable the Recycle Bin after checking functional-level prerequisites. $context Coverage crosswalk: former AD-CFG-05 is included here; AD-FEAT-01 provides the linked optional-feature inventory.`n`n$result"
+    return $false
 }

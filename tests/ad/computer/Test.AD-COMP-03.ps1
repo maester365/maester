@@ -39,20 +39,21 @@
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState -Categories @('Computers')
 
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Computers) {
+        throw 'Computer inventory is required to review CreatorSid.'
     }
 
     $computers = $adState.Computers
+    if (@($computers | Where-Object { -not $_.PSObject.Properties['mS-DS-CreatorSID'] }).Count -gt 0) {
+        Add-MtTestResultDetail -SkippedBecause Error -Result 'The cached computer inventory does not expose the mS-DS-CreatorSID LDAP attribute.'
+        return
+    }
 
-    # Count enabled computers with CreatorSid attribute
-    # CreatorSid is optional in the collected computer contract, so check whether it exists.
+    # Count visible values of the actual LDAP attribute. An absent value does not
+    # prove it was never set or distinguish unset data from restricted visibility.
     $computersWithCreatorSid = $computers | Where-Object {
         $_.Enabled -eq $true -and
-        $_.PSObject.Properties['ms-ds-CreatorSid'] -and
-        $_.'ms-ds-CreatorSid'
+        $_.'mS-DS-CreatorSID'
     }
 
     $creatorSidCount = ($computersWithCreatorSid | Measure-Object).Count
@@ -60,7 +61,7 @@
     $totalCount = ($computers | Measure-Object).Count
 
     # Test passes if we successfully retrieved computer data
-    $testResult = $totalCount -gt 0
+    $testResult = $null -ne $adState.Computers
 
     # Generate markdown results
     if ($testResult) {
@@ -77,13 +78,13 @@
         $result += "| Computers with CreatorSid | $creatorSidCount |" + "`n"
         $result += "| CreatorSid Percentage | $percentage% |" + "`n" + "`n"
 
-        $testResultMarkdown = "Active Directory computer objects have been analyzed. $creatorSidCount out of $enabledCount enabled computers ($percentage%) have the CreatorSid attribute set.`n`n%TestResult%"
+        $testResultMarkdown = "Active Directory computer objects have been analyzed. $creatorSidCount out of $enabledCount enabled computers ($percentage%) have a visible mS-DS-CreatorSID value. This inventory does not distinguish an unset value from an unreadable value.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

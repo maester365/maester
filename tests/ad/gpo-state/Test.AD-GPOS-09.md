@@ -16,7 +16,7 @@
 - Retrieves GPO state, groups GPOs by Owner, and renders a table with owner and GPO counts.
 
 #### Related Tests
-- `Test-MtAdGpoOwnerDistinctCount`.
+- **AD-GPOS-08 — GPO owner distinct count should be investigated** — `Test-MtAdGpoOwnerDistinctCount` — Summarizes distinct GPO owners.
 
 #### Related links
 - [Microsoft Learn - Group Policy management](https://learn.microsoft.com/windows-server/identity/ad-ds/manage/group-policy/group-policy-overview) 

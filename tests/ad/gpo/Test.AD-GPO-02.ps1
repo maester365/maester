@@ -1,33 +1,31 @@
-﻿function Test-MtAdGpoCreatedBefore2020Count {
+﻿function Test-MtAdGpoStale {
     <#
     .SYNOPSIS
-    Counts the number of Group Policy Objects (GPOs) created before 2020 in Active Directory.
+    Checks that GPOs have been modified within the configured age limit.
 
     .DESCRIPTION
-    This test retrieves Active Directory GPO state information using Get-MtADGpoState, then counts
-    the number of GPOs with a CreationTime earlier than January 1st, 2020.
-
-    Knowing how many older GPOs exist helps identify potential legacy policy sprawl that may
-    include outdated security settings.
+    Uses the cached GPO inventory. Fails when a GPO's last modification is older than
+    MaximumAgeYears (five calendar years by default). Reports creation and modification
+    dates together; an old creation date alone does not cause failure.
 
     .EXAMPLE
-    Test-MtAdGpoCreatedBefore2020Count
+    Test-MtAdGpoStale
 
-    Returns $true if GPO data is accessible, $false otherwise.
-
-    The test result includes the count of GPOs created before 2020.
+    Returns $true when no GPO exceeds the modification-age limit.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdGpoCreatedBefore2020Count
+    https://maester.dev/docs/tests/AD-GPO-02
     #>
     [MaesterTest(
         Id = 'AD-GPO-02',
-        Title = 'GPO created before 2020 count should be retrievable',
+        Title = 'GPOs should be modified within the configured age limit',
         Product = 'ad',
         Feature = 'group-policy',
         Area = 'infrastructure',
         ResourceType = 'GroupPolicy',
-        Severity = 'Info',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:groupPolicyContainer.gPCFileSysPath:ReadProperty', 'ActiveDirectory:File:SYSVOL:Read'),
@@ -35,41 +33,33 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
-
-    Write-Verbose "Starting Test-MtAdGpoCreatedBefore2020Count"
+    param(
+        # Maximum age of a GPO's last modification, in calendar years.
+        [ValidateRange(1, 100)]
+        [int] $MaximumAgeYears = 5
+    )
 
     $gpoState = Get-MtADGpoState
-    if ($null -eq $gpoState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $gpoState -or $null -eq $gpoState.GPOs) {
+        throw 'The GPO inventory could not be retrieved; modification age cannot be assessed.'
     }
 
-    $gpos = $gpoState.GPOs
-
-    $cutoffDate = Get-Date -Year 2020 -Month 1 -Day 1
-    $oldGpos = $gpos | Where-Object { $_.CreationTime -lt $cutoffDate }
-
-    $oldCount = ($oldGpos | Measure-Object).Count
-    $totalCount = ($gpos | Measure-Object).Count
-
-    $testResult = $totalCount -ge 0
-
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| GPOs created before $($cutoffDate.ToString('yyyy-MM-dd')) | $oldCount |" + "`n"
-        $result += "| Total GPOs | $totalCount |" + "`n"
-
-        $testResultMarkdown = "Active Directory Group Policy Objects have been analyzed. The domain contains $oldCount GPO(s) created before $($cutoffDate.ToString('yyyy-MM-dd')).`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    $gpos = @($gpoState.GPOs)
+    if (@($gpos | Where-Object { $null -eq $_.ModificationTime }).Count -gt 0) {
+        throw 'One or more GPOs have no modification date; modification age cannot be assessed.'
     }
-    else {
-        $testResultMarkdown = 'Unable to retrieve Active Directory Group Policy Objects. Ensure you have appropriate permissions and the Group Policy Management Console is installed.'
+    $cutoffDate = (Get-Date).AddYears(-$MaximumAgeYears)
+    $stale = @($gpos | Where-Object { [datetime]$_.ModificationTime -lt $cutoffDate })
+    $result = "Total GPOs: $($gpos.Count). Stale GPOs: $($stale.Count). Modification cutoff: $($cutoffDate.ToString('yyyy-MM-dd HH:mm:ss')).`n`n"
+    $result += "| GPO | Created | Modified | Assessment |`n| --- | --- | --- | --- |`n"
+    foreach ($gpo in ($gpos | Sort-Object DisplayName)) {
+        $name = ([string]$gpo.DisplayName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+        $created = if ($null -ne $gpo.CreationTime) { ([datetime]$gpo.CreationTime).ToString('yyyy-MM-dd HH:mm:ss') } else { 'Unknown' }
+        $modified = ([datetime]$gpo.ModificationTime).ToString('yyyy-MM-dd HH:mm:ss')
+        $assessment = if ([datetime]$gpo.ModificationTime -lt $cutoffDate) { 'Stale' } else { 'Within limit' }
+        $result += "| $name | $created | $modified | $assessment |`n"
     }
-
-    # Generate markdown results
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $message = if ($stale.Count -eq 0) { 'Well done. No GPO exceeds the configured modification-age limit.' } else { "Review and update $($stale.Count) GPO(s) not modified within $MaximumAgeYears years. Age is a hygiene indicator, not proof of insecure settings." }
+    Add-MtTestResultDetail -Result "$message`n`n$result"
+    return ($stale.Count -eq 0)
 }

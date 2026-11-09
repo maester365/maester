@@ -18,9 +18,8 @@ This test retrieves `$adState.DaclEntries`, filters entries where `ObjectClass` 
 
 #### Related Tests
 
-- `Test-MtAdDaclDistinctObjectCount`
-- `Test-MtAdDaclDenyAceCount`
-- `Test-MtAdDaclDenyAceDetails`
+- **AD-DACL-01 — Distinct DACL object count should be investigated** — `Test-MtAdDaclDistinctObjectCount` — Inventories distinct objects with DACL entries.
+- **AD-DACL-05 — Deny ACEs and affected identities should be investigated** — `Test-MtAdDaclDenyAceCount` — Reviews deny ACEs separately.
 
 > **Note:** This test is `LongRunning`. It loads the full DACL dataset, which can consume significant memory in large Active Directory environments. Use `Invoke-Maester -IncludeLongRunning` to run it.
 

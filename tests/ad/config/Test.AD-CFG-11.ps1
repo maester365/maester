@@ -36,9 +36,8 @@
     $adState = Get-MtADDomainState -Categories @('Configuration')
 
     # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
+    if ($null -eq $adState -or $null -eq $adState.Configuration -or $null -eq $adState.Configuration.DhcpServers) {
+        throw 'DHCP server registrations could not be retrieved.'
     }
 
     $config = $adState.Configuration
@@ -54,13 +53,19 @@
         $result = "| Metric | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Registered DHCP Servers Count | $dhcpServersCount |" + "`n"
+        $result += "`n| Registered DNS name | IPv4 address | Parsed |`n| --- | --- | --- |`n"
+        foreach ($server in $dhcpServers) {
+            $name = ([string]$server.DnsName).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+            $address = ([string]$server.IPAddress).Replace('|', '&#124;') -replace '[\r\n]+', ' '
+            $result += "| $name | $address | $($server.RegistrationParsed) |`n"
+        }
         $testResultMarkdown = "Active Directory registered DHCP servers have been counted. $dhcpServersCount DHCP server(s) were found.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory configuration data for DhcpServers. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
 
     return $testResult
 }

@@ -1,25 +1,18 @@
 ﻿function Test-MtAdForestDomainCount {
     <#
     .SYNOPSIS
-    Counts the number of domains in the forest.
-
+    Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
-    This test retrieves the count of domains in the Active Directory forest.
-    Understanding your forest structure is essential for security planning,
-    trust management, and administrative boundary definition.
-
+    Uses directory metadata; incomplete or unavailable required inventory raises an error.
     .EXAMPLE
-    Test-MtAdForestDomainCount
-
-    Returns $true if forest domain data is accessible.
-    The test result includes the count of domains in the forest.
-
+    Invoke-MtTest -Id AD-FOR-02
+    Review the forest domain inventory manually.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdForestDomainCount
+    https://maester.dev/docs/tests/AD-FOR-02
     #>
     [MaesterTest(
         Id = 'AD-FOR-02',
-        Title = 'Forest domain count should be retrievable',
+        Title = 'Forest domain inventory for review',
         Product = 'ad',
         Feature = 'domain-and-forest',
         Area = 'infrastructure',
@@ -34,46 +27,10 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdForestDomainCount"
-
-    # Get AD domain state data (uses cached data if available)
-    $adState = Get-MtADDomainState -Categories @('Forest')
-
-    # If unable to retrieve AD data, skip the test
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
-
-    $forest = $adState.Forest
-    $domains = $forest.Domains
-    $domainCount = $domains.Count
-
-    # Test passes if we successfully retrieved forest data
-    $testResult = $domainCount -ge 1
-
-    # Generate markdown results
-    if ($testResult) {
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Domains | $domainCount |" + "`n"
-        $result += "| Forest Name | $($forest.Name) |" + "`n"
-        $result += "| Root Domain | $($forest.RootDomain) |" + "`n" + "`n"
-
-        $result += "### Domain List" + "`n" + "`n"
-        $result += "| Domain Name |" + "`n"
-        $result += "| --- |" + "`n"
-        foreach ($domain in ($domains | Sort-Object)) {
-            $result += "| $domain |" + "`n"
-        }
-
-        $testResultMarkdown = "Active Directory forest domains have been counted. There are $domainCount domain(s) in the forest.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve forest domain information. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Forest')
+    if (-not $state.Forest -or $null -eq $state.Forest.Domains) { throw 'Forest domains not collected.' }
+    $domains = @($state.Forest.Domains)
+    $rows = @('| Forest domain |', '| --- |')
+    foreach ($domain in $domains) { $rows += '| {0} |' -f (Format-MtAdSiteInventoryValue $domain) }
+    Add-MtTestResultDetail -Result "Review the forest domain topology. The number of domains alone is not a finding.`n`n| Metric | Value |`n| --- | --- |`n| Forest domain count | $($domains.Count) |`n`n$($rows -join "`n")" -Investigate
 }

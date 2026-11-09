@@ -1,9 +1,6 @@
-UPN (User Principal Name) suffixes are a critical component of Active Directory authentication infrastructure. They allow users to log on using an email-style username format (user@suffix) rather than the traditional domain\username format. Understanding the UPN suffix configuration is important for:
+Shows the count and individual values of configured alternate forest UPN suffixes. This list does not enumerate user UPNs or show whether any suffix is in use; domain DNS suffixes are independently usable.
 
-- **Authentication Experience**: UPN suffixes enable a consistent logon experience across multiple domains and forests
-- **Identity Management**: During mergers and acquisitions, UPN suffixes help maintain brand identity while consolidating directories
-- **Security Assessment**: Unnecessary or unauthorized UPN suffixes could indicate misconfiguration or security risks
-- **Compliance**: Some compliance frameworks require visibility into all authentication namespaces
+Alternate UPN suffixes can support consistent sign-in names during reorganizations or mergers. Their presence is configuration metadata, not evidence of a user's effective sign-in name or a vulnerability.
 
 #### Control Type
 
@@ -11,19 +8,19 @@ UPN (User Principal Name) suffixes are a critical component of Active Directory 
 
 #### Security Recommendation
 
-Regularly review configured UPN suffixes to ensure:
-- Only legitimate organizational domains are configured as UPN suffixes
-- Unused or deprecated UPN suffixes from past mergers are removed
-- UPN suffixes align with the organization's current domain and brand strategy
+Review alternate suffixes with identity administrators and verify actual user UPN assignments before adding or removing any configured suffix. Document ownership and business purpose, and confirm whether deprecated suffixes are still needed before cleanup.
 
 #### How the Test Works
 
-This test retrieves the UPN suffixes configured at the forest level using the `Get-ADForest` cmdlet. It counts the number of custom UPN suffixes and reports whether any are configured. The default forest domain is not counted as a custom suffix.
+Reports the count and values of configured alternate forest UPN suffixes; it does not include every domain DNS suffix or examine individual user objects.
 
 #### Related Tests
 
-- `Test-MtAdUpnSuffixesDetails` - Provides detailed list of all configured UPN suffixes
-- `Test-MtAdSpnSuffixesCount` - Checks SPN suffix configuration for service principal management
+- **AD-FORS-03 — SPN suffix inventory for review** — `Test-MtAdSpnSuffixesCount` — Inventories forest SPN suffixes separately.
+
+#### Related links
+
+* [Active Directory Domain Services documentation](https://learn.microsoft.com/windows-server/identity/ad-ds/active-directory-domain-services)
 
 <!--- Results --->
 %TestResult%

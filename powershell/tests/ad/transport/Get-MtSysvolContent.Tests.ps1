@@ -129,6 +129,34 @@ Describe 'Get-MtSysvolContent transport contract' {
         }
     }
 
+    It 'does not return a clean password scan when an XML file is malformed or unreadable' -ForEach @(
+        @{ Windows = $true; ReadFailure = $false }
+        @{ Windows = $false; ReadFailure = $false }
+        @{ Windows = $true; ReadFailure = $true }
+        @{ Windows = $false; ReadFailure = $true }
+    ) {
+        $script:readFailure = $ReadFailure
+        $script:useWindowsAdapter = $Windows
+        Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $script:useWindowsAdapter }
+        $adapterMock = {
+            if ($Operation -eq 'List') {
+                return [PSCustomObject]@{ RelativePath = 'Machine/Preferences/Groups/Groups.xml'; Name = 'Groups.xml'; Length = 50 }
+            }
+            if ($Operation -eq 'ReadText') {
+                if ($script:readFailure) { throw 'read failed SECRET-MUST-NOT-PRINT' }
+                return '<Groups><User cpassword="SECRET-MUST-NOT-PRINT"'
+            }
+            return $true
+        }
+        Mock Invoke-MtSysvolWindowsAdapter -ModuleName Maester $adapterMock
+        Mock Invoke-MtSysvolUnixAdapter -ModuleName Maester $adapterMock
+        InModuleScope Maester {
+            { Get-MtSysvolContent -GpoGuid '11111111-1111-1111-1111-111111111111' } | Should -Throw '*password scan is incomplete*'
+            try { Get-MtSysvolContent -GpoGuid '11111111-1111-1111-1111-111111111111' }
+            catch { $_.Exception.Message | Should -Not -Match 'SECRET-MUST-NOT-PRINT' }
+        }
+    }
+
     It 'throws rather than truncating a GPO over the aggregate bound' {
         Mock Test-MtSysvolWindowsPlatform -ModuleName Maester { $true }
         Mock Invoke-MtSysvolWindowsAdapter -ModuleName Maester {

@@ -7,7 +7,7 @@ BeforeDiscovery {
 }
 
 Describe 'AD-CFG-22: KDS root key count' {
-    It 'Skips when zero KDS root keys are found' {
+    It 'Fails when zero KDS root keys are found' {
         InModuleScope Maester {
             Mock Get-MtADDomainState -ModuleName Maester {
                 return [ordered]@{
@@ -18,8 +18,8 @@ Describe 'AD-CFG-22: KDS root key count' {
             }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $result = Test-MtAdKdsRootKeysCount
-            $result | Should -Be $null
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
+            $result | Should -BeFalse
         }
     }
 
@@ -35,7 +35,7 @@ Describe 'AD-CFG-22: KDS root key count' {
                 }
             }
 
-            $result = Test-MtAdKdsRootKeysCount
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
             $result | Should -Be $true
         }
     }
@@ -54,8 +54,8 @@ Describe 'AD-CFG-22: KDS root key count' {
             }
             Mock Add-MtTestResultDetail -ModuleName Maester { }
 
-            $result = Test-MtAdKdsRootKeysCount
-            $result | Should -Be $null
+            $result = Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true
+            $result | Should -BeTrue
             Assert-MockCalled Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate -eq $true } -Exactly 1
         }
     }
@@ -157,7 +157,7 @@ Describe 'AD-DCOMP-06: Stale enabled computers' {
         }
     }
 
-    It 'Returns Investigate when stale enabled computers exist' {
+    It 'Fails when stale enabled computers exist' {
         InModuleScope Maester {
             Mock Get-MtADDomainState -ModuleName Maester {
                 return [ordered]@{
@@ -173,7 +173,7 @@ Describe 'AD-DCOMP-06: Stale enabled computers' {
             }
 
             $result = Test-MtAdComputerStaleEnabledCount
-            $result | Should -Be $null
+            $result | Should -BeFalse
         }
     }
 }

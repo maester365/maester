@@ -1,81 +1,42 @@
 ﻿function Test-MtAdUserNonStandardPrimaryGroupCount {
-    <#
-    .SYNOPSIS
-    Counts users with a non-standard primary group in Active Directory.
-
-    .DESCRIPTION
-    This test identifies user objects whose PrimaryGroupId is not set to 513
-    (Domain Users). A non-standard primary group can be legitimate in some cases,
-    but it is uncommon and may indicate privileged configurations, legacy migrations,
-    or unusual access control requirements that should be validated.
-
+    <# .SYNOPSIS
+    Checks for ordinary users with unapproved primary group IDs.
     .EXAMPLE
-    Test-MtAdUserNonStandardPrimaryGroupCount
-
-    Returns $true if user data is accessible, $false otherwise.
-    The test result includes the count of users with a non-standard primary group.
-
+    Invoke-MtTest -Id AD-USER-12
+    Assess ordinary users for unapproved primary group IDs.
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdUserNonStandardPrimaryGroupCount
+    https://maester.dev/docs/tests/AD-USER-12
     #>
     [MaesterTest(
         Id = 'AD-USER-12',
-        Title = 'User non-standard primary group count should be retrievable',
+        Title = 'Ordinary users should use an approved primary group',
         Product = 'ad',
         Feature = 'users',
         Area = 'identity-lifecycle',
         ResourceType = 'User',
-        Severity = 'Info',
-        Mitre = 'None',
+        Severity = 'Low',
+        UserImpact = 'Low',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1078.002',
         Service = 'ActiveDirectory',
-        Permission = ('ActiveDirectory:Ldap:user:ReadProperty'),
+        Permission = 'ActiveDirectory:Ldap:user:ReadProperty',
         Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Primary group RID values permitted for ordinary user accounts.
+        [ValidatePattern('^[0-9]+$')]
+        [string[]] $AllowedPrimaryGroupIds = @('513')
+    )
 
-    Write-Verbose "Starting Test-MtAdUserNonStandardPrimaryGroupCount"
-    $adState = Get-MtADDomainState -Categories @('Users')
-    Write-Verbose "Retrieved AD state"
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
-        return $null
-    }
-    Write-Verbose "Filtering/counting user non standard primary group count"
-
-    $users = $adState.Users
-    $usersWithNonStandardPrimaryGroup = $users | Where-Object {
-        $null -ne $_.primaryGroupId -and $_.primaryGroupId -ne 513
-    }
-
-    $nonStandardPrimaryGroupCount = ($usersWithNonStandardPrimaryGroup | Measure-Object).Count
-    $totalCount = ($users | Measure-Object).Count
-    $testResult = $totalCount -gt 0
-
-    if ($testResult) {
-        $percentage = if ($totalCount -gt 0) {
-            [Math]::Round(($nonStandardPrimaryGroupCount / $totalCount) * 100, 2)
-        } else {
-            0
-        }
-
-        $result = "| Metric | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| Total Users | $totalCount |" + "`n"
-        $result += "| Users with PrimaryGroupId = 513 | $($totalCount - $nonStandardPrimaryGroupCount) |" + "`n"
-        $result += "| Users with Non-Standard Primary Group | $nonStandardPrimaryGroupCount |" + "`n"
-        $result += "| Non-Standard Primary Group Percentage | $percentage% |" + "`n" + "`n"
-    Write-Verbose "Counts computed"
-
-        $testResultMarkdown = "Active Directory users have been analyzed. $nonStandardPrimaryGroupCount out of $totalCount users ($percentage%) have a primaryGroupId other than 513 (Domain Users).`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    } else {
-        $testResultMarkdown = "Unable to retrieve Active Directory users. Ensure you have appropriate permissions and the Active Directory module is installed."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    Write-Verbose "Completed Test-MtAdUserNonStandardPrimaryGroupCount"
-
-    return $testResult
+    $state = Get-MtADDomainState -Categories @('Users')
+    if ($null -eq $state.Users) { throw 'AD user data was not returned.' }
+    $allowedIds = @($AllowedPrimaryGroupIds | ForEach-Object { [int]$_ })
+    $unknown = @($state.Users | Where-Object { (Test-MtAdUserOrdinaryIdentity $_) -and $null -eq $_.PrimaryGroupId })
+    if ($unknown.Count) { throw "PrimaryGroupId missing for $($unknown.Count) ordinary users." }
+    $found = @($state.Users | Where-Object { (Test-MtAdUserOrdinaryIdentity $_) -and $allowedIds -notcontains [int]$_.PrimaryGroupId })
+    if ($found.Count) { Add-MtTestResultDetail -Result "Found $($found.Count) ordinary users with unapproved primary groups. Review effective membership and approve exceptions before changing groups.`n`n$(Format-MtAdUserSecurityTable $found @('SamAccountName', 'PrimaryGroupId', 'DistinguishedName'))" }
+    else { Add-MtTestResultDetail -Result 'Well done. Ordinary users have approved primary group IDs.' }
+    return ($found.Count -eq 0)
 }

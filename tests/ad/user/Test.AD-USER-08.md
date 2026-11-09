@@ -1,4 +1,4 @@
-Enabled accounts that have never logged on may indicate incomplete provisioning, abandoned onboarding, or unnecessary standing access. These objects should be reviewed to ensure they still have a valid business purpose.
+Enabled accounts older than the configurable 30-day provisioning grace period with no recorded logon need review. A missing replicated timestamp is not definitive proof the user has never logged in.
 
 #### Control Type
 
@@ -6,17 +6,20 @@ Enabled accounts that have never logged on may indicate incomplete provisioning,
 
 #### Security Recommendation
 
-Investigate enabled accounts with no recorded logon activity. Disable or remove unused accounts and make sure future provisioning workflows include validation and cleanup steps.
+Investigate enabled accounts without recorded logons after their provisioning grace period and confirm use with domain-controller events before removing access.
 
 #### How the Test Works
 
-This test retrieves Active Directory user data from `Get-MtADDomainState`, filters to enabled users, and counts accounts where `LastLogonDate` is null.
+The test checks enabled users older than `ProvisioningGraceDays` (default 30) without a recorded replicated logon timestamp. No timestamp is not proof that a user has never logged on.
 
 #### Related Tests
 
-- `Test-MtAdUserDormantEnabledCount`
-- `Test-MtAdUserDisabledCount`
-- `Test-MtAdUserPasswordNeverExpiresCount`
+- **AD-USER-02 — Enabled users should not remain dormant** — `Test-MtAdUserDormantEnabledCount` — Reviews old recorded logons.
+- **AD-USER-01 — Disabled users should be removed after the retention period** — `Test-MtAdUserDisabledCount` — Reviews disabled account retention.
+
+#### Remediation action
+1. Check authoritative authentication logs and ask the owner whether provisioning is complete.
+2. Disable unnecessary accounts in [Active Directory administration](https://learn.microsoft.com/windows-server/identity/ad-ds/get-started/adac/active-directory-administrative-center).
 
 <!--- Results --->
 %TestResult%
