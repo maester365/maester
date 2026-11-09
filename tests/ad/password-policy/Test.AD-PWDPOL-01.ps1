@@ -2,6 +2,11 @@
     <#
     .SYNOPSIS
     Evaluates the normalized default domain password policy against configured safeguards.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-PWDPOL-01
+    Assess the default domain password policy against configured safeguards.
+    .LINK
+    https://maester.dev/docs/tests/AD-PWDPOL-01
     #>
     [MaesterTest(
         Id = 'AD-PWDPOL-01',

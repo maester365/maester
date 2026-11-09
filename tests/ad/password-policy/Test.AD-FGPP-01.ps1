@@ -25,6 +25,11 @@ function Test-MtAdFineGrainedPasswordPolicySecurity {
     <#
     .SYNOPSIS
     Evaluates fine-grained password policy security settings and effective usage in separate result rows.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-FGPP-01
+    Assess both fine-grained password policy settings and usage; missing unconfirmed inventory requires investigation.
+    .LINK
+    https://maester.dev/docs/tests/AD-FGPP-01
     #>
     [MaesterTest(
         Id = 'AD-FGPP-01',
