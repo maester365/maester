@@ -724,9 +724,6 @@
             $adoIdentity = if ($adoConnection -is [System.Collections.IDictionary]) { $adoConnection['Identity'] }
             Add-ConnectionResult -Name 'Azure DevOps' -Status 'Connected' -Details (@($organization, $adoIdentity | Where-Object { $_ }) -join ', ')
          }
-      } catch [Management.Automation.CommandNotFoundException] {
-         Write-Verbose "A command the Azure DevOps connection needs is missing: $($_.Exception.Message)"
-         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
       } catch {
          Write-Verbose "Failed to connect to Azure DevOps: $($_.Exception.Message)"
          Add-ConnectionResult -Name 'Azure DevOps' -Status 'Failed' -Details (Get-ErrorSummary $_)

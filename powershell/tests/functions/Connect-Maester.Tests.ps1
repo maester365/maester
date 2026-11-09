@@ -666,6 +666,22 @@ Describe 'Connect-Maester Azure DevOps' {
             $script:adoOrganization | Should -BeNullOrEmpty
         }
 
+        It 'Reports the actual failure when <MissingCommand> is unavailable despite ADOPS being installed' -ForEach @(
+            @{ MissingCommand = 'Get-AzAccessToken' }
+            @{ MissingCommand = 'Connect-ADOPS' }
+        ) {
+            Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = @{ Id = 'user' }; Tenant = @{ Id = 'tenant' } } }
+            Mock Get-AzAccessToken -ModuleName Maester { [pscustomobject]@{ Token = 'ado-token' } }
+            Mock $MissingCommand -ModuleName Maester { throw [System.Management.Automation.CommandNotFoundException]::new("$MissingCommand is unavailable.") }
+
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
+
+            $row = $script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps'
+            $row.Status | Should -Be 'Failed'
+            $row.Details | Should -Be "$MissingCommand is unavailable."
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache | Should -Be 'NotConnected' }
+        }
+
         It 'Allows a fresh connection probe after a successful retry' {
             InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = 'NotConnected' }
             Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'contoso'
