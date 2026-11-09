@@ -2,7 +2,7 @@
     . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
     Use-MtModuleFunction -Name Test-MtCisaSpfDirective
 
-    function New-TestSpfRecord {
+    function Get-TestSpfRecord {
         param(
             [string] $Mechanism,
             [string] $Qualifier = '?',
@@ -53,7 +53,7 @@ Describe 'Test-MtCisaSpfDirective' {
         @{ Qualifier = '-' }
         @{ Qualifier = '~' }
     ) {
-        $script:TestSpfRecord = New-TestSpfRecord -Mechanism 'all' -Qualifier $Qualifier
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier $Qualifier
 
         Test-MtCisaSpfDirective | Should -BeTrue
         $script:TestResultMarkdown | Should -Match 'Fail-all mechanism'
@@ -63,14 +63,14 @@ Describe 'Test-MtCisaSpfDirective' {
         @{ Qualifier = '+' }
         @{ Qualifier = '?' }
     ) {
-        $script:TestSpfRecord = New-TestSpfRecord -Mechanism 'all' -Qualifier $Qualifier
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier $Qualifier
 
         Test-MtCisaSpfDirective | Should -BeFalse
         $script:TestResultMarkdown | Should -Match 'No -all, ~all, or redirect mechanism'
     }
 
     It 'accepts a redirect modifier' {
-        $script:TestSpfRecord = New-TestSpfRecord -Mechanism '' -Modifier 'redirect'
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism '' -Modifier 'redirect'
 
         Test-MtCisaSpfDirective | Should -BeTrue
         $script:TestResultMarkdown | Should -Match 'Redirect modifier'
@@ -78,7 +78,7 @@ Describe 'Test-MtCisaSpfDirective' {
 
     It 'skips coexistence domains even when the SPF record would otherwise pass' {
         $script:IsCoexistenceDomain = $true
-        $script:TestSpfRecord = New-TestSpfRecord -Mechanism 'all' -Qualifier '-'
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier '-'
 
         Test-MtCisaSpfDirective | Should -BeNull
         $script:SkippedBecause | Should -Be 'NotSupported'

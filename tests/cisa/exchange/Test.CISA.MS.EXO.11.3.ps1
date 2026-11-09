@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaMailboxIntelligence
 
-    Returns true if standard and strict protection is on
+    Returns $null because this deprecated check is skipped; CISA removed the requirement from SCuBA.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaMailboxIntelligence
