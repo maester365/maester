@@ -4,6 +4,11 @@
     Inventories IP and SMTP site links by their parent transport containers.
     .DESCRIPTION
     Reports all site links and counts per transport for administrator review, without inferring transport from cost or interval.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-CFG-23
+    Review IP and SMTP site-link inventory manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-CFG-23
     #>
     [MaesterTest(
         Id = 'AD-CFG-23',

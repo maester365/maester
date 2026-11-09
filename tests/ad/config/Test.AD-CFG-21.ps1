@@ -4,6 +4,11 @@
     Inventories published NTAuth public certificates.
     .DESCRIPTION
     Reports NTAuth certificate subject, issuer, dates and thumbprint for review; expiry is not a baseline failure.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-CFG-21
+    Review NTAuth certificates manually; expiration is not a failing baseline.
+    .LINK
+    https://maester.dev/docs/tests/AD-CFG-21
     #>
     [MaesterTest(
         Id = 'AD-CFG-21',

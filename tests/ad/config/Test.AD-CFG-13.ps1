@@ -4,6 +4,11 @@
     Inventories certificate template objects and CA publication references.
     .DESCRIPTION
     Cross-references template CNs with published template names and lists missing references for review without judging security of templates.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-CFG-13
+    Review certificate templates and CA publication references manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-CFG-13
     #>
     [MaesterTest(
         Id = 'AD-CFG-13',

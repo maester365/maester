@@ -4,6 +4,11 @@
     Inventories Active Directory CRL distribution point objects.
     .DESCRIPTION
     Reports object names, distinguished names and whether a CRL value was published; it does not assess reachability or revocation health.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-CFG-20
+    Review CRL distribution point metadata manually; this does not check reachability.
+    .LINK
+    https://maester.dev/docs/tests/AD-CFG-20
     #>
     [MaesterTest(
         Id = 'AD-CFG-20',
