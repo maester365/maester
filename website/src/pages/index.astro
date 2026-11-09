@@ -95,7 +95,7 @@ const story = media.stories.find((s) => s.approved);
 // The demo report: the host serves public/demo/report.html at /demo/report; the dev server only by its file name.
 // Maester and Maester Cloud side by side, for the comparison near the end of the page.
 const compare = [
-	{ what: 'Checks, packs and report', core: 'Every one', cloud: 'The same, every one' },
+	{ what: 'Checks, packs and report', core: 'Every one', cloud: 'The same, except Active Directory checks, which need a domain controller' },
 	{ what: 'Where it runs', core: 'Your desktop, GitHub Actions or your own pipelines', cloud: 'Securely in your own Azure subscription' },
 	{ what: 'Your data', core: 'Stays on your machine or in your own pipeline', cloud: 'Report data never leaves the Azure region you choose' },
 	{ what: 'Setup', core: 'You install, schedule and store the reports', cloud: 'Simplified deployment, nothing to script' },
@@ -105,7 +105,7 @@ const compare = [
 	{ what: 'Tenants', core: 'One tenant per run', cloud: 'Every tenant in one place' },
 	{ what: 'Alerts', core: 'Email and Teams alerts you set up', cloud: 'Built in' },
 	{ what: 'Support', core: 'The community on Discord and GitHub', cloud: 'Formal support' },
-	{ what: 'Price', core: 'Free', cloud: 'From $99 a month' },
+	{ what: 'Price', core: 'Free', cloud: 'From $99 a month, plus the Azure resources it uses' },
 	{ what: 'Supports Maester', core: 'Contribute checks or sponsor the maintainers', cloud: 'Your subscription keeps Maester and its checks free for everyone' },
 ];
 const demoUrl = import.meta.env.DEV ? '/demo/report.html' : '/demo/report';

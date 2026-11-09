@@ -77,7 +77,9 @@ const free = [
 				<span>/ month</span>
 			</p>
 			<h2>Run it in your own Azure subscription.</h2>
-			<p class="body">The $99 plan deploys Maester Cloud into your own Azure subscription, then does the running for you, with nothing to script or schedule.</p>
+			<p class="body">The $99 plan deploys Maester Cloud into your own Azure subscription, then does the running for you, with nothing to script or schedule. The Azure resources it uses are billed to your
+				subscription separately. Active Directory checks need a domain controller, so run those with Maester itself.
+			</p>
 			<ul>
 				<li>Runs securely in your Azure subscription</li>
 				<li>Your report data never leaves the Azure region you choose</li>
@@ -95,7 +97,7 @@ const free = [
 	</section>
 
 	<p class="note">
-		The checks are the same in every option: Maester Cloud runs the same open-source engine and checks. <a href="/sponsor">Other ways to support Maester</a>
+		Maester Cloud runs the same open-source engine and checks, apart from Active Directory checks, which need a domain controller. <a href="/sponsor">Other ways to support Maester</a>
 	</p>
 	<p class="note note--small">
 		Want to compare other ways to run Maester? The community has built{' '}
