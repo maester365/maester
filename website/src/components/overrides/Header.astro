@@ -4,13 +4,14 @@
 import Search from '@astrojs/starlight/components/Search.astro';
 import SiteHeaderBar from '../SiteHeaderBar.astro';
 import VersionPicker from '../VersionPicker.astro';
+import { pagePath } from '../../lib/site-nav';
 
 // The 2.x archive has its own sidebar but no tab, and Packs and Blog are in the top bar already.
 const hidden = ['/docs/2.x', '/docs/packs', '/blog'];
 const allTopics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !hidden.some((link) => topic.link.startsWith(link)));
 // Two pages of the Guides that people go to often enough to have a tab of their own. On them, their tab is the one
 // marked, not Guides.
-const path = Astro.url.pathname.replace(/\.html$/, '');
+const path = pagePath(Astro.url.pathname);
 const pageTabs = [
 	{ label: 'Write tests', link: '/docs/writing-tests/first-custom-test', match: '/docs/writing-tests' },
 	{ label: 'Contributing', link: '/docs/contributing', match: '/docs/contributing' },
@@ -23,7 +24,7 @@ const tabs = builderAt < 0 ? [...topics, ...pageTabs] : [...topics.slice(0, buil
 ---
 
 <div class="mt-header">
-	<SiteHeaderBar path={Astro.url.pathname}>
+	<SiteHeaderBar path={path}>
 		<div class="mt-header__search sl-flex md:sl-hidden print:hidden" slot="tools" title="Search (⌘K)"><Search /></div>
 	</SiteHeaderBar>
 	<div class="mt-docs-row sl-hidden md:sl-flex">

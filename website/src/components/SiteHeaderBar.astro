@@ -3,6 +3,7 @@
 // docs header both use it, so the two never drift. The `tools` slot adds buttons before Sponsor (the docs put search
 // there on phones).
 import ThemeToggle from './ThemeToggle.astro';
+import { isCurrentNav, siteNav } from '../lib/site-nav';
 
 interface Props {
 	/** The page's path, to mark the menu item it belongs to. */
@@ -10,19 +11,8 @@ interface Props {
 }
 
 const { path } = Astro.props;
-const nav = [
-	{ label: 'Docs', href: '/docs/intro' },
-	{ label: 'Test catalog', href: '/docs/tests' },
-	{ label: 'Blog', href: '/blog' },
-	{ label: 'Contributors', href: '/contributors' },
-	{ label: 'Pricing', href: '/pricing' },
-	{ label: 'Manifesto', href: 'https://maester.cloud/manifesto' },
-	{ label: 'Packs', href: 'https://packs.maester.cloud' },
-	{ label: 'Maester Cloud ↗', href: 'https://maester.cloud' },
-];
-// Every docs page belongs to Docs, except the test catalog, which has its own item.
-const isCurrent = (href: string) =>
-	href === '/docs/tests' ? path.startsWith('/docs/tests') : href === '/docs/intro' ? path.startsWith('/docs') && !path.startsWith('/docs/tests') : path.startsWith(href);
+const nav = siteNav;
+const isCurrent = (href: string) => isCurrentNav(path, href);
 ---
 
 <div class="site-header__inner">

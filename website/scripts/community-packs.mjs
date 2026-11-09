@@ -20,6 +20,18 @@ async function fetchJson(url) {
   return response.json();
 }
 
+// The pack's banner image on packs.maester.cloud, when it has one: only an https URL, and a value that isn't a URL
+// costs that pack its banner, not the whole list.
+function bannerUrl(value) {
+  if (!value) return "";
+  try {
+    const url = new URL(value, `${site}/`);
+    return url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
 const list = (value) => (value == null ? [] : Array.isArray(value) ? value : [value]);
 
 function pack(p, tests) {
@@ -34,8 +46,7 @@ function pack(p, tests) {
     badges: list(p.Badges),
     products: list(p.Products),
     url: p.Url ?? `${site}/p/${code.toLowerCase()}`,
-    // The pack's banner image on packs.maester.cloud, when it has one.
-    banner: p.Banner ? new URL(p.Banner, `${site}/`).href : "",
+    banner: bannerUrl(p.Banner),
     count: tests ? tests.length : (p.Tests ?? 0),
     tests: (tests ?? []).map((t) => ({
       id: t.Id,
