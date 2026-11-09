@@ -4,18 +4,18 @@
     Counts the number of disabled computer objects in Active Directory.
 
     .DESCRIPTION
-    This test retrieves the count of disabled computer objects and compares it to the total
-    number of computer objects in Active Directory. This provides visibility into the
-    number of inactive or decommissioned computer accounts that remain in the directory.
+    This investigation inventory counts known enabled, known disabled and unknown-state
+    computers, reports the disabled share of the visible inventory, and lists disabled
+    objects for lifecycle review. It does not impose a zero-disabled-account baseline.
 
     .EXAMPLE
-    Test-MtAdComputerDisabledCount
+    Invoke-MtTest -Id AD-COMP-01
 
-    Returns $true if computer object data is accessible, $false otherwise.
-    The test result includes counts of disabled and total computers.
+    Inventories visible computer account states and reports Investigate.
+    Missing required inventory produces Error rather than a security failure.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAdComputerDisabledCount
+    https://maester.dev/docs/tests/AD-COMP-01
     #>
     [MaesterTest(
         Id = 'AD-COMP-01',
@@ -41,20 +41,17 @@
 
     if ($null -eq $adState -or $null -eq $adState.Computers) {
         Add-MtTestResultDetail -SkippedBecause Error -Result 'Computer inventory is unavailable; disabled accounts cannot be assessed.'
-        return
+        return $null
     }
 
     $computers = $adState.Computers
-    if (@($computers | Where-Object { $null -eq $_.Enabled }).Count -gt 0) {
-        Add-MtTestResultDetail -SkippedBecause Error -Result 'Computer enabled state is unavailable; disabled-account counts cannot be established.'
-        return
-    }
 
     # Count disabled and total computers
     $disabledComputers = $computers | Where-Object { $_.Enabled -eq $false }
     $disabledCount = ($disabledComputers | Measure-Object).Count
     $totalCount = ($computers | Measure-Object).Count
-    $enabledCount = $totalCount - $disabledCount
+    $enabledCount = @($computers | Where-Object { $_.Enabled -eq $true }).Count
+    $unknownCount = @($computers | Where-Object { $null -eq $_.Enabled }).Count
 
     $testResult = $null -ne $adState.Computers
 
@@ -71,9 +68,15 @@
         $result += "| Total Computers | $totalCount |" + "`n"
         $result += "| Enabled Computers | $enabledCount |" + "`n"
         $result += "| Disabled Computers | $disabledCount |" + "`n"
+        $result += "| Computers with Unknown Enabled State | $unknownCount |" + "`n"
         $result += "| Disabled Percentage | $percentage% |" + "`n" + "`n"
+        $result += "| Disabled Computer | Distinguished Name |`n| --- | --- |`n"
+        foreach ($computer in $disabledComputers) {
+            $result += '| {0} | {1} |' -f (Format-MtAdSiteInventoryValue $computer.Name), (Format-MtAdSiteInventoryValue $computer.DistinguishedName)
+            $result += "`n"
+        }
 
-        $testResultMarkdown = "Active Directory computer objects have been analyzed. $disabledCount out of $totalCount computers ($percentage%) are disabled.`n`n%TestResult%"
+        $testResultMarkdown = "ℹ️ Review the disabled-computer lifecycle inventory. $disabledCount of $totalCount visible computers ($percentage%) are known disabled. $unknownCount have unknown enabled state, so the reported disabled share may undercount disabled objects. Disabled accounts may be intentional; this is not a security pass/fail threshold.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
         $testResultMarkdown = "Unable to retrieve Active Directory computer objects. Ensure you have appropriate permissions and the Active Directory module is installed."

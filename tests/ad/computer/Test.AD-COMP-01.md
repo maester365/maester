@@ -15,12 +15,14 @@ Regularly review disabled computer accounts and delete those that are permanentl
 
 #### How the Test Works
 
-This test retrieves all computer objects from Active Directory and counts:
+This cached investigation inventory counts visible computer objects and reports:
 - Total number of computer accounts
-- Number of disabled computer accounts
-- Percentage of computers that are disabled
+- Known-enabled and known-disabled computer accounts separately
+- Accounts whose enabled state is unknown
+- Known-disabled share of the visible inventory, which may undercount disabled objects when some statuses are unknown
+- Each known-disabled computer and its distinguished name
 
-The test returns informational results to help you assess the scope of disabled accounts in your environment.
+The result is **Investigate**, not a zero-disabled-computer pass/fail baseline. Unknown statuses are reported rather than silently classified as enabled or aborting the entire inventory. A missing whole computer collection remains Error. Removing disabled accounts requires owner approval and a suitable retention policy; presence alone is not evidence of an active compromise.
 
 #### Related Tests
 
