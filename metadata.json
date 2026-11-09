@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6ZMCAHJY0D59FTR22E6SVF3",
   "strategy": "manual-commit",
   "branch": "feat/website-pricing-video-polish",
-  "checkpoints_count": 37,
+  "checkpoints_count": 40,
   "files_touched": [
     ".gitignore",
     "website/public/explainers/how-it-works/audio/mix.mp3",
@@ -33,6 +33,13 @@
       "compact_transcript": "/2/transcript.jsonl",
       "content_hash": "/2/content_hash.txt",
       "prompt": "/2/prompt.txt"
+    },
+    {
+      "metadata": "/3/metadata.json",
+      "transcript": "/3/full.jsonl",
+      "compact_transcript": "/3/transcript.jsonl",
+      "content_hash": "/3/content_hash.txt",
+      "prompt": "/3/prompt.txt"
     }
   ],
   "token_usage": {
@@ -43,15 +50,15 @@
     "api_call_count": 2
   },
   "redaction": {
-    "replacements": 3442,
+    "replacements": 4014,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
-      "credential_value": 0,
+      "credential_value": 6,
       "credentialed_uri": 0,
-      "entropy": 3354,
-      "key_context": 90,
+      "entropy": 3908,
+      "key_context": 102,
       "provider_token": 0,
       "shell_stdin": 0
     }
