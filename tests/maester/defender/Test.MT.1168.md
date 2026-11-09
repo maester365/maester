@@ -1,4 +1,4 @@
-﻿Verify that cleaned malware is retained for at least 30 days to support forensic analysis and threat investigation.
+Verify that cleaned malware is retained for at least 30 days to support forensic analysis and threat investigation.
 
 Short retention may impact forensic analysis and threat investigation.
 

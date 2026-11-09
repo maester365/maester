@@ -1,4 +1,4 @@
-﻿Identifying specific stale trusts enables targeted remediation:
+Identifying specific stale trusts enables targeted remediation:
 
 - **Prioritization**: Focus cleanup efforts on the oldest, most likely unused trusts
 - **Investigation**: Specific target domains can be investigated for existence and need

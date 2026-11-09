@@ -1,4 +1,4 @@
-function Get-MtAffectedObjectFromMarkdown {
+﻿function Get-MtAffectedObjectFromMarkdown {
     <#
     .SYNOPSIS
     Extracts object records from test result markdown by matching known portal deep-link patterns.
@@ -69,7 +69,10 @@ function Get-MtAffectedObjectFromMarkdown {
         # by a link title (`[name](url "title")`).
         $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"[^"]*")?\)|(?<url>https://[^\s)\]]+)'
         # Markdown backslash escapes (\( \_ \* ...) that result markdown adds around display names.
-        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>])'
+        # Must stay a superset of what Get-MtSafeMarkdown escapes, or a name keeps a literal
+        # backslash on the affected-objects page. `:` and `@` were added there for GFM autolink
+        # literals; `~` has been escaped by the helper for longer and was missing here too.
+        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>~:@])'
 
         foreach ($link in [regex]::Matches($Markdown, $linkPattern)) {
             $url = $link.Groups['url'].Value

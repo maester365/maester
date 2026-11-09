@@ -1,4 +1,4 @@
-﻿This test verifies the health of Intune Mobile Threat Defense Connectors, including Microsoft Defender for Endpoint.
+This test verifies the health of Intune Mobile Threat Defense Connectors, including Microsoft Defender for Endpoint.
 
 #### Remediation action
 

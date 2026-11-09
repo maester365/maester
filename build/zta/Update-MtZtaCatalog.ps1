@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Writes the test catalog of the Zero Trust Assessment pack from a copy of the ZeroTrustAssessment module.
 

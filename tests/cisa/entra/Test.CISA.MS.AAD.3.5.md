@@ -1,4 +1,4 @@
-﻿The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.
+The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.
 
 Rationale: SMS, voice call, and email OTP are the weakest authenticators. This policy forces users to use stronger MFA methods.
 

@@ -3,7 +3,7 @@ import explorer from '../../data/explorer.json';
 import { productIcon, productInitials, featureIcon } from '../../lib/report-icons.mjs';
 import { previewLabel } from '../../lib/versions.mjs';
 
-export type Check = (typeof explorer.tests)[number] & { pillar?: string[]; category?: string; also?: string[]; testId?: string };
+export type Check = (typeof explorer.tests)[number] & { pillar?: string[]; category?: string; also?: string[]; testId?: string; community?: boolean; url?: string };
 export const data = explorer;
 export const checks = explorer.tests as Check[];
 export const severityOrder = ['Critical', 'High', 'Medium', 'Low', 'Info'];
@@ -12,8 +12,13 @@ export { previewLabel, productIcon, productInitials, featureIcon };
 
 export const productName = (key: string) => explorer.products.find((p) => p.key === key)?.name ?? key;
 export const packOf = (code: string) => explorer.packs.find((p) => p.code === code);
+// A community pack listed on packs.maester.cloud (community-packs.mjs): its checks have no page here, only there.
+export const communityPackOf = (code: string) => explorer.communityPacks.find((p) => p.code === code);
+export const packName = (code: string) => packOf(code)?.name ?? communityPackOf(code)?.name ?? code;
 export const frameworkOf = (key: string) => explorer.frameworks.find((f) => f.key === key);
 export const checkUrl = (id: string) => `/docs/tests/${id}`;
+// Where a check's row links: its page here, or a community pack check's page on packs.maester.cloud.
+export const checkHref = (t: Check) => t.url || checkUrl(t.id);
 
 // The suites of the nav, by their key in the URL of their page (/docs/tests/<key>).
 export const suiteInfo: Record<string, { name: string; slug: string }> = {

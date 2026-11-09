@@ -1,4 +1,4 @@
-﻿1.3.3 (L2) Ensure 'External sharing' of calendars is not available
+1.3.3 (L2) Ensure 'External sharing' of calendars is not available
 
 External calendar sharing allows an administrator to enable the ability for users to share calendars with anyone outside of the organization. Outside users will be sent a URL that can be used to view the calendar.
 

@@ -1,4 +1,4 @@
-﻿Domain administrator accounts with SPNs represent the **highest possible Kerberoasting risk**:
+Domain administrator accounts with SPNs represent the **highest possible Kerberoasting risk**:
 
 - **Maximum privileges**: Domain admins have unrestricted access to the entire domain
 - **Golden ticket risk**: Compromising a domain admin can lead to complete domain compromise

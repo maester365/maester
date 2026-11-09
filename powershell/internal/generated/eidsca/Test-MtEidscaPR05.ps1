@@ -1,4 +1,4 @@
-function Test-MtEidscaPR05 {
+﻿function Test-MtEidscaPR05 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -201,6 +201,30 @@ Describe 'Affected objects' {
             }
 
             $affectedObject.DisplayName | Should -Be 'AzMfa Test (Require MFA) test_21783'
+        }
+
+        It 'Should remove every escape Get-MtSafeMarkdown adds, not a subset' {
+            # The parser's pattern has to stay a superset of the helper's, or a name keeps a
+            # literal backslash on the affected-objects page. This drives the whole set through
+            # both sides rather than naming a few characters, so adding one to the helper without
+            # adding it here fails this case instead of reaching the page.
+            # Every character Get-MtSafeMarkdown escapes, except '[' and ']'. Those two are left out
+            # for a reason that is not the unescape pattern: $linkPattern admits at most one level of
+            # brackets in a name, so an escaped bracket breaks the link match before the unescape is
+            # ever reached. That is a pre-existing limit of the link pattern and is unchanged here.
+            $chars = @('\', '`', '*', '_', '(', ')', '!', '|', '<', '>', '~', ':', '@')
+            foreach ($c in $chars) {
+                $nombre = InModuleScope Maester -Parameters @{ C = $c } {
+                    param($C)
+                    Get-MtSafeMarkdown ("Contoso" + $C + "App")
+                }
+                $markdown = "- [$nombre](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/44444444-4444-4444-4444-444444444444)"
+                $affectedObject = InModuleScope Maester -Parameters @{ Markdown = $markdown } {
+                    param($Markdown)
+                    Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+                }
+                $affectedObject.DisplayName | Should -Be ("Contoso" + $C + "App") -Because "the escape of [$c] must round-trip"
+            }
         }
 
         It 'Should capture an enterprise application linked by object id only' {

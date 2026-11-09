@@ -1,4 +1,4 @@
-function ConvertFrom-MtPermission {
+﻿function ConvertFrom-MtPermission {
     <#
     .SYNOPSIS
     Splits one [MaesterTest] Permission element into its alternatives.

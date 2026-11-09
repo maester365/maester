@@ -87,8 +87,11 @@
         # endpoint is read from the active Graph context on every invocation, so a context switch
         # inside a single session is picked up instead of reusing a stale session value.
         [bool] $IsEndpointOverride = -not [string]::IsNullOrEmpty($GraphBaseUri)
+        # Read once, for the endpoint below and for the tenant in the cache key. An endpoint override
+        # replaces the endpoint the context would give, not the tenant the connection is to, so the
+        # tenant is read on that path as well.
+        $MgContext = Get-MgContext
         if (!$IsEndpointOverride) {
-            $MgContext = Get-MgContext
             if (-not $MgContext -or [string]::IsNullOrEmpty($MgContext.Environment)) {
                 throw "No active Microsoft Graph context. Ensure you are connected via 'Connect-Maester', or pass -GraphBaseUri to target an endpoint explicitly."
             }
@@ -121,6 +124,14 @@
         # inventory, which strips "_[" and "_{" suffixes from cache keys, still reads the request URL.
         $cacheKeySuffix = if ($OutputType -and $OutputType -ne 'PSObject') { "_[$OutputType]" } else { '' }
 
+        # The cache lives for the session, and a session can connect to a second tenant: the same request
+        # against two tenants in one cloud produces the same uri, so without the tenant in the key the
+        # second tenant is answered with the first tenant's data and nothing in the result says so. The
+        # tenant goes in a "_{...}" suffix, not a prefix, because the affected-object inventory recovers
+        # the request url by reading a cache key up to its first "_[" or "_{": a prefix would leave every
+        # Graph entry unmatched and silently drop it from the report's affected objects.
+        if ($MgContext.TenantId) { $cacheKeySuffix += "_{$($MgContext.TenantId)}" }
+
         # The endpoint itself can carry a path, for example a reverse proxy in front of Graph. A base
         # that does not end in a slash makes its last segment look like a document, which would put
         # that segment back into any uri made relative to it. Normalising the base once, here, is what
@@ -148,6 +159,9 @@
         [string] $VersionedBaseUri = (New-Object System.UriBuilder -ArgumentList ($TransportBaseUri.AbsoluteUri + $ApiVersion)).Uri.AbsoluteUri.TrimEnd('/') + '/'
 
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
+        # Batch request id -> the cache key of the request that id stands for, so a paged response is
+        # cached under its own key once the request loop has ended.
+        $batchCacheKeys = @{}
 
         # Batched requests that Graph throttled are retried up to this many attempts in all, waiting for the
         # Retry-After header, capped so one request cannot hold up the run for long.
@@ -183,7 +197,11 @@
             } else { Write-Output $results }
         }
 
-        function Complete-Result ($results, $DisablePaging) {
+        # $CacheKey is the key of the request whose response this is. It is passed in rather than read
+        # from the enclosing scope because the batch path completes its responses after the loop that
+        # builds the requests has ended, so the last request's uri is the only one still in scope: every
+        # paged response in a batch would otherwise be cached under the key of the last request.
+        function Complete-Result ($Results, $DisablePaging, $CacheKey) {
             if (!$DisablePaging -and $results -and (Get-ObjectProperty $results '@odata.nextLink')) {
                 # The "skipToken" are in rare cases not unique, so when it is processed, we can end up in a caching loop. By updating the cache with the original uri with the final result, we workaround this issue and have a faster cache.
                 $resultList = New-Object -TypeName System.Collections.ArrayList
@@ -194,8 +212,8 @@
                 } while (Get-ObjectProperty $results '@odata.nextLink')
                 $results.value = $resultList
                 # Update the original request cache with the consolidated results
-                if (!$DisableCache) {
-                    $__MtSession.GraphCache[$uriQueryEndpointFinal.Uri.AbsoluteUri + $cacheKeySuffix] = $results
+                if (!$DisableCache -and $CacheKey) {
+                    $__MtSession.GraphCache[$CacheKey] = $results
                 }
             }
             Format-Result $results $DisablePaging
@@ -234,6 +252,10 @@
                 $uriQueryEndpointFinal = New-Object System.UriBuilder -ArgumentList $uriQueryEndpoint.Uri
                 $uriQueryEndpointFinal.Path = ([IO.Path]::Combine($uriQueryEndpointFinal.Path, $id))
 
+                # The cache key stays absolute, which is what keeps entries from one
+                # environment from being served to another.
+                $requestCacheKey = $uriQueryEndpointFinal.Uri.AbsoluteUri + $cacheKeySuffix
+
                 if (!$DisableBatching -and ($RelativeUri.Count -gt 1 -or $UniqueId.Count -gt 1)) {
                     ## Create batch request entry
                     $request = New-Object PSObject -Property @{
@@ -243,11 +265,11 @@
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
+                    # Kept beside the request rather than on it, so the key never reaches the batch body.
+                    $batchCacheKeys[[string]$request.id] = $requestCacheKey
                 } else {
-                    # The cache key stays absolute, which is what keeps entries from one
-                    # environment from being served to another.
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey ($uriQueryEndpointFinal.Uri.AbsoluteUri + $cacheKeySuffix) -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
-                    Complete-Result $results $DisablePaging
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey $requestCacheKey -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
+                    Complete-Result -Results $results -DisablePaging $DisablePaging -CacheKey $requestCacheKey
                 }
             }
         }
@@ -314,7 +336,7 @@
                         }
                         throw [System.Management.Automation.ErrorRecord]::new([System.InvalidOperationException]::new($message), 'MtGraphBatchRequestFailed', $category, $request.url)
                     }
-                    Complete-Result $response.body $DisablePaging
+                    Complete-Result -Results $response.body -DisablePaging $DisablePaging -CacheKey $batchCacheKeys[[string]$response.id]
                 }
             }
         }

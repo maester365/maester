@@ -1,4 +1,4 @@
-﻿Agent Identities, Blueprint Principals, and Blueprints should have at least one active, enabled owner.
+Agent Identities, Blueprint Principals, and Blueprints should have at least one active, enabled owner.
 
 Owners are the technical custodians responsible for an AI agent's configuration, credentials, and lifecycle. When an agent or blueprint has no assigned owners—or when all assigned owners are deleted or disabled user accounts—the agent becomes unmanaged, making it harder to review security access, investigate anomalies, or safely decommission stale resources.
 

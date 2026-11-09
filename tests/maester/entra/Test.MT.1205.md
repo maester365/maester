@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprints and Blueprint Principals should have assigned sponsors.
+Agent Identity Blueprints and Blueprint Principals should have assigned sponsors.
 
 Sponsors provide business ownership and ongoing accountability for AI agents. While technical owners maintain configuration and authentication settings, sponsors justify why the agent exists, approve access scopes, and ensure the agent's activities remain aligned with organizational security policies.
 

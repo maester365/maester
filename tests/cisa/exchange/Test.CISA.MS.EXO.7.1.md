@@ -1,4 +1,4 @@
-﻿External sender warnings SHALL be implemented.
+External sender warnings SHALL be implemented.
 
 Rationale: Phishing is an ever-present threat. Alerting users when email originates from outside their organization can encourage them to exercise increased caution, especially if an email is one they expected from an internal sender.
 

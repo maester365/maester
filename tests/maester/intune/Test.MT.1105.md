@@ -1,4 +1,4 @@
-﻿This test verifies whether Microsoft Intune is set as MDM authority. In tenants where Intune is used to provision and manage devices, this should be automatically the case.
+This test verifies whether Microsoft Intune is set as MDM authority. In tenants where Intune is used to provision and manage devices, this should be automatically the case.
 
 #### Remediation action
 

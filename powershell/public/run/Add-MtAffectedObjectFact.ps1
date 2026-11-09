@@ -1,4 +1,4 @@
-function Add-MtAffectedObjectFact {
+﻿function Add-MtAffectedObjectFact {
     <#
     .SYNOPSIS
     Adds facts about an object, such as its last sign-in or its expired secrets, to the Affected objects page.

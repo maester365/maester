@@ -1,4 +1,4 @@
-﻿SID History is an attribute used during domain migrations to maintain access to resources in the source domain. While necessary during migrations, persistent SID History on computer accounts can indicate:
+SID History is an attribute used during domain migrations to maintain access to resources in the source domain. While necessary during migrations, persistent SID History on computer accounts can indicate:
 
 - **Incomplete migrations**: Computers that were migrated but never fully transitioned
 - **Security risks**: SIDs from untrusted or less-secure domains may grant unintended access

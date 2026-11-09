@@ -285,7 +285,6 @@ textarea.input {
   gap: 0.75rem;
 }
 
-.statusGood,
 .statusBad {
   border-radius: 8px;
   padding: 0.6rem 0.9rem;
@@ -442,3 +441,5 @@ textarea.input {
 .iconButton { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; padding: 0; border: 0; border-radius: 999px; background: none; color: var(--ifm-color-emphasis-700); cursor: pointer; transition: background-color 0.15s, color 0.15s; }
 .iconButton:hover { background: var(--ifm-color-emphasis-200); color: var(--ifm-font-color-base); }
 .iconButton svg { width: 0.85rem; height: 0.85rem; }
+/* The status region stays in the page for screen readers; empty, it takes no room in the output column. */
+.status:empty { margin-top: -0.75rem; }

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     $script:fixture = (Resolve-Path "$PSScriptRoot/../fixtures/packs/sample").Path
 
@@ -70,11 +70,44 @@ Describe 'Maester Pack manifest' {
         @{ Case = 'a banner that is not an image'; Change = { param($m) $m | Add-Member Banner 'banner.svg' }; Code = 'InvalidManifest' }
         @{ Case = 'a Guide that is not a JSON file'; Change = { param($m) $m | Add-Member Guide 'guide.md' }; Code = 'InvalidManifest' }
         @{ Case = 'a Guide file that does not exist'; Change = { param($m) $m | Add-Member Guide 'maester-pack.guide.json' }; Code = 'InvalidManifest' }
+        @{ Case = 'a Report that is not an object'; Change = { param($m) $m | Add-Member Report 'menu' }; Code = 'InvalidManifest' }
+        @{ Case = 'a menu entry with neither a Title nor a Section'; Change = { param($m) $m | Add-Member Report @{ Navigation = @(@{ View = 'pack' }) } }; Code = 'InvalidManifest' }
+        @{ Case = 'a menu entry with both a Title and a Section'; Change = { param($m) $m | Add-Member Report @{ Navigation = @(@{ Title = 'A'; Section = 'B'; View = 'pack' }) } }; Code = 'InvalidManifest' }
+        @{ Case = 'a plan menu entry without its attachment'; Change = { param($m) $m | Add-Member Report @{ Navigation = @(@{ Title = 'Plan'; View = 'plan' }) } }; Code = 'InvalidManifest' }
+        @{ Case = 'a logo that is not a mark name'; Change = { param($m) $m | Add-Member Report @{ Logo = 'https://example.com/logo.png' } }; Code = 'InvalidManifest' }
+        @{ Case = 'a nested menu entry with GroupBy that is not a list of names'; Change = { param($m) $m | Add-Member Report @{ Navigation = @(@{ Section = 'Results'; Items = @(@{ Title = 'By pillar'; View = 'tests'; GroupBy = @(1) }) }) } }; Code = 'InvalidManifest' }
     ) {
         $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "pack-$([guid]::NewGuid().ToString('n'))") -Edit { param($p) Set-Manifest -Pack $p -Change $Change }
         $result = Test-MtPack $pack
         $result.IsValid | Should -BeFalse
         $result.Errors.Code | Should -Contain $Code
+    }
+
+    It 'accepts a menu of any depth, and warns about a view it does not know and a menu over five levels deep' {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive 'menu')
+        # Two rows, then four levels the plan view expands to: six in all.
+        $deep = @{ Title = 'Plans'; Items = @(@{ Title = 'Plan'; View = 'plan'; Attachment = 'plan'; Expand = @('pillars', 'areas', 'lanes', 'tasks') }) }
+        Set-Manifest -Pack $pack -Change {
+            param($m)
+            $m | Add-Member Report @{ Navigation = @(
+                    @{ Title = 'Overview'; View = 'pack' }
+                    @{ Section = 'Results'; Items = @(@{ Title = 'By pillar'; Id = 'by-pillar'; View = 'tests'; GroupBy = @('Pillar', 'Category'); Filter = @{ Pillar = @('Identity') } }) }
+                    @{ Title = 'Timeline'; View = 'timeline' }
+                    $deep
+                ) }
+        }
+        $read = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        $read.Errors | Should -BeNullOrEmpty
+        @($read.Warnings) -match "view 'timeline'" | Should -Not -BeNullOrEmpty
+        @($read.Warnings) -match '6 levels deep' | Should -Not -BeNullOrEmpty
+    }
+
+    It 'accepts the menu of the Zero Trust Assessment pack without a warning' {
+        $read = InModuleScope Maester -Parameters @{ Path = (Join-Path $PSScriptRoot '../../../packs/zero-trust-assessment') } { param($Path) Read-MtPackManifest -Path $Path -Official }
+        $read.Errors | Should -BeNullOrEmpty
+        $read.Warnings | Should -BeNullOrEmpty
+        @($read.Manifest.Report.Navigation).Count | Should -BeGreaterThan 0
+        $read.Manifest.Report.Logo | Should -Be 'microsoft'
     }
 
     It 'accepts a user-installed module that runs in a child process, and says so' {

@@ -1,4 +1,4 @@
-﻿Providing or collecting customer feedback to the product team for Azure DevOps **should be** enabled.
+Providing or collecting customer feedback to the product team for Azure DevOps **should be** enabled.
 
 Rationale: You should have confidence that Microsoft is handling your data appropriately and for legitimate uses. Part of that assurance involves carefully restricting usage.
 

@@ -1,4 +1,4 @@
-﻿Repositories with the GitHub Secret Protection plan enabled **should** block pushes that contain secrets.
+Repositories with the GitHub Secret Protection plan enabled **should** block pushes that contain secrets.
 
 Rationale: Secret alerts tell you a secret was committed, which means the secret is already in the repository history and must be rotated. Push protection stops the commit at push time, preventing the exposure instead of reporting it. A repository that is licensed for Secret Protection but has push protection turned off pays for the plan while keeping the weaker of the two controls.
 

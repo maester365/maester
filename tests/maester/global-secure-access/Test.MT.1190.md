@@ -1,4 +1,4 @@
-﻿Newly installed Microsoft Entra private network connectors automatically join the **Default** connector group. If an Entra Private Access application is served by the Default group, a freshly installed or misconfigured connector immediately begins handling its traffic - a routing and outage risk. Keep the Default group as an idle / onboarding pool and serve every Private Access application through a dedicated connector group.
+Newly installed Microsoft Entra private network connectors automatically join the **Default** connector group. If an Entra Private Access application is served by the Default group, a freshly installed or misconfigured connector immediately begins handling its traffic - a routing and outage risk. Keep the Default group as an idle / onboarding pool and serve every Private Access application through a dedicated connector group.
 
 #### Remediation action:
 
