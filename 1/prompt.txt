@@ -1,0 +1,5 @@
+autofix https://github.com/maester365/maester/pull/2739
+
+---
+
+Yes, resolve them
