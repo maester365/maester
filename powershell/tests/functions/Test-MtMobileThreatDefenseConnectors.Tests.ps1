@@ -94,6 +94,16 @@ Describe 'Test-MtMobileThreatDefenseConnectors' {
         $script:Result | Should -BeLike '*Microsoft Defender for Endpoint*'
     }
 
+    It 'Names the <Name> connector from its ID' -ForEach @(
+        @{ Id = '74873197-ffec-4dfc-9816-db65f34c7cb9'; Name = 'Trellix Mobile Security' }
+        @{ Id = 'c2b688fe-48c0-464b-a89c-67041aa8fcb2'; Name = 'Windows Security Center' }
+    ) {
+        $script:Connector.id = $Id
+
+        Test-MtMobileThreatDefenseConnectors | Should -BeTrue
+        $script:Result | Should -BeLike "*| $Name |*"
+    }
+
     It 'Escapes unknown connector IDs and states in the report table' {
         $script:Connector.id = '[link](https://example.test) | extra'
         $script:Connector.partnerState = '**unknown** | extra'

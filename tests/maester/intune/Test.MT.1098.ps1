@@ -35,8 +35,9 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple MTD connectors can exist.')]
     param()
 
-    # MTD Connector IDs and Names
-    # Source: https://github.com/microsoft/Microsoft365DSC/blob/Dev/Modules/Microsoft365DSC/DSCResources/MSFT_IntuneDeviceConfigurationPolicyWindows10/MSFT_IntuneDeviceConfigurationPolicyWindows10.psm1
+    # MTD connector IDs and display names, used only to name connectors in the result.
+    # Based on https://github.com/microsoft/Microsoft365DSC/blob/Dev/Modules/Microsoft365DSC/DscResources/MSFT_IntuneMobileThreatDefenseConnector/MSFT_IntuneMobileThreatDefenseConnector.psm1
+    # Windows Security Center and Trellix differ from that file; both were checked against the IDs Graph returns in a tenant. iVerify is not in that file.
     $mtdConnectorInformation = @{
         '2c7790de-8b02-4814-85cf-e0c59380dee8' = 'Lookout for Work'
         '28fd67fd-b179-4629-a8b0-dad420b697c7' = 'Symantec Endpoint Protection'
@@ -46,7 +47,7 @@
         '860d3ab4-8fd1-45f5-89cd-ecf51e4f92e5' = 'BETTER Mobile Security'
         '870b252b-0ef0-4707-8847-50fc571472b3' = 'Sophos'
         '1f58d6d2-02cc-4c80-b008-1bfe7396a10a' = 'Jamf Trust'
-        '4873197-ffec-4dfc-9816-db65f34c7cb9'  = 'Trellix Mobile Security'
+        '74873197-ffec-4dfc-9816-db65f34c7cb9' = 'Trellix Mobile Security'
         'a447eca6-a986-4d3f-9838-5862bf50776c' = 'CylancePROTECT Mobile'
         '4928f0f6-2660-4f69-b4c5-5170ec921f7b' = 'Trend Micro'
         'bb13fe25-ce1f-45aa-b278-cabbc6b9072e' = 'SentinelOne'
