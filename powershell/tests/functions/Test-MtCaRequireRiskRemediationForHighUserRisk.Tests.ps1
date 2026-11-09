@@ -145,6 +145,31 @@ Describe 'MT.1253 risk remediation policy coverage' {
         }
     }
 
+    It 'Rejects a policy narrowed by <Condition>' -ForEach @(
+        @{ Condition = 'platform' }, @{ Condition = 'location' },
+        @{ Condition = 'device filter' }, @{ Condition = 'sign-in risk' }
+    ) {
+        InModuleScope Maester -Parameters @{ Condition = $Condition } {
+            param($Condition)
+            switch ($Condition) {
+                'platform' { $script:riskPolicy.conditions.platforms = @{ includePlatforms = @('iOS') } }
+                'location' { $script:riskPolicy.conditions.locations = @{ includeLocations = @('named-location') } }
+                'device filter' { $script:riskPolicy.conditions.devices = @{ deviceFilter = @{ mode = 'include'; rule = 'device.isCompliant -eq True' } } }
+                'sign-in risk' { $script:riskPolicy.conditions.signInRiskLevels = @('high') }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*No platform, location, device or sign-in risk scoping*' }
+        }
+    }
+
+    It 'Accepts platform and location conditions that select all' {
+        InModuleScope Maester {
+            $script:riskPolicy.conditions.platforms = @{ includePlatforms = @('all') }
+            $script:riskPolicy.conditions.locations = @{ includeLocations = @('All') }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+        }
+    }
+
     It 'Passes if a second policy qualifies, without accepting the excluded workforce policy' {
         InModuleScope Maester {
             Mock Get-MtConditionalAccessPolicy {

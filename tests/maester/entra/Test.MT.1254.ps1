@@ -67,6 +67,8 @@ function Test-MtEntraTenantConfigurationDrift {
     .LINK
     https://maester.dev/docs/tests/MT.1254
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'MaximumValueLength', Justification = 'Used by the nested value formatter.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'MaxPropertiesPerResource', Justification = 'Used by the nested drift row formatter.')]
     [MaesterTest(
         Id = 'MT.1254',
         Title = 'Tenant Configuration Management monitors report no active configuration drift.',

@@ -1,4 +1,4 @@
-function Get-MtCaRiskRemediationPolicyResult {
+﻿function Get-MtCaRiskRemediationPolicyResult {
     <#
     .SYNOPSIS
     Evaluates the Conditional Access policies that require risk remediation for risky users.
@@ -10,6 +10,7 @@ function Get-MtCaRiskRemediationPolicyResult {
     - includes all users, excluding only emergency access accounts and the guest/external-user selector,
     - targets all resources and excludes none,
     - is scoped to every user risk level from MinimumUserRiskLevel up to high, and
+    - is not narrowed by platform, location, device filter or sign-in risk conditions, and
     - requires the riskRemediation grant control.
 
     Emergency access comes from the EmergencyAccessAccounts setting. Without the setting, a user or group excluded
@@ -78,12 +79,20 @@ function Get-MtCaRiskRemediationPolicyResult {
         $unapprovedGroups = @($users.excludeGroups | Where-Object { $_ -and $_ -notin $emergencyGroupIds })
         $excludedRoles = @($users.excludeRoles | Where-Object { $_ })
         $checks = [ordered]@{
-            'Enabled'                                     = $policy.state -eq 'enabled'
-            'All users'                                   = @($policy.conditions.users.includeUsers) -contains 'All'
-            'Only approved user exclusions'               = ($unapprovedUsers.Count + $unapprovedGroups.Count + $excludedRoles.Count) -eq 0
-            'All resources'                               = (@($policy.conditions.applications.includeApplications) -contains 'All') -and
+            'Enabled'                                               = $policy.state -eq 'enabled'
+            'All users'                                             = @($policy.conditions.users.includeUsers) -contains 'All'
+            'Only approved user exclusions'                         = ($unapprovedUsers.Count + $unapprovedGroups.Count + $excludedRoles.Count) -eq 0
+            'All resources'                                         = (@($policy.conditions.applications.includeApplications) -contains 'All') -and
             @($policy.conditions.applications.excludeApplications | Where-Object { $_ }).Count -eq 0
-            "User risk $($requiredRiskLevels -join ', ')" = $missingRiskLevels.Count -eq 0
+            "User risk $($requiredRiskLevels -join ', ')"           = $missingRiskLevels.Count -eq 0
+            'No platform, location, device or sign-in risk scoping' = (
+                @($policy.conditions.signInRiskLevels | Where-Object { $_ }).Count -eq 0 -and
+                -not $policy.conditions.devices.deviceFilter -and
+                @($policy.conditions.platforms.includePlatforms | Where-Object { $_ -and $_ -ne 'all' }).Count -eq 0 -and
+                @($policy.conditions.platforms.excludePlatforms | Where-Object { $_ }).Count -eq 0 -and
+                @($policy.conditions.locations.includeLocations | Where-Object { $_ -and $_ -ne 'All' }).Count -eq 0 -and
+                @($policy.conditions.locations.excludeLocations | Where-Object { $_ }).Count -eq 0
+            )
         }
         $failed = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
         $exclusionCount = @($policy.conditions.users.excludeUsers | Where-Object { $_ }).Count +
