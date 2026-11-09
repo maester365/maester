@@ -267,6 +267,8 @@ Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $ten
 
 The Azure DevOps security tests (AZDO.*) use the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module. This module is not bundled with Maester; install it separately and connect to your organization before running `Invoke-Maester`. If `ADOPS` is not installed or there is no active connection, the Azure DevOps tests are skipped.
 
+`Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization <your-organization>` follows both approaches below. If an Az context exists, it passes that context's token to `Connect-ADOPS -OAuthToken`. Otherwise it uses interactive `Connect-ADOPS`. With `-Service Azure,AzureDevOps`, one call connects Azure and then reuses that sign-in for Azure DevOps.
+
 #### OAuth token-based authentication (recommended for automation)
 
 If you already have an authenticated Azure context (e.g., managed identity, workload identity federation, or `Connect-AzAccount`), you can use `Get-AzAccessToken` to obtain an OAuth token and pass it directly to `Connect-ADOPS`. This avoids the need to manage Personal Access Tokens.

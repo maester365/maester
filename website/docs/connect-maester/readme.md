@@ -233,12 +233,16 @@ Use `Disconnect-Maester` or `Disconnect-MtGitHub` to clear the in-memory GitHub 
 Maester includes an *optional* set of Azure DevOps security tests (AZDO.*).
 These tests require the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module and an active connection to your Azure DevOps organization.
 
-Connecting to Azure DevOps is **not** part of `Connect-Maester` and must be done separately:
+Maester does not install `ADOPS`. Install it once, then connect with `Connect-Maester`:
 
 ```powershell
 Install-Module ADOPS -Scope CurrentUser
-Connect-ADOPS -Organization <your-organization>
+Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization <your-organization>
 ```
+
+Azure DevOps is not included in `-Service All` and must be named explicitly. `Connect-Maester` imports `ADOPS` with the unsupported APIs that some tests need enabled. If an Az context exists (for example after `Connect-Maester -Service Azure` or `Connect-AzAccount`), it passes that context's access token to `Connect-ADOPS`. Otherwise `Connect-ADOPS` signs you in interactively. You can set the organization once with `AzureDevOpsOrganization` in `maester-config.json` instead of passing `-AzureDevOpsOrganization`.
+
+If `ADOPS` is not installed, `Connect-Maester` warns you and still connects the other services you asked for. If Azure DevOps was the only service you asked for, it writes an error. You can still connect with `Connect-ADOPS -Organization <your-organization>` yourself.
 
 If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
 
