@@ -4,12 +4,15 @@ Chat and channel messages are a quick way to paste a customer list or credential
 
 The policy must be in the **Enable** mode. Once it is on, a user who posts sensitive content in a chat or channel meets a policy tip or a block. DLP for Teams chat and channel messages needs Microsoft 365 E5 or the Microsoft Purview suite licence.
 
+The test requires the Teams workload with **TeamsLocation** including **All**, without an administrative-unit scope. CIS permits **TeamsLocationException** entries when the organization permits them. If the only otherwise qualifying policies have exceptions, Maester lists their values and marks the result for investigation: an administrator must confirm each exception is permitted. Maester cannot infer approval from the policy configuration. Separately verify that the policy's enabled rules protect the data the organization needs.
+
 #### Remediation action
 
 1. Sign in to the [Microsoft Purview portal](https://purview.microsoft.com).
-2. Go to **Solutions** > **Data loss prevention** > [**Policies**](https://purview.microsoft.com/datalossprevention/policies) and edit a policy, or create a new one.
-3. Under **Locations**, turn on **Teams chat and channel messages** and apply it to all accounts, without excluding any account or group.
-4. Set the policy mode to **Turn it on right away** and save the policy.
+2. Go to **Solutions** > **Data loss prevention** > [**Policies**](https://purview.microsoft.com/datalossprevention/policies) and edit **Default policy for Teams**. If it is absent, edit another suitable policy or create a new one.
+3. Under **Locations**, turn on **Teams chat and channel messages** and apply it to **All accounts**. Review any excluded accounts or groups and retain only exceptions permitted by the organization.
+4. On **Customized advanced DLP rules**, turn on **Default Teams DLP policy rule** or an organization-specific rule that protects the required data, such as credit card numbers and personally identifiable information.
+5. Set the policy mode to **Turn it on right away**, review the settings, and submit the policy. Verify that its mode is **On** in the portal (**Enable** in PowerShell).
 
 #### Related links
 

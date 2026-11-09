@@ -23,7 +23,7 @@
         Area = 'data-protection',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
+        UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1213.002', 'T1530'),
         Control = ('cis-m365:3.2.3', 'nist-800-53-r5:AC-4'),
@@ -50,7 +50,7 @@
         $hasCopilotScope = $copilotScope.Count -gt 0 -or $copilotLocations.Count -gt 0
         if ($hasCopilotScope) {
             $copilotInclusions = @($copilotScope + @($copilotScope | ForEach-Object { $_.Inclusions }) + @($copilotLocations | ForEach-Object { $_.Inclusions }) | Where-Object { $_ })
-            $copilotExclusions = @($copilotLocations | ForEach-Object { $_.Exclusions } | Where-Object { $_ })
+            $copilotExclusions = @($copilotScope + $copilotLocations | ForEach-Object { $_.Exclusions } | Where-Object { $_ })
             if ($copilotInclusions.Count -gt 0) {
                 $locationInclusions = $copilotInclusions
             } elseif ($canUseTopLevelScope) {
@@ -88,6 +88,7 @@
                 $properties = $_.PSObject.Properties
                 $sensitiveCondition = $properties['ContentContainsSensitiveInformation']
                 $advancedRule = $properties['AdvancedRule']
+                # This property represents both sensitive information types and sensitivity-label groups.
                 $hasSensitiveCondition = ($sensitiveCondition -and @($sensitiveCondition.Value | Where-Object { $_ }).Count -gt 0) -or ($advancedRule -and "$($advancedRule.Value)" -match 'ContentContainsSensitiveInformation')
                 $blockAccess = $properties['BlockAccess']
                 $restrictAccess = $properties['RestrictAccess']
@@ -105,7 +106,10 @@
             Copilot = $isCopilot
             IncludesAll = if ($scopeKnown) { $includesAll } else { 'Unknown' }
             UnitScoped = $unitScoped
-            Exclusions = $locationExclusions.Count
+            Exclusions = (@($locationExclusions | ForEach-Object {
+                        if ($_ -is [string]) { $_ }
+                        else { ConvertTo-Json -InputObject $_ -Depth 20 -Compress }
+                    }) -join '; ')
             Rules = $policyRules.Count
             RestrictingRules = $restrictingRules.Count
             Pass = $qualifies -and $locationExclusions.Count -eq 0
@@ -124,21 +128,24 @@
     $resultMd += "| --- | --- | --- | --- | --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
         $result = if ($row.Pass) { '✅ Pass' } elseif ($row.ReviewRequired) { 'Review' } else { '❌ Fail' }
-        $resultMd += "| $($row.Name) | $($row.Mode) | $($row.Copilot) | $($row.IncludesAll) | $($row.UnitScoped) | $($row.Exclusions) | $($row.Rules) | $($row.RestrictingRules) | $result |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) | $(Get-MtSafeMarkdown $row.Mode) | $($row.Copilot) | $($row.IncludesAll) | $($row.UnitScoped) | $(Get-MtSafeMarkdown $row.Exclusions) | $($row.Rules) | $($row.RestrictingRules) | $result |`n"
     }
 
     if ($passingPolicy) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
-    } elseif ($reviewRequired) {
+    }
+    elseif ($reviewRequired) {
         $testResultMarkdown = "$reviewText`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     if ($reviewRequired) {
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    } else {
+    }
+    else {
         Add-MtTestResultDetail -Result $testResultMarkdown
     }
     return $testResult
