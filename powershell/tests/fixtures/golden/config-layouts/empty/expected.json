@@ -50,6 +50,7 @@
       "TenantId": null,
       "ConfigSource": "defaults",
       "GlobalSettings": {
+        "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
         "EmergencyAccessAccounts": [],
         "GitHubOrganization": ""
@@ -64,6 +65,7 @@
       "TenantId": "11111111-2222-3333-4444-555555555555",
       "ConfigSource": "defaults",
       "GlobalSettings": {
+        "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
         "EmergencyAccessAccounts": [],
         "GitHubOrganization": ""
