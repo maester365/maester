@@ -5,11 +5,12 @@
 
     .DESCRIPTION
     Phishing-resistant MFA SHALL be enforced for all users
+    This check does not assess exclusions, narrowing conditions or alternative grant controls on a matching policy.
 
     .EXAMPLE
     Test-MtCisaPhishResistant
 
-    Returns true if at least one policy for all users and all apps requires the built-in Phishing-resistant MFA
+    Returns true if at least one policy includes all users and all apps and specifies the built-in Phishing-resistant MFA
     authentication strength, or a custom strength limited to Windows Hello for Business, passkeys (FIDO2) and
     certificate-based multifactor authentication
 
@@ -55,7 +56,7 @@
     $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has one or more policies that require Phishing Resistant Authentication Strengths :`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has one or more enabled policies that include all users and cloud apps and specify a phishing-resistant authentication strength. This check does not assess exclusions, narrowing conditions or alternative grant controls; review those separately.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require Phishing Resistant Authentication Strengths."
     }

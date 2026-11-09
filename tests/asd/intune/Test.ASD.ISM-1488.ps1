@@ -78,10 +78,11 @@
     }
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Word, Excel and PowerPoint block macros in files from the internet through an assigned Intune policy.`n`n$table"
+        $testResultMarkdown = "Intune policies with inclusion assignments configure Word, Excel and PowerPoint to block macros in files from the internet.`n`n$table"
     } else {
         $testResultMarkdown = "Macros in files from the internet are not blocked for $(@($missing.Application) -join ', ') by an assigned Intune policy.`n`n$table"
     }
+    $testResultMarkdown += "`n`nThis checks policy configuration and inclusion assignments; it does not verify assignment coverage or exclusions, conflicting policies, or effective settings on devices."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

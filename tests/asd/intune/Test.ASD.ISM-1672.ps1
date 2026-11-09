@@ -67,11 +67,12 @@
         $table = "| Policy | Macro runtime scan | Assigned |`n| --- | --- | --- |`n"
         foreach ($r in $report) { $table += "| $($r.Policy) | $($r.Scope) | $(if ($r.Assigned) { 'Yes' } else { 'No' }) |`n" }
         if ($testResult) {
-            $testResultMarkdown = "Well done. An assigned Intune policy enables antivirus scanning of Office macros at runtime.`n`n$table"
+            $testResultMarkdown = "An Intune policy with an inclusion assignment configures antivirus scanning of Office macros at runtime for all documents.`n`n$table"
         } else {
             $testResultMarkdown = "The Office setting **Macro Runtime Scan Scope** is configured, but no assigned policy enables it for all documents.`n`n$table"
         }
     }
+    $testResultMarkdown += "`n`nThis checks policy configuration and inclusion assignments; it does not verify assignment coverage or exclusions, conflicting policies, or effective settings on devices."
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
