@@ -1,0 +1,21 @@
+review the PRs which ones are bug fixes now that we are in a code freeze. lets focus on those to stabilise the build
+
+---
+
+lets review these Suggested order: 2699 and 2742 first, since they’re already green. Then 2735 and 2736 once their CI has run. and also look at the pr from sam
+
+---
+
+for 2699 do the recommended
+
+---
+
+for 2741, approve with that comment
+
+---
+
+Yes, unassign
+
+---
+
+walk me theouth each fo the remining that you gjust reviewed one by one. where there a re minor changes go ahead and make them
