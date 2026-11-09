@@ -4,6 +4,11 @@
     Assesses the cached Active Directory snapshot without inferring missing data.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DC-01
+    Review the inventoried DC site distinguished names manually.
+    .LINK
+    https://maester.dev/docs/tests/AD-DC-01
     #>
     [MaesterTest(
         Id = 'AD-DC-01',

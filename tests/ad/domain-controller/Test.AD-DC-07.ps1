@@ -4,6 +4,11 @@
     Checks the connected domain's DC operating-system baseline and lists each classified DC.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DC-07
+    Assess connected-domain DC operating systems against the minimum supported release.
+    .LINK
+    https://maester.dev/docs/tests/AD-DC-07
     #>
     [MaesterTest(
         Id = 'AD-DC-07',

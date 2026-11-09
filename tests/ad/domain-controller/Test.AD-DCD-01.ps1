@@ -4,6 +4,11 @@
     Reports LDAP and LDAPS advertised-port metadata without implying live connectivity.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DCD-01
+    Review advertised LDAP and LDAPS port metadata manually, not live connectivity.
+    .LINK
+    https://maester.dev/docs/tests/AD-DCD-01
     #>
     [MaesterTest(
         Id = 'AD-DCD-01',

@@ -1,4 +1,10 @@
-Checks that the forest inventory includes at least one Global Catalog. A missing GC can disrupt forest-wide directory searches and authentication dependencies. This is a minimum availability baseline, not a requirement that every DC be a GC.
+Inventories each forest DC's Global Catalog status by default. Set `AssessmentMode` in `TestSettings[].Parameters` to choose `Inventory`, `AllGlobalCatalogs`, or `MinimumForestCatalog`.
+
+- **Inventory** (default): reports GC, non-GC and unknown states as **Investigate** without imposing a placement baseline.
+- **AllGlobalCatalogs**: passes only when every inventoried DC is a GC; unknown status is Error, and any known non-GC is a failure.
+- **MinimumForestCatalog**: preserves the optional minimum-availability baseline of at least one forest GC; unknown status is Error.
+
+The Low priority and remediation attributes describe the optional policy failures. Inventory mode makes no pass/fail claim. Requiring all DCs to be GCs is an organizational choice, not a universal AD requirement.
 
 Global Catalogs hold a partial replica of forest objects for directory searches and universal-group-related authentication. Placement requirements vary by site topology and application needs; a configured GC flag alone does not prove service health.
 
@@ -12,7 +18,7 @@ Verify GC metadata, then plan GC placement and availability for the domain/site 
 
 #### How the Test Works
 
-Checks the forest DC inventory for at least one GC and reports the GC and non-GC distribution for context. It does not enforce a GC on every DC or in every site.
+Reports controller name, site and status with visual indicators, plus GC, non-GC and unknown counts. Inventory mode accepts incomplete per-controller status for investigation but still errors on missing/empty DC inventory. Policy modes require known statuses before evaluating their selected rule. The shared forest scope is unchanged.
 
 #### Related Tests
 

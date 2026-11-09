@@ -17,7 +17,7 @@ Checks FSMO owner NTDS Settings DNs against placement guidance and reports role 
 #### Related Tests
 
 - **AD-DOM-03 — Connected domain DC count for review** — `Test-MtAdDomainControllerCount` — Inventories connected-domain controllers.
-- **AD-DCD-04 — Forest has at least one Global Catalog** — `Test-MtAdDcNonGlobalCatalogCount` — Reviews Global Catalog coverage.
+- **AD-DCD-04 — Global Catalog status should be reviewed or meet the configured policy** — `Test-MtAdDcNonGlobalCatalogCount` — Inventories GC status or evaluates the selected placement rule.
 
 #### Related links
 

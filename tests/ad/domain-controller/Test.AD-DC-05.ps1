@@ -4,6 +4,11 @@
     Checks recommended FSMO placement and lists each recorded role owner.
     .DESCRIPTION
     Uses directory metadata; incomplete or unavailable required inventory raises an error.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-DC-05
+    Assess FSMO owner placement against the recommended role placement.
+    .LINK
+    https://maester.dev/docs/tests/AD-DC-05
     #>
     [MaesterTest(
         Id = 'AD-DC-05',
@@ -38,6 +43,6 @@
         'Placement issues' = $placement.Issues.Count
     })
     $findings = if ($ok) { '' } else { "`n`n#### Placement findings`n`n" + (@($placement.Issues | ForEach-Object { '- ' + (Format-MtAdSiteInventoryValue $_) }) -join "`n") }
-    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. FSMO owners meet recommended placement.' } else { 'Review FSMO role placement.' })$findings`n`n$metrics`n`n$($rows -join "`n")`n`nRole owner distribution does not establish physical redundancy or DC reachability."
+    Add-MtTestResultDetail -Result "$(if ($ok) { 'Well done. ✅ FSMO owners meet recommended placement.' } else { '⚠️ Review FSMO role placement.' })$findings`n`n$metrics`n`n$($rows -join "`n")`n`nRole owner distribution does not establish physical redundancy or DC reachability."
     return $ok
 }
