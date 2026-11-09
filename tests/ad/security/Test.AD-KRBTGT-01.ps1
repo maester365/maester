@@ -50,7 +50,7 @@
 
     if ($null -eq $adState -or $null -eq $adState.Users) {
         Add-MtTestResultDetail -SkippedBecause Error -Result 'Active Directory user inventory is unavailable; KRBTGT password age cannot be determined.'
-        return
+        return $null
     }
     Write-Verbose "Filtering/counting krbtgt password last set"
 
@@ -59,7 +59,7 @@
 
     if ($null -eq $krbtgt) {
         Add-MtTestResultDetail -SkippedBecause Error -Result 'KRBTGT was not found in the visible user inventory. Verify read access and account identity before assessing password age.'
-        return
+        return $null
     }
 
     $passwordLastSet = $krbtgt.PasswordLastSet
