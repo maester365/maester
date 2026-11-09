@@ -6,6 +6,9 @@
     .DESCRIPTION
     Security logs SHALL be sent to the agency's security operations center for monitoring.
 
+    By default the check requires the log categories that the CISA SCuBA baseline names. RequiredLogCategory
+    replaces that list, for a benchmark that names other categories.
+
     .EXAMPLE
     Test-MtCisaDiagnosticSettings
 
@@ -33,7 +36,10 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # The log categories that a diagnostic setting must send. Empty uses the categories CISA names.
+        [string[]] $RequiredLogCategory
+    )
 
     $cisaLogs = @(
         "AuditLogs",
@@ -49,6 +55,9 @@
         "MicrosoftGraphActivityLogs",
         "ManagedIdentitySignInLogs"
     )
+    if ($RequiredLogCategory) {
+        $cisaLogs = @($RequiredLogCategory)
+    }
 
     $logs = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
     $logs = ($logs.Content|ConvertFrom-Json).value
