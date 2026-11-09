@@ -34,6 +34,8 @@ function pack(p, tests) {
     badges: list(p.Badges),
     products: list(p.Products),
     url: p.Url ?? `${site}/p/${code.toLowerCase()}`,
+    // The pack's banner image on packs.maester.cloud, when it has one.
+    banner: p.Banner ? new URL(p.Banner, `${site}/`).href : "",
     count: tests ? tests.length : (p.Tests ?? 0),
     tests: (tests ?? []).map((t) => ({
       id: t.Id,
@@ -50,7 +52,14 @@ function pack(p, tests) {
 async function read() {
   try {
     const catalog = await fetchJson(`${site}/catalog.json`);
-    return { source: "catalog", generatedAt: catalog.GeneratedAt ?? null, packs: list(catalog.Packs).map((p) => [p, list(p.Tests)]) };
+    // catalog.json has each pack's tests but not its banner; index.json has the banner.
+    const banners = new Map();
+    try {
+      for (const p of list((await fetchJson(`${site}/index.json`)).Packs)) if (p?.Code && p.Banner) banners.set(p.Code, p.Banner);
+    } catch (error) {
+      console.log(`community-packs: no index.json (${error.message}), the packs have no banners`);
+    }
+    return { source: "catalog", generatedAt: catalog.GeneratedAt ?? null, packs: list(catalog.Packs).map((p) => [{ Banner: banners.get(p.Code), ...p }, list(p.Tests)]) };
   } catch (error) {
     console.log(`community-packs: no catalog.json (${error.message}), reading the test counts from index.json`);
   }
