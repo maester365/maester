@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01Q7b4JN6ND2Q5osxbXfnDBp",
+  "agent_id": "a7626ede43b55e7d7",
+  "subagent_type": "Explore",
+  "task_description": "Map packs login and site",
+  "token_usage": {
+    "input_tokens": 80,
+    "cache_creation_tokens": 159323,
+    "cache_read_tokens": 4867792,
+    "output_tokens": 18535,
+    "api_call_count": 40
+  },
+  "started_at": "2026-11-09T16:35:21.779972+11:00",
+  "completed_at": "2026-11-09T16:38:32.884297+11:00"
+}

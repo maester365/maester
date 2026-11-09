@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01XXk2jTDNpC6xVUBSBNt1bX",
+  "agent_id": "a15ed904b1aacc7f3",
+  "subagent_type": "Explore",
+  "task_description": "Map Maester Cloud roadmap/auth",
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 173063,
+    "cache_read_tokens": 6430436,
+    "output_tokens": 22617,
+    "api_call_count": 53
+  },
+  "started_at": "2026-11-09T16:35:21.780129+11:00",
+  "completed_at": "2026-11-09T16:39:25.237752+11:00"
+}

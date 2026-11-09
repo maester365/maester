@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6ZMC7SNXKWGQCG2BJQ9RVMZ",
   "strategy": "manual-commit",
   "branch": "feat/website-pricing-video-polish",
-  "checkpoints_count": 34,
+  "checkpoints_count": 42,
   "files_touched": [
     "website/src/layouts/SiteLayout.astro",
     "website/src/lib/check-counts.ts",
@@ -17,25 +17,39 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 424,
-    "cache_creation_tokens": 246834,
-    "cache_read_tokens": 34894647,
-    "output_tokens": 75662,
-    "api_call_count": 175
+    "input_tokens": 478,
+    "cache_creation_tokens": 354469,
+    "cache_read_tokens": 37566326,
+    "output_tokens": 95466,
+    "api_call_count": 195,
+    "subagent_tokens": {
+      "input_tokens": 186,
+      "cache_creation_tokens": 332386,
+      "cache_read_tokens": 11298228,
+      "output_tokens": 41152,
+      "api_call_count": 93
+    }
   },
   "redaction": {
-    "replacements": 624,
+    "replacements": 1154,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 590,
-      "key_context": 34,
+      "entropy": 1114,
+      "key_context": 40,
       "provider_token": 0,
       "shell_stdin": 0
     }

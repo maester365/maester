@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M6ZMC7SNXKWGQCG2BJQ9RVMZ",
+  "session_id": "8d03b941-18fd-4bd7-84b4-dac2fa2e1f50",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-09T07:46:48.420107Z",
+  "branch": "feat/website-pricing-video-polish",
+  "checkpoints_count": 8,
+  "save_step_count": 4,
+  "files_touched": [
+    "website/src/layouts/SiteLayout.astro",
+    "website/src/pages/pricing.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-fable-5-1",
+  "turn_id": "1b058a8237ae",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 54,
+    "cache_creation_tokens": 107635,
+    "cache_read_tokens": 2671679,
+    "output_tokens": 19804,
+    "api_call_count": 20,
+    "subagent_tokens": {
+      "input_tokens": 186,
+      "cache_creation_tokens": 332386,
+      "cache_read_tokens": 11298228,
+      "output_tokens": 41152,
+      "api_call_count": 93
+    }
+  },
+  "redaction": {
+    "replacements": 530,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 524,
+      "key_context": 6,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 8
+  }
+}
