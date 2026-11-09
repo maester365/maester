@@ -64,6 +64,19 @@ Describe 'AD configuration inventory batch' {
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
+    It 'renders the shared Enterprise CA assessment with CA and template context' {
+        Mock Get-MtADDomainState -ModuleName Maester {
+            [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(
+                [pscustomobject]@{ Name = 'CA|one'; dNSHostName = 'ca.example.com'; certificateTemplates = @('User', 'Machine') }
+            ) } }
+        }
+        Mock Add-MtTestResultDetail -ModuleName Maester { $script:detail = $Result }
+        Invoke-MtAdConfigurationInventoryReport -Kind EnterpriseCAs | Should -BeTrue
+        $script:detail | Should -Match 'Enterprise CAs: 1'
+        $script:detail | Should -Match 'CA&#124;one \| ca.example.com \| User, Machine'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
+    }
+
     It 'does not mistake a missing published template list for an empty one' {
         Mock Get-MtADDomainState -ModuleName Maester { [pscustomobject]@{ Configuration = [pscustomobject]@{ EnterpriseCAs = @(); CertificateTemplates = @() } } }
         { Invoke-MtAdConfigurationInventoryReport -Kind Templates } | Should -Throw '*EnrollmentTemplates data is unavailable*'

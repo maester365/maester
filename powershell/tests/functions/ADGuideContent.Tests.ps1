@@ -40,4 +40,12 @@ Describe 'AD guide references preserve full current test identities' {
         $guide | Should -Match 'DHCP'
         $guide | Should -Not -Match 'AD-SPN-0[17]|configured mappings'
     }
+
+    It 'retains native invocation examples and a help link in every AD check' {
+        foreach ($file in Get-ChildItem $script:adGuideRoot -Recurse -Filter 'Test.*.ps1') {
+            $text = Get-Content $file.FullName -Raw
+            $text | Should -Match '(?im)^\s*\.EXAMPLE\s*$' -Because $file.Name
+            $text | Should -Match '(?im)^\s*\.LINK\s*$' -Because $file.Name
+        }
+    }
 }

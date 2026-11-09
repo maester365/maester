@@ -99,14 +99,27 @@ Describe 'Native AD domain and forest results' {
         $script:batchDetail | Should -Match '\| Observed ms-DS-MachineAccountQuota \| 10 \|'
     }
 
-    It 'fails when there is no GC, passes with one GC, and errors when status is unknown' {
+    It 'inventories GC status by default and evaluates minimum-forest policy only when requested' {
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $false
-        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount | Should -BeFalse }
+        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount | Should -BeTrue }
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
+        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode MinimumForestCatalog | Should -BeFalse }
         $script:batchDetail | Should -Match '\| Non-Global Catalog DCs \| 1 \|'
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $true
-        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount | Should -BeTrue }
+        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode MinimumForestCatalog | Should -BeTrue }
         $script:batchState.DomainControllers[0].IsGlobalCatalog = $null
-        InModuleScope Maester { { Test-MtAdDcNonGlobalCatalogCount } | Should -Throw '*Incomplete GC status*' }
+        InModuleScope Maester {
+            Test-MtAdDcNonGlobalCatalogCount | Should -BeTrue
+            { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode MinimumForestCatalog } | Should -Throw '*Incomplete GC status*'
+        }
+    }
+
+    It 'requires every inventoried DC to be a GC only in all-GC policy mode' {
+        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode AllGlobalCatalogs | Should -BeTrue }
+        $script:batchState.DomainControllers += [pscustomobject]@{ DnsHostName = 'non-gc.child.example.com'; IsGlobalCatalog = $false }
+        InModuleScope Maester { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode AllGlobalCatalogs | Should -BeFalse }
+        $script:batchState.DomainControllers[1].IsGlobalCatalog = $null
+        InModuleScope Maester { { Test-MtAdDcNonGlobalCatalogCount -AssessmentMode AllGlobalCatalogs } | Should -Throw '*Incomplete GC status*' }
     }
 
     It 'shows both LDAP and LDAPS unknown ports without claiming live listener evidence' {

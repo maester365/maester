@@ -62,6 +62,21 @@ Describe 'AD missing inventory and preserved result context' {
         InModuleScope Maester { Test-MtAdComputerDisabledCount | Should -BeNullOrEmpty }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
     }
+
+    It 'reports partial enabled-state inventory without counting unknown computers as enabled' {
+        $script:state.Computers = @(
+            [pscustomobject]@{ Name = 'disabled'; Enabled = $false; DistinguishedName = 'CN=disabled,DC=example,DC=com' }
+            [pscustomobject]@{ Name = 'enabled'; Enabled = $true; DistinguishedName = 'CN=enabled,DC=example,DC=com' }
+            [pscustomobject]@{ Name = 'unknown'; Enabled = $null; DistinguishedName = 'CN=unknown,DC=example,DC=com' }
+        )
+        InModuleScope Maester { Test-MtAdComputerDisabledCount | Should -BeTrue }
+        $script:detail | Should -Match 'Enabled Computers \| 1'
+        $script:detail | Should -Match 'Disabled Computers \| 1'
+        $script:detail | Should -Match 'Unknown Enabled State \| 1'
+        $script:detail | Should -Match '\| disabled \| CN=disabled'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
+        Should -Not -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
+    }
     It 'does not turn missing GPO link data into clean enforced or inheritance-blocking assessments' {
         InModuleScope Maester {
             Test-MtAdGpoEnforcedCount | Should -BeNullOrEmpty

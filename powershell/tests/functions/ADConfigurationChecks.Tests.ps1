@@ -30,6 +30,8 @@ Describe 'AD configuration, forest and optional-feature checks' {
         $script:detail | Should -Match 'Configured tombstoneLifetime \| 180 days'
         $script:detail | Should -Match 'Effective tombstone lifetime \| 180 days'
         $script:detail | Should -Match 'default \(60 days\) \| False'
+        $script:detail | Should -Match 'Advisory status \| ✅ Meets advisory'
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $Investigate }
     }
 
     It 'reports 60 days as the effective lifetime only when the attribute is unset' {
@@ -38,6 +40,9 @@ Describe 'AD configuration, forest and optional-feature checks' {
         $script:detail | Should -Match 'Configured tombstoneLifetime \| Not set'
         $script:detail | Should -Match 'Effective tombstone lifetime \| 60 days'
         $script:detail | Should -Match 'default \(60 days\) \| True'
+        $script:detail | Should -Match 'Advisory status \| ⚠️ Below advisory'
+        Test-MtAdTombstoneLifetime -RecommendedMinimumDays 30 | Should -BeTrue
+        $script:detail | Should -Match 'Advisory status \| ✅ Meets advisory'
     }
 
     It 'errors rather than assuming a default if the Directory Service object is missing' {
@@ -46,6 +51,15 @@ Describe 'AD configuration, forest and optional-feature checks' {
         { Test-MtAdTombstoneLifetime } | Should -Throw '*Directory Service object*'
         { Test-MtAdDsHeuristicsCount } | Should -Throw '*Directory Service object*'
         { Test-MtAdSpnMappings } | Should -Throw '*Directory Service object*'
+    }
+
+    It 'errors on invalid tombstone values rather than treating them as advisory-only findings' -ForEach @(
+        @{ Value = 0 }
+        @{ Value = -1 }
+        @{ Value = 'invalid' }
+    ) {
+        $script:state.Configuration.TombstoneLifetime = $Value
+        { Test-MtAdTombstoneLifetime } | Should -Throw
     }
 
     It 'investigates unset dSHeuristics without treating it as an inventory error' {
