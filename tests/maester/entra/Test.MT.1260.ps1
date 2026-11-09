@@ -28,9 +28,10 @@
         ImplementationCost = 'Low',
         Mitre = 'T1078.004',
         Control = ('nist-800-53-r5:AC-2(12)', 'nist-800-53-r5:IR-4'),
+        Cloud = ('Commercial', 'GCC', 'GCCHigh', 'DoD'),
         Service = 'Graph',
         License = 'AAD_PREMIUM_P2',
-        Permission = 'Graph:Scope:IdentityRiskyUser.Read.All',
+        Permission = ('Graph:Scope:IdentityRiskyUser.Read.All', 'Graph:Scope:RoleManagement.Read.Directory|Graph:Scope:RoleManagement.Read.All'),
         Lifecycle = 'Preview',
         Author = 'Dfrank77'
     )]
@@ -38,6 +39,7 @@
     [OutputType([bool])]
     param()
 
+    # Deleted users stay in the risk report and admins cannot dismiss them, so they are not reported.
     # Active, unremediated risk states. A flag an admin has handled moves to 'remediated',
     # 'dismissed', 'confirmedSafe' or 'none'; those are intentionally excluded.
     # 'confirmedCompromised' MUST be treated as unremediated alongside 'atRisk' -- confirming a
@@ -54,7 +56,7 @@
             Invoke-MtGraphRequest -ApiVersion 'v1.0' `
                 -RelativeUri 'identityProtection/riskyUsers' `
                 -Filter "riskLevel eq 'high'" `
-                -Select @('id', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
+                -Select @('id', 'isDeleted', 'userPrincipalName', 'userDisplayName', 'riskLevel', 'riskState', 'riskDetail', 'riskLastUpdatedDateTime')
         )
     } catch {
         if ($_.Exception.Message -match '(?i)403|forbidden|authorization') {
@@ -65,7 +67,7 @@
     }
 
     $Unremediated = @(
-        $HighRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState }
+        $HighRiskUsers | Where-Object { $UnremediatedStates -contains [string]$_.riskState -and $_.isDeleted -ne $true }
     )
     Write-Verbose "Found $($HighRiskUsers.Count) high-risk user(s); $($Unremediated.Count) unremediated."
 
@@ -82,38 +84,11 @@
     $PrivilegedRolesByUser = @{}
     $RoleNote = ''
     try {
-        $RoleDefinitions = @(
-            Invoke-MtGraphRequest -ApiVersion 'v1.0' `
-                -RelativeUri 'roleManagement/directory/roleDefinitions' `
-                -Select @('id', 'displayName')
-        )
-        $RoleDefLookup = @{}
-        foreach ($Def in $RoleDefinitions) { $RoleDefLookup[[string]$Def.id] = $Def }
-
-        # Same properties as MT.1209 and MT.1210 so the active assignments come from the Graph cache.
-        $RoleAssignmentResult = Get-MtDirectoryRoleAssignment -Select @('id', 'principalId', 'roleDefinitionId', 'directoryScopeId')
-        if (!$RoleAssignmentResult.EligibleChecked) {
+        $PrivilegedResult = Get-MtPrincipalPrivilegedRole -PrincipalId @($Unremediated | ForEach-Object { [string]$_.id })
+        $PrivilegedRolesByUser = $PrivilegedResult.RolesByPrincipal
+        if (!$PrivilegedResult.EligibleChecked) {
             $RoleNote = "`n`nNote: PIM-eligible role assignments were not checked because they need " +
                 'Microsoft Entra ID P2 or Governance. Only active role assignments were checked.'
-        }
-
-        $UnremediatedIds = @{}
-        foreach ($Item in $Unremediated) { $UnremediatedIds[[string]$Item.id] = $true }
-
-        foreach ($Assignment in @($RoleAssignmentResult.Assignments)) {
-            $PrincipalId = [string]$Assignment.principalId
-            if (!$UnremediatedIds.ContainsKey($PrincipalId)) { continue }
-            $RoleDef = $RoleDefLookup[[string]$Assignment.roleDefinitionId]
-            if ($null -eq $RoleDef) { continue }
-            # isPrivileged is not queryable on roleDefinitions; use Maester's role catalog, as MT.1210 does.
-            $RoleInfo = Get-MtRoleInfo -RoleName ([string]$RoleDef.displayName -replace '\s', '')
-            if ($null -eq $RoleInfo -or !$RoleInfo.IsPrivileged) { continue }
-            $RoleName = [string]$RoleDef.displayName
-            if ($Assignment.AssignmentType -eq 'Eligible') { $RoleName += ' (eligible)' }
-            if (!$PrivilegedRolesByUser.ContainsKey($PrincipalId)) {
-                $PrivilegedRolesByUser[$PrincipalId] = [System.Collections.Generic.List[string]]::new()
-            }
-            $PrivilegedRolesByUser[$PrincipalId].Add($RoleName)
         }
     } catch {
         Write-Verbose "Could not read directory role assignments: $($_.Exception.Message)"
@@ -150,6 +125,12 @@
     }
     $Result += $RoleNote
 
-    Add-MtTestResultDetail -Result $Result
+    # Each risky user also appears on the report's Affected objects page; the table above stays as it is.
+    $AffectedUsers = @(
+        $Sorted | ForEach-Object {
+            [pscustomobject]@{ id = [string]$_.id; displayName = [string]$_.userDisplayName; userPrincipalName = [string]$_.userPrincipalName }
+        }
+    )
+    Add-MtTestResultDetail -Result $Result -GraphObjects $AffectedUsers -GraphObjectType IdentityProtection
     return $false
 }

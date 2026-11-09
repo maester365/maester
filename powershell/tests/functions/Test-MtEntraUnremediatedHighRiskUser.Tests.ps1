@@ -11,15 +11,19 @@
         $script:SkippedBecause = $null
         $script:SkippedError = $null
         $script:Severity = $null
+        $script:GraphObjects = $null
+        $script:GraphObjectType = $null
 
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause, $SkippedError, $Severity)
+            param($Result, $SkippedBecause, $SkippedError, $Severity, $GraphObjects, $GraphObjectType)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
             $script:SkippedError = $SkippedError
             $script:Severity = $Severity
+            $script:GraphObjects = $GraphObjects
+            $script:GraphObjectType = $GraphObjectType
         }
 
         # Role lookups default to "no roles". Tests that need roles override these.
@@ -157,6 +161,52 @@
         $script:TestResult | Should -Match 'Found 1 high-risk'
     }
 
+    It 'does not report a deleted user, whose risk an admin cannot dismiss' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'user-5'; isDeleted = $true; userPrincipalName = 'erin@contoso.com'; userDisplayName = 'Erin'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-05T00:00:00Z'
+                }
+            )
+        }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeTrue
+        $script:TestResult | Should -Match 'Well done'
+    }
+
+    It 'passes the unremediated users to the report as affected objects' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return @(
+                [pscustomobject]@{
+                    id = 'user-1'; userPrincipalName = 'alice@contoso.com'; userDisplayName = 'Alice'
+                    riskLevel = 'high'; riskState = 'atRisk'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-01T00:00:00Z'
+                },
+                [pscustomobject]@{
+                    id = 'user-2'; userPrincipalName = 'bob@contoso.com'; userDisplayName = 'Bob'
+                    riskLevel = 'high'; riskState = 'confirmedCompromised'; riskDetail = 'none'
+                    riskLastUpdatedDateTime = '2026-10-02T00:00:00Z'
+                }
+            )
+        } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyUsers' }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeFalse
+        $script:GraphObjectType | Should -Be 'IdentityProtection'
+        @($script:GraphObjects).Count | Should -Be 2
+        @($script:GraphObjects.id) | Should -Be @('user-1', 'user-2')
+        @($script:GraphObjects.displayName) | Should -Be @('Alice', 'Bob')
+        @($script:GraphObjects.userPrincipalName) | Should -Be @('alice@contoso.com', 'bob@contoso.com')
+    }
+
+    It 'passes no affected objects when no user is left unremediated' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest { return @() } -ParameterFilter { $RelativeUri -eq 'identityProtection/riskyUsers' }
+
+        Test-MtEntraUnremediatedHighRiskUser | Should -BeTrue
+        $script:GraphObjects | Should -BeNullOrEmpty
+    }
+
     It 'skips as NotAuthorized on a 403 from Graph' {
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw '403 Forbidden: Authorization_RequestDenied' }
 
@@ -215,6 +265,9 @@
             # The privileged user is listed first.
             # Matched as a regex rather than IndexOf, so the position is found whether or not the
             # escaping helper put a backslash before the @.
+            # Both users must be present first; a missing match returns Index 0 and would pass the order check.
+            $script:TestResult | Should -Match 'bob\\?@contoso\.com'
+            $script:TestResult | Should -Match 'alice\\?@contoso\.com'
             [regex]::Match($script:TestResult, 'bob\\?@contoso\.com').Index |
                 Should -BeLessThan ([regex]::Match($script:TestResult, 'alice\\?@contoso\.com').Index)
         }
