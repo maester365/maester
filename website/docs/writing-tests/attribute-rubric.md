@@ -228,7 +228,7 @@ it: one shipped with Maester or one of your own.
 
 - `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and
   a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'` and an ASD test `Control = 'essential-eight:ISM-1504'`.
-  Every test in `tests/cis`, `tests/cisa` and `tests/asd` must name a requirement of its suite's framework. The unit
+  Every test in `tests/cis`, `tests/cisa`, `tests/asd` and `tests/disa` must name a requirement of its suite's framework. The unit
   tests check this.
 - The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the
   requirement the test is written for first, and any other requirement it supports after it.

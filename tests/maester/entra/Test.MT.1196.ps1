@@ -135,13 +135,12 @@
                 $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
                     -Reference $CaReferences -GroupId $Group.id
             }
-            $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
-            $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
+            $Rule = ConvertTo-MtMarkdownCodeSpan -Text $Group.membershipRule -TableCell
             $LicenceCount = @($Group.assignedLicenses).Count
             $Result += "`n| $GroupLink | ``$($Analysis.ObjectType).$($Analysis.Property)`` | "
             $ProcessingState = $Group.membershipRuleProcessingState
             $Result += "``$($Analysis.Operator)`` | $ReviewFocus | $ProcessingState | "
-            $Result += "$LicenceCount | $CaText | <code>$Rule</code> |"
+            $Result += "$LicenceCount | $CaText | $Rule |"
         }
     }
 

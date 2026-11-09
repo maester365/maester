@@ -1,6 +1,6 @@
-Application access policies in Exchange Online help you control which applications can access which mailboxes.
+This check evaluates legacy application access policies in Exchange Online for applications with Microsoft Graph mail permissions.
 
-Without these policies, applications with Exchange permissions can access all mailboxes in your organization.
+These permissions grant access to every mailbox unless an application access policy restricts them.
 
 Microsoft Exchange related permissions that should be secured by application access policies include:
 
@@ -16,60 +16,31 @@ Microsoft Exchange related permissions that should be secured by application acc
 - Contacts.Read
 - Contacts.ReadWrite
 
-Exchange application access policies should be configured for all applications with Exchange permissions.
+This check requires a `RestrictAccess` policy for each application. A `DenyAccess` policy only denies access to mailboxes in its scope; it does not restrict access to mailboxes outside that scope and does not satisfy this check.
 
 ### Remediation action
 
-Follow the steps below to create an application access policy in Exchange Online that restricts the application's access to mailboxes in a specific distribution group.
+Microsoft has replaced application access policies with [RBAC for Applications](https://learn.microsoft.com/exchange/permissions-exo/application-rbac) and advises against creating new application access policies.
 
-#### Connect to Exchange Online
+1. For an app still using legacy policies, review its existing policies and confirm a matching `RestrictAccess` policy limits it to the intended mailboxes. A deny-only policy does not provide that limit.
+2. For new configurations or migration, follow Microsoft's RBAC for Applications guide to assign the required Exchange application role with a mailbox scope.
+3. Remove equivalent or broader Microsoft Graph application permissions from the app's Entra grants after migration. Entra and Exchange grants are additive; retaining an unscoped Entra grant defeats the Exchange scope. See [MT.1252](https://maester.dev/docs/tests/MT.1252) for overlapping grants.
+4. Verify the app against both an intended mailbox and a mailbox outside its scope. `Test-ServicePrincipalAuthorization` evaluates the Exchange RBAC assignment; it does not include separate Entra grants.
+
+MT.1058 does not evaluate RBAC assignments. An app whose mail permissions are granted only through Exchange RBAC is outside this check's scope.
+
+For existing application access policies, inspect and test the policy configuration with:
 
 ```powershell
 Connect-ExchangeOnline
-```
-
-#### Define variables for your application
-
-```powershell
-# Get these values from your Application Registration
-$AppID = "<your-app-id>"  # e.g. "0a3ad682-b031-416d-86c2-bf263f8b46a3"
-$GroupName = "AAP_$AppID"  # example naming convention for clarity
-$Description = "Restrict this app to members of distribution group"
-```
-
-#### Create a mail-enabled security group for policy scope
-
-```powershell
-# Create group and hide from address list
-$DGroup = New-DistributionGroup -Name $GroupName -Type Security
-Start-Sleep -Seconds 5  # Wait for group creation to propagate
-Set-DistributionGroup -Identity $DGroup.WindowsEmailAddress -HiddenFromAddressListsEnabled $true
-```
-
-#### Create the application access policy
-
-```powershell
-New-ApplicationAccessPolicy -AppId $AppID `
-                          -PolicyScopeGroupId $DGroup.WindowsEmailAddress `
-                          -AccessRight RestrictAccess `
-                          -Description $Description
-```
-
-#### Add members to the security group
-
-```powershell
-Add-DistributionGroupMember -Identity $GroupName -Member user@contoso.com
-```
-
-#### Verify the policy
-
-```powershell
-# List all policies
 Get-ApplicationAccessPolicy
-
-# Test for specific user
-Test-ApplicationAccessPolicy -Identity user@contoso.com -AppId $AppID
+Test-ApplicationAccessPolicy -Identity user@contoso.com -AppId '<your-app-id>'
 ```
+
+#### Related links
+
+- [Application access policy replacement notice - Microsoft Learn](https://learn.microsoft.com/powershell/module/exchangepowershell/new-applicationaccesspolicy)
+- [RBAC for Applications in Exchange Online - Microsoft Learn](https://learn.microsoft.com/exchange/permissions-exo/application-rbac)
 
 <!--- Results --->
 %TestResult%
