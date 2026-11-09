@@ -47,6 +47,7 @@
         Id = 'MT.1258',
         Title = 'Only allowlisted tenants can administer this tenant through GDAP or Tenant Governance.',
         Product = 'entra',
+        RelatedProduct = 'microsoft-365',
         Feature = 'external-identities',
         Area = 'privileged-access',
         ResourceType = 'Tenant',

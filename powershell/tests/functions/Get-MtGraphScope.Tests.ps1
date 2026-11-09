@@ -60,6 +60,23 @@ Describe 'Get-MtGraphScope' {
         $applicationIndex | Should -BeLessThan $auditLogIndex
     }
 
+    It 'Includes Tenant Governance and configuration monitoring scopes only with IncludePreview' {
+        $tenantScopes = @(
+            'ConfigurationMonitoring.Read.All'
+            'CrossTenantInformation.ReadBasic.All'
+            'RemoteTenantGroups.Read.All'
+            'TenantGovernance-RelatedTenant.Read.All'
+            'TenantGovernance-Relationship.Read.All'
+        )
+        $default = Get-MtGraphScope
+        $preview = Get-MtGraphScope -IncludePreview
+
+        foreach ($scope in $tenantScopes) {
+            $default | Should -Not -Contain $scope
+            $preview | Should -Contain $scope
+        }
+    }
+
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {
         $scopes = Get-MtGraphScope
         $directoryRecommendationsIndex = [array]::IndexOf($scopes, 'DirectoryRecommendations.Read.All')

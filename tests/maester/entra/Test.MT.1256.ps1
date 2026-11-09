@@ -27,7 +27,7 @@
         Area = 'privileged-access',
         ResourceType = 'Group',
         Severity = 'Medium',
-        UserImpact = 'Medium',
+        UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'T1098.003',
         Control = ('nist-800-53-r5:AC-2', 'nist-800-53-r5:AC-6(5)'),
