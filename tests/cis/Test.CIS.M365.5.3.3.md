@@ -2,7 +2,9 @@ The Global, Exchange, SharePoint, Teams, Security and Privileged Role Administra
 
 Role assignments accumulate: people change jobs, projects end and temporary access becomes permanent. A recurring review makes the people who know the context confirm who still needs each privileged role, and removes the others.
 
-Each of the six roles needs an active review that covers users and groups, repeats weekly or monthly, gives reviewers 14 days or less, sends notifications and reminders, asks for a justification when approving, applies results automatically, uses the default decision of **No change** and does not end. Access reviews need Microsoft Entra ID Governance or Microsoft Entra ID P2 licences.
+Each of the six roles needs an active review that covers users and groups, repeats at least monthly (weekly every 1 to 4 weeks, or monthly every month), gives reviewers 14 days or less, sends notifications and reminders, asks for a justification when approving, applies results automatically, uses the default decision of **No change** and does not end. Access reviews need Microsoft Entra ID Governance or Microsoft Entra ID P2 licences.
+
+**Note on recurrence:** The CIS Graph audit only checks that `recurrence.pattern.type` is `weekly` or `absoluteMonthly` and does not constrain `interval`. This check follows the benchmark's "monthly or more frequent" recommendation instead, so it is stricter than the literal audit. It fails a weekly review with an interval above 4 and a monthly review with an interval above 1.
 
 #### Remediation action
 

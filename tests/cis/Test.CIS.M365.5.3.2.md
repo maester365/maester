@@ -2,7 +2,9 @@ A recurring access review of guest users exists, repeats monthly or more frequen
 
 Guest accounts are created for a project and then forgotten. Each one keeps its access, and the external organisation that owns the identity can change or lose control of it without you noticing. A regular access review asks the owners to confirm that each guest still needs access, and removes those who are not confirmed.
 
-The review must repeat weekly or monthly, give reviewers no more than 14 days, send notifications and reminders, ask for a justification when access is approved, apply results automatically, deny access when no one responds and have no end date. Access reviews need Microsoft Entra ID Governance or Microsoft Entra ID P2 licences.
+The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly (every month), give reviewers no more than 14 days, send notifications and reminders, ask for a justification when access is approved, apply results automatically, deny access when no one responds and have no end date. Access reviews need Microsoft Entra ID Governance or Microsoft Entra ID P2 licences.
+
+**Note on recurrence:** The CIS Graph audit only checks that `recurrence.pattern.type` is `weekly` or `absoluteMonthly` and does not constrain `interval`. This check follows the benchmark's "monthly or more frequent" recommendation instead, so it is stricter than the literal audit. It fails a weekly review with an interval above 4 and a monthly review with an interval above 1.
 
 #### Remediation action
 

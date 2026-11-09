@@ -4,7 +4,7 @@
         Checks that recurring access reviews exist for the Global, Exchange, SharePoint, Teams, Security and Privileged Role Administrator roles.
 
     .DESCRIPTION
-        Checks that each of the Global Administrator, Exchange Administrator, SharePoint Administrator, Teams Administrator, Security Administrator and Privileged Role Administrator roles has an active access review of users and groups that repeats weekly or monthly, runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically and never ends.
+        Checks that each of the Global Administrator, Exchange Administrator, SharePoint Administrator, Teams Administrator, Security Administrator and Privileged Role Administrator roles has an active access review of users and groups that repeats at least monthly (weekly every 1 to 4 weeks, or monthly every month), runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically and never ends.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.3.3, L1)
 
     .EXAMPLE
@@ -72,7 +72,7 @@
         $principalQueries = @($review.scope.principalScopes.query)
         $checks = [ordered]@{
             'Users and groups in scope' = @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?users(\?|$)' }).Count -gt 0 -and @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?groups(\?|$)' }).Count -gt 0
-            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
+            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or ($patternType -eq 'weekly' -and $interval -ge 1 -and $interval -le 4)
             'Started' = ([datetime]$startDate).ToUniversalTime() -le [datetime]::UtcNow
             'Reviewers' = $reviewers.Count -ge 1
             'In progress' = $review.status -eq 'InProgress'

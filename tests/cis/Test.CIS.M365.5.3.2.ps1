@@ -4,7 +4,7 @@
         Checks that a recurring access review of guest users exists with the required settings.
 
     .DESCRIPTION
-        Checks that at least one access review that targets guest users repeats weekly or monthly, runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically with a default decision of deny, and never ends.
+        Checks that at least one access review that targets guest users repeats at least monthly (weekly every 1 to 4 weeks, or monthly every month), runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically with a default decision of deny, and never ends.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.3.2, L1)
 
     .EXAMPLE
@@ -60,7 +60,7 @@
             $durationInDays = ($stages | Measure-Object -Property durationInDays -Sum).Sum
         }
         $checks = [ordered]@{
-            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
+            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or ($patternType -eq 'weekly' -and $interval -ge 1 -and $interval -le 4)
             'Reviewers' = $reviewers.Count -ge 1
             'Notifications' = [bool]$settings.mailNotificationsEnabled
             'Reminders' = [bool]$settings.reminderNotificationsEnabled
