@@ -603,6 +603,15 @@ The most specific value wins: `Invoke-MtTest -Parameter` or `Invoke-Maester -Par
 setting's kind when it names none. A custom test or pack binds its own settings with a `Namespace.Key` name, such
 as `Contoso.Regions`.
 
+Maester checks `GlobalSettings` against the registry once, before the run: a value of the wrong type or one the
+setting does not allow stops the run with one message, and a key it does not know is reported as a likely typo.
+So give the parameter the same type, default and `ValidateSet` as the setting, and pass the value on to the
+helpers that need it; a built-in test never calls `Get-MtSetting`. If another test calls yours as a
+[shim](#tests-that-another-suite-already-has), it declares the same bound parameter and passes it on.
+
+A test or helper that does call `Get-MtSetting`, as custom tests and packs may, has the name of each setting it
+read recorded on its result (`SettingsRead`).
+
 Bind a parameter only to a fact about the tenant or a choice the organisation makes once. A value a benchmark
 sets stays a parameter of that test. Read [Parameters bound to a setting](./attribute-rubric.md#parameters-bound-to-a-setting)
 before adding one.

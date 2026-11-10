@@ -565,14 +565,19 @@ function ConvertTo-MtTestParameter {
         $sources[$parameter.Name] = 'Setting'
     }
 
+    # Effective is what the results record. The value of a parameter bound to a sensitive setting is
+    # redacted there, wherever it came from; the test still receives the real value in Bound.
+    $settingRegistry = (Get-MtSettingRegistry).Settings
     $effective = foreach ($parameter in @($Test.Parameters | Where-Object { -not $_.EngineOwned })) {
         $hasValue = $bound.ContainsKey($parameter.Name)
+        $settingName = if ($parameter.PSObject.Properties['Setting']) { $parameter.Setting } else { $null }
+        $sensitive = $hasValue -and $settingName -and $settingRegistry.ContainsKey($settingName) -and $settingRegistry[$settingName].Sensitive
         [pscustomobject]@{
-            Name   = $parameter.Name
-            Value  = if ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
+            Name    = $parameter.Name
+            Value   = if ($sensitive) { '[redacted]' } elseif ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
             Source  = if ($hasValue) { $sources[$parameter.Name] } else { 'Default' }
             Kind    = $parameter.Kind
-            Setting = if ($parameter.PSObject.Properties['Setting']) { $parameter.Setting } else { $null }
+            Setting = $settingName
         }
     }
 

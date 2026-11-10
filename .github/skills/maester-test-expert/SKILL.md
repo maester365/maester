@@ -298,7 +298,19 @@ The engine binds `GlobalSettings.<Setting>` when the test's `TestSettings` row d
 records `Source = 'Setting'`. Pass the value on to helpers (`Get-MtEmergencyAccessAccount -Account
 $EmergencyAccessAccounts`). Bind only a fact about the tenant or a choice made once for all tests; a value a
 benchmark sets stays a plain parameter. A new built-in setting goes in `powershell/assets/MaesterSettings.psd1`
-with its `Type` (matching the parameter), default, description and, for IDs or domains, `Kind`.
+with its `Type`, default, description, `AllowedValues`, `Items` (for a list of objects) and, for IDs or domains,
+`Kind`. The parameter's type, default and `ValidateSet` must match the registry entry, because the config is
+checked against the registry once before a run.
+
+- A built-in test never calls `Get-MtSetting`, and a helper never reads a setting that tests bind.
+- A shim declares each bound parameter of the test it calls and passes it on
+  (`return Test-MtX -EmergencyAccessAccounts $EmergencyAccessAccounts`); otherwise the called test runs with the
+  default.
+- A connection or transport setting that a connect command or data helper needs is read with `Get-MtSetting` and
+  must still be registered; the read is recorded on the result as `SettingsRead`.
+- A pack declares its `Namespace.Key` settings under `Settings` in `maester-pack.json`.
+
+`powershell/tests/general/TestParameterNames.Tests.ps1` and `TestShims.Tests.ps1` enforce these.
 
 ## Data Retrieval
 

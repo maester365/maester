@@ -207,6 +207,130 @@ Describe 'Parameters bound to a setting' {
     }
 }
 
+Describe 'GlobalSettings checked against the settings registry' {
+    BeforeAll {
+        function Test-Setting { param($Global) InModuleScope Maester -Parameters @{ G = $Global } { Test-MtGlobalSetting -GlobalSetting $G } }
+    }
+
+    It 'Accepts the shipped config and valid values' {
+        $check = Test-Setting ([pscustomobject]@{
+                EmergencyAccessAccounts = @(@{ UserPrincipalName = 'bg@contoso.com'; Type = 'user' }, [pscustomobject]@{ Id = '00000000-0000-0000-0000-0000000000b1'; Type = 'Group' })
+                ParkedDomains = @('contoso-old.com'); DefenderEndpointPolicyFiltering = 'All'; GitHubOrganization = ''
+                XspmExternalDataUris = @{ MicrosoftApps = 'https://contoso.com/apps.json' }; DataverseEnvironmentUrl = $null
+            })
+        $check.Errors | Should -BeNullOrEmpty
+        $check.Warnings | Should -BeNullOrEmpty
+        (Test-Setting $null).Errors | Should -BeNullOrEmpty
+    }
+
+    It 'Reports <Case>' -ForEach @(
+        @{ Case = 'a value of the wrong type'; Global = @{ ParkedDomains = 5 }; Message = 'GlobalSettings.ParkedDomains: expected a string*' }
+        @{ Case = 'a value that is not allowed'; Global = @{ DefenderEndpointComplianceLogic = 'Some' }; Message = "*'Some' is not one of EffectivePolicy*" }
+        @{ Case = 'a value that does not fit the kind'; Global = @{ ParkedDomains = @('not a domain') }; Message = '*not a valid Entra.Domain*' }
+        @{ Case = 'a list item without an identifier'; Global = @{ EmergencyAccessAccounts = @(@{ Type = 'User' }) }; Message = '*item 1: needs Id or UserPrincipalName*' }
+        @{ Case = 'a list item with a value that is not allowed'; Global = @{ EmergencyAccessAccounts = @(@{ Id = 'x'; Type = 'Robot' }) }; Message = "*Type 'Robot' is not one of User, Group*" }
+        @{ Case = 'a string where an object is expected'; Global = @{ XspmExternalDataUris = 'https://contoso.com' }; Message = '*XspmExternalDataUris: expected an object*' }
+    ) {
+        (Test-Setting $Global).Errors | Should -BeLike $Message
+    }
+
+    It 'Warns about a mistyped key and names the setting it is closest to' {
+        $check = Test-Setting @{ ParkedDomain = @('contoso-old.com') }
+        $check.Errors | Should -BeNullOrEmpty
+        $check.Warnings | Should -BeLike "*'ParkedDomain'*Did you mean 'ParkedDomains'?*"
+    }
+
+    It 'Warns about an unknown key without a dot, and about an unknown property of a list item' {
+        (Test-Setting @{ MyOwnThing = 1 }).Warnings | Should -BeLike "*'MyOwnThing'*Namespace.Key*"
+        (Test-Setting @{ EmergencyAccessAccounts = @(@{ Id = 'x'; Note = 'y' }) }).Warnings | Should -BeLike "*'Note' is ignored*"
+    }
+
+    It 'Passes a Namespace.Key that no pack declares' {
+        $check = Test-Setting @{ 'Contoso.Regions' = 5 }
+        $check.Errors | Should -BeNullOrEmpty
+        $check.Warnings | Should -BeNullOrEmpty
+    }
+
+    It 'Stops a run that has an invalid setting' {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'badsetting') -Id 'SET.2'
+        { Invoke-MtTest -Path $file -Config @{ GlobalSettings = @{ DefenderEndpointPolicyFiltering = 'Some' } } 6>$null } | Should -Throw '*1 invalid setting*DefenderEndpointPolicyFiltering*'
+    }
+}
+
+Describe 'Settings a pack declares' {
+    BeforeAll {
+        function Register-PackSetting {
+            param([hashtable] $Settings)
+            InModuleScope Maester -Parameters @{ S = $Settings } {
+                $manifest = [pscustomobject]@{ Connectors = @(); Settings = ($S | ConvertTo-Json -Depth 5 | ConvertFrom-Json) }
+                $null = Register-MtPackService -PackSet @([pscustomobject]@{ Id = 'contoso.sample'; Status = 'Ready'; Manifest = $manifest })
+            }
+        }
+    }
+    AfterEach { InModuleScope Maester { $null = Register-MtPackService -PackSet @() } }
+
+    It 'Checks the config against them and returns their defaults' {
+        Register-PackSetting @{ 'Contoso.Regions' = @{ Type = 'string[]'; Default = @('eu'); AllowedValues = @('eu', 'us') }; 'Contoso.Limit' = @{ Type = 'int' } }
+        InModuleScope Maester {
+            (Test-MtGlobalSetting -GlobalSetting @{ 'Contoso.Regions' = @('asia') }).Errors | Should -BeLike "*'asia' is not one of eu, us*"
+            (Test-MtGlobalSetting -GlobalSetting @{ 'Contoso.Limit' = 'ten' }).Errors | Should -BeLike '*Contoso.Limit: expected a whole number*'
+            Get-MtSetting -Name 'Contoso.Regions' | Should -Be @('eu')
+            Get-MtSetting -Name 'Contoso.Limit' -Default 3 | Should -Be 3
+        }
+    }
+
+    It 'Forgets them when the pack is no longer in the run' {
+        Register-PackSetting @{ 'Contoso.Limit' = @{ Type = 'int' } }
+        InModuleScope Maester {
+            $null = Register-MtPackService -PackSet @()
+            (Test-MtGlobalSetting -GlobalSetting @{ 'Contoso.Limit' = 'ten' }).Errors | Should -BeNullOrEmpty
+        }
+    }
+
+    It 'Checks the type of a test parameter bound to one' {
+        Register-PackSetting @{ 'Contoso.Regions' = @{ Type = 'string[]' } }
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'packtype') -Id 'PACK.2' -Param "[MaesterParameter(Setting = 'Contoso.Regions')] [string] `$Regions = ''"
+        (InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }).Errors.Message | Should -BeLike '*is a string`[`]*'
+    }
+
+    It 'Redacts a sensitive setting in the recorded parameters and config, and gives the test the value' {
+        Register-PackSetting @{ 'Contoso.ApiKey' = @{ Type = 'string'; Sensitive = $true } }
+        InModuleScope Maester {
+            $test = [pscustomobject]@{ Parameters = @([pscustomobject]@{ Name = 'ApiKey'; Type = 'string'; Default = ''; Range = $null; AllowedValues = $null; Kind = $null; Setting = 'Contoso.ApiKey'; EngineOwned = $false }) }
+            $fromSetting = ConvertTo-MtTestParameter -Test $test -GlobalSetting @{ 'Contoso.ApiKey' = 'secret' }
+            $fromSetting.Bound.ApiKey | Should -Be 'secret'
+            $fromSetting.Effective[0].Value | Should -Be '[redacted]'
+            $fromSetting.Effective[0].Source | Should -Be 'Setting'
+            (ConvertTo-MtTestParameter -Test $test -ConfigValue @{ ApiKey = 'row' }).Effective[0].Value | Should -Be '[redacted]'
+            (ConvertTo-MtTestParameter -Test $test).Effective[0].Value | Should -Be ''
+
+            $runConfig = [pscustomobject]@{ GlobalSettings = [pscustomobject]@{ 'Contoso.ApiKey' = 'secret'; ParkedDomains = @('contoso-old.com') }; TestSettings = @() }
+            $recorded = New-MtResultConfig -RunConfig $runConfig
+            $recorded.GlobalSettings.'Contoso.ApiKey' | Should -Be '[redacted]'
+            $recorded.GlobalSettings.ParkedDomains | Should -Be @('contoso-old.com')
+            $runConfig.GlobalSettings.'Contoso.ApiKey' | Should -Be 'secret'
+        }
+    }
+}
+
+Describe 'Settings a test reads while it runs' {
+    It 'Records the settings read with Get-MtSetting on the result' {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'reads') -Id 'READ.1' -Body "`$null = Get-MtSetting -Name 'GitHubOrganization'; `$null = Get-MtSetting 'Contoso.Regions' -Default @(); `$null = Get-MtSetting -Name 'GitHubOrganization'; `$true"
+        $row = Invoke-MtTest -Path $file -Config @{} 6>$null
+        $row.SettingsRead | Should -Be @('Contoso.Regions', 'GitHubOrganization')
+    }
+
+    It 'Records nothing for a test that reads no setting, or outside a test' {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'noreads') -Id 'READ.2'
+        (Invoke-MtTest -Path $file -Config @{} 6>$null).SettingsRead | Should -HaveCount 0
+        InModuleScope Maester {
+            $before = @($__MtSession.SettingRead.Keys).Count
+            $null = Get-MtSetting -Name 'GitHubOrganization'
+            @($__MtSession.SettingRead.Keys).Count | Should -Be $before
+        }
+    }
+}
+
 Describe 'Licence requirements' {
     It 'Matches <Requirement> against plans <Plans>: <Expected>' -ForEach @(
         @{ Requirement = @('AAD_PREMIUM'); Plans = @('41781fb2-bc02-4b7c-bd55-b576c07bb09d'); Expected = $true }

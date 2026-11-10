@@ -2,6 +2,10 @@
 # parameter of a built-in test or a pack that ships with Maester follows one convention, so an admin who
 # sets a value in TestSettings can guess its name. Whether a name says what it measures is a judgement; the
 # attribute-review workflow and the reviewer check that. Custom tests are not checked here.
+#
+# It also checks how settings are read: a built-in test receives a setting as a bound parameter and never
+# calls Get-MtSetting, a helper never reads a setting that tests bind, and every setting the module or a
+# shipped pack reads is declared.
 
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force -WarningAction SilentlyContinue
@@ -15,10 +19,33 @@ BeforeAll {
         })
     $script:parameters = @(foreach ($t in $tests) {
             foreach ($p in @($t.Parameters | Where-Object { -not $_.EngineOwned })) {
-                [pscustomobject]@{ Id = $t.Id; Name = $p.Name; Type = $p.Type; Setting = $p.Setting }
+                [pscustomobject]@{ Id = $t.Id; Name = $p.Name; Type = $p.Type; Setting = $p.Setting; Default = $p.Default; AllowedValues = $p.AllowedValues }
             }
         })
     $script:settings = InModuleScope Maester { (Get-MtSettingRegistry).Settings }
+
+    $script:moduleFiles = @(Get-ChildItem -Path (Join-Path $script:repoRoot 'powershell/internal'), (Join-Path $script:repoRoot 'powershell/public') -Recurse -File -Filter '*.ps1')
+
+    # The Get-MtSetting calls of a file that name the setting with a constant: Name and Line.
+    $script:findSettingCall = {
+        param([string] $Path)
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile($Path, [ref]$null, [ref]$null)
+        $calls = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.CommandAst] -and $node.GetCommandName() -in 'Get-MtSetting', 'Get-MtMaesterConfigGlobalSetting' }, $true)
+        foreach ($call in $calls) {
+            $elements = @($call.CommandElements | Select-Object -Skip 1)
+            $name = $null
+            for ($i = 0; $i -lt $elements.Count; $i++) {
+                $element = $elements[$i]
+                if ($element -is [System.Management.Automation.Language.CommandParameterAst]) {
+                    if ($element.ParameterName -in 'Name', 'SettingName' -and $i + 1 -lt $elements.Count -and $elements[$i + 1] -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $name = $elements[$i + 1].Value; break }
+                    if ($element.ParameterName -in 'Name', 'SettingName', 'Default') { $i++ }
+                    continue
+                }
+                if ($element -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $name = $element.Value; break }
+            }
+            if ($name) { [pscustomobject]@{ Name = $name; Line = $call.Extent.StartLineNumber } }
+        }
+    }
 
     # Reports offenders as "ID: Name - detail" so a failure names every parameter to rename.
     function Get-Offender {
@@ -84,23 +111,58 @@ Describe 'Settings that tests receive as parameters' {
         $offenders | Should -BeNullOrEmpty
     }
 
-    It 'Leaves a bound setting to the engine instead of reading it in the test' {
-        # A test that calls Get-MtSetting for a setting other tests receive as a parameter hides the value from
-        # Get-MtTest and the results, and a TestSettings row cannot override it.
+    It 'Gives a bound parameter the default and the allowed values of its setting' {
+        # The registry is where the config is checked, so a test must not accept or default to anything else.
+        $text = { param($v) @($v | Where-Object { $null -ne $_ } | ForEach-Object { "$_" } | Sort-Object) -join ', ' }
+        $offenders = foreach ($p in @($script:parameters | Where-Object { $_.Setting -and $script:settings.ContainsKey($_.Setting) })) {
+            $entry = $script:settings[$p.Setting]
+            if ((& $text $p.Default) -cne (& $text $entry.Default)) { "$($p.Id): $($p.Name) defaults to '$(& $text $p.Default)', setting $($p.Setting) to '$(& $text $entry.Default)'" }
+            if ((& $text $p.AllowedValues) -cne (& $text $entry.AllowedValues)) { "$($p.Id): $($p.Name) allows '$(& $text $p.AllowedValues)', setting $($p.Setting) '$(& $text $entry.AllowedValues)'" }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
+    It 'Never reads a setting inside a built-in test' {
+        # A test that calls Get-MtSetting hides the value from Get-MtTest, and a TestSettings row cannot
+        # override it. A test declares [MaesterParameter(Setting = '...')] and passes the value to its helpers.
+        $offenders = foreach ($file in @($script:files | Where-Object { $_.FullName.StartsWith((Join-Path $script:repoRoot 'tests')) })) {
+            foreach ($call in @(& $script:findSettingCall $file.FullName)) { "$($file.Name): reads '$($call.Name)' with Get-MtSetting; declare [MaesterParameter(Setting = '$($call.Name)')] instead" }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
+    It 'Never reads a setting that tests bind inside a helper' {
+        # A helper that reads the setting itself ignores the value the test was given, so a TestSettings row
+        # or -Parameter would change what the result records but not what the helper does.
         $bound = @($script:parameters | Where-Object Setting | ForEach-Object Setting | Sort-Object -Unique)
-        $offenders = foreach ($file in $script:files) {
-            $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$null)
-            $testFunctions = $ast.FindAll({
-                    param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
-                    $node.Body.ParamBlock -and ($node.Body.ParamBlock.Attributes.TypeName.Name -match '^MaesterTest(Attribute)?$')
-                }, $false)
-            foreach ($function in $testFunctions) {
-                $calls = $function.Body.FindAll({
-                        param($node) $node -is [System.Management.Automation.Language.CommandAst] -and $node.GetCommandName() -in 'Get-MtSetting', 'Get-MtMaesterConfigGlobalSetting'
-                    }, $true)
-                foreach ($call in $calls) {
-                    $name = @($call.CommandElements | Where-Object { $_ -is [System.Management.Automation.Language.StringConstantExpressionAst] -and $_.Value -ne $call.GetCommandName() } | ForEach-Object Value) | Select-Object -First 1
-                    if ($name -and $name -in $bound) { "$($file.Name): reads '$name' with Get-MtSetting; declare [MaesterParameter(Setting = '$name')] instead" }
+        $offenders = foreach ($file in $script:moduleFiles) {
+            foreach ($call in @(& $script:findSettingCall $file.FullName)) {
+                if ($call.Name -in $bound) { "$($file.Name): reads '$($call.Name)' with Get-MtSetting; take it as a parameter from the test instead" }
+            }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
+    It 'Reads only registered settings in the module' {
+        # An unregistered setting has no type, no default and no documentation, and the config check
+        # reports it to the user as a likely typo.
+        $offenders = foreach ($file in $script:moduleFiles) {
+            foreach ($call in @(& $script:findSettingCall $file.FullName)) {
+                if (-not $script:settings.ContainsKey($call.Name)) { "$($file.Name): '$($call.Name)' is not in assets/MaesterSettings.psd1" }
+            }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
+    It 'Declares the settings a pack reads in its maester-pack.json' {
+        $offenders = foreach ($pack in @(Get-ChildItem -Path (Join-Path $script:repoRoot 'packs') -Directory)) {
+            $manifestPath = Join-Path $pack.FullName 'maester-pack.json'
+            if (-not (Test-Path $manifestPath)) { continue }
+            $manifest = Get-Content -Path $manifestPath -Raw | ConvertFrom-Json
+            $declared = if ($manifest.PSObject.Properties['Settings']) { @($manifest.Settings.PSObject.Properties.Name) } else { @() }
+            foreach ($file in @(Get-ChildItem -Path $pack.FullName -Recurse -File -Filter '*.ps1')) {
+                foreach ($call in @(& $script:findSettingCall $file.FullName)) {
+                    if ($call.Name -notin $declared -and -not $script:settings.ContainsKey($call.Name)) { "$($pack.Name)/$($file.Name): '$($call.Name)' is not under Settings in maester-pack.json" }
                 }
             }
         }

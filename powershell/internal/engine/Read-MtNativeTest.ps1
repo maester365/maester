@@ -557,7 +557,12 @@ function Get-MtServiceRegistry {
 function Get-MtSettingRegistry {
     <#
     .SYNOPSIS
-    Returns the settings registry (assets/MaesterSettings.psd1). Cached for the session.
+    Returns the settings registry: assets/MaesterSettings.psd1 plus the settings of the packs in the run.
+
+    .DESCRIPTION
+    A pack declares its settings, named Namespace.Key, under Settings in its maester-pack.json, and
+    Register-MtPackService adds those of the packs that passed the loader gate. A pack cannot replace a
+    built-in setting. Cached for the session; the cache is dropped whenever the pack set changes.
     #>
     [CmdletBinding()]
     [OutputType([hashtable])]
@@ -565,7 +570,15 @@ function Get-MtSettingRegistry {
     if (-not $script:__MtSettingsRegistry) {
         $script:__MtSettingsRegistry = Import-PowerShellDataFile -Path (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
     }
-    $script:__MtSettingsRegistry
+    if (-not $script:__MtLayeredSettingRegistry) {
+        $settings = @{}
+        foreach ($key in $script:__MtSettingsRegistry.Settings.Keys) { $settings[$key] = $script:__MtSettingsRegistry.Settings[$key] }
+        if ($script:__MtPackSettings) {
+            foreach ($key in $script:__MtPackSettings.Keys) { if (-not $settings.ContainsKey($key)) { $settings[$key] = $script:__MtPackSettings[$key] } }
+        }
+        $script:__MtLayeredSettingRegistry = @{ SchemaVersion = $script:__MtSettingsRegistry.SchemaVersion; Settings = $settings }
+    }
+    $script:__MtLayeredSettingRegistry
 }
 
 function Get-MtParameterKindRegistry {
