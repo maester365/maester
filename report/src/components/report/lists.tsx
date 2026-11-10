@@ -152,12 +152,15 @@ export function TestTable({ rows, group = "none", empty = "No tests match these 
   const sort = sortProp ?? ownSort
   const setSort = onSort ?? setOwnSort
   // A sort by a column the reader has hidden is ignored: the order would have no header to show it or undo it.
-  const sorted = sortRows(model, rows, shownSort(shown, sort))
+  const activeSort = shownSort(shown, sort)
+  const sorted = sortRows(model, rows, activeSort)
   let groups: [string, Row[]][] = []
   if (group !== "none") {
     const byKey = new Map<string, Row[]>()
     for (const t of sorted) { const k = groupKey(model, group, t); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k)!.push(t) }
-    groups = [...byKey.entries()].sort((a, b) => tally(b[1]).Failed - tally(a[1]).Failed)
+    // Sorted by the column the list is grouped by, the groups follow the sort (the rows are already in its order,
+    // tests without a value last); otherwise the groups with the most failures come first.
+    groups = activeSort.replace(/^-/, "") === group ? [...byKey.entries()] : [...byKey.entries()].sort((a, b) => tally(b[1]).Failed - tally(a[1]).Failed)
   }
   const order = (group === "none" ? sorted : groups.flatMap(([, list]) => list)).map((t) => t.Id)
   const open = (id: string) => openTest(id, order)

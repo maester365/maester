@@ -350,6 +350,11 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			onState((state) => this.render(state, { table: this.querySelector<HTMLElement>('[data-table]')!, rowsBox, rows, segButtons, sortButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
 		}
 
+		// Draws the list again without touching the URL: a column change is not part of the state a link carries.
+		refresh() {
+			window.dispatchEvent(new CustomEvent('mt-catalog', { detail: readState() }));
+		}
+
 		// The Columns menu: which optional columns the list shows, remembered by the reader's browser.
 		columns() {
 			const table = this.querySelector<HTMLElement>('[data-table]')!;
@@ -389,7 +394,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 					saved = [...keys, ...other];
 					save(saved);
 					apply(keys);
-					writeState(readState());
+					this.refresh();
 				});
 			}
 			this.querySelector('[data-cols-reset]')?.addEventListener('click', () => {
@@ -400,7 +405,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 					/* nothing stored */
 				}
 				apply(standard);
-				writeState(readState());
+				this.refresh();
 			});
 			// Removed when the list leaves the page (disconnectedCallback), so a list that is put back adds it once.
 			this.listening?.abort();
@@ -465,11 +470,16 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			}
 			// Ranked by Maester's own checks, so groups of community pack checks come last.
 			const own = (rows: HTMLElement[]) => rows.filter((r) => !r.hasAttribute('data-community')).length;
-			const ordered = [...buckets.entries()].sort((a, b) =>
-				group === 'severity'
-					? SEVERITIES.indexOf(a[0]) - SEVERITIES.indexOf(b[0])
-					: own(b[1].rows) - own(a[1].rows) || b[1].rows.length - a[1].rows.length || a[1].label.localeCompare(b[1].label),
-			);
+			// Sorted by the column the list is grouped by, the groups follow the sort: the rows are already in its order,
+			// checks without a value last.
+			const groupColumn: Record<string, string> = { product: 'where', feature: ui.scope === 'product' ? 'where' : 'feature', area: 'area', severity: 'severity', suite: 'source' };
+			const ordered = column && groupColumn[group] === sortKey
+				? [...buckets.entries()]
+				: [...buckets.entries()].sort((a, b) =>
+						group === 'severity'
+							? SEVERITIES.indexOf(a[0]) - SEVERITIES.indexOf(b[0])
+							: own(b[1].rows) - own(a[1].rows) || b[1].rows.length - a[1].rows.length || a[1].label.localeCompare(b[1].label),
+					);
 
 			rowsBox.querySelectorAll('.mt-cl__ghead, .mt-cl__more').forEach((el: Element) => el.remove());
 			const fragment = document.createDocumentFragment();
