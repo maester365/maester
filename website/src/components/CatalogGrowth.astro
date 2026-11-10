@@ -7,6 +7,9 @@ import explorer from '../data/explorer.json';
 import history from '../data/catalog-history.json';
 import { productIcon, productInitials } from '../lib/report-icons.mjs';
 
+// bare: the chart and the product list only, for a page that gives the section its own heading.
+const { bare = false } = Astro.props as { bare?: boolean };
+
 type Test = (typeof explorer.tests)[number] & { community?: boolean };
 const tests = explorer.tests as Test[];
 const sourceOf = (t: Test) => (t.community ? 'community' : t.pack ? 'shipped' : 'builtIn');
@@ -94,8 +97,8 @@ const first = points[0];
 const growth = Math.round((total(counts.all) / Math.max(1, first.builtIn)) * 10) / 10;
 ---
 
-<section class="mt-growth" data-growth>
-	<div class="mt-growth__head">
+<section class:list={['mt-growth', { 'mt-growth--bare': bare }]} data-growth>
+	{!bare && <div class="mt-growth__head">
 		<div>
 			<p class="eyebrow">The checks</p>
 			<h2>
@@ -106,7 +109,7 @@ const growth = Math.round((total(counts.all) / Math.max(1, first.builtIn)) * 10)
 				community write the built-in checks, and anyone can publish a pack for what Maester doesn't cover yet.
 			</p>
 		</div>
-	</div>
+	</div>}
 
 	<div class="mt-growth__sources">
 		{
@@ -198,7 +201,15 @@ const growth = Math.round((total(counts.all) / Math.max(1, first.builtIn)) * 10)
 		--g-shipped: #2563eb;
 		--g-community: #7c3aed;
 	}
-	:global(:root[data-theme='dark']) .mt-growth {
+	.mt-growth--bare {
+		padding: 0;
+		max-width: none;
+	}
+	.mt-growth--bare .mt-growth__sources {
+		margin-top: 0;
+	}
+	:global(:root[data-theme='dark']) .mt-growth,
+	:global(.mt-dark-tile) .mt-growth {
 		--g-shipped: #60a5fa;
 		--g-community: #a78bfa;
 	}

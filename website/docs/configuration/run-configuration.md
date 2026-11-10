@@ -135,6 +135,7 @@ Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
 | --- | --- | --- | --- |
 | `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
+| `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
 | `GitHubOrganization` | string | | GitHub checks. |
 | `GitHubApiBaseUri` | string | `https://api.github.com` | GitHub checks. |
 | `GitHubApiVersion` | string | `2022-11-28` | GitHub checks. |
@@ -157,7 +158,7 @@ Which tests run. Every key has a command-line equivalent.
 | `Feature` | array | `[]` | Run only tests about these features (like `-Feature`), for example `conditional-access`. |
 | `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
 | `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
-| `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `ASD`, `EIDSCA`, `ORCA` or `AD`. |
+| `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `ASD`, `DISA`, `EIDSCA`, `ORCA` or `AD`. |
 | `Pack` | array | `[]` | Run only these [Maester Packs](../packs/index.md#choosing-which-packs-run), by pack ID or code (like `-Pack`). A pack named here runs even if it is off, with its long-running and preview tests. Other packs do not run. |
 | `Tag` | array | `[]` | Run only tests that any of these tags selects (like `-Tag`). |
 | `ExcludeTag` | array | `[]` | Do not run tests that any of these tags selects (like `-ExcludeTag`). |

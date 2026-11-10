@@ -28,7 +28,7 @@
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky',
-        Contributor = 'Mynster9361'
+        Contributor = ('Mynster9361', 'FiraSenax')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -46,7 +46,7 @@
         '860d3ab4-8fd1-45f5-89cd-ecf51e4f92e5' = 'BETTER Mobile Security'
         '870b252b-0ef0-4707-8847-50fc571472b3' = 'Sophos'
         '1f58d6d2-02cc-4c80-b008-1bfe7396a10a' = 'Jamf Trust'
-        '4873197-ffec-4dfc-9816-db65f34c7cb9'  = 'Trellix Mobile Security'
+        '74873197-ffec-4dfc-9816-db65f34c7cb9' = 'Trellix Mobile Security'
         'a447eca6-a986-4d3f-9838-5862bf50776c' = 'CylancePROTECT Mobile'
         '4928f0f6-2660-4f69-b4c5-5170ec921f7b' = 'Trend Micro'
         'bb13fe25-ce1f-45aa-b278-cabbc6b9072e' = 'SentinelOne'
@@ -65,21 +65,52 @@
         }
 
         $testResultMarkdown = "Mobile Threat Defense Connector Status:`n"
-        $testResultMarkdown += "| Name | LastHeartbeatDateTime | PartnerState |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
+        $testResultMarkdown += "| Name | LastHeartbeatDateTime | PartnerState | Reason |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- |`n"
 
         $connectorStatus = foreach ($connector in $mobileThreatDefenseConnectors) {
 
             if ($mtdConnectorInformation.ContainsKey($connector.id)) {
                 Write-Verbose ('Found {0} Connector.' -f $mtdConnectorInformation[$connector.id])
-                $testResultMarkdown += "| $($mtdConnectorInformation[$connector.id]) | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
+                $connectorName = $mtdConnectorInformation[$connector.id]
             } else {
                 Write-Verbose ('Found Unknown Third Party Mobile Threat Defense Connector: {0}' -f $connector.id)
-                $testResultMarkdown += "| $($connector.id) | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
+                $connectorName = $connector.id
             }
 
             $isConnected = $connector.partnerState -eq 'enabled'
-            $syncIsRecent = [System.Math]::Floor(((Get-Date) - [datetime]$connector.lastHeartbeatDateTime).TotalDays) -le 1
+            $reasons = @(switch ($connector.partnerState) {
+                'enabled' { break }
+                'notSetUp' { 'Setup is incomplete; device threat messages are blocked. Complete setup in Intune and with the partner, or remove an unused connector.' }
+                'unavailable' { 'The connector is deprovisioned; device threat messages are blocked. Ask the MTD partner to provision it again.' }
+                'available' { 'Setup is complete. Turn on a platform toggle to enable the connector.' }
+                'unresponsive' { 'The connector is unresponsive. After its configured unresponsiveness threshold, Intune ignores its compliance state. Check the partner service and connectivity.' }
+                'error' { 'The connector reported an error. Check the partner service for the error details.' }
+                default { 'Unrecognized connector state. Review the connector in Intune and with the partner.' }
+            })
+
+            $heartbeat = if ($connector.lastHeartbeatDateTime) { [datetime]$connector.lastHeartbeatDateTime } else { [datetime]::MinValue }
+            if ($heartbeat.Year -eq 1) {
+                $heartbeatDisplay = 'Never received'
+                $syncIsRecent = $false
+                $reasons += 'No heartbeat has been received. Complete setup and verify that the partner can communicate with Intune.'
+            } else {
+                $heartbeatDisplay = [string]$connector.lastHeartbeatDateTime
+                # At most one completed day since the heartbeat, so less than 48 hours.
+                $syncIsRecent = [System.Math]::Floor(((Get-Date) - $heartbeat).TotalDays) -le 1
+                if (-not $syncIsRecent) {
+                    $reasons += 'No heartbeat in the last 48 hours. Check the partner service and connectivity.'
+                }
+            }
+
+            if ($isConnected -and $syncIsRecent) {
+                $reasons = @('Enabled with a recent heartbeat.')
+            }
+
+            $nameMarkdown = Get-MtSafeMarkdown -Text $connectorName
+            $heartbeatMarkdown = Get-MtSafeMarkdown -Text $heartbeatDisplay
+            $stateMarkdown = Get-MtSafeMarkdown -Text ([string]$connector.partnerState)
+            $testResultMarkdown += "| $nameMarkdown | $heartbeatMarkdown | $stateMarkdown | $($reasons -join ' ') |`n"
             Write-Output ($isConnected -and $syncIsRecent)
         }
 

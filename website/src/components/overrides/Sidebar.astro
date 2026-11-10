@@ -1,11 +1,12 @@
 ---
 // The topics are tabs in the header, so the sidebar shows only the current topic's pages. On phones the drawer also
-// has the topics and the version picker.
+// has the topics, the version picker and, at the foot, the site's main menu, which the top bar folds away there.
 import MobileMenuFooter from '@astrojs/starlight/components/MobileMenuFooter.astro';
 import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
 import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
 import VersionPicker from '../VersionPicker.astro';
 import CatalogNav from '../catalog/CatalogNav.astro';
+import { isCurrentNav, siteNav } from '../../lib/site-nav';
 
 const { id } = Astro.locals.starlightRoute;
 let { sidebar } = Astro.locals.starlightRoute;
@@ -144,6 +145,9 @@ const alphabetical: Entry[] = isCommands
 	)
 }
 
+<nav class="mt-mobile-site md:sl-hidden" aria-label="Main">
+	{siteNav.map((item) => <a href={item.href} aria-current={isCurrentNav(Astro.url.pathname, item.href) ? 'page' : undefined}>{item.label}</a>)}
+</nav>
 <div class="md:sl-hidden">
 	<MobileMenuFooter />
 </div>
@@ -290,6 +294,25 @@ const alphabetical: Entry[] = isCommands
 		.mt-mobile-version {
 			display: block;
 		}
+	}
+	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. */
+	.mt-mobile-site {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.15rem 1rem;
+		margin-top: 1.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	.mt-mobile-site a {
+		padding: 0.4rem 0;
+		font-size: 0.9rem;
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.mt-mobile-site a[aria-current='page'] {
+		color: var(--sl-color-white);
+		font-weight: 600;
 	}
 	.mt-mobile-topics a[aria-current='page'] {
 		border-color: var(--sl-color-accent);
