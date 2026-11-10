@@ -90,10 +90,10 @@
 
     if (-not $policy) {
         $enabledRules = @($attachmentRules | Where-Object { $_.State -eq 'Enabled' })
-        $allRecipientRules = @($enabledRules | Where-Object { & $ruleCoversAllRecipients $_ })
-        if ($allRecipientRules.Count -gt 0) {
-            $highestPriority = ($allRecipientRules | Measure-Object -Property Priority -Minimum).Minimum
-            $allRecipientRule = $allRecipientRules | Where-Object { $_.Priority -eq $highestPriority } | Select-Object -First 1
+        if ($enabledRules.Count -gt 0) {
+            $highestPriority = ($enabledRules | Measure-Object -Property Priority -Minimum).Minimum
+            $highestPriorityRules = @($enabledRules | Where-Object { $_.Priority -eq $highestPriority })
+            $allRecipientRule = $highestPriorityRules | Where-Object { & $ruleCoversAllRecipients $_ } | Select-Object -First 1
 
             if ($allRecipientRule) {
                 $selectedPolicyName = $allRecipientRule.SafeAttachmentPolicy

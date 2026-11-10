@@ -1,15 +1,15 @@
 ﻿function Test-MtCisaBlockExecutable {
     <#
     .SYNOPSIS
-    Checks state of preset security policies
+    Checks the highest-priority anti-malware policy that applies to all users.
 
     .DESCRIPTION
-    Emails SHALL be filtered by attachment file types
+    Emails with click-to-run file attachments SHALL be blocked including, at a minimum, .exe, .cmd, and .vbe files.
 
     .EXAMPLE
     Test-MtCisaBlockExecutable
 
-    Returns true if standard and strict protection is on
+    Returns true when the effective all-recipient anti-malware policy blocks the required file types.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaBlockExecutable
@@ -34,80 +34,28 @@
     [OutputType([bool])]
     param()
 
-    $policies = Get-MtExo -Request MalwareFilterPolicy
-
     $clickToRunExtensions = @(
         "cmd",
         "exe",
         "vbe"
     )
-
-    $resultPolicies = @()
-    foreach($policy in $policies){
-        $p = [PSCustomObject]@{
-            Identity              = $policy.Identity
-            EnableFileFilter      = $policy.EnableFileFilter
-            RecommendedPolicyType = $policy.RecommendedPolicyType
-            clickToRunExtensions  = @()
-        }
-        foreach($extension in $clickToRunExtensions){
-            if($extension -in $policy.FileTypes){
-                $p.clickToRunExtensions += $extension
-            }
-        }
-        $resultPolicies += $p
-    }
-
-    $fileFilter = $resultPolicies | Where-Object { `
-        $_.EnableFileFilter -and `
-        ($_.clickToRunExtensions|Measure-Object).Count -eq ($clickToRunExtensions|Measure-Object).Count
-    }
-
-    $standard = $resultPolicies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Standard"
-    }
-
-    $strict = $resultPolicies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Strict"
-    }
-
-    $testResult = $standard -and $strict -and (($fileFilter|Measure-Object).Count -ge 1)
+    $policy = Get-MtCisaEffectiveAntiMalwarePolicy
+    $blockedExtensions = @($clickToRunExtensions | Where-Object { $_ -in $policy.FileTypes })
+    $testResult = $null -ne $policy -and
+        $policy.EnableFileFilter -eq $true -and
+        $blockedExtensions.Count -eq $clickToRunExtensions.Count
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
+    $policyName = if ($policy) { $policy.Identity } else { 'Not found' }
+    $result = "| Effective policy | File filter enabled | Required extensions | Result |`n"
+    $result += "| --- | --- | --- | --- |`n"
+    $result += "| $policyName | $($policy.EnableFileFilter) | $($blockedExtensions -join ', ') | $(if ($testResult) { '✅ Pass' } else { '❌ Fail' }) |`n"
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
+    $testResultMarkdown = if ($testResult) {
+        "Well done. The effective anti-malware policy blocks the required click-to-run file types. See [anti-malware policies]($portalLink).`n`n$result"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        "The effective anti-malware policy that applies to all users does not block all required click-to-run file types. Update it in [anti-malware policies]($portalLink).`n`n$result"
     }
-
-    $result = "| Policy | Status |`n"
-    $result += "| --- | --- |`n"
-    if ($standard) {
-        $result += "| Standard | $passResult |`n"
-    } else {
-        $result += "| Standard | $failResult |`n"
-    }
-    if ($strict) {
-        $result += "| Strict | $passResult |`n`n"
-    } else {
-        $result += "| Strict | $failResult |`n`n"
-    }
-
-    $result += "| Policy Name | File Filter Enabled | Extensions |`n"
-    $result += "| --- | --- | --- |`n"
-    foreach($item in $resultPolicies | Sort-Object -Property Identity){
-        if($item.EnableFileFilter){
-            $resultFilesList = ($item.clickToRunExtensions) -join ", "
-            $result += "| $($item.Identity) | $($passResult) | $resultFilesList |`n"
-        }else{
-            $result += "| $($item.Identity) | $($failResult) |  |`n"
-        }
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

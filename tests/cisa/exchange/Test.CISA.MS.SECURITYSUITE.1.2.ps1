@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaMalwareZap {
     <#
     .SYNOPSIS
-    Checks state of preset security policies
+    Checks the highest-priority anti-malware policy that applies to all users.
 
     .DESCRIPTION
     Email scanning SHALL be capable of reviewing emails after delivery.
@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaMalwareZap
 
-    Returns true if standard and strict protection is on
+    Returns true when the effective all-recipient anti-malware policy has zero-hour auto purge enabled.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaMalwareZap
@@ -35,35 +35,19 @@
     [OutputType([bool])]
     param()
 
-    $policies = Get-MtExoThreatPolicyMalware
-
-    $failingPolicies = $policies | Where-Object { $_.IsEnabled -and -not $_.ZapEnabled }
-    $testResult = ($failingPolicies | Measure-Object).Count -eq 0
+    $policy = Get-MtCisaEffectiveAntiMalwarePolicy
+    $testResult = $null -ne $policy -and $policy.ZapEnabled -eq $true
 
     $portalLink = "https://security.microsoft.com/antimalwarev2"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
-    $skipResult = "🗄️ Skip"
-
-    $result = "| Policy name | Enabled | ZapEnabled | Result |`n"
-    $result += "| --- | --- | --- | --- |`n"
-    foreach ($item in $policies) {
-        if (-not $item.IsEnabled) {
-            $result += "| $($item.Identity) | $false | $($item.ZapEnabled) | $($skipResult) |`n"
-        } elseif ($item.ZapEnabled) {
-            $result += "| $($item.Identity) | $true | $($item.ZapEnabled) | $($passResult) |`n"
-        } else {
-            $result += "| $($item.Identity) | $true | $($item.ZapEnabled) | $($failResult) |`n"
-        }
-    }
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. All the anti-malware policies in your tenant have the property ZapEnabled set to true ($portalLink).`n`n%TestResult%"
+    $policyName = if ($policy) { $policy.Identity } else { 'Not found' }
+    $result = "| Effective policy | Zero-hour auto purge | Result |`n"
+    $result += "| --- | --- | --- |`n"
+    $result += "| $policyName | $($policy.ZapEnabled) | $(if ($testResult) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    $testResultMarkdown = if ($testResult) {
+        "Well done. Zero-hour auto purge is enabled on the effective anti-malware policy. See [anti-malware policies]($portalLink).`n`n$result"
     } else {
-        $testResultMarkdown = "Your tenant does not have all the anti-malware policies with the property ZapEnabled set to true ($portalLink).`n`n%TestResult%"
+        "Zero-hour auto purge is not enabled on the effective anti-malware policy that applies to all users. Configure it in [anti-malware policies]($portalLink).`n`n$result"
     }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
