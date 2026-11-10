@@ -1,4 +1,4 @@
-﻿function Get-MtADDomainState {
+function Get-MtADDomainState {
     <#
     .SYNOPSIS
     Collects Active Directory domain state information.
@@ -34,7 +34,7 @@
     collected first. Valid values: Domain, FineGrainedPasswordPolicies, Forest,
     Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites,
     Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts,
-    OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers,
+    OrganizationalUnits, SmbConfigurations, DNS, Configuration, AuthenticationPolicies, Schema, Printers,
     DaclEntries.
 
     .EXAMPLE
@@ -76,7 +76,7 @@
         [ValidateRange(1, 1000000)]
         [int]$MaxRecordCount = 10000,
 
-        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'Schema', 'Printers', 'DaclEntries')]
+        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'AuthenticationPolicies', 'Schema', 'Printers', 'DaclEntries')]
         [string[]]$Categories
     )
 
@@ -494,6 +494,16 @@
                 return $result
             }
         }
+        AuthenticationPolicies = @{
+            Properties   = @('AuthenticationPolicyState')
+            Dependencies = @()
+            Collector    = {
+                $result = [ordered]@{}
+                # Collect policy instances directly so no-policy and unavailable-attribute states remain distinguishable.
+                $result['AuthenticationPolicyState'] = Get-MtLdapAuthenticationPolicyState -Connection $protocolConnection -ConfigurationNamingContext $protocolRootDse.ConfigurationNamingContext
+                return $result
+            }
+        }
         Schema = @{
             Properties   = @('SchemaObjects', 'SchemaContainer', 'LapsInstalled')
             Dependencies = @()
@@ -548,7 +558,7 @@
         'SmbConfigurations',
         'DNS',
         'Configuration',
-        'Schema',
+        'AuthenticationPolicies', 'AuthenticationPolicies', 'Schema',
         'Printers',
         'DaclEntries'
     )
@@ -621,6 +631,7 @@
         DNSZones               = @()
         DNSRecords             = @()
         Configuration          = $null
+        AuthenticationPolicyState = $null
         SchemaObjects          = @()
         SchemaContainer        = $null
         Printers               = @()
