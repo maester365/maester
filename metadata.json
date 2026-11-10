@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M73NCNJ85A2FQS63E3V6XYPK",
+  "strategy": "manual-commit",
+  "branch": "feat/parameter-settings",
+  "checkpoints_count": 7,
+  "files_touched": [
+    ".github/skills/maester-test-expert/SKILL.md",
+    "AGENTS.md",
+    "powershell/assets/MaesterSettings.psd1",
+    "powershell/internal/engine/Test-MtGlobalSetting.ps1",
+    "website/docs/configuration/emergency-access-accounts.md",
+    "website/docs/upgrading-from-2x.md",
+    "website/docs/writing-tests/index.mdx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 62,
+    "cache_creation_tokens": 50412,
+    "cache_read_tokens": 7188387,
+    "output_tokens": 22819,
+    "api_call_count": 24,
+    "subagent_tokens": {
+      "input_tokens": 64,
+      "cache_creation_tokens": 235341,
+      "cache_read_tokens": 5417315,
+      "output_tokens": 29522,
+      "api_call_count": 32
+    }
+  },
+  "redaction": {
+    "replacements": 2260,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 13,
+      "credentialed_uri": 0,
+      "entropy": 2217,
+      "key_context": 30,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

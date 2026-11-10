@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01KwNW4y5K6yCi135upK9bLk",
+  "agent_id": "a65cb7dea78b5cd13",
+  "subagent_type": "general-purpose",
+  "task_description": "Trial: build a Maester test",
+  "token_usage": {
+    "input_tokens": 78,
+    "cache_creation_tokens": 244446,
+    "cache_read_tokens": 6846954,
+    "output_tokens": 40117,
+    "api_call_count": 38
+  },
+  "started_at": "2026-11-11T08:00:18.215186+11:00",
+  "completed_at": "2026-11-11T08:09:23.072573+11:00"
+}
