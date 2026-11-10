@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M73PAVCNHAQ1QTZXZPK350SD",
+  "strategy": "manual-commit",
+  "branch": "feat/parameter-settings",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/skills/maester-test-expert/SKILL.md",
+    "build/website/Update-MtTestBuilderData.ps1",
+    "powershell/assets/MaesterSettings.psd1",
+    "powershell/internal/engine/completion/Get-MtArgumentCompleterTable.ps1",
+    "powershell/public/run/New-MtTest.ps1",
+    "powershell/tests/functions/engine/NativeTests.Tests.ps1",
+    "powershell/tests/general/TestBuilderData.Tests.ps1",
+    "website/docs/writing-tests/index.mdx",
+    "website/src/components/TestBuilder/generate.js",
+    "website/src/components/TestBuilder/index.jsx",
+    "website/src/components/TestBuilder/styles.module.css",
+    "website/src/data/test-builder.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 84114,
+    "cache_read_tokens": 18668481,
+    "output_tokens": 37971,
+    "api_call_count": 49,
+    "subagent_tokens": {
+      "input_tokens": 14,
+      "cache_creation_tokens": 9105,
+      "cache_read_tokens": 1429639,
+      "output_tokens": 10595,
+      "api_call_count": 6
+    }
+  },
+  "redaction": {
+    "replacements": 2265,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 13,
+      "credentialed_uri": 0,
+      "entropy": 2221,
+      "key_context": 31,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
