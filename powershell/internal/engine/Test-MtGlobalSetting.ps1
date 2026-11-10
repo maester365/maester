@@ -1,4 +1,4 @@
-function Test-MtGlobalSetting {
+﻿function Test-MtGlobalSetting {
     <#
     .SYNOPSIS
     Checks GlobalSettings of the run config against the settings registry, once, before a run.

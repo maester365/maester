@@ -26,7 +26,7 @@
 @{
     SchemaVersion = '1.0'
     Settings      = @{
-        EmergencyAccessAccounts           = @{ Type = 'object[]'; Items = @{ Properties = @{ Id = $null; UserPrincipalName = $null; Type = @('User', 'Group') }; RequireAny = @('Id', 'UserPrincipalName') }; Default = @(); Sensitive = $false; Description = 'Emergency access (break glass) accounts and groups excluded from Conditional Access checks.' }
+        EmergencyAccessAccounts           = @{ Type = 'object[]'; Items = @{ Properties = @{ Id = $null; UserPrincipalName = $null; Type = @('User', 'Group') }; RequireAny = @('Id', 'UserPrincipalName') }; Default = @(); Sensitive = $false; Description = 'Emergency access (break glass) accounts and groups. Checks of Conditional Access, privileged roles and sign-in activity treat them as the exception they are.' }
         ParkedDomains                     = @{ Type = 'string[]'; Kind = 'Entra.Domain'; Default = @(); Sensitive = $false; Description = 'Accepted domains that never send email. The email authentication checks expect them to deny all mail.' }
         DefenderEndpointPolicyFiltering   = @{ Type = 'string'; AllowedValues = @('All', 'IncludeUnassigned', 'OnlyAssigned'); Default = 'OnlyAssigned'; Sensitive = $false; Description = 'Which Defender for Endpoint policies the Defender checks read: All, IncludeUnassigned or OnlyAssigned.' }
         DefenderEndpointComplianceLogic   = @{ Type = 'string'; AllowedValues = @('EffectivePolicy', 'AllPolicies', 'AnyPolicy'); Default = 'EffectivePolicy'; Sensitive = $false; Description = 'How the Defender for Endpoint checks combine policies: EffectivePolicy, AllPolicies or AnyPolicy.' }

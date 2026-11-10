@@ -716,16 +716,29 @@ Selection and configuration understand families:
 
 ## Settings shared by many tests
 
-Read tenant-wide settings from `GlobalSettings` in the config with `Get-MtSetting`:
+A custom test receives a tenant-wide setting from `GlobalSettings` the way a built-in test does: as a parameter
+bound to the setting (see [Values set once for many tests](#values-set-once-for-many-tests)). The value then
+shows in `Get-MtTest` and in the results, and a `TestSettings` row can override it for that test:
 
 ```powershell
-$accounts = Get-MtSetting -Name EmergencyAccessAccounts
-$siteUrl  = Get-MtSetting -Name 'Contoso.SiteUrl' -Default 'https://contoso.sharepoint.com'
+param(
+    # Emergency access (break glass) accounts and groups.
+    [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+    [object[]] $EmergencyAccessAccounts = @(),
+
+    # SharePoint site the check reads.
+    [MaesterParameter(Setting = 'Contoso.SiteUrl')]
+    [string] $SiteUrl = 'https://contoso.sharepoint.com'
+)
 ```
 
-When the config does not set the value, `Get-MtSetting` returns Maester's default for the settings it knows,
-else `-Default`. Use a `Namespace.Key` name for your own settings. Prefer a test parameter when the value
-belongs to one test.
+Name your own settings `Namespace.Key`. A key without a dot is one of Maester's settings, listed in the
+[run configuration reference](../configuration/run-configuration.md#globalsettings); any other key without a dot
+gives a warning when the run starts. Use a plain parameter, with no setting, when the value belongs to one test.
+
+`Get-MtSetting -Name 'Contoso.SiteUrl' -Default '...'` still reads a setting directly, and is the only way in a
+Pester-format test or in a helper that runs before any test. A native test that calls it has the setting's name
+recorded on its result (`SettingsRead`), but the value is not shown and cannot be overridden per test.
 
 ## What a custom test can call
 

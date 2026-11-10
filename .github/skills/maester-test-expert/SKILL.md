@@ -104,8 +104,15 @@ New-MtTest -Id MT.1234 -Title 'At least one Conditional Access policy blocks dev
 ```
 
 Only `-Id` and `-Title` are required, so you can scaffold first and set the other values once the `.md` is
-written (see [Choosing the attribute values](#choosing-the-attribute-values)). `New-MtTest` does not write
-`Author`; add it.
+written (see [Choosing the attribute values](#choosing-the-attribute-values)). `New-MtTest` is made for custom
+tests, so for a built-in check finish what it leaves:
+
+- It warns that the `MT`, `CIS`, `CISA`, `ASD` and other built-in prefixes are reserved. For a check that ships
+  with Maester the warning is expected; ignore it.
+- It names the function after the ID (`Test-MT1234`). Rename it to say what it checks
+  (`Test-MtCaBlockDeviceCodeFlow`), with the `Mt` prefix and an approved verb.
+- It does not write `Author`. Add the contributor's GitHub handle; ask if you do not know it, and do not take it
+  from the git email address.
 
 ```powershell
 function Test-MtCaBlockDeviceCodeFlow {
@@ -235,6 +242,10 @@ Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_
   that kind exist). Never return `$null` to mean "not applicable".
 - Never use `NotConnected*` or `NotLicensed*` skip codes in a built-in check; declare `Service` /
   `License`.
+- A check that needs a setting the organisation has not filled in, such as `EmergencyAccessAccounts`, must not
+  fail and must not pass: skip with `-SkippedBecause Custom -SkippedCustomReason '<what to set and where>'`, naming
+  the setting and linking its configuration page (see `tests/maester/global-secure-access/Test.MT.1191.ps1`).
+  `NotApplicable` is for tenant state, not for missing configuration.
 - Checks that need delegated permissions skip with `-SkippedBecause NotSupportedAppPermission` when
   `(Get-MgContext).AuthType -ne 'Delegated'`.
 
@@ -561,8 +572,16 @@ the rubric. When you review a check yourself, follow "Reviewing a test's attribu
    rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
 9. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
    `-Parameter @{...}` for each parameter. Check the row's `Result`, `ReasonCode`, `ResultDetail.TestResult`.
-10. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
-   and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test.
+10. **Update the golden fixture.** A new built-in test changes the number of tests each selection returns, so
+   `powershell/tests/general/Golden.Tests.ps1` fails until you run `./build/golden/Export-MtGoldenFixture.ps1` and
+   commit `powershell/tests/fixtures/golden/selection.json`. Commit only that file: on macOS and Windows the
+   script can also rewrite the case of a path in `config-layouts/`, which you revert.
+11. **Update the pages that list the tests of a setting.** If the check binds `EmergencyAccessAccounts`, add it to
+   "Related Tests" in `website/docs/configuration/emergency-access-accounts.md`.
+12. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
+   and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test. A new `.ps1` file
+   needs a UTF-8 byte order mark (`FileEncoding.Tests.ps1`); the test only sees files git tracks, so `git add`
+   the new files before the run.
 
 ## Converting a User's Pester-format Test
 
