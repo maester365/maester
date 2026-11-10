@@ -21,7 +21,7 @@
         RelatedProduct = 'defender',
         Feature = 'anti-malware',
         Area = 'email-protection',
-        ResourceType = 'Policy',
+        ResourceType = 'Tenant',
         Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
