@@ -20,7 +20,7 @@
         Product = 'defender',
         Feature = 'safe-attachments',
         Area = 'email-protection',
-        ResourceType = 'Policy',
+        ResourceType = 'Tenant',
         Severity = 'High',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
