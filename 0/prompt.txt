@@ -1,0 +1,34 @@
+Background (from the session that started this one):
+Maester 3.0 is moving every shared tenant value to a test parameter bound to a registered setting (`[MaesterParameter(Setting = '...')]`), designed in issue 2775 and implemented in PR 2758 (branch `feat/parameter-settings`). That PR registered `ParkedDomains` (`string[]`, kind `Entra.Domain`) in `powershell/assets/MaesterSettings.psd1` but left the CISA Exchange tests inferring parked domains from Exchange's `SendingFromDomainDisabled`. The owner (Merill) has decided those tests should use `ParkedDomains` too, in a separate PR because it changes their results. The CIS equivalents are handled in PR 2673 and must be left alone.
+
+Task:
+In the Maester repo (read `AGENTS.md` first), switch the CISA Exchange email-authentication tests from inferring parked domains to the shared `ParkedDomains` setting, and open a PR.
+
+Today the tests under `tests/cisa/exchange/` that check SPF, DKIM and DMARC (find them by searching `tests/cisa` for `SendingFromDomainDisabled`, `Force`/`AllDomains`, and the SPF/DKIM/DMARC helpers; CISA EXO 2.x and 4.x are the likely ones) decide which accepted domains are parked from the Exchange property `SendingFromDomainDisabled`. Change them so that a domain is parked when it is listed in a parameter bound to the setting:
+
+```powershell
+# Domains that never send email.
+[MaesterParameter(Setting = 'ParkedDomains')]
+[string[]] $ParkedDomains = @()
+```
+
+Rules:
+- A test never calls `Get-MtSetting` for this; the engine binds the parameter (precedence: `-Parameter`, the test's `TestSettings` row, `GlobalSettings`, the default). See "Values set once for many tests" in `website/docs/writing-tests/index.mdx` and "Parameter names" / "Parameters bound to a setting" in `website/docs/writing-tests/attribute-rubric.md`.
+- Before changing each test, read what SCuBA asks for that policy (the requirement in `tests/cisa/frameworks/cisa-scuba.json`, the test's `.md`, and the ScubaGear baseline text for MS.EXO.2.x/4.x) and say in the PR what a parked domain must publish for each policy, so the new behaviour matches the baseline. If the baseline gives no separate rule for a non-sending domain, keep the sending-domain check for every domain and say so, rather than inventing a rule.
+- If a helper under `powershell/internal/` does the `SendingFromDomainDisabled` inference, give it a parameter for the list instead; do not read the setting in the helper.
+- Update each test's `.md`, any unit tests under `powershell/tests/` that cover these tests, and `website/docs/configuration/` if it lists which tests use `ParkedDomains`. If parameters changed, regenerate `website/src/data/test-builder.json` with `./build/website/Update-MtTestBuilderData.ps1`.
+- Do not touch `tests/cis/` (PR 2673 owns the CIS 2.1.8/2.1.9/2.1.10 tests), `powershell/assets/MaesterSettings.psd1`, or anything under `powershell/internal/engine/`: another session is editing those on `feat/parameter-settings`.
+
+Done means: `./powershell/tests/pester.ps1` passes, the work is committed on your branch, pushed, and a PR is open against `feat/parameter-settings` (the base of PR 2758; say in the body that it is stacked on 2758 and changes results for tenants that relied on `SendingFromDomainDisabled`, and add the `breaking change` label). End the PR body with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)` and commit messages with `Co-Authored-By: Claude <noreply@anthropic.com>`. Report the PR link first.
+
+Shared notes folder for this group of sessions (outside the repo; read siblings' notes there, leave hand-over notes or large findings there instead of pasting them into messages): /Users/merill/Library/Application Support/Claude/side-session-notes/local_338c3723-65a3-4813-9cbc-2a962282c882
+
+---
+
+<task-notification>
+<task-id>bj6yurcyg</task-id>
+<tool-use-id>toolu_01Gzbwwt5P5r1L8DkUgoTRQZ</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-upbeat-noyce-5d587a/3b2f2a7d-41ae-4a99-95e1-fca058c91077/tasks/bj6yurcyg.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the module's full unit test suite" completed (exit code 0)</summary>
+</task-notification>
