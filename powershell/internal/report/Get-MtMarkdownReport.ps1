@@ -91,8 +91,15 @@
                 # make sure we do not execute the code in the script block!
                 $cleanedScriptBlock = $test.ScriptBlock.ToString() -replace '%\w+%', '' -replace '\$_', '€_' # or show me how I can make it not execute the $_ thing
                 [void]$details.Append("#### Overview`n`n``````ps1`n$cleanedScriptBlock`n```````n`n")
-                if (![string]::IsNullOrEmpty($test.ErrorRecord)) {
-                    [void]$details.Append("#### Reason for failure`n`n$($test.ErrorRecord)`n`n")
+                # Redacted exports carry deserialized error records, whose string conversion loses the message.
+                # Read the prepared records so diagnostics remain redacted and caller objects stay unchanged.
+                $errorMessages = @(foreach ($record in $test.ErrorRecord) {
+                        if ($record.ErrorDetails.Message) { $record.ErrorDetails.Message }
+                        elseif ($record.Exception.Message) { $record.Exception.Message }
+                        elseif ($record -is [string] -and -not [string]::IsNullOrWhiteSpace($record)) { $record }
+                    })
+                if ($errorMessages.Count -gt 0) {
+                    [void]$details.Append("#### Reason for failure`n`n$($errorMessages -join "`n`n")`n`n")
                 }
             }
 
