@@ -733,6 +733,11 @@ const FIELD_ICONS = {
 const STEP_ICONS = { start: "person", name: "id", about: "product", priority: "severity", mapping: "framework", services: "service", licences: "licence", permissions: "permission", environment: "cloud", parameters: "params", lifecycle: "lifecycle" };
 const LIFECYCLE_ICONS = { Preview: ["preview", "info"], Stable: ["stable", "ok"], Deprecated: ["deprecated", "low"] };
 
+// Services show the icon of the product they connect to. Microsoft Graph has no icon of its own in the set, so it
+// shows Microsoft 365's; Dataverse has none either and shows its initials.
+const SERVICE_PRODUCT = { ActiveDirectory: "ad", Azure: "azure", AzureDevOps: "azure-devops", ExchangeOnline: "exchange", GitHub: "github", Graph: "microsoft-365", SecurityCompliance: "purview", SharePointOnline: "sharepoint", Teams: "teams" };
+const serviceIconOf = (name) => (SERVICE_PRODUCT[name] && productIcon(SERVICE_PRODUCT[name]) ? { icon: productIcon(SERVICE_PRODUCT[name]) } : { initials: name.slice(0, 2) });
+
 // Tenant types: the value written to the attribute stays Workforce or External; the label says what External
 // means. Workforce shows the Entra ID icon the report uses. External shows Microsoft's External ID icon
 // (public/img/icons/external-id.svg, from https://az-icons.com/icon/external-id-modified, unchanged).
@@ -767,7 +772,7 @@ const STEPS = [
   { key: "about", label: "Subject", fields: ["product", "feature", "relatedProducts", "area", "resourceType"] },
   { key: "priority", label: "Priority", fields: ["severity", "userImpact", "implementationCost"] },
   { key: "mapping", label: "Mapping", fields: ["mitre", "control"] },
-  { key: "services", label: "Services", fields: ["services"] },
+  { key: "services", label: "Service connections", fields: ["services"] },
   { key: "licences", label: "Licences", fields: ["license"] },
   { key: "permissions", label: "Permissions", fields: ["permission"] },
   { key: "environment", label: "Where it applies", fields: ["tenantType", "cloud", "platform"] },
@@ -1214,11 +1219,11 @@ export default function TestBuilder() {
         </section>
 
         <section className={styles.section} id={"step-" + "services"} hidden={step !== "services"}>
-          <h2>Which services does it connect to?</h2>
+          <h2>Which service connections does it need?</h2>
           <Field
             id="services"
             name="Service"
-            label="Services"
+            label="Service connections"
             required={need("Service")}
             hint="The connections the test needs. The engine checks them before it calls your function and skips the test when one is missing, so the function needs no connection check."
             problems={problems}
@@ -1231,7 +1236,7 @@ export default function TestBuilder() {
             <Checkbox checked={state.serviceNone} onCheckedChange={(v) => set({ serviceNone: v })}>
               None: the test needs no connection
             </Checkbox>
-            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} describe={(n) => (data.services.find((s) => s.name === n).optIn ? n + " (opt-in)" : n)} onChange={(v) => set({ services: v })} />}
+            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} describe={(n) => (data.services.find((s) => s.name === n).optIn ? n + " (opt-in)" : n)} iconFor={serviceIconOf} onChange={(v) => set({ services: v })} />}
           </Field>
         </section>
 
@@ -1268,7 +1273,7 @@ export default function TestBuilder() {
             problems={problems}
             notInList={
               <p>
-                The kinds of permission each service has are listed in <RepoFile path="powershell/assets/MaesterServiceRegistry.psd1" />. A test shipped with Maester names only the services it lists under Services.
+                The kinds of permission each service has are listed in <RepoFile path="powershell/assets/MaesterServiceRegistry.psd1" />. A test shipped with Maester names only the services it lists under Service connections.
               </p>
             }
           >
