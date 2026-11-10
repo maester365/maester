@@ -132,6 +132,28 @@ export function RadioCards({ value, onValueChange, options, label, columns }) {
   );
 }
 
+// A level, drawn as bars: `level` of `of` are filled, in the colour of `tone`. Info is a circled i, because an
+// Info test makes no judgement and so has no level.
+export function LevelIcon({ level, of = 3, tone }) {
+  if (!level)
+    return (
+      <svg className={clsx(ui.level, ui["tone-" + tone])} viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M8 7.25v4M8 4.75h.01" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  const width = of > 3 ? 2.5 : 3.25;
+  const gap = (16 - of * width) / (of + 1);
+  return (
+    <svg className={clsx(ui.level, ui["tone-" + tone])} viewBox="0 0 16 16" aria-hidden="true">
+      {Array.from({ length: of }, (_, i) => {
+        const height = 4 + ((i + 1) * 10) / of;
+        return <rect key={i} x={gap + i * (width + gap)} y={15 - height} width={width} height={height} rx="0.75" fill="currentColor" opacity={i < level ? 1 : 0.22} />;
+      })}
+    </svg>
+  );
+}
+
 // A radio group as one row of choices. Only the selected option's text is shown, under the row.
 export function RadioPills({ value, onValueChange, options, label }) {
   const picked = options.find((o) => o.value === value);
@@ -140,6 +162,7 @@ export function RadioPills({ value, onValueChange, options, label }) {
       <RadioGroupPrimitive.Root className={ui.pills} value={value} onValueChange={onValueChange} aria-label={label}>
         {options.map((o) => (
           <RadioGroupPrimitive.Item key={o.value} value={o.value} className={ui.pill} title={o.text}>
+            {o.icon}
             {o.label || o.value}
           </RadioGroupPrimitive.Item>
         ))}

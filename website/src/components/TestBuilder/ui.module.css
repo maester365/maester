@@ -189,8 +189,20 @@
 /* A radio group as one row of choices. */
 .pillsWrap { display: flex; flex-direction: column; gap: 0.4rem; width: 100%; }
 .pills { display: flex; flex-wrap: wrap; gap: 0.2rem; padding: 0.2rem; border-radius: 8px; background: var(--ifm-color-emphasis-200); width: fit-content; max-width: 100%; }
-.pill { border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ifm-color-emphasis-800); font: inherit; font-size: 0.875rem; font-weight: 500; padding: 0.3rem 0.85rem; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.pill { display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ifm-color-emphasis-800); font: inherit; font-size: 0.875rem; font-weight: 500; padding: 0.3rem 0.85rem; cursor: pointer; transition: background 0.15s, color 0.15s; }
 .pill:hover { background: var(--ifm-color-emphasis-100); }
 .pill[data-state="checked"] { background: var(--ifm-background-color); border-color: var(--ifm-color-primary); color: var(--ifm-font-color-base); font-weight: 600; }
 .pill:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--ifm-color-primary) 25%, transparent); }
 .pillText { margin: 0; font-size: 0.83rem; color: var(--ifm-color-emphasis-700); }
+
+/* Level icons: the colour says how bad, the bars say how much. */
+.level { width: 1rem; height: 1rem; flex: none; }
+.tone-critical { color: #dc2626; }
+.tone-high { color: #ea580c; }
+.tone-medium { color: #d97706; }
+.tone-low { color: var(--ifm-color-emphasis-600); }
+.tone-info { color: #2563eb; }
+[data-theme="dark"] .tone-critical { color: #f87171; }
+[data-theme="dark"] .tone-high { color: #fb923c; }
+[data-theme="dark"] .tone-medium { color: #fbbf24; }
+[data-theme="dark"] .tone-info { color: #60a5fa; }

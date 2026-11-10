@@ -4,7 +4,7 @@ import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
 import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
-import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
@@ -718,6 +718,13 @@ function CopyBlock({ text, language }) {
   );
 }
 
+// The rating fields show a level icon on each choice, so the scale reads at a glance.
+const SEVERITY_LEVEL = { Critical: 4, High: 3, Medium: 2, Low: 1, Info: 0 };
+const SCALE_LEVEL = { Low: 1, Medium: 2, High: 3 };
+const SCALE_TONE = { Low: "low", Medium: "medium", High: "high" };
+const severityOptions = (options) => options.map((o) => ({ ...o, icon: <LevelIcon level={SEVERITY_LEVEL[o.value]} of={4} tone={o.value.toLowerCase()} /> }));
+const scaleOptions = (options) => options.map((o) => ({ ...o, icon: <LevelIcon level={SCALE_LEVEL[o.value]} of={3} tone={SCALE_TONE[o.value]} /> }));
+
 // The form is shown one step at a time. Each step lists the fields whose problems count against it.
 const STEPS = [
   { key: "start", label: "Who it is for", fields: [] },
@@ -725,7 +732,9 @@ const STEPS = [
   { key: "about", label: "Subject", fields: ["product", "feature", "relatedProducts", "area", "resourceType"] },
   { key: "priority", label: "Priority", fields: ["severity", "userImpact", "implementationCost"] },
   { key: "mapping", label: "Mapping", fields: ["mitre", "control"] },
-  { key: "requirements", label: "Requirements", fields: ["services", "license", "permission"] },
+  { key: "services", label: "Services", fields: ["services"] },
+  { key: "licences", label: "Licences", fields: ["license"] },
+  { key: "permissions", label: "Permissions", fields: ["permission"] },
   { key: "environment", label: "Where it applies", fields: ["tenantType", "cloud", "platform"] },
   { key: "parameters", label: "Parameters", fields: ["parameters"] },
   { key: "lifecycle", label: "Lifecycle and credit", fields: ["lifecycle", "replacedBy", "flags", "author", "contributor", "tags"] },
@@ -1056,17 +1065,17 @@ export default function TestBuilder() {
         <section className={styles.section} id={"step-" + "priority"} hidden={step !== "priority"}>
           <h2>What should be fixed first?</h2>
           <Field id="severity" name="Severity" label="Severity" required={need("Severity")} hint="The risk to the organization while the test fails. Not the effort to fix it and not the disruption of fixing it." rubric={R.Severity} problems={problems} notInList={<p>The five values are fixed. The report, the scores and the <code>-Severity</code> selector depend on them.</p>}>
-            <RadioPills label="severity" value={state.severity} options={firstTable(R.Severity)} onValueChange={(v) => set({ severity: v })} />
+            <RadioPills label="severity" value={state.severity} options={severityOptions(firstTable(R.Severity))} onValueChange={(v) => set({ severity: v })} />
           </Field>
           {state.severity === "Info" ? (
             <p className={styles.note}>An Info test makes no risk judgement, so it has no user impact or implementation cost and is left out of scores.</p>
           ) : (
             <>
               <Field id="userImpact" name="UserImpact" label="User impact" required={need("UserImpact")} hint={P.UserImpact.description} rubric={R.UserImpact} problems={problems}>
-                <RadioPills label="userImpact" value={state.userImpact} options={firstTable(R.UserImpact)} onValueChange={(v) => set({ userImpact: v })} />
+                <RadioPills label="userImpact" value={state.userImpact} options={scaleOptions(firstTable(R.UserImpact))} onValueChange={(v) => set({ userImpact: v })} />
               </Field>
               <Field id="implementationCost" name="ImplementationCost" label="Implementation cost" required={need("ImplementationCost")} hint={P.ImplementationCost.description} rubric={R.ImplementationCost} problems={problems}>
-                <RadioPills label="implementationCost" value={state.implementationCost} options={firstTable(R.ImplementationCost)} onValueChange={(v) => set({ implementationCost: v })} />
+                <RadioPills label="implementationCost" value={state.implementationCost} options={scaleOptions(firstTable(R.ImplementationCost))} onValueChange={(v) => set({ implementationCost: v })} />
               </Field>
             </>
           )}
@@ -1168,8 +1177,8 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section} id={"step-" + "requirements"} hidden={step !== "requirements"}>
-          <h2>What does it need to run?</h2>
+        <section className={styles.section} id={"step-" + "services"} hidden={step !== "services"}>
+          <h2>Which services does it connect to?</h2>
           <Field
             id="services"
             name="Service"
@@ -1188,6 +1197,10 @@ export default function TestBuilder() {
             </Checkbox>
             {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} describe={(n) => (data.services.find((s) => s.name === n).optIn ? n + " (opt-in)" : n)} onChange={(v) => set({ services: v })} />}
           </Field>
+        </section>
+
+        <section className={styles.section} id={"step-" + "licences"} hidden={step !== "licences"}>
+          <h2>Which licences does the tenant need?</h2>
           <Field
             id="license"
             name="License"
@@ -1207,6 +1220,10 @@ export default function TestBuilder() {
           >
             <LicenseBuilder groups={state.license} onChange={(v) => set({ license: v })} />
           </Field>
+        </section>
+
+        <section className={styles.section} id={"step-" + "permissions"} hidden={step !== "permissions"}>
+          <h2>Which permissions does it need?</h2>
           <Field
             id="permission"
             name="Permission"
