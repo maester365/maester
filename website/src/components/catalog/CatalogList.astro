@@ -252,6 +252,8 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 	const FLAT_ROWS = 100;
 	const SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'Info'];
 
+	const LEVELS = ['Low', 'Medium', 'High'];
+
 	// The columns the list sorts by. Ascending is the order a reader looks for first: the most severe first, A to Z.
 	// A second click reverses it, a third goes back to the catalog's own order. Rows without a value stay last.
 	const rankOf = (order: string[], v: string) => (order.includes(v) ? order.indexOf(v) : order.length);
@@ -268,7 +270,6 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		control: { value: (r) => r.dataset.sControl ?? '', compare: (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }) },
 		source: { value: (r) => r.dataset.sSource ?? '', compare: (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }) },
 	};
-	const LEVELS = ['Low', 'Medium', 'High'];
 
 	// The grid track of each column, in the order the columns are laid out.
 	// The table scrolls sideways once the columns' smallest widths (in rem) no longer fit.
@@ -290,6 +291,11 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 
 	class CatalogList extends HTMLElement {
 		expanded = new Set<string>();
+		listening?: AbortController;
+
+		disconnectedCallback() {
+			this.listening?.abort();
+		}
 
 		connectedCallback() {
 			const rowsBox = this.querySelector<HTMLElement>('[data-rows]')!;
@@ -394,9 +400,16 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				}
 				apply(standard);
 			});
-			document.addEventListener('click', (e) => {
-				if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
-			});
+			// Removed when the list leaves the page (disconnectedCallback), so a list that is put back adds it once.
+			this.listening?.abort();
+			this.listening = new AbortController();
+			document.addEventListener(
+				'click',
+				(e) => {
+					if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+				},
+				{ signal: this.listening.signal },
+			);
 			menu.addEventListener('keydown', (e) => {
 				if (e.key === 'Escape' && menu.open) {
 					menu.open = false;

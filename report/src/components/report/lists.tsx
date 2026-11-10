@@ -85,7 +85,7 @@ function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onCha
   }
   useEffect(() => {
     if (!open) return
-    const close = () => setOpen(false)
+    const close = () => { setOpen(false) }
     window.addEventListener("scroll", close, true)
     window.addEventListener("resize", close)
     const away = (e: MouseEvent) => { if (!root.current?.contains(e.target as Node)) setOpen(false) }
@@ -94,7 +94,7 @@ function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onCha
     document.addEventListener("keydown", esc, true)
     return () => { document.removeEventListener("mousedown", away); document.removeEventListener("keydown", esc, true); window.removeEventListener("scroll", close, true); window.removeEventListener("resize", close) }
   }, [open])
-  const toggle = (key: string, on: boolean) => onChange((current) => COLUMNS.filter((c) => !c.fixed && (c.key === key ? on : current.includes(c.key))).map((c) => c.key))
+  const showColumn = (key: string, on: boolean) => { onChange((current) => COLUMNS.filter((c) => !c.fixed && (c.key === key ? on : current.includes(c.key))).map((c) => c.key)) }
   return (
     <div className="mt-cols" ref={root}>
       <button type="button" className="mt-cols-btn" aria-haspopup="true" aria-expanded={open} onClick={() => { place(); setOpen((o) => !o) }} title="Choose columns" aria-label="Choose columns">
@@ -105,10 +105,10 @@ function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onCha
           <div className="mt-cols-h">Columns</div>
           {available.map((c) => (
             <label key={c.key}>
-              <input type="checkbox" checked={chosen.includes(c.key)} onChange={(e) => toggle(c.key, (e.target as HTMLInputElement).checked)} />{c.label}
+              <input type="checkbox" checked={chosen.includes(c.key)} onChange={(e) => { showColumn(c.key, (e.target as HTMLInputElement).checked) }} />{c.label}
             </label>
           ))}
-          <button type="button" className="mt-cols-reset" onClick={() => onChange(STANDARD_COLUMNS)}>Reset to default</button>
+          <button type="button" className="mt-cols-reset" onClick={() => { onChange(STANDARD_COLUMNS) }}>Reset to default</button>
         </div>
       )}
     </div>
@@ -172,7 +172,7 @@ export function TestTable({ rows, group = "none", empty = "No tests match these 
           const dir = sort === c.key ? "ascending" : sort === `-${c.key}` ? "descending" : undefined
           return (
             <th key={c.key} className={c.wide ? "mt-hide-sm" : undefined} aria-sort={dir}>
-              <button type="button" className="mt-sort" onClick={() => setSort(nextSort(sort, c.key))} title={c.key === "id" ? "Sort by test ID" : `Sort by ${c.label.toLowerCase()}`}>
+              <button type="button" className="mt-sort" onClick={() => { setSort(nextSort(sort, c.key)) }} title={c.key === "id" ? "Sort by test ID" : `Sort by ${c.label.toLowerCase()}`}>
                 {c.label}<span className="mt-sort-i" aria-hidden="true">{dir === "ascending" ? "▲" : dir === "descending" ? "▼" : "↕"}</span>
               </button>
             </th>
