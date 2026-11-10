@@ -15,10 +15,10 @@
     https://maester.dev/docs/commands/Test-MtCisaDlpBaselineRule
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.8.4',
-        Title = 'At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.',
-        Product = 'exchange',
-        RelatedProduct = 'purview',
+        Id = 'CISA.MS.SECURITYSUITE.3.1',
+        Title = 'A DLP policy SHALL be configured to protect PII and sensitive information, as defined by the agency, blocking at a minimum: credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).',
+        Product = 'purview',
+        RelatedProduct = 'exchange',
         Feature = 'data-loss-prevention',
         Area = 'data-protection',
         ResourceType = 'Tenant',
@@ -26,7 +26,7 @@
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1213', 'T1530', 'T1567'),
-        Control = 'cisa-scuba:MS.EXO.8.4',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.3.1',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
         Author = 'soulemike'

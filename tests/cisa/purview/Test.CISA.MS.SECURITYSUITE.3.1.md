@@ -1,6 +1,6 @@
-The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.
+A DLP policy SHALL be configured to protect PII and sensitive information, as defined by the agency, blocking at a minimum: credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).
 
-> Reference your organization's policy defining PII.
+> Reference your organization's policy defining restricted information.
 
 Rationale: Users may inadvertently share sensitive information with others who should not have access to it. Data loss prevention policies provide a way for agencies to detect and prevent unauthorized disclosures.
 
@@ -39,8 +39,8 @@ Rationale: Users may inadvertently share sensitive information with others who s
 #### Related links
 
 * [Purview admin center - Data loss prevention policies](https://purview.microsoft.com/datalossprevention/policies)
-* [CISA 8 Data Loss Prevention Solutions - MS.EXO.8.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo82v2)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L438)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.3.1v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite31v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%
