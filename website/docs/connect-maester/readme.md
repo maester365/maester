@@ -237,12 +237,20 @@ Connecting to Azure DevOps is **not** part of `Connect-Maester` and must be done
 
 ```powershell
 Install-Module ADOPS -Scope CurrentUser
+Import-Module ADOPS -ArgumentList $true
 Connect-ADOPS -Organization <your-organization>
 ```
 
+Some of the endpoints the tests call are ones `ADOPS` treats as unsupported. `-ArgumentList $true` allows them.
+Instead, you can set `$AdoPSAllowInsecureAPIs = $true` before you import the module. See
+[AZDOPS issue 248](https://github.com/AZDOPS/AZDOPS/issues/248).
+
+The tests need the **Project-Scoped Users** role at the organization level, at least. Some need more, see
+[Connect-Maester advanced](connect-maester-advanced.mdx).
+
 If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
 
-See the [installation guide](../installation.md#installing-azure-devops-powershell-module) for prerequisites and permissions, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
+See the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 

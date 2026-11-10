@@ -245,8 +245,8 @@ against built-in and custom checks. It is published on the PowerShell Gallery.
 **Supply chain**
 
 - Source code is public and reviewed through pull requests; each test is a readable PowerShell file.
-- We will pin a specific module version, review release notes before upgrading, and install from [the PowerShell
-  Gallery / our internal repository].
+- We will [pin a specific module version](installation.mdx#update-or-pin-a-version), review release notes before
+  upgrading, and install from [the PowerShell Gallery / our internal repository].
 - Optional Maester Packs are third-party code and are not installed unless we install them. [We will not use packs /
   we will use only (pack) after review.]
 
@@ -282,9 +282,16 @@ that prevent those attacks are still in place. A weak setting produces no alert 
 
 **It is free. Who supports it?**
 Maester is an open-source project maintained by a community of Microsoft security practitioners, with the source
-on [GitHub](https://github.com/maester365/maester). There is no vendor support contract. Because it only reads
-configuration and runs in your own environment, the operational risk of a fault is low: the worst case is a run that
-fails or a test that reports the wrong result, which you can turn off.
+on [GitHub](https://github.com/maester365/maester). Questions and bugs go to
+[GitHub issues](https://github.com/maester365/maester/issues), and the open-source module comes with no support
+contract.
+
+If your organisation needs a product with a vendor behind it, [Maester Cloud](https://maester.cloud) runs Maester in
+your own Azure subscription, keeps the results over time and alerts you when something changes. It comes with
+support for setting it up and running it, and each subscription also funds the open-source project.
+
+Because Maester reads configuration and runs in your own environment, the operational risk of a fault is low: the
+worst case is a run that fails or a test that reports the wrong result, which you can turn off.
 
 **Will it change anything in our tenant?**
 Not by default: Maester asks only for read permissions. Two optional permissions are off unless you ask for them:
