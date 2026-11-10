@@ -36,6 +36,7 @@ export const emptyState = {
   serviceNone: false,
   license: [],
   permission: [],
+  parameters: [],
   tenantType: [],
   cloud: [],
   platform: [],
@@ -65,6 +66,156 @@ export const exampleState = {
   permission: [["Graph:Scope:Policy.Read.All"]],
   author: "your-github-handle",
 };
+
+// Test parameters. The rules are those of "Parameter names" in the attribute rubric and of Read-MtNativeTest.
+export const PARAMETER_TYPES = ["int", "bool", "switch", "string", "string[]"];
+export const emptyParameter = { name: "", type: "int", description: "", default: "", min: "", max: "", allowed: "", kind: "", setting: "" };
+const RESERVED_PARAMETER_NAMES = ["Force", "Confirm", "WhatIf", "PassThru", "Verbose", "Debug"];
+const PASCAL = /^[A-Z][A-Za-z0-9]*$/;
+const OWN_SETTING = /^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)+$/;
+const WHOLE = /^-?[0-9]+$/;
+
+// The registry entry of the setting a parameter is bound to, or undefined for a setting of the user's own.
+export function settingOf(parameter, data) {
+  return parameter.setting ? data.settings.find((s) => s.name.toLowerCase() === parameter.setting.trim().toLowerCase()) : undefined;
+}
+
+// A parameter bound to a registered setting takes its type, default and allowed values from the registry.
+export function resolveParameter(parameter, data) {
+  const setting = settingOf(parameter, data);
+  if (!setting) return { ...parameter, allowedValues: splitList(parameter.allowed) };
+  const value = setting.default;
+  return {
+    ...parameter,
+    type: setting.type,
+    kind: "",
+    min: "",
+    max: "",
+    default: Array.isArray(value) ? value.join(", ") : value === null || value === undefined ? "" : String(value),
+    allowedValues: setting.allowedValues || [],
+    registered: true,
+  };
+}
+
+// A new parameter bound to a registered setting, named after it.
+export function parameterForSetting(setting) {
+  return { ...emptyParameter, name: setting.name.split(".").pop(), setting: setting.name, description: setting.description };
+}
+
+export function validateParameters(state, data, add) {
+  const builtin = state.mode === "builtin";
+  const seen = new Set();
+  (state.parameters || []).forEach((raw, index) => {
+    const p = resolveParameter(raw, data);
+    const name = p.name.trim();
+    const label = name || "Parameter " + (index + 1);
+    const say = (level, text) => add("parameters", level, label + ": " + text);
+    const list = p.type === "string[]" || p.type === "object[]";
+
+    if (!name) say("error", "give it a name.");
+    else {
+      if (!PASCAL.test(name)) say("error", "use PascalCase, letters and digits only, for example MaximumInactiveDays.");
+      if (/^(Max|Min)(?!imum)/.test(name)) say("error", "spell out the limit: " + name.replace(/^Max(?!imum)/, "Maximum").replace(/^Min(?!imum)/, "Minimum") + ".");
+      if (/In(Days|Hours|Minutes|Seconds)$/.test(name)) say("error", "a unit is a plain suffix: " + name.replace(/In(Days|Hours|Minutes|Seconds)$/, "$1") + ".");
+      if (list && !/s$/.test(name)) say("error", "a list takes a plural name, for example ExcludedGroups.");
+      if (RESERVED_PARAMETER_NAMES.some((r) => r.toLowerCase() === name.toLowerCase())) say("error", "that name means something else in PowerShell. Name what turning it on does, for example AllDomains.");
+      if (name === "Instance" || /^Mt/.test(name)) say("error", "Instance and names starting with Mt belong to the engine.");
+      if (/(Threshold|Value|Number|Count)(Days|Hours|Minutes|Seconds)?$/.test(name) && !/^(Maximum|Minimum)/.test(name)) say("warn", "say what is measured and whether it is an upper or lower limit, for example MaximumInactiveDays.");
+      if (seen.has(name.toLowerCase())) say("error", "the test already has a parameter with this name.");
+      seen.add(name.toLowerCase());
+      const used = data.parameterNames.find((n) => n.name.toLowerCase() === name.toLowerCase());
+      if (used && used.type !== p.type) say(builtin ? "error" : "warn", "other tests use this name for a " + used.type + ". One name has one type; choose another name.");
+    }
+
+    if (!p.description.trim()) say(builtin ? "error" : "warn", "describe it in one line. Get-MtTest and the docs show the description.");
+    else if (/[\r\n]/.test(p.description)) say("error", "the description is one line.");
+
+    const setting = p.setting.trim();
+    if (setting && !p.registered) {
+      if (builtin) say("error", setting + " is not a registered setting. Choose one from the list, or register it in powershell/assets/MaesterSettings.psd1 in the same pull request.");
+      else if (!OWN_SETTING.test(setting)) say("error", "a setting of your own is named Namespace.Key, for example Contoso.Regions.");
+    }
+    if (p.registered && settingOf(raw, data).connection) say("error", setting + " is a connection setting, which a test does not bind.");
+
+    if (!p.registered) {
+      if (p.type === "int") {
+        if (!WHOLE.test(String(p.default).trim())) say("error", "give a whole number as the default. A test runs with no configuration.");
+        const min = String(p.min).trim();
+        const max = String(p.max).trim();
+        if ((min && !WHOLE.test(min)) || (max && !WHOLE.test(max))) say("error", "the range is two whole numbers.");
+        else if (Boolean(min) !== Boolean(max)) say("error", "a range needs both a lowest and a highest value.");
+        else if (min && Number(min) > Number(max)) say("error", "the lowest value of the range is above the highest.");
+        else if (min && WHOLE.test(String(p.default).trim()) && (Number(p.default) < Number(min) || Number(p.default) > Number(max))) say("error", "the default is outside the range.");
+        else if (!min) say("warn", "give a threshold a range, so a typo in the config is caught.");
+      }
+      if (p.type === "bool" && !/^(true|false)$/i.test(String(p.default).trim() || "false")) say("error", "the default is true or false.");
+      if (p.allowedValues.length && p.type === "string" && p.default.trim() && !p.allowedValues.includes(p.default.trim())) say("error", "the default is not one of the allowed values.");
+      if (p.allowedValues.length && !["string", "string[]"].includes(p.type)) say("error", "allowed values are for a string or a list of strings.");
+    }
+  });
+}
+
+const psValue = (text) => "'" + String(text).replace(/'/g, "''") + "'";
+
+// The lines of the param() block.
+export function parameterLines(state, data) {
+  const parameters = (state.parameters || []).map((raw) => resolveParameter(raw, data)).filter((p) => p.name.trim());
+  return parameters.map((p, index) => {
+    const lines = [];
+    const pad = "        ";
+    lines.push(pad + "# " + (p.description.trim().replace(/[\r\n]+/g, " ") || "Describe what this value changes."));
+    const named = [];
+    if (p.kind && !p.registered) named.push("Kind = " + psValue(p.kind));
+    if (p.setting.trim()) named.push("Setting = " + psValue(p.registered ? settingOf(p, data).name : p.setting.trim()));
+    if (named.length) lines.push(pad + "[MaesterParameter(" + named.join(", ") + ")]");
+    if (p.type === "int" && String(p.min).trim() && String(p.max).trim()) lines.push(pad + "[ValidateRange(" + String(p.min).trim() + ", " + String(p.max).trim() + ")]");
+    if (p.allowedValues.length) lines.push(pad + "[ValidateSet(" + p.allowedValues.map(psValue).join(", ") + ")]");
+    const items = splitList(p.default);
+    let value = "";
+    if (p.type === "int") value = " = " + (WHOLE.test(String(p.default).trim()) ? String(p.default).trim() : "0");
+    else if (p.type === "bool") value = " = " + (/^true$/i.test(String(p.default).trim()) ? "$true" : "$false");
+    else if (p.type === "string") value = " = " + psValue(p.default.trim());
+    else if (p.type === "string[]") value = " = @(" + items.map(psValue).join(", ") + ")";
+    else if (p.type === "object[]") value = " = @()";
+    lines.push(pad + "[" + p.type + "] $" + p.name.trim() + value + (index < parameters.length - 1 ? "," : ""));
+    return lines.join("\n");
+  });
+}
+
+// How an administrator sets the parameters: the shared settings once, the rest on the test's row.
+export function buildConfigExample(state, data) {
+  const parameters = (state.parameters || []).map((raw) => resolveParameter(raw, data)).filter((p) => p.name.trim());
+  if (!parameters.length) return "";
+  const sample = (p) => {
+    const first = p.allowedValues[0];
+    if (p.type === "int") return WHOLE.test(String(p.default).trim()) ? Number(p.default) : 0;
+    if (p.type === "bool" || p.type === "switch") return true;
+    if (p.type === "string") return first || p.default.trim() || "value";
+    if (p.type === "object[]") return p.registered && settingOf(p, data).name === "EmergencyAccessAccounts" ? [{ Type: "User", UserPrincipalName: "BreakGlass1@contoso.com" }] : [{}];
+    if (p.kind === "Entra.Domain" || (p.registered && settingOf(p, data).kind === "Entra.Domain")) return ["contoso-old.com"];
+    return first ? [first] : splitList(p.default).length ? splitList(p.default) : ["value"];
+  };
+  const config = {};
+  const bound = parameters.filter((p) => p.setting.trim());
+  const own = parameters.filter((p) => !p.setting.trim());
+  if (bound.length) {
+    config.GlobalSettings = {};
+    bound.forEach((p) => (config.GlobalSettings[p.registered ? settingOf(p, data).name : p.setting.trim()] = sample(p)));
+  }
+  if (own.length) {
+    const values = {};
+    own.forEach((p) => (values[p.name.trim()] = sample(p)));
+    config.TestSettings = [{ Id: state.id.trim() || "CT.1001", Parameters: values }];
+  }
+  return JSON.stringify(config, null, 2);
+}
+
+// The registered settings the test binds under the setting's own name: New-MtTest -Setting writes these.
+export function scaffoldedSettings(state, data) {
+  return (state.parameters || [])
+    .filter((p) => settingOf(p, data) && p.name.trim() === settingOf(p, data).name)
+    .map((p) => settingOf(p, data).name);
+}
 
 export function splitList(text) {
   return String(text || "")
@@ -252,6 +403,8 @@ export function validate(state, data) {
     if (builtin && !declared.includes(service.name)) add("permission", "error", p + " names " + service.name + ", which is not one of the services of the test. Add it under Services.");
   });
 
+  validateParameters(state, data, add);
+
   // Lifecycle
   if (state.replacedBy.trim()) {
     if (!idPattern.test(state.replacedBy.trim())) add("replacedBy", "error", "ReplacedBy is the ID of another test.");
@@ -325,7 +478,9 @@ export function attributeEntries(state) {
   return entries;
 }
 
-export function buildPs1(state) {
+export function buildPs1(state, data) {
+  const lines = data ? parameterLines(state, data) : [];
+  const paramBlock = lines.length ? "param(\n" + lines.join("\n\n") + "\n    )" : "param()";
   const attribute = attributeEntries(state)
     .map(([name, text]) => "        " + name + " = " + text)
     .join(",\n");
@@ -343,7 +498,7 @@ ${attribute}
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    ${paramBlock}
 
     # Read the tenant state. The engine has already checked that the services above are connected,
     # and turns an uncaught error into an Error result, so no connection check or try/catch is needed.
@@ -400,6 +555,8 @@ export function buildCommand(state, data) {
   ].forEach(([name, value]) => value && parts.push("-" + name + " " + (/^[A-Za-z0-9-]+$/.test(value) ? value : quote(value))));
   if (state.mitreNone) parts.push("-Mitre None");
   else if (state.mitre.length) parts.push("-Mitre " + psList(state.mitre));
+  const settings = scaffoldedSettings(state, data);
+  if (settings.length) parts.push("-Setting " + psList(settings));
   parts.push("-Path " + folderFor(state, data));
   return parts.join(" `\n    ");
 }

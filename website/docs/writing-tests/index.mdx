@@ -47,6 +47,8 @@ Invoke-Maester -Path .
 `New-MtTest` writes to `./custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
 existing files unless you pass `-Force`. Only `-Id` and `-Title` are required; `-Product`, `-Feature`, `-Area`,
 `-ResourceType`, `-UserImpact`, `-ImplementationCost` and `-Mitre` fill in the attributes of the same name.
+`-Setting EmergencyAccessAccounts, ParkedDomains` adds a parameter for each shared setting the test needs (see
+[Values set once for many tests](#values-set-once-for-many-tests)).
 
 ## Files and layout
 
@@ -611,6 +613,11 @@ helpers that need it; a built-in test never calls `Get-MtSetting`. If another te
 
 A test or helper that does call `Get-MtSetting`, as custom tests and packs may, has the name of each setting it
 read recorded on its result (`SettingsRead`).
+
+The [test builder](/test-builder) has a step for parameters: it lists the shared settings, writes the bound
+parameter, checks each name against the [naming rules](./attribute-rubric.md#parameter-names) as you type, and
+shows the `maester-config.json` an administrator would write. `New-MtTest -Setting <name>` writes the same
+bound parameter.
 
 Bind a parameter only to a fact about the tenant or a choice the organisation makes once. A value a benchmark
 sets stays a parameter of that test. Read [Parameters bound to a setting](./attribute-rubric.md#parameters-bound-to-a-setting)

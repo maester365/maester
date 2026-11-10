@@ -11,6 +11,8 @@
 # and may have:
 #   Kind           What a string holds, from MaesterParameterKinds.psd1, so a UI can offer a picker.
 #   AllowedValues  The values a string or string[] setting accepts.
+#   Role           'Connection' for a setting that a connect command or a data helper reads. A test does not
+#                  bind it, and the test builder does not offer it.
 #   Items          For object[]: Properties (the names an item may have, each with its allowed values or
 #                  $null for any) and RequireAny (an item needs at least one of these).
 #
@@ -30,11 +32,11 @@
         ParkedDomains                     = @{ Type = 'string[]'; Kind = 'Entra.Domain'; Default = @(); Sensitive = $false; Description = 'Accepted domains that never send email. The email authentication checks expect them to deny all mail.' }
         DefenderEndpointPolicyFiltering   = @{ Type = 'string'; AllowedValues = @('All', 'IncludeUnassigned', 'OnlyAssigned'); Default = 'OnlyAssigned'; Sensitive = $false; Description = 'Which Defender for Endpoint policies the Defender checks read: All, IncludeUnassigned or OnlyAssigned.' }
         DefenderEndpointComplianceLogic   = @{ Type = 'string'; AllowedValues = @('EffectivePolicy', 'AllPolicies', 'AnyPolicy'); Default = 'EffectivePolicy'; Sensitive = $false; Description = 'How the Defender for Endpoint checks combine policies: EffectivePolicy, AllPolicies or AnyPolicy.' }
-        XspmExternalDataUris              = @{ Type = 'object'; Default = $null; Sensitive = $false; Description = 'HTTPS mirrors of the data sources the XSPM Advanced Hunting queries read: EntraDirectoryRoles, MicrosoftApps, ApiPermissions, ArmApiRequests.' }
-        DataverseEnvironmentUrl           = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'URL of the Dataverse environment that the Copilot Studio checks read.' }
-        AzureDevOpsOrganization           = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.' }
-        GitHubOrganization                = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
-        GitHubApiBaseUri                  = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
-        GitHubApiVersion                  = @{ Type = 'string'; Default = '2022-11-28'; Sensitive = $false; Description = 'GitHub REST API version.' }
+        XspmExternalDataUris              = @{ Type = 'object'; Role = 'Connection'; Default = $null; Sensitive = $false; Description = 'HTTPS mirrors of the data sources the XSPM Advanced Hunting queries read: EntraDirectoryRoles, MicrosoftApps, ApiPermissions, ArmApiRequests.' }
+        DataverseEnvironmentUrl           = @{ Type = 'string'; Role = 'Connection'; Default = ''; Sensitive = $false; Description = 'URL of the Dataverse environment that the Copilot Studio checks read.' }
+        AzureDevOpsOrganization           = @{ Type = 'string'; Role = 'Connection'; Default = ''; Sensitive = $false; Description = 'Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.' }
+        GitHubOrganization                = @{ Type = 'string'; Role = 'Connection'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
+        GitHubApiBaseUri                  = @{ Type = 'string'; Role = 'Connection'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
+        GitHubApiVersion                  = @{ Type = 'string'; Role = 'Connection'; Default = '2022-11-28'; Sensitive = $false; Description = 'GitHub REST API version.' }
     }
 }

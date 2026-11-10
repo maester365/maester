@@ -2,23 +2,8 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
-import {
-  NEW,
-  emptyState,
-  exampleState,
-  functionNameFor,
-  validate,
-  buildPs1,
-  buildMd,
-  buildCommand,
-  folderFor,
-  addByHand,
-  registryChanges,
-  withPrefix,
-  splitList,
-  parsePermission,
-} from "./generate";
-import { Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
+import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
@@ -329,6 +314,143 @@ const productSummary = (products) => {
   const names = products.slice(0, 3).map((p) => p.name);
   return "In " + names.join(", ") + (products.length > 3 ? " and " + (products.length - 3) + " more" : "");
 };
+
+// Parameters: the values an administrator can change. One card per parameter. A parameter bound to a registered
+// setting takes its type, default and allowed values from the registry, so only its name and description are typed.
+function ParameterBuilder({ parameters, builtin, onChange }) {
+  const update = (index, patch) => onChange(parameters.map((p, i) => (i === index ? { ...p, ...patch } : p)));
+  const remove = (index) => onChange(parameters.filter((_, i) => i !== index));
+  const bindable = data.settings.filter((s) => !s.connection && s.type !== "object");
+  const unused = bindable.filter((s) => !parameters.some((p) => settingOf(p, data) === s));
+  return (
+    <div className={styles.stack}>
+      <datalist id="parameter-names">
+        {data.parameterNames.map((n) => (
+          <option key={n.name} value={n.name}>
+            {n.type}
+          </option>
+        ))}
+      </datalist>
+      {parameters.map((raw, index) => {
+        const p = resolveParameter(raw, data);
+        const setting = settingOf(raw, data);
+        const used = data.parameterNames.find((n) => n.name.toLowerCase() === p.name.trim().toLowerCase());
+        return (
+          <div className={styles.group} key={index}>
+            <div className={styles.paramGrid}>
+              <label className={styles.miniField}>
+                <span>Name</span>
+                <Input
+                  id={index === 0 ? "input-parameters" : undefined}
+                  list="parameter-names"
+                  placeholder="MaximumInactiveDays"
+                  value={raw.name}
+                  onChange={(e) => update(index, { name: e.target.value.replace(/\s/g, "") })}
+                />
+              </label>
+              <div className={styles.miniField}>
+                <span>Type</span>
+                {setting ? (
+                  <div>
+                    <Badge>{setting.type}</Badge>
+                  </div>
+                ) : (
+                  <Select value={raw.type} onValueChange={(v) => update(index, { type: v })} placeholder="Type" options={PARAMETER_TYPES.map((t) => ({ value: t, label: t }))} />
+                )}
+              </div>
+            </div>
+            <label className={styles.miniField}>
+              <span>Description</span>
+              <Input placeholder="One line: what the value changes" value={raw.description} onChange={(e) => update(index, { description: e.target.value.replace(/[\r\n]/g, " ") })} />
+            </label>
+            {setting ? (
+              <p className={styles.hint}>
+                Bound to the setting <code>{setting.name}</code>, which an administrator sets once in <code>GlobalSettings</code>. The settings registry gives it its type
+                {p.default ? ", its default (" + p.default + ")" : ""}
+                {p.allowedValues.length ? " and its allowed values (" + p.allowedValues.join(", ") + ")" : ""}.
+              </p>
+            ) : (
+              <>
+                {raw.type === "switch" ? (
+                  <p className={styles.hint}>A switch is off by default. Name it after what turning it on does.</p>
+                ) : (
+                  <div className={styles.paramGrid}>
+                    <label className={styles.miniField}>
+                      <span>Default</span>
+                      <Input
+                        placeholder={raw.type === "int" ? "90" : raw.type === "bool" ? "true or false" : raw.type === "string[]" ? "Comma-separated; empty for none" : "Empty for none"}
+                        value={raw.default}
+                        onChange={(e) => update(index, { default: e.target.value })}
+                      />
+                    </label>
+                    {raw.type === "int" && (
+                      <>
+                        <label className={styles.miniField}>
+                          <span>Lowest allowed</span>
+                          <Input placeholder="1" value={raw.min} onChange={(e) => update(index, { min: e.target.value })} />
+                        </label>
+                        <label className={styles.miniField}>
+                          <span>Highest allowed</span>
+                          <Input placeholder="365" value={raw.max} onChange={(e) => update(index, { max: e.target.value })} />
+                        </label>
+                      </>
+                    )}
+                    {(raw.type === "string" || raw.type === "string[]") && (
+                      <>
+                        <label className={styles.miniField}>
+                          <span>Allowed values</span>
+                          <Input placeholder="Comma-separated; empty for any" value={raw.allowed} onChange={(e) => update(index, { allowed: e.target.value })} />
+                        </label>
+                        <div className={styles.miniField}>
+                          <span>Holds</span>
+                          <Select
+                            value={raw.kind || "none"}
+                            onValueChange={(v) => update(index, { kind: v === "none" ? "" : v })}
+                            placeholder="Holds"
+                            options={[{ value: "none", label: "Plain text" }].concat(data.parameterKinds.map((k) => ({ value: k, label: k })))}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+                {!builtin && (
+                  <label className={styles.miniField}>
+                    <span>Shared setting of your own (optional)</span>
+                    <Input placeholder="Contoso.Regions" value={raw.setting} onChange={(e) => update(index, { setting: e.target.value.trim() })} />
+                  </label>
+                )}
+              </>
+            )}
+            {used && !setting && used.type === p.type && (
+              <p className={styles.hint}>
+                {used.tests} built-in {used.tests === 1 ? "test uses" : "tests use"} <code>{used.name}</code>. Reuse the name only if it means the same thing here.
+              </p>
+            )}
+            <div>
+              <Button variant="ghost" onClick={() => remove(index)}>
+                <DeleteIcon />
+                Remove {raw.name.trim() || "parameter"}
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+      <div className={styles.groupRow}>
+        <Select
+          value=""
+          onValueChange={(v) => onChange([...parameters, parameterForSetting(data.settings.find((s) => s.name === v))])}
+          placeholder="Add a shared setting"
+          options={unused.map((s) => ({ value: s.name, label: s.name, hint: s.description }))}
+        />
+        <Button onClick={() => onChange([...parameters, { ...emptyParameter }])}>
+          <PlusIcon />
+          Add a parameter
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 // Permission: each box is one thing the test needs (all of them); the permissions inside a box are alternatives
 // (any one of them), least privileged first.
@@ -682,6 +804,9 @@ export default function TestBuilder() {
     </>
   );
 
+  const configExample = buildConfigExample(state, data);
+  const handParameters = (state.parameters || []).filter((p) => p.name.trim()).length - scaffoldedSettings(state, data).length;
+
   const tabs = [
     ["ps1", "Test." + id + ".ps1"],
     ["md", "Test." + id + ".md"],
@@ -1007,6 +1132,33 @@ export default function TestBuilder() {
         </section>
 
         <section className={styles.section}>
+          <h2>What can an administrator change?</h2>
+          <Field
+            id="parameters"
+            label="Parameters"
+            hint="A value an administrator may need to change: a threshold, a list of exceptions, a choice. Leave this empty when the check has nothing to tune. Every parameter has a default, so the test runs with no configuration."
+            rubric={R["Parameter names"]}
+            rubricTitle="How to name a parameter, and when to bind a setting"
+            problems={problems}
+            notInList={
+              <p>
+                A shared setting is a fact about the tenant or a choice the organization makes once, such as its emergency access accounts or parked domains. A new one is added to <RepoFile path="powershell/assets/MaesterSettings.psd1" /> in the same pull request. A value a benchmark sets, such as a lockout threshold, is never a shared setting: keep it as a parameter of the test with the benchmark's value as the default.
+              </p>
+            }
+          >
+            <ParameterBuilder parameters={state.parameters || []} builtin={builtin} onChange={(v) => set({ parameters: v })} />
+          </Field>
+          {configExample && (
+            <div className={styles.field}>
+              <p className={styles.hint}>
+                How an administrator sets {(state.parameters || []).length === 1 ? "it" : "them"} in <code>maester-config.json</code>. A shared setting is set once under <code>GlobalSettings</code>, and the test's row under <code>TestSettings</code> can still override it for this test.
+              </p>
+              <CopyBlock text={configExample} language="json" />
+            </div>
+          )}
+        </section>
+
+        <section className={styles.section}>
           <h2>Lifecycle and credit</h2>
           <Field id="lifecycle" name="Lifecycle" label="Lifecycle" hint={P.Lifecycle.description} rubric={R["Lifecycle and ReplacedBy"]} problems={problems}>
             <RadioCards label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v }))} onValueChange={(v) => set({ lifecycle: v })} />
@@ -1070,7 +1222,7 @@ export default function TestBuilder() {
             <p className={styles.where}>
               Save as <code>{folder + "/Test." + id + ".ps1"}</code>
             </p>
-            <CopyBlock text={buildPs1(state)} language="powershell" />
+            <CopyBlock text={buildPs1(state, data)} language="powershell" />
           </TabsContent>
           <TabsContent value="md">
             <p className={styles.where}>
@@ -1091,6 +1243,11 @@ export default function TestBuilder() {
                   </span>
                 ))}
                 . Copy those lines from the <code>.ps1</code> tab.
+              </p>
+            )}
+            {handParameters > 0 && (
+              <p className={styles.where}>
+                <code>New-MtTest -Setting</code> writes the parameters bound to a shared setting. Copy the {handParameters === 1 ? "other parameter" : "other " + handParameters + " parameters"} of the <code>param()</code> block from the <code>.ps1</code> tab.
               </p>
             )}
           </TabsContent>

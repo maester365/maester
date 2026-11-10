@@ -313,6 +313,33 @@ Describe 'Settings a pack declares' {
     }
 }
 
+Describe 'New-MtTest -Setting' {
+    It 'Writes a parameter bound to each setting, with the type, default and allowed values of the registry' {
+        $folder = Join-Path $TestDrive 'scaffold-setting'
+        $null = New-MtTest -Id CONTOSO.2001 -Title 'Example check' -Service None -Setting EmergencyAccessAccounts, parkeddomains, DefenderEndpointComplianceLogic -Path $folder
+        $text = Get-Content (Join-Path $folder 'Test.CONTOSO.2001.ps1') -Raw
+        $text | Should -Match "\[ValidateSet\('EffectivePolicy', 'AllPolicies', 'AnyPolicy'\)\]\s+\[string\] \`$DefenderEndpointComplianceLogic = 'EffectivePolicy'"
+        $test = Get-MtTest -Path $folder
+        $test.IsValid | Should -BeTrue
+        $test.Parameters.Name | Should -Be @('EmergencyAccessAccounts', 'ParkedDomains', 'DefenderEndpointComplianceLogic')
+        $test.Parameters.Setting | Should -Be @('EmergencyAccessAccounts', 'ParkedDomains', 'DefenderEndpointComplianceLogic')
+        $test.Parameters.Type | Should -Be @('object[]', 'string[]', 'string')
+        ($test.Parameters | Where-Object Name -EQ 'ParkedDomains').Kind | Should -Be 'Entra.Domain'
+        @($test.Parameters | Where-Object { -not $_.Description }) | Should -HaveCount 0
+    }
+
+    It 'Refuses <Case> and writes no file' -ForEach @(
+        @{ Case = 'a setting that is not registered'; Setting = 'NoSuchSetting'; Message = '*not a registered setting*' }
+        @{ Case = 'a connection setting'; Setting = 'GitHubOrganization'; Message = '*connection setting*' }
+        @{ Case = 'a setting a parameter cannot hold'; Setting = 'XspmExternalDataUris'; Message = '*connection setting*' }
+    ) {
+        $folder = Join-Path $TestDrive ('scaffold-bad-' + [guid]::NewGuid().ToString('n'))
+        $null = New-MtTest -Id CONTOSO.2002 -Title 'Example check' -Service None -Setting $Setting -Path $folder -ErrorVariable problems -ErrorAction SilentlyContinue
+        "$problems" | Should -BeLike $Message
+        Test-Path (Join-Path $folder 'Test.CONTOSO.2002.ps1') | Should -BeFalse
+    }
+}
+
 Describe 'Settings a test reads while it runs' {
     It 'Records the settings read with Get-MtSetting on the result' {
         $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'reads') -Id 'READ.1' -Body "`$null = Get-MtSetting -Name 'GitHubOrganization'; `$null = Get-MtSetting 'Contoso.Regions' -Default @(); `$null = Get-MtSetting -Name 'GitHubOrganization'; `$true"

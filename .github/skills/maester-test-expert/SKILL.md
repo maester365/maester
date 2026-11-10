@@ -111,6 +111,9 @@ tests, so for a built-in check finish what it leaves:
   with Maester the warning is expected; ignore it.
 - It names the function after the ID (`Test-MT1234`). Rename it to say what it checks
   (`Test-MtCaBlockDeviceCodeFlow`), with the `Mt` prefix and an approved verb.
+- `-Setting EmergencyAccessAccounts` (one or more registered settings) writes the bound parameter for each, with
+  the registry's type, default and allowed values. Other parameters are added by hand; the
+  [test builder](https://maester.dev/test-builder) writes them and checks their names.
 - It does not write `Author`. Add the contributor's GitHub handle; ask if you do not know it, and do not take it
   from the git email address.
 

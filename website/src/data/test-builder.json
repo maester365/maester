@@ -18240,6 +18240,331 @@
       }
     ]
   },
+  "settings": [
+    {
+      "name": "AzureDevOpsOrganization",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.",
+      "connection": true
+    },
+    {
+      "name": "DataverseEnvironmentUrl",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "URL of the Dataverse environment that the Copilot Studio checks read.",
+      "connection": true
+    },
+    {
+      "name": "DefenderEndpointComplianceLogic",
+      "type": "string",
+      "kind": null,
+      "default": "EffectivePolicy",
+      "allowedValues": [
+        "EffectivePolicy",
+        "AllPolicies",
+        "AnyPolicy"
+      ],
+      "description": "How the Defender for Endpoint checks combine policies: EffectivePolicy, AllPolicies or AnyPolicy.",
+      "connection": false
+    },
+    {
+      "name": "DefenderEndpointPolicyFiltering",
+      "type": "string",
+      "kind": null,
+      "default": "OnlyAssigned",
+      "allowedValues": [
+        "All",
+        "IncludeUnassigned",
+        "OnlyAssigned"
+      ],
+      "description": "Which Defender for Endpoint policies the Defender checks read: All, IncludeUnassigned or OnlyAssigned.",
+      "connection": false
+    },
+    {
+      "name": "EmergencyAccessAccounts",
+      "type": "object[]",
+      "kind": null,
+      "default": [],
+      "allowedValues": [],
+      "description": "Emergency access (break glass) accounts and groups. Checks of Conditional Access, privileged roles and sign-in activity treat them as the exception they are.",
+      "connection": false
+    },
+    {
+      "name": "GitHubApiBaseUri",
+      "type": "string",
+      "kind": null,
+      "default": "https://api.github.com",
+      "allowedValues": [],
+      "description": "Base URI of the GitHub REST API.",
+      "connection": true
+    },
+    {
+      "name": "GitHubApiVersion",
+      "type": "string",
+      "kind": null,
+      "default": "2022-11-28",
+      "allowedValues": [],
+      "description": "GitHub REST API version.",
+      "connection": true
+    },
+    {
+      "name": "GitHubOrganization",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "GitHub organization that the GitHub checks read.",
+      "connection": true
+    },
+    {
+      "name": "ParkedDomains",
+      "type": "string[]",
+      "kind": "Entra.Domain",
+      "default": [],
+      "allowedValues": [],
+      "description": "Accepted domains that never send email. The email authentication checks expect them to deny all mail.",
+      "connection": false
+    },
+    {
+      "name": "XspmExternalDataUris",
+      "type": "object",
+      "kind": null,
+      "default": null,
+      "allowedValues": [],
+      "description": "HTTPS mirrors of the data sources the XSPM Advanced Hunting queries read: EntraDirectoryRoles, MicrosoftApps, ApiPermissions, ArmApiRequests.",
+      "connection": true
+    }
+  ],
+  "parameterKinds": [
+    "Azure.Resource",
+    "Azure.ResourceGroup",
+    "Azure.Subscription",
+    "Entra.Application",
+    "Entra.ConditionalAccessPolicy",
+    "Entra.DirectoryRole",
+    "Entra.Domain",
+    "Entra.Group",
+    "Entra.NamedLocation",
+    "Entra.ServicePrincipal",
+    "Entra.User"
+  ],
+  "parameterNames": [
+    {
+      "name": "AcceptedBannerTexts",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AllDevices",
+      "type": "switch",
+      "tests": 2
+    },
+    {
+      "name": "AllDomains",
+      "type": "switch",
+      "tests": 1
+    },
+    {
+      "name": "AllowedLicenseSkuPartNumbers",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AllowedPolicies",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "ComplianceLogic",
+      "type": "string",
+      "tests": 24
+    },
+    {
+      "name": "EmergencyAccessAccounts",
+      "type": "object[]",
+      "tests": 8
+    },
+    {
+      "name": "EvaluationPeriodDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "ExpiringWithinDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MailboxServicePlanIds",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "MaximumActiveSecrets",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumDevicesPerUser",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumExternalRecipientsPerHour",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumIdleTimeoutHours",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumIdleTimeoutMinutes",
+      "type": "int",
+      "tests": 3
+    },
+    {
+      "name": "MaximumInactiveDays",
+      "type": "int",
+      "tests": 7
+    },
+    {
+      "name": "MaximumInactivityMinutes",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumInstallDelayDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumInstanceDurationDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumInternalRecipientsPerHour",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumLifetimeDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumLockoutThreshold",
+      "type": "int",
+      "tests": 4
+    },
+    {
+      "name": "MaximumPasswordAgeDays",
+      "type": "int",
+      "tests": 3
+    },
+    {
+      "name": "MaximumPatchLevelAgeDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumRecipientsPerDay",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumSignInFrequencyDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumSignInFrequencyHours",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumValidationAgeDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumValidityDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MinimumIPv4PrefixLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MinimumLockoutDurationSeconds",
+      "type": "int",
+      "tests": 4
+    },
+    {
+      "name": "MinimumOsVersion",
+      "type": "string",
+      "tests": 1
+    },
+    {
+      "name": "MinimumPasscodeLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MinimumPasswordLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "PolicyFiltering",
+      "type": "string",
+      "tests": 24
+    },
+    {
+      "name": "RecentModificationDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "RequiredLogCategories",
+      "type": "string[]",
+      "tests": 2
+    },
+    {
+      "name": "RequiredPolicyTypes",
+      "type": "string[]",
+      "tests": 2
+    },
+    {
+      "name": "RequiredRecipients",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "Selector",
+      "type": "string",
+      "tests": 2
+    },
+    {
+      "name": "SkipHybridJoinCheck",
+      "type": "switch",
+      "tests": 2
+    },
+    {
+      "name": "Strict",
+      "type": "switch",
+      "tests": 3
+    }
+  ],
   "rubric": {
     "Rate the test, not your tenant": "Rate every value for a typical organization that fails the test, using the fix the test's own Markdown file\nrecommends. Do not rate for the best case, the worst case or one tenant you know. When two values fit, choose the\nlower one for `Severity`, `UserImpact` and `ImplementationCost`. A reader should be able to see the reason for\neach value in the test's description and remediation text.",
     "Product": "The product where the fix is made. One value.\n\n- Use the product whose admin surface holds the setting, not every product the test reads from.\n- Tests in a product folder (`tests/maester/entra`, `tests/cisa/exchange`) use that folder's product.\n- A product the test only reads from, or a licence it needs, is not a second product. `Service` and `License`\n  already say that.",

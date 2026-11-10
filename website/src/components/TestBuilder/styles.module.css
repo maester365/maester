@@ -443,3 +443,8 @@ textarea.input {
 .iconButton svg { width: 0.85rem; height: 0.85rem; }
 /* The status region stays in the page for screen readers; empty, it takes no room in the output column. */
 .status:empty { margin-top: -0.75rem; }
+
+/* Parameters: labelled inputs that sit side by side when there is room. */
+.paramGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.5rem; align-items: end; }
+.miniField { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; font-size: 0.78rem; color: var(--ifm-color-emphasis-700); }
+.miniField > span:first-child { font-weight: 600; }
