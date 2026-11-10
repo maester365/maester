@@ -7,6 +7,8 @@ At a minimum, the following alerts SHALL be enabled:
 - Tenant restricted from sending email.
 - A potentially malicious URL click was detected.
 
+The check always requires the six baseline alerts listed above. It also checks **A potentially malicious URL click was detected** when that alert is returned by `Get-ProtectionAlert`; ScubaGear likewise includes it only when the alert is present.
+
 Rationale: Potentially malicious or service impacting events may go undetected without a means of detecting these events. Setting up a mechanism to alert administrators to events listed above draws attention to them to help minimize impact to users and the agency.
 
 #### Remediation action:
@@ -21,7 +23,7 @@ Rationale: Potentially malicious or service impacting events may go undetected w
     - Messages have been delayed.
     - Tenant restricted from sending unprovisioned email.
     - Tenant restricted from sending email.
-    - A potentially malicious URL click was detected.
+    - A potentially malicious URL click was detected, if returned by Exchange Online.
 5. Click the pencil icon from the top menu.
 6. Select the **Enable selected policies** action from the **Bulk actions** menu.
 

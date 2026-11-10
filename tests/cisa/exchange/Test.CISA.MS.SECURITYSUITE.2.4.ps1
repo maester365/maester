@@ -27,7 +27,7 @@
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.001'),
         Control = 'cisa-scuba:MS.SECURITYSUITE.2.4',
-        Service = ('ExchangeOnline', 'Graph'),
+        Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'
     )]
