@@ -1,6 +1,4 @@
-﻿param([string] $MarkdownCapturePath)
-
-BeforeDiscovery {
+﻿BeforeDiscovery {
     $checks = @(
         @{ Id = 'MT.1200'; Command = 'Test-MtEntraAgentIdentityOrphaned' }
         @{ Id = 'MT.1201'; Command = 'Test-MtEntraAgentUserOrphaned' }
@@ -39,7 +37,6 @@ BeforeDiscovery {
 Describe 'Entra Agent ID result Markdown' {
     BeforeAll {
         Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
-        $script:AgentMarkdownCaptures = [System.Collections.Generic.List[object]]::new()
     }
 
     BeforeEach {
@@ -128,21 +125,8 @@ Describe 'Entra Agent ID result Markdown' {
         }
     }
 
-    AfterEach {
-        $script:AgentMarkdownCaptures.Add([pscustomobject]@{
-            Id = $script:AgentMarkdownTest.Id; Shape = $script:AgentMarkdownTest.Shape
-            ExpectedText = ($script:AgentMarkdownTest.Text -replace '\r\n|\r|\n', ' ')
-            Markdown = $script:AgentMarkdownTest.Result
-        })
-        Remove-Variable -Name AgentMarkdownTest -Scope Script -ErrorAction SilentlyContinue
-    }
-
     AfterAll {
-        # Optional evidence for checking these exact results with the report's Markdown renderer.
-        if ($MarkdownCapturePath) {
-            $script:AgentMarkdownCaptures | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $MarkdownCapturePath -Encoding utf8
-        }
-        Remove-Variable -Name AgentMarkdownCaptures -Scope Script -ErrorAction SilentlyContinue
+        Remove-Variable -Name AgentMarkdownTest -Scope Script -ErrorAction SilentlyContinue
     }
 
     It '<Id> keeps a <Shape> literal in findings' -ForEach $findingCases {
