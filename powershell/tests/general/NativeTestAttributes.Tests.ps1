@@ -164,8 +164,8 @@ Describe 'Attributes of the built-in tests' {
             }
 
             It 'Finds the suites that declare frameworks' {
-                @($script:frameworkSuites.Id | Sort-Object) | Should -Be @('ASD', 'CIS', 'CISA')
-                @($script:requirementsOf.Keys | Sort-Object) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'essential-eight', 'ism')
+                @($script:frameworkSuites.Id | Sort-Object) | Should -Be @('ASD', 'CIS', 'CISA', 'DISA')
+                @($script:requirementsOf.Keys | Sort-Object) | Should -Be @('cis-github', 'cis-m365', 'cisa-scuba', 'disa-stig-entra-id', 'disa-stig-intune-desktop', 'disa-stig-intune-mdm', 'essential-eight', 'ism')
             }
 
             It 'Names an existing requirement when a Control refers to a framework shipped with Maester' {

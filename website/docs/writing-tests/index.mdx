@@ -99,9 +99,10 @@ the rest keeps the benchmark's own punctuation, so a reader can search for the I
 | `CIS.M365.5.2.2.2` | `CIS.M365.` | Recommendation `5.2.2.2` of the CIS Microsoft 365 Foundations Benchmark |
 | `CISA.MS.AAD.3.1` | `CISA.` | SCuBA policy `MS.AAD.3.1v1`, without its version suffix |
 | `ASD.ISM-1504` | `ASD.` | ISM control `ISM-1504`, written with a hyphen by ASD |
+| `DISA.V-270233` | `DISA.` | Rule `V-270233` of a DISA STIG (vulnerability IDs are unique across STIGs) |
 
 Use a prefix of your own. These prefixes belong to the tests that ship with Maester: `MT.`, `CISA.`, `CIS.`,
-`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `ASD.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
+`EIDSCA.`, `ORCA.`, `AD-`, `AZDO.`, `ASD.`, `DISA.` and `MT1060.`. `MP.` is reserved for Maester Packs, third-party test packs
 planned for a later release. A custom test with one of these prefixes still runs, with a
 warning. A custom test that uses the exact ID of a built-in test is not run at all, and the built-in runs
 instead. To change how a built-in test behaves, set its parameters or severity in the
@@ -376,7 +377,7 @@ The names come from the service registry:
 | `SharePointOnline` | `SharePoint` | `Connect-Maester -Service SharePointOnline` |
 | `Teams` | | `Connect-Maester -Service Teams` |
 | `Dataverse` | | `Connect-Maester -Service Dataverse`; counts as connected when Graph is |
-| `AzureDevOps` | | `Connect-ADOPS` |
+| `AzureDevOps` | | `Connect-Maester -Service AzureDevOps` (or `Connect-ADOPS`) |
 | `GitHub` | | `Connect-Maester -Service GitHub` |
 | `ActiveDirectory` | `AD` | `Connect-Maester -Service ActiveDirectory` |
 
@@ -759,6 +760,9 @@ The frameworks that ship with Maester, with the key to use in `Control`:
 | `cisa-scuba` | CISA SCuBA Secure Configuration Baselines for Microsoft 365 | [tests/cisa/frameworks/cisa-scuba.json](https://github.com/maester365/maester/blob/main/tests/cisa/frameworks/cisa-scuba.json) | [tests/cisa/suite.json](https://github.com/maester365/maester/blob/main/tests/cisa/suite.json) |
 | `essential-eight` | ASD Essential Eight maturity model (each requirement is an ISM control; `Level` ML1 to ML3, `Strategy`) | [tests/asd/frameworks/essential-eight.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/essential-eight.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
 | `ism` | ASD Information security manual (ISM) (`Guideline`, `Section`, `Applicability`) | [tests/asd/frameworks/ism.json](https://github.com/maester365/maester/blob/main/tests/asd/frameworks/ism.json) | [tests/asd/suite.json](https://github.com/maester365/maester/blob/main/tests/asd/suite.json) |
+| `disa-stig-entra-id` | DISA Microsoft Entra ID STIG (`Category` CAT I to CAT III, `RuleId`, `StigId`) | [tests/disa/frameworks/disa-stig-entra-id.json](https://github.com/maester365/maester/blob/main/tests/disa/frameworks/disa-stig-entra-id.json) | [tests/disa/suite.json](https://github.com/maester365/maester/blob/main/tests/disa/suite.json) |
+| `disa-stig-intune-mdm` | DISA Microsoft Intune MDM Service Desktop and Mobile STIG | [tests/disa/frameworks/disa-stig-intune-mdm.json](https://github.com/maester365/maester/blob/main/tests/disa/frameworks/disa-stig-intune-mdm.json) | [tests/disa/suite.json](https://github.com/maester365/maester/blob/main/tests/disa/suite.json) |
+| `disa-stig-intune-desktop` | DISA Microsoft Intune MDM Service Desktop STIG | [tests/disa/frameworks/disa-stig-intune-desktop.json](https://github.com/maester365/maester/blob/main/tests/disa/frameworks/disa-stig-intune-desktop.json) | [tests/disa/suite.json](https://github.com/maester365/maester/blob/main/tests/disa/suite.json) |
 
 Open a file to see the requirement IDs you can reference and the version Maester implements. NIST SP 800-53 has
 no framework file; its control IDs are in

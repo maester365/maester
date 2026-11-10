@@ -233,24 +233,32 @@ Use `Disconnect-Maester` or `Disconnect-MtGitHub` to clear the in-memory GitHub 
 Maester includes an *optional* set of Azure DevOps security tests (AZDO.*).
 These tests require the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module and an active connection to your Azure DevOps organization.
 
-Connecting to Azure DevOps is **not** part of `Connect-Maester` and must be done separately:
+Maester does not install `ADOPS`. Install it once, then connect with `Connect-Maester`:
 
 ```powershell
 Install-Module ADOPS -Scope CurrentUser
-Import-Module ADOPS -ArgumentList $true
-Connect-ADOPS -Organization <your-organization>
+Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization <your-organization>
 ```
 
-Some of the endpoints the tests call are ones `ADOPS` treats as unsupported. `-ArgumentList $true` allows them.
-Instead, you can set `$AdoPSAllowInsecureAPIs = $true` before you import the module. See
-[AZDOPS issue 248](https://github.com/AZDOPS/AZDOPS/issues/248).
+Azure DevOps is not included in `-Service All` and must be named explicitly. If an Az context exists (for example after `Connect-Maester -Service Azure` or `Connect-AzAccount`), Maester requests an Azure DevOps token and passes it to `Connect-ADOPS`. Otherwise `Connect-ADOPS` signs you in interactively. ADOPS verifies access to the organization.
 
-The tests need the **Project-Scoped Users** role at the organization level, at least. Some need more, see
-[Connect-Maester advanced](connect-maester-advanced.mdx).
+Instead of passing `-AzureDevOpsOrganization`, add the organization to `GlobalSettings` in `maester-config.json`. Maester discovers the config when connecting, even before the first test run:
+
+```json
+{
+  "GlobalSettings": {
+    "AzureDevOpsOrganization": "contoso"
+  }
+}
+```
+
+When an organization is given, connecting replaces the current ADOPS session, so a failed sign-in does not retain the previous organization. When no organization is given and a working `Connect-ADOPS` session already exists, Maester keeps that session and reports its organization in the connection summary. Use `Disconnect-Maester` to disconnect ADOPS and clear Maester's connection status.
+
+If `ADOPS` is not installed, `Connect-Maester` warns you and still connects the other services you asked for. If Azure DevOps was the only service you asked for, it writes an error. You can still connect with `Connect-ADOPS -Organization <your-organization>` yourself.
 
 If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
 
-See the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
+See the [installation guide](../installation.md#azure-devops) for the permissions the tests need, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 

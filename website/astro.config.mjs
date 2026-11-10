@@ -117,7 +117,7 @@ export default defineConfig({
 								{ label: 'Many tenants', items: [{ autogenerate: { directory: 'docs/multi-tenant' } }] },
 								{ label: 'Active Directory', items: ['docs/advanced/active-directory'] },
 								{ label: 'Write your own tests', items: [{ autogenerate: { directory: 'docs/writing-tests' } }, { label: 'Test builder', link: '/test-builder' }] },
-								{ label: 'Community', items: ['docs/watch', 'docs/contributing', 'docs/agents-and-skills', 'docs/faq'] },
+								{ label: 'Community', items: ['docs/watch', 'docs/community-projects', 'docs/contributing', 'docs/agents-and-skills', 'docs/faq'] },
 							],
 						},
 						{
@@ -134,6 +134,7 @@ export default defineConfig({
 										{ label: 'CIS', link: '/docs/tests/cis' },
 										{ label: 'CISA SCuBA', link: '/docs/tests/cisa' },
 										{ label: 'ASD Essential Eight', link: '/docs/tests/asd' },
+										{ label: 'DISA STIGs', link: '/docs/tests/disa' },
 										{ label: 'Entra ID SCA (EIDSCA)', link: '/docs/tests/eidsca' },
 										{ label: 'ORCA', link: '/docs/tests/orca' },
 										{ label: 'Active Directory', link: '/docs/tests/ad' },

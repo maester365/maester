@@ -86,9 +86,10 @@ The Security & Compliance tests connect with `Connect-IPPSSession`, which comes 
 
 ### Azure DevOps
 
-The Azure DevOps tests need the **Project-Scoped Users** role at the organization level, at least. Some of the
-endpoints they call are ones the `ADOPS` module treats as unsupported, so allow them when you import the module (see
-[Connect to Azure DevOps](connect-maester/readme.md#connect-to-azure-devops-optional)).
+The Azure DevOps tests need the **Project-Scoped Users** role at the organization level, at least. Some need more,
+see [Connect-Maester advanced](connect-maester/connect-maester-advanced.mdx). Connect with
+`Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization <your-organization>`, see
+[Connect to Azure DevOps](connect-maester/readme.md#connect-to-azure-devops-optional).
 
 ## Pester
 

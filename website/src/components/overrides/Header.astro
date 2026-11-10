@@ -1,54 +1,109 @@
 ---
-// The docs header: logo, the five topics as tabs, search, the version picker, and the site links.
+// The docs header: the site's own top bar, exactly as on the other pages, then a second row with the docs topics as
+// tabs and search and the version picker on the right. On phones the second row is hidden and search moves up.
 import Search from '@astrojs/starlight/components/Search.astro';
-import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
-import SocialIcons from '@astrojs/starlight/components/SocialIcons.astro';
-import ThemeToggle from '../ThemeToggle.astro';
+import SiteHeaderBar from '../SiteHeaderBar.astro';
 import VersionPicker from '../VersionPicker.astro';
+import { pagePath } from '../../lib/site-nav';
 
-// The 2.x archive has its own sidebar but no tab.
-const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !topic.link.startsWith('/docs/2.x'));
+// The 2.x archive has its own sidebar but no tab, and Packs and Blog are in the top bar already.
+const hidden = ['/docs/2.x', '/docs/packs', '/blog'];
+const allTopics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !hidden.some((link) => topic.link.startsWith(link)));
+// Two pages of the Guides that people go to often enough to have a tab of their own. On them, their tab is the one
+// marked, not Guides.
+const path = pagePath(Astro.url.pathname);
+const pageTabs = [
+	{ label: 'Write tests', link: '/docs/writing-tests/first-custom-test', match: '/docs/writing-tests' },
+	{ label: 'Contributing', link: '/docs/contributing', match: '/docs/contributing' },
+].map((tab) => ({ ...tab, isCurrent: path === tab.match || path.startsWith(`${tab.match}/`) }));
+const onPageTab = pageTabs.some((tab) => tab.isCurrent);
+const topics = allTopics.map((topic) => ({ label: topic.label, link: topic.link, isCurrent: topic.isCurrent && !onPageTab }));
+// Write tests sits before Test builder, its neighbour in purpose; Contributing goes last.
+const builderAt = topics.findIndex((topic) => topic.link === '/test-builder');
+const tabs = builderAt < 0 ? [...topics, ...pageTabs] : [...topics.slice(0, builderAt), pageTabs[0], ...topics.slice(builderAt), pageTabs[1]];
 ---
 
 <div class="mt-header">
-	<div class="mt-header__row">
-		<div class="title-wrapper sl-flex"><SiteTitle /></div>
-		<div class="mt-header__search sl-flex print:hidden"><Search /></div>
-		<div class="mt-header__right sl-hidden md:sl-flex print:hidden">
-			<VersionPicker />
-			<a class="mt-header__sponsor" href="/sponsor" aria-label="Sponsor Maester">
-				<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#db2777" d="M8 14.25s-6-3.6-6-8.1C2 3.8 3.7 2.5 5.4 2.5c1.2 0 2.1.7 2.6 1.6.5-.9 1.4-1.6 2.6-1.6 1.7 0 3.4 1.3 3.4 3.65 0 4.5-6 8.1-6 8.1z"></path></svg>
-				Sponsor
-			</a>
-			<div class="sl-flex social-icons"><SocialIcons /></div>
-			<ThemeToggle />
+	<SiteHeaderBar path={path}>
+		<div class="mt-header__search sl-flex md:sl-hidden print:hidden" slot="tools" title="Search (⌘K)"><Search /></div>
+	</SiteHeaderBar>
+	<div class="mt-docs-row sl-hidden md:sl-flex">
+		<div class="mt-docs-row__inner">
+			<!-- An invisible copy of the logo, so the first tab starts exactly under Docs in the top bar. -->
+			<span class="site-logo mt-docs-row__spacer" aria-hidden="true"><img src="/img/logo.svg" alt="" width="28" height="28" /><span>Maester</span></span>
+			<nav class="mt-tabs" aria-label="Documentation sections">
+				{
+					tabs.map((tab) => (
+						<a href={tab.link} aria-current={tab.isCurrent ? 'page' : undefined} class:list={{ current: tab.isCurrent }}>
+							{tab.label}
+						</a>
+					))
+				}
+			</nav>
+			<div class="mt-docs-row__tools print:hidden">
+				<div class="mt-header__search sl-flex" title="Search (⌘K)"><Search /></div>
+				<VersionPicker />
+			</div>
 		</div>
 	</div>
-	<nav class="mt-tabs sl-hidden md:sl-flex" aria-label="Documentation sections">
-		{
-			topics.map((topic) => (
-				<a href={topic.link} aria-current={topic.isCurrent ? 'page' : undefined} class:list={{ current: topic.isCurrent }}>
-					{topic.label}
-				</a>
-			))
-		}
-		<a href="/" class="mt-tabs__home">Home</a>
-	</nav>
+	<span id="mt-header-end" hidden></span>
 </div>
 
 <style is:global>
-	/* The docs header lets the page show through, blurred, as it scrolls under: a tint of the nav colour and a
-	   faint edge instead of a solid bar. Browsers without backdrop-filter get the solid colour. */
-	header.header {
-		background-color: var(--sl-color-bg-nav);
-		border-bottom-color: color-mix(in srgb, var(--sl-color-hairline-shade) 55%, transparent);
+	/* Search is an icon beside the other header buttons, not a box across the middle; ⌘K still opens it. */
+	.mt-header__search button[data-open-modal] {
+		width: 2.1rem;
+		max-width: none;
+		height: 2.1rem;
+		padding: 0;
+		justify-content: center;
+		border: 0;
+		border-radius: 9px;
+		background: transparent;
+		color: var(--sl-color-gray-3);
+		font-size: 1.1rem;
+		transition: color 0.2s, background 0.2s;
 	}
-	@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-		header.header {
-			background-color: color-mix(in srgb, var(--sl-color-bg-nav) 72%, transparent);
-			-webkit-backdrop-filter: saturate(180%) blur(14px);
-			backdrop-filter: saturate(180%) blur(14px);
+	.mt-header__search button[data-open-modal]:hover {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+	.mt-header__search button[data-open-modal] > span,
+	.mt-header__search button[data-open-modal] > kbd {
+		display: none !important;
+	}
+	/* On phones Starlight's own menu button opens the sidebar, so the site menu steps aside. */
+	@media (max-width: 49.99rem) {
+		.mt-header .site-menu {
+			display: none !important;
 		}
+	}
+	/* The top bar sets its own width and padding, as on the other pages; the second row takes Starlight's. */
+	.mt-header .site-header__inner {
+		width: 100%;
+		box-sizing: border-box;
+	}
+	@media (min-width: 50rem) {
+		header.header {
+			padding: 0 !important;
+		}
+		.mt-header .site-header__inner {
+			padding-block: 0.75rem;
+		}
+	}
+	/* On phones Starlight keeps its padding (and room for its menu button), so the bar adds none. */
+	@media (max-width: 49.99rem) {
+		.mt-header .site-header__inner {
+			padding: 0;
+		}
+	}
+	/* The same glass as the other pages' header (site.css .site-header), so the bar doesn't change shade when you move
+	   between the docs and the rest of the site. */
+	header.header {
+		background-color: color-mix(in srgb, var(--sl-color-black) 88%, transparent);
+		-webkit-backdrop-filter: blur(8px);
+		backdrop-filter: blur(8px);
+		border-bottom-color: var(--mt-line);
 	}
 </style>
 
@@ -57,57 +112,65 @@ const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		justify-content: center;
-	}
-	.mt-header__row {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
 		justify-content: space-between;
 	}
-	.title-wrapper {
-		overflow: clip;
-		padding: 0.25rem;
-		margin: -0.25rem;
-		min-width: 0;
-	}
-	.mt-header__search {
+	/* The row takes exactly the height the top bar leaves, so nothing sits on the header's bottom border. The line
+	   spans the page; the tabs sit in the top bar's centred column, starting under Docs so the logo stands alone. */
+	.mt-docs-row {
 		flex: 1 1 auto;
-		justify-content: center;
+		min-height: 0;
+		border-top: 1px solid color-mix(in srgb, var(--sl-color-hairline-shade) 55%, transparent);
 	}
-	.mt-header__right {
-		gap: 0.9rem;
-		align-items: center;
+	.mt-docs-row__inner {
+		display: flex;
+		align-items: stretch;
+		gap: 1.5rem;
+		width: 100%;
+		max-width: 75rem;
+		margin: 0 auto;
+		padding-inline: 1rem;
+		box-sizing: border-box;
 	}
-	.social-icons {
-		gap: 0.75rem;
-		align-items: center;
+	/* Same markup, font and gap as the logo in the top bar, so it takes exactly the same width. */
+	.mt-docs-row__spacer {
+		visibility: hidden;
+		flex: none;
+		align-self: center;
 	}
-	.mt-header__sponsor {
-		display: inline-flex;
+	/* Where the top bar folds its links into the menu there is no Docs to line up under, and the room goes to the tabs. */
+	@media (max-width: 64rem) {
+		.mt-docs-row__spacer {
+			display: none !important;
+		}
+		.mt-docs-row__inner .mt-tabs {
+			gap: 1.1rem;
+		}
+	}
+	/* Search and the version picker, centred in the row and pushed to the right. The picker's right edge lines up
+	   with the theme icon above it rather than with the theme button's (wider, borderless) box. */
+	.mt-docs-row__tools {
+		display: flex;
 		align-items: center;
 		gap: 0.35rem;
-		border: 1px solid var(--sl-color-gray-5);
-		border-radius: 9px;
-		padding: 0.3rem 0.65rem;
-		font-size: 0.8125rem;
-		font-weight: 600;
-		color: var(--sl-color-white);
-		text-decoration: none;
+		margin-inline-start: auto;
+		margin-inline-end: 0.55rem;
 	}
-	.mt-header__sponsor:hover {
-		border-color: var(--sl-color-gray-3);
+	.mt-header__search {
+		align-items: center;
 	}
 	.mt-tabs {
+		display: flex;
 		gap: 1.5rem;
-		align-items: flex-end;
-		margin-top: 0.4rem;
+		align-items: stretch;
 		font-size: 0.875rem;
 	}
 	.mt-tabs a {
+		display: flex;
+		align-items: center;
 		color: var(--sl-color-gray-3);
 		text-decoration: none;
-		padding-bottom: 0.45rem;
+		white-space: nowrap;
+		padding-top: 2px;
 		border-bottom: 2px solid transparent;
 		font-weight: 500;
 	}
@@ -118,8 +181,5 @@ const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic
 		color: var(--sl-color-white);
 		border-bottom-color: var(--sl-color-accent);
 		font-weight: 600;
-	}
-	.mt-tabs .mt-tabs__home {
-		margin-inline-start: auto;
 	}
 </style>
