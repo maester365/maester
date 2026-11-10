@@ -6,6 +6,10 @@ Protection setting in Microsoft Entra. Any listed object that is not protected, 
 fails the test. If nothing is listed, or every listed object is protected but other objects in Microsoft Entra
 have protection and are not listed, the result is **Investigate**: check whether the list is complete.
 
+Protection limits destructive deletion by a compromised administrator. A protected object stays recoverable for
+seven days after it is soft deleted, so an attacker cannot permanently destroy accounts or remove access
+(MITRE T1485 Data Destruction and T1531 Account Access Removal) before someone notices.
+
 See [Hard Deletion Protection](https://maester.dev/docs/configuration/hard-deletion-protection) for the
 configuration format and for suggestions on which objects to list.
 
