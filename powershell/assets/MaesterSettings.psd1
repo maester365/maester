@@ -11,5 +11,6 @@
         GitHubOrganization      = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
         GitHubApiBaseUri        = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
         GitHubApiVersion        = @{ Type = 'string'; Default = '2022-11-28'; Sensitive = $false; Description = 'GitHub REST API version.' }
+        HardDeletionProtectedObjects = @{ Type = 'object[]'; Default = @(); Sensitive = $false; Description = 'Critical users, groups, applications and service principals (Type and Id) that must have Hard Deletion Protection enabled.' }
     }
 }

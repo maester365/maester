@@ -310,6 +310,10 @@
         {
           "key": "recommendations",
           "name": "Entra recommendations"
+        },
+        {
+          "key": "backup-and-recovery",
+          "name": "Backup and recovery"
         }
       ]
     },
