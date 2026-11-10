@@ -105,7 +105,7 @@ function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onCha
           <div className="mt-cols-h">Columns</div>
           {available.map((c) => (
             <label key={c.key}>
-              <input type="checkbox" checked={chosen.includes(c.key)} onChange={(e) => { showColumn(c.key, (e.target as HTMLInputElement).checked) }} />{c.label}
+              <input type="checkbox" checked={chosen.includes(c.key)} onChange={(e) => { showColumn(c.key, e.currentTarget.checked) }} />{c.label}
             </label>
           ))}
           <button type="button" className="mt-cols-reset" onClick={() => { onChange(STANDARD_COLUMNS) }}>Reset to default</button>
