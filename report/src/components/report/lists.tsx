@@ -73,6 +73,16 @@ export function sortRows(model: Model, rows: Row[], sort: string) {
   })
 }
 
+/** The optional columns a report can show (those some test has a value for) and the columns a list shows. */
+export function visibleColumns(model: Model, chosen: string[]) {
+  const available = COLUMNS.filter((c) => !c.fixed && (c.standard || model.rows.some((t) => c.value(model, t))))
+  const shown = COLUMNS.filter((c) => c.fixed || (chosen.includes(c.key) && available.includes(c)))
+  return { available, shown }
+}
+
+/** The sort, or none when its column is not shown. */
+export const shownSort = (shown: Column[], sort: string) => (shown.some((c) => c.key === sort.replace(/^-/, "")) ? sort : "")
+
 /** The button that picks the columns a test list shows, for every list in the report. */
 function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onChange: (keys: string[] | ((current: string[]) => string[])) => void; available: Column[] }) {
   const [open, setOpen] = useState(false)
@@ -136,13 +146,13 @@ function groupKey(model: Model, group: string, t: Row): string {
 export function TestTable({ rows, group = "none", empty = "No tests match these filters.", sort: sortProp, onSort }: { rows: Row[]; group?: string; empty?: string; sort?: string; onSort?: (sort: string) => void }) {
   const { model, openTest, columns: chosen, setColumns } = useReport()
   // Columns no test in the report has a value for are left out of the table and the picker.
-  const available = COLUMNS.filter((c) => !c.fixed && (c.standard || model.rows.some((t) => c.value(model, t))))
-  const shown = COLUMNS.filter((c) => c.fixed || (chosen.includes(c.key) && available.includes(c)))
+  const { available, shown } = visibleColumns(model, chosen)
   // A list keeps its own sort unless the page holds it (the All tests page keeps it with its filters).
   const [ownSort, setOwnSort] = useState("")
   const sort = sortProp ?? ownSort
   const setSort = onSort ?? setOwnSort
-  const sorted = sortRows(model, rows, sort)
+  // A sort by a column the reader has hidden is ignored: the order would have no header to show it or undo it.
+  const sorted = sortRows(model, rows, shownSort(shown, sort))
   let groups: [string, Row[]][] = []
   if (group !== "none") {
     const byKey = new Map<string, Row[]>()

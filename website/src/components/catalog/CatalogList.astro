@@ -347,7 +347,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 
 			this.columns();
 
-			onState((state) => this.render(state, { rowsBox, rows, segButtons, sortButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
+			onState((state) => this.render(state, { table: this.querySelector<HTMLElement>('[data-table]')!, rowsBox, rows, segButtons, sortButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
 		}
 
 		// The Columns menu: which optional columns the list shows, remembered by the reader's browser.
@@ -389,6 +389,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 					saved = [...keys, ...other];
 					save(saved);
 					apply(keys);
+					writeState(readState());
 				});
 			}
 			this.querySelector('[data-cols-reset]')?.addEventListener('click', () => {
@@ -399,6 +400,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 					/* nothing stored */
 				}
 				apply(standard);
+				writeState(readState());
 			});
 			// Removed when the list leaves the page (disconnectedCallback), so a list that is put back adds it once.
 			this.listening?.abort();
@@ -433,7 +435,10 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 
 			const shown: HTMLElement[] = rows.filter((r: HTMLElement) => this.matches(r, state));
 			const sort = state.sort[0] ?? '';
-			const column = SORTS[sort.replace(/^-/, '')];
+			// A sort by a column the reader has hidden is ignored: the order would have no header to show it or undo it.
+			const sortKey = sort.replace(/^-/, '');
+			const sortShown = sortKey === 'id' || sortKey === 'title' || (ui.table.dataset.show ?? '').split(' ').includes(sortKey);
+			const column = sortShown ? SORTS[sortKey] : undefined;
 			for (const b of sortButtons as HTMLButtonElement[]) {
 				const dir = sort === b.dataset.sort ? 'asc' : sort === `-${b.dataset.sort}` ? 'desc' : '';
 				b.setAttribute('aria-pressed', String(Boolean(dir)));

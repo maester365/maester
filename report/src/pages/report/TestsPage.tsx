@@ -3,7 +3,7 @@
 import { useMemo } from "react"
 import { RESULT_LABEL, RESULT_ORDER, SEVERITIES, frameworkLabel, frameworkRank, requirementsOf, type Row } from "@/lib/model"
 import { useReport } from "@/components/report/ReportContext"
-import { Footer, GROUPS, TestTable, sortRows, sourceLabel } from "@/components/report/lists"
+import { Footer, GROUPS, TestTable, shownSort, sortRows, sourceLabel, visibleColumns } from "@/components/report/lists"
 import { Dropdown, FeatureMark, Icon, ProductMark, copyText, type IconName } from "@/components/report/ui"
 
 const GROUP_ICON: Record<string, IconName> = { product: "product", area: "area", feature: "feature", severity: "severity", source: "source", result: "result" }
@@ -11,7 +11,7 @@ const GROUP_ICON: Record<string, IconName> = { product: "product", area: "area",
 interface Dimension { key: string; icon: IconName; values: (t: Row) => string[]; label: (v: string) => string; order?: string[]; rank?: (v: string) => number }
 
 export default function TestsPage() {
-  const { model, explorer, setExplorer } = useReport()
+  const { model, explorer, setExplorer, columns } = useReport()
   const { q, filters, group, sort } = explorer
   const dims: Dimension[] = useMemo(() => ([
     { key: "Result", icon: "result", values: (t) => [t.Result], label: (v) => RESULT_LABEL[v] || v, order: RESULT_ORDER },
@@ -36,7 +36,7 @@ export default function TestsPage() {
   }
   // Every cell is escaped: an ID can come from a Pester test name, which may hold a pipe or a line break.
   const cell = (v: unknown) => String(v ?? "").replace(/[\\|]/g, "\\$&").replace(/\r?\n/g, " ")
-  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...sortRows(model, rows, sort).map((t) => `| ${[t.Result, t.Id, t.Title, t.Severity, model.productName(t.Product)].map(cell).join(" | ")} |`)].join("\n"), `Copied ${rows.length} rows`)
+  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...sortRows(model, rows, shownSort(visibleColumns(model, columns).shown, sort)).map((t) => `| ${[t.Result, t.Id, t.Title, t.Severity, model.productName(t.Product)].map(cell).join(" | ")} |`)].join("\n"), `Copied ${rows.length} rows`)
   const groups = Object.keys(GROUPS).filter((g) => g !== "feature" || model.hasAttributes)
 
   return (
