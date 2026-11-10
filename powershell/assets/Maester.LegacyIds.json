@@ -1132,40 +1132,40 @@
     },
     {
       "LegacyId": "CISA.MS.EXO.12.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.SECURITYSUITE.8.1",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamAllowList.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.12.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.SECURITYSUITE.8.2",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamSafeList.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.15.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.1",
+      "Rule": "function",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLink.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.15.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.2",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkDownloadScan.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.15.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.3",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkClickTracking.Tests.ps1"

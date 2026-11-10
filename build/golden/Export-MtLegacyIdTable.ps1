@@ -281,12 +281,14 @@ foreach ($nativeFile in (Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recu
     $testFunction = $nativeAst.Find({
             param($node)
             $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
-            @($node.Attributes | Where-Object { $_.TypeName.FullName -eq 'MaesterTest' }).Count -gt 0
+            @($node.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.FullName -eq 'MaesterTest' }).Count -gt 0
         }, $true) | Select-Object -First 1
     $title = ''
     $functions = @()
     if ($testFunction) {
-        $testAttribute = $testFunction.Attributes | Where-Object { $_.TypeName.FullName -eq 'MaesterTest' } | Select-Object -First 1
+        $testAttribute = $testFunction.Body.ParamBlock.Attributes |
+            Where-Object { $_.TypeName.FullName -eq 'MaesterTest' } |
+            Select-Object -First 1
         $titleArgument = $testAttribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
         if (-not $titleArgument -or $titleArgument.Argument -isnot [System.Management.Automation.Language.StringConstantExpressionAst]) {
             throw "Native test '$($nativeFile.FullName)' has no constant Title in its MaesterTest attribute."
