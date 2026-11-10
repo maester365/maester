@@ -150,7 +150,7 @@ Describe 'CISA PIM native-engine outcome: <Id>' -ForEach @(
                 [pscustomobject]@{ id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; displayName = 'Security Administrator' }
             )
         }
-        $config = [pscustomobject]@{
+        $script:PimConfig = [pscustomobject]@{
             Environment = [pscustomobject]@{
                 Licenses = @('AAD_PREMIUM_P2')
                 Services = [pscustomobject]@{ Graph = $true }
@@ -163,7 +163,7 @@ Describe 'CISA PIM native-engine outcome: <Id>' -ForEach @(
             throw (Get-TestPimErrorRecord -Code 'AadPremiumLicenseRequired')
         }
 
-        $row = Invoke-MtTest -Id $Id -Config $config
+        $row = Invoke-MtTest -Id $Id -Config $script:PimConfig
 
         $row.Result | Should -Be 'Skipped'
         $row.ResultDetail.TestSkipped | Should -Be 'NotLicensedEntraIDP2OrGovernance'
@@ -174,7 +174,7 @@ Describe 'CISA PIM native-engine outcome: <Id>' -ForEach @(
             throw (Get-TestPimErrorRecord -Code 'Authorization_RequestDenied')
         }
 
-        $row = Invoke-MtTest -Id $Id -Config $config
+        $row = Invoke-MtTest -Id $Id -Config $script:PimConfig
 
         $row.Result | Should -Be 'Error'
         $row.ReasonCode | Should -Be 'TestError'
