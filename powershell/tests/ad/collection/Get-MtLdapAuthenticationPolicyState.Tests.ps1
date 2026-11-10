@@ -8,7 +8,25 @@ Describe 'Get-MtLdapAuthenticationPolicyState' {
         $script:SearchResults = @{}
         function Invoke-MtLdapSearch {
             param($Connection,$SearchBase,$Scope,$Filter,$Attributes)
-            return @($script:SearchResults[$Filter])
+            $result = $script:SearchResults[$Filter]
+            if ($null -eq $result) { return @() }
+
+            foreach ($sourceItem in @($result)) {
+                $properties = [ordered]@{}
+                foreach ($property in $sourceItem.PSObject.Properties) {
+                    $properties[$property.Name] = $property.Value
+                }
+                $properties['__MtLdapPresentAttributes'] = @($properties.Keys)
+
+                foreach ($requestedAttribute in @($Attributes)) {
+                    if ($requestedAttribute -in @('*', '+', '1.1', 'distinguishedName')) { continue }
+                    $existingKey = @($properties.Keys | Where-Object { $_ -ieq $requestedAttribute } | Select-Object -First 1)
+                    if ($existingKey.Count -eq 0) {
+                        $properties[$requestedAttribute] = $null
+                    }
+                }
+                [PSCustomObject]$properties
+            }
         }
     }
 
@@ -19,6 +37,17 @@ Describe 'Get-MtLdapAuthenticationPolicyState' {
         $result.MissingRequiredAttributeCount | Should -Be 0
     }
 
+    It 'preserves omitted attributes after production-style normalization' {
+        $script:SearchResults['(objectClass=msDS-AuthNPolicy)'] = [PSCustomObject]@{
+            Name = 'Policy with omitted expression attributes'
+            DistinguishedName = 'CN=Policy with omitted expression attributes,CN=AuthN Policies,CN=AuthN Policy Configuration,CN=Services,CN=Configuration,DC=contoso,DC=com'
+            'msDS-AuthNPolicyEnforced' = $false
+        }
+        $result = Get-MtLdapAuthenticationPolicyState -Connection ([PSCustomObject]@{}) -ConfigurationNamingContext 'CN=Configuration,DC=contoso,DC=com'
+        $result.Policies[0].AttributeState.'msDS-ComputerAllowedToAuthenticateTo'.Present | Should -BeFalse
+        $result.Policies[0].AttributeState.'msDS-ComputerAllowedToAuthenticateTo'.IsNull | Should -BeFalse
+        $result.MissingRequiredAttributeCount | Should -Be 5
+    }
     It 'distinguishes a missing requested attribute from a configured empty value' {
         $script:SearchResults['(objectClass=msDS-AuthNPolicy)'] = [PSCustomObject]@{
             Name = 'Tier0 Policy'

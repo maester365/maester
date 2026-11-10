@@ -49,8 +49,14 @@ function Get-MtLdapAuthenticationPolicyState {
         )
 
         $property = $InputObject.PSObject.Properties[$Name]
-        $present = $null -ne $property
-        $value = if ($present) { $property.Value } else { $null }
+        $presenceMetadata = $InputObject.PSObject.Properties['__MtLdapPresentAttributes']
+        $present = if ($null -ne $presenceMetadata) {
+            $Name -in @($presenceMetadata.Value)
+        }
+        else {
+            $null -ne $property
+        }
+        $value = if ($null -ne $property) { $property.Value } else { $null }
         return [PSCustomObject][ordered]@{
             Present = $present
             Value   = $value

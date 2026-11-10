@@ -1,4 +1,4 @@
-﻿function Invoke-MtLdapSearch {
+function Invoke-MtLdapSearch {
     <#
     .SYNOPSIS
     Searches LDAP, optionally consuming converted responses one page at a time.
@@ -105,6 +105,9 @@
             }
         }
 
+        # Record attributes actually returned by LDAP before requested-but-omitted attributes are normalized to null.
+        # Consumers can therefore distinguish omitted, returned-null, returned-empty, and configured values.
+        $properties['__MtLdapPresentAttributes'] = @($properties.Keys)
         if ($null -ne $requestedAttributes) {
             foreach ($requestedAttr in $requestedAttributes) {
                 if ($requestedAttr -eq '*' -or $requestedAttr -eq '+' -or $requestedAttr -eq '1.1') {

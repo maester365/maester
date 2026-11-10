@@ -558,7 +558,8 @@ function Get-MtADDomainState {
         'SmbConfigurations',
         'DNS',
         'Configuration',
-        'AuthenticationPolicies', 'AuthenticationPolicies', 'Schema',
+        'AuthenticationPolicies',
+        'Schema',
         'Printers',
         'DaclEntries'
     )
