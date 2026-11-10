@@ -28,7 +28,7 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.2',
         Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
-        Author = 'soulemike'
+        Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

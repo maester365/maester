@@ -29,7 +29,8 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.1',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'EXCHANGE_DLP',
-        Author = 'soulemike'
+        Author = 'soulemike',
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
