@@ -1,0 +1,25 @@
+move this to the bottom of the sponsor page and not the top
+
+---
+
+remove Sponsorship never changes what a check reports: every check is reviewed against the same public rubric.
+
+---
+
+Remove the join Discord. I want them to contact me another way. Can you think of an idea of how someone can submit maybe a form or something?
+
+---
+
+why not just a form in maester cloud...
+
+---
+
+lets just do a mailto
+
+---
+
+lets send to sponsor@maester.cloud
+
+---
+
+create a new pr with it

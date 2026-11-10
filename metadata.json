@@ -3,7 +3,7 @@
   "checkpoint_id": "01M72426V0Y487ESE0RTG59B7R",
   "strategy": "manual-commit",
   "branch": "fix/sponsor-page-org-block",
-  "checkpoints_count": 2,
+  "checkpoints_count": 6,
   "files_touched": [
     "website/src/pages/sponsor.astro"
   ],
@@ -14,25 +14,32 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 28,
-    "cache_creation_tokens": 93620,
-    "cache_read_tokens": 2705307,
-    "output_tokens": 11574,
-    "api_call_count": 13
+    "input_tokens": 118,
+    "cache_creation_tokens": 174798,
+    "cache_read_tokens": 7320871,
+    "output_tokens": 21312,
+    "api_call_count": 53
   },
   "redaction": {
-    "replacements": 2246,
+    "replacements": 2812,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 8,
       "credentialed_uri": 0,
-      "entropy": 2217,
-      "key_context": 21,
+      "entropy": 2777,
+      "key_context": 27,
       "provider_token": 0,
       "shell_stdin": 0
     }
