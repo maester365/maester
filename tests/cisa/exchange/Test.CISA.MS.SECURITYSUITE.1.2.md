@@ -1,6 +1,6 @@
-Emails identified as containing malware SHALL be quarantined or dropped.
+Email scanning SHALL be capable of reviewing emails after delivery.
 
-Rationale: Email can be used as a mechanism for delivering malware. Preventing emails with known malware from reaching user mailboxes helps ensure users cannot interact with those emails.
+Rationale: As known malware signatures are updated, it is possible for an email to be retroactively identified as containing malware after delivery. By scanning emails, the number of malware-infected in users' mailboxes can be reduced.
 
 #### Remediation action
 
@@ -17,9 +17,9 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
 * [Defender admin center - Order and precedence of email protection](https://learn.microsoft.com/defender-office-365/how-policies-and-protections-are-combined)
-* [CISA 10 Malware Scanning - MS.EXO.10.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo102v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L582)
-* [Microsoft Learn - Anatomy of a quarantine policy](https://learn.microsoft.com/defender-office-365/quarantine-policies#anatomy-of-a-quarantine-policy)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.1.2v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite12v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
+* [Microsoft Learn - Zero-hour auto purge (ZAP) for malware](https://learn.microsoft.com/defender-office-365/zero-hour-auto-purge#zero-hour-auto-purge-zap-for-email-messages)
 
 <!--- Results --->
 %TestResult%

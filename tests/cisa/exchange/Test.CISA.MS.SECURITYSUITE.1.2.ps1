@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaMalwareZap
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.10.3',
+        Id = 'CISA.MS.SECURITYSUITE.1.2',
         Title = 'Email scanning SHALL be capable of reviewing emails after delivery.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1204.002', 'T1566.001'),
-        Control = 'cisa-scuba:MS.EXO.10.3',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.1.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'JeanPhilippeGeorge'

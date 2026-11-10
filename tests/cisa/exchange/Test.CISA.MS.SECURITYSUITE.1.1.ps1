@@ -15,8 +15,8 @@
     https://maester.dev/docs/commands/Test-MtCisaBlockExecutable
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.9.5',
-        Title = 'At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe).',
+        Id = 'CISA.MS.SECURITYSUITE.1.1',
+        Title = 'Emails with click-to-run file attachments SHALL be blocked including, at a minimum, .exe, .cmd, and .vbe files.',
         Product = 'exchange',
         RelatedProduct = 'defender',
         Feature = 'anti-malware',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1204.002', 'T1566.001'),
-        Control = 'cisa-scuba:MS.EXO.9.5',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.1.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]
