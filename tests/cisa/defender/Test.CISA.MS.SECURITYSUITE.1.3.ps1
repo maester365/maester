@@ -29,7 +29,7 @@
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
-        Contributor = 'JeanPhilippeGeorge'
+        Contributor = ('JeanPhilippeGeorge', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

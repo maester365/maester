@@ -29,7 +29,7 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.1.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
-        Contributor = 'JeanPhilippeGeorge'
+        Contributor = ('JeanPhilippeGeorge', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
