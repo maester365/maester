@@ -3,6 +3,7 @@
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.7.1.ps1')
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.7.2.ps1')
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.7.3.ps1')
+    . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.8.1.ps1')
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.8.2.ps1')
     . (Join-Path $testRoot 'powershell\internal\checks\cisa\exchange\Get-MtCisaEffectiveSafeLinksPolicy.ps1')
 }
@@ -20,7 +21,7 @@ Describe 'CISA Security Suite Safe Links checks' {
                     EnableSafeLinksForOffice = $true; EnableForInternalSenders = $true
                 }
             )
-            EOPProtectionPolicyRule = @(
+            ATPProtectionPolicyRule = @(
                 [pscustomobject]@{
                     Identity = 'Strict Preset Security Policy'; State = 'Enabled'
                     SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @()
@@ -45,7 +46,7 @@ Describe 'CISA Security Suite Safe Links checks' {
                     EnableSafeLinksForOffice = $true; EnableForInternalSenders = $true
                 }
             )
-            EOPProtectionPolicyRule = @()
+            ATPProtectionPolicyRule = @()
             SafeLinksRule = @(
                 [pscustomobject]@{
                     State = 'Enabled'; Priority = 1; SafeLinksPolicy = 'Scoped'
@@ -72,7 +73,7 @@ Describe 'CISA Security Suite Safe Links checks' {
                     Identity = 'All recipients'; ScanUrls = $true; DeliverMessageAfterScan = $true
                 }
             )
-            EOPProtectionPolicyRule = @()
+            ATPProtectionPolicyRule = @()
             SafeLinksRule = @(
                 [pscustomobject]@{
                     State = 'Enabled'; Priority = 1; SafeLinksPolicy = 'Scoped'
@@ -98,7 +99,7 @@ Describe 'CISA Security Suite Safe Links checks' {
                 [pscustomobject]@{ Identity = 'All recipients'; TrackClicks = $false },
                 [pscustomobject]@{ Identity = 'Unrelated'; TrackClicks = $true }
             )
-            EOPProtectionPolicyRule = @()
+            ATPProtectionPolicyRule = @()
             SafeLinksRule = @(
                 [pscustomobject]@{
                     State = 'Enabled'; Priority = 1; SafeLinksPolicy = 'All recipients'
@@ -122,7 +123,7 @@ Describe 'CISA Security Suite Safe Links checks' {
                     ScanUrls = $false; DeliverMessageAfterScan = $false; TrackClicks = $false
                 }
             )
-            EOPProtectionPolicyRule = @(
+            ATPProtectionPolicyRule = @(
                 [pscustomobject]@{
                     Identity = 'Strict Preset Security Policy'; State = 'Enabled'
                     SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @()
@@ -134,6 +135,44 @@ Describe 'CISA Security Suite Safe Links checks' {
 
         Test-MtCisaSafeLinkDownloadScan | Should -BeTrue
         Test-MtCisaSafeLinkClickTracking | Should -BeTrue
+    }
+
+    It 'uses the Defender preset rule scope rather than the EOP preset rule scope' {
+        $script:exoResponses = @{
+            SafeLinksPolicy = @(
+                [pscustomobject]@{
+                    Identity = 'Strict Preset Security Policy'; RecommendedPolicyType = 'Strict'
+                    ScanUrls = $true; DeliverMessageAfterScan = $true; TrackClicks = $true
+                },
+                [pscustomobject]@{
+                    Identity = 'All recipients'; Name = 'All recipients'
+                    ScanUrls = $false; DeliverMessageAfterScan = $false; TrackClicks = $false
+                }
+            )
+            ATPProtectionPolicyRule = @(
+                [pscustomobject]@{
+                    Identity = 'Strict Preset Security Policy'; State = 'Enabled'
+                    SentTo = @('user@contoso.com'); SentToMemberOf = @(); RecipientDomainIs = @()
+                }
+            )
+            EOPProtectionPolicyRule = @(
+                [pscustomobject]@{
+                    Identity = 'Strict Preset Security Policy'; State = 'Enabled'
+                    SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @()
+                }
+            )
+            SafeLinksRule = @(
+                [pscustomobject]@{
+                    State = 'Enabled'; Priority = 1; SafeLinksPolicy = 'All recipients'
+                    SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @()
+                }
+            )
+        }
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        (Get-MtCisaEffectiveSafeLinksPolicy).Policy.Identity | Should -Be 'All recipients'
+        Test-MtCisaSafeLinkDownloadScan | Should -BeFalse
+        Test-MtCisaSafeLinkClickTracking | Should -BeFalse
     }
 
     It 'fails Safe List compliance if any returned connection filter enables it' {
@@ -156,5 +195,12 @@ Describe 'CISA Security Suite Safe Links checks' {
         Mock Get-MtExo { $script:exoResponses[$Request] }
 
         Test-MtCisaAntiSpamSafeList | Should -BeFalse
+    }
+
+    It 'does not pass IP allow-list compliance when no connection filter policy is returned' {
+        $script:exoResponses = @{ HostedConnectionFilterPolicy = @() }
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        Test-MtCisaAntiSpamAllowList | Should -BeFalse
     }
 }

@@ -19,9 +19,11 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    Existing mappings are retained when their target still exists, so moving a check from a Pester wrapper
+    to a native test does not discard its legacy IDs.
+
+    The output is deterministic for the current tests tree and checked-in table: GeneratedFrom is the last
+    commit that touched the scanned legacy test files, and current IDs include native Test.<ID>.ps1 files.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -55,6 +57,11 @@ $ManualOverrides = [ordered]@{
     # Pre-colon names of the split checks; the current titles say 'Global Administrator' and both call one function.
     'MT.1050 Apps with high-risk permissions having a direct path to Global Admin'                                                = 'MT.1050'
     'MT.1051 Apps with high-risk permissions having an indirect path to Global Admin'                                             = 'MT.1051'
+    'MS.EXO.12.1'                                                                                                                 = 'CISA.MS.SECURITYSUITE.8.1'
+    'MS.EXO.12.2'                                                                                                                 = 'CISA.MS.SECURITYSUITE.8.2'
+    'MS.EXO.15.1'                                                                                                                 = 'CISA.MS.SECURITYSUITE.7.1'
+    'MS.EXO.15.2'                                                                                                                 = 'CISA.MS.SECURITYSUITE.7.2'
+    'MS.EXO.15.3'                                                                                                                 = 'CISA.MS.SECURITYSUITE.7.3'
     # Mock-based unit tests that briefly lived under tests/; they were never security checks.
     'MFA for All users should pass even if not targeting guests'                                                                   = 'retired'
     'MFA for All users that excludes any guest type should fail'                                                                   = 'retired'
@@ -244,7 +251,7 @@ foreach ($commit in $commits) {
 }
 #endregion Scan history
 
-#region Current IDs (from the tree of $generatedFrom)
+#region Current IDs
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
 $treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
@@ -261,6 +268,40 @@ foreach ($line in $treeLines) {
         $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
     }
 }
+# Native test IDs and their metadata are not present in the legacy Pester wrappers scanned above.
+foreach ($nativeFile in (Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
+        Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' })) {
+    $id = $nativeFile.Name -replace '^Test\.', '' -replace '\.ps1$', ''
+    $tokens = $null
+    $parseErrors = $null
+    $nativeAst = [System.Management.Automation.Language.Parser]::ParseFile($nativeFile.FullName, [ref] $tokens, [ref] $parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Could not parse native test '$($nativeFile.FullName)': $($parseErrors[0].Message)"
+    }
+    $testFunction = $nativeAst.Find({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            @($node.Attributes | Where-Object { $_.TypeName.FullName -eq 'MaesterTest' }).Count -gt 0
+        }, $true) | Select-Object -First 1
+    $title = ''
+    $functions = @()
+    if ($testFunction) {
+        $testAttribute = $testFunction.Attributes | Where-Object { $_.TypeName.FullName -eq 'MaesterTest' } | Select-Object -First 1
+        $titleArgument = $testAttribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
+        if (-not $titleArgument -or $titleArgument.Argument -isnot [System.Management.Automation.Language.StringConstantExpressionAst]) {
+            throw "Native test '$($nativeFile.FullName)' has no constant Title in its MaesterTest attribute."
+        }
+        $title = Get-NormalizedTitle $titleArgument.Argument.Value
+        $functions = @($testFunction.Name)
+    }
+    $relativePath = [System.IO.Path]::GetRelativePath($RepoRoot, $nativeFile.FullName).Replace('\', '/')
+    $currentIds[$id] = [pscustomobject]@{
+        Id        = $id
+        Title     = $title
+        Functions = $functions
+        Path      = $relativePath
+    }
+}
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
 
 $titleIndex = @{}
@@ -275,6 +316,18 @@ foreach ($c in $currentIds.Values) {
     }
 }
 #endregion Current IDs
+
+#region Existing mappings
+$priorMappings = @{}
+if (Test-Path -LiteralPath $OutputPath) {
+    $priorTable = Get-Content -LiteralPath $OutputPath -Raw | ConvertFrom-Json
+    foreach ($entry in $priorTable.Entries) {
+        if ($entry.CurrentId -and $entry.CurrentId -ne 'retired') {
+            $priorMappings[$entry.LegacyId] = $entry
+        }
+    }
+}
+#endregion Existing mappings
 
 #region Map
 $entries = [System.Collections.Generic.List[object]]::new()
@@ -303,6 +356,8 @@ foreach ($record in $history.Values) {
         $currentId = $ManualOverrides[$record.Id]; $rule = 'manual'
     } elseif ($prefixTarget) {
         $currentId = $prefixTarget; $rule = 'prefix'
+    } elseif ($priorMappings.ContainsKey($record.Id) -and $currentIds.ContainsKey($priorMappings[$record.Id].CurrentId)) {
+        $currentId = $priorMappings[$record.Id].CurrentId; $rule = $priorMappings[$record.Id].Rule
     } elseif ($titleCandidates.Count -eq 1) {
         $currentId = @($titleCandidates)[0]; $rule = 'title'
         if ($functionCandidates.Count -gt 0 -and -not $functionCandidates.Contains($currentId)) {

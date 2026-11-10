@@ -57,7 +57,7 @@
     if ($testResult) {
         $message = "Well done. The effective all-recipient Safe Links policy enables URL protection for email, Teams, Office documents, and internal senders.`n`n%TestResult%"
     } else {
-        $message = 'Enable Safe Links and internal-sender protection on the effective all-recipient policy. A preset policy applies only when its all-recipient preset rule is enabled; otherwise the highest-priority all-recipient custom rule applies.`n`n%TestResult%'
+        $message = "Enable Safe Links and internal-sender protection on the effective all-recipient policy. A preset policy applies only when its all-recipient preset rule is enabled; otherwise the highest-priority all-recipient custom rule applies.`n`n%TestResult%"
     }
 
     Add-MtTestResultDetail -Result ($message -replace '%TestResult%', $result)

@@ -1,6 +1,6 @@
 {
   "SchemaVersion": "1.0",
-  "GeneratedFrom": "fc6a9078bcdd59b5b2f788682fdcd2be27e15b9c",
+  "GeneratedFrom": "eb13e7a116e4063bec204e901e4847ae67c1f6f6",
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
@@ -1131,6 +1131,46 @@
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
     },
     {
+      "LegacyId": "CISA.MS.EXO.12.1",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamAllowList.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.12.2",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamSafeList.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.15.1",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLink.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.15.2",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkDownloadScan.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.15.3",
+      "CurrentId": "retired",
+      "Rule": "retired",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkClickTracking.Tests.ps1"
+    },
+    {
       "LegacyId": "Configure which users are allowed to present in Teams meetings",
       "CurrentId": "retired",
       "Rule": "retired",
@@ -1892,16 +1932,16 @@
     },
     {
       "LegacyId": "MS.EXO.12.1",
-      "CurrentId": "CISA.MS.EXO.12.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.8.1",
+      "Rule": "manual",
       "FirstSeenCommit": "d119939a0fca63d684941e7194531ec6e6e0a455",
       "LastSeenCommit": "726b9fd3bc414db3c41db8c6ec9a825c0713b34e",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamAllowList.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.12.2",
-      "CurrentId": "CISA.MS.EXO.12.2",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.8.2",
+      "Rule": "manual",
       "FirstSeenCommit": "4b0afaad10741d4fff485316df5a6b843d3afcfa",
       "LastSeenCommit": "6d7e5099d9d830c07cab2a660a471f29f74d18f3",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAntiSpamSafeList.Tests.ps1"
@@ -1948,24 +1988,24 @@
     },
     {
       "LegacyId": "MS.EXO.15.1",
-      "CurrentId": "CISA.MS.EXO.15.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.1",
+      "Rule": "manual",
       "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLink.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.15.2",
-      "CurrentId": "CISA.MS.EXO.15.2",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.2",
+      "Rule": "manual",
       "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkDownloadScan.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.15.3",
-      "CurrentId": "CISA.MS.EXO.15.3",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.7.3",
+      "Rule": "manual",
       "FirstSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenCommit": "e7c8045968db237b765bb43687d055ed9ad4ec6e",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSafeLinkClickTracking.Tests.ps1"

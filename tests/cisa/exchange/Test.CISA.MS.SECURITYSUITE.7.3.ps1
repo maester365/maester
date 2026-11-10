@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaSafeLinkClickTracking {
     <#
     .SYNOPSIS
-    Checks state of URL direct download scans
+    Checks whether user click tracking is enabled on the effective all-recipient Safe Links policy.
 
     .DESCRIPTION
     User click tracking SHOULD be enabled.
@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaSafeLinkClickTracking
 
-    Returns true if URL direct download scan enabled
+    Returns true if user click tracking is enabled on the effective all-recipient Safe Links policy.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaSafeLinkClickTracking

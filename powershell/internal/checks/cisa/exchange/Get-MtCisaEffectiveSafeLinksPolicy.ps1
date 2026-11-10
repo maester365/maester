@@ -4,7 +4,7 @@ function Get-MtCisaEffectiveSafeLinksPolicy {
     param()
 
     $policies = @(Get-MtExo -Request SafeLinksPolicy)
-    $presetRules = @(Get-MtExo -Request EOPProtectionPolicyRule)
+    $presetRules = @(Get-MtExo -Request ATPProtectionPolicyRule)
     $safeLinksRules = @(Get-MtExo -Request SafeLinksRule)
 
     $isEmpty = {
