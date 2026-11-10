@@ -59,8 +59,6 @@
     $testResult = $missingAlerts.Count -eq 0
 
     $portalLink = 'https://security.microsoft.com/alertpoliciesv2'
-    $passResult = '✅ Pass'
-    $failResult = '❌ Fail'
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has [alerts configured]($portalLink).`n`n%TestResult%"
