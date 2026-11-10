@@ -43,6 +43,23 @@ Invoke-Maester
 Tests for a service you have not connected to are reported as **Skipped**, with the reason, so you can tell which
 results are missing and why. See [Connect-Maester](connect-maester/readme.md).
 
+### For a comprehensive check, add the Zero Trust Assessment
+
+For the most complete picture of your tenant, also run Microsoft's
+[Zero Trust Assessment](packs/zero-trust-assessment.md). It ships with Maester as a pack, and its results appear in
+the same report as Maester's own checks, grouped by Zero Trust pillar and placed beside the Maester checks for the
+same product and area.
+
+```powershell
+Install-Module ZeroTrustAssessment -Scope CurrentUser
+Connect-Maester -Service All -SharePointClientId '<Client ID>'
+Invoke-Maester -Pack ZTA
+```
+
+The assessment needs PowerShell 7.6 or later and asks you to sign in a second time, in the browser. It can take an
+hour or more on a large tenant, which is why a plain `Invoke-Maester` leaves it out until you name it. To include it
+in every run, see [Run it](packs/zero-trust-assessment.md#run-it).
+
 ## Step 2: Read the report
 
 When the run finishes, Maester writes an HTML report to the `./test-results` folder and, in an interactive session, opens it. Every test appears with one
@@ -113,8 +130,9 @@ See [Configure Maester](configuration/overview.md) and [Emergency access account
 
 ## Step 5: Choose your baseline
 
-Maester ships several suites: its own tests and the CIS, CISA, ASD Essential Eight, EIDSCA and ORCA suites. Pick the ones that match
-the requirements your organisation has to meet. See [Choosing a baseline](choosing-a-baseline.md).
+Maester ships several suites: its own tests and the CIS, CISA, ASD Essential Eight, EIDSCA and ORCA suites, plus the
+Zero Trust Assessment pack. Pick the ones that match the requirements your organisation has to meet. See
+[Choosing a baseline](choosing-a-baseline.md).
 
 ## Step 6: Monitor continuously
 
