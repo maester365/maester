@@ -59,8 +59,7 @@
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId @($rolesOf.Keys) -Select id, userPrincipalName, displayName, accountEnabled, createdDateTime, signInActivity)
     $inactive = foreach ($user in $users) {
         if ($user.accountEnabled -ne $true) { continue }
-        $signIns = @($user.signInActivity.lastSignInDateTime, $user.signInActivity.lastNonInteractiveSignInDateTime | Where-Object { $_ } | ForEach-Object { [datetime]$_ })
-        $lastSignIn = if ($signIns.Count -gt 0) { ($signIns | Measure-Object -Maximum).Maximum.ToUniversalTime() } else { $null }
+        $lastSignIn = Get-MtUserLastSignIn -User $user
         $isInactive = if ($lastSignIn) { $lastSignIn -lt $cutoff } else { $user.createdDateTime -and ([datetime]$user.createdDateTime).ToUniversalTime() -lt $cutoff }
         if ($isInactive) {
             [pscustomobject]@{
