@@ -295,14 +295,21 @@ const alphabetical: Entry[] = isCommands
 			display: block;
 		}
 	}
-	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. */
+	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. Hidden on
+	   wide screens here, not with md:sl-hidden: that class is in Starlight's cascade layer, so this unlayered rule
+	   would win over it. */
 	.mt-mobile-site {
-		display: grid;
+		display: none;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 0.15rem 1rem;
 		margin-top: 1.5rem;
 		padding-top: 1rem;
 		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	@media (max-width: 49.99rem) {
+		.mt-mobile-site {
+			display: grid;
+		}
 	}
 	.mt-mobile-site a {
 		padding: 0.4rem 0;

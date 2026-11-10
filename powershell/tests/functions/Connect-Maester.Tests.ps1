@@ -671,11 +671,62 @@ Describe 'Connect-Maester Azure DevOps' {
             $script:adoOrganization | Should -BeNullOrEmpty
         }
 
-        It 'Clears the previous organization when configuration is <ConfigProblem>' -ForEach @(
-            @{ ConfigProblem = 'missing an organization'; ConfigContent = '{"GlobalSettings":{}}' }
-            @{ ConfigProblem = 'invalid JSON'; ConfigContent = '{invalid' }
-        ) {
-            $ConfigContent | Set-Content ./maester-config.json
+        It 'Clears the previous organization when token acquisition fails' {
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'old-org' } }
+            $script:adoOrganization = 'old-org'
+            Mock Get-AzContext -ModuleName Maester { [pscustomobject]@{ Account = @{ Id = 'user' }; Tenant = @{ Id = 'tenant' } } }
+            Mock Get-AzAccessToken -ModuleName Maester { throw 'token failed' }
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+            # A surviving session must pass the probe so a request failure cannot hide it.
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
+
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'new-org'
+
+            $row = $script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps'
+            $row.Status | Should -Be 'Failed'
+            $row.Details | Should -Be 'token failed'
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            # A new run clears the probe cache; neither the probe nor ADOPS may recover the old organization.
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
+            Test-MtConnection -Service AzureDevOps | Should -BeFalse
+            InModuleScope Maester { Get-ADOPSConnection } | Should -BeNullOrEmpty
+            $script:adoOrganization | Should -BeNullOrEmpty
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 1 -Exactly
+        }
+
+        It 'Keeps a verified ADOPS session when the configuration names no organization' {
+            # No organization means nothing to connect to, so a session from Connect-ADOPS is kept and reported,
+            # not torn down. Test-MtConnection verifies it first, so the summary names the organization the tests read.
+            '{"GlobalSettings":{}}' | Set-Content ./maester-config.json
+            $script:adoOrganization = 'old-org'
+            Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' }
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+
+            Connect-Maester -Service AzureDevOps -WarningVariable adoWarnings -ErrorVariable adoErrors -ErrorAction SilentlyContinue 3>$null
+
+            $adoErrors | Should -BeNullOrEmpty
+            ($adoWarnings -join "`n") | Should -Match "existing ADOPS session to 'old-org'"
+            $row = $script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps'
+            $row.Status | Should -Be 'Connected'
+            $row.Details | Should -Be 'old-org (existing ADOPS session; no organization specified)'
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            $script:adoOrganization | Should -Be 'old-org'
+            # The next run resets the probe cache and still finds the same session.
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
+            Test-MtConnection -Service AzureDevOps | Should -BeTrue
+        }
+
+        It 'Reports an invalid configuration file as a failure without disconnecting ADOPS' {
+            '{invalid' | Set-Content ./maester-config.json
             $script:adoOrganization = 'old-org'
             Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' }
             Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
@@ -686,10 +737,58 @@ Describe 'Connect-Maester Azure DevOps' {
 
             Connect-Maester -Service AzureDevOps -ErrorAction SilentlyContinue
 
-            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache = $null }
-            Test-MtConnection -Service AzureDevOps | Should -BeFalse
-            $script:adoOrganization | Should -BeNullOrEmpty
+            $row = $script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps'
+            $row.Status | Should -Be 'Failed'
+            $row.Details | Should -Match 'not valid JSON'
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
             Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            $script:adoOrganization | Should -Be 'old-org'
+        }
+
+        It 'Keeps an existing ADOPS session and connects the other services when no organization is given' {
+            $script:adoOrganization = 'old-org'
+            Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' }
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { @{} }
+            Mock Get-ADOPSConnection -ModuleName Maester { @{ Organization = $script:adoOrganization } }
+
+            Connect-Maester -Service Graph, AzureDevOps -WarningVariable adoWarnings -ErrorVariable adoErrors 3>$null
+
+            $adoErrors | Should -BeNullOrEmpty
+            ($adoWarnings -join "`n") | Should -Match 'No Azure DevOps organization specified'
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps').Status | Should -Be 'Connected'
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Microsoft Graph').Status | Should -Be 'Connected'
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+        }
+
+        It 'Skips without disconnecting when no organization is given and the persisted ADOPS session no longer works' {
+            # Get-ADOPSConnection reads ~/.ADOPS/Config.json, which can name an organization whose token is gone.
+            Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -contains 'ADOPS' }
+            Mock Get-ADOPSConnection -ModuleName Maester { @{ Organization = 'stale-org' } }
+            Mock Invoke-ADOPSRestMethod -ModuleName Maester { throw 'TF400813: The user is not authorized to access this resource.' }
+
+            Connect-Maester -Service AzureDevOps -ErrorVariable adoErrors -ErrorAction SilentlyContinue
+
+            # The probe's own caught exception is also recorded in -ErrorVariable, so look for the one Connect-Maester writes.
+            @($adoErrors | Where-Object { "$_" -match 'No Azure DevOps organization specified' }).Count | Should -Be 1
+            ($script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps').Status | Should -Be 'Skipped'
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            InModuleScope Maester { $__MtSession.AzureDevOpsConnectionCache | Should -Be 'NotConnected' }
+        }
+
+        It 'Disconnects the previous ADOPS session only when a new sign-in is attempted' {
+            $script:adoOrganization = 'old-org'
+            Mock Disconnect-ADOPS -ModuleName Maester { $script:adoOrganization = $null }
+            Mock Get-ADOPSConnection -ModuleName Maester {
+                if ($script:adoOrganization) { @{ Organization = $script:adoOrganization } }
+            }
+
+            Connect-Maester -Service AzureDevOps -AzureDevOpsOrganization 'new-org'
+
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 1 -Exactly
+            Should -Invoke Connect-ADOPS -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'new-org' }
+            $script:adoOrganization | Should -BeNullOrEmpty
         }
 
         It 'Reports the actual failure when <MissingCommand> is unavailable despite ADOPS being installed' -ForEach @(
@@ -736,6 +835,7 @@ Describe 'Connect-Maester Azure DevOps' {
             $adoErrors.Count | Should -Be 1
             "$($adoErrors[0])" | Should -Match 'AzureDevOpsOrganization'
             Should -Invoke Connect-ADOPS -ModuleName Maester -Times 0 -Exactly
+            Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
             ($script:connectionSummaryRows | Where-Object Service -eq 'Azure DevOps').Status | Should -Be 'Skipped'
         }
     }
