@@ -1,15 +1,15 @@
 ﻿function Test-MtCisaImpersonationTip {
     <#
     .SYNOPSIS
-    Checks state of preset security policies
+    Checks user safety tips in anti-phishing policies
 
     .DESCRIPTION
-    Impersonation protection checks SHOULD be used.
+    User warnings comparable to EOP safety tips SHOULD be enabled on an effective policy that applies to all recipients.
 
     .EXAMPLE
     Test-MtCisaImpersonationTip
 
-    Returns true if standard and strict protection is on
+    Returns true if an all-recipient preset policy or custom policy enables all required user safety tips.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaImpersonationTip
@@ -35,59 +35,53 @@
     [OutputType([bool])]
     param()
 
-    $policies = Get-MtExo -Request AntiPhishPolicy
-
-    $resultPolicies = $policies | Where-Object { `
-        $_.Enabled -and `
-        $_.EnableSimilarDomainsSafetyTips -and `
-        $_.EnableSimilarUsersSafetyTips -and `
-        $_.EnableUnusualCharactersSafetyTips
-    }
-
-    $standard = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Standard"
-    }
-
-    $strict = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Strict"
-    }
-
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
+    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
+    $requiredTips = @(
+        'EnableFirstContactSafetyTips',
+        'EnableSimilarUsersSafetyTips',
+        'EnableSimilarDomainsSafetyTips',
+        'EnableUnusualCharactersSafetyTips',
+        'EnableViaTag',
+        'EnableUnauthenticatedSender'
+    )
+    $customPolicies = @(
+        $policies | Where-Object {
+            $policy = $_
+            $missingTips = @($requiredTips | Where-Object { -not $policy.$_ })
+            $policy.Identity -notmatch '(?i)(Standard|Strict) Preset Security Policy' -and
+            $missingTips.Count -eq 0
+        }
+    )
+    $presetPolicies = @(
+        $policies | Where-Object { $_.Identity -match '(?i)(Standard|Strict) Preset Security Policy' }
+    )
+    $testResult = $customPolicies.Count -gt 0 -or $presetPolicies.Count -gt 0
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. User safety tips are enabled by an all-recipient preset policy or a custom anti-phishing policy. [Review anti-phishing policies]($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Enable all required user safety tips in a custom anti-phishing policy that applies to all recipients, or ensure an all-recipient Standard or Strict preset policy is enabled. [Review anti-phishing policies]($portalLink).`n`n%TestResult%"
     }
 
-    $result = "| Policy | Status |`n"
-    $result += "| --- | --- |`n"
-    if ($standard) {
-        $result += "| Standard | $passResult |`n"
-    } else {
-        $result += "| Standard | $failResult |`n"
-    }
-    if ($strict) {
-        $result += "| Strict | $passResult |`n`n"
-    } else {
-        $result += "| Strict | $failResult |`n`n"
-    }
-
-    $result += "| Policy Name | Result |`n"
-    $result += "| --- | --- |`n"
-    foreach($item in $policies | Sort-Object -Property Identity){
-        if($item.Guid -in $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $($passResult) |`n"
-        }else{
-            $result += "| $($item.Identity) | $($failResult) |`n"
+    $policyResults = foreach ($policy in $policies | Sort-Object -Property Identity) {
+        $missingTips = @($requiredTips | Where-Object { -not $policy.$_ })
+        if ($policy.Identity -match '(?i)(Standard|Strict) Preset Security Policy') {
+            "- **$($policy.Identity):** preset policy applies to all recipients."
+        } elseif ($missingTips.Count -eq 0) {
+            "- **$($policy.Identity):** all required safety tips are enabled."
+        } else {
+            "- **$($policy.Identity):** missing $($missingTips -join ', ')."
         }
     }
+    if ($presetPolicies.Count -gt 0) {
+        $policyResults += '- An enabled Standard or Strict preset policy rule covers all recipients.'
+    } elseif ($policyResults.Count -eq 0) {
+        $policyResults = @('No all-recipient anti-phishing policy was found.')
+    }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', ($policyResults -join "`n")
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

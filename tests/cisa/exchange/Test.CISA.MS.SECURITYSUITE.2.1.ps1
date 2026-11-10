@@ -4,12 +4,15 @@
     Checks impersonation protection for configured sensitive users
 
     .DESCRIPTION
-    User impersonation protection SHOULD be enabled for sensitive accounts.
+    User impersonation protection SHOULD be enabled for every configured sensitive account.
+
+    .PARAMETER SensitiveUsers
+    Sensitive users to require in the policy, as email addresses or display name and email separated by a semicolon.
 
     .EXAMPLE
     Test-MtCisaImpersonation
 
-    Returns true if sensitive-user protection is enabled and at least one protected account is configured.
+    Returns true if one enabled policy covering all recipients protects every configured sensitive user.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaImpersonation
@@ -33,61 +36,79 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        [string[]] $SensitiveUsers = @()
+    )
 
-    $policies = Get-MtExo -Request AntiPhishPolicy
+    $configuredUsers = @(
+        $SensitiveUsers |
+            ForEach-Object {
+                $parts = ([string]$_).Split(';', 2)
+                $email = if ($parts.Count -gt 1) { $parts[1] } else { $parts[0] }
+                $email.Trim().ToLowerInvariant()
+            } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            Select-Object -Unique
+    )
 
-    $resultPolicies = $policies | Where-Object { `
-        $_.Enabled -and `
-        $_.ImpersonationProtectionState -eq "Automatic" -and `
-        $_.EnableOrganizationDomainsProtection -and `
-        $_.EnableTargetedDomainsProtection -and `
-        $_.EnableTargetedUserProtection -and `
-        @($_.TargetedUsersToProtect | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }).Count -gt 0
-    }
+    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
+    $resultPolicies = @(
+        $policies | Where-Object {
+            $protectedUsers = @(
+                $_.TargetedUsersToProtect |
+                    ForEach-Object {
+                        $parts = ([string]$_).Split(';', 2)
+                        $email = if ($parts.Count -gt 1) { $parts[1] } else { $parts[0] }
+                        $email.Trim().ToLowerInvariant()
+                    } |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                    Select-Object -Unique
+            )
+            $missingUsers = @($configuredUsers | Where-Object { $_ -notin $protectedUsers })
+            $action = ([string]$_.TargetedUserProtectionAction).Trim().ToLowerInvariant()
 
-    $standard = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Standard"
-    }
-
-    $strict = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Strict"
-    }
-
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
+            $configuredUsers.Count -gt 0 -and
+            $_.EnableTargetedUserProtection -eq $true -and
+            -not [string]::IsNullOrWhiteSpace($action) -and
+            $action -notin @('noaction', 'bccmessage') -and
+            $missingUsers.Count -eq 0
+        }
+    )
+    $testResult = $resultPolicies.Count -gt 0
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [impersonation protection enabled for configured sensitive users]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. An enabled anti-phishing policy applying to all recipients protects every configured sensitive user. [Review anti-phishing policies]($portalLink).`n`n%TestResult%"
+    } elseif ($configuredUsers.Count -eq 0) {
+        $testResultMarkdown = "Configure the SensitiveUsers parameter with the agency's sensitive accounts, then enable user impersonation protection for each one in an anti-phishing policy that applies to all recipients. [Review anti-phishing policies]($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [impersonation protection enabled for configured sensitive users]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Enable user impersonation protection for every configured sensitive user in an anti-phishing policy that applies to all recipients, using an action other than NoAction or BccMessage. [Review anti-phishing policies]($portalLink).`n`n%TestResult%"
     }
 
-    $result = "| Policy | Status |`n"
-    $result += "| --- | --- |`n"
-    if ($standard) {
-        $result += "| Standard | $passResult |`n"
+    $result = if ($configuredUsers.Count -eq 0) {
+        "No sensitive users are configured for this test."
+    } elseif ($policies.Count -eq 0) {
+        "No enabled anti-phishing policy covering all recipients was found."
     } else {
-        $result += "| Standard | $failResult |`n"
-    }
-    if ($strict) {
-        $result += "| Strict | $passResult |`n`n"
-    } else {
-        $result += "| Strict | $failResult |`n`n"
-    }
-
-    $result += "| Policy Name | Sensitive users protected | Result |`n"
-    $result += "| --- | --- | --- |`n"
-    foreach($item in $policies | Sort-Object -Property Identity){
-        $targetedUsers = @($item.TargetedUsersToProtect | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
-        if($item.Guid -in $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $($targetedUsers.Count) | $($passResult) |`n"
-        }else{
-            $result += "| $($item.Identity) | $($targetedUsers.Count) | $($failResult) |`n"
+        $policyResults = foreach ($policy in $policies | Sort-Object -Property Identity) {
+            $targetedUsers = @(
+                $policy.TargetedUsersToProtect |
+                    ForEach-Object {
+                        $parts = ([string]$_).Split(';', 2)
+                        $email = if ($parts.Count -gt 1) { $parts[1] } else { $parts[0] }
+                        $email.Trim().ToLowerInvariant()
+                    } |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+                    Select-Object -Unique
+            )
+            $missingUsers = @($configuredUsers | Where-Object { $_ -notin $targetedUsers })
+            $status = if ($policy.Identity -in $resultPolicies.Identity) { $passResult } else { $failResult }
+            "- **$($policy.Identity):** $status; configured users missing from protection: $(if ($missingUsers.Count -gt 0) { $missingUsers -join ', ' } else { 'none' })."
         }
+        $policyResults -join "`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

@@ -1,17 +1,11 @@
-User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.
+User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed for all recipients.
 
 Rationale: Many tasks are better suited for automated processes, such as identifying unusual characters in the `FROM` address or identifying a first-time sender. User warnings can handle these tasks, reducing the burden on end users and the risk of successful phishing attempts.
 
 #### Remediation action
 
-1. Sign in to **Microsoft 365 Defender**.
-2. In the left-hand menu, go to **Email & Collaboration** > **Policies & Rules**.
-3. Select **Threat Policies**.
-4. From the **Templated policies** section, select **Preset Security Policies**.
-5. Under **Standard protection**, slide the toggle switch to the right so the text next to the toggle reads **Standard protection is on**.
-6. Under **Strict protection**, slide the toggle switch to the right so the text next to the toggle reads **Strict protection is on**.
-
-Note: If the toggle slider in step 5 is grayed out, click on **Manage protection settings** instead and configure the policy settings according to [Use the Microsoft 365 Defender portal to assign Standard and Strict preset security policies to users | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/preset-security-policies?view=o365-worldwide#use-the-microsoft-365-defender-portal-to-assign-standard-and-strict-preset-security-policies-to-users).
+1. Sign in to the [Microsoft Defender anti-phishing policies page](https://security.microsoft.com/antiphishing).
+2. Enable first-contact, similar-user, similar-domain, unusual-character, via-tag, and unauthenticated-sender safety tips in an enabled custom anti-phishing policy that applies to all recipients; or enable an all-recipient Standard or Strict preset policy.
 
 #### Related links
 

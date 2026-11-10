@@ -47,14 +47,15 @@
             Select-Object -Unique
     )
     $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
-    $allowedActions = @('MoveToJmf', 'Quarantine', 'Redirect', 'Delete')
     $compliantPolicies = @(
         $policies | Where-Object {
             $policy = $_
             $targetDomains = @($policy.TargetedDomainsToProtect | ForEach-Object { ([string]$_).Trim().ToLowerInvariant() })
             $missingDomains = @($configuredDomains | Where-Object { $_ -notin $targetDomains })
+            $action = ([string]$policy.TargetedDomainProtectionAction).Trim().ToLowerInvariant()
             $_.EnableTargetedDomainsProtection -eq $true -and
-            $_.TargetedDomainProtectionAction -in $allowedActions -and
+            -not [string]::IsNullOrWhiteSpace($action) -and
+            $action -notin @('noaction', 'bccmessage') -and
             $missingDomains.Count -eq 0
         }
     )
@@ -64,8 +65,10 @@
     $result += "| --- | --- | --- | --- |`n"
     foreach ($policy in $policies | Sort-Object -Property Identity) {
         $targetDomains = @($policy.TargetedDomainsToProtect | ForEach-Object { ([string]$_).Trim().ToLowerInvariant() })
+        $action = ([string]$policy.TargetedDomainProtectionAction).Trim().ToLowerInvariant()
         $protected = $policy.EnableTargetedDomainsProtection -eq $true -and
-            $policy.TargetedDomainProtectionAction -in $allowedActions -and
+            -not [string]::IsNullOrWhiteSpace($action) -and
+            $action -notin @('noaction', 'bccmessage') -and
             $configuredDomains.Count -gt 0 -and
             @($configuredDomains | Where-Object { $_ -notin $targetDomains }).Count -eq 0
         $status = if ($protected) { '✅ Pass' } else { '❌ Fail' }

@@ -36,11 +36,12 @@
     param()
 
     $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
-    $allowedActions = @('MoveToJmf', 'Quarantine', 'Redirect', 'Delete')
     $compliantPolicies = @(
         $policies | Where-Object {
+            $action = ([string]$_.TargetedDomainProtectionAction).Trim().ToLowerInvariant()
             $_.EnableOrganizationDomainsProtection -eq $true -and
-            $_.TargetedDomainProtectionAction -in $allowedActions
+            -not [string]::IsNullOrWhiteSpace($action) -and
+            $action -notin @('noaction', 'bccmessage')
         }
     )
     $testResult = $compliantPolicies.Count -gt 0
@@ -50,7 +51,8 @@
     foreach ($policy in $policies | Sort-Object -Property Identity) {
         $enabled = $policy.EnableOrganizationDomainsProtection -eq $true
         $action = if ($policy.TargetedDomainProtectionAction) { $policy.TargetedDomainProtectionAction } else { 'Not configured' }
-        $status = if ($enabled -and $policy.TargetedDomainProtectionAction -in $allowedActions) { '✅ Pass' } else { '❌ Fail' }
+        $actionValue = ([string]$policy.TargetedDomainProtectionAction).Trim().ToLowerInvariant()
+        $status = if ($enabled -and -not [string]::IsNullOrWhiteSpace($actionValue) -and $actionValue -notin @('noaction', 'bccmessage')) { '✅ Pass' } else { '❌ Fail' }
         $result += "| $($policy.Identity) | $(if ($enabled) { 'Enabled' } else { 'Disabled' }) | $action | $status |`n"
     }
 

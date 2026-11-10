@@ -55,6 +55,14 @@ $ManualOverrides = [ordered]@{
     # Pre-colon names of the split checks; the current titles say 'Global Administrator' and both call one function.
     'MT.1050 Apps with high-risk permissions having a direct path to Global Admin'                                                = 'MT.1050'
     'MT.1051 Apps with high-risk permissions having an indirect path to Global Admin'                                             = 'MT.1051'
+    'CISA.MS.EXO.11.1'                                                                                                            = 'CISA.MS.SECURITYSUITE.2.1'
+    'CISA.MS.EXO.11.2'                                                                                                            = 'CISA.MS.SECURITYSUITE.2.4'
+    'CISA.MS.EXO.16.1'                                                                                                            = 'CISA.MS.SECURITYSUITE.4.1'
+    'CISA.MS.EXO.16.2'                                                                                                            = 'CISA.MS.SECURITYSUITE.4.2'
+    'MS.EXO.11.1'                                                                                                                 = 'CISA.MS.SECURITYSUITE.2.1'
+    'MS.EXO.11.2'                                                                                                                 = 'CISA.MS.SECURITYSUITE.2.4'
+    'MS.EXO.16.1'                                                                                                                 = 'CISA.MS.SECURITYSUITE.4.1'
+    'MS.EXO.16.2'                                                                                                                 = 'CISA.MS.SECURITYSUITE.4.2'
     # Mock-based unit tests that briefly lived under tests/; they were never security checks.
     'MFA for All users should pass even if not targeting guests'                                                                   = 'retired'
     'MFA for All users that excludes any guest type should fail'                                                                   = 'retired'
@@ -276,11 +284,19 @@ foreach ($c in $currentIds.Values) {
 }
 #endregion Current IDs
 
+# Native tests are current checks that replaced Pester tests.
+$nativeIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+$nativeTestFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
+    Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' }
+foreach ($file in $nativeTestFiles) {
+    $null = $nativeIds.Add($file.BaseName.Substring('Test.'.Length))
+}
+
 #region Map
 $entries = [System.Collections.Generic.List[object]]::new()
 $review = [System.Collections.Generic.List[string]]::new()
 foreach ($record in $history.Values) {
-    if ($currentIds.ContainsKey($record.Id)) { continue }
+    if ($currentIds.ContainsKey($record.Id) -or $nativeIds.Contains($record.Id)) { continue }
     if ($record.Id -in $GenericIds) { continue }
 
     $titleCandidates = [System.Collections.Generic.SortedSet[string]]::new()
@@ -294,7 +310,13 @@ foreach ($record in $history.Values) {
     foreach ($rename in $PrefixRenames) {
         if ($record.Id.StartsWith($rename.Old, [System.StringComparison]::OrdinalIgnoreCase)) {
             $target = $rename.New + $record.Id.Substring($rename.Old.Length)
-            if ($currentIds.ContainsKey($target)) { $prefixTarget = $currentIds[$target].Id; break }
+            if ($currentIds.ContainsKey($target)) {
+                $prefixTarget = $currentIds[$target].Id
+                break
+            } elseif ($nativeIds.Contains($target)) {
+                $prefixTarget = $target
+                break
+            }
         }
     }
 
@@ -323,7 +345,7 @@ foreach ($record in $history.Values) {
         $review.Add("AMBIGUOUS $($record.Id): function -> $($functionCandidates -join '|')")
     }
 
-    if ($currentId -ne 'retired' -and -not $currentIds.ContainsKey($currentId)) {
+    if ($currentId -ne 'retired' -and -not ($currentIds.ContainsKey($currentId) -or $nativeIds.Contains($currentId))) {
         throw "Mapping for '$($record.Id)' targets '$currentId', which is not a current ID."
     }
     $entries.Add([ordered]@{

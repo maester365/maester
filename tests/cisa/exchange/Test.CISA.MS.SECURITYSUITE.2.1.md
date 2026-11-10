@@ -1,18 +1,15 @@
-User impersonation protection SHOULD be enabled for sensitive accounts.
+User impersonation protection SHOULD be enabled for all sensitive accounts that the agency configures.
 
-Rationale: Users might not be able to reliably identify phishing emails, especially if the `FROM` address is nearly indistinguishable from that of a known entity. By automatically identifying senders who appear to be impersonating known senders, the risk of a successful phishing attempt can be reduced.
+Rationale: Users might not be able to reliably identify phishing emails, especially if the `FROM` address is nearly indistinguishable from that of a known entity. By automatically identifying senders who appear to be impersonating known senders, the risk of a successful phishing attempt can be reduced. The check compares the configured sensitive-user list with the users protected by an enabled, all-recipient anti-phishing policy.
 
 #### Remediation action
 
-1. Sign in to **Microsoft 365 Defender**.
-2. In the left-hand menu, go to **Email & Collaboration** > **Policies & Rules**.
-3. Select **Threat Policies**.
-4. From the **Templated policies** section, select **Preset Security Policies**.
-5. Under **Standard protection**, slide the toggle switch to the right so the text next to the toggle reads **Standard protection is on**.
-6. Under **Strict protection**, slide the toggle switch to the right so the text next to the toggle reads **Strict protection is on**.
-7. In the default anti-phishing policy, enable user impersonation protection and add the organization's sensitive accounts to **Users to protect**. Standard and strict preset policies alone do not identify which accounts the organization considers sensitive.
+1. Set the test's `SensitiveUsers` parameter to the agency's sensitive account email addresses. An entry may also be written as `Display Name;email@agency.gov`.
+2. Sign in to the [Microsoft Defender anti-phishing policies page](https://security.microsoft.com/antiphishing).
+3. In an enabled anti-phishing policy that applies to all recipients, enable **User impersonation protection** and add every configured account under **Users to protect**.
+4. Choose an action other than **No action** or **Bcc message**, then save the policy.
 
-Note: If the toggle slider in step 5 is grayed out, click on **Manage protection settings** instead and configure the policy settings according to [Use the Microsoft 365 Defender portal to assign Standard and Strict preset security policies to users | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/preset-security-policies?view=o365-worldwide#use-the-microsoft-365-defender-portal-to-assign-standard-and-strict-preset-security-policies-to-users).
+An empty `SensitiveUsers` list is not treated as evidence of compliance.
 
 #### Related links
 
