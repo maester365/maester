@@ -1,4 +1,4 @@
-﻿function Get-MtADDomainState {
+function Get-MtADDomainState {
     <#
     .SYNOPSIS
     Collects Active Directory domain state information.
@@ -33,7 +33,7 @@
     are collected (legacy behavior). Dependencies are automatically resolved and
     collected first. Valid values: Domain, FineGrainedPasswordPolicies, Forest,
     Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites,
-    Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts,
+    Subnets, OptionalFeatures, ReplicationConnections, ReplicationPartitions, DfsrSubscriptions, Trusts,
     OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers,
     DaclEntries.
 
@@ -76,7 +76,7 @@
         [ValidateRange(1, 1000000)]
         [int]$MaxRecordCount = 10000,
 
-        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'Schema', 'Printers', 'DaclEntries')]
+        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'ReplicationPartitions', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'Schema', 'Printers', 'DaclEntries')]
         [string[]]$Categories
     )
 
@@ -218,6 +218,15 @@
             Collector    = {
                 $result = [ordered]@{}
                 $result['ReplicationConnections'] = @(Get-MtLdapReplicationConnection -Connection $protocolConnection -ConfigurationNamingContext $protocolRootDse.ConfigurationNamingContext)
+                return $result
+            }
+        }
+        ReplicationPartitions = @{
+            Properties   = @('ReplicationPartitionState')
+            Dependencies = @()
+            Collector    = {
+                $result = [ordered]@{}
+                $result['ReplicationPartitionState'] = Get-MtLdapReplicationPartitionState -Connection $protocolConnection -RootDse $protocolRootDse
                 return $result
             }
         }
@@ -542,6 +551,7 @@
         'Subnets',
         'OptionalFeatures',
         'ReplicationConnections',
+        'ReplicationPartitions',
         'DfsrSubscriptions',
         'Trusts',
         'OrganizationalUnits',
@@ -614,6 +624,7 @@
         ProtocolEvidence       = $null
         CollectionMode         = $null
         ReplicationConnections = @()
+        ReplicationPartitionState = $null
         DfsrSubscriptions      = @()
         Trusts                 = @()
         OrganizationalUnits    = @()
