@@ -160,7 +160,7 @@
                 $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
                     Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
                 if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted."
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted. Generate affected objects with Invoke-Maester -IncludeAffectedObjects."
                 }
             }
         }

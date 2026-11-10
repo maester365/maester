@@ -736,7 +736,8 @@ function New-MtResultConfig {
         $entry = [ordered]@{ Id = $row.Id; Title = $row.Title; Severity = $row.Severity }
         $default = if ($row.ParentId -and $catalog.ContainsKey($row.ParentId)) { $catalog[$row.ParentId].Severity } elseif ($catalog.ContainsKey($row.Id)) { $catalog[$row.Id].Severity } else { $null }
         if ($default) { $entry.DefaultSeverity = $default }
-        $user = if ($detached.TestSettingsHash) { $detached.TestSettingsHash.PSObject.Properties[$row.Id].Value } else { $null }
+        $userProperty = if ($detached.TestSettingsHash) { $detached.TestSettingsHash.PSObject.Properties[$row.Id] } else { $null }
+        $user = if ($null -ne $userProperty) { $userProperty.Value } else { $null }
         if ($user) {
             foreach ($p in $user.PSObject.Properties) { if ($p.Name -notin 'Id', 'Title', 'Severity') { $entry[$p.Name] = $p.Value } }
         }

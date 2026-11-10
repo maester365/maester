@@ -48,6 +48,27 @@ Describe 'Sensitive settings in result configuration' {
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 
+    It 'Preserves configured values while allowing native rows without a user setting' {
+        $script:config.TestSettingsHash = @{
+            'Custom.Configured' = [pscustomobject]@{ Id = 'Custom.Configured'; CustomValue = @('one', 'two') }
+        }
+        $before = $script:config | ConvertTo-Json -Depth 30 -Compress
+        $out = InModuleScope Maester -Parameters @{ Config = $script:config } {
+            $rows = @(
+                [pscustomobject]@{ Id = 'Custom.Configured'; Title = 'Configured'; Severity = 'Low'; ParentId = $null }
+                [pscustomobject]@{ Id = 'Custom.Unconfigured'; Title = 'Unconfigured'; Severity = 'Medium'; ParentId = $null }
+            )
+            New-MtResultConfig -RunConfig $Config -NativeRows $rows -Rows $rows
+        }
+        $out.TestSettings.Count | Should -Be 2
+        $out.TestSettings[0].CustomValue | Should -Be @('one', 'two')
+        $out.TestSettings[1].Id | Should -Be 'Custom.Unconfigured'
+        $out.TestSettings[1].Severity | Should -Be 'Medium'
+        $out.TestSettings[1].PSObject.Properties.Name | Should -Not -Contain 'CustomValue'
+        $out.TestSettings[0].CustomValue[0] = 'changed'
+        ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
+    }
+
     It 'Uses registry sensitivity rather than a hard-coded setting name' {
         InModuleScope Maester -Parameters @{ Config = $script:config } {
             $saved = $script:__MtSettingsRegistry
