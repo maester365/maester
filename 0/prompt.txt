@@ -1,0 +1,35 @@
+can you run this locally https://github.com/maester365/maester/pull/2678/
+
+---
+
+revew this pr, is it good to merge. are the docs in a way they make sense...
+
+---
+
+lets fix the install guide (do we need the isntall guide, is ther eanyhint it has that is not in getting started?)
+
+---
+
+should we fix the home page to point to the new get started?
+
+---
+
+push it into this one.
+
+also on this section: It is free. Who supports it? Maester is an open-source project maintained by a community of Microsoft security practitioners, with the source on GitHub. There is no vendor support contract. Because it only reads configuration and runs in your own environment, the operational risk of a fault is low: the worst case is a run that fails or a test that reports the wrong result, which you can turn off.
+
+should we point a link to Maester Cloud and say for orgs that need formal support please see Maester Cloud..?
+
+---
+
+<task-notification>
+<task-id>bjwe99074</task-id>
+<tool-use-id>toolu_01WdSrtkHdMq4jP2oDAZM12j</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/35cd740a-abd9-44a3-ad9e-fcdca50f2a1b/tasks/bjwe99074.output</output-file>
+<status>completed</status>
+<summary>Background command "Build the website and run the URL contract check" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+The integration of Microsoft Zero Trust is an important one in MAester. I feel the Getting started should include that as a recommendation if they are looking for a comprehensive check of their tenant
