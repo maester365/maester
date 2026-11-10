@@ -18,12 +18,14 @@ Describe 'Get-MtLdapReplicationPartitionState' {
             NamingContexts = @('DC=contoso,DC=com','CN=Configuration,DC=contoso,DC=com','CN=Schema,CN=Configuration,DC=contoso,DC=com','DC=DomainDnsZones,DC=contoso,DC=com','DC=ForestDnsZones,DC=contoso,DC=com')
         }
     }
-    It 'reports five readable core naming contexts' {
+    It 'reports three mandatory core contexts and two advertised DNS application partitions' {
         $state = Get-MtLdapReplicationPartitionState -Connection ([PSCustomObject]@{}) -RootDse $script:RootDse
         $state.AdvertisedCount | Should -Be 5
         $state.ReadableCount | Should -Be 5
         $state.UnreadableCount | Should -Be 0
         $state.MissingExpectedCount | Should -Be 0
+        $state.ExpectedCoreNamingContexts.Count | Should -Be 3
+        $state.AdvertisedDnsApplicationPartitionCount | Should -Be 2
     }
     It 'preserves additional application partitions without failing the core set' {
         $script:RootDse.NamingContexts += 'DC=AppPartition,DC=contoso,DC=com'
@@ -37,10 +39,18 @@ Describe 'Get-MtLdapReplicationPartitionState' {
         $state.UnreadableCount | Should -Be 1
         $state.PartitionResults | Where-Object { -not $_.Readable } | Select-Object -ExpandProperty NamingContext | Should -Be 'DC=DomainDnsZones,DC=contoso,DC=com'
     }
-    It 'reports a missing expected core naming context separately from readability' {
+    It 'does not fail when a DNS application partition is not hosted by the assessed DC' {
         $script:RootDse.NamingContexts = @($script:RootDse.NamingContexts | Where-Object { $_ -notlike 'DC=ForestDnsZones,*' })
         $state = Get-MtLdapReplicationPartitionState -Connection ([PSCustomObject]@{}) -RootDse $script:RootDse
+        $state.MissingExpectedCount | Should -Be 0
+        $state.UnreadableCount | Should -Be 0
+        ($state.DnsApplicationPartitions | Where-Object Name -eq 'ForestDnsZones').Status | Should -Be 'NotAdvertisedOnAssessedDc'
+    }
+    It 'reports a missing mandatory core naming context separately from readability' {
+        $script:RootDse.NamingContexts = @($script:RootDse.NamingContexts | Where-Object { $_ -notlike 'CN=Schema,*' })
+        $state = Get-MtLdapReplicationPartitionState -Connection ([PSCustomObject]@{}) -RootDse $script:RootDse
         $state.MissingExpectedCount | Should -Be 1
+        $state.MissingExpectedNamingContexts | Should -Contain 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
         $state.UnreadableCount | Should -Be 0
     }
 }

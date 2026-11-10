@@ -24,11 +24,20 @@ function Get-MtLdapReplicationPartitionState {
     foreach ($value in @($RootDse.DefaultNamingContext,$RootDse.ConfigurationNamingContext,$RootDse.SchemaNamingContext)) {
         if (-not [string]::IsNullOrWhiteSpace([string]$value)) { $expected.Add([string]$value) | Out-Null }
     }
-    if (-not [string]::IsNullOrWhiteSpace([string]$RootDse.DefaultNamingContext)) {
-        $expected.Add("DC=DomainDnsZones,$($RootDse.DefaultNamingContext)") | Out-Null
-    }
-    if (-not [string]::IsNullOrWhiteSpace([string]$RootDse.RootDomainNamingContext)) {
-        $expected.Add("DC=ForestDnsZones,$($RootDse.RootDomainNamingContext)") | Out-Null
+    # DNS application partitions do not replicate to every domain controller. Keep them observable,
+    # but do not make their absence a core-partition failure for a DC that does not advertise them.
+    $dnsApplicationPartitions = [System.Collections.Generic.List[object]]::new()
+    foreach ($definition in @(
+        [PSCustomObject]@{ Name = 'DomainDnsZones'; NamingContext = if ($RootDse.DefaultNamingContext) { "DC=DomainDnsZones,$($RootDse.DefaultNamingContext)" } else { $null } },
+        [PSCustomObject]@{ Name = 'ForestDnsZones'; NamingContext = if ($RootDse.RootDomainNamingContext) { "DC=ForestDnsZones,$($RootDse.RootDomainNamingContext)" } else { $null } }
+    )) {
+        if ([string]::IsNullOrWhiteSpace([string]$definition.NamingContext)) { continue }
+        $dnsApplicationPartitions.Add([PSCustomObject][ordered]@{
+            Name = $definition.Name
+            NamingContext = $definition.NamingContext
+            Advertised = $definition.NamingContext -in $advertised
+            Status = if ($definition.NamingContext -in $advertised) { 'Advertised' } else { 'NotAdvertisedOnAssessedDc' }
+        }) | Out-Null
     }
 
     $partitionResults = [System.Collections.Generic.List[object]]::new()
@@ -60,6 +69,9 @@ function Get-MtLdapReplicationPartitionState {
         AdvertisedNamingContexts = $advertised
         ExpectedCoreNamingContexts = $expectedUnique
         MissingExpectedNamingContexts = $missingExpected
+        DnsApplicationPartitions = @($dnsApplicationPartitions)
+        AdvertisedDnsApplicationPartitionCount = @($dnsApplicationPartitions | Where-Object Advertised).Count
+        UnadvertisedDnsApplicationPartitionCount = @($dnsApplicationPartitions | Where-Object { -not $_.Advertised }).Count
         PartitionResults = @($partitionResults)
         AdvertisedCount = $advertised.Count
         ReadableCount = @($partitionResults | Where-Object Readable).Count

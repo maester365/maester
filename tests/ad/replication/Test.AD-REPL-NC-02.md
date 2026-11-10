@@ -1,12 +1,15 @@
-A functioning Active Directory domain normally exposes its domain, configuration, schema, DomainDnsZones, and ForestDnsZones naming contexts. Missing core partitions can affect directory configuration, schema visibility, or AD-integrated DNS replication.
+Every assessed domain controller should advertise the mandatory domain, configuration, and schema naming contexts. A missing mandatory partition can affect directory data, configuration, or schema visibility.
 
-#### Remediation action
-1. Confirm the assessed domain controller is advertising its default, configuration, schema, DomainDnsZones, and ForestDnsZones naming contexts.
-2. Use `repadmin /showrepl`, `dcdiag /test:dns`, and DNS Manager to validate missing DNS application partitions.
-3. Confirm the domain controller is enlisted in the expected application partitions before changing directory configuration.
-4. Treat additional application partitions as valid unless independent evidence shows they are stale or unauthorized.
+`DomainDnsZones` and `ForestDnsZones` are Active Directory application partitions. They do not replicate to every domain controller, so this test reports whether they are advertised by the assessed DC without treating an unhosted DNS partition as a replication failure.
 
-#### Related links
+##### Remediation action
+- Investigate any missing domain, configuration, or schema naming context on the assessed domain controller.
+- Validate the affected DC with `repadmin /showrepl`, Event Viewer, and a base-scope LDAP read.
+- Review DNS application-partition enlistment separately with `dnscmd /enumdirectorypartitions` and `dnscmd /enumdirectorypartition` when the server is expected to host AD-integrated DNS.
+- Do not enlist or remove a DC from an application partition solely because it is not advertised; confirm DNS-server role and intended replication scope first.
+
+##### Related links
 - [Microsoft Learn: Active Directory partitions](https://learn.microsoft.com/windows-server/identity/ad-ds/plan/active-directory-logical-structure)
-<!--- Results --->
+- [Microsoft Learn: Application directory partitions](https://learn.microsoft.com/windows/win32/ad/about-application-directory-partitions)
+
 %TestResult%
