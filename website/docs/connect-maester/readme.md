@@ -258,7 +258,7 @@ If `ADOPS` is not installed, `Connect-Maester` warns you and still connects the 
 
 If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
 
-See the [installation guide](../installation.md#installing-azure-devops-powershell-module) for prerequisites and permissions, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
+See the [installation guide](../installation.md#azure-devops) for the permissions the tests need, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 
