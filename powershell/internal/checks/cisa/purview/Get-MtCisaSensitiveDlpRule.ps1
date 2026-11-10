@@ -26,7 +26,7 @@
             }
     )
 
-    $fullProtectionRules = foreach ($rule in $rules) {
+    $sensitiveRules = foreach ($rule in $rules) {
         if ($rule.Disabled -ne $false) {
             continue
         }
@@ -39,7 +39,7 @@
         }
 
         $matchedTypes = [System.Collections.Generic.List[string]]::new()
-        if ($rule.IsAdvancedRule -ne $true) {
+        if ($rule.IsAdvancedRule -eq $false) {
             foreach ($contentType in @($rule.ContentContainsSensitiveInformation)) {
                 $contentName = if ($contentType -is [string]) {
                     $contentType
@@ -57,7 +57,7 @@
             }
         }
 
-        if ($rule.IsAdvancedRule -ne $false) {
+        elseif ($rule.IsAdvancedRule -eq $true) {
             $advancedRule = [string]$rule.AdvancedRule
             foreach ($sensitiveType in $sensitiveTypes) {
                 if (
@@ -70,13 +70,14 @@
             }
         }
 
-        if ($matchedTypes.Count -eq $sensitiveTypes.Count) {
+        if ($matchedTypes.Count -gt 0) {
             [pscustomobject]@{
-                Policy = $parentPolicy.Policy
-                Rule   = $rule
+                Policy         = $parentPolicy.Policy
+                Rule           = $rule
+                SensitiveTypes = [string[]]$matchedTypes.ToArray()
             }
         }
     }
 
-    return @($fullProtectionRules)
+    return @($sensitiveRules)
 }

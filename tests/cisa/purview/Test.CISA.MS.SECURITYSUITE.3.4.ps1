@@ -1,4 +1,4 @@
-﻿function Test-MtCisaDlpNotifiesUsers {
+﻿function Test-MtCisaDlpUserNotification {
     <#
     .SYNOPSIS
     Checks whether full-protection DLP rules notify users.
@@ -7,12 +7,12 @@
     DLP rules protecting credit card numbers, ITINs, and SSNs SHOULD notify users to help educate them on proper use of sensitive information.
 
     .EXAMPLE
-    Test-MtCisaDlpNotifiesUsers
+    Test-MtCisaDlpUserNotification
 
     Returns true when every non-disabled full-protection rule in an enabled policy notifies at least one user.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisaDlpNotifiesUsers
+    https://maester.dev/docs/tests/CISA.MS.SECURITYSUITE.3.4
     #>
     [MaesterTest(
         Id = 'CISA.MS.SECURITYSUITE.3.4',
@@ -34,7 +34,7 @@
     [OutputType([bool])]
     param()
 
-    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule)
+    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule | Where-Object { $_.SensitiveTypes.Count -eq 3 })
     $testResult = $fullProtectionRules.Count -gt 0 -and @(
         $fullProtectionRules | Where-Object { @($_.Rule.NotifyUser).Count -eq 0 }
     ).Count -eq 0

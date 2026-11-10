@@ -34,7 +34,7 @@
     [OutputType([bool])]
     param()
 
-    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule)
+    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule | Where-Object { $_.SensitiveTypes.Count -eq 3 })
     $testResult = $fullProtectionRules.Count -gt 0 -and @(
         $fullProtectionRules | Where-Object {
             $_.Rule.BlockAccess -ne $true -or $_.Rule.BlockAccessScope -ne 'All'

@@ -1,4 +1,4 @@
-﻿function Test-MtCisaDlpAllLocations {
+﻿function Test-MtCisaDlpLocationCoverage {
     <#
     .SYNOPSIS
     Checks whether sensitive-information DLP policies cover all required workloads.
@@ -7,12 +7,12 @@
     A DLP policy protecting credit card numbers, ITINs, and SSNs SHOULD cover Exchange, OneDrive, SharePoint, Teams, and Devices.
 
     .EXAMPLE
-    Test-MtCisaDlpAllLocations
+    Test-MtCisaDlpLocationCoverage
 
     Returns true when enabled policies with non-disabled full-protection rules cover every required workload and location.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisaDlpAllLocations
+    https://maester.dev/docs/tests/CISA.MS.SECURITYSUITE.3.2
     #>
     [MaesterTest(
         Id = 'CISA.MS.SECURITYSUITE.3.2',
@@ -34,7 +34,7 @@
     [OutputType([bool])]
     param()
 
-    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule)
+    $fullProtectionRules = @(Get-MtCisaSensitiveDlpRule | Where-Object { $_.SensitiveTypes.Count -eq 3 })
     $locations = @(
         [pscustomobject]@{ Name = 'Exchange'; Workload = 'Exchange'; Property = 'ExchangeLocation' }
         [pscustomobject]@{ Name = 'OneDrive'; Workload = 'OneDriveForBusiness'; Property = 'OneDriveLocation' }

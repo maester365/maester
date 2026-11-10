@@ -1,4 +1,4 @@
-﻿function Test-MtCisaDlpEndpointRestrictions {
+﻿function Test-MtCisaDlpEndpointRestriction {
     <#
     .SYNOPSIS
     Prompts review of manual endpoint DLP restrictions.
@@ -7,12 +7,12 @@
     The baseline's endpoint DLP requirement is manual and applies only when at least one device is onboarded to Defender for Endpoint. ScubaGear does not automate this assessment.
 
     .EXAMPLE
-    Test-MtCisaDlpEndpointRestrictions
+    Test-MtCisaDlpEndpointRestriction
 
     Returns an Investigate result with the manual verification steps.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisaDlpEndpointRestrictions
+    https://maester.dev/docs/tests/CISA.MS.SECURITYSUITE.3.5
     #>
     [MaesterTest(
         Id = 'CISA.MS.SECURITYSUITE.3.5',
