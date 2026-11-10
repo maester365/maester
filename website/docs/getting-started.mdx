@@ -30,19 +30,6 @@ Connect-Maester
 Invoke-Maester
 ```
 
-`Connect-Maester` connects to Microsoft Graph. That is enough for the Entra ID tests and most of the others. The
-Exchange Online, Teams and SharePoint tests need their own PowerShell modules, and SharePoint also needs an app
-registration whose client ID you pass with `-SharePointClientId`. [Installation](installation.mdx#optional-modules-and-permissions)
-covers both. Then connect to all the services:
-
-```powershell
-Connect-Maester -Service All -SharePointClientId '<Client ID>'
-Invoke-Maester
-```
-
-Tests for a service you have not connected to are reported as **Skipped**, with the reason, so you can tell which
-results are missing and why. See [Connect-Maester](connect-maester/readme.md).
-
 ### For a comprehensive check, add the Zero Trust Assessment
 
 For the most complete picture of your tenant, also run Microsoft's
@@ -52,7 +39,7 @@ same product and area.
 
 ```powershell
 Install-Module ZeroTrustAssessment -Scope CurrentUser
-Connect-Maester -Service All -SharePointClientId '<Client ID>'
+Connect-Maester
 Invoke-Maester -Pack ZTA
 ```
 
