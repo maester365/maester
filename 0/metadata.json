@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M72KQ8CFJEJ76HFR1P45ZPD0",
+  "session_id": "35cd740a-abd9-44a3-ad9e-fcdca50f2a1b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-10T11:33:04.627809Z",
+  "branch": "pr-2678",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "website/docs/connect-maester/connect-maester-advanced.mdx",
+    "website/docs/connect-maester/readme.md",
+    "website/docs/installation.mdx",
+    "website/docs/making-the-case.mdx",
+    "website/docs/multi-tenant/azure-devops-pipeline.md",
+    "website/docs/sections/create-entra-app.mdx",
+    "website/src/content/404.md",
+    "website/src/layouts/SiteLayout.astro",
+    "website/src/pages/index.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "43cb1ee5c439",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 140,
+    "cache_creation_tokens": 141780,
+    "cache_read_tokens": 9917021,
+    "output_tokens": 33141,
+    "api_call_count": 65
+  },
+  "redaction": {
+    "replacements": 564,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 561,
+      "key_context": 3,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}
