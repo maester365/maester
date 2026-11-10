@@ -10,7 +10,13 @@
     }
 
     BeforeEach {
-        $State = @{ Detail = $null; Investigate = $false; Listed = @(); Protected = @{}; ObjectById = @{} }
+        $State = @{
+            Detail = $null; Investigate = $false; Listed = @(); Protected = @{}; ObjectById = @{}; DeletedById = @{}
+        }
+        $NotFoundError = [System.Exception]::new('NotFound (Not Found).')
+        $NotFoundError | Add-Member -NotePropertyName Response -NotePropertyValue (
+            [pscustomobject]@{ StatusCode = [System.Net.HttpStatusCode]::NotFound }
+        )
 
         Mock -ModuleName Maester Get-MtSetting -MockWith { return $State.Listed }.GetNewClosure()
         Mock -ModuleName Maester Add-MtTestResultDetail -MockWith {
@@ -20,15 +26,14 @@
         }.GetNewClosure()
         Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
             param($RelativeUri)
+            if ($RelativeUri -match '^directory/deletedItems/microsoft\.graph\.[A-Za-z]+/[^/]+$') {
+                $deleted = $State.DeletedById[$RelativeUri.Split('/')[-1]]
+                if ($null -eq $deleted) { throw $NotFoundError }
+                return $deleted
+            }
             if ($RelativeUri -match '^(users|groups|applications|servicePrincipals)/[^/]+$') {
                 $object = $State.ObjectById[$RelativeUri.Split('/')[-1]]
-                if ($null -eq $object) {
-                    $exception = [System.Exception]::new('NotFound (Not Found).')
-                    $exception | Add-Member -NotePropertyName Response -NotePropertyValue (
-                        [pscustomobject]@{ StatusCode = [System.Net.HttpStatusCode]::NotFound }
-                    )
-                    throw $exception
-                }
+                if ($null -eq $object) { throw $NotFoundError }
                 return $object
             }
             $key = [string]$RelativeUri
@@ -117,12 +122,31 @@
 
         It 'fails a listed object that is protected but soft deleted' {
             $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
+            $State.DeletedById[$script:GroupId] = [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
             $State.Protected['directory/deletedItems/microsoft.graph.group'] = @(
                 [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
             )
 
             Test-MtEntraHardDeletionProtection | Should -BeFalse
             $State.Detail | Should -Match 'Group \| 22222222-2222-2222-2222-222222222222 \| Deleted group \| Soft deleted'
+        }
+
+        It 'reports a listed object that was soft deleted without protection as soft deleted, not as not found' {
+            $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
+            $State.DeletedById[$script:UserId] = [pscustomobject]@{ id = $script:UserId; displayName = 'Removed user' }
+
+            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Removed user \| Soft deleted'
+            $State.Detail | Should -Not -Match 'Not found'
+        }
+
+        It 'looks for a deleted object among deleted items of the listed type only' {
+            $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
+
+            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 1 -ParameterFilter {
+                $RelativeUri -eq "directory/deletedItems/microsoft.graph.group/$('22222222-2222-2222-2222-222222222222')"
+            }
         }
 
         It 'shows the first 25 unlisted objects and the total' {

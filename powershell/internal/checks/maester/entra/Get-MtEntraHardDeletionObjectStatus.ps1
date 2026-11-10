@@ -5,41 +5,28 @@
 
     .DESCRIPTION
     Reads the object from Microsoft Graph beta. Status is 'Protected', 'Not protected', 'Soft deleted' or
-    'Not found'. An object that cannot be read as an active object is 'Soft deleted' when it appears in the
-    supplied protected objects as soft deleted, and 'Not found' otherwise. Any Graph error other than
-    HTTP 404 is thrown.
+    'Not found'. When the active lookup returns HTTP 404, the function looks for the object among the deleted
+    items of the same type. It reports 'Soft deleted' when it finds the object there, whether or not the object
+    has protection, and 'Not found' when neither lookup finds it. Any Graph error other than HTTP 404 is thrown.
 
     .PARAMETER Configured
     A HardDeletionProtectedObjects entry with Type and Id.
 
-    .PARAMETER ProtectedObject
-    The output of Get-MtEntraHardDeletionProtectedObject.
-
     .EXAMPLE
-    Get-MtEntraHardDeletionObjectStatus -Configured $Entry -ProtectedObject $Protected
+    Get-MtEntraHardDeletionObjectStatus -Configured $Entry
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
         [Parameter(Mandatory)]
-        [object] $Configured,
-
-        [Parameter()]
-        [AllowEmptyCollection()]
-        [object[]] $ProtectedObject = @()
+        [object] $Configured
     )
 
     $EndpointByType = @{
-        user             = 'users'
-        group            = 'groups'
-        application      = 'applications'
-        serviceprincipal = 'servicePrincipals'
-    }
-    $TypeNames = @{
-        user             = 'User'
-        group            = 'Group'
-        application      = 'Application'
-        serviceprincipal = 'ServicePrincipal'
+        user             = @{ Name = 'User'; Path = 'users'; GraphType = 'user' }
+        group            = @{ Name = 'Group'; Path = 'groups'; GraphType = 'group' }
+        application      = @{ Name = 'Application'; Path = 'applications'; GraphType = 'application' }
+        serviceprincipal = @{ Name = 'ServicePrincipal'; Path = 'servicePrincipals'; GraphType = 'servicePrincipal' }
     }
 
     $Type = ([string]$Configured.Type).ToLowerInvariant()
@@ -49,33 +36,33 @@
             'Type must be User, Group, Application or ServicePrincipal and Id must be an object ID.'
         )
     }
+    $Endpoint = $EndpointByType[$Type]
 
     $Object = $null
+    $Status = 'Not found'
     try {
-        $Object = Invoke-MtGraphRequest -ApiVersion 'beta' `
-            -RelativeUri "$($EndpointByType[$Type])/$($Configured.Id)" `
+        $Object = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "$($Endpoint.Path)/$($Configured.Id)" `
             -Select @('id', 'displayName', 'isHardDeleteProtectionEnabled') -ErrorAction Stop
+        $Status = if ($Object.isHardDeleteProtectionEnabled -eq $true) { 'Protected' } else { 'Not protected' }
     } catch {
         if ($_.Exception.Response.StatusCode -ne [System.Net.HttpStatusCode]::NotFound) { throw }
     }
 
-    $DisplayName = ''
-    $Status = 'Not found'
-    if ($Object) {
-        $DisplayName = [string]$Object.displayName
-        $Status = if ($Object.isHardDeleteProtectionEnabled -eq $true) { 'Protected' } else { 'Not protected' }
-    } else {
-        $Deleted = @($ProtectedObject | Where-Object { $_.Id -eq [string]$Configured.Id -and $_.State -eq 'Soft deleted' })
-        if ($Deleted.Count -gt 0) {
-            $DisplayName = $Deleted[0].DisplayName
+    if (!$Object) {
+        try {
+            $Object = Invoke-MtGraphRequest -ApiVersion 'beta' `
+                -RelativeUri "directory/deletedItems/microsoft.graph.$($Endpoint.GraphType)/$($Configured.Id)" `
+                -Select @('id', 'displayName') -ErrorAction Stop
             $Status = 'Soft deleted'
+        } catch {
+            if ($_.Exception.Response.StatusCode -ne [System.Net.HttpStatusCode]::NotFound) { throw }
         }
     }
 
     [pscustomobject]@{
-        Type        = $TypeNames[$Type]
+        Type        = $Endpoint.Name
         Id          = [string]$Configured.Id
-        DisplayName = $DisplayName
+        DisplayName = if ($Object) { [string]$Object.displayName } else { '' }
         Status      = $Status
     }
 }

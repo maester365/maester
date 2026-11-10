@@ -61,7 +61,7 @@
 
     $Rows = @(
         foreach ($Configured in $ConfiguredObjects) {
-            Get-MtEntraHardDeletionObjectStatus -Configured $Configured -ProtectedObject $Protected
+            Get-MtEntraHardDeletionObjectStatus -Configured $Configured
         }
     )
     $Unlisted = @($Protected | Where-Object { $Rows.Id -notcontains $_.Id })
