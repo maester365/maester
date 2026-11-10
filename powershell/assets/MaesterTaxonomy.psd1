@@ -42,6 +42,7 @@
                 @{ Key = 'agent-identities'; Name = 'Agent identities' }
                 @{ Key = 'monitoring'; Name = 'Logs and monitoring' }
                 @{ Key = 'recommendations'; Name = 'Entra recommendations' }
+                @{ Key = 'backup-and-recovery'; Name = 'Backup and recovery' }
             )
         }
         @{

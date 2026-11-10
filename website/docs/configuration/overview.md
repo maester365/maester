@@ -141,6 +141,7 @@ The following global settings are available for customization:
 | `DefenderEndpointPolicyFiltering` | Which Defender for Endpoint policies the Defender checks read: `All`, `IncludeUnassigned` or `OnlyAssigned` (default) | This page |
 | `DefenderEndpointComplianceLogic` | How the Defender for Endpoint checks combine policies: `EffectivePolicy` (default), `AllPolicies` or `AnyPolicy` | This page |
 | `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
+| `HardDeletionProtectedObjects` | Define the critical users, groups, applications and service principals that must have Hard Deletion Protection enabled | [Hard Deletion Protection](./hard-deletion-protection.md) |
 
 The GitHub and Dataverse settings are listed in the [run configuration reference](./run-configuration.md#globalsettings).
 

@@ -80,6 +80,10 @@ Keys Maester does not know are kept and passed through, so they do no harm. The 
     "EmergencyAccessAccounts": [
       { "Type": "User", "UserPrincipalName": "BreakGlass1@contoso.com" },
       { "Type": "Group", "Id": "00000000-0000-0000-0000-000000000000" }
+    ],
+    "HardDeletionProtectedObjects": [
+      { "Type": "User", "Id": "00000000-0000-0000-0000-000000000001" },
+      { "Type": "ServicePrincipal", "Id": "00000000-0000-0000-0000-000000000002" }
     ]
   },
   "Selection": {
@@ -153,6 +157,7 @@ Maester knows these:
 | `DefenderEndpointComplianceLogic` | string | `EffectivePolicy` | Defender for Endpoint checks. |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
 | `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
+| `HardDeletionProtectedObjects` | array | none | Critical objects (`Type` and `Id`) that must have Hard Deletion Protection enabled. See [Hard Deletion Protection](./hard-deletion-protection.md). |
 | `GitHubOrganization` | string | | GitHub checks. |
 | `GitHubApiBaseUri` | string | `https://api.github.com` | GitHub checks. |
 | `GitHubApiVersion` | string | `2022-11-28` | GitHub checks. |
