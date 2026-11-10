@@ -373,6 +373,19 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         (Invoke-MtTest -Id CIS.GH.1.1.20 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Passed'
     }
 
+    It 'Renders repository and branch underscores as literal identifier text' {
+        $script:repoBody = $script:repoBody.Replace('"repo"', '"_repo_"').Replace('fixture-org/repo', 'fixture-org/_repo_')
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/repos/fixture-org/_repo_/branches/_release_/protection$' } {
+            [pscustomobject]@{ Content = $script:policyBody; Headers = @{} }
+        }
+        $row = Invoke-MtTest -Id CIS.GH.1.1.4 -Config (Get-CisBranchFixtureConfig -Main @('_release_'))
+        $row.Result | Should -Be 'Passed'
+        $html = (ConvertFrom-Markdown -InputObject $row.ResultDetail.TestResult).Html
+        $html | Should -Match '<td>fixture-org/_repo_</td>'
+        $html | Should -Match '<td>_release_</td>'
+        $html | Should -Not -Match '<em>|<strong>'
+    }
+
     It 'Evaluates beyond the presentation limit and displays violating branches first' {
         $script:branchBody=@(0..100|ForEach-Object {@{name=('b{0:d3}' -f $_)}})|ConvertTo-Json -Compress
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter {$Uri -match '/branches/b100/protection/required_signatures$'} { [pscustomobject]@{Content='{"enabled":false}';Headers=@{}} }

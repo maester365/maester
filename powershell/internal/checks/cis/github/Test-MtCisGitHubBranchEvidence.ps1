@@ -149,7 +149,8 @@
         $branchText = [System.Net.WebUtility]::HtmlEncode([string]$row.Branch).Replace('|', '&#124;').Replace('`', '&#96;').Replace("`n", ' ').Replace("`r", ' ')
         if ($repoText.Length -gt 160) { $repoText = $repoText.Substring(0, 160) }
         if ($branchText.Length -gt 160) { $branchText = $branchText.Substring(0, 160) }
-        $detail += "| $repoText | $branchText | $($row.Verdict) | $($row.Reason) | $($row.StartedUtc) - $($row.CompletedUtc) |`n"
+        # Escape Markdown after capping the display text so truncation cannot split an escape.
+        $detail += "| $(Get-MtSafeMarkdown $repoText) | $(Get-MtSafeMarkdown $branchText) | $($row.Verdict) | $($row.Reason) | $($row.StartedUtc) - $($row.CompletedUtc) |`n"
     }
     foreach ($state in 'Passed', 'Failed', 'Indeterminate', 'Error') { $detail += "`n$state findings: $(@($rows | Where-Object Verdict -EQ $state).Count)." }
     $detail += "`nEvaluated branch findings: $($rows.Count); displayed: $([Math]::Min(100, $rows.Count)). This is the named configuration audit, not proof of historical merges or enforcement against every actor. Bypass lists are not required to be empty.`n"
