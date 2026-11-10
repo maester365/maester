@@ -718,6 +718,14 @@ function CopyBlock({ text, language }) {
   );
 }
 
+// Tenant types: the value written to the attribute stays Workforce or External; the label says what External
+// means. Workforce shows the Entra ID icon the report uses. External shows Microsoft's External ID icon
+// (public/img/icons/external-id.svg, from https://az-icons.com/icon/external-id-modified, unchanged).
+const TENANT_TYPES = {
+  Workforce: { label: "Workforce", icon: productIcon("entra") },
+  External: { label: "External (Consumer)", icon: "/img/icons/external-id.svg" },
+};
+
 // The rating fields show a level icon on each choice, so the scale reads at a glance.
 const SEVERITY_LEVEL = { Critical: 4, High: 3, Medium: 2, Low: 1, Info: 0 };
 const SCALE_LEVEL = { Low: 1, Medium: 2, High: 3 };
@@ -1244,7 +1252,7 @@ export default function TestBuilder() {
           <h2>Where does it apply?</h2>
           <p className={styles.intro}>Leave all three empty unless the test is only valid in some tenants, clouds or operating systems. Most tests are.</p>
           <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Workforce is an organization's own tenant; External is a Microsoft Entra External ID tenant for customers. Leave empty for Workforce only."} problems={problems}>
-            <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} onChange={(v) => set({ tenantType: v })} />
+            <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} describe={(o) => TENANT_TYPES[o]?.label || o} iconFor={(o) => ({ icon: TENANT_TYPES[o]?.icon })} onChange={(v) => set({ tenantType: v })} />
           </Field>
           <Field id="cloud" name="Cloud" label="Clouds" hint={P.Cloud.description} problems={problems}>
             <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} onChange={(v) => set({ cloud: v })} />
