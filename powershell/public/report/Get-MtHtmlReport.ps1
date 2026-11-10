@@ -160,7 +160,7 @@
                 $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
                     Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
                 if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects, so no user identities can be redacted. Generate them with Invoke-Maester -IncludeAffectedObjects."
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted. Generate affected objects with Invoke-Maester -IncludeAffectedObjects."
                 }
             }
         }
@@ -207,12 +207,9 @@
             Write-Warning "RedactUserIdentity: the HTML reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
         }
 
+        $reportResults = ConvertTo-MtRedactedResult -MaesterResults $reportResults -ReplacementMap $replacements -KeepUserIdentity:($RedactUserIdentity -eq 'None')
         Write-Verbose "Generating HTML report."
         $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
-        # Redact the JSON text before it is compressed.
-        if ($RedactUserIdentity -ne 'None') {
-            $json = ConvertTo-MtRedactedReportContent -Content $json -ReplacementMap $replacements -JsonEncoded
-        }
 
         # The results are written gzip-compressed and Base64-encoded, as attachments are: the guides and
         # results are text that compresses to about a fifth. Base64 text cannot end the script element.

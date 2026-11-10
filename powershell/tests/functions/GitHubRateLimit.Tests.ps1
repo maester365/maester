@@ -2,7 +2,7 @@
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
-Describe 'GitHub shared transport rate-limit boundaries' {
+Describe 'GitHub rate limits through transport and native checks' {
     BeforeEach {
         $script:policyCalls = 0
         $script:limitStatus = 429
@@ -39,6 +39,38 @@ Describe 'GitHub shared transport rate-limit boundaries' {
         InModuleScope Maester { $__MtSession.GitHubConnection = $null; $__MtSession.GitHubAuthHeader = $null; $__MtSession.GitHubCache = @{}; $__MtSession.MaesterConfig = $null }
     }
 
+    It 'Stops traffic across branches, repositories and two native checks for <Kind>' -ForEach @(
+        @{ Kind = '429 Retry-After'; Status = 429; Primary = $false }
+        @{ Kind = '403 primary exhaustion'; Status = 403; Primary = $true }
+    ) {
+        $script:limitStatus = $Status
+        if ($Primary) { $script:limitHeaders = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = [DateTimeOffset]::UtcNow.AddMinutes(10).ToUnixTimeSeconds(); 'x-ratelimit-resource' = 'core' }; $script:limitBody = '{"message":"API rate limit exceeded"}' }
+        $rows = @(Invoke-MtTest -Id 'CIS.GH.1.1.4', 'CIS.GH.1.1.7' -Config $script:scopeConfig)
+        $rows.Count | Should -Be 2
+        @($rows | Where-Object Result -NE 'Error').Count | Should -Be 0
+        $script:policyCalls | Should -Be 1
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+
+    It 'Stops native branch-population enumeration and subsequent checks after rate limiting' {
+        $rows = @(Invoke-MtTest -Id 'CIS.GH.1.1.12', 'CIS.GH.1.1.4' -Config $script:scopeConfig)
+        $rows.Count | Should -Be 2
+        @($rows | Where-Object Result -NE 'Error').Count | Should -Be 0
+        $script:policyCalls | Should -Be 1
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/protection' }
+    }
+
+    It 'Retains completed branch findings and does not count unvisited branches as evaluated' {
+        $script:successfulPolicies = 1
+        $row = Invoke-MtTest -Id 'CIS.GH.1.1.4' -Config $script:scopeConfig
+        $row.Result | Should -Be 'Error'
+        $row.ResultDetail.TestResult | Should -Match 'Passed findings: 1'
+        $row.ResultDetail.TestResult | Should -Match 'Evaluated branch findings: 2;'
+        $row.ResultDetail.TestResult | Should -Match 'not assessed'
+        $script:policyCalls | Should -Be 2
+    }
+
     It 'Preserves structured retry metadata, blocks DisableCache and expires without waiting' {
         InModuleScope Maester {
             $caught = $null
@@ -56,6 +88,15 @@ Describe 'GitHub shared transport rate-limit boundaries' {
         $script:successfulPolicies = 100
         InModuleScope Maester { (Invoke-MtGitHubRequest '/policy').required_pull_request_reviews.dismiss_stale_reviews | Should -BeTrue }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+    }
+
+    It 'Keeps ordinary permission 403 separate and continues other objects' {
+        $script:limitStatus = 403
+        $script:limitHeaders = @{}
+        $script:limitBody = '{"message":"Resource not accessible by integration"}'
+        $rows = @(Invoke-MtTest -Id 'CIS.GH.1.1.4', 'CIS.GH.1.1.7' -Config $script:scopeConfig)
+        @($rows | Where-Object Result -NE 'Error').Count | Should -Be 0
+        $script:policyCalls | Should -Be 202
     }
 
     It 'Shares secondary limits with GraphQL while preserving separate primary quotas' -ForEach @(@{ Primary = $true }, @{ Primary = $false }) {
@@ -178,6 +219,19 @@ Describe 'GraphQL and bootstrap rate-limit boundaries' {
             @($__MtSession.GitHubCache.Keys | Where-Object { $_ -like 'GraphQL|*' }).Count | Should -Be 0
         }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times $(if ($Primary) { 2 } else { 1 })
+    }
+
+    It 'Retains successful GraphQL data at primary exhaustion and stops the next association cursor' {
+        Mock Invoke-WebRequest -ModuleName Maester {
+            [pscustomobject]@{ Content = '{"data":{"enterprise":{"id":"E_fixture","slug":"fixture-enterprise","organizations":{"nodes":[],"pageInfo":{"hasNextPage":true,"endCursor":"next"}}}}}'; Headers = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = [DateTimeOffset]::UtcNow.AddMinutes(10).ToUnixTimeSeconds() } }
+        }
+        InModuleScope Maester {
+            $__MtSession.MaesterConfig = [pscustomobject]@{ GlobalSettings = [pscustomobject]@{ GitHubEnterprise = 'fixture-enterprise' } }
+            { Test-MtCisGitHubEnterprise -Purpose Association -OrganizationId O_fixture -OrganizationLogin fixture-org } | Should -Throw '*rate limit*'
+            $__MtSession.GitHubCache.Count | Should -Be 1
+            @($__MtSession.GitHubCache.Values)[0].Data.enterprise.id | Should -Be 'E_fixture'
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
     }
 
     It 'Shares an HTTP secondary limit received by GraphQL with REST' {
