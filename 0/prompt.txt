@@ -1,0 +1,33 @@
+can we come up with a better design than a global setting? what do other things like bicep etc do with params. take a step back and review and come up with a design
+
+---
+
+should we have  a naming convention for parameters. how do we handle the scenario where one name means two different things for two tests. Is that what 'Kind' does
+
+---
+
+yes lets build out all of this today since we don't want this to proliferate. even emergency can be the same. that way we can avoid breaking changes later.
+
+lets also add a test that validates the naming convention and fails with a warning if it doesn't meet the criteria. 
+
+maybe we can use the luna model to perform an intelligent analysis with a prompt to keep the names consistent (like we do with test attributes for rubric) - maybe it is added to test attributes itself
+
+---
+
+<task-notification>
+<task-id>bxsin751f</task-id>
+<tool-use-id>toolu_01Xo4NC1sJ1kogsBZZFZ5uAK</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/338c3723-65a3-4813-9cbc-2a962282c882/tasks/bxsin751f.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the module's full unit test suite" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>be5h75ulz</task-id>
+<tool-use-id>toolu_01461Xru5YYaCF8GLbZKytsF</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester/338c3723-65a3-4813-9cbc-2a962282c882/tasks/be5h75ulz.output</output-file>
+<status>completed</status>
+<summary>Background command "Rerun the full unit test suite" completed (exit code 0)</summary>
+</task-notification>
