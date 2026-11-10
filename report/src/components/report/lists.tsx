@@ -83,6 +83,21 @@ export function visibleColumns(model: Model, chosen: string[]) {
 /** The sort, or none when its column is not shown. */
 export const shownSort = (shown: Column[], sort: string) => (shown.some((c) => c.key === sort.replace(/^-/, "")) ? sort : "")
 
+/** The rows of a list in the order it shows them: sorted, then gathered into groups when it is grouped. */
+export function groupRows(model: Model, rows: Row[], group: string, sort: string) {
+  const sorted = sortRows(model, rows, sort)
+  let groups: [string, Row[]][] = []
+  if (group !== "none") {
+    const byKey = new Map<string, Row[]>()
+    for (const t of sorted) { const k = groupKey(model, group, t); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k)!.push(t) }
+    // Sorted by the column the list is grouped by, the groups follow the sort (the rows are already in its order,
+    // tests without a value last); otherwise the groups with the most failures come first. A pack's own field can
+    // share a column's name (id) without being that column, so only Maester's groupings count.
+    groups = group in GROUPS && sort.replace(/^-/, "") === group ? [...byKey.entries()] : [...byKey.entries()].sort((a, b) => tally(b[1]).Failed - tally(a[1]).Failed)
+  }
+  return { sorted, groups, ordered: group === "none" ? sorted : groups.flatMap(([, list]) => list) }
+}
+
 /** The button that picks the columns a test list shows, for every list in the report. */
 function ColumnPicker({ chosen, onChange, available }: { chosen: string[]; onChange: (keys: string[] | ((current: string[]) => string[])) => void; available: Column[] }) {
   const [open, setOpen] = useState(false)
@@ -152,18 +167,8 @@ export function TestTable({ rows, group = "none", empty = "No tests match these 
   const sort = sortProp ?? ownSort
   const setSort = onSort ?? setOwnSort
   // A sort by a column the reader has hidden is ignored: the order would have no header to show it or undo it.
-  const activeSort = shownSort(shown, sort)
-  const sorted = sortRows(model, rows, activeSort)
-  let groups: [string, Row[]][] = []
-  if (group !== "none") {
-    const byKey = new Map<string, Row[]>()
-    for (const t of sorted) { const k = groupKey(model, group, t); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k)!.push(t) }
-    // Sorted by the column the list is grouped by, the groups follow the sort (the rows are already in its order,
-    // tests without a value last); otherwise the groups with the most failures come first. A pack's own field can
-    // share a column's name (id) without being that column, so only Maester's groupings count.
-    groups = group in GROUPS && activeSort.replace(/^-/, "") === group ? [...byKey.entries()] : [...byKey.entries()].sort((a, b) => tally(b[1]).Failed - tally(a[1]).Failed)
-  }
-  const order = (group === "none" ? sorted : groups.flatMap(([, list]) => list)).map((t) => t.Id)
+  const { sorted, groups, ordered } = groupRows(model, rows, group, shownSort(shown, sort))
+  const order = ordered.map((t) => t.Id)
   const open = (id: string) => openTest(id, order)
   const row = (t: Row) => (
     <tr key={t.Id} className="click" tabIndex={0} onClick={() => open(t.Id)} onKeyDown={(e) => { if (e.key === "Enter") open(t.Id) }}>
