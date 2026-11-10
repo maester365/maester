@@ -48,7 +48,9 @@
     # EmailAttestationRequired: $true = verification code required, $false = not required
     # EmailAttestationReAuthDays: number of days before reauthentication is required
     # CISA requires <= 30 days
-    $testResult = $spoTenant.EmailAttestationRequired -eq $true -and $spoTenant.EmailAttestationReAuthDays -le 30
+    $testResult = $spoTenant.EmailAttestationRequired -eq $true -and
+        $null -ne $spoTenant.EmailAttestationReAuthDays -and
+        $spoTenant.EmailAttestationReAuthDays -le 30
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Verification code reauthentication is required every $($spoTenant.EmailAttestationReAuthDays) day(s)."

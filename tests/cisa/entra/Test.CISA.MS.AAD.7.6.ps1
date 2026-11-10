@@ -46,7 +46,15 @@
             expand = "policy(expand=rules)"
         }
     }
-    $policy = Invoke-MtGraphRequest @policySplat
+    try {
+        $policy = Invoke-MtGraphRequest @policySplat -ErrorAction Stop
+    } catch {
+        if ($_.ErrorDetails.Message -match '"code"\s*:\s*"AadPremiumLicenseRequired"') {
+            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+            return $null
+        }
+        throw
+    }
 
     $testResult = ($policy.policy.rules | Where-Object {`
                 $_.'@odata.type' -eq "#microsoft.graph.unifiedRoleManagementPolicyApprovalRule"

@@ -16,7 +16,7 @@
     #>
     [MaesterTest(
         Id = 'CISA.MS.EXO.2.2',
-        Title = 'An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.',
+        Title = 'An SPF policy SHALL be published for each domain that fails all non-approved senders.',
         Product = 'exchange',
         Feature = 'email-authentication',
         Area = 'email-protection',
@@ -35,12 +35,8 @@
     param()
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-
     $spfRecords = @()
-    foreach($domain in $sendingDomains){
+    foreach($domain in $acceptedDomains){
         $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF
         $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed" -ErrorAction Ignore
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value "" -ErrorAction Ignore
@@ -51,17 +47,9 @@
         }).Count -gt 0
         $hasRedirect = @($terms | Where-Object { $_.modifier -eq 'redirect' }).Count -gt 0
 
-        if ($domain.IsCoexistenceDomain) {
-            $spfRecord.pass = "Skipped"
-            $spfRecord.reason = "coexistence domain"
-        }
-        elseif ($hasFailAll -or $hasRedirect) {
+        if ($hasFailAll -or $hasRedirect) {
             $spfRecord.pass = "Passed"
             $spfRecord.reason = if ($hasFailAll) { 'Fail-all mechanism' } else { 'Redirect modifier' }
-        }
-        elseif ($spfRecord.spfRecord -is [string] -and $spfRecord.spfRecord -like "*not available") {
-            $spfRecord.pass = "Skipped"
-            $spfRecord.reason = $spfRecord.spfRecord
         }
         elseif ($spfRecord.spfRecord -is [string]) {
             $spfRecord.reason = $spfRecord.spfRecord
@@ -91,20 +79,18 @@
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. All sending domains have an SPF policy that fails or redirects non-approved senders.`n`n%TestResult%"
+        $testResultMarkdown = "The SCuBA SPF check passed this heuristic: each accepted domain has a fail-all mechanism or redirect modifier. Review the policies to confirm that non-approved senders do not pass SPF.`n`n%TestResult%"
     }else{
-        $testResultMarkdown = "One or more sending domains do not have an SPF policy that fails or redirects non-approved senders.`n`n%TestResult%"
+        $testResultMarkdown = "One or more accepted domains do not have a parsed fail-all mechanism or redirect modifier in the SPF policy.`n`n%TestResult%"
     }
 
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
-    $skipResult = "🗄️ Skip"
     $result = "| Domain | Result | Reason | Directives |`n"
     $result += "| --- | --- | --- | --- |`n"
     foreach ($item in $spfRecords | Sort-Object -Property domain) {
         switch($item.pass){
             "Passed" {$itemResult = $passResult}
-            "Skipped" {$itemResult = $skipResult}
             "Failed" {$itemResult = $failResult}
         }
         $itemDirectives = ($item.spfRecord.terms|Where-Object {`

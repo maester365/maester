@@ -52,8 +52,16 @@
                 expand = "principal"
             }
         }
-        $assignments = Invoke-MtGraphRequest @assignmentsSplat | Where-Object {`
-                $_.scheduleInfo.expiration.type -eq "noExpiration" }
+        try {
+            $assignments = Invoke-MtGraphRequest @assignmentsSplat -ErrorAction Stop | Where-Object {`
+                    $_.scheduleInfo.expiration.type -eq "noExpiration" }
+        } catch {
+            if ($_.ErrorDetails.Message -match '"code"\s*:\s*"AadPremiumLicenseRequired"') {
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+                return $null
+            }
+            throw
+        }
 
         $roleAssignment.principal = $assignments.principal
 

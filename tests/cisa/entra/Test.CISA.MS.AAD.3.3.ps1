@@ -4,7 +4,7 @@
     Checks if the Authentication Methods policy for Microsoft Authenticator is set appropriately
 
     .DESCRIPTION
-    If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
+    If Microsoft Authenticator is enabled, it SHALL show login context information with Authenticator OTP disabled.
 
     .EXAMPLE
     Test-MtCisaAuthenticatorContext
@@ -16,7 +16,7 @@
     #>
     [MaesterTest(
         Id = 'CISA.MS.AAD.3.3',
-        Title = 'If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.',
+        Title = 'If Microsoft Authenticator is enabled, it SHALL show login context information with Authenticator OTP disabled.',
         Product = 'entra',
         Feature = 'authentication-methods',
         Area = 'authentication',
@@ -57,7 +57,7 @@
     $resultPass = "✅ Pass"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately.`n`n"
+        $testResultMarkdown = "Well done. The [Microsoft Authenticator policy]($link) displays application and location context for all users with Authenticator software OTP disabled.`n`n"
     } else {
         $testResultMarkdown = "Your tenant does not have the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately or migration to Authentication Methods is not complete.`n`n"
     }
@@ -65,7 +65,7 @@
     $checks = @{
         MethodEnabled    = if($authenticatorPolicy.state -eq "enabled"){$resultPass}else{$resultFail}
         MethodTarget     = if($authenticatorPolicy.includeTargets.Id -contains "all_users"){$resultPass}else{$resultFail}
-        OtpDisabled      = if(-not $authenticatorPolicy.isSoftwareOathEnabled){$resultPass}else{$resultFail}
+        OtpDisabled      = if($authenticatorPolicy.isSoftwareOathEnabled -eq $false){$resultPass}else{$resultFail}
         ContextEnabled   = if($authenticatorPolicy.featureSettings.displayAppInformationRequiredState.state -eq "enabled"){$resultPass}else{$resultFail}
         ContextTarget    = if($authenticatorPolicy.featureSettings.displayAppInformationRequiredState.includeTarget.id -contains "all_users"){$resultPass}else{$resultFail}
         LocationEnabled  = if($authenticatorPolicy.featureSettings.displayLocationInformationRequiredState.state -eq "enabled"){$resultPass}else{$resultFail}
@@ -76,7 +76,7 @@
     $testResultMarkdown += "| --- | --- |`n"
     $testResultMarkdown += "| Microsoft Authenticator state | $($checks.MethodEnabled) |`n"
     $testResultMarkdown += "| Included Targets | $($checks.MethodTarget) |`n"
-    $testResultMarkdown += "| Allow use of Microsoft Authenticator OTP set to *No* | $($checks.OtpDisabled) |`n"
+    $testResultMarkdown += "| Microsoft Authenticator software OTP (not Email OTP) disabled | $($checks.OtpDisabled) |`n"
     $testResultMarkdown += "| Show application name in push and passwordless notifications status | $($checks.ContextEnabled) | `n"
     $testResultMarkdown += "| Show application name in push and passwordless notifications included target | $($checks.ContextTarget) | `n"
     $testResultMarkdown += "| Show geographic location in push and passwordless notifications status | $($checks.LocationEnabled) | `n"

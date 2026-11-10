@@ -1,9 +1,8 @@
-An SPF policy SHALL be published for each sending domain that fails non-approved senders.
+An SPF policy SHALL be published for each accepted domain that fails all non-approved senders.
 
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Publishing an SPF policy for each agency domain mitigates forged `FROM` fields by providing a means for recipients to detect emails spoofed in this way. SPF is required for FCEB departments and agencies by Binding Operational Directive (BOD) 18-01, "Enhance Email and Web Security". SCuBA accepts either a hard fail (`-all`) or soft fail (`~all`) mechanism; a redirect modifier is also accepted as in ScubaGear.
 
-Coexistence domains related to Hybrid Configuration Wizard (HCW) are skipped.
-Production use of coexistence domains is discouraged, and additional controls, such as transport rules, should be used to restrict their use.
+This check evaluates every accepted domain, including coexistence domains, to match the SCuBA evaluation scope.
 
 #### Remediation action
 
@@ -13,7 +12,7 @@ To test your SPF configuration, consider using a web-based tool, such as those l
 
 `Resolve-DnsName example.onmicrosoft.com txt`
 
-If SPF is configured, you will see a response resembling `v=spf1 include:spf.protection.outlook.com -all`; the contents of the policy may vary by agency. This check verifies that each sending domain has an SPF policy that ends in a fail-all mechanism (`-all` or `~all`) or delegates through a redirect modifier. It does not validate that the individual sender addresses are authorized. See [SPF TXT record syntax for Microsoft 365 | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-anti-spoofing?view=o365-worldwide#spf-txt-record-syntax-for-microsoft-365) for more information.
+If SPF is configured, you will see a response resembling `v=spf1 include:spf.protection.outlook.com -all`; the contents of the policy may vary by agency. This check applies the SCuBA heuristic to each accepted domain: the parsed SPF record must contain a `-all` or `~all` mechanism, or a redirect modifier. A passing result is not proof that the redirect target rejects all non-approved senders, and the check does not validate individual sender addresses; review the reported records. See [SPF TXT record syntax for Microsoft 365 | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-anti-spoofing?view=o365-worldwide#spf-txt-record-syntax-for-microsoft-365) for more information.
 
 #### Related links
 

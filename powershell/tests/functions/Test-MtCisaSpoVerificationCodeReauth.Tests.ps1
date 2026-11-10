@@ -44,4 +44,26 @@ Describe 'Test-MtCisaSpoVerificationCodeReauth' {
         Test-MtCisaSpoVerificationCodeReauth | Should -BeNull
         $script:SkippedBecause | Should -Be 'NotApplicable'
     }
+
+    It 'fails when the reauthentication period is missing' {
+        $script:SpoTenant = [pscustomobject]@{
+            SharingCapability = 'ExternalUserAndGuestSharing'
+            EmailAttestationRequired = $true
+            EmailAttestationReAuthDays = $null
+        }
+
+        Test-MtCisaSpoVerificationCodeReauth | Should -BeFalse
+        $script:SkippedBecause | Should -BeNullOrEmpty
+        $script:TestResultMarkdown | Should -Match 'not properly configured'
+    }
+
+    It 'applies the SCuBA upper-bound condition to a zero-day value' {
+        $script:SpoTenant = [pscustomobject]@{
+            SharingCapability = 'ExternalUserAndGuestSharing'
+            EmailAttestationRequired = $true
+            EmailAttestationReAuthDays = 0
+        }
+
+        Test-MtCisaSpoVerificationCodeReauth | Should -BeTrue
+    }
 }

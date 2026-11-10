@@ -10,6 +10,7 @@
         )
 
         return [pscustomobject]@{
+            domain = 'example.gov'
             spfRecord = [pscustomobject]@{
                 terms = @(
                     [pscustomobject]@{
@@ -31,14 +32,16 @@ Describe 'Test-MtCisaSpfDirective' {
         $script:TestSpfRecord = $null
         $script:TestResultMarkdown = $null
         $script:SkippedBecause = $null
-        $script:IsCoexistenceDomain = $false
-
-        Mock -ModuleName Maester Get-MtExo {
-            return @([pscustomobject]@{
+        $script:AcceptedDomains = @(
+            [pscustomobject]@{
                 DomainName = 'example.gov'
                 SendingFromDomainDisabled = $false
-                IsCoexistenceDomain = $script:IsCoexistenceDomain
-            })
+                IsCoexistenceDomain = $false
+            }
+        )
+
+        Mock -ModuleName Maester Get-MtExo {
+            return $script:AcceptedDomains
         }
         Mock -ModuleName Maester Get-MailAuthenticationRecord { return $script:TestSpfRecord }
         Mock -ModuleName Maester Add-MtTestResultDetail {
@@ -76,11 +79,28 @@ Describe 'Test-MtCisaSpfDirective' {
         $script:TestResultMarkdown | Should -Match 'Redirect modifier'
     }
 
-    It 'skips coexistence domains even when the SPF record would otherwise pass' {
-        $script:IsCoexistenceDomain = $true
-        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier '-'
+    It 'evaluates accepted domains even when sending is disabled or the domain is marked as coexistence' {
+        $script:AcceptedDomains = @(
+            [pscustomobject]@{
+                DomainName = 'coexistence.example.gov'
+                SendingFromDomainDisabled = $true
+                IsCoexistenceDomain = $true
+            }
+        )
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier '+'
+        $script:TestSpfRecord.domain = 'coexistence.example.gov'
 
-        Test-MtCisaSpfDirective | Should -BeNull
-        $script:SkippedBecause | Should -Be 'NotSupported'
+        Test-MtCisaSpfDirective | Should -BeFalse
+        $script:SkippedBecause | Should -BeNullOrEmpty
+        $script:TestResultMarkdown | Should -Match 'coexistence.example.gov'
+    }
+
+    It 'describes the redirect check as a heuristic that requires review' {
+        $script:TestSpfRecord = Get-TestSpfRecord -Mechanism 'all' -Qualifier '+' -Modifier 'redirect'
+
+        Test-MtCisaSpfDirective | Should -BeTrue
+        $script:TestResultMarkdown | Should -Match 'passed this heuristic'
+        $script:TestResultMarkdown | Should -Match 'Review the policies'
+        $script:TestResultMarkdown | Should -Not -Match 'Well done'
     }
 }
