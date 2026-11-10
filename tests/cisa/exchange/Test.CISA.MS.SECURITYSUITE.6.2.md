@@ -1,6 +1,6 @@
-Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.
+Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
 
-Rationale: Spam is a constant threat as junk mail can reduce user productivity, fill up mailboxes unnecessarily, and in some cases include malicious links or attachments. Moving spam messages to a separate junk or quarantine folder helps users filter out spam while still giving them the ability to review messages, as needed, in case a message is filtered incorrectly.
+Rationale: Legitimate emails may be incorrectly filtered by spam protections. Adding allowed senders is an acceptable method of combating these false positives. Allowing an entire domain, especially a common domain like office.com, however, provides for a large number of potentially unknown users to bypass spam protections.
 
 #### Remediation action
 
@@ -16,8 +16,8 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 #### Related links
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
-* [CISA 14 Inbound Anti-Spam Protections - MS.EXO.14.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo142v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L768)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.6.2v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite62v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%

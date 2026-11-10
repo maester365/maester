@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaSpamBypass
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.14.3',
+        Id = 'CISA.MS.SECURITYSUITE.6.2',
         Title = 'Allowed domains SHALL NOT be added to inbound anti-spam protection policies.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
-        Control = 'cisa-scuba:MS.EXO.14.3',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.6.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'thomas-s-schmidt'

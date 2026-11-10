@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaAuditLog
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.17.1',
+        Id = 'CISA.MS.SECURITYSUITE.5.1',
         Title = 'Microsoft Purview Audit (Standard) logging SHALL be enabled.',
         Product = 'exchange',
         RelatedProduct = 'purview',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'T1685.002',
-        Control = 'cisa-scuba:MS.EXO.17.1',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.5.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike'
     )]
