@@ -1,6 +1,6 @@
-URL comparison with a block-list SHOULD be enabled.
+User click tracking SHOULD be enabled.
 
-Rationale: Users may be directed to malicious websites via links in email. Blocking access to known, malicious URLs can prevent users from accessing known malicious websites.
+Rationale: Users may click on malicious links in emails, leading to compromise or unauthorized data disclosure. Enabling user click tracking lets agencies know if a malicious link may have been visited after the fact to help tailor a response to a potential incident.
 
 #### Remediation action:
 
@@ -18,8 +18,8 @@ Rationale: Users may be directed to malicious websites via links in email. Block
 #### Related links
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
-* [CISA 15 Link Protection - MS.EXO.15.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo151v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L813)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.7.3v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite73v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%

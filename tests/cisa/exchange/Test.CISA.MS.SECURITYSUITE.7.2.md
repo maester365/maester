@@ -18,8 +18,8 @@ Rationale: URLs in emails may direct users to download and run malware. Scanning
 #### Related links
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
-* [CISA 15 Link Protection - MS.EXO.15.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo152v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L828)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.7.2v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite72v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%

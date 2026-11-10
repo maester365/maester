@@ -1,22 +1,22 @@
-﻿function Test-MtCisaSafeLink {
+﻿function Test-MtCisaSafeLinkClickTracking {
     <#
     .SYNOPSIS
-    Checks state of URL block list
+    Checks state of URL direct download scans
 
     .DESCRIPTION
-    URL comparison with a block-list SHOULD be enabled.
+    User click tracking SHOULD be enabled.
 
     .EXAMPLE
-    Test-MtCisaSafeLink
+    Test-MtCisaSafeLinkClickTracking
 
-    Returns true if URL block list enabled
+    Returns true if URL direct download scan enabled
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSafeLink
+    https://maester.dev/docs/commands/Test-MtCisaSafeLinkClickTracking
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.15.1',
-        Title = 'URL comparison with a block-list SHOULD be enabled.',
+        Id = 'CISA.MS.SECURITYSUITE.7.3',
+        Title = 'User click tracking SHOULD be enabled.',
         Product = 'exchange',
         RelatedProduct = 'defender',
         Feature = 'safe-links',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566.002', 'T1204.001'),
-        Control = 'cisa-scuba:MS.EXO.15.1',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.7.3',
         Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
@@ -39,7 +39,7 @@
     $policies = Get-MtExo -Request SafeLinksPolicy
 
     $resultPolicies = $policies | Where-Object { `
-            $_.EnableSafeLinksForEmail
+            $_.TrackClicks
     }
 
     $standard = $policies | Where-Object { `

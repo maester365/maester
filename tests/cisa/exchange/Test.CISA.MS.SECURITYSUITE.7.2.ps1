@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaSafeLinkDownloadScan
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.15.2',
+        Id = 'CISA.MS.SECURITYSUITE.7.2',
         Title = 'Direct download links SHOULD be scanned for malware.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1204.001', 'T1566.002'),
-        Control = 'cisa-scuba:MS.EXO.15.2',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.7.2',
         Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',

@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaAntiSpamAllowList
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.12.1',
+        Id = 'CISA.MS.SECURITYSUITE.8.1',
         Title = 'IP allow lists SHOULD NOT be created.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = ('T1566', 'T1684.002'),
-        Control = 'cisa-scuba:MS.EXO.12.1',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.8.1',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
         Contributor = 'merill'
