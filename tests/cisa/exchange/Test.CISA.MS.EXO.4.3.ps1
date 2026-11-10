@@ -45,11 +45,7 @@
     )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# Parked domains should have DMARC with reject policy
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # Every accepted domain is checked, a parked domain included: MS.EXO.4.3v1 gives no separate rule for one.
     $tldMatch = "^.*\.(?'tld'.*)$"
     $govDomains = $acceptedDomains | Where-Object {`
         $_ -imatch $tldMatch|Out-Null;
