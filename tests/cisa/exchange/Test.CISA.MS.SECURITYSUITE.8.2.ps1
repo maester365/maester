@@ -35,25 +35,25 @@
     [OutputType([bool])]
     param()
 
-    $policy = Get-MtExo -Request HostedConnectionFilterPolicy
-
-    $resultPolicy = $policy | Where-Object {`
-        -not $_.EnableSafeList
-    }
-
-    $testResult = ($resultPolicy|Measure-Object).Count -eq 1
+    $policies = @(Get-MtExo -Request HostedConnectionFilterPolicy)
+    $policiesWithSafeList = @($policies | Where-Object { $_.EnableSafeList -eq $true })
+    $testResult = $policies.Count -gt 0 -and $policiesWithSafeList.Count -eq 0
 
     $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. [Safe List]($portalLink) is disabled in your tenant."
     } else {
-        $testResultMarkdown = "[Safe List]($portalLink) is enabled in your tenant."
+        $testResultMarkdown = "Disable Safe List on every connection filter policy returned by [the anti-spam policies page]($portalLink)."
+        if ($policies.Count -eq 0) {
+            $testResultMarkdown = "No connection filter policy was returned. Verify the connection to Exchange Online and confirm that the policy data is available."
+        } elseif ($policiesWithSafeList.Count -gt 0) {
+            $policyNames = @($policiesWithSafeList | ForEach-Object { $_.Name })
+            $testResultMarkdown += "`n`nSafe List is enabled on: $($policyNames -join ', ')."
+        }
     }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+    return [bool]$testResult
 }

@@ -36,58 +36,19 @@
     [OutputType([bool])]
     param()
 
-    $policies = Get-MtExo -Request SafeLinksPolicy
-
-    $resultPolicies = $policies | Where-Object { `
-        $_.ScanUrls
-    }
-
-    $standard = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Standard"
-    }
-
-    $strict = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Strict"
-    }
-
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
-
-    $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
+    $effectivePolicy = Get-MtCisaEffectiveSafeLinksPolicy
+    $policy = $effectivePolicy.Policy
+    $testResult = $null -ne $policy -and (
+        $effectivePolicy.IsPreset -or
+        ($policy.ScanUrls -eq $true -and $policy.DeliverMessageAfterScan -eq $true)
+    )
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $message = "Well done. Direct download links are scanned for malware by the effective all-recipient Safe Links policy ($($effectivePolicy.PolicyName))."
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $message = "Enable URL scanning and delivery after scanning on the effective all-recipient Safe Links policy. The benchmark requires both settings for a custom policy; an enabled all-recipient Standard or Strict preset policy also satisfies the requirement."
     }
 
-    $result = "| Policy | Status |`n"
-    $result += "| --- | --- |`n"
-    if ($standard) {
-        $result += "| Standard | $passResult |`n"
-    } else {
-        $result += "| Standard | $failResult |`n"
-    }
-    if ($strict) {
-        $result += "| Strict | $passResult |`n`n"
-    } else {
-        $result += "| Strict | $failResult |`n`n"
-    }
-
-    $result += "| Policy Name | Policy Result |`n"
-    $result += "| --- | --- |`n"
-    foreach($item in $policies | Sort-Object -Property Identity){
-        if($item.Guid -in $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $passResult |`n"
-        }else{
-            $result += "| $($item.Identity) | $failResult |`n"
-        }
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
+    Add-MtTestResultDetail -Result $message
+    return [bool]$testResult
 }

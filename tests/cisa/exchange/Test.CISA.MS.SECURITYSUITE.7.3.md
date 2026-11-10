@@ -15,6 +15,8 @@ Rationale: Users may click on malicious links in emails, leading to compromise o
 9. Select **Next** on each page until the **Review and confirm your changes** page.
 10. On the **Review and confirm your changes** page, select **Confirm**.
 
+If you do not use an all-recipient Standard or Strict preset policy, enable user click tracking on the effective all-recipient Safe Links policy.
+
 #### Related links
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
