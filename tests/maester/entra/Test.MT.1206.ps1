@@ -246,9 +246,8 @@
         foreach ($Item in $InactiveAgents) {
             $DisplayName = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
-            $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+            $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
             $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.AppId) | " +
                 "$($Item.LastSignIn) | $($Item.InactiveDays) | $Reason |"
         }
@@ -260,9 +259,8 @@
             foreach ($Item in $DormantFleetFindings) {
                 $Name = [string]$Item.DisplayName
                 if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-                $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-                $Name = $Name -replace "`r?`n", ' '
-                $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+                $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+                $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
                 $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | " +
                     "$($Item.AgentCount) | $Reason |"
             }
