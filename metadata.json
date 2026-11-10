@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M73YCJGVBMVVPNR7X5AK0A99",
+  "strategy": "manual-commit",
+  "branch": "feat/parameter-settings",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "website/src/components/TestBuilder/index.jsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 6675,
+    "cache_read_tokens": 1900216,
+    "output_tokens": 2978,
+    "api_call_count": 6,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 2895,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 13,
+      "credentialed_uri": 0,
+      "entropy": 2842,
+      "key_context": 40,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
