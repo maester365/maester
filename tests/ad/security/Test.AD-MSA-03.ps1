@@ -3,8 +3,15 @@
     [CmdletBinding()][OutputType([bool])]param()
     $state=Get-MtADDomainState -Categories ServiceAccounts
     if($null -eq $state){Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory;return $null}
+    if($null -eq $state.ServiceAccounts){Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'ServiceAccounts collection failed or returned no state.';return $null}
+
     $incomplete=@($state.ServiceAccounts|Where-Object{-not $_.AuthorizationEvidenceComplete -or @($_.UnresolvedPasswordRetrievalTrustees).Count -gt 0})
-    $table="| gMSA | Complete | Evidence status | Unresolved trustees | Error |`n| --- | --- | --- | ---: | --- |`n";foreach($i in $incomplete){$table+="| $($i.SamAccountName) | $($i.AuthorizationEvidenceComplete) | $($i.AuthorizationEvidenceStatus) | $(@($i.UnresolvedPasswordRetrievalTrustees).Count) | $($i.AuthorizationCollectionError) |`n"}
+    $table="| gMSA | Complete | Evidence status | Unresolved SID | Resolution status | Resolution error | Collection error |`n| --- | --- | --- | --- | --- | --- | --- |`n"
+    foreach($gmsa in $incomplete){
+        $unresolved=@($gmsa.UnresolvedPasswordRetrievalTrustees)
+        if($unresolved.Count -eq 0){$table+="| $($gmsa.SamAccountName) | $($gmsa.AuthorizationEvidenceComplete) | $($gmsa.AuthorizationEvidenceStatus) |  |  |  | $($gmsa.AuthorizationCollectionError) |`n";continue}
+        foreach($trustee in $unresolved){$table+="| $($gmsa.SamAccountName) | $($gmsa.AuthorizationEvidenceComplete) | $($gmsa.AuthorizationEvidenceStatus) | $($trustee.Sid) | $($trustee.ResolutionStatus) | $($trustee.ResolutionError) | $($gmsa.AuthorizationCollectionError) |`n"}
+    }
     Add-MtTestResultDetail -Result "Found $($incomplete.Count) gMSA object(s) with incomplete or unresolved authorization evidence.`n`n$table" -Investigate
     return $true
 }

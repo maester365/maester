@@ -50,6 +50,29 @@
         'S-1-1-0'='Everyone'
         'S-1-5-7'='Anonymous Logon'
         'S-1-5-11'='Authenticated Users'
+        'S-1-5-32-545'='BUILTIN\Users'
+    }
+
+    function Get-MtGmsaBroadPrincipalName {
+        param([string]$Sid)
+        if ($broadSidMap.Contains($Sid)) { return $broadSidMap[$Sid] }
+        if ($Sid -match '^S-1-5-21-\d+-\d+-\d+-513$') { return 'Domain Users' }
+        if ($Sid -match '^S-1-5-21-\d+-\d+-\d+-515$') { return 'Domain Computers' }
+        return $null
+    }
+
+    function Test-MtGmsaPasswordRetrievalAccessMask {
+        param([object]$AccessMask)
+        try {
+            $signedMask=[int64]$AccessMask
+            if($signedMask -lt 0){$signedMask+=4294967296L}
+            if($signedMask -gt [uint32]::MaxValue){return $false}
+            $mask=[uint32]$signedMask
+        } catch { return $false }
+        $rightDsReadProperty=[uint32]0x00000010
+        $genericAll=[uint32]0x10000000
+        $genericRead=[uint32]2147483648
+        return (($mask -band $rightDsReadProperty) -ne 0) -or (($mask -band $genericAll) -ne 0) -or (($mask -band $genericRead) -ne 0)
     }
 
     # Cache SID lookups for this collection because the same host or group often authorizes several gMSAs.
@@ -95,14 +118,16 @@
 
         $trustees=@()
         if($null -ne $descriptor){
-            $trustees=@($descriptor.Access | Where-Object {$_.AccessControlType -eq 'Allow'} | ForEach-Object {
+            $trustees=@($descriptor.Access | Where-Object { $_.AccessControlType -eq 'Allow' -and (Test-MtGmsaPasswordRetrievalAccessMask -AccessMask $_.AccessMask) } | ForEach-Object {
                 $ace = $_
                 $sid=[string]$ace.Sid
                 $resolution = $null
 
-                if($broadSidMap.Contains($sid)){
+
+                $broadPrincipalName=Get-MtGmsaBroadPrincipalName -Sid $sid
+                if($broadPrincipalName){
                     $resolution=[pscustomobject][ordered]@{
-                        Status='WellKnownBroadPrincipal';Name=$broadSidMap[$sid];SamAccountName=$null
+                        Status='WellKnownBroadPrincipal';Name=$broadPrincipalName;SamAccountName=$null
                         DistinguishedName=$null;ObjectClass=$null;Error=$null
                     }
                 } elseif($sidResolutionCache.ContainsKey($sid)) {
@@ -148,8 +173,8 @@
                     ObjectClass=$resolution.ObjectClass
                     ResolutionStatus=$resolution.Status
                     ResolutionError=$resolution.Error
-                    Classification=if($broadSidMap.Contains($sid)){'Broad'}elseif($isUnresolved){'Unresolved'}else{'Delegated'}
-                    BroadPrincipalName=if($broadSidMap.Contains($sid)){$broadSidMap[$sid]}else{$null}
+                    Classification=if($broadPrincipalName){'Broad'}elseif($isUnresolved){'Unresolved'}else{'Delegated'}
+                    BroadPrincipalName=$broadPrincipalName
                     AccessMask=$ace.AccessMask
                     IsInherited=[bool]$ace.IsInherited
                     AuthorizationSource='msDS-GroupMSAMembership'
