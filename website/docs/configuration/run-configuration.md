@@ -129,11 +129,16 @@ Free-form values about the run, echoed in the result as `RunMetadata`. Use it to
 
 ## GlobalSettings
 
-Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
+Tenant-wide settings. A test receives one as a parameter bound to the setting, so a test's `TestSettings` row
+can override it (see [Values set once for many tests](../writing-tests/index.mdx#values-set-once-for-many-tests));
+connection commands read theirs with `Get-MtSetting`. Maester knows these:
 
 | Setting | Type | Default | Used by |
 | --- | --- | --- | --- |
-| `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `EmergencyAccessAccounts` | array | none | Conditional Access and privileged role checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `ParkedDomains` | array | none | Email authentication checks: domains that never send email. |
+| `DefenderEndpointPolicyFiltering` | string | `OnlyAssigned` | Defender for Endpoint checks. |
+| `DefenderEndpointComplianceLogic` | string | `EffectivePolicy` | Defender for Endpoint checks. |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
 | `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
 | `GitHubOrganization` | string | | GitHub checks. |

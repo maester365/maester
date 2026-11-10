@@ -254,8 +254,12 @@ param(
 )
 ```
 
-- Types: `int`, `bool`, `switch`, `string`, `string[]`. Constant defaults. Nothing mandatory: the check must run
-  with no config.
+- Types: `int`, `bool`, `switch`, `string`, `string[]` (and `object[]` only when bound to a setting). Constant
+  defaults. Nothing mandatory: the check must run with no config.
+- Names follow the rubric's "Parameter names": PascalCase; `Maximum`/`Minimum` + what + unit
+  (`MaximumInactiveDays`, never `MaxInactiveDays` or `...InDays`); plural lists (`ExcludedGroups`); say what is
+  measured. Reuse a name other tests already use for the same idea (`Get-MtTest` lists them). Unit tests
+  (`TestParameterNames.Tests.ps1`) and the attribute review enforce this.
 - Every parameter has a **one-line** `#` comment directly above it (only the nearest comment line is read), or
   `.PARAMETER` help. The unit tests require a description.
 - Thresholds get `ValidateRange`; choices get `ValidateSet`.
@@ -279,8 +283,22 @@ Each instance object has `Id` (required, unique, `^[A-Za-z0-9][A-Za-z0-9._-]{0,1
 
 ### Settings
 
-Read tenant-wide settings with `Get-MtSetting -Name <name>` (for example `EmergencyAccessAccounts`). New settings
-Maester itself reads go in `powershell/assets/MaesterSettings.psd1` with a type, default and description.
+A tenant-wide setting (`EmergencyAccessAccounts`, `ParkedDomains`, ...) reaches a check as a parameter bound to it,
+never through `Get-MtSetting` in the check:
+
+```powershell
+param(
+    # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+    [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+    [object[]] $EmergencyAccessAccounts = @()
+)
+```
+
+The engine binds `GlobalSettings.<Setting>` when the test's `TestSettings` row does not set the parameter, and
+records `Source = 'Setting'`. Pass the value on to helpers (`Get-MtEmergencyAccessAccount -Account
+$EmergencyAccessAccounts`). Bind only a fact about the tenant or a choice made once for all tests; a value a
+benchmark sets stays a plain parameter. A new built-in setting goes in `powershell/assets/MaesterSettings.psd1`
+with its `Type` (matching the parameter), default, description and, for IDs or domains, `Kind`.
 
 ## Data Retrieval
 

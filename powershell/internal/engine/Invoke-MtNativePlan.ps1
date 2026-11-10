@@ -373,7 +373,7 @@ function Expand-MtTestFamily {
                     }
                     if ($ownParameters -is [System.Collections.IDictionary]) { foreach ($k in $ownParameters.Keys) { $configValues[[string]$k] = $ownParameters[$k] } }
                     else { foreach ($prop in $ownParameters.PSObject.Properties) { $configValues[$prop.Name] = $prop.Value } }
-                    $binding = ConvertTo-MtTestParameter -Test $test -ConfigValue $configValues -Override $overrideValues
+                    $binding = ConvertTo-MtTestParameter -Test $test -ConfigValue $configValues -Override $overrideValues -GlobalSetting $RunConfig.GlobalSettings
                     $instanceRow.EffectiveParameters = $binding.Effective
                     if ($binding.Error) {
                         $instanceRow.Disposition = 'Error'; $instanceRow.ReasonCode = 'InvalidConfiguration'; $instanceRow.ReasonDetail = $binding.Error

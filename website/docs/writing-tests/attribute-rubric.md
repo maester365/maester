@@ -273,16 +273,67 @@ A test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `n
   Each of those has an attribute or is derived.
 - A custom test may tag freely.
 
+## Parameter names
+
+A parameter's name is what an administrator types in `TestSettings` and reads in `Get-MtTest` and the results, so
+every parameter of a test shipped with Maester follows one convention. A name belongs to its own test: two tests
+may use one name for two different things, and nothing links them unless both bind the same setting. Still, a
+name says what is measured, so a reader never has to open the test to learn what a value means.
+
+| Kind of value | Name | Examples |
+| --- | --- | --- |
+| Upper or lower limit | `Maximum` or `Minimum`, what is measured, then the unit | `MaximumInactiveDays`, `MinimumPasswordLength`, `MaximumIdleTimeoutMinutes` |
+| Other number of days, hours or minutes | What it is, then the unit | `ExpiringWithinDays`, `EvaluationPeriodDays` |
+| List | Its role, then a plural noun | `ExcludedGroups`, `AllowedPolicies`, `ParkedDomains` |
+| Switch | What turning it on does; off by default | `Strict`, `AllDevices`, `SkipHybridJoinCheck` |
+| Choice | A noun for what is chosen, with a `ValidateSet` | `PolicyFiltering`, `ComplianceLogic` |
+
+- PascalCase. Spell out `Maximum` and `Minimum`, never `Max` or `Min`.
+- A unit is a plain suffix: `Days`, `Hours`, `Minutes`, `Seconds`. Not `InDays`.
+- A `string[]` or `object[]` name is plural.
+- Say what is measured. `MaximumInactiveDays`, not `ThresholdDays`; `MaximumValidationAgeDays`, not
+  `StaleThresholdDays`.
+- Reuse an established name for the same idea. If other tests already call it `MaximumInactiveDays`, a new test
+  that counts days without a sign-in does not call it `DormantDays`.
+- Do not use the names of PowerShell common parameters (`Force`, `Confirm`, `WhatIf`, `PassThru`).
+
+### Parameters bound to a setting
+
+A fact about the tenant or a choice the organisation makes once, such as its parked domains or its emergency
+access accounts, is a setting in `GlobalSettings`. A test receives it as a parameter bound to that setting:
+
+```powershell
+param(
+    # Domains that never send email.
+    [MaesterParameter(Setting = 'ParkedDomains')]
+    [string[]] $ParkedDomains = @()
+)
+```
+
+- Bind a parameter only when the value means the same thing to every test that binds it, and the organisation
+  sets it once. A value a benchmark sets, such as a lockout threshold, is never bound: each benchmark test keeps
+  its own default.
+- A test never calls `Get-MtSetting` for such a value. The engine binds it, so `Get-MtTest` and the results show
+  it and a `TestSettings` row can override it.
+- A setting is named after what it holds, never after a test or a suite. It is registered in
+  `powershell/assets/MaesterSettings.psd1`; a pack names its own settings `Namespace.Key`.
+
 ## How the rubric is enforced
 
-1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a
+1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1` and
+   `powershell/tests/general/TestParameterNames.Tests.ps1`) fail when a built-in test misses a
    required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a
    retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not
-   have, or is a CIS or CISA test without a `Control` for its own framework.
+   have, or is a CIS or CISA test without a `Control` for its own framework. They also fail on a parameter name
+   that breaks a mechanical rule of [Parameter names](#parameter-names): not PascalCase, `Max` or `Min`, a unit
+   with `In`, a singular list, a common parameter's name, one name with two types, or a test that reads a bound
+   setting with `Get-MtSetting`.
 2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A
    reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit
    the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the
    same product and feature. It fails a test whose area, resource type or severity differs from the same check in
    another suite, and whose user impact or implementation cost differs when both plainly recommend the same fix.
-   MITRE techniques and related products are not compared. A maintainer can overrule it.
+   MITRE techniques and related products are not compared. It also reviews the names of a new, renamed or
+   rebound parameter against [Parameter names](#parameter-names) and the names other tests already use. A
+   maintainer can overrule it.
 3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`.

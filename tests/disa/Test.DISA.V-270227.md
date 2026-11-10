@@ -2,7 +2,7 @@ A Microsoft Entra diagnostic setting sends the sign-in, audit and risk logs to a
 
 Sign-in and audit logs kept only in Microsoft Entra ID are retained for 30 days at most and are not correlated with other sources. Sending them to a SIEM keeps them and lets the security team alert on them.
 
-This test runs the same check as [CISA.MS.AAD.4.1](https://maester.dev/docs/tests/CISA.MS.AAD.4.1) with DISA's list of categories (`RequiredLogCategory`): SignInLogs, AuditLogs, ServicePrincipalSignInLogs, ManagedIdentitySignInLogs, UserRiskEvents, RiskyUsers, RiskyServicePrincipals and ServicePrincipalRiskEvents. CISA asks for four more. The STIG also asks you to confirm in Microsoft Sentinel, or your SIEM, that logs arrived within the last hour; check that by hand.
+This test runs the same check as [CISA.MS.AAD.4.1](https://maester.dev/docs/tests/CISA.MS.AAD.4.1) with DISA's list of categories (`RequiredLogCategories`): SignInLogs, AuditLogs, ServicePrincipalSignInLogs, ManagedIdentitySignInLogs, UserRiskEvents, RiskyUsers, RiskyServicePrincipals and ServicePrincipalRiskEvents. CISA asks for four more. The STIG also asks you to confirm in Microsoft Sentinel, or your SIEM, that logs arrived within the last hour; check that by hand.
 
 #### Remediation action
 

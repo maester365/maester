@@ -381,7 +381,7 @@ function ConvertTo-MtRequiredVersion {
 function Read-MtTestParameter {
     <#
     .SYNOPSIS
-    Reads one parameter of a test function: type, default, allowed values, range, kind and description.
+    Reads one parameter of a test function: type, default, allowed values, range, kind, setting and description.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
@@ -398,6 +398,7 @@ function Read-MtTestParameter {
     $allowed = $null
     $range = $null
     $kind = $null
+    $setting = $null
     $mandatory = $false
     foreach ($a in $ParameterAst.Attributes) {
         if ($a -is [System.Management.Automation.Language.TypeConstraintAst]) {
@@ -417,8 +418,16 @@ function Read-MtTestParameter {
             }
             { $_ -in 'MaesterParameter', 'MaesterParameterAttribute' } {
                 $k = $a.NamedArguments | Where-Object ArgumentName -EQ 'Kind' | Select-Object -First 1
-                if ($k -and $k.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $kind = $k.Argument.Value }
-                else { & $OnError 'InvalidMetadata' "Parameter '$name': [MaesterParameter] needs Kind = '<kind>'." $line }
+                $s = $a.NamedArguments | Where-Object ArgumentName -EQ 'Setting' | Select-Object -First 1
+                if ($k) {
+                    if ($k.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $kind = $k.Argument.Value }
+                    else { & $OnError 'InvalidMetadata' "Parameter '$name': [MaesterParameter] Kind must be a constant string." $line }
+                }
+                if ($s) {
+                    if ($s.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $setting = $s.Argument.Value }
+                    else { & $OnError 'InvalidMetadata' "Parameter '$name': [MaesterParameter] Setting must be a constant string." $line }
+                }
+                if (-not $k -and -not $s) { & $OnError 'InvalidMetadata' "Parameter '$name': [MaesterParameter] needs Kind = '<kind>', Setting = '<setting>' or both." $line }
             }
             'Parameter' {
                 $m = $a.NamedArguments | Where-Object ArgumentName -EQ 'Mandatory' | Select-Object -First 1
@@ -432,6 +441,7 @@ function Read-MtTestParameter {
         { $_ -in 'switch', 'system.management.automation.switchparameter' } { 'switch' }
         { $_ -in 'string', 'system.string' } { 'string' }
         { $_ -in 'string[]', 'system.string[]' } { 'string[]' }
+        { $_ -in 'object[]', 'system.object[]' } { 'object[]' }
         default { $_ }
     }
 
@@ -444,8 +454,25 @@ function Read-MtTestParameter {
 
     $engineOwned = $name -eq 'Instance' -or $name -like 'Mt*'
     if (-not $engineOwned) {
-        if ($typeName -notin 'int', 'bool', 'switch', 'string', 'string[]') { & $OnError 'InvalidMetadata' "Parameter '$name': type '$typeName' is not supported. Use int, bool, switch, string or string[]." $line }
+        if ($typeName -notin 'int', 'bool', 'switch', 'string', 'string[]', 'object[]') { & $OnError 'InvalidMetadata' "Parameter '$name': type '$typeName' is not supported. Use int, bool, switch, string or string[]." $line }
         if ($mandatory) { & $OnError 'InvalidMetadata' "Parameter '$name' must not be mandatory: a test must run with an empty configuration." $line }
+        if ($setting) {
+            # A setting is a value the whole run shares, declared once in the settings registry. The test's
+            # parameter must agree with it, and takes the setting's kind when it names none.
+            $entry = (Get-MtSettingRegistry).Settings[$setting]
+            if ($entry) {
+                if ($entry.Type -and $entry.Type -ne $typeName) { & $OnError 'InvalidMetadata' "Parameter '$name': setting '$setting' is a $($entry.Type), but the parameter is a $typeName." $line }
+                if ($entry.Kind) {
+                    if (-not $kind) { $kind = $entry.Kind }
+                    elseif ($kind -ne $entry.Kind) { & $OnError 'InvalidMetadata' "Parameter '$name': setting '$setting' has kind $($entry.Kind), but the parameter declares $kind." $line }
+                }
+            } elseif ($setting -notmatch '^[A-Za-z][A-Za-z0-9]*\.[A-Za-z][A-Za-z0-9.]*$') {
+                # A pack names its own settings Namespace.Key; a built-in name must be in the registry.
+                & $OnError 'InvalidMetadata' "Parameter '$name': '$setting' is not a registered setting. Add it to assets/MaesterSettings.psd1, or use a Namespace.Key name for a pack's setting." $line
+            }
+        } elseif ($typeName -eq 'object[]') {
+            & $OnError 'InvalidMetadata' "Parameter '$name': type 'object[]' is only for a parameter bound to a setting, for example [MaesterParameter(Setting = 'EmergencyAccessAccounts')]." $line
+        }
     }
 
     # Description: a comment directly above the parameter, else .PARAMETER help.
@@ -479,6 +506,7 @@ function Read-MtTestParameter {
         AllowedValues = $allowed
         Range         = $range
         Kind          = $kind
+        Setting       = $setting
         Description   = $description
         EngineOwned   = $engineOwned
     }
@@ -524,6 +552,20 @@ function Get-MtServiceRegistry {
         $script:__MtLayeredServiceRegistry = @{ SchemaVersion = $script:__MtServiceRegistry.SchemaVersion; Services = $services }
     }
     $script:__MtLayeredServiceRegistry
+}
+
+function Get-MtSettingRegistry {
+    <#
+    .SYNOPSIS
+    Returns the settings registry (assets/MaesterSettings.psd1). Cached for the session.
+    #>
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+    param()
+    if (-not $script:__MtSettingsRegistry) {
+        $script:__MtSettingsRegistry = Import-PowerShellDataFile -Path (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
+    }
+    $script:__MtSettingsRegistry
 }
 
 function Get-MtParameterKindRegistry {

@@ -38,7 +38,7 @@
     [OutputType([bool])]
     param(
         # Check all domains, not only .gov domains.
-        [switch]$Force,
+        [switch]$AllDomains,
 
         # Check 2nd Level Domains Explicitly per CISA
         [switch]$Strict
@@ -56,7 +56,7 @@
         if($Matches.tld -eq "gov"){$_}
     }
 
-    if(!($govDomains) -and !($Force)){
+    if(!($govDomains) -and !($AllDomains)){
         Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
         return $null
     }

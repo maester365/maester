@@ -50,7 +50,7 @@
     [OutputType([bool])]
     param (
         # A CIDR segment whose prefix length is *below* this value (broader than /16) is flagged as a broad / near-default route. A /16 - common for 10.x networks - and narrower pass. (GSA is IPv4-only, so IPv6 segments are not evaluated.)
-        [int] $BroadIPv4MaskThreshold = 16
+        [int] $MinimumIPv4PrefixLength = 16
     )
 
     Write-Verbose "Running Test-MtGsaPrivateAccessAppSegmentHygiene..."
@@ -93,7 +93,7 @@
             } elseif ($destinationHost -match '/(\d+)\s*$' -and -not $destinationHost.Contains(':')) {
                 # GSA is IPv4-only; IPv6 segments are not evaluated.
                 $prefix = [int]$Matches[1]
-                if ($prefix -lt $BroadIPv4MaskThreshold) {
+                if ($prefix -lt $MinimumIPv4PrefixLength) {
                     $reason = if ($prefix -eq 0) { 'all-IP destination (default route)' } else { "broad IP range (/$prefix - near-default route)" }
                 }
             }

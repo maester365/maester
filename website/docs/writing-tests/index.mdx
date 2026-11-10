@@ -548,7 +548,10 @@ param(
 
 Rules:
 
-- Types are `int`, `bool`, `switch`, `string` or `string[]`.
+- Types are `int`, `bool`, `switch`, `string` or `string[]`, and `object[]` for a parameter bound to a setting
+  that holds a list of objects.
+- Names follow the [parameter naming rules](./attribute-rubric.md#parameter-names): `MaximumInactiveDays`,
+  `ExcludedGroups`, `Strict`.
 - Defaults are constants. No parameter is mandatory.
 - Every parameter has a description: a `#` comment on the line directly above it, or `.PARAMETER` help. Only
   the comment line nearest the parameter is read, so keep the comment to one line or use `.PARAMETER`.
@@ -571,7 +574,38 @@ The engine checks each value against the `param()` block before the test runs. A
 a fraction for an `int`, a number for a `string`, a string for a `bool` or `switch`, or a value outside the
 `ValidateRange` or `ValidateSet` gives that test an `Error` row with reason `InvalidConfiguration`; the run
 carries on. A `string[]` parameter accepts one string or a list. The effective values, and where each came from
-(`Default`, `Config` or `Parameter`), are written to the result row's `Parameters`.
+(`Default`, `Config`, `Setting` or `Parameter`), are written to the result row's `Parameters`.
+
+### Values set once for many tests
+
+Some values are the same for every test that needs them: the domains that never send email, the emergency access
+accounts. An administrator sets these once in `GlobalSettings`, and a test receives one as a parameter bound to
+the setting:
+
+```powershell
+param(
+    # Domains that never send email.
+    [MaesterParameter(Setting = 'ParkedDomains')]
+    [string[]] $ParkedDomains = @()
+)
+```
+
+```json
+{
+  "GlobalSettings": { "ParkedDomains": ["contoso-old.com"] },
+  "TestSettings": [ { "Id": "CIS.M365.2.1.9", "Parameters": { "ParkedDomains": [] } } ]
+}
+```
+
+The most specific value wins: `Invoke-MtTest -Parameter` or `Invoke-Maester -Parameter`, then the test's
+`TestSettings` row, then `GlobalSettings`, then the parameter's default. A built-in setting must be registered in
+`powershell/assets/MaesterSettings.psd1`, and the parameter's type must match it; the parameter takes the
+setting's kind when it names none. A custom test or pack binds its own settings with a `Namespace.Key` name, such
+as `Contoso.Regions`.
+
+Bind a parameter only to a fact about the tenant or a choice the organisation makes once. A value a benchmark
+sets stays a parameter of that test. Read [Parameters bound to a setting](./attribute-rubric.md#parameters-bound-to-a-setting)
+before adding one.
 
 ### Parameter kinds
 

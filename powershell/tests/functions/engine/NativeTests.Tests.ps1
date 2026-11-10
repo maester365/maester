@@ -121,6 +121,92 @@ Describe 'Parameter binding (appendix A.5)' {
     }
 }
 
+Describe 'Parameters bound to a setting' {
+    BeforeAll {
+        $script:bound = [pscustomobject]@{
+            Parameters = @(
+                [pscustomobject]@{ Name = 'ParkedDomains'; Type = 'string[]'; Default = @(); Range = $null; AllowedValues = $null; Kind = 'Entra.Domain'; Setting = 'ParkedDomains'; EngineOwned = $false }
+                [pscustomobject]@{ Name = 'EmergencyAccessAccounts'; Type = 'object[]'; Default = @(); Range = $null; AllowedValues = $null; Kind = $null; Setting = 'EmergencyAccessAccounts'; EngineOwned = $false }
+                [pscustomobject]@{ Name = 'PolicyFiltering'; Type = 'string'; Default = 'OnlyAssigned'; Range = $null; AllowedValues = @('All', 'OnlyAssigned'); Kind = $null; Setting = 'DefenderEndpointPolicyFiltering'; EngineOwned = $false }
+            )
+        }
+        function Get-SettingBinding {
+            param($Config, $Override, $Global)
+            InModuleScope Maester -Parameters @{ T = $script:bound; C = $Config; O = $Override; G = $Global } { ConvertTo-MtTestParameter -Test $T -ConfigValue $C -Override $O -GlobalSetting $G }
+        }
+        function Get-Source { param($Binding, $Name) ($Binding.Effective | Where-Object Name -EQ $Name).Source }
+    }
+
+    It 'Binds a parameter from GlobalSettings and records the source and setting' {
+        $b = Get-SettingBinding -Global ([pscustomobject]@{ ParkedDomains = @('contoso-old.com'); DefenderEndpointPolicyFiltering = 'All' })
+        $b.Error | Should -BeNullOrEmpty
+        $b.Bound.ParkedDomains | Should -Be @('contoso-old.com')
+        $b.Bound.PolicyFiltering | Should -Be 'All'
+        Get-Source $b 'ParkedDomains' | Should -Be 'Setting'
+        ($b.Effective | Where-Object Name -EQ 'PolicyFiltering').Setting | Should -Be 'DefenderEndpointPolicyFiltering'
+    }
+
+    It 'Lets the test''s TestSettings row override the setting' {
+        $b = Get-SettingBinding -Config @{ ParkedDomains = @() } -Global @{ ParkedDomains = @('contoso-old.com') }
+        $b.Bound.ParkedDomains | Should -HaveCount 0
+        Get-Source $b 'ParkedDomains' | Should -Be 'Config'
+    }
+
+    It 'Lets the run''s -Parameter value override the row and the setting' {
+        $b = Get-SettingBinding -Config @{ PolicyFiltering = 'OnlyAssigned' } -Override @{ PolicyFiltering = 'All' } -Global @{ DefenderEndpointPolicyFiltering = 'OnlyAssigned' }
+        $b.Bound.PolicyFiltering | Should -Be 'All'
+        Get-Source $b 'PolicyFiltering' | Should -Be 'Parameter'
+    }
+
+    It 'Keeps the default when the setting is not set or is null' {
+        $b = Get-SettingBinding -Global @{ ParkedDomains = $null }
+        $b.Bound.ContainsKey('ParkedDomains') | Should -BeFalse
+        Get-Source $b 'ParkedDomains' | Should -Be 'Default'
+    }
+
+    It 'Binds a list of objects' {
+        $b = Get-SettingBinding -Global @{ EmergencyAccessAccounts = @(@{ Id = '00000000-0000-0000-0000-0000000000b1'; Type = 'Group' }, [pscustomobject]@{ UserPrincipalName = 'bg@contoso.com' }) }
+        $b.Error | Should -BeNullOrEmpty
+        $b.Bound.EmergencyAccessAccounts | Should -HaveCount 2
+        $b.Bound.EmergencyAccessAccounts[0].Type | Should -Be 'Group'
+        $b.Bound.EmergencyAccessAccounts[1].UserPrincipalName | Should -Be 'bg@contoso.com'
+    }
+
+    It 'Rejects a setting value that does not fit the parameter: <Case>' -ForEach @(
+        @{ Case = 'outside ValidateSet'; Global = @{ DefenderEndpointPolicyFiltering = 'Some' } }
+        @{ Case = 'not a domain'; Global = @{ ParkedDomains = @('not a domain') } }
+        @{ Case = 'strings for a list of objects'; Global = @{ EmergencyAccessAccounts = @('bg@contoso.com') } }
+    ) {
+        (Get-SettingBinding -Global $Global).Error | Should -BeLike "Setting '*"
+    }
+
+    It 'Reads Setting and takes the kind from the settings registry' {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'setting') -Id 'SET.1' -Param @'
+        [MaesterParameter(Setting = 'ParkedDomains')]
+        [string[]] $ParkedDomains = @()
+'@
+        $t = InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }
+        $t.Errors | Should -HaveCount 0
+        $t.Parameters[0].Setting | Should -Be 'ParkedDomains'
+        $t.Parameters[0].Kind | Should -Be 'Entra.Domain'
+    }
+
+    It 'Reports <Case>' -ForEach @(
+        @{ Case = 'an unregistered setting'; Param = "[MaesterParameter(Setting = 'NoSuchSetting')] [string[]] `$Domains = @()"; Message = '*not a registered setting*' }
+        @{ Case = 'a type that differs from the setting'; Param = "[MaesterParameter(Setting = 'ParkedDomains')] [string] `$ParkedDomains = ''"; Message = '*is a string`[`]*' }
+        @{ Case = 'a kind that differs from the setting'; Param = "[MaesterParameter(Kind = 'Entra.Group', Setting = 'ParkedDomains')] [string[]] `$ParkedDomains = @()"; Message = '*has kind Entra.Domain*' }
+        @{ Case = 'a list of objects without a setting'; Param = '[object[]] $Accounts = @()'; Message = '*only for a parameter bound to a setting*' }
+    ) {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive ('bad' + [guid]::NewGuid().ToString('n'))) -Id 'BAD.1' -Param $Param
+        (InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }).Errors.Message | Should -BeLike $Message
+    }
+
+    It 'Accepts a pack''s own Namespace.Key setting' {
+        $file = New-NativeTestFile -Folder (Join-Path $TestDrive 'packsetting') -Id 'PACK.1' -Param "[MaesterParameter(Setting = 'Contoso.Regions')] [string[]] `$Regions = @()"
+        (InModuleScope Maester -Parameters @{ File = $file } { Read-MtNativeTest -Path $File }).Errors | Should -HaveCount 0
+    }
+}
+
 Describe 'Licence requirements' {
     It 'Matches <Requirement> against plans <Plans>: <Expected>' -ForEach @(
         @{ Requirement = @('AAD_PREMIUM'); Plans = @('41781fb2-bc02-4b7c-bd55-b576c07bb09d'); Expected = $true }

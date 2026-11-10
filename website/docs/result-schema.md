@@ -210,7 +210,7 @@ Added in 2.1:
 | `ReasonDetail` | string | The reason in words. For `TestError`, the first line of the error. |
 | `ParentId` | string | For a family's rows, the family's ID. Also set on the single row that stands for a whole family that did not run. |
 | `InstanceId` | string | For an instance row, its full ID (the same as `Id`). |
-| `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind }`, where `Source` is `Default`, `Config` or `Parameter`. Empty for Pester rows. |
+| `Parameters` | array | Native tests: the effective parameter values, each `{ Name, Value, Source, Kind, Setting }`, where `Source` is `Default`, `Config`, `Setting` (from the `GlobalSettings` entry the parameter is bound to, named in `Setting`) or `Parameter`. Empty for Pester rows. |
 | `Diagnostics` | array of strings | Warnings (`WARNING: ...`) and non-terminating errors (`ERROR: ...`) the test wrote. |
 | `Package` | object | For a test from a [Maester Pack](./packs/index.md): `Id`, `Name`, `Version`, `Commit`, `Publisher`, `BuiltIn` and `Runtime` of the pack. `null` for every other test. A pack's rows always have `Source` `Custom`. |
 | `Fields` | object | For an instance row, the `Fields` its family's instance source gave, for example `{ "Pillar": ["Identity"], "Category": "Access control" }` for a Zero Trust Assessment result. Values are strings or arrays of strings. `null` for every other row. |

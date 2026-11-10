@@ -39,10 +39,10 @@
     param(
         # Maximum allowed active client secrets per blueprint. Defaults to 2.
         [Parameter(Mandatory = $false)]
-        [int]$MaxActiveSecrets = 2,
+        [int]$MaximumActiveSecrets = 2,
         # Maximum allowed validity period in days for credentials. Defaults to 730 days (2 years).
         [Parameter(Mandatory = $false)]
-        [int]$MaxValidityDays = 730
+        [int]$MaximumValidityDays = 730
     )
 
     try {
@@ -103,7 +103,7 @@
                 # Check if lifespan exceeds max validity
                 if ($null -ne $StartDateTime -and $null -ne $EndDateTime) {
                     $LifespanTotalDays = $EndDateTime.Subtract($StartDateTime).TotalDays
-                    if ($LifespanTotalDays -gt $MaxValidityDays) {
+                    if ($LifespanTotalDays -gt $MaximumValidityDays) {
                         $LifespanDays = [math]::Round($LifespanTotalDays, 1)
                         $CredentialFindings.Add([pscustomobject]@{
                             BlueprintId = $BlueprintId
@@ -111,21 +111,21 @@
                             AppId       = $AppId
                             KeyId       = $KeyId
                             Type        = 'Secret'
-                            Issue       = "Excessive validity lifespan ($LifespanDays days exceeds limit of $MaxValidityDays days)."
+                            Issue       = "Excessive validity lifespan ($LifespanDays days exceeds limit of $MaximumValidityDays days)."
                         })
                     }
                 }
             }
 
             # Check excessive active secrets count
-            if ($ActivePasswords.Count -gt $MaxActiveSecrets) {
+            if ($ActivePasswords.Count -gt $MaximumActiveSecrets) {
                 $CredentialFindings.Add([pscustomobject]@{
                     BlueprintId = $BlueprintId
                     DisplayName = $DisplayName
                     AppId       = $AppId
                     KeyId       = '(multiple)'
                     Type        = 'Secret'
-                    Issue       = "Excessive active secrets ($($ActivePasswords.Count) active secrets exceeds limit of $MaxActiveSecrets)."
+                    Issue       = "Excessive active secrets ($($ActivePasswords.Count) active secrets exceeds limit of $MaximumActiveSecrets)."
                 })
             }
 
