@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M73HCTTNHQ21MB4450N6VA3M",
+  "strategy": "manual-commit",
+  "branch": "feat/parameter-settings",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "powershell/internal/engine/Test-MtGlobalSetting.ps1"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 104,
+    "cache_creation_tokens": 233799,
+    "cache_read_tokens": 10244971,
+    "output_tokens": 63022,
+    "api_call_count": 48
+  },
+  "redaction": {
+    "replacements": 2255,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 13,
+      "credentialed_uri": 0,
+      "entropy": 2217,
+      "key_context": 25,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
