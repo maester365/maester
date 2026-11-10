@@ -19,8 +19,7 @@
             $State.Investigate = [bool]$Investigate
         }.GetNewClosure()
         Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
-            [CmdletBinding()]
-            param($RelativeUri, $ApiVersion, $Filter, $Select)
+            param($RelativeUri)
             if ($RelativeUri -match '^(users|groups|applications|servicePrincipals)/[^/]+$') {
                 $object = $State.ObjectById[$RelativeUri.Split('/')[-1]]
                 if ($null -eq $object) {
@@ -156,8 +155,7 @@
         It 'throws for a Graph error that is not a 404' {
             $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
             Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
-                [CmdletBinding()]
-                param($RelativeUri, $ApiVersion, $Filter, $Select)
+                param($RelativeUri)
                 if ($RelativeUri -like 'users/*') {
                     $exception = [System.Exception]::new('Forbidden (Forbidden).')
                     $exception | Add-Member -NotePropertyName Response -NotePropertyValue (
