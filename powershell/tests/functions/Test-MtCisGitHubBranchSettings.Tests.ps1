@@ -21,6 +21,7 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $script:otherPolicyBody = $null
         $script:otherStatus = 200
         $script:signatureStatus = 200
+        $script:statusStatus = 200
         $script:repoHeaders = @{}
         InModuleScope Maester {
             $__MtSession.GitHubConnection = [pscustomobject]@{ Connected = $true; Organization = 'fixture-org'; ApiBaseUri = 'https://api.github.com'; ApiVersion = '2022-11-28' }
@@ -37,7 +38,7 @@ Describe 'CIS GitHub branch audits through production evidence and native result
                 '^/orgs/fixture-org/repos$' { $headers = $script:repoHeaders; $script:repoBody; break }
                 '^/repos/fixture-org/repo$' { $script:defaultBody; break }
                 '^/repos/fixture-org/repo/branches$' { $script:branchBody; break }
-                '/protection/required_status_checks$' { $script:statusBody; break }
+                '/protection/required_status_checks$' { $status = $script:statusStatus; $script:statusBody; break }
                 '/protection/required_signatures$' { $status = $script:signatureStatus; $script:signatureBody; break }
                 '/branches/other/protection$' { $status = $script:otherStatus; $(if ($null -ne $script:otherPolicyBody) { $script:otherPolicyBody } else { $script:policyBody }); break }
                 '/protection$' { $status = $script:policyStatus; $script:policyBody; break }
@@ -263,6 +264,51 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         InModuleScope Maester {$__MtSession.GitHubCache=@{}}
         $script:branchStateBody='{"name":"main","protected":false}'
         (Invoke-MtTest -Id CIS.GH.1.1.4 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Failed'
+    }
+    It 'Fails absent status-check protection confirmed by classic protection for <Id>' -ForEach @(
+        @{ Id = 'CIS.GH.1.1.9' }, @{ Id = 'CIS.GH.1.1.10' }
+    ) {
+        $script:statusStatus = 404
+        $row = Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)
+        $row.Result | Should -Be 'Failed'
+        $row.ResultDetail.TestResult | Should -Match 'classic branch protection has no required status-check policy'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -match '/branches/main/protection$' }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/repos/fixture-org/repo/rules/branches/main' }
+    }
+    It 'Keeps absent status-check protection indeterminate with potential <Type> rules for <Id>' -ForEach @(
+        foreach ($id in 'CIS.GH.1.1.9', 'CIS.GH.1.1.10') {
+            foreach ($type in 'required_status_checks', 'future_rule') { @{ Id = $id; Type = $type } }
+        }
+    ) {
+        $script:statusStatus = 404
+        $script:rulesBody = '[{"type":"' + $Type + '"}]'
+        $row = Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)
+        $row.Result | Should -Be 'Skipped'
+        $row.ResultDetail.TestResult | Should -Match 'alternative ruleset enforcement is unresolved'
+    }
+    It 'Keeps status-check 404 indeterminate with unusable or contradictory classic protection: <Case>' -ForEach @(
+        @{ Case = 'empty object'; Body = '{}' },
+        @{ Case = 'wrong branch'; Body = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/other/protection"}' },
+        @{ Case = 'wrong host'; Body = '{"url":"https://example.invalid/repos/fixture-org/repo/branches/main/protection"}' },
+        @{ Case = 'unexpected query'; Body = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection?other=1"}' },
+        @{ Case = 'null policy'; Policy = 'null' },
+        @{ Case = 'object policy'; Policy = '{"strict":true,"contexts":["ci"],"checks":[]}' },
+        @{ Case = 'wrong-type policy'; Policy = 'false' }
+    ) {
+        $script:statusStatus = 404
+        if ($Body) { $script:policyBody = $Body }
+        else { $script:policyBody = $script:policyBody.Substring(0, $script:policyBody.Length - 1) + ',"required_status_checks":' + $Policy + '}' }
+        $row = Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)
+        $row.Result | Should -Be 'Skipped'
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/rules/branches/' }
+    }
+    It 'Preserves <Expected> when classic protection cannot contextualize a status-check 404' -ForEach @(
+        @{ Status = 404; Expected = 'Skipped' }, @{ Status = 403; Expected = 'Error' }
+    ) {
+        $script:statusStatus = 404
+        $script:policyStatus = $Status
+        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be $Expected
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/rules/branches/' }
     }
     It 'Retains archived/disabled repositories and all <Visibility> visibility classes' -ForEach @(@{Visibility='public'},@{Visibility='internal'},@{Visibility='private'}) {
         $script:repoBody=$script:repoBody.Replace('"private"','"'+$Visibility+'"').Replace('"archived":false','"archived":true').Replace('"disabled":false','"disabled":true')

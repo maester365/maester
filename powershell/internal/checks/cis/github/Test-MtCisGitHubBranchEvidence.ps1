@@ -107,7 +107,27 @@
                     if ($evidence.State -eq 'NotFoundOrNotVisible') {
                         $state = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Branch
                         if ($state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool] -and -not $state.Data.protected) { $absent = $true }
-                        else { $reason = 'HTTP 404 is ambiguous or protection may be supplied by rulesets.' }
+                        else {
+                            $reason = 'HTTP 404 is ambiguous or protection may be supplied by rulesets.'
+                            if ($kind -eq 'StatusChecks' -and $state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool] -and $state.Data.protected) {
+                                $protection = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Protection
+                                $expectedUri = [uri]"$($__MtSession.GitHubConnection.ApiBaseUri)/repos/$([uri]::EscapeDataString($repository.owner.login))/$([uri]::EscapeDataString($repository.name))/branches/$([uri]::EscapeDataString($branch))/protection"
+                                $actualUri = $null
+                                # The GET schema makes required_status_checks optional, but not nullable.
+                                # A matching classic policy with that field omitted contextualizes the 404;
+                                # a contradictory or malformed field must not become a confirmed violation.
+                                if ($protection.State -eq 'Available' -and $protection.Data.url -is [string] -and
+                                    [uri]::TryCreate($protection.Data.url, [UriKind]::Absolute, [ref]$actualUri) -and
+                                    $actualUri.Scheme -eq $expectedUri.Scheme -and $actualUri.Host -eq $expectedUri.Host -and $actualUri.Port -eq $expectedUri.Port -and
+                                    [uri]::UnescapeDataString($actualUri.AbsolutePath) -ceq [uri]::UnescapeDataString($expectedUri.AbsolutePath) -and
+                                    [string]::IsNullOrEmpty($actualUri.Query) -and [string]::IsNullOrEmpty($actualUri.Fragment) -and [string]::IsNullOrEmpty($actualUri.UserInfo) -and
+                                    -not (Test-MtGitHubObjectProperty -InputObject $protection.Data -PropertyName required_status_checks)) {
+                                    $conforming = $false
+                                    $evidence = $protection
+                                    $reason = 'Accessible classic branch protection has no required status-check policy.'
+                                }
+                            }
+                        }
                     }
                     if ($absent) { $verdict = 'Failed'; $reason = 'An accessible existing branch is unprotected.' }
                     elseif ($null -ne $conforming) {
