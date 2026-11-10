@@ -9,7 +9,7 @@
     Use this function to clear the cache and force a refresh of the data from Active Directory.
 
     .PARAMETER Categories
-    An array of cache categories to clear. Valid values are: Domain, FineGrainedPasswordPolicies, Forest, Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites, Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts, OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers, DaclEntries.
+    An array of cache categories to clear. Valid values are: Domain, FineGrainedPasswordPolicies, Forest, Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites, Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts, OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers, DaclEntries, DnsAuthorization.
 
     .PARAMETER ComputerName
     The name of the computer whose DomainState entries should be cleared for the specified categories. If omitted, all computers are affected for the selected categories.

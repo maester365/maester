@@ -35,7 +35,7 @@
     Computers, Users, Groups, ServiceAccounts, DomainControllers, ReplicationSites,
     Subnets, OptionalFeatures, ReplicationConnections, DfsrSubscriptions, Trusts,
     OrganizationalUnits, SmbConfigurations, DNS, Configuration, Schema, Printers,
-    DaclEntries.
+    DaclEntries, DnsAuthorization.
 
     .EXAMPLE
     Get-MtADDomainState
