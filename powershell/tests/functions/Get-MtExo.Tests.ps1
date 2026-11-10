@@ -25,10 +25,13 @@
                 [PSCustomObject]@{ UserPrincipalName = 'vip@example.test'; IsVIP = $IsVIP.IsPresent; ResultSize = $ResultSize }
             }
         } | Import-Module -Global -Force
+        New-Module -Name tmpEXO_audit_mttest -ScriptBlock {
+            function Get-UnifiedAuditLogRetentionPolicy { }
+        } | Import-Module -Global -Force
     }
 
     AfterAll {
-        Remove-Module tmpEXO_restricted_mttest, tmpEXO_mttest, tmpEOP_mttest, tmpEXO_vip_mttest -Force -ErrorAction SilentlyContinue
+        Remove-Module tmpEXO_restricted_mttest, tmpEXO_mttest, tmpEOP_mttest, tmpEXO_vip_mttest, tmpEXO_audit_mttest -Force -ErrorAction SilentlyContinue
         Clear-MtExoCache
     }
 
@@ -73,5 +76,18 @@
         $vipUsers[0].UserPrincipalName | Should -Be 'vip@example.test'
         $vipUsers[0].IsVIP | Should -BeTrue
         $vipUsers[0].ResultSize | Should -Be 'Unlimited'
+    }
+
+    It 'caches unified audit log retention policy results' {
+        Mock -ModuleName Maester Get-UnifiedAuditLogRetentionPolicy {
+            [PSCustomObject]@{ Identity = 'Default'; RetentionDuration = 'TwelveMonths' }
+        }
+
+        $first = Get-MtExo -Request UnifiedAuditLogRetentionPolicy
+        $second = Get-MtExo -Request UnifiedAuditLogRetentionPolicy
+
+        $first.RetentionDuration | Should -Be 'TwelveMonths'
+        $second.RetentionDuration | Should -Be 'TwelveMonths'
+        Should -Invoke -ModuleName Maester Get-UnifiedAuditLogRetentionPolicy -Times 1 -Exactly
     }
 }

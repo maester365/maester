@@ -76,6 +76,7 @@
         "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
         "ConnectionInformation"          = "Get-ConnectionInformation"
         "AdminAuditLogConfig"            = "Get-AdminAuditLogConfig"
+        "UnifiedAuditLogRetentionPolicy" = "Get-UnifiedAuditLogRetentionPolicy"
         "EXOMailboxAudit"                = "Get-EXOMailbox -RecipientTypeDetails 'UserMailbox' -PropertySets 'Audit','Minimum' -ResultSize 'Unlimited'"
         "MailboxAuditBypassAssociation"  = "Get-MailboxAuditBypassAssociation -ResultSize 'Unlimited' -WarningAction 'SilentlyContinue'"
         "EmailTenantSettings"            = "Get-EmailTenantSettings"

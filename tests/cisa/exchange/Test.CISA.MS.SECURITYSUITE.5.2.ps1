@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaAuditLogRetention {
     <#
     .SYNOPSIS
-    Checks state of purview
+    Checks Exchange audit-retention evidence and requests manual verification.
 
     .DESCRIPTION
     Audit logs SHALL be retained and searchable for a minimum of 3 months and retrievable for a minimum of 12 months.
@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaAuditLogRetention
 
-    Returns true if audit log retention enabled
+    Returns true with an Investigate result for this manual benchmark requirement.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaAuditLogRetention
@@ -36,7 +36,7 @@
     [OutputType([bool])]
     param()
 
-    $policies = Get-UnifiedAuditLogRetentionPolicy
+    $policies = @(Get-MtExo -Request UnifiedAuditLogRetentionPolicy)
 
     $resultPolicies = $policies | Where-Object { `
         $_.Enabled -and `
@@ -49,17 +49,17 @@
         $_.RetentionDuration -like "*Years")
     }
 
-    $testResult = ($resultPolicies|Measure-Object).Count -ge 1
-
-    $portalLink = "https://purview.microsoft.com/audit/auditpolicies"
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. An enabled [Exchange Online audit retention policy]($portalLink) covers the required Exchange record types for at least 12 months. Confirm 3-month searchability in the Audit portal."
+    $portalLink = 'https://purview.microsoft.com/audit/auditpolicies'
+    if ($resultPolicies.Count -gt 0) {
+        $policyNames = @($resultPolicies | ForEach-Object { $_.Name ?? $_.Identity } | Where-Object { $_ })
+        $policySummary = "Found enabled Exchange audit retention policy(ies) covering the checked Exchange record types for at least 12 months: $($policyNames -join ', ')."
     } else {
-        $testResultMarkdown = "Your tenant does not have an enabled [Exchange Online audit retention policy]($portalLink) covering the required Exchange record types for at least 12 months."
+        $policySummary = 'No enabled Exchange audit retention policy was found that covers the checked Exchange record types for at least 12 months. Other approved retention or log-export solutions may still satisfy the requirement.'
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    $testResultMarkdown = "Manual verification required. $policySummary CISA also requires audit logs to be searchable for at least three months and retrievable for at least 12 months across the applicable workloads. This check cannot verify the full requirement. Confirm the search and retention coverage in the [Audit portal]($portalLink) or the approved alternative log-archive solution."
 
-    return $testResult
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+
+    return $true
 }

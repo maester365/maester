@@ -88,8 +88,12 @@
             }
 
             if (-not (& $isEmpty $rule.RecipientDomainIs)) {
+                if ($tenantDomains.Count -eq 0) {
+                    throw 'Cannot determine whether the enabled all-recipient anti-spam rule covers the tenant because no accepted domains were returned.'
+                }
+
                 $recipientDomains = @($rule.RecipientDomainIs | ForEach-Object { ([string]$_).Trim().ToLowerInvariant() })
-                if ($tenantDomains.Count -eq 0 -or @($tenantDomains | Where-Object { $_ -notin $recipientDomains }).Count -gt 0) {
+                if (@($tenantDomains | Where-Object { $_ -notin $recipientDomains }).Count -gt 0) {
                     continue
                 }
             }

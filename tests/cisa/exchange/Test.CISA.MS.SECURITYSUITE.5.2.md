@@ -6,10 +6,10 @@ Rationale: Audit logs may no longer be available when needed if they are not ret
 
 1. Sign in to the [Microsoft Purview portal](https://purview.microsoft.com/audit).
 2. Under **Solutions**, select **Audit** and confirm that audit search is available for at least the previous 3 months.
-3. Open **Audit policies** and create or update retention policies for the required audit records.
-4. Ensure the retention duration is at least 12 months. Creating custom retention policies may require an eligible audit license.
+3. Open **Audit policies** and create or update retention policies for all audit records that need longer retention.
+4. Ensure the records can be searched for at least three months and retrieved for at least 12 months. Creating custom retention policies may require an eligible audit license.
 
-Maester checks the configured Exchange audit retention policy and its 12-month duration. Confirm 3-month searchability in the Audit portal.
+The benchmark marks this requirement as manual, so Maester reports **Investigate** rather than a pass or failure. It shows whether an enabled Exchange audit retention policy covers the checked Exchange record types for at least 12 months; the absence of that policy does not rule out an approved alternative retention or log-export solution. Confirm three-month searchability, 12-month retrievability, and coverage of all applicable workloads in the Audit portal or the approved alternative.
 
 #### Related links
 
