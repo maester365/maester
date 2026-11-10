@@ -3,6 +3,7 @@ title: Getting started
 description: Your first Maester run, how to read the report, and how to go from a one-off check to continuous monitoring.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 import InstallCommand from '@components/InstallCommand.astro';
 
 # Getting started
@@ -21,21 +22,28 @@ By default Maester asks only for read permissions. It does not change anything i
 
 ## Step 1: Run your first report
 
-Install Maester, then connect and run it:
+Install Maester:
 
 <InstallCommand />
+
+Then pick one of these runs. Either way you get one report.
+
+<Tabs syncKey="first-run">
+<TabItem label="Quick check">
+
+Maester's built-in checks, in a few minutes:
 
 ```powershell
 Connect-Maester
 Invoke-Maester
 ```
 
-### For a comprehensive check, add the Zero Trust Assessment
+</TabItem>
+<TabItem label="Comprehensive check">
 
-For the most complete picture of your tenant, also run Microsoft's
-[Zero Trust Assessment](packs/zero-trust-assessment.md). It ships with Maester as a pack, and its results appear in
-the same report as Maester's own checks, grouped by Zero Trust pillar and placed beside the Maester checks for the
-same product and area.
+Maester's built-in checks plus Microsoft's [Zero Trust Assessment](packs/zero-trust-assessment.md), for the most
+complete picture of your tenant. The assessment's results appear in the same report, grouped by Zero Trust pillar
+and next to the Maester checks for the same product and area.
 
 ```powershell
 Install-Module ZeroTrustAssessment -Scope CurrentUser
@@ -44,8 +52,10 @@ Invoke-Maester -Pack ZTA
 ```
 
 The assessment needs PowerShell 7.6 or later and asks you to sign in a second time, in the browser. It can take an
-hour or more on a large tenant, which is why a plain `Invoke-Maester` leaves it out until you name it. To include it
-in every run, see [Run it](packs/zero-trust-assessment.md#run-it).
+hour or more on a large tenant. To include it in every run, see [Run it](packs/zero-trust-assessment.md#run-it).
+
+</TabItem>
+</Tabs>
 
 ## Step 2: Read the report
 
