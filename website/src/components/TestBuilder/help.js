@@ -91,7 +91,7 @@ export const FIELD_HELP = {
     empty: "The test is treated as **Workforce** only. It is not treated as valid in every tenant: with enforcement on, it is skipped in an External ID tenant. Tick External as well if the test applies there.",
   },
   cloud: {
-    more: "Tick the clouds only when the feature is missing or different in some of them, for example a setting that sovereign clouds do not have. Maester detects the tenant's cloud and writes it to the result. By default a mismatch is only recorded; with `Environment.Enforce.Cloud` turned on in `maester-config.json`, the test is **Skipped** with reason `CloudMismatch` in a cloud you did not tick.",
+    more: "Commercial is the worldwide cloud. GCC, GCC High and DoD are the United States government clouds, China is operated by 21Vianet, Bleu is the French sovereign cloud, Delos the German one and GovSG the Singapore government cloud.\n\nTick the clouds only when the feature is missing or different in some of them, for example a setting that sovereign clouds do not have. Maester detects the tenant's cloud and writes it to the result. By default a mismatch is only recorded; with `Environment.Enforce.Cloud` turned on in `maester-config.json`, the test is **Skipped** with reason `CloudMismatch` in a cloud you did not tick.",
     empty: "The test is valid in every cloud and is never skipped because of the cloud.",
   },
   platform: {

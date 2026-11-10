@@ -206,3 +206,7 @@
 [data-theme="dark"] .tone-high { color: #fb923c; }
 [data-theme="dark"] .tone-medium { color: #fbbf24; }
 [data-theme="dark"] .tone-info { color: #60a5fa; }
+
+/* Flags of the national clouds, and a globe for the worldwide one. */
+.flag { width: 1.15rem; height: 0.8rem; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px var(--ifm-color-emphasis-300); }
+.flagGlobe { width: 1rem; height: 1rem; flex: none; fill: none; stroke: var(--ifm-color-emphasis-700); stroke-width: 1.25; }

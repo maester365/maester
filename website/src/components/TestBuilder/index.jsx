@@ -4,7 +4,7 @@ import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
 import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
-import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
@@ -726,6 +726,18 @@ const TENANT_TYPES = {
   External: { label: "External (Consumer)", icon: "/img/icons/external-id.svg" },
 };
 
+// Clouds: the country whose cloud it is, shown as a flag. Commercial is the worldwide cloud and shows a globe.
+const CLOUDS = {
+  Commercial: { label: "Worldwide" },
+  GCC: { country: "us", label: "United States" },
+  GCCHigh: { country: "us", label: "United States" },
+  DoD: { country: "us", label: "United States" },
+  China: { country: "cn", label: "China" },
+  Bleu: { country: "fr", label: "France" },
+  Delos: { country: "de", label: "Germany" },
+  GovSG: { country: "sg", label: "Singapore" },
+};
+
 // The rating fields show a level icon on each choice, so the scale reads at a glance.
 const SEVERITY_LEVEL = { Critical: 4, High: 3, Medium: 2, Low: 1, Info: 0 };
 const SCALE_LEVEL = { Low: 1, Medium: 2, High: 3 };
@@ -1255,7 +1267,7 @@ export default function TestBuilder() {
             <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} describe={(o) => TENANT_TYPES[o]?.label || o} iconFor={(o) => ({ icon: TENANT_TYPES[o]?.icon })} onChange={(v) => set({ tenantType: v })} />
           </Field>
           <Field id="cloud" name="Cloud" label="Clouds" hint={P.Cloud.description} problems={problems}>
-            <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} onChange={(v) => set({ cloud: v })} />
+            <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} iconFor={(o) => ({ glyph: <Flag country={CLOUDS[o]?.country} label={CLOUDS[o]?.label} /> })} onChange={(v) => set({ cloud: v })} />
           </Field>
           <Field id="platform" name="Platform" label="Platforms" hint={P.Platform.description} problems={problems}>
             <Checks id="platform" values={state.platform} options={P.Platform.allowedValues} iconFor={(o) => ({ glyph: osGlyph(o) })} onChange={(v) => set({ platform: v })} />

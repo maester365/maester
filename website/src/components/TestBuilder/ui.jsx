@@ -132,6 +132,76 @@ export function RadioCards({ value, onValueChange, options, label, columns }) {
   );
 }
 
+// Small flags for the national clouds, drawn here because flag emoji do not render on Windows. They are
+// simplified to read at 16 pixels: the colours and layout of each flag, not every star.
+const star = (cx, cy, r) =>
+  Array.from({ length: 10 }, (_, i) => {
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    const d = i % 2 ? r * 0.4 : r;
+    return (cx + d * Math.cos(a)).toFixed(2) + "," + (cy + d * Math.sin(a)).toFixed(2);
+  }).join(" ");
+const FLAGS = {
+  us: (
+    <>
+      <rect width="20" height="14" fill="#fff" />
+      {[0, 4, 8, 12].map((y) => (
+        <rect key={y} y={y} width="20" height="2" fill="#B22234" />
+      ))}
+      <rect width="9" height="8" fill="#3C3B6E" />
+      {[2.25, 4.5, 6.75].map((x) => [2.5, 5.5].map((y) => <circle key={x + "-" + y} cx={x} cy={y} r="0.6" fill="#fff" />))}
+    </>
+  ),
+  cn: (
+    <>
+      <rect width="20" height="14" fill="#DE2910" />
+      <polygon points={star(4.5, 4.5, 2.6)} fill="#FFDE00" />
+      {[[8.5, 1.8], [10, 3.6], [10, 6], [8.5, 7.8]].map(([x, y]) => (
+        <circle key={y} cx={x} cy={y} r="0.6" fill="#FFDE00" />
+      ))}
+    </>
+  ),
+  fr: (
+    <>
+      <rect width="20" height="14" fill="#fff" />
+      <rect width="6.67" height="14" fill="#0055A4" />
+      <rect x="13.33" width="6.67" height="14" fill="#EF4135" />
+    </>
+  ),
+  de: (
+    <>
+      <rect width="20" height="14" fill="#DD0000" />
+      <rect width="20" height="4.67" fill="#000" />
+      <rect y="9.33" width="20" height="4.67" fill="#FFCE00" />
+    </>
+  ),
+  sg: (
+    <>
+      <rect width="20" height="14" fill="#fff" />
+      <rect width="20" height="7" fill="#EF3340" />
+      <circle cx="5" cy="3.5" r="2.4" fill="#fff" />
+      <circle cx="6" cy="3.5" r="2.2" fill="#EF3340" />
+      {[[7.6, 1.9], [6.4, 2.9], [8.8, 2.9], [6.9, 4.4], [8.3, 4.4]].map(([x, y]) => (
+        <circle key={x} cx={x} cy={y} r="0.5" fill="#fff" />
+      ))}
+    </>
+  ),
+};
+export function Flag({ country, label }) {
+  if (!FLAGS[country])
+    return (
+      <svg className={ui.flagGlobe} viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.25" />
+        <path d="M1.75 8h12.5M8 1.75c2 2 2.6 4 2.6 6.25S10 12.25 8 14.25C6 12.25 5.4 10.25 5.4 8S6 3.75 8 1.75z" />
+      </svg>
+    );
+  return (
+    <svg className={ui.flag} viewBox="0 0 20 14" role="img" aria-label={label}>
+      <title>{label}</title>
+      {FLAGS[country]}
+    </svg>
+  );
+}
+
 // A level, drawn as bars: `level` of `of` are filled, in the colour of `tone`. Info is a circled i, because an
 // Info test makes no judgement and so has no level.
 export function LevelIcon({ level, of = 3, tone }) {
