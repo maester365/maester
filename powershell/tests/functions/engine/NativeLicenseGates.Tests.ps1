@@ -15,8 +15,8 @@
         'CISA.MS.AAD.3.5'  = $p1; 'CISA.MS.AAD.3.6' = $p1; 'CISA.MS.AAD.3.7' = $p1; 'CISA.MS.AAD.3.8' = $p1; 'CISA.MS.AAD.4.1' = $p1
         'CISA.MS.AAD.2.1'  = $p2; 'CISA.MS.AAD.2.2' = $p2; 'CISA.MS.AAD.2.3' = $p2
         'CISA.MS.AAD.7.4'  = $p2OrGovernance; 'CISA.MS.AAD.7.5' = $p2OrGovernance; 'CISA.MS.AAD.7.6' = $p2OrGovernance; 'CISA.MS.AAD.7.7' = $p2OrGovernance
-        'CISA.MS.EXO.11.1' = $mdoP1; 'CISA.MS.EXO.11.2' = $mdoP1; 'CISA.MS.EXO.11.3' = $mdoP1; 'CISA.MS.EXO.15.1' = $mdoP1
-        'CISA.MS.EXO.15.2' = $mdoP1; 'CISA.MS.EXO.15.3' = $mdoP1; 'CISA.MS.EXO.16.1' = $mdoP1; 'CISA.MS.EXO.16.2' = $mdoP1
+        'CISA.MS.SECURITYSUITE.2.1' = $mdoP1; 'CISA.MS.SECURITYSUITE.2.4' = $mdoP1; 'CISA.MS.EXO.11.3' = $mdoP1; 'CISA.MS.EXO.15.1' = $mdoP1
+        'CISA.MS.EXO.15.2' = $mdoP1; 'CISA.MS.EXO.15.3' = $mdoP1; 'CISA.MS.SECURITYSUITE.4.1' = $mdoP1; 'CISA.MS.SECURITYSUITE.4.2' = $mdoP1
         'CISA.MS.EXO.17.3' = @{ License = @('M365_ADVANCED_AUDITING'); Legacy = 'NotLicensedAdvAudit' }
         'CISA.MS.EXO.8.1'  = $exoDlp; 'CISA.MS.EXO.8.2' = $exoDlp; 'CISA.MS.EXO.8.4' = $exoDlp
         'CIS.M365.1.3.6'   = @{ License = @('LOCKBOX_ENTERPRISE'); Legacy = 'NotLicensedCustomerLockbox' }

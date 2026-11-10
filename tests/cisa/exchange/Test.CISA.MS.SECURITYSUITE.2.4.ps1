@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaImpersonationTip
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.11.2',
+        Id = 'CISA.MS.SECURITYSUITE.2.4',
         Title = 'User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.001'),
-        Control = 'cisa-scuba:MS.EXO.11.2',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.2.4',
         Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'

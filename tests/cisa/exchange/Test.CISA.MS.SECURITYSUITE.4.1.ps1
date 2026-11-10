@@ -15,8 +15,8 @@
     https://maester.dev/docs/commands/Test-MtCisaExoAlert
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.16.1',
-        Title = 'Alerts SHALL be enabled.',
+        Id = 'CISA.MS.SECURITYSUITE.4.1',
+        Title = 'At a minimum, the following alerts SHALL be enabled.',
         Product = 'exchange',
         RelatedProduct = 'defender',
         Feature = 'alerts',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1114.003', 'T1204.001'),
-        Control = 'cisa-scuba:MS.EXO.16.1',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.4.1',
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',

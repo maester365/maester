@@ -1,22 +1,22 @@
 ﻿function Test-MtCisaImpersonation {
     <#
     .SYNOPSIS
-    Checks state of preset security policies
+    Checks impersonation protection for configured sensitive users
 
     .DESCRIPTION
-    Impersonation protection checks SHOULD be used.
+    User impersonation protection SHOULD be enabled for sensitive accounts.
 
     .EXAMPLE
     Test-MtCisaImpersonation
 
-    Returns true if standard and strict protection is on
+    Returns true if sensitive-user protection is enabled and at least one protected account is configured.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaImpersonation
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.11.1',
-        Title = 'Impersonation protection checks SHOULD be used.',
+        Id = 'CISA.MS.SECURITYSUITE.2.1',
+        Title = 'User impersonation protection SHOULD be enabled for sensitive accounts.',
         Product = 'exchange',
         RelatedProduct = 'defender',
         Feature = 'anti-phishing',
@@ -26,7 +26,7 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.001'),
-        Control = 'cisa-scuba:MS.EXO.11.1',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.2.1',
         Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike'
@@ -42,7 +42,8 @@
         $_.ImpersonationProtectionState -eq "Automatic" -and `
         $_.EnableOrganizationDomainsProtection -and `
         $_.EnableTargetedDomainsProtection -and `
-        $_.EnableTargetedUserProtection
+        $_.EnableTargetedUserProtection -and `
+        @($_.TargetedUsersToProtect | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }).Count -gt 0
     }
 
     $standard = $policies | Where-Object { `
@@ -60,9 +61,9 @@
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [impersonation protection enabled for configured sensitive users]($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [impersonation protection enabled for configured sensitive users]($portalLink).`n`n%TestResult%"
     }
 
     $result = "| Policy | Status |`n"
@@ -78,13 +79,14 @@
         $result += "| Strict | $failResult |`n`n"
     }
 
-    $result += "| Policy Name | Result |`n"
-    $result += "| --- | --- |`n"
+    $result += "| Policy Name | Sensitive users protected | Result |`n"
+    $result += "| --- | --- | --- |`n"
     foreach($item in $policies | Sort-Object -Property Identity){
+        $targetedUsers = @($item.TargetedUsersToProtect | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
         if($item.Guid -in $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $($passResult) |`n"
+            $result += "| $($item.Identity) | $($targetedUsers.Count) | $($passResult) |`n"
         }else{
-            $result += "| $($item.Identity) | $($failResult) |`n"
+            $result += "| $($item.Identity) | $($targetedUsers.Count) | $($failResult) |`n"
         }
     }
 
