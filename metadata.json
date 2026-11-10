@@ -3,7 +3,7 @@
   "checkpoint_id": "01M726PBG16A2DCER7CD2XEG7J",
   "strategy": "manual-commit",
   "branch": "feat/report-catalog-sort-columns",
-  "checkpoints_count": 6,
+  "checkpoints_count": 7,
   "files_touched": [
     "report/src/components/report/lists.tsx",
     "website/src/components/catalog/CatalogList.astro"
@@ -29,6 +29,13 @@
       "compact_transcript": "/2/transcript.jsonl",
       "content_hash": "/2/content_hash.txt",
       "prompt": "/2/prompt.txt"
+    },
+    {
+      "metadata": "/3/metadata.json",
+      "transcript": "/3/full.jsonl",
+      "compact_transcript": "/3/transcript.jsonl",
+      "content_hash": "/3/content_hash.txt",
+      "prompt": "/3/prompt.txt"
     }
   ],
   "token_usage": {
@@ -39,15 +46,15 @@
     "api_call_count": 17
   },
   "redaction": {
-    "replacements": 1674,
+    "replacements": 2821,
     "layers": {
       "betterleaks": 0,
       "connection_string": 0,
       "credential_key": 0,
-      "credential_value": 6,
-      "credentialed_uri": 0,
-      "entropy": 1650,
-      "key_context": 18,
+      "credential_value": 82,
+      "credentialed_uri": 2,
+      "entropy": 2714,
+      "key_context": 23,
       "provider_token": 0,
       "shell_stdin": 0
     }
