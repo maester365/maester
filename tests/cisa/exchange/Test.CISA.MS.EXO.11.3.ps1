@@ -29,7 +29,8 @@
         Control = 'cisa-scuba:MS.EXO.11.3',
         Service = 'None',
         Lifecycle = 'Deprecated',
-        Author = 'soulemike'
+        Author = 'soulemike',
+        Contributor = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

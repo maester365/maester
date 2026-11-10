@@ -29,7 +29,7 @@
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',
-        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge')
+        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

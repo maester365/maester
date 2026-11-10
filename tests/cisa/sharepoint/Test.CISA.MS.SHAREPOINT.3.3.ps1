@@ -27,7 +27,8 @@
         Mitre = ('T1213.002', 'T1530'),
         Control = 'cisa-scuba:MS.SHAREPOINT.3.3',
         Service = 'SharePointOnline',
-        Author = 'Mynster9361'
+        Author = 'Mynster9361',
+        Contributor = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

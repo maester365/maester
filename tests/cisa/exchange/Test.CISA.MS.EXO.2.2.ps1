@@ -28,7 +28,7 @@
         Control = 'cisa-scuba:MS.EXO.2.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
-        Contributor = 'moorereason'
+        Contributor = ('moorereason', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

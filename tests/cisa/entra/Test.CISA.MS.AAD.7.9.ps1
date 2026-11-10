@@ -20,7 +20,7 @@
         Control = 'cisa-scuba:MS.AAD.7.9',
         Service = 'Graph',
         Author = 'soulemike',
-        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge')
+        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

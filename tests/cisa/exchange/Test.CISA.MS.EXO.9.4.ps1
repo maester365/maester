@@ -30,7 +30,7 @@
         Service = 'None',
         Lifecycle = 'Deprecated',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'SamErde')
+        Contributor = ('thomas-s-schmidt', 'SamErde', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
