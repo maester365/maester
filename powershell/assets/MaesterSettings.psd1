@@ -10,6 +10,7 @@
         AzureDevOpsOrganization = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.' }
         GitHubOrganization      = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
         GitHubApiBaseUri        = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
+        GitHubDeletionPolicy    = @{ Type = 'object'; Default = @{}; Sensitive = $true; Description = 'Host and organization-bound approved owner and repository administrator IDs for GitHub deletion assessments.' }
         GitHubApiVersion        = @{ Type = 'string'; Default = '2022-11-28'; Sensitive = $false; Description = 'GitHub REST API version.' }
     }
 }
