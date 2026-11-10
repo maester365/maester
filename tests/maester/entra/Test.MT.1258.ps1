@@ -177,8 +177,12 @@
     $roleNames = @{}
     $privilegedRoles = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     try {
-        $foreignAssignments = @(Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments' -ApiVersion beta `
-                -Select 'id', 'principalId', 'principalOrganizationId', 'roleDefinitionId', 'directoryScopeId' -ErrorAction Stop | ForEach-Object {
+        $assignmentRequest = @{
+            RelativeUri = 'roleManagement/directory/roleAssignments'
+            ApiVersion  = 'beta'
+            Select      = 'id', 'principalId', 'principalOrganizationId', 'roleDefinitionId', 'directoryScopeId'
+        }
+        $foreignAssignments = @(Invoke-MtGraphRequest @assignmentRequest -ErrorAction Stop | ForEach-Object {
                 $foreignTenantId = if ($_.principalOrganizationId -and "$($_.principalOrganizationId)" -ne $ownTenantId) { "$($_.principalOrganizationId)" }
                 elseif ($remoteGroupById.ContainsKey("$($_.principalId)")) { "$($remoteGroupById["$($_.principalId)"].remoteTenantId)" }
                 else { $null }
@@ -186,8 +190,12 @@
                     [pscustomobject]@{ TenantId = $foreignTenantId; principalId = "$($_.principalId)"; roleDefinitionId = "$($_.roleDefinitionId)"; directoryScopeId = $_.directoryScopeId }
                 }
             })
-        foreach ($definition in @(Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta `
-                    -Select 'id', 'templateId', 'displayName', 'isPrivileged' -ErrorAction Stop)) {
+        $definitionRequest = @{
+            RelativeUri = 'roleManagement/directory/roleDefinitions'
+            ApiVersion  = 'beta'
+            Select      = 'id', 'templateId', 'displayName', 'isPrivileged'
+        }
+        foreach ($definition in @(Invoke-MtGraphRequest @definitionRequest -ErrorAction Stop)) {
             foreach ($key in @($definition.id, $definition.templateId) | Where-Object { $_ }) {
                 $roleNames[$key] = $definition.displayName
                 if ($definition.isPrivileged -eq $true) { $null = $privilegedRoles.Add($key) }
@@ -327,8 +335,13 @@
         param([string] $TargetId)
         try {
             # -DisablePaging keeps the lookup to one page of 10 events, and returns the raw response: the events are in .value.
-            $response = Invoke-MtGraphRequest -RelativeUri 'auditLogs/directoryAudits' -ApiVersion v1.0 `
-                -Filter "targetResources/any(t:t/id eq '$TargetId')" -QueryParameters @{ '$orderby' = 'activityDateTime asc'; '$top' = '10' } -DisablePaging -ErrorAction Stop
+            $auditRequest = @{
+                RelativeUri     = 'auditLogs/directoryAudits'
+                ApiVersion      = 'v1.0'
+                Filter          = "targetResources/any(t:t/id eq '$TargetId')"
+                QueryParameters = @{ '$orderby' = 'activityDateTime asc'; '$top' = '10' }
+            }
+            $response = Invoke-MtGraphRequest @auditRequest -DisablePaging -ErrorAction Stop
             $audit = @($response.value)
         } catch {
             Write-Verbose "Could not read the audit log for $($TargetId): $($_.Exception.Message)"

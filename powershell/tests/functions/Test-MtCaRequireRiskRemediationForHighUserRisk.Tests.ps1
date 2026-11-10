@@ -188,3 +188,55 @@ Describe 'MT.1253 risk remediation policy coverage' {
         }
     }
 }
+
+Describe 'MT.1253 Conditional Access request path' {
+    BeforeAll {
+        # Graph returns riskRemediation only to a request that sends this header, and unknownFutureValue otherwise.
+        $script:MtRiskPolicyJson = {
+            param($Headers)
+            $control = if ($Headers -and $Headers['Prefer'] -eq 'include-unknown-enum-members') { 'riskRemediation' } else { 'unknownFutureValue' }
+            '{"id":"policy-rr","displayName":"Risk remediation","state":"enabled","grantControls":{"operator":"OR","builtInControls":["' + $control + '"]},"conditions":{"userRiskLevels":["high"],"users":{"includeUsers":["All"],"excludeUsers":[],"excludeGroups":[],"excludeRoles":[]},"applications":{"includeApplications":["All"],"excludeApplications":[]}}}'
+        }
+    }
+
+    BeforeEach {
+        InModuleScope Maester { $__MtSession.GraphCache = @{} }
+        Mock Get-MgContext -ModuleName Maester { @{ Environment = 'Global'; TenantId = 'contoso-tenant' } }
+        Mock Get-MgEnvironment -ModuleName Maester { @{ GraphEndpoint = 'https://graph.microsoft.com/' } }
+        # The qualifying policy is on the second page, so the header must survive pagination.
+        Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'beta/identity/conditionalAccess/policies' } {
+            [pscustomobject] @{ '@odata.context' = 'https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/policies'; value = @([pscustomobject] @{ id = 'policy-other'; displayName = 'Other'; state = 'disabled' }); '@odata.nextLink' = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies?$skiptoken=p2' }
+        }
+        Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies?$skiptoken=p2' } {
+            [pscustomobject] @{ '@odata.context' = 'https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/policies'; value = @(& $script:MtRiskPolicyJson $Headers | ConvertFrom-Json) }
+        }
+        Mock Get-MtEmergencyAccessAccount -ModuleName Maester { @() }
+        Mock Get-GraphObjectMarkdown -ModuleName Maester { 'Risk remediation policy' }
+        Mock Add-MtTestResultDetail -ModuleName Maester { }
+    }
+
+    It 'Requests unknown enum members on every page and passes the policy Graph returns' {
+        InModuleScope Maester { Test-MtCaRequireRiskRemediationForHighUserRisk } | Should -BeTrue
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+            $Headers['Prefer'] -eq 'include-unknown-enum-members'
+        }
+    }
+
+    It 'Skips MT.1013 from the policies MT.1253 read, with one Graph read per page and no errors' {
+        $results = InModuleScope Maester {
+            $riskRemediation = Test-MtCaRequireRiskRemediationForHighUserRisk -ErrorVariable riskErrors
+            $passwordChange = Test-MtCaRequirePasswordChangeForHighUserRisk -ErrorVariable passwordErrors
+            @{ RiskRemediation = $riskRemediation; PasswordChange = $passwordChange; Errors = @($riskErrors) + @($passwordErrors) }
+        }
+
+        $results.RiskRemediation | Should -BeTrue
+        $results.PasswordChange | Should -BeNullOrEmpty
+        # Get-ObjectProperty probes for @odata.nextLink with Select-Object -ErrorAction SilentlyContinue, which still records an error.
+        @($results.Errors | Where-Object { $_ -and $_.InvocationInfo.MyCommand.Name -ne 'Select-Object' }) | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -like "MT.1253 is met: 'Risk remediation'*"
+        }
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Uri -eq 'beta/identity/conditionalAccess/policies' }
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Uri -like '*$skiptoken=p2' }
+    }
+}

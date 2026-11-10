@@ -21,6 +21,7 @@
 
   Write-Verbose -Message "Getting Conditional Access policies."
 
-  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta -DisableCache:$DisableCache
+  # riskRemediation and other newer grant controls are only returned with this header.
+  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta -IncludeUnknownEnumMembers -DisableCache:$DisableCache
 
 }

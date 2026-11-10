@@ -99,8 +99,12 @@
     try {
         $catalogs = @(Invoke-MtGraphRequest -RelativeUri 'identityGovernance/entitlementManagement/catalogs' -ApiVersion v1.0 -Select 'id' -ErrorAction Stop)
         foreach ($catalog in @($catalogs | Where-Object { $_.id })) {
-            $catalogResources = @(Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/catalogs/$($catalog.id)/resources" -ApiVersion v1.0 `
-                    -Select 'id', 'originId', 'originSystem' -ErrorAction Stop)
+            $resourceRequest = @{
+                RelativeUri = "identityGovernance/entitlementManagement/catalogs/$($catalog.id)/resources"
+                ApiVersion  = 'v1.0'
+                Select      = 'id', 'originId', 'originSystem'
+            }
+            $catalogResources = @(Invoke-MtGraphRequest @resourceRequest -ErrorAction Stop)
             foreach ($catalogResource in $catalogResources) {
                 if ($catalogResource.originSystem -eq $scopeInfo.OriginSystem -and $catalogResource.originId -and -not $excluded.Contains("$($catalogResource.originId)")) {
                     $null = $governedIds.Add("$($catalogResource.originId)")

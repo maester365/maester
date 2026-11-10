@@ -78,3 +78,25 @@ Describe 'MT.1013 password change for high user risk' {
         }
     }
 }
+
+Describe 'MT.1013 skip through the Conditional Access request path' {
+    BeforeEach {
+        InModuleScope Maester { $__MtSession.GraphCache = @{} }
+        Mock Get-MgContext -ModuleName Maester { @{ Environment = 'Global'; TenantId = 'contoso-tenant' } }
+        Mock Get-MgEnvironment -ModuleName Maester { @{ GraphEndpoint = 'https://graph.microsoft.com/' } }
+        # Graph returns riskRemediation only to a request that sends the Prefer header, and unknownFutureValue otherwise.
+        Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'beta/identity/conditionalAccess/policies' } {
+            $control = if ($Headers -and $Headers['Prefer'] -eq 'include-unknown-enum-members') { 'riskRemediation' } else { 'unknownFutureValue' }
+            '{"value":[{"id":"policy-rr","displayName":"Risk remediation","state":"enabled","grantControls":{"operator":"OR","builtInControls":["' + $control + '"]},"conditions":{"userRiskLevels":["high"],"users":{"includeUsers":["All"],"excludeUsers":[],"excludeGroups":[],"excludeRoles":[]},"applications":{"includeApplications":["All"],"excludeApplications":[]}}}]}' | ConvertFrom-Json
+        }
+        Mock Get-MtEmergencyAccessAccount -ModuleName Maester { @() }
+        Mock Add-MtTestResultDetail -ModuleName Maester { }
+    }
+
+    It 'Is skipped for a risk remediation policy that Graph returns only with the Prefer header' {
+        InModuleScope Maester { Test-MtCaRequirePasswordChangeForHighUserRisk } | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -like "MT.1253 is met: 'Risk remediation'*"
+        }
+    }
+}

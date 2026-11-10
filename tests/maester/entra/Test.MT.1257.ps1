@@ -40,8 +40,7 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        # Also fail when an access package assignment is missing its expected app role assignment.
-        # Set to $false to fail on unauthorized access only and list missing access for review.
+        # Also fail when an assignment is missing its expected app role assignment; $false fails on unauthorized access only.
         [bool] $IncludeMissingAccess = $true,
 
         # Object IDs of governed applications whose drift this check ignores.

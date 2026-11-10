@@ -250,6 +250,43 @@ Describe 'Invoke-MtGraphRequest' {
         }
     }
 
+    Context 'Unknown enum members' {
+        It 'Sends no Prefer header by default' {
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                -not $Headers.Contains('Prefer') -and $Headers['ConsistencyLevel'] -eq 'eventual'
+            }
+        }
+
+        It 'Sends the Prefer header on the first request and on every next page' {
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'v1.0/users' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page1' }); '@odata.nextLink' = 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' }
+            }
+            Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/v1.0/users?$skiptoken=abc' } {
+                [pscustomobject] @{ value = @([pscustomobject] @{ id = 'page2' }) }
+            }
+            $result = InModuleScope Maester { Invoke-MtGraphRequest -RelativeUri 'users' -IncludeUnknownEnumMembers }
+
+            @($result).id | Should -Be @('page1', 'page2')
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $Headers['Prefer'] -eq 'include-unknown-enum-members' -and $Headers['ConsistencyLevel'] -eq 'eventual'
+            }
+        }
+
+        It 'Caches the response apart from a request without the header and serves it from cache' {
+            InModuleScope Maester {
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -IncludeUnknownEnumMembers -DisablePaging
+                $null = Invoke-MtGraphRequest -RelativeUri 'users' -IncludeUnknownEnumMembers -DisablePaging
+            }
+            Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly
+            InModuleScope Maester {
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_{contoso-tenant}'
+                $__MtSession.GraphCache.Keys | Should -Contain 'https://graph.microsoft.com/v1.0/users_[IncludeUnknownEnumMembers]_{contoso-tenant}'
+            }
+        }
+    }
+
     Context 'Paging' {
         It 'Follows an absolute @odata.nextLink unchanged' {
             # Return PSObject, matching Invoke-MgGraphRequest -OutputType PSObject: Format-Result
@@ -292,6 +329,22 @@ Describe 'Invoke-MtGraphRequest' {
     }
 
     Context 'Batching' {
+        It 'Sends the Prefer header on each request in a batch with -IncludeUnknownEnumMembers' {
+            $script:MtBatchBody = $null
+            Mock Invoke-MgGraphRequest -ModuleName Maester {
+                $script:MtBatchBody = $Body
+                @{ responses = @(
+                        @{ id = 0; body = @{ value = @(@{ id = 'a' }) } }
+                        @{ id = 1; body = @{ value = @(@{ id = 'b' }) } }
+                    )
+                }
+            }
+            InModuleScope Maester { $null = Invoke-MtGraphRequest -RelativeUri 'users', 'groups' -IncludeUnknownEnumMembers -DisablePaging }
+
+            $requests = ($script:MtBatchBody | ConvertFrom-Json).requests
+            $requests.headers.Prefer | Should -Be @('include-unknown-enum-members', 'include-unknown-enum-members')
+        }
+
         It 'Posts to a relative $batch endpoint with endpoint free request urls' {
             $script:MtBatchBody = $null
             Mock Invoke-MgGraphRequest -ModuleName Maester {

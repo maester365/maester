@@ -20,8 +20,12 @@
     }
 
     try {
-        $monitors = @(Invoke-MtGraphRequest -RelativeUri 'admin/configurationManagement/configurationMonitors' -ApiVersion v1.0 `
-                -Select 'id', 'displayName', 'description', 'status', 'inactivationReason', 'monitorRunFrequencyInHours', 'mode', 'createdDateTime', 'lastModifiedDateTime', 'createdBy', 'lastModifiedBy' -ErrorAction Stop)
+        $monitorRequest = @{
+            RelativeUri = 'admin/configurationManagement/configurationMonitors'
+            ApiVersion  = 'v1.0'
+            Select      = 'id', 'displayName', 'description', 'status', 'inactivationReason', 'monitorRunFrequencyInHours', 'mode', 'createdDateTime', 'lastModifiedDateTime', 'createdBy', 'lastModifiedBy'
+        }
+        $monitors = @(Invoke-MtGraphRequest @monitorRequest -ErrorAction Stop)
     } catch {
         if ($_.Exception.Response -and [int]$_.Exception.Response.StatusCode -in @(401, 403)) {
             # The skip from the instance source skips the whole family, as the drift request does for one monitor.
@@ -122,10 +126,13 @@ function Test-MtEntraTenantConfigurationDrift {
 
     # The active drifts of every monitor are read once and served from the request cache to the other monitors.
     try {
-        $drifts = @(Invoke-MtGraphRequest -RelativeUri 'admin/configurationManagement/configurationDrifts' -ApiVersion v1.0 `
-                -Filter "status eq 'active'" `
-                -Select 'id', 'monitorId', 'resourceType', 'baselineResourceDisplayName', 'resourceInstanceIdentifier', 'firstReportedDateTime', 'status', 'driftedProperties' `
-                -ErrorAction Stop | Where-Object { $_.monitorId -eq $monitor.id })
+        $driftRequest = @{
+            RelativeUri = 'admin/configurationManagement/configurationDrifts'
+            ApiVersion  = 'v1.0'
+            Filter      = "status eq 'active'"
+            Select      = 'id', 'monitorId', 'resourceType', 'baselineResourceDisplayName', 'resourceInstanceIdentifier', 'firstReportedDateTime', 'status', 'driftedProperties'
+        }
+        $drifts = @(Invoke-MtGraphRequest @driftRequest -ErrorAction Stop | Where-Object { $_.monitorId -eq $monitor.id })
     } catch {
         if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized

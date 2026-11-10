@@ -59,6 +59,9 @@
         # Specifies consistency level.
         [Parameter(Mandatory = $false)]
         [string] $ConsistencyLevel = 'eventual',
+        # Sends "Prefer: include-unknown-enum-members" so Graph returns enum members added after unknownFutureValue.
+        [Parameter(Mandatory = $false)]
+        [switch] $IncludeUnknownEnumMembers,
         # Only return first page of results.
         [Parameter(Mandatory = $false)]
         [switch] $DisablePaging,
@@ -123,6 +126,13 @@
         # caller that asked for PSObject, or the other way round. The suffix starts with "_[" so the affected-object
         # inventory, which strips "_[" and "_{" suffixes from cache keys, still reads the request URL.
         $cacheKeySuffix = if ($OutputType -and $OutputType -ne 'PSObject') { "_[$OutputType]" } else { '' }
+
+        $requestHeaders = @{ ConsistencyLevel = $ConsistencyLevel }
+        if ($IncludeUnknownEnumMembers) {
+            $requestHeaders['Prefer'] = 'include-unknown-enum-members'
+            # A response read without the header carries unknownFutureValue, so it must not answer this request.
+            $cacheKeySuffix += '_[IncludeUnknownEnumMembers]'
+        }
 
         # The cache lives for the session, and a session can connect to a second tenant: the same request
         # against two tenants in one cloud produces the same uri, so without the tenant in the key the
@@ -207,7 +217,7 @@
                 $resultList = New-Object -TypeName System.Collections.ArrayList
                 $resultList.AddRange(@($results.value))
                 do {
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache # Do not use cache as "skipTokens" is not always unique in large datasets and we may end with a loop
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $results.'@odata.nextLink' -Headers $requestHeaders -OutputType $OutputType -DisableCache # Do not use cache as "skipTokens" is not always unique in large datasets and we may end with a loop
                     $resultList.AddRange(@($results.value))
                 } while (Get-ObjectProperty $results '@odata.nextLink')
                 $results.value = $resultList
@@ -262,13 +272,13 @@
                         id      = $listRequests.Count #(New-Guid).ToString()
                         method  = $($Method)
                         url     = $uriQueryEndpointFinal.Uri.AbsoluteUri -replace ('^{0}' -f [regex]::Escape($VersionedBaseUri)), ''
-                        headers = @{ ConsistencyLevel = $ConsistencyLevel }
+                        headers = $requestHeaders
                     }
                     $listRequests.Add($request)
                     # Kept beside the request rather than on it, so the key never reaches the batch body.
                     $batchCacheKeys[[string]$request.id] = $requestCacheKey
                 } else {
-                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey $requestCacheKey -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri (Resolve-TransportUri $uriQueryEndpointFinal.Uri) -CacheKey $requestCacheKey -Headers $requestHeaders -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
                     Complete-Result -Results $results -DisablePaging $DisablePaging -CacheKey $requestCacheKey
                 }
             }

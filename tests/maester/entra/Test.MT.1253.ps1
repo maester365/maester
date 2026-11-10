@@ -13,7 +13,8 @@
     The check passes when at least one enabled Conditional Access policy:
     - includes all users, excluding only emergency access accounts and the guest/external-user selector,
     - targets all resources and excludes none,
-    - is scoped to the high user risk level (and to every lower level named by MinimumUserRiskLevel), and
+    - is scoped to the high user risk level (and to every lower level named by MinimumUserRiskLevel),
+    - is not narrowed by platform, location, device filter or sign-in risk conditions, and
     - requires the riskRemediation grant control.
 
     Learn more:
@@ -33,8 +34,8 @@
         Area = 'authentication',
         ResourceType = 'Tenant',
         Severity = 'Medium',
-        UserImpact = 'Low',
-        ImplementationCost = 'Low',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
         Mitre = 'T1078.004',
         Control = 'nist-800-53-r5:AC-2(12)',
         Service = 'Graph',
