@@ -476,3 +476,7 @@ textarea.input {
 }
 
 .intro { margin: 0 0 1rem; font-size: 0.92rem; color: var(--ifm-color-emphasis-800); }
+
+.label { display: inline-flex; align-items: center; gap: 0.4rem; }
+.stepIcon { opacity: 0.8; }
+.stepStrip .stepIcon { display: none; }

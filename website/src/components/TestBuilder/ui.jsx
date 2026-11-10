@@ -123,12 +123,58 @@ export function RadioCards({ value, onValueChange, options, label, columns }) {
             <RadioGroupPrimitive.Indicator className={ui.radioDot} />
           </RadioGroupPrimitive.Item>
           <span className={ui.radioBody}>
-            <span className={ui.radioLabel}>{o.label || o.value}</span>
+            <span className={ui.radioLabel}>
+              {o.icon}
+              {o.label || o.value}
+            </span>
             {o.text && <span className={ui.radioText}>{o.text}</span>}
           </span>
         </label>
       ))}
     </RadioGroupPrimitive.Root>
+  );
+}
+
+// One stroke icon per attribute. The paths shared with the HTML report are those of report/src/components/
+// report/ui.tsx, so an attribute has the same icon here as in the report.
+const ATTRIBUTE_ICONS = {
+  product: "M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8",
+  related: "M8 7h11v11M19 7 5 21",
+  feature: "M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5",
+  area: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z",
+  resource: "M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+  severity: "M12 4l9 16H3L12 4zM12 10v4M12 17h.01",
+  impact: "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M21 20c0-2.5-1.5-4.3-4-4.8",
+  effort: "M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z",
+  lifecycle: "M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9",
+  service: "M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0V8zM12 18v4",
+  licence: "M4 7h16v10H4zM8 11h5M8 14h3M16 11v3",
+  permission: "M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4",
+  duration: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2",
+  source: "M3 7h6l2 2h10v10H3z",
+  framework: "M9 5h11M9 12h11M9 19h11M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2",
+  attack: "M12 3v4M12 17v4M3 12h4M17 12h4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
+  tag: "M3 12V3h9l9 9-9 9-9-9zM7.5 7.5h.01",
+  params: "M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M8 10v4M16 16v4",
+  // Only here: the report has no row for these.
+  id: "M5 9h14M5 15h14M10 4 8 20M16 4l-2 16",
+  title: "M4 6h16M4 12h16M4 18h10",
+  code: "M8 6l-6 6 6 6M16 6l6 6-6 6",
+  tenant: "M4 21V5l8-2v18M12 9h8v12M8 8h.01M8 12h.01M8 16h.01M16 13h.01M16 17h.01M2 21h20",
+  cloud: "M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.6 1.5A3.5 3.5 0 0 1 17.5 18z",
+  platform: "M3 5h18v11H3zM8 20h8M12 16v4",
+  person: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3.6-6 8-6s8 2 8 6",
+  preview: "M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 15h9",
+  stable: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6",
+  deprecated: "M3 5h18v4H3zM5 9v10h14V9M10 13h4",
+  maester: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4",
+};
+export function AttributeIcon({ name, tone, className }) {
+  if (!ATTRIBUTE_ICONS[name]) return null;
+  return (
+    <svg className={clsx(ui.attrIcon, tone && ui["tone-" + tone], className)} viewBox="0 0 24 24" aria-hidden="true">
+      <path d={ATTRIBUTE_ICONS[name]} />
+    </svg>
   );
 }
 
@@ -189,9 +235,11 @@ const FLAGS = {
 export function Flag({ country, label }) {
   if (!FLAGS[country])
     return (
-      <svg className={ui.flagGlobe} viewBox="0 0 16 16" aria-hidden="true">
-        <circle cx="8" cy="8" r="6.25" />
-        <path d="M1.75 8h12.5M8 1.75c2 2 2.6 4 2.6 6.25S10 12.25 8 14.25C6 12.25 5.4 10.25 5.4 8S6 3.75 8 1.75z" />
+      <svg className={ui.flagGlobe} viewBox="0 0 16 16" role="img" aria-label={label}>
+        <title>{label}</title>
+        <circle cx="8" cy="8" r="7" fill="#2B88D8" />
+        <path d="M4.2 3.1c1.2-.3 2.3.1 2.9 1 .5.9-.2 1.600-1 2.100-.9.500-.7 1.500-1.600 1.800C3.400 8.300 2.300 7.500 1.600 6.300c.4-1.400 1.300-2.500 2.600-3.200zM9.600 7.400c1-.6 2.400-.4 3.300.3.800.7 1.900.6 2 1.500-.3 1.700-1.300 3.200-2.700 4.100-.9-.3-1.100-1.300-1.900-1.900-.8-.6-1.600-1.200-1.600-2.200 0-.8.300-1.400.9-1.800zM5.300 10.600c.8.100 1.400.7 1.500 1.500.1.800-.2 1.700-.8 2.300-1.300-.4-2.400-1.300-3.100-2.400.6-.800 1.500-1.400 2.400-1.400z" fill="#57C454" />
+        <circle cx="8" cy="8" r="6.6" fill="none" stroke="#1B5FA8" strokeWidth="0.8" />
       </svg>
     );
   return (

@@ -4,7 +4,7 @@ import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
 import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
-import { Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { AttributeIcon, Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
@@ -214,6 +214,7 @@ function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, no
     <div className={styles.field} id={"field-" + id}>
       <div className={styles.fieldHead}>
         <label className={styles.label} htmlFor={"input-" + id}>
+          <AttributeIcon name={FIELD_ICONS[id]} />
           {label}
         </label>
         {!required && <span className={styles.optional}>Optional</span>}
@@ -718,6 +719,20 @@ function CopyBlock({ text, language }) {
   );
 }
 
+// The icon beside each field's label and each step. An attribute the report shows has the report's icon.
+const FIELD_ICONS = {
+  suite: "source", prefix: "tag", id: "id", title: "title", functionName: "code",
+  product: "product", feature: "feature", relatedProducts: "related", area: "area", resourceType: "resource",
+  severity: "severity", userImpact: "impact", implementationCost: "effort",
+  mitre: "attack", control: "framework",
+  services: "service", license: "licence", permission: "permission",
+  tenantType: "tenant", cloud: "cloud", platform: "platform",
+  parameters: "params",
+  lifecycle: "lifecycle", replacedBy: "related", flags: "duration", author: "person", contributor: "impact", tags: "tag",
+};
+const STEP_ICONS = { start: "person", name: "id", about: "product", priority: "severity", mapping: "framework", services: "service", licences: "licence", permissions: "permission", environment: "cloud", parameters: "params", lifecycle: "lifecycle" };
+const LIFECYCLE_ICONS = { Preview: ["preview", "info"], Stable: ["stable", "ok"], Deprecated: ["deprecated", "low"] };
+
 // Tenant types: the value written to the attribute stays Workforce or External; the label says what External
 // means. Workforce shows the Entra ID icon the report uses. External shows Microsoft's External ID icon
 // (public/img/icons/external-id.svg, from https://az-icons.com/icon/external-id-modified, unchanged).
@@ -777,6 +792,7 @@ function StepList({ steps, step, onStep, className }) {
             <span className={styles.stepMark} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} aria-hidden="true">
               {s.errors ? s.errors : s.done ? "✓" : index + 1}
             </span>
+            <AttributeIcon name={STEP_ICONS[s.key]} className={styles.stepIcon} />
             <span className={styles.stepLabel}>{s.label}</span>
             {s.optional && <span className={styles.stepNote}>Optional</span>}
             {s.errors > 0 && (
@@ -956,8 +972,8 @@ export default function TestBuilder() {
             value={state.mode}
             onValueChange={setMode}
             options={[
-              { value: "builtin", label: "A test for Maester", text: "You will open a pull request. Values come from Maester's registries and every rubric attribute is required." },
-              { value: "custom", label: "My own custom test", text: "It lives in your custom folder. Only the ID and title are required, and you may use your own values." },
+              { value: "builtin", icon: <AttributeIcon name="maester" />, label: "A test for Maester", text: "You will open a pull request. Values come from Maester's registries and every rubric attribute is required." },
+              { value: "custom", icon: <AttributeIcon name="source" />, label: "My own custom test", text: "It lives in your custom folder. Only the ID and title are required, and you may use your own values." },
             ]}
           />
           <div className={styles.actions}>
@@ -1276,6 +1292,14 @@ export default function TestBuilder() {
 
         <section className={styles.section} id={"step-" + "parameters"} hidden={step !== "parameters"}>
           <h2>What can an administrator change?</h2>
+          <div className={styles.explain}>
+            <p>
+              A <strong>parameter</strong> is a value of this test that an administrator can change in <code>maester-config.json</code>, such as a threshold or a list of exceptions.
+            </p>
+            <p>
+              A <strong>shared setting</strong> is one value that many tests use: a fact about the tenant, or a choice the organization makes once, such as its emergency access accounts or the domains that never send email. The administrator sets it once under <code>GlobalSettings</code> and every test that binds a parameter to it receives it. The help button explains how to add a new one.
+            </p>
+          </div>
           <Field
             id="parameters"
             label="Parameters"
@@ -1283,10 +1307,63 @@ export default function TestBuilder() {
             rubric={R["Parameter names"]}
             rubricTitle="How to name a parameter, and when to bind a setting"
             problems={problems}
-            notInList={
-              <p>
-                A shared setting is a fact about the tenant or a choice the organization makes once, such as its emergency access accounts or parked domains. A new one is added to <RepoFile path="powershell/assets/MaesterSettings.psd1" /> in the same pull request. A value a benchmark sets, such as a lockout threshold, is never a shared setting: keep it as a parameter of the test with the benchmark's value as the default.
-              </p>
+            guide={
+              <>
+                <h3>What a shared setting is</h3>
+                <p>
+                  Some values mean the same thing to every test that needs them: which accounts are the emergency access accounts, which domains are parked. Asking the administrator to repeat such a value on every test would be tedious and easy to get wrong. A shared setting holds it once, under <code>GlobalSettings</code> in <code>maester-config.json</code>.
+                </p>
+                <p>
+                  A test does not read the setting itself. It declares a parameter bound to it, <code>[MaesterParameter(Setting = 'ParkedDomains')]</code>, and the engine fills the parameter in. The result records the value and that it came from the setting, and a <code>TestSettings</code> row can still override it for one test.
+                </p>
+                <p>
+                  Bind a parameter only when the organization sets the value once and it means the same to every test. A value a benchmark sets, such as a lockout threshold, is never a shared setting: it stays a parameter of that test, with the benchmark's value as the default.
+                </p>
+                <h3>Use a shared setting that exists</h3>
+                <p>
+                  Choose it under <em>Add a shared setting</em>. The builder writes the parameter with the setting's type, default and allowed values, which must not be changed.
+                </p>
+                <h3>Add a new shared setting</h3>
+                {builtin ? (
+                  <ol className={styles.steps}>
+                    <li>
+                      <strong>Name it after what it holds</strong>, never after a test or a suite, in PascalCase and plural for a list: <code>ParkedDomains</code>, not <code>Cis218Domains</code>.
+                    </li>
+                    <li>
+                      <strong>Register it</strong> in <RepoFile path="powershell/assets/MaesterSettings.psd1" />, in the same pull request, with its <code>Type</code>, <code>Default</code>, <code>Sensitive</code> and <code>Description</code>. Add <code>AllowedValues</code> for a fixed set of choices, <code>Kind</code> when a string holds something a picker can offer (a domain, a group), and <code>Items</code> for a list of objects.
+                      <CopyBlock text={"ExcludedRegions = @{ Type = 'string[]'; Default = @(); Sensitive = $false; Description = 'Regions the organization does not operate in.' }"} language="powershell" />
+                    </li>
+                    <li>
+                      <strong>Bind the parameter</strong> in the test with the same type, default and allowed values. The builder lists a setting only once it is registered, so write this one by hand:
+                      <CopyBlock text={"# Regions the organization does not operate in.\n[MaesterParameter(Setting = 'ExcludedRegions')]\n[string[]] $ExcludedRegions = @()"} language="powershell" />
+                    </li>
+                    <li>
+                      <strong>Pass the value on.</strong> Give it to the helper functions that need it as an argument. A helper never reads a setting that tests bind, or it would ignore the value the test was given.
+                    </li>
+                    <li>
+                      <strong>Document it</strong> in the <code>GlobalSettings</code> table of <RepoFile path="website/docs/configuration/run-configuration.md" />.
+                    </li>
+                    <li>
+                      <strong>Regenerate and test.</strong> Run <code>./build/website/Update-MtTestBuilderData.ps1</code>, so this page offers the setting, then <code>./powershell/tests/pester.ps1</code>. The unit tests fail when a parameter's type or default differs from its setting.
+                    </li>
+                  </ol>
+                ) : (
+                  <ol className={styles.steps}>
+                    <li>
+                      <strong>Name it <code>Namespace.Key</code></strong>, with your organization or pack as the namespace: <code>Contoso.Regions</code>. The dot keeps it apart from Maester's own settings, and Maester does not report it as a typo.
+                    </li>
+                    <li>
+                      <strong>Add a parameter</strong> here and type that name under <em>Shared setting of your own</em>. Give it a default, so the test runs before anyone sets the value.
+                    </li>
+                    <li>
+                      <strong>Set the value</strong> once under <code>GlobalSettings</code> in <code>maester-config.json</code>. Every test of yours that binds <code>Contoso.Regions</code> receives it. The example below the form shows the file.
+                    </li>
+                    <li>
+                      <strong>In a Maester Pack</strong>, also declare the setting under <code>Settings</code> in <code>maester-pack.json</code>, with its type. Maester then checks the value in the config before a run.
+                    </li>
+                  </ol>
+                )}
+              </>
             }
           >
             <ParameterBuilder parameters={state.parameters || []} builtin={builtin} onChange={(v) => set({ parameters: v })} />
@@ -1304,7 +1381,7 @@ export default function TestBuilder() {
         <section className={styles.section} id={"step-" + "lifecycle"} hidden={step !== "lifecycle"}>
           <h2>Lifecycle and credit</h2>
           <Field id="lifecycle" name="Lifecycle" label="Lifecycle" hint={P.Lifecycle.description} rubric={R["Lifecycle and ReplacedBy"]} problems={problems}>
-            <RadioPills label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v }))} onValueChange={(v) => set({ lifecycle: v })} />
+            <RadioPills label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v, icon: <AttributeIcon name={LIFECYCLE_ICONS[v][0]} tone={LIFECYCLE_ICONS[v][1]} /> }))} onValueChange={(v) => set({ lifecycle: v })} />
           </Field>
           {(state.lifecycle === "Deprecated" || state.replacedBy) && (
             <Field id="replacedBy" name="ReplacedBy" label="Replaced by" hint={P.ReplacedBy.description} problems={problems}>

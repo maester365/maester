@@ -108,7 +108,7 @@
 .radio[data-state="checked"] { border-color: var(--ifm-color-primary); }
 .radioDot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--ifm-color-primary); }
 .radioBody { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
-.radioLabel { font-weight: 600; font-size: 0.9rem; }
+.radioLabel { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.9rem; }
 .radioText { font-size: 0.83rem; color: var(--ifm-color-emphasis-700); }
 
 .checkRow { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.875rem; margin: 0.2rem 0; cursor: pointer; }
@@ -209,4 +209,12 @@
 
 /* Flags of the national clouds, and a globe for the worldwide one. */
 .flag { width: 1.15rem; height: 0.8rem; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px var(--ifm-color-emphasis-300); }
-.flagGlobe { width: 1rem; height: 1rem; flex: none; fill: none; stroke: var(--ifm-color-emphasis-700); stroke-width: 1.25; }
+.flagGlobe { width: 1rem; height: 1rem; flex: none; }
+
+/* Attribute icons: one stroke icon beside a field's label, a step or a choice. */
+.attrIcon { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; color: var(--ifm-color-emphasis-700); }
+.attrIcon.tone-info { color: #2563eb; }
+.attrIcon.tone-ok { color: #16a34a; }
+.attrIcon.tone-low { color: var(--ifm-color-emphasis-600); }
+[data-theme="dark"] .attrIcon.tone-info { color: #60a5fa; }
+[data-theme="dark"] .attrIcon.tone-ok { color: #4ade80; }
