@@ -1,4 +1,4 @@
-function Test-MtPackContent {
+﻿function Test-MtPackContent {
     <#
     .SYNOPSIS
     Validates a pack folder and scans it locally, without running any of it (Maester Packs design, sections 4.3 and 9.6).
@@ -265,7 +265,7 @@ function Get-MtPackReservedTag {
     [CmdletBinding()]
     [OutputType([string[]])]
     param()
-    [string[]]@('Maester', 'MT', 'CIS', 'CISA', 'EIDSCA', 'ORCA', 'AD', 'ASD', 'AZDO', 'XSPM', 'All', 'Custom')
+    [string[]]@('Maester', 'MT', 'CIS', 'CISA', 'EIDSCA', 'ORCA', 'AD', 'ASD', 'DISA', 'AZDO', 'XSPM', 'All', 'Custom')
 }
 
 function Test-MtPackScriptFile {

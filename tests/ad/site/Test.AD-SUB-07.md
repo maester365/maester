@@ -1,4 +1,4 @@
-﻿Detailed information about public IP subnet usage helps:
+Detailed information about public IP subnet usage helps:
 
 - **Identify misconfigurations**: Find subnets that should use private ranges
 - **Assess security posture**: Evaluate exposure of internal resources

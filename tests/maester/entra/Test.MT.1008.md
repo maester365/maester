@@ -1,4 +1,4 @@
-﻿MFA for Azure management is a critical security control. This function checks if the tenant has at least one
+MFA for Azure management is a critical security control. This function checks if the tenant has at least one
 Conditional Access policy requiring multifactor authentication to access Azure management.
 
 Learn more:

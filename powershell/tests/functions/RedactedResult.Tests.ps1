@@ -1,5 +1,14 @@
 ﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+
+    # Reads the results Get-MtHtmlReport embeds: gzip-compressed, Base64-encoded JSON in the data element.
+    function Get-ReportDataText([string] $Html) {
+        $match = [regex]::Match($Html, '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip\+base64">([A-Za-z0-9+/=]*)</script>')
+        if (-not $match.Success) { throw 'The report has no compressed maester-report-data element.' }
+        $stream = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String($match.Groups[1].Value))
+        $reader = [System.IO.StreamReader]::new([System.IO.Compression.GZipStream]::new($stream, [System.IO.Compression.CompressionMode]::Decompress))
+        try { $reader.ReadToEnd() } finally { $reader.Dispose() }
+    }
 }
 
 Describe 'Scoped redacted result Markdown' {
@@ -52,7 +61,7 @@ Describe 'Scoped redacted result Markdown' {
         $json | Should -Match 'object-test; 2 administrators'
         $json | Should -Match 'CIS.GH.1.2.3'
         (ConvertTo-Json -InputObject $source -Depth 15) | Should -BeExactly $before
-        $html = Get-MtHtmlReport -MaesterResults $source -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{}
+        $html = Get-ReportDataText (Get-MtHtmlReport -MaesterResults $source -RedactUserIdentity HtmlOnly -UserIdentityReplacementMap @{})
         $html | Should -Not -Match 'raw-user|TestResultRedacted'
         $html | Should -Match 'object-test; 2 administrators'
         (ConvertTo-Json -InputObject $source -Depth 15) | Should -BeExactly $before
@@ -78,7 +87,7 @@ Describe 'Scoped redacted result Markdown' {
     }
     It 'Omits alternative metadata from unredacted HTML while preserving input' {
         $source = @{ Tests = @(@{ ResultDetail = @{ TestResult = 'raw-user'; TestResultRedacted = 'safe-user' } }) }
-        $html = Get-MtHtmlReport -MaesterResults $source -RedactUserIdentity None
+        $html = Get-ReportDataText (Get-MtHtmlReport -MaesterResults $source -RedactUserIdentity None)
         $html | Should -Match 'raw-user'
         $html | Should -Not -Match 'safe-user|TestResultRedacted'
         $source.Tests[0].ResultDetail.TestResultRedacted | Should -Be 'safe-user'
@@ -128,6 +137,7 @@ function Test-CustomExportFixture {
         $csvRow.ResultDetail | Should -Match $(if ($Mode -eq 'AllOutputs') { 'SAFE_FIXTURE_IDENTITY' } else { 'RAW_FIXTURE_IDENTITY' })
         foreach ($extension in 'json', 'html', 'md', 'csv') {
             $content = Get-Content (Join-Path $folder "result.$extension") -Raw
+            if ($extension -eq 'html') { $content = Get-ReportDataText $content }
             $content | Should -Not -Match 'TestResultRedacted'
             if ($Mode -eq 'AllOutputs' -or ($Mode -eq 'HtmlOnly' -and $extension -eq 'html')) {
                 $content | Should -Match 'SAFE_FIXTURE_IDENTITY'

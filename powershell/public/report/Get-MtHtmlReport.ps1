@@ -13,9 +13,13 @@
     The report omits each test's ErrorRecord, which the report doesn't display. The
     MaesterResults object passed in and the JSON results file keep it.
 
+    The results are embedded gzip-compressed and Base64-encoded, which keeps the file small. Scripts that
+    read the results should read the JSON results file rather than the HTML.
+
     Reports added with Add-MtReportAttachment are embedded in the page, each in its own element, and
     opened from a button. They are left out when RedactUserIdentity is HtmlOnly or AllOutputs, because
-    Maester cannot redact another tool's report.
+    Maester cannot redact another tool's report. JSON attachments, data that a built-in view of the report
+    reads, are kept and redacted the way the results are.
 
     .Example
     $pesterResults = Invoke-Pester -PassThru
@@ -100,7 +104,7 @@
             # objects files keep the full records.
             if ($null -ne $copy.AffectedObjects) {
                 $copy.AffectedObjects = @($copy.AffectedObjects | ForEach-Object {
-                        [PSCustomObject]@{
+                        $slim = [ordered]@{
                             System      = $_.System
                             Type        = $_.Type
                             Id          = $_.Id
@@ -109,21 +113,82 @@
                             Tests       = @($_.Tests)
                             Referenced  = [bool](@($_.Sources) | Where-Object { $_ -in 'GraphObjects', 'Markdown' })
                         }
+                        # Only objects that have facts carry the property, so a report without any stays as small as before.
+                        $facts = @(Get-ObjectProperty $_ 'Facts' | Where-Object { $_ })
+                        if ($facts.Count -gt 0) {
+                            $slim.Facts = @($facts | ForEach-Object {
+                                    $fact = [ordered]@{ Name = $_.Name; Value = $_.Value; Tone = $_.Tone; Source = $_.Source; AsOf = $_.AsOf }
+                                    # Key and Raw let the report's own summaries read a fact without parsing its text.
+                                    $key = Get-ObjectProperty $_ 'Key'
+                                    if ($key) { $fact.Key = $key; $fact.Raw = $_.Raw }
+                                    [PSCustomObject]$fact
+                                })
+                        }
+                        [PSCustomObject]$slim
                     })
             }
             # The report data lists each attachment without its content, which is written into its own element.
+            # Under RedactUserIdentity, JSON attachments are redacted like the results and HTML ones are left out.
             if ($null -ne $copy.Attachments) {
-                if ($RedactUserIdentity -ne 'None') {
+                $listed = @(foreach ($attachment in @($copy.Attachments | Where-Object { $_ -and $_.Content })) {
+                        if ($RedactUserIdentity -ne 'None') {
+                            if ([string](Get-ObjectProperty $attachment 'ContentType') -ne 'application/json') {
+                                $redactedAttachments.Value = $true
+                                continue
+                            }
+                            $attachment = & $redactAttachment $attachment
+                        }
+                        $attachmentContent.Add($attachment)
+                        [PSCustomObject](& $copyWithout $attachment 'Content')
+                    })
+                if ($RedactUserIdentity -ne 'None' -and $listed.Count -eq 0) {
                     $copy.Remove('Attachments')
-                    $redactedAttachments.Value = $true
                 } else {
-                    $copy.Attachments = @($copy.Attachments | Where-Object { $_ -and $_.Content } | ForEach-Object {
-                            $attachmentContent.Add($_)
-                            [PSCustomObject](& $copyWithout $_ 'Content')
-                        })
+                    $copy.Attachments = $listed
                 }
             }
             [PSCustomObject]$copy
+        }
+
+        # The user identities to redact, from the map Invoke-Maester built or from the results' AffectedObjects.
+        $replacements = @{}
+        if ($RedactUserIdentity -ne 'None') {
+            if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
+                $replacements = $UserIdentityReplacementMap
+            } else {
+                $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
+                $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
+                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
+                if (-not $hasInventory) {
+                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted. Generate affected objects with Invoke-Maester -IncludeAffectedObjects."
+                }
+            }
+        }
+
+        # A copy of a JSON attachment with the same replacements as the results: decompressed, redacted, compressed again.
+        $redactAttachment = {
+            param($Attachment)
+            $item = & $copyWithout $Attachment ''
+            $compressed = [System.IO.MemoryStream]::new([System.Convert]::FromBase64String([string]$item.Content))
+            try {
+                $gunzip = [System.IO.Compression.GZipStream]::new($compressed, [System.IO.Compression.CompressionMode]::Decompress)
+                $reader = [System.IO.StreamReader]::new($gunzip, [System.Text.Encoding]::UTF8)
+                try { $text = $reader.ReadToEnd() } finally { $reader.Dispose() }
+            } finally {
+                $compressed.Dispose()
+            }
+            $text = ConvertTo-MtRedactedReportContent -Content $text -ReplacementMap $replacements -JsonEncoded
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($text)
+            $buffer = [System.IO.MemoryStream]::new()
+            try {
+                $gzip = [System.IO.Compression.GZipStream]::new($buffer, [System.IO.Compression.CompressionLevel]::SmallestSize, $true)
+                try { $gzip.Write($bytes, 0, $bytes.Length) } finally { $gzip.Dispose() }
+                $item.Content = [System.Convert]::ToBase64String($buffer.ToArray())
+            } finally {
+                $buffer.Dispose()
+            }
+            $item.Size = $bytes.Length
+            [PSCustomObject]$item
         }
 
         $attachmentContent = [System.Collections.Generic.List[object]]::new()
@@ -139,48 +204,36 @@
         }
 
         if ($redactedAttachments.Value) {
-            Write-Warning "RedactUserIdentity: the reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
+            Write-Warning "RedactUserIdentity: the HTML reports added with Add-MtReportAttachment are left out of the HTML report, because they cannot be redacted."
         }
 
-        $replacements = @{}
-        if ($RedactUserIdentity -ne 'None') {
-            if ($PSBoundParameters.ContainsKey('UserIdentityReplacementMap')) {
-                $replacements = $UserIdentityReplacementMap
-            } else {
-                $replacements = Get-MtUserIdentityReplacementMap -MaesterResults $MaesterResults
-                $hasInventory = @($MaesterResults) + @($MaesterResults.Tenants) |
-                    Where-Object { $_ -and $_.PSObject.Properties.Name -contains 'AffectedObjects' }
-                if (-not $hasInventory) {
-                    Write-Warning "RedactUserIdentity: the results carry no AffectedObjects. Only supplied redacted result Markdown and identities in the replacement map can be redacted."
-                }
-            }
-        }
         $reportResults = ConvertTo-MtRedactedResult -MaesterResults $reportResults -ReplacementMap $replacements -KeepUserIdentity:($RedactUserIdentity -eq 'None')
         Write-Verbose "Generating HTML report."
         $json = $reportResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
-        # Prevent values from terminating the script element while preserving them when JavaScript parses the JSON.
-        $json = $json.Replace('&', '\u0026').Replace('<', '\u003c').Replace('>', '\u003e')
+        # The results are written gzip-compressed and Base64-encoded, as attachments are: the guides and
+        # results are text that compresses to about a fifth. Base64 text cannot end the script element.
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
+        $buffer = [System.IO.MemoryStream]::new()
+        try {
+            $gzip = [System.IO.Compression.GZipStream]::new($buffer, [System.IO.Compression.CompressionLevel]::SmallestSize, $true)
+            try { $gzip.Write($bytes, 0, $bytes.Length) } finally { $gzip.Dispose() }
+            $data = [System.Convert]::ToBase64String($buffer.ToArray())
+        } finally {
+            $buffer.Dispose()
+        }
 
         $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
         $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
-        # Insert the test results json into the template.
-        # Locate the EndOfJson sentinel (handles both double-quote and backtick strings
-        # produced by different Vite/Rolldown versions) then walk back to the variable
-        # assignment that owns the placeholder object so the same variable name is preserved.
-        $endPattern = 'EndOfJson:(?:"EndOfJson"|`EndOfJson`)\}'
-        $endMatch = [regex]::Match($templateHtml, $endPattern)
-        $insertLocationEnd = $endMatch.Index + $endMatch.Length
-
-        # Find the last variable declaration (var/const/let NAME=) before the end marker.
-        $startMatches = [regex]::Matches($templateHtml.Substring(0, $endMatch.Index), '(?:var|const|let)\s+\w+\s*=')
-        $startMatch = $startMatches[$startMatches.Count - 1]
-        $insertLocationStart = $startMatch.Index + $startMatch.Value.Length  # position just after the '='
-
-        $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-        $outputHtml += $json
-        $outputHtml += $templateHtml.Substring($insertLocationEnd)
+        # Replace the template's data element, which holds a placeholder, with the compressed results.
+        $dataElement = [regex]::Match($templateHtml, '<script\b[^>]*\bid="maester-report-data"[^>]*>.*?</script>', 'Singleline')
+        if (-not $dataElement.Success) {
+            throw "The report template has no maester-report-data element: $htmlFilePath"
+        }
+        $outputHtml = $templateHtml.Substring(0, $dataElement.Index)
+        $outputHtml += '<script type="application/octet-stream" id="maester-report-data" data-encoding="gzip+base64">{0}</script>' -f $data
+        $outputHtml += $templateHtml.Substring($dataElement.Index + $dataElement.Length)
 
         # Each attachment is Base64 text, which cannot end the script element. The report reads it by the element's id.
         if ($attachmentContent.Count -gt 0) {

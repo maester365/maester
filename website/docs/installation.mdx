@@ -89,24 +89,20 @@ Install-Module ADOPS -Scope CurrentUser
 
 In order to run all the Azure DevOps tests, you need to connect to Azure DevOps.
 
-This is currently not included as part of [Connect-Maester](connect-maester/readme.md) and must be called separately. Run the following command to interactively connect using the Azure DevOps modules. A sign-in window will appear.
+Use [Connect-Maester](connect-maester/readme.md#connect-to-azure-devops-optional) with the `AzureDevOps` service. It imports the optional `ADOPS` module and reuses an Az context when one exists or signs you in interactively.
 
-Example with PowerShell variable
 ```powershell
-$AdoPSAllowInsecureAPIs = $true
+Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization 'contoso'
+```
+
+You can also connect with the `ADOPS` module directly. A sign-in window will appear.
+
+```powershell
 Import-Module ADOPS
-Connect-ADOPS -Organization <Name Of DevOps Organization>
+Connect-ADOPS -Organization 'contoso'
 ```
 
-Example with ArgumentList
-```powershell
-Import-Module ADOPS -ArgumentList $true
-Connect-ADOPS -Organization <Name Of DevOps Organization>
-```
-
-> Note: Some of the API endpoints used for Azure DevOps tests use unsupported endpoints.
-To allow usage of unsupported endpoints, you must set `$true` in the argumentlist when importing the module, or set a PowerShell variable called "$AdoPSAllowInsecureAPIs" to `$true` before importing the module.
-Reference: https://github.com/AZDOPS/AZDOPS/issues/248
+Some Azure DevOps checks use unsupported APIs. Those checks pass `-Force` to the relevant ADOPS commands; no module-wide opt-in is needed.
 
 ### Permissions
 

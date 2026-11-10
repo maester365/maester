@@ -1,4 +1,4 @@
-function Test-MtPack {
+﻿function Test-MtPack {
     <#
     .SYNOPSIS
     Checks a Maester Pack folder the way Install-MtPack does, without installing it or running any of its code.

@@ -68,10 +68,24 @@
     }
 
     $GroupIds = @($Candidates.Group.id | Select-Object -Unique)
-    $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId $GroupIds)
+    # The Conditional Access references only add context. When the policies can't be read, for example
+    # because the connection lacks the permission to read them, the groups are still reported.
+    $CaReferences = @()
+    $CaReadError = $null
+    try {
+        $CaReferences = @(Get-MtDynamicGroupCaReference -GroupId $GroupIds)
+    } catch {
+        $CaReadError = $_
+        Write-Verbose "Unable to read the Conditional Access policies: $($_.Exception.Message)"
+    }
     $Result = "Found $($GroupIds.Count) dynamic group(s) whose rules require review. " +
         'A match is not proof of exploitability; validate who can change each attribute ' +
         'and what access the group grants.'
+    if ($CaReadError) {
+        $CaMessage = $CaReadError.Exception.Message -replace "`r?`n", ' '
+        $Result += "`n`nThe Conditional Access policies could not be read, so the CA references are not " +
+            "shown: $([System.Net.WebUtility]::HtmlEncode($CaMessage))"
+    }
 
     $RiskSections = @(
         [pscustomobject]@{
@@ -116,15 +130,17 @@
             if ($Analysis.UsesPatternMatch) {
                 $ReviewFocus += '; pattern or partial matching broadens the rule'
             }
-            $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
-                -Reference $CaReferences -GroupId $Group.id
-            $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
-            $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
+            $CaText = 'Not available'
+            if (-not $CaReadError) {
+                $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
+                    -Reference $CaReferences -GroupId $Group.id
+            }
+            $Rule = ConvertTo-MtMarkdownCodeSpan -Text $Group.membershipRule -TableCell
             $LicenceCount = @($Group.assignedLicenses).Count
             $Result += "`n| $GroupLink | ``$($Analysis.ObjectType).$($Analysis.Property)`` | "
             $ProcessingState = $Group.membershipRuleProcessingState
             $Result += "``$($Analysis.Operator)`` | $ReviewFocus | $ProcessingState | "
-            $Result += "$LicenceCount | $CaText | <code>$Rule</code> |"
+            $Result += "$LicenceCount | $CaText | $Rule |"
         }
     }
 

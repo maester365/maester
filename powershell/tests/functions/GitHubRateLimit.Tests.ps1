@@ -247,30 +247,57 @@ Describe 'GraphQL and bootstrap rate-limit boundaries' {
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
     }
 
-    It 'Stops bootstrap after successful primary exhaustion and carries a final permission-probe limit into assessments (early=<Early>)' -ForEach @(@{ Early = $true }, @{ Early = $false }) {
-        $script:early = $Early
+    It 'Preserves bootstrap cooldowns at <Probe> after <Outcome>' -ForEach @(
+        @{ Probe = 'user'; Outcome = 'Success'; ExpectedRequests = 1 }
+        @{ Probe = 'orgs/fixture-org'; Outcome = 'Success'; ExpectedRequests = 2 }
+        @{ Probe = 'user/memberships/orgs/fixture-org'; Outcome = 'Success'; ExpectedRequests = 3 }
+        @{ Probe = 'orgs/fixture-org/actions/permissions'; Outcome = 'Success'; ExpectedRequests = 4 }
+        @{ Probe = 'user'; Outcome = 'Error'; ExpectedRequests = 1 }
+        @{ Probe = 'orgs/fixture-org'; Outcome = 'Error'; ExpectedRequests = 2 }
+        @{ Probe = 'user/memberships/orgs/fixture-org'; Outcome = 'Error'; ExpectedRequests = 3 }
+        @{ Probe = 'orgs/fixture-org/actions/permissions'; Outcome = 'Error'; ExpectedRequests = 4 }
+    ) {
+        $script:LimitedProbe = "https://api.github.com/$Probe"
+        $script:ProbeOutcome = $Outcome
         Mock Invoke-WebRequest -ModuleName Maester {
-            if ($Uri -match '/user$') {
-                $headers = if ($script:early) { @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = [DateTimeOffset]::UtcNow.AddMinutes(10).ToUnixTimeSeconds() } } else { @{} }
-                return [pscustomobject]@{ Content = '{"login":"fixture-user"}'; Headers = $headers }
+            $Headers = @{}
+            if ($Uri -eq $script:LimitedProbe) {
+                if ($script:ProbeOutcome -eq 'Error') {
+                    $Response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::TooManyRequests)
+                    $null = $Response.Headers.TryAddWithoutValidation('retry-after', '120')
+                    throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic rate limit', $Response)
+                }
+                $Headers = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = [DateTimeOffset]::UtcNow.AddMinutes(10).ToUnixTimeSeconds() }
             }
-            if ($Uri -match '/memberships/') { return [pscustomobject]@{ Content = '{"state":"active","role":"admin"}'; Headers = @{} } }
-            if ($Uri -match '/orgs/fixture-org$') { return [pscustomobject]@{ Content = '{"login":"fixture-org","plan":{"name":"enterprise"}}'; Headers = @{} } }
-            $response = [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::TooManyRequests)
-            $null = $response.Headers.TryAddWithoutValidation('retry-after', '120')
-            throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic rate limit', $response)
+            $Content = switch ($Uri) {
+                'https://api.github.com/user' { '{"login":"fixture-user"}' }
+                'https://api.github.com/orgs/fixture-org' { '{"login":"fixture-org","plan":{"name":"enterprise"}}' }
+                'https://api.github.com/user/memberships/orgs/fixture-org' { '{"state":"active","role":"admin"}' }
+                'https://api.github.com/orgs/fixture-org/actions/permissions' { '{}' }
+                default { throw "Unexpected request: $Uri" }
+            }
+            [pscustomobject]@{ Content = $Content; Headers = $Headers; StatusCode = 200 }
         }
-        InModuleScope Maester -Parameters @{ Early = $Early } {
-            $token = [System.Security.SecureString]::new()
-            $token.AppendChar('x')
-            Connect-MtGitHub -Organization fixture-org -Token $token -ApiBaseUri https://api.github.com -ApiVersion '2022-11-28' -WarningAction SilentlyContinue
-            if ($Early) { $__MtSession.GitHubConnection.FailureReason | Should -Be 'RateLimited' }
-            else {
-                $__MtSession.GitHubConnection.Connected | Should -BeTrue
+        InModuleScope Maester -Parameters @{ Probe = $Probe; Outcome = $Outcome } {
+            $Token = [System.Security.SecureString]::new()
+            $Token.AppendChar('x')
+            Connect-MtGitHub -Organization fixture-org -Token $Token -ApiBaseUri https://api.github.com -ApiVersion '2022-11-28' -WarningVariable Warnings -WarningAction SilentlyContinue
+            # Exhausting the membership response blocks only the non-blocking administration probe.
+            $Connected = $Probe -eq 'orgs/fixture-org/actions/permissions' -or ($Outcome -eq 'Success' -and $Probe -eq 'user/memberships/orgs/fixture-org')
+            $__MtSession.GitHubConnection.Connected | Should -Be $Connected
+            if (-not $Connected) {
+                $__MtSession.GitHubConnection.FailureReason | Should -Be 'RateLimited'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            } else {
+                [object]::ReferenceEquals($__MtSession.GitHubRateLimits.Connection, $__MtSession.GitHubConnection) | Should -BeTrue
+                $AdminVerified = $Outcome -eq 'Success' -and $Probe -eq 'orgs/fixture-org/actions/permissions'
+                $__MtSession.GitHubConnection.AdministrationPermissionVerified | Should -Be $AdminVerified
+                if (-not $AdminVerified) { $Warnings -join ' ' | Should -Match 'administration.*rate limit' }
                 { Invoke-MtGitHubRequest '/repository' } | Should -Throw '*rate limit*'
             }
+            $__MtSession.GitHubRateLimits.Limits.Count | Should -Be 1
         }
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times $(if ($Early) { 1 } else { 4 })
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times $ExpectedRequests
     }
 }
 

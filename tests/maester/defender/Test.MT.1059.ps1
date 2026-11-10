@@ -1,4 +1,4 @@
-function Get-MtMdiHealthIssueInstance {
+﻿function Get-MtMdiHealthIssueInstance {
     <#
     .SYNOPSIS
     Returns one MT.1059 instance per Microsoft Defender for Identity health issue.

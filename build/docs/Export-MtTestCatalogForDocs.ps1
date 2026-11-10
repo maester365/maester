@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
     Exports the built-in Maester test catalog to JSON for the website test-docs generator.
 
@@ -16,6 +16,10 @@
     facts, such as the CIS level and profiles. Its Control lists the controls of other frameworks that the
     requirement relates to. Benchmark is null for every other test. Frameworks at the top level gives the Name,
     Version and Url of each framework by Key.
+
+    Packs lists the packs that ship with Maester (packs/<name>/maester-pack.json) with the tests of their catalog,
+    such as the Zero Trust Assessment's, so the site can show them beside the built-in checks. The Taxonomy names
+    the keys and techniques that the packs' tests use as well.
 
     No tenant connection is needed and no test code is run. Importing the module requires
     Microsoft.Graph.Authentication to be installed (it is a RequiredModule of Maester).
@@ -102,7 +106,30 @@ $catalog = foreach ($t in $sorted) {
         MarkdownPath       = ConvertTo-RepoPath $t.MarkdownPath
     }
 }
-$taxonomy = & $module { param($tests) Get-MtResultTaxonomy -InputObject $tests } $sorted
+# The packs that ship with Maester, with the tests their catalog lists (packs/<name>/maester-pack.json, Catalog).
+$packs = @(foreach ($manifestFile in Get-ChildItem -Path (Join-Path $repoRoot 'packs') -Filter 'maester-pack.json' -Recurse -File | Sort-Object FullName) {
+        $manifest = Get-Content -LiteralPath $manifestFile.FullName -Raw | ConvertFrom-Json
+        $catalogFile = if ($manifest.Catalog) { Join-Path $manifestFile.DirectoryName $manifest.Catalog }
+        if (-not $catalogFile -or -not (Test-Path -LiteralPath $catalogFile)) { continue }
+        $packCatalog = Get-Content -LiteralPath $catalogFile -Raw | ConvertFrom-Json
+        [ordered]@{
+            Id            = $manifest.Id
+            Code          = $manifest.Code
+            Name          = $manifest.Name
+            Description   = $manifest.Description
+            Publisher     = $manifest.Publisher
+            Homepage      = $manifest.Homepage
+            Folder        = ConvertTo-RepoPath $manifestFile.DirectoryName
+            Module        = $packCatalog.Module
+            ModuleVersion = $packCatalog.ModuleVersion
+            Source        = $packCatalog.Source
+            # The module's licence, which goes with the text of its tests that the site shows.
+            License       = $packCatalog.License
+            Tests         = @($packCatalog.Tests)
+        }
+    })
+
+$taxonomy = & $module { param($tests) Get-MtResultTaxonomy -InputObject $tests } (@($sorted) + @($packs | ForEach-Object { $_.Tests }))
 
 # The frameworks the built-in suites declare, for the names of the keys in Benchmark. Sorted by key (ordinal).
 $declared = @(& $module {
@@ -116,7 +143,7 @@ $frameworks = @([System.Linq.Enumerable]::OrderBy([object[]]$declared, [Func[obj
         [ordered]@{ Key = $_.Key; Name = $_.Name; Version = $_.Version; Url = $_.Url }
     })
 
-$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Frameworks = $frameworks; Tests = @($catalog) }) -Depth 6
+$json = ConvertTo-Json -InputObject ([ordered]@{ Taxonomy = $taxonomy; Frameworks = $frameworks; Packs = @($packs); Tests = @($catalog) }) -Depth 6
 $json = $json.Replace("`r`n", "`n") + "`n"
 $outDir = Split-Path $OutputPath -Parent
 if ($outDir -and -not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }

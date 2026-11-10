@@ -188,7 +188,7 @@ Added in 2.1:
 
 | Field | Type | Content |
 | --- | --- | --- |
-| `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `ASD`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
+| `Source` | string | Where the test comes from: `Maester`, `CISA`, `CIS`, `ASD`, `DISA`, `EIDSCA`, `ORCA` or `Custom` (or the `Source` of a custom `suite.json`). |
 | `Suite` | string | The suite ID, for example `Maester`, `CISA`, `AD` or `Custom`. |
 | `Product` | string | The key of the product where the fix is made, for example `entra` or `exchange`. `Taxonomy.Products` gives the name. A custom test may use a name of its own. |
 | `RelatedProduct` | array of strings | Keys of other products the test also checks or depends on. |

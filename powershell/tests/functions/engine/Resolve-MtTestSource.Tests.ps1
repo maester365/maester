@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force
     $script:legacyFolder = (Resolve-Path "$PSScriptRoot/../../fixtures/legacy-pester").Path
 }
@@ -222,7 +222,7 @@ Describe 'Get-MtTestFileOrigin' {
         foreach ($folder in Get-ChildItem $root -Directory | Where-Object Name -NE 'Custom') {
             $manifest = Join-Path $folder.FullName 'suite.json'
             $manifest | Should -Exist -Because $folder.Name
-            (Get-Content $manifest -Raw | ConvertFrom-Json).Source | Should -BeIn @('Maester', 'CISA', 'CIS', 'EIDSCA', 'ORCA', 'ASD') -Because $folder.Name
+            (Get-Content $manifest -Raw | ConvertFrom-Json).Source | Should -BeIn @('Maester', 'CISA', 'CIS', 'EIDSCA', 'ORCA', 'ASD', 'DISA') -Because $folder.Name
         }
     }
 }

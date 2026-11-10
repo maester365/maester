@@ -1,4 +1,4 @@
-﻿The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
+The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
 
 Rationale: Any alternative DLP solution should be able to detect sensitive information in Exchange Online and block access to unauthorized entities.
 

@@ -1,4 +1,4 @@
-﻿Conditional Access Policies **should be** configured for Microsoft Entra ID-backed organizations.
+Conditional Access Policies **should be** configured for Microsoft Entra ID-backed organizations.
 
 Rationale: When you sign in to the web portal of a Microsoft Entra ID-backed organization, Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators.
 

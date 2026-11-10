@@ -1,4 +1,4 @@
-﻿The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.
+The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.
 
 > Reference your organization's policy defining PII.
 

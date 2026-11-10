@@ -1,4 +1,4 @@
-function Clear-ModuleVariable {
+﻿function Clear-ModuleVariable {
     <#
     .SYNOPSIS
     Resets all module variables to their default values.
@@ -18,12 +18,14 @@ function Clear-ModuleVariable {
     $__MtSession.NativeTestInfo = @{}
     $__MtSession.NativeReturnValue = @{}
     $__MtSession.MaesterConfig = $null
+    $__MtSession.ConnectionConfig = $null
     $__MtSession.AdminPortalUrl = @{}
     Clear-MtDnsCache
     Clear-MtExoCache
     Clear-MtADCache
     $__MtSession.AIAgentInfo = $null
     $__MtSession.IncludeAffectedObjects = $false
+    $__MtSession.AffectedObjectFacts = $null
     $__MtSession.AzureDevOpsConnectionCache = $null
     # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.
     # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.

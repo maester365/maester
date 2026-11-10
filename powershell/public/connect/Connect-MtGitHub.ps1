@@ -131,6 +131,7 @@
             [string]::IsNullOrWhiteSpace($ApiBaseUri) -or
             [string]::IsNullOrWhiteSpace($ApiVersion))) {
         $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -WarningAction SilentlyContinue
+        $__MtSession.ConnectionConfig = $__MtSession.MaesterConfig
     }
 
     # Resolve organization (param -> config -> error)
@@ -264,21 +265,10 @@
     # Bootstrap probes use the same guard as assessment requests. Carry this connection's cooldown
     # into the final session, including a non-blocking administration-probe limit.
     $rateLimitConnection = [pscustomobject]@{ ApiBaseUri = $ApiBaseUri }
-    function Invoke-ConnectionProbe ([string] $Uri) {
-        Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection
-        try {
-            $response = Invoke-WebRequest -Uri $Uri -Headers $authHeaders -Method GET -UseBasicParsing -ConnectionTimeoutSeconds 30 -OperationTimeoutSeconds 30 -ErrorAction Stop
-            Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection -Headers $response.Headers
-            return $response
-        } catch {
-            Invoke-MtGitHubRateLimitGuard -Api REST -Connection $rateLimitConnection -ErrorRecord $_
-            throw
-        }
-    }
 
     # Probe 1: token identity
     try {
-        $userResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/user"
+        $userResponse = Invoke-MtGitHubConnectionProbe -Uri "$ApiBaseUri/user" -Headers $authHeaders -Connection $rateLimitConnection
         $user = $userResponse.Content | ConvertFrom-Json
         Write-Verbose "GitHub token identity: $($user.login)"
     } catch {
@@ -346,7 +336,7 @@
         $roleWarning = $null
 
         try {
-            $orgResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg"
+            $orgResponse = Invoke-MtGitHubConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Connection $rateLimitConnection
             try {
                 $orgData = $orgResponse.Content | ConvertFrom-Json -ErrorAction Stop
             } catch {
@@ -405,7 +395,7 @@
         # Use /user/memberships/orgs/{org} so the token only has to prove its own membership,
         # not read an arbitrary /orgs/{org}/memberships/{username} record.
         try {
-            $membershipResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg"
+            $membershipResponse = Invoke-MtGitHubConnectionProbe -Uri "$ApiBaseUri/user/memberships/orgs/$encodedOrg" -Headers $authHeaders -Connection $rateLimitConnection
 
             $membershipData = $null
             try {
@@ -490,7 +480,7 @@
     $adminAcceptedPermissions = $null
     $adminWarning            = $null
     try {
-        $adminResponse = Invoke-ConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions"
+        $adminResponse = Invoke-MtGitHubConnectionProbe -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions" -Headers $authHeaders -Connection $rateLimitConnection
         $adminVerified   = $true
         $adminStatusCode = 200
         if ($adminResponse.PSObject.Properties.Name -contains 'StatusCode' -and $null -ne $adminResponse.StatusCode) {

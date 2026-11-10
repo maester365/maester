@@ -1,4 +1,4 @@
-﻿- Empty Organizational Units (OUs that contain no users, groups, or computers) represent directory clutter that can:
+- Empty Organizational Units (OUs that contain no users, groups, or computers) represent directory clutter that can:
   - Create confusion: Administrators may wonder if the OU has a purpose or if it can be deleted
   - Complicate navigation: Empty OUs make the directory structure harder to browse and understand
   - Accumulate over time: OUs created for temporary purposes or abandoned projects often remain indefinitely

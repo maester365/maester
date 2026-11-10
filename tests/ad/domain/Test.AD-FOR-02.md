@@ -1,4 +1,4 @@
-﻿Understanding the number and names of domains in your forest is critical for:
+Understanding the number and names of domains in your forest is critical for:
 
 - **Security Boundaries**: Each domain represents a security boundary with its own policies
 - **Trust Management**: Understanding trust relationships between domains

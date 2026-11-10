@@ -1,4 +1,4 @@
-# Settings registry (Maester 3.0 design, section 7.3). GlobalSettings in the run config may set any key;
+﻿# Settings registry (Maester 3.0 design, section 7.3). GlobalSettings in the run config may set any key;
 # the registry records the type, default and sensitivity of the settings Maester itself reads. Keys that
 # are not listed pass through, so test packs can use Namespace.Key. A sensitive setting is redacted in
 # the results.
@@ -7,6 +7,7 @@
     Settings      = @{
         EmergencyAccessAccounts = @{ Type = 'object[]'; Default = @(); Sensitive = $false; Description = 'Emergency access (break glass) accounts and groups excluded from Conditional Access checks.' }
         DataverseEnvironmentUrl = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'URL of the Dataverse environment that the Copilot Studio checks read.' }
+        AzureDevOpsOrganization = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.' }
         GitHubOrganization      = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
         GitHubApiBaseUri        = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
         GitHubDeletionPolicy    = @{ Type = 'object'; Default = @{}; Sensitive = $true; Description = 'Host and organization-bound approved owner and repository administrator IDs for GitHub deletion assessments.' }

@@ -240,7 +240,7 @@ Describe 'GitHub CIS deletion assessment through shared HTTP transports' {
         $script:responses['/orgs/fixture-org/members?role=admin&per_page=100'] = @(@{ id = 1; login = "[owner](https://example.invalid)`n| forged" })
         Test-MtCisGitHubRepositoryDeletionLimited | Should -BeTrue
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter {
-            $Result.Contains('| \[owner\]\(https://example.invalid\) \| forged | 1 | Approved |') -and
+            $Result.Contains('| \[owner\]\(https\://example.invalid\) \| forged | 1 | Approved |') -and
             -not $Result.Contains("`n| forged")
         }
     }

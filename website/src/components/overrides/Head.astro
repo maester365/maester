@@ -3,6 +3,7 @@
 // PostHog), structured data, and noindex on the frozen 2.x docs.
 import Default from '@astrojs/starlight/components/Head.astro';
 import Analytics from '../Analytics.astro';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2?url';
 import { CARD_HEIGHT, CARD_WIDTH, cardUrl, defaultCard, docsCard } from '../../lib/og.mjs';
 
 const { entry, id } = Astro.locals.starlightRoute;
@@ -47,6 +48,11 @@ const jsonLd = [
 	}
 </script>
 <Default />
+<!-- Hold the first paint until the whole header is parsed: the search button's script sits in the middle of it, and
+     without this the browser paints the top bar without its right side or the second row, then redraws it. -->
+<link rel="expect" href="#mt-header-end" blocking="render" />
+<!-- Inter ready before the first paint, so the text doesn't draw in a fallback font and then change. -->
+<link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
 {isArchive ? <meta name="robots" content="noindex" /> : <meta name="robots" content="max-image-preview:large" />}
 <meta property="og:image" content={image} />
 {!ownImage && <meta property="og:image:width" content={String(CARD_WIDTH)} />}
@@ -54,5 +60,5 @@ const jsonLd = [
 <meta property="og:image:alt" content={data.title} />
 <meta name="twitter:image" content={image} />
 {!ownImage && !isArchive && <meta name="maester:og" content={JSON.stringify(card)} />}
-{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <Analytics />

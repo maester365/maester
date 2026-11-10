@@ -1,4 +1,4 @@
-﻿2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled
+2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled
 
 The Common Attachment Types Filter lets a user block known and custom malicious file types from being attached to emails.
 

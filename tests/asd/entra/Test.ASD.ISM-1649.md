@@ -1,4 +1,4 @@
-﻿Just-in-time administration is used for the administration of systems and their resources (ISM-1649, Essential Eight Maturity Level Three).
+Just-in-time administration is used for the administration of systems and their resources (ISM-1649, Essential Eight Maturity Level Three).
 
 A standing administrator role is a target around the clock: whoever holds the account holds the tenant. With Privileged Identity Management, administrators are eligible for a role and activate it for a few hours when they need it, with MFA, a justification and an audit trail.
 

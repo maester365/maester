@@ -1,4 +1,4 @@
-﻿Inter-forest trusts (external trusts) connect different Active Directory forests and pose unique security risks:
+Inter-forest trusts (external trusts) connect different Active Directory forests and pose unique security risks:
 
 - **SID History Attacks**: External trusts may be vulnerable to SID history attacks where attackers inject privileged SIDs from the external domain
 - **Less Visibility**: You have less control and visibility over security practices in external forests

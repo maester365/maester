@@ -1,4 +1,4 @@
-﻿Unknown SPN service classes on user accounts require immediate attention because:
+Unknown SPN service classes on user accounts require immediate attention because:
 
 - **High risk**: User accounts with SPNs are Kerberoasting targets
 - **Shadow IT**: Unknown services may bypass security controls

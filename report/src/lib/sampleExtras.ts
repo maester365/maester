@@ -4,6 +4,11 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Raw = Record<string, any>
 
+// The Zero Trust Assessment pack's own menu and guide, so the sample shows the pack as a real run does.
+const ztaFiles = import.meta.glob<Raw>(["../../../packs/zero-trust-assessment/maester-pack.json", "../../../packs/zero-trust-assessment/maester-pack.guide.json"], { eager: true, import: "default" })
+const ztaManifest = Object.entries(ztaFiles).find(([k]) => k.endsWith("maester-pack.json"))?.[1]
+const ztaGuide = Object.entries(ztaFiles).find(([k]) => k.endsWith("guide.json"))?.[1]
+
 const USERS = ["Adele Vance", "Alex Wilber", "Bagul Atayewa", "Bob Leaf", "Damien Bowden", "Diego Siciliani", "Emergency Access", "Gael Colas", "Isaiah Langer", "Joshua Fernando", "Lee Gu", "Megan Bowen", "Miriam Graham", "Nestor Wilke", "Patti Fernandez", "Tyler Chan"]
 const POLICIES = ["Require MFA for admins", "Block legacy authentication", "Require MFA for all users", "Require compliant device for admins", "Block sign-in from risky locations", "Require password change for high-risk users", "Sign-in frequency for admins", "Block device code flow"]
 const GROUPS = ["All Staff", "Break glass accounts", "Finance", "Helpdesk", "Privileged access reviewers"]
@@ -47,5 +52,20 @@ export function withSampleExtras(result: Raw, seed = 0): Raw {
     })
     withHistory = { ...previous, History: history }
   }
-  return { ...result, AffectedObjects: result.AffectedObjects ?? objects, Previous: withHistory }
+  // A run with Zero Trust Assessment results gets the Zero Trust plan, built from the pack's files (sampleZeroTrust.ts).
+  const hasZta = result.Tests.some((t: Raw) => typeof t?.Id === "string" && t.Id.startsWith("ZTA."))
+  const attachments = hasZta && !(result.Attachments || []).some((a: Raw) => a?.Name === "zero-trust-workshop")
+    ? [...(result.Attachments || []), { Id: "dev:zero-trust-workshop", Name: "zero-trust-workshop", ContentType: "application/json" }]
+    : result.Attachments
+  const packs = hasZta && ztaManifest
+    ? (() => {
+        const list: Raw[] = Array.isArray(result.Packs) ? [...result.Packs] : []
+        const i = list.findIndex((p) => p?.Id === ztaManifest.Id)
+        const extra = { Logo: ztaManifest.Report?.Logo ?? null, Navigation: JSON.stringify(ztaManifest.Report?.Navigation ?? null), Guide: JSON.stringify(ztaGuide ?? null) }
+        if (i >= 0) list[i] = { ...extra, ...list[i] }
+        else list.push({ Id: ztaManifest.Id, Code: ztaManifest.Code, Name: ztaManifest.Name, Description: ztaManifest.Description, Version: ztaManifest.Version, Publisher: ztaManifest.Publisher, BuiltIn: true, Homepage: ztaManifest.Homepage, Status: "Ready", ...extra })
+        return list
+      })()
+    : result.Packs
+  return { ...result, AffectedObjects: result.AffectedObjects ?? objects, Previous: withHistory, ...(attachments ? { Attachments: attachments } : {}), ...(packs ? { Packs: packs } : {}) }
 }

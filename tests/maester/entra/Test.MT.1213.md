@@ -1,4 +1,4 @@
-﻿Agent Identity Blueprints should use specific, secure redirect URIs.
+Agent Identity Blueprints should use specific, secure redirect URIs.
 
 During interactive consent, Microsoft Entra sends the consent result and optional state value to a redirect URI registered on the Blueprint. A wildcard can route that response to an unintended or attacker-controlled matching address. A plain HTTP address sends the response without transport encryption, allowing someone who can observe or alter network traffic to intercept or tamper with the consent result or state. HTTP loopback addresses are permitted for local development because the response stays on the same device instead of travelling across the network; they should not be used for deployed endpoints.
 

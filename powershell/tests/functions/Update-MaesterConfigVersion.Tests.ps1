@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:BuildScriptPath = Resolve-Path "$PSScriptRoot/../../../build/Update-MaesterConfigVersion.ps1"
 
     function Write-TestConfig {

@@ -3,6 +3,8 @@
 // Pester-format tests lack most 3.0 fields; every helper copes with a missing value, and the views that need a
 // field hide when no row has it (see views.tsx).
 
+import { readGuide, readNavigation, type NavEntry, type PackGuide } from "./packNav"
+import { runSubject, scrubPlaceholders, type Subject } from "./runSubject"
 import { getReportAttachments, type ReportAttachment } from "@/lib/reportAttachments"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,10 +51,11 @@ export const TACTICS: [string, string][] = [
 export const FRAMEWORK_LABEL: Record<string, string> = {
   "cis-m365": "CIS Microsoft 365", "cis-github": "CIS GitHub", "cisa-scuba": "CISA SCuBA",
   "essential-eight": "Essential Eight", ism: "ASD ISM", "nist-800-53-r5": "NIST SP 800-53",
+  "disa-stig-entra-id": "DISA STIG Entra ID", "disa-stig-intune-mdm": "DISA STIG Intune MDM", "disa-stig-intune-desktop": "DISA STIG Intune Desktop",
 }
 
-// The order frameworks are listed in everywhere: NIST, CISA, CIS, then ASD's ISM and Essential Eight, then any other.
-const FRAMEWORK_ORDER = ["nist-800-53-r5", "cisa-scuba", "cis-m365", "cis-github", "ism", "essential-eight"]
+// The order frameworks are listed in everywhere: NIST, CISA, CIS, then ASD's ISM and Essential Eight, then the DISA STIGs, then any other.
+const FRAMEWORK_ORDER = ["nist-800-53-r5", "cisa-scuba", "cis-m365", "cis-github", "ism", "essential-eight", "disa-stig-entra-id", "disa-stig-intune-mdm", "disa-stig-intune-desktop"]
 export const frameworkRank = (key: string) => (FRAMEWORK_ORDER.indexOf(key) + 1 || FRAMEWORK_ORDER.length + 1)
 
 // Why a test did not run, as a heading and what to do about it. Codes: website/docs/configuration/applicability.md.
@@ -63,7 +66,7 @@ export const REASONS: Record<string, [string, string]> = {
   TenantTypeMismatch: ["Not for this kind of tenant", "These tests apply to another tenant type."],
   CloudMismatch: ["Not for this cloud", "These tests apply to another Microsoft cloud."],
   PlatformMismatch: ["Not for this platform", "These tests need another operating system."],
-  NotApplicable: ["Does not apply", "The tenant has nothing for these tests to check."],
+  NotApplicable: ["Does not apply", "There is nothing for these tests to check."],
   TestSkipped: ["The test skipped itself", "Each test says why."],
   NoInstances: ["Nothing to check", "The family found no items to test."],
   NoResult: ["No result", "The test returned no verdict."],
@@ -160,6 +163,12 @@ export interface Pack {
   Risk: string | null
   Status: string
   Reason: string | null
+  /** A mark the report draws in the pack's page header instead of its Code: "microsoft" or a product key. */
+  Logo: string | null
+  /** The pack's menu in the report (lib/packNav.ts), or null for the menu the report builds. */
+  Navigation: NavEntry[] | null
+  /** The pack's guide, for the menu's guide pages. */
+  Guide: PackGuide | null
 }
 
 const text = (value: unknown) => (value === null || value === undefined ? "" : String(value))
@@ -292,6 +301,10 @@ export interface Model {
   changes: { newlyFailing: Row[]; fixed: Row[]; added: Row[] }
   attachments: ReportAttachment[]
   hasAttributes: boolean
+  /** The tenant or Active Directory domain the run read, or null for a run of local tests (lib/runSubject.ts). */
+  subject: Subject
+  /** Which of the attributes that rank failures any test declares: without them, the report leaves out what they rank. */
+  rated: { severity: boolean; effort: boolean; mitre: boolean }
   // A run of one to three tests is shown as the tests themselves.
   focused: boolean
 }
@@ -305,6 +318,7 @@ export function requirementStatus(rows: Row[] | undefined): string {
 }
 
 export function buildModel(result: Raw): Model {
+  result = scrubPlaceholders(result)
   const rows: Row[] = (Array.isArray(result?.Tests) ? result.Tests : []).map(normalize)
   const byId = new Map(rows.map((t) => [t.Id, t]))
   const taxonomy = result?.Taxonomy || {}
@@ -314,20 +328,21 @@ export function buildModel(result: Raw): Model {
   const techniques = new Map<string, Raw>((taxonomy.Attack?.Techniques || []).map((t: Raw) => [t.Id, t]))
   const failing = rows.filter((t) => t.Result === "Failed")
   const hasAttributes = rows.some((t) => t.Product || t.Area || t.Benchmark)
-  // A 2.x result has no Product: its Block (the Describe name, such as Entra ID) stands in for it.
-  if (!hasAttributes) for (const t of rows) if (!t.Product && t.raw.Block) t.Product = text(t.raw.Block)
+  // A 2.x result has no Product: its Block (the Describe name, such as Entra ID) stands in for it. A native test
+  // without a Product has none; its Block is only its suite's name.
+  if (!hasAttributes) for (const t of rows) if (!t.Product && t.raw.Block && t.Format !== "Native") t.Product = text(t.raw.Block)
 
   // Packs: the result's list when it has one, else what the rows say.
   const packMap = new Map<string, Pack & { rows: Row[] }>()
   for (const p of Array.isArray(result?.Packs) ? result.Packs : []) {
-    packMap.set(p.Id, { Id: p.Id, Code: text(p.Code) || p.Id, Name: text(p.Name) || p.Id, Description: p.Description ?? null, Version: p.Version ?? null, Publisher: p.Publisher ?? null, BuiltIn: !!p.BuiltIn, Homepage: p.Homepage ?? null, Risk: p.Risk ?? null, Status: text(p.Status) || "Ready", Reason: p.Reason ?? null, rows: [] })
+    packMap.set(p.Id, { Id: p.Id, Code: text(p.Code) || p.Id, Name: text(p.Name) || p.Id, Description: p.Description ?? null, Version: p.Version ?? null, Publisher: p.Publisher ?? null, BuiltIn: !!p.BuiltIn, Homepage: p.Homepage ?? null, Risk: p.Risk ?? null, Status: text(p.Status) || "Ready", Reason: p.Reason ?? null, Logo: text(p.Logo) || null, Navigation: readNavigation(p.Navigation), Guide: readGuide(p.Guide), rows: [] })
   }
   for (const t of rows) {
     if (!t.Package) continue
     const id = text(t.Package.Id)
     if (!packMap.has(id)) {
       const code = text(t.Suite) || id
-      packMap.set(id, { Id: id, Code: code, Name: text(t.Package.Name) || id, Description: null, Version: t.Package.Version ?? null, Publisher: t.Package.Publisher ?? null, BuiltIn: !!t.Package.BuiltIn, Homepage: null, Risk: null, Status: "Ready", Reason: null, rows: [] })
+      packMap.set(id, { Id: id, Code: code, Name: text(t.Package.Name) || id, Description: null, Version: t.Package.Version ?? null, Publisher: t.Package.Publisher ?? null, BuiltIn: !!t.Package.BuiltIn, Homepage: null, Risk: null, Status: "Ready", Reason: null, Logo: null, Navigation: null, Guide: null, rows: [] })
     }
     packMap.get(id)!.rows.push(t)
   }
@@ -396,6 +411,12 @@ export function buildModel(result: Raw): Model {
     changes,
     attachments: getReportAttachments(result),
     hasAttributes,
+    subject: runSubject(result),
+    rated: {
+      severity: rows.some((t) => SEVERITIES.includes(t.Severity)),
+      effort: rows.some((t) => t.UserImpact || t.ImplementationCost),
+      mitre: rows.some((t) => t.Mitre.length > 0),
+    },
     focused: rows.length > 0 && rows.length <= 3,
   }
 }

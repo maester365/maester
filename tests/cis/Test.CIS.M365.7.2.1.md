@@ -1,4 +1,4 @@
-﻿SharePoint Online can accept sign-ins from legacy authentication protocols. Those protocols do not support multifactor authentication or conditional access, so anyone who obtains or sprays a password can reach SharePoint content without a second factor.
+SharePoint Online can accept sign-ins from legacy authentication protocols. Those protocols do not support multifactor authentication or conditional access, so anyone who obtains or sprays a password can reach SharePoint content without a second factor.
 
 Blocking legacy protocols makes SharePoint sign-in use modern authentication only. Older clients and scripts that depend on basic authentication stop working until they are updated. A Conditional Access policy that blocks legacy authentication is the main control across Microsoft 365, so this SharePoint setting is a second layer that closes the same route in SharePoint itself.
 

@@ -6,7 +6,7 @@
 .DESCRIPTION
    Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. By default, it connects to Microsoft Graph. Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
 
-   Non-Microsoft 365 services such as Active Directory and GitHub are not included in -Service All and must be explicitly specified.
+   Non-Microsoft 365 services such as Active Directory, Azure DevOps and GitHub are not included in -Service All and must be explicitly specified.
 
    When it finishes, Connect-Maester shows a summary table with the status of each service it tried (Connected, Skipped, Failed or Not installed) and a short detail. Use -Verbose to see the step-by-step messages for each connection.
 
@@ -35,6 +35,11 @@
    Connect-Maester -Service ActiveDirectory
 
    Validates connectivity to the current Active Directory domain. Active Directory must be explicitly selected and is not included in -Service All.
+
+.EXAMPLE
+   Connect-Maester -Service Graph,AzureDevOps -AzureDevOpsOrganization 'contoso'
+
+   Connects to Microsoft Graph and the Azure DevOps organization 'contoso' for the Azure DevOps (AZDO) tests. The Azure DevOps connection needs the community ADOPS module (Install-Module ADOPS -Scope CurrentUser), which Maester does not install. When an Az context exists (for example after Connect-Maester -Service Azure), its access token is passed to Connect-ADOPS; otherwise Connect-ADOPS signs in interactively. The organization can also be set with AzureDevOpsOrganization in maester-config.json.
 
 .EXAMPLE
    Connect-Maester -Service Azure,Graph
@@ -150,7 +155,7 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null,
 
-      # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
+      # The services to connect to such as Active Directory, Azure, Azure DevOps, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory, Azure DevOps and GitHub are not included in All and must be explicitly specified.
       # The service of an installed Maester Pack's connector, such as CNT.GoogleWorkspace, connects through that pack; pack services are never included in All.
       [string[]]$Service = 'Graph',
 
@@ -185,6 +190,10 @@
       # The GitHub organization login name to connect to when Service includes GitHub.
       [string]$GitHubOrganization,
 
+      # The Azure DevOps organization to connect to when Service includes AzureDevOps, as a name ('contoso') or URL ('https://dev.azure.com/contoso').
+      # Falls back to AzureDevOpsOrganization in maester-config.json.
+      [string]$AzureDevOpsOrganization,
+
       # The Active Directory forest DNS name to discover when Service includes ActiveDirectory.
       [object]$ActiveDirectoryForest,
 
@@ -212,7 +221,7 @@
     )
 
    try {
-      $requestedServices = Resolve-MtRequestedService -Service $Service -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline'
+      $requestedServices = Resolve-MtRequestedService -Service $Service -BuiltIn 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline'
    } catch {
       Write-Error -Message $_.Exception.Message -Category InvalidArgument
       return
@@ -650,6 +659,80 @@
       }
    }
 
+   # Azure DevOps connects through the community ADOPS module, which Maester does not require. It runs after
+   # Az.Accounts so a context from -Service Azure in the same call can supply the token.
+   $azureDevOpsProblem = $null
+   if ($Service -contains 'AzureDevOps') {
+      Write-Verbose 'Connecting to Azure DevOps'
+      # A failed reconnect must not leave a previous successful probe visible.
+      $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+      try {
+         $adoModule = Get-Module -Name ADOPS
+         $adoAvailable = $adoModule -or (Get-Module -Name ADOPS -ListAvailable)
+         if ($adoAvailable) {
+            if (-not $adoModule) {
+               Import-Module -Name ADOPS -Global -ErrorAction Stop
+            }
+            # Reset persisted state before config discovery too: a missing or invalid config
+            # must not revive the old organization when the next run resets its probe cache.
+            Disconnect-ADOPS -ErrorAction Stop
+         }
+         # A connector may have discovered config before the tenant was known. Refresh that
+         # config for this tenant, while preserving any config supplied by a test run.
+         if ($adoAvailable -and [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization) -and (
+               $null -eq $__MtSession.MaesterConfig -or
+               [object]::ReferenceEquals($__MtSession.MaesterConfig, $__MtSession.ConnectionConfig))) {
+            $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -TenantId $TenantId -WarningAction SilentlyContinue
+            $__MtSession.ConnectionConfig = $__MtSession.MaesterConfig
+         }
+         $organization = if (-not [string]::IsNullOrWhiteSpace($AzureDevOpsOrganization)) { $AzureDevOpsOrganization.Trim() } else { Get-MtSetting -Name 'AzureDevOpsOrganization' }
+         if (-not $adoAvailable) {
+            $azureDevOpsProblem = @{
+               Message  = 'The ADOPS PowerShell module is not installed, so Maester cannot connect to Azure DevOps. Run: Install-Module ADOPS -Scope CurrentUser'
+               Category = [System.Management.Automation.ErrorCategory]::NotInstalled
+            }
+            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
+         } elseif ([string]::IsNullOrWhiteSpace($organization)) {
+            $azureDevOpsProblem = @{
+               Message  = 'No Azure DevOps organization specified. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json.'
+               Category = [System.Management.Automation.ErrorCategory]::InvalidArgument
+            }
+            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
+         } else {
+            $connectAdoParams = @{ Organization = $organization; ErrorAction = 'Stop' }
+            if ($TenantId) {
+               $connectAdoParams['TenantId'] = $TenantId
+            }
+            $azContext = if (Get-Command -Name Get-AzContext -ErrorAction SilentlyContinue) { Get-AzContext -ErrorAction SilentlyContinue }
+            if ($azContext) {
+               # ADOPS still verifies organization access when given an OAuth token.
+               Write-Verbose "Getting an Azure DevOps access token from the Az context of '$($azContext.Account.Id)'"
+               $tokenParams = @{ ResourceUrl = '499b84ac-1321-427f-aa17-267ca6975798'; ErrorAction = 'Stop' }
+               $tokenTenant = if ($TenantId) { $TenantId } elseif ($azContext.Tenant.Id) { $azContext.Tenant.Id }
+               if ($tokenTenant) {
+                  $tokenParams['TenantId'] = $tokenTenant
+               }
+               $accessToken = (Get-AzAccessToken @tokenParams).Token
+               if ($accessToken -is [securestring]) {
+                  $accessToken = ConvertFrom-SecureString -SecureString $accessToken -AsPlainText
+               }
+               $connectAdoParams['OAuthToken'] = $accessToken
+            } else {
+               Write-Verbose 'No Az context found. Connect-ADOPS signs in interactively.'
+            }
+
+            $adoConnection = Connect-ADOPS @connectAdoParams
+            # Test-MtConnection caches its Azure DevOps probe, so let it check the new connection.
+            $__MtSession.AzureDevOpsConnectionCache = $null
+            $adoIdentity = if ($adoConnection -is [System.Collections.IDictionary]) { $adoConnection['Identity'] }
+            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Connected' -Details (@($organization, $adoIdentity | Where-Object { $_ }) -join ', ')
+         }
+      } catch {
+         Write-Verbose "Failed to connect to Azure DevOps: $($_.Exception.Message)"
+         Add-ConnectionResult -Name 'Azure DevOps' -Status 'Failed' -Details (Get-ErrorSummary $_)
+      }
+   }
+
     # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
     if ($Service -contains 'ActiveDirectory') {
        Write-Verbose 'Connecting to Active Directory through the protocol-aware LDAP path'
@@ -710,4 +793,14 @@
 
    Write-MtConnectionSummary -Summary $connectionSummary
    $__MtSession.ConnectionSummary = $connectionSummary
+
+   # A missing ADOPS module or organization stops nothing else: it warns when other services were requested
+   # and is an error only when Azure DevOps was the one service asked for.
+   if ($azureDevOpsProblem) {
+      if (@($Service).Count -eq 1 -and $packServices.Count -eq 0) {
+         Write-Error -Message $azureDevOpsProblem.Message -Category $azureDevOpsProblem.Category
+      } else {
+         Write-Warning $azureDevOpsProblem.Message
+      }
+   }
 } # end function Connect-Maester

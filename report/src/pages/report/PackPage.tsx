@@ -7,7 +7,7 @@ import { getAttachmentPath, getTestAttachments } from "@/lib/reportAttachments"
 import { tally, type Row } from "@/lib/model"
 import { useReport } from "@/components/report/ReportContext"
 import { Footer, TestTable } from "@/components/report/lists"
-import { Bar, Legend } from "@/components/report/ui"
+import { Bar, Legend, PackLogo } from "@/components/report/ui"
 import { Segmented } from "./ProductPage"
 
 export default function PackPage({ packId }: { packId: string }) {
@@ -28,7 +28,7 @@ export default function PackPage({ packId }: { packId: string }) {
     <div className="mt-wrap">
       <div className="mt-headrow">
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-          <span className="mt-code lg">{pack.Code}</span>
+          <PackLogo logo={pack.Logo} code={pack.Code} />
           <div className="mt-head"><div className="mt-eyebrow">Pack · {pack.Id}{pack.Version ? ` · v${pack.Version}` : ""}</div><h1 className="mt-h1">{pack.Name}</h1></div>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

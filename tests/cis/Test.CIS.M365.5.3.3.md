@@ -1,4 +1,4 @@
-﻿The Global, Exchange, SharePoint, Teams, Security and Privileged Role Administrator roles each have a recurring access review that is configured as required.
+The Global, Exchange, SharePoint, Teams, Security and Privileged Role Administrator roles each have a recurring access review that is configured as required.
 
 Role assignments accumulate: people change jobs, projects end and temporary access becomes permanent. A recurring review makes the people who know the context confirm who still needs each privileged role, and removes the others.
 
