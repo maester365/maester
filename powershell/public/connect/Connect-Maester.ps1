@@ -554,6 +554,8 @@
 
       'MicrosoftTeams' {
          if ($Service -contains 'Teams' -or $Service -contains 'All') {
+            $__MtSession.TeamsUseDeviceCode = $UseDeviceCode.IsPresent
+            $__MtSession.TeamsEnvironmentName = $TeamsEnvironmentName
             Write-Verbose 'Connecting to Microsoft Teams'
             try {
                $teamsParams = @{ ErrorAction = 'Stop' }

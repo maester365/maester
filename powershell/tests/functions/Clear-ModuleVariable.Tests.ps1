@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -9,6 +9,7 @@ Describe 'Clear-ModuleVariable — GitHub session lifecycle' {
             $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer testtoken' }
             $__MtSession.GitHubCache      = @{ somekey = 'cached-value' }
         }
+
     }
 
     AfterEach {
@@ -46,6 +47,20 @@ Describe 'Clear-ModuleVariable — GitHub session lifecycle' {
         InModuleScope Maester {
             Clear-ModuleVariable
             Test-MtConnection -Service GitHub | Should -BeTrue
+        }
+    }
+}
+
+Describe 'Clear-ModuleVariable - Teams API cache lifecycle' {
+    It 'Clears per-run Teams settings but preserves the connected MSAL client' {
+        InModuleScope Maester {
+            $client = [pscustomobject]@{ Cached = $true }
+            $__MtSession.TeamsCache = @{ 'UnifiedAppSettings:tenant' = @('setting') }
+            $__MtSession.TeamsAuthCache = @{ Clients = @{ tenant = $client } }
+            Clear-ModuleVariable
+
+            $__MtSession.TeamsCache.Count | Should -Be 0
+            $__MtSession.TeamsAuthCache.Clients.tenant.Cached | Should -BeTrue
         }
     }
 }
