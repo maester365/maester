@@ -32,7 +32,7 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.2.3',
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
-        Author = 'soulemike'
+        Author = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
