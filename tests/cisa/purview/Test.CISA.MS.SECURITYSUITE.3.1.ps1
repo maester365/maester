@@ -22,7 +22,7 @@
         Feature = 'data-loss-prevention',
         Area = 'data-protection',
         ResourceType = 'Tenant',
-        Severity = 'High',
+        Severity = 'Medium',
         UserImpact = 'Medium',
         ImplementationCost = 'Medium',
         Mitre = ('T1213', 'T1530', 'T1567'),

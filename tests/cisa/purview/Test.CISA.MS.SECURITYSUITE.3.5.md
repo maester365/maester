@@ -2,6 +2,8 @@ The DLP policy SHOULD block access to sensitive information by restricted applic
 
 This is a manual baseline requirement and ScubaGear does not automate it. It applies only when at least one device is onboarded to Defender for Endpoint; verify whether the requirement applies before assessing the configuration.
 
+Blocking restricted applications and unallowed Bluetooth apps helps prevent sensitive files from being exfiltrated over Bluetooth.
+
 #### Remediation action
 
 1. Sign in to the [Microsoft Purview portal](https://purview.microsoft.com/datalossprevention/policies).

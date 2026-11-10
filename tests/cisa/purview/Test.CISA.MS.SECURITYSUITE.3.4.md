@@ -1,6 +1,6 @@
 User notifications to help educate users on the proper use of sensitive information SHOULD be enabled in the DLP policy.
 
-User notifications provide feedback when a DLP policy detects sensitive information. This check requires at least one user to be notified by every non-disabled rule in an enabled policy that protects credit card numbers, ITINs, and SSNs.
+User notifications provide feedback when a DLP policy detects sensitive information. This check requires at least one user to be notified by every non-disabled rule in an enabled policy that protects credit card numbers, ITINs, and SSNs. Notifications are an informational layer; they do not block access, which is assessed separately by CISA.MS.SECURITYSUITE.3.3.
 
 #### Remediation action
 

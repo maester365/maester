@@ -21,7 +21,7 @@
         Feature = 'data-loss-prevention',
         Area = 'data-protection',
         ResourceType = 'Policy',
-        Severity = 'Medium',
+        Severity = 'Low',
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = 'None',

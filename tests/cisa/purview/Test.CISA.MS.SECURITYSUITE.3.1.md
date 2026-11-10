@@ -2,7 +2,7 @@ A DLP policy SHALL protect PII and sensitive information, as defined by the agen
 
 > Reference your organization's policy defining restricted information.
 
-Rationale: Users may inadvertently share sensitive information with others who should not have access to it. Data loss prevention policies provide a way for agencies to detect and prevent unauthorized disclosures.
+Rationale: A DLP policy is a defense-in-depth safeguard: a user or attacker must first gain access to data before it can help prevent disclosure. It can detect and prevent users from inadvertently sharing sensitive information with people who should not have access to it.
 
 #### Remediation action:
 

@@ -23,7 +23,7 @@
         Area = 'data-protection',
         ResourceType = 'Tenant',
         Severity = 'Info',
-        Mitre = ('T1565', 'T1485', 'T1530', 'T1486'),
+        Mitre = 'T1011.001',
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.5',
         Service = 'None',
         Author = 'soulemike'
