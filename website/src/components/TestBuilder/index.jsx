@@ -1,10 +1,12 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
 import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
-import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { Badge, Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
+import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
 import { productIcon, productInitials, featureIcon } from "../../lib/report-icons.mjs";
@@ -205,7 +207,9 @@ function Help({ id, title, badge, label, children }) {
 // add a missing value open in the help panel, so the form stays short.
 function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, notInList, problems, children }) {
   const mine = problems.filter((p) => p.field === id);
-  const hasHelp = hint || guide || rubric || notInList;
+  const { builtin } = useContext(HelpContext);
+  const extra = fieldHelp(id, builtin);
+  const hasHelp = hint || guide || rubric || notInList || extra;
   return (
     <div className={styles.field} id={"field-" + id}>
       <div className={styles.fieldHead}>
@@ -217,6 +221,13 @@ function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, no
           <span className={styles.helpSlot}>
             <Help id={id} title={label} badge={name}>
               {hint && <p className={styles.lead}>{hint}</p>}
+              {extra && extra.more && <Markdown text={extra.more} />}
+              {extra && extra.empty && (
+                <>
+                  <h3>If you leave it empty</h3>
+                  <Markdown text={extra.empty} />
+                </>
+              )}
               {guide}
               {rubric && (
                 <>
@@ -481,10 +492,6 @@ function PermissionBuilder({ groups, services, onChange }) {
         <p>
           Each box is one thing the test needs, and the test needs <strong>all</strong> of them. Permissions inside one box are <strong>alternatives</strong>: any one of them is enough. Put the least privileged one first.
         </p>
-        <p>
-          A permission is written <code>&lt;Service&gt;:&lt;Kind&gt;:&lt;Name&gt;</code> and <code>|</code> joins alternatives, so “User.Read.All, and Policy.Read.All or Directory.Read.All” is{" "}
-          <code>Permission = ('Graph:Scope:User.Read.All', 'Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All')</code>.
-        </p>
       </div>
       {shown.map((group, index) => {
         const d = draftFor(index);
@@ -606,9 +613,6 @@ function LicenseBuilder({ groups, onChange }) {
         <p>
           A test requires <strong>service plans</strong>, the building blocks inside a product such as Microsoft 365 E5. Plans inside one box are joined with <strong>and</strong>: the tenant needs all of them. Boxes are joined with <strong>or</strong>: any one box is enough.
         </p>
-        <p>
-          In the attribute each box is one element and <code>&amp;</code> joins the plans in it, so “Entra ID P1 and Intune, or Entra ID P2” is <code>License = ('AAD_PREMIUM&amp;INTUNE_A', 'AAD_PREMIUM_P2')</code>.
-        </p>
       </div>
       {shown.map((group, index) => (
         <React.Fragment key={index}>
@@ -714,11 +718,61 @@ function CopyBlock({ text, language }) {
   );
 }
 
+// The form is shown one step at a time. Each step lists the fields whose problems count against it.
+const STEPS = [
+  { key: "start", label: "Who it is for", fields: [] },
+  { key: "name", label: "Name", fields: ["suite", "prefix", "id", "title", "functionName"] },
+  { key: "about", label: "Subject", fields: ["product", "feature", "relatedProducts", "area", "resourceType"] },
+  { key: "priority", label: "Priority", fields: ["severity", "userImpact", "implementationCost"] },
+  { key: "mapping", label: "Mapping", fields: ["mitre", "control"] },
+  { key: "requirements", label: "Requirements", fields: ["services", "license", "permission"] },
+  { key: "environment", label: "Where it applies", fields: ["tenantType", "cloud", "platform"] },
+  { key: "parameters", label: "Parameters", fields: ["parameters"] },
+  { key: "lifecycle", label: "Lifecycle and credit", fields: ["lifecycle", "replacedBy", "flags", "author", "contributor", "tags"] },
+];
+const stepOfField = (field) => (STEPS.find((s) => s.fields.includes(field)) || STEPS[0]).key;
+const stepOfHash = (hash) => {
+  const value = (hash || "").replace(/^#/, "");
+  if (value.startsWith("field-")) return stepOfField(value.slice(6));
+  return STEPS.some((s) => s.key === value) ? value : null;
+};
+
+// The list of steps: in the site's sidebar on a wide screen, a row above the form on a narrow one. A step shows
+// a tick once it has been opened and has nothing to fix, or the number of things to fix.
+function StepList({ steps, step, onStep, className }) {
+  return (
+    <ol className={className} aria-label="Steps">
+      {steps.map((s, index) => (
+        <li key={s.key}>
+          <button type="button" className={styles.step} aria-current={s.key === step ? "step" : undefined} onClick={() => onStep(s.key)}>
+            <span className={styles.stepMark} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} aria-hidden="true">
+              {s.errors ? s.errors : s.done ? "✓" : index + 1}
+            </span>
+            <span className={styles.stepLabel}>{s.label}</span>
+            {s.optional && <span className={styles.stepNote}>Optional</span>}
+            {s.errors > 0 && (
+              <span className={styles.srOnly}>
+                , {s.errors} to fix
+              </span>
+            )}
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export default function TestBuilder() {
   const [state, setState] = useState(exampleState);
   const [tab, setTab] = useState("ps1");
+  const [step, setStepState] = useState("start");
+  const [seen, setSeen] = useState(["start"]);
+  const [railHost, setRailHost] = useState(null);
+  const formRef = useRef(null);
+  const jump = useRef(null);
+  const [jumps, setJumps] = useState(0);
   const [helpId, setHelpId] = useState(null);
-  const helpContext = useMemo(() => ({ openId: helpId, setOpenId: setHelpId }), [helpId]);
+  const helpContext = useMemo(() => ({ openId: helpId, setOpenId: setHelpId, builtin: state.mode === "builtin" }), [helpId, state.mode]);
   const [guide, openGuide] = useGuides(setHelpId);
   const set = (patch) => setState((s) => ({ ...s, ...patch }));
   const builtin = state.mode === "builtin";
@@ -739,6 +793,49 @@ export default function TestBuilder() {
   const firstFramework = state.controls.find((c) => data.frameworks.some((f) => c.startsWith(f.key + ":") && f.requirements.some((r) => f.key + ":" + r.id === c)));
 
   const need = (name) => builtin && P[name].required !== "No";
+
+  // Steps. The address keeps the step, so a link or a reload opens it; a link to a field opens the field's step.
+  const setStep = useCallback((key, field) => {
+    setStepState(key);
+    setSeen((list) => (list.includes(key) ? list : [...list, key]));
+    setHelpId(null);
+    try {
+      window.history.replaceState(null, "", "#" + key);
+    } catch (e) {
+      // The address is not updated; the step still opens.
+    }
+    jump.current = { field };
+    setJumps((n) => n + 1);
+  }, []);
+  const goField = (field) => setStep(stepOfField(field), field);
+  // After the step is on the page: bring the field, or the top of the form, into view.
+  useEffect(() => {
+    if (!jump.current) return;
+    const { field } = jump.current;
+    jump.current = null;
+    const target = field ? document.getElementById("field-" + field) : formRef.current;
+    if (!target) return;
+    if (field) target.scrollIntoView({ block: "center" });
+    else if (target.getBoundingClientRect().top < 0) target.scrollIntoView({ block: "start" });
+    const input = field && document.getElementById("input-" + field);
+    if (input && input.focus) input.focus({ preventScroll: true });
+  }, [jumps]);
+  useEffect(() => {
+    setRailHost(document.getElementById("mt-builder-steps"));
+    const open = () => {
+      const hash = window.location.hash;
+      const key = stepOfHash(hash);
+      if (key) setStep(key, hash.startsWith("#field-") ? hash.slice(7) : undefined);
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, [setStep]);
+  const steps = STEPS.map((s) => {
+    const count = errors.filter((p) => s.fields.includes(p.field)).length;
+    return { ...s, errors: count, done: seen.includes(s.key) && count === 0 && s.key !== step, optional: !builtin && !["start", "name"].includes(s.key) };
+  });
+  const stepIndex = STEPS.findIndex((s) => s.key === step);
 
   // The prefix of custom tests is remembered in this browser.
   useEffect(() => {
@@ -817,9 +914,13 @@ export default function TestBuilder() {
     <HelpContext.Provider value={helpContext}>
     <div className={styles.shell}>
     <div className={styles.builder}>
-      <div className={styles.form}>
-        <section className={styles.section}>
+      <div className={styles.form} ref={formRef}>
+        <StepList steps={steps} step={step} onStep={setStep} className={styles.stepStrip} />
+        <section className={styles.section} id={"step-" + "start"} hidden={step !== "start"}>
           <h2>Who is the test for?</h2>
+          <p className={styles.intro}>
+            Every Maester test declares what it is about, how urgent a failure is and what it needs to run, in a <code>[MaesterTest()]</code> attribute. Pick the values step by step and the code updates as you go. The help button beside a field says what it means, what happens when you leave it empty, and the rule reviewers apply.
+          </p>
           <RadioCards
             label="Who is the test for?"
             columns
@@ -836,7 +937,7 @@ export default function TestBuilder() {
           </div>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "name"} hidden={step !== "name"}>
           <h2>Name it</h2>
           {builtin && (
             <Field id="suite" label="Suite" required hint="The suite decides the ID prefix and the folder. New checks written by the community go in Maester." problems={problems}>
@@ -888,7 +989,7 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "about"} hidden={step !== "about"}>
           <div className={styles.sectionHead}>
             <h2>What is it about?</h2>
             <Help id="rate-the-test" title="Rate the test, not your tenant" label="Rate the test, not your tenant">
@@ -952,26 +1053,26 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "priority"} hidden={step !== "priority"}>
           <h2>What should be fixed first?</h2>
           <Field id="severity" name="Severity" label="Severity" required={need("Severity")} hint="The risk to the organization while the test fails. Not the effort to fix it and not the disruption of fixing it." rubric={R.Severity} problems={problems} notInList={<p>The five values are fixed. The report, the scores and the <code>-Severity</code> selector depend on them.</p>}>
-            <RadioCards label="severity" value={state.severity} options={firstTable(R.Severity)} onValueChange={(v) => set({ severity: v })} />
+            <RadioPills label="severity" value={state.severity} options={firstTable(R.Severity)} onValueChange={(v) => set({ severity: v })} />
           </Field>
           {state.severity === "Info" ? (
             <p className={styles.note}>An Info test makes no risk judgement, so it has no user impact or implementation cost and is left out of scores.</p>
           ) : (
             <>
               <Field id="userImpact" name="UserImpact" label="User impact" required={need("UserImpact")} hint={P.UserImpact.description} rubric={R.UserImpact} problems={problems}>
-                <RadioCards label="userImpact" value={state.userImpact} options={firstTable(R.UserImpact)} onValueChange={(v) => set({ userImpact: v })} />
+                <RadioPills label="userImpact" value={state.userImpact} options={firstTable(R.UserImpact)} onValueChange={(v) => set({ userImpact: v })} />
               </Field>
               <Field id="implementationCost" name="ImplementationCost" label="Implementation cost" required={need("ImplementationCost")} hint={P.ImplementationCost.description} rubric={R.ImplementationCost} problems={problems}>
-                <RadioCards label="implementationCost" value={state.implementationCost} options={firstTable(R.ImplementationCost)} onValueChange={(v) => set({ implementationCost: v })} />
+                <RadioPills label="implementationCost" value={state.implementationCost} options={firstTable(R.ImplementationCost)} onValueChange={(v) => set({ implementationCost: v })} />
               </Field>
             </>
           )}
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "mapping"} hidden={step !== "mapping"}>
           <h2>What does it map to?</h2>
           <Field
             id="mitre"
@@ -1067,7 +1168,7 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "requirements"} hidden={step !== "requirements"}>
           <h2>What does it need to run?</h2>
           <Field
             id="services"
@@ -1120,7 +1221,12 @@ export default function TestBuilder() {
           >
             <PermissionBuilder groups={state.permission} services={state.serviceNone ? [] : state.services} onChange={(v) => set({ permission: v })} />
           </Field>
-          <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Leave empty for Workforce only."} problems={problems}>
+        </section>
+
+        <section className={styles.section} id={"step-" + "environment"} hidden={step !== "environment"}>
+          <h2>Where does it apply?</h2>
+          <p className={styles.intro}>Leave all three empty unless the test is only valid in some tenants, clouds or operating systems. Most tests are.</p>
+          <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Workforce is an organization's own tenant; External is a Microsoft Entra External ID tenant for customers. Leave empty for Workforce only."} problems={problems}>
             <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} onChange={(v) => set({ tenantType: v })} />
           </Field>
           <Field id="cloud" name="Cloud" label="Clouds" hint={P.Cloud.description} problems={problems}>
@@ -1131,7 +1237,7 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "parameters"} hidden={step !== "parameters"}>
           <h2>What can an administrator change?</h2>
           <Field
             id="parameters"
@@ -1158,10 +1264,10 @@ export default function TestBuilder() {
           )}
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "lifecycle"} hidden={step !== "lifecycle"}>
           <h2>Lifecycle and credit</h2>
           <Field id="lifecycle" name="Lifecycle" label="Lifecycle" hint={P.Lifecycle.description} rubric={R["Lifecycle and ReplacedBy"]} problems={problems}>
-            <RadioCards label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v }))} onValueChange={(v) => set({ lifecycle: v })} />
+            <RadioPills label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v }))} onValueChange={(v) => set({ lifecycle: v })} />
           </Field>
           {(state.lifecycle === "Deprecated" || state.replacedBy) && (
             <Field id="replacedBy" name="ReplacedBy" label="Replaced by" hint={P.ReplacedBy.description} problems={problems}>
@@ -1195,7 +1301,23 @@ export default function TestBuilder() {
             </p>
           )}
         </section>
+        <div className={styles.stepNav}>
+          <Button disabled={stepIndex === 0} onClick={() => setStep(STEPS[stepIndex - 1].key)}>
+            Back
+          </Button>
+          <span className={styles.stepCount}>
+            Step {stepIndex + 1} of {STEPS.length}
+          </span>
+          {stepIndex < STEPS.length - 1 ? (
+            <Button variant="primary" onClick={() => setStep(STEPS[stepIndex + 1].key)}>
+              Next: {STEPS[stepIndex + 1].label}
+            </Button>
+          ) : (
+            <span className={styles.stepCount}>{errors.length ? "Fix what is listed with the code, then copy it." : "Done. Copy the code."}</span>
+          )}
+        </div>
       </div>
+      {railHost && createPortal(<StepList steps={steps} step={step} onStep={setStep} className={styles.stepRail} />, railHost)}
 
       <aside className={styles.output} aria-label="Generated test" data-help-dock>
         {/* Only problems are shown here; a test that meets the rules needs no banner. */}
@@ -1208,7 +1330,15 @@ export default function TestBuilder() {
               <ul>
                 {errors.slice(0, 6).map((p, i) => (
                   <li key={i}>
-                    <a href={"#field-" + p.field}>{p.text}</a>
+                    <a
+                      href={"#field-" + p.field}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        goField(p.field);
+                      }}
+                    >
+                      {p.text}
+                    </a>
                   </li>
                 ))}
                 {errors.length > 6 && <li>and {errors.length - 6} more</li>}

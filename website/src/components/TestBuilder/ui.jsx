@@ -132,6 +132,23 @@ export function RadioCards({ value, onValueChange, options, label, columns }) {
   );
 }
 
+// A radio group as one row of choices. Only the selected option's text is shown, under the row.
+export function RadioPills({ value, onValueChange, options, label }) {
+  const picked = options.find((o) => o.value === value);
+  return (
+    <div className={ui.pillsWrap}>
+      <RadioGroupPrimitive.Root className={ui.pills} value={value} onValueChange={onValueChange} aria-label={label}>
+        {options.map((o) => (
+          <RadioGroupPrimitive.Item key={o.value} value={o.value} className={ui.pill} title={o.text}>
+            {o.label || o.value}
+          </RadioGroupPrimitive.Item>
+        ))}
+      </RadioGroupPrimitive.Root>
+      {picked && picked.text && <p className={ui.pillText}>{picked.text}</p>}
+    </div>
+  );
+}
+
 export function Checkbox({ checked, onCheckedChange, children }) {
   return (
     <label className={ui.checkRow}>

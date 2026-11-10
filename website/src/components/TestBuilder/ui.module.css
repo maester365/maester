@@ -185,3 +185,12 @@
 .optionTile { flex: none; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; font-size: 0.55rem; font-weight: 700; line-height: 1; color: var(--ifm-color-emphasis-800); background: var(--ifm-color-emphasis-200); }
 .button-icon { width: 2rem; height: 2rem; padding: 0; flex: none; }
 .button .icon { opacity: 0.85; }
+
+/* A radio group as one row of choices. */
+.pillsWrap { display: flex; flex-direction: column; gap: 0.4rem; width: 100%; }
+.pills { display: flex; flex-wrap: wrap; gap: 0.2rem; padding: 0.2rem; border-radius: 8px; background: var(--ifm-color-emphasis-200); width: fit-content; max-width: 100%; }
+.pill { border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ifm-color-emphasis-800); font: inherit; font-size: 0.875rem; font-weight: 500; padding: 0.3rem 0.85rem; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.pill:hover { background: var(--ifm-color-emphasis-100); }
+.pill[data-state="checked"] { background: var(--ifm-background-color); border-color: var(--ifm-color-primary); color: var(--ifm-font-color-base); font-weight: 600; }
+.pill:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--ifm-color-primary) 25%, transparent); }
+.pillText { margin: 0; font-size: 0.83rem; color: var(--ifm-color-emphasis-700); }
