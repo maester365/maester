@@ -76,7 +76,7 @@
         [ValidateRange(1, 1000000)]
         [int]$MaxRecordCount = 10000,
 
-        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'Schema', 'Printers', 'DaclEntries')]
+        [ValidateSet('Domain', 'FineGrainedPasswordPolicies', 'Forest', 'Computers', 'Users', 'Groups', 'ServiceAccounts', 'DomainControllers', 'ReplicationSites', 'Subnets', 'OptionalFeatures', 'ReplicationConnections', 'DfsrSubscriptions', 'Trusts', 'OrganizationalUnits', 'SmbConfigurations', 'DNS', 'Configuration', 'Schema', 'Printers', 'DaclEntries', 'DnsAuthorization')]
         [string[]]$Categories
     )
 
@@ -515,6 +515,16 @@
                 return $result
             }
         }
+        DnsAuthorization = @{
+            Properties = @('DnsAuthorization')
+            Dependencies = @()
+            Collector = {
+                $result = [ordered]@{}
+                # Collect DNS authorization independently so routine DNS inventory does not require ACL analysis.
+                $result['DnsAuthorization'] = Get-MtLdapDnsZoneAuthorization -Connection $protocolConnection -RootDse $protocolRootDse
+                return $result
+            }
+        }
         DaclEntries = @{
             Properties   = @('DaclEntries')
             Dependencies = @()
@@ -550,7 +560,8 @@
         'Configuration',
         'Schema',
         'Printers',
-        'DaclEntries'
+        'DaclEntries',
+        'DnsAuthorization'
     )
 
     if ($isScoped) {
@@ -626,6 +637,7 @@
         Printers               = @()
         LapsInstalled          = $false
         DaclEntries            = @()
+        DnsAuthorization       = $null
         FineGrainedPasswordPolicies = @()
     }
 

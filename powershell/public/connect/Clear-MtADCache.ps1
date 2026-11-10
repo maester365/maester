@@ -36,7 +36,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification='Scoped cache clearing is performed in a controlled context for tests')]
     [CmdletBinding()]
     param(
-        [ValidateSet('Domain','FineGrainedPasswordPolicies','Forest','Computers','Users','Groups','ServiceAccounts','DomainControllers','ReplicationSites','Subnets','OptionalFeatures','ReplicationConnections','DfsrSubscriptions','Trusts','OrganizationalUnits','SmbConfigurations','DNS','Configuration','Schema','Printers','DaclEntries')][string[]]$Categories,
+        [ValidateSet('Domain','FineGrainedPasswordPolicies','Forest','Computers','Users','Groups','ServiceAccounts','DomainControllers','ReplicationSites','Subnets','OptionalFeatures','ReplicationConnections','DfsrSubscriptions','Trusts','OrganizationalUnits','SmbConfigurations','DNS','Configuration','Schema','Printers','DaclEntries','DnsAuthorization')][string[]]$Categories,
         [string]$ComputerName
     )
 
