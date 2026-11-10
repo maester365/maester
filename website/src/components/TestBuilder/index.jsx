@@ -1278,7 +1278,7 @@ export default function TestBuilder() {
 
         <section className={styles.section} id={"step-" + "environment"} hidden={step !== "environment"}>
           <h2>Where does it apply?</h2>
-          <p className={styles.intro}>Leave all three empty unless the test is only valid in some tenants, clouds or operating systems. Most tests are.</p>
+          <p className={styles.intro}>Leave these empty unless the test is only valid in some tenants, clouds or operating systems. Most tests leave them empty.</p>
           <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Workforce is an organization's own tenant; External is a Microsoft Entra External ID tenant for customers. Leave empty for Workforce only."} problems={problems}>
             <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} describe={(o) => TENANT_TYPES[o]?.label || o} iconFor={(o) => ({ icon: TENANT_TYPES[o]?.icon })} onChange={(v) => set({ tenantType: v })} />
           </Field>

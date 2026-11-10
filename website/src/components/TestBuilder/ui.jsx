@@ -37,12 +37,42 @@ const OS_PATHS = {
   MacOS:
     "M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47c-1.34.03-1.77-.79-3.29-.79c-1.53 0-2 .77-3.27.82c-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51c1.28-.02 2.5.87 3.29.87c.78 0 2.26-1.07 3.81-.91c.65.03 2.47.26 3.64 1.98c-.09.06-2.17 1.28-2.15 3.81c.03 3.02 2.65 4.03 2.68 4.04c-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5c.13 1.17-.34 2.35-1.04 3.19c-.69.85-1.83 1.51-2.95 1.42c-.15-1.15.41-2.35 1.05-3.11",
 };
-export const osGlyph = (name) =>
-  OS_PATHS[name] ? (
+// Platform icons in colour: Windows as its four blue panes, Linux as a small Tux, macOS as the Apple mark in
+// graphite (it has no colour of its own).
+export const osGlyph = (name) => {
+  if (name === "Windows")
+    return (
+      <svg className={ui.optionIcon} viewBox="0 0 24 24" aria-hidden="true">
+        {[[3, 3], [12.5, 3], [3, 12.5], [12.5, 12.5]].map(([x, y]) => (
+          <rect key={x + "-" + y} x={x} y={y} width="8.5" height="8.5" fill="#0078D4" />
+        ))}
+      </svg>
+    );
+  if (name === "Linux")
+    return (
+      <svg className={ui.optionIcon} viewBox="0 0 24 24" aria-hidden="true">
+        <ellipse cx="8.2" cy="20.6" rx="2.6" ry="1.2" fill="#F5B301" />
+        <ellipse cx="15.8" cy="20.6" rx="2.6" ry="1.2" fill="#F5B301" />
+        <path
+          d="M12 2.500c-2.200 0-3.600 1.700-3.600 4 0 1.600.200 2.600-.900 4.300C6 13.100 4.800 15.200 4.800 17.700c0 2 1.500 3.100 7.200 3.100s7.200-1.100 7.200-3.100c0-2.500-1.200-4.600-2.700-6.900-1.100-1.700-.900-2.700-.900-4.300 0-2.300-1.400-4-3.600-4z"
+          fill="#2B2B2B"
+          stroke="#8A8A8A"
+          strokeWidth="0.5"
+        />
+        <ellipse cx="12" cy="15.6" rx="3.7" ry="4.6" fill="#fff" />
+        <circle cx="10.6" cy="6.500" r="1" fill="#fff" />
+        <circle cx="13.4" cy="6.500" r="1" fill="#fff" />
+        <circle cx="10.8" cy="6.600" r="0.450" fill="#2B2B2B" />
+        <circle cx="13.2" cy="6.600" r="0.450" fill="#2B2B2B" />
+        <path d="M10.200 8.700l1.800-.900 1.800.900-1.800 1.400z" fill="#F5B301" />
+      </svg>
+    );
+  return OS_PATHS[name] ? (
     <svg className={ui.optionIcon} viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor" d={OS_PATHS[name]} />
+      <path fill="#7D7D82" d={OS_PATHS[name]} />
     </svg>
   ) : null;
+};
 
 // The icon of an option: an image, a glyph, or a small tile with initials when there is no image.
 export function OptionIcon({ icon, initials, glyph }) {
