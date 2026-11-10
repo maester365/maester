@@ -28,7 +28,8 @@
         Mitre = 'T1685.002',
         Control = 'cisa-scuba:MS.SECURITYSUITE.5.1',
         Service = 'ExchangeOnline',
-        Author = 'soulemike'
+        Author = 'soulemike',
+        Contributor = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

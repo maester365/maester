@@ -30,7 +30,7 @@
         Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
         License = 'M365_ADVANCED_AUDITING',
         Author = 'soulemike',
-        Contributor = 'thomas-s-schmidt'
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
