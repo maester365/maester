@@ -12,7 +12,7 @@
     Returns true when every non-disabled full-protection rule in an enabled policy blocks access for everyone.
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisaDlpBlocksSensitiveInformation
+    https://maester.dev/docs/tests/CISA.MS.SECURITYSUITE.3.3
     #>
     [MaesterTest(
         Id = 'CISA.MS.SECURITYSUITE.3.3',

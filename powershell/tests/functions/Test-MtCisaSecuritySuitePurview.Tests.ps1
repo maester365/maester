@@ -1,5 +1,5 @@
 ﻿BeforeAll {
-    $testRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..\..')
+    $testRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
     function Get-TestSensitiveDlpResponse {
         $advancedRule = @(
             '50842eb7-edc8-4019-85dd-5a5c1f2bb085',
@@ -31,12 +31,12 @@
         }
     }
 
-    . (Join-Path $testRoot 'powershell\internal\checks\cisa\purview\Get-MtCisaSensitiveDlpRule.ps1')
-    . (Join-Path $testRoot 'tests\cisa\purview\Test.CISA.MS.SECURITYSUITE.3.1.ps1')
-    . (Join-Path $testRoot 'tests\cisa\purview\Test.CISA.MS.SECURITYSUITE.3.2.ps1')
-    . (Join-Path $testRoot 'tests\cisa\purview\Test.CISA.MS.SECURITYSUITE.3.3.ps1')
-    . (Join-Path $testRoot 'tests\cisa\purview\Test.CISA.MS.SECURITYSUITE.3.4.ps1')
-    . (Join-Path $testRoot 'tests\cisa\purview\Test.CISA.MS.SECURITYSUITE.3.5.ps1')
+    . (Join-Path $testRoot 'powershell/internal/checks/cisa/purview/Get-MtCisaSensitiveDlpRule.ps1')
+    . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.1.ps1')
+    . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.2.ps1')
+    . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.3.ps1')
+    . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.4.ps1')
+    . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.5.ps1')
 }
 
 Describe 'CISA Security Suite Purview checks' {
