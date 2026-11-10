@@ -3,7 +3,7 @@
 import { useMemo } from "react"
 import { RESULT_LABEL, RESULT_ORDER, SEVERITIES, frameworkLabel, frameworkRank, requirementsOf, type Row } from "@/lib/model"
 import { useReport } from "@/components/report/ReportContext"
-import { Footer, GROUPS, TestTable, sourceLabel } from "@/components/report/lists"
+import { Footer, GROUPS, TestTable, sortRows, sourceLabel } from "@/components/report/lists"
 import { Dropdown, FeatureMark, Icon, ProductMark, copyText, type IconName } from "@/components/report/ui"
 
 const GROUP_ICON: Record<string, IconName> = { product: "product", area: "area", feature: "feature", severity: "severity", source: "source", result: "result" }
@@ -12,7 +12,7 @@ interface Dimension { key: string; icon: IconName; values: (t: Row) => string[];
 
 export default function TestsPage() {
   const { model, explorer, setExplorer } = useReport()
-  const { q, filters, group } = explorer
+  const { q, filters, group, sort } = explorer
   const dims: Dimension[] = useMemo(() => ([
     { key: "Result", icon: "result", values: (t) => [t.Result], label: (v) => RESULT_LABEL[v] || v, order: RESULT_ORDER },
     { key: "Severity", icon: "severity", values: (t) => (SEVERITIES.includes(t.Severity) ? [t.Severity] : model.rated.severity ? ["Not rated"] : []), label: (v) => v, order: [...SEVERITIES, "Not rated"] },
@@ -36,7 +36,7 @@ export default function TestsPage() {
   }
   // Every cell is escaped: an ID can come from a Pester test name, which may hold a pipe or a line break.
   const cell = (v: unknown) => String(v ?? "").replace(/[\\|]/g, "\\$&").replace(/\r?\n/g, " ")
-  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...rows.map((t) => `| ${[t.Result, t.Id, t.Title, t.Severity, model.productName(t.Product)].map(cell).join(" | ")} |`)].join("\n"), `Copied ${rows.length} rows`)
+  const copyRows = () => copyText(["| Result | ID | Title | Severity | Product |", "| --- | --- | --- | --- | --- |", ...sortRows(model, rows, sort).map((t) => `| ${[t.Result, t.Id, t.Title, t.Severity, model.productName(t.Product)].map(cell).join(" | ")} |`)].join("\n"), `Copied ${rows.length} rows`)
   const groups = Object.keys(GROUPS).filter((g) => g !== "feature" || model.hasAttributes)
 
   return (
@@ -71,7 +71,7 @@ export default function TestsPage() {
               options={groups.map((g) => ({ value: g, label: GROUPS[g], icon: GROUP_ICON[g] ? <Icon name={GROUP_ICON[g]} /> : undefined }))} />
             {filtered && <button type="button" className="mt-btn" onClick={() => setExplorer({ q: "", filters: {} })}>Clear filters</button>}
           </div>
-          <TestTable rows={rows} group={group} />
+          <TestTable rows={rows} group={group} sort={sort} onSort={(s) => setExplorer({ sort: s })} />
         </div>
       </div>
       <Footer />
