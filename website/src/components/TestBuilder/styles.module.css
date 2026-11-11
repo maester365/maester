@@ -500,3 +500,13 @@ textarea.input {
 
 .linkButton { padding: 0; border: 0; background: none; font: inherit; color: var(--ifm-color-primary); text-decoration: underline; cursor: pointer; }
 .note svg { vertical-align: -0.15em; }
+
+/* The AI prompt in the list of steps: apart from the numbered steps, since it is not one of them. */
+.stepRail .stepApart { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--ifm-color-emphasis-200); }
+.stepMark[data-state="ai"] { border-color: transparent; color: var(--ifm-color-primary); }
+.stepMark[data-state="ai"] svg { color: inherit; }
+.stepApart .stepIcon { display: none; }
+@media (min-width: 50rem) {
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepApart .stepIcon { display: inline; color: var(--ifm-color-primary); }
+}
+.miniField textarea { width: 100%; }

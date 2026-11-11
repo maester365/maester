@@ -784,7 +784,7 @@ const stepOfField = (field) => (STEPS.find((s) => s.fields.includes(field)) || S
 const stepOfHash = (hash) => {
   const value = (hash || "").replace(/^#/, "");
   if (value.startsWith("field-")) return stepOfField(value.slice(6));
-  return STEPS.some((s) => s.key === value) ? value : null;
+  return value === "ai" || STEPS.some((s) => s.key === value) ? value : null;
 };
 
 // The list of steps: in the site's sidebar on a wide screen, a row above the form on a narrow one. A step shows
@@ -792,6 +792,7 @@ const stepOfHash = (hash) => {
 function StepList({ steps, step, onStep, className }) {
   return (
     <ol className={className} aria-label="Steps">
+      {/* Not a step: the prompt uses whatever the steps hold so far, so it sits apart, after them. */}
       {steps.map((s, index) => (
         <li key={s.key}>
           <button type="button" className={styles.step} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} title={s.label + (s.errors ? ": " + s.errors + " to fix" : "")} aria-current={s.key === step ? "step" : undefined} onClick={() => onStep(s.key)}>
@@ -809,6 +810,15 @@ function StepList({ steps, step, onStep, className }) {
           </button>
         </li>
       ))}
+      <li className={styles.stepApart}>
+        <button type="button" className={styles.step} title="Write the test with AI" aria-current={step === "ai" ? "step" : undefined} onClick={() => onStep("ai")}>
+          <span className={styles.stepMark} data-state="ai" aria-hidden="true">
+            <AttributeIcon name="spark" />
+          </span>
+          <AttributeIcon name="spark" className={styles.stepIcon} />
+          <span className={styles.stepLabel}>Write it with AI</span>
+        </button>
+      </li>
     </ol>
   );
 }
@@ -991,7 +1001,6 @@ export default function TestBuilder() {
     ["ps1", "Test." + id + ".ps1"],
     ["md", "Test." + id + ".md"],
     ["cmd", "New-MtTest"],
-    ["ai", "AI prompt"],
   ];
 
   return (
@@ -1026,11 +1035,11 @@ export default function TestBuilder() {
             }}
           />
           <p className={styles.note}>
-            <AttributeIcon name="spark" /> Want an AI assistant to write the test? Fill in what you know, then copy the prompt from the{" "}
-            <button type="button" className={styles.linkButton} onClick={() => setTab("ai")}>
-              AI prompt
-            </button>{" "}
-            tab. <Link to="/docs/writing-tests/with-ai">How it works</Link>.
+            <AttributeIcon name="spark" /> Want an AI assistant to write the test? Fill in what you know, then open{" "}
+            <button type="button" className={styles.linkButton} onClick={() => setStep("ai")}>
+              Write it with AI
+            </button>
+            . <Link to="/docs/writing-tests/with-ai">How it works</Link>.
           </p>
           {loaded && (
             <p className={styles.note}>
@@ -1472,6 +1481,29 @@ export default function TestBuilder() {
             </p>
           )}
         </section>
+        <section className={styles.section} id="step-ai" hidden={step !== "ai"}>
+          <h2>Write it with AI</h2>
+          <div className={styles.explain}>
+            <p>
+              An AI coding assistant such as GitHub Copilot or Claude Code can write the test from a prompt. The prompt below carries the values you picked in the steps, points the assistant at Maester's guides and tells it how to check its work. The ID and the title are enough to start; every other value you pick is one less for it to guess.
+            </p>
+            <p>
+              {builtin ? "Run it in a clone of the Maester repository, which has agents and skills for writing a check." : "Run it in the folder that holds your custom tests. The assistant does not need the Maester repository."} <Link to="/docs/writing-tests/with-ai">How this works, and how to check the result</Link>.
+            </p>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.miniField}>
+              <span>What should the test verify?</span>
+              <Textarea value={goal} rows={4} placeholder="Guest users cannot invite other guests. The setting is 'Guest invite restrictions' under External collaboration settings, and it should be 'Only users assigned to specific admin roles'." onChange={(e) => setGoal(e.target.value)} />
+            </label>
+          </div>
+          <div className={styles.field}>
+            <p className={styles.hint}>Copy this into your assistant.</p>
+            <CopyBlock text={buildAiPrompt(state, data, goal)} language="markdown" />
+            <p className={styles.hint}>Read what the assistant writes before you run it: check the endpoint and property names against Microsoft Learn, and run the test on a tenant you know.</p>
+          </div>
+        </section>
+        {stepIndex >= 0 && (
         <div className={styles.stepNav}>
           <Button disabled={stepIndex === 0} onClick={() => setStep(STEPS[stepIndex - 1].key)}>
             Back
@@ -1487,6 +1519,7 @@ export default function TestBuilder() {
             <span className={styles.stepCount}>{errors.length ? "Fix what is listed with the code, then copy it." : "Done. Copy the code."}</span>
           )}
         </div>
+        )}
       </div>
       {railHost && createPortal(<StepList steps={steps} step={step} onStep={setStep} className={styles.stepRail} />, railHost)}
 
@@ -1551,18 +1584,6 @@ export default function TestBuilder() {
                 <code>New-MtTest -Setting</code> writes the parameters bound to a shared setting. Copy the {handParameters === 1 ? "other parameter" : "other " + handParameters + " parameters"} of the <code>param()</code> block from the <code>.ps1</code> tab.
               </p>
             )}
-          </TabsContent>
-          <TabsContent value="ai">
-            <p className={styles.where}>
-              A prompt for an AI coding assistant such as GitHub Copilot or Claude Code. It carries the values you picked, points the assistant at Maester's guides and tells it how to check its work.{" "}
-              {builtin ? "Run it in a clone of the Maester repository, which has agents and skills for writing a check." : "Run it in the folder that holds your custom tests."} <Link to="/docs/writing-tests/with-ai">Read more</Link>.
-            </p>
-            <label className={styles.miniField}>
-              <span>What should the test verify?</span>
-              <Textarea value={goal} rows={4} placeholder="Guest users cannot invite other guests. The setting is 'Guest invite restrictions' under External collaboration settings, and it should be 'Only users assigned to specific admin roles'." onChange={(e) => setGoal(e.target.value)} />
-            </label>
-            <CopyBlock text={buildAiPrompt(state, data, goal)} language="markdown" />
-            <p className={styles.where}>Read what the assistant writes before you run it: check the endpoint and property names against Microsoft Learn, and run the test on a tenant you know.</p>
           </TabsContent>
         </Tabs>
 

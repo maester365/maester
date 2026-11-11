@@ -20,7 +20,8 @@ The assistant brings the PowerShell, the attribute and the remediation text.
 1. Open the [test builder](/test-builder) and choose who the test is for.
 2. Fill in what you know. The ID and the title are enough; every value you pick is one less for the assistant
    to guess.
-3. Open the **AI prompt** tab, say in a sentence or two what the test should verify, and copy the prompt.
+3. Open **Write it with AI**, below the steps, say in a sentence or two what the test should verify, and copy
+   the prompt.
 4. Paste it into your assistant, in the right folder (see below).
 5. Review what it wrote, then run the test on a tenant you know.
 
