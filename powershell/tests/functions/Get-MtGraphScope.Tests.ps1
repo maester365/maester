@@ -60,6 +60,33 @@
         $applicationIndex | Should -BeLessThan $auditLogIndex
     }
 
+    It 'Includes Tenant Governance and configuration monitoring scopes only with IncludePreview' {
+        $tenantScopes = @(
+            'ConfigurationMonitoring.Read.All'
+            'CrossTenantInformation.ReadBasic.All'
+            'RemoteTenantGroups.Read.All'
+            'TenantGovernance-RelatedTenant.Read.All'
+            'TenantGovernance-Relationship.Read.All'
+        )
+        $default = Get-MtGraphScope
+        $preview = Get-MtGraphScope -IncludePreview
+
+        foreach ($scope in $tenantScopes) {
+            $default | Should -Not -Contain $scope
+            $preview | Should -Contain $scope
+        }
+    }
+
+    It 'Returns no scope twice with <Name>' -ForEach @(
+        @{ Name = 'no switches'; Parameters = @{} }
+        @{ Name = 'IncludePreview'; Parameters = @{ IncludePreview = $true } }
+        @{ Name = 'all switches'; Parameters = @{ IncludePreview = $true; Privileged = $true; SendMail = $true; SendTeamsMessage = $true } }
+    ) {
+        $scopes = @(Get-MtGraphScope @Parameters)
+
+        @($scopes | Group-Object | Where-Object { $_.Count -gt 1 } | ForEach-Object { $_.Name }) | Should -BeNullOrEmpty
+    }
+
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {
         $scopes = Get-MtGraphScope
         $directoryRecommendationsIndex = [array]::IndexOf($scopes, 'DirectoryRecommendations.Read.All')

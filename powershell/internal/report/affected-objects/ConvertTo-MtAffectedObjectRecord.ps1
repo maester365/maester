@@ -29,11 +29,14 @@
     # GraphObjectType → canonical object type. Must match the type names emitted by
     # Get-MtAffectedObjectFromMarkdown so records from both sources dedupe correctly.
     $canonicalType = @{
-        ConditionalAccess = 'ConditionalAccessPolicy'
-        Users             = 'User'
-        UserRole          = 'User'
-        Groups            = 'Group'
-        Devices           = 'Device'
+        AccessPackageCatalogs = 'AccessPackageCatalog'
+        AccessPackages        = 'AccessPackage'
+        ConditionalAccess     = 'ConditionalAccessPolicy'
+        Users                 = 'User'
+        UserRole              = 'User'
+        Groups                = 'Group'
+        Devices               = 'Device'
+        ServicePrincipals     = 'ServicePrincipal'
     }
 
     # GraphObjectType whose objects are really another type: the check links to a settings blade
@@ -45,7 +48,6 @@
     # Kept out of Get-MtPortalLinkTemplate: Get-GraphObjectMarkdown would render these types without a link.
     # Applications are absent because markdown deep links identify them by appId, not object id.
     $odataObjectType = @{
-        '#microsoft.graph.servicePrincipal'        = 'ServicePrincipal'
         '#microsoft.graph.directoryRole'           = 'DirectoryRole'
         '#microsoft.graph.conditionalAccessPolicy' = 'ConditionalAccessPolicy'
     }

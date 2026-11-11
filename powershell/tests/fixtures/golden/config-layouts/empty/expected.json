@@ -52,6 +52,7 @@
       "GlobalSettings": {
         "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
+        "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [],
         "GitHubOrganization": ""
       },
@@ -67,6 +68,7 @@
       "GlobalSettings": {
         "AzureDevOpsOrganization": "",
         "DataverseEnvironmentUrl": "",
+        "DelegatedAdminTenants": [],
         "EmergencyAccessAccounts": [],
         "GitHubOrganization": ""
       },

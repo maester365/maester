@@ -1,0 +1,242 @@
+﻿BeforeAll {
+    Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+}
+
+Describe 'MT.1253 risk remediation policy coverage' {
+    BeforeEach {
+        InModuleScope Maester {
+            $script:riskPolicy = @{
+                id = 'policy-1'; displayName = 'Risk remediation'; state = 'enabled'
+                grantControls = @{ builtInControls = @('riskRemediation') }
+                conditions = @{
+                    users = @{ includeUsers = @('All'); excludeUsers = @(); excludeGroups = @(); excludeRoles = @() }
+                    applications = @{ includeApplications = @('All') }
+                    userRiskLevels = @('high')
+                }
+            }
+            Mock Get-MtConditionalAccessPolicy { $script:riskPolicy }
+            Mock Get-MtEmergencyAccessAccount { @() }
+            Mock Invoke-MtGraphRequest { throw 'Unexpected Graph call in offline test' }
+            Mock Get-GraphObjectMarkdown { 'Risk remediation policy' }
+            Mock Add-MtTestResultDetail { }
+        }
+    }
+
+    It 'Passes an enabled all-user all-resource high-risk remediation policy' {
+        InModuleScope Maester {
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like 'Well done.*' }
+        }
+    }
+
+    It 'Rejects an arbitrary <Field> exclusion even though All users is included' -ForEach @(
+        @{ Field = 'excludeUsers' }, @{ Field = 'excludeGroups' }, @{ Field = 'excludeRoles' }
+    ) {
+        InModuleScope Maester -Parameters @{ Field = $Field } {
+            param($Field)
+            $script:riskPolicy.conditions.users[$Field] = @('11111111-1111-1111-1111-111111111111')
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*Only approved user exclusions*' }
+        }
+    }
+
+    It 'Accepts configured emergency users and dedicated groups together with guest selectors' {
+        InModuleScope Maester {
+            Mock Get-MtEmergencyAccessAccount {
+                @{ ObjectId = 'bg-user'; Type = 'user' }
+                @{ ObjectId = 'bg-group'; Type = 'group' }
+            }
+            $script:riskPolicy.conditions.users.excludeUsers = @('bg-user', 'GuestsOrExternalUsers')
+            $script:riskPolicy.conditions.users.excludeGroups = @('bg-group')
+            $script:riskPolicy.conditions.users.excludeGuestsOrExternalUsers = @{
+                guestOrExternalUserTypes = 'b2bCollaborationGuest,b2bCollaborationMember'
+                externalTenants = @{ membershipKind = 'all' }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+        }
+    }
+
+    It 'Does not let an approved emergency exclusion approve an unrelated workforce group' {
+        InModuleScope Maester {
+            Mock Get-MtEmergencyAccessAccount { @{ ObjectId = 'bg-user'; Type = 'user' } }
+            $script:riskPolicy.conditions.users.excludeUsers = @('bg-user')
+            $script:riskPolicy.conditions.users.excludeGroups = @('workforce')
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+        }
+    }
+
+    It 'Does not approve a group using an emergency user entry with the same ID' {
+        InModuleScope Maester {
+            Mock Get-MtEmergencyAccessAccount { @{ ObjectId = 'same-id'; Type = 'user' } }
+            $script:riskPolicy.conditions.users.excludeGroups = @('same-id')
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+        }
+    }
+
+    It 'Accepts a <Type> excluded from every Conditional Access policy when EmergencyAccessAccounts is not set' -ForEach @(
+        @{ Type = 'user'; Field = 'excludeUsers' }, @{ Type = 'group'; Field = 'excludeGroups' }
+    ) {
+        InModuleScope Maester -Parameters @{ Field = $Field } {
+            param($Field)
+            $script:riskPolicy.conditions.users[$Field] = @('bg-id')
+            Mock Get-MtConditionalAccessPolicy {
+                $script:riskPolicy
+                @{ id = 'policy-2'; displayName = 'MFA'; state = 'enabled'; conditions = @{ users = @{ includeUsers = @('All'); $Field = @('bg-id') } } }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*detected automatically*bg-id*' }
+        }
+    }
+
+    It 'Rejects an exclusion that another Conditional Access policy does not share' {
+        InModuleScope Maester {
+            $script:riskPolicy.conditions.users.excludeUsers = @('bg-id', 'workforce')
+            Mock Get-MtConditionalAccessPolicy {
+                $script:riskPolicy
+                @{ id = 'policy-2'; displayName = 'MFA'; state = 'enabled'; conditions = @{ users = @{ includeUsers = @('All'); excludeUsers = @('bg-id') } } }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+        }
+    }
+
+    It 'Does not detect emergency access when EmergencyAccessAccounts is set' {
+        InModuleScope Maester {
+            Mock Get-MtEmergencyAccessAccount { @{ ObjectId = 'configured'; Type = 'user' } }
+            $script:riskPolicy.conditions.users.excludeUsers = @('bg-id')
+            Mock Get-MtConditionalAccessPolicy {
+                $script:riskPolicy
+                @{ id = 'policy-2'; displayName = 'MFA'; state = 'enabled'; conditions = @{ users = @{ includeUsers = @('All'); excludeUsers = @('bg-id') } } }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+        }
+    }
+
+    It 'Propagates emergency account resolution errors instead of passing' {
+        InModuleScope Maester {
+            Mock Get-MtEmergencyAccessAccount { throw 'Could not resolve configured emergency access object(s)' }
+            { Test-MtCaRequireRiskRemediationForHighUserRisk } | Should -Throw '*Could not resolve*'
+        }
+    }
+
+    It 'Rejects a policy that is <Condition>' -ForEach @(
+        @{ Condition = 'report-only' }, @{ Condition = 'limited to a group' },
+        @{ Condition = 'limited to an application' }, @{ Condition = 'excluding an application' },
+        @{ Condition = 'missing high risk' }, @{ Condition = 'password-change only' }
+    ) {
+        InModuleScope Maester -Parameters @{ Condition = $Condition } {
+            param($Condition)
+            switch ($Condition) {
+                'report-only' { $script:riskPolicy.state = 'enabledForReportingButNotEnforced' }
+                'limited to a group' { $script:riskPolicy.conditions.users.includeUsers = @(); $script:riskPolicy.conditions.users.includeGroups = @('group') }
+                'limited to an application' { $script:riskPolicy.conditions.applications.includeApplications = @('app') }
+                'excluding an application' { $script:riskPolicy.conditions.applications.excludeApplications = @('app') }
+                'missing high risk' { $script:riskPolicy.conditions.userRiskLevels = @('medium') }
+                'password-change only' { $script:riskPolicy.grantControls.builtInControls = @('passwordChange') }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+        }
+    }
+
+    It 'Requires all risk levels selected by the parameter' {
+        InModuleScope Maester {
+            Test-MtCaRequireRiskRemediationForHighUserRisk -MinimumUserRiskLevel medium | Should -BeFalse
+            $script:riskPolicy.conditions.userRiskLevels = @('medium', 'high')
+            Test-MtCaRequireRiskRemediationForHighUserRisk -MinimumUserRiskLevel medium | Should -BeTrue
+        }
+    }
+
+    It 'Rejects a policy narrowed by <Condition>' -ForEach @(
+        @{ Condition = 'platform' }, @{ Condition = 'location' },
+        @{ Condition = 'device filter' }, @{ Condition = 'sign-in risk' }
+    ) {
+        InModuleScope Maester -Parameters @{ Condition = $Condition } {
+            param($Condition)
+            switch ($Condition) {
+                'platform' { $script:riskPolicy.conditions.platforms = @{ includePlatforms = @('iOS') } }
+                'location' { $script:riskPolicy.conditions.locations = @{ includeLocations = @('named-location') } }
+                'device filter' { $script:riskPolicy.conditions.devices = @{ deviceFilter = @{ mode = 'include'; rule = 'device.isCompliant -eq True' } } }
+                'sign-in risk' { $script:riskPolicy.conditions.signInRiskLevels = @('high') }
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeFalse
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*No platform, location, device or sign-in risk scoping*' }
+        }
+    }
+
+    It 'Accepts platform and location conditions that select all' {
+        InModuleScope Maester {
+            $script:riskPolicy.conditions.platforms = @{ includePlatforms = @('all') }
+            $script:riskPolicy.conditions.locations = @{ includeLocations = @('All') }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+        }
+    }
+
+    It 'Passes if a second policy qualifies, without accepting the excluded workforce policy' {
+        InModuleScope Maester {
+            Mock Get-MtConditionalAccessPolicy {
+                $script:riskPolicy
+                $other = $script:riskPolicy.Clone()
+                $other.id = 'policy-2'
+                $other.conditions = @{
+                    users = @{ includeUsers = @('All'); excludeGroups = @('workforce') }
+                    applications = @{ includeApplications = @('All') }
+                    userRiskLevels = @('high')
+                }
+                $other
+            }
+            Test-MtCaRequireRiskRemediationForHighUserRisk | Should -BeTrue
+            Should -Invoke Add-MtTestResultDetail -Times 1 -Exactly -ParameterFilter { $Result -like '*Only approved user exclusions*' }
+        }
+    }
+}
+
+Describe 'MT.1253 Conditional Access request path' {
+    BeforeAll {
+        # Graph returns riskRemediation only to a request that sends this header, and unknownFutureValue otherwise.
+        $script:MtRiskPolicyJson = {
+            param($Headers)
+            $control = if ($Headers -and $Headers['Prefer'] -eq 'include-unknown-enum-members') { 'riskRemediation' } else { 'unknownFutureValue' }
+            '{"id":"policy-rr","displayName":"Risk remediation","state":"enabled","grantControls":{"operator":"OR","builtInControls":["' + $control + '"]},"conditions":{"userRiskLevels":["high"],"users":{"includeUsers":["All"],"excludeUsers":[],"excludeGroups":[],"excludeRoles":[]},"applications":{"includeApplications":["All"],"excludeApplications":[]}}}'
+        }
+    }
+
+    BeforeEach {
+        InModuleScope Maester { $__MtSession.GraphCache = @{} }
+        Mock Get-MgContext -ModuleName Maester { @{ Environment = 'Global'; TenantId = 'contoso-tenant' } }
+        Mock Get-MgEnvironment -ModuleName Maester { @{ GraphEndpoint = 'https://graph.microsoft.com/' } }
+        # The qualifying policy is on the second page, so the header must survive pagination.
+        Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'beta/identity/conditionalAccess/policies' } {
+            [pscustomobject] @{ '@odata.context' = 'https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/policies'; value = @([pscustomobject] @{ id = 'policy-other'; displayName = 'Other'; state = 'disabled' }); '@odata.nextLink' = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies?$skiptoken=p2' }
+        }
+        Mock Invoke-MgGraphRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies?$skiptoken=p2' } {
+            [pscustomobject] @{ '@odata.context' = 'https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/policies'; value = @(& $script:MtRiskPolicyJson $Headers | ConvertFrom-Json) }
+        }
+        Mock Get-MtEmergencyAccessAccount -ModuleName Maester { @() }
+        Mock Get-GraphObjectMarkdown -ModuleName Maester { 'Risk remediation policy' }
+        Mock Add-MtTestResultDetail -ModuleName Maester { }
+    }
+
+    It 'Requests unknown enum members on every page and passes the policy Graph returns' {
+        InModuleScope Maester { Test-MtCaRequireRiskRemediationForHighUserRisk } | Should -BeTrue
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+            $Headers['Prefer'] -eq 'include-unknown-enum-members'
+        }
+    }
+
+    It 'Skips MT.1013 from the policies MT.1253 read, with one Graph read per page and no errors' {
+        $results = InModuleScope Maester {
+            $riskRemediation = Test-MtCaRequireRiskRemediationForHighUserRisk -ErrorVariable riskErrors
+            $passwordChange = Test-MtCaRequirePasswordChangeForHighUserRisk -ErrorVariable passwordErrors
+            @{ RiskRemediation = $riskRemediation; PasswordChange = $passwordChange; Errors = @($riskErrors) + @($passwordErrors) }
+        }
+
+        $results.RiskRemediation | Should -BeTrue
+        $results.PasswordChange | Should -BeNullOrEmpty
+        # Get-ObjectProperty probes for @odata.nextLink with Select-Object -ErrorAction SilentlyContinue, which still records an error.
+        @($results.Errors | Where-Object { $_ -and $_.InvocationInfo.MyCommand.Name -ne 'Select-Object' }) | Should -BeNullOrEmpty
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -like "MT.1253 is met: 'Risk remediation'*"
+        }
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Uri -eq 'beta/identity/conditionalAccess/policies' }
+        Should -Invoke Invoke-MgGraphRequest -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Uri -like '*$skiptoken=p2' }
+    }
+}
