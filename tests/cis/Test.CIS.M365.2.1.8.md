@@ -6,7 +6,7 @@ Maester does not guess which domains are parked. CIS leaves that to the person r
 
 For a parked domain the record must be `v=spf1 -all`; a `~all` policy does not meet the parked-domain audit. For sending domains, the test follows a redirect modifier only when the record has no all mechanism, since receivers ignore the redirect in that case. Domains in the onmicrosoft.com namespace are skipped.
 
-An `exp=` modifier does not authorize senders. The audit still requires the compliant all mechanism to be the final term: `v=spf1 -all exp=why.example.com` does not meet that termination requirement.
+An `exp=` modifier does not authorize senders. The audit still requires the compliant all mechanism to be the final term: `v=spf1 -all exp=why.example.com` does not meet that termination requirement. An earlier `all` mechanism ends SPF evaluation before a later qualifier, so a record such as `v=spf1 all include:vendor.example -all` does not meet the audit.
 
 #### Remediation action
 
