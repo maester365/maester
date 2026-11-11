@@ -10,7 +10,7 @@
     ISSO addresses are listed under "Additional recipients" of the "Role activation alert".
 
     This check lists the roles with an active or eligible assignment and reads the additional recipients of each
-    role's activation alert. A role fails when it has none or, when RequiredRecipient is set, when one of those
+    role's activation alert. A role fails when it has none or, when RequiredRecipients is set, when one of those
     addresses is missing.
 
     CISA.MS.AAD.7.8 and CISA.MS.AAD.7.9 read the same alert, but only for the roles that CISA counts as highly
@@ -22,7 +22,7 @@
     Returns true when every assigned role sends its activation alert to at least one additional recipient.
 
     .EXAMPLE
-    Test-MtDisaRoleActivationNotification -RequiredRecipient 'sa@contoso.mil', 'isso@contoso.mil'
+    Test-MtDisaRoleActivationNotification -RequiredRecipients 'sa@contoso.mil', 'isso@contoso.mil'
 
     Returns true when every assigned role sends its activation alert to both addresses.
 
@@ -50,7 +50,7 @@
     [OutputType([bool])]
     param(
         # Email addresses that every role's activation alert must be sent to, such as the SA and the ISSO. Empty accepts any additional recipient.
-        [string[]] $RequiredRecipient
+        [string[]] $RequiredRecipients
     )
 
     $assignments = @((Get-MtDirectoryRoleAssignment).Assignments | Where-Object { $_ })
@@ -66,8 +66,8 @@
 
     $rows = foreach ($roleId in $roleIds) {
         $recipients = @(Get-MtRoleActivationNotificationRecipient -RoleDefinitionId $roleId)
-        $missing = if ($RequiredRecipient) {
-            @($RequiredRecipient | Where-Object { $_ -notin $recipients })
+        $missing = if ($RequiredRecipients) {
+            @($RequiredRecipients | Where-Object { $_ -notin $recipients })
         } elseif ($recipients.Count -eq 0) {
             @('an additional recipient')
         } else {
