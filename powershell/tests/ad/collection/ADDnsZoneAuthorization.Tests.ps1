@@ -1,4 +1,4 @@
-BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force }
+BeforeDiscovery { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force  }
 Describe 'AD DNS zone authorization behavior' {
     InModuleScope Maester {
         BeforeAll {
