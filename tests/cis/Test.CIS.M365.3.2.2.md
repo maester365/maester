@@ -1,10 +1,10 @@
-At least one data loss prevention policy includes the Microsoft Teams location and is turned on.
+At least one data loss prevention policy includes the Microsoft Teams location, has an enabled rule, and is turned on.
 
 Chat and channel messages are a quick way to paste a customer list or credentials, and files that users share in Teams end up in SharePoint and OneDrive. A DLP policy that covers Teams can block or warn about sensitive information in chat messages and channel conversations, in addition to the files. The policy covers the Teams content that an attacker collects from (T1213), the files stored behind it in SharePoint and OneDrive (T1530), and it stops sensitive content from leaving through a web service such as a message or an upload (T1567).
 
 The policy must be in the **Enable** mode. Once it is on, a user who posts sensitive content in a chat or channel meets a policy tip or a block. DLP for Teams chat and channel messages needs Microsoft 365 E5 or the Microsoft Purview suite licence.
 
-The test requires the Teams workload with **TeamsLocation** including **All**, without an administrative-unit scope. CIS permits **TeamsLocationException** entries when the organization permits them. If the only otherwise qualifying policies have exceptions, Maester lists their values and marks the result for investigation: an administrator must confirm each exception is permitted. Maester cannot infer approval from the policy configuration. Separately verify that the policy's enabled rules protect the data the organization needs.
+The test requires the Teams workload with **TeamsLocation** including **All**, without an administrative-unit scope, and at least one enabled DLP rule attached to the policy. CIS permits **TeamsLocationException** entries when the organization permits them. If the only otherwise qualifying policies have exceptions, Maester lists their values and marks the result for investigation: an administrator must confirm each exception is permitted. Maester cannot infer approval from the policy configuration. The check confirms that a rule is enabled but does not assess whether its conditions protect the data the organization needs; verify the rule separately.
 
 #### Remediation action
 

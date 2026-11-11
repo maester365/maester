@@ -109,10 +109,33 @@ Describe 'CIS 3.2 DLP audit alignment' {
     Context '3.2.2 Teams all accounts and permitted exceptions' {
         BeforeEach {
             $script:Policies = @(Get-DlpPolicyFixture -Properties @{ Workload = 'Exchange, Teams'; TeamsLocation = @([pscustomobject]@{ ImmutableIdentity = 'All' }) })
+            $script:Rules = @(Get-DlpRuleFixture)
         }
 
         It 'passes without exceptions' {
             Test-MtCisTeamsDlpPolicy | Should -BeTrue
+            $script:Investigate | Should -BeFalse
+        }
+
+        It 'fails when no enabled rule exists, even with permitted exceptions' {
+            $script:Rules = @()
+            $script:Policies[0].TeamsLocationException = @('allowed@contoso.com')
+
+            Test-MtCisTeamsDlpPolicy | Should -BeFalse
+            $script:Investigate | Should -BeFalse
+        }
+
+        It 'fails when the only matching rule is disabled' {
+            $script:Rules = @(Get-DlpRuleFixture -Properties @{ Disabled = $true })
+
+            Test-MtCisTeamsDlpPolicy | Should -BeFalse
+            $script:Investigate | Should -BeFalse
+        }
+
+        It 'does not count an enabled rule for another policy' {
+            $script:Rules = @(Get-DlpRuleFixture -Properties @{ ParentPolicyName = 'Other policy' })
+
+            Test-MtCisTeamsDlpPolicy | Should -BeFalse
             $script:Investigate | Should -BeFalse
         }
 
@@ -145,6 +168,7 @@ Describe 'CIS 3.2 DLP audit alignment' {
         It 'passes if another qualifying policy has no exceptions' {
             $script:Policies[0].TeamsLocationException = @('allowed@contoso.com')
             $script:Policies += Get-DlpPolicyFixture -Properties @{ Name = 'Unrestricted'; Workload = 'Teams'; TeamsLocation = @('All') }
+            $script:Rules += Get-DlpRuleFixture -Properties @{ ParentPolicyName = 'Unrestricted' }
 
             Test-MtCisTeamsDlpPolicy | Should -BeTrue
             $script:Investigate | Should -BeFalse
