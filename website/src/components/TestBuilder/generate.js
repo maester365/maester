@@ -217,6 +217,67 @@ export function scaffoldedSettings(state, data) {
     .map((p) => settingOf(p, data).name);
 }
 
+// The form filled in from an existing test (a row of /data/builder-tests.json). It loads what the attribute
+// declares. References the engine adds, the related controls of the test's benchmark requirement, are left out,
+// because a test does not repeat them.
+export function stateFromTest(test, data) {
+  const list = (value) => (Array.isArray(value) ? value.filter((v) => v !== null && v !== "") : []);
+  const suite = data.suites.find((s) => s.idPrefixes.some((prefix) => test.Id.startsWith(prefix)));
+  const derived = new Set();
+  list(test.Control).forEach((control) => {
+    const framework = data.frameworks.find((f) => control.startsWith(f.key + ":"));
+    const requirement = framework && framework.requirements.find((r) => framework.key + ":" + r.id === control);
+    ((requirement && requirement.related) || []).forEach((r) => derived.add(r));
+  });
+  const mitre = list(test.Mitre);
+  const services = list(test.Service);
+  const text = (value) => (Array.isArray(value) ? value.join(", ") : value === null || value === undefined ? "" : String(value));
+  return {
+    ...emptyState,
+    mode: "builtin",
+    suite: suite ? suite.id : emptyState.suite,
+    id: test.Id,
+    title: test.Title || "",
+    functionName: test.FunctionName && test.FunctionName !== functionNameFor(test.Id) ? test.FunctionName : "",
+    product: test.Product || "",
+    relatedProducts: list(test.RelatedProduct),
+    feature: test.Feature || "",
+    area: test.Area || "",
+    resourceType: test.ResourceType || "",
+    severity: test.Severity || "",
+    userImpact: test.UserImpact || "",
+    implementationCost: test.ImplementationCost || "",
+    mitreNone: mitre.length === 1 && mitre[0] === "None",
+    mitre: mitre.filter((m) => m !== "None"),
+    controls: list(test.Control).filter((c) => !derived.has(c)),
+    serviceNone: services.length === 1 && services[0] === "None",
+    services: services.filter((x) => x !== "None"),
+    license: list(test.License).map((element) => element.split("&").map((x) => x.trim()).filter(Boolean)),
+    permission: list(test.Permission).map((element) => element.split("|").map((x) => x.trim()).filter(Boolean)),
+    tenantType: list(test.TenantType),
+    cloud: list(test.Cloud),
+    platform: list(test.Platform),
+    lifecycle: test.Lifecycle || "Stable",
+    replacedBy: test.ReplacedBy || "",
+    longRunning: Boolean(test.LongRunning),
+    exclusive: Boolean(test.Exclusive),
+    author: list(test.Author).join(", "),
+    contributor: list(test.Contributor).join(", "),
+    parameters: list(test.Parameters).map((p) => ({
+      ...emptyParameter,
+      name: p.Name,
+      type: p.Type,
+      description: p.Description || "",
+      default: p.Type === "switch" ? "" : text(p.Default),
+      min: p.Range ? String(p.Range[0]) : "",
+      max: p.Range ? String(p.Range[1]) : "",
+      allowed: list(p.AllowedValues).join(", "),
+      kind: p.Kind || "",
+      setting: p.Setting || "",
+    })),
+  };
+}
+
 export function splitList(text) {
   return String(text || "")
     .split(/[\n,]/)

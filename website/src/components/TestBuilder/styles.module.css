@@ -343,6 +343,9 @@ textarea.input {
   padding: 0.9rem 1rem;
   border-radius: 8px;
   overflow-x: auto;
+  /* Long lines wrap, so the code reads without scrolling sideways. Copy still gives the lines as written. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
 }
@@ -492,3 +495,5 @@ textarea.input {
   :global(:root[data-mt-nav='collapsed']) .stepRail .step[data-state="bad"] .stepIcon { color: var(--ifm-color-danger-dark); }
   :global(:root[data-mt-nav='collapsed']) .stepRail .step[aria-current="step"] .stepIcon { color: var(--ifm-color-primary); }
 }
+
+.existing { margin-top: 0.75rem; }

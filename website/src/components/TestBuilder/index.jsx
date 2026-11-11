@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
-import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
+import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, stateFromTest, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
 import { AttributeIcon, Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import { fieldHelp } from "./help";
@@ -812,9 +812,40 @@ function StepList({ steps, step, onStep, className }) {
   );
 }
 
+// Start from a test that ships with Maester: type its ID or part of its title. The list is fetched the first
+// time the picker is used, so the page does not carry all the tests.
+function ExistingTestPicker({ onLoad }) {
+  const [tests, setTests] = useState(null);
+  const [failed, setFailed] = useState(false);
+  const load = useCallback(() => {
+    if (tests || failed) return;
+    fetch("/data/builder-tests.json")
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
+      .then(setTests, () => setFailed(true));
+  }, [tests, failed]);
+  const items = useMemo(() => (tests || []).map((t) => ({ value: t.Id, label: t.Id + "  " + t.Title, hint: t.Suite, ...productIconOf(t.Product) })), [tests]);
+  return (
+    <div className={styles.existing} onPointerDown={load} onFocus={load}>
+      <Combobox
+        id="input-existing"
+        value=""
+        items={items}
+        placeholder="Start from an existing test: type an ID or a title"
+        searchPlaceholder="MT.1001, CIS.M365.2.1.9, device code, DKIM"
+        empty={failed ? "The list of tests could not be loaded." : tests ? "No test matches." : "Loading the tests…"}
+        onSelect={(id) => {
+          const test = (tests || []).find((t) => t.Id === id);
+          if (test) onLoad(test);
+        }}
+      />
+    </div>
+  );
+}
+
 export default function TestBuilder() {
   const [state, setState] = useState(exampleState);
   const [tab, setTab] = useState("ps1");
+  const [loaded, setLoaded] = useState(null);
   const [step, setStepState] = useState("start");
   const [seen, setSeen] = useState(["start"]);
   const [railHost, setRailHost] = useState(null);
@@ -982,9 +1013,20 @@ export default function TestBuilder() {
             ]}
           />
           <div className={styles.actions}>
-            <Button onClick={() => reset(exampleState)}>Load the example</Button>
-            <Button onClick={() => reset(emptyState)}>Start empty</Button>
+            <Button onClick={() => { setLoaded(null); reset(exampleState); }}>Load the example</Button>
+            <Button onClick={() => { setLoaded(null); reset(emptyState); }}>Start empty</Button>
           </div>
+          <ExistingTestPicker
+            onLoad={(test) => {
+              setState((s) => ({ ...stateFromTest(test, data), customPrefix: s.customPrefix }));
+              setLoaded({ id: test.Id, title: test.Title, instanceSource: false });
+            }}
+          />
+          {loaded && (
+            <p className={styles.note}>
+              Loaded <a href={"/docs/tests/" + loaded.id}>{loaded.id}</a>: its attributes and parameters are in the form. The code on the right is still the builder's template, not the test's own code, so copy the attribute and the <code>param()</code> block from it, not the body.
+            </p>
+          )}
         </section>
 
         <section className={styles.section} id={"step-" + "name"} hidden={step !== "name"}>
