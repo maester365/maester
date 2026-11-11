@@ -102,12 +102,8 @@
             if ([string]::IsNullOrWhiteSpace($DisplayName)) {
                 $DisplayName = '(unnamed)'
             }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
-            $UserPrincipalName = [System.Net.WebUtility]::HtmlEncode(
-                [string]$OrphanedUser.UserPrincipalName
-            ) -replace '\|', '&#124;'
-            $UserPrincipalName = $UserPrincipalName -replace "`r?`n", ' '
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+            $UserPrincipalName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$OrphanedUser.UserPrincipalName))
             $Reason = [string]$OrphanedUser.Reason -replace '\|', '\|'
             $Result += "`n| $($OrphanedUser.AgentUserId) | $DisplayName | " +
                 "$UserPrincipalName | $($OrphanedUser.ParentIdentityId) | $Reason |"

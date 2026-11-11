@@ -54,8 +54,10 @@ Invoke-Maester -IncludeLongRunning          # everything, including the assessme
 The pack itself stays enabled, so naming it is enough; it is the long-running flag that keeps it out of a plain
 `Invoke-Maester`. To remove it entirely, set `Packs: [{ "Id": "maester.zero-trust-assessment", "Enabled": false }]`.
 
-To run it on every run, add it to `Selection.TestId` in `maester-config.json`, or set
-`Selection.IncludeLongRunning` to `true`. Give it time with `Execution.LongRunningTimeoutSeconds`: the assessment
+To run it on every run, add it to `Selection.Pack` in `maester-config.json`, which works like `-Pack`: Maester's own
+tests still run, and packs you do not name there do not. Don't use `Selection.TestId` for this: it limits the run to
+the IDs it lists, so `["ZTA"]` runs only the assessment. You can also set `Selection.IncludeLongRunning` to `true`,
+which runs every other long-running test too. Give it time with `Execution.LongRunningTimeoutSeconds`: the assessment
 can take an hour or more on a large tenant.
 
 The pack gets the assessment's results one of two ways.

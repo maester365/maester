@@ -45,6 +45,15 @@ The configuration file has two main sections:
 
 The `GlobalSettings` section contains organization-wide configuration that can be used by multiple tests. For example, you can define your emergency access accounts here so that all related tests use the same accounts.
 
+A test receives a global setting as one of its parameters, so `Get-MtTest` shows which tests use it and the result shows the value each test ran with. To give one test a different value, set the parameter in that test's `TestSettings` row; it wins over `GlobalSettings`:
+
+```json
+{
+  "GlobalSettings": { "ParkedDomains": ["contoso-old.com"] },
+  "TestSettings": [ { "Id": "CIS.M365.2.1.9", "Parameters": { "ParkedDomains": [] } } ]
+}
+```
+
 ### XSPM external data sources
 
 The XSPM unified identity query uses Advanced Hunting `externaldata` sources to enrich identity results. You can override these sources with HTTPS mirrors by adding `XspmExternalDataUris` to the `GlobalSettings` section of your custom configuration:
@@ -120,6 +129,9 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `ParkedDomains` | Accepted domains that never send email; the email authentication checks expect them to deny all mail | This page |
+| `DefenderEndpointPolicyFiltering` | Which Defender for Endpoint policies the Defender checks read: `All`, `IncludeUnassigned` or `OnlyAssigned` (default) | This page |
+| `DefenderEndpointComplianceLogic` | How the Defender for Endpoint checks combine policies: `EffectivePolicy` (default), `AllPolicies` or `AnyPolicy` | This page |
 | `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
 The GitHub and Dataverse settings are listed in the [run configuration reference](./run-configuration.md#globalsettings).

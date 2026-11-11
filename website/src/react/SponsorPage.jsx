@@ -110,9 +110,6 @@ function Backers() {
   return (
     <aside id="thank-you" className={styles.thanks}>
       <h2>Thank you to our sponsors {heart}</h2>
-      <p className={styles.thanksSub}>
-        These organisations and people sponsor Maester and its maintainers. You make Maester possible.
-      </p>
       {featured.length > 0 && (
         <ul className={styles.featured}>
           {featured.map((sponsor) => (
@@ -120,6 +117,9 @@ function Backers() {
           ))}
         </ul>
       )}
+      <a className={styles.becomeSponsor} href="https://packs.maester.cloud/sponsor?from=maester.dev-sponsor">
+        Become a sponsor
+      </a>
       {backers.length > 0 && (
         <ul className={styles.backers}>
           {backers.map((backer) => (
@@ -146,12 +146,13 @@ function Backers() {
   );
 }
 
-function Section({ id, title, subtitle, people, gridClass, Card }) {
+// `heading={false}` leaves out the title and its line, for a section whose heading is drawn above the page body.
+function Section({ id, title, subtitle, people, gridClass, Card, heading = true }) {
   if (people.length === 0) return null;
   return (
-    <section id={id} className={styles.section}>
-      <h2>{title}</h2>
-      <p className={styles.sectionSub}>{subtitle}</p>
+    <section id={heading ? id : undefined} className={styles.section} aria-label={heading ? undefined : title}>
+      {heading && <h2>{title}</h2>}
+      {heading && <p className={styles.sectionSub}>{subtitle}</p>}
       <div className={`${styles.grid} ${gridClass}`}>
         {people.map((person) => (
           <Card key={person.github} person={person} />
@@ -182,12 +183,21 @@ export default function Sponsor() {
           </p>
         </header>
 
+        {/* Above the body, so the thank-you column starts level with the first row of cards. */}
+        {maintainers.length > 0 && (
+          <div id="maintainers" className={`${styles.section} ${styles.sectionHead}`}>
+            <h2>Core maintainers</h2>
+            <p className={styles.sectionSub}>
+              The people who look after Maester day to day: reviews, releases, the engine and the roadmap.
+            </p>
+          </div>
+        )}
+
         <div className={`${styles.body} ${hasThanks ? styles.withThanks : ""}`}>
           <div className={styles.main}>
             <Section
-              id="maintainers"
+              heading={false}
               title="Core maintainers"
-              subtitle="The people who look after Maester day to day: reviews, releases, the engine and the roadmap."
               people={maintainers}
               gridClass={styles.gridMaintainers}
               Card={MaintainerCard}
