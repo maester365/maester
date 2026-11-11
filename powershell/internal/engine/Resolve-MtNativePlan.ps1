@@ -210,7 +210,7 @@
         # Parameter binding.
         $values = if ($setting -and $setting.PSObject.Properties['Parameters']) { $setting.Parameters } else { $null }
         $override = if ($ParameterOverride.ContainsKey($t.Id)) { $ParameterOverride[$t.Id] } else { $null }
-        $binding = ConvertTo-MtTestParameter -Test $t -ConfigValue $values -Override $override
+        $binding = ConvertTo-MtTestParameter -Test $t -ConfigValue $values -Override $override -GlobalSetting $RunConfig.GlobalSettings
         $row.EffectiveParameters = $binding.Effective
         if ($binding.Error) {
             & $set 'Error' 'InvalidConfiguration' $binding.Error
@@ -510,16 +510,20 @@ function ConvertTo-MtTestParameter {
     Validates parameter values from the config against a test's param() block (design appendix A.5).
 
     .DESCRIPTION
-    Returns Bound (a hashtable to splat), Effective (name, value, source and kind of every parameter) and
-    Error (a message, or $null). PowerShell's own binder is too lenient for this: it turns 90.5 into 90
-    and accepts abbreviated names, so the engine checks names and types itself.
+    Returns Bound (a hashtable to splat), Effective (name, value, source, kind and setting of every
+    parameter) and Error (a message, or $null). PowerShell's own binder is too lenient for this: it turns
+    90.5 into 90 and accepts abbreviated names, so the engine checks names and types itself.
+
+    The most specific value wins: the run's -Parameter value, then the test's TestSettings row, then the
+    GlobalSettings entry a parameter names with [MaesterParameter(Setting = ...)], then the default.
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
         [Parameter(Mandatory)] [object] $Test,
         [Parameter()] [AllowNull()] [object] $ConfigValue,
-        [Parameter()] [AllowNull()] [object] $Override
+        [Parameter()] [AllowNull()] [object] $Override,
+        [Parameter()] [AllowNull()] [object] $GlobalSetting
     )
 
     $bound = @{}
@@ -548,13 +552,32 @@ function ConvertTo-MtTestParameter {
         $sources[$parameter.Name] = $item.Source
     }
 
+    # A parameter that neither the test's row nor the run sets takes its setting from GlobalSettings.
+    foreach ($parameter in @($Test.Parameters | Where-Object { $_.PSObject.Properties['Setting'] -and $_.Setting -and -not $_.EngineOwned })) {
+        if ($bound.ContainsKey($parameter.Name) -or $null -eq $GlobalSetting) { continue }
+        $hasSetting = if ($GlobalSetting -is [System.Collections.IDictionary]) { $GlobalSetting.Contains($parameter.Setting) } else { $null -ne $GlobalSetting.PSObject.Properties[$parameter.Setting] }
+        if (-not $hasSetting) { continue }
+        $value = if ($GlobalSetting -is [System.Collections.IDictionary]) { $GlobalSetting[$parameter.Setting] } else { $GlobalSetting.($parameter.Setting) }
+        if ($null -eq $value) { continue }
+        $converted = ConvertTo-MtParameterValue -Parameter $parameter -Value $value -Kinds $kinds
+        if ($converted.Error) { $errors.Add("Setting '$($parameter.Setting)' (parameter '$($parameter.Name)'): $($converted.Error)"); continue }
+        $bound[$parameter.Name] = $converted.Value
+        $sources[$parameter.Name] = 'Setting'
+    }
+
+    # Effective is what the results record. The value of a parameter bound to a sensitive setting is
+    # redacted there, wherever it came from; the test still receives the real value in Bound.
+    $settingRegistry = (Get-MtSettingRegistry).Settings
     $effective = foreach ($parameter in @($Test.Parameters | Where-Object { -not $_.EngineOwned })) {
         $hasValue = $bound.ContainsKey($parameter.Name)
+        $settingName = if ($parameter.PSObject.Properties['Setting']) { $parameter.Setting } else { $null }
+        $sensitive = $hasValue -and $settingName -and $settingRegistry.ContainsKey($settingName) -and $settingRegistry[$settingName].Sensitive
         [pscustomobject]@{
-            Name   = $parameter.Name
-            Value  = if ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
-            Source = if ($hasValue) { $sources[$parameter.Name] } else { 'Default' }
-            Kind   = $parameter.Kind
+            Name    = $parameter.Name
+            Value   = if ($sensitive) { '[redacted]' } elseif ($hasValue) { $bound[$parameter.Name] } else { $parameter.Default }
+            Source  = if ($hasValue) { $sources[$parameter.Name] } else { 'Default' }
+            Kind    = $parameter.Kind
+            Setting = $settingName
         }
     }
 
@@ -611,6 +634,12 @@ function ConvertTo-MtParameterValue {
             $items = @(foreach ($v in @($Value)) { & $unwrap $v })
             if ($items | Where-Object { $_ -isnot [string] }) { return & $result $null 'expected a string or a list of strings.' }
             $converted = [string[]]$items
+        }
+        'object[]' {
+            # A list of objects, such as EmergencyAccessAccounts: { "Id": "...", "Type": "group" }.
+            $items = @(@($Value) | Where-Object { $null -ne $_ })
+            if ($items | Where-Object { $_ -isnot [System.Collections.IDictionary] -and $_ -isnot [System.Management.Automation.PSCustomObject] }) { return & $result $null 'expected a list of objects.' }
+            return & $result ([object[]]@(foreach ($item in $items) { if ($item -is [System.Collections.IDictionary]) { [pscustomobject]$item } else { $item } })) $null
         }
         default { return & $result $null "type '$($Parameter.Type)' cannot be set from the config." }
     }

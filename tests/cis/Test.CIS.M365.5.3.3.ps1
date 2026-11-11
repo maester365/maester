@@ -36,7 +36,7 @@
     param(
         # Maximum number of days that each review instance stays open.
         [ValidateRange(1, 180)]
-        [int] $MaximumInstanceDurationInDays = 14
+        [int] $MaximumInstanceDurationDays = 14
     )
 
     Write-Verbose 'Getting access review definitions...'
@@ -79,7 +79,7 @@
             'Notifications' = [bool]$settings.mailNotificationsEnabled
             'Reminders' = [bool]$settings.reminderNotificationsEnabled
             'Justification' = [bool]$settings.justificationRequiredOnApproval
-            'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationInDays
+            'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationDays
             'Auto apply' = [bool]$settings.autoApplyDecisionsEnabled
             'Default decision none' = $settings.defaultDecision -eq 'None'
             'No end date' = $settings.recurrence.range.type -eq 'noEnd'

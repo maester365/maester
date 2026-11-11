@@ -6,7 +6,7 @@
     .DESCRIPTION
     At least one Intune Multi Admin Approval Policy should be configured.
 
-    With RequiredPolicyType the check passes only when a policy of one of those types exists, for example
+    With RequiredPolicyTypes the check passes only when a policy of one of those types exists, for example
     deviceWipe or deviceAction for a policy that protects device wipes.
 
     .EXAMPLE
@@ -15,7 +15,7 @@
     Returns true if at least one Intune Multi Admin Approval Policy is configured, false if none is configured.
 
     .EXAMPLE
-    Test-MtOperationApprovalPolicies -RequiredPolicyType deviceWipe, deviceAction
+    Test-MtOperationApprovalPolicies -RequiredPolicyTypes deviceWipe, deviceAction
 
     Returns true if a Multi Admin Approval policy protects device wipes.
 
@@ -43,17 +43,17 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param(
         # Policy types (operationApprovalPolicyType, such as deviceWipe) of which one policy must exist. Empty accepts any policy.
-        [string[]] $RequiredPolicyType
+        [string[]] $RequiredPolicyTypes
     )
 
     Write-Verbose 'Testing Multi Admin Approval Policy configuration'
     Write-Verbose 'Retrieving Intune Multi Admin Approval Policies status...'
     $approvalPolicies = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta | Where-Object { $_ })
 
-    if ($RequiredPolicyType) {
-        $matching = @($approvalPolicies | Where-Object { $_.policyType -in $RequiredPolicyType -or $_.policySet.policyType -in $RequiredPolicyType })
+    if ($RequiredPolicyTypes) {
+        $matching = @($approvalPolicies | Where-Object { $_.policyType -in $RequiredPolicyTypes -or $_.policySet.policyType -in $RequiredPolicyTypes })
         $testResult = $matching.Count -gt 0
-        $typeList = ($RequiredPolicyType | ForEach-Object { "``$_``" }) -join ', '
+        $typeList = ($RequiredPolicyTypes | ForEach-Object { "``$_``" }) -join ', '
         $testResultMarkdown = if ($testResult) {
             "Well done. An Intune Multi Admin Approval policy of type $typeList is configured.`n"
         } else {
