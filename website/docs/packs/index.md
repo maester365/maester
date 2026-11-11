@@ -80,6 +80,64 @@ different:
 A pack can also be installed from a local folder (`Install-MtPack ./my-pack`), which suits a pack you are still
 writing or one you keep outside GitHub. Nothing is sent for a local folder either.
 
+## Private packs
+
+A private pack lives in a private or internal GitHub repository. Only people who can read that repository can
+install it, which makes it the way to share tests inside one company: checks for your own policies, naming rules or
+internal systems that should not be published. Anyone you give access to the repository, such as a partner or a
+customer, can install it as well.
+
+Install it like any other pack. `Install-MtPack`, `Update-MtPack` and `Restore-MtPack` need a GitHub sign-in that
+can read the repository, and use the first of these that can:
+
+1. **`-Token`**, a `SecureString`, for a script that reads a token from a vault. When you pass it, nothing else
+   is tried.
+2. **The Maester session's GitHub sign-in**, after `Connect-MtGitHub`, when it is to github.com. The Maester
+   GitHub App must be able to read the pack's repository.
+3. **The GitHub CLI.** When `gh` is installed and signed in, Maester asks it for a token (`gh auth token`) at the
+   moment of each request and does not keep it.
+4. **`GH_TOKEN`, then `GITHUB_TOKEN`**, the environment variables a pipeline sets.
+
+On your own computer, sign in to the GitHub CLI once and there is nothing to set:
+
+```powershell
+gh auth login
+Install-MtPack contoso/maester-internal-checks
+```
+
+With a token from a vault:
+
+```powershell
+Install-MtPack contoso/maester-internal-checks -Token (Get-Secret -Name PackReadToken)
+```
+
+Whichever way it gets it, Maester sends the token to `api.github.com` only and does not store it. Use a token
+that can only read this one repository: a fine-grained token with read-only **Contents**.
+
+:::caution[Keep tokens out of environment variables]
+Everything that runs in the session can read an environment variable, including the packs you run, and every
+process the session starts inherits it. Outside a pipeline, use the GitHub CLI or `-Token` instead. If you do set
+`GH_TOKEN`, do not set it in your profile, and remove it before `Invoke-Maester`. Running an installed pack does
+not need a token: only `Install-MtPack`, `Update-MtPack` and `Restore-MtPack` download from GitHub.
+:::
+
+A private pack goes through the same checks as a public one, and is pinned in the lock file the same way. What is
+different:
+
+- It is never listed on packs.maester.cloud, and cannot be published there.
+- Nothing about it is sent to Maester: no install event, and run telemetry never names it.
+- A pipeline needs a token too. In GitHub Actions the workflow's own `GITHUB_TOKEN` reads only the repository
+  the workflow runs in, so a pack in another private repository needs a token that can read that repository.
+  Give it to the restore step only, not to the whole job:
+
+  ```yaml
+  - name: Restore packs
+    shell: pwsh
+    env:
+      GH_TOKEN: ${{ secrets.PACK_READ_TOKEN }}
+    run: Restore-MtPack
+  ```
+
 ## Installing a pack
 
 `Install-MtPack` takes the pack's GitHub repository (`owner/repo`, `owner/repo/folder`, `owner/repo@ref` or a

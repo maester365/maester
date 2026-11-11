@@ -31,6 +31,16 @@
     .PARAMETER Force
     Answer yes to the approval question.
 
+    .PARAMETER Token
+    A GitHub token that can read the pack's repository, as a SecureString, for a private or internal
+    repository. It is used for this command only, is sent to api.github.com only, and is not stored. When it
+    is given, no other sign-in is tried. Without it, Maester uses the first of these that can read the
+    repository: the sign-in of Connect-MtGitHub in this session, the GitHub CLI (`gh auth token`, when gh is
+    installed and signed in), then the GH_TOKEN and GITHUB_TOKEN environment variables. An environment
+    variable can be read by every process and module in the session, including installed packs, so prefer
+    the other ways outside a pipeline. A fine-grained token needs only read-only Contents access to the
+    one repository.
+
     .EXAMPLE
     Update-MtPack
 
@@ -40,6 +50,11 @@
     Update-MtPack contoso.google-workspace -Version 1.3.0
 
     Updates one pack to a given release.
+
+    .EXAMPLE
+    Update-MtPack contoso.private-pack -Token (Get-Secret -Name PackReadToken)
+
+    Updates a pack from a private repository with a token read from a secret vault.
 
     .LINK
     https://maester.dev/docs/commands/Update-MtPack
@@ -67,7 +82,10 @@
         [switch] $NonInteractive,
 
         [Parameter()]
-        [switch] $Force
+        [switch] $Force,
+
+        [Parameter()]
+        [securestring] $Token
     )
 
     Write-Verbose "Update-MtPack: Id=$($Id -join ', ') Version=$Version"
@@ -86,7 +104,7 @@
         $source = ($previous.Source -replace '@[^/@]+$', '')
         if (-not $PSCmdlet.ShouldProcess($previous.Id, 'Update the pack')) { continue }
         try {
-            $entry = Invoke-MtPackInstall -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous -SkipUnchanged -Confirm:$false
+            $entry = Invoke-MtPackInstall -Token $Token -Source $source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous $previous -SkipUnchanged -Confirm:$false
         } catch {
             Write-Error "The pack $($previous.Id) was not updated: $($_.Exception.Message)"
             continue
