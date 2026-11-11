@@ -28,13 +28,13 @@ Describe 'gMSA managed-password authorization source contract' {
         $source | Should -Match 'AuthorizationDescriptorParseFailure'
         $source | Should -Match 'AuthorizationDescriptorUnsupportedShape'
     }
-    It 'uses registered taxonomy and Medium severity for AD-MSA-02' {
+    It 'uses registered taxonomy and High severity for AD-MSA-02' {
         $test02=Get-Content "$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-02.ps1" -Raw
         $test03=Get-Content "$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-03.ps1" -Raw
 foreach($testSource in @($test02,$test03)){$testSource|Should -Match "Feature='account-security'";$testSource|Should -Match "ResourceType='Computer'"}
 $test02 | Should -Match "Area='applications'"
 $test03 | Should -Match "Area='applications'"
-        $test02 | Should -Match "Severity='Medium'"
+        $test02 | Should -Match "Severity='High'"
     }
     It 'does not permit a clean pass when ServiceAccounts state is unavailable' {
         foreach($path in @("$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-02.ps1","$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-03.ps1")){(Get-Content $path -Raw)|Should -Match '\$null -eq \$state\.ServiceAccounts'}
