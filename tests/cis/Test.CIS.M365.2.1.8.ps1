@@ -51,6 +51,18 @@
             continue
         }
         $record = if ($spf -and $spf.PSObject.Properties['record']) { $spf.record } else { $null }
+        if ($isParked) {
+            # CIS asks parked domains for v=spf1 -all: no sender mechanisms, no redirect, hard fail last.
+            # An exp= modifier authorizes no one, so it is allowed before -all.
+            $pass = [string]$record -match '(?i)^\s*v=spf1(\s+exp=\S+)*\s+-all\s*$'
+            $detail = if ($pass) {
+                'Listed as parked; the record denies all senders with -all.'
+            } else {
+                'Listed as parked; CIS requires v=spf1 -all, which denies all senders.'
+            }
+            [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $pass; Detail = $detail }
+            continue
+        }
         $effective = $record
         $redirectTargets = @()
         $redirectError = $null
@@ -108,17 +120,6 @@
         }
         elseif (-not $pass) {
             $detail = 'The record does not end with -all or ~all'
-        }
-
-        if ($isParked) {
-            # CIS asks parked domains for v=spf1 -all: no sender mechanisms, no redirect, hard fail last.
-            # An exp= modifier authorizes no one, so it is allowed before -all.
-            $pass = [string]$record -match '(?i)^\s*v=spf1(\s+exp=\S+)*\s+-all\s*$'
-            $detail = if ($pass) {
-                'Listed as parked; the record denies all senders with -all.'
-            } else {
-                'Listed as parked; CIS requires v=spf1 -all, which denies all senders.'
-            }
         }
 
         [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $pass; Detail = $detail }

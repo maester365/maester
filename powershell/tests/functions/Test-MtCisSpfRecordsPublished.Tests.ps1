@@ -54,6 +54,14 @@
         Test-MtCisSpfRecordsPublished -ParkedDomains 'example.com' | Should -BeFalse
     }
 
+    It 'fails a parked redirect without resolving an unavailable target' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 redirect=_spf.example.net' }
+        $script:spfResults['_spf.example.net'] = 'DNS lookup unavailable'
+
+        Test-MtCisSpfRecordsPublished -ParkedDomains 'example.com' | Should -BeFalse
+        Should -Invoke ConvertFrom-MailAuthenticationRecordSpf -ModuleName Maester -Times 1 -Exactly
+    }
+
     It 'applies the sending-domain rule to a domain that is not listed' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
 
