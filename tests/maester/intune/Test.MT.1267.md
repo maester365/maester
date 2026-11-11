@@ -4,7 +4,7 @@ Maester's other Intune checks look at how device compliance policies are *config
 
 A device's compliance state is one of `compliant`, `noncompliant`, `conflict`, `error`, `inGracePeriod`, `unknown` or `configManager`. This test counts a device as non-compliant when it is `noncompliant`, in `conflict`, in `error`, or in the grace period (`inGracePeriod` is non-compliant but still has access to corporate resources). It leaves `unknown` and `configManager` devices out of the calculation: an `unknown` device has not reported a verdict, and a `configManager` device is evaluated by Configuration Manager, not Intune.
 
-The test passes when the non-compliant share of evaluated devices is at or below the threshold, which defaults to **5%**. Set your own in `maester-config.json` under `TestSettings` > `Parameters` with `MaxNonCompliantPercentage`.
+The test passes when the non-compliant share of evaluated devices is at or below the threshold, which defaults to **5%**. Set your own in `maester-config.json` under `TestSettings` > `Parameters` with `MaximumNonCompliantPercentage`.
 
 A tenant with no managed devices, or where no device has reported a verdict yet, is **skipped as not applicable**. A share of zero over zero devices is not a pass.
 

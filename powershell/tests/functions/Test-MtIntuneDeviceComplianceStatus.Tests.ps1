@@ -100,7 +100,7 @@
             }
 
             # 10% is above the default 5% (fail) but at the custom 10% (pass).
-            Test-MtIntuneDeviceComplianceStatus -MaxNonCompliantPercentage 10 | Should -BeTrue
+            Test-MtIntuneDeviceComplianceStatus -MaximumNonCompliantPercentage 10 | Should -BeTrue
         }
 
         It 'skips as NotApplicable when the tenant has no managed devices' {

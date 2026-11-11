@@ -26,7 +26,7 @@
     Returns true if the non-compliant share of evaluated Intune managed devices is at or below 5%.
 
     .EXAMPLE
-    Test-MtIntuneDeviceComplianceStatus -MaxNonCompliantPercentage 10
+    Test-MtIntuneDeviceComplianceStatus -MaximumNonCompliantPercentage 10
 
     Returns true if the non-compliant share of evaluated Intune managed devices is at or below 10%.
 
@@ -55,7 +55,7 @@
         # The highest share of evaluated devices that may be non-compliant before this test fails, as a
         # percentage. Set it per tenant in maester-config.json (TestSettings > Parameters).
         [ValidateRange(0, 100)]
-        [int] $MaxNonCompliantPercentage = 5
+        [int] $MaximumNonCompliantPercentage = 5
     )
 
     Write-Verbose "Querying Intune managed devices..."
@@ -95,7 +95,7 @@
 
     $nonCompliant = @($devices | Where-Object { $_.ComplianceState -in $nonCompliantStates })
     $percentage = [math]::Round(($nonCompliant.Count / $evaluated.Count) * 100, 1)
-    $testResult = $percentage -le $MaxNonCompliantPercentage
+    $testResult = $percentage -le $MaximumNonCompliantPercentage
 
     $counts = [ordered]@{
         'Compliant'      = @($devices | Where-Object { $_.ComplianceState -eq 'compliant' }).Count
@@ -108,7 +108,7 @@
     }
 
     $testResultMarkdown = "Evaluated $($evaluated.Count) of $($devices.Count) managed device(s). "
-    $testResultMarkdown += "**$($nonCompliant.Count)** ($percentage%) are non-compliant; the threshold is $MaxNonCompliantPercentage%.`n`n"
+    $testResultMarkdown += "**$($nonCompliant.Count)** ($percentage%) are non-compliant; the threshold is $MaximumNonCompliantPercentage%.`n`n"
     $testResultMarkdown += "| Compliance state | Devices |`n"
     $testResultMarkdown += "| --- | --- |`n"
     foreach ($state in $counts.Keys) {
