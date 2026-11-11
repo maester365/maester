@@ -35,12 +35,17 @@
         [Parameter()] [int] $CooldownHours = 72,
         # More branches or tags a requested commit may be reachable from, such as the ref in the lock file.
         # Each must be a real branch or tag of the repository; a commit ID is ignored.
-        [Parameter()] [string[]] $ReachableFrom = @()
+        [Parameter()] [string[]] $ReachableFrom = @(),
+        # The -Token of the pack command, passed on to Invoke-MtPackGitHubRequest.
+        [Parameter()] [AllowNull()] [securestring] $Token
     )
+
+    $auth = @{}
+    if ($Token) { $auth.Token = $Token }
 
     $usedToken = $false
     $repoPath = "repos/$($Source.Owner)/$($Source.Repo)"
-    $repository = Invoke-MtPackGitHubRequest -Path $repoPath -UsedToken ([ref] $usedToken)
+    $repository = Invoke-MtPackGitHubRequest @auth -Path $repoPath -UsedToken ([ref] $usedToken)
     $owner = $Source.Owner
     $repo = $Source.Repo
     if ($repository.full_name -and $repository.full_name -ne "$owner/$repo") {
@@ -52,12 +57,12 @@
 
     # Invoke-RestMethod writes an empty JSON array as one empty array, not as nothing: enumerate it, so that a
     # repository without releases has none and installs from its default branch.
-    $releases = @(Invoke-MtPackGitHubRequest -Path "$repoPath/releases?per_page=30" | ForEach-Object { $_ } |
+    $releases = @(Invoke-MtPackGitHubRequest @auth -Path "$repoPath/releases?per_page=30" | ForEach-Object { $_ } |
             Where-Object { $_ -and $_.tag_name -and -not $_.draft -and -not $_.prerelease } |
             Sort-Object { [datetime]$_.published_at } -Descending)
     $commitOf = {
         param($ref)
-        $commit = Invoke-MtPackGitHubRequest -Path "$repoPath/commits/$([uri]::EscapeDataString($ref))"
+        $commit = Invoke-MtPackGitHubRequest @auth -Path "$repoPath/commits/$([uri]::EscapeDataString($ref))"
         [string]$commit.sha
     }
     $ageOf = {
@@ -77,7 +82,7 @@
             @($name.Substring(5))
         } else { @("heads/$name", "tags/$name") }
         foreach ($n in $names) {
-            $candidateRef = Invoke-MtPackGitHubRequest -Path "$repoPath/git/ref/$([uri]::EscapeDataString($n))" -AllowNotFound
+            $candidateRef = Invoke-MtPackGitHubRequest @auth -Path "$repoPath/git/ref/$([uri]::EscapeDataString($n))" -AllowNotFound
             if ($candidateRef -and $candidateRef.ref -ceq "refs/$n") { return $candidateRef }
         }
         $null
@@ -88,7 +93,7 @@
     $newer = $null
     if ($requested) {
         $release = $releases | Where-Object { $_.tag_name -eq $requested -or $_.tag_name -eq "v$requested" -or "v$($_.tag_name)" -eq $requested } | Select-Object -First 1
-        if (-not $release) { $release = Invoke-MtPackGitHubRequest -Path "$repoPath/releases/tags/$([uri]::EscapeDataString($requested))" -AllowNotFound }
+        if (-not $release) { $release = Invoke-MtPackGitHubRequest @auth -Path "$repoPath/releases/tags/$([uri]::EscapeDataString($requested))" -AllowNotFound }
         $ref = if ($release) { [string]$release.tag_name } else { $requested }
         if ($release) { $commit = & $commitOf "refs/tags/$ref" }
         else {
@@ -106,7 +111,7 @@
                     if ($extraRef) { $refs += [string]$extraRef.ref }
                 }
                 $refs += @($releases | ForEach-Object { "refs/tags/$($_.tag_name)" })
-                if (-not (Test-MtPackCommitReachable -RepositoryPath $repoPath -Commit $commit -Ref $refs)) {
+                if (-not (Test-MtPackCommitReachable @auth -RepositoryPath $repoPath -Commit $commit -Ref $refs)) {
                     throw "The commit $commit is not on the default branch, a release$(if (@($ReachableFrom | Where-Object { $_ }).Count -gt 0) { ' or the branch or tag it was installed from' }) of $owner/$repo. GitHub serves commits from forks under the original repository's name, so Maester installs only commits that belong to the repository itself."
                 }
                 $release = $releases | Where-Object { $_.target_commitish -eq $commit } | Select-Object -First 1
@@ -168,11 +173,15 @@ function Test-MtPackCommitReachable {
     param(
         [Parameter(Mandatory)] [string] $RepositoryPath,
         [Parameter(Mandatory)] [string] $Commit,
-        [Parameter(Mandatory)] [AllowEmptyCollection()] [string[]] $Ref
+        [Parameter(Mandatory)] [AllowEmptyCollection()] [string[]] $Ref,
+        [Parameter()] [AllowNull()] [securestring] $Token
     )
 
+    $auth = @{}
+    if ($Token) { $auth.Token = $Token }
+
     foreach ($r in ($Ref | Where-Object { $_ } | Select-Object -Unique -First 10)) {
-        $compare = Invoke-MtPackGitHubRequest -Path "$RepositoryPath/compare/$([uri]::EscapeDataString($r))...$Commit" -AllowNotFound
+        $compare = Invoke-MtPackGitHubRequest @auth -Path "$RepositoryPath/compare/$([uri]::EscapeDataString($r))...$Commit" -AllowNotFound
         # 'behind' or 'identical': the commit is an ancestor of the ref, or is the ref.
         if ($compare -and $compare.status -in 'behind', 'identical') { return $true }
     }

@@ -38,7 +38,7 @@
     param(
         # Maximum allowed days of inactivity before flagging an enabled agent. Defaults to 180 days.
         [Parameter(Mandatory = $false)]
-        [int]$MaxInactiveDays = 180
+        [int]$MaximumInactiveDays = 180
     )
 
     try {
@@ -129,7 +129,7 @@
 
             if ($null -ne $LastSignInDate) {
                 $DaysSinceSignInTotal = $UtcNow.Subtract($LastSignInDate).TotalDays
-                if ($DaysSinceSignInTotal -gt $MaxInactiveDays) {
+                if ($DaysSinceSignInTotal -gt $MaximumInactiveDays) {
                     $DaysSinceSignIn = [math]::Floor($DaysSinceSignInTotal)
                     $InactiveAgents.Add([pscustomobject]@{
                         ObjectId       = [string]$Agent.id
@@ -137,7 +137,7 @@
                         AppId          = $AppId
                         LastSignIn     = $LastSignInDate.ToString('yyyy-MM-dd')
                         InactiveDays   = $DaysSinceSignIn
-                        Reason         = "Inactive for $DaysSinceSignIn days (exceeds $MaxInactiveDays days)."
+                        Reason         = "Inactive for $DaysSinceSignIn days (exceeds $MaximumInactiveDays days)."
                     })
                 }
             } else {
@@ -153,7 +153,7 @@
                     $null
                 }
                 if ($null -eq $DaysSinceCreationTotal -or
-                    $DaysSinceCreationTotal -gt $MaxInactiveDays) {
+                    $DaysSinceCreationTotal -gt $MaximumInactiveDays) {
                     if ($null -eq $DaysSinceCreationTotal) {
                         $InactiveDays = 'Unknown'
                         $InactivityReason = (
@@ -182,7 +182,7 @@
 
         if ($InactiveAgents.Count -eq 0) {
             Add-MtTestResultDetail -Result (
-                "Well done. All enabled Agent Identities have active sign-in activity within the last $MaxInactiveDays days."
+                "Well done. All enabled Agent Identities have active sign-in activity within the last $MaximumInactiveDays days."
             )
             return $true
         }
@@ -235,20 +235,19 @@
                     DisplayName = [string]$Blueprint.displayName
                     AppId       = $BlueprintAppId
                     AgentCount  = $Group.Count
-                    Reason      = "All $($Group.Count) child Agent Identit$(if ($Group.Count -eq 1) { 'y is' } else { 'ies are' }) inactive beyond $MaxInactiveDays days, and the Blueprint still holds a live credential."
+                    Reason      = "All $($Group.Count) child Agent Identit$(if ($Group.Count -eq 1) { 'y is' } else { 'ies are' }) inactive beyond $MaximumInactiveDays days, and the Blueprint still holds a live credential."
                 })
             }
         }
 
-        $Result = "Found $($InactiveAgents.Count) enabled Agent Identity object(s) with no recent sign-in activity in the last $MaxInactiveDays days."
+        $Result = "Found $($InactiveAgents.Count) enabled Agent Identity object(s) with no recent sign-in activity in the last $MaximumInactiveDays days."
         $Result += "`n`n| Agent Identity object ID | Display name | App ID | Last sign-in | Inactive days | Reason |"
         $Result += "`n| --- | --- | --- | --- | --- | --- |"
         foreach ($Item in $InactiveAgents) {
             $DisplayName = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
-            $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+            $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
             $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.AppId) | " +
                 "$($Item.LastSignIn) | $($Item.InactiveDays) | $Reason |"
         }
@@ -260,9 +259,8 @@
             foreach ($Item in $DormantFleetFindings) {
                 $Name = [string]$Item.DisplayName
                 if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-                $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-                $Name = $Name -replace "`r?`n", ' '
-                $Reason = [System.Net.WebUtility]::HtmlEncode([string]$Item.Reason) -replace '\|', '&#124;'
+                $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+                $Reason = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Reason))
                 $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | " +
                     "$($Item.AgentCount) | $Reason |"
             }

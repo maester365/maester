@@ -72,7 +72,7 @@ const facts = mappedChecks.map((t) => ({
 </mt-attack-view>
 
 <script>
-	import { matches, onState, FILTERS } from './state';
+	import { matches, onState, FILTERS, VIEW } from './state';
 	import type { CheckFacts } from './state';
 
 	const band = (n: number) => (n < 5 ? 1 : n < 15 ? 2 : n < 35 ? 3 : n < 80 ? 4 : 5);
@@ -92,7 +92,7 @@ const facts = mappedChecks.map((t) => ({
 				// A tile keeps the filters: All checks opens with them and the technique.
 				const params = new URLSearchParams();
 				// eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
-				for (const name of FILTERS) if (name !== 'mitre' && name !== 'group' && state[name].length) params.set(name, state[name].join(','));
+				for (const name of FILTERS) if (name !== 'mitre' && !VIEW.includes(name) && state[name].length) params.set(name, state[name].join(','));
 				for (const tile of tiles) {
 					const id = tile.dataset.technique!;
 					const n = counts.get(id) ?? 0;

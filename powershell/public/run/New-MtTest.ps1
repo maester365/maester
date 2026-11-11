@@ -46,6 +46,12 @@
     .PARAMETER Mitre
     The MITRE ATT&CK technique IDs the checked control prevents or detects, for example T1110.003, or None.
 
+    .PARAMETER Setting
+    Shared settings the test receives as parameters, for example EmergencyAccessAccounts or ParkedDomains. Each
+    becomes a parameter bound to the setting with [MaesterParameter(Setting = '...')], with the type, default and
+    allowed values of the settings registry. An administrator sets the value once under GlobalSettings in
+    maester-config.json, and the test's TestSettings row can override it. Get-MtSetting -Name completes the names.
+
     .PARAMETER Path
     The folder to create the files in. Defaults to ./custom (an existing ./Custom folder is reused).
 
@@ -62,6 +68,11 @@
 
     Creates a test with the classification, priority and ATT&CK attributes filled in. The attribute rubric at
     https://maester.dev/docs/writing-tests/attribute-rubric explains how to choose each value.
+
+    .EXAMPLE
+    New-MtTest -Id CONTOSO.1003 -Title 'Break glass accounts have a passkey' -Setting EmergencyAccessAccounts
+
+    Creates a test with an EmergencyAccessAccounts parameter that the engine fills from the setting of that name.
 
     .LINK
     https://maester.dev/docs/commands/New-MtTest
@@ -108,6 +119,9 @@
         [string[]] $Mitre,
 
         [Parameter()]
+        [string[]] $Setting,
+
+        [Parameter()]
         [string] $Path = './custom',
 
         [Parameter()]
@@ -146,6 +160,34 @@
         Write-Warning "The prefix of '$Id' is reserved for tests shipped with Maester and for Maester Packs. Use your own prefix, for example CONTOSO."
     }
 
+    # One parameter per shared setting, with the type, default and allowed values of the settings registry.
+    $quoteValue = { param($v) "'" + ([string]$v).Replace("'", "''") + "'" }
+    $registry = (Get-MtSettingRegistry).Settings
+    $parameterBlocks = foreach ($name in @($Setting | Where-Object { $_ } | Select-Object -Unique)) {
+        if (-not $registry.ContainsKey($name)) {
+            Write-Error "'$name' is not a registered setting. The settings are listed at https://maester.dev/docs/configuration/run-configuration#globalsettings. Add a parameter for a setting of your own by hand: [MaesterParameter(Setting = 'Contoso.Key')]."
+            return
+        }
+        $entry = $registry[$name]
+        $registeredName = @($registry.Keys | Where-Object { $_ -eq $name })[0]
+        if ($entry.Type -eq 'object' -or ($entry.ContainsKey('Role') -and $entry.Role -eq 'Connection')) {
+            Write-Error "'$registeredName' is a connection setting, which a test does not receive as a parameter."
+            return
+        }
+        $default = switch ($entry.Type) {
+            'int' { [string][int]$entry.Default }
+            'bool' { if ($entry.Default) { '$true' } else { '$false' } }
+            'string' { & $quoteValue $entry.Default }
+            'string[]' { '@(' + ((@($entry.Default) | Where-Object { $null -ne $_ } | ForEach-Object { & $quoteValue $_ }) -join ', ') + ')' }
+            default { '@()' }
+        }
+        $lines = @("        # $($entry.Description)", "        [MaesterParameter(Setting = '$registeredName')]")
+        if ($entry.ContainsKey('AllowedValues') -and $entry.AllowedValues) { $lines += "        [ValidateSet($((@($entry.AllowedValues) | ForEach-Object { & $quoteValue $_ }) -join ', '))]" }
+        $lines += "        [$($entry.Type)] `$$(@($registeredName -split '\.')[-1]) = $default"
+        $lines -join "`n"
+    }
+    $paramBlock = if (@($parameterBlocks).Count -gt 0) { "param(`n" + (@($parameterBlocks) -join ",`n`n") + "`n    )" } else { 'param()' }
+
     $functionName = 'Test-' + (($Id -split '[.\-_]' | Where-Object { $_ } | ForEach-Object { $_.Substring(0, 1).ToUpperInvariant() + $_.Substring(1) }) -join '')
     # The attribute, in the order of the design: identity, classification, priority, mappings, applicability.
     $quote = { param($v) "'" + ([string]$v).Replace("'", "''") + "'" }
@@ -174,7 +216,7 @@ $attributeLines
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    $paramBlock
 
     # Read the tenant state. The engine has already checked that the services above are connected,
     # and turns an uncaught error into an Error result, so no connection check or try/catch is needed.

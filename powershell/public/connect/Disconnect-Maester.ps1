@@ -71,6 +71,19 @@
    }
 
    if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {
+      # The service list can be replaced by another Connect-Maester call. Clean up a loaded
+      # ADOPS session too, without importing an optional module just to disconnect it.
+      try {
+         if (Get-Module -Name ADOPS) {
+            Write-Verbose -Message 'Disconnecting from Azure DevOps.'
+            Disconnect-ADOPS -ErrorAction Stop
+         }
+      } catch {
+         Write-Warning "Disconnect-ADOPS encountered an error: $($_.Exception.Message)"
+      } finally {
+         $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+      }
+
       if ($null -ne $__MtSession.ADConnection) {
           Write-Verbose -Message "Clearing Active Directory connection data."
           $__MtSession.ADConnection = $null
