@@ -1021,7 +1021,11 @@
             Set-MtConsolePhase 'Results'
             Write-MtProgress -Activity 'Processing test results' -Status "$(@($pesterResults.Tests).Count + $nativeRows.Count) test(s)" -Force
 
-            # Build the Invoke-Maester command string from bound parameters
+            # Build the Invoke-Maester command string from bound parameters.
+            # Only strings and value types are written out. Any other object is recorded as its
+            # type name, because interpolating it calls its own ToString(), and a caller-supplied
+            # type can use that to place its contents - a connection string, a token - into a
+            # command string that is then stored in the result and the report.
             $invokeMaesterCommand = "Invoke-Maester"
             foreach ($param in $PSBoundParameters.GetEnumerator()) {
                 $paramName = $param.Key
@@ -1030,12 +1034,8 @@
                     if ($paramValue.IsPresent) {
                         $invokeMaesterCommand += " -$paramName"
                     }
-                } elseif ($paramValue -is [array]) {
-                    $invokeMaesterCommand += " -$paramName @('$($paramValue -join "', '")')"
-                } elseif ($paramValue -is [string]) {
-                    $invokeMaesterCommand += " -$paramName '$paramValue'"
                 } elseif ($null -ne $paramValue) {
-                    $invokeMaesterCommand += " -$paramName $paramValue"
+                    $invokeMaesterCommand += " -$paramName $(ConvertTo-MtCommandParameterValue -Value $paramValue)"
                 }
             }
 
