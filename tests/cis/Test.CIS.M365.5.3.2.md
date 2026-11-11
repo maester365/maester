@@ -25,8 +25,11 @@ The review must repeat at least monthly: weekly (every 1 to 4 weeks) or monthly 
 
 To create or update the review with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`. The `scope` cannot be changed by an update, so create a new review if the existing one targets the wrong scope.
 
-#### Related links
+#### Review updates
 
+Definition updates apply only to future review instances; a currently running instance keeps its existing settings.
+
+#### Related links
 * [Microsoft Entra admin center - Access reviews](https://entra.microsoft.com/#view/Microsoft_AAD_ERM/DashboardBlade/~/Controls/menuId/)
 * [Create an access review of groups and applications in Microsoft Entra ID](https://learn.microsoft.com/entra/id-governance/create-access-review)
 * [Manage guest access with access reviews](https://learn.microsoft.com/entra/id-governance/manage-guest-access-with-access-reviews)

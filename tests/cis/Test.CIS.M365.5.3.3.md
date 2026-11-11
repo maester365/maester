@@ -13,7 +13,7 @@ Each of the six roles needs an active review that covers users and groups, repea
 3. Select **Microsoft Entra roles** under **Manage**, then select **Access reviews** and **New**.
 4. Provide a name and description, then set:
    - **Frequency** to **Monthly** or more frequently.
-   - **Duration (in days)** to **14** or less.
+   - **Duration (in days)** to **14** or less and shorter than the selected recurrence interval; PIM does not allow recurring reviews to overlap.
    - **End** to **Never**.
    - **Users scope** to **All users and groups**.
    - **Role** to the roles listed above. One review is created for each role selected.
@@ -27,8 +27,11 @@ Each of the six roles needs an active review that covers users and groups, repea
 
 To create or update the reviews with the Microsoft Graph API, send a `POST` to `v1.0/identityGovernance/accessReviews/definitions` with a body that meets the settings above. To update an existing review, send a `PUT` with the full writable object to `v1.0/identityGovernance/accessReviews/definitions/{review-id}`. The `scope` cannot be changed by an update, so create a new review if an existing one targets the wrong role or excludes groups.
 
-#### Related links
+#### Review updates
 
+Definition updates apply only to future review instances; a currently running instance keeps its existing settings. Graph only allows the `reviewers` property to be updated when individual users are already assigned as reviewers, so create a new review to replace a self-review with named reviewers.
+
+#### Related links
 * [Microsoft Entra admin center - Privileged Identity Management](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)
 * [Create an access review of Azure resource and Microsoft Entra roles in PIM](https://learn.microsoft.com/entra/id-governance/privileged-identity-management/pim-create-roles-and-resource-roles-review)
 * [Create an access review of groups and applications in Microsoft Entra ID](https://learn.microsoft.com/entra/id-governance/create-access-review)
