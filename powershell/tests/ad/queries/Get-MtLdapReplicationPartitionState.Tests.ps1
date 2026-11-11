@@ -53,4 +53,11 @@ Describe 'Get-MtLdapReplicationPartitionState' {
         $state.MissingExpectedNamingContexts | Should -Contain 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
         $state.UnreadableCount | Should -Be 0
     }
+    It 'marks the core assessment unavailable when a mandatory RootDSE value is blank' {
+        $script:RootDse.SchemaNamingContext = ''
+        $state = Get-MtLdapReplicationPartitionState -Connection ([PSCustomObject]@{}) -RootDse $script:RootDse
+        $state.CoreNamingContextAssessmentAvailable | Should -BeFalse
+        $state.MissingCoreRootDseAttributes | Should -Contain 'SchemaNamingContext'
+        $state.AdvertisedNamingContexts.Count | Should -Be 5
+    }
 }

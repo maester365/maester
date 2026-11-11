@@ -20,9 +20,16 @@ function Get-MtLdapReplicationPartitionState {
     )
 
     $advertised = [string[]]@($RootDse.NamingContexts | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Sort-Object -Unique)
+    $coreDefinitions = @(
+        [PSCustomObject]@{ Name = 'DefaultNamingContext'; Value = $RootDse.DefaultNamingContext },
+        [PSCustomObject]@{ Name = 'ConfigurationNamingContext'; Value = $RootDse.ConfigurationNamingContext },
+        [PSCustomObject]@{ Name = 'SchemaNamingContext'; Value = $RootDse.SchemaNamingContext }
+    )
+    $missingCoreRootDseAttributes = [string[]]@($coreDefinitions | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.Value) } | ForEach-Object Name)
+    $coreNamingContextAssessmentAvailable = ($missingCoreRootDseAttributes.Count -eq 0)
     $expected = [System.Collections.Generic.List[string]]::new()
-    foreach ($value in @($RootDse.DefaultNamingContext,$RootDse.ConfigurationNamingContext,$RootDse.SchemaNamingContext)) {
-        if (-not [string]::IsNullOrWhiteSpace([string]$value)) { $expected.Add([string]$value) | Out-Null }
+    foreach ($definition in $coreDefinitions) {
+        if (-not [string]::IsNullOrWhiteSpace([string]$definition.Value)) { $expected.Add([string]$definition.Value) | Out-Null }
     }
     # DNS application partitions do not replicate to every domain controller. Keep them observable,
     # but do not make their absence a core-partition failure for a DC that does not advertise them.
@@ -68,6 +75,8 @@ function Get-MtLdapReplicationPartitionState {
         AssessedServer = [string]$RootDse.DnsHostName
         AdvertisedNamingContexts = $advertised
         ExpectedCoreNamingContexts = $expectedUnique
+        CoreNamingContextAssessmentAvailable = $coreNamingContextAssessmentAvailable
+        MissingCoreRootDseAttributes = $missingCoreRootDseAttributes
         MissingExpectedNamingContexts = $missingExpected
         DnsApplicationPartitions = @($dnsApplicationPartitions)
         AdvertisedDnsApplicationPartitionCount = @($dnsApplicationPartitions | Where-Object Advertised).Count

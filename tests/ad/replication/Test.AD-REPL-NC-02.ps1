@@ -25,6 +25,11 @@ function Test-MtAdReplicationCoreNamingContextsPresent {
     $adState = Get-MtADDomainState -Categories ReplicationPartitions
     if ($null -eq $adState -or $null -eq $adState['ReplicationPartitionState']) { return $null }
     $state = $adState['ReplicationPartitionState']
+    if (-not $state.CoreNamingContextAssessmentAvailable) {
+        $missingAttributes = @($state.MissingCoreRootDseAttributes) -join ', '
+        Add-MtTestResultDetail -Result "Mandatory RootDSE naming-context evidence was not returned. Core naming-context coverage is unavailable. Missing attributes: $missingAttributes"
+        return $null
+    }
     $result = "| Assessed DC | Expected core | Missing |`n| --- | ---: | ---: |`n"
     $result += "| $($state.AssessedServer) | $(@($state.ExpectedCoreNamingContexts).Count) | $($state.MissingExpectedCount) |"
     if ($state.MissingExpectedCount -gt 0) {
