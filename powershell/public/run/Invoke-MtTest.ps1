@@ -83,7 +83,18 @@
                 if ($inPath) { $tests.Add($t) }
             }
         } else {
-            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root)) { $tests.Add($t) }
+            # Built-in tests in a source checkout need Maester's module scope for private helpers.
+            $testRoot = [System.IO.Path]::GetFullPath((Get-MtMaesterTestFolderPath))
+            $fullPath = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $Path).Path)
+            $comparison = if ($IsWindows) { [System.StringComparison]::OrdinalIgnoreCase } else { [System.StringComparison]::Ordinal }
+            $separator = [System.IO.Path]::DirectorySeparatorChar
+            $testRootPrefix = $testRoot.TrimEnd($separator, [System.IO.Path]::AltDirectorySeparatorChar) + $separator
+            $customRoot = Join-Path $testRoot 'custom'
+            $customRootPrefix = $customRoot.TrimEnd($separator, [System.IO.Path]::AltDirectorySeparatorChar) + $separator
+            $withinTestRoot = [string]::Equals($fullPath, $testRoot, $comparison) -or $fullPath.StartsWith($testRootPrefix, $comparison)
+            $withinCustomRoot = [string]::Equals($fullPath, $customRoot, $comparison) -or $fullPath.StartsWith($customRootPrefix, $comparison)
+            $isBuiltInPath = $withinTestRoot -and -not $withinCustomRoot
+            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root -BuiltIn:$isBuiltInPath)) { $tests.Add($t) }
         }
     }
     if ($Id) {

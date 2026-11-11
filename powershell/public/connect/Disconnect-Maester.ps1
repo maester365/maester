@@ -71,6 +71,11 @@
    }
 
    if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {
+      $__MtSession.TeamsCache = @{}
+      $__MtSession.TeamsAuthCache = @{}
+      $__MtSession.TeamsUseDeviceCode = $false
+      $__MtSession.TeamsEnvironmentName = $null
+
       # The service list can be replaced by another Connect-Maester call. Clean up a loaded
       # ADOPS session too, without importing an optional module just to disconnect it.
       try {
