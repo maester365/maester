@@ -25,12 +25,9 @@ function Test-MtCisaTeamsBroadcastRecording {
     [OutputType([bool])]
     param()
 
-    $policies = @(Get-CsTeamsMeetingBroadcastPolicy -Identity Global -ErrorAction Stop)
-    if ($policies.Count -ne 1 -or $policies[0].Identity -ne 'Global') {
-        throw 'Teams did not return exactly one Global meeting broadcast policy.'
-    }
-    $setting = $policies[0].PSObject.Properties['BroadcastRecordingMode']
-    if ($null -eq $setting) {
+    $policy = Get-MtCisaTeamsGlobalMeetingBroadcastPolicy
+    $setting = $policy.PSObject.Properties['BroadcastRecordingMode']
+    if ($null -eq $setting -or [string]::IsNullOrWhiteSpace([string]$setting.Value)) {
         throw 'The Global meeting broadcast policy did not return BroadcastRecordingMode.'
     }
 

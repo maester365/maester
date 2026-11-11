@@ -1,5 +1,28 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+
+    if (-not ('MaesterTestDeviceCodeResult' -as [type])) {
+        $null = Add-Type -TypeDefinition @'
+public sealed class MaesterTestDeviceCodeResult
+{
+    public MaesterTestDeviceCodeResult(string message)
+    {
+        Message = message;
+    }
+
+    public string Message { get; }
+}
+
+public static class MaesterTestDeviceCodeCallbackInvoker
+{
+    public static System.Threading.Tasks.Task Invoke(System.Delegate callback, object deviceCode)
+    {
+        return System.Threading.Tasks.Task.Run(async () =>
+            await (System.Threading.Tasks.Task)callback.DynamicInvoke(deviceCode));
+    }
+}
+'@ -ErrorAction Stop
+    }
 }
 
 Describe 'Get-MtTeamsUnifiedTenantSettings' {
@@ -106,5 +129,19 @@ Describe 'Get-MtTeamsUnifiedTenantSettings' {
         Mock Get-MgContext -ModuleName Maester { $null }
 
         { InModuleScope Maester { Get-MtTeamsUnifiedTenantSettings } } | Should -Throw '*Graph context is required*'
+    }
+
+    It 'Captures the device-code message through a managed callback' {
+        $messageSource = [System.Threading.Tasks.TaskCompletionSource[string]]::new()
+        $deviceCode = [MaesterTestDeviceCodeResult]::new('Use the displayed code to sign in.')
+        $callback = InModuleScope Maester -Parameters @{
+            DeviceCodeType = $deviceCode.GetType()
+            MessageSource  = $messageSource
+        } {
+            Get-MtTeamsUnifiedSettingsDeviceCodeCallback -DeviceCodeType $DeviceCodeType -MessageSource $MessageSource
+        }
+
+        [MaesterTestDeviceCodeCallbackInvoker]::Invoke($callback, $deviceCode).GetAwaiter().GetResult()
+        $messageSource.Task.GetAwaiter().GetResult() | Should -Be 'Use the displayed code to sign in.'
     }
 }

@@ -14,7 +14,7 @@ function Test-MtCisaTeamsUnmanagedInboundContact {
         Feature            = 'external-access',
         Area               = 'external-access',
         ResourceType       = 'Tenant',
-        Severity           = 'High',
+        Severity           = 'Medium',
         UserImpact         = 'Medium',
         ImplementationCost = 'Low',
         Mitre              = 'T1204.001',

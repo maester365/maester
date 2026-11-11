@@ -14,9 +14,9 @@ function Test-MtCisaTeamsExternalAccessScope {
         Feature            = 'external-access',
         Area               = 'external-access',
         ResourceType       = 'Tenant',
-        Severity           = 'High',
+        Severity           = 'Medium',
         UserImpact         = 'Medium',
-        ImplementationCost = 'Medium',
+        ImplementationCost = 'Low',
         Mitre              = ('T1199', 'T1204.001'),
         Control            = 'cisa-scuba:MS.TEAMS.2.1',
         Service            = 'Teams',
@@ -52,7 +52,7 @@ function Test-MtCisaTeamsExternalAccessScope {
             }
 
             $domainPolicy = $allowedDomains.Value
-            $allowAllKnownDomains = "$($domainPolicy.PSObject.TypeNames -join ' ') $domainPolicy" -match 'AllowAllKnownDomains'
+            $allowAllKnownDomains = ($domainPolicy.PSObject.TypeNames -join ' ') -match 'AllowAllKnownDomains'
             if ($allowAllKnownDomains) {
                 $domainDisplay = 'AllowAllKnownDomains'
             }

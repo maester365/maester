@@ -1,5 +1,6 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+    $script:cisaTeamsBroadcastTestPath = Join-Path $PSScriptRoot '../../../tests/cisa/teams/Test.CISA.MS.TEAMS.1.7.ps1'
 
     $script:createdTeamsStubs = @()
     $teamsStubs = @{
@@ -85,6 +86,21 @@ Describe 'CISA Teams checks' {
         { InModuleScope Maester { Test-MtCisaTeamsMeetingPolicyBoolean -SettingName AllowAnonymousUsersToStartMeeting -ExpectedValue $false -PolicyDescription 'Anonymous meeting start' } } | Should -Throw '*did not return a Boolean value*'
     }
 
+    It 'Caches all meeting policies when a check also requests the Global policy' {
+        Mock Get-CsTeamsMeetingPolicy -ModuleName Maester {
+            @(
+                [pscustomobject]@{ Identity = 'Global' }
+                [pscustomobject]@{ Identity = 'Custom' }
+            )
+        }
+
+        InModuleScope Maester {
+            @(Get-MtCisaTeamsMeetingPolicies) | Should -HaveCount 2
+            (Get-MtCisaTeamsGlobalMeetingPolicy).Identity | Should -Be 'Global'
+        }
+        Should -Invoke Get-CsTeamsMeetingPolicy -ModuleName Maester -Times 1 -Exactly
+    }
+
     It 'Passes external federation when disabled' {
         Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
             [pscustomobject]@{ AllowFederatedUsers = $false }
@@ -120,6 +136,66 @@ Describe 'CISA Teams checks' {
 
         InModuleScope Maester {
             Test-MtCisaTeamsExternalAccessScope | Should -BeTrue
+        }
+    }
+
+    It 'Does not mistake a restricted domain name for the allow-all policy' {
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
+            [pscustomobject]@{
+                AllowFederatedUsers = $true
+                AllowedDomains      = [pscustomobject]@{ AllowedDomain = @('allowallknowndomains.com') }
+            }
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaTeamsExternalAccessScope | Should -BeTrue
+        }
+    }
+
+    It 'Caches tenant federation configurations for the current run' {
+        Mock Get-CsTenantFederationConfiguration -ModuleName Maester {
+            [pscustomobject]@{ AllowFederatedUsers = $false }
+        }
+
+        InModuleScope Maester {
+            @(Get-MtCisaTeamsFederationConfigurations) | Should -HaveCount 1
+            @(Get-MtCisaTeamsFederationConfigurations) | Should -HaveCount 1
+        }
+        Should -Invoke Get-CsTenantFederationConfiguration -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Passes CISA 1.7 when the Global policy does not always record' {
+        Mock Get-CsTeamsMeetingBroadcastPolicy -ModuleName Maester {
+            [pscustomobject]@{ Identity = 'Global'; BroadcastRecordingMode = 'OrganizerCanRecord' }
+        }
+
+        InModuleScope Maester -Parameters @{ TestPath = $script:cisaTeamsBroadcastTestPath } {
+            . $TestPath
+            Test-MtCisaTeamsBroadcastRecording | Should -BeTrue
+            Test-MtCisaTeamsBroadcastRecording | Should -BeTrue
+        }
+        Should -Invoke Get-CsTeamsMeetingBroadcastPolicy -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Fails CISA 1.7 when the Global policy is set to always record' {
+        Mock Get-CsTeamsMeetingBroadcastPolicy -ModuleName Maester {
+            [pscustomobject]@{ Identity = 'Global'; BroadcastRecordingMode = 'AlwaysEnabled' }
+        }
+
+        InModuleScope Maester -Parameters @{ TestPath = $script:cisaTeamsBroadcastTestPath } {
+            . $TestPath
+            Test-MtCisaTeamsBroadcastRecording | Should -BeFalse
+        }
+    }
+
+    It 'Errors when CISA 1.7 cannot assess the Global recording setting' {
+        Mock Get-CsTeamsMeetingBroadcastPolicy -ModuleName Maester {
+            [pscustomobject]@{ Identity = 'Global' }
+        }
+
+        InModuleScope Maester -Parameters @{ TestPath = $script:cisaTeamsBroadcastTestPath } {
+            . $TestPath
+            { Test-MtCisaTeamsBroadcastRecording } | Should -Throw '*did not return BroadcastRecordingMode*'
         }
     }
 
@@ -214,6 +290,7 @@ Describe 'CISA Teams checks' {
         }
 
         InModuleScope Maester {
+            Test-MtCisaTeamsAppControl -SettingName DefaultApp -AppType Microsoft | Should -BeFalse
             Test-MtCisaTeamsAppControl -SettingName DefaultApp -AppType Microsoft | Should -BeFalse
         }
         Should -Invoke Get-CsTeamsAppPermissionPolicy -ModuleName Maester -Times 1 -Exactly

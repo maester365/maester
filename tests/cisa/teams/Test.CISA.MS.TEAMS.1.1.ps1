@@ -12,7 +12,7 @@ function Test-MtCisaTeamsExternalParticipantControl {
         Product            = 'teams',
         Feature            = 'meetings',
         Area               = 'external-access',
-        ResourceType       = 'Tenant',
+        ResourceType       = 'Policy',
         Severity           = 'Medium',
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
