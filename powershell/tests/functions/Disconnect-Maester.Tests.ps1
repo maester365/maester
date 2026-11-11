@@ -2,8 +2,76 @@
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
+Describe 'Disconnect-Maester - Azure DevOps session lifecycle' {
+    BeforeAll {
+        $script:createdAdoStub = -not (Get-Command Disconnect-ADOPS -ErrorAction SilentlyContinue)
+        if ($script:createdAdoStub) {
+            function global:Disconnect-ADOPS { [CmdletBinding()] param() }
+        }
+    }
+
+    AfterAll {
+        if ($script:createdAdoStub) { Remove-Item function:global:Disconnect-ADOPS }
+    }
+
+    BeforeEach {
+        Mock Disconnect-ADOPS -ModuleName Maester {}
+        Mock Disconnect-MgGraph -ModuleName Maester {}
+        Mock Get-Module -ModuleName Maester { [pscustomobject]@{ Name = 'ADOPS' } } -ParameterFilter { $Name -eq 'ADOPS' }
+        InModuleScope Maester {
+            $__MtSession.Connections = @('Graph')
+            $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'contoso' }
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.Connections = @()
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+    }
+
+    It 'Disconnects ADOPS with <Command> even after another connect replaces the service list' -ForEach @(
+        @{ Command = 'Disconnect-Maester' }
+        @{ Command = 'Maester\Disconnect-Maester' }
+        @{ Command = 'Disconnect-MtMaester' }
+    ) {
+        & $Command
+        Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 1 -Exactly
+        Test-MtConnection -Service AzureDevOps | Should -BeFalse
+    }
+
+    It 'Preserves ADOPS when only Disconnect-MtGraph is requested' {
+        Disconnect-MtGraph
+        Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+        Test-MtConnection -Service AzureDevOps | Should -BeTrue
+    }
+
+    It 'Preserves ADOPS when only the module-qualified Disconnect-MtGraph alias is requested' {
+        Maester\Disconnect-MtGraph
+        Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+        Test-MtConnection -Service AzureDevOps | Should -BeTrue
+    }
+
+    It 'Invalidates the connection probe and warns if the provider disconnect fails' {
+        Mock Disconnect-ADOPS -ModuleName Maester { throw 'disconnect failed' }
+        Disconnect-Maester -WarningVariable disconnectWarnings -WarningAction SilentlyContinue
+        "$disconnectWarnings" | Should -Match 'Disconnect-ADOPS.*disconnect failed'
+        Test-MtConnection -Service AzureDevOps | Should -BeFalse
+        Should -Invoke Disconnect-MgGraph -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Does not load ADOPS just to disconnect' {
+        Mock Get-Module -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'ADOPS' }
+        Disconnect-Maester
+        Should -Invoke Disconnect-ADOPS -ModuleName Maester -Times 0 -Exactly
+        Test-MtConnection -Service AzureDevOps | Should -BeFalse
+    }
+}
+
 Describe 'Disconnect-Maester - GitHub session lifecycle' {
     BeforeEach {
+        Mock Get-Module -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'ADOPS' }
         Mock Disconnect-MgGraph -ModuleName Maester {}
 
         InModuleScope Maester {
@@ -100,6 +168,7 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
 
 Describe 'Disconnect-Maester - Active Directory session lifecycle' {
     BeforeEach {
+        Mock Get-Module -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'ADOPS' }
         Mock Disconnect-MgGraph -ModuleName Maester {}
 
         InModuleScope Maester {
@@ -177,6 +246,7 @@ Describe 'Disconnect-Maester - service disconnects' {
         Mock Disconnect-MgGraph -ModuleName Maester {}
         Mock Disconnect-ExchangeOnline -ModuleName Maester {}
         Mock Disconnect-MicrosoftTeams -ModuleName Maester {}
+        Mock Get-Module -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'ADOPS' }
 
         InModuleScope Maester {
             $__MtSession.Connections = @('Graph', 'ExchangeOnline', 'Teams')

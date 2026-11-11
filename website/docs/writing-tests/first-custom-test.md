@@ -37,7 +37,7 @@ This writes two files into `custom`:
 | `Test.CT.1001.md` | The text shown in the report: what is checked and how to fix it. |
 
 `CT.1001` is the test's ID. Pick a prefix of your own, such as `CT` or your company name, and a number. Do not
-use `MT`, `CIS`, `CISA`, `ASD`, `EIDSCA`, `ORCA`, `AD` or `AZDO`: those belong to the tests that ship with Maester.
+use `MT`, `CIS`, `CISA`, `ASD`, `DISA`, `EIDSCA`, `ORCA`, `AD` or `AZDO`: those belong to the tests that ship with Maester.
 
 :::tip
 Prefer forms to typing? The [test builder](/test-builder) lets you pick everything from lists. Choose

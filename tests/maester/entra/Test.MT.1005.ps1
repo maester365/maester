@@ -35,9 +35,11 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param ()
-
-    $EmergencyAccessAccounts = Get-MtSetting -Name 'EmergencyAccessAccounts'
+    param (
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
     # Only check policies that are not related to authentication context (the state of policy does not have to be enabled)
     $policies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }

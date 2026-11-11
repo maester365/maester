@@ -1,24 +1,29 @@
 ﻿function Get-MtEmergencyAccessAccount {
     <#
     .SYNOPSIS
-        Returns the emergency access (break-glass) accounts and groups configured in maester-config.json, resolved to directory object IDs.
+        Resolves emergency access (break-glass) accounts and groups to directory object IDs.
 
     .DESCRIPTION
-        Reads the EmergencyAccessAccounts global setting and resolves each entry - by object Id, or by
+        Resolves each entry of the EmergencyAccessAccounts setting - by object Id, or by
         UserPrincipalName / mail - to its directory object id and type (user or group). Returns objects
-        with ObjectId, DisplayName, and Type. Returns nothing when no emergency access accounts are
-        configured or none can be resolved.
+        with ObjectId, DisplayName, and Type. Returns nothing when no accounts are passed.
+
+        A test receives the setting as a parameter, [MaesterParameter(Setting = 'EmergencyAccessAccounts')],
+        and passes it here, so a test's own TestSettings row can override it.
 
     .EXAMPLE
-        Get-MtEmergencyAccessAccount
+        Get-MtEmergencyAccessAccount -Account $EmergencyAccessAccounts
 
         Returns the resolved emergency access accounts and groups.
     #>
     [CmdletBinding()]
-    param ()
+    param (
+        # The entries of the EmergencyAccessAccounts setting: objects with Id or UserPrincipalName, and Type.
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [object[]] $Account = @()
+    )
 
-    $emergencyAccessAccounts = Get-MtSetting -Name 'EmergencyAccessAccounts'
-    if (-not $emergencyAccessAccounts) {
+    $emergencyAccessAccounts = @($Account | Where-Object { $_ })
+    if ($emergencyAccessAccounts.Count -eq 0) {
         return
     }
 

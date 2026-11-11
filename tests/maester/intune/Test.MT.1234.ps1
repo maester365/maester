@@ -15,7 +15,7 @@
 
     A date that is itself old makes the setting pointless: a policy that requires patches from three
     years ago accepts every device. This check therefore requires both that the setting is configured
-    and that the date is no older than MaximumPatchLevelAgeInDays, a year by default.
+    and that the date is no older than MaximumPatchLevelAgeDays, a year by default.
 
     A value that cannot be read as a date is reported with its raw value and does not count towards a
     pass, rather than being guessed at in either direction.
@@ -24,7 +24,7 @@
     Android Enterprise policies are reported but not evaluated, and a tenant that has only those is
     reported as not applicable rather than as a failure. See the scope limitation in the guide.
 
-    .PARAMETER MaximumPatchLevelAgeInDays
+    .PARAMETER MaximumPatchLevelAgeDays
     Oldest security patch level, in days before today, that a policy may still require.
 
     .EXAMPLE
@@ -33,7 +33,7 @@
     Returns true if at least one assigned Android compliance policy requires a security patch level from the last year.
 
     .EXAMPLE
-    Test-MtAndroidSecurityPatchLevel -MaximumPatchLevelAgeInDays 180
+    Test-MtAndroidSecurityPatchLevel -MaximumPatchLevelAgeDays 180
 
     Returns true if at least one assigned Android compliance policy requires a security patch level from the last six months.
 
@@ -61,7 +61,7 @@
     param(
         # Oldest security patch level, in days before today, that a policy may still require.
         [ValidateRange(30, 3650)]
-        [int] $MaximumPatchLevelAgeInDays = 365
+        [int] $MaximumPatchLevelAgeDays = 365
     )
 
     Write-Verbose "Querying Android compliance policies..."
@@ -101,7 +101,7 @@
     }
 
     $today = [datetime]::UtcNow.Date
-    $oldestAccepted = $today.AddDays(-$MaximumPatchLevelAgeInDays)
+    $oldestAccepted = $today.AddDays(-$MaximumPatchLevelAgeDays)
 
     $rows = [System.Collections.Generic.List[pscustomobject]]::new()
     foreach ($policy in $evaluated) {
@@ -129,7 +129,7 @@
 
     $testResultMarkdown = "Found $($evaluated.Count) Android device administrator compliance policy/policies in Intune. "
     $testResultMarkdown += "Required: a security patch level on or after $($oldestAccepted.ToString('yyyy-MM-dd')) "
-    $testResultMarkdown += "($MaximumPatchLevelAgeInDays days).`n`n"
+    $testResultMarkdown += "($MaximumPatchLevelAgeDays days).`n`n"
     $testResultMarkdown += "| Policy | Minimum security patch level | Assignments |`n"
     $testResultMarkdown += "| --- | --- | --- |`n"
     foreach ($row in $rows) {
@@ -148,7 +148,7 @@
         $gaps = @($rows | Where-Object { $_.IsAssigned -and -not $_.Meets })
         if ($gaps.Count -gt 0) {
             $testResultMarkdown += "`n`n> **Note:** $($gaps.Count) assigned policy/policies do not require a patch level from the last "
-            $testResultMarkdown += "$MaximumPatchLevelAgeInDays days. Devices scoped only to those policies may be years behind on patches."
+            $testResultMarkdown += "$MaximumPatchLevelAgeDays days. Devices scoped only to those policies may be years behind on patches."
         }
     } else {
         $unassigned = @($rows | Where-Object { -not $_.IsAssigned -and $_.Meets })
@@ -160,7 +160,7 @@
             # policy requires one would contradict the table above it.
             $withValue = @($rows | Where-Object { $_.IsAssigned -and $_.PatchLevel -ne 'Not configured' })
             if ($withValue.Count -gt 0) {
-                $testResultMarkdown += "`nThe security patch level required by the assigned policies is older than $MaximumPatchLevelAgeInDays days, "
+                $testResultMarkdown += "`nThe security patch level required by the assigned policies is older than $MaximumPatchLevelAgeDays days, "
                 $testResultMarkdown += "or could not be read as a date, so it does not hold devices to a recent security bulletin. Move the date forward."
             } else {
                 $testResultMarkdown += "`nNo assigned Android compliance policy requires a minimum security patch level. "

@@ -141,15 +141,9 @@
             $ObservationNote += "`n`n| Object ID | Display name | Object type | Directory role |"
             $ObservationNote += "`n| --- | --- | --- | --- |"
             foreach ($Item in $RoleObservations) {
-                $Name = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.DisplayName
-                ) -replace '\|', '&#124;'
-                $Name = $Name -replace '[\r\n]+', ' '
+                $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.DisplayName))
                 if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-                $RoleName = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.RoleName
-                ) -replace '\|', '&#124;'
-                $RoleName = $RoleName -replace '[\r\n]+', ' '
+                $RoleName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName))
                 $ObservationNote += "`n| $($Item.ObjectId) | $Name | " +
                     "$($Item.ObjectType) | $RoleName |"
             }
@@ -169,9 +163,8 @@
         foreach ($Item in $RoleFindings) {
             $Name = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-            $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
-            $RoleName = [System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName) -replace '\|', '&#124;'
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+            $RoleName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName))
             $Scope = if ([string]::IsNullOrWhiteSpace($Item.Scope) -or $Item.Scope -eq '/') { 'Tenant-wide (/)' } else { $Item.Scope }
             $Result += "`n| $($Item.ObjectId) | $Name | $($Item.ObjectType) | $RoleName | $Scope |"
         }
