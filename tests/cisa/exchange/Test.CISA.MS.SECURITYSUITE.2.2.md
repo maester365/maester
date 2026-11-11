@@ -8,6 +8,7 @@ Configuring protection for owned domains reduces the risk that users will be dec
 2. Edit the default anti-phishing policy or an enabled policy that applies to all recipients.
 3. Under **Phishing threshold and protection**, enable **Domains I own** and choose one of the baseline actions: redirect, move the message to Junk Email, quarantine, or delete.
 4. Save the policy and verify its recipient scope includes all tenant users.
+5. If using Standard or Strict preset protection, select **All recipients** without exclusions on both **Apply Exchange Online Protection** and **Apply Defender for Office 365 protection**. EOP recipient coverage alone does not establish impersonation protection.
 
 #### Related links
 

@@ -84,16 +84,27 @@ Describe 'CISA Security Suite impersonation protection checks' {
         Test-MtCisaOwnedDomainImpersonationProtection | Should -BeFalse
     }
 
-    It 'uses the same recipient-scope rules for preset policies' {
+    It 'requires matching tenant-wide EOP and Defender preset rules for impersonation' {
         $script:exoResponses = @{
             AntiPhishPolicy = @(
                 [pscustomobject]@{
                     Name = 'Standard Preset Security Policy'; Identity = 'Standard Preset Security Policy'
                     Enabled = $true; IsDefault = $false; RecommendedPolicyType = 'Standard'
+                    EnableTargetedUserProtection = $true; TargetedUserProtectionAction = 'Quarantine'
+                    TargetedUsersToProtect = @('sensitive@contoso.com')
+                    EnableOrganizationDomainsProtection = $true; TargetedDomainProtectionAction = 'Quarantine'
+                    EnableTargetedDomainsProtection = $true; TargetedDomainsToProtect = @('partner.example')
                 }
             )
             AntiPhishRule = @()
             EOPProtectionPolicyRule = @(
+                [pscustomobject]@{
+                    State = 'Enabled'; Identity = 'Standard Preset Security Policy'
+                    SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @('contoso.com', 'fabrikam.com')
+                    ExceptIfSentTo = @(); ExceptIfSentToMemberOf = @(); ExceptIfRecipientDomainIs = @()
+                }
+            )
+            ATPProtectionPolicyRule = @(
                 [pscustomobject]@{
                     State = 'Enabled'; Identity = 'Standard Preset Security Policy'
                     SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @('contoso.com', 'fabrikam.com')
@@ -108,6 +119,34 @@ Describe 'CISA Security Suite impersonation protection checks' {
         Mock Get-MtExo { $script:exoResponses[$Request] }
 
         @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -HaveCount 1
+        Test-MtCisaImpersonation -SensitiveUsers 'sensitive@contoso.com' | Should -BeTrue
+        Test-MtCisaOwnedDomainImpersonationProtection | Should -BeTrue
+        Test-MtCisaPartnerDomainImpersonationProtection -PartnerDomains 'partner.example' | Should -BeTrue
+
+        $rule = $script:exoResponses.ATPProtectionPolicyRule[0]
+        $unsafeScopes = @(
+            @{ Field = 'State'; Value = 'Disabled' }
+            @{ Field = 'Identity'; Value = 'Strict Preset Security Policy' }
+            @{ Field = 'SentTo'; Value = @('user@contoso.com') }
+            @{ Field = 'SentToMemberOf'; Value = @('Scoped group') }
+            @{ Field = 'RecipientDomainIs'; Value = @('contoso.com') }
+            @{ Field = 'ExceptIfSentTo'; Value = @('user@contoso.com') }
+            @{ Field = 'ExceptIfSentToMemberOf'; Value = @('Excluded group') }
+            @{ Field = 'ExceptIfRecipientDomainIs'; Value = @('contoso.com') }
+        )
+        foreach ($scope in $unsafeScopes) {
+            $originalValue = $rule.($scope.Field)
+            $rule.($scope.Field) = $scope.Value
+            Test-MtCisaImpersonation -SensitiveUsers 'sensitive@contoso.com' | Should -BeFalse -Because $scope.Field
+            Test-MtCisaOwnedDomainImpersonationProtection | Should -BeFalse -Because $scope.Field
+            Test-MtCisaPartnerDomainImpersonationProtection -PartnerDomains 'partner.example' | Should -BeFalse -Because $scope.Field
+            Test-MtCisaImpersonationTip | Should -BeTrue -Because 'the EOP safety-tip scope is unchanged'
+            $rule.($scope.Field) = $originalValue
+        }
+
+        $script:exoResponses.ATPProtectionPolicyRule = @()
+        @(Get-MtCisaEffectiveAntiPhishPolicy -RequireDefenderProtection) | Should -BeNullOrEmpty
+        Test-MtCisaImpersonationTip | Should -BeTrue
 
         $script:exoResponses.EOPProtectionPolicyRule[0].ExceptIfRecipientDomainIs = @('contoso.com')
         @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -BeNullOrEmpty

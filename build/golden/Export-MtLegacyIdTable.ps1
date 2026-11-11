@@ -19,6 +19,9 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
+    Previously verified mappings from the generated-from commit are retained while their targets remain
+    current, unless a manual override applies. This preserves aliases when native titles or functions change.
+
     The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
     and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
     tests/ produces identical output.
@@ -324,6 +327,15 @@ foreach ($file in $nativeTestFiles) {
     }
 }
 
+# Keep verified aliases stable when native titles change or introduce additional matching candidates.
+$previousTable = ((Invoke-Git show "$($generatedFrom):powershell/assets/Maester.LegacyIds.json") -join "`n") | ConvertFrom-Json
+$verifiedMappings = @{}
+foreach ($entry in $previousTable.Entries) {
+    if ($currentIds.ContainsKey($entry.CurrentId) -or $nativeIds.Contains($entry.CurrentId)) {
+        $verifiedMappings[$entry.LegacyId] = $entry
+    }
+}
+
 #region Map
 $entries = [System.Collections.Generic.List[object]]::new()
 $review = [System.Collections.Generic.List[string]]::new()
@@ -355,7 +367,12 @@ foreach ($record in $history.Values) {
     $currentId = 'retired'; $rule = 'retired'
     if ($ManualOverrides.Contains($record.Id)) {
         $currentId = $ManualOverrides[$record.Id]; $rule = 'manual'
-    } elseif ($prefixTarget) {
+    }
+    elseif ($verifiedMappings.ContainsKey($record.Id)) {
+        $currentId = $verifiedMappings[$record.Id].CurrentId
+        $rule = $verifiedMappings[$record.Id].Rule
+    }
+    elseif ($prefixTarget) {
         $currentId = $prefixTarget; $rule = 'prefix'
     } elseif ($titleCandidates.Count -eq 1) {
         $currentId = @($titleCandidates)[0]; $rule = 'title'

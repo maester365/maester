@@ -46,7 +46,7 @@
             Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
             Select-Object -Unique
     )
-    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
+    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy -RequireDefenderProtection)
     $compliantPolicies = @(
         $policies | Where-Object {
             $policy = $_

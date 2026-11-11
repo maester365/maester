@@ -29,7 +29,7 @@
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -37,7 +37,7 @@
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -53,7 +53,7 @@
     {
       "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.4",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
@@ -69,7 +69,7 @@
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenCommit": "d559e19379a79601c1b0fbe83e21f0e1392ffebe",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -77,7 +77,7 @@
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -85,7 +85,7 @@
     {
       "LegacyId": "2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.7",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
@@ -957,7 +957,7 @@
     {
       "LegacyId": "CIS 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -965,7 +965,7 @@
     {
       "LegacyId": "CIS 2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.4",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
@@ -981,7 +981,7 @@
     {
       "LegacyId": "CIS 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -989,7 +989,7 @@
     {
       "LegacyId": "CIS 2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.7",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
@@ -1172,8 +1172,8 @@
     },
     {
       "LegacyId": "Ensure MailTips are enabled for end users",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1039",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1220,8 +1220,8 @@
     },
     {
       "LegacyId": "Ensure modern authentication for Exchange Online is enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1044",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1236,8 +1236,8 @@
     },
     {
       "LegacyId": "Ensure users installing Outlook add-ins is not allowed",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1041",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"

@@ -8,6 +8,7 @@ Protection should cover the partner domains configured for this test. ScubaGear 
 2. Sign in to the [Microsoft Defender anti-phishing policies page](https://security.microsoft.com/antiphishing).
 3. Edit an enabled anti-phishing policy that applies to all recipients. Add every configured domain under **Domains to protect** and choose one of the baseline actions: redirect, move the message to Junk Email, quarantine, or delete.
 4. Save the policy.
+5. If using Standard or Strict preset protection, select **All recipients** without exclusions on both **Apply Exchange Online Protection** and **Apply Defender for Office 365 protection**. EOP recipient coverage alone does not establish impersonation protection.
 
 #### Related links
 

@@ -28,7 +28,6 @@
         Mitre = 'None',
         Control = 'cisa-scuba:MS.SECURITYSUITE.4.2',
         Service = 'None',
-        License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
     )]

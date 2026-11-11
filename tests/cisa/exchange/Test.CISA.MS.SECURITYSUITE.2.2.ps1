@@ -35,7 +35,7 @@
     [OutputType([bool])]
     param()
 
-    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
+    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy -RequireDefenderProtection)
     $compliantPolicies = @(
         $policies | Where-Object {
             $action = ([string]$_.TargetedDomainProtectionAction).Trim().ToLowerInvariant()

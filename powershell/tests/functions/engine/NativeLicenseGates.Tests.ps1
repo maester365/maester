@@ -16,7 +16,7 @@
         'CISA.MS.AAD.2.1'  = $p2; 'CISA.MS.AAD.2.2' = $p2; 'CISA.MS.AAD.2.3' = $p2
         'CISA.MS.AAD.7.4'  = $p2OrGovernance; 'CISA.MS.AAD.7.5' = $p2OrGovernance; 'CISA.MS.AAD.7.6' = $p2OrGovernance; 'CISA.MS.AAD.7.7' = $p2OrGovernance
         'CISA.MS.SECURITYSUITE.2.1' = $mdoP1; 'CISA.MS.SECURITYSUITE.2.4' = $mdoP1; 'CISA.MS.EXO.11.3' = $mdoP1; 'CISA.MS.EXO.15.1' = $mdoP1
-        'CISA.MS.EXO.15.2' = $mdoP1; 'CISA.MS.EXO.15.3' = $mdoP1; 'CISA.MS.SECURITYSUITE.4.1' = $mdoP1; 'CISA.MS.SECURITYSUITE.4.2' = $mdoP1
+        'CISA.MS.EXO.15.2' = $mdoP1; 'CISA.MS.EXO.15.3' = $mdoP1
         'CISA.MS.EXO.17.3' = @{ License = @('M365_ADVANCED_AUDITING'); Legacy = 'NotLicensedAdvAudit' }
         'CISA.MS.EXO.8.1'  = $exoDlp; 'CISA.MS.EXO.8.2' = $exoDlp; 'CISA.MS.EXO.8.4' = $exoDlp
         'CIS.M365.1.3.6'   = @{ License = @('LOCKBOX_ENTERPRISE'); Legacy = 'NotLicensedCustomerLockbox' }
@@ -97,6 +97,16 @@ Describe 'Licence gates of converted tests' {
         # The mocks return no Conditional Access policy, so the body runs and finds no blocking policy.
         $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses 'AAD_PREMIUM_P2', 'AGENT_365')
         $row.Result | Should -Be 'Failed'
+    }
+
+    It 'evaluates Security Suite alerts without a Defender for Office 365 licence' {
+        $row = Invoke-MtTest -Id 'CISA.MS.SECURITYSUITE.4.1' -Config (New-Config -Licenses 'UNRELATED_PLAN')
+        $row.Result | Should -Be 'Failed'
+
+        $row = Invoke-MtTest -Id 'CISA.MS.SECURITYSUITE.4.2' -Config (New-Config -Licenses 'UNRELATED_PLAN')
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'TestSkipped'
+        $row.ResultDetail.TestSkipped | Should -Be 'Custom'
     }
 }
 

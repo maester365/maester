@@ -52,7 +52,7 @@
             Select-Object -Unique
     )
 
-    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy)
+    $policies = @(Get-MtCisaEffectiveAntiPhishPolicy -RequireDefenderProtection)
     $resultPolicies = @(
         $policies | Where-Object {
             $protectedUsers = @(

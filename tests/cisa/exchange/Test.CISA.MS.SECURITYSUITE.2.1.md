@@ -8,6 +8,7 @@ Rationale: Users might not be able to reliably identify phishing emails, especia
 2. Sign in to the [Microsoft Defender anti-phishing policies page](https://security.microsoft.com/antiphishing).
 3. In an enabled anti-phishing policy that applies to all recipients, enable **User impersonation protection** and add every configured account under **Users to protect**.
 4. Choose an action other than **No action** or **Bcc message**, then save the policy.
+5. If using Standard or Strict preset protection, select **All recipients** without exclusions on both **Apply Exchange Online Protection** and **Apply Defender for Office 365 protection**. EOP recipient coverage alone does not establish impersonation protection.
 
 An empty `SensitiveUsers` list is not treated as evidence of compliance.
 

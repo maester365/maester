@@ -95,6 +95,20 @@
         $bad | Should -BeNullOrEmpty
     }
 
+    It 'preserves verified Exchange aliases when native titles change' {
+        $aliases = @{
+            'Ensure MailTips are enabled for end users' = 'MT.1039'
+            'Ensure modern authentication for Exchange Online is enabled' = 'MT.1044'
+            'Ensure users installing Outlook add-ins is not allowed' = 'MT.1041'
+        }
+        foreach ($legacyId in $aliases.Keys) {
+            $entry = @($script:table.Entries | Where-Object LegacyId -EQ $legacyId)
+            $entry | Should -HaveCount 1
+            $entry[0].CurrentId | Should -Be $aliases[$legacyId]
+            $entry[0].Rule | Should -Be 'title'
+        }
+    }
+
     It 'has no duplicate LegacyId (case-insensitive)' {
         $duplicates = @($script:table.Entries | Group-Object { $_.LegacyId.ToLowerInvariant() } | Where-Object Count -GT 1 | ForEach-Object Name)
         $duplicates | Should -BeNullOrEmpty

@@ -5,14 +5,23 @@
 
     .DESCRIPTION
     Returns policies whose recipient rules cover every accepted domain without recipient exclusions.
+    Impersonation checks also require the matching Defender preset rule to cover all recipients.
+
+    .PARAMETER RequireDefenderProtection
+    Requires tenant-wide Defender protection in addition to EOP coverage for preset policies.
     #>
     [CmdletBinding()]
     [OutputType([object[]])]
-    param()
+    param(
+        [switch] $RequireDefenderProtection
+    )
 
     $policies = @(Get-MtExo -Request AntiPhishPolicy)
     $antiPhishRules = @(Get-MtExo -Request AntiPhishRule)
     $presetRules = @(Get-MtExo -Request EOPProtectionPolicyRule)
+    $defenderPresetRules = if ($RequireDefenderProtection) {
+        @(Get-MtExo -Request ATPProtectionPolicyRule)
+    }
     $tenantDomains = @(
         Get-MtExo -Request AcceptedDomain |
             ForEach-Object {
@@ -56,7 +65,17 @@
                     (& $coversAllTenantDomains $_)
                 }
             ).Count -gt 0
-        } elseif (-not $coversAllRecipients) {
+            if ($coversAllRecipients -and $RequireDefenderProtection) {
+                $coversAllRecipients = @(
+                    $defenderPresetRules | Where-Object {
+                        $_.State -eq 'Enabled' -and
+                        $_.Identity -match [regex]::Escape($policy.RecommendedPolicyType) -and
+                        (& $coversAllTenantDomains $_)
+                    }
+                ).Count -gt 0
+            }
+        }
+        elseif (-not $coversAllRecipients) {
             $policyRules = @(
                 $antiPhishRules | Where-Object {
                     $_.State -eq 'Enabled' -and

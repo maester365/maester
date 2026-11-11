@@ -28,7 +28,6 @@
         Mitre = ('T1114.003', 'T1204.001'),
         Control = 'cisa-scuba:MS.SECURITYSUITE.4.1',
         Service = 'ExchangeOnline',
-        License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
         Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
     )]
