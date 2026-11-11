@@ -46,10 +46,10 @@
     param(
         # Days without a sign-in after which an account must be disabled.
         [ValidateRange(1, 365)]
-        [int] $InactiveDays = 35
+        [int] $MaximumInactiveDays = 35
     )
 
-    $cutoff = [datetime]::UtcNow.AddDays(-$InactiveDays)
+    $cutoff = [datetime]::UtcNow.AddDays(-$MaximumInactiveDays)
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -Filter 'accountEnabled eq true' -Select id, userPrincipalName, displayName, userType, accountEnabled, createdDateTime, signInActivity)
     $inactive = foreach ($user in $users) {
         if ($user.accountEnabled -ne $true) { continue }
@@ -68,13 +68,13 @@
     $testResult = $inactive.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Every enabled user signed in within the last $InactiveDays days ($($users.Count) users checked)."
+        $testResultMarkdown = "Well done. Every enabled user signed in within the last $MaximumInactiveDays days ($($users.Count) users checked)."
     } else {
         $shown = @($inactive | Sort-Object LastSignIn, userPrincipalName | Select-Object -First 100)
         $table = "| User | Type | Last interactive sign-in |`n| --- | --- | --- |`n"
         foreach ($user in $shown) { $table += "| $(Get-MtSafeMarkdown $user.userPrincipalName) | $($user.UserType) | $($user.LastSignIn) |`n" }
         if ($inactive.Count -gt $shown.Count) { $table += "`nThe first $($shown.Count) of $($inactive.Count) accounts are shown.`n" }
-        $testResultMarkdown = "$($inactive.Count) enabled account(s) have not signed in for $InactiveDays days or more. Disable them, or document why they must stay enabled.`n`n$table"
+        $testResultMarkdown = "$($inactive.Count) enabled account(s) have not signed in for $MaximumInactiveDays days or more. Disable them, or document why they must stay enabled.`n`n$table"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

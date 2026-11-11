@@ -208,6 +208,7 @@ function Clear-MtNativeTestState {
     )
     if ($__MtSession.TestResultDetail -and $__MtSession.TestResultDetail.ContainsKey($Id)) { $null = $__MtSession.TestResultDetail.Remove($Id) }
     if ($__MtSession.NativeReturnValue -and $__MtSession.NativeReturnValue.ContainsKey($Id)) { $null = $__MtSession.NativeReturnValue.Remove($Id) }
+    if ($__MtSession.SettingRead -and $__MtSession.SettingRead.ContainsKey($Id)) { $null = $__MtSession.SettingRead.Remove($Id) }
 }
 
 function New-MtNativeWorkItem {
@@ -373,7 +374,7 @@ function Expand-MtTestFamily {
                     }
                     if ($ownParameters -is [System.Collections.IDictionary]) { foreach ($k in $ownParameters.Keys) { $configValues[[string]$k] = $ownParameters[$k] } }
                     else { foreach ($prop in $ownParameters.PSObject.Properties) { $configValues[$prop.Name] = $prop.Value } }
-                    $binding = ConvertTo-MtTestParameter -Test $test -ConfigValue $configValues -Override $overrideValues
+                    $binding = ConvertTo-MtTestParameter -Test $test -ConfigValue $configValues -Override $overrideValues -GlobalSetting $RunConfig.GlobalSettings
                     $instanceRow.EffectiveParameters = $binding.Effective
                     if ($binding.Error) {
                         $instanceRow.Disposition = 'Error'; $instanceRow.ReasonCode = 'InvalidConfiguration'; $instanceRow.ReasonDetail = $binding.Error
@@ -569,6 +570,9 @@ function ConvertTo-MtNativeRow {
         ParentId        = if ($isInstance -or $test.InstanceSource) { $test.Id } else { $null }
         InstanceId      = if ($isInstance) { $id } else { $null }
         Parameters      = @($PlanRow.EffectiveParameters)
+        # Settings the test read with Get-MtSetting while it ran, itself or through a helper. A setting it
+        # receives as a bound parameter is in Parameters instead.
+        SettingsRead    = [string[]]@(if ($RunResult -and $__MtSession.SettingRead -and $__MtSession.SettingRead.ContainsKey($id)) { $__MtSession.SettingRead[$id] | Sort-Object })
         Diagnostics     = $diagnostics
         # The pack a test comes from (Maester Packs design, section 5.5); null for every other test.
         Package         = if ($test.PSObject.Properties['Package']) { $test.Package } else { $null }
