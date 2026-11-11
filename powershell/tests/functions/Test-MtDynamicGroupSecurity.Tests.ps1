@@ -178,6 +178,8 @@
             $script:TestResult | Should -Match 'pattern or partial matching'
             $script:TestResult | Should -Match 'Include: \[Policy ca\] \(enabled\)'
             $script:TestResult | Should -Match 'Paused \| 1'
+            $script:TestResult | Should -Match ([regex]::Escape('| ` (user.displayName -match "^Admin") ` |'))
+            $script:TestResult | Should -Not -Match '<code>'
         }
 
         It 'separates risky and low-risk candidates into two tables' {
@@ -298,6 +300,32 @@
 
             Test-MtDynamicGroupMemberOfRule | Should -BeFalse
             $script:TestResult | Should -Match "$SourceId`` \(unresolved\)"
+        }
+
+        It 'separates source groups and Conditional Access references with semicolons, and shows the rule as code' {
+            $SourceIds = @('00000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000005')
+            $Rule = "user.memberOf -any (group.objectId -in ['$($SourceIds[0])', '$($SourceIds[1])'])"
+            $Target = Get-TestDynamicGroup -Id 'target' -Rule $Rule
+            $Sources = @(
+                [pscustomobject]@{ id = $SourceIds[0]; displayName = 'Source one' }
+                [pscustomobject]@{ id = $SourceIds[1]; displayName = 'Source two' }
+            )
+            $Policies = @(
+                Get-TestCaPolicy -Id 'include' -IncludeGroups @('target')
+                Get-TestCaPolicy -Id 'exclude' -ExcludeGroups @('target')
+            )
+            Mock -ModuleName Maester Invoke-MtGraphRequest {
+                if ($UniqueId) { return $Sources }
+                return @($Target)
+            }
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $Policies }
+
+            Test-MtDynamicGroupMemberOfRule | Should -BeFalse
+            $script:TestResult | Should -Match '\[Source one\]; \[Source two\]'
+            $script:TestResult | Should -Match ('Include: \[Policy include\] \(enabled\); ' +
+                'Exclude: \[Policy exclude\] \(enabled\)')
+            $script:TestResult | Should -Match ([regex]::Escape("| `` $Rule `` |"))
+            $script:TestResult | Should -Not -Match '<br>|<code>'
         }
 
         It 'still fails and lists the group when the Conditional Access policies cannot be read' {

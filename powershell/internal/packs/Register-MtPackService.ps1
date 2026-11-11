@@ -10,8 +10,12 @@
     connector says OptIn), and a test whose pack is missing gets ServiceNotRegistered. The entry also keeps
     Pack (the pack row), Connector (its manifest entry), DisplayName and Platform.
 
-    The registry is rebuilt from the given pack set each time, so a pack that is no longer installed or
-    allowed loses its services. Returns the service names registered.
+    The settings those packs declare (Settings in maester-pack.json) are added to the settings registry in the
+    same way, so the config is checked against them, Get-MtSetting returns their defaults and a pack test can
+    bind one with [MaesterParameter(Setting = 'Namespace.Key')].
+
+    Both registries are rebuilt from the given pack set each time, so a pack that is no longer installed or
+    allowed loses its services and settings. Returns the service names registered.
     #>
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -20,7 +24,18 @@
     )
 
     $services = @{}
+    $settings = @{}
     foreach ($pack in ($PackSet | Where-Object { $_.Status -eq 'Ready' -and $_.Manifest })) {
+        if ($pack.Manifest.PSObject.Properties['Settings'] -and $pack.Manifest.Settings) {
+            foreach ($p in $pack.Manifest.Settings.PSObject.Properties) {
+                if ($settings.ContainsKey($p.Name)) { Write-Warning "The setting $($p.Name) is declared by both $($settings[$p.Name].Pack) and $($pack.Id); the declaration of $($settings[$p.Name].Pack) is used."; continue }
+                $entry = @{ Pack = [string]$pack.Id }
+                foreach ($field in $p.Value.PSObject.Properties) { $entry[$field.Name] = $field.Value }
+                if (-not $entry.ContainsKey('Default')) { $entry['Default'] = $null }
+                $entry['Sensitive'] = [bool]($entry.ContainsKey('Sensitive') -and $entry['Sensitive'])
+                $settings[$p.Name] = $entry
+            }
+        }
         foreach ($c in $pack.Manifest.Connectors) {
             $name = [string]$c.Service
             if ($services.ContainsKey($name)) { Write-Warning "The service $name is provided by both $($services[$name].Pack.Id) and $($pack.Id); the connector of $($services[$name].Pack.Id) is used."; continue }
@@ -39,6 +54,8 @@
     }
     $script:__MtPackServices = $services
     $script:__MtLayeredServiceRegistry = $null
+    $script:__MtPackSettings = $settings
+    $script:__MtLayeredSettingRegistry = $null
     [string[]]@($services.Keys | Sort-Object)
 }
 

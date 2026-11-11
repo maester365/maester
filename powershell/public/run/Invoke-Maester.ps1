@@ -198,7 +198,7 @@
         # A severity set for a test in the run configuration is the one that counts.
         [string[]] $Severity,
 
-        # Only run the tests of these suites, for example Maester, CISA, CIS, ASD, EIDSCA, ORCA or AD. '*' wildcards are allowed.
+        # Only run the tests of these suites, for example Maester, CISA, CIS, ASD, DISA, EIDSCA, ORCA or AD. '*' wildcards are allowed.
         [string[]] $Suite,
 
         # Run these Maester Packs, by pack ID or code, for example ZTA or maester.zero-trust-assessment.
@@ -772,6 +772,10 @@
             $script:__MtPackSet = @()
         }
 
+        # GlobalSettings is checked once, against the built-in settings and those of the packs in the run, so a
+        # mistyped key or a wrong value is reported here and not by every test that reads it.
+        Assert-MtGlobalSetting -RunConfig $runConfig
+
         # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
         $builtInInventory = $null
         $customInventory = @()
@@ -1017,7 +1021,11 @@
             Set-MtConsolePhase 'Results'
             Write-MtProgress -Activity 'Processing test results' -Status "$(@($pesterResults.Tests).Count + $nativeRows.Count) test(s)" -Force
 
-            # Build the Invoke-Maester command string from bound parameters
+            # Build the Invoke-Maester command string from bound parameters.
+            # Only strings and value types are written out. Any other object is recorded as its
+            # type name, because interpolating it calls its own ToString(), and a caller-supplied
+            # type can use that to place its contents - a connection string, a token - into a
+            # command string that is then stored in the result and the report.
             $invokeMaesterCommand = "Invoke-Maester"
             foreach ($param in $PSBoundParameters.GetEnumerator()) {
                 $paramName = $param.Key
@@ -1026,12 +1034,8 @@
                     if ($paramValue.IsPresent) {
                         $invokeMaesterCommand += " -$paramName"
                     }
-                } elseif ($paramValue -is [array]) {
-                    $invokeMaesterCommand += " -$paramName @('$($paramValue -join "', '")')"
-                } elseif ($paramValue -is [string]) {
-                    $invokeMaesterCommand += " -$paramName '$paramValue'"
                 } elseif ($null -ne $paramValue) {
-                    $invokeMaesterCommand += " -$paramName $paramValue"
+                    $invokeMaesterCommand += " -$paramName $(ConvertTo-MtCommandParameterValue -Value $paramValue)"
                 }
             }
 

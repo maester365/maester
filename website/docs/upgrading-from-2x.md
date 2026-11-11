@@ -163,6 +163,15 @@ The `maester-config.json` format is the same, with new sections. See the
   tenant file that relied on hiding a base value must set it explicitly. Maester warns once and names the
   inherited settings.
 - **`Custom/maester-config.json` works without a root file.**
+- **`GlobalSettings` is checked before the run.** A value of the wrong type for one of Maester's settings, or an
+  `EmergencyAccessAccounts` entry without an `Id` or `UserPrincipalName` or with a `Type` other than `User` or
+  `Group`, stops the run and names the setting. In 2.x such a value was passed to the tests as it was.
+- **Name your own settings `Namespace.Key`.** A `GlobalSettings` key without a dot that Maester does not know,
+  such as one your custom tests read, gives a warning on every run, because it may be a typo of a built-in
+  setting. Rename it, for example `SiteUrl` to `Contoso.SiteUrl`, in the config and in the test.
+- **Tests receive settings as parameters.** A built-in test no longer reads `EmergencyAccessAccounts` itself: it
+  has a parameter bound to the setting, so you can give one test a different value in its `TestSettings` row. See
+  [GlobalSettings](./configuration/run-configuration.md#globalsettings).
 - **New ways to supply config**: `-Config <path | object | array>` and the `MAESTER_CONFIG` environment variable.
   Both make the run hermetic: config files next to the tests are not read.
 
