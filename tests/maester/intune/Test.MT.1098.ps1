@@ -28,7 +28,7 @@
         Service = 'Graph',
         License = 'INTUNE_A',
         Author = 'nicolonsky',
-        Contributor = ('Mynster9361', 'FiraSenax')
+        Contributor = ('Mynster9361', 'FiraSenax', 'julien-ly', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -78,10 +78,26 @@
                 $connectorName = $connector.id
             }
 
+            # The Windows Security Center connector reports 'notSetUp' with no heartbeat until the
+            # first Windows MAM user enrols, even with its own toggle already on (measured on a lab
+            # tenant in #2595; the Intune admin center says the status changes within 30 minutes of
+            # that enrolment). The verdict stays a failure, because Microsoft documents 'notSetUp' as
+            # blocking device threat messages whatever the cause. What changes is the Reason: without
+            # this, the row sends the operator back to the partner to finish a setup that is done.
+            $awaitingWindowsMamEnrolment = $connector.id -eq 'c2b688fe-48c0-464b-a89c-67041aa8fcb2' -and
+                $connector.windowsMobileApplicationManagementEnabled -and
+                $connector.partnerState -eq 'notSetUp'
+
             $isConnected = $connector.partnerState -eq 'enabled'
             $reasons = @(switch ($connector.partnerState) {
                 'enabled' { break }
-                'notSetUp' { 'Setup is incomplete; device threat messages are blocked. Complete setup in Intune and with the partner, or remove an unused connector.' }
+                'notSetUp' {
+                    if ($awaitingWindowsMamEnrolment) {
+                        'Windows MAM is on and this connector stays in notSetUp until the first Windows MAM user enrols; device threat messages are blocked until then. Enrol a MAM user, or remove the connector if Windows MAM is not in use.'
+                    } else {
+                        'Setup is incomplete; device threat messages are blocked. Complete setup in Intune and with the partner, or remove an unused connector.'
+                    }
+                }
                 'unavailable' { 'The connector is deprovisioned; device threat messages are blocked. Ask the MTD partner to provision it again.' }
                 'available' { 'Setup is complete. Turn on a platform toggle to enable the connector.' }
                 'unresponsive' { 'The connector is unresponsive. After its configured unresponsiveness threshold, Intune ignores its compliance state. Check the partner service and connectivity.' }
@@ -93,7 +109,11 @@
             if ($heartbeat.Year -eq 1) {
                 $heartbeatDisplay = 'Never received'
                 $syncIsRecent = $false
-                $reasons += 'No heartbeat has been received. Complete setup and verify that the partner can communicate with Intune.'
+                $reasons += if ($awaitingWindowsMamEnrolment) {
+                    'No heartbeat arrives before that first enrolment.'
+                } else {
+                    'No heartbeat has been received. Complete setup and verify that the partner can communicate with Intune.'
+                }
             } else {
                 $heartbeatDisplay = [string]$connector.lastHeartbeatDateTime
                 # At most one completed day since the heartbeat, so less than 48 hours.

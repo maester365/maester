@@ -2,7 +2,7 @@ This test verifies the health of Intune Mobile Threat Defense Connectors, includ
 
 Each connector must be enabled and have a heartbeat in the last 48 hours. The result table explains unhealthy states and reports a missing or year-1 heartbeat as **Never received**.
 
-A connector in `notSetUp` has not completed setup and blocks device threat messages. A connector in `available` has completed setup but needs a platform toggle enabled. Neither state satisfies this health check. An `unresponsive` connector needs attention because Intune ignores its compliance state once the configured unresponsiveness threshold is reached.
+A connector in `notSetUp` has not completed setup and blocks device threat messages. The **Windows Security Center** connector is a documented special case: with **Connect Windows devices for MAM** already on, it stays in `notSetUp` with no heartbeat until the first Windows MAM user enrols, so its Reason asks for that enrolment rather than for more setup. A connector in `available` has completed setup but needs a platform toggle enabled. Neither state satisfies this health check. An `unresponsive` connector needs attention because Intune ignores its compliance state once the configured unresponsiveness threshold is reached.
 
 #### Remediation action
 
