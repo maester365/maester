@@ -1,5 +1,6 @@
 /* maester.dev theme: the maester.cloud design tokens mapped onto Starlight. */
-@import '@fontsource-variable/inter';
+/* The opsz build: Inter switches to its display cut at large sizes, as SF Pro does. */
+@import '@fontsource-variable/inter/opsz.css';
 @import '@fontsource/geist-mono/400.css';
 @import '@fontsource/geist-mono/500.css';
 
@@ -88,8 +89,8 @@
 
 @media (min-width: 50rem) {
 	:root {
-		/* Room for the topic tabs under the search row. */
-		--sl-nav-height: 6rem;
+		/* The site's top bar, then the row of docs tabs with search and the version picker. */
+		--sl-nav-height: 6.6rem;
 	}
 }
 
@@ -162,6 +163,14 @@ h1#_top {
 .sl-markdown-content :is(th, td) {
 	border-bottom: 1px solid var(--mt-line);
 	padding: 0.55rem 0.75rem;
+}
+/* A long value in code, such as a permission string, wraps inside its cell instead of pushing the other columns out
+   of view. The first column is usually an ID or a name, which stays on one line rather than breaking at its hyphens. */
+.sl-markdown-content td code {
+	overflow-wrap: anywhere;
+}
+.sl-markdown-content td:first-child code {
+	white-space: nowrap;
 }
 .sl-markdown-content details {
 	border: 1px solid var(--mt-line);
@@ -318,4 +327,44 @@ img[src$='/products/exchange.png'] {
 	--ifm-color-emphasis-700: var(--sl-color-gray-2);
 	--ifm-color-emphasis-800: var(--sl-color-gray-1);
 	--ifm-color-emphasis-900: var(--sl-color-white);
+}
+
+/* Moving between pages: the browser keeps the old page on screen until the new one can paint, then cross-fades.
+   The top bar is the same on every page, so it carries over in place instead of being redrawn. */
+@view-transition {
+	navigation: auto;
+}
+.site-header__inner {
+	view-transition-name: mt-site-bar;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 120ms;
+}
+@media (prefers-reduced-motion: reduce) {
+	@view-transition {
+		navigation: none;
+	}
+}
+
+/* Previous and next at the foot of a docs page: a quiet pair of links, not two big cards. */
+.pagination-links {
+	gap: 0.75rem;
+}
+.pagination-links a {
+	padding: 0.6rem 0.9rem;
+	gap: 0.6rem;
+	border-color: var(--sl-color-gray-5);
+	border-radius: 10px;
+	box-shadow: none;
+	font-size: 0.8rem;
+	line-height: 1.35;
+}
+.pagination-links .link-title {
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.35;
+}
+.pagination-links svg {
+	font-size: 1rem;
 }

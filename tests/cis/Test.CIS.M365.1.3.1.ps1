@@ -37,38 +37,9 @@
     param()
 
     Write-Verbose 'Get domain details for the password expiry period'
-    $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
-
-    Write-Verbose 'Get verified and managed domains where passwords are set to expire'
-
-    $noPasswordExpiryPeriodInDays = [int]::MaxValue
-
-    $excludedDomains = @()
-    $applicableDomains = @()
-    foreach ($domain in $domains) {
-        # Password policy checks apply only to managed and verified domains.
-        if (($domain.authenticationType -ne "Managed") -or ($domain.isVerified -ne $true)) {
-            $excludedDomains += $domain
-            continue
-        }
-
-        $applicableDomains += $domain
-    }
-
-    $result = $applicableDomains | Where-Object {
-        $passwordValidityPeriodInDays = 0
-        $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
-        # If null or a boolean, the password expiry period is not set, and passwords do not expire.
-        # Return false to indicate this domain does not fail the test.
-        if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
-            return $false
-        }
-        if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
-            return $false
-        }
-        # If valid integer, check if equal to the value that indicates no password expiry (MaxValue).
-        return $passwordValidityPeriodInDays -ne $noPasswordExpiryPeriodInDays
-    }
+    # Password policy checks apply only to managed and verified domains. A domain that stores no period does not expire passwords.
+    $domains = @(Get-MtDomainPasswordValidity)
+    $result = @($domains | Where-Object { $_.IsApplicable -and $_.IsSet -and -not $_.NeverExpires })
 
     $testResult = ($result | Measure-Object).Count -eq 0
 
@@ -82,9 +53,9 @@
     $resultMd += "| --- | --- |`n"
     foreach ($item in $domains) {
         $itemResult = '❌ Fail'
-        if ($item.id -in $excludedDomains.id) {
+        if (-not $item.IsApplicable) {
             $itemResult = '⏭️ Skip'
-        } elseif ($item.id -notin $result.id) {
+        } elseif ($item.Id -notin $result.Id) {
             $itemResult = '✅ Pass'
         }
         $resultMd += "| $($item.Id) | $($itemResult) |`n"
