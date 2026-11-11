@@ -116,6 +116,13 @@ export default defineConfig({
 								{ label: 'Alerts', items: [{ autogenerate: { directory: 'docs/alerts' } }] },
 								{ label: 'Many tenants', items: [{ autogenerate: { directory: 'docs/multi-tenant' } }] },
 								{ label: 'Active Directory', items: ['docs/advanced/active-directory'] },
+								{
+									label: 'Maester Packs',
+									items: [
+										{ autogenerate: { directory: 'docs/packs' } },
+										{ label: 'Browse packs', link: 'https://packs.maester.cloud', attrs: { target: '_blank' } },
+									],
+								},
 								{ label: 'Write your own tests', items: [{ autogenerate: { directory: 'docs/writing-tests' } }, { label: 'Test builder', link: '/test-builder' }] },
 								{ label: 'Community', items: ['docs/watch', 'docs/community-projects', 'docs/contributing', 'docs/agents-and-skills', 'docs/faq'] },
 							],
@@ -160,16 +167,6 @@ export default defineConfig({
 							icon: 'seti:powershell',
 							// Grouped by job (the module's folders); the sidebar can also list them A to Z (overrides/Sidebar.astro).
 							items: commandsSidebar(),
-						},
-						{
-							id: 'packs',
-							label: 'Packs',
-							link: '/docs/packs',
-							icon: 'puzzle',
-							items: [
-								{ label: 'Maester Packs', items: [{ autogenerate: { directory: 'docs/packs' } }] },
-								{ label: 'Browse packs', link: 'https://packs.maester.cloud', attrs: { target: '_blank' } },
-							],
 						},
 						{
 							// The frozen 2.x docs: its own sidebar, left out of the header tabs.
