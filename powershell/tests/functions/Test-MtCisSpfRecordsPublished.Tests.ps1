@@ -36,6 +36,11 @@
         @{ Record = 'v=spf1 -all' }
         @{ Record = 'V=SPF1   -ALL ' }
         @{ Record = 'v=spf1 exp=why.example.com -all' }
+        @{ Record = 'v=spf1 exp=explain._spf.%{d} -all' }
+        @{ Record = 'v=spf1 exp=%{ir}.%{v}.%{d2r-}.example.com -all' }
+        @{ Record = 'V=SPF1 EXP=%{S}.%{L1R+}.example.com. -ALL' }
+        @{ Record = 'v=spf1 exp=why%%.%_.%-.example.com -all' }
+        @{ Record = 'v=spf1 exp=why.example.xn--p1ai -all' }
     ) {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
 
@@ -48,6 +53,18 @@
         @{ Record = 'v=spf1 redirect=_spf.example.net' }
         @{ Record = 'v=spf1 -all exp=why.example.com' }
         @{ Record = 'v=spf1 exp=a.example exp=b.example -all' }
+        @{ Record = 'v=spf1 exp=%(d).example.com -all' }
+        @{ Record = 'v=spf1 exp=%{d.example.com -all' }
+        @{ Record = 'v=spf1 exp=%{x}.example.com -all' }
+        @{ Record = 'v=spf1 exp=%{d2rr}.example.com -all' }
+        @{ Record = 'v=spf1 exp=%{d:}.example.com -all' }
+        @{ Record = 'v=spf1 exp=why%.example.com -all' }
+        @{ Record = 'v=spf1 exp=%{c}.example.com -all' }
+        @{ Record = 'v=spf1 exp=why.example.123 -all' }
+        @{ Record = 'v=spf1 exp=why.example.com- -all' }
+        @{ Record = 'v=spf1 exp= -all' }
+        @{ Record = 'v=spf10 exp=%{d} -all' }
+        @{ Record = 'v=spf1 exp=%{d} ~all' }
     ) {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
         $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 -all' }
