@@ -289,7 +289,39 @@ $nativeIds = [System.Collections.Generic.HashSet[string]]::new([System.StringCom
 $nativeTestFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
     Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' }
 foreach ($file in $nativeTestFiles) {
-    $null = $nativeIds.Add($file.BaseName.Substring('Test.'.Length))
+    $nativeId = $file.BaseName.Substring('Test.'.Length)
+    $null = $nativeIds.Add($nativeId)
+
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref] $tokens, [ref] $parseErrors)
+    if ($parseErrors.Count -gt 0) { continue }
+    $nativeFunction = $ast.EndBlock.Statements |
+        Where-Object {
+            $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $_.Body.ParamBlock -and
+            ($_.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' })
+        } |
+        Select-Object -First 1
+    if (-not $nativeFunction) { continue }
+
+    $attribute = $nativeFunction.Body.ParamBlock.Attributes |
+        Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } |
+        Select-Object -First 1
+    $titleArgument = $attribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
+    if ($titleArgument.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) {
+        $title = Get-NormalizedTitle -Title $titleArgument.Argument.Value
+        if ($title) {
+            if (-not $titleIndex.ContainsKey($title)) { $titleIndex[$title] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
+            $null = $titleIndex[$title].Add($nativeId)
+        }
+    }
+
+    $functionName = $nativeFunction.Name
+    if ($functionName) {
+        if (-not $functionIndex.ContainsKey($functionName)) { $functionIndex[$functionName] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
+        $null = $functionIndex[$functionName].Add($nativeId)
+    }
 }
 
 #region Map

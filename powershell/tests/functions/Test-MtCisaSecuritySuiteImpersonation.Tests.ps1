@@ -84,6 +84,35 @@ Describe 'CISA Security Suite impersonation protection checks' {
         Test-MtCisaOwnedDomainImpersonationProtection | Should -BeFalse
     }
 
+    It 'uses the same recipient-scope rules for preset policies' {
+        $script:exoResponses = @{
+            AntiPhishPolicy = @(
+                [pscustomobject]@{
+                    Name = 'Standard Preset Security Policy'; Identity = 'Standard Preset Security Policy'
+                    Enabled = $true; IsDefault = $false; RecommendedPolicyType = 'Standard'
+                }
+            )
+            AntiPhishRule = @()
+            EOPProtectionPolicyRule = @(
+                [pscustomobject]@{
+                    State = 'Enabled'; Identity = 'Standard Preset Security Policy'
+                    SentTo = @(); SentToMemberOf = @(); RecipientDomainIs = @('contoso.com', 'fabrikam.com')
+                    ExceptIfSentTo = @(); ExceptIfSentToMemberOf = @(); ExceptIfRecipientDomainIs = @()
+                }
+            )
+            AcceptedDomain = @(
+                [pscustomobject]@{ DomainName = 'contoso.com' }
+                [pscustomobject]@{ DomainName = 'fabrikam.com' }
+            )
+        }
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -HaveCount 1
+
+        $script:exoResponses.EOPProtectionPolicyRule[0].ExceptIfRecipientDomainIs = @('contoso.com')
+        @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -BeNullOrEmpty
+    }
+
     It 'requires configured partner domains and protection for every configured domain' {
         $script:exoResponses = @{
             AntiPhishPolicy = @(

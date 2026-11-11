@@ -82,6 +82,14 @@
         $missing | Should -BeNullOrEmpty
     }
 
+    It 'maps historical IDs to their current native checks' {
+        foreach ($legacyId in @('CISA.MS.EXO.03.1', 'MS.EXO.03.1')) {
+            $entry = @($script:table.Entries | Where-Object LegacyId -EQ $legacyId)
+            $entry | Should -HaveCount 1
+            $entry[0].CurrentId | Should -Be 'CISA.MS.EXO.3.1'
+        }
+    }
+
     It 'marks retired entries with Rule retired or manual' {
         $bad = @($script:table.Entries | Where-Object { ($_.CurrentId -eq 'retired') -and ($_.Rule -notin 'retired', 'manual') })
         $bad | Should -BeNullOrEmpty

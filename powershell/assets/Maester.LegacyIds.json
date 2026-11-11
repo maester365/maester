@@ -4,88 +4,88 @@
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
     },
     {
       "LegacyId": "2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
       "FirstSeenCommit": "a43b8c0dde5d19dbdceff2207fceb64305ef7a7b",
       "LastSeenCommit": "a43b8c0dde5d19dbdceff2207fceb64305ef7a7b",
       "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
     },
     {
       "LegacyId": "2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
     },
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "title",
       "FirstSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
     },
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
     },
     {
       "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "function",
       "FirstSeenCommit": "f57df8fe3eafecad5d9532fef92b24e3c20a75ef",
       "LastSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
     },
     {
       "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
     },
     {
       "LegacyId": "2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.5",
+      "Rule": "title",
       "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1"
     },
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "title",
       "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenCommit": "d559e19379a79601c1b0fbe83e21f0e1392ffebe",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
     },
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
     },
     {
       "LegacyId": "2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.7",
+      "Rule": "function",
       "FirstSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
@@ -828,216 +828,216 @@
     },
     {
       "LegacyId": "App management restrictions on applications and service principals is configured and enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1002",
+      "Rule": "title",
       "FirstSeenCommit": "c719496991fe90b2e629063847650f943d0df69e",
       "LastSeenCommit": "c719496991fe90b2e629063847650f943d0df69e",
       "LastSeenFile": "tests/Identity/Test-AppManagementPolicies.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.1.1 (L1) Ensure Administrative accounts are separate and cloud-only",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "function",
       "FirstSeenCommit": "19128f8d7c31df7d62a9bb665ee94d1737f818a0",
       "LastSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.1.1: Ensure Administrative accounts are separate and cloud-only",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.1.1",
+      "Rule": "function",
       "FirstSeenCommit": "a5165f7a75438136ebce918231ef9c05434b00f4",
       "LastSeenCommit": "6596496226d18406bbc001dd119c2139dde85a2f",
       "LastSeenFile": "tests/cis/Test-MtCisCloudAdmin.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.1.3 (L1) Ensure that between two and four global admins are designated",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.1.3",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisGlobalAdminCount.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.2.1",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCis365PublicGroup.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.2.2 (L1) Ensure sign-in to shared mailboxes is blocked",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.2.2",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSharedMailboxSignIn.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.3.1 (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.3.1",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisPasswordExpiry.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.3.3",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisCalendarSharing.Tests.ps1"
     },
     {
       "LegacyId": "CIS 1.3.6 (L2) Ensure the customer lockbox feature is enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.3.6",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisCustomerLockBox.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.1",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeLink.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.11 (L2) Ensure comprehensive attachment filtering is applied",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.11",
+      "Rule": "title",
       "FirstSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.12 (L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.12",
+      "Rule": "title",
       "FirstSeenCommit": "5a82f51d84dffda157308885725462e0d18c3aad",
       "LastSeenCommit": "5a82f51d84dffda157308885725462e0d18c3aad",
       "LastSeenFile": "tests/cis/Test-MtCisHostedConnectionFilterPolicy.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.13 (L1) Ensure the connection filter safe list is off (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.13",
+      "Rule": "title",
       "FirstSeenCommit": "222cde5ea3722f391da338d4869d86069ac5f56f",
       "LastSeenCommit": "222cde5ea3722f391da338d4869d86069ac5f56f",
       "LastSeenFile": "tests/cis/Test-MtCisConnectionFilterSafeList.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.14 (L2) Ensure comprehensive attachment filtering is applied",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.11",
+      "Rule": "title",
       "FirstSeenCommit": "6697e81f452c6673d15ca08367ee881d9bcff886",
       "LastSeenCommit": "83b2c5d0b7e4f470fbbd05ed54dd07bf24fbdf99",
       "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.2",
+      "Rule": "function",
       "FirstSeenCommit": "7baebb2f069ebf4f6a0333cbc32ea3f1458b09be",
       "LastSeenCommit": "c15b144941c28dbe4819c3944342ec44a07a547b",
       "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilter.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.2",
+      "Rule": "title",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilter.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.3",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.4",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.5",
+      "Rule": "title",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.6",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.7",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.9",
+      "Rule": "title",
       "FirstSeenCommit": "dfffedfaf152607c1d573549d2443890205d57ea",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisDkim.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.4.4",
+      "Rule": "function",
       "FirstSeenCommit": "ae728316378e9d63f8b30e4bc6f0c36974553e29",
       "LastSeenCommit": "ae728316378e9d63f8b30e4bc6f0c36974553e29",
       "LastSeenFile": "tests/cis/Test-MtCisZAP.Tests.ps1"
     },
     {
       "LegacyId": "CIS 2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.4.4",
+      "Rule": "title",
       "FirstSeenCommit": "e88fddcf9725996d957018ee33f51383c651d940",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisZAP.Tests.ps1"
     },
     {
       "LegacyId": "CIS 3.1.1 (L1) Ensure Microsoft 365 audit log search is Enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.3.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "22714f8f530937f69cf8ffb31fb39c84945e128b",
       "LastSeenCommit": "22714f8f530937f69cf8ffb31fb39c84945e128b",
       "LastSeenFile": "tests/cis/Test-MtCisAuditLogSearch.Tests.ps1"
     },
     {
       "LegacyId": "CIS 8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.8.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisThirdPartyFileSharing.Tests.ps1"
     },
     {
       "LegacyId": "CIS 8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.8.2.2",
+      "Rule": "title",
       "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisCommunicateWithUnmanagedTeamsUsers.Tests.ps1"
@@ -1052,80 +1052,80 @@
     },
     {
       "LegacyId": "CIS 8.4.1 (L1) Ensure all or a majority of third-party and custom apps are blocked",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.8.4.1",
+      "Rule": "function",
       "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisThirdPartyAndCustomApps.Tests.ps1"
     },
     {
       "LegacyId": "CIS 8.5.3 (L1) Ensure only people in my org can bypass the lobby",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.8.5.3",
+      "Rule": "title",
       "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1"
     },
     {
       "LegacyId": "CIS 8.6.1 (L1) Ensure users can report security concerns in Teams to internal destination",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.8.6.1",
+      "Rule": "function",
       "FirstSeenCommit": "3d82ef864339525388e94be7469f304dd3aea67e",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisTeamsReportSecurityConcerns.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.03.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.3.1",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.06.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.6.1",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.06.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.6.2",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.07.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.7.1",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.08.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.8.1",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.09.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.09.5",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.5",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
@@ -1180,40 +1180,40 @@
     },
     {
       "LegacyId": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1043",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
     },
     {
       "LegacyId": "Ensure additional storage providers are restricted in Outlook on the web",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
     },
     {
       "LegacyId": "Ensure built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1054",
+      "Rule": "function",
       "FirstSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
       "LastSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
       "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
     },
     {
       "LegacyId": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1054",
+      "Rule": "title",
       "FirstSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
       "LastSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
       "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
     },
     {
       "LegacyId": "Ensure intune device clean-up rule is configured",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1053",
+      "Rule": "title",
       "FirstSeenCommit": "824da0eb7d27a58b362a77084722299fb229dd03",
       "LastSeenCommit": "7347d0b002ada9eaf4e8a44029ce6d8c80dc7375",
       "LastSeenFile": "tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1"
@@ -1452,8 +1452,8 @@
     },
     {
       "LegacyId": "MS.AAD.1.1v1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.AAD.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "70102b643780d9d16f536152758b04fd6962ffc9",
       "LastSeenCommit": "79780a4d0e1660e80cde62a48e4ba7345f9dbf6a",
       "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
@@ -1468,8 +1468,8 @@
     },
     {
       "LegacyId": "MS.AAD.2.1v1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.AAD.2.1",
+      "Rule": "title",
       "FirstSeenCommit": "8577f2b693f5492db308555680084c51609f8c63",
       "LastSeenCommit": "7f7834cb28e6a0e99b942970781c63d1ff0f1703",
       "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
@@ -1484,8 +1484,8 @@
     },
     {
       "LegacyId": "MS.AAD.2.2v1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.AAD.2.2",
+      "Rule": "title",
       "FirstSeenCommit": "3c4b65421ae30460f255d30102b161a809983339",
       "LastSeenCommit": "3c4b65421ae30460f255d30102b161a809983339",
       "LastSeenFile": "tests/CISA/Test-MtCisaNotifyHighRisk.Tests.ps1"
@@ -1708,160 +1708,160 @@
     },
     {
       "LegacyId": "MS.EXO.01.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAutoExternalForwarding.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.02.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.2.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfRestriction.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.02.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.2.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSpfDirective.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.03.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.3.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDkim.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.04.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.4.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordExist.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.04.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.4.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcRecordReject.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.04.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.4.3",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDmarcAggregateCisa.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.05.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.5.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaSmtpAuthentication.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.06.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.6.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaContactSharing.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.06.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.6.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaCalendarSharing.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.07.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.7.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExternalSenderWarning.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.08.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.8.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlp.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.08.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.8.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpPii.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.08.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.8.3",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpAlternate.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.08.4",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.8.4",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaDlpBaselineRule.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFileType.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.4",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.4",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaEmailFilterAlternative.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.5",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.5",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
@@ -2212,8 +2212,8 @@
     },
     {
       "LegacyId": "MT. Check 'User Access Administrators' at root scope",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1056",
+      "Rule": "function",
       "FirstSeenCommit": "5fc121e488c1de3399d8b14dfc56cafd3f81bf7e",
       "LastSeenCommit": "0c90df79d37fc71ad0a64a7d911497b49bcfb2d9",
       "LastSeenFile": "tests/Maester/Azure/UserAccessAdmin.Tests.ps1"
@@ -2292,8 +2292,8 @@
     },
     {
       "LegacyId": "MT.1040",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
       "FirstSeenCommit": "ae83037141667b8adda14376303a28118e4d265a",
       "LastSeenCommit": "3df09deb503965936fc2029882ce949ca1f42764",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -2380,16 +2380,16 @@
     },
     {
       "LegacyId": "MT.XXX1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1086",
+      "Rule": "title",
       "FirstSeenCommit": "013cce9d605c9859a43bd1c0c6d75e0a26384532",
       "LastSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
       "LastSeenFile": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1"
     },
     {
       "LegacyId": "MT.XXX2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1087",
+      "Rule": "function",
       "FirstSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
       "LastSeenCommit": "18a24fd602180a43558b93d9bd9bc21da192fe37",
       "LastSeenFile": "tests/XSPM/Test-XspmCriticalAssetManagement.Tests.ps1"

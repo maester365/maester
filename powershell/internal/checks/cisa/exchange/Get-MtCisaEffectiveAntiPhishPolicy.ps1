@@ -1,4 +1,11 @@
 ﻿function Get-MtCisaEffectiveAntiPhishPolicy {
+    <#
+    .SYNOPSIS
+    Gets enabled anti-phishing policies that effectively cover all tenant recipients.
+
+    .DESCRIPTION
+    Returns policies whose recipient rules cover every accepted domain without recipient exclusions.
+    #>
     [CmdletBinding()]
     [OutputType([object[]])]
     param()
@@ -46,9 +53,7 @@
                 $presetRules | Where-Object {
                     $_.State -eq 'Enabled' -and
                     $_.Identity -match [regex]::Escape($policy.RecommendedPolicyType) -and
-                    (& $isEmpty $_.SentTo) -and
-                    (& $isEmpty $_.SentToMemberOf) -and
-                    (& $isEmpty $_.RecipientDomainIs)
+                    (& $coversAllTenantDomains $_)
                 }
             ).Count -gt 0
         } elseif (-not $coversAllRecipients) {
