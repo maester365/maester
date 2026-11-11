@@ -70,6 +70,14 @@
         $script:resultDetail.Result | Should -Match '\| example\.com \| Sending \|'
     }
 
+    It 'uses the shared ParkedDomains setting when no test override is supplied' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 -all' }
+        Mock Get-MtSetting -ModuleName Maester { @('example.com') }
+
+        Test-MtCisSpfRecordsPublished | Should -BeTrue
+        $script:resultDetail.Result | Should -Match '\| example\.com \| Parked \|'
+    }
+
     It 'keeps the soft-fail rule for sending domains' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 include:spf.example.net ~all' }
 

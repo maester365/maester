@@ -14,7 +14,7 @@ There should be no impact of setting up DKIM however, organizations should ensur
 
 The check requires Exchange DKIM to be enabled and its status to be **Valid** for every domain except the parked domains you list.
 
-Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so list your parked domains, the ones that never send email, in this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. Every other domain gets the sending-domain audit.
+Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so set the shared `GlobalSettings.ParkedDomains` list in the Maester config for all three checks. A per-test `ParkedDomains` value in `TestSettings[].Parameters` overrides the shared list for that check. Every other domain gets the sending-domain audit.
 
 For a parked domain, CIS asks that DKIM records are not published. The check passes when none of the selector1/selector2 CNAME or TXT records exist, and fails when one does. If some of those lookups fail, the domain is marked for investigation; if DNS lookups are not available at all, it is skipped. Only the standard Exchange Online selectors are checked.
 

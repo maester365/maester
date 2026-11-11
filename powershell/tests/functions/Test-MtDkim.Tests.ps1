@@ -139,6 +139,13 @@ Describe 'CIS DKIM with ParkedDomains' {
         Should -Invoke Resolve-MtDnsRecord -ModuleName Maester -Exactly 0
     }
 
+    It 'uses the shared ParkedDomains setting when no test override is supplied' {
+        Mock Get-MtSetting -ModuleName Maester { @('parked.example') }
+
+        Test-MtCisDkim | Should -BeTrue
+        $script:detail.Result | Should -Match '\| parked\.example \| Parked \|'
+    }
+
     It 'passes a listed domain with no selector records' {
         Test-MtCisDkim -ParkedDomains 'PARKED.example.' | Should -BeTrue
         $script:detail.Result | Should -Match '\| parked\.example \| Parked \|'

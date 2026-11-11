@@ -10,5 +10,6 @@
         GitHubOrganization      = @{ Type = 'string'; Default = ''; Sensitive = $false; Description = 'GitHub organization that the GitHub checks read.' }
         GitHubApiBaseUri        = @{ Type = 'string'; Default = 'https://api.github.com'; Sensitive = $false; Description = 'Base URI of the GitHub REST API.' }
         GitHubApiVersion        = @{ Type = 'string'; Default = '2022-11-28'; Sensitive = $false; Description = 'GitHub REST API version.' }
+        ParkedDomains           = @{ Type = 'string[]'; Default = @(); Sensitive = $false; Description = 'Domains that do not send email and use the parked-domain audit in CIS 2.1.8-2.1.10 checks.' }
     }
 }

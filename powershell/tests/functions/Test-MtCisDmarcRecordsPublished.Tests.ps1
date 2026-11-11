@@ -127,6 +127,16 @@
         $script:resultDetail.Result | Should -Match '\| parked\.example \| Parked \|'
     }
 
+    It 'uses the shared ParkedDomains setting when no test override is supplied' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
+        Mock Get-MtSetting -ModuleName Maester { @('parked.example') }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeTrue
+        $script:resultDetail.Result | Should -Match '\| parked\.example \| Parked \|'
+    }
+
     It 'fails a parked domain whose DMARC policy is quarantine' {
         $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
         $script:registrableDomains = @{ 'parked.example' = 'parked.example' }

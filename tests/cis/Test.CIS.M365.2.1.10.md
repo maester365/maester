@@ -4,7 +4,7 @@ DMARC tells receiving servers what to do with mail that fails SPF and DKIM align
 
 The test uses the record at the domain, or at its organisational domain (for example contoso.com for mail.contoso.com) when the domain has no valid record, including a malformed record, applying the subdomain policy where one exists. For sending domains, the policy must apply to 100 percent of mail (no pct tag, or pct=100), and both rua and ruf addresses must be mailto addresses.
 
-Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so list your parked domains, the ones that never send email, in this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. Every other domain gets the sending-domain audit.
+Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so set the shared `GlobalSettings.ParkedDomains` list in the Maester config for all three checks. A per-test `ParkedDomains` value in `TestSettings[].Parameters` overrides the shared list for that check. Every other domain gets the sending-domain audit.
 
 Parked domains use the CIS parked-domain requirement: a valid DMARC record with `p=reject`; rua, ruf and pct are not required. When the DNS lookup is not available for a domain, it is listed as Not checked.
 

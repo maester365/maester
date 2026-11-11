@@ -2,7 +2,7 @@ Sending domains must publish an SPF record that ends in a hard fail (-all) or so
 
 SPF lists the servers that may send mail for a domain. Receiving servers use it to reject, or to mark as suspicious, mail that pretends to come from your domain. Without an SPF record, or with one that ends in a neutral or permissive qualifier, anyone can send mail that looks like it comes from you without raising a flag.
 
-Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so list your parked domains, the ones that never send email, in this test's `ParkedDomains` parameter in `TestSettings[].Parameters`. Every other domain gets the sending-domain audit.
+Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so set the shared `GlobalSettings.ParkedDomains` list in the Maester config for all three checks. A per-test `ParkedDomains` value in `TestSettings[].Parameters` overrides the shared list for that check. Every other domain gets the sending-domain audit.
 
 For a parked domain the record must be `v=spf1 -all`; a `~all` policy does not meet the parked-domain audit. For sending domains, the test follows a redirect modifier only when the record has no all mechanism, since receivers ignore the redirect in that case. Domains in the onmicrosoft.com namespace are skipped.
 
