@@ -36,7 +36,7 @@
     [OutputType([bool])]
     param(
         # Age, in days, after which a trust is considered stale.
-        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 60
+        [ValidateRange(1, 3650)] [int] $MaximumValidationAgeDays = 60
     )
 
     Write-Verbose "Starting Test-MtAdTrustStaleCount"
@@ -54,7 +54,7 @@
     $totalCount = ($trusts | Measure-Object).Count
 
     # Define stale threshold
-    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
+    $staleThreshold = (Get-Date).AddDays(-$MaximumValidationAgeDays)
 
     # Count stale trusts (those not validated within the configured threshold)
     $staleTrusts = $trusts | Where-Object {
@@ -82,7 +82,7 @@
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Trusts | $totalCount |" + "`n"
-    $result += "| Stale Trusts (>$StaleThresholdDays days) | $staleCount |" + "`n"
+    $result += "| Stale Trusts (>$MaximumValidationAgeDays days) | $staleCount |" + "`n"
     $result += "| Unknown Validation Status | $unknownCount |" + "`n"
     $result += "| Valid Trusts | $($totalCount - $staleCount - $unknownCount) |" + "`n" + "`n"
 
@@ -91,11 +91,11 @@
     } elseif ($staleCount -eq 0 -and $unknownCount -eq $totalCount) {
         $testResultMarkdown = "No stale trusts detected. None of the $totalCount configured trusts has a recorded validation date, so staleness cannot be determined from available data.`n`n%TestResult%"
     } elseif ($staleCount -eq 0 -and $unknownCount -gt 0) {
-        $testResultMarkdown = "No stale trusts detected. $unknownCount trust(s) have an unknown validation status. The remaining $($totalCount - $unknownCount) configured trust(s) have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "No stale trusts detected. $unknownCount trust(s) have an unknown validation status. The remaining $($totalCount - $unknownCount) configured trust(s) have been validated within the last $MaximumValidationAgeDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
     } elseif ($staleCount -eq 0) {
-        $testResultMarkdown = "All $totalCount configured trusts have been validated within the last $StaleThresholdDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "All $totalCount configured trusts have been validated within the last $MaximumValidationAgeDays days. The most recent validation was on $mostRecentValidation.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Found $staleCount stale trust(s) that have not been validated for more than $StaleThresholdDays days. These trusts should be reviewed and removed if no longer needed.`n`n%TestResult%"
+        $testResultMarkdown = "Found $staleCount stale trust(s) that have not been validated for more than $MaximumValidationAgeDays days. These trusts should be reviewed and removed if no longer needed.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

@@ -62,5 +62,6 @@
     & $row 'Get-MtConnector' 'Service' 'Service'
 
     & $row 'Get-MtSetting' 'Name' 'Setting'
+    & $row 'New-MtTest' 'Setting' 'Setting'
     & $row 'Get-MtRoleMember' 'Role' 'Role'
 }

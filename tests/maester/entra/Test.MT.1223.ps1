@@ -59,9 +59,8 @@
     foreach ($Finding in $Findings) {
         $Name = [string]$Finding.DisplayName
         if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-        $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-        $Name = $Name -replace "`r?`n", ' '
-        $Permission = [System.Net.WebUtility]::HtmlEncode([string]$Finding.Permission)
+        $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+        $Permission = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Finding.Permission))
         $Result += "`n| $($Finding.AgentId) | $Name | $($Finding.AppId) | " +
             "$Permission | $($Finding.PermissionType) | $($Finding.AttackPath) |"
     }

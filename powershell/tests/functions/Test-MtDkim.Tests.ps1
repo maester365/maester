@@ -45,9 +45,11 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $true
+            # Test-MtCisaDkim does not read SendingFromDomainDisabled: MS.EXO.3.1v1 asks for DKIM on every
+            # domain, so a domain that cannot send is checked like any other.
             ExpectedResultByCommand   = @{
                 'Test-MtCisDkim'  = $null
-                'Test-MtCisaDkim' = $null
+                'Test-MtCisaDkim' = $false
             }
         }
         @{

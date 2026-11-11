@@ -1,0 +1,39 @@
+{
+  "Framework": "disa-stig-intune-mdm",
+  "Name": "DISA Microsoft Intune MDM Service Desktop and Mobile STIG",
+  "Version": "V1R2",
+  "Url": "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=microsoft",
+  "Published": "2026-05-27",
+  "Note": "Rule IDs, categories and STIG IDs from the DISA STIG. Related NIST SP 800-53 Rev. 5 controls follow the CCIs each rule lists. DISA STIGs are works of the US Government.",
+  "Requirements": [
+    {
+      "Id": "V-273867",
+      "Category": "CAT II",
+      "RuleId": "SV-273867r1207980_rule",
+      "StigId": "MSIN-25-000030",
+      "Related": [
+        "nist-800-53-r5:AC-11",
+        "nist-800-53-r5:AC-12"
+      ]
+    },
+    {
+      "Id": "V-273868",
+      "Category": "CAT II",
+      "RuleId": "SV-273868r1208024_rule",
+      "StigId": "MSIN-25-000370",
+      "Related": [
+        "nist-800-53-r5:AU-4(1)",
+        "nist-800-53-r5:AU-9(2)"
+      ]
+    },
+    {
+      "Id": "V-285327",
+      "Category": "CAT I",
+      "RuleId": "SV-285327r1211999_rule",
+      "StigId": "MSIN-25-002000",
+      "Related": [
+        "nist-800-53-r5:CM-6"
+      ]
+    }
+  ]
+}

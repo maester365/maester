@@ -8,11 +8,14 @@ import { createContext, useCallback, useContext, useMemo, useState, type ReactNo
 import { useTenant } from "@/context/TenantContext"
 import { useLocation, useNavigate } from "@/lib/router"
 import { buildModel, sortTests, type Model } from "@/lib/model"
+import { STANDARD_COLUMNS } from "./lists"
 
 export interface Explorer {
   q: string
   filters: Record<string, string[]>
   group: string
+  /** The column the list is sorted by, "-" first for descending; empty for the usual order. */
+  sort: string
 }
 
 interface ReportContextValue {
@@ -34,7 +37,12 @@ interface ReportContextValue {
   setExplorer: (patch: Partial<Explorer>) => void
   tab: string
   setTab: (tab: string) => void
+  /** The optional columns test lists show, in every list; the reader's browser remembers them. */
+  columns: string[]
+  setColumns: (keys: string[] | ((current: string[]) => string[])) => void
 }
+
+const COLUMNS_KEY = "maester.report.columns"
 
 const ReportContext = createContext<ReportContextValue | null>(null)
 
@@ -48,8 +56,22 @@ export function ReportProvider({ children }: { children: ReactNode }) {
   const model = models[selectedIndex] ?? models[0]
   const location = useLocation()
   const navigate = useNavigate()
-  const [explorer, setExplorerState] = useState<Explorer>({ q: "", filters: {}, group: "none" })
+  const [explorer, setExplorerState] = useState<Explorer>({ q: "", filters: {}, group: "none", sort: "" })
   const [tab, setTab] = useState("finding")
+  const [columns, setColumnsState] = useState<string[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(COLUMNS_KEY) || "null")
+      if (Array.isArray(saved) && saved.every((k) => typeof k === "string")) return saved
+    } catch { /* no storage: the standard columns */ }
+    return STANDARD_COLUMNS
+  })
+  const setColumns = useCallback((keys: string[] | ((current: string[]) => string[])) => {
+    setColumnsState((current) => {
+      const next = typeof keys === "function" ? keys(current) : keys
+      try { localStorage.setItem(COLUMNS_KEY, JSON.stringify(next)) } catch { /* not remembered */ }
+      return next
+    })
+  }, [])
   const [list, setList] = useState<string[]>([])
 
   const fromHash = location.hash.length > 1 ? decode(location.hash.slice(1)) : null
@@ -73,13 +95,13 @@ export function ReportProvider({ children }: { children: ReactNode }) {
   }, [navigate, setSelectedIndex])
   const setExplorer = useCallback((patch: Partial<Explorer>) => setExplorerState((e) => ({ ...e, ...patch })), [])
   const explore = useCallback((patch: Partial<Explorer>) => {
-    setExplorerState({ q: "", filters: {}, group: "none", ...patch })
+    setExplorerState({ q: "", filters: {}, group: "none", sort: "", ...patch })
     navigate("/tests")
   }, [navigate])
 
   const value = useMemo(
-    () => ({ model, models, multi: models.length > 1, tenantIndex: selectedIndex, selectTenant, openId, openTest, sequence, closeTest, explorer, explore, setExplorer, tab, setTab }),
-    [model, models, selectedIndex, selectTenant, openId, openTest, sequence, closeTest, explorer, explore, setExplorer, tab],
+    () => ({ model, models, multi: models.length > 1, tenantIndex: selectedIndex, selectTenant, openId, openTest, sequence, closeTest, explorer, explore, setExplorer, tab, setTab, columns, setColumns }),
+    [model, models, selectedIndex, selectTenant, openId, openTest, sequence, closeTest, explorer, explore, setExplorer, tab, columns, setColumns],
   )
   return <ReportContext.Provider value={value}>{children}</ReportContext.Provider>
 }
