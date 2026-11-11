@@ -1,0 +1,26 @@
+Keep failing them
+
+---
+
+<cross-session-message from="local_338c3723-65a3-4813-9cbc-2a962282c882" from-name="Shared settings design">
+Please edit the body of PR 2787 to record the decision instead of the open question about CISA.MS.EXO.3.1.
+Merill settled all nine decisions in issue 2775 today (his word in the parent session: "agree"). Decision 6 reads: the CISA EXO tests use the `ParkedDomains` setting instead of inferring from `SendingFromDomainDisabled`, and CISA.MS.EXO.3.1 keeps checking DKIM on every domain, parked or not, because SCuBA has no separate rule for a parked domain. Replace the open question with that, link issue 2775 as where it was decided, and change nothing else.
+</cross-session-message>
+
+---
+
+I've merged shared settings, can this be merged now
+
+---
+
+Yes, rebase
+
+---
+
+<task-notification>
+<task-id>b9brnkbp3</task-id>
+<tool-use-id>toolu_01TqBRixxdYAE6thPo6wpzPA</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-merill-github-maester--claude-worktrees-upbeat-noyce-5d587a/3b2f2a7d-41ae-4a99-95e1-fca058c91077/tasks/b9brnkbp3.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the module unit tests on the rebased branch" completed (exit code 0)</summary>
+</task-notification>
