@@ -14,10 +14,15 @@ The test passes when every Teams protection policy has ZAP turned on, and fails 
 ##### PowerShell
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
-2. Run the following command:
+2. Check whether a Teams protection policy exists, then create or update it with ZAP enabled:
 
 ```powershell
-Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
+if (Get-TeamsProtectionPolicy) {
+    Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
+}
+else {
+    New-TeamsProtectionPolicy -Name "Teams Protection Policy" -ZapEnabled $true
+}
 ```
 
 3. Review the exclusions with `Get-TeamsProtectionPolicyRule | Format-List ExceptIf*`.
@@ -26,7 +31,7 @@ Set-TeamsProtectionPolicy -Identity "Teams Protection Policy" -ZapEnabled $true
 
 * [Microsoft Defender portal - Microsoft Teams protection](https://security.microsoft.com/securitysettings/teamsProtectionPolicy)
 * [Zero-hour auto purge (ZAP) in Microsoft Teams](https://learn.microsoft.com/defender-office-365/zero-hour-auto-purge#zero-hour-auto-purge-zap-in-microsoft-teams)
-* [Configure ZAP for Teams protection in Defender for Office 365](https://learn.microsoft.com/defender-office-365/mdo-support-teams-about#configure-zap-for-teams-protection-in-defender-for-office-365-plan-2)
+* [Configure ZAP for Teams protection in Defender for Office 365](https://learn.microsoft.com/defender-office-365/mdo-support-teams-about#configure-zap-for-teams-protection-in-defender-for-office-365)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 2.4.4](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

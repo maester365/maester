@@ -1,6 +1,6 @@
 Federation lets users in other Microsoft 365 and Teams organizations find and message people in your tenant. If every known external domain is allowed, anyone with a tenant in those domains can start chats with your users. That is a common route for phishing and social engineering, because the sender looks like a normal business contact.
 
-Turning off external domains in the Global (Org-wide default) external access policy removes that path for everyone the policy applies to. Users who need to work with external organizations can be given a custom external access policy, or the organization settings can allow only specific partner domains. The test passes when the Global policy turns off external domains, or when the organization settings turn external domains off, block all of them or allow only specific domains.
+Turning off external domains in the Global (Org-wide default) external access policy removes that path for everyone the policy applies to. Users who need to work with external organizations can be assigned a custom external access policy, or the organization settings can allow only specific partner domains. Both the organization setting and the policy assigned to a user must allow federation. An organization allowlist alone does not enable federation if the applicable policy still turns it off. The test passes when the Global policy turns off external domains, or when the organization settings turn external domains off, block all of them or allow only specific domains.
 
 #### Remediation action
 
@@ -21,11 +21,12 @@ On the **Organization settings** tab, setting **Manage external domains for this
 Set-CsExternalAccessPolicy -Identity Global -EnableFederationAccess $false
 ```
 
-To allow only specific domains for the organization instead, run the following commands, replacing the example domain with your approved domains. The list replaces the domains that are allowed now:
+To use an organization allowlist instead of disabling federation in the Global policy, turn federation on in the Global policy and configure the tenant-level allowlist. Replace the example domain with your approved domains; the list replaces the domains that are allowed now:
 
 ```powershell
 $domains = [System.Collections.Generic.List[string]]::new()
 $domains.Add('partner.example.com')
+Set-CsExternalAccessPolicy -Identity Global -EnableFederationAccess $true
 Set-CsTenantFederationConfiguration -AllowFederatedUsers $true -AllowedDomainsAsAList $domains
 ```
 

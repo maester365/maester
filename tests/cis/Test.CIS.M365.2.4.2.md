@@ -2,15 +2,15 @@ The Strict preset security policy applies its strongest protections to the recip
 
 Executives, finance staff and administrators are the usual targets of spear phishing and whaling. Microsoft maintains the Standard and Strict preset security policies and updates them as threats change. Strict has the most aggressive settings for spam, phishing, malware, spoofing, impersonation, Safe Links and Safe Attachments, which suits the accounts that are most likely to be targeted and most valuable to compromise.
 
-The test reads the Strict preset rules for Exchange Online Protection and Defender for Office 365. Each rule must be enabled and have at least one recipient condition: `SentTo`, `SentToMemberOf` or `RecipientDomainIs`. This follows the CIS PowerShell audit procedure; it does not verify whether those targets include every priority account or evaluate rule exceptions, so review the target values and membership separately. Preset security policies can't target user tags, so use a group that contains the priority accounts. Microsoft Defender for Office 365 licences are required.
+The test reads the Strict preset rules for Exchange Online Protection and Defender for Office 365. Each rule must be enabled and have at least one recipient condition: `SentTo`, `SentToMemberOf` or `RecipientDomainIs`. This follows the CIS PowerShell audit procedure, but it does not verify that those targets include every priority account or evaluate rule exceptions. Review the recipient conditions, target membership and exceptions on both rules: different condition types combine with AND, while any matching exception excludes the recipient. Adjust or remove conditions and exceptions that keep a priority account from receiving either protection. Preset security policies can't target user tags, so use a group that contains the priority accounts. Microsoft Defender for Office 365 licences are required.
 
 #### Remediation action
 
 1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com).
 2. Go to **Email & collaboration** > **Policies & rules** > **Threat policies** > [**Preset security policies**](https://security.microsoft.com/presetSecurityPolicies).
 3. Turn on **Strict protection** and select **Manage protection settings**.
-4. On **Apply Exchange Online Protection**, select **Specific recipients** and add the users or groups that are your priority accounts.
-5. On **Apply Defender for Office 365 protection**, select **Specific recipients** and add the same users or groups.
+4. On **Apply Exchange Online Protection**, select **Specific recipients** and add the users or groups that are your priority accounts. Review existing recipient conditions and exceptions on this page, and adjust or remove any that keep a priority account from receiving protection.
+5. On **Apply Defender for Office 365 protection**, select **Specific recipients** and add the same users or groups. Review existing recipient conditions and exceptions here as well, and adjust or remove any that keep a priority account from receiving protection.
 6. On **Add email addresses to flag when impersonated by attackers**, add the internal and external senders, including your priority accounts, that attackers may impersonate.
 7. On **Add domains to flag when impersonated by attackers**, add the domains of key partners. Your accepted domains are protected automatically.
 8. On **Review and confirm your changes**, select **Confirm**.

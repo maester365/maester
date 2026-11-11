@@ -1,6 +1,8 @@
 Only invited people, people in your organization, or organizers and co-organizers can bypass the meeting lobby.
 
-The lobby lets an organizer, co-organizer or presenter see who is joining before admitting them. For meetings that may contain sensitive information, people who weren't invited directly should wait to be admitted, and anonymous users shouldn't be able to use a meeting link to hold meetings at unscheduled times. People outside the organization, and anyone who dials in, including internal users who are unauthenticated when dialing in, wait in the lobby until someone admits them.
+The lobby lets an organizer, co-organizer or presenter see who is joining before admitting them. With **People who were invited** (`InvitedUsers`), invited external participants can bypass the lobby, including people who receive a forwarded invitation and invitees on a distribution list. People who have only the meeting link, but no invitation, and participants who are not signed in must wait in the lobby. Choose **People in my org** or **Only organizers and co-organizers** if invited external participants should also wait.
+
+This test checks only the Global meeting policy default; organizers can change **Who can bypass the lobby** in Meeting options. Phone dial-in callers use the separate **People dialing in can bypass the lobby** setting, which organizers can also change in Meeting options. When that setting is on, callers may bypass the lobby after the meeting starts even when this test passes. Review the dial-in setting separately.
 
 The test passes when **Who can bypass the lobby** in the Global (Org-wide default) meeting policy is **People who were invited** (`InvitedUsers`), **People in my org** (`EveryoneInCompanyExcludingGuests`) or **Only organizers and co-organizers** (`OrganizerOnly`).
 

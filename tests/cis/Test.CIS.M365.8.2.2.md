@@ -1,6 +1,6 @@
 Users can't chat or meet with external users who have unmanaged Microsoft accounts, such as Microsoft Teams (free).
 
-Little effort is needed to get a free or trial Teams account, so attackers use unmanaged accounts to reach users through external access. Attacks delivered this way include DarkGate malware, social engineering and phishing by Midnight Blizzard, GIFShell and username enumeration. Turning off communication with unmanaged accounts removes that channel. Users can no longer communicate with Teams users who aren't managed by an organization; create a separate policy for groups that need to. This setting doesn't control anonymous meeting join through a shared link, and isn't available in GCC, GCC High, DoD or private cloud environments.
+Little effort is needed to get a free or trial Teams account, so attackers use unmanaged accounts to reach users through external access. Attacks delivered this way include DarkGate malware, social engineering and phishing by Midnight Blizzard, GIFShell and username enumeration. Turning off communication with unmanaged accounts removes that channel. Users can no longer communicate with Teams users who aren't managed by an organization. To make exceptions with a custom policy, keep the organization-level setting on and assign an allowing policy to the users who need access; turning the organization setting off cannot be overridden by a custom policy. This setting doesn't control anonymous meeting join through a shared link, and isn't available in GCC, GCC High, DoD or private cloud environments.
 
 The test passes when the Global (Org-wide default) external access policy or the organization settings turn the setting off.
 
@@ -12,7 +12,7 @@ The test passes when the Global (Org-wide default) external access policy or the
 4. Set **People in my org can chat and have meetings with external users who have unmanaged Microsoft accounts** to **Off**.
 5. Select **Save**.
 
-Turning the same setting **Off** on the **Organization settings** tab also meets the recommendation.
+Turning the same setting **Off** on the **Organization settings** tab also meets the recommendation, but blocks unmanaged-account access for everyone and cannot be overridden by a custom policy.
 
 ##### PowerShell
 

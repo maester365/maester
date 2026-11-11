@@ -73,9 +73,9 @@
     }
 
     if ($return) {
-        $testResultMarkdown = "Well done. Only approved third-party cloud storage services are turned on in Teams.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. The five checked third-party storage settings in the Global Teams client configuration are disabled or enabled only for approved providers.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Third-party cloud storage services that are not approved are turned on in Teams. Turn them off, or add them to the ApprovedProviders parameter if the organization has approved them.`n`n%TestResult%"
+        $testResultMarkdown = "One or more of the five checked third-party storage settings are missing or enabled without approval. Turn them off, or add approved providers to the ApprovedProviders parameter.`n`n%TestResult%"
     }
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 

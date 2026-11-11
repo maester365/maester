@@ -41,6 +41,10 @@ $params = @{
     ReportPhishAddresses = $usersub
 }
 Set-ReportSubmissionPolicy @params
+
+if (-not (Get-ReportSubmissionRule)) {
+    New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPolicy DefaultReportSubmissionPolicy -SentTo $usersub
+}
 ```
 
 #### Related links
