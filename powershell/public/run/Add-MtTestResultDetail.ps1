@@ -34,7 +34,7 @@
     .EXAMPLE
     Add-MtTestResultDetail -Description 'Check for stale credentials' -Result 'Found 3 service principals with unused credentials' -Investigate
 
-    This example marks a test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
+    This example marks a result as requiring investigation. A native test's Maester result is Investigate regardless of its return value; its return value still controls NUnit/JUnit export (`$null` is ignored, `$true` succeeds, and `$false` fails).
 
     .LINK
     https://maester.dev/docs/commands/Add-MtTestResultDetail
@@ -86,8 +86,8 @@
         [Parameter(Mandatory = $false)]
         [string] $SkippedCustomReason,
 
-        # Marks the test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
-        # This is different from skipped - the test ran and collected data, but the result needs human interpretation.
+        # Marks the test as requiring investigation. For native tests, this overrides the Maester result, while the return value still controls NUnit/JUnit export.
+        # Return $null when the investigation should be ignored by CI, rather than marked as passed or failed.
         [Parameter(Mandatory = $false)]
         [switch] $Investigate,
 

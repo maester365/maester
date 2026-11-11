@@ -9,7 +9,7 @@ Rationale: Audit logs may no longer be available when needed if they are not ret
 3. Open **Audit policies** and create or update retention policies for all audit records that need longer retention.
 4. Ensure the records can be searched for at least three months and retrieved for at least 12 months. Creating custom retention policies may require an eligible audit license.
 
-The benchmark marks this requirement as manual, so Maester reports **Investigate** rather than a pass or failure. It shows whether an enabled Exchange audit retention policy covers the checked Exchange record types for at least 12 months; the absence of that policy does not rule out an approved alternative retention or log-export solution. Confirm three-month searchability, 12-month retrievability, and coverage of all applicable workloads in the Audit portal or the approved alternative.
+The benchmark marks this requirement as manual, so Maester reports **Investigate** rather than a pass or failure. The optional Exchange policy lookup can provide evidence, but does not gate the test on an advanced-auditing license; if the lookup is unavailable, Maester reports that and still requests manual verification. The check does not assess the user scope of matching policies. Confirm policy scope, three-month searchability, 12-month retrievability, and coverage of all applicable workloads in the Audit portal or the approved alternative.
 
 #### Related links
 
