@@ -1,4 +1,4 @@
-function Test-MtAdAuthNPolicyConfigCount {
+﻿function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
     Evaluates Active Directory Authentication Policy and Silo posture.
@@ -33,10 +33,6 @@ function Test-MtAdAuthNPolicyConfigCount {
     param()
 
     Write-Verbose 'Starting Test-MtAdAuthNPolicyConfigCount'
-    if (-not (Test-MtConnection -Service ActiveDirectory)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
-        return $null
-    }
 
     $adState = Get-MtADDomainState -Categories @('AuthenticationPolicies')
     if ($null -eq $adState -or $null -eq $adState['AuthenticationPolicyState']) {
@@ -54,13 +50,13 @@ function Test-MtAdAuthNPolicyConfigCount {
     $result += "| Enforced Authentication Policies | $($state.EnforcedPolicyCount) |`n"
     $result += "| Authentication Policy Silos | $($state.SiloCount) |`n"
     $result += "| Enforced Authentication Policy Silos | $($state.EnforcedSiloCount) |`n"
-    $result += "| Missing requested expression attributes | $($state.MissingRequiredAttributeCount) |`n"
+    $result += "| Requested expression attributes not returned | $($state.MissingRequiredAttributeCount) |`n"
 
     if ($state.PolicyCount -eq 0) {
         $summary = 'No Authentication Policy objects were detected. Expression-attribute evaluation is not applicable because no policy instances exist.'
     }
     elseif ($state.MissingRequiredAttributeCount -gt 0) {
-        $summary = 'Authentication Policy objects were collected, but one or more requested expression attributes were unavailable. Review collection completeness before drawing a security conclusion.'
+        $summary = 'Authentication Policy objects were collected, but one or more optional expression attributes were not returned. Their configuration state is unknown; do not infer that they are unset or that collection was incomplete.'
     }
     else {
         $summary = 'Authentication Policy and Silo posture was collected successfully, including enforcement and expression-attribute availability.'

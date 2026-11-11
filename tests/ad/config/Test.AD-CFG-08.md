@@ -1,4 +1,4 @@
-Authentication Policies and Authentication Policy Silos provide additional controls for restricting where accounts can authenticate and for isolating high-value identities. A simple container count does not show whether policies are enforced or whether the expression attributes needed for evaluation were actually returned.
+﻿Authentication Policies and Authentication Policy Silos provide additional controls for restricting where accounts can authenticate and for isolating high-value identities. A simple container count does not show whether policies are enforced or whether the expression attributes needed for evaluation were actually returned.
 
 ##### Control Type
 
@@ -8,7 +8,7 @@ Authentication Policies and Authentication Policy Silos provide additional contr
 
 - Use Authentication Policies and Silos where they provide a documented security boundary for high-value accounts and services.
 - Review enforced and non-enforced Silos separately; non-enforced Silos do not apply their intended restrictions.
-- Treat missing requested expression attributes as incomplete evidence, not as proof that a policy is safely unconfigured.
+- Treat optional expression attributes that were not returned as unknown. Do not infer that they are unset or that collection was incomplete without additional evidence.
 - Validate assignments and business compatibility before enforcing new policies.
 
 ##### How the Test Works
@@ -20,7 +20,7 @@ The test performs read-only LDAP searches under `CN=AuthN Policy Configuration,C
 - Whether requested authentication-expression attributes were returned
 - A valid empty state when no policy or silo objects exist
 
-The test distinguishes no policy objects from unavailable attributes. If no policies exist, expression evaluation is **not applicable**. If policies exist but requested properties were not returned, collection completeness requires review.
+The test distinguishes no policy objects from optional attributes that were not returned. If no policies exist, expression evaluation is **not applicable**. If policies exist but requested properties were not returned, their configuration state is **unknown**; absence alone does not prove that the attributes are unset or that collection was incomplete.
 
 ##### Related links
 

@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:HelperPath = Join-Path $PSScriptRoot '../../../internal/services/ad/Get-MtLdapAuthenticationPolicyState.ps1'
     . $script:HelperPath
 }
@@ -85,5 +85,22 @@ Describe 'Get-MtLdapAuthenticationPolicyState' {
         $domainState = [ordered]@{ AuthenticationPolicyState = $state }
         $domainState['AuthenticationPolicyState'].PolicyCount | Should -Be 0
         $domainState['AuthenticationPolicyState'].MissingRequiredAttributeCount | Should -Be 0
+    }
+    It 'normalizes LDAP string Boolean enforcement values' {
+        $script:SearchResults['(objectClass=msDS-AuthNPolicy)'] = @(
+            [PSCustomObject]@{ Name='Audit Policy'; DistinguishedName='CN=Audit Policy,CN=Configuration,DC=contoso,DC=com'; 'msDS-AuthNPolicyEnforced'='FALSE' },
+            [PSCustomObject]@{ Name='Enforced Policy'; DistinguishedName='CN=Enforced Policy,CN=Configuration,DC=contoso,DC=com'; 'msDS-AuthNPolicyEnforced'='TRUE' }
+        )
+        $script:SearchResults['(objectClass=msDS-AuthNPolicySilo)'] = @(
+            [PSCustomObject]@{ Name='Audit Silo'; DistinguishedName='CN=Audit Silo,CN=Configuration,DC=contoso,DC=com'; 'msDS-AuthNPolicySiloEnforced'='0' },
+            [PSCustomObject]@{ Name='Enforced Silo'; DistinguishedName='CN=Enforced Silo,CN=Configuration,DC=contoso,DC=com'; 'msDS-AuthNPolicySiloEnforced'='1' }
+        )
+        $result = Get-MtLdapAuthenticationPolicyState -Connection ([PSCustomObject]@{}) -ConfigurationNamingContext 'CN=Configuration,DC=contoso,DC=com'
+        $result.EnforcedPolicyCount | Should -Be 1
+        $result.EnforcedSiloCount | Should -Be 1
+        $result.Policies[0].Enforced | Should -BeFalse
+        $result.Policies[1].Enforced | Should -BeTrue
+        $result.Silos[0].Enforced | Should -BeFalse
+        $result.Silos[1].Enforced | Should -BeTrue
     }
 }

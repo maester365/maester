@@ -1,4 +1,4 @@
-function Get-MtLdapAuthenticationPolicyState {
+﻿function Get-MtLdapAuthenticationPolicyState {
     <#
     .SYNOPSIS
     Collects Authentication Policies and Authentication Policy Silos over the validated LDAP connection.
@@ -69,6 +69,16 @@ function Get-MtLdapAuthenticationPolicyState {
         'msDS-ComputerAllowedToAuthenticateTo'
     )
 
+    $convertLdapBoolean = {
+        param([object]$Value)
+        if ($Value -is [bool]) { return [bool]$Value }
+        if ($null -eq $Value) { return $false }
+        $text = ([string]$Value).Trim()
+        if ($text -match '^(?i:true|1)$') { return $true }
+        if ($text -match '^(?i:false|0)$') { return $false }
+        return $false
+    }
+
     $normalizedPolicies = foreach ($policy in $policies) {
         $attributeState = [ordered]@{}
         foreach ($attributeName in $expressionNames) {
@@ -90,7 +100,7 @@ function Get-MtLdapAuthenticationPolicyState {
         [PSCustomObject][ordered]@{
             Name              = [string]$nameState.Value
             DistinguishedName = [string]$distinguishedNameState.Value
-            Enforced          = $enforcedState.Present -and [bool]$enforcedState.Value
+            Enforced          = $enforcedState.Present -and (& $convertLdapBoolean $enforcedState.Value)
             StrongNTLMPolicy  = $strongNtlmState.Value
             AttributeState    = [PSCustomObject]$attributeState
         }
@@ -107,7 +117,7 @@ function Get-MtLdapAuthenticationPolicyState {
         [PSCustomObject][ordered]@{
             Name                = [string]$nameState.Value
             DistinguishedName   = [string]$distinguishedNameState.Value
-            Enforced            = $enforcedState.Present -and [bool]$enforcedState.Value
+            Enforced            = $enforcedState.Present -and (& $convertLdapBoolean $enforcedState.Value)
             UserAuthNPolicy     = $userPolicyState.Value
             ServiceAuthNPolicy  = $servicePolicyState.Value
             ComputerAuthNPolicy = $computerPolicyState.Value
