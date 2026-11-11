@@ -497,3 +497,6 @@ textarea.input {
 }
 
 .existing { margin-top: 0.75rem; }
+
+.linkButton { padding: 0; border: 0; background: none; font: inherit; color: var(--ifm-color-primary); text-decoration: underline; cursor: pointer; }
+.note svg { vertical-align: -0.15em; }

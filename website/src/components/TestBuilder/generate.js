@@ -591,6 +591,63 @@ Explain how to fix a failing result, step by step.
 `;
 }
 
+// A prompt for an AI coding assistant, made from the form: what the test should verify, where the guidance is,
+// the files to create and how to check them. A test for Maester is written in a clone of the repository, whose
+// agents and skills the prompt points at; a custom test needs only the published guides.
+export function buildAiPrompt(state, data, goal) {
+  const builtin = state.mode === "builtin";
+  const id = state.id.trim() || (builtin ? "MT.1234" : "CT.1001");
+  const folder = folderFor(state, data);
+  const what = goal.trim() || "<Describe the setting to check, the value you expect and why it matters.>";
+  const ps1 = buildPs1(state, data);
+  const lines = [];
+  if (builtin) {
+    lines.push(
+      "I want to add a security check to Maester. Work in my clone of https://github.com/maester365/maester.",
+      "",
+      "What the check should verify:",
+      what,
+      "",
+      "Follow the repository's own guidance before you write anything:",
+      "- AGENTS.md",
+      "- the maester-test-expert skill: .github/skills/maester-test-expert/SKILL.md",
+      "- website/docs/writing-tests/index.mdx",
+      "- website/docs/writing-tests/attribute-rubric.md",
+      "",
+      "Steps:",
+      "1. Look for a test that already checks this setting, in every suite" + (state.product && state.feature && state.product !== NEW && state.feature !== NEW ? " (Get-MtTest -Product " + state.product + " -Feature " + state.feature + ", and a search of tests/ for the setting or endpoint)" : " (Get-MtTest, and a search of tests/ for the setting or endpoint)") + ". If one exists, stop and tell me.",
+      "2. Create " + folder + "/Test." + id + ".ps1 and " + folder + "/Test." + id + ".md. Start from the code below, which I made in the test builder at https://maester.dev/test-builder. Check each attribute value against the rubric and tell me which you would change and why.",
+      "3. Write the function body. Read the tenant through Maester's helpers and the session cache, declare Service and License instead of checking connections or licences in code, use no outer try/catch, return $true or $false, and report with Add-MtTestResultDetail. Give the function a name that says what it checks.",
+      "4. Write the .md: what is checked and why it matters, numbered remediation steps with a direct link to the admin portal page, and the Microsoft Learn article.",
+      "5. Validate: Get-MtTest " + id + ", regenerate the golden fixture (./build/golden/Export-MtGoldenFixture.ps1), git add the new files, then run ./powershell/tests/pester.ps1 and fix what it flags.",
+      "",
+      "Do not commit, push or open a pull request until I have reviewed the files." + (/^MT\.\d+$/.test(id) ? " The ID " + id + " must be reserved on https://github.com/maester365/maester/issues/697 first; remind me if I have not said it is." : ""),
+    );
+  } else {
+    lines.push(
+      "Write a custom Maester test for me. Maester (https://maester.dev) is a PowerShell framework that checks the security configuration of Microsoft 365.",
+      "",
+      "What the test should verify:",
+      what,
+      "",
+      "Read these guides first:",
+      "- https://maester.dev/docs/writing-tests/first-custom-test.md",
+      "- https://maester.dev/docs/writing-tests.md",
+      "- https://maester.dev/docs/writing-tests/formatting-test-results.md",
+      "",
+      "Steps:",
+      "1. Create " + folder + "/Test." + id + ".ps1 and " + folder + "/Test." + id + ".md. Start from the code below, which I made in the test builder at https://maester.dev/test-builder. Keep the ID and the attribute values unless one is wrong, and tell me if you change one.",
+      "2. Write the function body. Use only commands the Maester module exports, such as Invoke-MtGraphRequest and Add-MtTestResultDetail. Declare Service and License instead of checking connections or licences in code, use no outer try/catch, and return $true or $false.",
+      "3. Write the .md: what is checked and why it matters, and numbered steps to fix it with a link to the admin portal page.",
+      "4. Check the files without a tenant: Get-MtTest -Path " + folder + ". Then run the test: Invoke-MtTest -Path " + folder + "/Test." + id + ".ps1",
+      "",
+      "If you cannot run commands, give me both files in full and the commands to run. Do not invent Graph endpoints or property names: say so when you are not sure one exists.",
+    );
+  }
+  lines.push("", "Test." + id + ".ps1:", "", ps1);
+  return lines.join("\n");
+}
+
 export function folderFor(state, data) {
   if (state.mode !== "builtin") return "./custom";
   const suite = data.suites.find((s) => s.id === state.suite);

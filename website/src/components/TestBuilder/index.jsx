@@ -3,8 +3,8 @@ import { createPortal } from "react-dom";
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
-import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, folderFor, addByHand, registryChanges, withPrefix, splitList, stateFromTest, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
-import { AttributeIcon, Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, buildAiPrompt, folderFor, addByHand, registryChanges, withPrefix, splitList, stateFromTest, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
+import { AttributeIcon, Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent, Textarea } from "./ui";
 import GitHubPeople from "./GitHubPeople";
 import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
@@ -847,6 +847,7 @@ export default function TestBuilder() {
   const [state, setState] = useState(exampleState);
   const [tab, setTab] = useState("ps1");
   const [loaded, setLoaded] = useState(null);
+  const [goal, setGoal] = useState("");
   const [step, setStepState] = useState("start");
   const [seen, setSeen] = useState(["start"]);
   const [railHost, setRailHost] = useState(null);
@@ -990,6 +991,7 @@ export default function TestBuilder() {
     ["ps1", "Test." + id + ".ps1"],
     ["md", "Test." + id + ".md"],
     ["cmd", "New-MtTest"],
+    ["ai", "AI prompt"],
   ];
 
   return (
@@ -1023,6 +1025,13 @@ export default function TestBuilder() {
               setLoaded({ id: test.Id, title: test.Title, instanceSource: false });
             }}
           />
+          <p className={styles.note}>
+            <AttributeIcon name="spark" /> Want an AI assistant to write the test? Fill in what you know, then copy the prompt from the{" "}
+            <button type="button" className={styles.linkButton} onClick={() => setTab("ai")}>
+              AI prompt
+            </button>{" "}
+            tab. <Link to="/docs/writing-tests/with-ai">How it works</Link>.
+          </p>
           {loaded && (
             <p className={styles.note}>
               Loaded <a href={"/docs/tests/" + loaded.id}>{loaded.id}</a>: its attributes and parameters are in the form. The code on the right is still the builder's template, not the test's own code, so copy the attribute and the <code>param()</code> block from it, not the body.
@@ -1542,6 +1551,18 @@ export default function TestBuilder() {
                 <code>New-MtTest -Setting</code> writes the parameters bound to a shared setting. Copy the {handParameters === 1 ? "other parameter" : "other " + handParameters + " parameters"} of the <code>param()</code> block from the <code>.ps1</code> tab.
               </p>
             )}
+          </TabsContent>
+          <TabsContent value="ai">
+            <p className={styles.where}>
+              A prompt for an AI coding assistant such as GitHub Copilot or Claude Code. It carries the values you picked, points the assistant at Maester's guides and tells it how to check its work.{" "}
+              {builtin ? "Run it in a clone of the Maester repository, which has agents and skills for writing a check." : "Run it in the folder that holds your custom tests."} <Link to="/docs/writing-tests/with-ai">Read more</Link>.
+            </p>
+            <label className={styles.miniField}>
+              <span>What should the test verify?</span>
+              <Textarea value={goal} rows={4} placeholder="Guest users cannot invite other guests. The setting is 'Guest invite restrictions' under External collaboration settings, and it should be 'Only users assigned to specific admin roles'." onChange={(e) => setGoal(e.target.value)} />
+            </label>
+            <CopyBlock text={buildAiPrompt(state, data, goal)} language="markdown" />
+            <p className={styles.where}>Read what the assistant writes before you run it: check the endpoint and property names against Microsoft Learn, and run the test on a tenant you know.</p>
           </TabsContent>
         </Tabs>
 
