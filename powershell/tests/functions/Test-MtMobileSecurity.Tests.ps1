@@ -640,7 +640,7 @@
             }
 
             Test-MtAndroidSecurityPatchLevel | Should -BeFalse
-            Test-MtAndroidSecurityPatchLevel -MaximumPatchLevelAgeInDays 500 | Should -BeTrue
+            Test-MtAndroidSecurityPatchLevel -MaximumPatchLevelAgeDays 500 | Should -BeTrue
         }
 
         It 'fails when no patch level is configured' {

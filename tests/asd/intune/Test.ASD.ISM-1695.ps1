@@ -42,7 +42,7 @@
     param(
         # The most days a quality update may take from release to forced installation: deferral, deadline and grace period together.
         [ValidateRange(1, 365)]
-        [int] $MaximumDays = 30
+        [int] $MaximumInstallDelayDays = 30
     )
 
     $rings = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/deviceConfigurations?`$filter=isof('microsoft.graph.windowsUpdateForBusinessConfiguration')&`$expand=assignments" -ApiVersion beta)
@@ -64,7 +64,7 @@
             Deadline   = $deadline
             Grace      = $grace
             TotalDays  = $total
-            Compliant  = @($ring.assignments).Count -gt 0 -and $ring.qualityUpdatesPaused -ne $true -and $null -ne $total -and $total -le $MaximumDays
+            Compliant  = @($ring.assignments).Count -gt 0 -and $ring.qualityUpdatesPaused -ne $true -and $null -ne $total -and $total -le $MaximumInstallDelayDays
         }
     }
     $testResult = @($report | Where-Object Compliant).Count -gt 0
@@ -74,9 +74,9 @@
         $table += "| $($r.Name) | $(if ($r.Assigned) { 'Yes' } else { 'No' }) | $(if ($r.Paused) { 'Yes' } else { 'No' }) | $($r.Deferral) | $(if ($null -ne $r.Deadline) { $r.Deadline } else { 'Not set' }) | $($r.Grace) | $(if ($null -ne $r.TotalDays) { $r.TotalDays } else { 'No deadline' }) |`n"
     }
     if ($testResult) {
-        $testResultMarkdown = "Well done. At least one assigned update ring installs quality updates within $MaximumDays days of release.`n`n$table"
+        $testResultMarkdown = "Well done. At least one assigned update ring installs quality updates within $MaximumInstallDelayDays days of release.`n`n$table"
     } else {
-        $testResultMarkdown = "No assigned update ring installs quality updates within $MaximumDays days of release. Set a deadline for quality updates so that deferral, deadline and grace period add up to $MaximumDays days or fewer.`n`n$table"
+        $testResultMarkdown = "No assigned update ring installs quality updates within $MaximumInstallDelayDays days of release. Set a deadline for quality updates so that deferral, deadline and grace period add up to $MaximumInstallDelayDays days or fewer.`n`n$table"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

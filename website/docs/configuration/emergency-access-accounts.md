@@ -159,6 +159,20 @@ The following Maester tests use the Emergency Access Accounts configuration:
 | Test ID | Description |
 |---------|-------------|
 | MT.1005 | All Conditional Access policies are configured to exclude at least one emergency/break glass account or group |
+| MT.1024 | Entra recommendations should be completed |
+| MT.1111 | High privileged user should be linked to an identity |
+| MT.1191 | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy |
+| CIS.M365.5.3.1 | Ensure privileged role assignments are activated and not assigned |
+| ASD.ISM-1175 | Privileged user accounts are prevented from accessing the internet, email and web services |
+| ASD.ISM-1648 | Privileged access to systems and their resources is disabled after 45 days of inactivity |
+| ASD.ISM-1649 | Just-in-time administration is used for the administration of systems and their resources |
+
+Each of these tests receives the accounts as its `EmergencyAccessAccounts` parameter, so you can give one test a
+different list in its `TestSettings` row. To list them yourself:
+
+```powershell
+Get-MtTest | Where-Object { $_.Parameters.Setting -contains 'EmergencyAccessAccounts' }
+```
 
 ## Best Practices
 

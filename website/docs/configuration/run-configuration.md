@@ -129,11 +129,28 @@ Free-form values about the run, echoed in the result as `RunMetadata`. Use it to
 
 ## GlobalSettings
 
-Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
+Tenant-wide settings. A test receives one as a parameter bound to the setting, so a test's `TestSettings` row
+can override it (see [Values set once for many tests](../writing-tests/index.mdx#values-set-once-for-many-tests));
+connection commands read theirs with `Get-MtSetting`.
+
+Maester checks this section once, before the run:
+
+- A value of the wrong type, or one the setting does not allow, stops the run and names the setting, for example
+  `GlobalSettings.DefenderEndpointPolicyFiltering: 'Some' is not one of All, IncludeUnassigned, OnlyAssigned.`
+- A key without a dot that Maester does not know gives a warning that names the closest setting, so a typo such
+  as `ParkedDomain` is not silently ignored.
+- A setting of your own custom tests is named `Namespace.Key`, such as `Contoso.Regions`, and passes through. A
+  pack declares its settings, and they are checked in the same way while the pack runs.
+- A setting marked sensitive is recorded in the results as `[redacted]`.
+
+Maester knows these:
 
 | Setting | Type | Default | Used by |
 | --- | --- | --- | --- |
-| `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `EmergencyAccessAccounts` | array | none | Conditional Access and privileged role checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `ParkedDomains` | array | none | Email authentication checks: domains that never send email. |
+| `DefenderEndpointPolicyFiltering` | string | `OnlyAssigned` | Defender for Endpoint checks. |
+| `DefenderEndpointComplianceLogic` | string | `EffectivePolicy` | Defender for Endpoint checks. |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
 | `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
 | `GitHubOrganization` | string | | GitHub checks. |

@@ -772,6 +772,10 @@
             $script:__MtPackSet = @()
         }
 
+        # GlobalSettings is checked once, against the built-in settings and those of the packs in the run, so a
+        # mistyped key or a wrong value is reported here and not by every test that reads it.
+        Assert-MtGlobalSetting -RunConfig $runConfig
+
         # Stale copies of 2.x built-in wrappers under the custom root are not run (design section 8).
         $builtInInventory = $null
         $customInventory = @()
