@@ -54,7 +54,8 @@ const alphabetical: Entry[] = isCommands
 					<path d="M9 4v16" />
 					<path class="mt-nav-toggle__arrow" d="M15.5 9.5L13 12l2.5 2.5" />
 				</svg>
-				<span>Hide sidebar</span>
+				{/* The test builder shows the icon alone; its tooltip names it. */}
+				{!isBuilder && <span>Hide sidebar</span>}
 			</button>
 			{/* Before the page paints, so a hidden sidebar does not flash open on the next page. */}
 			<script is:inline>

@@ -653,6 +653,7 @@ function LicenseBuilder({ groups, onChange }) {
                 onSelect={(v) => !group.includes(v) && update(index, [...group, v])}
               />
               <Button onClick={() => setExploring(index)} disabled={!catalog}>
+                <AttributeIcon name="explore" />
                 Licence explorer
               </Button>
               {shown.length > 1 && (

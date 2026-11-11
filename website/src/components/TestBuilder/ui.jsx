@@ -197,6 +197,7 @@ const ATTRIBUTE_ICONS = {
   preview: "M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 15h9",
   stable: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6",
   deprecated: "M3 5h18v4H3zM5 9v10h14V9M10 13h4",
+  explore: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5M8 11h6M11 8v6",
   maester: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4",
 };
 export function AttributeIcon({ name, tone, className }) {
