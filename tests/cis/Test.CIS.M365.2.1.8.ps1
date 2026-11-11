@@ -58,7 +58,7 @@
         if ($isParked) {
             # CIS asks parked domains for v=spf1 -all: no sender mechanisms, no redirect, hard fail last.
             # An exp= modifier authorizes no one, so it is allowed before -all.
-            $pass = [string]$record -match '(?i)^\s*v=spf1(\s+exp=\S+)*\s+-all\s*$'
+            $pass = [string]$record -match '(?i)^\s*v=spf1(?:\s+exp=\S+)?\s+-all\s*$'
             $detail = if ($pass) {
                 'Listed as parked; the record denies all senders with -all.'
             } else {

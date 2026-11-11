@@ -47,6 +47,7 @@
         @{ Record = 'v=spf1 include:spf.protection.outlook.com -all' }
         @{ Record = 'v=spf1 redirect=_spf.example.net' }
         @{ Record = 'v=spf1 -all exp=why.example.com' }
+        @{ Record = 'v=spf1 exp=a.example exp=b.example -all' }
     ) {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = $Record }
         $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 -all' }
