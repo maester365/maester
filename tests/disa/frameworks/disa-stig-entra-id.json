@@ -1,0 +1,103 @@
+{
+  "Framework": "disa-stig-entra-id",
+  "Name": "DISA Microsoft Entra ID STIG",
+  "Version": "V1R2",
+  "Url": "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=microsoft",
+  "Published": "2026-09-03",
+  "Note": "Rule IDs, categories and STIG IDs from the DISA STIG. Related NIST SP 800-53 Rev. 5 controls follow the CCIs each rule lists. DISA STIGs are works of the US Government.",
+  "Requirements": [
+    {
+      "Id": "V-270200",
+      "Category": "CAT II",
+      "RuleId": "SV-270200r1085610_rule",
+      "StigId": "ENTR-ID-000030",
+      "Related": [
+        "nist-800-53-r5:AC-11",
+        "nist-800-53-r5:AC-12"
+      ]
+    },
+    {
+      "Id": "V-270204",
+      "Category": "CAT II",
+      "RuleId": "SV-270204r1271709_rule",
+      "StigId": "ENTR-ID-000090",
+      "Related": [
+        "nist-800-53-r5:AC-2(3)"
+      ]
+    },
+    {
+      "Id": "V-270208",
+      "Category": "CAT II",
+      "RuleId": "SV-270208r1085616_rule",
+      "StigId": "ENTR-ID-000140",
+      "Related": [
+        "nist-800-53-r5:AC-7"
+      ]
+    },
+    {
+      "Id": "V-270209",
+      "Category": "CAT II",
+      "RuleId": "SV-270209r1271710_rule",
+      "StigId": "ENTR-ID-000150",
+      "Related": [
+        "nist-800-53-r5:AC-8"
+      ]
+    },
+    {
+      "Id": "V-270227",
+      "Category": "CAT II",
+      "RuleId": "SV-270227r1085728_rule",
+      "StigId": "ENTR-ID-000370",
+      "Related": [
+        "nist-800-53-r5:AU-4(1)",
+        "nist-800-53-r5:AU-9(2)"
+      ]
+    },
+    {
+      "Id": "V-270233",
+      "Category": "CAT I",
+      "RuleId": "SV-270233r1085634_rule",
+      "StigId": "ENTR-ID-000440",
+      "Related": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
+      ]
+    },
+    {
+      "Id": "V-270239",
+      "Category": "CAT II",
+      "RuleId": "SV-270239r1271708_rule",
+      "StigId": "ENTR-ID-000610",
+      "Related": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    },
+    {
+      "Id": "V-270255",
+      "Category": "CAT II",
+      "RuleId": "SV-270255r1085626_rule",
+      "StigId": "ENTR-ID-000835",
+      "Related": [
+        "nist-800-53-r5:AC-2(1)"
+      ]
+    },
+    {
+      "Id": "V-270335",
+      "Category": "CAT II",
+      "RuleId": "SV-270335r1085641_rule",
+      "StigId": "ENTR-ID-001900",
+      "Related": [
+        "nist-800-53-r5:AC-2(2)"
+      ]
+    },
+    {
+      "Id": "V-270475",
+      "Category": "CAT II",
+      "RuleId": "SV-270475r1085680_rule",
+      "StigId": "ENTR-ID-003350",
+      "Related": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    }
+  ]
+}

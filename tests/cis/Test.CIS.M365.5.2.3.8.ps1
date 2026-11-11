@@ -5,6 +5,7 @@
 
     .DESCRIPTION
         Checks that the smart lockout threshold in Microsoft Entra password protection does not exceed the maximum, which limits how many wrong passwords an attacker can try before the account is locked out. When the threshold is not stored, Microsoft Entra uses its public cloud default of 10.
+        With MinimumLockoutDurationSeconds it also checks that an account stays locked for at least that long. When the duration is not stored, Microsoft Entra uses its default of 60 seconds. CIS does not ask for a duration, so it is not checked by default.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.2.3.8, L1)
 
     .EXAMPLE
@@ -35,7 +36,11 @@
     param(
         # Maximum number of failed sign-ins before the account is locked out.
         [ValidateRange(1, 50)]
-        [int] $MaximumLockoutThreshold = 10
+        [int] $MaximumLockoutThreshold = 10,
+
+        # Shortest lockout duration, in seconds, that is allowed. 0 does not check the duration.
+        [ValidateRange(0, 86400)]
+        [int] $MinimumLockoutDurationSeconds = 0
     )
 
     Write-Verbose 'Getting the password rule settings...'
@@ -52,14 +57,30 @@
     $isStored = $threshold -match '^\d+$'
     $effective = if ($isStored) { [int]$threshold } else { $default }
     $display = if ($isStored) { $threshold } else { "$default (default)" }
-    $testResult = $effective -le $MaximumLockoutThreshold
+    $thresholdOk = $effective -le $MaximumLockoutThreshold
+
+    # Microsoft's default lockout duration applies when the setting is not stored.
+    $defaultDuration = 60
+    $duration = "$($ruleValues['LockoutDurationInSeconds'])"
+    $isDurationStored = $duration -match '^\d+$'
+    $effectiveDuration = if ($isDurationStored) { [int]$duration } else { $defaultDuration }
+    $durationDisplay = if ($isDurationStored) { $duration } else { "$defaultDuration (default)" }
+    $durationOk = $MinimumLockoutDurationSeconds -eq 0 -or $effectiveDuration -ge $MinimumLockoutDurationSeconds
+    $testResult = $thresholdOk -and $durationOk
 
     $passText = "The lockout threshold is $effective."
-    $failText = "The lockout threshold is $effective. It should be $MaximumLockoutThreshold or less."
+    $failText = if (-not $thresholdOk) { "The lockout threshold is $effective. It should be $MaximumLockoutThreshold or less." } else { '' }
+    if ($MinimumLockoutDurationSeconds -gt 0) {
+        $passText += " Accounts stay locked for $effectiveDuration seconds."
+        if (-not $durationOk) { $failText = "$failText Accounts stay locked for $effectiveDuration seconds. It should be $MinimumLockoutDurationSeconds seconds or more.".Trim() }
+    }
 
-    $resultMd = "| Setting | Value | Maximum | Result |`n"
+    $resultMd = "| Setting | Value | Required | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
-    $resultMd += "| Lockout threshold | $display | $MaximumLockoutThreshold | $(if ($testResult) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    $resultMd += "| Lockout threshold | $display | $MaximumLockoutThreshold or less | $(if ($thresholdOk) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    if ($MinimumLockoutDurationSeconds -gt 0) {
+        $resultMd += "| Lockout duration (seconds) | $durationDisplay | $MinimumLockoutDurationSeconds or more | $(if ($durationOk) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    }
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"

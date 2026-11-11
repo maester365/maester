@@ -10,7 +10,7 @@
         the tenant. This check verifies that every enabled Compliant Network enforcement policy excludes
         all configured break-glass accounts and groups.
 
-        Emergency access accounts are read from the EmergencyAccessAccounts setting in maester-config.json.
+        Emergency access accounts come from the EmergencyAccessAccounts setting in maester-config.json.
 
     .EXAMPLE
         Test-MtGsaCompliantNetworkBreakGlassExcluded
@@ -38,7 +38,11 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param ()
+    param (
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
     Write-Verbose "Running Test-MtGsaCompliantNetworkBreakGlassExcluded..."
 
@@ -48,7 +52,7 @@
         return $null
     }
 
-    $emergencyAccounts = Get-MtEmergencyAccessAccount
+    $emergencyAccounts = Get-MtEmergencyAccessAccount -Account $EmergencyAccessAccounts
     if (-not $emergencyAccounts) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No emergency access accounts are configured in maester-config.json (EmergencyAccessAccounts), so break-glass exclusion cannot be verified.'
         return $null
