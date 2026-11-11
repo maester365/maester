@@ -233,10 +233,17 @@
     ParameterAttribute = @{
         Kind = @{
             Type        = 'string'
-            Required    = 'Always'
+            Required    = 'No'
             ValuesFrom  = 'ParameterKindRegistry'
             Pattern     = '^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)+$'
-            Description = 'Name of an entry in the parameter-kind registry, for example Entra.Group.'
+            Description = 'Name of an entry in the parameter-kind registry, for example Entra.Group. [MaesterParameter] needs Kind, Setting or both.'
+        }
+        Setting = @{
+            Type        = 'string'
+            Required    = 'No'
+            ValuesFrom  = 'SettingsRegistry'
+            Pattern     = '^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)*$'
+            Description = 'Name of a GlobalSettings entry the parameter is bound to, for example ParkedDomains. A pack uses Namespace.Key.'
         }
     }
 }

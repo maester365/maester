@@ -1,16 +1,25 @@
 ---
 title: Maester Packs
-description: Add tests, helpers and connectors that someone else publishes to Maester, checked and pinned before anything runs.
+description: What a Maester Pack is, how public and private packs differ, and how to install, run and connect them.
 sidebar:
   order: 1
 ---
 
 # Maester Packs
 
-A Maester Pack is a folder of native tests, the helpers they call and, optionally, connectors to services
-Maester does not know, that someone else publishes, usually as a GitHub repository. Installing a pack adds its
-tests to your project, and a run includes them when you name the pack with `-Pack` (or every installed pack
-with `-AllPacks`). Its results appear in the report like your own custom tests, never as Maester's own checks.
+## What is a pack?
+
+A pack is a set of extra tests for Maester that someone else wrote and shares. Maester ships with its own checks;
+a pack adds more, so one run can also cover another product, a benchmark, or the rules of one organisation.
+
+A pack is a folder, usually a GitHub repository, that holds:
+
+- **tests**, written the same way as Maester's own;
+- **helpers** the tests call;
+- optionally a **connector** to a service Maester does not know, such as Google Workspace or Okta.
+
+Installing a pack adds its tests to your project. A run includes them when you name the pack with `-Pack` (or every
+installed pack with `-AllPacks`), and its results appear in the report beside Maester's own, marked as the pack's.
 
 ```powershell
 Install-MtPack contoso/maester-google-workspace
@@ -18,8 +27,86 @@ Connect-Maester -Service Graph, CNT.GoogleWorkspace
 Invoke-Maester -Pack CNT
 ```
 
-Some packs ship with Maester. They need no install and run as soon as they are turned on (see
-[Packs that ship with Maester](#packs-that-ship-with-maester)).
+A pack is public or private, depending on the repository it lives in. Some packs also ship with Maester: they need
+no install and run as soon as they are turned on (see [Packs that ship with Maester](#packs-that-ship-with-maester)).
+
+## Public packs
+
+A public pack lives in a public GitHub repository, so anyone can install it with `Install-MtPack <owner>/<repo>`.
+The publisher does not need to register it anywhere or ask anyone: a public repository with a
+[valid pack](./writing-a-pack.md) and a release is enough.
+
+To help people find a pack, its publisher can list it on a pack index, a site that collects packs and shows a page
+for each one. [packs.maester.cloud](https://packs.maester.cloud/) is the index the Maester team runs: it reads and
+scans every pack before listing it, and shows what the pack checks, what it can reach and its risk. Listing is
+optional. An index only lists a pack: you still install it straight from the publisher's repository, and Maester
+runs the same [checks](./security.md) at install wherever you found it.
+
+When you install a public pack, Maester sends one anonymous event (the pack's source and commit, and a random
+installation ID) so installs can be counted. Set `MAESTER_DISABLE_TELEMETRY` to `1` to turn that off.
+
+## Private packs
+
+A private pack lives in a private or internal GitHub repository. Only people who can read that repository can
+install it, which makes it the way to share tests inside one company: checks for your own policies, naming rules or
+internal systems that should not be published. Anyone you give access to the repository, such as a partner or a
+customer, can install it as well.
+
+Install it like any other pack. `Install-MtPack`, `Update-MtPack` and `Restore-MtPack` need a GitHub sign-in that
+can read the repository, and use the first of these that can:
+
+1. **`-Token`**, a `SecureString`, for a script that reads a token from a vault. When you pass it, nothing else
+   is tried.
+2. **The Maester session's GitHub sign-in**, after `Connect-MtGitHub`, when it is to github.com. The Maester
+   GitHub App must be able to read the pack's repository.
+3. **The GitHub CLI.** When `gh` is installed and signed in, Maester asks it for a token (`gh auth token`) at the
+   moment of each request and does not keep it.
+4. **`GH_TOKEN`, then `GITHUB_TOKEN`**, the environment variables a pipeline sets.
+
+On your own computer, sign in to the GitHub CLI once and there is nothing to set:
+
+```powershell
+gh auth login
+Install-MtPack contoso/maester-internal-checks
+```
+
+With a token from a vault:
+
+```powershell
+Install-MtPack contoso/maester-internal-checks -Token (Get-Secret -Name PackReadToken)
+```
+
+Whichever way it gets it, Maester sends the token to `api.github.com` only and does not store it. Use a token
+that can only read this one repository: a fine-grained token with read-only **Contents**.
+
+:::caution[Keep tokens out of environment variables]
+Everything that runs in the session can read an environment variable, including the packs you run, and every
+process the session starts inherits it. Outside a pipeline, use the GitHub CLI or `-Token` instead. If you do set
+`GH_TOKEN`, do not set it in your profile, and remove it before `Invoke-Maester`. Running an installed pack does
+not need a token: only `Install-MtPack`, `Update-MtPack` and `Restore-MtPack` download from GitHub.
+:::
+
+A private pack goes through the same checks as a public one, and is pinned in the lock file the same way. What is
+different:
+
+- It is never listed on packs.maester.cloud, and cannot be published there.
+- Maester is never told which pack it is: there is no install event, and run telemetry never names it. A run's
+  totals still count its tests (how many ran, passed and failed), unless telemetry is off
+  (`MAESTER_DISABLE_TELEMETRY` set to `1`).
+- A pipeline needs a token too. In GitHub Actions the workflow's own `GITHUB_TOKEN` reads only the repository
+  the workflow runs in, so a pack in another private repository needs a token that can read that repository.
+  Give it to the restore step only, not to the whole job:
+
+  ```yaml
+  - name: Restore packs
+    shell: pwsh
+    env:
+      GH_TOKEN: ${{ secrets.PACK_READ_TOKEN }}
+    run: Restore-MtPack
+  ```
+
+A pack can also be installed from a local folder (`Install-MtPack ./my-pack`), which suits a pack you are still
+writing or one you keep outside GitHub. It is treated like a private pack: Maester is never told which pack it is.
 
 ## Installing a pack
 
