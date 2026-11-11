@@ -72,7 +72,7 @@ export const FIELD_HELP = {
     empty: "The test belongs to no framework. It still runs and is reported, but it is not counted in any benchmark's coverage and has no Benchmark value.",
   },
   services: {
-    more: "Every service you tick must be connected. Before it calls your function, the engine checks each one. When one is missing the test is **Skipped** with reason `ServiceNotConnected`, and the message names the service to connect. A test for an opt-in service is not run at all until that service is connected.",
+    more: "Every service you tick must be connected. Before it calls your function, the engine checks each one. When one is missing the test is **Skipped** with reason `ServiceNotConnected`, and the message names the service to connect. Active Directory is an opt-in service: its tests are not run at all until someone connects it with `Connect-Maester -Service ActiveDirectory`.",
     empty: {
       builtin: "Not allowed. Tick the services, or tick **None** for a test that needs no connection, such as one that reads only local files.",
       custom: "No connection is checked. If the code then calls a service that is not connected, the call throws and the result is **Error** instead of Skipped.",

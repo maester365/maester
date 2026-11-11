@@ -793,7 +793,7 @@ function StepList({ steps, step, onStep, className }) {
     <ol className={className} aria-label="Steps">
       {steps.map((s, index) => (
         <li key={s.key}>
-          <button type="button" className={styles.step} aria-current={s.key === step ? "step" : undefined} onClick={() => onStep(s.key)}>
+          <button type="button" className={styles.step} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} title={s.label + (s.errors ? ": " + s.errors + " to fix" : "")} aria-current={s.key === step ? "step" : undefined} onClick={() => onStep(s.key)}>
             <span className={styles.stepMark} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} aria-hidden="true">
               {s.errors ? s.errors : s.done ? "✓" : index + 1}
             </span>
@@ -1236,7 +1236,7 @@ export default function TestBuilder() {
             <Checkbox checked={state.serviceNone} onCheckedChange={(v) => set({ serviceNone: v })}>
               None: the test needs no connection
             </Checkbox>
-            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} describe={(n) => (data.services.find((s) => s.name === n).optIn ? n + " (opt-in)" : n)} iconFor={serviceIconOf} onChange={(v) => set({ services: v })} />}
+            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} iconFor={serviceIconOf} onChange={(v) => set({ services: v })} />}
           </Field>
         </section>
 

@@ -480,3 +480,15 @@ textarea.input {
 .label { display: inline-flex; align-items: center; gap: 0.4rem; }
 .stepIcon { opacity: 0.8; }
 .stepStrip .stepIcon { display: none; }
+
+/* Sidebar folded to a strip (the button at its top): each step is its icon, coloured by its state. */
+@media (min-width: 50rem) {
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step { justify-content: center; padding: 0.45rem 0; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepMark,
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepLabel,
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepNote { display: none; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepIcon { opacity: 1; width: 1.15rem; height: 1.15rem; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[data-state="done"] .stepIcon { color: var(--ifm-color-success-dark); }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[data-state="bad"] .stepIcon { color: var(--ifm-color-danger-dark); }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[aria-current="step"] .stepIcon { color: var(--ifm-color-primary); }
+}

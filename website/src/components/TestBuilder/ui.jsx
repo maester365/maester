@@ -51,8 +51,6 @@ export const osGlyph = (name) => {
   if (name === "Linux")
     return (
       <svg className={ui.optionIcon} viewBox="0 0 24 24" aria-hidden="true">
-        <ellipse cx="8.2" cy="20.6" rx="2.6" ry="1.2" fill="#F5B301" />
-        <ellipse cx="15.8" cy="20.6" rx="2.6" ry="1.2" fill="#F5B301" />
         <path
           d="M12 2.500c-2.200 0-3.600 1.700-3.600 4 0 1.600.200 2.600-.900 4.300C6 13.100 4.800 15.200 4.800 17.700c0 2 1.500 3.100 7.200 3.100s7.200-1.100 7.200-3.100c0-2.500-1.200-4.600-2.700-6.900-1.100-1.700-.900-2.700-.900-4.300 0-2.300-1.400-4-3.600-4z"
           fill="#2B2B2B"
@@ -64,7 +62,9 @@ export const osGlyph = (name) => {
         <circle cx="13.4" cy="6.500" r="1" fill="#fff" />
         <circle cx="10.8" cy="6.600" r="0.450" fill="#2B2B2B" />
         <circle cx="13.2" cy="6.600" r="0.450" fill="#2B2B2B" />
-        <path d="M10.200 8.700l1.800-.900 1.800.900-1.800 1.400z" fill="#F5B301" />
+        <path d="M9.800 8.600l2.200-1.100 2.200 1.100-2.200 1.800z" fill="#F5B301" />
+        <ellipse cx="7.800" cy="20.800" rx="3.200" ry="1.600" fill="#F5B301" />
+        <ellipse cx="16.200" cy="20.800" rx="3.200" ry="1.600" fill="#F5B301" />
       </svg>
     );
   return OS_PATHS[name] ? (
