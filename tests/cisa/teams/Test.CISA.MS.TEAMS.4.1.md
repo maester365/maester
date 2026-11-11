@@ -1,4 +1,4 @@
-Teams channel email integration can allow untrusted email content to be delivered into channels. This check reuses the CIS test for the Global client configuration. Availability may vary by Microsoft 365 environment and tenant.
+Teams channel email integration can allow untrusted email content to be delivered into channels. This check reuses `CIS.M365.8.1.2` for the Global client configuration. Availability may vary by Microsoft 365 environment and tenant.
 
 #### Remediation action
 

@@ -1,4 +1,4 @@
-Meeting recordings can disclose confidential discussions, shared screens and personal information. This check reuses the CIS Teams recording check because both suites evaluate whether cloud recording is disabled in the Global meeting policy.
+Meeting recordings can disclose confidential discussions, shared screens and personal information. This check reuses `CIS.M365.8.5.9` because both suites evaluate whether cloud recording is disabled in the Global meeting policy.
 
 #### Remediation action
 

@@ -17,9 +17,9 @@ function Test-MtCisaTeamsInternalMeetingAdmission {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
-        Control            = ('cisa-scuba:MS.TEAMS.1.4', 'nist-800-53-r5:AC-3'),
+        Control            = 'cisa-scuba:MS.TEAMS.1.4',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

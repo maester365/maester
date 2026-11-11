@@ -17,9 +17,9 @@ function Test-MtCisaTeamsBroadcastRecording {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
-        Control            = ('cisa-scuba:MS.TEAMS.1.7', 'nist-800-53-r5:AC-21a'),
+        Control            = 'cisa-scuba:MS.TEAMS.1.7',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

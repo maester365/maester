@@ -16,10 +16,10 @@ function Test-MtCisaTeamsAnonymousMeetingStart {
         Severity           = 'High',
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
-        Mitre              = ('T1078', 'T1078.001'),
-        Control            = ('cisa-scuba:MS.TEAMS.1.2', 'nist-800-53-r5:SC-15a'),
+        Mitre              = 'T1078.001',
+        Control            = 'cisa-scuba:MS.TEAMS.1.2',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

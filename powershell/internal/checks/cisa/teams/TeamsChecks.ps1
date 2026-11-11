@@ -68,15 +68,16 @@ function Get-MtCisaTeamsGlobalMeetingPolicy {
     return $policies[0]
 }
 
-function Get-MtCisaTeamsFederationConfiguration {
+function Get-MtCisaTeamsFederationConfigurations {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Teams can return multiple federation configurations.')]
     param()
 
     $configurations = @(Get-CsTenantFederationConfiguration -ErrorAction Stop)
-    if ($configurations.Count -ne 1) {
-        throw 'Teams did not return exactly one tenant federation configuration.'
+    if ($configurations.Count -eq 0) {
+        throw 'Teams returned no tenant federation configurations.'
     }
-    return $configurations[0]
+    return $configurations
 }
 
 function Test-MtCisaTeamsIsUSGovernment {

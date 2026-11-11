@@ -18,9 +18,9 @@ function Test-MtCisaTeamsUnmanagedInboundContact {
         UserImpact         = 'Medium',
         ImplementationCost = 'Low',
         Mitre              = 'T1204.001',
-        Control            = ('cisa-scuba:MS.TEAMS.2.2', 'nist-800-53-r5:CM-7', 'nist-800-53-r5:SI-8'),
+        Control            = 'cisa-scuba:MS.TEAMS.2.2',
         Service            = ('Graph', 'Teams'),
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -31,28 +31,81 @@ function Test-MtCisaTeamsUnmanagedInboundContact {
         return $null
     }
 
-    $configuration = Get-MtCisaTeamsFederationConfiguration
-    $inbound = $configuration.PSObject.Properties['AllowTeamsConsumerInbound']
-    $consumer = $configuration.PSObject.Properties['AllowTeamsConsumer']
+    $configurations = @(Get-MtCisaTeamsFederationConfigurations)
+    $index = 0
+    $results = foreach ($configuration in $configurations) {
+        $index++
+        $identityProperty = $configuration.PSObject.Properties['Identity']
+        $identity = if ($identityProperty -and $identityProperty.Value) {
+            [string]$identityProperty.Value
+        }
+        else {
+            "Configuration $index"
+        }
 
-    if ($consumer -and $consumer.Value -is [bool] -and -not $consumer.Value) {
-        $passed = $true
-    } elseif ($inbound -and $inbound.Value -is [bool] -and -not $inbound.Value) {
-        $passed = $true
-    } elseif ($inbound -and $consumer -and $inbound.Value -is [bool] -and $consumer.Value -is [bool]) {
-        $passed = $false
-    } else {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'The tenant does not expose the settings required to assess unmanaged inbound contact.'
+        $inbound = $configuration.PSObject.Properties['AllowTeamsConsumerInbound']
+        $consumer = $configuration.PSObject.Properties['AllowTeamsConsumer']
+        $inboundValue = if ($inbound -and $inbound.Value -is [bool]) {
+            [string]$inbound.Value
+        }
+        else {
+            'Unknown'
+        }
+        $consumerValue = if ($consumer -and $consumer.Value -is [bool]) {
+            [string]$consumer.Value
+        }
+        else {
+            'Unknown'
+        }
+
+        $policyPass = $null
+        if ($consumer -and $consumer.Value -is [bool] -and -not $consumer.Value) {
+            $policyPass = $true
+        }
+        elseif ($inbound -and $inbound.Value -is [bool] -and -not $inbound.Value) {
+            $policyPass = $true
+        }
+        elseif ($inbound -and $consumer -and $inbound.Value -is [bool] -and $consumer.Value -is [bool]) {
+            $policyPass = $false
+        }
+
+        $status = if ($null -eq $policyPass) {
+            'Unknown'
+        }
+        elseif ($policyPass) {
+            'Pass'
+        }
+        else {
+            'Fail'
+        }
+
+        [pscustomobject]@{
+            Policy                       = $identity
+            AllowTeamsConsumerInbound    = $inboundValue
+            AllowTeamsConsumer           = $consumerValue
+            Pass                         = $policyPass
+            Result                       = $status
+        }
+    }
+
+    $violatingPolicies = @($results | Where-Object { $_.Pass -eq $false } | ForEach-Object { $_.Policy })
+    $unknownPolicies = @($results | Where-Object { $null -eq $_.Pass } | ForEach-Object { $_.Policy })
+    if ($violatingPolicies.Count -eq 0 -and $unknownPolicies.Count -gt 0) {
+        $policyList = $unknownPolicies -join ', '
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "The tenant does not expose the settings required to assess unmanaged inbound contact for: $policyList."
         return $null
     }
 
+    $passed = $violatingPolicies.Count -eq 0
     $result = if ($passed) {
-        'Well done. Unmanaged users cannot initiate contact with internal users.'
+        'Well done. Unmanaged users cannot initiate contact with internal users in any federation configuration.'
     } else {
-        'Both unmanaged contact and inbound unmanaged contact are enabled.'
+        'Both unmanaged contact and inbound unmanaged contact are enabled in one or more federation configurations.'
     }
-    $result += "`n`n| Setting | Value |`n| --- | --- |`n"
-    $result += "| AllowTeamsConsumerInbound | $($inbound.Value) |`n| AllowTeamsConsumer | $($consumer.Value) |"
+    $result += "`n`n| Policy | AllowTeamsConsumerInbound | AllowTeamsConsumer | Result |`n| --- | --- | --- | --- |`n"
+    foreach ($row in $results) {
+        $result += "| $($row.Policy) | $($row.AllowTeamsConsumerInbound) | $($row.AllowTeamsConsumer) | $($row.Result) |`n"
+    }
     Add-MtTestResultDetail -Result $result
     return $passed
 }

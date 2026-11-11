@@ -18,9 +18,9 @@ function Test-MtCisaTeamsMicrosoftApps {
         UserImpact         = 'Medium',
         ImplementationCost = 'Medium',
         Mitre              = 'T1195',
-        Control            = ('cisa-scuba:MS.TEAMS.5.1', 'nist-800-53-r5:CM-11'),
+        Control            = 'cisa-scuba:MS.TEAMS.5.1',
         Service            = ('Graph', 'Teams'),
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test assesses every Microsoft app category setting.')]

@@ -17,9 +17,9 @@ function Test-MtCisaTeamsMeetingLobbyAdmission {
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
-        Control            = ('cisa-scuba:MS.TEAMS.1.3', 'nist-800-53-r5:SC-15a'),
+        Control            = 'cisa-scuba:MS.TEAMS.1.3',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

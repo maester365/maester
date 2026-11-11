@@ -86,7 +86,7 @@ Describe 'CISA Teams checks' {
     }
 
     It 'Passes external federation when disabled' {
-        Mock Get-MtCisaTeamsFederationConfiguration -ModuleName Maester {
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
             [pscustomobject]@{ AllowFederatedUsers = $false }
         }
 
@@ -96,7 +96,7 @@ Describe 'CISA Teams checks' {
     }
 
     It 'Fails external federation when all known domains are allowed' {
-        Mock Get-MtCisaTeamsFederationConfiguration -ModuleName Maester {
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
             $domains = [pscustomobject]@{}
             $domains.PSObject.TypeNames.Insert(0, 'AllowAllKnownDomains')
             [pscustomobject]@{
@@ -111,7 +111,7 @@ Describe 'CISA Teams checks' {
     }
 
     It 'Passes external federation when only configured domains are allowed' {
-        Mock Get-MtCisaTeamsFederationConfiguration -ModuleName Maester {
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
             [pscustomobject]@{
                 AllowFederatedUsers = $true
                 AllowedDomains      = [pscustomobject]@{ AllowedDomain = @('contoso.com') }
@@ -120,6 +120,63 @@ Describe 'CISA Teams checks' {
 
         InModuleScope Maester {
             Test-MtCisaTeamsExternalAccessScope | Should -BeTrue
+        }
+    }
+
+    It 'Fails external federation when any configuration allows all domains' {
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
+            $domains = [pscustomobject]@{}
+            $domains.PSObject.TypeNames.Insert(0, 'AllowAllKnownDomains')
+            @(
+                [pscustomobject]@{ Identity = 'Global'; AllowFederatedUsers = $false }
+                [pscustomobject]@{ Identity = 'Tag:Custom'; AllowFederatedUsers = $true; AllowedDomains = $domains }
+            )
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaTeamsExternalAccessScope | Should -BeFalse
+        }
+    }
+
+    It 'Fails unmanaged inbound contact when any configuration allows it' {
+        Mock Test-MtCisaTeamsIsUSGovernment -ModuleName Maester { $false }
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
+            @(
+                [pscustomobject]@{ Identity = 'Global'; AllowTeamsConsumerInbound = $false; AllowTeamsConsumer = $true }
+                [pscustomobject]@{ Identity = 'Tag:Custom'; AllowTeamsConsumerInbound = $true; AllowTeamsConsumer = $true }
+            )
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaTeamsUnmanagedInboundContact | Should -BeFalse
+        }
+    }
+
+    It 'Passes unmanaged inbound contact when every configuration blocks inbound contact' {
+        Mock Test-MtCisaTeamsIsUSGovernment -ModuleName Maester { $false }
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
+            @(
+                [pscustomobject]@{ Identity = 'Global'; AllowTeamsConsumerInbound = $false; AllowTeamsConsumer = $true }
+                [pscustomobject]@{ Identity = 'Tag:Custom'; AllowTeamsConsumerInbound = $true; AllowTeamsConsumer = $false }
+            )
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaTeamsUnmanagedInboundContact | Should -BeTrue
+        }
+    }
+
+    It 'Fails unmanaged outbound contact when any configuration allows it' {
+        Mock Test-MtCisaTeamsIsUSGovernment -ModuleName Maester { $false }
+        Mock Get-MtCisaTeamsFederationConfigurations -ModuleName Maester {
+            @(
+                [pscustomobject]@{ Identity = 'Global'; AllowTeamsConsumer = $false }
+                [pscustomobject]@{ Identity = 'Tag:Custom'; AllowTeamsConsumer = $true }
+            )
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaTeamsUnmanagedOutboundContact | Should -BeFalse
         }
     }
 

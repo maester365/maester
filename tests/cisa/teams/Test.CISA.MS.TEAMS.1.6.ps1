@@ -17,9 +17,9 @@ function Test-MtCisaTeamsCloudRecording {
         UserImpact         = 'Medium',
         ImplementationCost = 'Low',
         Mitre              = 'None',
-        Control            = ('cisa-scuba:MS.TEAMS.1.6', 'nist-800-53-r5:CM-7'),
+        Control            = 'cisa-scuba:MS.TEAMS.1.6',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

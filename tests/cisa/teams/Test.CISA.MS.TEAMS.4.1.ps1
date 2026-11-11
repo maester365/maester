@@ -14,13 +14,13 @@ function Test-MtCisaTeamsChannelEmailDisabled {
         Feature            = 'messaging',
         Area               = 'external-access',
         ResourceType       = 'Tenant',
-        Severity           = 'High',
+        Severity           = 'Medium',
         UserImpact         = 'Medium',
         ImplementationCost = 'Low',
-        Mitre              = ('T1204.001', 'T1204.002'),
-        Control            = ('cisa-scuba:MS.TEAMS.4.1', 'nist-800-53-r5:SI-8', 'nist-800-53-r5:SC-7(10)(a)', 'nist-800-53-r5:AC-4'),
+        Mitre              = 'T1566',
+        Control            = 'cisa-scuba:MS.TEAMS.4.1',
         Service            = 'Teams',
-        Author             = 'Copilot'
+        Author             = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
