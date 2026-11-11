@@ -1,4 +1,4 @@
-﻿function Get-MtLdapAuthenticationPolicyState {
+function Get-MtLdapAuthenticationPolicyState {
     <#
     .SYNOPSIS
     Collects Authentication Policies and Authentication Policy Silos over the validated LDAP connection.

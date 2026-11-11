@@ -1,4 +1,4 @@
-﻿function Test-MtAdAuthNPolicyConfigCount {
+function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
     Evaluates Active Directory Authentication Policy and Silo posture.

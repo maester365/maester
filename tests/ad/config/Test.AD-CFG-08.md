@@ -1,4 +1,4 @@
-﻿Authentication Policies and Authentication Policy Silos provide additional controls for restricting where accounts can authenticate and for isolating high-value identities. A simple container count does not show whether policies are enforced or whether the expression attributes needed for evaluation were actually returned.
+Authentication Policies and Authentication Policy Silos provide additional controls for restricting where accounts can authenticate and for isolating high-value identities. A simple container count does not show whether policies are enforced or whether the expression attributes needed for evaluation were actually returned.
 
 ##### Control Type
 
