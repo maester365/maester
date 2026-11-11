@@ -224,7 +224,7 @@ const AUTHORS_SHOWN = 6;
 </mt-catalog-nav>
 
 <script>
-	import { onState, readState, toggle, update, writeState, isFiltered, FILTERS } from './state';
+	import { onState, readState, toggle, update, writeState, isFiltered, FILTERS, VIEW } from './state';
 
 	class CatalogNav extends HTMLElement {
 		connectedCallback() {
@@ -285,7 +285,7 @@ const AUTHORS_SHOWN = 6;
 			});
 			clear?.addEventListener('click', () => {
 				const state = readState();
-				for (const name of FILTERS) if (name !== 'group') state[name] = [];
+				for (const name of FILTERS) if (!VIEW.includes(name)) state[name] = [];
 				writeState(state);
 			});
 

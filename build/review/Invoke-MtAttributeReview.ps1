@@ -87,6 +87,9 @@ $ErrorActionPreference = 'Stop'
 # The attributes the rubric governs. Everything else on [MaesterTest] is mechanical and checked by unit tests.
 $script:RubricAttribute = @('Product', 'RelatedProduct', 'Feature', 'Area', 'ResourceType', 'Severity',
     'UserImpact', 'ImplementationCost', 'Mitre')
+# What the review judges: the rubric attributes, and the names of the test's parameters (the rubric's
+# "Parameter names" section). Parameters is read from the param() block, not from [MaesterTest].
+$script:ReviewedAttribute = @($script:RubricAttribute) + 'Parameters'
 
 # A test file larger than this is not sent. It is reported as not reviewable instead of being cut short.
 $script:MaxSourceLength = 120000
@@ -150,6 +153,43 @@ function Get-MtReviewAttribute {
         $result.Attributes[$argument.ArgumentName] = if ($expression -is [System.Management.Automation.Language.ArrayLiteralAst]) { , @($values) } else { $values }
     }
     $result
+}
+
+function Get-MtReviewParameter {
+    <#
+    .SYNOPSIS
+    Reads the parameters of the [MaesterTest] function from the text of a test file without running it, as
+    "Name [type]" or "Name [type] setting=Setting", sorted. Parameters the engine supplies are left out.
+    #>
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param(
+        [AllowEmptyString()]
+        [string] $Content
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Content) -or $Content -match '(?im)^\s*using\s+(module|assembly|namespace)\b') { return , @() }
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseInput($Content, [ref] $tokens, [ref] $parseErrors)
+    $function = $ast.FindAll({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Body.ParamBlock -and
+            @($node.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' }).Count -gt 0
+        }, $true) | Select-Object -First 1
+    if (-not $function) { return , @() }
+    $parameters = foreach ($parameter in $function.Body.ParamBlock.Parameters) {
+        $name = $parameter.Name.VariablePath.UserPath
+        if ($name -eq 'Instance' -or $name -like 'Mt*') { continue }
+        $type = $parameter.Attributes | Where-Object { $_ -is [System.Management.Automation.Language.TypeConstraintAst] } | Select-Object -First 1
+        $typeName = if ($type) { $type.TypeName.Name.ToLowerInvariant() -replace '^switchparameter$', 'switch' } else { 'object' }
+        $setting = $parameter.Attributes | Where-Object { $_ -is [System.Management.Automation.Language.AttributeAst] -and $_.TypeName.Name -in 'MaesterParameter', 'MaesterParameterAttribute' } |
+            ForEach-Object { $_.NamedArguments | Where-Object ArgumentName -EQ 'Setting' } | Select-Object -First 1
+        $text = "$name [$typeName]"
+        if ($setting -and $setting.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) { $text += " setting=$($setting.Argument.Value)" }
+        $text
+    }
+    , @($parameters | Sort-Object)
 }
 
 function ConvertTo-MtReviewValue {
@@ -252,11 +292,14 @@ function Get-MtReviewTarget {
         foreach ($name in $script:RubricAttribute) {
             if ($declared.Attributes.Contains($name)) { $target.Declared[$name] = $declared.Attributes[$name] }
         }
+        $parameters = Get-MtReviewParameter -Content $source.Head
+        if ($parameters.Count -gt 0) { $target.Declared['Parameters'] = $parameters }
         if ($declared.Attributes.Contains('Id')) { $target.Id = [string] $declared.Attributes['Id'] }
         if ($declared.Attributes.Contains('Title')) { $target.Title = [string] $declared.Attributes['Title'] }
 
         if ($target.IsNew) {
             $target.Changed = @($script:RubricAttribute)
+            if ($parameters.Count -gt 0) { $target.Changed += 'Parameters' }
         } else {
             $previous = Get-MtReviewAttribute -Content $source.Base
             $target.Previous = [ordered]@{}
@@ -266,6 +309,10 @@ function Get-MtReviewTarget {
                 $after = ConvertTo-MtReviewValue -Value $(if ($declared.Attributes.Contains($name)) { $declared.Attributes[$name] })
                 if ($before -cne $after) { $target.Changed += $name }
             }
+            $previousParameters = Get-MtReviewParameter -Content $source.Base
+            if ($previousParameters.Count -gt 0) { $target.Previous['Parameters'] = $previousParameters }
+            # A renamed, added or rebound parameter is reviewed; a removed one is not.
+            if (@($parameters | Where-Object { $_ -cnotin $previousParameters }).Count -gt 0) { $target.Changed += 'Parameters' }
             if ($target.Changed.Count -eq 0) { continue } # nothing the rubric governs changed
         }
 
@@ -300,6 +347,7 @@ function Get-MtReviewIndex {
         foreach ($name in $script:RubricAttribute) {
             if ($read.Attributes.Contains($name)) { $entry[$name] = $read.Attributes[$name] }
         }
+        $entry['Parameters'] = Get-MtReviewParameter -Content (Get-Content -LiteralPath $file.FullName -Raw)
         [pscustomobject]$entry
     }
 }
@@ -359,6 +407,28 @@ function Get-MtReviewRelatedTest {
     $related | Sort-Object -Property Id | Select-Object -First $MaxRelated
 }
 
+function Get-MtReviewParameterName {
+    <#
+    .SYNOPSIS
+    Lists the parameter names the repository already uses, with their types, settings and how many tests use
+    each, so the reviewer can ask a new test to reuse an established name instead of inventing a synonym.
+    #>
+    [CmdletBinding()]
+    [OutputType([pscustomobject])]
+    param(
+        [AllowEmptyCollection()]
+        [object[]] $Index,
+        [string] $ExcludeId
+    )
+
+    $entries = foreach ($test in @($Index | Where-Object { $_.Id -ne $ExcludeId -and $_.PSObject.Properties['Parameters'] })) {
+        foreach ($text in @($test.Parameters)) { if ($text -match '^(?<name>\S+) \[(?<type>[^\]]+)\]') { [pscustomobject]@{ Name = $Matches.name; Text = $text } } }
+    }
+    $entries | Group-Object Name | Sort-Object Name | ForEach-Object {
+        [pscustomobject]@{ Name = $_.Name; Tests = $_.Count; Signature = @($_.Group.Text | Sort-Object -Unique) -join '; ' }
+    }
+}
+
 function Get-MtReviewSystem {
     <#
     .SYNOPSIS
@@ -416,6 +486,9 @@ function New-MtReviewRequestBody {
     $previous = if ($Target.IsNew) { 'none' } else { $Target.Previous | ConvertTo-Json -Depth 4 -Compress }
     $markdown = if ($Target.Markdown) { $Target.Markdown } else { '(the test has no Markdown file)' }
     $related = if (@($Target.Related).Count -gt 0) { ConvertTo-Json -InputObject @($Target.Related) -Depth 4 -Compress } else { 'none' }
+    $parameterNames = if ($Target.PSObject.Properties['ParameterNames'] -and @($Target.ParameterNames).Count -gt 0) {
+        (@($Target.ParameterNames) | ForEach-Object { "$($_.Name) ($($_.Tests)): $($_.Signature)" }) -join "`n"
+    } else { 'none' }
     $user = @(
         "Review this $(if ($Target.IsNew) { 'new' } else { 'changed' }) test: $($Target.Id) ($($Target.Path))."
         ''
@@ -423,6 +496,8 @@ function New-MtReviewRequestBody {
         "declared_attributes: $($Target.Declared | ConvertTo-Json -Depth 4 -Compress)"
         "previous_attributes: $previous"
         "related_tests: $related"
+        "existing_parameter_names:"
+        $parameterNames
         ''
         "<test_source_$nonce>"
         $Target.Source
@@ -442,7 +517,7 @@ function New-MtReviewRequestBody {
                 items = [ordered]@{
                     type                 = 'object'
                     properties           = [ordered]@{
-                        attribute = @{ type = 'string'; enum = @($script:RubricAttribute) }
+                        attribute = @{ type = 'string'; enum = @($script:ReviewedAttribute) }
                         declared  = @{ type = 'string' }
                         expected  = @{ type = 'string' }
                         reason    = @{ type = 'string' }
@@ -728,7 +803,10 @@ function Invoke-MtAttributeReview {
     $removed = @($File | ForEach-Object { $_ -replace '\\', '/' } |
             Where-Object { $_ -match '^tests/.+/Test\.[^/]+\.ps1$' -and -not (Test-Path -LiteralPath (Join-Path $HeadRoot $_) -PathType Leaf) })
     foreach ($target in $targets) {
-        if (-not $target.Error) { $target.Related = @(Get-MtReviewRelatedTest -Target $target -Index $index -Changed $targets -Removed $removed) }
+        if (-not $target.Error) {
+            $target.Related = @(Get-MtReviewRelatedTest -Target $target -Index $index -Changed $targets -Removed $removed)
+            $target | Add-Member -NotePropertyName ParameterNames -NotePropertyValue @(Get-MtReviewParameterName -Index $index -ExcludeId $target.Id) -Force
+        }
     }
     $results = foreach ($target in $targets) {
         if ($target.Error) {
