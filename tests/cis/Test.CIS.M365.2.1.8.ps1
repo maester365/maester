@@ -93,8 +93,10 @@
             [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $null; Detail = "DNS lookup not available for $($redirectTargets[-1])" }
             continue
         }
+        $effectiveTerms = [string]$effective -split '\s+'
+        $allMechanisms = @($effectiveTerms | Where-Object { $_ -match '(?i)^[+?~-]?all$' })
         $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all\s*$')
-        $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
+        $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~' -and $allMechanisms.Count -eq 1
         if (-not $record) {
             $detail = 'No SPF record found'
         } elseif ($redirectError) {

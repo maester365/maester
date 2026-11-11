@@ -75,6 +75,12 @@
         Test-MtCisSpfRecordsPublished | Should -BeFalse
     }
 
+    It 'rejects a sending-domain record with an earlier all mechanism' {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 all include:vendor.example -all' }
+
+        Test-MtCisSpfRecordsPublished | Should -BeFalse
+    }
+
     It 'follows a redirect for a sending domain' {
         $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 redirect=_spf.example.net' }
         $script:spfResults['_spf.example.net'] = [pscustomobject]@{ record = 'v=spf1 include:spf.protection.outlook.com -all' }
