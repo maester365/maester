@@ -52,41 +52,6 @@ install it, which makes it the way to share tests inside one company: checks for
 internal systems that should not be published. Anyone you give access to the repository, such as a partner or a
 customer, can install it as well.
 
-Install it like any other pack. Maester reads a GitHub token from `GH_TOKEN` or `GITHUB_TOKEN` to reach the
-repository. Set it only for the install, then remove it:
-
-```powershell
-$env:GH_TOKEN = gh auth token
-try { Install-MtPack contoso/maester-internal-checks } finally { Remove-Item Env:GH_TOKEN }
-```
-
-:::caution[Keep the token out of your session]
-Everything that runs in the session can read an environment variable, including the packs you run. Use a token
-that can only read this one repository (a fine-grained token with read-only **Contents**), do not set it in your
-profile, and remove it before `Invoke-Maester`. Running an installed pack does not need it: only
-`Install-MtPack`, `Update-MtPack` and `Restore-MtPack` download from GitHub. A way to install without an environment variable is tracked in
-[issue 2790](https://github.com/maester365/maester/issues/2790).
-:::
-
-A private pack goes through the same checks as a public one, and is pinned in the lock file the same way. What is
-different:
-
-- It is never listed on packs.maester.cloud, and cannot be published there.
-- Nothing about it is sent to Maester: no install event, and run telemetry never names it.
-- A pipeline needs the token too. In GitHub Actions the workflow's own `GITHUB_TOKEN` reads only the repository
-  the workflow runs in, so a pack in another private repository needs a token that can read that repository.
-  Give it to the restore step only, not to the whole job.
-
-A pack can also be installed from a local folder (`Install-MtPack ./my-pack`), which suits a pack you are still
-writing or one you keep outside GitHub. Nothing is sent for a local folder either.
-
-## Private packs
-
-A private pack lives in a private or internal GitHub repository. Only people who can read that repository can
-install it, which makes it the way to share tests inside one company: checks for your own policies, naming rules or
-internal systems that should not be published. Anyone you give access to the repository, such as a partner or a
-customer, can install it as well.
-
 Install it like any other pack. `Install-MtPack`, `Update-MtPack` and `Restore-MtPack` need a GitHub sign-in that
 can read the repository, and use the first of these that can:
 
@@ -125,7 +90,9 @@ A private pack goes through the same checks as a public one, and is pinned in th
 different:
 
 - It is never listed on packs.maester.cloud, and cannot be published there.
-- Nothing about it is sent to Maester: no install event, and run telemetry never names it.
+- Maester is never told which pack it is: there is no install event, and run telemetry never names it. A run's
+  totals still count its tests (how many ran, passed and failed), unless telemetry is off
+  (`MAESTER_DISABLE_TELEMETRY` set to `1`).
 - A pipeline needs a token too. In GitHub Actions the workflow's own `GITHUB_TOKEN` reads only the repository
   the workflow runs in, so a pack in another private repository needs a token that can read that repository.
   Give it to the restore step only, not to the whole job:
@@ -137,6 +104,9 @@ different:
       GH_TOKEN: ${{ secrets.PACK_READ_TOKEN }}
     run: Restore-MtPack
   ```
+
+A pack can also be installed from a local folder (`Install-MtPack ./my-pack`), which suits a pack you are still
+writing or one you keep outside GitHub. It is treated like a private pack: Maester is never told which pack it is.
 
 ## Installing a pack
 
