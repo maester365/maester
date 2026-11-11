@@ -101,8 +101,7 @@
             if ([string]::IsNullOrWhiteSpace($DisplayName)) {
                 $DisplayName = '(unnamed)'
             }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
             $Reason = [string]$OrphanedIdentity.Reason -replace '\|', '\|'
             $Result += "`n| $($OrphanedIdentity.AgentIdentityId) | $DisplayName | " +
                 "$($OrphanedIdentity.BlueprintAppId) | $Reason |"

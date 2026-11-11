@@ -243,15 +243,9 @@
             $ObservationNote += "`n`n| Object ID | Display name | Object type | Directory role |"
             $ObservationNote += "`n| --- | --- | --- | --- |"
             foreach ($Item in $RoleObservations) {
-                $DisplayName = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.DisplayName
-                ) -replace '\|', '&#124;'
-                $DisplayName = $DisplayName -replace '[\r\n]+', ' '
+                $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.DisplayName))
                 if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-                $RoleName = [System.Net.WebUtility]::HtmlEncode(
-                    [string]$Item.RoleName
-                ) -replace '\|', '&#124;'
-                $RoleName = $RoleName -replace '[\r\n]+', ' '
+                $RoleName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.RoleName))
                 $ObservationNote += "`n| $($Item.ObjectId) | $DisplayName | " +
                     "$($Item.ObjectType) | $RoleName |"
             }
@@ -265,10 +259,8 @@
             foreach ($Item in $PermissionObservations) {
                 $DisplayName = [string]$Item.DisplayName
                 if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-                $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-                $DisplayName = $DisplayName -replace '[\r\n]+', ' '
-                $Resources = [System.Net.WebUtility]::HtmlEncode([string]$Item.Resources) -replace '\|', '&#124;'
-                $Resources = $Resources -replace '[\r\n]+', ' '
+                $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+                $Resources = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Resources))
                 $ObservationNote += "`n| $($Item.ObjectId) | $DisplayName | " +
                     "$($Item.ForeignTenant) | $($Item.Count) | $Resources |"
             }
@@ -287,9 +279,8 @@
         foreach ($Item in $ForeignFindings) {
             $DisplayName = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($DisplayName)) { $DisplayName = '(unnamed)' }
-            $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
-            $DisplayName = $DisplayName -replace "`r?`n", ' '
-            $PrivName = [System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegeName) -replace '\|', '&#124;'
+            $DisplayName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($DisplayName))
+            $PrivName = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.PrivilegeName))
             $Result += "`n| $($Item.ObjectId) | $DisplayName | $($Item.ObjectType) | " +
                 "$($Item.ForeignTenant) | $($Item.PrivilegeType) | $PrivName |"
         }

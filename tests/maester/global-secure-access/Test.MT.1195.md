@@ -9,7 +9,7 @@ An enabled sign-in frequency policy that targets Quick Access is a **Fail**, unl
 * **Risk-gated** - has a user- or sign-in-risk condition, so the control only applies under elevated risk.
 * **Browser** - limited to the `browser` client app type; Private Access / Quick Access traffic is not browser-based.
 
-Reviewed, accepted exceptions can be **allow-listed** by policy id or display name via the `GsaQuickAccessSignInFrequencyAllowedPolicies` global setting in `maester-config.json`; those are reported as **Accepted** and never fail.
+Reviewed, accepted exceptions can be **allow-listed** by policy id or display name in this test's `AllowedPolicies` parameter (`TestSettings[].Parameters` in `maester-config.json`); those are reported as **Accepted** and never fail.
 
 #### Remediation action
 
