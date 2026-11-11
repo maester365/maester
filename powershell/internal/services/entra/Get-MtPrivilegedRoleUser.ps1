@@ -12,7 +12,7 @@
     roles. The hashtable is empty when nobody holds a privileged role.
 
     .EXAMPLE
-    $privilegedUsers = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
+    $privilegedUsers = Get-MtPrivilegedRoleUser -EmergencyAccessAccounts $EmergencyAccessAccounts
     $privilegedUsers.Keys
 
     Returns the object IDs of the users that hold a privileged directory role, apart from the emergency access accounts.
@@ -20,8 +20,8 @@
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(
-        # Leave out the emergency access accounts named in the Maester configuration (EmergencyAccessAccounts).
-        [switch] $ExcludeEmergencyAccessAccount
+        # Emergency access accounts to leave out: the entries of the EmergencyAccessAccounts setting.
+        [Parameter()] [AllowNull()] [AllowEmptyCollection()] [object[]] $EmergencyAccessAccounts = @()
     )
 
     # isPrivileged can be filtered on in beta only; CIS.M365.5.3.1 reads the same list.
@@ -29,7 +29,7 @@
     foreach ($role in @(Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta -Filter 'isPrivileged eq true')) {
         $roleName[$role.id] = $role.displayName
     }
-    $excluded = if ($ExcludeEmergencyAccessAccount) { @(Get-MtEmergencyAccessAccount | ForEach-Object ObjectId) } else { @() }
+    $excluded = if (@($EmergencyAccessAccounts | Where-Object { $_ }).Count -gt 0) { @(Get-MtEmergencyAccessAccount -Account $EmergencyAccessAccounts | ForEach-Object ObjectId) } else { @() }
 
     $rolesOf = @{}
     foreach ($assignment in @((Get-MtDirectoryRoleAssignment -ExpandPrincipal).Assignments | Where-Object { $roleName.ContainsKey($_.roleDefinitionId) })) {

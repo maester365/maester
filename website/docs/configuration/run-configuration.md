@@ -129,11 +129,28 @@ Free-form values about the run, echoed in the result as `RunMetadata`. Use it to
 
 ## GlobalSettings
 
-Tenant-wide settings that tests read with `Get-MtSetting`. Maester knows these:
+Tenant-wide settings. A test receives one as a parameter bound to the setting, so a test's `TestSettings` row
+can override it (see [Values set once for many tests](../writing-tests/index.mdx#values-set-once-for-many-tests));
+connection commands read theirs with `Get-MtSetting`.
+
+Maester checks this section once, before the run:
+
+- A value of the wrong type, or one the setting does not allow, stops the run and names the setting, for example
+  `GlobalSettings.DefenderEndpointPolicyFiltering: 'Some' is not one of All, IncludeUnassigned, OnlyAssigned.`
+- A key without a dot that Maester does not know gives a warning that names the closest setting, so a typo such
+  as `ParkedDomain` is not silently ignored.
+- A setting of your own custom tests is named `Namespace.Key`, such as `Contoso.Regions`, and passes through. A
+  pack declares its settings, and they are checked in the same way while the pack runs.
+- A setting marked sensitive is recorded in the results as `[redacted]`.
+
+Maester knows these:
 
 | Setting | Type | Default | Used by |
 | --- | --- | --- | --- |
-| `EmergencyAccessAccounts` | array | none | Conditional Access checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `EmergencyAccessAccounts` | array | none | Conditional Access and privileged role checks. See [Emergency access accounts](./emergency-access-accounts.md). |
+| `ParkedDomains` | array | none | Email authentication checks: domains that never send email. |
+| `DefenderEndpointPolicyFiltering` | string | `OnlyAssigned` | Defender for Endpoint checks. |
+| `DefenderEndpointComplianceLogic` | string | `EffectivePolicy` | Defender for Endpoint checks. |
 | `DataverseEnvironmentUrl` | string | | Copilot Studio checks. |
 | `AzureDevOpsOrganization` | string | | Default organization for `Connect-Maester -Service AzureDevOps`. |
 | `GitHubOrganization` | string | | GitHub checks. |
@@ -157,7 +174,7 @@ Which tests run. Every key has a command-line equivalent.
 | `Feature` | array | `[]` | Run only tests about these features (like `-Feature`), for example `conditional-access`. |
 | `Area` | array | `[]` | Run only tests of these security areas (like `-Area`), for example `authentication`. |
 | `Severity` | array | `[]` | Run only tests with these severities (like `-Severity`). The severity a `TestSettings` row sets is the one that counts. |
-| `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `ASD`, `EIDSCA`, `ORCA` or `AD`. |
+| `Suite` | array | `[]` | Run only tests of these suites (like `-Suite`), for example `Maester`, `CISA`, `CIS`, `ASD`, `DISA`, `EIDSCA`, `ORCA` or `AD`. |
 | `Pack` | array | `[]` | Run only these [Maester Packs](../packs/index.md#choosing-which-packs-run), by pack ID or code (like `-Pack`). A pack named here runs even if it is off, with its long-running and preview tests. Other packs do not run. |
 | `Tag` | array | `[]` | Run only tests that any of these tags selects (like `-Tag`). |
 | `ExcludeTag` | array | `[]` | Do not run tests that any of these tags selects (like `-ExcludeTag`). |

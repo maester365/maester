@@ -38,6 +38,20 @@
       { "Name": "ZeroTrustAssessment", "MinimumVersion": "3.1.0", "Install": "User", "Process": "Child" }
     ]
   },
+  "Settings": {
+    "ZeroTrustAssessment.ReportPath": { "Type": "string", "Default": "", "Description": "Folder or JSON file of an assessment that already ran. When set, the pack reads it and does not run the assessment." },
+    "ZeroTrustAssessment.MaxReportAgeDays": { "Type": "int", "Default": 7, "Description": "Refuse a report at ReportPath older than this many days. 0 turns the check off." },
+    "ZeroTrustAssessment.EmbedReport": { "Type": "bool", "Default": true, "Description": "Attach the assessment's own HTML report to the Maester report." },
+    "ZeroTrustAssessment.WorkshopPlan": { "Type": "bool", "Default": true, "Description": "Add the Zero Trust workshop plan to the Maester report." },
+    "ZeroTrustAssessment.ObjectFacts": { "Type": "bool", "Default": true, "Description": "Record the objects each assessment result names as affected objects." },
+    "ZeroTrustAssessment.OutputPath": { "Type": "string", "Default": "", "Description": "Folder the assessment writes to. A temporary folder when empty." },
+    "ZeroTrustAssessment.Pillar": { "Type": "string", "Default": "All", "AllowedValues": ["All", "Identity", "Devices", "Network", "Data", "Infrastructure", "SecOps", "AI"], "Description": "Run one pillar only." },
+    "ZeroTrustAssessment.Tests": { "Type": "string[]", "Default": [], "Description": "Assessment test IDs to run. All tests when empty." },
+    "ZeroTrustAssessment.Days": { "Type": "int", "Description": "Days of sign-in logs the assessment reads. The module's default when not set." },
+    "ZeroTrustAssessment.ShowLog": { "Type": "bool", "Default": true, "Description": "Show the assessment's log while it runs." },
+    "ZeroTrustAssessment.DisableTelemetry": { "Type": "bool", "Default": true, "Description": "The assessment sends the tenant ID to Microsoft unless this is true." },
+    "ZeroTrustAssessment.Connect": { "Type": "object", "Description": "Parameters for Connect-ZtAssessment, when the assessment cannot reuse Maester's sign-in." }
+  },
   "Categories": ["Microsoft 365", "Zero Trust", "Identity", "Devices", "Network", "Data"],
   "Report": {
     "Logo": "microsoft",

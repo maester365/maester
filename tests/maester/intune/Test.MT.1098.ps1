@@ -46,7 +46,7 @@
         '860d3ab4-8fd1-45f5-89cd-ecf51e4f92e5' = 'BETTER Mobile Security'
         '870b252b-0ef0-4707-8847-50fc571472b3' = 'Sophos'
         '1f58d6d2-02cc-4c80-b008-1bfe7396a10a' = 'Jamf Trust'
-        '4873197-ffec-4dfc-9816-db65f34c7cb9'  = 'Trellix Mobile Security'
+        '74873197-ffec-4dfc-9816-db65f34c7cb9' = 'Trellix Mobile Security'
         'a447eca6-a986-4d3f-9838-5862bf50776c' = 'CylancePROTECT Mobile'
         '4928f0f6-2660-4f69-b4c5-5170ec921f7b' = 'Trend Micro'
         'bb13fe25-ce1f-45aa-b278-cabbc6b9072e' = 'SentinelOne'
