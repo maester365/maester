@@ -1,4 +1,4 @@
-﻿BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force }
+BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force }
 Describe 'gMSA managed-password authorization source contract' {
     It 'never requests or decodes the managed password value' {
         $source=Get-Content "$PSScriptRoot/../../internal/services/ad/queries/Get-MtLdapServiceAccount.ps1" -Raw
@@ -31,7 +31,9 @@ Describe 'gMSA managed-password authorization source contract' {
     It 'uses registered taxonomy and Medium severity for AD-MSA-02' {
         $test02=Get-Content "$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-02.ps1" -Raw
         $test03=Get-Content "$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-03.ps1" -Raw
-        foreach($testSource in @($test02,$test03)){$testSource|Should -Match "Feature='account-security'";$testSource|Should -Match "Area='privileged-access'";$testSource|Should -Match "ResourceType='Computer'"}
+foreach($testSource in @($test02,$test03)){$testSource|Should -Match "Feature='account-security'";$testSource|Should -Match "ResourceType='Computer'"}
+$test02 | Should -Match "Area='applications'"
+$test03 | Should -Match "Area='privileged-access'"
         $test02 | Should -Match "Severity='Medium'"
     }
     It 'does not permit a clean pass when ServiceAccounts state is unavailable' {

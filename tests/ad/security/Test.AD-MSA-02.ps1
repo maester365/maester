@@ -1,5 +1,5 @@
-﻿function Test-MtAdGmsaBroadPasswordRetrievalAuthorization {
-    [MaesterTest(Id='AD-MSA-02',Title='Broad principals should not be authorized to retrieve gMSA managed passwords',Product='ad',Feature='account-security',Area='privileged-access',ResourceType='Computer',Severity='Medium',UserImpact='Low',ImplementationCost='Medium',Mitre=('T1555'),Service='ActiveDirectory',Permission=('ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount.msDS-GroupMSAMembership:ReadProperty'),Platform='Windows',Author='rolling-code')]
+function Test-MtAdGmsaBroadPasswordRetrievalAuthorization {
+    [MaesterTest(Id='AD-MSA-02',Title='Broad principals should not be authorized to retrieve gMSA managed passwords',Product='ad',Feature='account-security',Area='applications',ResourceType='Computer',Severity='Medium',UserImpact='Low',ImplementationCost='Medium',Mitre=('T1555'),Service='ActiveDirectory',Permission=('ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount.msDS-GroupMSAMembership:ReadProperty'),Platform='Windows',Author='rolling-code')]
     [CmdletBinding()][OutputType([bool])]param()
     $state=Get-MtADDomainState -Categories ServiceAccounts
     if($null -eq $state){Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory;return $null}
