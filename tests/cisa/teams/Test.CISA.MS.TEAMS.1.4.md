@@ -3,12 +3,14 @@ Automatically admitting internal participants avoids requiring them to wait for 
 #### Remediation action
 
 1. In the [Teams admin center](https://admin.teams.microsoft.com), go to **Meetings** > **Meeting policies** > **Global (Org-wide default)**.
-2. Under **Meeting join and lobby**, set **Who can bypass the lobby** to **People in my org**.
+2. Under **Meeting join and lobby**, set **Who can bypass the lobby** to **People in my org** (`EveryoneInCompanyExcludingGuests`).
 3. Save the policy.
+
+The CISA check also accepts `EveryoneInCompany` and `EveryoneInSameAndFederatedCompany`. If you also follow CIS 8.5.3, use `EveryoneInCompanyExcludingGuests`: `EveryoneInCompany` includes guests and fails CIS 8.5.3, while CIS's `InvitedUsers` setting does not automatically admit internal users and fails this CISA check.
 
 ##### PowerShell
 
-Run `Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers EveryoneInCompany`.
+Run `Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers EveryoneInCompanyExcludingGuests`.
 
 #### Related links
 

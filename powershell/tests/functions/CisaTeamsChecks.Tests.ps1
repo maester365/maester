@@ -1,6 +1,7 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
     $script:cisaTeamsBroadcastTestPath = Join-Path $PSScriptRoot '../../../tests/cisa/teams/Test.CISA.MS.TEAMS.1.7.ps1'
+    $script:cisaTeamsRecordingTestPath = Join-Path $PSScriptRoot '../../../tests/cisa/teams/Test.CISA.MS.TEAMS.1.6.ps1'
 
     $script:createdTeamsStubs = @()
     $teamsStubs = @{
@@ -49,6 +50,19 @@ Describe 'CISA Teams checks' {
             $__MtSession.TeamsCache = @{}
         }
         Mock Add-MtTestResultDetail -ModuleName Maester {}
+    }
+
+    It 'Runs a built-in test by path in the Maester module scope' {
+        Mock Test-MtConnection -ModuleName Maester { @($Service) -contains 'Teams' }
+        Mock Get-CsTeamsMeetingPolicy -ModuleName Maester {
+            [pscustomobject]@{ Identity = 'Global'; AllowCloudRecording = $false }
+        }
+
+        $row = Invoke-MtTest -Path $script:cisaTeamsRecordingTestPath -Config @{ Environment = @{ Services = @{ Teams = $true } } }
+
+        $row.Result | Should -Be 'Passed'
+        $row.Source | Should -Be 'Maester'
+        Should -Invoke Get-CsTeamsMeetingPolicy -ModuleName Maester -Times 1 -Exactly
     }
 
     It 'Checks every meeting policy for a Boolean setting' {
