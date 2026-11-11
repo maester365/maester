@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.12.2",
+  "checkpoint_id": "01M741AFNR9PTAN9WQ1D5ZEHRV",
+  "strategy": "manual-commit",
+  "branch": "feat/parameter-settings",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "website/docs/writing-tests/with-ai.md",
+    "website/src/components/TestBuilder/index.jsx",
+    "website/src/components/TestBuilder/styles.module.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 16,
+    "cache_creation_tokens": 9651,
+    "cache_read_tokens": 2369283,
+    "output_tokens": 4879,
+    "api_call_count": 6,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 2923,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 13,
+      "credentialed_uri": 0,
+      "entropy": 2864,
+      "key_context": 46,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
