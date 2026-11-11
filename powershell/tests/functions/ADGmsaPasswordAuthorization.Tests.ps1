@@ -33,7 +33,7 @@ Describe 'gMSA managed-password authorization source contract' {
         $test03=Get-Content "$PSScriptRoot/../../../tests/ad/security/Test.AD-MSA-03.ps1" -Raw
 foreach($testSource in @($test02,$test03)){$testSource|Should -Match "Feature='account-security'";$testSource|Should -Match "ResourceType='Computer'"}
 $test02 | Should -Match "Area='applications'"
-$test03 | Should -Match "Area='privileged-access'"
+$test03 | Should -Match "Area='applications'"
         $test02 | Should -Match "Severity='Medium'"
     }
     It 'does not permit a clean pass when ServiceAccounts state is unavailable' {
