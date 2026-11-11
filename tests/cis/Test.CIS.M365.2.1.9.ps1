@@ -206,6 +206,6 @@
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
-    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:('Investigate' -in $dkimRecords.pass -and 'Failed' -notin $dkimRecords.pass)
+    Add-MtTestResultDetail -Result $testResultMarkdown -Investigate:(('Investigate' -in $dkimRecords.pass -or 'NotSupported' -in $dkimRecords.pass) -and 'Failed' -notin $dkimRecords.pass)
     return $testResult
 }

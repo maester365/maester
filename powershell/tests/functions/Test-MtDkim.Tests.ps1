@@ -180,7 +180,7 @@ Describe 'CIS DKIM with ParkedDomains' {
 
     It 'reports a compliant parked domain alongside one that <OtherOutcome>' -ForEach @(
         @{ OtherOutcome = 'needs investigation'; Status = 'Error'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedUnconfirmed = $true }
-        @{ OtherOutcome = 'cannot be checked'; Status = 'NotAvailable'; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $true }
+        @{ OtherOutcome = 'cannot be checked'; Status = 'NotAvailable'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedUnconfirmed = $true }
         @{ OtherOutcome = 'passes'; Status = $null; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $false }
     ) {
         $script:acceptedDomains += [PSCustomObject]@{ DomainName = 'other.example'; InitialDomain = $false; IsCoexistenceDomain = $false }
