@@ -66,6 +66,7 @@ const ICON: Record<string, string> = {
   report: "M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5",
   tenant: "M4 21V6l8-3 8 3v15M9 9h1M14 9h1M9 13h1M14 13h1M10 21v-4h4v4",
   chevron: "M6 9l6 6 6-6",
+  columns: "M4 4h16v16H4zM9.5 4v16M14.5 4v16",
   prev: "M15 6l-6 6 6 6",
   home: "M3 11l9-7 9 7M5 10v10h14V10M10 20v-5h4v5",
   check: "M5 12l5 5 9-10",

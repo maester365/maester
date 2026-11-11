@@ -11,6 +11,11 @@
 
     Returns true if each sending domain has an SPF fail-all mechanism or redirect modifier
 
+    .EXAMPLE
+    Test-MtCisaSpfDirective -ParkedDomains 'contoso-old.com'
+
+    Checks contoso-old.com as a domain that never sends email: its SPF policy must end in -all or ~all
+
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpfDirective
     #>
@@ -32,9 +37,17 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Domains that never send email.
+        [MaesterParameter(Setting = 'ParkedDomains')]
+        [string[]] $ParkedDomains = @()
+    )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
+    # A domain is parked only when it is listed. Exchange's SendingFromDomainDisabled is not read: SCuBA asks
+    # for an SPF policy on every domain, so a domain that is not listed gets the check for a sending domain.
+    $parkedDomainNames = @($ParkedDomains | ForEach-Object { "$_".Trim().TrimEnd('.') } | Where-Object { $_ })
+
     $spfRecords = @()
     foreach($domain in $acceptedDomains){
         $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF
@@ -46,6 +59,26 @@
             $_.mechanism -eq 'all' -and $_.qualifier -in @('-', '~')
         }).Count -gt 0
         $hasRedirect = @($terms | Where-Object { $_.modifier -eq 'redirect' }).Count -gt 0
+
+        if($domain.DomainName -in $parkedDomainNames){
+            $parkedRecord = $spfRecord.spfRecord
+            if($parkedRecord -is [string]){
+                if($parkedRecord -like "*not available"){
+                    $spfRecord.pass = "Skipped"
+                }
+                $spfRecord.reason = "Parked domain: $parkedRecord"
+            }elseif($hasFailAll){
+                $spfRecord.pass = "Passed"
+                $spfRecord.reason = "Parked domain: fails all senders"
+            }elseif($hasRedirect){
+                $spfRecord.pass = "Skipped"
+                $spfRecord.reason = "Parked domain: redirect modifier"
+            }else{
+                $spfRecord.reason = "Parked domain: policy does not end in -all or ~all"
+            }
+            $spfRecords += $spfRecord
+            continue
+        }
 
         if ($hasFailAll -or $hasRedirect) {
             $spfRecord.pass = "Passed"
@@ -69,13 +102,14 @@
 
     if("Failed" -in $spfRecords.pass){
         $testResult = $false
-    }
-    elseif ("Failed" -notin $spfRecords.pass -and "Passed" -notin $spfRecords.pass) {
+    }elseif("Skipped" -in $spfRecords.pass){
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
-    }
-    else {
+    }elseif("Passed" -in $spfRecords.pass){
         $testResult = $true
+    }else{
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
     }
 
     if($testResult){
@@ -86,12 +120,14 @@
 
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
+    $skipResult = "🗄️ Skip"
     $result = "| Domain | Result | Reason | Directives |`n"
     $result += "| --- | --- | --- | --- |`n"
     foreach ($item in $spfRecords | Sort-Object -Property domain) {
         switch($item.pass){
             "Passed" {$itemResult = $passResult}
             "Failed" {$itemResult = $failResult}
+            "Skipped" {$itemResult = $skipResult}
         }
         $itemDirectives = ($item.spfRecord.terms|Where-Object {`
             $_.mechanismTarget -ne ""
