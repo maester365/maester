@@ -1,4 +1,4 @@
-﻿BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force }
+BeforeAll { Import-Module "$PSScriptRoot/../../Maester.psd1" -Force }
 Describe 'AD DNS zone authorization behavior' {
     InModuleScope Maester {
         BeforeAll {
@@ -19,6 +19,7 @@ Describe 'AD DNS zone authorization behavior' {
         }
         It 'normalizes <Name> schema GUID shape' -TestCases @(
             @{Name='byte array';Shape={ [byte[]]$script:NodeGuid.ToByteArray() }}
+            @{Name='decoded GUID string';Shape={ $script:NodeGuid.ToString() }}
             @{Name='object integer array';Shape={ [object[]]@($script:NodeGuid.ToByteArray()|ForEach-Object{[int]$_}) }}
             @{Name='Value wrapper';Shape={ [pscustomobject]@{Value=[byte[]]$script:NodeGuid.ToByteArray()} }}
             @{Name='single-item wrapper array';Shape={ ,([pscustomobject]@{Value=[byte[]]$script:NodeGuid.ToByteArray()}) }}
