@@ -85,7 +85,7 @@ enforces them. When writing or reviewing a change, check every added, moved or r
   (`global-secure-access`, not `GlobalSecureAccess`). No two paths may differ only in case.
 - One name per service, the same everywhere: `ad`, `azure`, `azure-devops`, `copilot`,
   `copilot-studio`, `defender`, `entra`, `exchange`, `fabric`, `foundry`, `github`,
-  `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`.
+  `global-secure-access`, `graph`, `intune`, `power-platform`, `purview`, `sharepoint`, `teams`, `xspm`.
   Folders name the product whose settings a check reads, never a theme: an AI check goes in
   the folder of its product (an Entra agent identity check in `entra/`) and declares
   `Area = 'ai'`. A new service must be added to the guide and the test.
