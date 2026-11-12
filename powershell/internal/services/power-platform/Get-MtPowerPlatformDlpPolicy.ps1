@@ -1,12 +1,13 @@
 ﻿function Get-MtPowerPlatformDlpPolicy {
     <#
     .SYNOPSIS
-    Retrieves the tenant-level Power Platform data loss prevention (DLP) policies.
+    Retrieves the Power Platform data loss prevention (DLP) policies.
 
     .DESCRIPTION
     Returns one object per policy with its scope: AllEnvironments, OnlyEnvironments or ExceptEnvironments, and the
-    names of the environments the scope lists, cached for the current test run. A policy without an environment filter
-    applies to every environment.
+    names of the environments the scope lists, cached for the current test run. The API lists tenant-level and
+    environment-level policies together. A policy stored under an environment is scoped to that environment only; a
+    tenant-level policy without an environment filter applies to every environment.
     #>
     [CmdletBinding()]
     [OutputType([object[]])]
@@ -34,6 +35,10 @@
                 }
 
                 $environmentNames = @($filter.parameters.environments | Where-Object { $_ } | ForEach-Object { $_.name })
+            }
+            elseif ($policy.id -match '/environments/(?<environment>[^/]+)/apiPolicies/') {
+                $scope = 'OnlyEnvironments'
+                $environmentNames = @($Matches['environment'])
             }
 
             [pscustomobject]@{

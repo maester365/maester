@@ -19,7 +19,13 @@
         [string] $Method = 'Get'
     )
 
-    $azureEnvironment = (Get-AzContext -ErrorAction Stop).Environment.Name
+    $azContext = Get-AzContext -ErrorAction Stop
+    $azureEnvironment = $azContext.Environment.Name
+    $graphTenantId = try { [string](Get-MgContext).TenantId } catch { $null }
+    $azureTenantId = [string]$azContext.Tenant.Id
+    if ($graphTenantId -and $azureTenantId -and $graphTenantId -ne $azureTenantId) {
+        throw "The Azure context tenant ($azureTenantId) does not match the Microsoft Graph tenant ($graphTenantId). Reconnect both to the same tenant."
+    }
     $endpoints = @{
         AzureCloud        = @{ BaseUri = 'https://api.bap.microsoft.com'; ResourceUrl = 'https://service.powerapps.com/' }
         AzureUSGovernment = @{ BaseUri = 'https://high.api.bap.microsoft.us'; ResourceUrl = 'https://high.service.powerapps.us/' }
