@@ -51,14 +51,19 @@
 
     # Default values: 60 days for older forests, 180 days for newer forests
     $defaultValue = 180
-    if ($null -eq $tombstoneLifetime) {
-        $tombstoneLifetime = $defaultValue
-        $isDefault = $true
-    } else {
-        $isDefault = $false
-    }
 
-    # Test passes if we successfully retrieved tombstone lifetime
+    # The lifetime is never substituted with a default. A value this check supplies itself would
+    # make the comparison below impossible to fail, and 180 is only the default for newer forests.
+
+    # A $null lifetime has two causes LDAP does not distinguish: the forest never set the
+    # attribute, or this account cannot read it. Both return the object with the attribute
+    # omitted, so the check reports what 'not set' would mean without claiming it retrieved a
+    # value.
+    $directoryServiceRead = [bool]$adState.Configuration.DirectoryServiceRead
+    $notSetLifetime = 60
+    $isAbsent = $directoryServiceRead -and $null -eq $tombstoneLifetime
+
+    # Passes only when the forest actually returned a lifetime.
     $testResult = $null -ne $tombstoneLifetime
 
     # Generate markdown results
@@ -66,8 +71,7 @@
         $result = "| Property | Value |" + "`n"
         $result += "| --- | --- |" + "`n"
         $result += "| Tombstone Lifetime | $tombstoneLifetime days |" + "`n"
-        $result += "| Default Value | $defaultValue days |" + "`n"
-        $result += "| Using Default | $isDefault |" + "`n"
+        $result += "| Recommended minimum | $defaultValue days |" + "`n"
         $result += "| Forest Name | $($adState.Forest.Name) |" + "`n"
 
         $recommendation = if ($tombstoneLifetime -ge 180) { "✅ Meets recommendation (180+ days)" } else { "⚠️ Below recommendation (180 days)" }
@@ -76,7 +80,11 @@
         $testResultMarkdown = "The Active Directory tombstone lifetime has been retrieved. Deleted objects are retained for $tombstoneLifetime days before permanent removal.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     } else {
-        $testResultMarkdown = "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."
+        $testResultMarkdown = if ($isAbsent) {
+            "The Directory Service object was read, but it carries no ``tombstoneLifetime``. That is either because the forest never set one - in which case Active Directory uses $notSetLifetime days, below the 180-day recommendation - or because this account cannot read the attribute. Active Directory returns the object with the attribute omitted in both cases, so the two cannot be told apart from here, and this check does not report a lifetime it did not read. Grant read access to ``tombstoneLifetime`` on CN=Directory Service,CN=Windows NT,CN=Services to settle which it is."
+        } else {
+            "Unable to retrieve tombstone lifetime. Ensure you have appropriate permissions and the Active Directory module is installed."
+        }
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
