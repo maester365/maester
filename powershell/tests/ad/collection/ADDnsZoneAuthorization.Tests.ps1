@@ -1,8 +1,9 @@
-BeforeDiscovery { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force  }
+﻿BeforeDiscovery { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force }
 Describe 'AD DNS zone authorization behavior' {
     InModuleScope Maester {
         BeforeAll {
             $script:Connection=[Runtime.Serialization.FormatterServices]::GetUninitializedObject([System.DirectoryServices.Protocols.LdapConnection])
+            $script:ZoneGuid=[guid]'e0fa1e8b-9b45-11d0-afdd-00c04fd930c9'
             $script:NodeGuid=[guid]'e0fa1e8c-9b45-11d0-afdd-00c04fd930c9'
             $script:RecordGuid=[guid]'11111111-2222-3333-4444-555555555555'
             $script:RootDse=[pscustomobject]@{DefaultNamingContext='DC=contoso,DC=com';RootDomainNamingContext='DC=contoso,DC=com';SchemaNamingContext='CN=Schema,CN=Configuration,DC=contoso,DC=com';NamingContexts=@('DC=DomainDnsZones,DC=contoso,DC=com')}
@@ -28,28 +29,31 @@ Describe 'AD DNS zone authorization behavior' {
             $script:SchemaShape=&$Shape
             (Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).DnsNodeSchemaGuid | Should -Be $script:NodeGuid.ToString()
         }
-        It 'classifies the fixed Pre-Windows 2000 Compatible Access SID as broad' {
-            $script:Aces=@([pscustomobject]@{ActiveDirectoryRights='CreateChild';Sid='S-1-5-32-554';IdentityReference='BUILTIN\Pre-Windows 2000 Compatible Access';ObjectType=$script:NodeGuid;InheritedObjectType=[guid]::Empty;AceFlags='None';AccessControlType='Allow';IsInherited=$false})
+        It 'classifies a zone-effective CreateChild ACE with dnsZone inheritance metadata as broad' {
+            $script:Aces=@([pscustomobject]@{ActiveDirectoryRights='CreateChild';Sid='S-1-5-32-554';IdentityReference='BUILTIN\Pre-Windows 2000 Compatible Access';ObjectType=$script:NodeGuid;InheritedObjectType=$script:ZoneGuid;AceFlags='ContainerInherit, Inherited';AccessControlType='Allow';IsInherited=$true})
             $result=Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse
             $result.BroadPrincipalAces.Count | Should -Be 1
+            $result.BroadPrincipalAces[0].MatchedWriteRights | Should -Contain 'CreateChild'
         }
-        It 'accepts dnsRecord WriteProperty but rejects an unrelated property GUID' {
-            $unrelated=[guid]'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+        It 'rejects non-inheritable dnsRecord WriteProperty and accepts an inheritable dnsNode child ACE' {
             $script:Aces=@(
                 [pscustomobject]@{ActiveDirectoryRights='WriteProperty';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:RecordGuid;InheritedObjectType=[guid]::Empty;AceFlags='None';AccessControlType='Allow';IsInherited=$false},
-                [pscustomobject]@{ActiveDirectoryRights='WriteProperty';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$unrelated;InheritedObjectType=[guid]::Empty;AceFlags='None';AccessControlType='Allow';IsInherited=$false}
+                [pscustomobject]@{ActiveDirectoryRights='WriteProperty';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:RecordGuid;InheritedObjectType=$script:NodeGuid;AceFlags='ContainerInherit';AccessControlType='Allow';IsInherited=$false}
             )
             $entries=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries
-            $entries[0].IsCandidate | Should -BeTrue
-            $entries[1].IsCandidate | Should -BeFalse
+            $entries[0].IsCandidate | Should -BeFalse
+            $entries[1].IsCandidate | Should -BeTrue
         }
-        It 'rejects inherited-object mismatch and InheritOnly ACEs' {
-            $script:Aces=@(
-                [pscustomobject]@{ActiveDirectoryRights='CreateChild';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:NodeGuid;InheritedObjectType=[guid]'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';AceFlags='None';AccessControlType='Allow';IsInherited=$true},
-                [pscustomobject]@{ActiveDirectoryRights='CreateChild';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:NodeGuid;InheritedObjectType=[guid]::Empty;AceFlags='InheritOnly';AccessControlType='Allow';IsInherited=$true}
-            )
-            $entries=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries
-            @($entries|Where-Object IsCandidate).Count | Should -Be 0
+        It 'rejects an unrelated dnsRecord property GUID even when the ACE is inheritable' {
+            $unrelated=[guid]'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+            $script:Aces=@([pscustomobject]@{ActiveDirectoryRights='WriteProperty';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$unrelated;InheritedObjectType=$script:NodeGuid;AceFlags='ContainerInherit';AccessControlType='Allow';IsInherited=$false})
+            $entry=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries[0]
+            $entry.IsCandidate | Should -BeFalse
+        }
+        It 'rejects InheritOnly ACEs even when their object metadata otherwise matches' {
+            $script:Aces=@([pscustomobject]@{ActiveDirectoryRights='CreateChild';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:NodeGuid;InheritedObjectType=$script:ZoneGuid;AceFlags='ContainerInherit, InheritOnly';AccessControlType='Allow';IsInherited=$true})
+            $entry=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries[0]
+            $entry.IsCandidate | Should -BeFalse
         }
     }
 }

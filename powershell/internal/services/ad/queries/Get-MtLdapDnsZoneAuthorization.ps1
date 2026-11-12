@@ -61,13 +61,20 @@
                     $rightsText=[string]$ace.ActiveDirectoryRights;$matched=@($writeRights|Where-Object{$rightsText-match"(^|,\s*)$([regex]::Escape($_))(,|$)"});if(-not$matched.Count){continue}
                     $sid=[string]$ace.Sid;$identity=[string]$ace.IdentityReference;$isUnresolved=$sid-and($identity-eq$sid-or[string]::IsNullOrWhiteSpace($identity))
                     $objectType=[string]$ace.ObjectType;$inheritedObjectType=[string]$ace.InheritedObjectType
-                    $inheritApplicable=$inheritedObjectType-eq$zeroGuid-or($dnsNodeGuid-and$inheritedObjectType-eq$dnsNodeGuid)
-                    $hasCreateDelete=@($matched|Where-Object{$_-in'CreateChild','DeleteChild'}).Count-gt0
+                    $aceFlags=[string]$ace.AceFlags
+                    $isInheritOnly=$aceFlags-match'InheritOnly'
+                    $inheritsToChildren=$aceFlags-match'(ContainerInherit|ObjectInherit)'
+                    $hasCreateDelete=@($matched|Where-Object{$_ -in @('CreateChild','DeleteChild')}).Count-gt0
                     $createDeleteApplicable=$objectType-eq$zeroGuid-or($dnsNodeGuid-and$objectType-eq$dnsNodeGuid)
                     $hasWriteProperty=$matched-contains'WriteProperty'
-                    $writePropertyApplicable=$objectType-eq$zeroGuid-or$objectType-in$dnsRecordGuids
-                    $hasGlobalWrite=@($matched|Where-Object{$_-in'GenericWrite','GenericAll','WriteDacl','WriteOwner'}).Count-gt0
-                    $applies=$inheritApplicable-and(($hasCreateDelete-and$createDeleteApplicable)-or($hasWriteProperty-and$writePropertyApplicable)-or$hasGlobalWrite)-and([string]$ace.AceFlags-notmatch'InheritOnly')
+                    $writePropertyTargetsDnsRecord=$objectType-eq$zeroGuid-or$objectType-in$dnsRecordGuids
+                    $childClassApplicable=$inheritedObjectType-eq$zeroGuid-or($dnsNodeGuid-and$inheritedObjectType-eq$dnsNodeGuid)
+                    $writePropertyApplicable=$hasWriteProperty-and$writePropertyTargetsDnsRecord-and$inheritsToChildren-and$childClassApplicable
+                    $hasGlobalWrite=@($matched|Where-Object{$_ -in @('GenericWrite','GenericAll','WriteDacl','WriteOwner')}).Count-gt0
+                    # Create/DeleteChild and global rights are evaluated on the zone object itself. InheritedObjectType
+                    # constrains child inheritance and does not invalidate rights already effective on the zone.
+                    $zoneObjectApplicable=($hasCreateDelete-and$createDeleteApplicable)-or$hasGlobalWrite
+                    $applies=($zoneObjectApplicable -or $writePropertyApplicable) -and (-not $isInheritOnly)
                     $aces.Add([pscustomobject][ordered]@{ZoneName=[string]$entry.name;ZoneDistinguishedName=[string]$entry.DistinguishedName;NamingContext=$context;TrusteeSid=$sid;TrusteeName=$identity;TrusteeClassification=if($broadSidMap.Contains($sid)){'Broad'}elseif($isUnresolved){'Unresolved'}else{'Delegated'};BroadPrincipalName=if($broadSidMap.Contains($sid)){$broadSidMap[$sid]}else{$null};AccessControlType=[string]$ace.AccessControlType;ActiveDirectoryRights=$rightsText;MatchedWriteRights=$matched;ObjectType=$objectType;InheritedObjectType=$inheritedObjectType;IsInherited=[bool]$ace.IsInherited;AppliesToDnsNode=[bool]$applies;IsCandidate=[bool]($applies-and$ace.AccessControlType-eq'Allow')})
                 }
             }
