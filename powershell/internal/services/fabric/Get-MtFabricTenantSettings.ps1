@@ -15,12 +15,24 @@
         return $__MtSession.FabricCache['TenantSettings']
     }
 
-    $accessToken = Get-AzAccessToken -ResourceUrl 'https://api.fabric.microsoft.com' -AsSecureString -ErrorAction Stop
+    $context = Get-AzContext
+    if ($null -eq $context -or $null -eq $context.Environment -or [string]::IsNullOrWhiteSpace($context.Environment.Name)) {
+        throw 'The connected Azure context did not identify an Azure environment.'
+    }
+
+    $environmentName = $context.Environment.Name
+    $apiEndpoint = switch ($environmentName) {
+        'AzureCloud' { 'https://api.fabric.microsoft.com' }
+        'AzureUSGovernment' { 'https://highapi.fabric.microsoft.us' }
+        default { throw "Microsoft Fabric tenant settings are not supported in Azure environment '$environmentName'." }
+    }
+
+    $accessToken = Get-AzAccessToken -ResourceUrl $apiEndpoint -AsSecureString -ErrorAction Stop
     if (-not $accessToken.Token) {
         throw 'The connected Azure context did not return a Microsoft Fabric access token.'
     }
 
-    $requestUri = 'https://api.fabric.microsoft.com/v1/admin/tenantsettings'
+    $requestUri = "$apiEndpoint/v1/admin/tenantsettings"
     $settings = [System.Collections.Generic.List[object]]::new()
     while (-not [string]::IsNullOrEmpty($requestUri)) {
         $response = Invoke-RestMethod -Method Get `
