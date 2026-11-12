@@ -51,7 +51,13 @@ $fixtures = Join-Path $RepoRoot 'powershell/tests/fixtures/golden'
 
 # 2.x IDs that have another ID in 3.0.
 $RenamedIds = @{
-    'MT1060' = 'MT.1060' # The drift family: four Its per folder in 2.x, one native family in 3.0.
+    'MT1060'             = 'MT.1060' # The drift family: four Its per folder in 2.x, one native family in 3.0.
+    'CISA.MS.EXO.9.1'   = 'CISA.MS.SECURITYSUITE.1.1'
+    'CISA.MS.EXO.9.3'   = 'CISA.MS.SECURITYSUITE.1.1'
+    'CISA.MS.EXO.9.5'    = 'CISA.MS.SECURITYSUITE.1.1'
+    'CISA.MS.EXO.10.1'  = 'CISA.MS.SECURITYSUITE.1.3'
+    'CISA.MS.EXO.10.2'  = 'CISA.MS.SECURITYSUITE.1.3'
+    'CISA.MS.EXO.10.3'   = 'CISA.MS.SECURITYSUITE.1.2'
 }
 
 # The typed selector that takes the place of a tag. Only tags with an obvious one are listed.

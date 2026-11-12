@@ -6,9 +6,9 @@
   "HelpUrlTemplate": "https://maester.dev/docs/tests/{Id}",
   "Upstream": {
     "Name": "CISA ScubaGear",
-    "Url": "https://github.com/cisagov/ScubaGear"
+    "Url": "https://github.com/cisagov/ScubaGear/tree/92e5f2e361e433554f72d38180d11210deb640dc"
   },
   "Frameworks": [
-    { "Key": "cisa-scuba", "Version": "ScubaGear main, 2026-10-11" }
+    { "Key": "cisa-scuba", "Version": "ScubaGear commit 92e5f2e, 2026-11-05" }
   ]
 }

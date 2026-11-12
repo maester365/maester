@@ -43,6 +43,17 @@ export function buildRedirects(dist) {
 		.split('\n')
 		.map((line) => line.trim().replace(/\/$/, ''))
 		.filter((line) => line.startsWith('/'));
+	const legacyIds = JSON.parse(readFileSync(join(websiteRoot, '../powershell/assets/Maester.LegacyIds.json'), 'utf8'));
+	const currentIdByLegacyId = new Map(legacyIds.Entries.map(({ LegacyId, CurrentId }) => [LegacyId.toLowerCase(), CurrentId]));
+	for (const path of contract) {
+		const legacyId = path.match(/^\/docs\/(?:next\/)?tests\/([^/]+)$/)?.[1];
+		if (!legacyId || exists(path)) continue;
+		const currentId = currentIdByLegacyId.get(legacyId.toLowerCase());
+		if (!currentId || currentId === 'retired') continue;
+		const target = `/docs/tests/${currentId}`;
+		if (exists(target)) add(path, target);
+	}
+
 	for (const path of contract) {
 		if (!path.startsWith('/docs/') || path.startsWith('/docs/next/') || path.startsWith('/docs/commands/') || path.startsWith('/docs/tests/')) continue;
 		if (exists(path)) continue;
@@ -133,4 +144,3 @@ export function redirects() {
 		},
 	};
 }
-
