@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    $cases = foreach ($id in @('1.3.2') + @(1..13 + 15..17 | ForEach-Object { "5.2.2.$_" })) {
+    $script:CisLiteralNameCases = foreach ($id in @('1.3.2') + @(1..13 + 15..17 | ForEach-Object { "5.2.2.$_" })) {
         foreach ($state in @('enabled', 'disabled', 'enabledForReportingButNotEnforced')) {
             @{ Id = "CIS.M365.$id"; State = $state; Expected = $state -eq 'enabled' }
         }
@@ -25,7 +25,7 @@ Describe 'Literal tenant names in CIS Conditional Access results' {
             }
         }
     }
-    It '<Id> preserves replacement tokens and the <State> verdict' -ForEach $cases {
+    It '<Id> preserves replacement tokens and the <State> verdict' -ForEach $script:CisLiteralNameCases {
         $name = 'Policy $& $$ $1 ${name}'
         $scope = @{
             users = @{ includeUsers=@('All'); excludeUsers=@(); includeGroups=@(); excludeGroups=@(); includeRoles=$script:adminRoles; excludeRoles=@() }
