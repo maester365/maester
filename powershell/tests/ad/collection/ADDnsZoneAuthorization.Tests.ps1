@@ -1,4 +1,4 @@
-﻿BeforeDiscovery { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force }
+BeforeDiscovery { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force }
 Describe 'AD DNS zone authorization behavior' {
     InModuleScope Maester {
         BeforeAll {
@@ -43,6 +43,12 @@ Describe 'AD DNS zone authorization behavior' {
             $entries=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries
             $entries[0].IsCandidate | Should -BeFalse
             $entries[1].IsCandidate | Should -BeTrue
+        }
+        It 'retains an InheritOnly WriteProperty ACE applicable to dnsNode children' {
+            $script:Aces=@([pscustomobject]@{ActiveDirectoryRights='WriteProperty';Sid='S-1-5-11';IdentityReference='NT AUTHORITY\Authenticated Users';ObjectType=$script:RecordGuid;InheritedObjectType=$script:NodeGuid;AceFlags='ContainerInherit, InheritOnly';AccessControlType='Allow';IsInherited=$false})
+            $entry=(Get-MtLdapDnsZoneAuthorization -Connection $script:Connection -RootDse $script:RootDse).ZoneAclEntries[0]
+            $entry.AppliesToDnsNode | Should -BeTrue
+            $entry.IsCandidate | Should -BeTrue
         }
         It 'rejects an unrelated dnsRecord property GUID even when the ACE is inheritable' {
             $unrelated=[guid]'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'

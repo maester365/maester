@@ -1,4 +1,4 @@
-﻿function Get-MtLdapDnsZoneAuthorization {
+function Get-MtLdapDnsZoneAuthorization {
     <#
     .SYNOPSIS
     Collects authorization ACEs from AD-integrated DNS zone objects.
@@ -74,7 +74,10 @@
                     # Create/DeleteChild and global rights are evaluated on the zone object itself. InheritedObjectType
                     # constrains child inheritance and does not invalidate rights already effective on the zone.
                     $zoneObjectApplicable=($hasCreateDelete-and$createDeleteApplicable)-or$hasGlobalWrite
-                    $applies=($zoneObjectApplicable -or $writePropertyApplicable) -and (-not $isInheritOnly)
+                    # InheritOnly prevents the ACE from applying to the zone object itself. It does not prevent
+                    # inheritable WriteProperty authorization from applying to a matching dnsNode child.
+                    $zoneObjectApplies=$zoneObjectApplicable-and(-not$isInheritOnly)
+                    $applies=$zoneObjectApplies-or$writePropertyApplicable
                     $aces.Add([pscustomobject][ordered]@{ZoneName=[string]$entry.name;ZoneDistinguishedName=[string]$entry.DistinguishedName;NamingContext=$context;TrusteeSid=$sid;TrusteeName=$identity;TrusteeClassification=if($broadSidMap.Contains($sid)){'Broad'}elseif($isUnresolved){'Unresolved'}else{'Delegated'};BroadPrincipalName=if($broadSidMap.Contains($sid)){$broadSidMap[$sid]}else{$null};AccessControlType=[string]$ace.AccessControlType;ActiveDirectoryRights=$rightsText;MatchedWriteRights=$matched;ObjectType=$objectType;InheritedObjectType=$inheritedObjectType;IsInherited=[bool]$ace.IsInherited;AppliesToDnsNode=[bool]$applies;IsCandidate=[bool]($applies-and$ace.AccessControlType-eq'Allow')})
                 }
             }
