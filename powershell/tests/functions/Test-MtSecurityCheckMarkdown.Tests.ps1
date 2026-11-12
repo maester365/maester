@@ -57,3 +57,25 @@ Describe 'Tenant-controlled names in security check reports' {
         ([regex]::Split($lines[2],'(?<!\\)\|')).Count|Should -Be ([regex]::Split($lines[0],'(?<!\\)\|')).Count
     }
 }
+
+Describe 'Affected-object matching with escaped display names' {
+    It 'preserves IDs and duplicate names for <Name>' -ForEach @(
+        @{ Name = 'Same name' }
+        @{ Name = 'Rule ] review' }
+        @{ Name = '[outer [inner] tail]' }
+        @{ Name = 'Back\slash [review] ]' }
+        @{ Name = 'Policy $& $$' }
+    ) {
+        $ids = @('11111111-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222')
+        $label = Get-MtSafeMarkdown $Name
+        $markdown = ($ids | ForEach-Object { "[$label](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$_)" }) -join "`n"
+        $records = @(& (Get-Module Maester) { param($md) Get-MtAffectedObjectFromMarkdown -Markdown $md -TestId 'PROBE.1' } $markdown)
+        $records | Should -HaveCount 2
+        @($records.Id | Sort-Object) | Should -Be $ids
+        foreach ($record in $records) {
+            $record.Type | Should -Be 'ConditionalAccessPolicy'
+            $record.DisplayName | Should -BeExactly $Name
+            $record.TestId | Should -Be 'PROBE.1'
+        }
+    }
+}
