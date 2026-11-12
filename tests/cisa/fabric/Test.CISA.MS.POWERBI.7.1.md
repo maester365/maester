@@ -1,8 +1,8 @@
 Sensitivity labels are enabled and employed on sensitive Power BI data according to enterprise policy, as required by SCuBA MS.POWERBI.7.1v1.
 
-This check reuses [CIS.M365.9.1.6](https://maester.dev/docs/tests/CIS.M365.9.1.6) for ScubaGear's automated condition: `EimInformationProtectionEdit.enabled` must be true. Disabled labeling fails; missing or malformed enabled data produces an error. When enabled, the result is **Investigate**, because availability alone cannot establish that labels are published or used on sensitive content. It never silently passes the human portion of the requirement.
+This check reuses [CIS.M365.9.1.6](https://maester.dev/docs/tests/CIS.M365.9.1.6) for ScubaGear's automated condition: `EimInformationProtectionEdit.enabled` must be true. Enabled labeling passes and disabled labeling fails; missing or malformed enabled data produces an error. A pass shows only that labels are available: it does not establish that labels are published or used on sensitive content.
 
-Sensitivity labels help users recognize data classification and protect supported export paths, but do not replace item permissions or guarantee protection on every sharing path. Label publication and actual use require separate evidence. No license gate is declared: an absent license must not hide a disabled setting; licensing prerequisites must be reviewed during remediation.
+Sensitivity labels help users recognize data classification and protect supported export paths, but do not replace item permissions or guarantee protection on every sharing path. Label publication and use on sensitive content require separate evidence; review them with the remediation steps below. No license gate is declared: an absent license must not hide a disabled setting; licensing prerequisites must be reviewed during remediation.
 
 #### Remediation action
 
@@ -12,7 +12,7 @@ Sensitivity labels help users recognize data classification and protect supporte
 4. Open **Tenant settings** > **Information protection** > **Allow users to apply sensitivity labels for content** and set it to **Enabled**.
 5. Define who can apply and change labels: the entire organization or the appropriate specific security groups. Ensure those users also have the necessary create and edit permissions on their content, then select **Apply**.
 6. With data owners, review sensitive reports, dashboards, semantic models (datasets), and dataflows against the enterprise classification and data protection policy. Apply the required labels where supported and check appropriate protection on exports.
-7. Retain evidence of published policies, authorized labeling scope, and sensitive-content review. Resolve the investigation through the organization's assessment process; rerunning the tenant-setting audit alone cannot complete this review.
+7. Retain evidence of published policies, authorized labeling scope, and sensitive-content review for the organization's assessment process; the tenant-setting audit alone cannot establish label use.
 
 #### Related links
 

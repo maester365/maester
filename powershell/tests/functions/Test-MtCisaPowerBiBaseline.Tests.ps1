@@ -32,7 +32,7 @@ Describe 'CISA Power BI baseline: <Check>' -ForEach $powerBiChecks {
         Mock -ModuleName Maester Add-MtTestResultDetail {}
     }
 
-    It 'accepts the audited enabled state, but requires investigation for actual label use' {
+    It 'accepts the audited enabled state' {
         Mock -ModuleName Maester Get-MtFabricTenantSettings {
             [pscustomobject]@{ settingName = $Setting; enabled = $Enabled }
         }
@@ -44,16 +44,9 @@ Describe 'CISA Power BI baseline: <Check>' -ForEach $powerBiChecks {
 
         $result | Should -HaveCount 1
         $result[0] | Should -BeOfType [bool]
-        $result[0] | Should -Be ($Setting -ne 'EimInformationProtectionEdit')
-        if ($Setting -eq 'EimInformationProtectionEdit') {
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $Investigate -and $Result -match 'published' -and $Result -match 'sensitive'
-            }
-        }
-        else {
-            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                -not $Investigate -and $Result -like 'Well done.*'
-            }
+        $result[0] | Should -BeTrue
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            -not $Investigate -and $Result -like 'Well done.*'
         }
     }
 
@@ -133,7 +126,7 @@ Describe 'CISA Power BI baseline: <Check>' -ForEach $powerBiChecks {
             }
         }
 
-        InModuleScope Maester -Parameters @{ Check = $Check; Expected = ($GroupScoped -or $Enabled) -and $Setting -ne 'EimInformationProtectionEdit' } {
+        InModuleScope Maester -Parameters @{ Check = $Check; Expected = $GroupScoped -or $Enabled } {
             param($Check, $Expected)
             & $Check | Should -Be $Expected
         }
