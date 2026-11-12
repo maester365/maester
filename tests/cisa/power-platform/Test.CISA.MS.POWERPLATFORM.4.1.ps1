@@ -42,6 +42,6 @@
         $resultMd += "| $($environment.DisplayName) | $($environment.EnvironmentType) | $($environment.IsDefault) |`n"
     }
 
-    Add-MtTestResultDetail -Investigate -Result "ScubaGear audits this requirement manually. In each environment that uses Dataverse, confirm that **Enforce content security policy** is **On** for **Model-driven** and **Canvas** apps, and that reporting is enabled.`n`n$resultMd"
+    Add-MtTestResultDetail -Investigate -Result "ScubaGear audits this requirement manually. In each environment that uses Dataverse, confirm that **Enforce content security policy** is **On** for **Model-driven** and **Canvas** apps, and that reporting is enabled with an endpoint for CSP violation reports.`n`n$resultMd"
     return $false
 }

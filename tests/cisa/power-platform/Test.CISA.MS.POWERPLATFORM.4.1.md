@@ -8,7 +8,7 @@ CSP limits the sources a Power App can load content from, which reduces the impa
 2. Select **Environments** and open an environment that has Dataverse.
 3. Select **Settings**, then **Product**, then **Privacy + Security**.
 4. Turn on **Enforce content security policy for model-driven apps** and **Enforce content security policy for canvas apps**.
-5. Turn on **Enable reporting**, then select **Save**.
+5. Set **Enable reporting** to **On** and add an appropriate endpoint for reporting CSP violations, then select **Save**.
 6. Repeat for each Dataverse environment.
 
 #### Related links

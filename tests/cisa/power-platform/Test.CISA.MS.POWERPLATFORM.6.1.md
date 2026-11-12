@@ -4,7 +4,7 @@ Sharing an app with everyone gives every user in the organization access to it, 
 
 #### Remediation action
 
-1. Connect with `Add-PowerAppsAccount -Endpoint prod` (use `-Endpoint usgov` for GCC High).
+1. Connect with `Add-PowerAppsAccount -Endpoint prod` (use `-Endpoint usgov` for GCC or `-Endpoint usgovhigh` for GCC High).
 2. Run:
 
    ```powershell

@@ -17,6 +17,10 @@
     }
 
     $response = Invoke-MtPowerPlatformRequest -RelativeUri '/providers/Microsoft.BusinessAppPlatform/scopes/admin/apiPolicies?api-version=2016-11-01'
+    if ($null -eq $response -or $null -eq $response.PSObject.Properties['value']) {
+        throw 'The Power Platform data policy API did not return a policy collection.'
+    }
+
     $policies = @(foreach ($policy in @($response.value)) {
             $filter = $policy.properties.definition.constraints.environmentFilter1
             $scope = 'AllEnvironments'

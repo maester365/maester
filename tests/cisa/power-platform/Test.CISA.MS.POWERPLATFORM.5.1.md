@@ -4,7 +4,7 @@ Power Pages sites can be exposed to anonymous internet users. Letting any user c
 
 #### Remediation action
 
-1. Connect with `Add-PowerAppsAccount -Endpoint prod` (use `-Endpoint usgov` for GCC High).
+1. Connect with `Add-PowerAppsAccount -Endpoint prod` (use `-Endpoint usgov` for GCC or `-Endpoint usgovhigh` for GCC High).
 2. Run:
 
    ```powershell

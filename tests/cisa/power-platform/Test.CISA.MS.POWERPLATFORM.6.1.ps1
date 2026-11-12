@@ -24,7 +24,7 @@
         Severity           = 'Low',
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
-        Mitre              = ('T1078.004', 'T1098.007'),
+        Mitre              = 'T1078.004',
         Control            = 'cisa-scuba:MS.POWERPLATFORM.6.1',
         Service            = 'Azure',
         Author             = 'JeremyFinney-lgtm'
