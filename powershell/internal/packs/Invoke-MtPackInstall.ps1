@@ -38,10 +38,15 @@
         # The pack IDs being installed above this one, to refuse cycles.
         [Parameter()] [string[]] $Stack = @(),
         # Return -Previous when the fetched files have its digest, without asking again.
-        [Parameter()] [switch] $SkipUnchanged
+        [Parameter()] [switch] $SkipUnchanged,
+        # The -Token of the pack command, used for this pack and the packs it requires.
+        [Parameter()] [AllowNull()] [securestring] $Token
     )
 
-    $candidate = Get-MtPackCandidate -Source $Source -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $Policy.CooldownHours
+    $auth = @{}
+    if ($Token) { $auth.Token = $Token }
+
+    $candidate = Get-MtPackCandidate @auth -Source $Source -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $Policy.CooldownHours
     try {
         if ($candidate.Errors.Count -gt 0) {
             $list = @($candidate.Errors | Select-Object -First 15 | ForEach-Object { "  $($_.Code): $(ConvertTo-MtPackSafeText $_.Message -MaxLength 300)" }) -join [Environment]::NewLine
@@ -77,7 +82,7 @@
             }
             if (-not ($r.PSObject.Properties['Source'] -and $r.Source)) { throw "The pack $id requires $($r.Id), which is not installed and has no Source to install it from." }
             Write-Host "The pack $id requires $($r.Id)$(if ($range) { " $range" }); installing it first."
-            $entry = Invoke-MtPackInstall -Source $r.Source -Lock $Lock -Policy $Policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$NonInteractive -Stack @($Stack + $id)
+            $entry = Invoke-MtPackInstall @auth -Source $r.Source -Lock $Lock -Policy $Policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$NonInteractive -Stack @($Stack + $id)
             if ($entry.Id -ne $r.Id) { throw "The pack $id requires $($r.Id) from $($r.Source), but that source holds $($entry.Id)." }
             if ($range -and -not (Test-MtVersionRange -Range $range -Version $entry.Version)) { throw "The pack $id requires $($r.Id) $range, but $($r.Source) has version $($entry.Version)." }
             foreach ($s in @($entry.Services)) { $requiredServices.Add($s) }

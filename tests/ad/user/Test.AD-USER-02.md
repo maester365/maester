@@ -10,7 +10,7 @@ Investigate dormant enabled accounts and disable or remove those that are no lon
 
 #### How the Test Works
 
-This test retrieves Active Directory user data from `Get-MtADDomainState`, filters to enabled users, and counts accounts where `LastLogonDate` is older than `DormantThresholdDays` (default 90 days). The output shows the number and percentage of dormant enabled users.
+This test retrieves Active Directory user data from `Get-MtADDomainState`, filters to enabled users, and counts accounts where `LastLogonDate` is older than `MaximumInactiveDays` (default 90 days). The output shows the number and percentage of dormant enabled users.
 
 #### Related Tests
 

@@ -52,21 +52,8 @@
             role             = $role.displayName
             activationNotify = $false
         }
-        $policySplat = @{
-            ApiVersion      = "v1.0"
-            RelativeUri     = "policies/roleManagementPolicyAssignments"
-            Filter          = "scopeId eq '/' and scopeType eq 'DirectoryRole' and roleDefinitionId eq '$($role.id)'"
-            QueryParameters = @{
-                expand = "policy(expand=rules)"
-            }
-        }
-        $policy = Invoke-MtGraphRequest @policySplat
-
-        $activationNotify = $policy.policy.rules | Where-Object {`
-                $_.id -eq "Notification_Admin_EndUser_Assignment" -and `
-                $_.notificationRecipients
-        }
-        $rolePolicy.activationNotify = -not $null -eq $activationNotify
+        $recipients = @(Get-MtRoleActivationNotificationRecipient -RoleDefinitionId $role.id)
+        $rolePolicy.activationNotify = $recipients.Count -gt 0
 
         $rolePolicies += $rolePolicy
     }

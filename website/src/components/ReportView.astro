@@ -1,0 +1,66 @@
+---
+// A view of the demo report (public/demo/views, captured by scripts/capture-demo-report.mjs) on a docs page: the
+// light or the dark capture, to match the page, linked to the same view of the live demo report.
+interface Props {
+	/** The capture's name, as in scripts/capture-demo-report.mjs. */
+	name?: string;
+	/** Another picture with a light and a dark file: its path without `-light.webp`. Used when there is no name. */
+	src?: string;
+	width?: number;
+	height?: number;
+	alt: string;
+	/** The view's route in the report, such as /plan. Without one the image is not a link. */
+	hash?: string;
+	caption?: string;
+}
+const { name, src, alt, hash, caption, width = 1600, height = 1000 } = Astro.props;
+const base = src ?? `/demo/views/${name}`;
+// The host serves public/demo/report.html at /demo/report; the dev server only by its file name.
+const demoUrl = import.meta.env.DEV ? '/demo/report.html' : '/demo/report';
+const Wrap = hash ? 'a' : 'div';
+const attrs = hash ? { href: `${demoUrl}#${hash}`, target: '_blank', rel: 'noopener', title: 'Open this view in the demo report' } : {};
+---
+
+<figure class="report-view not-content">
+	<Wrap class="frame" {...attrs}>
+		<img class="light" src={`${base}-light.webp`} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+		<img class="dark" src={`${base}-dark.webp`} alt="" aria-hidden="true" width={width} height={height} loading="lazy" decoding="async" />
+	</Wrap>
+	{caption && <figcaption>{caption}{hash && <> <a href={`${demoUrl}#${hash}`} target="_blank" rel="noopener">Open it in the demo report</a>.</>}</figcaption>}
+</figure>
+
+<style>
+	.report-view {
+		margin: 1.5rem 0 2rem;
+	}
+	.frame {
+		display: block;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.75rem;
+		overflow: hidden;
+		box-shadow: var(--sl-shadow-sm);
+	}
+	a.frame:hover {
+		border-color: var(--sl-color-accent);
+	}
+	img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.light {
+		display: none;
+	}
+	:global(:root[data-theme='light']) .light {
+		display: block;
+	}
+	:global(:root[data-theme='light']) .dark {
+		display: none;
+	}
+	figcaption {
+		margin-top: 0.6rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+		text-align: center;
+	}
+</style>

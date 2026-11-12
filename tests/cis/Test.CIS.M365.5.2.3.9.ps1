@@ -35,7 +35,7 @@
     param(
         # Minimum lockout duration in seconds.
         [ValidateRange(1, 86400)]
-        [int] $MinimumLockoutDurationInSeconds = 60
+        [int] $MinimumLockoutDurationSeconds = 60
     )
 
     Write-Verbose 'Getting the password rule settings...'
@@ -52,14 +52,14 @@
     $isStored = $duration -match '^\d+$'
     $effective = if ($isStored) { [int]$duration } else { $default }
     $display = if ($isStored) { $duration } else { "$default (default)" }
-    $testResult = $effective -ge $MinimumLockoutDurationInSeconds
+    $testResult = $effective -ge $MinimumLockoutDurationSeconds
 
     $passText = "The lockout duration is $effective seconds."
-    $failText = "The lockout duration is $effective seconds. It should be $MinimumLockoutDurationInSeconds seconds or longer."
+    $failText = "The lockout duration is $effective seconds. It should be $MinimumLockoutDurationSeconds seconds or longer."
 
     $resultMd = "| Setting | Value (seconds) | Minimum (seconds) | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
-    $resultMd += "| Lockout duration | $display | $MinimumLockoutDurationInSeconds | $(if ($testResult) { '✅ Pass' } else { '❌ Fail' }) |`n"
+    $resultMd += "| Lockout duration | $display | $MinimumLockoutDurationSeconds | $(if ($testResult) { '✅ Pass' } else { '❌ Fail' }) |`n"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
