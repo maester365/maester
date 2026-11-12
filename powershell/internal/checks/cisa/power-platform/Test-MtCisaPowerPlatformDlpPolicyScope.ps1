@@ -59,7 +59,7 @@
         $resultMd += "| --- | --- | --- |`n"
         foreach ($policy in $policies) {
             $covered = if (& $covers $policy $defaultName) { 'Yes' } else { 'No' }
-            $resultMd += "| $($policy.DisplayName) | $($policy.Scope) | $covered |`n"
+            $resultMd += "| $(Get-MtSafeMarkdown $policy.DisplayName) | $(Get-MtSafeMarkdown $policy.Scope) | $covered |`n"
         }
     }
     else {
@@ -88,7 +88,7 @@
         $resultMd += "| --- | --- | --- |`n"
         foreach ($environment in $nonDefaultEnvironments) {
             $covered = if ($environment -in $uncovered) { 'No' } else { 'Yes' }
-            $resultMd += "| $($environment.DisplayName) | $($environment.EnvironmentType) | $covered |`n"
+            $resultMd += "| $(Get-MtSafeMarkdown $environment.DisplayName) | $(Get-MtSafeMarkdown $environment.EnvironmentType) | $covered |`n"
         }
     }
 

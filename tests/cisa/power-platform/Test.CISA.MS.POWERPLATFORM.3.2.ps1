@@ -27,7 +27,8 @@
         Mitre              = 'None',
         Control            = 'cisa-scuba:MS.POWERPLATFORM.3.2',
         Service            = 'Azure',
-        Author             = 'JeremyFinney-lgtm'
+        Author             = 'JeremyFinney-lgtm',
+        Contributor        = 'earbona23'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -45,7 +46,7 @@
         $direction = $allowedTenant.direction
         $inbound = if ($null -ne $direction) { $direction.inbound } else { 'Unknown' }
         $outbound = if ($null -ne $direction) { $direction.outbound } else { 'Unknown' }
-        $resultMd += "| $($allowedTenant.tenantId) | $inbound | $outbound |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $allowedTenant.tenantId) | $(Get-MtSafeMarkdown $inbound) | $(Get-MtSafeMarkdown $outbound) |`n"
     }
 
     $summary = if ($allowedTenants.Count -gt 0) {

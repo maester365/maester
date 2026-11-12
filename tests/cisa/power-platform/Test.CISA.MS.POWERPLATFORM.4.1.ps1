@@ -28,7 +28,8 @@
         Mitre              = 'T1190',
         Control            = 'cisa-scuba:MS.POWERPLATFORM.4.1',
         Service            = 'Azure',
-        Author             = 'JeremyFinney-lgtm'
+        Author             = 'JeremyFinney-lgtm',
+        Contributor        = 'earbona23'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -39,7 +40,7 @@
     $resultMd = "| Environment | Type | Default |`n"
     $resultMd += "| --- | --- | --- |`n"
     foreach ($environment in $environments) {
-        $resultMd += "| $($environment.DisplayName) | $($environment.EnvironmentType) | $($environment.IsDefault) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $environment.DisplayName) | $(Get-MtSafeMarkdown $environment.EnvironmentType) | $($environment.IsDefault) |`n"
     }
 
     Add-MtTestResultDetail -Investigate -Result "ScubaGear audits this requirement manually. In each environment that uses Dataverse, confirm that **Enforce content security policy** is **On** for **Model-driven** and **Canvas** apps, and that reporting is enabled with an endpoint for CSP violation reports.`n`n$resultMd"

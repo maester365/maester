@@ -163,6 +163,36 @@ Describe 'CISA Power Platform baseline: DLP policy scope' {
             Test-MtCisaPowerPlatformNonDefaultEnvironmentDlp | Should -BeTrue
         }
     }
+
+    It 'escapes tenant-controlled policy names in the default environment table' {
+        Mock -ModuleName Maester Get-MtPowerPlatformDlpPolicy {
+            [pscustomobject]@{ DisplayName = "Ops | [Open](https://example.test)`nInjected"; Scope = 'AllEnvironments'; Environments = @() }
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformDefaultEnvironmentDlp | Should -BeTrue
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Result.Contains('| Ops \| \[Open\]\(https\://example.test\) Injected | AllEnvironments | Yes |')
+        }
+    }
+
+    It 'escapes tenant-controlled environment text in the non-default environment table' {
+        Mock -ModuleName Maester Get-MtPowerPlatformEnvironment {
+            [pscustomobject]@{ Name = 'Default-1'; DisplayName = 'Default'; IsDefault = $true; EnvironmentType = 'Default' }
+            [pscustomobject]@{ Name = 'Dev'; DisplayName = "Ops | [Open](https://example.test)`nInjected"; IsDefault = $false; EnvironmentType = 'Sandbox | Custom' }
+        }
+        Mock -ModuleName Maester Get-MtPowerPlatformDlpPolicy { }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformNonDefaultEnvironmentDlp | Should -BeFalse
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Result.Contains('| Ops \| \[Open\]\(https\://example.test\) Injected | Sandbox \| Custom | No |')
+        }
+    }
 }
 
 Describe 'CISA Power Platform baseline: tenant isolation' {
@@ -198,5 +228,45 @@ Describe 'CISA Power Platform baseline: tenant isolation' {
             Test-MtCisaPowerPlatformTenantIsolationAllowlist | Should -BeFalse
         }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Investigate }
+    }
+
+    It 'escapes tenant-controlled text in the allowlist table without changing the investigation outcome' {
+        Mock -ModuleName Maester Get-MtPowerPlatformTenantIsolation {
+            [pscustomobject]@{
+                properties = [pscustomobject]@{
+                    allowedTenants = @(
+                        [pscustomobject]@{
+                            tenantId = "Ops | [Open](https://example.test)`nInjected"
+                            direction = [pscustomobject]@{ inbound = $true; outbound = $false }
+                        }
+                    )
+                }
+            }
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformTenantIsolationAllowlist | Should -BeFalse
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Investigate -and $Result.Contains('| Ops \| \[Open\]\(https\://example.test\) Injected | True | False |')
+        }
+    }
+}
+
+Describe 'CISA Power Platform baseline: content security policy' {
+    It 'escapes tenant-controlled environment text without changing the investigation outcome' {
+        Mock -ModuleName Maester Add-MtTestResultDetail {}
+        Mock -ModuleName Maester Get-MtPowerPlatformEnvironment {
+            [pscustomobject]@{ DisplayName = "Ops | [Open](https://example.test)`nInjected"; EnvironmentType = 'Sandbox | Custom'; IsDefault = $false }
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformContentSecurityPolicy | Should -BeFalse
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Investigate -and $Result.Contains('| Ops \| \[Open\]\(https\://example.test\) Injected | Sandbox \| Custom | False |')
+        }
     }
 }
