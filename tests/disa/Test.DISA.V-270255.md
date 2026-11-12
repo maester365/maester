@@ -2,7 +2,7 @@ Every Microsoft Entra role with an active or eligible assignment sends its Privi
 
 When an eligible user activates a role, Privileged Identity Management can email an alert. Sending it to the people who watch the system (DISA names the SA and the ISSO) means an unexpected activation, such as one made with stolen credentials, is seen while the elevation is still active. DISA asks for this on every role that has an assignment, not only the most privileged ones.
 
-The check lists the roles that have an active or eligible assignment and reads the **Additional recipients** of each role's **Role activation alert**. A role fails when that list is empty. Set `RequiredRecipient` to the SA and ISSO addresses to require those exact recipients. [CISA.MS.AAD.7.8](https://maester.dev/docs/tests/CISA.MS.AAD.7.8) and [CISA.MS.AAD.7.9](https://maester.dev/docs/tests/CISA.MS.AAD.7.9) read the same alert for the highly privileged roles only.
+The check lists the roles that have an active or eligible assignment and reads the **Additional recipients** of each role's **Role activation alert**. A role fails when that list is empty. Set `RequiredRecipients` to the SA and ISSO addresses to require those exact recipients. [CISA.MS.AAD.7.8](https://maester.dev/docs/tests/CISA.MS.AAD.7.8) and [CISA.MS.AAD.7.9](https://maester.dev/docs/tests/CISA.MS.AAD.7.9) read the same alert for the highly privileged roles only.
 
 #### Remediation action
 

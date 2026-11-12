@@ -36,8 +36,8 @@
     [OutputType([bool])]
     param(
         # The Multi Admin Approval policy types that protect a device wipe.
-        [string[]] $RequiredPolicyType = ('deviceWipe', 'deviceAction')
+        [string[]] $RequiredPolicyTypes = ('deviceWipe', 'deviceAction')
     )
 
-    return Test-MtOperationApprovalPolicies -RequiredPolicyType $RequiredPolicyType
+    return Test-MtOperationApprovalPolicies -RequiredPolicyTypes $RequiredPolicyTypes
 }

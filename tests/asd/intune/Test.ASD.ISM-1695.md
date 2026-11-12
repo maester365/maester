@@ -1,6 +1,6 @@
 Patches, updates or other vendor mitigations for vulnerabilities in the operating systems of workstations are applied within one month of release (ISM-1695, Essential Eight Maturity Level One).
 
-A workstation that defers quality updates with no deadline installs them when the user chooses, which may be never. A Windows update ring with a deadline makes installation and restart compulsory after a set number of days. This check reads the update rings in Intune and passes when at least one assigned ring does not pause quality updates, sets a deadline, and the deferral period, deadline and grace period add up to no more than 30 days (the `MaximumDays` parameter). Rings managed by Windows Autopatch, or devices patched by another tool, are not read.
+A workstation that defers quality updates with no deadline installs them when the user chooses, which may be never. A Windows update ring with a deadline makes installation and restart compulsory after a set number of days. This check reads the update rings in Intune and passes when at least one assigned ring does not pause quality updates, sets a deadline, and the deferral period, deadline and grace period add up to no more than 30 days (the `MaximumInstallDelayDays` parameter). Rings managed by Windows Autopatch, or devices patched by another tool, are not read.
 
 #### Remediation action
 

@@ -38,7 +38,11 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
-    return Test-MtCisPrivilegedRolesActivatedNotAssigned
+    return Test-MtCisPrivilegedRolesActivatedNotAssigned -EmergencyAccessAccounts $EmergencyAccessAccounts
 }
