@@ -1,7 +1,7 @@
 ---
 title: Configuration overview
 sidebar:
-  order: 1
+  order: 2
 ---
 
 # Configure Maester
@@ -53,6 +53,14 @@ A test receives a global setting as one of its parameters, so `Get-MtTest` shows
   "TestSettings": [ { "Id": "CIS.M365.2.1.9", "Parameters": { "ParkedDomains": [] } } ]
 }
 ```
+
+Maester checks `GlobalSettings` once, before any test runs:
+
+- A value of the wrong type, or one the setting does not allow, stops the run with a message that names the setting.
+- A key Maester does not know gives a warning that names the closest setting, so a typo such as `ParkedDomain` is not silently ignored.
+- A setting marked sensitive is written to the results as `[redacted]`.
+
+Your own custom tests can have settings too. Name them `Namespace.Key`, for example `Contoso.Regions`, so they cannot collide with a setting of Maester or of a pack. A [Maester Pack](../packs/index.md) declares the settings it reads, and they are checked the same way when the pack runs. The [run configuration reference](./run-configuration.md#globalsettings) lists every setting Maester knows.
 
 ### XSPM external data sources
 
