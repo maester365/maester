@@ -140,34 +140,34 @@ if ($testFiles.Count -eq 0) {
     #region Combined single-run mode (required for coherent coverage data)
     # When coverage is enabled, all test files are passed to a single Invoke-Pester call so Pester can
     # produce one consolidated JaCoCo report.
-    $config = New-PesterConfiguration
-    $config.TestResult.Enabled = $true
+    $pesterConfig = New-PesterConfiguration
+    $pesterConfig.TestResult.Enabled = $true
     $coverageOutputPath = Join-Path $resultRoot "CodeCoverage.xml"
-    $config.CodeCoverage.Enabled      = $true
-    $config.CodeCoverage.OutputFormat = 'JaCoCo'
-    $config.CodeCoverage.OutputPath   = $coverageOutputPath
+    $pesterConfig.CodeCoverage.Enabled      = $true
+    $pesterConfig.CodeCoverage.OutputFormat = 'JaCoCo'
+    $pesterConfig.CodeCoverage.OutputPath   = $coverageOutputPath
     # Scope coverage to module source directories only (exclude tests/).
-    $config.CodeCoverage.Path         = @(
+    $pesterConfig.CodeCoverage.Path         = @(
         (Resolve-Path "$PSScriptRoot\..\public").Path,
         (Resolve-Path "$PSScriptRoot\..\internal").Path
     )
-    $config.CodeCoverage.RecursePaths = $true
+    $pesterConfig.CodeCoverage.RecursePaths = $true
     # Profiler-based coverage. With breakpoints on every line of the module the coverage run took ten
     # times as long as the other runs, as the tests run the engine end to end many times.
-    $config.CodeCoverage.UseBreakpoints = $false
+    $pesterConfig.CodeCoverage.UseBreakpoints = $false
     Write-PSFMessage -Level Important -Message "Code coverage enabled. Output: $coverageOutputPath"
 
     Write-PSFMessage -Level Important -Message "Running $($testFiles.Count) test files in combined coverage run"
-    $config.TestResult.OutputPath   = Join-Path $resultRoot "TEST-Coverage.xml"
-    $config.TestResult.OutputFormat = "JUnitXml"
-    $config.Run.Path                = [string[]]$testFiles.FullName
-    $config.Run.PassThru            = $true
-    $config.Output.Verbosity        = $Output
-    $result = Invoke-Pester -Configuration $config
+    $pesterConfig.TestResult.OutputPath   = Join-Path $resultRoot "TEST-Coverage.xml"
+    $pesterConfig.TestResult.OutputFormat = "JUnitXml"
+    $pesterConfig.Run.Path                = [string[]]$testFiles.FullName
+    $pesterConfig.Run.PassThru            = $true
+    $pesterConfig.Output.Verbosity        = $Output
+    $pesterRun = Invoke-Pester -Configuration $pesterConfig
 
-    $totalRun    += $result.TotalCount
-    $totalFailed += $result.FailedCount + $result.FailedContainersCount
-    foreach ($test in $result.Tests) {
+    $totalRun    += $pesterRun.TotalCount
+    $totalFailed += $pesterRun.FailedCount + $pesterRun.FailedContainersCount
+    foreach ($test in $pesterRun.Tests) {
         if ($test.Result -notin 'Passed', 'Skipped') {
             $null = $testresults.Add([pscustomobject]@{
                 Block   = $test.Block.ExpandedName
