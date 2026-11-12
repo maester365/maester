@@ -6,6 +6,8 @@
     .DESCRIPTION
     This cmdlet allows you to execute KQL queries against the Microsoft 365 Defender Advanced Hunting API.
     It simplifies the process of querying and retrieving data from the Microsoft Defender XDR for integration of Maester checks.
+    Throttled queries are attempted at most three times. If all attempts fail, the last Graph error is thrown
+    instead of returning an empty result.
 
     .EXAMPLE
     Invoke-MtGraphSecurityQuery -Query "IdentityInfo | where isnotempty(PrivilegedEntraPimRoles)" -Timespan "P14D"
@@ -31,6 +33,9 @@
     )
 
     process {
+        # Each pipeline query has its own response, including when an attempt fails.
+        $QueryResponse = $null
+        $QueryResults = $null
         $Body = @{
             "Query" = $Query;
             "Timespan" = $Timespan;
@@ -60,6 +65,9 @@
                 } else {
                     $retry = $true
                     $retryCount++
+                    if ($retryCount -ge $maxRetries) {
+                        throw
+                    }
                     Write-Verbose "API returned 429, retrying in $sleepDuration seconds (Attempt $retryCount of $maxRetries)"
                     Start-Sleep -Seconds $sleepDuration
                 }
