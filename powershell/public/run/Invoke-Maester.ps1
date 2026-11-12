@@ -4,9 +4,7 @@
     This is the main Maester command that runs the tests and generates a report of the results.
 
     .DESCRIPTION
-    Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
-
-    For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
+    Invoke-Maester runs the tests against the services you connected to with Connect-Maester and writes a report of the results.
 
     By default, Invoke-Maester runs the tests that ship with Maester and the custom tests in the Custom folder of the current directory, except Active Directory tests, preview tests and long-running tests. With -Path, native custom tests (`Test.*.ps1`) are found anywhere under the path and Pester-format custom tests (`*.Tests.ps1`) only in a Custom folder. Folders are searched up to three levels deep. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
@@ -21,7 +19,7 @@
     Include tests that can take a long time to run in tenants with a large number of objects.
 
     .PARAMETER IncludePreview
-    Include tests that are still being tested or are dependent on preview APIs.
+    Include preview tests: new tests that are left out of a default run while they are tried out and feedback on them is gathered.
 
     .PARAMETER NoLogo
     Do not show the Maester logo.
@@ -35,47 +33,62 @@
     .EXAMPLE
     Invoke-Maester
 
-    Runs the built-in tests and the custom tests in the ./Custom folder (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the ./test-results folder.
+    Runs the tests that ship with Maester and the custom tests in the ./Custom folder, except Active Directory tests, preview tests and long-running tests. Writes the report to the ./test-results folder and opens it in the browser.
 
     .EXAMPLE
-    Invoke-Maester ./maester
+    Invoke-Maester -TestId MT.1005
 
-    Runs the built-in tests and the custom tests and maester-config.json in the folder ./maester (except for Active Directory tests, preview tests and long-running tests) and generates a report of the results in the default ./test-results folder.
-
-    .EXAMPLE
-    Invoke-Maester -Tag 'CA' -IncludeLongRunning
-
-    Runs the tests with the tag "CA" and includes long-running tests. Generates a report of the results in the default ./test-results folder.
+    Runs one test. A test named by its exact ID runs even if it is a preview or long-running test.
 
     .EXAMPLE
-    Invoke-Maester -Tag 'CA', 'App' -IncludePreview
+    Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
 
-    Runs the tests with the tags 'CA' and 'App' and includes preview tests. Generates a report of the results in the default ./test-results folder.
-
-    .EXAMPLE
-    Invoke-Maester -Product entra -Severity Critical, High
-
-    Runs the Entra ID tests whose severity is Critical or High. Values of one selector are alternatives; different selectors must all match.
+    Runs test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. IDs are not case-sensitive and '*' is a wildcard.
 
     .EXAMPLE
-    Invoke-Maester -ExcludeProduct exchange
+    Invoke-Maester -ExcludeTestId 'MT.1024.*', 'CIS.M365.1.1.1'
 
-    Runs the tests that ship with Maester and the custom tests, except the tests about Exchange Online (a test whose Product or RelatedProduct is exchange). Pester-format custom tests have no product and still run.
+    Runs everything a default run does, except the tests with these IDs. -ExcludeTestId wins over -TestId.
+
+    .EXAMPLE
+    Invoke-Maester -Product entra
+
+    Runs the Microsoft Entra tests: every test whose Product or RelatedProduct is entra.
+
+    .EXAMPLE
+    Invoke-Maester -Product entra, exchange -Severity Critical, High
+
+    Runs the Entra and Exchange Online tests whose severity is Critical or High. The values of one selector are alternatives; different selectors must all match.
+
+    .EXAMPLE
+    Invoke-Maester -ExcludeProduct exchange, teams
+
+    Runs everything a default run does, except the tests about Exchange Online and Teams. -ExcludeProduct wins over every selector. Pester-format custom tests have no product and still run.
 
     .EXAMPLE
     Invoke-Maester -Suite cisa -Area authentication
 
-    Runs the tests of the CISA suite that are about authentication. -Product, -Feature, -Area, -Severity and -Suite select by the typed attributes of the tests and combine with -Tag and -TestId.
+    Runs the tests of the CISA suite that are about authentication.
 
     .EXAMPLE
-    Invoke-Maester -OutputFolder './my-test-results'
+    Invoke-Maester -Feature conditional-access
 
-    Runs tests and generates a report of the results in the ./my-test-results folder.
+    Runs the tests about one feature of a product, here Conditional Access.
 
     .EXAMPLE
-    Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
+    Invoke-Maester -IncludeLongRunning -IncludePreview
 
-    Runs the tests and generates a report of the results in the specified file.
+    Adds the long-running tests and the preview tests to the run.
+
+    .EXAMPLE
+    Invoke-Maester -Product entra -DryRun -PassThru
+
+    Shows what would run, and why every other test would not, without running any test. Each test that would have run is reported as NotRun with reason DryRun. Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
+
+    .EXAMPLE
+    Invoke-Maester ./maester
+
+    Runs the tests that ship with Maester and the custom tests in the ./maester folder, with the maester-config.json found there.
 
     .EXAMPLE
     Invoke-Maester -Path ./maester/Custom -SkipBuiltIn
@@ -83,36 +96,19 @@
     Runs only the custom tests in the ./maester/Custom folder.
 
     .EXAMPLE
-    Invoke-Maester -MailRecipient john@contoso.com
+    Invoke-Maester -Pack ZTA
 
-    Runs the tests and sends a report of the results to an email recipient.
-
-    .EXAMPLE
-    Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
-
-    Runs the tests and posts a summary of the results to a Teams channel.
+    Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default. Other installed packs do not run.
 
     .EXAMPLE
-    Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+    Invoke-Maester -Pack ZTA -SkipBuiltIn
 
-    Runs the tests and posts a summary of the results to a Teams channel.
-
-    .EXAMPLE
-    Invoke-Maester -Verbosity Normal
-
-    Shows results of tests as they are run, including details on failed tests.
+    Runs only the Zero Trust Assessment pack.
 
     .EXAMPLE
-    ```powershell
-    $configuration = New-PesterConfiguration
-    $configuration.Run.Path = './tests/Custom'
-    $configuration.Filter.Tag = 'CA'
-    $configuration.Filter.ExcludeTag = 'App'
+    Invoke-Maester -AllPacks
 
-    Invoke-Maester -PesterConfiguration $configuration
-    ```
-
-    Runs the built-in tests and the custom tests in the ./tests/Custom folder that include the 'CA' tag and exclude the 'App' tag.
+    Runs the tests that ship with Maester and every installed pack. Without -Pack or -AllPacks, installed packs do not run.
 
     .EXAMPLE
     ```powershell
@@ -131,29 +127,49 @@
     Explicitly connect to Active Directory, then run the Active Directory tests. They do not use Microsoft Graph, so no Graph connection is needed.
 
     .EXAMPLE
-    Invoke-Maester -Pack ZTA
+    Invoke-Maester -OutputFolder ./my-test-results
 
-    Runs the tests that ship with Maester and the Zero Trust Assessment pack, including its long-running test, even though the pack is off by default. Other installed packs do not run.
-
-    .EXAMPLE
-    Invoke-Maester -Pack ZTA -SkipBuiltIn
-
-    Runs only the Zero Trust Assessment pack.
+    Runs the tests and writes the html, markdown and json reports to the ./my-test-results folder.
 
     .EXAMPLE
-    Invoke-Maester -AllPacks
+    Invoke-Maester -OutputHtmlFile ./test-results/TestResults.html
 
-    Runs the tests that ship with Maester and every installed pack. Without -Pack or -AllPacks, installed packs do not run.
-
-    .EXAMPLE
-    Invoke-Maester -TestId 'MT.1005', 'CISA.MS.AAD.3.*'
-
-    Runs only test MT.1005 and the tests whose ID starts with CISA.MS.AAD.3. A test named by its exact ID runs even if it is a preview or long-running test.
+    Runs the tests and writes only the html report, to the file named.
 
     .EXAMPLE
-    Invoke-Maester -ExcludeTestId 'MT.1024.*' -DryRun -PassThru
+    Invoke-Maester -NonInteractive -OutputFolder ./test-results
 
-    Shows what would run, and why every other test would not, without running any test. Each test that would have run is reported as NotRun with reason DryRun. Native tests are only read; Pester-format custom tests still go through Pester discovery, which runs their BeforeDiscovery and Describe-level code.
+    Runs unattended, for a scheduled task or a pipeline: no logo, no dashboard, no run summary, and the report is not opened in the browser.
+
+    .EXAMPLE
+    Invoke-Maester -OutputMode Stream
+
+    Writes the console output as lines instead of the full-screen dashboard. This is what a pipeline or redirected output gets without asking; Plain also leaves out colour and symbols.
+
+    .EXAMPLE
+    Invoke-Maester -Verbosity Normal
+
+    Writes one line for each finished test, and keeps a two-line status at the bottom of the console instead of the dashboard.
+
+    .EXAMPLE
+    $results = Invoke-Maester -PassThru -NonInteractive
+
+    Returns the results as an object, for a script that goes on to read $results.FailedCount or $results.Tests.
+
+    .EXAMPLE
+    Invoke-Maester -MailRecipient john@contoso.com
+
+    Runs the tests and sends a report of the results to an email recipient.
+
+    .EXAMPLE
+    Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
+
+    Runs the tests and posts a summary of the results to a Teams channel.
+
+    .EXAMPLE
+    Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+
+    Runs the tests and posts a summary of the results to a Teams channel.
 
     .EXAMPLE
     Invoke-Maester -Config ./maester-config.json, @{ Selection = @{ DefaultAction = 'Skip' }; TestSettings = @(@{ Id = 'MT.1005'; Enabled = $true }) }
@@ -162,6 +178,9 @@
 
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
+
+    .LINK
+    https://maester.dev/docs/configuration/invoke-maester
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Incorrectly flags ExportCsv and ExportExcel as unused')]
