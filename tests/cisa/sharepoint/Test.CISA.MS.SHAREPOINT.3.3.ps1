@@ -28,7 +28,7 @@
         Control = 'cisa-scuba:MS.SHAREPOINT.3.3',
         Service = 'SharePointOnline',
         Author = 'Mynster9361',
-        Contributor = 'JeremyFinney-lgtm'
+        Contributor = ('JeremyFinney-lgtm', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
