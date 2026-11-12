@@ -29,7 +29,8 @@
         Control = ('cis-m365:2.4.2', 'nist-800-53-r5:SI-4(5)'),
         Service = 'ExchangeOnline',
         License = 'ATP_ENTERPRISE',
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'merill'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
