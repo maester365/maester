@@ -1,4 +1,4 @@
-BeforeAll { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force }
+﻿BeforeAll { Import-Module "$PSScriptRoot/../../../Maester.psd1" -Force }
 Describe 'gMSA managed-password authorization source contract' {
     It 'never requests or decodes the managed password value' {
         $source=Get-Content "$PSScriptRoot/../../../internal/services/ad/queries/Get-MtLdapServiceAccount.ps1" -Raw
@@ -43,15 +43,61 @@ $test03 | Should -Match "Area='applications'"
         $source=Get-Content "$PSScriptRoot/../../../../tests/ad/security/Test.AD-MSA-03.ps1" -Raw
         $source|Should -Match 'ResolutionStatus';$source|Should -Match 'ResolutionError';$source|Should -Match '\$trustee\.Sid'
     }
-    It 'normalizes the signed GENERIC_READ access mask' {
-        $signedGenericRead = -2147483648
-        $normalizedMask = [int64]$signedGenericRead
+    It 'classifies signed GENERIC_READ through the collector and rejects READ_CONTROL-only ACEs' {
+        InModuleScope Maester {
+            $connection = [Runtime.Serialization.FormatterServices]::GetUninitializedObject(
+                [System.DirectoryServices.Protocols.LdapConnection]
+            )
 
-        if ($normalizedMask -lt 0) {
-            $normalizedMask += 4294967296L
+            Mock Invoke-MtLdapSearch {
+                [pscustomobject]@{
+                    DistinguishedName = 'CN=svc-web,CN=Managed Service Accounts,DC=contoso,DC=com'
+                    name = 'svc-web'
+                    sAMAccountName = 'svc-web$'
+                    dNSHostName = 'svc-web.contoso.com'
+                    objectSid = 'S-1-5-21-1-2-3-1101'
+                    'msDS-GroupMSAMembership' = [byte[]](1, 2, 3, 4)
+                }
+            } -ParameterFilter {
+                $Filter -eq '(objectClass=msDS-GroupManagedServiceAccount)'
+            }
+
+            Mock ConvertFrom-MtLdapSecurityDescriptor {
+                [pscustomobject]@{
+                    Access = @(
+                        [pscustomobject]@{
+                            AccessControlType = 'Allow'
+                            AccessMask = -2147483648
+                            Sid = 'S-1-5-32-545'
+                            IdentityReference = 'BUILTIN\Users'
+                            IsInherited = $false
+                        }
+                        [pscustomobject]@{
+                            AccessControlType = 'Allow'
+                            AccessMask = 131072
+                            Sid = 'S-1-5-11'
+                            IdentityReference = 'NT AUTHORITY\Authenticated Users'
+                            IsInherited = $false
+                        }
+                    )
+                }
+            }
+
+            $result = @(
+                Get-MtLdapServiceAccount `
+                    -Connection $connection `
+                    -SearchBase 'DC=contoso,DC=com'
+            )
+
+            $result.Count | Should -Be 1
+            $result[0].PasswordRetrievalTrustees.Count | Should -Be 1
+            $result[0].BroadPasswordRetrievalTrustees.Count | Should -Be 1
+
+            $trustee = $result[0].BroadPasswordRetrievalTrustees[0]
+            $trustee.Sid | Should -Be 'S-1-5-32-545'
+            $trustee.Classification | Should -Be 'Broad'
+            $trustee.BroadPrincipalName | Should -Be 'BUILTIN\Users'
+            $result[0].PasswordRetrievalTrustees.Sid | Should -Not -Contain 'S-1-5-11'
         }
-
-        [uint32]$normalizedMask | Should -Be ([uint32]2147483648)
-        ('{0:X8}' -f [uint32]$normalizedMask) | Should -Be '80000000'
     }
 }
