@@ -65,5 +65,6 @@ Describe 'Test-MtCisaSpoVerificationCodeReauth' {
         }
 
         Test-MtCisaSpoVerificationCodeReauth | Should -BeTrue
+        $script:TestResultMarkdown | Should -Match 'required every 0 day\(s\)'
     }
 }

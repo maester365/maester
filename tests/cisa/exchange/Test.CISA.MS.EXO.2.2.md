@@ -4,6 +4,8 @@ Rationale: An adversary may modify the `FROM` field of an email such that it app
 
 This check evaluates every accepted domain, including coexistence domains, to match the SCuBA evaluation scope.
 
+If no accepted domains are returned, the check fails because the audited domains cannot be assessed. Verify that Exchange Online accepted domains can be retrieved, then rerun the check.
+
 Every accepted domain is checked. A domain that sends email must name Exchange Online as an approved sender. A parked domain, one that never sends email, has no approved senders, so it only needs a policy that fails all senders, such as `v=spf1 -all` (`~all` is also accepted, as in MS.EXO.2.2v3).
 
 Maester does not guess which domains are parked, and turning off **Allow mail to be sent from this domain** in Exchange no longer leaves a domain out of this test. List your parked domains in the `ParkedDomains` global setting, or in this test's `ParkedDomains` parameter:

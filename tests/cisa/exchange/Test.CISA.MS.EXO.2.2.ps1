@@ -44,6 +44,11 @@
     )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
+    if ($null -eq $acceptedDomains -or @($acceptedDomains).Count -eq 0) {
+        Add-MtTestResultDetail -Result "No accepted domains were returned, so the SPF check cannot evaluate the audited domains. Verify that Exchange Online accepted domains can be retrieved and rerun the check."
+        return $false
+    }
+
     # A domain is parked only when it is listed. Exchange's SendingFromDomainDisabled is not read: SCuBA asks
     # for an SPF policy on every domain, so a domain that is not listed gets the check for a sending domain.
     $parkedDomainNames = @($ParkedDomains | ForEach-Object { "$_".Trim().TrimEnd('.') } | Where-Object { $_ })

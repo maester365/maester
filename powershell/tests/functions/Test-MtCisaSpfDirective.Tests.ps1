@@ -78,6 +78,18 @@ Describe 'Test-MtCisaSpfDirective' {
         }
     }
 
+    It 'fails rather than skipping when accepted-domain retrieval returns <Label>' -ForEach @(
+        @{ Label = 'no objects'; Domains = @() }
+        @{ Label = 'null'; Domains = $null }
+    ) {
+        $script:AcceptedDomains = $Domains
+
+        Test-MtCisaSpfDirective | Should -BeFalse
+        $script:SkippedBecause | Should -BeNullOrEmpty
+        $script:TestResultMarkdown | Should -Match 'No accepted domains were returned'
+        Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Times 0 -Exactly
+    }
+
     It 'passes hard-fail and soft-fail mechanisms without requiring an Exchange Online include' -ForEach @(
         @{ Qualifier = '-' }
         @{ Qualifier = '~' }
