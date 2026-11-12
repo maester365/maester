@@ -1,4 +1,16 @@
-﻿BeforeDiscovery {
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSReviewUnusedParameter',
+    '',
+    Justification = 'Pester passes Check through InModuleScope scriptblocks, which the analyzer does not follow.'
+)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSUseDeclaredVarsMoreThanAssignments',
+    '',
+    Justification = 'Pester shares BeforeDiscovery data with Describe -ForEach, which the analyzer does not follow.'
+)]
+param()
+
+BeforeDiscovery {
     $powerBiChecks = @(
         @{ Check = 'Test-MtCisaPowerBiPublishToWebDisabled'; Setting = 'PublishToWeb'; Enabled = $false; GroupScoped = $false }
         @{ Check = 'Test-MtCisaPowerBiGuestAccessRestricted'; Setting = 'AllowGuestUserToAccessSharedContent'; Enabled = $false; GroupScoped = $true }
@@ -7,7 +19,7 @@
         @{ Check = 'Test-MtCisaPowerBiServicePrincipalProfilesRestricted'; Setting = 'AllowServicePrincipalsCreateAndUseProfiles'; Enabled = $false; GroupScoped = $true }
         @{ Check = 'Test-MtCisaPowerBiResourceKeyAuthenticationBlocked'; Setting = 'BlockResourceKeyAuthentication'; Enabled = $true; GroupScoped = $false }
         @{ Check = 'Test-MtCisaPowerBiScriptVisualsDisabled'; Setting = 'RScriptVisual'; Enabled = $false; GroupScoped = $false }
-        @{ Check = 'Test-MtCisaPowerBiSensitivityLabels'; Setting = 'EimInformationProtectionEdit'; Enabled = $true; GroupScoped = $false }
+        @{ Check = 'Test-MtCisaPowerBiSensitivityLabel'; Setting = 'EimInformationProtectionEdit'; Enabled = $true; GroupScoped = $false }
     )
 }
 
@@ -153,7 +165,7 @@ Describe 'Power BI publish-to-web audit differs from CIS without changing CIS be
 
         InModuleScope Maester {
             { Test-MtCisaPowerBiPublishToWebDisabled } | Should -Throw '*403 Forbidden*'
-            { Test-MtCisaPowerBiSensitivityLabels } | Should -Throw '*403 Forbidden*'
+            { Test-MtCisaPowerBiSensitivityLabel } | Should -Throw '*403 Forbidden*'
         }
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 0
     }

@@ -1,4 +1,4 @@
-﻿function Test-MtCisaPowerBiSensitivityLabels {
+﻿function Test-MtCisaPowerBiSensitivityLabel {
     <#
     .SYNOPSIS
     Checks label enablement and requests review of sensitive-data labeling.
