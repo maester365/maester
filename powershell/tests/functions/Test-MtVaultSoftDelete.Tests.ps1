@@ -29,7 +29,7 @@
         @{ SoftDelete = 'Disabled'; EnhancedSecurity = 'Enabled'; Expected = $false }
         @{ SoftDelete = 'Enabled'; EnhancedSecurity = 'Disabled'; Expected = $true }
         @{ SoftDelete = 'AlwaysON'; EnhancedSecurity = 'Disabled'; Expected = $true }
-        @{ SoftDelete = 'AlwaysON'; EnhancedSecurity = 'AlwaysON'; Expected = $true }
+        @{ SoftDelete = 'AlwaysON'; EnhancedSecurity = 'Invalid'; Expected = $true }
         @{ SoftDelete = 'Invalid'; EnhancedSecurity = 'Enabled'; Expected = $false }
         @{ SoftDelete = 'Enabled'; EnhancedSecurity = 'Enabled'; Expected = $true }
     ) {
