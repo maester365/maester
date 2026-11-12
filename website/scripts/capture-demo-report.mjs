@@ -67,5 +67,5 @@ for (const theme of ['light', 'dark']) {
 	await page.close();
 }
 await browser.close();
-for (const view of wanted.filter((v) => existsSync(new URL(`../public/demo/views/${v.name}-dark.webp`, import.meta.url)) && existsSync(new URL(`../public/explainers/how-it-works/img/${v.name}.webp`, import.meta.url)))) copyFileSync(new URL(`../public/demo/views/${view.name}-dark.webp`, import.meta.url), new URL(`../public/explainers/how-it-works/img/${view.name}.webp`, import.meta.url));
+for (const view of views.filter((v) => existsSync(new URL(`../public/demo/views/${v.name}-dark.webp`, import.meta.url)) && existsSync(new URL(`../public/explainers/how-it-works/img/${v.name}.webp`, import.meta.url)))) copyFileSync(new URL(`../public/demo/views/${view.name}-dark.webp`, import.meta.url), new URL(`../public/explainers/how-it-works/img/${view.name}.webp`, import.meta.url));
 console.log('Captured', wanted.length * 2, 'views.');
