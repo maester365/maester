@@ -6,6 +6,7 @@
 }
 
 .form {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -342,6 +343,9 @@ textarea.input {
   padding: 0.9rem 1rem;
   border-radius: 8px;
   overflow-x: auto;
+  /* Long lines wrap, so the code reads without scrolling sideways. Copy still gives the lines as written. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
 }
@@ -443,3 +447,66 @@ textarea.input {
 .iconButton svg { width: 0.85rem; height: 0.85rem; }
 /* The status region stays in the page for screen readers; empty, it takes no room in the output column. */
 .status:empty { margin-top: -0.75rem; }
+
+/* Parameters: labelled inputs that sit side by side when there is room. */
+.paramGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.5rem; align-items: end; }
+.miniField { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; font-size: 0.78rem; color: var(--ifm-color-emphasis-700); }
+.miniField > span:first-child { font-weight: 600; }
+
+/* Steps: a list in the site's sidebar on a wide screen, a row above the form on a narrow one. */
+.stepRail, .stepStrip { list-style: none; margin: 0; padding: 0; }
+.stepRail { display: flex; flex-direction: column; gap: 0.1rem; }
+.stepStrip { display: none; gap: 0.3rem; overflow-x: auto; padding-bottom: 0.3rem; }
+.step { display: flex; align-items: center; gap: 0.55rem; width: 100%; padding: 0.35rem 0.5rem; border: 0; border-radius: 6px; background: transparent; color: var(--ifm-color-emphasis-800); font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer; }
+.step:hover { background: var(--ifm-color-emphasis-100); }
+.step[aria-current="step"] { background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent); color: var(--ifm-font-color-base); font-weight: 600; }
+.step:focus-visible { outline: 2px solid var(--ifm-color-primary); outline-offset: 1px; }
+.stepMark { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.35rem; height: 1.35rem; border-radius: 999px; border: 1px solid var(--ifm-color-emphasis-400); font-size: 0.72rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.step[aria-current="step"] .stepMark { border-color: var(--ifm-color-primary); }
+.stepMark[data-state="done"] { border-color: var(--ifm-color-success-dark); color: var(--ifm-color-success-dark); }
+.stepMark[data-state="bad"] { border-color: var(--ifm-color-danger-dark); background: var(--ifm-color-danger-dark); color: #fff; }
+.stepLabel { min-width: 0; }
+.stepNote { margin-left: auto; font-size: 0.7rem; font-weight: 400; color: var(--ifm-color-emphasis-600); }
+.stepStrip .step { width: auto; white-space: nowrap; border: 1px solid var(--ifm-color-emphasis-300); }
+.stepStrip .stepNote { display: none; }
+.stepNav { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.stepCount { font-size: 0.83rem; color: var(--ifm-color-emphasis-700); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Below this width the sidebar is a drawer, so the steps move above the form. */
+@media (max-width: 49.99rem) {
+  .stepRail { display: none; }
+  .stepStrip { display: flex; }
+}
+
+.intro { margin: 0 0 1rem; font-size: 0.92rem; color: var(--ifm-color-emphasis-800); }
+
+.label { display: inline-flex; align-items: center; gap: 0.4rem; }
+.stepIcon { opacity: 0.8; }
+.stepStrip .stepIcon { display: none; }
+
+/* Sidebar folded to a strip (the button at its top): each step is its icon, coloured by its state. */
+@media (min-width: 50rem) {
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step { justify-content: center; padding: 0.45rem 0; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepMark,
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepLabel,
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepNote { display: none; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepIcon { opacity: 1; width: 1.15rem; height: 1.15rem; }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[data-state="done"] .stepIcon { color: var(--ifm-color-success-dark); }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[data-state="bad"] .stepIcon { color: var(--ifm-color-danger-dark); }
+  :global(:root[data-mt-nav='collapsed']) .stepRail .step[aria-current="step"] .stepIcon { color: var(--ifm-color-primary); }
+}
+
+.existing { margin-top: 0.75rem; }
+
+.linkButton { padding: 0; border: 0; background: none; font: inherit; color: var(--ifm-color-primary); text-decoration: underline; cursor: pointer; }
+.note svg { vertical-align: -0.15em; }
+
+/* The AI prompt in the list of steps: apart from the numbered steps, since it is not one of them. */
+.stepRail .stepApart { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--ifm-color-emphasis-200); }
+.stepMark[data-state="ai"] { border-color: transparent; color: var(--ifm-color-primary); }
+.stepMark[data-state="ai"] svg { color: inherit; }
+.stepApart .stepIcon { display: none; }
+@media (min-width: 50rem) {
+  :global(:root[data-mt-nav='collapsed']) .stepRail .stepApart .stepIcon { display: inline; color: var(--ifm-color-primary); }
+}
+.miniField textarea { width: 100%; }

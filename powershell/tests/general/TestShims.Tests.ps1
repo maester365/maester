@@ -80,6 +80,20 @@ Describe 'Built-in tests that call another suite''s test' {
         @($offenders) | Should -BeNullOrEmpty
     }
 
+    It 'Declares and passes on the settings of the test it calls' {
+        # The engine binds the parameters of the test it runs, the shim. The function the shim calls is an
+        # ordinary call, so a setting it does not receive from the shim is silently its default: the shim
+        # would ignore the tenant's emergency access accounts or parked domains.
+        $offenders = foreach ($shim in $script:shims) {
+            foreach ($parameter in @($shim.Target.Parameters | Where-Object { $_.Setting -and -not $_.EngineOwned })) {
+                $own = $shim.Test.Parameters | Where-Object { $_.Name -eq $parameter.Name -and $_.Setting -eq $parameter.Setting }
+                if (-not $own) { "$($shim.Test.Id): declare [MaesterParameter(Setting = '$($parameter.Setting)')] `$$($parameter.Name), as $($shim.Target.Id) does" }
+                elseif ($parameter.Name -notin $shim.Parameters) { "$($shim.Test.Id): pass -$($parameter.Name) `$$($parameter.Name) to $($shim.Command)" }
+            }
+        }
+        @($offenders) | Should -BeNullOrEmpty
+    }
+
     It 'Leaves its own requirement off the test it calls' {
         # The requirement a shim implements, its first Control, is claimed once, by the shim, so a run does not
         # report it twice. Supporting controls such as NIST SP 800-53 may be on both.

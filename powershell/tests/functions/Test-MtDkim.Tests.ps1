@@ -48,9 +48,11 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             InitialDomain             = $false
             IsCoexistenceDomain       = $false
             SendingFromDomainDisabled = $true
-                ExpectedResultByCommand   = @{
-                    'Test-MtCisDkim'  = $true
-                'Test-MtCisaDkim' = $null
+            # Test-MtCisaDkim does not read SendingFromDomainDisabled: MS.EXO.3.1v1 asks for DKIM on every
+            # domain, so a domain that cannot send is checked like any other.
+            ExpectedResultByCommand   = @{
+                'Test-MtCisDkim'  = $true
+                'Test-MtCisaDkim' = $false
             }
         }
         @{
@@ -139,11 +141,19 @@ Describe 'CIS DKIM with ParkedDomains' {
         Should -Invoke Resolve-MtDnsRecord -ModuleName Maester -Exactly 0
     }
 
-    It 'uses the shared ParkedDomains setting when no test override is supplied' {
-        Mock Get-MtSetting -ModuleName Maester { @('parked.example') }
+    It 'binds ParkedDomains from <Source>' -ForEach @(
+        @{ Source = 'Setting'; Config = @{}; Classification = 'Parked'; ExpectedResult = $true }
+        @{ Source = 'Config'; Config = @{ ParkedDomains = @() }; Classification = 'Sending'; ExpectedResult = $false }
+    ) {
+        $binding = InModuleScope Maester -Parameters @{ Config = $Config } {
+            ConvertTo-MtTestParameter -Test (Get-MtTest 'CIS.M365.2.1.9') -ConfigValue $Config -GlobalSetting @{ ParkedDomains = @('parked.example') }
+        }
+        $binding.Error | Should -BeNullOrEmpty
+        ($binding.Effective | Where-Object Name -EQ 'ParkedDomains').Source | Should -Be $Source
+        $parameters = $binding.Bound
 
-        Test-MtCisDkim | Should -BeTrue
-        $script:detail.Result | Should -Match '\| parked\.example \| Parked \|'
+        Test-MtCisDkim @parameters | Should -Be $ExpectedResult
+        $script:detail.Result | Should -Match "\| parked\.example \| $Classification \|"
     }
 
     It 'passes a listed domain with no selector records' {

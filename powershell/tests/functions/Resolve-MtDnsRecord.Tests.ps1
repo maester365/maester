@@ -63,12 +63,12 @@
             [pscustomobject]@{ Section = 'Answer'; Type = 'TXT'; Strings = @('v=spf1 -all') }
         }
 
-        $first = Resolve-MtDnsRecord -Name 'Example.com.' -Type TXT
-        $second = Resolve-MtDnsRecord -Name 'example.COM' -Type TXT
+        $first = Resolve-MtDnsRecord -Name 'Example.com' -Type TXT
+        $second = Resolve-MtDnsRecord -Name 'example.COM.' -Type TXT
 
         $second.Answers[0].Value | Should -Be $first.Answers[0].Value
         [object]::ReferenceEquals($first, $second) | Should -BeTrue
-        $second.Name | Should -Be 'Example.com.'
+        $second.Name | Should -Be 'Example.com'
         Should -Invoke Resolve-DnsName -ModuleName Maester -Exactly 1 -ParameterFilter {
             $Name -eq 'Example.com.' -and $Type -eq 'TXT'
         }
@@ -203,7 +203,7 @@ Describe 'Resolve-MtDnsRecord with Resolve-Dns' -Skip:$IsWindows {
         $result.Answers[0].Value | Should -Be 'mail.example.com'
         $result.Answers[0].Preference | Should -Be 10
         Should -Invoke -ModuleName Maester Resolve-Dns -Exactly 1 -ParameterFilter {
-            $Query -eq 'example.com' -and $QueryType -eq 'MX'
+            $Query -eq 'example.com.' -and $QueryType -eq 'MX'
         }
     }
 
@@ -250,12 +250,12 @@ Describe 'Resolve-MtDnsRecord with Resolve-Dns' -Skip:$IsWindows {
             }
         }
 
-        $first = Resolve-MtDnsRecord -Name 'Example.com.' -Type TXT
-        $second = Resolve-MtDnsRecord -Name 'example.COM' -Type TXT
+        $first = Resolve-MtDnsRecord -Name 'Example.com' -Type TXT
+        $second = Resolve-MtDnsRecord -Name 'example.COM.' -Type TXT
 
         $second.Answers[0].Value | Should -Be $first.Answers[0].Value
         [object]::ReferenceEquals($first, $second) | Should -BeTrue
-        $second.Name | Should -Be 'Example.com.'
+        $second.Name | Should -Be 'Example.com'
         Should -Invoke Resolve-Dns -ModuleName Maester -Exactly 1 -ParameterFilter {
             $Query -eq 'Example.com.' -and $QueryType -eq 'TXT'
         }

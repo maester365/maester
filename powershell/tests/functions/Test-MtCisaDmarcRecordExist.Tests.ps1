@@ -388,7 +388,7 @@ Describe 'Resolve-MtDnsTxtRecord' {
 
             $result.Status | Should -Be 'Success'
             $result.Answers | Should -Be @('v=DMARC1; p=reject; rua=mailto:reports@contoso.com', 'some unrelated TXT record')
-            Should -Invoke -ModuleName Maester Resolve-Dns -Exactly 1 -ParameterFilter { $Query -eq '_dmarc.contoso.com' -and $QueryType -eq 'TXT' }
+            Should -Invoke -ModuleName Maester Resolve-Dns -Exactly 1 -ParameterFilter { $Query -eq '_dmarc.contoso.com.' -and $QueryType -eq 'TXT' }
         }
 
         It 'returns no answers when the name has no TXT records' {
@@ -468,7 +468,7 @@ Describe 'Resolve-MtDnsTxtRecord' {
 
             $result.Status | Should -Be 'Success'
             $result.Answers | Should -Be @('v=DMARC1; p=reject; rua=mailto:reports@contoso.com', 'some unrelated TXT record')
-            Should -Invoke -ModuleName Maester Resolve-DnsName -Exactly 1 -ParameterFilter { $Name -eq '_dmarc.contoso.com' -and $Type -eq 'TXT' }
+            Should -Invoke -ModuleName Maester Resolve-DnsName -Exactly 1 -ParameterFilter { $Name -eq '_dmarc.contoso.com.' -and $Type -eq 'TXT' }
         }
 
         It 'reports NXDomain when the name does not exist' {

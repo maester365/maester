@@ -39,12 +39,9 @@
         [string]$Selector = 'selector1',
 
         # Domains that are not used to send email. They must not publish DKIM records.
+        [MaesterParameter(Setting = 'ParkedDomains')]
         [string[]]$ParkedDomains = @()
     )
-
-    if (-not $PSBoundParameters.ContainsKey('ParkedDomains')) {
-        $ParkedDomains = Get-MtSetting -Name 'ParkedDomains'
-    }
 
     $dkimSigningConfigs = Get-MtExo -Request DkimSigningConfig
     $acceptedDomains = Get-MtExo -Request AcceptedDomain

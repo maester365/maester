@@ -127,14 +127,22 @@
         $script:resultDetail.Result | Should -Match '\| parked\.example \| Parked \|'
     }
 
-    It 'uses the shared ParkedDomains setting when no test override is supplied' {
+    It 'binds ParkedDomains from <Source>' -ForEach @(
+        @{ Source = 'Setting'; Config = @{}; Classification = 'Parked'; ExpectedResult = $true }
+        @{ Source = 'Config'; Config = @{ ParkedDomains = @() }; Classification = 'Sending'; ExpectedResult = $false }
+    ) {
         $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
         $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
         $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
-        Mock Get-MtSetting -ModuleName Maester { @('parked.example') }
+        $binding = InModuleScope Maester -Parameters @{ Config = $Config } {
+            ConvertTo-MtTestParameter -Test (Get-MtTest 'CIS.M365.2.1.10') -ConfigValue $Config -GlobalSetting @{ ParkedDomains = @('parked.example') }
+        }
+        $binding.Error | Should -BeNullOrEmpty
+        ($binding.Effective | Where-Object Name -EQ 'ParkedDomains').Source | Should -Be $Source
+        $parameters = $binding.Bound
 
-        Test-MtCisDmarcRecordsPublished | Should -BeTrue
-        $script:resultDetail.Result | Should -Match '\| parked\.example \| Parked \|'
+        Test-MtCisDmarcRecordsPublished @parameters | Should -Be $ExpectedResult
+        $script:resultDetail.Result | Should -Match "\| parked\.example \| $Classification \|"
     }
 
     It 'fails a parked domain whose DMARC policy is quarantine' {

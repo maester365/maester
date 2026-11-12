@@ -7,6 +7,7 @@
     Uses Resolve-DnsName on Windows and Resolve-Dns from DnsClient-PS on other platforms.
     A successful query with no answers has Status Success and an empty Answers array.
     All lookup outcomes are cached until Clear-MtDnsCache resets the session snapshot.
+    Queries use absolute DNS names so suffix search policies cannot change the cached identity.
     Cached results are shared read-only objects and retain the first caller's Name spelling.
 
     .PARAMETER Name
@@ -30,7 +31,8 @@
         $__MtSession.DnsRecordCache = @{}
     }
 
-    $cacheKey = "$($Type.ToUpperInvariant())|$($Name.TrimEnd('.').ToLowerInvariant())"
+    $queryName = "$($Name.TrimEnd('.'))."
+    $cacheKey = "$($Type.ToUpperInvariant())|$($queryName.ToLowerInvariant())"
     if ($__MtSession.DnsRecordCache.ContainsKey($cacheKey)) {
         Write-Verbose "DNS record exists in cache for $Type $Name - Use Clear-MtDnsCache to reset"
         return $__MtSession.DnsRecordCache[$cacheKey]
@@ -47,7 +49,7 @@
 
     if ($IsWindows) {
         try {
-            $response = Resolve-DnsName -Name $Name -Type $Type -ErrorAction Stop
+            $response = Resolve-DnsName -Name $queryName -Type $Type -ErrorAction Stop
             $answers = @($response | Where-Object { $_.Section -eq 'Answer' -and $_.Type -eq $Type })
         } catch [System.Management.Automation.CommandNotFoundException] {
             $result.Status = 'NotAvailable'
@@ -73,7 +75,7 @@
         }
 
         try {
-            $response = Resolve-Dns -Query $Name -QueryType $Type -ErrorAction Stop
+            $response = Resolve-Dns -Query $queryName -QueryType $Type -ErrorAction Stop
             if ($response.HasError) {
                 if ("$($response.Header.ResponseCode)" -eq 'NotExistentDomain') {
                     $result.Status = 'NXDomain'

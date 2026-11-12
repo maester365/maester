@@ -35,12 +35,9 @@
     [OutputType([bool])]
     param(
         # Domains that are not used to send email. They need a valid DMARC record with p=reject.
+        [MaesterParameter(Setting = 'ParkedDomains')]
         [string[]]$ParkedDomains = @()
     )
-
-    if (-not $PSBoundParameters.ContainsKey('ParkedDomains')) {
-        $ParkedDomains = Get-MtSetting -Name 'ParkedDomains'
-    }
 
     Write-Verbose 'Getting accepted domains...'
     $domains = @(Get-MtExo -Request AcceptedDomain | Where-Object { $_.IsCoExistenceDomain -eq $false })

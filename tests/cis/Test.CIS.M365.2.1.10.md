@@ -6,6 +6,8 @@ The test uses the record at the domain, or at its organisational domain (for exa
 
 Maester does not guess which domains are parked. CIS leaves that to the person running the audit, so set the shared `GlobalSettings.ParkedDomains` list in the Maester config for all three checks. A per-test `ParkedDomains` value in `TestSettings[].Parameters` overrides the shared list for that check. Every other domain gets the sending-domain audit.
 
+The engine binds this setting to the test parameter and validates entries as domain names. An explicit empty per-test list overrides the shared list, so every domain in that check receives the sending-domain audit.
+
 Parked domains use the CIS parked-domain requirement: a valid DMARC record with `p=reject`; rua, ruf and pct are not required. When the DNS lookup is not available for a domain, it is listed as Not checked.
 
 #### Remediation action

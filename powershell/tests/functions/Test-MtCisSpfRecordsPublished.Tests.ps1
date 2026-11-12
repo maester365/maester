@@ -88,12 +88,20 @@
         $script:resultDetail.Result | Should -Match '\| example\.com \| Sending \|'
     }
 
-    It 'uses the shared ParkedDomains setting when no test override is supplied' {
-        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 -all' }
-        Mock Get-MtSetting -ModuleName Maester { @('example.com') }
+    It 'binds ParkedDomains from <Source>' -ForEach @(
+        @{ Source = 'Setting'; Config = @{}; Classification = 'Parked'; ExpectedResult = $false }
+        @{ Source = 'Config'; Config = @{ ParkedDomains = @() }; Classification = 'Sending'; ExpectedResult = $true }
+    ) {
+        $script:spfResults['example.com'] = [pscustomobject]@{ record = 'v=spf1 ~all' }
+        $binding = InModuleScope Maester -Parameters @{ Config = $Config } {
+            ConvertTo-MtTestParameter -Test (Get-MtTest 'CIS.M365.2.1.8') -ConfigValue $Config -GlobalSetting @{ ParkedDomains = @('example.com') }
+        }
+        $binding.Error | Should -BeNullOrEmpty
+        ($binding.Effective | Where-Object Name -EQ 'ParkedDomains').Source | Should -Be $Source
+        $parameters = $binding.Bound
 
-        Test-MtCisSpfRecordsPublished | Should -BeTrue
-        $script:resultDetail.Result | Should -Match '\| example\.com \| Parked \|'
+        Test-MtCisSpfRecordsPublished @parameters | Should -Be $ExpectedResult
+        $script:resultDetail.Result | Should -Match "\| example\.com \| $Classification \|"
     }
 
     It 'keeps the soft-fail rule for sending domains' {
