@@ -1,4 +1,4 @@
-function Get-MtCisaEffectiveSafeLinksPolicy {
+﻿function Get-MtCisaEffectiveSafeLinksPolicy {
     [CmdletBinding()]
     [OutputType([object])]
     param()

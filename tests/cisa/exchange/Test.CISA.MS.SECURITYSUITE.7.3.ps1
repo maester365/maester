@@ -30,7 +30,7 @@
         Service = ('ExchangeOnline', 'Graph'),
         License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

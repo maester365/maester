@@ -254,12 +254,11 @@ foreach ($commit in $commits) {
 #region Current IDs
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
-$treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
-foreach ($line in $treeLines) {
-    if ($line -notmatch '^\d+ blob ([0-9a-f]{40})\t(tests/.+\.tests\.ps1)$') { continue }
-    if ($Matches[2] -like 'tests/Custom/*') { continue }
-    $path = $Matches[2]
-    foreach ($it in (Get-BlobItInfo -Blob $Matches[1])) {
+$pesterFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter '*.Tests.ps1'
+foreach ($pesterFile in $pesterFiles) {
+    $path = [System.IO.Path]::GetRelativePath($RepoRoot, $pesterFile.FullName).Replace('\', '/')
+    if ($path -like 'tests/Custom/*') { continue }
+    foreach ($it in (Get-ItInfo -Content (Get-Content -LiteralPath $pesterFile.FullName -Raw))) {
         $split = Get-StaticSplit -Name $it.Name
         if (-not $split) {
             if ($it.Name -match '^([A-Za-z]+\.?\d+)\.(<|\$\()') { $null = $familyPrefixes.Add("$($Matches[1]).") }
@@ -407,6 +406,9 @@ $retiredFamilies = @($historicalFamilies | Where-Object { -not $familyPrefixes.C
 if ($retiredFamilies) { Write-Warning "Historical family prefixes no longer at HEAD: $($retiredFamilies -join ', ')" }
 foreach ($line in ($review | Sort-Object)) { Write-Verbose "REVIEW $line" }
 #endregion Report
+
+# Stale family wrappers must still be suppressed after their Pester sources are removed.
+$familyPrefixes.UnionWith($historicalFamilies)
 
 $document = [ordered]@{
     SchemaVersion  = '1.0'

@@ -20,8 +20,11 @@ Regenerate it after a change to `tests/` that renames or removes a check:
   otherwise `retired`.
 - `-Verbose` prints counts by rule and a `REVIEW` line for each ambiguous, conflicting
   or title-only match. Resolve ambiguous ones by adding them to `$ManualOverrides`.
-- `GeneratedFrom` is the last commit that touched the scanned test files, so the
-  output only changes when `tests/` changes.
+- `GeneratedFrom` is the last commit that touched the scanned legacy test files.
+  Current IDs come from the working tree's Pester and native tests, so removed
+  wrappers cannot keep retired tests marked as current.
+- Historical family prefixes are retained after their Pester wrappers are removed,
+  so stale copies of those wrappers remain suppressed.
 - `powershell/tests/general/LegacyIds.Tests.ps1` checks that no legacy ID is a current ID
   and that every target ID still exists. If it fails after you rename or remove a
   check, regenerate the table.
@@ -35,7 +38,7 @@ uses this table to keep `-Tag CA`, `-ExcludeTag MS.AAD.3.5` and every other 2.x 
 selecting the tests it selected. The tags are used for selection only and are never
 written to a result row.
 
-The table is derived from two frozen files, so it does not change when `tests/` changes:
+The table is derived from two frozen files and the generator's explicit ID renames:
 
 - `powershell/tests/fixtures/golden/tags-and-blocks.json`, the 2.x snapshot;
 - `powershell/tests/fixtures/golden/tags-3.0-preview.json`, the tags the 3.0 previews added.
@@ -47,6 +50,8 @@ The table is derived from two frozen files, so it does not change when `tests/` 
 - A tag that is the ID of the one test that carried it is left out: the engine always
   treats a built-in test's own ID as a selection tag.
 - A 2.x ID that 3.0 renamed is written as its 3.0 ID (`$RenamedIds` in the script).
+  Update those renames and the corresponding golden-test expectations when a
+  migrated check changes ID, then regenerate this table and `selection.json`.
 - `$Replacements` in the script lists the typed selector for the suite, product and
   topic tags that have one; `Severity:<value>` tags get `-Severity <value>`.
 - Tests added after 3.0 are not in the table. Do not add them, and do not edit the file
