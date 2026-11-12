@@ -2,6 +2,8 @@ Soft delete ensures that backup items and recovery points are retained for a per
 
 Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled.
 
+The check reads `softDeleteFeatureState` and accepts `Enabled` and `AlwaysON`. Enhanced security and vault immutability are separate settings.
+
 ### Remediation action
 
 To enable soft delete on a Recovery Services Vault:
