@@ -145,6 +145,18 @@
             )
         }
         @{
+            Key      = 'power-platform'
+            Name     = 'Power Platform'
+            Aliases  = @('Power Platform', 'Power Apps', 'Power Automate', 'Power Pages')
+            Features = @(
+                @{ Key = 'environments'; Name = 'Environments' }
+                @{ Key = 'data-policies'; Name = 'Data policies' }
+                @{ Key = 'tenant-isolation'; Name = 'Tenant isolation' }
+                @{ Key = 'power-apps'; Name = 'Power Apps' }
+                @{ Key = 'power-pages'; Name = 'Power Pages' }
+            )
+        }
+        @{
             Key      = 'microsoft-365'
             Name     = 'Microsoft 365'
             Aliases  = @('Microsoft 365', 'M365')

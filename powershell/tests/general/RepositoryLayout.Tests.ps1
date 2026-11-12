@@ -18,7 +18,7 @@ BeforeAll {
     $script:ServiceNames = @(
         'ad', 'azure', 'azure-devops', 'copilot', 'copilot-studio', 'defender', 'entra', 'exchange', 'fabric', 'foundry', 'github',
         'global-secure-access',
-        'graph', 'intune', 'purview', 'sharepoint', 'teams', 'xspm'
+        'graph', 'intune', 'power-platform', 'purview', 'sharepoint', 'teams', 'xspm'
     )
     # Areas of the maester suite that are not a service.
     $script:MaesterAreas = @('drift')
