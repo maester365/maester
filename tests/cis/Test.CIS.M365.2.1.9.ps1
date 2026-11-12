@@ -30,7 +30,7 @@
         Control = ('cis-m365:2.1.9', 'nist-800-53-r5:SC-8'),
         Service = 'ExchangeOnline',
         Author = 'NZLostboy',
-        Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech', 'JeremyFinney-lgtm')
+        Contributor = ('JeanPhilippeGeorge', 'brianreidc7', 'amlhive-tech', 'JeremyFinney-lgtm', 'earbona23', 'merill')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
