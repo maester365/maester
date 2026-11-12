@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    $cases = foreach ($id in @('1.3.2') + @(1..13 + 15..17 | ForEach-Object { "5.2.2.$_" })) {
+    $script:CisReportingCases = foreach ($id in @('1.3.2') + @(1..13 + 15..17 | ForEach-Object { "5.2.2.$_" })) {
         foreach ($state in @('enabled','disabled','enabledForReportingButNotEnforced')) {
             @{ Id = "CIS.M365.$id"; State = $state; Expected = $state -eq 'enabled' }
         }
@@ -36,7 +36,7 @@ Describe 'CIS Conditional Access tables with tenant-controlled names' {
             }
         }
     }
-    It '<Id> preserves table columns and the <State> verdict for policies and plan rules' -ForEach $cases {
+    It '<Id> preserves table columns and the <State> verdict for policies and plan rules' -ForEach $script:CisReportingCases {
         $script:rule.state = $State
         $scope = $script:plan.sharedConditions
         $controls = $script:rule.controls
