@@ -1,16 +1,16 @@
 ﻿function Test-MtCisSpfRecordsPublished {
     <#
     .SYNOPSIS
-        Checks that every custom accepted domain publishes an SPF record that ends in -all or ~all.
+        Checks the applicable CIS SPF requirement for each custom accepted domain.
 
     .DESCRIPTION
-        Looks up the SPF record of each custom accepted domain and passes when a record exists and ends with a hard fail or soft fail, either directly or through a redirect. Domains in the onmicrosoft.com namespace are excluded because Microsoft manages their SPF.
+        Sending domains must publish an SPF record that ends with -all or ~all, directly or through a redirect. Domains listed in the ParkedDomains parameter must publish v=spf1 -all, which denies all senders. Every other domain gets the sending-domain audit. Domains in the onmicrosoft.com namespace are excluded because Microsoft manages their SPF.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (2.1.8, L1)
 
     .EXAMPLE
         Test-MtCisSpfRecordsPublished
 
-        Returns true if all custom domains publish an SPF record that ends in -all or ~all.
+        Returns true if all custom domains meet the applicable CIS SPF requirement.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.2.1.8
@@ -28,24 +28,46 @@
         Mitre = ('T1566', 'T1684.002'),
         Control = ('cis-m365:2.1.8', 'nist-800-53-r5:SI-8'),
         Service = 'ExchangeOnline',
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = ('earbona23', 'merill')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Domains that are not used to send email. They must publish v=spf1 -all.
+        [MaesterParameter(Setting = 'ParkedDomains')]
+        [string[]]$ParkedDomains = @()
+    )
 
     Write-Verbose 'Getting accepted domains...'
     $domains = @(Get-MtExo -Request AcceptedDomain | Where-Object { $_.InitialDomain -eq $false -and $_.IsCoExistenceDomain -eq $false })
 
     $report = foreach ($domain in $domains) {
         $name = $domain.DomainName
+        $isParked = Test-MtCisParkedDomain -DomainName $name -ParkedDomains $ParkedDomains
+        $classification = if ($isParked) { 'Parked' } else { 'Sending' }
         $detail = ''
         $spf = ConvertFrom-MailAuthenticationRecordSpf -DomainName $name
         if ($spf -is [string] -and ($spf -like '*not available' -or $spf -eq 'DNS lookup unavailable')) {
-            [pscustomobject]@{ Domain = $name; Record = $null; Pass = $null; Detail = 'DNS lookup not available' }
+            [pscustomobject]@{ Domain = $name; Record = $null; Classification = $classification; Pass = $null; Detail = 'DNS lookup not available' }
             continue
         }
-        $record = if ($spf.GetType().Name -eq 'SPFRecord') { $spf.record } else { $null }
+        $record = if ($spf -and $spf.PSObject.Properties['record']) { $spf.record } else { $null }
+        if ($isParked) {
+            # CIS asks parked domains for v=spf1 -all: no sender mechanisms, no redirect, hard fail last.
+            # RFC 7208 sections 7.1-7.2: validate exp's domain-spec, not the fetched explanation text.
+            $macroExpand = '%(?:\{[slodiphv][0-9]*r?[.\-+,/_=]*\}|[%_-])'
+            $macroString = "(?:$macroExpand|[\x21-\x24\x26-\x7E])*"
+            $domainEnd = "(?:\.(?:[a-z0-9]*[a-z][a-z0-9]*|[a-z0-9]+-[a-z0-9-]*[a-z0-9])\.?|$macroExpand)"
+            $pass = [string]$record -match "(?i)^\s*v=spf1(?:\s+exp=$macroString$domainEnd)?\s+-all\s*$"
+            $detail = if ($pass) {
+                'Listed as parked; the record denies all senders with -all.'
+            } else {
+                'Listed as parked; CIS requires v=spf1 -all, which denies all senders.'
+            }
+            [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $pass; Detail = $detail }
+            continue
+        }
         $effective = $record
         $redirectTargets = @()
         $redirectError = $null
@@ -77,8 +99,7 @@
                 $redirectUnavailable = $true
                 break
             }
-            $redirectedType = if ($null -ne $redirected) { $redirected.GetType().Name } else { $null }
-            $effective = if ($redirectedType -eq 'SPFRecord') { $redirected.record } else { $null }
+            $effective = if ($null -ne $redirected -and $redirected.PSObject.Properties['record']) { $redirected.record } else { $null }
             if (-not $effective) {
                 $redirectError = "No SPF record was found at redirect target $target."
                 break
@@ -86,11 +107,13 @@
         }
 
         if ($redirectUnavailable) {
-            [pscustomobject]@{ Domain = $name; Record = $record; Pass = $null; Detail = "DNS lookup not available for $($redirectTargets[-1])" }
+            [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $null; Detail = "DNS lookup not available for $($redirectTargets[-1])" }
             continue
         }
-        $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all(\s|$)')
-        $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~'
+        $effectiveTerms = [string]$effective -split '\s+'
+        $allMechanisms = @($effectiveTerms | Where-Object { $_ -match '(?i)^[+?~-]?all$' })
+        $effectiveAll = [regex]::Match([string]$effective, '(?i)(^|\s)(?<q>[+?~-]?)all\s*$')
+        $pass = $effectiveAll.Success -and $effectiveAll.Groups['q'].Value -in '-', '~' -and $allMechanisms.Count -eq 1
         if (-not $record) {
             $detail = 'No SPF record found'
         } elseif ($redirectError) {
@@ -103,7 +126,8 @@
         elseif (-not $pass) {
             $detail = 'The record does not end with -all or ~all'
         }
-        [pscustomobject]@{ Domain = $name; Record = $record; Pass = $pass; Detail = $detail }
+
+        [pscustomobject]@{ Domain = $name; Record = $record; Classification = $classification; Pass = $pass; Detail = $detail }
     }
 
     $unchecked = @($report | Where-Object { $null -eq $_.Pass })
@@ -117,13 +141,14 @@
         $testResult = $true
     }
 
-    $passText = if ($domains.Count -eq 0) { 'There are no custom domains, so no SPF records are required.' } else { 'All custom domains publish an SPF record that ends in -all or ~all.' }
-    $failText = "$($failed.Count) custom domain(s) do not publish a compliant SPF record."
+    $passText = if ($domains.Count -eq 0) { 'There are no custom domains, so no SPF records are required.' } else { 'All custom domains meet the applicable CIS SPF requirement.' }
+    $failText = "$($failed.Count) custom domain(s) do not meet the applicable CIS SPF requirement."
 
-    $resultMd = "| Domain | SPF record | Detail | Result |`n"
-    $resultMd += "| --- | --- | --- | --- |`n"
+    $resultMd = "| Domain | Classification | SPF record | Detail | Result |`n"
+    $resultMd += "| --- | --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Domain) | $($row.Record) | $($row.Detail) | $(if ($null -eq $row.Pass) { 'Not checked' } elseif ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultText = if ($null -eq $row.Pass) { 'Not checked' } elseif ($row.Pass) { '✅ Pass' } else { '❌ Fail' }
+        $resultMd += "| $($row.Domain) | $($row.Classification) | $($row.Record) | $($row.Detail) | $resultText |`n"
     }
 
     if ($testResult) {
