@@ -194,7 +194,7 @@ Write-Host '   Verified: ORCA classes resolve inside the module'
 # Check 5 — Runtime result details resolve companion Markdown from the bundle
 # ──────────────────────────────────────────────────────────────────────────────
 
-$MetadataProbeCommand = 'Test-MtCisaDlp'
+$MetadataProbeCommand = 'Test-MtCisaDlpSensitiveInformation'
 $MetadataProbeProperty = $TestMetadata.PSObject.Properties[$MetadataProbeCommand]
 if (-not $MetadataProbeProperty) {
     throw "Test metadata bundle is missing the runtime probe entry: $MetadataProbeCommand"
@@ -205,13 +205,13 @@ $MetadataProbeValue = 'Metadata bundle runtime probe'
 $MetadataProbeResult = & $ImportedModule {
     param($TestName, $ProbeValue)
 
-    function Test-MtCisaDlp {
+    function Test-MtCisaDlpSensitiveInformation {
         param($Name, $Result)
 
         Add-MtTestResultDetail -TestName $Name -TestTitle $Name -Result $Result
     }
 
-    Test-MtCisaDlp -Name $TestName -Result $ProbeValue
+    Test-MtCisaDlpSensitiveInformation -Name $TestName -Result $ProbeValue
     $__MtSession.TestResultDetail[$TestName]
 } $MetadataProbeTestName $MetadataProbeValue
 

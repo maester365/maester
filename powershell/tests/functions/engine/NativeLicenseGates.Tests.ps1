@@ -101,6 +101,17 @@ Describe 'Licence gates of converted tests' {
         $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses 'AAD_PREMIUM_P2', 'AGENT_365')
         $row.Result | Should -Be 'Failed'
     }
+
+    It 'Runs the sensitive-information DLP check with only Security & Compliance connected' {
+        $config = New-Config -Licenses 'EXCHANGE_DLP'
+        $config.Environment.Services.Graph = $false
+        $config.Environment.Services.ExchangeOnline = $false
+
+        $row = Invoke-MtTest -Id 'CISA.MS.SECURITYSUITE.3.1' -Config $config
+
+        $row.Result | Should -Be 'Failed' -Because 'the check must run and report the missing DLP rules, not skip for an unrelated connection'
+        $row.ReasonCode | Should -BeNullOrEmpty
+    }
 }
 
 Describe 'Licence skip message' {

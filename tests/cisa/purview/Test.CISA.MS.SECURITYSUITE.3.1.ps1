@@ -27,10 +27,10 @@
         ImplementationCost = 'Medium',
         Mitre = ('T1213', 'T1530', 'T1567'),
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.1',
-        Service = ('ExchangeOnline', 'Graph', 'SecurityCompliance'),
+        Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

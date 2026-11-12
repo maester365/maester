@@ -26,7 +26,8 @@
         Mitre = 'T1011.001',
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.5',
         Service = 'None',
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'earbona23'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

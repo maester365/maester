@@ -4,6 +4,8 @@ A DLP policy SHALL protect PII and sensitive information, as defined by the agen
 
 Rationale: A DLP policy is a defense-in-depth safeguard: a user or attacker must first gain access to data before it can help prevent disclosure. It can detect and prevent users from inadvertently sharing sensitive information with people who should not have access to it.
 
+This check requires a Security & Compliance PowerShell connection; separate Exchange Online and Microsoft Graph connections are not required.
+
 #### Remediation action:
 
 1. Sign in to the [Microsoft Purview portal](https://purview.microsoft.com/datalossprevention/policies).

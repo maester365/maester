@@ -19,9 +19,8 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    GeneratedFrom is the last commit that touched the scanned Pester test files. Current native test IDs,
+    titles and function names are read from the working tree so legacy checks can map to their native replacements.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -49,6 +48,21 @@ $RepoRoot = (Resolve-Path -Path $RepoRoot).Path
 #region Manual overrides
 # Reviewed by hand. Value is a current ID or 'retired'. Applied before every automatic rule.
 $ManualOverrides = [ordered]@{
+    # Exchange DLP requirements consolidated into the Security Suite sensitive-information requirement.
+    'CISA.MS.EXO.08.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    # Preserve the existing targets when a native CIS check shares the historical title.
+    'Ensure MailTips are enabled for end users' = 'MT.1039'
+    'Ensure modern authentication for Exchange Online is enabled' = 'MT.1044'
+    'Ensure users installing Outlook add-ins is not allowed' = 'MT.1041'
     # The original combined high-risk app permission check, later split into MT.1050 (direct) and MT.1051 (indirect).
     'Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.' = 'MT.1050'
     'MT.1050 Apps with high-risk permissions having a direct or indirect path to Global Admin'                                    = 'MT.1050'
@@ -262,6 +276,42 @@ foreach ($line in $treeLines) {
     }
 }
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
+
+# Native tests are current checks after migration from the Pester format.
+$nativeTestFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
+    Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' }
+foreach ($file in $nativeTestFiles) {
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Cannot parse native test '$($file.FullName)': $($parseErrors[0].Message)"
+    }
+
+    $function = $ast.FindAll({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Body.ParamBlock -and
+            ($node.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' })
+        }, $true) | Select-Object -First 1
+    if (-not $function) {
+        throw "Native test '$($file.FullName)' has no MaesterTest attribute."
+    }
+
+    $attribute = $function.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } | Select-Object -First 1
+    $id = $file.BaseName.Substring('Test.'.Length)
+    $title = $attribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
+    if (-not $title -or $title.Argument -isnot [System.Management.Automation.Language.StringConstantExpressionAst]) {
+        throw "Native test '$($file.FullName)' has no static title."
+    }
+
+    $currentIds[$id] = [pscustomobject]@{
+        Id        = $id
+        Title     = Get-NormalizedTitle $title.Argument.Value
+        Functions = @($function.Name)
+        Path      = $file.FullName.Substring($RepoRoot.Length + 1).Replace('\', '/')
+    }
+}
 
 $titleIndex = @{}
 $functionIndex = @{}

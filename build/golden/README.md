@@ -18,6 +18,8 @@ Regenerate it after a change to `tests/` that renames or removes a check:
   script), `prefix` (known prefix renames such as `MS.` to `CISA.MS.`), `title`
   (same normalised title), `function` (same single `Test-*` function called),
   otherwise `retired`.
+- Current native IDs, titles and function names are read from the working tree.
+  The former Exchange DLP checks 8.1, 8.2 and 8.4 map to `CISA.MS.SECURITYSUITE.3.1`.
 - `-Verbose` prints counts by rule and a `REVIEW` line for each ambiguous, conflicting
   or title-only match. Resolve ambiguous ones by adding them to `$ManualOverrides`.
 - `GeneratedFrom` is the last commit that touched the scanned test files, so the
