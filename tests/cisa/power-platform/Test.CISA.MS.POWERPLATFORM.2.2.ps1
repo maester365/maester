@@ -27,7 +27,8 @@
         Mitre              = ('T1567', 'T1048'),
         Control            = 'cisa-scuba:MS.POWERPLATFORM.2.2',
         Service            = 'Azure',
-        Author             = 'JeremyFinney-lgtm'
+        Author             = 'JeremyFinney-lgtm',
+        Contributor        = 'earbona23'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
