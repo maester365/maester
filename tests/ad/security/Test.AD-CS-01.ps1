@@ -1,4 +1,4 @@
-﻿function Test-MtAdcsPublishedTemplatePrerequisites {
+﻿function Test-MtAdcsPublishedTemplatePrerequisite {
     <#
     .SYNOPSIS
     Reviews published AD CS templates for modeled unguarded authentication-enrollment prerequisites.
