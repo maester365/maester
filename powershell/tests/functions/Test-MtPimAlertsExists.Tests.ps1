@@ -8,25 +8,27 @@
             param(
                 [string] $AlertId = 'RedundantAssignmentAlert',
                 [bool] $IsActive = $true,
-                [object[]] $AlertIncidents = @()
+                [object[]] $AlertIncidents = @(),
+                [object] $LastScannedDateTime = '2026-11-13T01:20:52Z'
             )
 
             return [PSCustomObject]@{
-                id                 = "DirectoryRole_tenant-id_$AlertId"
-                alertDefinitionId  = "DirectoryRole_tenant-id_$AlertId"
-                isActive           = $IsActive
-                incidentCount      = $AlertIncidents.Count
-                alertDefinition    = [PSCustomObject]@{
+                id                  = "DirectoryRole_tenant-id_$AlertId"
+                alertDefinitionId   = "DirectoryRole_tenant-id_$AlertId"
+                isActive            = $IsActive
+                incidentCount       = $AlertIncidents.Count
+                lastScannedDateTime = $LastScannedDateTime
+                alertDefinition     = [PSCustomObject]@{
                     displayName    = 'PIM alert name'
                     description    = 'PIM alert description'
                     securityImpact = 'PIM security impact'
                     mitigationSteps = 'PIM mitigation steps'
                     howToPrevent   = 'PIM prevention guidance'
                 }
-                alertConfiguration = [PSCustomObject]@{
+                alertConfiguration  = [PSCustomObject]@{
                     isEnabled = $true
                 }
-                alertIncidents     = $AlertIncidents
+                alertIncidents      = $AlertIncidents
             }
         }
 
@@ -55,16 +57,18 @@
         $script:testDescription = $null
         $script:testResult = $null
         $script:skippedBecause = $null
+        $script:skippedCustomReason = $null
 
         Mock -ModuleName Maester Get-MgContext {
             return [PSCustomObject]@{ TenantId = 'tenant-id' }
         }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Description, $Result, $SkippedBecause)
+            param($Description, $Result, $SkippedBecause, $SkippedCustomReason)
 
             $script:testDescription = $Description
             $script:testResult = $Result
             $script:skippedBecause = $SkippedBecause
+            $script:skippedCustomReason = $SkippedCustomReason
         }
         Mock -ModuleName Maester Invoke-WebRequest
     }
@@ -101,7 +105,55 @@
         $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredBreakGlass @()
 
         $result.numberOfAffectedItems | Should -Be 0
-        $script:testResult | Should -Be 'All privileged role assignments are managed by PIM. Well done!'
+        $script:testResult | Should -Be 'Well done. No role assignment in scope is affected by the PIM alert **PIM alert name** (last scan: 2026-11-13 01:20 UTC).'
+    }
+
+    It 'skips an inactive alert that PIM has never scanned' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return New-PimAlert -IsActive $false -LastScannedDateTime '0001-01-01T00:00:00Z'
+        }
+        Mock -ModuleName Maester Get-MtEamClassification { @{ 'control-plane-role' = 'ControlPlane' } }
+
+        $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredAccessLevel ControlPlane -FilteredBreakGlass @()
+
+        $result | Should -BeNullOrEmpty
+        $script:skippedBecause | Should -Be 'Custom'
+        $script:skippedCustomReason | Should -Match 'PIM has not scanned this alert'
+        $script:testResult | Should -BeNullOrEmpty
+        Should -Invoke Get-MtEamClassification -ModuleName Maester -Times 0 -Exactly
+    }
+
+    It 'skips an inactive alert whose scan date is the minimum DateTime value' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return New-PimAlert -IsActive $false -LastScannedDateTime ([datetime]::SpecifyKind([datetime]::MinValue, 'Utc'))
+        }
+
+        Test-MtPimAlertsExists -AlertId StaleSignInAlert -FilteredBreakGlass @() | Should -BeNullOrEmpty
+        $script:skippedBecause | Should -Be 'Custom'
+    }
+
+    It 'still evaluates an active alert whatever its scan date' {
+        $incident = New-PimAlertIncident -AssigneeId 'user-1' -AssigneeDisplayName 'User One' -AssigneeUserPrincipalName 'user1@contoso.com'
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return New-PimAlert -AlertIncidents @($incident) -LastScannedDateTime '0001-01-01T00:00:00Z'
+        }
+
+        $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredBreakGlass @()
+
+        $result.numberOfAffectedItems | Should -Be 1
+        $script:skippedBecause | Should -BeNullOrEmpty
+    }
+
+    It 'evaluates an inactive alert without a scan date as before' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            return New-PimAlert -IsActive $false -LastScannedDateTime $null
+        }
+
+        $result = Test-MtPimAlertsExists -AlertId RedundantAssignmentAlert -FilteredBreakGlass @()
+
+        $result.numberOfAffectedItems | Should -Be 0
+        $script:skippedBecause | Should -BeNullOrEmpty
+        $script:testResult | Should -Be 'Well done. No role assignment in scope is affected by the PIM alert **PIM alert name**.'
     }
 
     It 'filters incidents by Enterprise Access Model role classification' {

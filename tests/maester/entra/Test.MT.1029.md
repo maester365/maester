@@ -1,6 +1,6 @@
 Stale accounts should not be assigned to privileged roles.
 
-This test reads the Privileged Identity Management security alert **Accounts in a privileged role have not signed in during the past n days** (`StaleSignInAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. Emergency access (break glass) accounts are excluded from the affected items.
+This test reads the Privileged Identity Management security alert **Accounts in a privileged role have not signed in during the past n days** (`StaleSignInAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. If PIM has never scanned the alert in the tenant, the test is skipped until the alerts are refreshed. Emergency access (break glass) accounts are excluded from the affected items.
 
 #### Remediation action
 

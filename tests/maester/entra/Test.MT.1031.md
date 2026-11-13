@@ -1,6 +1,6 @@
 Privileged roles on the Control Plane should be managed by Privileged Identity Management (PIM) only.
 
-This test reads the Privileged Identity Management security alert **Roles are being assigned outside of Privileged Identity Management** (`RolesAssignedOutsidePimAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. Emergency access (break glass) accounts are excluded from the affected items. The alert is filtered to Control Plane roles (Enterprise Access Model tiering).
+This test reads the Privileged Identity Management security alert **Roles are being assigned outside of Privileged Identity Management** (`RolesAssignedOutsidePimAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. If PIM has never scanned the alert in the tenant, the test is skipped until the alerts are refreshed. Emergency access (break glass) accounts are excluded from the affected items. The alert is filtered to Control Plane roles (Enterprise Access Model tiering).
 
 #### Remediation action
 
