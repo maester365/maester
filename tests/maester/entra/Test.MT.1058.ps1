@@ -9,7 +9,8 @@
     .EXAMPLE
     Test-MtSpExchangeAppAccessPolicy
 
-    Returns true if all service principals with Exchange permissions have access policies configured
+    Returns true if all service principals with Exchange permissions have access policies configured.
+    It also returns true when the only finding is an app role assignment that it could not evaluate: that result is marked Investigate in the test result details, not in the return value.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy
