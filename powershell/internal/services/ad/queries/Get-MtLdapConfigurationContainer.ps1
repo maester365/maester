@@ -69,7 +69,7 @@
     $enterprise = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Enrollment Services,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKIEnrollmentService)' -Attributes ($commonAttributes + @('certificateTemplates', 'dNSHostName', 'cACertificate', 'flags'))
 
     $securityDescriptorFlags = [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Dacl
-    $templates = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Certificate Templates,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKICertificateTemplate)' -Attributes ($commonAttributes + @('displayName', 'pKIExtendedKeyUsage', 'msPKI-Enrollment-Flag', 'msPKI-Certificate-Name-Flag', 'nTSecurityDescriptor')) -SecurityDescriptorFlags $securityDescriptorFlags
+    $templates = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=Certificate Templates,$pkiBase" -Scope OneLevel -Filter '(objectClass=pKICertificateTemplate)' -Attributes ($commonAttributes + @('displayName', 'pKIExtendedKeyUsage', 'msPKI-Enrollment-Flag', 'msPKI-Certificate-Name-Flag', 'msPKI-RA-Signature', 'nTSecurityDescriptor')) -SecurityDescriptorFlags $securityDescriptorFlags
 
     $cdp = Invoke-ConfigurationSearchSafe -RelativeSearchBase "CN=CDP,$pkiBase" -Scope OneLevel -Filter '(|(objectClass=cRLDistributionPoint)(objectClass=certificationAuthority))' -Attributes ($commonAttributes + @('certificateRevocationList'))
 
