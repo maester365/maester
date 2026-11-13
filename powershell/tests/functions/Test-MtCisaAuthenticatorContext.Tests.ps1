@@ -6,6 +6,7 @@
 Describe 'CISA Microsoft Authenticator context and software OTP' {
     BeforeEach {
         $script:ResultMarkdown = $null
+        $script:SkippedBecause = $null
         $script:AuthenticatorPolicy = [pscustomobject]@{
             id = 'MicrosoftAuthenticator'
             state = 'enabled'
@@ -23,9 +24,24 @@ Describe 'CISA Microsoft Authenticator context and software OTP' {
             )
         }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result)
+            param($Result, $SkippedBecause)
             $script:ResultMarkdown = $Result
+            $script:SkippedBecause = $SkippedBecause
         }
+    }
+
+    It 'skips when the Microsoft Authenticator policy is disabled' {
+        $script:AuthenticatorPolicy.state = 'disabled'
+
+        Test-MtCisaAuthenticatorContext | Should -BeNull
+        $script:SkippedBecause | Should -Be 'NotApplicable'
+    }
+
+    It 'skips when no Microsoft Authenticator policy is returned' {
+        $script:AuthenticatorPolicy = $null
+
+        Test-MtCisaAuthenticatorContext | Should -BeNull
+        $script:SkippedBecause | Should -Be 'NotApplicable'
     }
 
     It 'passes with Authenticator software OTP disabled even when Email OTP is enabled' {

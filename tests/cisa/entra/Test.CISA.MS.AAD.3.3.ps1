@@ -37,6 +37,13 @@
 
     $result = Get-MtAuthenticationMethodPolicyConfig
 
+    $authenticatorPolicy = $result | Where-Object {`
+        $_.id -eq "MicrosoftAuthenticator" }
+    if (-not $authenticatorPolicy -or $authenticatorPolicy.state -ne "enabled") {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
+
     $policies = $result | Where-Object {`
         $_.id -eq "MicrosoftAuthenticator" -and `
         $_.state -eq "enabled" -and `
@@ -46,9 +53,6 @@
         $_.featureSettings.displayAppInformationRequiredState.includeTarget.id -contains "all_users" -and `
         $_.featureSettings.displayLocationInformationRequiredState.state -eq "enabled" -and `
         $_.featureSettings.displayLocationInformationRequiredState.includeTarget.id -contains "all_users" }
-
-    $authenticatorPolicy = $result | Where-Object {`
-        $_.id -eq "MicrosoftAuthenticator" }
 
     $testResult = (($policies|Measure-Object).Count -ge 1)
 
