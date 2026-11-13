@@ -44,6 +44,11 @@
         return $null
     }
 
+    if (@(Get-MtCisaPhishingResistantPolicy).Count -gt 0) {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        return $null
+    }
+
     $policies = $result | Where-Object {`
         $_.id -eq "MicrosoftAuthenticator" -and `
         $_.state -eq "enabled" -and `

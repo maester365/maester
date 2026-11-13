@@ -4,6 +4,8 @@ Rationale: Weaker forms of MFA do not protect against sophisticated phishing att
 
 The test passes when an enabled Conditional Access policy for all users and all cloud apps requires the built-in **Phishing-resistant MFA** authentication strength, or a custom authentication strength limited to Windows Hello for Business, passkeys (FIDO2) and certificate-based multifactor authentication.
 
+Policies with user, group, role, application, or guest exclusions are not counted. Unlike ScubaGear, Maester does not currently have corresponding allowlists for approved Conditional Access exclusions.
+
 #### Remediation action:
 
 Create a Conditional Access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new Conditional Access policy, per the values below:
