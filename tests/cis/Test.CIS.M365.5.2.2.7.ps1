@@ -75,7 +75,7 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

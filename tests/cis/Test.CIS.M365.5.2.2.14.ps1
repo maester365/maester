@@ -56,7 +56,7 @@
     $resultMd = "| Named location | IP ranges | Trusted | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.Ranges) | $($row.Trusted) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) | $($row.Ranges) | $($row.Trusted) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {
@@ -64,7 +64,7 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

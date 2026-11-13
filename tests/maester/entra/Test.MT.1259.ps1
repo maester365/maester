@@ -170,7 +170,7 @@
         $placeholderApp = $null
     }
     if ($placeholderApp.id) {
-        $appLink = "[$($placeholderApp.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($placeholderApp.id)/appId/$resourceAppId)"
+        $appLink = "[$(Get-MtSafeMarkdown $placeholderApp.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($placeholderApp.id)/appId/$resourceAppId)"
     } else {
         $appLink = "``$resourceAppId`` (no service principal found in this tenant, or no permission to read it)"
     }

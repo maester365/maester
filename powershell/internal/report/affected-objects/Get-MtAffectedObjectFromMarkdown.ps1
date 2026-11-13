@@ -64,9 +64,10 @@
         # different occurrence. .NET allows the repeated 'url' group name across the alternation.
         # https only: display names are not escaped in result markdown, so a crafted name can smuggle
         # a javascript: url into a link that would otherwise match a portal pattern.
-        # The name may contain one level of brackets ("[RaviK] - Policy") and the url may be followed
-        # by a link title (`[name](url "title")`).
-        $linkPattern = '\[(?<name>(?:[^\[\]]|\[[^\[\]]*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"[^"]*")?\)|(?<url>https://[^\s)\]]+)'
+        # Consume backslash escapes before interpreting brackets. Generated names can contain escaped
+        # unmatched or nested brackets; legacy unescaped names may contain one bracketed group.
+        # The url may be followed by a link title (`[name](url "title")`).
+        $linkPattern = '\[(?<name>(?:\\.|[^\[\]\\]|\[(?:\\.|[^\[\]\\])*\])+)\]\((?<url>https://[^)\s]+)(?:\s+"(?<title>[^"]*)")?\)|(?<url>https://[^\s)\]]+)'
         # Markdown backslash escapes (\( \_ \* ...) that result markdown adds around display names.
         # Must stay a superset of what Get-MtSafeMarkdown escapes, or a name keeps a literal
         # backslash on the affected-objects page. `:` and `@` were added there for GFM autolink
