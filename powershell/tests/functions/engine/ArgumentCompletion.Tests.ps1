@@ -103,7 +103,9 @@ Describe 'Tab completion' {
         }
 
         It 'lists only the values that still select a test' {
-            Get-CompletionText 'Invoke-Maester -Suite CISA -Severity ' | Should -Not -Contain 'Info'
+            $offered = Get-CompletionText 'Invoke-Maester -Suite CISA -Severity '
+            $offered | Should -Contain 'Info'
+            $offered | Should -Not -Contain 'Critical'
         }
 
         It 'lists the suites of the built-in tests' {
