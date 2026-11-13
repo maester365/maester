@@ -139,11 +139,14 @@
     $appsWithExchangePermissionsCount = ($principalsWithExchangePerms | Measure-Object).Count
     $invalidCount = ($missingPolicies | Measure-Object).Count
     $result = $invalidCount -eq 0
+    # An assignment that could not be resolved is not evidence of compliance: no failure, but not a pass either.
+    $needsReview = $result -and $unresolvedAssignments.Count -gt 0
+    $praise = if ($needsReview) { '' } else { 'Well done. ' }
 
     if ($appsWithExchangePermissionsCount -eq 0) {
-        $testResultMarkdown = 'Well done. No applications with Exchange permissions were found.'
+        $testResultMarkdown = "${praise}No applications with Exchange permissions were found."
     } elseif ($result) {
-        $testResultMarkdown = "Well done. All **$appsWithExchangePermissionsCount** applications with Exchange permissions have matching RestrictAccess policies configured."
+        $testResultMarkdown = "${praise}All **$appsWithExchangePermissionsCount** applications with Exchange permissions have matching RestrictAccess policies configured."
     } else {
         $testResultMarkdown = "Found **$appsWithExchangePermissionsCount** applications with Exchange permissions. **$invalidCount** application(s) do not have a matching RestrictAccess policy configured."
 
@@ -165,7 +168,7 @@
 
     if ($unresolvedAssignments.Count -gt 0) {
         $testResultMarkdown += "`n`n### App Role Assignments Not Evaluated`n`n"
-        $testResultMarkdown += "These assignments name an app role that the API does not define, so this check cannot tell what they grant.`n`n"
+        $testResultMarkdown += "These assignments name an app role that the API does not define, so this check cannot tell what they grant. Review them before reading this result as a pass.`n`n"
         $testResultMarkdown += "| Application | API | App Role ID |`n"
         $testResultMarkdown += "| --- | --- | --- |`n"
         foreach ($unresolved in $unresolvedAssignments) {
@@ -174,6 +177,10 @@
         }
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    if ($needsReview) {
+        Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
+    } else {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    }
     return $result
 }

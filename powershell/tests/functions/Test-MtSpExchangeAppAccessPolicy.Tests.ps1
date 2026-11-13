@@ -18,9 +18,11 @@ AfterAll {
 Describe 'Test-MtSpExchangeAppAccessPolicy' {
     BeforeEach {
         $script:Result = $null
+        $script:Investigate = $false
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result)
+            param($Result, [switch] $Investigate)
             $script:Result = $Result
+            $script:Investigate = $Investigate.IsPresent
         }
         Mock -ModuleName Maester Get-MtLinkServicePrincipal { 'Contoso Mail App' }
         Mock -ModuleName Maester Get-ApplicationAccessPolicy { @() }
@@ -180,8 +182,22 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         }
 
         Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Investigate | Should -BeFalse -Because 'a definite failure stays a failure'
         $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read |'))
         $script:Result | Should -Match '### App Role Assignments Not Evaluated'
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | Microsoft Graph | unknown-role |'))
+    }
+
+    It 'Asks for investigation instead of passing when the only finding is an assignment the API does not define' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
+        }
+
+        $null = Test-MtSpExchangeAppAccessPolicy
+        $script:Investigate | Should -BeTrue
+        $script:Result | Should -Not -Match 'Well done'
         $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | Microsoft Graph | unknown-role |'))
     }
 
@@ -292,5 +308,18 @@ Describe 'MT.1058 native engine results' {
         $rows | Should -HaveCount 1
         $rows[0].Result | Should -Be $Expected
         $rows[0].ResultDetail.TestResult | Should -Not -BeNullOrEmpty
+    }
+
+    It 'Records an assignment the API does not define as Investigate through Invoke-MtTest' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy { @() }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
+        }
+
+        $rows = @(Invoke-MtTest -Id 'MT.1058' -Config $script:config)
+        $rows | Should -HaveCount 1
+        $rows[0].Result | Should -Be 'Investigate'
     }
 }
