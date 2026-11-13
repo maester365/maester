@@ -30,7 +30,7 @@
         Service = ('Graph', 'ExchangeOnline'),
         LongRunning,
         Author = 'l-gosling',
-        Contributor = ('merill', 'SamErde', 'thomas-s-schmidt')
+        Contributor = ('merill', 'SamErde', 'thomas-s-schmidt', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -38,29 +38,57 @@
 
     Write-Verbose 'Running Test-MtSpExchangeAppAccessPolicy'
 
-# Note: If you make any changes to this list, please keep it in sync
-    # with the markdown file Test-MtSpExchangeAppAccessPolicy.md
-    $exchangePermissions = @(
-        'Mail.Read', 'Mail.ReadBasic', 'Mail.ReadBasic.All', 'Mail.ReadWrite', 'Mail.Send',
-        'MailboxSettings.Read', 'MailboxSettings.ReadWrite',
-        'Calendars.Read', 'Calendars.ReadWrite',
-        'Contacts.Read', 'Contacts.ReadWrite'
-    )
+    # Note: If you make any changes to these lists, please keep them in sync
+    # with the markdown file Test.MT.1058.md
+    # Permissions that application access policies restrict, by the appId of the API that defines them.
+    $mailboxApiPermissions = [ordered]@{
+        # Microsoft Graph
+        '00000003-0000-0000-c000-000000000000' = @(
+            'Mail.Read', 'Mail.ReadBasic', 'Mail.ReadBasic.All', 'Mail.ReadWrite', 'Mail.Send',
+            'MailboxSettings.Read', 'MailboxSettings.ReadWrite',
+            'Calendars.Read', 'Calendars.ReadWrite',
+            'Contacts.Read', 'Contacts.ReadWrite'
+        )
+    }
+    $exchangePermissions = @($mailboxApiPermissions.Values | ForEach-Object { $_ })
+
+    # An app role ID is defined by the API the assignment points to (its resourceId), so it is resolved there.
+    $mailboxApis = @{}
+    foreach ($apiAppId in $mailboxApiPermissions.Keys) {
+        foreach ($api in @(Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter "appId eq '$apiAppId'")) {
+            $roleValues = @{}
+            foreach ($appRole in @($api.AppRoles)) {
+                $roleValues[[string]$appRole.Id] = $appRole.Value
+            }
+            $mailboxApis[[string]$api.Id] = [PSCustomObject]@{
+                DisplayName = $api.DisplayName
+                RoleValues  = $roleValues
+                Permissions = $mailboxApiPermissions[$apiAppId]
+            }
+        }
+    }
 
     # Get service principals with Exchange permissions
-    $msGraph = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter "appId eq '00000003-0000-0000-c000-000000000000'"
-    $availablePermissions = $msGraph.AppRoles | Select-Object Id, Value
-
+    $unresolvedAssignments = [System.Collections.Generic.List[object]]::new()
     $servicePrincipals = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals'
     $principalsWithExchangePerms = $servicePrincipals | ForEach-Object {
         $sp = $_
         $appRoles = Invoke-MtGraphRequest -RelativeUri "servicePrincipals/$($sp.Id)/appRoleAssignments"
-        $permissions = $appRoles.AppRoleId | ForEach-Object {
-            $roleId = $_
-            ($availablePermissions | Where-Object { $_.Id -eq $roleId }).Value
+        $permissions = foreach ($assignment in @($appRoles)) {
+            $api = $mailboxApis[[string]$assignment.ResourceId]
+            # Other APIs, and the default access role (empty GUID), grant no mailbox permission.
+            if (-not $api -or $assignment.AppRoleId -eq [guid]::Empty) {
+                continue
+            }
+            $roleId = [string]$assignment.AppRoleId
+            if (-not $api.RoleValues.ContainsKey($roleId)) {
+                $unresolvedAssignments.Add([PSCustomObject]@{ ServicePrincipal = $sp; Api = $api.DisplayName; AppRoleId = $roleId })
+            } elseif ($api.RoleValues[$roleId] -in $api.Permissions) {
+                $api.RoleValues[$roleId]
+            }
         }
 
-        if ($permissions | Where-Object { $_ -in $exchangePermissions }) {
+        if ($permissions) {
             [PSCustomObject]@{
                 Id          = $sp.Id
                 DisplayName = $sp.DisplayName
@@ -131,6 +159,17 @@
 
     if ($appsWithPolicies.Count -gt 0 -and $invalidCount -gt 0) {
         $testResultMarkdown += "`n`n**Applications with matching RestrictAccess policies configured:** $($appsWithPolicies.Count)"
+    }
+
+    if ($unresolvedAssignments.Count -gt 0) {
+        $testResultMarkdown += "`n`n### App Role Assignments Not Evaluated`n`n"
+        $testResultMarkdown += "These assignments name an app role that the API does not define, so this check cannot tell what they grant.`n`n"
+        $testResultMarkdown += "| Application | API | App Role ID |`n"
+        $testResultMarkdown += "| --- | --- | --- |`n"
+        foreach ($unresolved in $unresolvedAssignments) {
+            $portalLink = Get-MtLinkServicePrincipal -ServicePrincipal $unresolved.ServicePrincipal -Blade Permissions
+            $testResultMarkdown += "| $portalLink | $(Get-MtSafeMarkdown $unresolved.Api) | $(Get-MtSafeMarkdown $unresolved.AppRoleId) |`n"
+        }
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
