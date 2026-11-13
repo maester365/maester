@@ -20,6 +20,7 @@
         LinkTemplates    = @{
             AuthenticationMethod = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
             AuthorizationPolicy  = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
+            ConditionalAccessPlan = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_ConditionalAccess/PolicyPlanView.ReactView/planId/{0}"
             ConditionalAccess    = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
             ConsentPolicy        = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
             Devices              = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
@@ -31,12 +32,14 @@
         }
         # @odata.type → GraphObjectType (auto-detection when no explicit type is passed)
         OdataTypeMapping = @{
+            '#microsoft.graph.conditionalAccessPolicyPlan' = 'ConditionalAccessPlan'
+            '#microsoft.graph.conditionalAccessPolicyRule' = 'ConditionalAccess'
             '#microsoft.graph.user'   = 'Users'
             '#microsoft.graph.group'  = 'Groups'
             '#microsoft.graph.device' = 'Devices'
         }
         # GraphObjectType → whether the deep link addresses a single object instance
         # (types not listed here resolve to a tenant-level settings surface)
-        InstanceTypes    = @('ConditionalAccess', 'Devices', 'Groups', 'Users', 'UserRole')
+        InstanceTypes    = @('ConditionalAccess', 'ConditionalAccessPlan', 'Devices', 'Groups', 'Users', 'UserRole')
     }
 }

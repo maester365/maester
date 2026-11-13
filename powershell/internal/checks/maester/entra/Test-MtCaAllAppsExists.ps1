@@ -39,11 +39,12 @@
 
   See [Plan a Conditional Access deployment - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app)'
   if ($SkipCheckAllUsers.IsPresent) {
-    $testResult = "These Conditional Access policies target all cloud apps:`n`n"
+    $testResult = "These Conditional Access policies target all cloud apps:`n`n%TestResult%"
   } else {
-    $testResult = "These Conditional Access policies target all cloud apps and all users:`n`n"
+    $testResult = "These Conditional Access policies target all cloud apps and all users:`n`n%TestResult%"
   }
 
+  $matchingPolicies = [System.Collections.Generic.List[object]]::new()
   $result = $false
   foreach ($policy in $policies) {
     if ( ( $SkipCheckAllUsers.IsPresent -or $policy.conditions.users.includeUsers -eq 'All' ) `
@@ -51,7 +52,7 @@
     ) {
       $result = $true
       $currentResult = $true
-      $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+      $matchingPolicies.Add($policy)
     } else {
       $currentResult = $false
     }
@@ -66,7 +67,7 @@
     }
   }
 
-  Add-MtTestResultDetail -Description $testDescription -Result $testResult
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
   return $result
 
 }

@@ -1,0 +1,153 @@
+{
+  "value": [
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "templateId": null,
+      "displayName": "[Plan: CAPLAB-20261108 Shared scope] [Rule: CAPLAB-20261108 Require MFA]",
+      "createdDateTime": null,
+      "modifiedDateTime": null,
+      "state": "enabledForReportingButNotEnforced",
+      "deletedDateTime": null,
+      "policyApplies": true,
+      "analysisReasons": "notSet",
+      "partialEnablementStrategy": null,
+      "sessionControls": null,
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "servicePrincipalRiskLevels": [],
+        "agentIdRiskLevels": null,
+        "insiderRiskLevels": null,
+        "purviewDataLossPreventionRules": null,
+        "agentSessionRiskLevels": null,
+        "clients": null,
+        "platforms": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "authenticationFlows": null,
+        "federatedTokens": null,
+        "agents": null,
+        "agentContext": null,
+        "actionsAndDestinations": null,
+        "applications": {
+          "includeApplications": [
+            "00000000-0000-4000-8000-000000000004"
+          ],
+          "excludeApplications": [],
+          "includeUserActions": [],
+          "includeAgentActions": [],
+          "includeAuthenticationContextClassReferences": [],
+          "applicationFilter": null,
+          "networkAccess": null,
+          "globalSecureAccess": null
+        },
+        "users": {
+          "includeUsers": [],
+          "excludeUsers": [
+            "00000000-0000-4000-8000-000000000005"
+          ],
+          "includeGroups": [
+            "00000000-0000-4000-8000-000000000006"
+          ],
+          "excludeGroups": [],
+          "includeRoles": [],
+          "excludeRoles": [],
+          "includeGuestsOrExternalUsers": null,
+          "excludeGuestsOrExternalUsers": null
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "builtInControls": [
+          "mfa"
+        ],
+        "customAuthenticationFactors": [],
+        "termsOfUse": [],
+        "authenticationStrength": null
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "templateId": null,
+      "displayName": "[Plan: CAPLAB-20261108 Shared scope] [Rule: CAPLAB-20261108 Windows compliant]",
+      "createdDateTime": null,
+      "modifiedDateTime": null,
+      "state": "enabledForReportingButNotEnforced",
+      "deletedDateTime": null,
+      "policyApplies": true,
+      "analysisReasons": "notSet",
+      "partialEnablementStrategy": null,
+      "sessionControls": null,
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "servicePrincipalRiskLevels": [],
+        "agentIdRiskLevels": null,
+        "insiderRiskLevels": null,
+        "purviewDataLossPreventionRules": null,
+        "agentSessionRiskLevels": null,
+        "clients": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "authenticationFlows": null,
+        "federatedTokens": null,
+        "agents": null,
+        "agentContext": null,
+        "actionsAndDestinations": null,
+        "applications": {
+          "includeApplications": [
+            "00000000-0000-4000-8000-000000000004"
+          ],
+          "excludeApplications": [],
+          "includeUserActions": [],
+          "includeAgentActions": [],
+          "includeAuthenticationContextClassReferences": [],
+          "applicationFilter": null,
+          "networkAccess": null,
+          "globalSecureAccess": null
+        },
+        "users": {
+          "includeUsers": [],
+          "excludeUsers": [
+            "00000000-0000-4000-8000-000000000005"
+          ],
+          "includeGroups": [
+            "00000000-0000-4000-8000-000000000006"
+          ],
+          "excludeGroups": [],
+          "includeRoles": [],
+          "excludeRoles": [],
+          "includeGuestsOrExternalUsers": null,
+          "excludeGuestsOrExternalUsers": null
+        },
+        "platforms": {
+          "includePlatforms": [
+            "windows"
+          ],
+          "excludePlatforms": []
+        }
+      },
+      "grantControls": {
+        "operator": "OR",
+        "builtInControls": [
+          "compliantDevice"
+        ],
+        "customAuthenticationFactors": [],
+        "termsOfUse": [],
+        "authenticationStrength": null
+      }
+    }
+  ]
+}

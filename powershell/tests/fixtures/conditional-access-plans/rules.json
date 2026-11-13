@@ -1,0 +1,82 @@
+{
+  "@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules",
+  "value": [
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "displayName": "CAPLAB-20261108 Require MFA",
+      "description": null,
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "applications": null,
+        "users": null,
+        "platforms": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "agents": null,
+        "actionsAndDestinations": null
+      },
+      "controls": {
+        "sessionControls": null,
+        "grantControls": {
+          "operator": "OR",
+          "builtInControls": [
+            "mfa"
+          ],
+          "customAuthenticationFactors": [],
+          "termsOfUse": [],
+          "authenticationStrength@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules('00000000-0000-4000-8000-000000000007')/controls/grantControls/authenticationStrength/$entity",
+          "authenticationStrength": null
+        }
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "displayName": "CAPLAB-20261108 Windows compliant",
+      "description": null,
+      "state": "enabledForReportingButNotEnforced",
+      "conditions": {
+        "userRiskLevels": [],
+        "signInRiskLevels": [],
+        "clientAppTypes": [
+          "all"
+        ],
+        "applications": null,
+        "users": null,
+        "locations": null,
+        "times": null,
+        "deviceStates": null,
+        "devices": null,
+        "clientApplications": null,
+        "agents": null,
+        "actionsAndDestinations": null,
+        "platforms": {
+          "includePlatforms": [
+            "windows"
+          ],
+          "excludePlatforms": []
+        }
+      },
+      "controls": {
+        "sessionControls": null,
+        "grantControls": {
+          "operator": "OR",
+          "builtInControls": [
+            "compliantDevice"
+          ],
+          "customAuthenticationFactors": [],
+          "termsOfUse": [],
+          "authenticationStrength@odata.context": "https://graph.microsoft.com/beta/$metadata#identity/conditionalAccess/plans('00000000-0000-4000-8000-000000000001')/rules('00000000-0000-4000-8000-000000000008')/controls/grantControls/authenticationStrength/$entity",
+          "authenticationStrength": null
+        }
+      }
+    }
+  ]
+}

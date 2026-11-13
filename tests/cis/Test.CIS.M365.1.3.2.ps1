@@ -74,7 +74,7 @@
     $resultMd += "| Web session idle timeout | $timeoutText | $(if ($timeoutOk) { '✅ Pass' } else { '❌ Fail' }) |`n"
     $resultMd += "| Conditional Access policy with app enforced restrictions | $(if ($policyOk) { 'Found' } else { 'Not found' }) | $(if ($policyOk) { '✅ Pass' } else { '❌ Fail' }) |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) ($($row.State)) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) ($($row.State)) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

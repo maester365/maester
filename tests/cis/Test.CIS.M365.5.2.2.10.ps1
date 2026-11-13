@@ -63,7 +63,7 @@
     $resultMd = "| Policy | State | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.State) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) | $($row.State) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {

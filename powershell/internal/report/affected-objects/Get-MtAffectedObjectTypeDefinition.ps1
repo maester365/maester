@@ -38,6 +38,8 @@
                 'AuthenticationMethod'
                 'AuthorizationPolicy'
                 'ConditionalAccessPolicy'
+                'ConditionalAccessPolicyPlan'
+                'ConditionalAccessPolicyRule'
                 'ConsentPolicy'
                 'Device'
                 'DirectoryRole'

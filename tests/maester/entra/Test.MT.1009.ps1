@@ -45,8 +45,9 @@ Legacy authentication is an unsecure method to authenticate. This function check
 Conditional Access policy that blocks legacy authentication.
 
 See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)"
-    $testResult = "These Conditional Access policies block legacy authentication for other clients :`n`n"
+    $testResult = "These Conditional Access policies block legacy authentication for other clients :`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.grantControls.builtInControls -contains 'block' `
@@ -56,7 +57,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            $matchingPolicies.Add($policy)
         } else {
             $CurrentResult = $false
         }
@@ -66,7 +67,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
     if ($result -eq $false) {
         $testResult = "There was no Conditional Access policy blocking legacy authentication for other clients."
     }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
 
     return $result
 }

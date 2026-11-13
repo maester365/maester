@@ -22,7 +22,7 @@
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         # If not specified, the function will try to determine the type based on the object.
         [Parameter(Mandatory = $false)]
-        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
+        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConditionalAccessPlan', 'ConsentPolicy',
             'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
             )]
         [string] $GraphObjectType,
@@ -52,16 +52,32 @@
         }
 
         if($currentGraphObjectType) {
-            $link = $markdownLinkTemplate[$currentGraphObjectType] -f $item.id
+            if ($currentGraphObjectType -eq 'ConditionalAccess' -and (Get-ObjectProperty $item 'planId')) {
+                $link = $markdownLinkTemplate.ConditionalAccessPlan -f $item.planId
+            } else {
+                $link = $markdownLinkTemplate[$currentGraphObjectType] -f $item.id
+            }
         }
         else {
             $link = "#"
         }
 
+        # A plan URL contains only the parent ID. Keep the rule identity in the link title so
+        # custom Markdown tables and rehydrated reports can recover it without changing the URL.
+        $linkTitle = ''
+        if ($currentGraphObjectType -eq 'ConditionalAccess' -and
+            (Get-ObjectProperty $item 'sourceType') -eq 'PolicyPlanRule' -and
+            (Get-ObjectProperty $item 'planId')) {
+            $ruleId = [string](Get-ObjectProperty $item 'id')
+            if ($ruleId -match '^[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$') {
+                $linkTitle = ' "ConditionalAccessPolicyRule:{0}"' -f $ruleId
+            }
+        }
+
         if ($AsPlainTextLink) {
-            $result += "[$displayName]($link)"
+            $result += "[$displayName]($link$linkTitle)"
         } else {
-            $result += "  - [$displayName]($link)`n"
+            $result += "  - [$displayName]($link$linkTitle)`n"
         }
     }
 

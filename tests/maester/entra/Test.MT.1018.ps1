@@ -45,8 +45,9 @@
 Microsoft recommends disabling browser persistence for users accessing the tenant from a unmanaged device.
 
 See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)'
-    $testResult = "These Conditional Access policies enforce sign-in frequency:`n`n"
+    $testResult = "These Conditional Access policies enforce sign-in frequency:`n`n%TestResult%"
 
+    $matchingPolicies = [System.Collections.Generic.List[object]]::new()
     $result = $false
     foreach ($policy in $policies) {
         # Check if device filter for compliant or hybrid Azure AD joined devices is present
@@ -76,7 +77,7 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         ) {
             $result = $true
             $CurrentResult = $true
-            $testResult += "  - [$(Get-MtSafeMarkdown $policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            $matchingPolicies.Add($policy)
         } else {
             $CurrentResult = $false
         }
@@ -87,6 +88,6 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         $testResult = 'There was no Conditional Access policy enforcing sign-in frequency for non-corporate devices.'
     }
 
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $matchingPolicies.ToArray() -GraphObjectType ConditionalAccess
     return $result
 }
