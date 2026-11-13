@@ -70,7 +70,7 @@
                 Title    = "$controlName."
                 Severity = 'Medium'
                 Tag      = @(@($controlScore.controlCategory) | Where-Object { $_ })
-                Data     = [pscustomobject]@{ ControlScore = $controlScore; Profile = $null; InMt1024 = $false }
+                Data     = [pscustomobject]@{ ControlScore = $controlScore; Profile = $null; InMt1024 = $false; SnapshotDate = $snapshot.createdDateTime }
             }
             continue
         }
@@ -90,6 +90,8 @@
                 ControlScore = $controlScore
                 Profile      = $controlProfile
                 InMt1024     = $entraRecommendationTypes.Contains($controlName)
+                # When Microsoft took the snapshot, so a setting changed after it is not mistaken for a failure.
+                SnapshotDate = $snapshot.createdDateTime
             }
         }
     }
@@ -292,6 +294,26 @@ function Test-MtSecureScoreControl {
     $resultMd = "**$score of $maxScore points** for this improvement action."
     $status = ConvertFrom-MtSecureScoreHtml -Html ([string]$controlScore.implementationStatus)
     if ($status) { $resultMd += "`n`n$status" }
+    # Secure Score refreshes once a day, so say which snapshot the points come from. Graph can hand the date
+    # back as text or as a date; both are shown in UTC. No date, no line. A date that cannot be read is said
+    # so, rather than dropped or failing the test.
+    $snapshotDate = $Instance.Data.SnapshotDate
+    if ($snapshotDate) {
+        $snapshotUtc = $null
+        if ($snapshotDate -is [datetime]) {
+            $snapshotUtc = if ($snapshotDate.Kind -eq [System.DateTimeKind]::Unspecified) { [datetime]::SpecifyKind($snapshotDate, [System.DateTimeKind]::Utc) } else { $snapshotDate.ToUniversalTime() }
+        } else {
+            $parsed = [datetimeoffset]::MinValue
+            if ([datetimeoffset]::TryParse([string]$snapshotDate, [cultureinfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::AssumeUniversal, [ref]$parsed)) {
+                $snapshotUtc = $parsed.UtcDateTime
+            }
+        }
+        if ($snapshotUtc) {
+            $resultMd += "`n`nFrom the Secure Score snapshot taken $($snapshotUtc.ToString('yyyy-MM-dd HH:mm', [cultureinfo]::InvariantCulture)) UTC."
+        } else {
+            $resultMd += "`n`nThe date of the Secure Score snapshot could not be read."
+        }
+    }
     if (-not $passed) { $resultMd += $actionLinkMd }
 
     Add-MtTestResultDetail -Description $descriptionMd -Severity $severity -Result $resultMd

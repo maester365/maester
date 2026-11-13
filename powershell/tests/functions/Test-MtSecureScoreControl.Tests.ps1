@@ -226,6 +226,14 @@
             @(Get-MtSecureScoreControlInstance).Id | Should -Not -Contain 'exo_mailboxaudit'
         }
 
+        It 'carries the snapshot date on every instance' {
+            $script:Snapshot.value[0] | Add-Member -NotePropertyName createdDateTime -NotePropertyValue '2026-11-12T03:00:00Z'
+
+            $instances = @(Get-MtSecureScoreControlInstance)
+            $instances.Count | Should -Be 3
+            $instances | ForEach-Object { $_.Data.SnapshotDate | Should -Be '2026-11-12T03:00:00Z' }
+        }
+
         It 'returns no instances when the tenant has no snapshot yet' {
             $script:Snapshot = [pscustomobject]@{ value = @() }
 
@@ -311,7 +319,7 @@
     Context 'Test' {
         BeforeEach {
             function Get-FakeInstance {
-                param([double] $Score, [double] $MaxScore, [object[]] $StateUpdates = @(), [bool] $InMt1024 = $false)
+                param([double] $Score, [double] $MaxScore, [object[]] $StateUpdates = @(), [bool] $InMt1024 = $false, [object] $SnapshotDate = $null)
                 [pscustomobject]@{
                     Id       = 'ctrl'
                     Severity = 'Medium'
@@ -319,6 +327,7 @@
                         ControlScore = (Get-FakeControlScore -Name 'ctrl' -Score $Score)
                         Profile      = (Get-FakeControlProfile -Id 'ctrl' -MaxScore $MaxScore -StateUpdates $StateUpdates)
                         InMt1024     = $InMt1024
+                        SnapshotDate = $SnapshotDate
                     }
                 }
             }
@@ -335,6 +344,27 @@
             Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0.15 -MaxScore 10) | Should -BeFalse
             $script:TestResult | Should -Match '0.15 of 10 points'
             $script:TestResult | Should -Match 'Open this improvement action\]\(https://security.microsoft.com/ctrl\)'
+        }
+
+        It 'shows the snapshot date in UTC when Graph returns it as text' {
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 9 -MaxScore 9 -SnapshotDate '2026-11-12T03:00:00Z') | Should -BeTrue
+            $script:TestResult | Should -Match 'snapshot taken 2026-11-12 03:00 UTC'
+        }
+
+        It 'shows the snapshot date in UTC when Graph returns it as a date' {
+            $date = [datetime]::SpecifyKind([datetime]'2026-11-12T03:00:00', [System.DateTimeKind]::Utc)
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 0 -MaxScore 3 -SnapshotDate $date) | Should -BeFalse
+            $script:TestResult | Should -Match 'snapshot taken 2026-11-12 03:00 UTC'
+        }
+
+        It 'says the snapshot date could not be read instead of failing' {
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 9 -MaxScore 9 -SnapshotDate 'not a date') | Should -BeTrue
+            $script:TestResult | Should -Match 'date of the Secure Score snapshot could not be read'
+        }
+
+        It 'leaves the snapshot line out when the snapshot has no date' {
+            Test-MtSecureScoreControl -Instance (Get-FakeInstance -Score 9 -MaxScore 9) | Should -BeTrue
+            $script:TestResult | Should -Not -Match 'snapshot taken'
         }
 
         It 'skips a control marked <State> and reports who set it and their comment' -ForEach @(
