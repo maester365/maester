@@ -1,23 +1,22 @@
 ﻿function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
-    Counts Active Directory AuthN policy containers.
-
+    Evaluates Active Directory Authentication Policy and Silo posture.
     .DESCRIPTION
-    Phase 14 (AD Configuration tests) - AD-CFG-08.
-    This test retrieves $config.AuthNPolicyContainers and returns the count of configured AuthN policy containers.
-
+    AD-CFG-08 collects Authentication Policies and Silos directly from the configuration naming
+    context, reports enforcement state, and distinguishes absent expression attributes from
+    intentionally empty values.
     .EXAMPLE
     Test-MtAdAuthNPolicyConfigCount
-
-    Returns $true if configuration data is accessible.
-
     .LINK
     https://maester.dev/docs/commands/Test-MtAdAuthNPolicyConfigCount
+    .NOTES
+    Author: Mario Contestabile
+    LinkedIn: https://www.linkedin.com/in/mario-contestabile/
     #>
     [MaesterTest(
         Id = 'AD-CFG-08',
-        Title = 'AuthN policy container count should be retrievable',
+        Title = 'Authentication Policy and Silo posture should be retrievable',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'authentication',
@@ -26,40 +25,43 @@
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
-        Author = 'soulemike'
+        # Maester requires the Author attribute to use the contributor's GitHub handle for catalog attribution.
+        Author = 'rolling-code'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdAuthNPolicyConfigCount"
+    Write-Verbose 'Starting Test-MtAdAuthNPolicyConfigCount'
 
-    $adState = Get-MtADDomainState -Categories @('Configuration')
-
-    if ($null -eq $adState) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+    $adState = Get-MtADDomainState -Categories @('AuthenticationPolicies')
+    if ($null -eq $adState -or $null -eq $adState['AuthenticationPolicyState']) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy collection failed or returned no state. Review verbose LDAP collection output and access to CN=AuthN Policy Configuration.'
         return $null
     }
 
-    $config = $adState.Configuration
-    $authNPolicyContainers = if ($null -ne $config) { $config.AuthNPolicyContainers } else { $null }
-    $authNPolicyContainersSafe = if ($null -ne $authNPolicyContainers) { @($authNPolicyContainers) } else { @() }
+    # Get-MtADDomainState returns an OrderedDictionary, so use key access to preserve its public return contract.
+    $state = $adState['AuthenticationPolicyState']
+    # A successful empty collection is valid evidence and must not be presented as a failed LDAP query.
+    $testResult = $true
+    $result = "| Metric | Value |`n"
+    $result += "| --- | --- |`n"
+    $result += "| Authentication Policies | $($state.PolicyCount) |`n"
+    $result += "| Enforced Authentication Policies | $($state.EnforcedPolicyCount) |`n"
+    $result += "| Authentication Policy Silos | $($state.SiloCount) |`n"
+    $result += "| Enforced Authentication Policy Silos | $($state.EnforcedSiloCount) |`n"
+    $result += "| Requested expression attributes not returned | $($state.MissingRequiredAttributeCount) |`n"
 
-    $authNPolicyConfigCount = ($authNPolicyContainersSafe | Measure-Object).Count
-    $testResult = $null -ne $config
-
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| AuthN Policy Containers Count | $authNPolicyConfigCount |" + "`n" + "`n"
-
-        $testResultMarkdown = "Active Directory AuthN policy containers have been counted.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($state.PolicyCount -eq 0) {
+        $summary = 'No Authentication Policy objects were detected. Expression-attribute evaluation is not applicable because no policy instances exist.'
+    }
+    elseif ($state.MissingRequiredAttributeCount -gt 0) {
+        $summary = 'Authentication Policy objects were collected, but one or more optional expression attributes were not returned. Their configuration state is unknown; do not infer that they are unset or that collection was incomplete.'
     }
     else {
-        $testResultMarkdown = "Unable to retrieve Active Directory configuration. Ensure you have appropriate permissions and the Active Directory module is installed."
+        $summary = 'Authentication Policy and Silo posture was collected successfully, including enforcement and expression-attribute availability.'
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result "$summary`n`n$result"
     return $testResult
 }
