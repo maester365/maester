@@ -120,8 +120,10 @@
 
     $missingPolicies = @()
     $appsWithPolicies = @()
+    # A RestrictAccess policy created with -AppId * applies to every application.
+    $restrictsAllApps = $appAccessPolicies.AppId -contains '*'
     foreach ($sp in $principalsWithExchangePerms) {
-        $hasPolicy = $appAccessPolicies.AppId -contains $sp.AppId
+        $hasPolicy = $restrictsAllApps -or $appAccessPolicies.AppId -contains $sp.AppId
         $filteredPermissions = $sp.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
         $appRecord = [PSCustomObject]@{
             Id          = $sp.Id

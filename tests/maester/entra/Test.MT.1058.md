@@ -21,7 +21,7 @@ Each permission is matched on the API that defines it. `full_access_as_app` give
 
 An app role assignment to one of these two APIs that names a role the API does not define is listed under **App Role Assignments Not Evaluated**. When nothing else fails, the result is marked for investigation instead of passing. `Test-MtSpExchangeAppAccessPolicy` still returns `$true` in that case, so a script that reads only its return value sees a pass.
 
-This check requires a `RestrictAccess` policy for each application. A `DenyAccess` policy only denies access to mailboxes in its scope; it does not restrict access to mailboxes outside that scope and does not satisfy this check.
+This check requires a `RestrictAccess` policy for each application; a `RestrictAccess` policy created with `-AppId *` applies to every application. A `DenyAccess` policy only denies access to mailboxes in its scope; it does not restrict access to mailboxes outside that scope and does not satisfy this check.
 
 ### Remediation action
 

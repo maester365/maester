@@ -106,6 +106,23 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
     }
 
+    It 'Passes when a RestrictAccess policy applies to all applications' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('*'); AccessRight = 'RestrictAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+        $script:Result | Should -Match 'All \*\*1\*\* applications'
+    }
+
+    It 'Does not count a DenyAccess policy that applies to all applications' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('*'); AccessRight = 'DenyAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+    }
+
     It 'Fails when no application access policies exist' {
         Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
     }
