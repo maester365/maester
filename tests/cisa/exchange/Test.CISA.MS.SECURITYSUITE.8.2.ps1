@@ -15,7 +15,7 @@
     https://maester.dev/docs/commands/Test-MtCisaAntiSpamSafeList
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.12.2',
+        Id = 'CISA.MS.SECURITYSUITE.8.2',
         Title = 'Safe lists SHOULD NOT be enabled.',
         Product = 'exchange',
         RelatedProduct = 'defender',
@@ -26,34 +26,34 @@
         UserImpact = 'Low',
         ImplementationCost = 'Low',
         Mitre = ('T1566', 'T1684.002'),
-        Control = 'cisa-scuba:MS.EXO.12.2',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.8.2',
         Service = 'ExchangeOnline',
         Author = 'soulemike',
-        Contributor = 'merill'
+        Contributor = ('merill', 'JeremyFinney-lgtm', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    $policy = Get-MtExo -Request HostedConnectionFilterPolicy
-
-    $resultPolicy = $policy | Where-Object {`
-        -not $_.EnableSafeList
-    }
-
-    $testResult = ($resultPolicy|Measure-Object).Count -eq 1
+    $policies = @(Get-MtExo -Request HostedConnectionFilterPolicy)
+    $policiesWithSafeList = @($policies | Where-Object { $_.EnableSafeList -eq $true })
+    $testResult = $policies.Count -gt 0 -and $policiesWithSafeList.Count -eq 0
 
     $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. [Safe List]($portalLink) is disabled in your tenant."
     } else {
-        $testResultMarkdown = "[Safe List]($portalLink) is enabled in your tenant."
+        $testResultMarkdown = "Disable Safe List on every connection filter policy returned by [the anti-spam policies page]($portalLink)."
+        if ($policies.Count -eq 0) {
+            $testResultMarkdown = "No connection filter policy was returned. Verify the connection to Exchange Online and confirm that the policy data is available."
+        } elseif ($policiesWithSafeList.Count -gt 0) {
+            $policyNames = @($policiesWithSafeList | ForEach-Object { $_.Name })
+            $testResultMarkdown += "`n`nSafe List is enabled on: $($policyNames -join ', ')."
+        }
     }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+    return [bool]$testResult
 }

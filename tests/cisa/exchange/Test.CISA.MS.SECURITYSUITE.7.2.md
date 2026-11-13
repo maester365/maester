@@ -15,11 +15,13 @@ Rationale: URLs in emails may direct users to download and run malware. Scanning
 9. Select **Next** on each page until the **Review and confirm your changes** page.
 10. On the **Review and confirm your changes** page, select **Confirm**.
 
+If you do not use an all-recipient Standard or Strict preset policy, enable URL scanning and delivery after scanning on the effective all-recipient Safe Links policy.
+
 #### Related links
 
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
-* [CISA 15 Link Protection - MS.EXO.15.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo152v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L828)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.7.2v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite72v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%

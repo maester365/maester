@@ -28,6 +28,7 @@
                 } else {
                     continue
                 }
+
                 $name = ($name -replace '\s+', ' ').Trim()
                 $colon = $name.IndexOf(':')
                 $id = $null
@@ -104,5 +105,60 @@
         foreach ($prefix in $script:table.FamilyPrefixes) {
             $prefix | Should -Match '^[A-Za-z]+\.?\d+\.$'
         }
+    }
+}
+
+Describe 'Export-MtLegacyIdTable current Pester IDs' {
+    BeforeAll {
+        $exporter = Join-Path (Resolve-Path "$PSScriptRoot/../../..").Path 'build/golden/Export-MtLegacyIdTable.ps1'
+        $fixtureRoot = Join-Path $TestDrive 'legacy-id-repo'
+        $testsRoot = Join-Path $fixtureRoot 'tests'
+        $null = New-Item -Path $testsRoot -ItemType Directory -Force
+        $fixtureRoot = (Resolve-Path $fixtureRoot).ProviderPath
+        $historicalFile = Join-Path $testsRoot 'Historical.Tests.ps1'
+        $outputPath = Join-Path $fixtureRoot 'LegacyIds.json'
+        @(
+            "Describe 'Historical checks' {"
+            "    It 'ORCA.100: Retired check' { Test-FixtureRetired }"
+            "    It 'ORCA100: Retired check' { Test-FixtureRetired }"
+            "    It 'Fixture.Legacy: Renamed check' { Test-FixtureRenamed }"
+            "    It 'Fixture100.<Name>: Historical family' { Test-FixtureFamily }"
+            '}'
+        ) | Set-Content -LiteralPath $historicalFile -Encoding utf8BOM
+        & git -C $fixtureRoot init --quiet
+        if ($LASTEXITCODE -ne 0) { throw 'Could not initialize the legacy-ID fixture repository.' }
+        & git -C $fixtureRoot add -- tests
+        if ($LASTEXITCODE -ne 0) { throw 'Could not stage the legacy-ID fixture tests.' }
+        & git -C $fixtureRoot -c user.name=Fixture -c user.email=fixture@example.com -c commit.gpgsign=false commit --quiet -m 'Add historical checks' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not commit the legacy-ID fixture tests.' }
+        Remove-Item -LiteralPath $historicalFile
+        "Describe 'Current checks' { It 'Fixture.Current: Renamed check' { Test-FixtureRenamed } }" |
+            Set-Content -LiteralPath (Join-Path $testsRoot 'Current.Tests.ps1') -Encoding utf8BOM
+        '{"Entries":[{"LegacyId":"ORCA100","CurrentId":"ORCA.100","Rule":"function"}]}' |
+            Set-Content -LiteralPath $outputPath -Encoding utf8
+
+        & $exporter -RepoRoot $fixtureRoot -OutputPath $outputPath -WarningAction SilentlyContinue
+        $script:fixtureTable = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json
+        $script:fixtureEntries = $script:fixtureTable.Entries
+    }
+
+    It 'retires removed Pester IDs instead of retaining a mapping to a removed check' {
+        @($script:fixtureEntries | Where-Object { $_.LegacyId -in 'ORCA.100', 'ORCA100' }).Count | Should -Be 2
+        foreach ($id in 'ORCA.100', 'ORCA100') {
+            $entry = $script:fixtureEntries | Where-Object { $_.LegacyId -eq $id }
+            $entry.CurrentId | Should -Be 'retired'
+            $entry.Rule | Should -Be 'retired'
+        }
+    }
+
+    It 'maps historical IDs to the current working-tree Pester check' {
+        $entry = $script:fixtureEntries | Where-Object { $_.LegacyId -eq 'Fixture.Legacy' }
+        $entry.CurrentId | Should -Be 'Fixture.Current'
+        $entry.Rule | Should -Be 'title'
+        @($script:fixtureEntries | Where-Object { $_.LegacyId -eq 'Fixture.Current' }) | Should -BeNullOrEmpty
+    }
+
+    It 'preserves historical family prefixes after their Pester wrappers are removed' {
+        $script:fixtureTable.FamilyPrefixes | Should -Contain 'Fixture100.'
     }
 }
