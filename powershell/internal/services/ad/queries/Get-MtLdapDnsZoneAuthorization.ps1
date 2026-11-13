@@ -1,4 +1,4 @@
-function Get-MtLdapDnsZoneAuthorization {
+﻿function Get-MtLdapDnsZoneAuthorization {
     <#
     .SYNOPSIS
     Collects authorization ACEs from AD-integrated DNS zone objects.

@@ -1,4 +1,4 @@
-function Test-MtAdDnsUnresolvedTrusteeAuthorization {
+﻿function Test-MtAdDnsUnresolvedTrusteeAuthorization {
     [MaesterTest(Id='AD-DNS-21',Title='Unresolved trustees with DNS zone write authorization should be investigated',Product='ad',Feature='dns',Area='access-control',ResourceType='DnsZone',Severity='Info',Mitre='None',Service='ActiveDirectory',Permission=('ActiveDirectory:Ldap:dnsZone.ntSecurityDescriptor:ReadControl','ActiveDirectory:Ldap:Schema/classSchema.schemaIDGUID:ReadProperty'),Platform='Windows',Author='rolling-code')]
     [CmdletBinding()][OutputType([bool])]param()
     $state=Get-MtADDomainState -Categories @('DnsAuthorization')

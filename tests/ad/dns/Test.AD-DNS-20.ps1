@@ -1,4 +1,4 @@
-function Test-MtAdDnsBroadPrincipalAuthorization {
+﻿function Test-MtAdDnsBroadPrincipalAuthorization {
     [MaesterTest(Id='AD-DNS-20',Title='Broad principals should not have applicable DNS zone write authorization',Product='ad',Feature='dns',Area='access-control',ResourceType='DnsZone',Severity='Medium',UserImpact='Low',ImplementationCost='Medium',Mitre=('T1557'),Service='ActiveDirectory',Permission=('ActiveDirectory:Ldap:dnsZone.ntSecurityDescriptor:ReadControl','ActiveDirectory:Ldap:Schema/classSchema.schemaIDGUID:ReadProperty'),Platform='Windows',Author='rolling-code')]
     [CmdletBinding()][OutputType([bool])]param()
     $state=Get-MtADDomainState -Categories @('DnsAuthorization')
