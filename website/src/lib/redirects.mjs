@@ -29,7 +29,14 @@ export function buildRedirects(dist) {
 	// Maester 2.x documented each test's function as a command. In 3.0 those are tests: send each to its test.
 	const catalog = JSON.parse(readFileSync(join(websiteRoot, 'src/data/test-catalog.json'), 'utf8'));
 	const versions = JSON.parse(readFileSync(join(websiteRoot, 'src/data/versions.json'), 'utf8'));
+	const legacyIds = JSON.parse(readFileSync(join(websiteRoot, '../powershell/assets/Maester.LegacyIds.json'), 'utf8'));
 	const testByFunction = new Map(catalog.Tests.filter((t) => t.FunctionName).map((t) => [t.FunctionName, t.Id]));
+	const testIds = new Set(catalog.Tests.map((test) => test.Id));
+	const testByLegacyId = new Map(
+		legacyIds.Entries
+			.filter((entry) => testIds.has(entry.CurrentId))
+			.map((entry) => [entry.LegacyId, entry.CurrentId]),
+	);
 	for (const name of Object.keys(versions.commands)) {
 		if (exists(`/docs/commands/${name}`)) continue;
 		const test = testByFunction.get(name);
@@ -44,7 +51,14 @@ export function buildRedirects(dist) {
 		.map((line) => line.trim().replace(/\/$/, ''))
 		.filter((line) => line.startsWith('/'));
 	for (const path of contract) {
-		if (!path.startsWith('/docs/') || path.startsWith('/docs/next/') || path.startsWith('/docs/commands/') || path.startsWith('/docs/tests/')) continue;
+		if (path.startsWith('/docs/tests/')) {
+			if (exists(path)) continue;
+			const legacyId = path.slice('/docs/tests/'.length);
+			const currentId = testByLegacyId.get(legacyId);
+			if (currentId) add(path, `/docs/tests/${currentId}`);
+			continue;
+		}
+		if (!path.startsWith('/docs/') || path.startsWith('/docs/next/') || path.startsWith('/docs/commands/')) continue;
 		if (exists(path)) continue;
 		const archived = path.replace(/^\/docs\//, '/docs/2.x/');
 		if (exists(archived)) add(path, archived);
@@ -133,4 +147,3 @@ export function redirects() {
 		},
 	};
 }
-

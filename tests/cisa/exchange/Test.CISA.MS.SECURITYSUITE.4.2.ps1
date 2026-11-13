@@ -15,8 +15,8 @@
     https://maester.dev/docs/commands/Test-MtCisaExoAlertSiem
     #>
     [MaesterTest(
-        Id = 'CISA.MS.EXO.16.2',
-        Title = 'Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.',
+        Id = 'CISA.MS.SECURITYSUITE.4.2',
+        Title = 'The alerts SHOULD be sent to a monitored address or incorporated into a Security Information and Event Management (SIEM).',
         Product = 'exchange',
         RelatedProduct = 'defender',
         Feature = 'alerts',
@@ -26,11 +26,10 @@
         UserImpact = 'Low',
         ImplementationCost = 'Medium',
         Mitre = 'None',
-        Control = 'cisa-scuba:MS.EXO.16.2',
+        Control = 'cisa-scuba:MS.SECURITYSUITE.4.2',
         Service = 'None',
-        License = 'ATP_ENTERPRISE',
         Author = 'soulemike',
-        Contributor = 'thomas-s-schmidt'
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

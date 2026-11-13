@@ -1164,8 +1164,6 @@
         "CISA.MS.EXO.10.1",
         "CISA.MS.EXO.10.2",
         "CISA.MS.EXO.10.3",
-        "CISA.MS.EXO.11.1",
-        "CISA.MS.EXO.11.2",
         "CISA.MS.EXO.11.3",
         "CISA.MS.EXO.12.1",
         "CISA.MS.EXO.12.2",
@@ -1177,8 +1175,6 @@
         "CISA.MS.EXO.15.1",
         "CISA.MS.EXO.15.2",
         "CISA.MS.EXO.15.3",
-        "CISA.MS.EXO.16.1",
-        "CISA.MS.EXO.16.2",
         "CISA.MS.EXO.17.1",
         "CISA.MS.EXO.17.2",
         "CISA.MS.EXO.17.3",
@@ -1201,6 +1197,10 @@
         "CISA.MS.EXO.9.3",
         "CISA.MS.EXO.9.4",
         "CISA.MS.EXO.9.5",
+        "CISA.MS.SECURITYSUITE.2.1",
+        "CISA.MS.SECURITYSUITE.2.4",
+        "CISA.MS.SECURITYSUITE.4.1",
+        "CISA.MS.SECURITYSUITE.4.2",
         "CISA.MS.SHAREPOINT.1.1",
         "CISA.MS.SHAREPOINT.1.2",
         "CISA.MS.SHAREPOINT.1.3",
@@ -1209,6 +1209,30 @@
         "CISA.MS.SHAREPOINT.3.1",
         "CISA.MS.SHAREPOINT.3.2",
         "CISA.MS.SHAREPOINT.3.3"
+      ]
+    },
+    {
+      "Tag": "CISA.MS.EXO.11.1",
+      "Tests": [
+        "CISA.MS.SECURITYSUITE.2.1"
+      ]
+    },
+    {
+      "Tag": "CISA.MS.EXO.11.2",
+      "Tests": [
+        "CISA.MS.SECURITYSUITE.2.4"
+      ]
+    },
+    {
+      "Tag": "CISA.MS.EXO.16.1",
+      "Tests": [
+        "CISA.MS.SECURITYSUITE.4.1"
+      ]
+    },
+    {
+      "Tag": "CISA.MS.EXO.16.2",
+      "Tests": [
+        "CISA.MS.SECURITYSUITE.4.2"
       ]
     },
     {
@@ -2155,8 +2179,6 @@
         "CISA.MS.EXO.10.1",
         "CISA.MS.EXO.10.2",
         "CISA.MS.EXO.10.3",
-        "CISA.MS.EXO.11.1",
-        "CISA.MS.EXO.11.2",
         "CISA.MS.EXO.11.3",
         "CISA.MS.EXO.12.1",
         "CISA.MS.EXO.12.2",
@@ -2168,8 +2190,6 @@
         "CISA.MS.EXO.15.1",
         "CISA.MS.EXO.15.2",
         "CISA.MS.EXO.15.3",
-        "CISA.MS.EXO.16.1",
-        "CISA.MS.EXO.16.2",
         "CISA.MS.EXO.17.1",
         "CISA.MS.EXO.17.2",
         "CISA.MS.EXO.17.3",
@@ -2191,7 +2211,11 @@
         "CISA.MS.EXO.9.2",
         "CISA.MS.EXO.9.3",
         "CISA.MS.EXO.9.4",
-        "CISA.MS.EXO.9.5"
+        "CISA.MS.EXO.9.5",
+        "CISA.MS.SECURITYSUITE.2.1",
+        "CISA.MS.SECURITYSUITE.2.4",
+        "CISA.MS.SECURITYSUITE.4.1",
+        "CISA.MS.SECURITYSUITE.4.2"
       ]
     },
     {
@@ -2221,13 +2245,13 @@
     {
       "Tag": "MS.EXO.11.1",
       "Tests": [
-        "CISA.MS.EXO.11.1"
+        "CISA.MS.SECURITYSUITE.2.1"
       ]
     },
     {
       "Tag": "MS.EXO.11.2",
       "Tests": [
-        "CISA.MS.EXO.11.2"
+        "CISA.MS.SECURITYSUITE.2.4"
       ]
     },
     {
@@ -2299,13 +2323,13 @@
     {
       "Tag": "MS.EXO.16.1",
       "Tests": [
-        "CISA.MS.EXO.16.1"
+        "CISA.MS.SECURITYSUITE.4.1"
       ]
     },
     {
       "Tag": "MS.EXO.16.2",
       "Tests": [
-        "CISA.MS.EXO.16.2"
+        "CISA.MS.SECURITYSUITE.4.2"
       ]
     },
     {

@@ -4,6 +4,13 @@
         $legacyIdsPath = Join-Path $repoRoot 'powershell/assets/Maester.LegacyIds.json'
         $script:rawJson = [System.IO.File]::ReadAllText($legacyIdsPath)
         $script:table = $script:rawJson | ConvertFrom-Json
+        $testPathSpec = @(
+            ':(glob,icase)tests/**/*.tests.ps1'
+            ':(glob,icase)tests/**/Test.*.ps1'
+            ':(exclude,glob,icase)tests/Custom/**'
+        )
+        $script:latestTestChange = & git -C $repoRoot log -1 --format=%H -- $testPathSpec
+        if ($LASTEXITCODE -ne 0) { throw 'Could not find the latest commit that changed a built-in test.' }
 
         # Fresh AST scan of the built-in tests: the static ID of every It name under tests/ (Custom excluded).
         $script:currentIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -52,6 +59,10 @@
         @($script:table.Entries).Count | Should -BeGreaterThan 0
     }
 
+    It 'uses the latest commit that changed either test format as its snapshot' {
+        $script:table.GeneratedFrom | Should -Be $script:latestTestChange
+    }
+
     It 'uses LF line endings' {
         $script:rawJson | Should -Not -Match "`r"
     }
@@ -82,9 +93,31 @@
         $missing | Should -BeNullOrEmpty
     }
 
+    It 'maps historical IDs to their current native checks' {
+        foreach ($legacyId in @('CISA.MS.EXO.03.1', 'MS.EXO.03.1')) {
+            $entry = @($script:table.Entries | Where-Object LegacyId -EQ $legacyId)
+            $entry | Should -HaveCount 1
+            $entry[0].CurrentId | Should -Be 'CISA.MS.EXO.3.1'
+        }
+    }
+
     It 'marks retired entries with Rule retired or manual' {
         $bad = @($script:table.Entries | Where-Object { ($_.CurrentId -eq 'retired') -and ($_.Rule -notin 'retired', 'manual') })
         $bad | Should -BeNullOrEmpty
+    }
+
+    It 'preserves verified Exchange aliases when native titles change' {
+        $aliases = @{
+            'Ensure MailTips are enabled for end users' = 'MT.1039'
+            'Ensure modern authentication for Exchange Online is enabled' = 'MT.1044'
+            'Ensure users installing Outlook add-ins is not allowed' = 'MT.1041'
+        }
+        foreach ($legacyId in $aliases.Keys) {
+            $entry = @($script:table.Entries | Where-Object LegacyId -EQ $legacyId)
+            $entry | Should -HaveCount 1
+            $entry[0].CurrentId | Should -Be $aliases[$legacyId]
+            $entry[0].Rule | Should -Be 'title'
+        }
     }
 
     It 'has no duplicate LegacyId (case-insensitive)' {
@@ -104,5 +137,10 @@
         foreach ($prefix in $script:table.FamilyPrefixes) {
             $prefix | Should -Match '^[A-Za-z]+\.?\d+\.$'
         }
+    }
+
+    It 'preserves family prefix aliases when a native family check uses a renamed ID' {
+        $script:table.FamilyPrefixes | Should -Contain 'MT1060.'
+        $script:table.FamilyPrefixes | Should -Contain 'MT.1060.'
     }
 }

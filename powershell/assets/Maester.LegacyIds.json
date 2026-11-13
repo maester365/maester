@@ -1,6 +1,6 @@
 {
   "SchemaVersion": "1.0",
-  "GeneratedFrom": "fc6a9078bcdd59b5b2f788682fdcd2be27e15b9c",
+  "GeneratedFrom": "085e29ebb692c7f34bc87deff6bad40e735f902a",
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
@@ -1131,6 +1131,38 @@
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
     },
     {
+      "LegacyId": "CISA.MS.EXO.11.1",
+      "CurrentId": "CISA.MS.SECURITYSUITE.2.1",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonation.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.11.2",
+      "CurrentId": "CISA.MS.SECURITYSUITE.2.4",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonationTip.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.16.1",
+      "CurrentId": "CISA.MS.SECURITYSUITE.4.1",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlert.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.16.2",
+      "CurrentId": "CISA.MS.SECURITYSUITE.4.2",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlertSiem.Tests.ps1"
+    },
+    {
       "LegacyId": "Configure which users are allowed to present in Teams meetings",
       "CurrentId": "retired",
       "Rule": "retired",
@@ -1868,16 +1900,16 @@
     },
     {
       "LegacyId": "MS.EXO.11.1",
-      "CurrentId": "CISA.MS.EXO.11.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.2.1",
+      "Rule": "manual",
       "FirstSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
       "LastSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonation.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.11.2",
-      "CurrentId": "CISA.MS.EXO.11.2",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.2.4",
+      "Rule": "manual",
       "FirstSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
       "LastSeenCommit": "73e139b26d340765f4cfc202847ea009479da2ac",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaImpersonationTip.Tests.ps1"
@@ -1972,16 +2004,16 @@
     },
     {
       "LegacyId": "MS.EXO.16.1",
-      "CurrentId": "CISA.MS.EXO.16.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.4.1",
+      "Rule": "manual",
       "FirstSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
       "LastSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlert.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.16.2",
-      "CurrentId": "CISA.MS.EXO.16.2",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.4.2",
+      "Rule": "manual",
       "FirstSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
       "LastSeenCommit": "4af5fc2c7df1f755e933cba0042069793d47121a",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaExoAlertSiem.Tests.ps1"
@@ -3128,6 +3160,7 @@
     "MT.1033.",
     "MT.1034.",
     "MT.1059.",
+    "MT.1060.",
     "MT1060."
   ]
 }
