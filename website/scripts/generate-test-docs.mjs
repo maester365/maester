@@ -75,8 +75,11 @@ const suiteConfig = {
     title: "CIS Benchmark Tests",
     sidebarLabel: "🌀 CIS",
     description: "CIS Benchmark controls implemented as Maester tests.",
-    overview:
-      "These tests verify tenant and organization configuration against CIS Benchmark recommendations.",
+    overview: `These tests verify tenant and organization configuration against CIS Benchmark recommendations.
+
+The CIS Microsoft 365 Foundations Benchmark v7.0.0 designates the following recommendations for manual assessment. Complete these assessments in addition to running Maester's automated checks. Although CIS marks 8.4.1 manual, Maester includes an automated check for it.
+
+**Manual assessment recommendation IDs:** 1.1.2, 1.3.8, 2.2.1, 2.4.3, 2.4.5, 5.1.2.1, 5.1.2.4, 5.1.2.5, 5.1.2.6, 5.1.3.2, 5.1.3.3, 5.2.4.1, 5.2.4.2, 5.2.4.3, 5.2.4.4, 5.2.4.5, 8.4.1.`,
   },
   orca: {
     label: "ORCA",
