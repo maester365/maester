@@ -36,21 +36,7 @@
     [OutputType([bool])]
     param()
 
-    # The built-in Phishing-resistant MFA strength, and the methods a custom strength may be limited to, as ScubaGear checks them.
-    $phishingResistantStrengthId = '00000000-0000-0000-0000-000000000004'
-    $phishingResistantMethods = @('windowsHelloForBusiness', 'fido2', 'x509CertificateMultiFactor')
-
-    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-
-    $policies = $result | Where-Object {`
-        $_.conditions.applications.includeApplications -contains "All" -and `
-        $_.conditions.users.includeUsers -contains "All" -and `
-        $_.grantControls.authenticationStrength -and (
-            $_.grantControls.authenticationStrength.id -eq $phishingResistantStrengthId -or (
-                @($_.grantControls.authenticationStrength.allowedCombinations).Count -gt 0 -and
-                @($_.grantControls.authenticationStrength.allowedCombinations | Where-Object { $_ -notin $phishingResistantMethods }).Count -eq 0
-            )
-        ) }
+    $policies = Get-MtCisaPhishingResistantPolicy
 
     $testResult = ($policies|Measure-Object).Count -ge 1
 

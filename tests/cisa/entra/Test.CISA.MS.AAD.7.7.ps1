@@ -29,7 +29,7 @@
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',
-        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge')
+        Contributor = ('michaelmsonne', 'JeanPhilippeGeorge', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -52,7 +52,15 @@
                 expand = "policy(expand=rules)"
             }
         }
-        $policy = Invoke-MtGraphRequest @policySplat
+        try {
+            $policy = Invoke-MtGraphRequest @policySplat -ErrorAction Stop
+        } catch {
+            if ($_.ErrorDetails.Message -match '"code"\s*:\s*"AadPremiumLicenseRequired"') {
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+                return $null
+            }
+            throw
+        }
 
         $eligibleNotify = $policy.policy.rules | Where-Object {`
                 $_.id -eq "Notification_Admin_Admin_Eligibility" -and `

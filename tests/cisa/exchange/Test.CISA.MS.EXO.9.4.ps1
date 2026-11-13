@@ -1,10 +1,10 @@
 ﻿function Test-MtCisaEmailFilterAlternative {
     <#
     .SYNOPSIS
-    Placeholder
+    This retired CISA requirement is no longer assessed.
 
     .DESCRIPTION
-    Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter.
+    CISA removed this requirement from the SCuBA baseline in April 2026.
 
     .EXAMPLE
     Test-MtCisaEmailFilterAlternative
@@ -27,19 +27,15 @@
         ImplementationCost = 'Low',
         Mitre = ('T1204.002', 'T1566.001'),
         Control = 'cisa-scuba:MS.EXO.9.4',
-        Service = 'Graph',
+        Service = 'None',
+        Lifecycle = 'Deprecated',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'SamErde')
+        Contributor = ('thomas-s-schmidt', 'SamErde', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ('Eop' -in (Get-MtLicenseInformation -Product Eop) -or 'Eop' -in (Get-MtLicenseInformation -Product MdoV2)) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Tenant is licensed for Exchange Online Protection; an alternative mail filter is not needed."
-        return $null
-    } else {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Tenant is not licensed for Exchange Online Protection and there is no implementation to check for alternate mail filters available."
-        return $null
-    }
+    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "CISA removed MS.EXO.9.4 from the SCuBA baseline in April 2026. This legacy check is no longer assessed."
+    return $null
 }

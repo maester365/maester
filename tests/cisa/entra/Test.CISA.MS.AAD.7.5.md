@@ -4,6 +4,8 @@ Rationale: Provisioning users to privileged roles within a PAM system enables en
 
 #### Remediation action
 
+This assessment requires access to the Entra PIM API. If the API returns `AadPremiumLicenseRequired`, Maester skips the check with `NotLicensedEntraIDP2OrGovernance`, even if the tenant's service plans list a qualifying licence. A skip is not evidence that the requirement is satisfied; other API errors are not treated as licence skips.
+
 1. In **Entra admin center** select **Show more** > **Roles & admins** and then select **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.
 
     Perform the steps below for each highly privileged role. We reference the **Global Administrator** role as an example.

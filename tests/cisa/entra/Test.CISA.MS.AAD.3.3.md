@@ -1,6 +1,12 @@
-If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
+If Microsoft Authenticator is enabled, it SHALL show login context information with Authenticator OTP disabled.
 
 Rationale: This policy helps protect the tenant when Microsoft Authenticator is used by showing user context information, which helps reduce MFA phishing compromises.
+
+The SCuBA MS.AAD.3.3v2 implementation instructions also require **Allow use of Microsoft Authenticator OTP** to be **No**, and ScubaGear checks `isSoftwareOathEnabled = false`. Authenticator software OATH codes do not display the application and location context shown in push and passwordless notifications, so leaving this option enabled fails this check even when both context settings are enabled.
+
+This is **Microsoft Authenticator software OTP**, not **Email OTP** or the separate **Software OATH tokens** authentication method. Email OTP is assessed separately by `CISA.MS.AAD.3.5`; this check does not assess its state.
+
+The check is not applicable when the Microsoft Authenticator policy is absent or disabled, or when an enabled phishing-resistant MFA policy covers all users and applications without exclusions.
 
 #### Remediation action:
 

@@ -52,7 +52,15 @@
             role             = $role.displayName
             activationNotify = $false
         }
-        $recipients = @(Get-MtRoleActivationNotificationRecipient -RoleDefinitionId $role.id)
+        try {
+            $recipients = @(Get-MtRoleActivationNotificationRecipient -RoleDefinitionId $role.id -ErrorAction Stop)
+        } catch {
+            if ($_.ErrorDetails.Message -match '"code"\s*:\s*"AadPremiumLicenseRequired"') {
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+                return $null
+            }
+            throw
+        }
         $rolePolicy.activationNotify = $recipients.Count -gt 0
 
         $rolePolicies += $rolePolicy
