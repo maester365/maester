@@ -27,9 +27,9 @@
         ImplementationCost = 'Low',
         Mitre = ('T1114.003', 'T1204.001'),
         Control = 'cisa-scuba:MS.SECURITYSUITE.4.1',
-        Service = 'ExchangeOnline',
+        Service = ('ExchangeOnline', 'SecurityCompliance'),
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

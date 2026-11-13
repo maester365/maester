@@ -108,6 +108,14 @@ Describe 'Licence gates of converted tests' {
         $row.ReasonCode | Should -Be 'TestSkipped'
         $row.ResultDetail.TestSkipped | Should -Be 'Custom'
     }
+
+    It 'skips Security Suite alerts when Security & Compliance is not connected' {
+        $config = New-Config -Licenses 'UNRELATED_PLAN'
+        $config.Environment.Services.SecurityCompliance = $false
+        $row = Invoke-MtTest -Id 'CISA.MS.SECURITYSUITE.4.1' -Config $config
+        $row.Result | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'ServiceNotConnected'
+    }
 }
 
 Describe 'Licence skip message' {
