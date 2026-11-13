@@ -1,4 +1,4 @@
-function Test-MtAdGmsaAuthorizationEvidenceCompleteness {
+﻿function Test-MtAdGmsaAuthorizationEvidenceCompleteness {
     [MaesterTest(Id='AD-MSA-03',Title='gMSA managed-password authorization evidence should be complete and resolvable',Product='ad',Feature='account-security',Area='applications',ResourceType='Computer',Severity='Info',Mitre='None',Service='ActiveDirectory',Permission=('ActiveDirectory:Ldap:msDS-GroupManagedServiceAccount.msDS-GroupMSAMembership:ReadProperty'),Platform='Windows',Author='rolling-code')]
     [CmdletBinding()][OutputType([bool])]param()
     $state=Get-MtADDomainState -Categories ServiceAccounts
