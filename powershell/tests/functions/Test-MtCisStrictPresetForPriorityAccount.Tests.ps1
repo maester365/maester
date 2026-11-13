@@ -62,6 +62,18 @@ Describe 'Test-MtCisStrictPresetForPriorityAccount' {
         $script:Result | Should -Match 'no recipient conditions'
     }
 
+    It 'fails when the EOP rule has no recipient conditions and the ATP rule is targeted' {
+        $script:EopRule = Get-StrictRuleFixture
+
+        Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
+    }
+
+    It 'fails when the ATP rule has no recipient conditions and the EOP rule is targeted' {
+        $script:AtpRule = Get-StrictRuleFixture
+
+        Test-MtCisStrictPresetForPriorityAccount | Should -BeFalse
+    }
+
     It 'fails when a rule is not returned' {
         $script:EopRule = $null
 
