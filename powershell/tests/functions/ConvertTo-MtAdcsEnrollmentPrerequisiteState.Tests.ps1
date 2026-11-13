@@ -2,7 +2,7 @@
     $repoRoot = (Resolve-Path "$PSScriptRoot/../../..").Path
     . "$repoRoot/powershell/internal/services/ad/protocol/ConvertFrom-MtLdapValue.ps1"
     . "$repoRoot/powershell/internal/services/ad/ConvertTo-MtAdcsEnrollmentPrerequisiteState.ps1"
-    function New-AdcsTestConfiguration {
+    function Get-AdcsTestConfiguration {
         $template = [pscustomobject]@{
             Name = 'UserAuth'
             pKIExtendedKeyUsage = @('1.3.6.1.5.5.7.3.2')
@@ -22,57 +22,58 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
     It 'keeps unavailable configuration inconclusive' {
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState -Configuration $null
         $result.EvidenceAvailable | Should -BeFalse
+        $result.PSObject.Properties.Name | Should -Not -Contain 'EligibleCount'
         $result.Disposition | Should -Be 'Inconclusive'
     }
     It 'correlates a published authentication template without claiming exploitability' {
-        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState (New-AdcsTestConfiguration)
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState (Get-AdcsTestConfiguration)
         $result.PotentiallyEligibleCount | Should -Be 1
-        $result.EligibleCount | Should -Be 0
+        $result.PSObject.Properties.Name | Should -Not -Contain 'EligibleCount'
         $result.Templates[0].PublishedBy | Should -Contain 'CA01'
     }
     It 'does not classify an unpublished template as potentially eligible' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.EnterpriseCAs = @()
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
         $result.Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
     }
     It 'recognizes manager approval as a disproven modeled prerequisite' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].'msPKI-Enrollment-Flag' = 2
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
     }
     It 'does not treat unavailable security descriptors as authorization evidence' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].nTSecurityDescriptor = $null
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
     It 'recognizes required authorization signatures as a separate issuance gate' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].'msPKI-RA-Signature' = 1
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
         $result.Templates[0].AuthorizedSignaturesRequired | Should -Be 1
         $result.Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
     }
     It 'does not infer a missing signature count to be zero' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-RA-Signature')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
     It 'does not infer an unobserved subject-supply flag to be false' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-Certificate-Name-Flag')
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
         $result.Templates[0].Disposition | Should -Be 'Inconclusive'
         $result.Templates[0].EnrolleeSuppliesSubject | Should -BeNullOrEmpty
     }
     It 'does not infer an unobserved enrollment flag to permit issuance' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-Enrollment-Flag')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
     It 'recognizes an explicitly observed empty EKU as unrestricted' {
         foreach ($empty in @($null, @())) {
-            $config = New-AdcsTestConfiguration
+            $config = Get-AdcsTestConfiguration
             $config.CertificateTemplates[0].pKIExtendedKeyUsage = $empty
             $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
             $result.Templates[0].AuthenticationCapable | Should -BeTrue
@@ -80,12 +81,12 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         }
     }
     It 'keeps an uncollected EKU property unknown' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].PSObject.Properties.Remove('pKIExtendedKeyUsage')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
     It 'preserves a CA publication reference that has no matching template' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates = @()
         $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
         $result.Templates.Count | Should -Be 1
@@ -94,19 +95,19 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         $result.InconclusiveCount | Should -Be 1
     }
     It 'does not resolve duplicate template CNs by silently selecting one' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates += $config.CertificateTemplates[0].PSObject.Copy()
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).InconclusiveCount | Should -BeGreaterThan 0
     }
     It 'does not let missing evidence override an independently disproven condition' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].'msPKI-Enrollment-Flag' = 2
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-Certificate-Name-Flag')
         $config.CertificateTemplates[0].PSObject.Properties.Remove('msPKI-RA-Signature')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
     }
     It 'uses the real LDAP converter for byte-backed flag and signature values' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates[0].'msPKI-Certificate-Name-Flag' = [Text.Encoding]::UTF8.GetBytes('1')
         $config.CertificateTemplates[0].'msPKI-Enrollment-Flag' = [Text.Encoding]::UTF8.GetBytes('0')
         $config.CertificateTemplates[0].'msPKI-RA-Signature' = [Text.Encoding]::UTF8.GetBytes('1')
@@ -114,18 +115,18 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
     }
     It 'treats malformed, negative or multivalued signature evidence as unknown' {
         foreach ($bad in @('invalid', -1, @('0', '1'))) {
-            $config = New-AdcsTestConfiguration
+            $config = Get-AdcsTestConfiguration
             $config.CertificateTemplates[0].'msPKI-RA-Signature' = $bad
             (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
         }
     }
     It 'does not report complete evidence when a CA publication list was not collected' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.EnterpriseCAs[0].PSObject.Properties.Remove('certificateTemplates')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Disposition | Should -Be 'Inconclusive'
     }
     It 'keeps an unavailable inventory distinct from a completed empty inventory' {
-        $config = New-AdcsTestConfiguration
+        $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates = $null
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).EvidenceAvailable | Should -BeFalse
         $config.CertificateTemplates = @()
@@ -140,7 +141,7 @@ Describe 'AD-CS-01 native engine outcomes' {
         $script:adcsRunConfig = @{ Environment = @{ Services = @{ ActiveDirectory = $true } } }
     }
     BeforeEach {
-        $script:adcsConfiguration = New-AdcsTestConfiguration
+        $script:adcsConfiguration = Get-AdcsTestConfiguration
         Mock -ModuleName Maester Get-MtADDomainState { [pscustomobject]@{ Configuration = $script:adcsConfiguration } }
     }
     It 'has valid native metadata with an existing resource type and author handle' {

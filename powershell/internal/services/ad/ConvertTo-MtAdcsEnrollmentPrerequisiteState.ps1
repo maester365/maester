@@ -30,7 +30,7 @@
     }
     $unavailable = [pscustomobject]@{
         EvidenceAvailable = $false; Disposition = 'Inconclusive'; Templates = @()
-        PublishedTemplateCount = 0; EligibleCount = 0; PotentiallyEligibleCount = 0; InconclusiveCount = 0
+        PublishedTemplateCount = 0; PotentiallyEligibleCount = 0; InconclusiveCount = 0
         Reason = 'AD CS publication or template inventory is unavailable or incomplete.'
     }
     $caField = & $readField $Configuration 'EnterpriseCAs'
@@ -106,7 +106,7 @@
     [pscustomobject]@{
         EvidenceAvailable = $true
         Disposition = if ($inconclusive -gt 0) { 'Inconclusive' } elseif ($potential -gt 0) { 'PotentiallyEligible' } else { 'PrerequisitesNotSatisfied' }
-        Templates = $facts; PublishedTemplateCount = $publishedBy.Count; EligibleCount = 0
+        Templates = $facts; PublishedTemplateCount = $publishedBy.Count
         PotentiallyEligibleCount = $potential; InconclusiveCount = $inconclusive; Reason = $null
     }
 }
