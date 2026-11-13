@@ -3,9 +3,9 @@
     Generates the Maester previous-ID table (Maester.LegacyIds.json) from the git history of tests/.
 
     .DESCRIPTION
-    Walks every commit that touched a *.Tests.ps1 file under tests/ (tests/Custom excluded), parses the
-    It names of every changed file version with the PowerShell AST (regex fallback for files that do
-    not parse) and records every static test ID that ever shipped.
+    Walks every commit that touched a *.Tests.ps1 or Test.*.ps1 file under tests/ (tests/Custom excluded),
+    parses the It names of every changed Pester file version with the PowerShell AST (regex fallback for
+    files that do not parse) and records every static test ID that ever shipped.
 
     The ID of an It name is the text before the first colon when that text has no spaces
     (for example 'MT.1001' or 'MS.AAD.7.1'). Early wrappers had no ID; for those the whole It name is
@@ -22,9 +22,9 @@
     Previously verified mappings from the generated-from commit are retained while their targets remain
     current, unless a manual override applies. This preserves aliases when native titles or functions change.
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    The output is deterministic: GeneratedFrom is the last commit that touched either test format, and
+    current Pester and native IDs are read from that commit's tree, so rerunning on a later commit that
+    does not touch tests/ produces identical output.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -91,7 +91,11 @@ $PrefixRenames = @(
 # Commands that are not check functions.
 $IgnoredFunctions = @('Test-Path', 'Test-Json', 'Test-Connection', 'Test-NetConnection', 'Test-MtConnection', 'Test-MtContext')
 
-$testPathSpec = @(':(glob,icase)tests/**/*.tests.ps1', ':(exclude,glob,icase)tests/Custom/**')
+$testPathSpec = @(
+    ':(glob,icase)tests/**/*.tests.ps1'
+    ':(glob,icase)tests/**/Test.*.ps1'
+    ':(exclude,glob,icase)tests/Custom/**'
+)
 
 function Invoke-Git {
     # Arguments are passed through $args so git switches such as -p are not bound as PowerShell parameters.
@@ -208,8 +212,8 @@ foreach ($line in $logLines) {
     if ($line -match '^commit ([0-9a-f]{40})$') {
         $current = [pscustomobject]@{ Sha = $Matches[1]; Files = [System.Collections.Generic.List[object]]::new() }
         $commits.Add($current)
-    } elseif ($line -match '^:\d+ \d+ [0-9a-f]+ ([0-9a-f]{40}) ([AMT])\t(.+)$') {
-        $current.Files.Add([pscustomobject]@{ Blob = $Matches[1]; Path = $Matches[3] })
+    } elseif ($line -match '^:\d+ \d+ [0-9a-f]{40} ([0-9a-f]{40}) ([AMTD])\t(.+)$') {
+        $current.Files.Add([pscustomobject]@{ Blob = $Matches[1]; Status = $Matches[2]; Path = $Matches[3] })
     }
 }
 $commits = @($commits | Where-Object { $_.Files.Count -gt 0 })
@@ -232,6 +236,7 @@ $history = [System.Collections.Generic.Dictionary[string, object]]::new([System.
 $historicalFamilies = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
 foreach ($commit in $commits) {
     foreach ($file in $commit.Files) {
+        if ($file.Status -eq 'D' -or $file.Path -notmatch '(?i)\.tests\.ps1$') { continue }
         foreach ($it in (Get-BlobItInfo -Blob $file.Blob)) {
             $split = Get-StaticSplit -Name $it.Name
             if (-not $split) {
@@ -258,46 +263,34 @@ foreach ($commit in $commits) {
 #region Current IDs (from the tree of $generatedFrom)
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+$nativeIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+$nativeRecords = [System.Collections.Generic.List[object]]::new()
 $treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
 foreach ($line in $treeLines) {
-    if ($line -notmatch '^\d+ blob ([0-9a-f]{40})\t(tests/.+\.tests\.ps1)$') { continue }
-    if ($Matches[2] -like 'tests/Custom/*') { continue }
+    if ($line -notmatch '^\d+ blob ([0-9a-f]{40})\t(tests/.+)$') { continue }
+    $blob = $Matches[1]
     $path = $Matches[2]
-    foreach ($it in (Get-BlobItInfo -Blob $Matches[1])) {
-        $split = Get-StaticSplit -Name $it.Name
-        if (-not $split) {
-            if ($it.Name -match '^([A-Za-z]+\.?\d+)\.(<|\$\()') { $null = $familyPrefixes.Add("$($Matches[1]).") }
-            continue
+    if ($path -like 'tests/Custom/*') { continue }
+
+    if ($path -match '(?i)\.tests\.ps1$') {
+        foreach ($it in (Get-BlobItInfo -Blob $blob)) {
+            $split = Get-StaticSplit -Name $it.Name
+            if (-not $split) {
+                if ($it.Name -match '^([A-Za-z]+\.?\d+)\.(<|\$\()') { $null = $familyPrefixes.Add("$($Matches[1]).") }
+                continue
+            }
+            $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
         }
-        $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
+        continue
     }
-}
-Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
 
-$titleIndex = @{}
-$functionIndex = @{}
-foreach ($c in $currentIds.Values) {
-    if (-not $titleIndex.ContainsKey($c.Title)) { $titleIndex[$c.Title] = [System.Collections.Generic.SortedSet[string]]::new() }
-    $null = $titleIndex[$c.Title].Add($c.Id)
-    if ($c.Functions.Count -eq 1) {
-        $f = $c.Functions[0]
-        if (-not $functionIndex.ContainsKey($f)) { $functionIndex[$f] = [System.Collections.Generic.SortedSet[string]]::new() }
-        $null = $functionIndex[$f].Add($c.Id)
-    }
-}
-#endregion Current IDs
-
-# Native tests are current checks that replaced Pester tests.
-$nativeIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-$nativeTestFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File -Filter 'Test.*.ps1' |
-    Where-Object { $_.FullName -notmatch '[\\/]Custom[\\/]' }
-foreach ($file in $nativeTestFiles) {
-    $nativeId = $file.BaseName.Substring('Test.'.Length)
+    if ($path -notmatch '(?i)(?:^|/)Test\.(?<id>.+)\.ps1$') { continue }
+    $nativeId = $Matches.id
     $null = $nativeIds.Add($nativeId)
-
+    $content = (Invoke-Git cat-file -p $blob) -join "`n"
     $tokens = $null
     $parseErrors = $null
-    $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref] $tokens, [ref] $parseErrors)
+    $ast = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref] $tokens, [ref] $parseErrors)
     if ($parseErrors.Count -gt 0) { continue }
     $nativeFunction = $ast.EndBlock.Statements |
         Where-Object {
@@ -311,21 +304,49 @@ foreach ($file in $nativeTestFiles) {
     $attribute = $nativeFunction.Body.ParamBlock.Attributes |
         Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } |
         Select-Object -First 1
+    if ($attribute.NamedArguments.ArgumentName -contains 'InstanceSource') { $null = $familyPrefixes.Add("$nativeId.") }
     $titleArgument = $attribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
+    $title = ''
     if ($titleArgument.Argument -is [System.Management.Automation.Language.StringConstantExpressionAst]) {
         $title = Get-NormalizedTitle -Title $titleArgument.Argument.Value
-        if ($title) {
-            if (-not $titleIndex.ContainsKey($title)) { $titleIndex[$title] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
-            $null = $titleIndex[$title].Add($nativeId)
+    }
+    $nativeRecords.Add([pscustomobject]@{ Id = $nativeId; Title = $title; Function = $nativeFunction.Name })
+}
+foreach ($historicalPrefix in $historicalFamilies) {
+    if ($familyPrefixes.Contains($historicalPrefix)) { continue }
+    foreach ($rename in $PrefixRenames) {
+        if (-not $historicalPrefix.StartsWith($rename.Old, [System.StringComparison]::OrdinalIgnoreCase)) { continue }
+        $renamedPrefix = $rename.New + $historicalPrefix.Substring($rename.Old.Length)
+        if ($familyPrefixes.Contains($renamedPrefix)) {
+            $null = $familyPrefixes.Add($historicalPrefix)
+            break
         }
     }
+}
+Write-Verbose "Current static IDs: $($currentIds.Count); native IDs: $($nativeIds.Count); family prefixes: $($familyPrefixes -join ', ')"
 
-    $functionName = $nativeFunction.Name
-    if ($functionName) {
-        if (-not $functionIndex.ContainsKey($functionName)) { $functionIndex[$functionName] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
-        $null = $functionIndex[$functionName].Add($nativeId)
+$titleIndex = @{}
+$functionIndex = @{}
+foreach ($c in $currentIds.Values) {
+    if (-not $titleIndex.ContainsKey($c.Title)) { $titleIndex[$c.Title] = [System.Collections.Generic.SortedSet[string]]::new() }
+    $null = $titleIndex[$c.Title].Add($c.Id)
+    if ($c.Functions.Count -eq 1) {
+        $f = $c.Functions[0]
+        if (-not $functionIndex.ContainsKey($f)) { $functionIndex[$f] = [System.Collections.Generic.SortedSet[string]]::new() }
+        $null = $functionIndex[$f].Add($c.Id)
     }
 }
+foreach ($native in $nativeRecords) {
+    if ($native.Title) {
+        if (-not $titleIndex.ContainsKey($native.Title)) { $titleIndex[$native.Title] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
+        $null = $titleIndex[$native.Title].Add($native.Id)
+    }
+    if ($native.Function) {
+        if (-not $functionIndex.ContainsKey($native.Function)) { $functionIndex[$native.Function] = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal) }
+        $null = $functionIndex[$native.Function].Add($native.Id)
+    }
+}
+#endregion Current IDs
 
 # Keep verified aliases stable when native titles change or introduce additional matching candidates.
 $previousTable = ((Invoke-Git show "$($generatedFrom):powershell/assets/Maester.LegacyIds.json") -join "`n") | ConvertFrom-Json

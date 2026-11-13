@@ -4,6 +4,13 @@
         $legacyIdsPath = Join-Path $repoRoot 'powershell/assets/Maester.LegacyIds.json'
         $script:rawJson = [System.IO.File]::ReadAllText($legacyIdsPath)
         $script:table = $script:rawJson | ConvertFrom-Json
+        $testPathSpec = @(
+            ':(glob,icase)tests/**/*.tests.ps1'
+            ':(glob,icase)tests/**/Test.*.ps1'
+            ':(exclude,glob,icase)tests/Custom/**'
+        )
+        $script:latestTestChange = & git -C $repoRoot log -1 --format=%H -- $testPathSpec
+        if ($LASTEXITCODE -ne 0) { throw 'Could not find the latest commit that changed a built-in test.' }
 
         # Fresh AST scan of the built-in tests: the static ID of every It name under tests/ (Custom excluded).
         $script:currentIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -50,6 +57,10 @@
         $script:table.SchemaVersion | Should -Be '1.0'
         $script:table.GeneratedFrom | Should -Match '^[0-9a-f]{40}$'
         @($script:table.Entries).Count | Should -BeGreaterThan 0
+    }
+
+    It 'uses the latest commit that changed either test format as its snapshot' {
+        $script:table.GeneratedFrom | Should -Be $script:latestTestChange
     }
 
     It 'uses LF line endings' {
@@ -126,5 +137,10 @@
         foreach ($prefix in $script:table.FamilyPrefixes) {
             $prefix | Should -Match '^[A-Za-z]+\.?\d+\.$'
         }
+    }
+
+    It 'preserves family prefix aliases when a native family check uses a renamed ID' {
+        $script:table.FamilyPrefixes | Should -Contain 'MT1060.'
+        $script:table.FamilyPrefixes | Should -Contain 'MT.1060.'
     }
 }

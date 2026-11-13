@@ -30,6 +30,7 @@
             } |
             Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
     )
+    if ($tenantDomains.Count -eq 0) { return @() }
 
     $isEmpty = {
         param($Value)

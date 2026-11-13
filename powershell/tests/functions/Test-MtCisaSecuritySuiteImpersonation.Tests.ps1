@@ -152,6 +152,22 @@ Describe 'CISA Security Suite impersonation protection checks' {
         @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -BeNullOrEmpty
     }
 
+    It 'does not accept a default policy when accepted-domain data is missing' {
+        $script:exoResponses = @{
+            AntiPhishPolicy = @(
+                [pscustomobject]@{
+                    Name = 'Default'; Identity = 'Default'; Enabled = $true; IsDefault = $true
+                }
+            )
+            AntiPhishRule = @()
+            EOPProtectionPolicyRule = @()
+            AcceptedDomain = @()
+        }
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        @(Get-MtCisaEffectiveAntiPhishPolicy) | Should -BeNullOrEmpty
+    }
+
     It 'requires configured partner domains and protection for every configured domain' {
         $script:exoResponses = @{
             AntiPhishPolicy = @(

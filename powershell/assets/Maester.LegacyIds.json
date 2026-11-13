@@ -1,6 +1,6 @@
 {
   "SchemaVersion": "1.0",
-  "GeneratedFrom": "eb13e7a116e4063bec204e901e4847ae67c1f6f6",
+  "GeneratedFrom": "085e29ebb692c7f34bc87deff6bad40e735f902a",
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
@@ -3160,6 +3160,7 @@
     "MT.1033.",
     "MT.1034.",
     "MT.1059.",
+    "MT.1060.",
     "MT1060."
   ]
 }
