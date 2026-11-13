@@ -1,4 +1,4 @@
-function Clear-MtADCache {
+﻿function Clear-MtADCache {
     <#
     .SYNOPSIS
     Resets the local cache of Active Directory data. Use this if you need to force a refresh of the cache in the current session.

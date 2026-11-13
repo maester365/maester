@@ -1,4 +1,4 @@
-function Test-MtAdReplicationNamingContextsReadable {
+﻿function Test-MtAdReplicationNamingContextsReadable {
     <#
     .SYNOPSIS
         Checks that every naming context advertised by the assessed DC is readable.

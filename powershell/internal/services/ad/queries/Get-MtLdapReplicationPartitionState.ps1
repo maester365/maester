@@ -1,4 +1,4 @@
-function Get-MtLdapReplicationPartitionState {
+﻿function Get-MtLdapReplicationPartitionState {
     <#
     .SYNOPSIS
         Collects advertised and readable Active Directory naming-context posture.

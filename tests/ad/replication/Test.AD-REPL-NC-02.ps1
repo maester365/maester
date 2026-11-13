@@ -1,4 +1,4 @@
-function Test-MtAdReplicationCoreNamingContextsPresent {
+﻿function Test-MtAdReplicationCoreNamingContextsPresent {
     <#
     .SYNOPSIS
         Checks that expected core naming contexts are advertised by the assessed DC.
