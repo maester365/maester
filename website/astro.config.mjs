@@ -111,7 +111,7 @@ export default defineConfig({
 								{ label: 'Get started', items: ['docs/intro', 'docs/getting-started', 'docs/installation', 'docs/choosing-a-baseline', 'docs/making-the-case', 'docs/preview', 'docs/upgrading-from-2x', 'docs/updating-tests'] },
 								{ label: 'Connect', items: [{ autogenerate: { directory: 'docs/connect-maester' } }] },
 								{ label: 'Choose what to run', items: [{ autogenerate: { directory: 'docs/configuration' } }] },
-								{ label: 'Results', items: ['docs/export-results', 'docs/result-schema', 'docs/ca-what-if'] },
+								{ label: 'Results', items: [{ label: 'The Maester report', items: [{ autogenerate: { directory: 'docs/report' } }] }, 'docs/export-results', 'docs/result-schema', 'docs/ca-what-if'] },
 								{ label: 'Automate', items: [{ autogenerate: { directory: 'docs/monitoring' } }] },
 								{ label: 'Alerts', items: [{ autogenerate: { directory: 'docs/alerts' } }] },
 								{ label: 'Many tenants', items: [{ autogenerate: { directory: 'docs/multi-tenant' } }] },
