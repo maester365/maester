@@ -38,6 +38,18 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
             }
         }
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+        } {
+            [pscustomobject]@{
+                Id = 'exchange-sp'
+                DisplayName = 'Office 365 Exchange Online'
+                AppRoles = @(
+                    [pscustomobject]@{ Id = 'ews-role'; Value = 'full_access_as_app' }
+                    [pscustomobject]@{ Id = 'exchange-manage-role'; Value = 'Exchange.ManageAsApp' }
+                )
+            }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
             $RelativeUri -eq 'servicePrincipals' -and -not $Filter
         } {
             [pscustomobject]@{ Id = 'app-sp'; AppId = 'mail-app'; DisplayName = 'Contoso Mail App' }
@@ -181,6 +193,64 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         }
 
         Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+        $script:Result | Should -Not -Match 'Not Evaluated'
+    }
+
+    It 'Counts an app whose only mailbox permission is full_access_as_app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('Found **1** applications with Exchange permissions.'))
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | full_access_as_app |'))
+    }
+
+    It 'Passes for full_access_as_app when a RestrictAccess policy includes the app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('mail-app'); AccessRight = 'RestrictAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+    }
+
+    It 'Lists the Microsoft Graph and EWS permissions of one app together' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'graph-sp' }
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read, full_access_as_app |'))
+    }
+
+    It 'Does not count an Exchange Online app role other than full_access_as_app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'exchange-manage-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+    }
+
+    It 'Still evaluates Microsoft Graph permissions when the tenant has no Office 365 Exchange Online service principal' {
+        # Without that service principal, no app role assignment can point at it.
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+        } { @() }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read |'))
         $script:Result | Should -Not -Match 'Not Evaluated'
     }
 }

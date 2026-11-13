@@ -49,6 +49,8 @@
             'Calendars.Read', 'Calendars.ReadWrite',
             'Contacts.Read', 'Contacts.ReadWrite'
         )
+        # Office 365 Exchange Online: Exchange Web Services (EWS)
+        '00000002-0000-0ff1-ce00-000000000000' = @('full_access_as_app')
     }
     $exchangePermissions = @($mailboxApiPermissions.Values | ForEach-Object { $_ })
 
