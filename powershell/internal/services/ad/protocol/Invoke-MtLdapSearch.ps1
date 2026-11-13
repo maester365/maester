@@ -1,4 +1,4 @@
-function Invoke-MtLdapSearch {
+﻿function Invoke-MtLdapSearch {
     <#
     .SYNOPSIS
     Searches LDAP, optionally consuming converted responses one page at a time.

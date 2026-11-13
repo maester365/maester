@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     $script:HelperPath = Join-Path $PSScriptRoot '../../../internal/services/ad/Get-MtLdapAuthenticationPolicyState.ps1'
     . $script:HelperPath
 }
