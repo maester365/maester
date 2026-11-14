@@ -240,8 +240,7 @@
             }
 
             InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
-            $script:capturedResult | Should -BeLike "*Automatically detected emergency access*Emergency User 1 ($emergencyUserId1)*"
-            $script:capturedResult | Should -BeLike '*All Conditional Access policies exclude this emergency access user.*'
+            $script:capturedResult | Should -BeLike "Well done. All Conditional Access policies exclude the automatically detected emergency access user:*Emergency User 1 ($emergencyUserId1)*"
             $script:capturedResult | Should -Not -BeLike "*don't have the emergency access*"
             $script:capturedResult | Should -Not -BeLike '*%TestResult%*'
         }

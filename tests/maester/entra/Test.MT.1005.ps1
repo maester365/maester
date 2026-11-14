@@ -88,7 +88,7 @@
         # If the number of enabled policies is not the same as the number of excluded users or groups, there is no emergency access
         if ($PolicyCount -eq $ExcludedUsers -or $PolicyCount -eq $ExcludedGroups) {
             $result = $true
-            $testResult += "All Conditional Access policies exclude this emergency access $EmergencyAccessUUIDType."
+            $testResult = "Well done. All Conditional Access policies exclude the automatically detected emergency access $($EmergencyAccessUUIDType):`n`n* $($EmergencyAccessUUIDType): $detected`n"
             Add-MtTestResultDetail -Result $testResult
             return $result
         }
