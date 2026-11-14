@@ -5,6 +5,11 @@
     .DESCRIPTION
     Uses custom root trust and offline chain validation for Microsoft and third-party CA certificates.
     Reports incomplete or invalid paths for investigation without asserting actual DC trust or authentication success.
+    .EXAMPLE
+    Invoke-MtTest -Id AD-PKI-13
+    Reviews published NTAuth CA paths without enrolling certificates or attempting authentication.
+    .LINK
+    https://maester.dev/docs/tests/AD-PKI-13
     #>
     [MaesterTest(
         Id = 'AD-PKI-13',
