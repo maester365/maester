@@ -278,6 +278,41 @@
             $script:capturedResult | Should -BeLike "*don't have the emergency access user excluded*"
             @($script:capturedObjects).displayName | Should -Be 'Policy 2 - Missing Exclusions'
         }
+
+        It 'Should not take GuestsOrExternalUsers for an emergency access account (auto-detected)' {
+            $policy = Get-PolicyWithUserExclusion -UserIds @('GuestsOrExternalUsers')
+            $script:capturedResult = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:capturedResult = $Result
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -Not -BeLike '*GuestsOrExternalUsers*'
+        }
+
+        It 'Should check the excluded account, not GuestsOrExternalUsers, when policies exclude both (auto-detected)' {
+            $policies = @(
+                Get-PolicyWithUserAndGroupExclusion -UserIds @('GuestsOrExternalUsers', $emergencyUserId1) -GroupIds @()
+                Get-PolicyWithUserExclusion -UserIds @('GuestsOrExternalUsers')
+            )
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @{ id = $emergencyUserId1; displayName = 'Emergency User 1' } }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeLike "*Emergency User 1 ($emergencyUserId1)*"
+            @($script:capturedObjects).displayName | Should -Be 'Policy With User Exclusion'
+        }
     }
 
     Context "Single user configured as emergency access" {

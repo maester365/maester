@@ -54,8 +54,10 @@
     $PolicyCount = $policies | Measure-Object | Select-Object -ExpandProperty Count
     if (-not $EmergencyAccessAccounts -or $EmergencyAccessAccounts.Count -eq 0) {
         Write-Verbose "No emergency access accounts or groups defined in the Maester config. Use the default logic to detect emergency access accounts or groups."
-        $ExcludedUserObjectGUID = $policies.conditions.users.excludeUsers | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 -ExpandProperty Name
-        $ExcludedUsers = $policies.conditions.users.excludeUsers | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 | Select-Object -ExpandProperty Count
+        # GuestsOrExternalUsers names a category of users, not an account, so it can't be the emergency access account
+        $ExcludedUserIds = @($policies.conditions.users.excludeUsers | Where-Object { $_ -ne 'GuestsOrExternalUsers' })
+        $ExcludedUserObjectGUID = $ExcludedUserIds | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 -ExpandProperty Name
+        $ExcludedUsers = $ExcludedUserIds | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 | Select-Object -ExpandProperty Count
         $ExcludedGroupObjectGUID = $policies.conditions.users.excludeGroups | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 -ExpandProperty Name
         $ExcludedGroups = $policies.conditions.users.excludeGroups | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 | Select-Object -ExpandProperty Count
 
