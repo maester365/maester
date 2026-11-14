@@ -18,19 +18,37 @@ AfterAll {
 Describe 'Test-MtSpExchangeAppAccessPolicy' {
     BeforeEach {
         $script:Result = $null
+        $script:Investigate = $false
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result)
+            param($Result, [switch] $Investigate)
             $script:Result = $Result
+            $script:Investigate = $Investigate.IsPresent
         }
         Mock -ModuleName Maester Get-MtLinkServicePrincipal { 'Contoso Mail App' }
         Mock -ModuleName Maester Get-ApplicationAccessPolicy { @() }
         Mock -ModuleName Maester Invoke-MtGraphRequest { throw "Unexpected Graph request: $RelativeUri" }
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
-            $RelativeUri -eq 'servicePrincipals' -and $Filter
+            $RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000003-0000-0000-c000-000000000000'"
         } {
             [pscustomobject]@{
                 Id = 'graph-sp'
-                AppRoles = @([pscustomobject]@{ Id = 'mail-read-role'; Value = 'Mail.Read' })
+                DisplayName = 'Microsoft Graph'
+                AppRoles = @(
+                    [pscustomobject]@{ Id = 'mail-read-role'; Value = 'Mail.Read' }
+                    [pscustomobject]@{ Id = 'user-read-all-role'; Value = 'User.Read.All' }
+                )
+            }
+        }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+        } {
+            [pscustomobject]@{
+                Id = 'exchange-sp'
+                DisplayName = 'Office 365 Exchange Online'
+                AppRoles = @(
+                    [pscustomobject]@{ Id = 'ews-role'; Value = 'full_access_as_app' }
+                    [pscustomobject]@{ Id = 'exchange-manage-role'; Value = 'Exchange.ManageAsApp' }
+                )
             }
         }
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
@@ -41,7 +59,7 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
             $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
         } {
-            [pscustomobject]@{ AppRoleId = 'mail-read-role' }
+            [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'graph-sp' }
         }
     }
 
@@ -86,6 +104,23 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
         }
 
         Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+    }
+
+    It 'Passes when a RestrictAccess policy applies to all applications' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('*'); AccessRight = 'RestrictAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+        $script:Result | Should -Match 'All \*\*1\*\* applications'
+    }
+
+    It 'Does not count a DenyAccess policy that applies to all applications' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('*'); AccessRight = 'DenyAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
     }
 
     It 'Fails when no application access policies exist' {
@@ -142,18 +177,130 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
 
         { Test-MtSpExchangeAppAccessPolicy } | Should -Throw '*Graph unavailable*'
     }
+
+    It 'Resolves an app role against the API the assignment points to' {
+        # Microsoft Graph's Mail.Read role ID, but assigned on another API: it is not Mail.Read there.
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'other-api-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+        $script:Result | Should -BeExactly 'Well done. No applications with Exchange permissions were found.'
+    }
+
+    It 'Lists an assignment whose role the API does not define instead of dropping it' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'graph-sp' }
+            [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Investigate | Should -BeFalse -Because 'a definite failure stays a failure'
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read |'))
+        $script:Result | Should -Match '### App Role Assignments Not Evaluated'
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | Microsoft Graph | unknown-role |'))
+    }
+
+    It 'Asks for investigation instead of passing when the only finding is an assignment the API does not define' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
+        }
+
+        $returned = Test-MtSpExchangeAppAccessPolicy
+        $returned | Should -BeNullOrEmpty -Because 'an Investigate result that returns $true is exported to NUnit/JUnit as a pass'
+        $script:Investigate | Should -BeTrue
+        $script:Result | Should -Not -Match 'Well done'
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | Microsoft Graph | unknown-role |'))
+    }
+
+    It 'Does not list the default access role as not evaluated' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = '00000000-0000-0000-0000-000000000000'; ResourceId = 'graph-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+        $script:Result | Should -Not -Match 'Not Evaluated'
+    }
+
+    It 'Counts an app whose only mailbox permission is full_access_as_app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('Found **1** applications with Exchange permissions.'))
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | full_access_as_app |'))
+    }
+
+    It 'Passes for full_access_as_app when a RestrictAccess policy includes the app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy {
+            [pscustomobject]@{ AppId = @('mail-app'); AccessRight = 'RestrictAccess' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+    }
+
+    It 'Lists the Microsoft Graph and EWS permissions of one app together' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'graph-sp' }
+            [pscustomobject]@{ AppRoleId = 'ews-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read, full_access_as_app |'))
+    }
+
+    It 'Does not count an Exchange Online app role other than full_access_as_app' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'exchange-manage-role'; ResourceId = 'exchange-sp' }
+        }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeTrue
+    }
+
+    It 'Still evaluates Microsoft Graph permissions when the tenant has no Office 365 Exchange Online service principal' {
+        # Without that service principal, no app role assignment can point at it.
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000002-0000-0ff1-ce00-000000000000'"
+        } { @() }
+
+        Test-MtSpExchangeAppAccessPolicy | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | mail-app | Mail.Read |'))
+        $script:Result | Should -Not -Match 'Not Evaluated'
+    }
 }
 
 Describe 'MT.1058 native engine results' {
     BeforeEach {
         Mock -ModuleName Maester Get-MgContext { $null }
         Mock -ModuleName Maester Invoke-MtGraphRequest {
-            if ($RelativeUri -eq 'servicePrincipals' -and $Filter) {
-                [pscustomobject]@{ AppRoles = @([pscustomobject]@{ Id = 'mail-read-role'; Value = 'Mail.Read' }) }
+            if ($RelativeUri -eq 'servicePrincipals' -and $Filter -eq "appId eq '00000003-0000-0000-c000-000000000000'") {
+                [pscustomobject]@{ Id = 'graph-sp'; DisplayName = 'Microsoft Graph'; AppRoles = @([pscustomobject]@{ Id = 'mail-read-role'; Value = 'Mail.Read' }) }
+            } elseif ($RelativeUri -eq 'servicePrincipals' -and $Filter) {
+                @()
             } elseif ($RelativeUri -eq 'servicePrincipals') {
                 [pscustomobject]@{ Id = 'app-sp'; AppId = 'mail-app'; DisplayName = 'Contoso Mail App' }
             } elseif ($RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments') {
-                [pscustomobject]@{ AppRoleId = 'mail-read-role' }
+                [pscustomobject]@{ AppRoleId = 'mail-read-role'; ResourceId = 'graph-sp' }
             } else {
                 throw "Unexpected Graph request: $RelativeUri"
             }
@@ -179,5 +326,18 @@ Describe 'MT.1058 native engine results' {
         $rows | Should -HaveCount 1
         $rows[0].Result | Should -Be $Expected
         $rows[0].ResultDetail.TestResult | Should -Not -BeNullOrEmpty
+    }
+
+    It 'Records an assignment the API does not define as Investigate through Invoke-MtTest' {
+        Mock -ModuleName Maester Get-ApplicationAccessPolicy { @() }
+        Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+            $RelativeUri -eq 'servicePrincipals/app-sp/appRoleAssignments'
+        } {
+            [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
+        }
+
+        $rows = @(Invoke-MtTest -Id 'MT.1058' -Config $script:config)
+        $rows | Should -HaveCount 1
+        $rows[0].Result | Should -Be 'Investigate'
     }
 }
