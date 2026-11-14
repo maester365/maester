@@ -18525,6 +18525,11 @@
       "tests": 1
     },
     {
+      "name": "MinimumScorePercentage",
+      "type": "int",
+      "tests": 1
+    },
+    {
       "name": "ParkedDomains",
       "type": "string[]",
       "tests": 1
