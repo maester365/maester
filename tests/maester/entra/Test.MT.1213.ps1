@@ -29,7 +29,8 @@
         Control = ('nist-800-53-r5:SC-23', 'nist-800-53-r5:SC-8'),
         Service = 'Graph',
         Lifecycle = 'Preview',
-        Author = 'agnivesh'
+        Author = 'agnivesh',
+        Contributor = 'FiraSenax'
     )]
     [CmdletBinding()]
     [OutputType([bool])]

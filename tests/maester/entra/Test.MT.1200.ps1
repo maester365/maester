@@ -26,7 +26,8 @@
         Mitre = 'T1078.004',
         Service = 'Graph',
         Lifecycle = 'Preview',
-        Author = 'agnivesh'
+        Author = 'agnivesh',
+        Contributor = 'FiraSenax'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
