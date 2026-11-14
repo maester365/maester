@@ -15,7 +15,8 @@
         if ($null -eq $entry -or $null -eq $entry.PSObject.Properties['cACertificate']) {
             throw 'NTAuth certificate attributes were not collected.'
         }
-        if ($null -ne $entry.cACertificate -and @($entry.cACertificate).Count -gt 0) { $hasCertificate = $true }
+        if ($entry.cACertificate -is [byte[]] -or $entry.cACertificate -is [string] -or
+            ($null -ne $entry.cACertificate -and @($entry.cACertificate).Count -gt 0)) { $hasCertificate = $true }
     }
     if (-not $hasCertificate) { return }
 

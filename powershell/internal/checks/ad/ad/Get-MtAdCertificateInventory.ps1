@@ -21,6 +21,9 @@
             $values = [System.Collections.Generic.List[object]]::new()
             if ($raw -is [byte[]] -or $raw -is [string]) {
                 $values.Add($raw)
+            } elseif ($raw -is [array] -and $raw.Count -gt 0 -and @($raw | Where-Object { $_ -isnot [byte] }).Count -eq 0) {
+                # A single LDAP binary attribute can be projected as an object array of bytes.
+                $values.Add([byte[]]$raw)
             } elseif ($null -ne $raw) {
                 foreach ($value in $raw) { $values.Add($value) }
             }

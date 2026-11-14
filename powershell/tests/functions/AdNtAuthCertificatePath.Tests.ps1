@@ -163,6 +163,25 @@ Describe 'Offline NTAuth certificate paths' {
         $rows.Count | Should -Be 1
         $rows[0].Verified | Should -BeTrue
     }
+    It 'accepts single DER certificates flattened by LDAP property projection' {
+        $config = Get-PathTestConfiguration
+        $config.TrustedRootCAs[0].cACertificate = [object[]]$script:root.RawData
+        $config.IntermediateCAs[0].cACertificate = [object[]]$script:intermediate.RawData
+        $config.NtAuthCertificates[0].cACertificate = [object[]]$script:issuing.RawData
+        (Get-MtAdNtAuthCertificatePath $config).Verified | Should -BeTrue
+    }
+    It 'does not silently accept non-byte values mixed into a flattened certificate' {
+        $config = Get-PathTestConfiguration
+        $config.TrustedRootCAs[0].cACertificate = @([object[]]$script:root.RawData) + 'unexpected value'
+        { Get-MtAdNtAuthCertificatePath $config } | Should -Throw '*Unsupported certificate value*'
+    }
+    It 'does not mistake an empty DER or base64 certificate for an empty store' {
+        foreach ($value in @([byte[]]@(), '')) {
+            $config = Get-PathTestConfiguration
+            $config.NtAuthCertificates[0].cACertificate = $value
+            { Get-MtAdNtAuthCertificatePath $config } | Should -Throw '*Unable to parse public certificate*'
+        }
+    }
     It 'does not retrieve a missing issuer from an AIA URL' {
         $listener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
         $listener.Start()
