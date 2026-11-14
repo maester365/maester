@@ -59,34 +59,43 @@
         $ExcludedGroupObjectGUID = $policies.conditions.users.excludeGroups | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 -ExpandProperty Name
         $ExcludedGroups = $policies.conditions.users.excludeGroups | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 | Select-Object -ExpandProperty Count
 
-        # If the number of enabled policies is not the same as the number of excluded users or groups, there is no emergency access
-        if ($PolicyCount -eq $ExcludedUsers -or $PolicyCount -eq $ExcludedGroups) {
-            $result = $true
-        } else {
-            # If the number of excluded users is higher than the number of excluded groups, check the user object GUID
-            $CheckId = $ExcludedGroupObjectGUID
-            $EmergencyAccessUUIDType = 'group'
-            if ($ExcludedUsers -gt $ExcludedGroups) {
-                $EmergencyAccessUUIDType = 'user'
-                $CheckId = $ExcludedUserObjectGUID
-            }
+        # If the number of excluded users is higher than the number of excluded groups, check the user object GUID
+        $CheckId = $ExcludedGroupObjectGUID
+        $EmergencyAccessUUIDType = 'group'
+        if ($ExcludedUsers -gt $ExcludedGroups) {
+            $EmergencyAccessUUIDType = 'user'
+            $CheckId = $ExcludedUserObjectGUID
+        }
 
-            # Get displayName of the emergency access account or group
-            if ($CheckId) {
+        # Get displayName of the emergency access account or group
+        if ($CheckId) {
+            try {
                 if ($EmergencyAccessUUIDType -eq 'user') {
                     $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
                 } else {
                     $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
                 }
-
-                Write-Verbose "Emergency access account or group: $CheckId"
-                $testResult = "Automatically detected emergency access`n`n* $($EmergencyAccessUUIDType): $DisplayName ($CheckId)`n`n"
+            } catch {
+                Write-Verbose "Could not get the display name of emergency access $EmergencyAccessUUIDType $($CheckId): $_"
+                $DisplayName = $null
             }
 
-            $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
-            $policiesWithoutEmergency | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
-                Write-Verbose "Conditional Access policy $_ does not exclude emergency access $EmergencyAccessUUIDType"
-            }
+            Write-Verbose "Emergency access account or group: $CheckId"
+            $detected = if ($DisplayName) { "$DisplayName ($CheckId)" } else { $CheckId }
+            $testResult = "Automatically detected emergency access`n`n* $($EmergencyAccessUUIDType): $detected`n`n"
+        }
+
+        # If the number of enabled policies is not the same as the number of excluded users or groups, there is no emergency access
+        if ($PolicyCount -eq $ExcludedUsers -or $PolicyCount -eq $ExcludedGroups) {
+            $result = $true
+            $testResult += "All Conditional Access policies exclude this emergency access $EmergencyAccessUUIDType."
+            Add-MtTestResultDetail -Result $testResult
+            return $result
+        }
+
+        $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
+        $policiesWithoutEmergency | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
+            Write-Verbose "Conditional Access policy $_ does not exclude emergency access $EmergencyAccessUUIDType"
         }
 
         $testResult += "These Conditional Access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
