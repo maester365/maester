@@ -41,6 +41,8 @@
     foreach ($ca in @($caField.Value)) {
         $publication = & $readField $ca 'certificateTemplates'
         if (-not $publication.Present) { return $unavailable }
+        # LDAP projects a requested but absent multi-valued attribute as an observed null.
+        if ($null -eq $publication.Value) { continue }
         $caName = [string](ConvertFrom-MtLdapValue -Value (& $readField $ca 'Name').Value)
         if ([string]::IsNullOrWhiteSpace($caName)) { $caName = [string](ConvertFrom-MtLdapValue -Value (& $readField $ca 'DistinguishedName').Value) }
         foreach ($reference in @($publication.Value)) {

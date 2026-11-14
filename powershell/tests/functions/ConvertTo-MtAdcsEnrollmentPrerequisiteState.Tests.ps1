@@ -152,6 +152,22 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         $config.EnterpriseCAs[0].PSObject.Properties.Remove('certificateTemplates')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Disposition | Should -Be 'Inconclusive'
     }
+    It 'recognizes a collected <Label> CA publication list as completed empty evidence' -ForEach @(
+        @{ Label = 'null'; Publication = $null },
+        @{ Label = 'empty array'; Publication = @() }
+    ) {
+        $config = Get-AdcsTestConfiguration
+        $config.EnterpriseCAs[0].certificateTemplates = $Publication
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
+        $result.EvidenceAvailable | Should -BeTrue
+        $result.PublishedTemplateCount | Should -Be 0
+        $result.Disposition | Should -Be 'PrerequisitesNotSatisfied'
+    }
+    It 'does not treat a blank publication reference as a completed empty list' {
+        $config = Get-AdcsTestConfiguration
+        $config.EnterpriseCAs[0].certificateTemplates = @(' ')
+        (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).EvidenceAvailable | Should -BeFalse
+    }
     It 'keeps an unavailable inventory distinct from a completed empty inventory' {
         $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates = $null
@@ -212,6 +228,12 @@ Describe 'AD-CS-01 native engine outcomes' {
     It 'uses NotApplicable for a completed inventory without published templates' {
         $script:adcsConfiguration.EnterpriseCAs = @()
         $script:adcsConfiguration.CertificateTemplates = @()
+        $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
+        $row.Result.ToString() | Should -Be 'Skipped'
+        $row.ReasonCode | Should -Be 'NotApplicable'
+    }
+    It 'uses NotApplicable when an existing CA has an observed null publication list' {
+        $script:adcsConfiguration.EnterpriseCAs[0].certificateTemplates = $null
         $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
         $row.Result.ToString() | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'NotApplicable'
