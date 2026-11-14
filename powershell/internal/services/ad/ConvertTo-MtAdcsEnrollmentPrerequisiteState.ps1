@@ -59,6 +59,8 @@
     }
 
     $authenticationOids = @('1.3.6.1.5.5.7.3.2', '1.3.6.1.4.1.311.20.2.2', '1.3.6.1.5.2.3.4', '2.5.29.37.0')
+    # ASN.1 roots 0 and 1 limit the second arc to 0..39; LDAP numeric OIDs use canonical ASCII decimal arcs.
+    $oidPattern = '\A(?:[01]\.(?:[0-9]|[1-3][0-9])|2\.(?:0|[1-9][0-9]*))(?:\.(?:0|[1-9][0-9]*))*\z'
     $names = @(@($publishedBy.Keys) + @($templatesByName.Keys) | Sort-Object -Unique)
     $facts = @(foreach ($name in $names) {
         $published = $publishedBy.ContainsKey($name)
@@ -69,7 +71,7 @@
 
         $ekuField = & $readField $template 'pKIExtendedKeyUsage'
         $eku = @(foreach ($value in @($ekuField.Value)) { if ($null -ne $value) { [string](ConvertFrom-MtLdapValue -Value $value) } })
-        $malformedEku = @($eku | Where-Object { $_ -notmatch '^[0-2]\.\d+(?:\.\d+)*$' }).Count -gt 0
+        $malformedEku = @($eku | Where-Object { $_ -notmatch $oidPattern }).Count -gt 0
         $authenticationCapable = if (-not $ekuField.Present -or $malformedEku) { $null } else {
             $eku.Count -eq 0 -or @($eku | Where-Object { $_ -in $authenticationOids }).Count -gt 0
         }

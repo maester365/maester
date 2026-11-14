@@ -85,6 +85,33 @@ Describe 'Published AD CS enrollment prerequisite evidence' {
         $config.CertificateTemplates[0].PSObject.Properties.Remove('pKIExtendedKeyUsage')
         (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
     }
+    It 'keeps malformed EKU OID <_> inconclusive' -ForEach @('0.40.1', '1.40.1', '3.1.1', '1.03.6.1', '2.01.1', '1.3.06.1', "1.3.6`n", '1.3.٦') {
+        $config = Get-AdcsTestConfiguration
+        $config.CertificateTemplates[0].pKIExtendedKeyUsage = @($_)
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
+        $result.Templates[0].AuthenticationCapable | Should -BeNullOrEmpty
+        $result.Templates[0].Disposition | Should -Be 'Inconclusive'
+        $result.Templates[0].MissingEvidence | Should -Contain 'Authentication EKU evidence is unavailable or malformed.'
+    }
+    It 'accepts valid non-authentication EKU OID <_>' -ForEach @('0.39.1', '1.39.1', '2.40.1', '2.999.1') {
+        $config = Get-AdcsTestConfiguration
+        $config.CertificateTemplates[0].pKIExtendedKeyUsage = @($_)
+        $result = ConvertTo-MtAdcsEnrollmentPrerequisiteState $config
+        $result.Templates[0].AuthenticationCapable | Should -BeFalse
+        $result.Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
+        $result.Templates[0].MissingEvidence | Should -BeNullOrEmpty
+    }
+    It 'keeps a malformed EKU unknown alongside a recognized authentication EKU' {
+        $config = Get-AdcsTestConfiguration
+        $config.CertificateTemplates[0].pKIExtendedKeyUsage += '1.40.1'
+        (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'Inconclusive'
+    }
+    It 'retains an independently known issuance gate despite a malformed EKU' {
+        $config = Get-AdcsTestConfiguration
+        $config.CertificateTemplates[0].pKIExtendedKeyUsage = @('1.40.1')
+        $config.CertificateTemplates[0].'msPKI-RA-Signature' = 1
+        (ConvertTo-MtAdcsEnrollmentPrerequisiteState $config).Templates[0].Disposition | Should -Be 'PrerequisitesNotSatisfied'
+    }
     It 'preserves a CA publication reference that has no matching template' {
         $config = Get-AdcsTestConfiguration
         $config.CertificateTemplates = @()
@@ -169,6 +196,13 @@ Describe 'AD-CS-01 native engine outcomes' {
         $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
         $row.Result.ToString() | Should -Be 'Investigate'
         $row.ResultDetail.TestResult | Should -BeLike '*Unknown*Inconclusive*'
+    }
+    It 'reports a malformed EKU as investigation through the native engine' {
+        $script:adcsConfiguration.CertificateTemplates[0].pKIExtendedKeyUsage = @('1.40.1')
+        $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
+        $row.Result.ToString() | Should -Be 'Investigate'
+        $row.ResultDetail.TestResult | Should -BeLike '*Unknown*Inconclusive*'
+        $row.ResultDetail.TestResult | Should -BeLike '*Authentication EKU evidence is unavailable or malformed*'
     }
     It 'does not pass an unavailable configuration inventory' {
         $script:adcsConfiguration = $null
