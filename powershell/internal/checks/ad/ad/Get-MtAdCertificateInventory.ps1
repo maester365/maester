@@ -2,7 +2,9 @@
     [CmdletBinding()]
     [OutputType([object[]])]
     param(
-        [Parameter(Mandatory)] $Configuration
+        [Parameter(Mandatory)] $Configuration,
+
+        [switch] $IncludeRawData
     )
 
     $rows = @()
@@ -29,7 +31,7 @@
                 } else { throw "Unsupported certificate value for $($role.Name) $($entry.Name)." }
                 try {
                     $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new([byte[]]$bytes)
-                    $rows += [pscustomobject]@{
+                    $row = [pscustomobject]@{
                         Role = $role.Name
                         Name = [string]$entry.Name
                         Subject = $cert.Subject
@@ -39,6 +41,8 @@
                         Thumbprint = $cert.Thumbprint
                         Status = if ($cert.NotAfter -lt (Get-Date)) { 'Expired (review)' } elseif ($cert.NotBefore -gt (Get-Date)) { 'Not yet valid (review)' } else { 'Within validity dates' }
                     }
+                    if ($IncludeRawData) { $row | Add-Member -NotePropertyName RawData -NotePropertyValue $cert.RawData }
+                    $rows += $row
                 } catch {
                     throw "Unable to parse public certificate for $($role.Name) $($entry.Name)."
                 } finally {
