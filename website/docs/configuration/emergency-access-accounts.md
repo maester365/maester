@@ -1,7 +1,7 @@
 ---
 title: Emergency Access Accounts
 sidebar:
-  order: 2
+  order: 3
 ---
 
 # Configuring Emergency Access Accounts
