@@ -212,7 +212,8 @@ Describe 'Test-MtSpExchangeAppAccessPolicy' {
             [pscustomobject]@{ AppRoleId = 'unknown-role'; ResourceId = 'graph-sp' }
         }
 
-        $null = Test-MtSpExchangeAppAccessPolicy
+        $returned = Test-MtSpExchangeAppAccessPolicy
+        $returned | Should -BeNullOrEmpty -Because 'an Investigate result that returns $true is exported to NUnit/JUnit as a pass'
         $script:Investigate | Should -BeTrue
         $script:Result | Should -Not -Match 'Well done'
         $script:Result | Should -Match ([regex]::Escape('| Contoso Mail App | Microsoft Graph | unknown-role |'))

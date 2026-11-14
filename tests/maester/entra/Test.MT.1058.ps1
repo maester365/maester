@@ -10,7 +10,7 @@
     Test-MtSpExchangeAppAccessPolicy
 
     Returns true if all service principals with Exchange permissions have access policies configured.
-    It also returns true when the only finding is an app role assignment that it could not evaluate: that result is marked Investigate in the test result details, not in the return value.
+    Returns $null when the only finding is an app role assignment that it could not evaluate: the result is marked Investigate, and NUnit/JUnit exports ignore it instead of reporting a pass.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy
@@ -182,8 +182,9 @@
 
     if ($needsReview) {
         Add-MtTestResultDetail -Result $testResultMarkdown -Investigate
-    } else {
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        # NUnit/JUnit exports an Investigate result from the return value: $true would be exported as a pass.
+        return $null
     }
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $result
 }
