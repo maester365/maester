@@ -129,7 +129,7 @@ function Test-MtIntuneSecurityBaselineStatus {
 
     if ($baseline.Kind -eq 'SettingsCatalog') {
         $assignmentCount = [int]$baseline.AssignmentCount
-        $markdown = "Security baseline **$($baseline.Name)** is a settings catalog baseline, assigned to $assignmentCount group(s) or filter(s).`n`n"
+        $markdown = "Security baseline **$(Get-MtSafeMarkdown $baseline.Name)** is a settings catalog baseline, assigned to $assignmentCount group(s) or filter(s).`n`n"
         $markdown += "Intune publishes no per-device compliance summary for a settings catalog baseline through a documented API, "
         $markdown += "so this test reports the baseline rather than giving it a verdict. "
         $markdown += "Check its device status in the Intune admin center under **Devices** > **Configuration**, or export "
@@ -156,7 +156,7 @@ function Test-MtIntuneSecurityBaselineStatus {
     $deviatingCount = $notSecureCount + $conflictCount + $errorCount
     $testResult = $deviatingCount -eq 0
 
-    $testResultMarkdown = "Security baseline **$($baseline.Name)** is reporting against $($baseline.TotalDeviceCount) device(s).`n`n"
+    $testResultMarkdown = "Security baseline **$(Get-MtSafeMarkdown $baseline.Name)** is reporting against $($baseline.TotalDeviceCount) device(s).`n`n"
     $testResultMarkdown += "| Device state | Devices |`n"
     $testResultMarkdown += "| --- | --- |`n"
     $testResultMarkdown += "| Secure | $secureCount |`n"

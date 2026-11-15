@@ -241,6 +241,19 @@
             $script:TestResult | Should -Not -Match 'Well done'
         }
 
+        It 'escapes a baseline name that carries markdown' {
+            # A baseline name is written by a tenant admin and lands in the report. Without escaping,
+            # a name like the one below renders as a clickable link in the result.
+            $hostil = '[Sign in again](https://phish.example)'
+            $settingsCatalog = [pscustomobject]@{ Data = (Get-TestSettingsCatalogBaseline -Name $hostil) }
+            $null -eq (Test-MtIntuneSecurityBaselineStatus -Instance $settingsCatalog) | Should -BeTrue
+            $script:TestResult | Should -Match '\\\[Sign in again'
+
+            $legacy = [pscustomobject]@{ Data = (Get-TestBaseline -Name $hostil -Secure 3) }
+            Test-MtIntuneSecurityBaselineStatus -Instance $legacy | Should -BeTrue
+            $script:TestResult | Should -Match '\\\[Sign in again'
+        }
+
         It 'skips as NotApplicable when no device has an evaluated verdict' {
             # Assigned, but every device is still unknown or not applicable: nothing to judge.
             $instance = [pscustomobject]@{ Data = (Get-TestBaseline -Unknown 10 -NotApplicable 3) }
