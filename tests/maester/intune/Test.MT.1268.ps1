@@ -4,10 +4,15 @@
     Returns one MT.1268 instance per assigned Intune security baseline.
 
     .DESCRIPTION
-    Instance source of the MT.1268 family. The suffix is the security baseline's template ID
-    (MT.1268.<templateId>) and the title names the baseline. Only baselines that are actually deployed to
-    devices are emitted: a baseline template with no reporting device is not an assigned baseline and must
-    not surface as a passing result.
+    Instance source of the MT.1268 family. The suffix is the security baseline's ID and the title names
+    the baseline. Only baselines that are actually deployed are emitted: a baseline nothing has been
+    given is not an assigned baseline and must not surface as a passing result.
+
+    Both kinds of baseline are emitted. A legacy template counts as deployed when at least one device
+    reports against it. A settings catalog baseline counts as deployed when it has at least one
+    assignment, since Intune exposes no device count for it; the check then reports it rather than
+    judging it. Leaving that kind out is what made a tenant whose baselines are all current ones report
+    that there was nothing here to check.
 
     When the baselines cannot be read at all (typically a 403 from Intune RBAC) the whole family is
     skipped rather than reported, because Add-MtTestResultDetail -SkippedBecause in an instance source
@@ -40,9 +45,16 @@
     }
 
     foreach ($baseline in $baselines) {
-        # Only baselines reporting against at least one device. An undeployed template has no outcome to
-        # judge, so leaving it out keeps it from surfacing as a (false) passing baseline.
-        if ($baseline.TotalDeviceCount -le 0) { continue }
+        if ($baseline.Kind -eq 'SettingsCatalog') {
+            # No device count exists for this kind, so deployment is read from the assignments. An
+            # unassigned baseline is left out for the same reason an undeployed template is.
+            if ([int]$baseline.AssignmentCount -le 0) { continue }
+        } else {
+            # Only baselines reporting against at least one device. An undeployed template has no outcome
+            # to judge, so leaving it out keeps it from surfacing as a (false) passing baseline.
+            if ($baseline.TotalDeviceCount -le 0) { continue }
+        }
+
         [pscustomobject]@{
             Id    = $baseline.Id
             Title = "Security baseline '$($baseline.Name)' should report every device as secure."
@@ -61,10 +73,20 @@ function Test-MtIntuneSecurityBaselineStatus {
     Intune reports for each assigned security baseline: whether the devices the baseline is deployed to
     actually match it.
 
-    It runs once per assigned security baseline (deviceManagement/templates of type securityBaseline that
-    report against at least one device). For each, Intune summarises its devices as secure, not secure,
-    in conflict, in error, unknown or not applicable. The baseline passes when every device Intune has
-    evaluated against it is secure, and fails when any device is not secure, in conflict, or in error.
+    It runs once per assigned security baseline, of either kind.
+
+    For a legacy baseline (deviceManagement/templates of type securityBaseline that reports against at
+    least one device) Intune summarises its devices as secure, not secure, in conflict, in error, unknown
+    or not applicable. The baseline passes when every device Intune has evaluated against it is secure,
+    and fails when any device is not secure, in conflict, or in error.
+
+    For a settings catalog baseline there is no such summary to read, so the baseline is reported and
+    skipped as not applicable rather than judged. Graph publishes no per-device state for
+    configurationPolicies - the resource has no deviceStatuses navigation, and the one route that carries
+    it, the DeviceStatusesByConfigurationProfile export, documents its column names but not the meaning of
+    their values. Deciding a tenant's security posture on an undocumented encoding is worse than saying
+    plainly that the number is not available, and a silent pass would be worse than both: on a tenant
+    whose only baseline sat in error, this family reported that there was nothing to check.
 
     A baseline that is assigned but has no evaluated device yet (every device still unknown or not
     applicable) is skipped as not applicable: a baseline nothing has reported a secure-or-not verdict on
@@ -93,7 +115,8 @@ function Test-MtIntuneSecurityBaselineStatus {
         License = 'INTUNE_A',
         Lifecycle = 'Preview',
         InstanceSource = 'Get-MtIntuneSecurityBaselineInstance',
-        Author = 'earbona23'
+        Author = 'earbona23',
+        Contributor = ('julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -103,6 +126,18 @@ function Test-MtIntuneSecurityBaselineStatus {
     )
 
     $baseline = $Instance.Data
+
+    if ($baseline.Kind -eq 'SettingsCatalog') {
+        $assignmentCount = [int]$baseline.AssignmentCount
+        $markdown = "Security baseline **$($baseline.Name)** is a settings catalog baseline, assigned to $assignmentCount group(s) or filter(s).`n`n"
+        $markdown += "Intune publishes no per-device compliance summary for a settings catalog baseline through a documented API, "
+        $markdown += "so this test reports the baseline rather than giving it a verdict. "
+        $markdown += "Check its device status in the Intune admin center under **Devices** > **Configuration**, or export "
+        $markdown += "[DeviceStatusesByConfigurationProfile](https://learn.microsoft.com/intune/device-management/reports/ref-graph-available-reports#devicestatusesbyconfigurationprofile)."
+        Add-MtTestResultDetail -Result $markdown -SkippedBecause NotApplicable
+        return $null
+    }
+
     $secureCount = [int]$baseline.SecureCount
     $notSecureCount = [int]$baseline.NotSecureCount
     $conflictCount = [int]$baseline.ConflictCount

@@ -4,10 +4,21 @@
     Retrieves Intune security baselines with the device-state summary Intune reports for each.
 
     .DESCRIPTION
-    Lists the security baseline templates in the tenant (beta deviceManagement/templates, templateType
-    'securityBaseline') and, for each, reads its device-state summary. It returns a normalized object per
-    baseline carrying the display name and the per-state device counts (secure, not secure, conflict,
-    error, unknown and not applicable), plus the total number of devices reporting against it.
+    Lists the security baselines in the tenant, of both kinds, and returns a normalized object per
+    baseline carrying a Kind and the display name.
+
+    Kind 'Template' is a legacy baseline (beta deviceManagement/templates, templateType
+    'securityBaseline'). For each, this reads its device-state summary and carries the per-state device
+    counts (secure, not secure, conflict, error, unknown and not applicable), plus the total number of
+    devices reporting against it.
+
+    Kind 'SettingsCatalog' is a current baseline (beta deviceManagement/configurationPolicies whose
+    templateReference/templateFamily is 'baseline'). These carry an AssignmentCount and no device counts,
+    because Intune publishes no per-device compliance summary for them through a documented API:
+    configurationPolicies has no deviceStatuses navigation, and the only route is the
+    DeviceStatusesByConfigurationProfile export, whose column *values* are undocumented. The caller
+    reports those baselines rather than judging them. Without this family a tenant whose baselines are
+    all current ones reports that there is nothing to check, which is the opposite of the truth.
 
     The total is included because a baseline template that no device reports against is not deployed to
     anything, so it cannot have a compliance outcome. The caller uses the total to leave undeployed
@@ -60,6 +71,7 @@
         $notApplicableCount = [int]$summary.notApplicableCount
 
         $result.Add([pscustomobject]@{
+                Kind               = 'Template'
                 Id                 = $template.id
                 Name               = $template.displayName
                 SecureCount        = $secureCount
@@ -69,6 +81,29 @@
                 UnknownCount       = $unknownCount
                 NotApplicableCount = $notApplicableCount
                 TotalDeviceCount   = $secureCount + $notSecureCount + $conflictCount + $errorCount + $unknownCount + $notApplicableCount
+            })
+    }
+
+    # The current baselines live in the settings catalog, under a templateReference whose templateFamily
+    # is 'baseline' (a documented member of deviceManagementConfigurationTemplateFamily). Assignments are
+    # expanded in the same request so that an unassigned baseline can be told from a deployed one without
+    # a call per policy.
+    $policies = @(Invoke-MtGraphRequest -ApiVersion beta -ErrorAction Stop `
+            -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'baseline'&`$expand=assignments")
+
+    $usablePolicies = @($policies | Where-Object { $_ -and $_.id })
+    if ($policies.Count -gt 0 -and $usablePolicies.Count -eq 0) {
+        Write-Verbose "Settings catalog baselines could not be read; returning null so the caller reports a skip."
+        return $null
+    }
+
+    foreach ($policy in $usablePolicies) {
+        $result.Add([pscustomobject]@{
+                Kind            = 'SettingsCatalog'
+                Id              = $policy.id
+                # configurationPolicies carries 'name', not 'displayName'.
+                Name            = $policy.name
+                AssignmentCount = @($policy.assignments | Where-Object { $_ }).Count
             })
     }
 

@@ -36,6 +36,7 @@
                 [int] $NotApplicable = 0
             )
             return [pscustomobject]@{
+                Kind               = 'Template'
                 Id                 = [guid]::NewGuid().ToString()
                 Name               = $Name
                 SecureCount        = $Secure
@@ -45,6 +46,20 @@
                 UnknownCount       = $Unknown
                 NotApplicableCount = $NotApplicable
                 TotalDeviceCount   = $Secure + $NotSecure + $Conflict + $ErrorDevices + $Unknown + $NotApplicable
+            }
+        }
+
+        function Get-TestSettingsCatalogBaseline {
+            # The current kind of baseline: no device counts exist for it, only assignments.
+            param(
+                [string] $Name = 'Security Baseline for Windows 10 and later',
+                [int] $Assignments = 1
+            )
+            return [pscustomobject]@{
+                Kind            = 'SettingsCatalog'
+                Id              = [guid]::NewGuid().ToString()
+                Name            = $Name
+                AssignmentCount = $Assignments
             }
         }
     }
@@ -211,6 +226,21 @@
             Test-MtIntuneSecurityBaselineStatus -Instance $instance | Should -BeFalse
         }
 
+        It 'reports a settings catalog baseline and skips it instead of judging it' {
+            # Intune publishes no per-device compliance summary for this kind through a documented API.
+            # The baseline must still appear by name, with its assignment count: the failure this
+            # replaces was the family reporting that there was nothing in the tenant to check while a
+            # settings catalog baseline sat in error on its device.
+            $instance = [pscustomobject]@{ Data = (Get-TestSettingsCatalogBaseline -Name 'Windows 26H2' -Assignments 2) }
+
+            $null -eq (Test-MtIntuneSecurityBaselineStatus -Instance $instance) | Should -BeTrue
+            $script:SkippedBecause | Should -Be 'NotApplicable'
+            $script:TestResult | Should -Match 'Windows 26H2'
+            $script:TestResult | Should -Match 'assigned to 2 group'
+            # It must not claim a verdict it cannot have.
+            $script:TestResult | Should -Not -Match 'Well done'
+        }
+
         It 'skips as NotApplicable when no device has an evaluated verdict' {
             # Assigned, but every device is still unknown or not applicable: nothing to judge.
             $instance = [pscustomobject]@{ Data = (Get-TestBaseline -Unknown 10 -NotApplicable 3) }
@@ -234,6 +264,23 @@
             $instances.Count | Should -Be 2
             $instances.Title | Should -Not -Contain "Security baseline 'Never assigned' should report every device as secure."
             $script:SkippedBecause | Should -BeNullOrEmpty
+        }
+
+        It 'emits assigned settings catalog baselines and leaves unassigned ones out' {
+            # No device count exists for this kind, so deployment is read from the assignments.
+            Mock -ModuleName Maester Get-MtSecurityBaseline {
+                return @(
+                    (Get-TestSettingsCatalogBaseline -Name 'Assigned baseline' -Assignments 1),
+                    (Get-TestSettingsCatalogBaseline -Name 'Unassigned baseline' -Assignments 0),
+                    (Get-TestBaseline -Name 'Legacy deployed' -Secure 3)
+                )
+            }
+
+            $instances = @(Get-MtIntuneSecurityBaselineInstance)
+            $instances.Count | Should -Be 2
+            $instances.Title | Should -Contain "Security baseline 'Assigned baseline' should report every device as secure."
+            $instances.Title | Should -Not -Contain "Security baseline 'Unassigned baseline' should report every device as secure."
+            $instances.Title | Should -Contain "Security baseline 'Legacy deployed' should report every device as secure."
         }
 
         It 'skips the family as NotAuthorized when the baselines cannot be read' {
@@ -282,6 +329,9 @@
             } -MockWith {
                 return [pscustomobject]@{ id = 's1'; secureCount = 8; notSecureCount = 2; conflictCount = 1; errorCount = 0; unknownCount = 3; notApplicableCount = 1 }
             }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like 'deviceManagement/configurationPolicies*'
+            } -MockWith { return @() }
 
             InModuleScope Maester {
                 $result = Get-MtSecurityBaseline
@@ -290,6 +340,46 @@
                 $result[0].SecureCount | Should -Be 8
                 $result[0].NotSecureCount | Should -Be 2
                 $result[0].TotalDeviceCount | Should -Be 15
+            }
+        }
+
+        It 'returns the settings catalog baselines with their assignment count' {
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -eq 'deviceManagement/templates'
+            } -MockWith { return @() }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like 'deviceManagement/configurationPolicies*'
+            } -MockWith {
+                # configurationPolicies carries 'name', not 'displayName'.
+                return @(
+                    [pscustomobject]@{ id = 'pol-1'; name = 'Windows 26H2'; assignments = @([pscustomobject]@{ id = 'a1' }, [pscustomobject]@{ id = 'a2' }) },
+                    [pscustomobject]@{ id = 'pol-2'; name = 'Microsoft Edge'; assignments = @() }
+                )
+            }
+
+            InModuleScope Maester {
+                $result = Get-MtSecurityBaseline
+                $result.Count | Should -Be 2
+                $result[0].Kind | Should -Be 'SettingsCatalog'
+                $result[0].Name | Should -Be 'Windows 26H2'
+                $result[0].AssignmentCount | Should -Be 2
+                $result[1].AssignmentCount | Should -Be 0
+            }
+        }
+
+        It 'returns null when the settings catalog request yields elements without an id' {
+            # Same reasoning as the templates read: a failed call collects as a single empty element,
+            # and treating that as "this tenant has no current baselines" would hide a permission
+            # problem behind a clean result.
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -eq 'deviceManagement/templates'
+            } -MockWith { return @() }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like 'deviceManagement/configurationPolicies*'
+            } -MockWith { return @($null) }
+
+            InModuleScope Maester {
+                $null -eq (Get-MtSecurityBaseline) | Should -BeTrue
             }
         }
 
@@ -304,6 +394,9 @@
         It 'returns an empty list when the tenant has no security baselines' {
             Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
                 $RelativeUri -eq 'deviceManagement/templates'
+            } -MockWith { return @() }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like 'deviceManagement/configurationPolicies*'
             } -MockWith { return @() }
 
             InModuleScope Maester {
@@ -325,6 +418,9 @@
                 # Only a secure count is present; everything else is absent.
                 return [pscustomobject]@{ id = 's1'; secureCount = 4 }
             }
+            Mock -ModuleName Maester Invoke-MtGraphRequest -ParameterFilter {
+                $RelativeUri -like 'deviceManagement/configurationPolicies*'
+            } -MockWith { return @() }
 
             InModuleScope Maester {
                 $result = Get-MtSecurityBaseline
