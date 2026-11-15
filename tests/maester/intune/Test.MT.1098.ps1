@@ -93,7 +93,7 @@
                 'enabled' { break }
                 'notSetUp' {
                     if ($awaitingWindowsMamEnrolment) {
-                        'Windows MAM is on and this connector stays in notSetUp until the first Windows MAM user enrols; device threat messages are blocked until then. Enrol a MAM user, or remove the connector if Windows MAM is not in use.'
+                        'Connect Windows devices for MAM is on for this connector, so it stays in notSetUp until the first Windows MAM user enrols; device threat messages are blocked until then. Enrol a MAM user, or remove the connector if Windows MAM is not in use.'
                     } else {
                         'Setup is incomplete; device threat messages are blocked. Complete setup in Intune and with the partner, or remove an unused connector.'
                     }
