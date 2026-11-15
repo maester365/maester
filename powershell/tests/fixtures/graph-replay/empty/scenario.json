@@ -1,0 +1,15 @@
+{
+  "name": "empty",
+  "description": "A new tenant: no licences, no directory synchronization, no administrators assigned. Shows how tests handle missing data.",
+  "sanitized": false,
+  "context": {
+    "tenantId": "fa4efa4e-0000-4000-8000-000000000000",
+    "account": "admin@northwind.onmicrosoft.com",
+    "authType": "Delegated",
+    "environment": "Global"
+  },
+  "expectations": {
+    "CIS.M365.1.1.3": "Failed",
+    "MT.1073": "Skipped"
+  }
+}

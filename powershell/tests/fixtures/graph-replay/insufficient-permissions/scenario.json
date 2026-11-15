@@ -1,0 +1,14 @@
+{
+  "name": "insufficient-permissions",
+  "description": "A tenant where the account Maester runs as may not read some settings. Shows how a test handles a 403 from Graph.",
+  "sanitized": false,
+  "context": {
+    "tenantId": "fa4efa4e-0000-4000-8000-000000000000",
+    "account": "reader@tailspin.onmicrosoft.com",
+    "authType": "Delegated",
+    "environment": "Global"
+  },
+  "expectations": {
+    "MT.1073": "Skipped"
+  }
+}

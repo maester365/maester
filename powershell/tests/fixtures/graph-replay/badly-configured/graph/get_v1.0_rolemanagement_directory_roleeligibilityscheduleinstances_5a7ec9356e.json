@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/rolemanagement/directory/roleeligibilityscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10'&expand=principal",
+    "key": "GET v1.0/rolemanagement/directory/roleeligibilityscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10'&expand=principal"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": []
+    }
+  }
+}

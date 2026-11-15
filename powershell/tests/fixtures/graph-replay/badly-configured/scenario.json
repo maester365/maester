@@ -1,0 +1,15 @@
+{
+  "name": "badly-configured",
+  "description": "A tenant with the settings Maester flags. Each test with mock data fails here.",
+  "sanitized": false,
+  "context": {
+    "tenantId": "fa4efa4e-0000-4000-8000-000000000000",
+    "account": "admin@fabrikam.onmicrosoft.com",
+    "authType": "Delegated",
+    "environment": "Global"
+  },
+  "expectations": {
+    "CIS.M365.1.1.3": "Failed",
+    "MT.1073": "Failed"
+  }
+}

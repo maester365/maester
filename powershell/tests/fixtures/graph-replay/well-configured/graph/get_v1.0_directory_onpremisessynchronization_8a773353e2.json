@@ -1,0 +1,23 @@
+{
+  "note": "MT.1073 passes: soft match and hard match are both blocked.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/directory/onpremisessynchronization",
+    "key": "GET v1.0/directory/onpremisessynchronization"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "features": {
+            "blockCloudObjectTakeoverThroughHardMatchEnabled": true,
+            "blockSoftMatchEnabled": true,
+            "passwordSyncEnabled": true
+          },
+          "id": "fa4efa4e-0000-4000-8000-000000000000"
+        }
+      ]
+    }
+  }
+}

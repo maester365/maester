@@ -1,0 +1,17 @@
+{
+  "name": "well-configured",
+  "description": "A tenant configured as Maester recommends. Each test with mock data passes here, or is skipped when replay cannot run it.",
+  "sanitized": false,
+  "context": {
+    "tenantId": "fa4efa4e-0000-4000-8000-000000000000",
+    "account": "admin@contoso.onmicrosoft.com",
+    "authType": "Delegated",
+    "environment": "Global"
+  },
+  "expectations": {
+    "CIS.M365.1.1.3": "Passed",
+    "MT.1041": "Skipped",
+    "MT.1073": "Passed",
+    "MT.1076": "Skipped"
+  }
+}

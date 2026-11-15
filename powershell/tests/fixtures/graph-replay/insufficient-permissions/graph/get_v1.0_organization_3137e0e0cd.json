@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/organization",
+    "key": "GET v1.0/organization"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "displayName": "Tailspin (insufficient permissions)",
+          "id": "fa4efa4e-0000-4000-8000-000000000000",
+          "onPremisesSyncEnabled": true,
+          "tenantType": "AAD",
+          "verifiedDomains": [
+            {
+              "isDefault": true,
+              "isInitial": true,
+              "name": "tailspin.onmicrosoft.com",
+              "type": "Managed"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

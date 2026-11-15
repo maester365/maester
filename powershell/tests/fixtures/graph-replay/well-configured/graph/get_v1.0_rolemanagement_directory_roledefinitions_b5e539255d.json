@@ -1,0 +1,23 @@
+{
+  "note": "Page 1 of the role definitions. The nextLink points to the next fixture.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/rolemanagement/directory/roledefinitions",
+    "key": "GET v1.0/rolemanagement/directory/roledefinitions"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "@odata.nextLink": "https://graph.microsoft.com/v1.0/roleManagement/directory/roleDefinitions?$skiptoken=maester-page-2",
+      "value": [
+        {
+          "displayName": "Global Reader",
+          "id": "f2ef992c-3afb-46b9-b7cf-a126ee74c451",
+          "isBuiltIn": true,
+          "isEnabled": true,
+          "templateId": "f2ef992c-3afb-46b9-b7cf-a126ee74c451"
+        }
+      ]
+    }
+  }
+}

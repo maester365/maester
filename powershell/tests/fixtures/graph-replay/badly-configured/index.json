@@ -1,0 +1,40 @@
+{
+  "scenario": "badly-configured",
+  "fixtures": [
+    {
+      "key": "GET v1.0/directory/onpremisessynchronization",
+      "file": "graph/get_v1.0_directory_onpremisessynchronization_8a773353e2.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/organization",
+      "file": "graph/get_v1.0_organization_3137e0e0cd.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/rolemanagement/directory/roleassignmentscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10' and assignmentType eq 'Assigned'&expand=principal",
+      "file": "graph/get_v1.0_rolemanagement_directory_roleassignmentscheduleinstances_39951d4c44.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/rolemanagement/directory/roledefinitions",
+      "file": "graph/get_v1.0_rolemanagement_directory_roledefinitions_b5e539255d.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/rolemanagement/directory/roledefinitions?$skiptoken=maester-page-2",
+      "file": "graph/get_v1.0_rolemanagement_directory_roledefinitions_a8356c3441.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/rolemanagement/directory/roleeligibilityscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10'&expand=principal",
+      "file": "graph/get_v1.0_rolemanagement_directory_roleeligibilityscheduleinstances_5a7ec9356e.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/subscribedskus",
+      "file": "graph/get_v1.0_subscribedskus_bbafe73091.json",
+      "status": 200
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "note": "Read by every run for the licence gates.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/subscribedskus",
+    "key": "GET v1.0/subscribedskus"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": []
+    }
+  }
+}

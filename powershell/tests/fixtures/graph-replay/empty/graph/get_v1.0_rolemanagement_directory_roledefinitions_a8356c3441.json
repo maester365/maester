@@ -1,0 +1,22 @@
+{
+  "note": "Page 2 of the role definitions.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/rolemanagement/directory/roledefinitions?$skiptoken=maester-page-2",
+    "key": "GET v1.0/rolemanagement/directory/roledefinitions?$skiptoken=maester-page-2"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "displayName": "Global Administrator",
+          "id": "62e90394-69f5-4237-9190-012177145e10",
+          "isBuiltIn": true,
+          "isEnabled": true,
+          "templateId": "62e90394-69f5-4237-9190-012177145e10"
+        }
+      ]
+    }
+  }
+}

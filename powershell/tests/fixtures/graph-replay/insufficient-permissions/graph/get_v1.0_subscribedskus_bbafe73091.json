@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/subscribedskus",
+    "key": "GET v1.0/subscribedskus"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "capabilityStatus": "Enabled",
+          "consumedUnits": 10,
+          "prepaidUnits": {
+            "enabled": 25
+          },
+          "servicePlans": [
+            {
+              "appliesTo": "User",
+              "provisioningStatus": "Success",
+              "servicePlanId": "41781fb2-bc02-4b7c-bd55-b576c07bb09d",
+              "servicePlanName": "AAD_PREMIUM"
+            },
+            {
+              "appliesTo": "User",
+              "provisioningStatus": "Success",
+              "servicePlanId": "eec0eb4f-6444-4f95-aba0-50c24d67f998",
+              "servicePlanName": "AAD_PREMIUM_P2"
+            }
+          ],
+          "skuId": "fa4efa4e-0000-4000-8000-0000000005e5",
+          "skuPartNumber": "SPE_E5"
+        }
+      ]
+    }
+  }
+}

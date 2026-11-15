@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/rolemanagement/directory/roleeligibilityscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10'&expand=principal",
+    "key": "GET v1.0/rolemanagement/directory/roleeligibilityscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10'&expand=principal"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "assignmentType": "Assigned",
+          "directoryScopeId": "/",
+          "id": "assignment-3",
+          "memberType": "Direct",
+          "principal": {
+            "@odata.type": "#microsoft.graph.user",
+            "accountEnabled": true,
+            "displayName": "admin-3",
+            "id": "fa4efa4e-0000-4000-8000-000000000103",
+            "userPrincipalName": "admin3@contoso.onmicrosoft.com"
+          },
+          "principalId": "fa4efa4e-0000-4000-8000-000000000103",
+          "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10"
+        }
+      ]
+    }
+  }
+}

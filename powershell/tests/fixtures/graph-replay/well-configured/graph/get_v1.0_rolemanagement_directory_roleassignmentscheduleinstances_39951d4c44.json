@@ -1,0 +1,45 @@
+{
+  "note": "CIS.M365.1.1.3 passes: two active Global Administrators (with the eligible one, three).",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/rolemanagement/directory/roleassignmentscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10' and assignmentType eq 'Assigned'&expand=principal",
+    "key": "GET v1.0/rolemanagement/directory/roleassignmentscheduleinstances?$filter=roleDefinitionId eq '62e90394-69f5-4237-9190-012177145e10' and assignmentType eq 'Assigned'&expand=principal"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "value": [
+        {
+          "assignmentType": "Assigned",
+          "directoryScopeId": "/",
+          "id": "assignment-1",
+          "memberType": "Direct",
+          "principal": {
+            "@odata.type": "#microsoft.graph.user",
+            "accountEnabled": true,
+            "displayName": "admin-1",
+            "id": "fa4efa4e-0000-4000-8000-000000000101",
+            "userPrincipalName": "admin1@contoso.onmicrosoft.com"
+          },
+          "principalId": "fa4efa4e-0000-4000-8000-000000000101",
+          "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10"
+        },
+        {
+          "assignmentType": "Assigned",
+          "directoryScopeId": "/",
+          "id": "assignment-2",
+          "memberType": "Direct",
+          "principal": {
+            "@odata.type": "#microsoft.graph.user",
+            "accountEnabled": true,
+            "displayName": "admin-2",
+            "id": "fa4efa4e-0000-4000-8000-000000000102",
+            "userPrincipalName": "admin2@contoso.onmicrosoft.com"
+          },
+          "principalId": "fa4efa4e-0000-4000-8000-000000000102",
+          "roleDefinitionId": "62e90394-69f5-4237-9190-012177145e10"
+        }
+      ]
+    }
+  }
+}

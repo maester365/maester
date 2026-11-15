@@ -1,0 +1,31 @@
+{
+  "note": "Read by every run for the tenant context (name, domain, tenant type) and by MT.1073.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/organization",
+    "key": "GET v1.0/organization"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#organization",
+      "value": [
+        {
+          "displayName": "Contoso (well configured)",
+          "id": "fa4efa4e-0000-4000-8000-000000000000",
+          "onPremisesSyncEnabled": true,
+          "tenantType": "AAD",
+          "verifiedDomains": [
+            {
+              "capabilities": "Email, OfficeCommunicationsOnline",
+              "isDefault": true,
+              "isInitial": true,
+              "name": "contoso.onmicrosoft.com",
+              "type": "Managed"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

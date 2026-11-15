@@ -1,0 +1,20 @@
+{
+  "scenario": "insufficient-permissions",
+  "fixtures": [
+    {
+      "key": "GET v1.0/directory/onpremisessynchronization",
+      "file": "graph/get_v1.0_directory_onpremisessynchronization_8a773353e2.json",
+      "status": 403
+    },
+    {
+      "key": "GET v1.0/organization",
+      "file": "graph/get_v1.0_organization_3137e0e0cd.json",
+      "status": 200
+    },
+    {
+      "key": "GET v1.0/subscribedskus",
+      "file": "graph/get_v1.0_subscribedskus_bbafe73091.json",
+      "status": 200
+    }
+  ]
+}

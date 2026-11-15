@@ -1,0 +1,17 @@
+{
+  "note": "MT.1073 is skipped as NotAuthorized: Graph refuses the request.",
+  "request": {
+    "method": "GET",
+    "uri": "v1.0/directory/onpremisessynchronization",
+    "key": "GET v1.0/directory/onpremisessynchronization"
+  },
+  "response": {
+    "status": 403,
+    "body": {
+      "error": {
+        "code": "Authorization_RequestDenied",
+        "message": "Insufficient privileges to complete the operation."
+      }
+    }
+  }
+}
