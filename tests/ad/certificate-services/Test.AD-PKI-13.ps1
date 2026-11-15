@@ -33,7 +33,8 @@
     $state = Get-MtADDomainState -Categories Configuration
     $paths = @(Get-MtAdNtAuthCertificatePath -Configuration $state.Configuration)
     if ($paths.Count -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause NotApplicable -SkippedCustomReason 'The collected NTAuth store contains no CA certificates.'
+        Add-MtTestResultDetail -SkippedBecause NotApplicable -Result 'Skipped. The collected NTAuth store contains no CA certificates.'
+        return
     }
 
     $unverified = @($paths | Where-Object { -not $_.Verified })

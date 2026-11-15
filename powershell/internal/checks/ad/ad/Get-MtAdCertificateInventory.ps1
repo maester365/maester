@@ -29,7 +29,10 @@
             }
             foreach ($value in $values) {
                 if ($null -eq $value) { continue }
-                $bytes = if ($value -is [byte[]]) { $value } elseif ($value -is [string]) {
+                $bytes = if ($value -is [byte[]]) { $value } elseif ($value -is [array] -and $value.Count -gt 0 -and @($value | Where-Object { $_ -isnot [byte] }).Count -eq 0) {
+                    # Each value of a multi-valued LDAP binary attribute can also be projected as an object array of bytes.
+                    [byte[]]$value
+                } elseif ($value -is [string]) {
                     try { [Convert]::FromBase64String($value) } catch { throw "Invalid certificate encoding for $($role.Name) $($entry.Name)." }
                 } else { throw "Unsupported certificate value for $($role.Name) $($entry.Name)." }
                 try {

@@ -155,6 +155,46 @@ Describe 'Offline NTAuth certificate paths' {
             (Get-MtAdNtAuthCertificatePath $config).Verified | Should -BeFalse
         } finally { $child.Dispose(); $limited.Dispose() }
     }
+    It 'counts <SubordinateCaCount> subordinate CAs with root path length <RootPathLength>' -ForEach @(
+        foreach ($subordinateCaCount in 1..4) {
+            foreach ($rootPathLength in 0..4) {
+                @{ SubordinateCaCount = $subordinateCaCount; RootPathLength = $rootPathLength }
+            }
+        }
+    ) {
+        $certificates = [Collections.Generic.List[Security.Cryptography.X509Certificates.X509Certificate2]]::new()
+        try {
+            $certificates.Add((New-PathTestCertificate -Name "Root with path length $RootPathLength" -PathLength $RootPathLength -NotAfter (Get-Date).AddYears(2)))
+            foreach ($level in 1..$SubordinateCaCount) {
+                $certificates.Add((New-PathTestCertificate -Name "Subordinate CA $level" -Issuer $certificates[-1] -PathLength ($SubordinateCaCount - $level) -NotAfter (Get-Date).AddDays(70 - 10 * $level)))
+            }
+            $config = Get-PathTestConfiguration
+            $config.TrustedRootCAs[0].cACertificate = $certificates[0].RawData
+            $intermediateValues = [Collections.Generic.List[object]]::new()
+            for ($index = 1; $index -lt $certificates.Count - 1; $index++) {
+                $intermediateValues.Add([object[]]$certificates[$index].RawData)
+            }
+            $config.IntermediateCAs = @()
+            if ($intermediateValues.Count -gt 0) {
+                $raw = $intermediateValues.ToArray()
+                if ($intermediateValues.Count -eq 1) { $raw = $intermediateValues[0] }
+                $config.IntermediateCAs = @([pscustomobject]@{ Name = 'LDAP-projected intermediates'; cACertificate = $raw })
+            }
+            $config.NtAuthCertificates[0].cACertificate = $certificates[-1].RawData
+
+            $row = Get-MtAdNtAuthCertificatePath $config
+            $row.Path.Count | Should -Be ($SubordinateCaCount + 1)
+            $row.RootThumbprint | Should -Be $certificates[0].Thumbprint
+            $row.Verified | Should -Be ($SubordinateCaCount -le $RootPathLength)
+            if ($SubordinateCaCount -le $RootPathLength) {
+                $row.Issues | Should -BeNullOrEmpty
+            } else {
+                $row.Issues | Should -Contain 'CaPathLengthConstraintExceeded'
+            }
+        } finally {
+            foreach ($certificate in $certificates) { $certificate.Dispose() }
+        }
+    }
     It 'deduplicates a CA published more than once and in multiple roles' {
         $config = Get-PathTestConfiguration
         $config.NtAuthCertificates[0].cACertificate = @($script:issuing.RawData, $script:issuing.RawData)
@@ -169,6 +209,36 @@ Describe 'Offline NTAuth certificate paths' {
         $config.IntermediateCAs[0].cACertificate = [object[]]$script:intermediate.RawData
         $config.NtAuthCertificates[0].cACertificate = [object[]]$script:issuing.RawData
         (Get-MtAdNtAuthCertificatePath $config).Verified | Should -BeTrue
+    }
+    It 'parses multiple LDAP-projected DER values in the <Role> inventory' -ForEach @(
+        @{ Property = 'EnterpriseCAs'; Role = 'Enterprise CA' }
+        @{ Property = 'TrustedRootCAs'; Role = 'Trusted root' }
+        @{ Property = 'IntermediateCAs'; Role = 'Intermediate' }
+        @{ Property = 'NtAuthCertificates'; Role = 'NTAuth' }
+    ) {
+        $values = [Collections.Generic.List[object]]::new()
+        $values.Add([object[]]$script:root.RawData)
+        $values.Add([object[]]$script:issuing.RawData)
+        $config = Get-PathTestConfiguration
+        $config.$Property = @([pscustomobject]@{ Name = 'Multiple projected certificates'; cACertificate = $values.ToArray() })
+
+        $rows = @(Get-MtAdCertificateInventory $config -IncludeRawData | Where-Object Role -EQ $Role)
+        $rows.Count | Should -Be 2
+        $rows.Thumbprint | Should -Contain $script:root.Thumbprint
+        $rows.Thumbprint | Should -Contain $script:issuing.Thumbprint
+    }
+    It 'rejects a <Kind> projected value alongside a valid certificate' -ForEach @(
+        @{ Kind = 'mixed-byte'; ExpectedMessage = '*Unsupported certificate value*' }
+        @{ Kind = 'malformed-DER'; ExpectedMessage = '*Unable to parse public certificate*' }
+    ) {
+        $values = [Collections.Generic.List[object]]::new()
+        $values.Add([object[]]$script:root.RawData)
+        $invalid = if ($Kind -eq 'mixed-byte') { @([byte]1, 'unexpected value') } else { [object[]][byte[]](1, 2, 3) }
+        $values.Add($invalid)
+        $config = Get-PathTestConfiguration
+        $config.TrustedRootCAs[0].cACertificate = $values.ToArray()
+
+        { Get-MtAdNtAuthCertificatePath $config } | Should -Throw $ExpectedMessage
     }
     It 'does not silently accept non-byte values mixed into a flattened certificate' {
         $config = Get-PathTestConfiguration
@@ -261,6 +331,7 @@ Describe 'AD-PKI-13 native engine outcomes' {
         $row = Invoke-MtTest -Id AD-PKI-13 -Config $script:pathRunConfig
         $row.Result.ToString() | Should -Be Skipped
         $row.ReasonCode | Should -Be NotApplicable
+        $row.ResultDetail.TestResult.Trim() | Should -Be 'Skipped. The collected NTAuth store contains no CA certificates.'
     }
     It 'reports malformed evidence as an error' {
         $script:pathConfiguration.NtAuthCertificates[0].cACertificate = [byte[]](1, 2, 3)
