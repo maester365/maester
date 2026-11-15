@@ -280,6 +280,7 @@ When contributing tests, please ensure the following:
   - [x] If there are multiple objects (e.g. list of CA policies, Users, etc) then use the `GraphObjects` and `GraphObjectType` parameters in [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1). These include deep links to the admin portal. If the object type you wish is not available you can add it to [Get-GraphObjectMarkdown.ps1](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1). Feel free to ask on Discord if you need help with this.
 - [x] The test's page under `website/docs/tests/` is generated from the test files; do not write it by hand.
 - [x] Check the test with `Get-MtTest <ID>` after `Import-Module ./powershell/Maester.psd1 -Force`, and run it with `Invoke-MtTest -Path <file>` against a tenant. `Get-MtTest -Path <file>` applies the rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
+- [x] A test that reads Microsoft Graph, new or changed, ships with **mock data**: fixtures in a scenario under `powershell/tests/fixtures/graph-replay` in which it passes and one in which it fails, with both results in the scenarios' `scenario.json` `expectations`. You can write and run it with no tenant. See [Mock data for every test](#mock-data-for-every-test).
 
 When in doubt always check the existing tests for the conventions used, feel free to discuss on [Discord](https://discord.entra.news) or [GitHub Issues](https://github.com/maester365/maester/issues).
 
@@ -292,6 +293,34 @@ When in doubt always check the existing tests for the conventions used, feel fre
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
+
+### Mock data for every test
+
+Every new or changed test that reads Microsoft Graph comes with Graph fixtures for at least one passing case and
+one failing case. [Mock data and offline testing](./writing-tests/graph-fixtures.md) shows how to write them by hand
+or record them from a test tenant, and how to run a test offline with `Enable-MtGraphFixture -Mode Replay`.
+
+- `powershell/tests/functions/GraphFixtureScenarios.Tests.ps1` runs each test in each scenario that lists it, in
+  replay, and fails if its result is not the expected one or a fixture is missing.
+- `powershell/tests/general/GraphFixtureCoverage.Tests.ps1` fails when a test that reads only Graph has no passing and
+  failing case. The tests that predate the rule are listed in `powershell/tests/fixtures/graph-replay/coverage-baseline.txt`.
+  That list only shrinks: remove a test's line when you give it mock data, or when your pull request changes the
+  test (the pull request build checks this). Never add a line.
+- Tests that read Exchange Online, Teams or another service other than Graph, and the generated EIDSCA and ORCA
+  tests, are not covered by the rule yet.
+
+MT.1073 and CIS.M365.1.1.3 are worked examples to copy.
+
+### Fixing a bug in a test
+
+Reproduce a reported bug with mock data before you change the test:
+
+1. Capture the Graph responses that trigger it (a recording made with `Enable-MtGraphFixture -Mode Record`, which
+   sanitises by default, then reviewed) or write them by hand with `New-MtGraphFixture`.
+2. Add them as a regression scenario under `powershell/tests/fixtures/graph-replay`, named after the issue, such as
+   `issue-1234-null-conditions`, with the result the test should give in its `scenario.json` `expectations`.
+3. Run `./powershell/tests/pester.ps1 -Include 'GraphFixtureScenarios*'` and see the expectation fail.
+4. Fix the test until it passes, and commit the scenario with the fix.
 
 ### Attribute checks
 

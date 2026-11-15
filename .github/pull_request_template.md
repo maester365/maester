@@ -23,6 +23,8 @@ Closes # <!-- Issue # here -->
 - [ ] My code requires changes to the documentation.
 - [ ] I have updated the documentation as required.
 - [ ] The build and unit tests pass after running `/powershell/tests/pester.ps1` locally.
+- [ ] Every new or changed test ships with mock data: Graph fixtures in a scenario where it passes and one where it fails, listed in their `scenario.json` expectations ([Mock data and offline testing](https://maester.dev/docs/writing-tests/graph-fixtures)). Tests that read only other services are exempt for now.
+- [ ] For a bug fix: a regression fixture reproduces the bug and failed before the fix.
 
 ## ℹ️ Additional Information
 <!-- Any additional information like breaking changes, dependencies added, screenshots, comparisons between new and old behavior, etc.

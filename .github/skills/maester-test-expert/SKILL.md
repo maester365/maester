@@ -575,16 +575,36 @@ the rubric. When you review a check yourself, follow "Reviewing a test's attribu
    rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
 9. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
    `-Parameter @{...}` for each parameter. Check the row's `Result`, `ReasonCode`, `ResultDetail.TestResult`.
-10. **Update the golden fixture.** A new built-in test changes the number of tests each selection returns, so
+   Without a tenant, use Graph replay (step 10).
+10. **Write the mock data** (required for a test that reads Microsoft Graph, new or changed): fixtures in a
+   scenario under `powershell/tests/fixtures/graph-replay` in which the test passes (usually `well-configured`) and
+   one in which it fails (usually `badly-configured`), and the test's result in each scenario's `scenario.json`
+   `expectations`. Turn on replay with `Enable-MtGraphFixture -Mode Replay -Path ./powershell/tests/fixtures/graph-replay
+   -Scenario <name>`, run `Invoke-MtTest -Path <file>`, write each request `(Get-MtGraphFixtureStatus).Missing` lists
+   with `New-MtGraphFixture`, using fake IDs that start with `fa4efa4e`. If the test is in
+   `coverage-baseline.txt` there, remove its line. See
+   [Mock data and offline testing](../../../website/docs/writing-tests/graph-fixtures.md).
+11. **Update the golden fixture.** A new built-in test changes the number of tests each selection returns, so
    `powershell/tests/general/Golden.Tests.ps1` fails until you run `./build/golden/Export-MtGoldenFixture.ps1` and
    commit `powershell/tests/fixtures/golden/selection.json`. Commit only that file: on macOS and Windows the
    script can also rewrite the case of a path in `config-layouts/`, which you revert.
-11. **Update the pages that list the tests of a setting.** If the check binds `EmergencyAccessAccounts`, add it to
+12. **Update the pages that list the tests of a setting.** If the check binds `EmergencyAccessAccounts`, add it to
    "Related Tests" in `website/docs/configuration/emergency-access-accounts.md`.
-12. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
+13. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
    and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test. A new `.ps1` file
    needs a UTF-8 byte order mark (`FileEncoding.Tests.ps1`); the test only sees files git tracks, so `git add`
    the new files before the run.
+
+## Fixing a bug in a check
+
+Reproduce the bug with mock data before you change the check:
+
+1. Capture or hand-write the Graph responses that trigger the bug: a recording from the reporter
+   (`Enable-MtGraphFixture -Mode Record`, sanitised, reviewed), or fixtures written with `New-MtGraphFixture`.
+2. Put them in a regression scenario under `powershell/tests/fixtures/graph-replay`, named after the issue
+   (`issue-1234-<what>`), with the result the check *should* give in its `scenario.json` `expectations`.
+3. Run `./powershell/tests/pester.ps1 -Include 'GraphFixtureScenarios*'` and see that expectation fail.
+4. Fix the check, run it again until it passes, and commit the scenario with the fix.
 
 ## Converting a User's Pester-format Test
 
@@ -654,9 +674,17 @@ to. It can call only Maester's exported commands; to reuse a built-in check it c
 - [ ] One True Brace Style; Pascal Case; full cmdlet names (no aliases); 4-space indentation.
 - [ ] UTF-8 with BOM for `.ps1` files.
 
+### Mock data
+- [ ] A test that reads Microsoft Graph, new or changed, has fixtures in a scenario in which it passes and one in
+      which it fails, and both results are in the scenarios' `expectations`.
+- [ ] Fixtures use fake IDs (`fa4efa4e-...`) and fake domains, or were recorded with sanitisation on and reviewed.
+- [ ] The test's line is removed from `powershell/tests/fixtures/graph-replay/coverage-baseline.txt` if it was there.
+- [ ] A bug fix starts with a regression scenario that reproduces the bug and fails before the fix
+      (see [Fixing a bug in a check](#fixing-a-bug-in-a-check)).
+
 ### Pre-pull request
-- [ ] `./powershell/tests/pester.ps1` passes (PSScriptAnalyzer included).
-- [ ] Ran against a tenant with `Invoke-MtTest`.
+- [ ] `./powershell/tests/pester.ps1` passes (PSScriptAnalyzer included), including `GraphFixture*`.
+- [ ] Ran against a tenant with `Invoke-MtTest`, or in Graph replay.
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## Common Mistakes

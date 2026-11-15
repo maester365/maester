@@ -24,6 +24,26 @@ maester.dev), `report/` (React app that builds the HTML report template).
   duplicates" below).
 - `powershell/tests/` — **unit tests for the module itself**.
 
+## Mock data for every test, and bugs reproduced first
+
+Maester can record Microsoft Graph responses to JSON fixtures and replay them with no network
+(`Enable-MtGraphFixture`; guide: `website/docs/writing-tests/graph-fixtures.md`). Two rules follow:
+
+- **Every new or changed test that reads Microsoft Graph ships with mock data**: fixtures in a scenario
+  under `powershell/tests/fixtures/graph-replay` in which it passes and one in which it fails, with both
+  results in the scenarios' `scenario.json` `expectations`. `GraphFixtureCoverage.Tests.ps1` enforces it;
+  the tests that predate the rule are in `coverage-baseline.txt`, which only shrinks (remove a test's line
+  when you give it mock data or change it; never add one). Hand-written fixtures use fake IDs starting
+  `fa4efa4e` and fake domains; never commit real tenant data or a `.salt` file.
+- **Fix a bug by reproducing it first**: capture (sanitised recording) or hand-write the Graph responses that
+  trigger it, add them as a regression scenario (`issue-<number>-<what>`) with the result the check should
+  give, run `./powershell/tests/pester.ps1 -Include 'GraphFixtureScenarios*'` and see it fail, then fix the
+  check until it passes. Commit the scenario with the fix.
+
+Work offline with `Enable-MtGraphFixture -Mode Replay -Path ./powershell/tests/fixtures/graph-replay -Scenario
+well-configured` and `Invoke-MtTest -Path <file>`; `(Get-MtGraphFixtureStatus).Missing` lists the requests that
+still need a fixture, and `New-MtGraphFixture` writes one.
+
 ## Commands
 
 - New built-in test: `git add` its files, then `./build/golden/Export-MtGoldenFixture.ps1` and commit
