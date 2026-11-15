@@ -96,10 +96,19 @@ jobs:
             }
           }
 
+      # GraphFixtureCoverage.Tests.ps1 compares a pull request with its base: a test it changes must ship with mock data.
+      - name: Fetch the base commit of the pull request
+        if: steps.filter.outputs.pwshmodule == 'true' && github.event_name == 'pull_request' && runner.os == 'Linux'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git fetch --no-tags --depth=1 origin "$BASE_SHA"
+
       - name: Run Pester tests
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         env:
+          MAESTER_FIXTURE_BASE_REF: "${{ github.event_name == 'pull_request' && runner.os == 'Linux' && github.event.pull_request.base.sha || '' }}"
           # Enable code coverage only on the Linux + PowerShell 7 leg so we get a
           # baseline JaCoCo report without re-running the entire test suite in a
           # separate dedicated coverage job. Other matrix legs still run the
