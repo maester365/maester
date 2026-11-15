@@ -80,9 +80,16 @@
     # whether its token still works, so each answer is reported as it comes.
     $services = [ordered]@{}
     $probed = @{}
+    $graphReplay = $__MtSession.GraphFixture -and $__MtSession.GraphFixture.Mode -eq 'Replay'
     foreach ($name in $Service) {
         $canonical = Resolve-MtServiceName -Name $name -Registry $registry
         if (-not $canonical) { continue }
+        if ($graphReplay -and $canonical -ne 'Graph') {
+            # Graph replay serves Microsoft Graph only: the tests of another service are skipped, not sent to it.
+            $services[$canonical] = $false
+            & $step 'Service' @{ Name = $canonical; Connected = $false }
+            continue
+        }
         $probe = $registry.Services[$canonical].Probe
         if (-not $probed.ContainsKey($probe)) {
             $probed[$probe] = if ($probe -eq 'Graph') { [bool]$graphConnected } elseif ($registry.Services[$canonical].ContainsKey('Pack')) { Test-MtPackConnection -Service $canonical } else {

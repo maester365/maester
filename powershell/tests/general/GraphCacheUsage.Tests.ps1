@@ -20,6 +20,9 @@
         'powershell/public/connect/Clear-MtDnsCache.ps1'
         # Session lifecycle, not a check: disconnecting and resetting the module clear the caches.
         'powershell/public/connect/Disconnect-Maester.ps1'
+        # Switching between the tenant and a Graph fixture set (record and replay) starts with an empty cache.
+        'powershell/public/services/graph/Enable-MtGraphFixture.ps1'
+        'powershell/public/services/graph/Disable-MtGraphFixture.ps1'
         'powershell/internal/session/Clear-ModuleVariable.ps1'
     )
 

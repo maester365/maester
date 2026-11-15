@@ -117,6 +117,8 @@
     # set for this call from the current connection and restored afterwards; without them, the links that tests
     # build to the portals are relative (#view/...). A cloud with no known portal URLs keeps the links relative.
     $savedPortalUrl = $__MtSession.AdminPortalUrl
+    # Graph record and replay from MAESTER_GRAPH_FIXTURE_MODE, before the connection is looked at.
+    Initialize-MtGraphFixture
     if (-not $insideRun) {
         try {
             Initialize-MtSession

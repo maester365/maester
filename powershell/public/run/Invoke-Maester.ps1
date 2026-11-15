@@ -475,6 +475,9 @@
         # Reset the graph cache and urls to avoid stale data.
         Clear-ModuleVariable
         $__MtSession.Console = $console
+        # Graph record and replay (Enable-MtGraphFixture, or MAESTER_GRAPH_FIXTURE_MODE): a new list of missing fixtures.
+        Initialize-MtGraphFixture -NewRun
+        $graphReplay = $__MtSession.GraphFixture -and $__MtSession.GraphFixture.Mode -eq 'Replay'
 
         # Redaction maps user identities onto their stable ids, so it needs the inventory even when
         # the caller did not ask for the Affected objects page. Collect it in that case, but only surface it
@@ -484,7 +487,8 @@
         # Anonymous run events: one now and one when the run ends, so a run that never ends shows up
         # (Write-Telemetry says what is sent). Stage says how far a run that did not complete got.
         $telemetryRun = $null
-        if (-not $DisableTelemetry -and -not $DryRun) {
+        # A replayed run reads a fake tenant from files: it is not a run to count.
+        if (-not $DisableTelemetry -and -not $DryRun -and -not $graphReplay) {
             $telemetryRun = [pscustomobject]@{ RunId = [guid]::NewGuid().ToString(); StartedAt = [datetime]::UtcNow; Stage = 'Setup'; LastError = $(if ($Error.Count) { $Error[0] }); Sent = $false }
             Write-Telemetry -EventName InvokeMaesterStart -Run $telemetryRun
         }
@@ -1195,6 +1199,9 @@
                 Write-MtProgress -Activity 'Sending Teams message'
                 Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
             }
+
+            # Graph record and replay: update the index of a recording, or list the requests replay had no fixture for.
+            Write-MtGraphFixtureSummary
 
             Write-MtProgress -Activity '🔥 Completed tests' -Completed
             # Restore the screen and write what was kept while the dashboard owned it, then the summary.

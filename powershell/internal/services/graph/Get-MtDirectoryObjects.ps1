@@ -23,7 +23,7 @@
     } | ConvertTo-Json
 
     $graphUrl = 'beta/directoryObjects/getByIds?$select=id,displayName'
-    $result = Invoke-MgGraphRequest -Uri $graphUrl -Method POST -Body $postBody -OutputType PSObject
+    $result = Invoke-MtGraphTransport -Uri $graphUrl -Method POST -Body $postBody -OutputType PSObject
     $values = Get-ObjectProperty $result 'value'
     if($AsMarkdown) {
         $values = Get-GraphObjectMarkdown -GraphObjects $values

@@ -325,7 +325,9 @@ function Test-MtApplicability {
                 $entry = $registry.Services[$s]
                 $legacy = $entry.LegacySkipCode
                 # A pack connector's service names its own connect command.
-                $text = if ($entry.ContainsKey('Pack')) { "Not connected to $($entry.DisplayName). Run Connect-Maester -Service $s." } else { Get-MtSkippedReason -SkippedBecause $legacy }
+                $text = if ($__MtSession.GraphFixture -and $__MtSession.GraphFixture.Mode -eq 'Replay' -and $s -ne 'Graph') {
+                    "Graph replay serves Microsoft Graph only, from fixtures: $(if ($entry.DisplayName) { $entry.DisplayName } else { $s }) is not recorded, so this test does not run offline."
+                } elseif ($entry.ContainsKey('Pack')) { "Not connected to $($entry.DisplayName). Run Connect-Maester -Service $s." } else { Get-MtSkippedReason -SkippedBecause $legacy }
                 return & $fail 'ServiceNotConnected' $text $legacy
             }
         }

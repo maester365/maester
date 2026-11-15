@@ -61,9 +61,9 @@
         while ($true) {
             try {
                 if ($Method -eq 'GET') {
-                    $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType # -Body $Body # Cannot use Body with GET in PS 5.1
+                    $results = Invoke-MtGraphTransport -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType # -Body $Body # Cannot use Body with GET in PS 5.1
                 } else {
-                    $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
+                    $results = Invoke-MtGraphTransport -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
                 }
                 break
             } catch {
