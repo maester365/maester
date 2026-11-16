@@ -11,7 +11,7 @@ Each of the six roles needs an active review that covers users and groups, repea
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com).
 2. Expand **ID Governance** > **Privileged Identity Management**.
 3. For **Microsoft Entra roles**, select **Microsoft Entra roles**.
-4. Under **Manage**, select **Microsoft Entra roles**, then select **Access reviews** and **New**.
+4. Under **Manage**, select **Microsoft Entra roles** again, then select **Access reviews** and **New**.
 5. Provide a name and description, then set:
    - **Frequency** to **Monthly** or more frequently.
    - **Duration (in days)** to **14** or less and shorter than the selected recurrence interval; PIM does not allow recurring reviews to overlap.

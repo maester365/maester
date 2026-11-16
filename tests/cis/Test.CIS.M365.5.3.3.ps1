@@ -29,7 +29,8 @@
         Control = ('cis-m365:5.3.3', 'nist-800-53-r5:AC-6(7)'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'julien-ly'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -73,7 +74,6 @@
         $checks = [ordered]@{
             'Users and groups in scope' = @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?users(\?|$)' }).Count -gt 0 -and @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?groups(\?|$)' }).Count -gt 0
             'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or ($patternType -eq 'weekly' -and $interval -ge 1 -and $interval -le 4)
-            'Started' = ([datetime]$startDate).ToUniversalTime() -le [datetime]::UtcNow
             'Reviewers' = $reviewers.Count -ge 1
             'In progress' = $review.status -eq 'InProgress'
             'Notifications' = [bool]$settings.mailNotificationsEnabled
@@ -81,7 +81,7 @@
             'Justification' = [bool]$settings.justificationRequiredOnApproval
             'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationDays
             'Auto apply' = [bool]$settings.autoApplyDecisionsEnabled
-            'Default decision none' = $settings.defaultDecision -eq 'None'
+            'Default decision none' = $settings.defaultDecisionEnabled -eq $false -or $settings.defaultDecision -eq 'None'
             'No end date' = $settings.recurrence.range.type -eq 'noEnd'
         }
         $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
@@ -99,7 +99,7 @@
     $resultMd = "| Role | Access review | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Role) | $($row.Name) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Role) | $(Get-MtSafeMarkdown $row.Name) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
     foreach ($roleName in $missingRoles) {
         if (@($report | Where-Object { $_.Role -eq $roleName }).Count -eq 0) {
@@ -112,7 +112,7 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
