@@ -22,7 +22,7 @@ applications whose service principal does not have a Microsoft Graph
 
 #### Related links
 
-- [Register an application with the Microsoft identity platform](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
+- [Register an application with the Microsoft identity platform](https://learn.microsoft.com/entra/identity-platform/quickstart-register-app)
 
 <!--- Results --->
 %TestResult%

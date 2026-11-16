@@ -24,7 +24,7 @@ External ID (CIAM) tenants and are therefore not evaluated by this test.
 
 #### Related links
 
-- [Configure a custom OIDC identity provider](https://learn.microsoft.com/en-us/entra/external-id/customers/how-to-custom-oidc-federation-customers)
+- [Configure a custom OIDC identity provider](https://learn.microsoft.com/entra/external-id/customers/how-to-custom-oidc-federation-customers)
 
 <!--- Results --->
 %TestResult%
