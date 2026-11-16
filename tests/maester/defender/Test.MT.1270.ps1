@@ -70,14 +70,14 @@
     $summary = Get-MtDefenderExploitableVulnerability
     if ($null -eq $summary) {
         # Defender returned no result set at all. Report a skip rather than a clean fleet.
-        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Defender Vulnerability Management returned no result set for this tenant, so there is no fleet to judge.'
         return $null
     }
 
     if ($summary.AssessedDeviceCount -le 0) {
         # No device has any vulnerability data, so there is no fleet to judge. Zero exposed out of zero
         # assessed is not a pass.
-        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No device has any Defender Vulnerability Management data, so there is no fleet to judge. Zero exposed devices out of zero assessed is not a pass.'
         return $null
     }
 
