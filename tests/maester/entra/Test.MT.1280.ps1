@@ -11,7 +11,7 @@
         Feature            = 'external-identities',
         Area               = 'applications',
         ResourceType       = 'UserFlow',
-        Severity           = 'Medium',
+        Severity           = 'Low',
         UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',

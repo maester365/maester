@@ -11,8 +11,8 @@
         Feature            = 'external-identities',
         Area               = 'applications',
         ResourceType       = 'UserFlow',
-        Severity           = 'High',
-        UserImpact         = 'High',
+        Severity           = 'Low',
+        UserImpact         = 'Low',
         ImplementationCost = 'Low',
         Mitre              = 'None',
         Service            = 'Graph',
@@ -27,13 +27,13 @@
     param(
         # How many days ahead of expiry a still-valid credential is flagged as "expiring soon".
         [ValidateRange(1, 365)]
-        [int] $ExpiryWarningDays = 30
+        [int] $ExpiringWithinDays = 30
     )
 
     $userFlows = @((Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'identity/authenticationEventsFlows' -OutputType Hashtable).value)
 
     $now = Get-Date
-    $warningCutoff = $now.AddDays($ExpiryWarningDays)
+    $warningCutoff = $now.AddDays($ExpiringWithinDays)
 
     $linkedAppResults = @()
     foreach ($flow in $userFlows) {
