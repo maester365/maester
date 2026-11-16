@@ -10,6 +10,11 @@
         return $null
     }
     $items=@($state.DnsAuthorization.UnresolvedTrusteeAces)
+    if ($items.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'No unresolved trustee DNS write authorization was detected in the readable zone ACLs.'
+        return $true
+    }
+
     $result="| Zone | SID | Rights |`n| --- | --- | --- |`n"
     foreach($item in $items){$result+="| $($item.ZoneName) | $($item.TrusteeSid) | $($item.MatchedWriteRights -join ', ') |`n"}
     Add-MtTestResultDetail -Result "Found $($items.Count) unresolved trustee DNS write authorization candidate(s).`n`n$result" -Investigate
