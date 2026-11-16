@@ -8,6 +8,7 @@
         )
 
         function New-GuestAccessReview {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param([string] $DisplayName)
 
             return [pscustomobject]@{
@@ -37,6 +38,7 @@
         }
 
         function New-RoleAccessReview {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [string] $DisplayName,
                 [string] $RoleId,
