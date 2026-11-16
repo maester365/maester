@@ -30,7 +30,7 @@
         Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'earbona23')
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'earbona23', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -51,7 +51,7 @@
     foreach ($sensitiveType in $requiredTypes) {
         $matchingRules = @(
             $sensitiveRules | Where-Object { $sensitiveType -in $_.SensitiveTypes } |
-                ForEach-Object { "$($_.Policy.Identity): $($_.Rule.Name)" }
+                ForEach-Object { "$(Get-MtSafeMarkdown $_.Policy.Name): $(Get-MtSafeMarkdown $_.Rule.Name)" }
         )
         $status = if ($sensitiveType -in $coveredTypes) { '✅ Pass' } else { '❌ Fail' }
         $ruleNames = if ($matchingRules.Count -gt 0) { $matchingRules -join ', ' } else { 'None' }
@@ -64,6 +64,7 @@
         "Configure an enabled DLP policy with non-disabled rules that protect the missing sensitive information types: $($missingTypes -join ', ').`n`n%TestResult%"
     }
 
-    Add-MtTestResultDetail -Result ($message -replace '%TestResult%', $result)
+    $testResultMarkdown = $message.Replace('%TestResult%', $result)
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return [bool]$testResult
 }

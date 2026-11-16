@@ -28,7 +28,8 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.4',
         Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'julien-ly'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -41,11 +42,16 @@
 
     $result = "| Policy | Rule | Users notified | Result |`n"
     $result += "| --- | --- | --- | --- |`n"
-    foreach ($entry in $fullProtectionRules | Sort-Object -Property { $_.Policy.Identity }, { $_.Rule.Name }) {
+    foreach ($entry in $fullProtectionRules | Sort-Object -Property { $_.Policy.Name }, { $_.Rule.Name }) {
         $users = @($entry.Rule.NotifyUser)
         $status = if ($users.Count -gt 0) { '✅ Pass' } else { '❌ Fail' }
-        $userText = if ($users.Count -gt 0) { $users -join ', ' } else { 'None' }
-        $result += "| $($entry.Policy.Identity) | $($entry.Rule.Name) | $userText | $status |`n"
+        $policyName = Get-MtSafeMarkdown $entry.Policy.Name
+        $ruleName = Get-MtSafeMarkdown $entry.Rule.Name
+        $userText = if ($users.Count -gt 0) { Get-MtSafeMarkdown ($users -join ', ') } else { 'None' }
+        $result += "| $policyName | $ruleName | $userText | $status |`n"
+    }
+    if ($fullProtectionRules.Count -eq 0) {
+        $result += "| No matching rules | - | None | ❌ Fail |`n"
     }
 
     if ($fullProtectionRules.Count -eq 0) {
@@ -56,6 +62,7 @@
         $message = "Enable user notifications for every non-disabled DLP rule in an enabled policy that protects all three required sensitive information types.`n`n%TestResult%"
     }
 
-    Add-MtTestResultDetail -Result ($message -replace '%TestResult%', $result)
+    $testResultMarkdown = $message.Replace('%TestResult%', $result)
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return [bool]$testResult
 }

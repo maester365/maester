@@ -28,7 +28,8 @@
         Control = 'cisa-scuba:MS.SECURITYSUITE.3.2',
         Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'julien-ly'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -66,7 +67,7 @@
         )
         [pscustomobject]@{
             Location = $location.Name
-            Policies = @($coveredRules | ForEach-Object { $_.Policy.Identity } | Select-Object -Unique)
+            Policies = @($coveredRules | ForEach-Object { $_.Policy.Name } | Select-Object -Unique)
             Covered  = $coveredRules.Count -gt 0
         }
     }
@@ -76,7 +77,11 @@
     $result += "| --- | --- | --- |`n"
     foreach ($locationResult in $locationResults) {
         $status = if ($locationResult.Covered) { '✅ Pass' } else { '❌ Fail' }
-        $policyNames = if ($locationResult.Policies.Count -gt 0) { $locationResult.Policies -join ', ' } else { 'None' }
+        $policyNames = if ($locationResult.Policies.Count -gt 0) {
+            ($locationResult.Policies | ForEach-Object { Get-MtSafeMarkdown $_ }) -join ', '
+        } else {
+            'None'
+        }
         $result += "| $($locationResult.Location) | $policyNames | $status |`n"
     }
 
@@ -86,6 +91,7 @@
         $message = "Enable DLP policies with non-disabled rules protecting credit card numbers, ITINs, and SSNs for all required Microsoft 365 and device locations.`n`n%TestResult%"
     }
 
-    Add-MtTestResultDetail -Result ($message -replace '%TestResult%', $result)
+    $testResultMarkdown = $message.Replace('%TestResult%', $result)
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return [bool]$testResult
 }

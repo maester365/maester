@@ -32,6 +32,7 @@
     }
 
     . (Join-Path $testRoot 'powershell/internal/checks/cisa/purview/Get-MtCisaSensitiveDlpRule.ps1')
+    . (Join-Path $testRoot 'powershell/public/report/Get-MtSafeMarkdown.ps1')
     . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.1.ps1')
     . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.2.ps1')
     . (Join-Path $testRoot 'tests/cisa/purview/Test.CISA.MS.SECURITYSUITE.3.3.ps1')
@@ -101,6 +102,42 @@ Describe 'CISA Security Suite Purview checks' {
 
         $script:exoResponses.DlpComplianceRule[0].NotifyUser = @()
         Test-MtCisaDlpUserNotification | Should -BeFalse
+    }
+
+    It 'renders tenant-provided policy and rule names safely' {
+        $script:exoResponses = Get-TestSensitiveDlpResponse
+        $script:exoResponses.DlpCompliancePolicy[0].Name = 'Maester lab DLP | $& $$'
+        $script:exoResponses.DlpCompliancePolicy[0].Identity = 'FFO.extest.microsoft.com/Configuration/Maester lab DLP'
+        $script:exoResponses.DlpComplianceRule[0].ParentPolicyName = 'Maester lab DLP | $& $$'
+        $script:exoResponses.DlpComplianceRule[0].Name = 'Maester lab rule | $& $$'
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        Test-MtCisaDlpSensitiveInformation | Should -BeTrue
+        Test-MtCisaDlpLocationCoverage | Should -BeTrue
+        Test-MtCisaDlpBlocksSensitiveInformation | Should -BeTrue
+        Test-MtCisaDlpUserNotification | Should -BeTrue
+
+        Should -Invoke Add-MtTestResultDetail -Times 4 -Exactly -ParameterFilter {
+            $Result.Contains('Maester lab DLP \| $& $$') -and
+                -not $Result.Contains('FFO.extest.microsoft.com') -and
+                -not $Result.Contains('%TestResult%')
+        }
+        Should -Invoke Add-MtTestResultDetail -Times 3 -Exactly -ParameterFilter {
+            $Result.Contains('Maester lab rule \| $& $$')
+        }
+    }
+
+    It 'shows an explicit row when no full-protection rule exists' {
+        $script:exoResponses = Get-TestSensitiveDlpResponse
+        $script:exoResponses.DlpComplianceRule = @()
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        Test-MtCisaDlpBlocksSensitiveInformation | Should -BeFalse
+        Test-MtCisaDlpUserNotification | Should -BeFalse
+
+        Should -Invoke Add-MtTestResultDetail -Times 2 -Exactly -ParameterFilter {
+            $Result.Contains('| No matching rules |')
+        }
     }
 
     It 'returns an investigation result for the manual endpoint DLP requirement' {

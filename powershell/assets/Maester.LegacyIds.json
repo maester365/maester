@@ -1,6 +1,7 @@
 {
   "SchemaVersion": "1.0",
   "GeneratedFrom": "eb13e7a116e4063bec204e901e4847ae67c1f6f6",
+  "CurrentTestsHash": "29cbff210eb9a560ee7c1f92d7b38fc7256b3aa70a39584e85f8b28a80ad6e19",
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",

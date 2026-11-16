@@ -29,7 +29,7 @@
         Service = 'SecurityCompliance',
         License = 'EXCHANGE_DLP',
         Author = 'soulemike',
-        Contributor = 'JeremyFinney-lgtm'
+        Contributor = ('JeremyFinney-lgtm', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -44,11 +44,16 @@
 
     $result = "| Policy | Rule | Block access | Scope | Result |`n"
     $result += "| --- | --- | --- | --- | --- |`n"
-    foreach ($entry in $fullProtectionRules | Sort-Object -Property { $_.Policy.Identity }, { $_.Rule.Name }) {
+    foreach ($entry in $fullProtectionRules | Sort-Object -Property { $_.Policy.Name }, { $_.Rule.Name }) {
         $status = if ($entry.Rule.BlockAccess -eq $true -and $entry.Rule.BlockAccessScope -eq 'All') { '✅ Pass' } else { '❌ Fail' }
         $blockAccess = if ($entry.Rule.BlockAccess -eq $true) { 'Enabled' } else { 'Disabled' }
         $scope = if ($entry.Rule.BlockAccessScope) { $entry.Rule.BlockAccessScope } else { 'Not configured' }
-        $result += "| $($entry.Policy.Identity) | $($entry.Rule.Name) | $blockAccess | $scope | $status |`n"
+        $policyName = Get-MtSafeMarkdown $entry.Policy.Name
+        $ruleName = Get-MtSafeMarkdown $entry.Rule.Name
+        $result += "| $policyName | $ruleName | $blockAccess | $scope | $status |`n"
+    }
+    if ($fullProtectionRules.Count -eq 0) {
+        $result += "| No matching rules | - | Not configured | Not configured | ❌ Fail |`n"
     }
 
     if ($fullProtectionRules.Count -eq 0) {
@@ -59,6 +64,7 @@
         $message = "Configure every non-disabled DLP rule in an enabled policy that protects all three required sensitive information types to block access for everyone.`n`n%TestResult%"
     }
 
-    Add-MtTestResultDetail -Result ($message -replace '%TestResult%', $result)
+    $testResultMarkdown = $message.Replace('%TestResult%', $result)
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return [bool]$testResult
 }

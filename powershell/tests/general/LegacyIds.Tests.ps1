@@ -49,7 +49,114 @@
         $script:table | Should -Not -BeNullOrEmpty
         $script:table.SchemaVersion | Should -Be '1.0'
         $script:table.GeneratedFrom | Should -Match '^[0-9a-f]{40}$'
+        $script:table.CurrentTestsHash | Should -Match '^[0-9a-f]{64}$'
         @($script:table.Entries).Count | Should -BeGreaterThan 0
+    }
+
+    It 'identifies the current built-in test inputs' {
+        $filesByPath = [System.Collections.Generic.Dictionary[string, System.IO.FileInfo]]::new([System.StringComparer]::Ordinal)
+        $inputFiles = Get-ChildItem -Path (Join-Path $repoRoot 'tests') -Recurse -File |
+            Where-Object {
+                $_.FullName -notmatch '[\\/]Custom[\\/]' -and
+                ($_.Name -like '*.Tests.ps1' -or $_.Name -like 'Test.*.ps1')
+            }
+        foreach ($file in $inputFiles) {
+            $path = [System.IO.Path]::GetRelativePath($repoRoot, $file.FullName).Replace('\', '/')
+            $filesByPath.Add($path, $file)
+        }
+        $paths = [string[]]@($filesByPath.Keys)
+        [System.Array]::Sort($paths, [System.StringComparer]::Ordinal)
+        $manifest = foreach ($path in $paths) {
+            $content = [System.IO.File]::ReadAllText($filesByPath[$path].FullName) -replace "`r`n|`r", "`n"
+            $fileHash = [System.Convert]::ToHexString(
+                [System.Security.Cryptography.SHA256]::HashData([System.Text.Encoding]::UTF8.GetBytes($content))
+            ).ToLowerInvariant()
+            "$path`0$fileHash"
+        }
+        $expectedHash = [System.Convert]::ToHexString(
+            [System.Security.Cryptography.SHA256]::HashData(
+                [System.Text.Encoding]::UTF8.GetBytes(($manifest -join "`n"))
+            )
+        ).ToLowerInvariant()
+
+        $script:table.CurrentTestsHash | Should -Be $expectedHash
+    }
+
+    It 'retains a previous mapping when its current target still exists' {
+        $testRepo = Join-Path $TestDrive 'legacy-id-retention'
+        $testRoot = Join-Path $testRepo 'tests'
+        New-Item -ItemType Directory -Path (Join-Path $testRoot 'legacy') -Force | Out-Null
+        $outputPath = Join-Path $testRepo 'Maester.LegacyIds.json'
+        $generatorPath = Join-Path $repoRoot 'build/golden/Export-MtLegacyIdTable.ps1'
+
+        $historicalTest = @(
+            "Describe 'Legacy migration' {"
+            "    It 'LEGACY-ID: Old title' {"
+            '        Test-MtOld'
+            '    }'
+            '}'
+        ) -join "`n"
+        [System.IO.File]::WriteAllText(
+            (Join-Path $testRoot 'legacy/Legacy.Tests.ps1'),
+            $historicalTest,
+            [System.Text.UTF8Encoding]::new($false)
+        )
+
+        foreach ($test in @(
+                @{ Id = 'MT.1001'; Name = 'Test-MtCurrent'; Title = 'Current title' }
+                @{ Id = 'MT.1002'; Name = 'Test-MtOld'; Title = 'Old title' }
+            )) {
+            $nativeTest = @(
+                "function $($test.Name) {"
+                "    [MaesterTest(Id = '$($test.Id)', Title = '$($test.Title)')]"
+                '    param()'
+                '    return $true'
+                '}'
+            ) -join "`n"
+            [System.IO.File]::WriteAllText(
+                (Join-Path $testRoot "Test.$($test.Id).ps1"),
+                $nativeTest,
+                [System.Text.UTF8Encoding]::new($false)
+            )
+        }
+
+        & git -C $testRepo init --quiet
+        if ($LASTEXITCODE -ne 0) { throw 'Could not initialize the legacy ID test repository.' }
+        & git -C $testRepo config user.name 'Maester Tests'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not configure the legacy ID test repository.' }
+        & git -C $testRepo config user.email 'maester-tests@example.invalid'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not configure the legacy ID test repository.' }
+        & git -C $testRepo add -- tests
+        if ($LASTEXITCODE -ne 0) { throw 'Could not stage the legacy ID test fixtures.' }
+        & git -C $testRepo commit --quiet -m 'Add legacy ID test fixtures'
+        if ($LASTEXITCODE -ne 0) { throw 'Could not commit the legacy ID test fixtures.' }
+        Remove-Item -LiteralPath (Join-Path $testRoot 'legacy/Legacy.Tests.ps1')
+
+        $placeholderCommit = '0000000000000000000000000000000000000000'
+        $priorTable = [ordered]@{
+            SchemaVersion = '1.0'
+            GeneratedFrom = $placeholderCommit
+            Entries = @(
+                [ordered]@{
+                    LegacyId = 'LEGACY-ID'
+                    CurrentId = 'MT.1001'
+                    Rule = 'title'
+                    FirstSeenCommit = $placeholderCommit
+                    LastSeenCommit = $placeholderCommit
+                    LastSeenFile = 'tests/legacy/Legacy.Tests.ps1'
+                }
+            )
+            FamilyPrefixes = @()
+        }
+        [System.IO.File]::WriteAllText(
+            $outputPath,
+            (($priorTable | ConvertTo-Json -Depth 5) + "`n"),
+            [System.Text.UTF8Encoding]::new($false)
+        )
+
+        & $generatorPath -RepoRoot $testRepo -OutputPath $outputPath -WarningAction SilentlyContinue
+        $generated = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json
+        ($generated.Entries | Where-Object LegacyId -EQ 'LEGACY-ID').CurrentId | Should -Be 'MT.1001'
     }
 
     It 'uses LF line endings' {
