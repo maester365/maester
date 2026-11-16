@@ -101,6 +101,18 @@
         $entries['CISA.MS.EXO.17.3'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.5.2'
     }
 
+    It 'maps historical native-test titles to current IDs' {
+        $entries = @{}
+        foreach ($entry in $script:table.Entries) {
+            $entries[$entry.LegacyId] = $entry
+        }
+
+        $entries['MT.1048 Limit external participants from having control in a Teams meeting'].CurrentId | Should -Be 'MT.1048'
+        $entries['MT.1048 Limit external participants from having control in a Teams meeting'].Rule | Should -Be 'title'
+        $entries['Ensure modern authentication for Exchange Online is enabled'].CurrentId | Should -Be 'MT.1044'
+        $entries['Ensure modern authentication for Exchange Online is enabled'].Rule | Should -Be 'manual'
+    }
+
     It 'marks retired entries with Rule retired or manual' {
         $bad = @($script:table.Entries | Where-Object { ($_.CurrentId -eq 'retired') -and ($_.Rule -notin 'retired', 'manual') })
         $bad | Should -BeNullOrEmpty

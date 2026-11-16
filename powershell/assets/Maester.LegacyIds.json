@@ -860,8 +860,8 @@
     },
     {
       "LegacyId": "CIS 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.1.2.1",
+      "Rule": "title",
       "FirstSeenCommit": "9daff9942284717b7705fdaaa14460e7e7779253",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCis365PublicGroup.Tests.ps1"
@@ -932,8 +932,8 @@
     },
     {
       "LegacyId": "CIS 2.1.14 (L2) Ensure comprehensive attachment filtering is applied",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.2.1.11",
+      "Rule": "title",
       "FirstSeenCommit": "6697e81f452c6673d15ca08367ee881d9bcff886",
       "LastSeenCommit": "83b2c5d0b7e4f470fbbd05ed54dd07bf24fbdf99",
       "LastSeenFile": "tests/cis/Test-MtCisAttachmentFilterComprehensive.Tests.ps1"
@@ -1116,8 +1116,8 @@
     },
     {
       "LegacyId": "CISA.MS.EXO.09.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
@@ -1188,16 +1188,16 @@
     },
     {
       "LegacyId": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1043",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
     },
     {
       "LegacyId": "Ensure additional storage providers are restricted in Outlook on the web",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1228,8 +1228,8 @@
     },
     {
       "LegacyId": "Ensure modern authentication for Exchange Online is enabled",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1044",
+      "Rule": "manual",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1412,8 +1412,8 @@
     },
     {
       "LegacyId": "Limit external participants from having control in a Teams meeting",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
       "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
       "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
@@ -1460,8 +1460,8 @@
     },
     {
       "LegacyId": "MS.AAD.1.1v1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.AAD.1.1",
+      "Rule": "title",
       "FirstSeenCommit": "70102b643780d9d16f536152758b04fd6962ffc9",
       "LastSeenCommit": "79780a4d0e1660e80cde62a48e4ba7345f9dbf6a",
       "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
@@ -1476,8 +1476,8 @@
     },
     {
       "LegacyId": "MS.AAD.2.1v1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.AAD.2.1",
+      "Rule": "title",
       "FirstSeenCommit": "8577f2b693f5492db308555680084c51609f8c63",
       "LastSeenCommit": "7f7834cb28e6a0e99b942970781c63d1ff0f1703",
       "LastSeenFile": "tests/CISA/Test-MtCisaBlockHighRisk.Tests.ps1"
@@ -1836,24 +1836,24 @@
     },
     {
       "LegacyId": "MS.EXO.09.1",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.1",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.2",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.2",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFileType.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.09.3",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CISA.MS.EXO.9.3",
+      "Rule": "title",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
@@ -2236,128 +2236,128 @@
     },
     {
       "LegacyId": "MT. Limit external participants from having control in a Teams meeting",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
       "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT. Only invited users should be automatically admitted to Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
       "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT. Restrict anonymous users from joining meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
       "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT. Restrict anonymous users from starting Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
       "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT. Restrict dial-in users from bypassing a meeting lobby",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
       "FirstSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenCommit": "98ef0a4134190a3ecef844012a40002b1edd0e35",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1037 Only users with Presenter role are allowed to present in Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1037",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1038 Only invited users should be automatically admitted to Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1039 Restrict anonymous users from joining meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1040",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "CIS.M365.6.5.3",
+      "Rule": "title",
       "FirstSeenCommit": "ae83037141667b8adda14376303a28118e4d265a",
       "LastSeenCommit": "3df09deb503965936fc2029882ce949ca1f42764",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1040 Restrict anonymous users from starting Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1041 Limit external participants from having control in a Teams meeting",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "f3a5cb06bcad1e9d496efd171aa38aaa0b162e70",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1042 Restrict dial-in users from bypassing a meeting lobby",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
       "FirstSeenCommit": "c2e63c6775f1bd7f97bcd57865146f16389cde88",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1045 Only invited users should be automatically admitted to Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
       "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1046 Restrict anonymous users from joining meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
       "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1047 Restrict anonymous users from starting Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
       "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "MT.1048 Limit external participants from having control in a Teams meeting",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1048",
+      "Rule": "title",
       "FirstSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenCommit": "4a98de7b8dd9e3320850c7bb7ff9a3fa9b20656a",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
@@ -2756,8 +2756,8 @@
     },
     {
       "LegacyId": "ORCA120",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "ORCA.120.3",
+      "Rule": "title",
       "FirstSeenCommit": "c4ed30699a3283a5dd0d134bd5ec3b2b176799d9",
       "LastSeenCommit": "b238e666fba7c6ba7edccce07d194ebf6b6816d6",
       "LastSeenFile": "tests/orca/Test-ORCA120.Tests.ps1"
@@ -3116,8 +3116,8 @@
     },
     {
       "LegacyId": "Only invited users should be automatically admitted to Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1045",
+      "Rule": "title",
       "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
       "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
@@ -3132,24 +3132,24 @@
     },
     {
       "LegacyId": "Restrict anonymous users from joining meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1046",
+      "Rule": "title",
       "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
       "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "Restrict anonymous users from starting Teams meetings",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1047",
+      "Rule": "title",
       "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
       "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"
     },
     {
       "LegacyId": "Restrict dial-in users from bypassing a meeting lobby",
-      "CurrentId": "retired",
-      "Rule": "retired",
+      "CurrentId": "MT.1042",
+      "Rule": "title",
       "FirstSeenCommit": "35415eece07df1777ab48152f10d1d05ee077ef1",
       "LastSeenCommit": "82ecfa58d52f459064a02c037ecd671d78ec43b4",
       "LastSeenFile": "tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1"

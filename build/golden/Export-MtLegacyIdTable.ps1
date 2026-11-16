@@ -5,7 +5,7 @@
     .DESCRIPTION
     Walks every commit that touched a *.Tests.ps1 file under tests/ (tests/Custom excluded), parses the
     It names of every changed file version with the PowerShell AST (regex fallback for files that do
-    not parse) and records every static test ID that ever shipped. Current native test IDs and their
+    not parse) and records every static test ID that ever shipped. Current native test IDs, titles and
     check functions are read from the current tests/ tree.
 
     The ID of an It name is the text before the first colon when that text has no spaces
@@ -58,6 +58,8 @@ $ManualOverrides = [ordered]@{
     # Pre-colon names of the split checks; the current titles say 'Global Administrator' and both call one function.
     'MT.1050 Apps with high-risk permissions having a direct path to Global Admin'                                                = 'MT.1050'
     'MT.1051 Apps with high-risk permissions having an indirect path to Global Admin'                                             = 'MT.1051'
+    # This title matches both the CIS and Maester checks; preserve the historical Maester mapping.
+    'Ensure modern authentication for Exchange Online is enabled'                                                                  = 'MT.1044'
     # Mock-based unit tests that briefly lived under tests/; they were never security checks.
     'MFA for All users should pass even if not targeting guests'                                                                   = 'retired'
     'MFA for All users that excludes any guest type should fail'                                                                   = 'retired'
@@ -277,13 +279,41 @@ foreach ($nativeTestFile in $nativeTestFiles) {
     if ($parseErrors.Count -gt 0) {
         throw "Failed to parse native test '$($nativeTestFile.FullName)': $($parseErrors[0].Message)"
     }
-    $functions = @($ast.FindAll({
+    $functionAsts = @($ast.FindAll({
                 param($node)
                 $node -is [System.Management.Automation.Language.FunctionDefinitionAst]
-            }, $false) | ForEach-Object { $_.Name } |
+            }, $false))
+    $functions = @($functionAsts | ForEach-Object { $_.Name } |
             Where-Object { $_ -like 'Test-*' -and $_ -notin $IgnoredFunctions } | Sort-Object -Unique)
+    $testFunctions = @($functionAsts | Where-Object {
+            $_.Body.ParamBlock -and ($_.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' })
+        })
+    if ($testFunctions.Count -ne 1) {
+        throw "Expected one function with a [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
+
+    $attribute = $testFunctions[0].Body.ParamBlock.Attributes |
+        Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } |
+        Select-Object -First 1
+    $titleArgument = $attribute.NamedArguments |
+        Where-Object { $_.ArgumentName -eq 'Title' } |
+        Select-Object -First 1
+    if (-not $titleArgument) {
+        throw "Missing Title in the [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
+    $titleExpression = $titleArgument.Argument
+    $title = if ($titleExpression -is [System.Management.Automation.Language.StringConstantExpressionAst]) {
+        $titleExpression.Value
+    } elseif (
+        $titleExpression -is [System.Management.Automation.Language.ExpandableStringExpressionAst] -and
+        $titleExpression.NestedExpressions.Count -eq 0
+    ) {
+        $titleExpression.Value
+    } else {
+        throw "Title must be a constant string in the [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
     $currentIds[$id] = [pscustomobject]@{
-        Id = $id; Title = ''; Functions = $functions; Path = $nativeTestFile.FullName
+        Id = $id; Title = (Get-NormalizedTitle $title); Functions = $functions; Path = $nativeTestFile.FullName
     }
 }
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
