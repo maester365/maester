@@ -11,6 +11,10 @@
         )
         $script:latestTestChange = & git -C $repoRoot log -1 --format=%H -- $testPathSpec
         if ($LASTEXITCODE -ne 0) { throw 'Could not find the latest commit that changed a built-in test.' }
+        $script:generatedTablePath = Join-Path $TestDrive 'Maester.LegacyIds.json'
+        $pwsh = (Get-Process -Id $PID).Path
+        $script:generatorOutput = & $pwsh -NoProfile -NonInteractive -File (Join-Path $repoRoot 'build/golden/Export-MtLegacyIdTable.ps1') -OutputPath $script:generatedTablePath 2>&1
+        $script:generatorExitCode = $LASTEXITCODE
 
         # Fresh AST scan of the built-in tests: the static ID of every It name under tests/ (Custom excluded).
         $script:currentIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -57,6 +61,13 @@
         $script:table.SchemaVersion | Should -Be '1.0'
         $script:table.GeneratedFrom | Should -Match '^[0-9a-f]{40}$'
         @($script:table.Entries).Count | Should -BeGreaterThan 0
+    }
+
+    It 'matches the legacy ID exporter output' {
+        $script:generatorExitCode | Should -Be 0 -Because ($script:generatorOutput | Out-String)
+        $generated = [System.IO.File]::ReadAllText($script:generatedTablePath) -replace "`r`n", "`n"
+        $committed = [System.IO.File]::ReadAllText($legacyIdsPath) -replace "`r`n", "`n"
+        $generated | Should -Be $committed -Because 'Maester.LegacyIds.json is generated and must not be edited by hand'
     }
 
     It 'uses the latest commit that changed either test format as its snapshot' {
