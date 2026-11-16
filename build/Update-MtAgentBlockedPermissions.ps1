@@ -49,16 +49,27 @@ if ([string]::IsNullOrWhiteSpace($content) -or $content.Length -lt 1000) {
 # --- Find the table ---
 
 $lines = $content -split "`n"
-$tableStartIndex = -1
-for ($i = 0; $i -lt $lines.Count; $i++) {
-    if ($lines[$i] -match '^\|\s*Permission name\s*\|') {
-        $tableStartIndex = $i
-        break
-    }
-}
+$headerIndexes = @(for ($i = 0; $i -lt $lines.Count; $i++) {
+    if ($lines[$i] -match '^\|\s*Permission name\s*\|') { $i }
+})
 
-if ($tableStartIndex -lt 0) {
+if ($headerIndexes.Count -eq 0) {
     throw "Could not find the 'Permission name' table header in the downloaded markdown. Microsoft may have renamed or moved the section."
+}
+if ($headerIndexes.Count -gt 1) {
+    throw "Found $($headerIndexes.Count) tables with a 'Permission name' header (lines $(($headerIndexes | ForEach-Object { $_ + 1 }) -join ', ')); expected one. Check which table lists the blocked permissions."
+}
+$tableStartIndex = $headerIndexes[0]
+
+# Rows are read by column position, so check the column names and their order first.
+# A swapped or added column would otherwise put the wrong values in the snapshot.
+$expectedHeader = @('Permission name', 'Delegated', 'Application')
+$headerCells = @($lines[$tableStartIndex].Trim() -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+if (-not [string]::Equals(($headerCells -join ' | '), ($expectedHeader -join ' | '), [StringComparison]::OrdinalIgnoreCase)) {
+    throw "Unexpected table columns '$($headerCells -join ' | ')'; expected '$($expectedHeader -join ' | ')'. Microsoft may have added, removed or reordered a column."
+}
+if ($tableStartIndex + 1 -ge $lines.Count -or $lines[$tableStartIndex + 1].Trim() -notmatch '^\|(\s*:?-+:?\s*\|){3}$') {
+    throw "Expected a three-column separator row (|---|---|---|) after the table header."
 }
 
 # --- Parse rows ---
@@ -75,8 +86,8 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
     # Split on | and trim. The split gives us empty strings at the start and end.
     $cells = $line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' }
 
-    if ($cells.Count -lt 3) {
-        throw "Malformed row (expected 3 columns): $line"
+    if ($cells.Count -ne 3) {
+        throw "Malformed row (expected 3 columns, found $($cells.Count)): $line"
     }
 
     # Column 0: permission name (may be a markdown link like [Name](url))
@@ -90,10 +101,27 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
         throw "Empty permission name in row: $line"
     }
 
-    # Column 1: Delegated, Column 2: Application
-    # The values use symbols, not words, but handle both
-    $delegated = if ($cells[1] -match [char]0x274C) { $true } elseif ($cells[1] -match [char]0x2796) { $false } else { throw "Unexpected Delegated value $($cells[1]) for $permName" }
-    $application = if ($cells[2] -match [char]0x274C) { $true } elseif ($cells[2] -match [char]0x2796) { $false } else { throw "Unexpected Application value $($cells[2]) for $permName" }
+    # Graph permission names use only letters, digits, '.', '_' and '-', as in Microsoft's Graph
+    # permissions reference. Anything else (a space, a backtick, an invisible character) would put a
+    # name in the snapshot that is not the real permission name. A space breaks the drift test's
+    # match; an invisible character does not even show, because PowerShell's -eq ignores it. The
+    # check is case-sensitive (-cnotmatch) because a case-insensitive [A-Za-z] also accepts the
+    # Kelvin sign.
+    if ($permName -cnotmatch '^[A-Za-z0-9][A-Za-z0-9._-]*\z') {
+        throw "Unexpected characters in permission name '$permName' in row: $line"
+    }
+
+    # Column 1: Delegated, column 2: Application. Each cell must hold exactly one symbol:
+    # U+274C (cross mark) means blocked, U+2796 (heavy minus sign) means not blocked. A trailing
+    # U+FE0F (emoji presentation selector) does not change the meaning, so it is removed first.
+    # Compared ordinally: -ceq ignores U+FE0F and zero-width characters on some machines and not on
+    # others (not when .NET runs in invariant globalization mode).
+    $delegated, $application = foreach ($column in 1, 2) {
+        $value = $cells[$column].Replace([string][char]0xFE0F, '').Trim()
+        if ([string]::Equals($value, [string][char]0x274C, [StringComparison]::Ordinal)) { $true }
+        elseif ([string]::Equals($value, [string][char]0x2796, [StringComparison]::Ordinal)) { $false }
+        else { throw "Unexpected $($expectedHeader[$column]) value '$($cells[$column])' for $permName" }
+    }
 
     $permissions.Add(@{
         Permission  = $permName
@@ -106,6 +134,15 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
 
 if ($permissions.Count -lt $MinimumRowCount) {
     throw "Only $($permissions.Count) permissions parsed; expected at least $MinimumRowCount. The table format may have changed."
+}
+
+# A name listed twice makes the snapshot ambiguous (which row's values apply?), and the ordinal
+# sort below does not keep equal names in a fixed order. Stop instead of writing either.
+$seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $permissions) {
+    if (-not $seen.Add($p.Permission)) {
+        throw "Permission '$($p.Permission)' appears more than once in the table. Check the source before updating the snapshot."
+    }
 }
 
 Write-Verbose "Parsed $($permissions.Count) blocked permissions."
@@ -124,11 +161,17 @@ try {
 # The snapshot holds no timestamp, so the workflow's git diff is non-empty only when
 # Microsoft's table or SourceUrl changes.
 
+# Sort by ordinal (character code) comparison. Sort-Object compares by the machine's culture,
+# which orders some names differently from one machine to another and would make the
+# snapshot change without any change in Microsoft's table.
+$sorted = [System.Collections.Generic.List[hashtable]]::new($permissions)
+$sorted.Sort([System.Comparison[hashtable]] { param($a, $b) [string]::CompareOrdinal($a.Permission, $b.Permission) })
+
 $output = [ordered]@{
     SourceUrl    = $SourceUrl
     SourceSha256 = $sourceHash
     Count        = $permissions.Count
-    Permissions  = @($permissions | Sort-Object { $_.Permission } | ForEach-Object {
+    Permissions  = @($sorted | ForEach-Object {
         [ordered]@{
             Permission  = $_.Permission
             Delegated   = $_.Delegated
