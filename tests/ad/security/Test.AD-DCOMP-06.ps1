@@ -46,7 +46,7 @@
     [OutputType([bool])]
     param(
         # Number of days without a logon before an enabled computer is considered stale.
-        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 180
+        [ValidateRange(1, 3650)] [int] $MaximumInactiveDays = 180
     )
 
     Write-Verbose "Starting Test-MtAdComputerStaleEnabledCount"
@@ -64,7 +64,7 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
-    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
+    $staleThreshold = (Get-Date).AddDays(-$MaximumInactiveDays)
 
     # Find enabled computers that haven't logged on for the configured threshold or more.
     $staleEnabledComputers = $computers | Where-Object {
@@ -88,9 +88,9 @@
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Enabled Computers | $totalEnabled |" + "`n"
-    $result += "| Stale Enabled Computers ($StaleThresholdDays+ days) | $staleCount |" + "`n"
+    $result += "| Stale Enabled Computers ($MaximumInactiveDays+ days) | $staleCount |" + "`n"
     $result += "| Never Logged On | $neverLoggedOn |" + "`n"
-    $result += "| Not Logged On in $StaleThresholdDays+ Days | $notLoggedInThresholdDays |" + "`n"
+    $result += "| Not Logged On in $MaximumInactiveDays+ Days | $notLoggedInThresholdDays |" + "`n"
 
     if ($totalEnabled -gt 0) {
         $percentage = [Math]::Round(($staleCount / $totalEnabled) * 100, 2)
@@ -115,7 +115,7 @@
     Write-Verbose "Counts computed"
 
     if ($staleCount -eq 0) {
-        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd'))."
+        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $MaximumInactiveDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd'))."
         $testResultMarkdown = "$analysisSummary`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown

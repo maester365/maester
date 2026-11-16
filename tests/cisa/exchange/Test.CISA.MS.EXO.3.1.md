@@ -5,21 +5,11 @@ Production use of coexistence domains is discouraged, and additional controls, s
 
 Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Enabling DKIM is another means for recipients to detect spoofed emails and verify the integrity of email content.
 
+Every other accepted domain is checked, including a parked domain that never sends email: MS.EXO.3.1v1 asks for DKIM on all domains and gives no separate rule for one. Turning off **Allow mail to be sent from this domain** in Exchange no longer leaves a domain out of this test, and the `ParkedDomains` global setting does not change it.
+
 ### Remediation action
 
-#### Option 1: Enable DKIM
-
 To enable DKIM, follow the instructions listed on [Steps to Create, enable and disable DKIM from Microsoft 365 Defender portal | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-dkim-configure?view=o365-worldwide#steps-to-create-enable-and-disable-dkim-from-microsoft-365-defender-portal).
-
-#### Option 2: Disallow mail to be sent from domain
-
-If the domain is not used for sending mail, we recommend disabling the ability to send from this domain. This will skip the domain for this particular test.
-
-1. Sign in to the [**Exchange Admin Center - Accepted Domains**](https://admin.exchange.microsoft.com/#/accepteddomains).
-2. Select the domain to disable sending from.
-3. Uncheck **Allow mail to be sent from this domain**.
-
-We recommend doing this for **\*onmicrosoft.com** domains.
 
 ### Related links
 

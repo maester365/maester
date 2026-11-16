@@ -1,0 +1,121 @@
+{
+  "Framework": "disa-stig-intune-desktop",
+  "Name": "DISA Microsoft Intune MDM Service Desktop STIG",
+  "Version": "V1R1",
+  "Url": "https://public.cyber.mil/stigs/downloads/?_dl_facet_stigs=microsoft",
+  "Published": "2024-10-04",
+  "Note": "Rule IDs, categories and STIG IDs from the DISA STIG. Related NIST SP 800-53 Rev. 5 controls follow the CCIs each rule lists. DISA STIGs are works of the US Government.",
+  "Requirements": [
+    {
+      "Id": "V-267303",
+      "Category": "CAT II",
+      "RuleId": "SV-267303r1026081_rule",
+      "StigId": "MSIN-24-000030",
+      "Related": [
+        "nist-800-53-r5:AC-11",
+        "nist-800-53-r5:AC-12"
+      ]
+    },
+    {
+      "Id": "V-267309",
+      "Category": "CAT II",
+      "RuleId": "SV-267309r1025795_rule",
+      "StigId": "MSIN-24-000090",
+      "Related": [
+        "nist-800-53-r5:AC-2(3)"
+      ]
+    },
+    {
+      "Id": "V-267314",
+      "Category": "CAT II",
+      "RuleId": "SV-267314r1026042_rule",
+      "StigId": "MSIN-24-000140",
+      "Related": [
+        "nist-800-53-r5:AC-7"
+      ]
+    },
+    {
+      "Id": "V-267315",
+      "Category": "CAT II",
+      "RuleId": "SV-267315r1026051_rule",
+      "StigId": "MSIN-24-000150",
+      "Related": [
+        "nist-800-53-r5:AC-8"
+      ]
+    },
+    {
+      "Id": "V-267334",
+      "Category": "CAT II",
+      "RuleId": "SV-267334r1025801_rule",
+      "StigId": "MSIN-24-000370",
+      "Related": [
+        "nist-800-53-r5:AU-4(1)",
+        "nist-800-53-r5:AU-9(2)"
+      ]
+    },
+    {
+      "Id": "V-267341",
+      "Category": "CAT II",
+      "RuleId": "SV-267341r1026082_rule",
+      "StigId": "MSIN-24-000440",
+      "Related": [
+        "nist-800-53-r5:IA-2(1)",
+        "nist-800-53-r5:IA-2(2)"
+      ]
+    },
+    {
+      "Id": "V-267355",
+      "Category": "CAT II",
+      "RuleId": "SV-267355r1025805_rule",
+      "StigId": "MSIN-24-000610",
+      "Related": [
+        "nist-800-53-r5:IA-5(1)"
+      ]
+    },
+    {
+      "Id": "V-267372",
+      "Category": "CAT II",
+      "RuleId": "SV-267372r1025806_rule",
+      "StigId": "MSIN-24-000820",
+      "Related": [
+        "nist-800-53-r5:AC-2(4)"
+      ]
+    },
+    {
+      "Id": "V-267373",
+      "Category": "CAT II",
+      "RuleId": "SV-267373r1025807_rule",
+      "StigId": "MSIN-24-000830",
+      "Related": [
+        "nist-800-53-r5:AC-2(4)"
+      ]
+    },
+    {
+      "Id": "V-267374",
+      "Category": "CAT II",
+      "RuleId": "SV-267374r1026210_rule",
+      "StigId": "MSIN-24-000840",
+      "Related": [
+        "nist-800-53-r5:AC-2(4)"
+      ]
+    },
+    {
+      "Id": "V-267375",
+      "Category": "CAT II",
+      "RuleId": "SV-267375r1025809_rule",
+      "StigId": "MSIN-24-000850",
+      "Related": [
+        "nist-800-53-r5:AC-2(4)"
+      ]
+    },
+    {
+      "Id": "V-267379",
+      "Category": "CAT II",
+      "RuleId": "SV-267379r1025810_rule",
+      "StigId": "MSIN-24-000900",
+      "Related": [
+        "nist-800-53-r5:AC-2(1)"
+      ]
+    }
+  ]
+}

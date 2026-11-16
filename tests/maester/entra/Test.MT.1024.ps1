@@ -61,7 +61,11 @@ function Test-MtEntraRecommendation {
     [OutputType([bool])]
     param(
         # The recommendation to check, supplied by the engine.
-        $Instance
+        $Instance,
+
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
     )
 
     $recommendation = $Instance.Data
@@ -132,7 +136,7 @@ function Test-MtEntraRecommendation {
     if ($recommendation.status -ne 'completedBySystem' -and $recommendation.recommendationType -in $breakGlassAwareRecommendationTypes) {
         try {
             # Pipe instead of using member access so that no configured accounts yields an empty list, not @($null).
-            $breakGlassObjectId = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId } | Where-Object { $_ })
+            $breakGlassObjectId = @(Get-MtEmergencyAccessAccount -Account $EmergencyAccessAccounts | ForEach-Object { $_.ObjectId } | Where-Object { $_ })
         } catch {
             # A break-glass account that cannot be resolved must not become a false pass. Leave the
             # list empty so the exclusion does not apply and the recommendation is evaluated as-is.

@@ -111,6 +111,8 @@
         $script:TestResult | Should -Match '\[Group failed\]'
         $script:TestResult | Should -Match 'could not be evaluated: unsupported property'
         $script:TestResult | Should -Match 'user.propertyThatDoesNotExist -eq null'
+        $script:TestResult | Should -Match ([regex]::Escape('| ` user.propertyThatDoesNotExist -eq null ` |'))
+        $script:TestResult | Should -Not -Match '<code>'
         $script:TestResult | Should -Not -Match '\[Group healthy\]'
     }
 
@@ -170,6 +172,58 @@
 
         Test-MtDynamicGroupProcessingFailure | Should -BeFalse
         $script:TestResult | Should -Match 'Require MFA for Sales'
+    }
+
+    It 'separates the Conditional Access references of a group with semicolons' {
+        $Groups = @(Get-TestDynamicGroup -Id 'failed')
+        $Statuses = @(Get-TestProcessingStatus -Id 'failed' -Status 'Failed' -ErrorMessage 'Error')
+        $Policies = @(
+            [pscustomobject]@{
+                id          = 'include'
+                displayName = 'Require MFA for Sales'
+                state       = 'enabled'
+                conditions  = [pscustomobject]@{
+                    users = [pscustomobject]@{ includeGroups = @('failed'); excludeGroups = @() }
+                }
+            }
+            [pscustomobject]@{
+                id          = 'exclude'
+                displayName = 'Block legacy authentication'
+                state       = 'enabledForReportingButNotEnforced'
+                conditions  = [pscustomobject]@{
+                    users = [pscustomobject]@{ includeGroups = @(); excludeGroups = @('failed') }
+                }
+            }
+        )
+        Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $Policies }
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            if ($UniqueId) { return $Statuses }
+            return $Groups
+        }
+
+        Test-MtDynamicGroupProcessingFailure | Should -BeFalse
+        $script:TestResult | Should -Match ('Include: \[Require MFA for Sales\]\([^)]*\) \(enabled\); ' +
+            'Exclude: \[Block legacy authentication\]\([^)]*\) \(enabledForReportingButNotEnforced\)')
+        $script:TestResult | Should -Not -Match '<br>'
+    }
+
+    It 'shows the rule as code in its own table cell, whatever characters it contains' {
+        $Rule = '(user.department -match "Sales|HR") -or (user.jobTitle -eq "[Sign in](https://phish.example)")'
+        $Groups = @(Get-TestDynamicGroup -Id 'failed' -Rule $Rule)
+        $Statuses = @(Get-TestProcessingStatus -Id 'failed' -Status 'Failed' -ErrorMessage 'Error')
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            if ($UniqueId) { return $Statuses }
+            return $Groups
+        }
+
+        Test-MtDynamicGroupProcessingFailure | Should -BeFalse
+        $Row = @($script:TestResult -split "`n" | Where-Object { $_ -match '^\| \[Group failed\]' })
+        $Row.Count | Should -Be 1
+        # Four cells, so five pipes that are not escaped, whatever the rule contains.
+        [regex]::Matches($Row[0], '(?<!\\)\|').Count | Should -Be 5
+        $Row[0] | Should -Match ([regex]::Escape(
+                '` (user.department -match "Sales\|HR") -or (user.jobTitle -eq "[Sign in](https://phish.example)") `'))
+        $Row[0] | Should -Not -Match '<code>|&quot;|&#124;'
     }
 
     It 'still fails and lists the group when the Conditional Access policies cannot be read' {

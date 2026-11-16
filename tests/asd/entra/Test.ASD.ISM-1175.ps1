@@ -49,15 +49,19 @@
     [OutputType([bool])]
     param(
         # The IDs of the Exchange Online service plans that provide a mailbox: Plan 2, Plan 1, Kiosk and Essentials.
-        [string[]] $MailboxServicePlanId = @(
+        [string[]] $MailboxServicePlanIds = @(
             'efb87545-963c-4e0d-99df-69c6916d9eb0',
             '9aaf7827-d63c-4b61-89c3-182f06f82e5c',
             '4a82b400-a79f-41a4-b4e2-e94f5787b113',
             '1126bef5-da20-4f07-b45e-ad25d2581aa8'
-        )
+        ),
+
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
     )
 
-    $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
+    $rolesOf = Get-MtPrivilegedRoleUser -EmergencyAccessAccounts $EmergencyAccessAccounts
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
@@ -65,7 +69,7 @@
 
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId @($rolesOf.Keys) -Select id, userPrincipalName, displayName, assignedPlans)
     $withMailbox = @($users | Where-Object {
-            @($_.assignedPlans | Where-Object { $_.servicePlanId -in $MailboxServicePlanId -and $_.capabilityStatus -eq 'Enabled' }).Count -gt 0
+            @($_.assignedPlans | Where-Object { $_.servicePlanId -in $MailboxServicePlanIds -and $_.capabilityStatus -eq 'Enabled' }).Count -gt 0
         } | ForEach-Object {
             [pscustomobject]@{ id = $_.id; displayName = $_.displayName; userPrincipalName = $_.userPrincipalName; Roles = $rolesOf[$_.id] -join ', ' }
         })

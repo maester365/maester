@@ -18,19 +18,37 @@
     <script src="../_shared/gsap.min.js"></script>
     <script src="../_shared/hyperframe.runtime.js"></script>
     <script src="timings.js"></script>
+    <!-- The live check counts, served by the site (src/pages/explainers/counts.js.ts). Without it the numbers in
+         the markup stand. -->
+    <script src="../counts.js"></script>
     <style>
       .scene { position: absolute; inset: 0; opacity: 0; }
       .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
 
       /* Intro and end card */
       .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 34px; }
-      .flame { width: 120px; height: 140px; }
+      .flame { width: 150px; height: 150px; display: block; }
       .big { font-size: 92px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.04; max-width: 1500px; }
       .ember { color: #ff6b6f; }
       .sub { font-size: 38px; color: #a1a1aa; }
       .pill { font-family: "Geist Mono", monospace; font-size: 34px; background: #18181b; border: 2px solid #27272a; border-radius: 18px; padding: 22px 36px; color: #e4e4e7; }
       .pill b { color: #ff8a8d; font-weight: 500; }
       .chips { display: flex; gap: 20px; }
+      /* Intro: the flame's glow, the headline's words, and the products ticking over as they are named */
+      .flamewrap { position: relative; width: 150px; height: 150px; }
+      .glow { position: absolute; left: 50%; top: 55%; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,95,95,.34), rgba(255,95,95,0)); opacity: 0; }
+      .flamewrap .flame { position: relative; transform-origin: 50% 90%; }
+      .big .w { display: inline-block; opacity: 0; }
+      .underline { position: relative; display: inline-block; }
+      .underline::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 8px; border-radius: 4px; background: #ff6b6f; transform: scaleX(var(--u, 0)); transform-origin: 0 50%; }
+      .products { display: flex; gap: 18px; }
+      .product { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; width: 112px; font-size: 19px; line-height: 1.2; color: #a1a1aa; opacity: 0; }
+      .product span { display: flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 24px; border: 2px solid #27272a; background: #18181b; }
+      .product img { width: 56px; height: 56px; object-fit: contain; }
+      /* GitHub's mark is black and the Active Directory icon dark blue: draw both white on the dark tile. */
+      .product img.inv { filter: brightness(0) invert(1); }
+      .product i { position: absolute; left: 76px; top: -10px; width: 34px; height: 34px; border-radius: 50%; background: #22c55e; color: #052e16; font-style: normal; font-weight: 700; font-size: 22px; line-height: 34px; text-align: center; opacity: var(--tick, 0); transform: scale(var(--tick, 0)); }
+      #s-intro .sub { opacity: 0; }
       .chip { font-size: 30px; border: 2px solid #3f3f46; border-radius: 999px; padding: 12px 28px; color: #d4d4d8; }
 
       /* Terminal */
@@ -93,16 +111,38 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="how-it-works" data-start="0" data-duration="100" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="how-it-works" data-start="0" data-duration="101" data-width="1920" data-height="1080">
       <!-- Voice-over and music, mixed by scripts/narration/music.mjs -->
-      <audio id="mix" src="audio/mix.mp3" data-start="0" data-duration="100" data-track-index="2" data-volume="1"></audio>
+      <audio id="mix" src="audio/mix.mp3" data-start="0" data-duration="101" data-track-index="2" data-volume="1"></audio>
 
       <!-- Intro -->
       <div class="scene" id="s-intro">
         <div class="center">
-          <svg class="flame" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 1c1.4 4-1.2 6.4-2.6 8.3C7.6 11.6 6 13.6 6 16.6 6 21 8.7 25 12 25s6-3.1 6-7.4c0-2.3-.9-4-2.1-5.4.2 1.9-.7 3.4-2 3.8.7-4.2-.4-10.3-1.9-15z" fill="#ff5f5f"></path><path d="M12 25c-1.9 0-3.2-1.6-3.2-3.6 0-2 1.6-3.2 2.4-4.6.6 1.4 2 2 2 4 .6-.4 1-1.1 1.2-1.8.5.7.8 1.5.8 2.4 0 2-1.4 3.6-3.2 3.6z" fill="#ffb347"></path></svg>
-          <div class="big">Test your Microsoft 365 <span class="ember">security</span>,<br />every day, in one run.</div>
-          <div class="sub">Maester · open source · free</div>
+          <div class="flamewrap">
+            <div class="glow"></div>
+            <img class="flame" src="../../img/logo.svg" alt="" />
+          </div>
+          <div class="sub">Maester · Open Source · Free</div>
+          <div class="big">
+            <span class="w l1">Test</span> <span class="w l1">your</span> <span class="w l1">Microsoft</span> <span class="w l1">365</span> <span class="w l1 ember">security,</span><br />
+            <span class="w l2 underline" id="u-day">every day,</span> <span class="w l3 underline" id="u-run">in one run.</span>
+          </div>
+          <!-- The products Maester checks, with the logos the report uses (public/report-icons) -->
+          <div class="products">
+            <div class="product"><span><img src="../../report-icons/v1/products/entra.svg" alt="" /></span><i>✓</i>Entra ID</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/exchange.png" alt="" /></span><i>✓</i>Exchange</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/teams.svg" alt="" /></span><i>✓</i>Teams</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/sharepoint.svg" alt="" /></span><i>✓</i>SharePoint</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/defender.svg" alt="" /></span><i>✓</i>Defender</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/intune.svg" alt="" /></span><i>✓</i>Intune</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/purview.svg" alt="" /></span><i>✓</i>Purview</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/azure.svg" alt="" /></span><i>✓</i>Azure</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/azure-devops.svg" alt="" /></span><i>✓</i>Azure DevOps</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/github.svg" alt="" class="inv" /></span><i>✓</i>GitHub</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/ad.svg" alt="" class="inv" /></span><i>✓</i>Active Directory</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/fabric.svg" alt="" /></span><i>✓</i>Fabric</div>
+            <div class="product"><span><img src="../../report-icons/v1/products/copilot-studio.svg" alt="" /></span><i>✓</i>Copilot Studio</div>
+          </div>
         </div>
       </div>
 
@@ -113,7 +153,7 @@
           <div class="term__body">
             <div class="line" id="l1"><span class="prompt">PS&gt; </span><span class="cmd" id="c1">Install-Module <span class="k">Maester</span></span></div>
             <div class="line m" id="l2">Installing package 'Maester'<span class="bar"><i id="b1"></i></span>done</div>
-            <div class="line" id="l3"><span class="g">✓</span> Maester 3.0 installed. <span class="m">888 checks ship in the module.</span></div>
+            <div class="line" id="l3"><span class="g">✓</span> Maester 3.0 installed. <span class="m"><span data-count="builtIn">890</span> checks ship in the module.</span></div>
             <div class="line" id="l4">&nbsp;</div>
             <div class="line" id="l5"><span class="prompt">PS&gt; </span><span class="cmd" id="c2">Connect-Maester</span></div>
             <div class="line m" id="l6">Signing in to Microsoft Graph with read-only permissions…</div>
@@ -121,7 +161,7 @@
             <div class="line" id="l8"><span class="dot"></span>Graph  <span class="dot"></span>Exchange Online  <span class="dot"></span>Teams  <span class="dot"></span>Azure</div>
             <div class="line" id="l9">&nbsp;</div>
             <div class="line" id="l10"><span class="prompt">PS&gt; </span><span class="cmd" id="c3">Invoke-Maester <span class="y">-Pack</span> ZTA</span></div>
-            <div class="line m" id="l11">Selected 1,224 checks · CIS · CISA SCuBA · EIDSCA · ORCA · Maester · Zero Trust Assessment</div>
+            <div class="line m" id="l11">Selected <span data-count="core">1,254</span> checks · CIS · CISA SCuBA · EIDSCA · ORCA · Maester · Zero Trust</div>
           </div>
           <!-- The dashboard takes over the terminal once the run starts -->
           <div class="dash" id="dash">
@@ -208,6 +248,12 @@
       </div>
     </div>
     <script>
+      // The terminal's check counts follow the catalog.
+      for (const el of document.querySelectorAll("[data-count]")) {
+        const n = window.__counts?.[el.dataset.count];
+        if (n) el.textContent = n.toLocaleString("en-US");
+      }
+
       const C = window.__chapters;
       const D = window.__duration;
       const tl = gsap.timeline({ paused: true });
@@ -216,8 +262,24 @@
       const type = (sel, chars, at, d) => tl.to(sel, { width: `${chars}ch`, duration: d, ease: `steps(${chars})` }, at);
 
       // Intro
-      show("#s-intro", 0, 0.4);
-      tl.from("#s-intro .big", { y: 40, duration: 1 }, 0);
+      // Something moves the whole time, in step with the voice-over, so the opening reads without sound: the flame
+      // lights, the name, the headline a phrase at a time as it is spoken, and each product ticking over.
+      const t0 = C.intro.t;
+      const at = (part) => t0 + C.intro.length * part; // a point in the spoken sentence, 0 to 1
+      show("#s-intro", 0, 0.3);
+      tl.fromTo("#s-intro .flame", { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: "back.out(2)" }, 0.1);
+      tl.fromTo("#s-intro .glow", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" }, 0.2);
+      tl.to("#s-intro .glow", { scale: 1.18, opacity: 0.7, duration: 0.9, ease: "sine.inOut", repeat: 7, yoyo: true }, 1.4);
+      tl.fromTo("#s-intro .sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6 }, at(0.08));
+      tl.fromTo("#s-intro .l1", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.24, ease: "power2.out" }, at(0.32));
+      tl.fromTo("#s-intro .product", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.09, ease: "power2.out" }, at(0.34));
+      tl.to("#s-intro .product i", { "--tick": 1, duration: 0.3, stagger: 0.17, ease: "back.out(2)" }, at(0.52));
+      tl.to("#s-intro .product", { color: "#fafafa", duration: 0.3, stagger: 0.17 }, at(0.52));
+      tl.to("#s-intro .product span", { borderColor: "#3d6b3d", duration: 0.3, stagger: 0.17 }, at(0.52));
+      tl.fromTo("#s-intro .l2", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, at(0.7));
+      tl.to("#u-day", { "--u": 1, duration: 0.5, ease: "power2.out" }, at(0.74));
+      tl.fromTo("#s-intro .l3", { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, at(0.85));
+      tl.to("#u-run", { "--u": 1, duration: 0.5, ease: "power2.out" }, at(0.89));
       hide("#s-intro", C.install.t - 0.6);
 
       // Install
@@ -234,7 +296,7 @@
 
       // Invoke
       const tv = C.invoke.t;
-      show("#l10", tv); type("#c3", 23, tv + 0.3, 1.5);
+      show("#l10", tv); type("#c3", 24, tv + 0.3, 1.5);
       show("#l11", tv + 2.6);
 
       // Console dashboard

@@ -112,10 +112,9 @@
         foreach ($Item in $RedirectFindings) {
             $Name = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-            $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
-            $Uri = [System.Net.WebUtility]::HtmlEncode([string]$Item.Uri) -replace '\|', '&#124;'
-            $Issue = [System.Net.WebUtility]::HtmlEncode([string]$Item.Issue) -replace '\|', '&#124;'
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+            $Uri = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Uri))
+            $Issue = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Issue))
             $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | $Uri | $Issue |"
         }
 

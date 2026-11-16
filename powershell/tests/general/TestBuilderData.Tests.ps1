@@ -9,6 +9,20 @@ Describe 'Test builder data' {
         $code | Should -Match ([regex]::Escape("const CONTROL_PATTERN = /$($schema.Properties.Control.Pattern)/;"))
     }
 
+    It 'offers every setting a test can bind, and no connection setting' {
+        $root = (Resolve-Path "$PSScriptRoot/../../..").Path
+        $data = Get-Content (Join-Path $root 'website/src/data/test-builder.json') -Raw | ConvertFrom-Json
+        $registry = (Import-PowerShellDataFile (Join-Path $root 'powershell/assets/MaesterSettings.psd1')).Settings
+        @($data.settings.name | Sort-Object) | Should -Be @($registry.Keys | Sort-Object)
+        $offered = @($data.settings | Where-Object { -not $_.connection -and $_.type -ne 'object' } | ForEach-Object name)
+        # Every setting a built-in test binds is one the page offers.
+        $bound = @(Get-ChildItem (Join-Path $root 'tests') -Recurse -Filter 'Test.*.ps1' | Select-String -Pattern "MaesterParameter\([^)]*Setting\s*=\s*'([^']+)'" -AllMatches |
+                ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+        $bound | Should -Not -BeNullOrEmpty
+        @($bound | Where-Object { $_ -notin $offered }) | Should -BeNullOrEmpty
+        @($data.parameterNames | Where-Object name -EQ 'MaximumInactiveDays').type | Should -Be 'int'
+    }
+
     It 'is up to date with the schema, the registries and the rubric' {
         $root = (Resolve-Path "$PSScriptRoot/../../..").Path
         $fresh = Join-Path ([System.IO.Path]::GetTempPath()) "test-builder-$([guid]::NewGuid()).json"
