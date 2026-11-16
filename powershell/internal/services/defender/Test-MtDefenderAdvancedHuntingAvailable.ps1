@@ -23,6 +23,11 @@
     The distinction matters, because a tenant with no onboarded device must still be skipped by the
     caller's own no-data path, with its own reason.
 
+    The answer is a property of the tenant, not of the caller, so it is read once per run and kept in
+    $__MtSession.DefenderHuntingTables. Three checks depend on it and advanced hunting is rate limited;
+    asking the same question three times a run is a cost paid by every tenant, including the ones where
+    nothing is wrong. Invoke-Maester clears it between runs.
+
     .OUTPUTS
     [bool] - True when the Defender for Endpoint tables answer, false when they do not.
 
@@ -35,8 +40,13 @@
     [OutputType([bool])]
     param()
 
+    if ($null -ne $__MtSession.DefenderHuntingTables) {
+        return [bool]$__MtSession.DefenderHuntingTables
+    }
+
     try {
         $null = Invoke-MtGraphSecurityQuery -Query 'DeviceInfo | project DeviceId | take 1' -Timespan 'P1D'
+        $__MtSession.DefenderHuntingTables = $true
         return $true
     } catch {
         # Deliberately broad. Invoke-MtGraphSecurityQuery surfaces the API's message, and that message is
@@ -45,6 +55,7 @@
         # ". Fix semantic errors in your query." for others. Matching the text would make the probe fail
         # open on the tenants it exists for. The query being a constant is what bounds this catch.
         Write-Verbose "Defender for Endpoint tables did not answer advanced hunting: $($_.Exception.Message)"
+        $__MtSession.DefenderHuntingTables = $false
         return $false
     }
 }

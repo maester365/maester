@@ -6,6 +6,12 @@
         Use-MtModuleFunction -Name Test-MtDefenderAdvancedHuntingAvailable
     }
 
+    BeforeEach {
+        # The answer is cached for the run. Without this each case would read the previous one's result
+        # and the probe would appear to work no matter what it was given.
+        InModuleScope Maester { $__MtSession.DefenderHuntingTables = $null }
+    }
+
     It 'reports available when the probe query answers' {
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { @([pscustomobject]@{ DeviceId = 'd1' }) }
 
@@ -35,17 +41,43 @@
         Test-MtDefenderAdvancedHuntingAvailable | Should -BeFalse
     }
 
-    It 'asks only for what it needs, once' {
-        # The probe runs before every check that depends on it, so a probe that pulled rows would be a
-        # per-run cost on every tenant, including the ones where nothing is wrong.
+    It 'asks only for what it needs, and only once per run' {
+        # Three checks depend on this and advanced hunting is rate limited, so the question is asked
+        # once and kept for the run. A probe that pulled rows, or asked again per check, would be a cost
+        # on every tenant, including the ones where nothing is wrong.
         Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { @() }
 
+        $null = Test-MtDefenderAdvancedHuntingAvailable
+        $null = Test-MtDefenderAdvancedHuntingAvailable
         $null = Test-MtDefenderAdvancedHuntingAvailable
 
         Should -Invoke -ModuleName Maester Invoke-MtGraphSecurityQuery -Times 1 -Exactly
         Should -Invoke -ModuleName Maester Invoke-MtGraphSecurityQuery -ParameterFilter {
             $Query -eq 'DeviceInfo | project DeviceId | take 1'
         } -Times 1 -Exactly
+    }
+
+    It 'caches the unavailable answer too, rather than retrying per check' {
+        # The expensive case is the one that fails: without this the tenant pays a failing query for
+        # every check that depends on the probe.
+        Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { throw 'Query execution has failed.' }
+
+        Test-MtDefenderAdvancedHuntingAvailable | Should -BeFalse
+        Test-MtDefenderAdvancedHuntingAvailable | Should -BeFalse
+
+        Should -Invoke -ModuleName Maester Invoke-MtGraphSecurityQuery -Times 1 -Exactly
+    }
+
+    It 'asks again once the run cache is cleared' {
+        # Invoke-Maester clears the per-run cache, so a second run on a tenant whose licensing changed
+        # must not be answered from the first.
+        Mock -ModuleName Maester Invoke-MtGraphSecurityQuery { @() }
+
+        $null = Test-MtDefenderAdvancedHuntingAvailable
+        InModuleScope Maester { $__MtSession.DefenderHuntingTables = $null }
+        $null = Test-MtDefenderAdvancedHuntingAvailable
+
+        Should -Invoke -ModuleName Maester Invoke-MtGraphSecurityQuery -Times 2 -Exactly
     }
 
     It 'does not swallow the failure silently' {
