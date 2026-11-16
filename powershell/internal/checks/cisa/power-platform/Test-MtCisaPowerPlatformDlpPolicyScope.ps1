@@ -41,11 +41,12 @@
     }
 
     $defaultName = $defaultEnvironments[0].Name
+    $investigate = $false
     if ($Scope -eq 'DefaultEnvironment') {
         $coveringPolicies = @($policies | Where-Object { & $covers $_ $defaultName })
-        $testResult = $coveringPolicies.Count -gt 0
+        $checkResult = $coveringPolicies.Count -gt 0
 
-        if ($testResult) {
+        if ($checkResult) {
             $message = 'Well done. At least one DLP policy applies to the default Power Platform environment.'
         }
         elseif ($policies.Count -eq 0) {
@@ -69,16 +70,16 @@
                 $environment = $_
                 -not ($policies | Where-Object { & $covers $_ $environment.Name })
             })
-        $testResult = $allEnvironmentPolicies.Count -gt 0 -or $uncovered.Count -eq 0
+        # The admin API does not indicate whether this inventory is complete for the tenant.
+        $environmentInventoryComplete = $false
+        $checkResult = $allEnvironmentPolicies.Count -gt 0 -or ($environmentInventoryComplete -and $uncovered.Count -eq 0)
+        $investigate = -not $environmentInventoryComplete -and $allEnvironmentPolicies.Count -eq 0 -and $uncovered.Count -eq 0
 
         if ($allEnvironmentPolicies.Count -gt 0) {
             $message = 'Well done. At least one DLP policy applies to all Power Platform environments.'
         }
-        elseif ($nonDefaultEnvironments.Count -eq 0) {
-            $message = 'Well done. The tenant has no non-default Power Platform environments that need a DLP policy.'
-        }
-        elseif ($testResult) {
-            $message = 'Well done. Every non-default Power Platform environment is covered by a DLP policy.'
+        elseif ($investigate) {
+            $message = 'Unable to verify that the returned environment inventory is complete for the tenant. Confirm the full inventory with a tenant-wide Power Platform administrator.'
         }
         else {
             $message = 'Some non-default Power Platform environments are not covered by any DLP policy. Add them to a DLP policy scope.'
@@ -92,6 +93,6 @@
         }
     }
 
-    Add-MtTestResultDetail -Result "$message`n`n$resultMd"
-    return $testResult
+    Add-MtTestResultDetail -Result "$message`n`n$resultMd" -Investigate:$investigate
+    return $checkResult
 }

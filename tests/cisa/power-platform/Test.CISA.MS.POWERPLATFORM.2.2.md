@@ -2,6 +2,8 @@ Checks that every non-default Power Platform environment is covered by at least 
 
 Environments without a DLP policy allow unrestricted connector use, which can move organizational data to unapproved services.
 
+The Power Platform API does not indicate whether its environment inventory is complete for the tenant. If no all-environments policy applies and no returned environment is uncovered, the result requires investigation rather than passing. Confirm the full inventory with a tenant-wide Power Platform administrator.
+
 #### Remediation action
 
 1. Sign in to the [Power Platform admin center](https://admin.powerplatform.microsoft.com).

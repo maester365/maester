@@ -164,6 +164,31 @@ Describe 'CISA Power Platform baseline: DLP policy scope' {
         }
     }
 
+    It 'investigates when no non-default environments are returned without an all-environments policy' {
+        Mock -ModuleName Maester Get-MtPowerPlatformEnvironment {
+            [pscustomobject]@{ Name = 'Default-1'; DisplayName = 'Default'; IsDefault = $true; EnvironmentType = 'Default' }
+        }
+        Mock -ModuleName Maester Get-MtPowerPlatformDlpPolicy { }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformNonDefaultEnvironmentDlp | Should -BeFalse
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Investigate }
+    }
+
+    It 'investigates when returned environments are covered but inventory completeness is unknown' {
+        Mock -ModuleName Maester Get-MtPowerPlatformDlpPolicy {
+            [pscustomobject]@{ DisplayName = 'P'; Scope = 'OnlyEnvironments'; Environments = @('Dev') }
+        }
+
+        InModuleScope Maester {
+            Test-MtCisaPowerPlatformNonDefaultEnvironmentDlp | Should -BeFalse
+        }
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Investigate }
+    }
+
     It 'escapes tenant-controlled policy names in the default environment table' {
         Mock -ModuleName Maester Get-MtPowerPlatformDlpPolicy {
             [pscustomobject]@{ DisplayName = "Ops | [Open](https://example.test)`nInjected"; Scope = 'AllEnvironments'; Environments = @() }
