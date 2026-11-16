@@ -16,7 +16,7 @@
         ImplementationCost = 'Low',
         Mitre              = 'None',
         Service            = 'Graph',
-        Permission         = ('Graph:Scope:IdentityUserFlow.Read.All', 'Graph:Scope:Application.Read.All'),
+        Permission         = ('Graph:Scope:EventListener.Read.All', 'Graph:Scope:Application.Read.All'),
         TenantType         = 'External',
         Lifecycle          = 'Preview',
         Author             = ('rbrayb'),

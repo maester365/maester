@@ -16,7 +16,7 @@ to.
 
 1. In the [Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/UsersManagementMenuBlade/~/AllUsers), open **Users**.
 2. Locate each user listed in the results below (search by email/UPN).
-3. Update their **First name** / **Last name** (or ask the user to complete their profile) so the display name is meaningful. If the account is a test or abandoned account, consider removing it instead.
+3. Update their **Display Name** / **First name** / **Last name** (or ask the user to complete their profile) so the display name is meaningful. If the account is a test or abandoned account, consider removing it instead.
 
 <!--- Results --->
 %TestResult%
