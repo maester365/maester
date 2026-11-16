@@ -19,9 +19,9 @@
         - Risk-gated : has a user- or sign-in-risk condition, so the control only applies under elevated risk.
         - Browser    : limited to the 'browser' client app type; Private Access traffic is not browser-based.
 
-        Reviewed, accepted exceptions can be allow-listed by policy id or display name via the
-        'GsaQuickAccessSignInFrequencyAllowedPolicies' global setting (maester-config.json); those are
-        reported as Accepted and never fail.
+        Reviewed, accepted exceptions can be allow-listed by policy id or display name in the
+        AllowedPolicies parameter (TestSettings in maester-config.json); those are reported as Accepted
+        and never fail.
 
         Remediation for a Fail is to exclude the Quick Access app from the sign-in frequency policy - not
         to remove the control organization-wide.
@@ -54,9 +54,8 @@
     [OutputType([bool])]
     param (
         # Conditional Access policies (by id or displayName) that are reviewed, accepted exceptions and
-        # should never fail this check. Defaults to the 'GsaQuickAccessSignInFrequencyAllowedPolicies'
-        # GlobalSetting in maester-config.json.
-        [string[]] $AllowedPolicies
+        # should never fail this check.
+        [string[]] $AllowedPolicies = @()
     )
 
     Write-Verbose "Running Test-MtGsaQuickAccessNoSignInFrequency..."
@@ -71,9 +70,6 @@
     }
     $quickAccessAppId = $quickAccess.appId
 
-    if (-not $AllowedPolicies) {
-        $AllowedPolicies = @(Get-MtSetting -Name 'GsaQuickAccessSignInFrequencyAllowedPolicies')
-    }
     $AllowedPolicies = @($AllowedPolicies | Where-Object { $_ })
 
     # Enabled sign-in-frequency policies that target the Quick Access app (directly or via All resources).
@@ -146,7 +142,7 @@
     }
 
     if (@($acceptedPolicies).Count -gt 0) {
-        $testResult += "`n**Accepted (allow-listed):** reviewed exceptions from ``GsaQuickAccessSignInFrequencyAllowedPolicies``:`n`n"
+        $testResult += "`n**Accepted (allow-listed):** reviewed exceptions from ``AllowedPolicies``:`n`n"
         foreach ($policy in $acceptedPolicies) { $testResult += "* $($policy.displayName)`n" }
     }
 

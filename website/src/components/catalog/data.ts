@@ -26,6 +26,7 @@ export const suiteInfo: Record<string, { name: string; slug: string }> = {
 	CIS: { name: 'CIS', slug: 'cis' },
 	CISA: { name: 'CISA SCuBA', slug: 'cisa' },
 	ASD: { name: 'ASD Essential Eight', slug: 'asd' },
+	DISA: { name: 'DISA STIGs', slug: 'disa' },
 	EIDSCA: { name: 'Entra ID SCA (EIDSCA)', slug: 'eidsca' },
 	ORCA: { name: 'ORCA', slug: 'orca' },
 	AD: { name: 'Active Directory', slug: 'ad' },

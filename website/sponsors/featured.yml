@@ -14,13 +14,13 @@
 #
 # Logos are PNG or SVG, about 1000 pixels wide at most, cropped to the logo with a transparent background.
 
+- name: Increment
+  url: https://www.increment.inc
+  logo: /img/sponsors/increment.png
+  logoDark: /img/sponsors/increment-dark.png
+
 - name: CyberDrain
   url: https://cyberdrain.com
   github: CyberDrain
   logo: /img/sponsors/cyberdrain.png
   logoDark: /img/sponsors/cyberdrain-dark.png
-
-- name: Increment
-  url: https://www.increment.inc
-  logo: /img/sponsors/increment.png
-  logoDark: /img/sponsors/increment-dark.png

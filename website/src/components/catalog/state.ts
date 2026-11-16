@@ -2,9 +2,12 @@
 // The URL is the state: each filter is a query parameter with comma-separated values, so a filtered view can be
 // shared and survives a reload. A change is announced with a `mt-catalog` event on window.
 
-export const FILTERS = ['q', 'severity', 'area', 'cost', 'impact', 'source', 'channel', 'product', 'feature', 'suite', 'mitre', 'pillar', 'author', 'group'] as const;
+export const FILTERS = ['q', 'severity', 'area', 'cost', 'impact', 'source', 'channel', 'product', 'feature', 'suite', 'mitre', 'pillar', 'author', 'group', 'sort'] as const;
 export type Filter = (typeof FILTERS)[number];
 export type State = Record<Filter, string[]>;
+
+// How the list is shown rather than which checks it holds: kept when the filters are cleared.
+export const VIEW: readonly Filter[] = ['group', 'sort'];
 
 export function readState(): State {
 	const params = new URLSearchParams(location.search);
@@ -46,9 +49,9 @@ export function onState(listener: (state: State) => void) {
 	listener(readState());
 }
 
-// Filters that narrow the checks (all but how they are grouped).
+// Filters that narrow the checks (all but how they are grouped and sorted).
 // eslint-disable-next-line security/detect-object-injection -- name is one of FILTERS
-export const isFiltered = (state: State) => FILTERS.some((name) => name !== 'group' && state[name].length > 0);
+export const isFiltered = (state: State) => FILTERS.some((name) => !VIEW.includes(name) && state[name].length > 0);
 
 // The values of one check that the filters test, as the list writes them on its rows (data-* attributes): text in
 // lowercase for the search, and space-separated lists for the fields a check can have several of.

@@ -42,11 +42,8 @@
 
     $dkimSigningConfigs = Get-MtExo -Request DkimSigningConfig
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# DKIM record without key for parked domains
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # Every accepted domain is checked, a parked domain included: MS.EXO.3.1v1 asks for DKIM on all domains
+    # and gives no separate rule for a domain that never sends email.
 
     $dkimRecords = @()
     foreach ($domain in $acceptedDomains) {
@@ -68,8 +65,8 @@
         if (-not $dkimSigningConfig) {
             $dkimRecord = [PSCustomObject]@{
                 domain     = $domain.DomainName
-                pass       = if ($domain.SendingFromDomainDisabled) { 'Skipped' } elseif ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
-                reason     = if ($domain.SendingFromDomainDisabled) { 'Parked domain' } elseif ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
+                pass       = if ($domain.InitialDomain -eq $true) { 'Passed' } else { 'Failed' }
+                reason     = if ($domain.InitialDomain -eq $true) { 'Microsoft auto-signs DKIM for the initial onmicrosoft.com domain' } else { 'No DkimSigningConfig found for domain' }
                 dkimRecord = $null
             }
             $dkimRecords += $dkimRecord
@@ -100,10 +97,7 @@
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
-        if ($domain.SendingFromDomainDisabled) {
-            $dkimRecord.pass = 'Skipped'
-            $dkimRecord.reason = 'Parked domain'
-        } elseif (-not $dkimSigningConfig.enabled) {
+        if (-not $dkimSigningConfig.enabled) {
             $dkimRecord.pass = 'Failed'
             $dkimRecord.reason = 'DKIM is disabled'
         } elseif ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
@@ -112,8 +106,6 @@
             } else {
                 $dkimRecord.pass = 'Passed'
             }
-        } elseif ($domain.DomainName -like '*.onmicrosoft.com') {
-            $dkimRecord.reason = "Recommendation: Disable sending from domain"
         } elseif ($dkimRecord.dkimRecord -like "*not available") {
             $dkimRecord.pass = "Skipped"
             $dkimRecord.reason = $dkimRecord.dkimRecord

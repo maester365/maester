@@ -102,6 +102,25 @@ Describe 'Maester Pack manifest' {
         @($read.Warnings) -match '6 levels deep' | Should -Not -BeNullOrEmpty
     }
 
+    It 'reads the Settings a pack declares, and refuses <Case>' -ForEach @(
+        @{ Case = 'a name without a namespace'; Settings = @{ Regions = @{ Type = 'string[]' } }; Message = '*must be named Namespace.Key*' }
+        @{ Case = 'a setting without a type'; Settings = @{ 'Contoso.Regions' = @{ Default = @() } }; Message = '*needs a Type*' }
+        @{ Case = 'a type Maester does not know'; Settings = @{ 'Contoso.Regions' = @{ Type = 'datetime' } }; Message = '*needs a Type*' }
+        @{ Case = 'allowed values for a number'; Settings = @{ 'Contoso.Limit' = @{ Type = 'int'; AllowedValues = @('1') } }; Message = '*AllowedValues is a list of strings*' }
+    ) {
+        $pack = Copy-SamplePack -Destination (Join-Path $TestDrive "settings-$([guid]::NewGuid().ToString('n'))")
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member -NotePropertyName Settings -NotePropertyValue @{ 'Contoso.Regions' = @{ Type = 'string[]'; Default = @('eu'); Description = 'Regions to check.'; Colour = 'red' } } -Force }
+        $ok = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        $ok.Errors | Should -BeNullOrEmpty
+        $ok.Manifest.Settings.'Contoso.Regions'.Type | Should -Be 'string[]'
+        @($ok.Warnings) -match "unknown key 'Colour'" | Should -Not -BeNullOrEmpty
+
+        Set-Manifest -Pack $pack -Change { param($m) $m | Add-Member -NotePropertyName Settings -NotePropertyValue $Settings -Force }
+        $bad = InModuleScope Maester -Parameters @{ Path = $pack } { param($Path) Read-MtPackManifest -Path $Path }
+        @($bad.Errors.Message) -like $Message | Should -Not -BeNullOrEmpty
+        @($bad.Manifest.Settings.PSObject.Properties).Count | Should -Be 0
+    }
+
     It 'accepts the menu of the Zero Trust Assessment pack without a warning' {
         $read = InModuleScope Maester -Parameters @{ Path = (Join-Path $PSScriptRoot '../../../packs/zero-trust-assessment') } { param($Path) Read-MtPackManifest -Path $Path -Official }
         $read.Errors | Should -BeNullOrEmpty

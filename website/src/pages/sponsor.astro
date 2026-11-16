@@ -1,6 +1,6 @@
 ---
-// Sponsor: organisations first, then the people who build Maester (their GitHub Sponsors listings, refreshed
-// on each deploy by scripts/sponsors.mjs into src/data/sponsors.json).
+// Sponsor: the people who build Maester first (their GitHub Sponsors listings, refreshed on each deploy by
+// scripts/sponsors.mjs into src/data/sponsors.json), then organisations.
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SponsorPage from '../react/SponsorPage.jsx';
 ---
@@ -10,6 +10,7 @@ import SponsorPage from '../react/SponsorPage.jsx';
 	description="Maester is free and open source. Sponsor the project as an organisation, or sponsor the people who build it."
 	wide
 >
+	<SponsorPage />
 	<section class="org">
 		<div>
 			<p class="eyebrow">For organisations</p>
@@ -17,15 +18,16 @@ import SponsorPage from '../react/SponsorPage.jsx';
 			<p>
 				Sponsorship pays for maintainer time, the test tenants every check is proven against, and the Microsoft licences
 				those tenants need. Organisation sponsors are thanked with their logo on this page, on the home page and in the
-				README. Sponsorship never changes what a check reports: every check is reviewed against the same public rubric.
+				README.
 			</p>
 		</div>
 		<div class="org__actions">
 			<a class="site-btn site-btn--primary" href="https://github.com/sponsors/maester365">Sponsor on GitHub</a>
-			<a class="site-btn site-btn--ghost" href="https://discord.maester.dev">Ask about invoicing on Discord</a>
+			<a class="site-btn site-btn--ghost" href="https://packs.maester.cloud/sponsor?from=maester.dev"
+				>Talk to us about sponsoring</a
+			>
 		</div>
 	</section>
-	<SponsorPage />
 </SiteLayout>
 
 <style>
@@ -39,7 +41,7 @@ import SponsorPage from '../react/SponsorPage.jsx';
 		border-radius: 20px;
 		background: var(--mt-canvas);
 		padding: clamp(1.5rem, 4vw, 2.5rem);
-		margin-bottom: 1rem;
+		margin-top: 3rem;
 	}
 	.org > div:first-child {
 		max-width: 44rem;
