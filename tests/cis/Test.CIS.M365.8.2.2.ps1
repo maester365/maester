@@ -29,7 +29,7 @@
         Control = ('cis-m365:8.2.2', 'nist-800-53-r5:AC-20'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
-        Contributor = ('merill', 'Mynster9361')
+        Contributor = ('merill', 'Mynster9361', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -46,6 +46,8 @@
         $policySetting = $externalAccessPolicy.EnableTeamsConsumerAccess
     }
     $testResult = $orgSetting -eq $false -or $policySetting -eq $false
+    $passResult = '✅ Pass'
+    $failResult = '❌ Fail'
 
     $resultMarkdown = if ($testResult) {
         "Well done. Communication with unmanaged Teams users is turned off by the audited Global external access policy or organization setting. Custom external access policies assigned to users are not checked.`n`n"
@@ -54,9 +56,9 @@
     }
     $resultMarkdown += "| Setting | Value | Result |`n"
     $resultMarkdown += "| --- | --- | --- |`n"
-    $resultMarkdown += "| AllowTeamsConsumer (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { 'Pass' } else { 'Fail' }) |`n"
+    $resultMarkdown += "| AllowTeamsConsumer (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { $passResult } else { $failResult }) |`n"
     $policyValue = if ($orgSetting -eq $false) { 'Not checked' } elseif ($null -eq $policySetting) { 'Not found' } else { $policySetting }
-    $policyResult = if ($orgSetting -eq $false) { 'Not checked' } elseif ($policySetting -eq $false) { 'Pass' } else { 'Fail' }
+    $policyResult = if ($orgSetting -eq $false) { 'Not checked' } elseif ($policySetting -eq $false) { $passResult } else { $failResult }
     $resultMarkdown += "| EnableTeamsConsumerAccess (Global external access policy) | $policyValue | $policyResult |`n"
     $resultMarkdown += "`nEither setting turned off meets the CIS recommendation."
 

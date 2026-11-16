@@ -78,11 +78,13 @@ Describe 'Test-MtCisZAP' {
 
 Describe 'CIS unmanaged Teams user settings' {
     BeforeEach {
+        $script:Result = $null
         $script:Federation = [pscustomobject]@{
             AllowTeamsConsumer       = $false
             AllowTeamsConsumerInbound = $false
         }
         $script:GlobalPolicy = $null
+        Mock Add-MtTestResultDetail { param($Result) $script:Result = $Result }
         Mock Get-CsTenantFederationConfiguration { $script:Federation }
         Mock Get-CsExternalAccessPolicy {
             if ($null -eq $script:GlobalPolicy) { throw 'The Global policy lookup should not run.' }
@@ -92,28 +94,40 @@ Describe 'CIS unmanaged Teams user settings' {
 
     It 'passes 8.2.2 without looking up the Global policy when the organization setting is false' {
         Test-MtCisCommunicateWithUnmanagedTeamsUsers | Should -BeTrue
+        $script:Result | Should -Match ([regex]::Escape('| AllowTeamsConsumer (organization settings) | False | ✅ Pass |'))
         Should -Invoke Get-CsExternalAccessPolicy -Times 0 -Exactly
     }
 
     It 'passes 8.2.3 without looking up the Global policy when the organization setting is false' {
         Test-MtCisCommunicateInitiateExternalTeamsUsers | Should -BeTrue
+        $script:Result | Should -Match ([regex]::Escape('| AllowTeamsConsumerInbound (organization settings) | False | ✅ Pass |'))
         Should -Invoke Get-CsExternalAccessPolicy -Times 0 -Exactly
     }
 
-    It 'uses the Global policy fallback for 8.2.2 when the organization setting is enabled' {
+    It 'uses the Global policy fallback and reports pass/fail for 8.2.2 when the organization setting is enabled' {
         $script:Federation.AllowTeamsConsumer = $true
         $script:GlobalPolicy = [pscustomobject]@{ EnableTeamsConsumerAccess = $false }
 
         Test-MtCisCommunicateWithUnmanagedTeamsUsers | Should -BeTrue
-        Should -Invoke Get-CsExternalAccessPolicy -Times 1 -Exactly
+        $script:Result | Should -Match ([regex]::Escape('| EnableTeamsConsumerAccess (Global external access policy) | False | ✅ Pass |'))
+
+        $script:GlobalPolicy.EnableTeamsConsumerAccess = $true
+        Test-MtCisCommunicateWithUnmanagedTeamsUsers | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| EnableTeamsConsumerAccess (Global external access policy) | True | ❌ Fail |'))
+        Should -Invoke Get-CsExternalAccessPolicy -Times 2 -Exactly
     }
 
-    It 'uses the Global policy fallback for 8.2.3 when the organization setting is enabled' {
+    It 'uses the Global policy fallback and reports pass/fail for 8.2.3 when the organization setting is enabled' {
         $script:Federation.AllowTeamsConsumerInbound = $true
         $script:GlobalPolicy = [pscustomobject]@{ EnableTeamsConsumerInbound = $false }
 
         Test-MtCisCommunicateInitiateExternalTeamsUsers | Should -BeTrue
-        Should -Invoke Get-CsExternalAccessPolicy -Times 1 -Exactly
+        $script:Result | Should -Match ([regex]::Escape('| EnableTeamsConsumerInbound (Global external access policy) | False | ✅ Pass |'))
+
+        $script:GlobalPolicy.EnableTeamsConsumerInbound = $true
+        Test-MtCisCommunicateInitiateExternalTeamsUsers | Should -BeFalse
+        $script:Result | Should -Match ([regex]::Escape('| EnableTeamsConsumerInbound (Global external access policy) | True | ❌ Fail |'))
+        Should -Invoke Get-CsExternalAccessPolicy -Times 2 -Exactly
     }
 }
 
@@ -127,6 +141,7 @@ Describe 'Test-MtCisThirdPartyFileSharing' {
 
     It 'passes when every provider is off' {
         Test-MtCisThirdPartyFileSharing | Should -BeTrue
+        $script:Result | Should -Match ([regex]::Escape('| AllowDropBox | False | No | ✅ Pass |'))
     }
 
     It 'fails when a provider that is not approved is on' {

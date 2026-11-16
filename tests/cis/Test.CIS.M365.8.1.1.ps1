@@ -35,7 +35,7 @@
         Control = ('cis-m365:8.1.1', 'nist-800-53-r5:AC-20', 'nist-800-53-r5:CM-7'),
         Service = 'Teams',
         Author = 'HenrikPiecha',
-        Contributor = ('merill', 'Mynster9361')
+        Contributor = ('merill', 'Mynster9361', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -62,6 +62,9 @@
     $return = $true
     foreach ($provider in 'Dropbox', 'Box', 'GoogleDrive', 'ShareFile', 'Egnyte') {
         $setting = "Allow$provider"
+        if ($provider -eq 'Dropbox') {
+            $setting = 'AllowDropBox'
+        }
         $value = $clientConfig.$setting
         $approved = $provider -in $ApprovedProviders
         if ($value -eq $false -or ($approved -and $value -eq $true)) {
