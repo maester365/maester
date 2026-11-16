@@ -16,6 +16,15 @@
     [OutputType([pscustomobject])]
     param()
 
+    # Probed before the real query. Without this, a tenant whose Defender for Endpoint tables are not
+    # served by advanced hunting ends the whole family in Error carrying the API's own text, which can be
+    # as little as ". Fix semantic errors in your query." - a message that points at this check rather
+    # than at the tenant. See Test-MtDefenderAdvancedHuntingAvailable for why no licence gate detects it.
+    if (-not (Test-MtDefenderAdvancedHuntingAvailable)) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Defender for Endpoint tables are not available in advanced hunting on this tenant. A tenant holding both Defender for Business and Defender for Endpoint Plan 2 keeps the Defender for Business experience, which has no advanced hunting, until Support switches it.'
+        return
+    }
+
     $configurations = Get-MtDefenderSecureConfigurationAssessment
 
     foreach ($configuration in $configurations) {

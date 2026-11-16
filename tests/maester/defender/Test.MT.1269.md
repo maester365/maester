@@ -14,6 +14,7 @@ Only configurations Defender reports as **applicable to at least one device** ar
 
 - **No Defender Vulnerability Management data.** When the hunting query returns no assessment, no device is onboarded to Defender for Endpoint or none has reported. The family is skipped with `NoInstances`. A tenant with no onboarded device has no configuration to be compliant with, and is never reported as having none non-compliant.
 - **Not licensed.** The check declares `DEFENDER_XDR`, so a tenant without a Defender XDR workload is skipped as not licensed, never failed.
+- **Advanced hunting does not serve the Defender for Endpoint tables.** The check probes `DeviceInfo` before its own query and skips when that table does not answer. A tenant holding both Defender for Business (from Business Premium) and Defender for Endpoint Plan 2 (for instance from an E5 trial) keeps the [Defender for Business experience](https://learn.microsoft.com/defender-business/mdb-faq#can-i-have-a-mix-of-microsoft-endpoint-security-subscriptions) until Support switches it, and [advanced hunting belongs to Plan 2 only](https://learn.microsoft.com/defender-business/mdb-overview#how-does-defender-for-business-compare-to-microsoft-defender-for-endpoint). A licence gate cannot see this: `DEFENDER_XDR` passes, and so would a gate on Plan 2. Without the probe the check ends in `Error` carrying the API's own text, which on such a tenant can be as little as `". Fix semantic errors in your query."`.
 
 ## How to remediate
 

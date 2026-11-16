@@ -59,6 +59,14 @@
     [OutputType([bool])]
     param()
 
+    # Same probe as MT.1269: a tenant whose Defender for Endpoint tables are not served by advanced
+    # hunting would otherwise end in Error with the API's own text rather than with a reason an
+    # assessor can act on.
+    if (-not (Test-MtDefenderAdvancedHuntingAvailable)) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Defender for Endpoint tables are not available in advanced hunting on this tenant. A tenant holding both Defender for Business and Defender for Endpoint Plan 2 keeps the Defender for Business experience, which has no advanced hunting, until Support switches it.'
+        return $null
+    }
+
     $summary = Get-MtDefenderExploitableVulnerability
     if ($null -eq $summary) {
         # Defender returned no result set at all. Report a skip rather than a clean fleet.
