@@ -43,7 +43,7 @@
     [OutputType([bool])]
     param()
 
-    # Deleted users stay in the risk report and admins cannot dismiss them, so they are not reported.
+    # Deleted users can stay in the risk report, but a deleted account cannot sign in and leaves nothing to act on, so it is not reported.
     # Active, unremediated risk states. A flag an admin has handled moves to 'remediated',
     # 'dismissed', 'confirmedSafe' or 'none'; those are intentionally excluded.
     # 'confirmedCompromised' MUST be treated as unremediated alongside 'atRisk' -- confirming a

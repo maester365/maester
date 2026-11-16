@@ -155,7 +155,7 @@
         $script:TestResult | Should -Match 'Found 1 medium-risk'
     }
 
-    It 'does not report a deleted user, whose risk an admin cannot dismiss' {
+    It 'does not report a deleted user, who cannot sign in and leaves nothing to act on' {
         Mock -ModuleName Maester Invoke-MtGraphRequest {
             return @(
                 [pscustomobject]@{
