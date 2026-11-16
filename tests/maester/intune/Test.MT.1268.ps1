@@ -81,7 +81,9 @@ function Test-MtIntuneSecurityBaselineStatus {
     and fails when any device is not secure, in conflict, or in error.
 
     For a settings catalog baseline there is no such summary to read, so the baseline is reported and
-    skipped as not applicable rather than judged. Graph publishes no per-device state for
+    skipped with a reason that names the limitation rather than judged. The engine's NotApplicable text
+    ("This test does not apply to this tenant.") said the opposite of the detail next to it, which states
+    that the baseline is assigned. Graph publishes no per-device state for
     configurationPolicies - the resource has no deviceStatuses navigation, and the one route that carries
     it, the DeviceStatusesByConfigurationProfile export, documents its column names but not the meaning of
     their values. Deciding a tenant's security posture on an undocumented encoding is worse than saying
@@ -89,8 +91,8 @@ function Test-MtIntuneSecurityBaselineStatus {
     whose only baseline sat in error, this family reported that there was nothing to check.
 
     A baseline that is assigned but has no evaluated device yet (every device still unknown or not
-    applicable) is skipped as not applicable: a baseline nothing has reported a secure-or-not verdict on
-    is not a compliant baseline.
+    applicable) is skipped with that as its stated reason: a baseline nothing has reported a
+    secure-or-not verdict on is not a compliant baseline.
 
     .EXAMPLE
     Test-MtIntuneSecurityBaselineStatus
@@ -134,7 +136,7 @@ function Test-MtIntuneSecurityBaselineStatus {
         $markdown += "so this test reports the baseline rather than giving it a verdict. "
         $markdown += "Check its device status in the Intune admin center under **Devices** > **Configuration**, or export "
         $markdown += "[DeviceStatusesByConfigurationProfile](https://learn.microsoft.com/intune/device-management/reports/ref-graph-available-reports#devicestatusesbyconfigurationprofile)."
-        Add-MtTestResultDetail -Result $markdown -SkippedBecause NotApplicable
+        Add-MtTestResultDetail -Result $markdown -SkippedBecause Custom -SkippedCustomReason 'Intune publishes no per-device state for a settings catalog baseline, so this baseline is reported rather than judged.'
         return $null
     }
 
@@ -149,7 +151,7 @@ function Test-MtIntuneSecurityBaselineStatus {
     if ($evaluatedCount -le 0) {
         # Assigned, but no device has reported a secure or not-secure verdict yet. There is no outcome to
         # judge, so skip rather than pass.
-        Add-MtTestResultDetail -SkippedBecause NotApplicable
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'This baseline is assigned, but no device has reported a secure or not-secure verdict yet.'
         return $null
     }
 
