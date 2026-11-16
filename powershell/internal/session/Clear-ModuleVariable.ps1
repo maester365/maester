@@ -25,6 +25,7 @@
     Clear-MtExoCache
     Clear-MtADCache
     $__MtSession.AIAgentInfo = $null
+    $__MtSession.DefenderHuntingTables = $null
     $__MtSession.IncludeAffectedObjects = $false
     $__MtSession.AffectedObjectFacts = $null
     $__MtSession.AzureDevOpsConnectionCache = $null
