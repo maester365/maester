@@ -33,6 +33,10 @@
     # No snapshot yet (for example a brand new tenant): no instances, so the engine skips the family.
     if ($null -eq $snapshot) { return }
 
+    # Joined on the profile id, which in practice is the control name (exo_mailboxaudit, AdminMFAV2), although
+    # the secureScoreControlProfile reference describes id as a "Provider-generated GUID/unique identifier".
+    # If Microsoft ever makes it a GUID, no control finds its profile and every result errors (see the
+    # no-profile check in Test-MtSecureScoreControl) rather than passing empty.
     $profileLookup = @{}
     foreach ($controlProfile in $profiles) { $profileLookup[[string]$controlProfile.id] = $controlProfile }
 
@@ -196,6 +200,10 @@ function ConvertFrom-MtSecureScoreHtml {
     $text = $text -replace '(?i)<li[^>]*>', "`n- " -replace '(?i)<br\s*/?>', "`n" -replace '(?i)</p>|</h4>', "`n`n"
     $text = $text -replace '<[^>]+>', ''
     $text = [System.Net.WebUtility]::HtmlDecode($text)
+    # Decoding can turn encoded text back into markup (&lt;script&gt; becomes <script>), so escape every
+    # < and > that is left, the way Get-MtSafeMarkdown does: the report shows them as text, not HTML.
+    # Escaping instead of stripping keeps placeholders such as <MailboxIdentity> in the remediation steps.
+    $text = $text -replace '([<>])', '\$1'
     # Collapse runs of blank lines and trim each line.
     $lines = $text -split "`r?`n" | ForEach-Object { $_.Trim() }
     return (($lines -join "`n") -replace "`n{3,}", "`n`n").Trim()

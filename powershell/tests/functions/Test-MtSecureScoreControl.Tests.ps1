@@ -310,6 +310,19 @@
             $md | Should -Not -Match '&nbsp;'
         }
 
+        It 'does not turn encoded markup back into HTML' -ForEach @(
+            @{ Html = '&lt;script&gt;alert(1)&lt;/script&gt;'; Expected = '\<script\>alert(1)\</script\>' }
+            @{ Html = '&lt;img src=x onerror=alert(1)&gt;'; Expected = '\<img src=x onerror=alert(1)\>' }
+            @{ Html = '<p>&lt;iframe src="https://example.com"&gt;&lt;/iframe&gt;</p>'; Expected = '\<iframe src="https://example.com"\>\</iframe\>' }
+        ) {
+            ConvertFrom-MtSecureScoreHtml -Html $Html | Should -BeExactly $Expected
+        }
+
+        It 'keeps an encoded placeholder as text instead of dropping it' {
+            ConvertFrom-MtSecureScoreHtml -Html '<p>Run Set-Mailbox -Identity &lt;MailboxIdentity&gt; -AuditEnabled $true</p>' |
+                Should -BeExactly 'Run Set-Mailbox -Identity \<MailboxIdentity\> -AuditEnabled $true'
+        }
+
         It 'returns an empty string for empty input' {
             ConvertFrom-MtSecureScoreHtml -Html '' | Should -Be ''
             ConvertFrom-MtSecureScoreHtml -Html $null | Should -Be ''
