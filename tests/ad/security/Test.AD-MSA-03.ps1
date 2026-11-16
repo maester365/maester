@@ -6,6 +6,11 @@
     if($null -eq $state.ServiceAccounts){Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'ServiceAccounts collection failed or returned no state.';return $null}
 
     $incomplete=@($state.ServiceAccounts|Where-Object{-not $_.AuthorizationEvidenceComplete -or @($_.UnresolvedPasswordRetrievalTrustees).Count -gt 0})
+    if ($incomplete.Count -eq 0) {
+        Add-MtTestResultDetail -Result 'gMSA managed-password authorization evidence was complete and resolvable for all collected objects.'
+        return $true
+    }
+
     $table="| gMSA | Complete | Evidence status | Unresolved SID | Resolution status | Resolution error | Collection error |`n| --- | --- | --- | --- | --- | --- | --- |`n"
     foreach($gmsa in $incomplete){
         $unresolved=@($gmsa.UnresolvedPasswordRetrievalTrustees)
