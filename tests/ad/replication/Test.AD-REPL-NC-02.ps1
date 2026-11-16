@@ -23,7 +23,14 @@
     param()
 
     $adState = Get-MtADDomainState -Categories ReplicationPartitions
-    if ($null -eq $adState -or $null -eq $adState['ReplicationPartitionState']) { return $null }
+    if ($null -eq $adState) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
+    if ($null -eq $adState['ReplicationPartitionState']) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Replication partition evidence is unavailable.'
+        return $null
+    }
     $state = $adState['ReplicationPartitionState']
     if (-not $state.CoreNamingContextAssessmentAvailable) {
         $missingAttributes = @($state.MissingCoreRootDseAttributes) -join ', '
