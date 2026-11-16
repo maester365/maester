@@ -22,7 +22,7 @@
         Area               = 'access-control',
         ResourceType       = 'Tenant',
         Severity           = 'Low',
-        UserImpact         = 'Low',
+        UserImpact         = 'Medium',
         ImplementationCost = 'Low',
         Mitre              = 'T1078.004',
         Control            = 'cisa-scuba:MS.POWERPLATFORM.6.1',
