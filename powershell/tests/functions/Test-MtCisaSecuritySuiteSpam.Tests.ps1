@@ -1,5 +1,6 @@
 ﻿BeforeAll {
     $testRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..\..')
+    . (Join-Path $testRoot 'powershell\internal\checks\cisa\exchange\Get-MtExoActiveSpamPolicyEvaluation.ps1')
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.6.1.ps1')
     . (Join-Path $testRoot 'tests\cisa\exchange\Test.CISA.MS.SECURITYSUITE.6.2.ps1')
 }
@@ -71,6 +72,31 @@ Describe 'CISA Security Suite spam filter checks' {
         Test-MtCisaSpamAction | Should -BeTrue
     }
 
+    It 'labels default policies accurately and describes an unshielded pass neutrally' {
+        $script:exoResponses = @{
+            HostedContentFilterPolicy = @(
+                [pscustomobject]@{
+                    Identity = 'Default'; RecommendedPolicyType = 'Custom'; IsDefault = $true
+                    SpamAction = 'MoveToJmf'; HighConfidenceSpamAction = 'Quarantine'
+                    PhishSpamAction = 'Delete'; HighConfidencePhishAction = 'Redirect'
+                    AllowedSenderDomains = @()
+                }
+            )
+            EOPProtectionPolicyRule = @()
+            HostedContentFilterRule = @()
+            AcceptedDomain = @()
+        }
+        Mock Get-MtExo { $script:exoResponses[$Request] }
+
+        Test-MtCisaSpamAction | Should -BeTrue
+        Test-MtCisaSpamBypass | Should -BeTrue
+
+        Should -Invoke Add-MtTestResultDetail -Times 2 -Exactly -ParameterFilter {
+            $Result -match '\| Default \| Default \|' -and
+            $Result -match 'All active policies were evaluated; no policy was shielded by a compliant higher-priority preset or custom policy\.'
+        }
+    }
+
     It 'errors when a domain-scoped spam rule cannot be checked because accepted domains are unavailable' {
         $script:exoResponses = @{
             HostedContentFilterPolicy = @()
@@ -87,6 +113,7 @@ Describe 'CISA Security Suite spam filter checks' {
         Mock Get-MtExo { $script:exoResponses[$Request] }
 
         { Test-MtCisaSpamAction } | Should -Throw '*no accepted domains were returned*'
+        { Test-MtCisaSpamBypass } | Should -Throw '*no accepted domains were returned*'
     }
 
     It 'applies allowed-domain checks to active policies using preset precedence' {

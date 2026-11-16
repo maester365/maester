@@ -82,6 +82,25 @@
         $missing | Should -BeNullOrEmpty
     }
 
+    It 'maps migrated Security Suite checks to their native successors' {
+        $entries = @{}
+        foreach ($entry in $script:table.Entries) {
+            $entries[$entry.LegacyId] = $entry
+        }
+
+        $entries['MS.EXO.14.1'].CurrentId | Should -Be 'retired'
+        $entries['MS.EXO.14.2'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.6.1'
+        $entries['MS.EXO.14.3'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.6.2'
+        $entries['MS.EXO.17.1'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.5.1'
+        $entries['MS.EXO.17.3'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.5.2'
+
+        $entries['CISA.MS.EXO.14.1'].CurrentId | Should -Be 'retired'
+        $entries['CISA.MS.EXO.14.2'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.6.1'
+        $entries['CISA.MS.EXO.14.3'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.6.2'
+        $entries['CISA.MS.EXO.17.1'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.5.1'
+        $entries['CISA.MS.EXO.17.3'].CurrentId | Should -Be 'CISA.MS.SECURITYSUITE.5.2'
+    }
+
     It 'marks retired entries with Rule retired or manual' {
         $bad = @($script:table.Entries | Where-Object { ($_.CurrentId -eq 'retired') -and ($_.Rule -notin 'retired', 'manual') })
         $bad | Should -BeNullOrEmpty

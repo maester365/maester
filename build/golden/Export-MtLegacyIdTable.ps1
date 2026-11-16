@@ -5,7 +5,8 @@
     .DESCRIPTION
     Walks every commit that touched a *.Tests.ps1 file under tests/ (tests/Custom excluded), parses the
     It names of every changed file version with the PowerShell AST (regex fallback for files that do
-    not parse) and records every static test ID that ever shipped.
+    not parse) and records every static test ID that ever shipped. Current native test IDs and their
+    check functions are read from the current tests/ tree.
 
     The ID of an It name is the text before the first colon when that text has no spaces
     (for example 'MT.1001' or 'MS.AAD.7.1'). Early wrappers had no ID; for those the whole It name is
@@ -19,9 +20,11 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    A previous mapping is retained with its original rule when no new match is found and its target is
+    still a current ID.
+
+    Historical IDs are derived from git history. Current native test IDs and functions come from the
+    working tree, so the output is deterministic for the same history and current test files.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -244,7 +247,7 @@ foreach ($commit in $commits) {
 }
 #endregion Scan history
 
-#region Current IDs (from the tree of $generatedFrom)
+#region Current IDs
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
 $treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
@@ -261,7 +264,37 @@ foreach ($line in $treeLines) {
         $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
     }
 }
+
+$testsRoot = Join-Path $RepoRoot 'tests'
+$customRoot = Join-Path $testsRoot 'Custom'
+$nativeTestFiles = Get-ChildItem -Path $testsRoot -Filter 'Test.*.ps1' -File -Recurse |
+    Where-Object { -not $_.FullName.StartsWith($customRoot, [System.StringComparison]::OrdinalIgnoreCase) }
+foreach ($nativeTestFile in $nativeTestFiles) {
+    $id = [System.IO.Path]::GetFileNameWithoutExtension($nativeTestFile.Name).Substring(5)
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($nativeTestFile.FullName, [ref] $tokens, [ref] $parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Failed to parse native test '$($nativeTestFile.FullName)': $($parseErrors[0].Message)"
+    }
+    $functions = @($ast.FindAll({
+                param($node)
+                $node -is [System.Management.Automation.Language.FunctionDefinitionAst]
+            }, $false) | ForEach-Object { $_.Name } |
+            Where-Object { $_ -like 'Test-*' -and $_ -notin $IgnoredFunctions } | Sort-Object -Unique)
+    $currentIds[$id] = [pscustomobject]@{
+        Id = $id; Title = ''; Functions = $functions; Path = $nativeTestFile.FullName
+    }
+}
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
+
+$previousEntries = @{}
+if (Test-Path -Path $OutputPath) {
+    $previousTable = [System.IO.File]::ReadAllText($OutputPath) | ConvertFrom-Json
+    foreach ($entry in $previousTable.Entries) {
+        $previousEntries[$entry.LegacyId] = $entry
+    }
+}
 
 $titleIndex = @{}
 $functionIndex = @{}
@@ -321,6 +354,16 @@ foreach ($record in $history.Values) {
         $currentId = @($functionCandidates)[0]; $rule = 'function'
     } elseif ($functionCandidates.Count -gt 1) {
         $review.Add("AMBIGUOUS $($record.Id): function -> $($functionCandidates -join '|')")
+    }
+
+    if ($previousEntries.ContainsKey($record.Id)) {
+        $previous = $previousEntries[$record.Id]
+        if ($currentId -eq 'retired' -and $previous.CurrentId -ne 'retired' -and $currentIds.ContainsKey($previous.CurrentId)) {
+            $currentId = $currentIds[$previous.CurrentId].Id
+            $rule = $previous.Rule
+        } elseif ($currentId -eq $previous.CurrentId) {
+            $rule = $previous.Rule
+        }
     }
 
     if ($currentId -ne 'retired' -and -not $currentIds.ContainsKey($currentId)) {
