@@ -29,22 +29,28 @@
         Service = 'Graph',
         License = 'AAD_PREMIUM',
         Author = 'soulemike',
-        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm')
+        Contributor = ('thomas-s-schmidt', 'JeremyFinney-lgtm', 'earbona23', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
     $result = Get-MtAuthenticationMethodPolicyConfig
+    if (-not $result) {
+        throw 'No authentication method configurations were returned; cannot determine whether Microsoft Authenticator is enabled.'
+    }
 
-    $authenticatorPolicy = $result | Where-Object {`
-        $_.id -eq "MicrosoftAuthenticator" }
+    $authenticatorPolicy = $result | Where-Object { $_.id -eq 'MicrosoftAuthenticator' }
     if (-not $authenticatorPolicy -or $authenticatorPolicy.state -ne "enabled") {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }
 
-    if (@(Get-MtCisaPhishingResistantPolicy).Count -gt 0) {
+    if (@(Get-MtCisaPhishingResistantPolicy -EmergencyAccessAccounts $EmergencyAccessAccounts).Count -gt 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }

@@ -30,13 +30,18 @@
         Control = 'cisa-scuba:MS.AAD.3.1',
         Service = 'Graph',
         License = 'AAD_PREMIUM',
-        Author = 'soulemike'
+        Author = 'soulemike',
+        Contributor = ('earbona23', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
-    $policies = Get-MtCisaPhishingResistantPolicy
+    $policies = Get-MtCisaPhishingResistantPolicy -EmergencyAccessAccounts $EmergencyAccessAccounts
 
     $testResult = ($policies|Measure-Object).Count -ge 1
 

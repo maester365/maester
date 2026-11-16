@@ -6,7 +6,7 @@ The SCuBA MS.AAD.3.3v2 implementation instructions also require **Allow use of M
 
 This is **Microsoft Authenticator software OTP**, not **Email OTP** or the separate **Software OATH tokens** authentication method. Email OTP is assessed separately by `CISA.MS.AAD.3.5`; this check does not assess its state.
 
-The check is not applicable when the Microsoft Authenticator policy is absent or disabled, or when an enabled phishing-resistant MFA policy covers all users and applications without exclusions.
+The check is not applicable when the Microsoft Authenticator policy is absent or disabled, or when an enabled phishing-resistant MFA policy covers all users and applications. User and group exclusions are allowed only for emergency access accounts or groups configured in `maester-config.json`; other exclusions do not make the phishing-resistant requirement applicable. An empty authentication-method configuration cannot establish applicability and is reported as an error.
 
 #### Remediation action:
 

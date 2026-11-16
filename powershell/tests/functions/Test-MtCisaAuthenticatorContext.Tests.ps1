@@ -37,6 +37,7 @@ Describe 'CISA Microsoft Authenticator context and software OTP' {
         $script:ResultMarkdown = $null
         $script:SkippedBecause = $null
         $script:ConditionalAccessPolicies = @()
+        $script:EmergencyAccessAccounts = @()
         $script:AuthenticatorPolicy = [pscustomobject]@{
             id = 'MicrosoftAuthenticator'
             state = 'enabled'
@@ -47,14 +48,19 @@ Describe 'CISA Microsoft Authenticator context and software OTP' {
                 displayLocationInformationRequiredState = @{ state = 'enabled'; includeTarget = @{ id = 'all_users' } }
             }
         }
+        $script:AuthenticationMethodPolicyConfig = @(
+            $script:AuthenticatorPolicy
+            [pscustomobject]@{ id = 'Email'; state = 'enabled' }
+        )
         Mock -ModuleName Maester Get-MtAuthenticationMethodPolicyConfig {
-            @(
-                $script:AuthenticatorPolicy
-                [pscustomobject]@{ id = 'Email'; state = 'enabled' }
-            )
+            $script:AuthenticationMethodPolicyConfig
         }
         Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
             $script:ConditionalAccessPolicies
+        }
+        Mock -ModuleName Maester Get-MtEmergencyAccessAccount {
+            param($Account)
+            @($Account | ForEach-Object { [pscustomobject]@{ ObjectId = $_.Id } })
         }
         Mock -ModuleName Maester Add-MtTestResultDetail {
             param($Result, $SkippedBecause)
@@ -71,10 +77,19 @@ Describe 'CISA Microsoft Authenticator context and software OTP' {
     }
 
     It 'skips when no Microsoft Authenticator policy is returned' {
-        $script:AuthenticatorPolicy = $null
+        $script:AuthenticationMethodPolicyConfig = @(
+            [pscustomobject]@{ id = 'Email'; state = 'enabled' }
+        )
 
         Test-MtCisaAuthenticatorContext | Should -BeNull
         $script:SkippedBecause | Should -Be 'NotApplicable'
+    }
+
+    It 'errors when no authentication method configurations are returned' {
+        $script:AuthenticationMethodPolicyConfig = @()
+
+        { Test-MtCisaAuthenticatorContext } | Should -Throw '*No authentication method configurations were returned*'
+        $script:SkippedBecause | Should -BeNullOrEmpty
     }
 
     It 'skips when ScubaGear would mark phishing-resistant MFA as enforced' {
@@ -84,6 +99,33 @@ Describe 'CISA Microsoft Authenticator context and software OTP' {
         $script:SkippedBecause | Should -Be 'NotApplicable'
         Get-MtCisaPhishingResistantPolicy | Should -HaveCount 1
         Test-MtCisaPhishResistant | Should -BeTrue
+    }
+
+    It 'allows phishing-resistant policies that exclude configured emergency access accounts' {
+        $policy = Get-TestPhishingResistantPolicy
+        $policy.conditions.users.excludeUsers = @('emergency-user')
+        $policy.conditions.users.excludeGroups = @('emergency-group')
+        $script:ConditionalAccessPolicies = @($policy)
+        $script:EmergencyAccessAccounts = @(
+            [pscustomobject]@{ Id = 'emergency-user'; Type = 'user' }
+            [pscustomobject]@{ Id = 'emergency-group'; Type = 'group' }
+        )
+
+        Test-MtCisaAuthenticatorContext -EmergencyAccessAccounts $script:EmergencyAccessAccounts | Should -BeNull
+        $script:SkippedBecause | Should -Be 'NotApplicable'
+        Get-MtCisaPhishingResistantPolicy -EmergencyAccessAccounts $script:EmergencyAccessAccounts | Should -HaveCount 1
+        Test-MtCisaPhishResistant -EmergencyAccessAccounts $script:EmergencyAccessAccounts | Should -BeTrue
+    }
+
+    It 'does not allow additional user exclusions beyond configured emergency access accounts' {
+        $policy = Get-TestPhishingResistantPolicy
+        $policy.conditions.users.excludeUsers = @('emergency-user', 'other-user')
+        $script:ConditionalAccessPolicies = @($policy)
+        $script:EmergencyAccessAccounts = @([pscustomobject]@{ Id = 'emergency-user'; Type = 'user' })
+
+        Test-MtCisaAuthenticatorContext -EmergencyAccessAccounts $script:EmergencyAccessAccounts | Should -BeTrue
+        $script:SkippedBecause | Should -BeNullOrEmpty
+        Get-MtCisaPhishingResistantPolicy -EmergencyAccessAccounts $script:EmergencyAccessAccounts | Should -BeNullOrEmpty
     }
 
     It 'does not skip when a phishing-resistant policy has role exclusions' {
