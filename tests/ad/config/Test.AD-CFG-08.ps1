@@ -35,8 +35,13 @@
     Write-Verbose 'Starting Test-MtAdAuthNPolicyConfigCount'
 
     $adState = Get-MtADDomainState -Categories @('AuthenticationPolicies')
-    if ($null -eq $adState -or $null -eq $adState['AuthenticationPolicyState']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy collection failed or returned no state. Review verbose LDAP collection output and access to CN=AuthN Policy Configuration.'
+    if ($null -eq $adState) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
+
+    if ($null -eq $adState['AuthenticationPolicyState']) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy LDAP evidence is unavailable.'
         return $null
     }
 
