@@ -67,13 +67,15 @@
     BeforeEach {
         $script:TestResult = $null
         $script:SkippedBecause = $null
+        $script:SkippedCustomReason = $null
 
         Mock -ModuleName Maester Get-MtLicenseInformation { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail {
-            param($Result, $SkippedBecause)
+            param($Result, $SkippedBecause, $SkippedCustomReason)
 
             $script:TestResult = $Result
             $script:SkippedBecause = $SkippedBecause
+            $script:SkippedCustomReason = $SkippedCustomReason
         }
     }
 
@@ -234,7 +236,10 @@
             $instance = [pscustomobject]@{ Data = (Get-TestSettingsCatalogBaseline -Name 'Windows 26H2' -Assignments 2) }
 
             $null -eq (Test-MtIntuneSecurityBaselineStatus -Instance $instance) | Should -BeTrue
-            $script:SkippedBecause | Should -Be 'NotApplicable'
+            # Not NotApplicable: the engine writes "This test does not apply to this tenant." for that,
+            # which contradicts a result stating the baseline is assigned.
+            $script:SkippedBecause | Should -Be 'Custom'
+            $script:SkippedCustomReason | Should -Match 'no per-device state'
             $script:TestResult | Should -Match 'Windows 26H2'
             $script:TestResult | Should -Match 'assigned to 2 group'
             # It must not claim a verdict it cannot have.
@@ -254,12 +259,27 @@
             $script:TestResult | Should -Match '\\\[Sign in again'
         }
 
-        It 'skips as NotApplicable when no device has an evaluated verdict' {
-            # Assigned, but every device is still unknown or not applicable: nothing to judge.
+        It 'skips with its own reason when no device has an evaluated verdict' {
+            # Assigned, but every device is still unknown or not applicable: nothing to judge. The
+            # reason has to say that, because "does not apply to this tenant" is the opposite of a
+            # baseline the tenant has assigned.
             $instance = [pscustomobject]@{ Data = (Get-TestBaseline -Unknown 10 -NotApplicable 3) }
 
             $null -eq (Test-MtIntuneSecurityBaselineStatus -Instance $instance) | Should -BeTrue
-            $script:SkippedBecause | Should -Be 'NotApplicable'
+            $script:SkippedBecause | Should -Be 'Custom'
+            $script:SkippedCustomReason | Should -Match 'no device has reported'
+        }
+
+        It 'keeps the two baseline skips apart' {
+            # A settings catalog baseline and a legacy one with no verdict are different situations and
+            # must not collapse into one reason.
+            $null = Test-MtIntuneSecurityBaselineStatus -Instance ([pscustomobject]@{ Data = (Get-TestSettingsCatalogBaseline -Name 'A' -Assignments 1) })
+            $catalogo = $script:SkippedCustomReason
+
+            $null = Test-MtIntuneSecurityBaselineStatus -Instance ([pscustomobject]@{ Data = (Get-TestBaseline -Unknown 4) })
+            $sinVeredicto = $script:SkippedCustomReason
+
+            $catalogo | Should -Not -Be $sinVeredicto
         }
     }
 
