@@ -18465,6 +18465,11 @@
       "tests": 4
     },
     {
+      "name": "MaximumNonCompliantPercentage",
+      "type": "int",
+      "tests": 1
+    },
+    {
       "name": "MaximumPasswordAgeDays",
       "type": "int",
       "tests": 3
