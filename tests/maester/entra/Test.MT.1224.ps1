@@ -110,7 +110,7 @@
         $Grant = $Policy.grantControls
         $Controls = @($Grant.builtInControls | Where-Object { $_ })
         if ($Grant.authenticationStrength.displayName) {
-            $Controls += "authentication strength: $($Grant.authenticationStrength.displayName)"
+            $Controls += "authentication strength: $(Get-MtSafeMarkdown $Grant.authenticationStrength.displayName)"
         }
         if (@($Grant.termsOfUse | Where-Object { $_ }).Count -gt 0) {
             $Controls += 'terms of use'
@@ -125,7 +125,6 @@
         } else {
             $GrantText = $Controls -join " $($Grant.operator) "
         }
-        $GrantText = $GrantText -replace '\|', '\|'
 
         $Result += "`n| $(Get-GraphObjectMarkdown -GraphObjects $Policy -GraphObjectType ConditionalAccess -AsPlainTextLink) | $CreatedText | $EarliestOnText | $Status | $GrantText |"
     }
