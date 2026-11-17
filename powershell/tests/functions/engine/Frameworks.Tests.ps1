@@ -336,7 +336,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     It 'Gives every <Prefix> test a Benchmark of <Label>, from the first Control of the test' -ForEach @(
         @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 144 }
         @{ Prefix = 'CIS.GH.'; Label = 'cis-github'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
-        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
+        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 77 }
         @{ Prefix = 'ASD.'; Label = 'essential-eight or ism'; Framework = @('essential-eight', 'ism'); Version = $null; Count = 14 }
         @{ Prefix = 'DISA.'; Label = 'a DISA STIG'; Framework = @('disa-stig-entra-id', 'disa-stig-intune-mdm', 'disa-stig-intune-desktop'); Version = $null; Count = 19 }
     ) {
@@ -380,10 +380,33 @@ Describe 'Benchmark of the tests shipped with Maester' {
 
         $cisa = @($script:builtIn | Where-Object { $_.Id -like 'CISA.*' })
         @($cisa | Where-Object { $_.Benchmark.Criticality -cnotin 'SHALL', 'SHOULD' -or $_.Benchmark.Upstream.Status -cnotin 'Current', 'Moved', 'Removed', 'NotFound' } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 69
         @($cisa | ForEach-Object { $_.Control } | Where-Object { $_ -cnotlike 'nist-800-53-r5:*' -and $_ -cnotlike 'cisa-scuba:*' }) | Should -BeNullOrEmpty
     }
 
+    It 'Pins the CISA framework to the SCuBA baselines that moved Exchange policies to the Security Suite' {
+        $cisaFramework = Get-Content (Join-Path $script:repoRoot 'tests/cisa/frameworks/cisa-scuba.json') -Raw | ConvertFrom-Json
+        $cisaSuite = Get-Content (Join-Path $script:repoRoot 'tests/cisa/suite.json') -Raw | ConvertFrom-Json
+        $cisaFramework.Version | Should -BeExactly 'ScubaGear commit 92e5f2e, 2026-11-05'
+        $cisaSuite.Frameworks[0].Version | Should -BeExactly $cisaFramework.Version
+        $cisaFramework.Url | Should -Match '92e5f2e361e433554f72d38180d11210deb640dc'
+        $cisaSuite.Upstream.Url | Should -Match '92e5f2e361e433554f72d38180d11210deb640dc'
+
+        foreach ($id in 'MS.AAD.5.4', 'MS.EXO.2.1', 'MS.EXO.17.2') {
+            $requirement = $cisaFramework.Requirements | Where-Object Id -EQ $id
+            $requirement.Upstream.Status | Should -Be 'Removed'
+            $requirement.Upstream.From | Should -Not -BeNullOrEmpty
+            $requirement.Upstream.Reason | Should -Not -BeNullOrEmpty
+        }
+
+        @($cisaFramework.Requirements | Where-Object Id -Like 'MS.SECURITYSUITE.*').Count | Should -Be 24
+        # A moved policy is checked either by its legacy test or by the Security Suite test that replaces it.
+        foreach ($requirement in @($cisaFramework.Requirements | Where-Object { $_.Upstream.Status -eq 'Moved' })) {
+            $legacy = $script:byId["CISA.$($requirement.Id)"]
+            $target = $script:byId["CISA.$($requirement.Upstream.Id -replace 'v\d+$', '')"]
+            @($legacy, $target | Where-Object { $_ }).Count | Should -BeGreaterThan 0 -Because "$($requirement.Id) moved to $($requirement.Upstream.Id)"
+        }
+    }
     It 'Keeps what the Maester 2.x benchmark tags said about each CIS test' {
         # L1, L2, "CIS E3 Level 1" and "CIS M365 v7.0.0" were tags in 2.x. The framework files are their home now.
         $legacy = InModuleScope Maester { (Get-MtLegacyTagTable).ByTest }
@@ -524,9 +547,9 @@ Describe 'Benchmark and Control on result rows' {
     It 'Gives the rows of the CISA suite their Benchmark and the NIST SP 800-53 controls without a tenant' {
         $run = Get-Run 'Cisa'
         $rows = @($run.Tests | Where-Object Suite -EQ 'CISA')
-        $rows.Count | Should -Be 79
+        $rows.Count | Should -Be 77
         @($rows | Where-Object { $_.Benchmark.Framework -cne 'cisa-scuba' -or -not $_.Benchmark.Criticality } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 69
         $row = $rows | Where-Object Id -EQ 'CISA.MS.AAD.3.1'
         $row.Benchmark.Requirement | Should -BeExactly 'MS.AAD.3.1'
         $row.Benchmark.Upstream.Id | Should -Be 'MS.AAD.3.1v1'

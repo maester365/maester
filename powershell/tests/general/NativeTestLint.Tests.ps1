@@ -152,6 +152,7 @@ Describe 'Product of the built-in tests' {
             'maester/teams'                = 'teams'
             'maester/xspm'                 = 'defender'
             'cisa/entra'                   = 'entra'
+            'cisa/defender'                = 'defender'
             'cisa/exchange'                = 'exchange'
             'cisa/sharepoint'              = 'sharepoint'
             'asd/entra'                    = 'entra'

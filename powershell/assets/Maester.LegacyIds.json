@@ -1,6 +1,6 @@
 {
   "SchemaVersion": "1.0",
-  "GeneratedFrom": "fc6a9078bcdd59b5b2f788682fdcd2be27e15b9c",
+  "GeneratedFrom": "eb13e7a116e4063bec204e901e4847ae67c1f6f6",
   "Entries": [
     {
       "LegacyId": "1.1.1 (L1) Ensure Administrative accounts are cloud-only",
@@ -29,7 +29,7 @@
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenCommit": "6e0a967fc7e6c2ba3d711ae650b49402f145f624",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -37,7 +37,7 @@
     {
       "LegacyId": "2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -53,7 +53,7 @@
     {
       "LegacyId": "2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.4",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
@@ -69,7 +69,7 @@
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "function",
+      "Rule": "title",
       "FirstSeenCommit": "811ca62ea0cd22285c9393b56acdd3e338ad5f0f",
       "LastSeenCommit": "d559e19379a79601c1b0fbe83e21f0e1392ffebe",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -77,7 +77,7 @@
     {
       "LegacyId": "2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenCommit": "7e35b57b0f8c01aedc4a29d057a810830a98d873",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -85,7 +85,7 @@
     {
       "LegacyId": "2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.7",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenCommit": "2487d220155d59d0a35da593584baf23d58bdf41",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
@@ -957,7 +957,7 @@
     {
       "LegacyId": "CIS 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.3",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1"
@@ -965,7 +965,7 @@
     {
       "LegacyId": "CIS 2.1.4 (L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.4",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAttachment.Tests.ps1"
@@ -981,7 +981,7 @@
     {
       "LegacyId": "CIS 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.6",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1"
@@ -989,7 +989,7 @@
     {
       "LegacyId": "CIS 2.1.7 (L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
       "CurrentId": "CIS.M365.2.1.7",
-      "Rule": "title",
+      "Rule": "function",
       "FirstSeenCommit": "4df9d3e671e648ae838c919e29aa1d03e50474b4",
       "LastSeenCommit": "8a08dabc56545cf42ebac9321351463a9f1b121e",
       "LastSeenFile": "tests/cis/Test-MtCisSafeAntiPhishingPolicy.Tests.ps1"
@@ -1116,18 +1116,66 @@
     },
     {
       "LegacyId": "CISA.MS.EXO.09.3",
-      "CurrentId": "CISA.MS.EXO.9.3",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
     },
     {
       "LegacyId": "CISA.MS.EXO.09.5",
-      "CurrentId": "CISA.MS.EXO.9.5",
-      "Rule": "title",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
       "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
       "LastSeenCommit": "5810a0dc37538fe0c4884f55938f23f5c7d1d6cc",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.10.1",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.3",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareScan.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.10.2",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.3",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareAction.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.10.3",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.2",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareZap.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.9.1",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
+      "FirstSeenCommit": "d176a815b8cfef203cfe0672af5bc092385f05b9",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.9.3",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
+      "FirstSeenCommit": "b2513b049671c82eede6415f708bb3560e6a8d06",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
+      "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
+    },
+    {
+      "LegacyId": "CISA.MS.EXO.9.5",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
+      "FirstSeenCommit": "b2513b049671c82eede6415f708bb3560e6a8d06",
+      "LastSeenCommit": "eb38f4357cdf3576600aeca7d8da3138f77a37ca",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
     },
     {
@@ -1140,8 +1188,8 @@
     },
     {
       "LegacyId": "Ensure MailTips are enabled for end users",
-      "CurrentId": "MT.1039",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1188,8 +1236,8 @@
     },
     {
       "LegacyId": "Ensure modern authentication for Exchange Online is enabled",
-      "CurrentId": "MT.1044",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1204,8 +1252,8 @@
     },
     {
       "LegacyId": "Ensure users installing Outlook add-ins is not allowed",
-      "CurrentId": "MT.1041",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenCommit": "7cd563adfc02cdecb49b1b5e755f5c541bdd4beb",
       "LastSeenFile": "tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1"
@@ -1796,8 +1844,8 @@
     },
     {
       "LegacyId": "MS.EXO.09.1",
-      "CurrentId": "CISA.MS.EXO.9.1",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
@@ -1812,8 +1860,8 @@
     },
     {
       "LegacyId": "MS.EXO.09.3",
-      "CurrentId": "CISA.MS.EXO.9.3",
-      "Rule": "title",
+      "CurrentId": "retired",
+      "Rule": "retired",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
@@ -1828,8 +1876,8 @@
     },
     {
       "LegacyId": "MS.EXO.09.5",
-      "CurrentId": "CISA.MS.EXO.9.5",
-      "Rule": "title",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
       "FirstSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenCommit": "062c1e6a1e0566789256aaea1e37b73dcdb11aed",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
@@ -1844,24 +1892,24 @@
     },
     {
       "LegacyId": "MS.EXO.10.1",
-      "CurrentId": "CISA.MS.EXO.10.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.3",
+      "Rule": "manual",
       "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareScan.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.10.2",
-      "CurrentId": "CISA.MS.EXO.10.2",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.3",
+      "Rule": "manual",
       "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareAction.Tests.ps1"
     },
     {
       "LegacyId": "MS.EXO.10.3",
-      "CurrentId": "CISA.MS.EXO.10.3",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.2",
+      "Rule": "manual",
       "FirstSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaMalwareZap.Tests.ps1"
@@ -2124,8 +2172,8 @@
     },
     {
       "LegacyId": "MS.EXO.9.1",
-      "CurrentId": "CISA.MS.EXO.9.1",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
       "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
       "LastSeenCommit": "1e22bb9c04dc04785d4a813e270b5359d71c6338",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaAttachmentFilter.Tests.ps1"
@@ -2140,8 +2188,8 @@
     },
     {
       "LegacyId": "MS.EXO.9.3",
-      "CurrentId": "CISA.MS.EXO.9.3",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
       "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
       "LastSeenCommit": "e6db16c50cb93a790370609162c683a5d1338928",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockFileType.Tests.ps1"
@@ -2156,8 +2204,8 @@
     },
     {
       "LegacyId": "MS.EXO.9.5",
-      "CurrentId": "CISA.MS.EXO.9.5",
-      "Rule": "prefix",
+      "CurrentId": "CISA.MS.SECURITYSUITE.1.1",
+      "Rule": "manual",
       "FirstSeenCommit": "9b5657a0506757ef2c2be95b93c115a921491522",
       "LastSeenCommit": "e6db16c50cb93a790370609162c683a5d1338928",
       "LastSeenFile": "tests/cisa/exchange/Test-MtCisaBlockExecutable.Tests.ps1"
