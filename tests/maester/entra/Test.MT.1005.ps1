@@ -54,6 +54,13 @@
     $PolicyCount = $policies | Measure-Object | Select-Object -ExpandProperty Count
     if (-not $EmergencyAccessAccounts -or $EmergencyAccessAccounts.Count -eq 0) {
         Write-Verbose "No emergency access accounts or groups defined in the Maester config. Use the default logic to detect emergency access accounts or groups."
+
+        # Detection reads the exclusions of user-targeted policies, so without one there is nothing to detect
+        if ($PolicyCount -eq 0) {
+            Add-MtTestResultDetail -Result 'No user-targeted Conditional Access policy was found, so no emergency access account or group could be detected.'
+            return $result
+        }
+
         # GuestsOrExternalUsers names a category of users, not an account, so it can't be the emergency access account
         $ExcludedUserIds = @($policies.conditions.users.excludeUsers | Where-Object { $_ -ne 'GuestsOrExternalUsers' })
         $ExcludedUserObjectGUID = $ExcludedUserIds | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 1 -ExpandProperty Name
@@ -84,7 +91,6 @@
 
             Write-Verbose "Emergency access account or group: $CheckId"
             $detected = if ($DisplayName) { "$DisplayName ($CheckId)" } else { $CheckId }
-            $testResult = "Automatically detected emergency access`n`n* $($EmergencyAccessUUIDType): $detected`n`n"
         }
 
         # If the number of enabled policies is not the same as the number of excluded users or groups, there is no emergency access
@@ -95,12 +101,19 @@
             return $result
         }
 
+        # No policy excludes a specific user or group, so there is no candidate and no type to name
+        if (-not $CheckId) {
+            $testResult = "No emergency access account or group could be detected: none of these Conditional Access policies excludes a specific user or group.`n`n%TestResult%"
+            Add-MtTestResultDetail -GraphObjects $policies -GraphObjectType ConditionalAccess -Result $testResult
+            return $result
+        }
+
         $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
         $policiesWithoutEmergency | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
             Write-Verbose "Conditional Access policy $_ does not exclude emergency access $EmergencyAccessUUIDType"
         }
 
-        $testResult += "These Conditional Access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
+        $testResult = "Automatically detected emergency access`n`n* $($EmergencyAccessUUIDType): $detected`n`nThese Conditional Access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
         Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
         return $result
 

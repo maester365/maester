@@ -282,6 +282,59 @@
         It 'Should not take GuestsOrExternalUsers for an emergency access account (auto-detected)' {
             $policy = Get-PolicyWithUserExclusion -UserIds @('GuestsOrExternalUsers')
             $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -Not -BeLike '*GuestsOrExternalUsers*'
+            # Nothing was detected, so the result must not name a type
+            $script:capturedResult | Should -BeLike 'No emergency access account or group could be detected:*'
+            $script:capturedResult | Should -Not -BeLike '*emergency access group*'
+            @($script:capturedObjects).displayName | Should -Be 'Policy With User Exclusion'
+        }
+
+        It 'Should not name a type when no policy excludes a specific user or group (auto-detected)' {
+            $policy = Get-PolicyWithNoExclusions
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeExactly "No emergency access account or group could be detected: none of these Conditional Access policies excludes a specific user or group.`n`n%TestResult%"
+            @($script:capturedObjects).displayName | Should -Be 'Policy Without Exclusions'
+        }
+
+        It 'Should say no user-targeted policy was found, with no placeholder, when there is no policy (auto-detected)' {
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeExactly 'No user-targeted Conditional Access policy was found, so no emergency access account or group could be detected.'
+            $script:capturedObjects | Should -BeNullOrEmpty
+        }
+
+        It 'Should say no user-targeted policy was found when only an Agent Identity policy exists (auto-detected)' {
+            $policy = Get-PolicyAgentIdentity
+            $script:capturedResult = $null
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Add-MtTestResultDetail {
@@ -290,7 +343,7 @@
             }
 
             InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
-            $script:capturedResult | Should -Not -BeLike '*GuestsOrExternalUsers*'
+            $script:capturedResult | Should -BeExactly 'No user-targeted Conditional Access policy was found, so no emergency access account or group could be detected.'
         }
 
         It 'Should check the excluded account, not GuestsOrExternalUsers, when policies exclude both (auto-detected)' {
