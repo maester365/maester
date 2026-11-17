@@ -35,8 +35,10 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple MTD connectors can exist.')]
     param()
 
-    # MTD Connector IDs and Names
-    # Source: https://github.com/microsoft/Microsoft365DSC/blob/Dev/Modules/Microsoft365DSC/DSCResources/MSFT_IntuneDeviceConfigurationPolicyWindows10/MSFT_IntuneDeviceConfigurationPolicyWindows10.psm1
+    # MTD connector IDs and display names, used only to name connectors in the result.
+    # Same 16 entries as Microsoft365DSC's MTD connector resource at the commit checked:
+    # https://github.com/Microsoft365DSC/Microsoft365DSC/blob/b91a708b8221d9841d870ac1205101e2e5c5838f/Modules/Microsoft365DSC/DscResources/MSFT_IntuneMobileThreatDefenseConnector/MSFT_IntuneMobileThreatDefenseConnector.psm1
+    # The Trellix, Windows Security Center and iVerify IDs were also checked against the IDs Graph returns in a tenant.
     $mtdConnectorInformation = @{
         '2c7790de-8b02-4814-85cf-e0c59380dee8' = 'Lookout for Work'
         '28fd67fd-b179-4629-a8b0-dad420b697c7' = 'Symantec Endpoint Protection'
