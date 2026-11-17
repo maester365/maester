@@ -4,7 +4,7 @@
         Checks that recurring access reviews exist for the Global, Exchange, SharePoint, Teams, Security and Privileged Role Administrator roles.
 
     .DESCRIPTION
-        Checks that each of the Global Administrator, Exchange Administrator, SharePoint Administrator, Teams Administrator, Security Administrator and Privileged Role Administrator roles has an active access review of users and groups that repeats weekly or monthly, runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically and never ends.
+        Checks that each of the Global Administrator, Exchange Administrator, SharePoint Administrator, Teams Administrator, Security Administrator and Privileged Role Administrator roles has an active access review of users and groups that repeats at least monthly (weekly every 1 to 4 weeks, or monthly every month), runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically and never ends.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.3.3, L1)
 
     .EXAMPLE
@@ -29,7 +29,8 @@
         Control = ('cis-m365:5.3.3', 'nist-800-53-r5:AC-6(7)'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'julien-ly'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -49,12 +50,13 @@
         'e8611ab8-c189-46e8-94e1-60213ab1f814' = 'Privileged Role Administrator'
     }
     $reviews = Invoke-MtGraphRequest -RelativeUri 'identityGovernance/accessReviews/definitions'
-    $roleReviews = @($reviews | Where-Object { (@($_.scope.resourceScopes.query) -join ' ') -match 'roleDefinitions' })
+    $roleReviews = @($reviews | Where-Object { (@($_.scope.resourceScopes.query) -join ' ') -match '/directory/roleDefinitions/' })
 
     $report = foreach ($review in $roleReviews) {
         $resourceQuery = @($review.scope.resourceScopes.query) -join ' '
         $matchedRoleIds = @($roleList.Keys | Where-Object { $resourceQuery -match $_ })
         $startDate = $review.settings.recurrence.range.startDate
+        # The CIS audit requires a start date; the InProgress status check below avoids timezone-sensitive date-only comparisons.
         if ($matchedRoleIds.Count -eq 0 -or [string]::IsNullOrWhiteSpace($startDate)) {
             continue
         }
@@ -72,8 +74,7 @@
         $principalQueries = @($review.scope.principalScopes.query)
         $checks = [ordered]@{
             'Users and groups in scope' = @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?users(\?|$)' }).Count -gt 0 -and @($principalQueries | Where-Object { $_ -match '^/?(v1\.0/|beta/)?groups(\?|$)' }).Count -gt 0
-            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
-            'Started' = ([datetime]$startDate).ToUniversalTime() -le [datetime]::UtcNow
+            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or ($patternType -eq 'weekly' -and $interval -ge 1 -and $interval -le 4)
             'Reviewers' = $reviewers.Count -ge 1
             'In progress' = $review.status -eq 'InProgress'
             'Notifications' = [bool]$settings.mailNotificationsEnabled
@@ -81,7 +82,7 @@
             'Justification' = [bool]$settings.justificationRequiredOnApproval
             'Duration' = $null -ne $durationInDays -and $durationInDays -le $MaximumInstanceDurationDays
             'Auto apply' = [bool]$settings.autoApplyDecisionsEnabled
-            'Default decision none' = $settings.defaultDecision -eq 'None'
+            'Default decision none' = $settings.defaultDecisionEnabled -eq $false -or $settings.defaultDecision -eq 'None'
             'No end date' = $settings.recurrence.range.type -eq 'noEnd'
         }
         $failedChecks = @($checks.GetEnumerator() | Where-Object { -not $_.Value } | ForEach-Object { $_.Key })
@@ -99,7 +100,7 @@
     $resultMd = "| Role | Access review | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Role) | $($row.Name) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $($row.Role) | $(Get-MtSafeMarkdown $row.Name) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
     foreach ($roleName in $missingRoles) {
         if (@($report | Where-Object { $_.Role -eq $roleName }).Count -eq 0) {
@@ -112,7 +113,7 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

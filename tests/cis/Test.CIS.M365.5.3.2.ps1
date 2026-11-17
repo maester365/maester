@@ -4,7 +4,7 @@
         Checks that a recurring access review of guest users exists with the required settings.
 
     .DESCRIPTION
-        Checks that at least one access review that targets guest users repeats weekly or monthly, runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically with a default decision of deny, and never ends.
+        Checks that at least one access review that targets guest users repeats at least monthly (weekly every 1 to 4 weeks, or monthly every month), runs for no more than 14 days, sends notifications and reminders, requires a justification, applies decisions automatically with a default decision of deny, and never ends.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (5.3.2, L1)
 
     .EXAMPLE
@@ -29,7 +29,8 @@
         Control = ('cis-m365:5.3.2', 'nist-800-53-r5:AC-2'),
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
-        Author = 'JeremyFinney-lgtm'
+        Author = 'JeremyFinney-lgtm',
+        Contributor = 'julien-ly'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -41,7 +42,11 @@
 
     Write-Verbose 'Getting access review definitions...'
     $reviews = Invoke-MtGraphRequest -RelativeUri 'identityGovernance/accessReviews/definitions'
-    $guestReviews = @($reviews | Where-Object { $_.scope.query -match "userType eq 'Guest'" -or (@($_.scope.principalScopes.query) -join ' ') -match "userType eq 'Guest'" })
+    $guestReviews = @($reviews | Where-Object {
+            $_.scope.query -match "userType eq 'Guest'" -or
+            (@($_.scope.resourceScopes.query) -join ' ') -match "userType eq 'Guest'" -or
+            (@($_.scope.principalScopes.query) -join ' ') -match "userType eq 'Guest'"
+        })
 
     $report = foreach ($review in $guestReviews) {
         $settings = $review.settings
@@ -56,7 +61,7 @@
             $durationInDays = ($stages | Measure-Object -Property durationInDays -Sum).Sum
         }
         $checks = [ordered]@{
-            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or $patternType -eq 'weekly'
+            'Weekly or monthly' = ($patternType -eq 'absoluteMonthly' -and $interval -eq 1) -or ($patternType -eq 'weekly' -and $interval -ge 1 -and $interval -le 4)
             'Reviewers' = $reviewers.Count -ge 1
             'Notifications' = [bool]$settings.mailNotificationsEnabled
             'Reminders' = [bool]$settings.reminderNotificationsEnabled
@@ -77,7 +82,7 @@
     $resultMd = "| Access review | Status | Failed checks | Result |`n"
     $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.Status) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) | $($row.Status) | $(if ($row.Failed) { $row.Failed } else { 'None' }) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {
@@ -85,7 +90,7 @@
     } else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
