@@ -5,10 +5,9 @@ Turning meeting recording off in the Global policy means nobody who has that pol
 #### Remediation action
 
 1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
-2. Go to **Meetings** > **Meeting policies**.
-3. Open the **Global (Org-wide default)** policy.
-4. Under **Recording**, turn off **Meeting recording**.
-5. Select **Save**.
+2. Go to **Settings & policies** > [**Global (Org-wide default) settings**](https://admin.teams.microsoft.com/one-policy/settings) and select **Meetings**.
+3. Under **Recording & transcription**, set **Meeting recording** to **Off**.
+4. Select **Save**.
 
 ##### PowerShell
 

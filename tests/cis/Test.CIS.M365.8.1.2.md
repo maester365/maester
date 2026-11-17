@@ -5,7 +5,7 @@ When the setting is off, channel members can still post in Teams. Only the email
 #### Remediation action
 
 1. Sign in to the [Microsoft Teams admin center](https://admin.teams.microsoft.com).
-2. Go to **Teams** > **Teams settings**.
+2. Go to **Settings & policies** > [**Global (Org-wide default) settings**](https://admin.teams.microsoft.com/one-policy/settings) and select **Teams** to open the **Teams settings** section.
 3. Under **Email integration**, turn off **Users can send emails to a channel email address**.
 4. Select **Save**.
 
@@ -20,9 +20,8 @@ Set-CsTeamsClientConfiguration -Identity Global -AllowEmailIntoChannel $false
 
 #### Related links
 
-* [Microsoft Teams admin center](https://admin.teams.microsoft.com)
-* [Set-CsTeamsClientConfiguration (AllowEmailIntoChannel)](https://learn.microsoft.com/powershell/module/teams/set-csteamsclientconfiguration)
-* [Set-CsTeamsClientConfiguration](https://learn.microsoft.com/powershell/module/teams/set-csteamsclientconfiguration)
+* [Microsoft Teams admin center - Settings & policies](https://admin.teams.microsoft.com/one-policy/settings)
+* [Set-CsTeamsClientConfiguration](https://learn.microsoft.com/powershell/module/microsoftteams/set-csteamsclientconfiguration)
 * [CIS Microsoft 365 Foundations Benchmark v7.0.0 - 8.1.2](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

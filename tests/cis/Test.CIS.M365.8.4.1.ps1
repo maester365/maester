@@ -4,14 +4,14 @@
     Ensure app permission policies are configured
 
     .DESCRIPTION
-    The Global (Org-wide default) app permission policy should block third-party and custom Teams apps,
-    either entirely or by allowing only an approved list.
+    The Teams org-wide app settings should not let users install and use third-party or custom apps by default,
+    and should not let users interact with custom apps in preview.
     CIS Microsoft 365 Foundations Benchmark v7.0.0 (8.4.1, L1)
 
     .EXAMPLE
     Test-MtCisThirdPartyAndCustomApps
 
-    Returns true if the Global app permission policy blocks third-party and custom apps
+    Returns true if the org-wide app settings turn off third-party apps, custom apps and custom apps in preview by default
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyAndCustomApps
@@ -37,47 +37,41 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Test-MtCisThirdPartyAndCustomApps: Checking if all or a majority of third-party and custom apps are blocked'
+    Write-Verbose 'Test-MtCisThirdPartyAndCustomApps: Checking the Teams org-wide app settings'
 
-    $return = $true
-    $appPermPolicy = Get-CsTeamsAppPermissionPolicy -Identity Global
-
-    $passResult = '✅ Pass'
-    $failResult = '❌ Fail'
-
-    $result = "| Policy | Value | Status |`n"
-    $result += "| --- | --- | --- |`n"
-
-    if (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.GlobalCatalogApps)) {
-        # Third-party apps
-        $result += "| Third-party apps | Allow all apps | $failResult |`n"
-        $return = $false
-    } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
-        $result += "| Third-party apps | Allow specific apps and block all others | $passResult |`n"
-    } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
-        $result += "| Third-party apps | Block specific apps and allow all others | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| Third-party apps | Block all apps | $passResult |`n"
+    try {
+        $tenantSettings = @(Get-M365UnifiedTenantSettings -SettingNames GlobalApp, PrivateApp -ErrorAction Stop)
+    } catch {
+        if ($_.Exception.Message -match '(?i)(application[- ]based|app[- ]only|application authentication).{0,100}(not supported|unsupported)|(not supported|unsupported).{0,100}(application[- ]based|app[- ]only|application authentication)') {
+            Add-MtTestResultDetail -SkippedBecause NotSupportedAppPermission
+            return $null
+        }
+        throw
     }
+    $customAppSetting = Get-CsTeamsSettingsCustomApp
 
-    if (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.PrivateCatalogApps)) {
-        # Custom apps
-        $result += "| Custom apps | Allow all apps | $failResult |`n"
-        $return = $false
-    } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
-        $result += "| Custom apps | Allow specific apps and block all others | $passResult |`n"
-    } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
-        $result += "| Custom apps | Block specific apps and allow all others | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| Custom apps | Block all apps | $passResult |`n"
+    $thirdParty = ($tenantSettings | Where-Object { $_.SettingName -eq 'GlobalApp' } | Select-Object -First 1).SettingValue
+    $custom = ($tenantSettings | Where-Object { $_.SettingName -eq 'PrivateApp' } | Select-Object -First 1).SettingValue
+    $preview = $customAppSetting.IsSideloadedAppsInteractionEnabled
+
+    $checks = @(
+        [pscustomobject]@{ Setting = 'Third-party apps: Let users install and use available apps by default'; Value = $thirdParty; Pass = $thirdParty -eq 'None' }
+        [pscustomobject]@{ Setting = 'Custom apps: Let users install and use available apps by default'; Value = $custom; Pass = $custom -eq 'None' }
+        [pscustomobject]@{ Setting = 'Custom apps: Let users interact with custom apps in preview'; Value = $preview; Pass = $preview -eq $false }
+    )
+    $return = @($checks | Where-Object { -not $_.Pass }).Count -eq 0
+
+    $result = "| Setting | Value | Status |`n"
+    $result += "| --- | --- | --- |`n"
+    foreach ($check in $checks) {
+        $displayValue = if ($null -eq $check.Value) { 'Not found' } else { $check.Value }
+        $result += "| $($check.Setting) | $displayValue | $(if ($check.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($return) {
-        $testResultMarkdown = "Well done. All or a majority of third-party and custom apps are blocked.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Users can't install third-party or custom apps by default or interact with custom apps in preview.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "All or a majority of third-party or custom apps are allowed.`n`n%TestResult%"
+        $testResultMarkdown = "The org-wide app settings let users install third-party or custom apps by default, or interact with custom apps in preview.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result

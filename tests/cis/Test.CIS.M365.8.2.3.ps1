@@ -29,7 +29,7 @@
         Control = ('cis-m365:8.2.3', 'nist-800-53-r5:AC-20'),
         Service = 'Teams',
         Author = 'Mynster9361',
-        Contributor = 'merill'
+        Contributor = ('merill', 'julien-ly')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -38,20 +38,30 @@
 
     Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if external unmanaged Teams users cannot initiate conversations'
 
-    $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
-    if ($AllowTeamsConsumerInbound -eq $false) {
-        Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
-        return $true
+    $federation = Get-CsTenantFederationConfiguration
+    $orgSetting = $federation.AllowTeamsConsumerInbound
+    $policySetting = $null
+    if ($orgSetting -ne $false) {
+        $externalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+        $policySetting = $externalAccessPolicy.EnableTeamsConsumerInbound
     }
-    else {
-        $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
-        if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
-            Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
-            return $true
-        }
-        else {
-            Add-MtTestResultDetail -Result 'External unmanaged Teams users can initiate conversations.'
-            return $false
-        }
+    $testResult = $orgSetting -eq $false -or $policySetting -eq $false
+    $passResult = '✅ Pass'
+    $failResult = '❌ Fail'
+
+    $resultMarkdown = if ($testResult) {
+        "Well done. The audited Global external access policy or organization setting prevents external unmanaged Teams users from initiating conversations. Custom external access policies assigned to users are not checked.`n`n"
+    } else {
+        "External unmanaged Teams users can initiate conversations. Turn this off in the Global external access policy or in the organization settings.`n`n"
     }
+    $resultMarkdown += "| Setting | Value | Result |`n"
+    $resultMarkdown += "| --- | --- | --- |`n"
+    $resultMarkdown += "| AllowTeamsConsumerInbound (organization settings) | $(if ($null -eq $orgSetting) { 'Not found' } else { $orgSetting }) | $(if ($orgSetting -eq $false) { $passResult } else { $failResult }) |`n"
+    $policyValue = if ($orgSetting -eq $false) { 'Not checked' } elseif ($null -eq $policySetting) { 'Not found' } else { $policySetting }
+    $policyResult = if ($orgSetting -eq $false) { 'Not checked' } elseif ($policySetting -eq $false) { $passResult } else { $failResult }
+    $resultMarkdown += "| EnableTeamsConsumerInbound (Global external access policy) | $policyValue | $policyResult |`n"
+    $resultMarkdown += "`nEither setting turned off meets the CIS recommendation."
+
+    Add-MtTestResultDetail -Result $resultMarkdown
+    return $testResult
 }

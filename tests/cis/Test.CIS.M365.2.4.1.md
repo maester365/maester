@@ -7,9 +7,15 @@ The test needs the protection to be on, at least one priority account, and an en
 #### Remediation action
 
 1. Sign in to the [Microsoft Defender portal](https://security.microsoft.com).
-2. Go to **Settings** > **Email & collaboration** > **Priority account protection** and turn on **Priority account protection**.
-3. Go to **Settings** > **Email & collaboration** > **User tags**, open **Priority account** and add the accounts to tag.
-4. Go to **Email & collaboration** > **Policies & rules** > **Alert policy** and create alerts for malware and phishing that use the **Priority account** user tag, a severity of **High**, the filter for inbound mail and a notification recipient.
+2. Go to **System** > **Settings** > **Email & collaboration** > [**Priority account protection**](https://security.microsoft.com/securitysettings/priorityAccountProtection) and turn on **Priority account protection**.
+3. Select **User tags**, select the **Priority account** tag and select **Edit**. Add the users or groups that are your priority accounts (groups are recommended), then select **Next** and **Submit**. Repeat for any other tags you use, such as Finance or HR.
+4. Go to **Email & collaboration** > **Policies & rules** > [**Alert policy**](https://security.microsoft.com/alertpoliciesv2) and select **New alert policy**.
+5. Enter a name and description, set **Severity** to **High** and **Category** to **Threat management**.
+6. Set **Activity is** to **Detected malware in an email message** and the mail direction to **Inbound**.
+7. Select **Add condition** > **User: recipient tags are** and select **Priority account**.
+8. Select **Every time an activity matches the rule**, select **Next** and add the recipients who should be notified.
+9. Select **Yes, turn it on right away** and **Submit**.
+10. Repeat steps 4 to 9 with **Activity is** set to **Phishing email detected at time of delivery**.
 
 #### Related links
 
