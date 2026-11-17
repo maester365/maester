@@ -12,6 +12,9 @@
 
 Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
     BeforeAll {
+        # The tag context below reaches into the module with InModuleScope, so this file needs the module
+        # loaded. Without this it passes only when another test file in the same run imported it first.
+        Import-Module $PSScriptRoot/../../../Maester.psd1 -Force
         $repoRoot = (Resolve-Path "$PSScriptRoot/../../../..").Path
         $goldenRoot = Join-Path $repoRoot 'powershell/tests/fixtures/golden'
         $exporter = Join-Path $repoRoot 'build/golden/Export-MtGoldenFixture.ps1'
