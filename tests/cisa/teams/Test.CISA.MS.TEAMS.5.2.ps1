@@ -20,7 +20,8 @@ function Test-MtCisaTeamsThirdPartyApps {
         Mitre              = ('T1195', 'T1528'),
         Control            = 'cisa-scuba:MS.TEAMS.5.2',
         Service            = ('Graph', 'Teams'),
-        Author             = 'JeremyFinney-lgtm'
+        Author             = 'JeremyFinney-lgtm',
+        Contributor        = 'julien-ly'
     )]
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test assesses every third-party app category setting.')]

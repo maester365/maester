@@ -20,7 +20,8 @@ function Test-MtCisaTeamsMicrosoftApps {
         Mitre              = 'T1195',
         Control            = 'cisa-scuba:MS.TEAMS.5.1',
         Service            = ('Graph', 'Teams'),
-        Author             = 'JeremyFinney-lgtm'
+        Author             = 'JeremyFinney-lgtm',
+        Contributor        = 'julien-ly'
     )]
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test assesses every Microsoft app category setting.')]
