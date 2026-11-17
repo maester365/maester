@@ -107,7 +107,7 @@ What a failing result points at. One key.
 - `Tenant` when the test evaluates the single default or global policy of a kind, because there is one of it and
   it applies to everyone.
 - Otherwise the kind of object a failing result lists or counts: `User`, `Application`, `Device`,
-  `ConditionalAccessPolicy`, `GroupPolicy` and so on. A test that evaluates every policy and lists the ones that
+  `ConditionalAccessPolicy`, `GroupPolicy`, `UserFlow` and so on. A test that evaluates every policy and lists the ones that
   fail uses the policy type.
 - A test that counts objects for review (an inventory test) uses the type it counts. When no key names that kind
   of object and it is a one-off, use `Tenant`.

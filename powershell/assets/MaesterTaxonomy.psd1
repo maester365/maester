@@ -248,6 +248,7 @@
         @{ Key = 'Group'; Description = 'Security, Microsoft 365 and distribution groups.' }
         @{ Key = 'Application'; Description = 'App registrations.' }
         @{ Key = 'ServicePrincipal'; Description = 'Enterprise applications, managed identities and other service principals.' }
+        @{ Key = 'UserFlow'; Description = 'Entra External ID (CIAM) user flows.' }
         @{ Key = 'Agent'; Description = 'AI agents and agent identities.' }
         @{ Key = 'Device'; Description = 'Managed or registered devices.' }
         @{ Key = 'DirectoryRole'; Description = 'Directory roles and role assignments.' }
