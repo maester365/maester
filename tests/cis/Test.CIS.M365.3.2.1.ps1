@@ -4,13 +4,13 @@
         Checks that at least one data loss prevention policy is enabled.
 
     .DESCRIPTION
-        Checks that at least one data loss prevention policy that is not a Copilot policy is enabled.
+        Checks that at least one enabled data loss prevention policy defines an Exchange, SharePoint, OneDrive or Teams location.
         CIS Microsoft 365 Foundations Benchmark v7.0.0 (3.2.1, L1)
 
     .EXAMPLE
         Test-MtCisDlpPoliciesEnabled
 
-        Returns true if a non-Copilot DLP policy is enabled.
+        Returns true if an enabled DLP policy defines at least one required workload location.
 
     .LINK
         https://maester.dev/docs/tests/CIS.M365.3.2.1
@@ -36,32 +36,37 @@
     param()
 
     Write-Verbose 'Getting data loss prevention policies...'
-    $policies = @(Get-MtExo -Request DlpCompliancePolicy | Where-Object { $_.EnforcementPlanes -notcontains 'CopilotExperiences' })
+    $policies = @(Get-MtExo -Request DlpCompliancePolicy)
 
     $report = foreach ($policy in $policies) {
+        $locations = @('ExchangeLocation', 'SharePointLocation', 'OneDriveLocation', 'TeamsLocation' | Where-Object {
+                @($policy.$_ | Where-Object { $_ }).Count -gt 0
+            })
         [pscustomobject]@{
             Name = $policy.Name
             Mode = $policy.Mode
-            Pass = $policy.Mode -eq 'Enable'
+            Locations = $locations -join ', '
+            Pass = $policy.Mode -eq 'Enable' -and $locations.Count -gt 0
         }
     }
     $testResult = @($report | Where-Object { $_.Pass }).Count -ge 1
 
-    $passText = 'At least one non-Copilot data loss prevention policy is enabled.'
-    $failText = if ($policies.Count -eq 0) { 'No non-Copilot data loss prevention policy was found.' } else { 'No non-Copilot data loss prevention policy is enabled.' }
+    $passText = 'At least one enabled data loss prevention policy defines an Exchange, SharePoint, OneDrive or Teams location.'
+    $failText = 'No enabled data loss prevention policy defines an Exchange, SharePoint, OneDrive or Teams location.'
 
-    $resultMd = "| Policy | Mode | Result |`n"
-    $resultMd += "| --- | --- | --- |`n"
+    $resultMd = "| Policy | Mode | Required workload locations | Result |`n"
+    $resultMd += "| --- | --- | --- | --- |`n"
     foreach ($row in $report) {
-        $resultMd += "| $($row.Name) | $($row.Mode) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
+        $resultMd += "| $(Get-MtSafeMarkdown $row.Name) | $(Get-MtSafeMarkdown $row.Mode) | $($row.Locations) | $(if ($row.Pass) { '✅ Pass' } else { '❌ Fail' }) |`n"
     }
 
     if ($testResult) {
         $testResultMarkdown = "Well done. $passText`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "$failText`n`n%TestResult%"
     }
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+    $testResultMarkdown = $testResultMarkdown.Replace('%TestResult%', $resultMd)
 
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
