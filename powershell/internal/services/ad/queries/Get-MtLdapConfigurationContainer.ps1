@@ -91,6 +91,12 @@
         WellKnownSecurityPrincipals = @($wellKnown); SiteLinks = @($siteLinks); DhcpServers = @($dhcp); AuthNPolicyContainers = @($authN)
         TrustedRootCAs = @($trustedRoots); IntermediateCAs = @($intermediate); EnterpriseCAs = @($enterprise); CertificateTemplates = @($templates)
         EnrollmentTemplates = $enrollmentTemplates; CrlDistributionPoints = @($cdp); NtAuthCertificates = @($ntAuth); LdapQueryPolicies = @($policies)
+        # Whether the Directory Service object itself came back. It is NOT proof that
+        # tombstoneLifetime was readable: if the account can see the object but has no read
+        # access to that attribute, Active Directory omits the attribute and returns the
+        # object, which looks exactly like the attribute not being set. Callers must not
+        # infer a value from this flag alone - see Test-MtAdTombstoneLifetime.
+        DirectoryServiceRead = ($null -ne $directoryService)
         TombstoneLifetime = if ($null -ne $directoryService) { $directoryService.tombstoneLifetime } else { $null }
         DsHeuristics = if ($null -ne $directoryService) { $directoryService.dSHeuristics } else { $null }
         SpnMappings = if ($null -ne $directoryService) { @($directoryService.sPNMappings | Where-Object { $null -ne $_ }) } else { @() }
