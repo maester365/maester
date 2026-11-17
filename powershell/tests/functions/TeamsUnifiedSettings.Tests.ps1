@@ -76,7 +76,7 @@ public sealed class MaesterTestUnifiedDeviceCodeClient
 
     public Task<MaesterTestUnifiedDeviceCodeResult> GetTokenTask()
     {
-        Task.Delay(1000).ContinueWith(_ => _tokenSource.TrySetResult(new MaesterTestUnifiedDeviceCodeResult()));
+        Task.Delay(5000).ContinueWith(_ => _tokenSource.TrySetException(new TimeoutException("The host did not release the device-code token.")));
         return _tokenSource.Task;
     }
 

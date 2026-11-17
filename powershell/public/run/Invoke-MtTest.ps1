@@ -96,7 +96,8 @@
             $withinCustomRoot = [string]::Equals($fullPath, $customRoot, $comparison) -or $fullPath.StartsWith($customRootPrefix, $comparison)
             $isBuiltInPath = $withinTestRoot -and -not $withinCustomRoot
             $reloadBuiltInSourceTests = $isBuiltInPath
-            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root -BuiltIn:$isBuiltInPath)) { $tests.Add($t) }
+            $inventoryRoot = if ($isBuiltInPath) { $testRoot } else { $root }
+            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $inventoryRoot -BuiltIn:$isBuiltInPath)) { $tests.Add($t) }
         }
     }
     if ($Id) {
@@ -124,9 +125,36 @@
     if ($reloadBuiltInSourceTests) {
         $maester = $ExecutionContext.SessionState.Module
         $loadTestFile = [scriptblock]::Create('. $args[0]')
+        $reloadedTests = [System.Collections.Generic.List[object]]::new()
         foreach ($test in @($tests | Where-Object { $_.BuiltIn -and $_.File -and $_.Errors.Count -eq 0 })) {
-            # Keep the refreshed function in the module scope used by Invoke-MtNativePlan.
-            $null = $maester.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($test.File))
+            # Promote the refreshed function from this command's scope to module scope for path and ID runs.
+            try {
+                $null = $maester.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($test.File))
+                $function = Get-Item -LiteralPath "Function:\$($test.FunctionName)" -ErrorAction Stop
+                Set-Item -LiteralPath "Function:\script:$($test.FunctionName)" -Value $function.ScriptBlock -ErrorAction Stop
+                $reloadedTests.Add($test)
+            } catch {
+                $test.Errors.Add([pscustomobject]@{
+                        Code    = 'LoadFailed'
+                        Message = "The file could not be loaded: $($_.Exception.Message)"
+                        Line    = 1
+                    })
+            }
+        }
+
+        if ($reloadedTests.Count -gt 0) {
+            # ID-based runs use the cached parameter and attribute metadata as well as the refreshed function.
+            $catalog = @(Get-MtTestCatalog)
+            foreach ($test in $reloadedTests) {
+                $index = 0
+                while ($index -lt $catalog.Count -and $catalog[$index].Id -ne $test.Id) { $index++ }
+                if ($index -lt $catalog.Count) {
+                    $catalog[$index] = $test
+                } else {
+                    $catalog += $test
+                }
+            }
+            $script:__MtTestCatalog = $catalog
         }
     }
 
