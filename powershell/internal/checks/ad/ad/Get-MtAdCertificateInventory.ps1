@@ -19,12 +19,18 @@
             $values = [System.Collections.Generic.List[object]]::new()
             if ($raw -is [byte[]] -or $raw -is [string]) {
                 $values.Add($raw)
+            } elseif ($raw -is [array] -and $raw.Count -gt 0 -and @($raw | Where-Object { $_ -isnot [byte] }).Count -eq 0) {
+                # A single LDAP binary attribute can be projected as an object array of bytes.
+                $values.Add([byte[]]$raw)
             } elseif ($null -ne $raw) {
                 foreach ($value in $raw) { $values.Add($value) }
             }
             foreach ($value in $values) {
                 if ($null -eq $value) { continue }
-                $bytes = if ($value -is [byte[]]) { $value } elseif ($value -is [string]) {
+                $bytes = if ($value -is [byte[]]) { $value } elseif ($value -is [array] -and $value.Count -gt 0 -and @($value | Where-Object { $_ -isnot [byte] }).Count -eq 0) {
+                    # Each value of a multi-valued LDAP binary attribute can also be projected as an object array of bytes.
+                    [byte[]]$value
+                } elseif ($value -is [string]) {
                     try { [Convert]::FromBase64String($value) } catch { throw "Invalid certificate encoding for $($role.Name) $($entry.Name)." }
                 } else { throw "Unsupported certificate value for $($role.Name) $($entry.Name)." }
                 try {
