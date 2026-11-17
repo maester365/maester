@@ -27,7 +27,8 @@
         Mitre = ('T1213.002', 'T1530'),
         Control = 'cisa-scuba:MS.SHAREPOINT.3.3',
         Service = 'SharePointOnline',
-        Author = 'Mynster9361'
+        Author = 'Mynster9361',
+        Contributor = ('JeremyFinney-lgtm', 'earbona23')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -35,16 +36,22 @@
 
     $spoTenant = Get-MtSpo
 
-    # Only applicable when sharing allows external users: ExternalUserSharingOnly (1) or ExternalUserAndGuestSharing (2)
-    if ($spoTenant.SharingCapability -notin @("ExternalUserSharingOnly", "ExternalUserAndGuestSharing")) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "External sharing does not allow new or anonymous guests. Verification code reauthentication is not applicable."
+    # SCuBA applies this policy when sharing is Anyone, New and existing guests, or Existing guests.
+    if ($spoTenant.SharingCapability -notin @(
+        "ExternalUserAndGuestSharing",
+        "ExternalUserSharingOnly",
+        "ExistingExternalUserSharingOnly"
+    )) {
+        Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }
 
     # EmailAttestationRequired: $true = verification code required, $false = not required
     # EmailAttestationReAuthDays: number of days before reauthentication is required
     # CISA requires <= 30 days
-    $testResult = $spoTenant.EmailAttestationRequired -eq $true -and $spoTenant.EmailAttestationReAuthDays -le 30
+    $testResult = $spoTenant.EmailAttestationRequired -eq $true -and
+        $null -ne $spoTenant.EmailAttestationReAuthDays -and
+        $spoTenant.EmailAttestationReAuthDays -le 30
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Verification code reauthentication is required every $($spoTenant.EmailAttestationReAuthDays) day(s)."

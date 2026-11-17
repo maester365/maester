@@ -13,7 +13,8 @@ Rationale: Requiring periodic reauthentication via verification codes ensures th
 #### Related links
 
 * [CISA 3 Verification Code Reauth - MS.SHAREPOINT.3.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint33v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/SharepointConfig.rego)
+* [CISA SCuBA baseline - MS.SHAREPOINT.3.3v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint33v2)
+* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/SharepointConfig.rego#L477)
 
 <!--- Results --->
 %TestResult%

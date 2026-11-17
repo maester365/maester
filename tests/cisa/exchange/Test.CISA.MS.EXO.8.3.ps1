@@ -1,10 +1,10 @@
 ﻿function Test-MtCisaDlpAlternate {
     <#
     .SYNOPSIS
-    This will always return $null
+    This retired CISA requirement is no longer assessed.
 
     .DESCRIPTION
-    The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
+    CISA removed this requirement from the SCuBA baseline in April 2026.
 
     .EXAMPLE
     Test-MtCisaDlpAlternate
@@ -28,12 +28,14 @@
         Mitre = ('T1213', 'T1530', 'T1567'),
         Control = 'cisa-scuba:MS.EXO.8.3',
         Service = 'None',
-        Author = 'soulemike'
+        Lifecycle = 'Deprecated',
+        Author = 'soulemike',
+        Contributor = 'JeremyFinney-lgtm'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."
+    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "CISA removed MS.EXO.8.3 from the SCuBA baseline in April 2026. This legacy check is no longer assessed."
     return $null
 }

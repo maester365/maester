@@ -4,6 +4,8 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 
 #### Remediation action:
 
+This assessment requires access to the Entra PIM API. If the API returns `AadPremiumLicenseRequired`, Maester skips the check with `NotLicensedEntraIDP2OrGovernance`, even if the tenant's service plans list a qualifying licence. A skip is not evidence that the requirement is satisfied; other API errors are not treated as licence skips.
+
 1. In **Entra admin center** select **Identity governance** and **Privileged Identity Management**.
 2. Under **Manage**, select **Microsoft Entra roles**.
 3. Under **Manage**, select **[Roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)**.

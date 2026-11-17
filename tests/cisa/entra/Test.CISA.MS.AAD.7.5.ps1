@@ -29,7 +29,7 @@
         Service = 'Graph',
         License = ('AAD_PREMIUM_P2', 'Entra_Identity_Governance'),
         Author = 'soulemike',
-        Contributor = 'michaelmsonne'
+        Contributor = ('michaelmsonne', 'JeremyFinney-lgtm')
     )]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -52,9 +52,17 @@
                 expand = "principal"
             }
         }
-        $assignments = Invoke-MtGraphRequest @assignmentsSplat | Where-Object {`
-                $null -eq $_.createdUsing -or `
-                $null -eq $_.scheduleInfo.startDateTime }
+        try {
+            $assignments = Invoke-MtGraphRequest @assignmentsSplat -ErrorAction Stop | Where-Object {`
+                    $null -eq $_.createdUsing -or `
+                    $null -eq $_.scheduleInfo.startDateTime }
+        } catch {
+            if ($_.ErrorDetails.Message -match '"code"\s*:\s*"AadPremiumLicenseRequired"') {
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+                return $null
+            }
+            throw
+        }
 
         $roleAssignment.principal = $assignments.principal
 

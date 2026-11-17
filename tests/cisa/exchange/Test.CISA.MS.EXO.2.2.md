@@ -1,9 +1,10 @@
-An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
+An SPF policy SHALL be published for each accepted domain that fails all non-approved senders.
 
-Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Publishing an SPF policy for each agency domain mitigates forged `FROM` fields by providing a means for recipients to detect emails spoofed in this way. SPF is required for FCEB departments and agencies by Binding Operational Directive (BOD) 18-01, "Enhance Email and Web Security".
+Rationale: An adversary may modify the `FROM` field of an email such that it appears to be a legitimate email sent by an agency, facilitating phishing attacks. Publishing an SPF policy for each agency domain mitigates forged `FROM` fields by providing a means for recipients to detect emails spoofed in this way. SPF is required for FCEB departments and agencies by Binding Operational Directive (BOD) 18-01, "Enhance Email and Web Security". SCuBA accepts either a hard fail (`-all`) or soft fail (`~all`) mechanism; a redirect modifier is also accepted as in ScubaGear.
 
-Coexistence domains related to Hybrid Configuration Wizard (HCW) are skipped.
-Production use of coexistence domains is discouraged, and additional controls, such as transport rules, should be used to restrict their use.
+This check evaluates every accepted domain, including coexistence domains, to match the SCuBA evaluation scope.
+
+If no accepted domains are returned, the check fails because the audited domains cannot be assessed. Verify that Exchange Online accepted domains can be retrieved, then rerun the check.
 
 Every accepted domain is checked. A domain that sends email must name Exchange Online as an approved sender. A parked domain, one that never sends email, has no approved senders, so it only needs a policy that fails all senders, such as `v=spf1 -all` (`~all` is also accepted, as in MS.EXO.2.2v3).
 
@@ -23,13 +24,13 @@ To test your SPF configuration, consider using a web-based tool, such as those l
 
 `Resolve-DnsName example.onmicrosoft.com txt`
 
-If SPF is configured, you will see a response resembling `v=spf1 include:spf.protection.outlook.com -all` returned; though by necessity, the contents of the SPF policy may vary by agency. In this example, the SPF policy indicates the IP addresses listed by the policy for "spf.protection.outlook.com" are the only approved senders for "example.onmicrosoft.com." These IPs can be determined via an additional SPF lookup, this time for "spf.protection.outlook.com." Ensure the IP addresses listed as approved senders for your domain are those identified for MS.EXO.2.1v1. [See SPF TXT record syntax for Microsoft 365 | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-anti-spoofing?view=o365-worldwide#spf-txt-record-syntax-for-microsoft-365) for a more in-depth discussion of SPF record syntax.
+If SPF is configured, you will see a response resembling `v=spf1 include:spf.protection.outlook.com -all`; the contents of the policy may vary by agency. This check applies the SCuBA heuristic to each accepted domain: the parsed SPF record must contain a `-all` or `~all` mechanism, or a redirect modifier. A passing result is not proof that the redirect target rejects all non-approved senders, and the check does not validate individual sender addresses; review the reported records. See [SPF TXT record syntax for Microsoft 365 | Microsoft Learn](https://learn.microsoft.com/microsoft-365/security/office-365-security/email-authentication-anti-spoofing?view=o365-worldwide#spf-txt-record-syntax-for-microsoft-365) for more information.
 
 #### Related links
 
 * [Exchange admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
-* [CISA 2 Sender Policy Framework - MS.EXO.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L75)
+* [CISA 2 Sender Policy Framework - MS.EXO.2.2v3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v3)
+* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L145)
 
 <!--- Results --->
 %TestResult%

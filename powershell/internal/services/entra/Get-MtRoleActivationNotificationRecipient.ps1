@@ -28,7 +28,7 @@
         Filter          = "scopeId eq '/' and scopeType eq 'DirectoryRole' and roleDefinitionId eq '$RoleDefinitionId'"
         QueryParameters = @{ expand = 'policy(expand=rules)' }
     }
-    $assignment = Invoke-MtGraphRequest @policySplat
+    $assignment = Invoke-MtGraphRequest @policySplat -ErrorAction Stop
     $rule = @($assignment.policy.rules) | Where-Object { $_.id -eq 'Notification_Admin_EndUser_Assignment' } | Select-Object -First 1
     return [string[]]@($rule.notificationRecipients | Where-Object { $_ })
 }
