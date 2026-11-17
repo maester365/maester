@@ -8,7 +8,8 @@
     A policy covers an environment when its scope is all environments, when it names the environment in an
     OnlyEnvironments scope, or when it excludes other environments but not this one.
     DefaultEnvironment passes when at least one policy covers the default environment.
-    NonDefaultEnvironment passes when a policy applies to all environments, or every non-default environment is covered.
+    NonDefaultEnvironment passes when a policy applies to all environments. Otherwise, the returned inventory cannot
+    prove that every non-default environment is covered, so apparent complete coverage requires investigation.
 
     .EXAMPLE
     Test-MtCisaPowerPlatformDlpPolicyScope -Scope DefaultEnvironment
