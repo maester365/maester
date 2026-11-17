@@ -29,7 +29,8 @@
         Service = 'Graph',
         Lifecycle = 'Preview',
         LongRunning,
-        Author = 'agnivesh'
+        Author = 'agnivesh',
+        Contributor = 'FiraSenax'
     )]
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple directory roles.')]

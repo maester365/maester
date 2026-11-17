@@ -30,7 +30,7 @@
         Service = ('Graph', 'ExchangeOnline'),
         LongRunning,
         Author = 'l-gosling',
-        Contributor = ('merill', 'SamErde', 'thomas-s-schmidt')
+        Contributor = ('merill', 'SamErde', 'thomas-s-schmidt', 'FiraSenax')
     )]
     [CmdletBinding()]
     [OutputType([bool])]

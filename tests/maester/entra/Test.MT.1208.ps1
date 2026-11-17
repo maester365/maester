@@ -32,7 +32,8 @@
         Service = 'Graph',
         Lifecycle = 'Preview',
         LongRunning,
-        Author = 'agnivesh'
+        Author = 'agnivesh',
+        Contributor = 'FiraSenax'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
