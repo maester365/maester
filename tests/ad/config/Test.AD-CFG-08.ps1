@@ -3,16 +3,15 @@
     .SYNOPSIS
     Evaluates Active Directory Authentication Policy and Silo posture.
     .DESCRIPTION
-    AD-CFG-08 collects Authentication Policies and Silos directly from the configuration naming
-    context, reports enforcement state, and distinguishes absent expression attributes from
-    intentionally empty values.
+    AD-CFG-08 reports policy and silo inventory and enforcement state. Authentication-expression
+    attributes are optional, and LDAP omission alone does not establish why a value was not returned.
     .EXAMPLE
     Test-MtAdAuthNPolicyConfigCount
     .LINK
     https://maester.dev/docs/commands/Test-MtAdAuthNPolicyConfigCount
     .NOTES
-    Author: Mario Contestabile
-    LinkedIn: https://www.linkedin.com/in/mario-contestabile/
+    Original author: soulemike
+    Authentication Policy and Silo posture rewrite: Mario Contestabile (rolling-code)
     #>
     [MaesterTest(
         Id = 'AD-CFG-08',
@@ -25,48 +24,42 @@
         Mitre = 'None',
         Service = 'ActiveDirectory',
         Permission = ('ActiveDirectory:Ldap:Configuration/*:ReadProperty'),
-        # Maester requires the Author attribute to use the contributor's GitHub handle for catalog attribution.
-        Author = 'rolling-code'
+        Author = 'soulemike'
     )]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     Write-Verbose 'Starting Test-MtAdAuthNPolicyConfigCount'
-
     $adState = Get-MtADDomainState -Categories @('AuthenticationPolicies')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
-
     if ($null -eq $adState['AuthenticationPolicyState']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy LDAP evidence is unavailable.'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy LDAP evidence is unavailable. Review verbose LDAP collection output and access to CN=AuthN Policy Configuration.'
         return $null
     }
 
-    # Get-MtADDomainState returns an OrderedDictionary, so use key access to preserve its public return contract.
     $state = $adState['AuthenticationPolicyState']
-    # A successful empty collection is valid evidence and must not be presented as a failed LDAP query.
-    $testResult = $true
     $result = "| Metric | Value |`n"
     $result += "| --- | --- |`n"
     $result += "| Authentication Policies | $($state.PolicyCount) |`n"
     $result += "| Enforced Authentication Policies | $($state.EnforcedPolicyCount) |`n"
     $result += "| Authentication Policy Silos | $($state.SiloCount) |`n"
     $result += "| Enforced Authentication Policy Silos | $($state.EnforcedSiloCount) |`n"
-    $result += "| Requested expression attributes not returned | $($state.MissingRequiredAttributeCount) |`n"
 
-    if ($state.PolicyCount -eq 0) {
-        $summary = 'No Authentication Policy objects were detected. Expression-attribute evaluation is not applicable because no policy instances exist.'
+    if ($state.PolicyCount -eq 0 -and $state.SiloCount -eq 0) {
+        $summary = 'No Authentication Policy or Authentication Policy Silo objects were detected.'
     }
-    elseif ($state.MissingRequiredAttributeCount -gt 0) {
-        $summary = 'Authentication Policy objects were collected, but one or more optional expression attributes were not returned. Their configuration state is unknown; do not infer that they are unset or that collection was incomplete.'
+    elseif (@($state.NonEnforcedSilos).Count -gt 0) {
+        $siloNames = @($state.NonEnforcedSilos | ForEach-Object { Get-MtSafeMarkdown -Text ([string]$_) }) -join ', '
+        $summary = "Authentication Policy and Silo posture was collected successfully. Review non-enforced silos: $siloNames"
     }
     else {
-        $summary = 'Authentication Policy and Silo posture was collected successfully, including enforcement and expression-attribute availability.'
+        $summary = 'Authentication Policy and Silo posture was collected successfully.'
     }
 
     Add-MtTestResultDetail -Result "$summary`n`n$result"
-    return $testResult
+    return $true
 }
