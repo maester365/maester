@@ -12,6 +12,9 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
     BeforeEach {
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail { }
+        Mock -ModuleName Maester Resolve-MtDnsRecord {
+            [PSCustomObject]@{ Name = $Name; Type = $Type; Status = 'NXDomain'; Answers = [object[]]@() }
+        }
         Mock -ModuleName Maester Get-MailAuthenticationRecord {
             throw 'DNS lookup should not be attempted without a DKIM signing configuration'
         }
@@ -48,7 +51,7 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
             # Test-MtCisaDkim does not read SendingFromDomainDisabled: MS.EXO.3.1v1 asks for DKIM on every
             # domain, so a domain that cannot send is checked like any other.
             ExpectedResultByCommand   = @{
-                'Test-MtCisDkim'  = $null
+                'Test-MtCisDkim'  = $true
                 'Test-MtCisaDkim' = $false
             }
         }
@@ -99,13 +102,121 @@ Describe 'DKIM checks with no signing configuration' -ForEach @(
 
         $expectedResult = $ExpectedResultByCommand[$CommandName]
 
-        $result = & $CommandName
+        $parameters = if ($CommandName -eq 'Test-MtCisDkim' -and $DomainName -eq 'parked.example') { @{ ParkedDomains = 'parked.example' } } else { @{} }
+        $result = & $CommandName @parameters
         if ($null -eq $expectedResult) {
             $result | Should -BeNullOrEmpty
         } else {
             $result | Should -Be $expectedResult
         }
         Should -Invoke Get-MailAuthenticationRecord -ModuleName Maester -Exactly 0
+    }
+}
+
+Describe 'CIS DKIM with ParkedDomains' {
+    BeforeEach {
+        $script:acceptedDomains = @([PSCustomObject]@{ DomainName = 'parked.example'; InitialDomain = $false; IsCoexistenceDomain = $false })
+        # Name -> status for the selector lookups; anything not listed is NXDomain.
+        $script:selectorStatus = @{}
+        $script:selectorRecords = @{}
+        Mock -ModuleName Maester Add-MtTestResultDetail {
+            $script:detail = [PSCustomObject]@{ Result = $Result; Investigate = [bool]$Investigate; SkippedBecause = $SkippedBecause }
+        }
+        Mock -ModuleName Maester Get-MtExo {
+            if ($Request -eq 'AcceptedDomain') { return $script:acceptedDomains }
+            return @()
+        }
+        Mock -ModuleName Maester Get-MailAuthenticationRecord { throw 'No Exchange DKIM lookup should be needed for a parked domain.' }
+        Mock -ModuleName Maester Resolve-MtDnsRecord {
+            $key = "$Type|$Name"
+            $status = if ($script:selectorStatus.ContainsKey($key)) { $script:selectorStatus[$key] } elseif ($script:selectorRecords.ContainsKey($key)) { 'Success' } else { 'NXDomain' }
+            $answers = if ($script:selectorRecords.ContainsKey($key)) { [object[]]@([PSCustomObject]@{ Value = $script:selectorRecords[$key] }) } else { [object[]]@() }
+            [PSCustomObject]@{ Name = $Name; Type = $Type; Status = $status; Answers = $answers }
+        }
+    }
+
+    It 'checks a domain against the sending-domain audit unless it is listed' {
+        Test-MtCisDkim | Should -BeFalse
+        $script:detail.Result | Should -Match '\| parked\.example \| Sending \|'
+        Should -Invoke Resolve-MtDnsRecord -ModuleName Maester -Exactly 0
+    }
+
+    It 'binds ParkedDomains from <Source>' -ForEach @(
+        @{ Source = 'Setting'; Config = @{}; Classification = 'Parked'; ExpectedResult = $true }
+        @{ Source = 'Config'; Config = @{ ParkedDomains = @() }; Classification = 'Sending'; ExpectedResult = $false }
+    ) {
+        $binding = InModuleScope Maester -Parameters @{ Config = $Config } {
+            ConvertTo-MtTestParameter -Test (Get-MtTest 'CIS.M365.2.1.9') -ConfigValue $Config -GlobalSetting @{ ParkedDomains = @('parked.example') }
+        }
+        $binding.Error | Should -BeNullOrEmpty
+        ($binding.Effective | Where-Object Name -EQ 'ParkedDomains').Source | Should -Be $Source
+        $parameters = $binding.Bound
+
+        Test-MtCisDkim @parameters | Should -Be $ExpectedResult
+        $script:detail.Result | Should -Match "\| parked\.example \| $Classification \|"
+    }
+
+    It 'passes a listed domain with no selector records' {
+        Test-MtCisDkim -ParkedDomains 'PARKED.example.' | Should -BeTrue
+        $script:detail.Result | Should -Match '\| parked\.example \| Parked \|'
+        $script:detail.Result | Should -Match 'Well done'
+        Should -Invoke Resolve-MtDnsRecord -ModuleName Maester -Exactly 4
+    }
+
+    It 'fails a listed domain that publishes a selector record' {
+        $script:selectorRecords['CNAME|selector1._domainkey.parked.example'] = 'selector1-parked-example._domainkey.contoso.onmicrosoft.com'
+
+        Test-MtCisDkim -ParkedDomains 'parked.example' | Should -BeFalse
+        $script:detail.Result | Should -Match 'a selector1 or selector2 DKIM record is published'
+    }
+
+    It 'fails a listed domain with a selector record even when another lookup failed' {
+        $script:selectorRecords['TXT|selector2._domainkey.parked.example'] = 'v=DKIM1; p=abc'
+        $script:selectorStatus['CNAME|selector1._domainkey.parked.example'] = 'Error'
+
+        Test-MtCisDkim -ParkedDomains 'parked.example' | Should -BeFalse
+        $script:detail.Investigate | Should -BeFalse
+    }
+
+    It 'investigates a listed domain when a selector lookup fails' {
+        $script:selectorStatus['CNAME|selector1._domainkey.parked.example'] = 'Error'
+
+        Test-MtCisDkim -ParkedDomains 'parked.example' | Should -BeTrue
+        $script:detail.Investigate | Should -BeTrue
+        $script:detail.Result | Should -Match 'Compliance .* remains unconfirmed'
+    }
+
+    It 'skips with NotSupported when DNS lookups are not available' {
+        foreach ($selector in 'selector1', 'selector2') {
+            foreach ($type in 'CNAME', 'TXT') { $script:selectorStatus["$type|$selector._domainkey.parked.example"] = 'NotAvailable' }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'parked.example' | Should -BeNullOrEmpty
+        $script:detail.SkippedBecause | Should -Be 'NotSupported'
+    }
+
+    It 'reports a compliant parked domain alongside one that <OtherOutcome>' -ForEach @(
+        @{ OtherOutcome = 'needs investigation'; Status = 'Error'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedUnconfirmed = $true }
+        @{ OtherOutcome = 'cannot be checked'; Status = 'NotAvailable'; ExpectedResult = $true; ExpectedInvestigation = $true; ExpectedUnconfirmed = $true }
+        @{ OtherOutcome = 'passes'; Status = $null; ExpectedResult = $true; ExpectedInvestigation = $false; ExpectedUnconfirmed = $false }
+    ) {
+        $script:acceptedDomains += [PSCustomObject]@{ DomainName = 'other.example'; InitialDomain = $false; IsCoexistenceDomain = $false }
+        if ($Status) {
+            foreach ($selector in 'selector1', 'selector2') {
+                foreach ($type in 'CNAME', 'TXT') { $script:selectorStatus["$type|$selector._domainkey.other.example"] = $Status }
+            }
+        }
+
+        Test-MtCisDkim -ParkedDomains 'parked.example', 'other.example' | Should -Be $ExpectedResult
+        $script:detail.Investigate | Should -Be $ExpectedInvestigation
+        $script:detail.SkippedBecause | Should -BeNullOrEmpty
+        $script:detail.Result | Should -Match '\| parked\.example .*Pass'
+        if ($ExpectedUnconfirmed) {
+            $script:detail.Result | Should -Match 'Compliance .* remains unconfirmed'
+            $script:detail.Result | Should -Not -Match 'Well done'
+        } else {
+            $script:detail.Result | Should -Match 'Well done'
+        }
     }
 }
 

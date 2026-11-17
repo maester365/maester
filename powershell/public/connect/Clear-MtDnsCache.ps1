@@ -23,4 +23,5 @@
     Write-Verbose -Message "Clearing the results cached from DNS lookups in this session"
 
     $__MtSession.DnsCache = @()
+    $__MtSession.DnsRecordCache = @{}
 }

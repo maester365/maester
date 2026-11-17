@@ -4,20 +4,53 @@
         . "$PSScriptRoot/../helpers/Use-MtModuleFunction.ps1"
         Use-MtModuleFunction -Name Test-MtCisDmarcRecordsPublished
 
+        $script:parkedDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
+        }
+        $script:quarantineDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'quarantine'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @()
+            reportForensic  = @()
+        }
+        $script:fullyCompliantDmarcRecord = [pscustomobject]@{
+            valid           = $true
+            policy          = 'reject'
+            policySubdomain = $null
+            percentage      = 100
+            reportAggregate = @([pscustomobject]@{ mailAddress = 'reports@example.com' })
+            reportForensic  = @([pscustomobject]@{ mailAddress = 'forensic@example.com' })
+        }
+
         $script:domains = @()
         $script:registrableDomains = @{}
         $script:dmarcResults = @{}
+        $script:dkimSigningConfigs = @()
 
-        Mock Get-MtExo -ModuleName Maester { $script:domains }
+        Mock Get-MtExo -ModuleName Maester {
+            if ($Request -eq 'AcceptedDomain') { return $script:domains }
+            return $script:dkimSigningConfigs
+        }
         Mock Get-MtRegistrableDomain -ModuleName Maester { $script:registrableDomains[$DomainName] }
         Mock ConvertFrom-MailAuthenticationRecordDmarc -ModuleName Maester { $script:dmarcResults[$DomainName] }
-        Mock Add-MtTestResultDetail -ModuleName Maester {}
+        Mock Add-MtTestResultDetail -ModuleName Maester {
+            $script:resultDetail = [pscustomobject]@{ Result = $Result; Investigate = [bool]$Investigate; SkippedBecause = $SkippedBecause }
+        }
     }
 
     BeforeEach {
         $script:domains = @()
         $script:registrableDomains = @{}
         $script:dmarcResults = @{}
+        $script:dkimSigningConfigs = @()
+        $script:resultDetail = $null
     }
 
     It 'fails a known noncompliant domain before skipping an unavailable lookup' {
@@ -43,6 +76,30 @@
         }
     }
 
+    It 'returns <Outcome> when another DMARC lookup is unavailable' -ForEach @(
+        @{ Outcome = 'a failure'; Parked = @(); ExpectedResult = $false; ExpectedSkip = $null }
+        @{ Outcome = 'NotSupported'; Parked = @('example.com'); ExpectedResult = $null; ExpectedSkip = 'NotSupported' }
+    ) {
+        $script:domains = @(
+            [pscustomobject]@{ DomainName = 'example.com'; IsCoExistenceDomain = $false }
+            [pscustomobject]@{ DomainName = 'unavailable.example'; IsCoExistenceDomain = $false }
+        )
+        $script:registrableDomains = @{
+            'example.com'         = 'example.com'
+            'unavailable.example' = 'unavailable.example'
+        }
+        $script:dmarcResults = @{
+            'example.com'         = $script:parkedDmarcRecord
+            'unavailable.example' = 'DNS lookup unavailable'
+        }
+
+        Test-MtCisDmarcRecordsPublished -ParkedDomains $Parked | Should -Be $ExpectedResult
+        $script:resultDetail.SkippedBecause | Should -Be $ExpectedSkip
+        if ($null -eq $ExpectedSkip) {
+            $script:resultDetail.Result | Should -Match '\| unavailable\.example .* \| Not checked \|'
+        }
+    }
+
     It 'looks up the organizational domain after an invalid subdomain record and reports an invalid effective record' {
         $script:domains = @([pscustomobject]@{ DomainName = 'mail.example.com'; IsCoExistenceDomain = $false })
         $script:registrableDomains = @{ 'mail.example.com' = 'example.com' }
@@ -58,5 +115,62 @@
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $Result -match 'Invalid DMARC record' -and $Result -match 'mail.example.com'
         }
+    }
+
+    It 'requires p=reject but not reporting tags for parked domains' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
+
+        Test-MtCisDmarcRecordsPublished -ParkedDomains 'parked.example' | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match '\| parked\.example \| Parked \|'
+    }
+
+    It 'binds ParkedDomains from <Source>' -ForEach @(
+        @{ Source = 'Setting'; Config = @{}; Classification = 'Parked'; ExpectedResult = $true }
+        @{ Source = 'Config'; Config = @{ ParkedDomains = @() }; Classification = 'Sending'; ExpectedResult = $false }
+    ) {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
+        $binding = InModuleScope Maester -Parameters @{ Config = $Config } {
+            ConvertTo-MtTestParameter -Test (Get-MtTest 'CIS.M365.2.1.10') -ConfigValue $Config -GlobalSetting @{ ParkedDomains = @('parked.example') }
+        }
+        $binding.Error | Should -BeNullOrEmpty
+        ($binding.Effective | Where-Object Name -EQ 'ParkedDomains').Source | Should -Be $Source
+        $parameters = $binding.Bound
+
+        Test-MtCisDmarcRecordsPublished @parameters | Should -Be $ExpectedResult
+        $script:resultDetail.Result | Should -Match "\| parked\.example \| $Classification \|"
+    }
+
+    It 'fails a parked domain whose DMARC policy is quarantine' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:quarantineDmarcRecord }
+
+        Test-MtCisDmarcRecordsPublished -ParkedDomains 'parked.example' | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'Parked-domain policy is reject'
+    }
+
+    It 'applies the sending-domain audit to a domain that is not listed' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'parked.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'parked.example' = 'parked.example' }
+        $script:dmarcResults = @{ 'parked.example' = $script:parkedDmarcRecord }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeFalse
+        $script:resultDetail.Result | Should -Match '\| parked\.example \| Sending \|'
+        $script:resultDetail.Result | Should -Match 'Aggregate reports \(rua\)'
+    }
+
+    It 'accepts a fully compliant DMARC record for a sending domain' {
+        $script:domains = @([pscustomobject]@{ DomainName = 'sending.example'; IsCoExistenceDomain = $false })
+        $script:registrableDomains = @{ 'sending.example' = 'sending.example' }
+        $script:dmarcResults = @{ 'sending.example' = $script:fullyCompliantDmarcRecord }
+
+        Test-MtCisDmarcRecordsPublished | Should -BeTrue
+        $script:resultDetail.Investigate | Should -BeFalse
+        $script:resultDetail.Result | Should -Match 'Well done\. All accepted domains meet'
     }
 }

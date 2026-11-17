@@ -23,6 +23,7 @@ $__MtSession = @{
 	Connections            = @()
 	ConnectionConfig       = $null             # Reference to config discovered by a connector, not an explicit run config.
 	DnsCache               = @()
+	DnsRecordCache         = @{}
 	ExoCache               = @{}
 	OrcaCache              = @{}
 	AIAgentInfo            = $null       # Get-MtAIAgentInfo cache: @{ Agents; Error }, Error is why no agent data is available
