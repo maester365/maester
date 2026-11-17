@@ -94,6 +94,14 @@ Describe 'Test-MtMobileThreatDefenseConnectors' {
         $script:Result | Should -BeLike '*Microsoft Defender for Endpoint*'
     }
 
+    It 'Names the Trellix connector by the ID Intune assigns to it' {
+        $script:Connector.id = '74873197-ffec-4dfc-9816-db65f34c7cb9'
+
+        Test-MtMobileThreatDefenseConnectors | Should -BeTrue
+        $script:Result | Should -BeLike '*| Trellix Mobile Security |*'
+        $script:Result | Should -Not -BeLike '*74873197*'
+    }
+
     It 'Escapes unknown connector IDs and states in the report table' {
         $script:Connector.id = '[link](https://example.test) | extra'
         $script:Connector.partnerState = '**unknown** | extra'

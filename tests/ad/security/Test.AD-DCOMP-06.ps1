@@ -45,7 +45,7 @@
     [OutputType([bool])]
     param(
         # Number of days without a logon before an enabled computer is considered stale.
-        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 180
+        [ValidateRange(1, 3650)] [int] $MaximumInactiveDays = 180
     )
 
     Write-Verbose "Starting Test-MtAdComputerStaleEnabledCount"
@@ -58,7 +58,7 @@
     $computers = $adState.Computers
     if ($null -eq $computers) { throw 'Computer inventory is required to assess stale accounts.' }
     if (@($computers).Count -eq 0) { throw 'Computer inventory is empty; stale accounts cannot be assessed.' }
-    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
+    $staleThreshold = (Get-Date).AddDays(-$MaximumInactiveDays)
 
     # Find enabled computers that haven't logged on for the configured threshold or more.
     $staleEnabledComputers = $computers | Where-Object {
@@ -82,9 +82,9 @@
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Enabled Computers | $totalEnabled |" + "`n"
-    $result += "| Stale Enabled Computers ($StaleThresholdDays+ days) | $staleCount |" + "`n"
+    $result += "| Stale Enabled Computers ($MaximumInactiveDays+ days) | $staleCount |" + "`n"
     $result += "| Never Logged On | $neverLoggedOn |" + "`n"
-    $result += "| Not Logged On in $StaleThresholdDays+ Days | $notLoggedInThresholdDays |" + "`n"
+    $result += "| Not Logged On in $MaximumInactiveDays+ Days | $notLoggedInThresholdDays |" + "`n"
 
     if ($totalEnabled -gt 0) {
         $percentage = [Math]::Round(($staleCount / $totalEnabled) * 100, 2)
@@ -111,7 +111,7 @@
     Write-Verbose "Counts computed"
 
     if ($staleCount -eq 0) {
-        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $StaleThresholdDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd')). Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related device inventory."
+        $analysisSummary = "There are $totalEnabled enabled computers. The most recent logon date is $mostRecentLogon. No enabled computers currently exceed the stale threshold of $MaximumInactiveDays days. A computer would trigger the threshold if it has never logged on or last logged on before $($staleThreshold.ToString('yyyy-MM-dd')). Coverage crosswalk: former AD-COMP-02 is included here under the single computers Feature; AD-COMP-01 supplies the related device inventory."
         $testResultMarkdown = "$analysisSummary`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         Add-MtTestResultDetail -Result $testResultMarkdown

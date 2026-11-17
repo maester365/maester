@@ -61,7 +61,7 @@
 
     $topLevel = @('$schema', 'Id', 'Guid', 'Name', 'Description', 'Version', 'Publisher', 'License', 'Homepage', 'Support', 'SecurityContact',
         'RequiresMaester', 'Code', 'Suites', 'Helpers', 'Connectors', 'Uses', 'Requires', 'Exports', 'Categories', 'Listed',
-        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner', 'Guide', 'Report')
+        'Deprecated', 'Yanked', 'Icon', 'EnabledByDefault', 'Runtime', 'Catalog', 'Pricing', 'Banner', 'Guide', 'Report', 'Settings')
     $strictKeys = @{
         Uses        = @('Services', 'GraphScopes', 'TenantWrites', 'Network', 'Modules')
         Connector   = @('Service', 'Platform', 'DisplayName', 'File', 'Connect', 'Test', 'Disconnect', 'Describe', 'Renew', 'OptIn', 'Permissions', 'Environment')
@@ -165,6 +165,28 @@
         }
     }
     if ($folders.Suites.Count -eq 0 -and $connectors.Count -eq 0) { & $fail 'The pack has no Suites and no Connectors, so it adds nothing.' }
+
+    # Settings: the GlobalSettings keys the pack reads, each named Namespace.Key with a type, so the config is
+    # checked against them, Get-MtSetting returns their defaults and the pack's page can list them.
+    $settingTypes = 'int', 'bool', 'string', 'string[]', 'object', 'object[]'
+    $settingKeys = 'Type', 'Default', 'Description', 'AllowedValues', 'Kind', 'Sensitive'
+    $settings = [ordered]@{}
+    if ($manifest.PSObject.Properties['Settings'] -and $null -ne $manifest.Settings) {
+        if ($manifest.Settings -isnot [pscustomobject]) { & $fail 'Settings must be an object with one entry per setting.' }
+        else {
+            foreach ($p in $manifest.Settings.PSObject.Properties) {
+                $where = "The setting '$($p.Name)'"
+                if ($p.Name -notmatch '^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z][A-Za-z0-9]*)+$') { & $fail "$where must be named Namespace.Key, for example Contoso.Regions. Names without a dot are Maester's own settings."; continue }
+                if ($p.Value -isnot [pscustomobject]) { & $fail "$where must be an object with a Type."; continue }
+                foreach ($key in $p.Value.PSObject.Properties.Name) { if ($key -notin $settingKeys) { $warnings.Add("$where has the unknown key '$key', which is ignored.") } }
+                $type = if ($p.Value.PSObject.Properties['Type']) { $p.Value.Type } else { $null }
+                if ($type -isnot [string] -or $type -notin $settingTypes) { & $fail "$where needs a Type: $($settingTypes -join ', ')."; continue }
+                if ($p.Value.PSObject.Properties['Sensitive'] -and $p.Value.Sensitive -isnot [bool]) { & $fail "$where`: Sensitive must be true or false."; continue }
+                if ($p.Value.PSObject.Properties['AllowedValues'] -and ($type -notin 'string', 'string[]' -or @($p.Value.AllowedValues | Where-Object { $_ -isnot [string] }).Count -gt 0)) { & $fail "$where`: AllowedValues is a list of strings, for a string or string[] setting."; continue }
+                $settings[$p.Name] = $p.Value
+            }
+        }
+    }
 
     # What the pack reaches (section 4.2).
     $uses = $manifest.PSObject.Properties['Uses']
@@ -318,6 +340,7 @@
     $normalised['Helpers'] = [string[]]@($folders.Helpers | Where-Object { $_ -is [string] })
     $normalised['Connectors'] = @($connectors | Where-Object { $_ -is [pscustomobject] })
     $normalised['Exports'] = [string[]]@(& $list 'Exports')
+    $normalised['Settings'] = [pscustomobject]$settings
     $usesValue = if ($uses -and $uses.Value -is [pscustomobject]) { $uses.Value } else { [pscustomobject]@{} }
     $normalised['Uses'] = [pscustomobject][ordered]@{
         Services     = [string[]]@(& $list 'Services' $usesValue)

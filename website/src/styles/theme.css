@@ -164,6 +164,14 @@ h1#_top {
 	border-bottom: 1px solid var(--mt-line);
 	padding: 0.55rem 0.75rem;
 }
+/* A long value in code, such as a permission string, wraps inside its cell instead of pushing the other columns out
+   of view. The first column is usually an ID or a name, which stays on one line rather than breaking at its hyphens. */
+.sl-markdown-content td code {
+	overflow-wrap: anywhere;
+}
+.sl-markdown-content td:first-child code {
+	white-space: nowrap;
+}
 .sl-markdown-content details {
 	border: 1px solid var(--mt-line);
 	border-radius: var(--mt-radius);

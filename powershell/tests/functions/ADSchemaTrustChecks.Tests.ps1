@@ -98,7 +98,7 @@ Describe 'Merged AD schema, RootDSE, service-account and trust checks' {
 
     It 'reports a missing KRBTGT account as unavailable and respects a configured password-age threshold' {
         Test-MtAdKrbtgtPasswordLastSet | Should -BeFalse
-        Test-MtAdKrbtgtPasswordLastSet -MaxPasswordAgeDays 240 | Should -BeTrue
+        Test-MtAdKrbtgtPasswordLastSet -MaximumPasswordAgeDays 240 | Should -BeTrue
         $script:state.Users = @()
         Test-MtAdKrbtgtPasswordLastSet | Should -BeNullOrEmpty
         Should -Invoke Add-MtTestResultDetail -ModuleName Maester -ParameterFilter { $SkippedBecause -eq 'Error' }
@@ -130,7 +130,7 @@ Describe 'Merged AD schema, RootDSE, service-account and trust checks' {
         $script:detail.Text | Should -Match 'no stale-trust assertion can be made'
         $script:detail.Text | Should -Not -Match 'No stale trusts detected'
         $script:state.Trusts[0] | Add-Member -NotePropertyName LastValidated -NotePropertyValue (Get-Date).AddDays(-90) -Force
-        Test-MtAdTrustStaleCount -StaleThresholdDays 60 | Should -BeTrue
+        Test-MtAdTrustStaleCount -MaximumValidationAgeDays 60 | Should -BeTrue
         $script:detail.Text | Should -Match 'Stale Trusts \(>60 days\) \| 1'
         $script:detail.Text | Should -Match 'Unknown Validation Status \| 1'
         $script:detail.Text | Should -Match 'external.example \| Inbound \| Domain Uplevel \| [0-9]{4}-'

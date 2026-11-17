@@ -12,7 +12,7 @@
 #### Security Recommendation
 
 1. **Rotate KRBTGT password regularly**:
-   - At least every `MaxPasswordAgeDays` days (default 180, about twice per year)
+   - At least every `MaximumPasswordAgeDays` days (default 180, about twice per year)
    - Immediately if compromise is suspected
 
 2. **If compromise is suspected**:
@@ -30,7 +30,7 @@
 This test retrieves the KRBTGT account from Active Directory and checks:
 - Password last set date
 - Days since last password change
-- Whether password age exceeds `MaxPasswordAgeDays` (default 180)
+- Whether password age exceeds `MaximumPasswordAgeDays` (default 180)
 - Account status (reported for context; this check only evaluates password age)
 
 If the user inventory or KRBTGT account is missing, the check produces **Error**, not a finding that the password age failed. A missing `PasswordLastSet` on a visible account does not establish a recent password change and fails the age check. Rotation during incident response requires a planned two-stage procedure; do not assume that an arbitrary ten-hour interval fits every ticket policy.

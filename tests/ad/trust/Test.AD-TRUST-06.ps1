@@ -36,7 +36,7 @@
     [OutputType([bool])]
     param(
         # Age, in days, after which a trust is considered stale.
-        [ValidateRange(1, 3650)] [int] $StaleThresholdDays = 60
+        [ValidateRange(1, 3650)] [int] $MaximumValidationAgeDays = 60
     )
 
     Write-Verbose "Starting Test-MtAdTrustStaleCount"
@@ -54,7 +54,7 @@
     $totalCount = ($trusts | Measure-Object).Count
 
     # Define stale threshold
-    $staleThreshold = (Get-Date).AddDays(-$StaleThresholdDays)
+    $staleThreshold = (Get-Date).AddDays(-$MaximumValidationAgeDays)
 
     # Count stale trusts (those not validated within the configured threshold)
     $staleTrusts = @($trusts | Where-Object {
@@ -82,7 +82,7 @@
     $result = "| Metric | Value |" + "`n"
     $result += "| --- | --- |" + "`n"
     $result += "| Total Trusts | $totalCount |" + "`n"
-    $result += "| Stale Trusts (>$StaleThresholdDays days) | $staleCount |" + "`n"
+    $result += "| Stale Trusts (>$MaximumValidationAgeDays days) | $staleCount |" + "`n"
     $result += "| Unknown Validation Status | $unknownCount |" + "`n"
     $result += "| Known dates within threshold | $($totalCount - $staleCount - $unknownCount) |" + "`n" + "`n"
     if ($totalCount -gt 0) {
@@ -108,11 +108,11 @@
     } elseif ($staleCount -eq 0 -and $unknownCount -eq $totalCount) {
         $testResultMarkdown = "Validation age is unknown for all $totalCount configured trusts. The safe LDAP inventory has no persisted last-validation timestamp; no stale-trust assertion can be made. Do not substitute trust object modification time.`n`n%TestResult%"
     } elseif ($staleCount -eq 0 -and $unknownCount -gt 0) {
-        $testResultMarkdown = "No dated trust exceeds $StaleThresholdDays days, but $unknownCount trust(s) have no recorded validation date and cannot be assessed. The most recent known validation date was $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "No dated trust exceeds $MaximumValidationAgeDays days, but $unknownCount trust(s) have no recorded validation date and cannot be assessed. The most recent known validation date was $mostRecentValidation.`n`n%TestResult%"
     } elseif ($staleCount -eq 0) {
-        $testResultMarkdown = "All $totalCount trusts with known validation dates fall within $StaleThresholdDays days. The most recent recorded date was $mostRecentValidation.`n`n%TestResult%"
+        $testResultMarkdown = "All $totalCount trusts with known validation dates fall within $MaximumValidationAgeDays days. The most recent recorded date was $mostRecentValidation.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Found $staleCount trust(s) with a recorded validation date older than $StaleThresholdDays days; $unknownCount trust(s) remain unassessable. Review the dated records and verify trusts independently.`n`n%TestResult%"
+        $testResultMarkdown = "Found $staleCount trust(s) with a recorded validation date older than $MaximumValidationAgeDays days; $unknownCount trust(s) remain unassessable. Review the dated records and verify trusts independently.`n`n%TestResult%"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

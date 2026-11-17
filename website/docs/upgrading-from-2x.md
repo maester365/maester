@@ -19,6 +19,104 @@ Existing exported AD collectors also distinguish collection failure from an empt
 
 AD-CFG-22 treats zero **visible** KDS keys as Investigate unless complete key-inventory access has been independently confirmed with `KeyInventoryReadAccessConfirmed`. Do not create keys solely because a restricted identity returned an empty inventory.
 
+### Replaced AD check IDs
+
+The 90 removed IDs map to the surviving checks below. The mapping follows `build/golden/native-test-replacements.psd1`.
+Review the surviving check before moving an ID-based configuration: its scope or result classification can differ from the removed check.
+
+| Removed check ID | Surviving check ID |
+| --- | --- |
+| `AD-CFG-01` | `AD-FOR-03` |
+| `AD-CFG-04` | `AD-FEAT-01` |
+| `AD-CFG-05` | `AD-FOR-04` |
+| `AD-CFG-14` | `AD-CFG-13` |
+| `AD-CFG-16` | `AD-CFG-15` |
+| `AD-CFG-17` | `AD-CFG-15` |
+| `AD-CFG-18` | `AD-CFG-15` |
+| `AD-CFG-19` | `AD-CFG-15` |
+| `AD-CFG-24` | `AD-CFG-23` |
+| `AD-COMP-02` | `AD-DCOMP-06` |
+| `AD-COMP-09` | `AD-DCOMP-01` |
+| `AD-COMP-10` | `AD-DCOMP-03` |
+| `AD-DACL-04` | `AD-DACL-03` |
+| `AD-DACL-06` | `AD-DACL-05` |
+| `AD-DACL-08` | `AD-DACL-07` |
+| `AD-DACL-10` | `AD-DACL-09` |
+| `AD-DACL-12` | `AD-DACL-11` |
+| `AD-DACL-13` | `AD-DACL-11` |
+| `AD-DACL-16` | `AD-DACL-15` |
+| `AD-DACL-18` | `AD-DACL-17` |
+| `AD-DC-06` | `AD-DC-05` |
+| `AD-DC-08` | `AD-DC-07` |
+| `AD-DCD-02` | `AD-DCD-01` |
+| `AD-DCOMP-02` | `AD-DCOMP-01` |
+| `AD-DCOMP-05` | `AD-DCOMP-04` |
+| `AD-DCOMP-09` | `AD-DCOMP-08` |
+| `AD-DOM-06` | `AD-DOM-05` |
+| `AD-DOM-08` | `AD-DOM-07` |
+| `AD-FEAT-02` | `AD-FEAT-01` |
+| `AD-FGPP-02` | `AD-FGPP-01` |
+| `AD-FGPP-03` | `AD-FGPP-01` |
+| `AD-FGPP-04` | `AD-FGPP-01` |
+| `AD-FORS-02` | `AD-FORS-01` |
+| `AD-GMC-03` | `AD-GMC-02` |
+| `AD-GMC-05` | `AD-GMC-04` |
+| `AD-GMC-07` | `AD-GMC-06` |
+| `AD-GMC-09` | `AD-GMC-08` |
+| `AD-GMC-11` | `AD-GMC-10` |
+| `AD-GPO-03` | `AD-GPO-02` |
+| `AD-GPO-05` | `AD-GPO-04` |
+| `AD-GPOL-06` | `AD-GPOL-03` |
+| `AD-GPOREP-02` | `AD-GPOREP-01` |
+| `AD-GPOREP-04` | `AD-GPOREP-03` |
+| `AD-GPOREP-08` | `AD-GPOREP-07` |
+| `AD-GPOREP-11` | `AD-GPOREP-10` |
+| `AD-GPOREP-13` | `AD-GPOREP-12` |
+| `AD-GPOREP-16` | `AD-GPOREP-15` |
+| `AD-GPOREP-18` | `AD-GPOREP-17` |
+| `AD-GPOREP-19` | `AD-GPOREP-17` |
+| `AD-GPOREP-20` | `AD-GPOREP-17` |
+| `AD-GRP-07` | `AD-GRP-06` |
+| `AD-GRP-09` | `AD-GRP-08` |
+| `AD-GRP-10` | `AD-GRP-08` |
+| `AD-OU-05` | `AD-OU-04` |
+| `AD-PWDPOL-02` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-03` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-04` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-05` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-06` | `AD-PWDPOL-01` |
+| `AD-PWDPOL-07` | `AD-PWDPOL-01` |
+| `AD-ROOTDSE-02` | `AD-ROOTDSE-01` |
+| `AD-SCH-02` | `AD-SCH-01` |
+| `AD-SCH-04` | `AD-SCH-03` |
+| `AD-SITE-03` | `AD-SITE-02` |
+| `AD-SITE-05` | `AD-SITE-04` |
+| `AD-SPN-02` | `AD-SPN-01` |
+| `AD-SPN-04` | `AD-SPN-03` |
+| `AD-SPN-08` | `AD-SPN-07` |
+| `AD-SPN-10` | `AD-SPN-09` |
+| `AD-SPN-13` | `AD-SPN-12` |
+| `AD-SUB-01` | `AD-SITE-04` |
+| `AD-SUB-02` | `AD-SITE-04` |
+| `AD-SUB-05` | `AD-SUB-04` |
+| `AD-SUB-07` | `AD-SUB-06` |
+| `AD-SUB-09` | `AD-SUB-08` |
+| `AD-SUB-10` | `AD-SUB-08` |
+| `AD-SUB-11` | `AD-SITE-04` |
+| `AD-TRUST-04` | `AD-TRUST-03` |
+| `AD-TRUST-05` | `AD-TRUST-01` |
+| `AD-TRUST-07` | `AD-TRUST-06` |
+| `AD-USER-14` | `AD-SPN-06` |
+| `AD-USER-17` | `AD-USER-16` |
+| `AD-USER-18` | `AD-USER-16` |
+| `AD-USER-21` | `AD-USER-20` |
+| `AD-USER-23` | `AD-USER-22` |
+| `AD-USER-24` | `AD-USER-22` |
+| `AD-USER-25` | `AD-USER-22` |
+| `AD-USER-27` | `AD-USER-26` |
+| `AD-USER-28` | `AD-USER-05` |
+| `AD-USER-29` | `AD-USER-05` |
+
 ### Second AD review batch
 
 The additional convention review restores native `.EXAMPLE`/`.LINK` help and preserves accurate explanatory sections and visual status indicators. COMP-01 remains a lifecycle inventory and reports unknown enabled states separately. DCD-04 now defaults to inventory; configure `AssessmentMode = 'AllGlobalCatalogs'` for an all-DCs-as-GCs policy or `MinimumForestCatalog` for the prior minimum availability baseline. FOR-03's configurable 180-day advisory is informational and retains the correct 60-day unset-attribute behavior.
@@ -185,6 +283,15 @@ The `maester-config.json` format is the same, with new sections. See the
   tenant file that relied on hiding a base value must set it explicitly. Maester warns once and names the
   inherited settings.
 - **`Custom/maester-config.json` works without a root file.**
+- **`GlobalSettings` is checked before the run.** A value of the wrong type for one of Maester's settings, or an
+  `EmergencyAccessAccounts` entry without an `Id` or `UserPrincipalName` or with a `Type` other than `User` or
+  `Group`, stops the run and names the setting. In 2.x such a value was passed to the tests as it was.
+- **Name your own settings `Namespace.Key`.** A `GlobalSettings` key without a dot that Maester does not know,
+  such as one your custom tests read, gives a warning on every run, because it may be a typo of a built-in
+  setting. Rename it, for example `SiteUrl` to `Contoso.SiteUrl`, in the config and in the test.
+- **Tests receive settings as parameters.** A built-in test no longer reads `EmergencyAccessAccounts` itself: it
+  has a parameter bound to the setting, so you can give one test a different value in its `TestSettings` row. See
+  [GlobalSettings](./configuration/run-configuration.md#globalsettings).
 - **New ways to supply config**: `-Config <path | object | array>` and the `MAESTER_CONFIG` environment variable.
   Both make the run hermetic: config files next to the tests are not read.
 

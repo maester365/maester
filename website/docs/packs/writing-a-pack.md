@@ -98,6 +98,7 @@ people look for packs, see [Publishing your pack](#publishing-your-pack).
 | `Pricing` | `Free` (the default) or `Paid`, for a pack that needs a paid product or subscription to be useful. The pack index shows it; Maester does not act on it. |
 | `Banner` | An image in the pack that the pack index shows when it features the pack. See [Banner image](#banner-image). |
 | `Guide` | A JSON file in the pack that says how to install, connect and run it, for its page on the pack index. See [The pack page](#the-pack-page). |
+| `Settings` | The `GlobalSettings` keys the pack reads. See [Settings](#settings). |
 | `Report.Navigation` | The pack's menu in the Maester report. See [The pack's menu in the report](#the-packs-menu-in-the-report). |
 | `EnabledByDefault` | For a pack that ships with Maester: `false` to leave it off until the config turns it on. |
 
@@ -301,6 +302,44 @@ These lines set the header instead of showing in the log. The JSON object takes 
 The [Zero Trust Assessment pack](./zero-trust-assessment.md) is a worked example: its child process reads the
 progress the assessment keeps and the progress logs it writes, once a second, and writes these lines (see
 `Invoke-MtZtaCollection` in `packs/zero-trust-assessment/tests/Test.ZTA.ps1`).
+
+## Settings
+
+A pack that reads values from `GlobalSettings` of the user's config declares them in its manifest, each named
+`Namespace.Key` so that it cannot collide with a setting of Maester or of another pack:
+
+```json
+"Settings": {
+  "Contoso.Regions": { "Type": "string[]", "Default": ["eu"], "AllowedValues": ["eu", "us", "apac"], "Description": "Regions to check." },
+  "Contoso.ApiKey": { "Type": "string", "Sensitive": true, "Description": "Key for the Contoso API." }
+}
+```
+
+| Key | Content |
+| --- | --- |
+| `Type` | Required: `int`, `bool`, `string`, `string[]`, `object` or `object[]`. |
+| `Default` | What `Get-MtSetting` returns when the config does not set the setting. |
+| `Description` | One sentence for the user. |
+| `AllowedValues` | The values a `string` or `string[]` setting accepts. |
+| `Kind` | What a string holds, such as `Entra.Group`, so a user interface can offer a picker. |
+| `Sensitive` | `true` to record the value as `[redacted]` in the results. |
+
+While the pack is in a run, Maester checks the config against these declarations before any test starts, so a
+wrong type or a value that is not allowed stops the run with one message. A test receives a setting as a
+parameter bound to it, which also lets a `TestSettings` row override it for that test:
+
+```powershell
+param(
+    # Regions to check.
+    [MaesterParameter(Setting = 'Contoso.Regions')]
+    [ValidateSet('eu', 'us', 'apac')]
+    [string[]] $Regions = @('eu')
+)
+```
+
+A connector or a helper that needs a setting before any test runs reads it with `Get-MtSetting -Name
+'Contoso.ApiKey'`. Declare every setting the pack reads: a setting that is not declared has no default, is not
+checked, and is never redacted.
 
 ## Connectors
 

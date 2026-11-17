@@ -88,6 +88,16 @@ Describe 'AD configuration, forest and optional-feature checks' {
         { Test-MtAdOptionalFeatureCount } | Should -Throw '*scopes were not collected*'
     }
 
+    It 'keeps multiple optional-feature scopes readable without raw HTML separators' {
+        $script:state.OptionalFeatures[0].EnabledScopes = @(
+            'CN=Partitions,CN=Configuration,DC=example,DC=test'
+            'CN=Partitions,CN=Configuration,DC=other,DC=test'
+        )
+        Test-MtAdOptionalFeatureCount | Should -BeTrue
+        $script:detail | Should -Match 'DC=example,DC=test; CN=Partitions,CN=Configuration,DC=other,DC=test'
+        $script:detail | Should -Not -Match '<br>'
+    }
+
     It 'fails for zero KDS root keys rather than assuming gMSAs are unused' {
         $script:state.Configuration.KdsRootKeys = @()
         Test-MtAdKdsRootKeysCount -KeyInventoryReadAccessConfirmed $true | Should -BeFalse

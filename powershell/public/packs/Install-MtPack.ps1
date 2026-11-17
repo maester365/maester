@@ -57,6 +57,16 @@
     Answer yes to the approval question. A pack of High risk, or one newer than the cooldown, still needs
     its code typed unless -AcceptRisk and -IncludeRecent cover it.
 
+    .PARAMETER Token
+    A GitHub token that can read the pack's repository, as a SecureString, for a private or internal
+    repository. It is used for this command only, is sent to api.github.com only, and is not stored. When it
+    is given, no other sign-in is tried. Without it, Maester uses the first of these that can read the
+    repository: the sign-in of Connect-MtGitHub in this session, the GitHub CLI (`gh auth token`, when gh is
+    installed and signed in), then the GH_TOKEN and GITHUB_TOKEN environment variables. An environment
+    variable can be read by every process and module in the session, including installed packs, so prefer
+    the other ways outside a pipeline. A fine-grained token needs only read-only Contents access to the
+    one repository.
+
     .PARAMETER PassThru
     Return the lock file entry of the pack. Without it, Install-MtPack writes what was installed and how to
     run it, and returns nothing.
@@ -81,6 +91,11 @@
     Invoke-Maester -Pack DEMO -SkipBuiltIn
 
     Installs the demo pack, then runs only its tests, by the pack's code.
+
+    .EXAMPLE
+    Install-MtPack contoso/private-pack -Token (Get-Secret -Name PackReadToken)
+
+    Installs a pack from a private repository with a token read from a secret vault.
 
     .LINK
     https://maester.dev/docs/commands/Install-MtPack
@@ -115,7 +130,10 @@
         [switch] $Force,
 
         [Parameter()]
-        [switch] $PassThru
+        [switch] $PassThru,
+
+        [Parameter()]
+        [securestring] $Token
     )
 
     $where = Resolve-MtPackLockPath -PackLock $PackLock -Scope $Scope -Path (Get-Location).Path
@@ -125,7 +143,7 @@
     $quiet = $NonInteractive -or (Test-MtPackNonInteractive)
 
     $before = @($lock.Packs | ForEach-Object { $_.Id })
-    $entry = Invoke-MtPackInstall -Source $Source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous ($lock.Packs | Where-Object { $_.Id -eq $Source -or $_.Source -eq $Source } | Select-Object -First 1)
+    $entry = Invoke-MtPackInstall -Token $Token -Source $Source -Version $Version -Lock $lock -Policy $policy -AcceptRisk $AcceptRisk -IncludeRecent:$IncludeRecent -Force:$Force -NonInteractive:$quiet -Previous ($lock.Packs | Where-Object { $_.Id -eq $Source -or $_.Source -eq $Source } | Select-Object -First 1)
     if (-not $entry) { return }
 
     Write-MtPackLock -Path $where.LockPath -Lock $lock
