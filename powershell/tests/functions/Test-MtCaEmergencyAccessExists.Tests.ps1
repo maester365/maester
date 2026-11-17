@@ -2,6 +2,8 @@
     BeforeAll {
         Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
+        # Keep the tests off Microsoft Graph; tests that need display names mock Invoke-MtGraphRequest again
+        Mock -ModuleName Maester Invoke-MtGraphRequest { return $null }
 
         # Test user and group IDs
         $script:emergencyUserId1 = "11111111-1111-1111-1111-111111111111"
@@ -224,6 +226,145 @@
             Mock -ModuleName Maester Get-MtSetting { return $null }
 
             InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+        }
+
+        It 'Should name the detected account, not the failure text, when it passes (auto-detected)' {
+            $policy = Get-PolicyWithUserExclusion -UserIds @($emergencyUserId1)
+            $script:capturedResult = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @{ id = $emergencyUserId1; displayName = 'Emergency User 1' } }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:capturedResult = $Result
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+            $script:capturedResult | Should -BeLike "Well done. All Conditional Access policies exclude the automatically detected emergency access user:*Emergency User 1 ($emergencyUserId1)*"
+            $script:capturedResult | Should -Not -BeLike "*don't have the emergency access*"
+            $script:capturedResult | Should -Not -BeLike '*%TestResult%*'
+        }
+
+        It 'Should still pass and show the ID when the display name cannot be read (auto-detected)' {
+            $policy = Get-PolicyWithUserExclusion -UserIds @($emergencyUserId1)
+            $script:capturedResult = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { throw 'Request_ResourceNotFound' }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:capturedResult = $Result
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+            $script:capturedResult | Should -BeLike "*user: $emergencyUserId1*"
+        }
+
+        It 'Should list the policies that miss the detected account when it fails (auto-detected)' {
+            $policies = Get-MultiplePoliciesMixedExclusions -UserIds @($emergencyUserId1) -GroupIds @()
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @{ id = $emergencyUserId1; displayName = 'Emergency User 1' } }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeLike "*Automatically detected emergency access*Emergency User 1 ($emergencyUserId1)*"
+            $script:capturedResult | Should -BeLike "*don't have the emergency access user excluded*"
+            @($script:capturedObjects).displayName | Should -Be 'Policy 2 - Missing Exclusions'
+        }
+
+        It 'Should not take GuestsOrExternalUsers for an emergency access account (auto-detected)' {
+            $policy = Get-PolicyWithUserExclusion -UserIds @('GuestsOrExternalUsers')
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -Not -BeLike '*GuestsOrExternalUsers*'
+            # Nothing was detected, so the result must not name a type
+            $script:capturedResult | Should -BeLike 'No emergency access account or group could be detected:*'
+            $script:capturedResult | Should -Not -BeLike '*emergency access group*'
+            @($script:capturedObjects).displayName | Should -Be 'Policy With User Exclusion'
+        }
+
+        It 'Should not name a type when no policy excludes a specific user or group (auto-detected)' {
+            $policy = Get-PolicyWithNoExclusions
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeExactly "No emergency access account or group could be detected: none of these Conditional Access policies excludes a specific user or group.`n`n%TestResult%"
+            @($script:capturedObjects).displayName | Should -Be 'Policy Without Exclusions'
+        }
+
+        It 'Should say no user-targeted policy was found, with no placeholder, when there is no policy (auto-detected)' {
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeExactly 'No user-targeted Conditional Access policy was found, so no emergency access account or group could be detected.'
+            $script:capturedObjects | Should -BeNullOrEmpty
+        }
+
+        It 'Should say no user-targeted policy was found when only an Agent Identity policy exists (auto-detected)' {
+            $policy = Get-PolicyAgentIdentity
+            $script:capturedResult = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:capturedResult = $Result
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeExactly 'No user-targeted Conditional Access policy was found, so no emergency access account or group could be detected.'
+        }
+
+        It 'Should check the excluded account, not GuestsOrExternalUsers, when policies exclude both (auto-detected)' {
+            $policies = @(
+                Get-PolicyWithUserAndGroupExclusion -UserIds @('GuestsOrExternalUsers', $emergencyUserId1) -GroupIds @()
+                Get-PolicyWithUserExclusion -UserIds @('GuestsOrExternalUsers')
+            )
+            $script:capturedResult = $null
+            $script:capturedObjects = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
+            Mock -ModuleName Maester Invoke-MtGraphRequest { return @{ id = $emergencyUserId1; displayName = 'Emergency User 1' } }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result, $GraphObjects)
+                $script:capturedResult = $Result
+                $script:capturedObjects = $GraphObjects
+            }
+
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            $script:capturedResult | Should -BeLike "*Emergency User 1 ($emergencyUserId1)*"
+            @($script:capturedObjects).displayName | Should -Be 'Policy With User Exclusion'
         }
     }
 
