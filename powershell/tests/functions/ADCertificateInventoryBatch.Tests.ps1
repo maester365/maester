@@ -26,6 +26,54 @@ Describe 'AD configuration inventory batch' {
         { Get-MtAdCertificateInventory -Configuration $config } | Should -Throw '*Unable to parse public certificate*'
     }
 
+    Context 'LDAP binary projection in the <Role> inventory' -ForEach @(
+        @{ Property = 'EnterpriseCAs'; Role = 'Enterprise CA' }
+        @{ Property = 'TrustedRootCAs'; Role = 'Trusted root' }
+        @{ Property = 'IntermediateCAs'; Role = 'Intermediate' }
+        @{ Property = 'NtAuthCertificates'; Role = 'NTAuth' }
+    ) {
+        BeforeEach {
+            $script:projectionConfiguration = [pscustomobject]@{
+                EnterpriseCAs = @(); TrustedRootCAs = @(); IntermediateCAs = @(); NtAuthCertificates = @()
+            }
+        }
+
+        It 'accepts a single DER value projected as an object array of bytes' {
+            $script:projectionConfiguration.$Property = @([pscustomobject]@{ Name = 'Projected CA'; cACertificate = [object[]]$script:certBytes })
+            $rows = @(Get-MtAdCertificateInventory -Configuration $script:projectionConfiguration)
+            $rows.Count | Should -Be 1
+            $rows[0].Role | Should -Be $Role
+            $rows[0].Thumbprint | Should -Not -BeNullOrEmpty
+            $rows[0].PSObject.Properties.Name | Should -Not -Contain RawData
+        }
+
+        It 'retains multiple projected DER values on one directory object' {
+            $values = [Collections.Generic.List[object]]::new()
+            $values.Add([object[]]$script:certBytes)
+            $values.Add([object[]]$script:certBytes)
+            $script:projectionConfiguration.$Property = @([pscustomobject]@{ Name = 'Two certificates'; cACertificate = $values.ToArray() })
+            $rows = @(Get-MtAdCertificateInventory -Configuration $script:projectionConfiguration)
+            $rows.Count | Should -Be 2
+            @($rows | Where-Object Role -EQ $Role).Count | Should -Be 2
+        }
+
+        It 'rejects non-byte content alongside a valid projected certificate' {
+            $values = [Collections.Generic.List[object]]::new()
+            $values.Add([object[]]$script:certBytes)
+            $values.Add(@([byte]1, 'unexpected value'))
+            $script:projectionConfiguration.$Property = @([pscustomobject]@{ Name = 'Mixed input'; cACertificate = $values.ToArray() })
+            { Get-MtAdCertificateInventory -Configuration $script:projectionConfiguration } | Should -Throw '*Unsupported certificate value*'
+        }
+
+        It 'rejects malformed DER alongside a valid projected certificate' {
+            $values = [Collections.Generic.List[object]]::new()
+            $values.Add([object[]]$script:certBytes)
+            $values.Add([object[]][byte[]](1, 2, 3))
+            $script:projectionConfiguration.$Property = @([pscustomobject]@{ Name = 'Malformed input'; cACertificate = $values.ToArray() })
+            { Get-MtAdCertificateInventory -Configuration $script:projectionConfiguration } | Should -Throw '*Unable to parse public certificate*'
+        }
+    }
+
     It 'distinguishes missing data from a retrieved empty collection' {
         $state = [pscustomobject]@{ Configuration = [pscustomobject]@{ SiteLinks = @() } }
         @(Get-MtAdConfigurationInventory -State $state -Required SiteLinks).Count | Should -Be 1
