@@ -28,7 +28,7 @@ carries the same rules for AI coding and review agents.
    `Test.<ID>.ps1` and `Test.<ID>.md` for checks, `Verb-Noun.ps1` for functions.
 2. **One name per service.** A service folder has the same name wherever it appears:
    `ad`, `azure`, `azure-devops`, `copilot`, `copilot-studio`, `defender`, `entra`, `exchange`, `fabric`, `foundry`, `github`,
-   `global-secure-access`, `graph`, `intune`, `purview`, `sharepoint`, `teams`, `xspm`. Adding a service means adding
+   `global-secure-access`, `graph`, `intune`, `power-platform`, `purview`, `sharepoint`, `teams`, `xspm`. Adding a service means adding
    it to this list and to the layout test.
 3. **A file goes in the group that matches its job**, not in the suite that first needed it (see the trees below).
 4. **Generated code lives in `generated/` folders**, so it is obvious from the path that it must not be edited by hand.
