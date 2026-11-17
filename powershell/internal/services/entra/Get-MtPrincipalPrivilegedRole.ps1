@@ -12,6 +12,9 @@
 
     Only direct assignments are matched. A role held through a role-assignable group is not returned yet.
 
+    The scope of an assignment (directoryScopeId) is not checked, so a role scoped to an administrative unit counts
+    the same as a tenant-wide one. MT.1210 treats scope the same way.
+
     The result has two properties: RolesByPrincipal, a hashtable from principal ID to a list of role names (only
     principals that hold a privileged role are present), and EligibleChecked, which is true when PIM-eligible
     assignments were read (they need Microsoft Entra ID P2 or Governance).
@@ -54,6 +57,7 @@
     foreach ($assignment in @($assignmentResult.Assignments)) {
         $principal = [string]$assignment.principalId
         if (-not $wanted.ContainsKey($principal)) { continue }
+        # directoryScopeId is not checked: an administrative-unit-scoped role counts as tenant-wide, as in MT.1210.
         $definition = $roleDefinitionById[[string]$assignment.roleDefinitionId]
         if ($null -eq $definition) { continue }
         # isPrivileged is not queryable on roleDefinitions; use Maester's role catalog, as MT.1210 does.
