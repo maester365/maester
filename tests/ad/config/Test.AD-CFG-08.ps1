@@ -1,23 +1,21 @@
 ﻿function Test-MtAdAuthNPolicyConfigCount {
     <#
     .SYNOPSIS
-    Counts Active Directory AuthN policy containers.
-
+    Evaluates Active Directory Authentication Policy and Silo posture.
     .DESCRIPTION
-    Phase 14 (AD Configuration tests) - AD-CFG-08.
-    This test retrieves $config.AuthNPolicyContainers and returns the count of configured AuthN policy containers.
-
+    AD-CFG-08 reports policy and silo inventory and enforcement state. Authentication-expression
+    attributes are optional, and LDAP omission alone does not establish why a value was not returned.
     .EXAMPLE
     Test-MtAdAuthNPolicyConfigCount
-
-    Returns $true if configuration data is accessible.
-
     .LINK
     https://maester.dev/docs/commands/Test-MtAdAuthNPolicyConfigCount
+    .NOTES
+    Original author: soulemike
+    Authentication Policy and Silo posture rewrite: Mario Contestabile (rolling-code)
     #>
     [MaesterTest(
         Id = 'AD-CFG-08',
-        Title = 'AuthN policy container count should be retrievable',
+        Title = 'Authentication Policy and Silo posture should be retrievable',
         Product = 'ad',
         Feature = 'directory-configuration',
         Area = 'authentication',
@@ -32,34 +30,36 @@
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Starting Test-MtAdAuthNPolicyConfigCount"
-
-    $adState = Get-MtADDomainState -Categories @('Configuration')
-
+    Write-Verbose 'Starting Test-MtAdAuthNPolicyConfigCount'
+    $adState = Get-MtADDomainState -Categories @('AuthenticationPolicies')
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    if ($null -eq $adState['AuthenticationPolicyState']) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Authentication Policy LDAP evidence is unavailable. Review verbose LDAP collection output and access to CN=AuthN Policy Configuration.'
+        return $null
+    }
 
-    $config = $adState.Configuration
-    $authNPolicyContainers = if ($null -ne $config) { $config.AuthNPolicyContainers } else { $null }
-    $authNPolicyContainersSafe = if ($null -ne $authNPolicyContainers) { @($authNPolicyContainers) } else { @() }
+    $state = $adState['AuthenticationPolicyState']
+    $result = "| Metric | Value |`n"
+    $result += "| --- | --- |`n"
+    $result += "| Authentication Policies | $($state.PolicyCount) |`n"
+    $result += "| Enforced Authentication Policies | $($state.EnforcedPolicyCount) |`n"
+    $result += "| Authentication Policy Silos | $($state.SiloCount) |`n"
+    $result += "| Enforced Authentication Policy Silos | $($state.EnforcedSiloCount) |`n"
 
-    $authNPolicyConfigCount = ($authNPolicyContainersSafe | Measure-Object).Count
-    $testResult = $null -ne $config
-
-    if ($testResult) {
-        $result = "| Property | Value |" + "`n"
-        $result += "| --- | --- |" + "`n"
-        $result += "| AuthN Policy Containers Count | $authNPolicyConfigCount |" + "`n" + "`n"
-
-        $testResultMarkdown = "Active Directory AuthN policy containers have been counted.`n`n%TestResult%"
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    if ($state.PolicyCount -eq 0 -and $state.SiloCount -eq 0) {
+        $summary = 'No Authentication Policy or Authentication Policy Silo objects were detected.'
+    }
+    elseif (@($state.NonEnforcedSilos).Count -gt 0) {
+        $siloNames = @($state.NonEnforcedSilos | ForEach-Object { Get-MtSafeMarkdown -Text ([string]$_) }) -join ', '
+        $summary = "Authentication Policy and Silo posture was collected successfully. Review non-enforced silos: $siloNames"
     }
     else {
-        $testResultMarkdown = "Unable to retrieve Active Directory configuration. Ensure you have appropriate permissions and the Active Directory module is installed."
+        $summary = 'Authentication Policy and Silo posture was collected successfully.'
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-    return $testResult
+    Add-MtTestResultDetail -Result "$summary`n`n$result"
+    return $true
 }

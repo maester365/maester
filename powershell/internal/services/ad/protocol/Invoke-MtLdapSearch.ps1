@@ -105,6 +105,7 @@
             }
         }
 
+
         if ($null -ne $requestedAttributes) {
             foreach ($requestedAttr in $requestedAttributes) {
                 if ($requestedAttr -eq '*' -or $requestedAttr -eq '+' -or $requestedAttr -eq '1.1') {
