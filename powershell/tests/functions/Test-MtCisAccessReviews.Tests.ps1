@@ -97,6 +97,23 @@
         $script:result | Should -BeLike '*Maester lab 5.3.2 guests \| $& $$*'
     }
 
+    It 'fails guest reviews that recur less often than monthly' {
+        $patterns = @(
+            [pscustomobject]@{ Type = 'weekly'; Interval = 5 }
+            [pscustomobject]@{ Type = 'absoluteMonthly'; Interval = 2 }
+        )
+
+        foreach ($pattern in $patterns) {
+            $review = New-GuestAccessReview -DisplayName 'Infrequent guest review'
+            $review.settings.recurrence.pattern.type = $pattern.Type
+            $review.settings.recurrence.pattern.interval = $pattern.Interval
+            $script:reviews = @($review)
+
+            Test-MtCisGuestAccessReviews | Should -BeFalse
+            $script:result | Should -BeLike '*Weekly or monthly*'
+        }
+    }
+
     It 'accepts active role reviews with disabled default decisions and future date-only start dates' {
         $roleIds = @(
             '62e90394-69f5-4237-9190-012177145e10',
@@ -115,5 +132,54 @@
 
         Test-MtCisPrivilegedRoleAccessReviews | Should -BeTrue
         $script:result | Should -BeLike '*Maester role review \| $& $$*'
+    }
+
+    It 'fails role reviews that recur less often than monthly' {
+        $roleIds = @(
+            '62e90394-69f5-4237-9190-012177145e10',
+            '29232cdf-9323-42fd-ade2-1d097af3e4de',
+            'f28a1f50-f6e7-4571-818b-6a12f2af6b6c',
+            '69091246-20e8-4a56-aa4d-066075b2a7a8',
+            '194ae4cb-b126-40b2-bd5b-6091b380977d',
+            'e8611ab8-c189-46e8-94e1-60213ab1f814'
+        )
+        $patterns = @(
+            [pscustomobject]@{ Type = 'weekly'; Interval = 5 }
+            [pscustomobject]@{ Type = 'absoluteMonthly'; Interval = 2 }
+        )
+
+        foreach ($pattern in $patterns) {
+            $script:reviews = @(
+                foreach ($roleId in $roleIds) {
+                    $review = New-RoleAccessReview -DisplayName 'Infrequent role review' -RoleId $roleId -StartDate '2026-01-01'
+                    $review.settings.recurrence.pattern.type = $pattern.Type
+                    $review.settings.recurrence.pattern.interval = $pattern.Interval
+                    $review
+                }
+            )
+
+            Test-MtCisPrivilegedRoleAccessReviews | Should -BeFalse
+            $script:result | Should -BeLike '*Weekly or monthly*'
+        }
+    }
+
+    It 'ignores role reviews outside the directory role definitions path' {
+        $roleIds = @(
+            '62e90394-69f5-4237-9190-012177145e10',
+            '29232cdf-9323-42fd-ade2-1d097af3e4de',
+            'f28a1f50-f6e7-4571-818b-6a12f2af6b6c',
+            '69091246-20e8-4a56-aa4d-066075b2a7a8',
+            '194ae4cb-b126-40b2-bd5b-6091b380977d',
+            'e8611ab8-c189-46e8-94e1-60213ab1f814'
+        )
+        $script:reviews = @(
+            foreach ($roleId in $roleIds) {
+                $review = New-RoleAccessReview -DisplayName 'Non-directory role review' -RoleId $roleId -StartDate '2026-01-01'
+                $review.scope.resourceScopes[0].query = "/roleManagement/other/roleDefinitions/$roleId"
+                $review
+            }
+        )
+
+        Test-MtCisPrivilegedRoleAccessReviews | Should -BeFalse
     }
 }

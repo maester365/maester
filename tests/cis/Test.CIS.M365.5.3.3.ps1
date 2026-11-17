@@ -56,6 +56,7 @@
         $resourceQuery = @($review.scope.resourceScopes.query) -join ' '
         $matchedRoleIds = @($roleList.Keys | Where-Object { $resourceQuery -match $_ })
         $startDate = $review.settings.recurrence.range.startDate
+        # The CIS audit requires a start date; the InProgress status check below avoids timezone-sensitive date-only comparisons.
         if ($matchedRoleIds.Count -eq 0 -or [string]::IsNullOrWhiteSpace($startDate)) {
             continue
         }
