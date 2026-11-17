@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
     if (-not ('MaesterTestDeviceCodeResult' -as [type])) {
@@ -21,7 +21,60 @@ public static class MaesterTestDeviceCodeCallbackInvoker
             await (System.Threading.Tasks.Task)callback.DynamicInvoke(deviceCode));
     }
 }
+
+public sealed class MaesterTestUnifiedTokenClient
+{
+    public System.Threading.Tasks.Task<object[]> GetAccountsAsync()
+    {
+        return System.Threading.Tasks.Task.FromResult(new object[0]);
+    }
+
+    public MaesterTestUnifiedTokenRequest AcquireTokenInteractive(System.Collections.Generic.IEnumerable<string> scopes)
+    {
+        return new MaesterTestUnifiedTokenRequest();
+    }
+}
+
+public sealed class MaesterTestUnifiedTokenRequest
+{
+    public MaesterTestUnifiedTokenRequest WithUseEmbeddedWebView(bool enabled) { return this; }
+    public MaesterTestUnifiedTokenRequest WithLoginHint(string account) { return this; }
+    public System.Threading.Tasks.Task<MaesterTestUnifiedTokenResult> ExecuteAsync()
+    {
+        return System.Threading.Tasks.Task.FromResult(new MaesterTestUnifiedTokenResult());
+    }
+}
+
+public sealed class MaesterTestUnifiedTokenResult
+{
+    public string AccessToken { get { return "interactive-test-token"; } }
+}
 '@ -ErrorAction Stop
+    }
+
+}
+
+Describe 'Get-MtTeamsUnifiedSettingsAccessToken' {
+    BeforeAll {
+        Import-Module Microsoft.Graph.Authentication -ErrorAction Stop
+    }
+
+    It 'Passes scopes to the MSAL interactive overload and returns its access token' {
+        InModuleScope Maester {
+            $tenantId = '11111111-1111-1111-1111-111111111111'
+            $__MtSession.TeamsUseDeviceCode = $false
+            $__MtSession.TeamsAuthCache = @{
+                Clients = @{ "$tenantId|Global" = [MaesterTestUnifiedTokenClient]::new() }
+            }
+            $context = [pscustomobject]@{
+                TenantId = $tenantId
+                Environment = 'Global'
+                Account = 'admin@contoso.com'
+            }
+
+            Get-MtTeamsUnifiedSettingsAccessToken -Context $context |
+                Should -Be 'interactive-test-token'
+        }
     }
 }
 

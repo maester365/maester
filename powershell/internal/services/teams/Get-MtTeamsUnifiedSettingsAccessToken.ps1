@@ -7,7 +7,7 @@
 
     $tenantId = [string]$Context.TenantId
     $clientId = '12128f48-ec9e-42f0-b203-ea49fb6af367'
-    $scope = @('08ff1ce2-4973-4b08-86a3-ebed13badc7f/.default')
+    [string[]]$scope = @('08ff1ce2-4973-4b08-86a3-ebed13badc7f/.default')
     $authority = "https://login.microsoftonline.com/$tenantId"
     $cacheKey = "$tenantId|$($Context.Environment)"
 
