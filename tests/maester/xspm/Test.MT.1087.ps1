@@ -42,6 +42,17 @@
     [OutputType([bool])]
     param()
 
+    # Probed before either query. This check reads DeviceNetworkEvents and DeviceTvmSoftwareVulnerabilities,
+    # and its no-data fallback reads DeviceTvmSoftwareInventory, so on a tenant whose Defender for Endpoint
+    # tables are not served by advanced hunting both throw and the check ends in Error carrying the API's
+    # own text, which on such a tenant can be as little as ". Fix semantic errors in your query." The
+    # existing assessed-device guard below never runs, because the throw happens first.
+    # MT.1084 already guards the same way for DeviceInfo and IdentityLogonEvents.
+    if (-not (Test-MtDefenderAdvancedHuntingAvailable)) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Defender for Endpoint tables are not available in advanced hunting on this tenant. A tenant holding both Defender for Business and Defender for Endpoint Plan 2 keeps the Defender for Business experience, which has no advanced hunting, until Support switches it.'
+        return $null
+    }
+
     Write-Verbose "Get raw data from Exposure Management..."
     $Query = @"
         // Flag remotely exploitable, no user interaction, CVE's with a EPSS score above a certain threshold (likelihood of exploitation)

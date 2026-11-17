@@ -26,6 +26,7 @@ $__MtSession = @{
 	ExoCache               = @{}
 	OrcaCache              = @{}
 	AIAgentInfo            = $null       # Get-MtAIAgentInfo cache: @{ Agents; Error }, Error is why no agent data is available
+	DefenderHuntingTables  = $null       # Test-MtDefenderAdvancedHuntingAvailable cache: $true when the Defender for Endpoint tables answer
 	AzureDevOpsConnectionCache = $null
 	DataverseApiBase       = $null       # Resolved Dataverse OData API base URL (e.g. https://org123.api.crm.dynamics.com/api/data/v9.2)
 	DataverseResourceUrl   = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
