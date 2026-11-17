@@ -18,10 +18,15 @@ Regenerate it after a change to `tests/` that renames or removes a check:
   script), `prefix` (known prefix renames such as `MS.` to `CISA.MS.`), `title`
   (same normalised title), `function` (same single `Test-*` function called),
   otherwise `retired`.
+- Current native IDs, titles and function names are read from the working tree.
+  The former Exchange DLP checks 8.1, 8.2 and 8.4 map to `CISA.MS.SECURITYSUITE.3.1`.
 - `-Verbose` prints counts by rule and a `REVIEW` line for each ambiguous, conflicting
   or title-only match. Resolve ambiguous ones by adding them to `$ManualOverrides`.
-- `GeneratedFrom` is the last commit that touched the scanned test files, so the
-  output only changes when `tests/` changes.
+- `GeneratedFrom` is the last commit that touched the historical Pester test files.
+  Current built-in Pester and native test files are read from the working tree;
+  `CurrentTestsHash` is a SHA-256 fingerprint of their relative paths and contents.
+- Existing mappings are retained when their targets still exist, so moving a check
+  from a Pester wrapper to a native test does not discard its legacy IDs.
 - `powershell/tests/general/LegacyIds.Tests.ps1` checks that no legacy ID is a current ID
   and that every target ID still exists. If it fails after you rename or remove a
   check, regenerate the table.

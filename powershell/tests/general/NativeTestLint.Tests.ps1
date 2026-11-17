@@ -153,6 +153,7 @@ Describe 'Product of the built-in tests' {
             'maester/xspm'                 = 'defender'
             'cisa/entra'                   = 'entra'
             'cisa/exchange'                = 'exchange'
+            'cisa/purview'                 = 'purview'
             'cisa/sharepoint'              = 'sharepoint'
             'asd/entra'                    = 'entra'
             'asd/intune'                   = 'intune'

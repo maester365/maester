@@ -49,14 +49,14 @@ Describe 'Published module result detail metadata' {
         Mock -ModuleName Maester Get-MtExo { @() }
 
         # Check functions are internal in 3.0; run it in the module scope so the mocks apply.
-        InModuleScope Maester { Test-MtCisaDlp } | Should -BeFalse
+        InModuleScope Maester { Test-MtCisaDlpSensitiveInformation } | Should -BeFalse
 
         $detail = InModuleScope Maester {
             $__MtSession.TestResultDetail.Values | Select-Object -First 1
         }
-        $detail.TestDescription | Should -Match '^A DLP solution SHALL be used\.'
-        $detail.TestDescription | Should -Not -Match 'function\s+Test-MtCisaDlp'
-        $detail.TestResult | Should -Match 'does not have.*Data Loss Prevention Policies.*enabled'
+        $detail.TestDescription | Should -Match '^A DLP policy SHALL protect PII and sensitive information'
+        $detail.TestDescription | Should -Not -Match 'function\s+Test-MtCisaDlpSensitiveInformation'
+        $detail.TestResult | Should -Match 'Configure an enabled DLP policy.*missing sensitive information types'
     }
 
     It 'loads adjacent Markdown for custom tests' {

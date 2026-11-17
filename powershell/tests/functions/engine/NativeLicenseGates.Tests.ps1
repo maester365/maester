@@ -18,7 +18,10 @@
         'CISA.MS.EXO.11.1' = $mdoP1; 'CISA.MS.EXO.11.2' = $mdoP1; 'CISA.MS.EXO.11.3' = $mdoP1; 'CISA.MS.EXO.15.1' = $mdoP1
         'CISA.MS.EXO.15.2' = $mdoP1; 'CISA.MS.EXO.15.3' = $mdoP1; 'CISA.MS.EXO.16.1' = $mdoP1; 'CISA.MS.EXO.16.2' = $mdoP1
         'CISA.MS.EXO.17.3' = @{ License = @('M365_ADVANCED_AUDITING'); Legacy = 'NotLicensedAdvAudit' }
-        'CISA.MS.EXO.8.1'  = $exoDlp; 'CISA.MS.EXO.8.2' = $exoDlp; 'CISA.MS.EXO.8.4' = $exoDlp
+        'CISA.MS.SECURITYSUITE.3.1' = $exoDlp
+        'CISA.MS.SECURITYSUITE.3.2' = $exoDlp
+        'CISA.MS.SECURITYSUITE.3.3' = $exoDlp
+        'CISA.MS.SECURITYSUITE.3.4' = $exoDlp
         'CIS.M365.1.3.6'   = @{ License = @('LOCKBOX_ENTERPRISE'); Legacy = 'NotLicensedCustomerLockbox' }
         'CIS.M365.2.1.1'   = $mdoP1; 'CIS.M365.2.1.4' = $mdoP1; 'CIS.M365.2.1.5' = $mdoP1; 'CIS.M365.2.1.7' = $mdoP1
         'MT.1053'          = $intune; 'MT.1096' = $intune; 'MT.1102' = $intune; 'MT.1105' = $intune
@@ -97,6 +100,17 @@ Describe 'Licence gates of converted tests' {
         # The mocks return no Conditional Access policy, so the body runs and finds no blocking policy.
         $row = Invoke-MtTest -Id 'MT.1181' -Config (New-Config -Licenses 'AAD_PREMIUM_P2', 'AGENT_365')
         $row.Result | Should -Be 'Failed'
+    }
+
+    It 'Runs the sensitive-information DLP check with only Security & Compliance connected' {
+        $config = New-Config -Licenses 'EXCHANGE_DLP'
+        $config.Environment.Services.Graph = $false
+        $config.Environment.Services.ExchangeOnline = $false
+
+        $row = Invoke-MtTest -Id 'CISA.MS.SECURITYSUITE.3.1' -Config $config
+
+        $row.Result | Should -Be 'Failed' -Because 'the check must run and report the missing DLP rules, not skip for an unrelated connection'
+        $row.ReasonCode | Should -BeNullOrEmpty
     }
 }
 

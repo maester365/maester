@@ -19,9 +19,10 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    GeneratedFrom is the last commit that touched the scanned Pester test files. Current test IDs, titles and
+    function names are read from the working tree. CurrentTestsHash identifies the built-in test files used.
+    Existing mappings are retained when their target still exists, so moving a check from a Pester wrapper
+    to a native test does not discard its legacy IDs.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -49,6 +50,21 @@ $RepoRoot = (Resolve-Path -Path $RepoRoot).Path
 #region Manual overrides
 # Reviewed by hand. Value is a current ID or 'retired'. Applied before every automatic rule.
 $ManualOverrides = [ordered]@{
+    # Exchange DLP requirements consolidated into the Security Suite sensitive-information requirement.
+    'CISA.MS.EXO.08.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'CISA.MS.EXO.8.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.08.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.1' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.2' = 'CISA.MS.SECURITYSUITE.3.1'
+    'MS.EXO.8.4' = 'CISA.MS.SECURITYSUITE.3.1'
+    # Preserve the existing targets when a native CIS check shares the historical title.
+    'Ensure MailTips are enabled for end users' = 'MT.1039'
+    'Ensure modern authentication for Exchange Online is enabled' = 'MT.1044'
+    'Ensure users installing Outlook add-ins is not allowed' = 'MT.1041'
     # The original combined high-risk app permission check, later split into MT.1050 (direct) and MT.1051 (indirect).
     'Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.' = 'MT.1050'
     'MT.1050 Apps with high-risk permissions having a direct or indirect path to Global Admin'                                    = 'MT.1050'
@@ -244,21 +260,81 @@ foreach ($commit in $commits) {
 }
 #endregion Scan history
 
-#region Current IDs (from the tree of $generatedFrom)
+#region Current IDs
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
-$treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
-foreach ($line in $treeLines) {
-    if ($line -notmatch '^\d+ blob ([0-9a-f]{40})\t(tests/.+\.tests\.ps1)$') { continue }
-    if ($Matches[2] -like 'tests/Custom/*') { continue }
-    $path = $Matches[2]
-    foreach ($it in (Get-BlobItInfo -Blob $Matches[1])) {
-        $split = Get-StaticSplit -Name $it.Name
-        if (-not $split) {
-            if ($it.Name -match '^([A-Za-z]+\.?\d+)\.(<|\$\()') { $null = $familyPrefixes.Add("$($Matches[1]).") }
-            continue
+$testFiles = Get-ChildItem -Path (Join-Path $RepoRoot 'tests') -Recurse -File |
+    Where-Object {
+        $_.FullName -notmatch '[\\/]Custom[\\/]' -and
+        ($_.Name -like '*.Tests.ps1' -or $_.Name -like 'Test.*.ps1')
+    }
+$testFilesByPath = [System.Collections.Generic.Dictionary[string, System.IO.FileInfo]]::new([System.StringComparer]::Ordinal)
+$testPaths = [System.Collections.Generic.List[string]]::new()
+foreach ($file in $testFiles) {
+    $path = [System.IO.Path]::GetRelativePath($RepoRoot, $file.FullName).Replace('\', '/')
+    $testFilesByPath.Add($path, $file)
+    $testPaths.Add($path)
+}
+$testPaths.Sort([System.StringComparer]::Ordinal)
+$testFileManifest = [System.Collections.Generic.List[string]]::new()
+foreach ($path in $testPaths) {
+    $content = [System.IO.File]::ReadAllText($testFilesByPath[$path].FullName) -replace "`r`n|`r", "`n"
+    $fileHash = [System.Convert]::ToHexString(
+        [System.Security.Cryptography.SHA256]::HashData([System.Text.Encoding]::UTF8.GetBytes($content))
+    ).ToLowerInvariant()
+    $testFileManifest.Add("$path`0$fileHash")
+}
+$currentTestsHash = [System.Convert]::ToHexString(
+    [System.Security.Cryptography.SHA256]::HashData(
+        [System.Text.Encoding]::UTF8.GetBytes(($testFileManifest -join "`n"))
+    )
+).ToLowerInvariant()
+
+foreach ($path in $testPaths) {
+    $file = $testFilesByPath[$path]
+    if ($file.Name -like '*.Tests.ps1') {
+        foreach ($it in (Get-ItInfo -Content ([System.IO.File]::ReadAllText($file.FullName)))) {
+            $split = Get-StaticSplit -Name $it.Name
+            if (-not $split) {
+                if ($it.Name -match '^([A-Za-z]+\.?\d+)\.(<|\$\()') { $null = $familyPrefixes.Add("$($Matches[1]).") }
+                continue
+            }
+            $currentIds[$split.Id] = [pscustomobject]@{
+                Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path
+            }
         }
-        $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
+        continue
+    }
+
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Cannot parse native test '$($file.FullName)': $($parseErrors[0].Message)"
+    }
+
+    $function = $ast.FindAll({
+            param($node)
+            $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+            $node.Body.ParamBlock -and
+            ($node.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' })
+        }, $true) | Select-Object -First 1
+    if (-not $function) {
+        throw "Native test '$($file.FullName)' has no MaesterTest attribute."
+    }
+
+    $attribute = $function.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } | Select-Object -First 1
+    $id = $file.BaseName.Substring('Test.'.Length)
+    $title = $attribute.NamedArguments | Where-Object { $_.ArgumentName -eq 'Title' } | Select-Object -First 1
+    if (-not $title -or $title.Argument -isnot [System.Management.Automation.Language.StringConstantExpressionAst]) {
+        throw "Native test '$($file.FullName)' has no static title."
+    }
+
+    $currentIds[$id] = [pscustomobject]@{
+        Id        = $id
+        Title     = Get-NormalizedTitle $title.Argument.Value
+        Functions = @($function.Name)
+        Path      = $path
     }
 }
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
@@ -275,6 +351,18 @@ foreach ($c in $currentIds.Values) {
     }
 }
 #endregion Current IDs
+
+#region Existing mappings
+$priorMappings = @{}
+if (Test-Path -LiteralPath $OutputPath) {
+    $priorTable = Get-Content -LiteralPath $OutputPath -Raw | ConvertFrom-Json
+    foreach ($entry in $priorTable.Entries) {
+        if ($entry.CurrentId -and $entry.CurrentId -ne 'retired') {
+            $priorMappings[$entry.LegacyId] = $entry
+        }
+    }
+}
+#endregion Existing mappings
 
 #region Map
 $entries = [System.Collections.Generic.List[object]]::new()
@@ -303,6 +391,8 @@ foreach ($record in $history.Values) {
         $currentId = $ManualOverrides[$record.Id]; $rule = 'manual'
     } elseif ($prefixTarget) {
         $currentId = $prefixTarget; $rule = 'prefix'
+    } elseif ($priorMappings.ContainsKey($record.Id) -and $currentIds.ContainsKey($priorMappings[$record.Id].CurrentId)) {
+        $currentId = $priorMappings[$record.Id].CurrentId; $rule = $priorMappings[$record.Id].Rule
     } elseif ($titleCandidates.Count -eq 1) {
         $currentId = @($titleCandidates)[0]; $rule = 'title'
         if ($functionCandidates.Count -gt 0 -and -not $functionCandidates.Contains($currentId)) {
@@ -349,11 +439,13 @@ $sortedEntries | Group-Object { $_.Rule } | Sort-Object Name | ForEach-Object { 
 $retiredFamilies = @($historicalFamilies | Where-Object { -not $familyPrefixes.Contains($_) })
 if ($retiredFamilies) { Write-Warning "Historical family prefixes no longer at HEAD: $($retiredFamilies -join ', ')" }
 foreach ($line in ($review | Sort-Object)) { Write-Verbose "REVIEW $line" }
+$familyPrefixes.UnionWith($historicalFamilies)
 #endregion Report
 
 $document = [ordered]@{
     SchemaVersion  = '1.0'
     GeneratedFrom  = $generatedFrom
+    CurrentTestsHash = $currentTestsHash
     Entries        = $sortedEntries
     FamilyPrefixes = @($familyPrefixes)
 }

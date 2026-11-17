@@ -59,7 +59,12 @@ Describe 'Maester 2.x golden fixtures' -Tag 'Golden' {
             # more. What must hold is that every 2.x tag still selects exactly the tests it selected: not
             # fewer, and not more, so a new test must not take a 2.x tag as one of its own tags.
             # MT1060 (drift) became the native family MT.1060: its four 2.x Its are one test.
-            $script:renamedIds = @{ 'MT1060' = 'MT.1060' }
+            $script:renamedIds = @{
+                'MT1060' = 'MT.1060'
+                'CISA.MS.EXO.8.1' = 'CISA.MS.SECURITYSUITE.3.1'
+                'CISA.MS.EXO.8.2' = 'CISA.MS.SECURITYSUITE.3.1'
+                'CISA.MS.EXO.8.4' = 'CISA.MS.SECURITYSUITE.3.1'
+            }
             $toSet = {
                 param($entries)
                 $byTag = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.SortedSet[string]]]::new([System.StringComparer]::OrdinalIgnoreCase)

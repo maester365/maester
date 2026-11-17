@@ -336,7 +336,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     It 'Gives every <Prefix> test a Benchmark of <Label>, from the first Control of the test' -ForEach @(
         @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 144 }
         @{ Prefix = 'CIS.GH.'; Label = 'cis-github'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
-        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
+        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 81 }
         @{ Prefix = 'ASD.'; Label = 'essential-eight or ism'; Framework = @('essential-eight', 'ism'); Version = $null; Count = 14 }
         @{ Prefix = 'DISA.'; Label = 'a DISA STIG'; Framework = @('disa-stig-entra-id', 'disa-stig-intune-mdm', 'disa-stig-intune-desktop'); Version = $null; Count = 19 }
     ) {
@@ -375,12 +375,13 @@ Describe 'Benchmark of the tests shipped with Maester' {
         $test.Benchmark.Upstream.Status | Should -Be 'Current'
         $test.Benchmark.Upstream.Id | Should -Be 'MS.AAD.1.1v1'
         $test.Control | Should -Be @('cisa-scuba:MS.AAD.1.1', 'nist-800-53-r5:CM-7')
-        $script:byId['CISA.MS.EXO.8.1'].Benchmark.Upstream.Status | Should -Be 'Moved'
+        $script:byId['CISA.MS.SECURITYSUITE.3.1'].Benchmark.Upstream.Status | Should -Be 'Current'
+        $script:byId['CISA.MS.EXO.8.1'] | Should -BeNullOrEmpty
         $script:byId['CISA.MS.EXO.8.3'].Benchmark.Upstream.Status | Should -Be 'Removed'
 
         $cisa = @($script:builtIn | Where-Object { $_.Id -like 'CISA.*' })
         @($cisa | Where-Object { $_.Benchmark.Criticality -cnotin 'SHALL', 'SHOULD' -or $_.Benchmark.Upstream.Status -cnotin 'Current', 'Moved', 'Removed', 'NotFound' } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 73
         @($cisa | ForEach-Object { $_.Control } | Where-Object { $_ -cnotlike 'nist-800-53-r5:*' -and $_ -cnotlike 'cisa-scuba:*' }) | Should -BeNullOrEmpty
     }
 
@@ -524,9 +525,9 @@ Describe 'Benchmark and Control on result rows' {
     It 'Gives the rows of the CISA suite their Benchmark and the NIST SP 800-53 controls without a tenant' {
         $run = Get-Run 'Cisa'
         $rows = @($run.Tests | Where-Object Suite -EQ 'CISA')
-        $rows.Count | Should -Be 79
+        $rows.Count | Should -Be 81
         @($rows | Where-Object { $_.Benchmark.Framework -cne 'cisa-scuba' -or -not $_.Benchmark.Criticality } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 73
         $row = $rows | Where-Object Id -EQ 'CISA.MS.AAD.3.1'
         $row.Benchmark.Requirement | Should -BeExactly 'MS.AAD.3.1'
         $row.Benchmark.Upstream.Id | Should -Be 'MS.AAD.3.1v1'
@@ -743,10 +744,10 @@ Describe 'Docs export' {
         $cis.Benchmark.Requirement | Should -BeExactly '1.1.1'
         $cis.Benchmark.Level | Should -Be 'L1'
         $cis.Benchmark.Profile | Should -Be @('E3 Level 1')
-        $cisa = $script:exported['CISA.MS.EXO.8.1']
+        $cisa = $script:exported['CISA.MS.SECURITYSUITE.3.1']
         $cisa.Benchmark.Criticality | Should -Be 'SHALL'
         $cisa.Benchmark.Upstream.Id | Should -Be 'MS.SECURITYSUITE.3.1v1'
-        $cisa.Control | Should -Be @('cisa-scuba:MS.EXO.8.1', 'nist-800-53-r5:SC-7(10)')
+        $cisa.Control | Should -Be @('cisa-scuba:MS.SECURITYSUITE.3.1', 'nist-800-53-r5:SC-7(10)')
         $script:exported['MT.1001'].PSObject.Properties['Benchmark'] | Should -Not -BeNullOrEmpty
         $script:exported['MT.1001'].Benchmark | Should -BeNullOrEmpty
         # A reference to a framework without a file, such as NIST SP 800-53, stays in Control and gives no Benchmark.
