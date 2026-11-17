@@ -3,6 +3,11 @@
     $script:fabricTestTokenKey = [byte[]](0..15)
     $script:encryptedFabricTestToken = '76492d1116743f0423413b16050a5345MgB8ADgAbwBvADMAWgBoAGcAYQBPAEYAMwBhAHQARgBCAEYAeQA3AHgAbQBlAFEAPQA9AHwAYwAwAGYANwBlADUAMAA1ADcANwBmAGUANABmAGMAMQAxAGIAMgAyADMANAA4ADcANQA5AGMAZAA5ADQAMwAyADEAOABjADQAOQBjAGYAOAA4ADMAZAA2AGEAZgA1ADcAMAA1ADEANABkADIANABlAGEANABhADgAOABkAGUAZQBhADAAYwAwADIAYgBiADgAMQBkAGQAMAA1AGEAMgAzAGIAYQA3ADQAMgBlAGUAMAA3AGMANQA1AGMAMwA2ADIANwA1ADgAZgBiAGUAOQBlADcAYgBlAGYAOQA2ADAAMAA4AGYAZgBkADQANAA5AGMAOQA2AGQAMQAyAGEANgA1ADQANQAwADcAMABhADkAYQAxADIAMwBhADMAMQAxAGIAZQBjADgAYgA4ADYAMgBkADIANABlAGMANgBlADcAMQA='
 
+    if (-not (Get-Command Get-AzContext -ErrorAction SilentlyContinue)) {
+        function global:Get-AzContext {}
+        $script:removeAzContextStub = $true
+    }
+
     if (-not (Get-Command Get-AzAccessToken -ErrorAction SilentlyContinue)) {
         function global:Get-AzAccessToken {
             [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', 'ResourceUrl', Justification = 'Stub signature only; Mock binds -ResourceUrl from it.')]
@@ -17,6 +22,9 @@
 }
 
 AfterAll {
+    if ($script:removeAzContextStub) {
+        Remove-Item -Path Function:\Get-AzContext -ErrorAction SilentlyContinue
+    }
     if ($script:removeAzStub) {
         Remove-Item -Path Function:\Get-AzAccessToken -ErrorAction SilentlyContinue
     }
@@ -25,6 +33,9 @@ AfterAll {
 Describe 'Get-MtFabricTenantSettings' {
     BeforeEach {
         InModuleScope Maester { $__MtSession.FabricCache = @{} }
+        Mock -ModuleName Maester Get-AzContext {
+            [pscustomobject]@{ Environment = [pscustomobject]@{ Name = 'AzureCloud' } }
+        }
     }
 
     It 'requests a secure Fabric token and returns the tenant settings' {
@@ -54,6 +65,38 @@ Describe 'Get-MtFabricTenantSettings' {
             $Authentication -eq 'Bearer' -and
             $Token -is [securestring]
         }
+    }
+
+    It 'uses the GCC High token audience and tenant settings endpoint' {
+        Mock -ModuleName Maester Get-AzContext {
+            [pscustomobject]@{ Environment = [pscustomobject]@{ Name = 'AzureUSGovernment' } }
+        }
+        Mock -ModuleName Maester Get-AzAccessToken {
+            [pscustomobject]@{ Token = ConvertTo-SecureString -String $script:encryptedFabricTestToken -Key $script:fabricTestTokenKey }
+        }
+        Mock -ModuleName Maester Invoke-RestMethod {
+            [pscustomobject]@{ value = @([pscustomobject]@{ settingName = 'FirstSetting' }); continuationUri = $null }
+        }
+
+        $settings = @(InModuleScope Maester { Get-MtFabricTenantSettings })
+
+        $settings | Should -HaveCount 1
+        Should -Invoke Get-AzAccessToken -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $ResourceUrl -eq 'https://highapi.fabric.microsoft.us' -and $AsSecureString
+        }
+        Should -Invoke Invoke-RestMethod -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+            $Uri -eq 'https://highapi.fabric.microsoft.us/v1/admin/tenantsettings'
+        }
+    }
+
+    It 'rejects unsupported Azure environments before requesting a token' {
+        Mock -ModuleName Maester Get-AzContext {
+            [pscustomobject]@{ Environment = [pscustomobject]@{ Name = 'AzureChinaCloud' } }
+        }
+        Mock -ModuleName Maester Get-AzAccessToken {}
+
+        { InModuleScope Maester { Get-MtFabricTenantSettings } } | Should -Throw "*not supported in Azure environment 'AzureChinaCloud'*"
+        Should -Invoke Get-AzAccessToken -ModuleName Maester -Exactly -Times 0
     }
 
     It 'follows continuationUri and combines settings from every page' {
