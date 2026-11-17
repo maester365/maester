@@ -437,6 +437,48 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         ($row.Parameters | Where-Object Name -EQ 'Limit').Value | Should -Be 5
     }
 
+    It 'Reloads a selected built-in source test before running its updated definition in module scope' {
+        $folder = Join-Path $TestDrive 'builtin-source'
+        $file = Join-Path $folder 'Test.CONTOSO.9997.ps1'
+        $source = @'
+function Test-CONTOSO9997 {
+    [MaesterTest(
+        Id = 'CONTOSO.9997',
+        Title = 'Built-in source test',
+        Product = 'teams',
+        Feature = 'apps',
+        Area = 'applications',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1195',
+        Service = 'None',
+        Author = 'unit-test'
+    )]
+    [CmdletBinding()]
+    param()
+    return $false
+}
+'@
+        $null = New-Item -ItemType Directory -Path $folder -Force
+        $source | Set-Content -LiteralPath $file
+        "Description of CONTOSO.9997.`n`n<!--- Results --->`n%TestResult%" |
+            Set-Content -LiteralPath (Join-Path $folder 'Test.CONTOSO.9997.md')
+        $module = Get-Module Maester
+        $loadTestFile = [scriptblock]::Create('. $args[0]')
+        $null = $module.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($file))
+
+        $source.Replace('return $false', 'Get-MtTestSchema | Out-Null; return $true') |
+            Set-Content -LiteralPath $file
+        Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+
+        $row = Invoke-MtTest -Path $file -Config @{} -WarningAction SilentlyContinue
+
+        $row.Result | Should -Be 'Passed'
+        $row.Source | Should -Be 'Maester'
+    }
+
     It 'Rejects an invalid parameter value as InvalidConfiguration' {
         $folder = Join-Path $TestDrive 'invoke2'
         $file = New-NativeTestFile -Folder $folder -Id 'INV.2' -Attribute "Service = 'None'" -Param '[ValidateRange(1, 10)] [int] $Limit = 1'

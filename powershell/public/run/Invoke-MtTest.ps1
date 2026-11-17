@@ -66,6 +66,7 @@
 
     Write-Verbose "Invoke-MtTest: Id=$($Id -join ', ') Path=$Path"
     $tests = [System.Collections.Generic.List[object]]::new()
+    $reloadBuiltInSourceTests = $false
     if ($Path) {
         if (-not (Test-Path -LiteralPath $Path)) { Write-Error "The path '$Path' does not exist."; return }
         $root = if (Test-Path -LiteralPath $Path -PathType Container) { (Resolve-Path -LiteralPath $Path).Path } else { Split-Path (Resolve-Path -LiteralPath $Path).Path -Parent }
@@ -94,6 +95,7 @@
             $withinTestRoot = [string]::Equals($fullPath, $testRoot, $comparison) -or $fullPath.StartsWith($testRootPrefix, $comparison)
             $withinCustomRoot = [string]::Equals($fullPath, $customRoot, $comparison) -or $fullPath.StartsWith($customRootPrefix, $comparison)
             $isBuiltInPath = $withinTestRoot -and -not $withinCustomRoot
+            $reloadBuiltInSourceTests = $isBuiltInPath
             foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root -BuiltIn:$isBuiltInPath)) { $tests.Add($t) }
         }
     }
@@ -118,6 +120,15 @@
     }
     if ($tests.Count -eq 0) { Write-Error 'No native tests to run.'; return }
     if ($Parameter -and $tests.Count -ne 1) { Write-Error "-Parameter can be used only when exactly one test is selected; $($tests.Count) are."; return }
+
+    if ($reloadBuiltInSourceTests) {
+        $maester = $ExecutionContext.SessionState.Module
+        $loadTestFile = [scriptblock]::Create('. $args[0]')
+        foreach ($test in @($tests | Where-Object { $_.BuiltIn -and $_.File -and $_.Errors.Count -eq 0 })) {
+            # Keep the refreshed function in the module scope used by Invoke-MtNativePlan.
+            $null = $maester.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($test.File))
+        }
+    }
 
     # Called by a test during an Invoke-Maester run, the run's config is kept; otherwise it is resolved for
     # this call (the config a finished run leaves in the session must not apply to a later standalone call).

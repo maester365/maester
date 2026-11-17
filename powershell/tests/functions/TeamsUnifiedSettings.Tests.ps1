@@ -52,6 +52,63 @@ public sealed class MaesterTestUnifiedTokenResult
 '@ -ErrorAction Stop
     }
 
+    if (-not ('MaesterTestUnifiedDeviceCodeClient' -as [type])) {
+        $null = Add-Type -TypeDefinition @'
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public sealed class MaesterTestUnifiedDeviceCodeClient
+{
+    private readonly TaskCompletionSource<MaesterTestUnifiedDeviceCodeResult> _tokenSource = new TaskCompletionSource<MaesterTestUnifiedDeviceCodeResult>();
+
+    public bool TokenWasReleasedWhilePending { get; private set; }
+
+    public Task<object[]> GetAccountsAsync()
+    {
+        return Task.FromResult(new object[0]);
+    }
+
+    public MaesterTestUnifiedDeviceCodeRequest AcquireTokenWithDeviceCode(IEnumerable<string> scopes, Delegate callback)
+    {
+        return new MaesterTestUnifiedDeviceCodeRequest(this);
+    }
+
+    public Task<MaesterTestUnifiedDeviceCodeResult> GetTokenTask()
+    {
+        Task.Delay(1000).ContinueWith(_ => _tokenSource.TrySetResult(new MaesterTestUnifiedDeviceCodeResult()));
+        return _tokenSource.Task;
+    }
+
+    public void ReleaseTokenFromHost()
+    {
+        TokenWasReleasedWhilePending = !_tokenSource.Task.IsCompleted;
+        _tokenSource.TrySetResult(new MaesterTestUnifiedDeviceCodeResult());
+    }
+}
+
+public sealed class MaesterTestUnifiedDeviceCodeRequest
+{
+    private readonly MaesterTestUnifiedDeviceCodeClient _client;
+
+    public MaesterTestUnifiedDeviceCodeRequest(MaesterTestUnifiedDeviceCodeClient client)
+    {
+        _client = client;
+    }
+
+    public Task<MaesterTestUnifiedDeviceCodeResult> ExecuteAsync()
+    {
+        return _client.GetTokenTask();
+    }
+}
+
+public sealed class MaesterTestUnifiedDeviceCodeResult
+{
+    public string AccessToken { get { return "device-code-test-token"; } }
+}
+'@ -ErrorAction Stop
+    }
+
 }
 
 Describe 'Get-MtTeamsUnifiedSettingsAccessToken' {
@@ -74,6 +131,46 @@ Describe 'Get-MtTeamsUnifiedSettingsAccessToken' {
 
             Get-MtTeamsUnifiedSettingsAccessToken -Context $context |
                 Should -Be 'interactive-test-token'
+        }
+    }
+
+    It 'Writes device-code instructions directly to the host before waiting for a token' {
+        $tenantId = '11111111-1111-1111-1111-111111111111'
+        $context = [pscustomobject]@{
+            TenantId = $tenantId
+            Environment = 'Global'
+            Account = $null
+        }
+        $client = [MaesterTestUnifiedDeviceCodeClient]::new()
+
+        $output = @(
+            InModuleScope Maester -Parameters @{ Context = $context; Client = $client } {
+                $__MtSession.TeamsUseDeviceCode = $true
+                $__MtSession.TeamsAuthCache = @{
+                    Clients = @{ "$($Context.TenantId)|$($Context.Environment)" = $Client }
+                }
+                $script:deviceCodeTestClient = $Client
+                Mock Get-MtTeamsUnifiedSettingsDeviceCodeCallback {
+                    $null = $MessageSource.TrySetResult('Use the displayed code to sign in.')
+                }
+                Mock Write-MtHostLine {
+                    $null = $script:deviceCodeTestClient.ReleaseTokenFromHost()
+                }
+
+                try {
+                    Get-MtTeamsUnifiedSettingsAccessToken -Context $Context 6>&1
+                } finally {
+                    $script:deviceCodeTestClient = $null
+                }
+            }
+        )
+
+        @($output | Where-Object { $_ -is [System.Management.Automation.InformationRecord] }) |
+            Should -BeNullOrEmpty
+        $output | Should -Contain 'device-code-test-token'
+        $client.TokenWasReleasedWhilePending | Should -BeTrue
+        Should -Invoke Write-MtHostLine -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Text -eq 'Use the displayed code to sign in.'
         }
     }
 }

@@ -67,7 +67,7 @@
         )
         $null = $waitTask.GetAwaiter().GetResult()
         if ($messageSource.Task.IsCompleted) {
-            Write-Information $messageSource.Task.GetAwaiter().GetResult() -InformationAction Continue
+            Write-MtHostLine ($messageSource.Task.GetAwaiter().GetResult())
         }
         $result = $tokenTask.GetAwaiter().GetResult()
     } elseif (-not $result) {
