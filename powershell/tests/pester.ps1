@@ -118,7 +118,7 @@ function Test-FileSelected {
     if ($isGolden -and ($skipGolden -or $skipOsIndependent)) { return $false }
     # The general tests that build the module run on every operating system: the build writes files and paths.
     if ($skipOsIndependent -and $File.Directory.Name -eq 'general' -and
-        $File.Name -notin 'Build-MaesterModule.Tests.ps1', 'PublishedModuleResultDetail.Tests.ps1') { return $false }
+        $File.Name -notin 'Build-MaesterModule.Tests.ps1', 'BuildCommonFunctions.Tests.ps1', 'PublishedModuleResultDetail.Tests.ps1') { return $false }
     return $true
 }
 

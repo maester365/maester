@@ -255,7 +255,7 @@ function Assert-DirectoryExists {
                 [System.IO.DirectoryInfo] $DirectoryInfo = $InputObject.Directory
             }
             elseif ($InputObject -is [string]) {
-                [System.IO.DirectoryInfo] $DirectoryInfo = $InputObject
+                [System.IO.DirectoryInfo] $DirectoryInfo = Get-FullPath -Paths $InputObject -BaseDirectory $BaseDirectory
             }
 
             if (!$DirectoryInfo.Exists) {
