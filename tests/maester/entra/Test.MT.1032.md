@@ -1,6 +1,6 @@
 A limited number of Global Administrators should be assigned.
 
-This test reads the Privileged Identity Management security alert **There are too many global administrators** (`TooManyGlobalAdminsAssignedToTenantAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. Emergency access (break glass) accounts are excluded from the affected items.
+This test reads the Privileged Identity Management security alert **There are too many global administrators** (`TooManyGlobalAdminsAssignedToTenantAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. If PIM has never scanned the alert in the tenant, the test is skipped until the alerts are refreshed. Emergency access (break glass) accounts are excluded from the affected items.
 
 #### Remediation action
 

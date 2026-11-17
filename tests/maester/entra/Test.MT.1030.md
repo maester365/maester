@@ -1,6 +1,6 @@
 Eligible role assignments on the Control Plane should be in use by administrators.
 
-This test reads the Privileged Identity Management security alert **Administrators aren't using their privileged roles** (`RedundantAssignmentAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. Emergency access (break glass) accounts are excluded from the affected items. The alert is filtered to Control Plane roles (Enterprise Access Model tiering).
+This test reads the Privileged Identity Management security alert **Administrators aren't using their privileged roles** (`RedundantAssignmentAlert`) from Microsoft Graph and passes when the alert is not active or has no affected role assignments. If PIM has never scanned the alert in the tenant, the test is skipped until the alerts are refreshed. Emergency access (break glass) accounts are excluded from the affected items. The alert is filtered to Control Plane roles (Enterprise Access Model tiering).
 
 #### Remediation action
 

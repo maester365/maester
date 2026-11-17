@@ -49,6 +49,25 @@
       # Keep per-call compatibility properties and filtered counts out of the Graph cache.
       $Alert = $Alert.PSObject.Copy()
       $AlertDefinition = $Alert.alertDefinition
+
+      # PIM reports an alert it has never scanned as inactive, which would read as a pass.
+      $lastScanned = $Alert.lastScannedDateTime
+      $lastScanUtc = $null
+      if ($lastScanned -is [datetimeoffset]) {
+        $lastScanUtc = $lastScanned.UtcDateTime
+      } elseif ($lastScanned -is [datetime]) {
+        $lastScanUtc = $lastScanned.ToUniversalTime()
+      } elseif (-not [string]::IsNullOrWhiteSpace("$lastScanned")) {
+        $parsedScan = [datetimeoffset]::MinValue
+        if ([datetimeoffset]::TryParse("$lastScanned", [cultureinfo]::InvariantCulture, [System.Globalization.DateTimeStyles]::AssumeUniversal, [ref]$parsedScan)) {
+          $lastScanUtc = $parsedScan.UtcDateTime
+        }
+      }
+      if (-not $Alert.isActive -and $null -ne $lastScanUtc -and $lastScanUtc.Year -le 1) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'PIM has not scanned this alert in the tenant yet, so there is no result to evaluate. Refresh the PIM alerts for Microsoft Entra roles (POST /beta/identityGovernance/roleManagementAlerts/alerts/refresh), then run Maester again.'
+        return $null
+      }
+
       $AffectedRoleAssignments = if ($Alert.isActive) { @($Alert.alertIncidents) } else { @() }
 
       # Preserve the PIM v2 result properties consumed by the Maester tests and cmdlet callers.
@@ -120,7 +139,8 @@ $($AffectedRoleAssignmentSummary)
 Get more details from the PIM alert [$(Get-MtSafeMarkdown $Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
 "
       } else {
-        $testResult = 'All privileged role assignments are managed by PIM. Well done!'
+        $lastScanText = if ($null -ne $lastScanUtc) { " (last scan: $($lastScanUtc.ToString('yyyy-MM-dd HH:mm', [cultureinfo]::InvariantCulture)) UTC)" } else { '' }
+        $testResult = "Well done. No role assignment in scope is affected by the PIM alert **$(Get-MtSafeMarkdown $Alert.alertName)**$lastScanText."
       }
 
       Add-MtTestResultDetail -Description $testDescription -Result $testResult
