@@ -38,8 +38,12 @@
     foreach ($ou in $ous) {
         $value = if ($null -ne $ou.Modified) { $ou.Modified } elseif ($null -ne $ou.whenChanged) { $ou.whenChanged } elseif ($null -ne $ou.modifyTimeStamp) { $ou.modifyTimeStamp } else { $null }
         if ($null -eq $value -or [string]::IsNullOrWhiteSpace([string]$value)) { throw "OU '$($ou.DistinguishedName)' has no modification date." }
-        $date = [datetime]::MinValue
-        if (-not [datetime]::TryParse([string]$value, [ref]$date)) { throw "OU '$($ou.DistinguishedName)' has an invalid modification date." }
+        if ($value -is [datetime]) {
+            $date = $value
+        } else {
+            $date = [datetime]::MinValue
+            if (-not [datetime]::TryParse([string]$value, [ref]$date)) { throw "OU '$($ou.DistinguishedName)' has an invalid modification date." }
+        }
         if ($date -lt $cutoff) {
             $old++
             $rows += '| {0} | {1} | {2} |' -f (Format-MtAdSiteInventoryValue $ou.Name), $date.ToString('yyyy-MM-dd'), (Format-MtAdSiteInventoryValue $ou.DistinguishedName)

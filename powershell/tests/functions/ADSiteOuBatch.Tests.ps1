@@ -126,6 +126,22 @@ Describe 'AD site, subnet, OU and printer checks with <Representation> state' -F
         $script:detail.Text | Should -Match '1 OU\(s\)'
     }
 
+    It 'keeps typed OU modification dates independent of <Culture> parsing' -ForEach @(
+        @{ Culture = 'de-DE' }
+        @{ Culture = 'en-US' }
+    ) {
+        $previousCulture = [Globalization.CultureInfo]::CurrentCulture
+        try {
+            [Globalization.CultureInfo]::CurrentCulture = [Globalization.CultureInfo]::new($Culture)
+            $script:state.OrganizationalUnits[0].Modified = [datetime]::new(2010, 11, 17)
+            Test-MtAdOuStaleCount -MaximumAgeYears 5 | Should -BeTrue
+            $script:detail.Text | Should -Match '\| 2010-11-17 \|'
+            $script:detail.Text | Should -Match '1 OU\(s\)'
+        } finally {
+            [Globalization.CultureInfo]::CurrentCulture = $previousCulture
+        }
+    }
+
     It 'reports printer name, server, location and description for review' {
         Test-MtAdPrinterTotalCount | Should -BeTrue
         $script:detail.Investigate | Should -BeTrue
