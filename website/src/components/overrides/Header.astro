@@ -6,8 +6,8 @@ import SiteHeaderBar from '../SiteHeaderBar.astro';
 import VersionPicker from '../VersionPicker.astro';
 import { pagePath } from '../../lib/site-nav';
 
-// The 2.x archive has its own sidebar but no tab, and Packs and Blog are in the top bar already.
-const hidden = ['/docs/2.x', '/docs/packs', '/blog'];
+// The 2.x archive has its own sidebar but no tab, and Blog is in the top bar already.
+const hidden = ['/docs/2.x', '/blog'];
 const allTopics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !hidden.some((link) => topic.link.startsWith(link)));
 // Two pages of the Guides that people go to often enough to have a tab of their own. On them, their tab is the one
 // marked, not Guides.

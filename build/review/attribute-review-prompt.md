@@ -7,10 +7,15 @@ text define how each attribute value is chosen. They are the only authority for 
 
 ## What you receive
 
-- `attributes_to_review`: the attributes to judge. For a new test this is every rubric attribute. For a changed
-  test it is the attributes whose values changed.
+- `attributes_to_review`: the attributes to judge. For a new test this is every rubric attribute, and
+  `Parameters` when it has any. For a changed test it is the attributes whose values changed, and `Parameters`
+  when a parameter was added, renamed or bound to another setting.
 - `declared_attributes`: the values in the version under review.
 - `previous_attributes`: the values before the change, or `none` for a new test.
+- `declared_attributes.Parameters`: the test's parameters as `Name [type]`, or `Name [type] setting=Setting` for
+  a parameter bound to a setting.
+- `existing_parameter_names`: the parameter names other tests in the repository use, one per line as
+  `Name (number of tests): signatures`.
 - `related_tests`: the other tests in the repository with the same `Product` and `Feature`, each with its id,
   title and rubric attributes, or `none`. They come from the repository, not from the pull request, except that
   a test the pull request also changes is shown with its new values.
@@ -63,8 +68,16 @@ judge the attributes on their merits.
    `None` is a finding when the description names attacker behaviour the control addresses. A plausible technique
    that is merely absent is a note.
 
+10. `Parameters`: judge each name against the rubric's "Parameter names" section. A finding when a name does
+    not say what it measures, when it invents a synonym for a name in `existing_parameter_names` that means the
+    same thing (for example `DormantDays` where other tests use `MaximumInactiveDays`), when it reuses an
+    existing name for something different, or when a parameter is bound to a setting for a value a benchmark
+    sets. Write `declared` as the parameter's current name and `expected` as the name to use, or `unbound` for a
+    binding to remove. Report one finding for each parameter that needs a change.
+
 Unit tests already check that required attributes are present and that keys and technique IDs exist. You do
-not need to repeat those checks, but report an invalid key or ID if you notice one.
+not need to repeat those checks, but report an invalid key or ID if you notice one. They also check the
+mechanical parameter rules (PascalCase, `Maximum` not `Max`, no `In` before a unit, plural lists).
 
 ## Output
 

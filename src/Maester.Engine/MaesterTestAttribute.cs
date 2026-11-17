@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 // These two types are deliberately in the GLOBAL namespace. PowerShell resolves an attribute
 // written as [MaesterTest(...)] by probing 'MaesterTest' and 'MaesterTestAttribute' in the global
@@ -127,16 +127,25 @@ public sealed class MaesterTestAttribute : Attribute
 
 /// <summary>
 /// Declares the semantic kind of a test parameter so that a UI can offer a picker, and the engine can
-/// validate the value and resolve a display name:
+/// validate the value and resolve a display name, and the shared setting the value can come from:
 /// <code>
 /// [MaesterParameter(Kind = 'Entra.Group')]
 /// [string[]] $ExcludedGroups
+///
+/// [MaesterParameter(Kind = 'Entra.Domain', Setting = 'ParkedDomains')]
+/// [string[]] $ParkedDomains = @()
 /// </code>
-/// Kinds are defined in the parameter-kind registry, not here.
+/// Kinds are defined in the parameter-kind registry and settings in the settings registry, not here.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 public sealed class MaesterParameterAttribute : Attribute
 {
     /// <summary>Name of an entry in the parameter-kind registry, for example Entra.Group.</summary>
     public string Kind { get; set; }
+
+    /// <summary>
+    /// Name of a GlobalSettings entry, for example ParkedDomains. When the test's own TestSettings row and the
+    /// run's -Parameter value do not set the parameter, the engine binds it from that setting.
+    /// </summary>
+    public string Setting { get; set; }
 }

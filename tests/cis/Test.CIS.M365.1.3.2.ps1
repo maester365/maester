@@ -41,17 +41,8 @@
     )
 
     Write-Verbose 'Getting the activity-based timeout policy and Conditional Access policies...'
-    $timeoutPolicies = @(Invoke-MtGraphRequest -RelativeUri 'policies/activityBasedTimeoutPolicies' | Where-Object { $_ })
+    $timeoutSpan = (Get-MtActivityBasedTimeout).Timeout
     $policies = Get-MtConditionalAccessPolicy
-
-    $timeoutSpan = $null
-    if ($timeoutPolicies.Count -gt 0) {
-        $definition = @($timeoutPolicies[0].definition)[0] | ConvertFrom-Json
-        $timeout = $definition.ActivityBasedTimeoutPolicy.ApplicationPolicies[0].WebSessionIdleTimeout
-        if ($timeout) {
-            $timeoutSpan = [timespan]::Parse($timeout)
-        }
-    }
     $timeoutOk = $null -ne $timeoutSpan -and $timeoutSpan -le [timespan]::FromHours($MaximumIdleTimeoutHours)
 
     $candidates = @($policies | Where-Object { $_.sessionControls.applicationEnforcedRestrictions.isEnabled })

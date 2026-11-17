@@ -252,13 +252,13 @@ Instead of passing `-AzureDevOpsOrganization`, add the organization to `GlobalSe
 }
 ```
 
-Connecting replaces the current ADOPS session, so a failed sign-in does not retain the previous organization. Use `Disconnect-Maester` to disconnect ADOPS and clear Maester's connection status.
+When an organization is given, connecting replaces the current ADOPS session, so a failed sign-in does not retain the previous organization. When no organization is given and a working `Connect-ADOPS` session already exists, Maester keeps that session and reports its organization in the connection summary. Use `Disconnect-Maester` to disconnect ADOPS and clear Maester's connection status.
 
 If `ADOPS` is not installed, `Connect-Maester` warns you and still connects the other services you asked for. If Azure DevOps was the only service you asked for, it writes an error. You can still connect with `Connect-ADOPS -Organization <your-organization>` yourself.
 
 If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
 
-See the [installation guide](../installation.md#installing-azure-devops-powershell-module) for prerequisites and permissions, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
+See the [installation guide](../installation.md#azure-devops) for the permissions the tests need, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 

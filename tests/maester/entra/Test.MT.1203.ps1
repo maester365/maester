@@ -92,9 +92,7 @@
         $Result += "`n`n| Blueprint Principal object ID | Display name | Blueprint App ID | " +
             "Linked Agent Identity object IDs |`n| --- | --- | --- | --- |"
         foreach ($Principal in $OrphanedPrincipals) {
-            $Name = [System.Net.WebUtility]::HtmlEncode($Principal.DisplayName)
-            $Name = $Name -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Principal.DisplayName))
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
             $IdentityIds = if ($Principal.AgentIdentityIds.Count -gt 0) {
                 $Principal.AgentIdentityIds -join ', '

@@ -67,7 +67,7 @@
             throw "Enabled scopes could not be retrieved for optional feature '$($feature.Name)'."
         }
         if (@($feature.EnabledScopes).Count -gt 0) {
-            $scopeText = (@($feature.EnabledScopes) | ForEach-Object { ([string]$_).Replace('|', '&#124;') }) -join '<br>'
+            $scopeText = (@($feature.EnabledScopes) | ForEach-Object { ([string]$_).Replace('|', '&#124;') }) -join '; '
         }
         $name = ([string]$feature.Name).Replace('|', '&#124;')
         $result += "| $name | $($feature.IsEnabled) | $scopeText |`n"

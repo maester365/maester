@@ -1,25 +1,12 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "@site/src/react/shims/Link.jsx";
 import data from "@site/src/data/test-builder.json";
 import Markdown, { firstTable } from "./Markdown";
-import {
-  NEW,
-  emptyState,
-  exampleState,
-  functionNameFor,
-  validate,
-  buildPs1,
-  buildMd,
-  buildCommand,
-  folderFor,
-  addByHand,
-  registryChanges,
-  withPrefix,
-  splitList,
-  parsePermission,
-} from "./generate";
-import { Button, Checkbox, Combobox, DeleteIcon, HelpButton, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, Select, Sheet, Tabs, TabsContent } from "./ui";
+import { NEW, emptyState, exampleState, functionNameFor, validate, buildPs1, buildMd, buildCommand, buildAiPrompt, folderFor, addByHand, registryChanges, withPrefix, splitList, stateFromTest, parsePermission, PARAMETER_TYPES, emptyParameter, parameterForSetting, resolveParameter, settingOf, buildConfigExample, scaffoldedSettings } from "./generate";
+import { AttributeIcon, Badge, Button, Checkbox, Combobox, DeleteIcon, Flag, HelpButton, LevelIcon, OptionIcon, PlusIcon, osGlyph, Input, RadioCards, RadioPills, Select, Sheet, Tabs, TabsContent, Textarea } from "./ui";
 import GitHubPeople from "./GitHubPeople";
+import { fieldHelp } from "./help";
 import LicenseExplorer, { indexCatalog, planLabel } from "./LicenseExplorer";
 import styles from "./styles.module.css";
 import { productIcon, productInitials, featureIcon } from "../../lib/report-icons.mjs";
@@ -220,11 +207,14 @@ function Help({ id, title, badge, label, children }) {
 // add a missing value open in the help panel, so the form stays short.
 function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, notInList, problems, children }) {
   const mine = problems.filter((p) => p.field === id);
-  const hasHelp = hint || guide || rubric || notInList;
+  const { builtin } = useContext(HelpContext);
+  const extra = fieldHelp(id, builtin);
+  const hasHelp = hint || guide || rubric || notInList || extra;
   return (
     <div className={styles.field} id={"field-" + id}>
       <div className={styles.fieldHead}>
         <label className={styles.label} htmlFor={"input-" + id}>
+          <AttributeIcon name={FIELD_ICONS[id]} />
           {label}
         </label>
         {!required && <span className={styles.optional}>Optional</span>}
@@ -232,6 +222,13 @@ function Field({ id, name, label, required, hint, guide, rubric, rubricTitle, no
           <span className={styles.helpSlot}>
             <Help id={id} title={label} badge={name}>
               {hint && <p className={styles.lead}>{hint}</p>}
+              {extra && extra.more && <Markdown text={extra.more} />}
+              {extra && extra.empty && (
+                <>
+                  <h3>If you leave it empty</h3>
+                  <Markdown text={extra.empty} />
+                </>
+              )}
               {guide}
               {rubric && (
                 <>
@@ -330,6 +327,143 @@ const productSummary = (products) => {
   return "In " + names.join(", ") + (products.length > 3 ? " and " + (products.length - 3) + " more" : "");
 };
 
+// Parameters: the values an administrator can change. One card per parameter. A parameter bound to a registered
+// setting takes its type, default and allowed values from the registry, so only its name and description are typed.
+function ParameterBuilder({ parameters, builtin, onChange }) {
+  const update = (index, patch) => onChange(parameters.map((p, i) => (i === index ? { ...p, ...patch } : p)));
+  const remove = (index) => onChange(parameters.filter((_, i) => i !== index));
+  const bindable = data.settings.filter((s) => !s.connection && s.type !== "object");
+  const unused = bindable.filter((s) => !parameters.some((p) => settingOf(p, data) === s));
+  return (
+    <div className={styles.stack}>
+      <datalist id="parameter-names">
+        {data.parameterNames.map((n) => (
+          <option key={n.name} value={n.name}>
+            {n.type}
+          </option>
+        ))}
+      </datalist>
+      {parameters.map((raw, index) => {
+        const p = resolveParameter(raw, data);
+        const setting = settingOf(raw, data);
+        const used = data.parameterNames.find((n) => n.name.toLowerCase() === p.name.trim().toLowerCase());
+        return (
+          <div className={styles.group} key={index}>
+            <div className={styles.paramGrid}>
+              <label className={styles.miniField}>
+                <span>Name</span>
+                <Input
+                  id={index === 0 ? "input-parameters" : undefined}
+                  list="parameter-names"
+                  placeholder="MaximumInactiveDays"
+                  value={raw.name}
+                  onChange={(e) => update(index, { name: e.target.value.replace(/\s/g, "") })}
+                />
+              </label>
+              <div className={styles.miniField}>
+                <span>Type</span>
+                {setting ? (
+                  <div>
+                    <Badge>{setting.type}</Badge>
+                  </div>
+                ) : (
+                  <Select value={raw.type} onValueChange={(v) => update(index, { type: v })} placeholder="Type" options={PARAMETER_TYPES.map((t) => ({ value: t, label: t }))} />
+                )}
+              </div>
+            </div>
+            <label className={styles.miniField}>
+              <span>Description</span>
+              <Input placeholder="One line: what the value changes" value={raw.description} onChange={(e) => update(index, { description: e.target.value.replace(/[\r\n]/g, " ") })} />
+            </label>
+            {setting ? (
+              <p className={styles.hint}>
+                Bound to the setting <code>{setting.name}</code>, which an administrator sets once in <code>GlobalSettings</code>. The settings registry gives it its type
+                {p.default ? ", its default (" + p.default + ")" : ""}
+                {p.allowedValues.length ? " and its allowed values (" + p.allowedValues.join(", ") + ")" : ""}.
+              </p>
+            ) : (
+              <>
+                {raw.type === "switch" ? (
+                  <p className={styles.hint}>A switch is off by default. Name it after what turning it on does.</p>
+                ) : (
+                  <div className={styles.paramGrid}>
+                    <label className={styles.miniField}>
+                      <span>Default</span>
+                      <Input
+                        placeholder={raw.type === "int" ? "90" : raw.type === "bool" ? "true or false" : raw.type === "string[]" ? "Comma-separated; empty for none" : "Empty for none"}
+                        value={raw.default}
+                        onChange={(e) => update(index, { default: e.target.value })}
+                      />
+                    </label>
+                    {raw.type === "int" && (
+                      <>
+                        <label className={styles.miniField}>
+                          <span>Lowest allowed</span>
+                          <Input placeholder="1" value={raw.min} onChange={(e) => update(index, { min: e.target.value })} />
+                        </label>
+                        <label className={styles.miniField}>
+                          <span>Highest allowed</span>
+                          <Input placeholder="365" value={raw.max} onChange={(e) => update(index, { max: e.target.value })} />
+                        </label>
+                      </>
+                    )}
+                    {(raw.type === "string" || raw.type === "string[]") && (
+                      <>
+                        <label className={styles.miniField}>
+                          <span>Allowed values</span>
+                          <Input placeholder="Comma-separated; empty for any" value={raw.allowed} onChange={(e) => update(index, { allowed: e.target.value })} />
+                        </label>
+                        <div className={styles.miniField}>
+                          <span>Holds</span>
+                          <Select
+                            value={raw.kind || "none"}
+                            onValueChange={(v) => update(index, { kind: v === "none" ? "" : v })}
+                            placeholder="Holds"
+                            options={[{ value: "none", label: "Plain text" }].concat(data.parameterKinds.map((k) => ({ value: k, label: k })))}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+                {!builtin && (
+                  <label className={styles.miniField}>
+                    <span>Shared setting of your own (optional)</span>
+                    <Input placeholder="Contoso.Regions" value={raw.setting} onChange={(e) => update(index, { setting: e.target.value.trim() })} />
+                  </label>
+                )}
+              </>
+            )}
+            {used && !setting && used.type === p.type && (
+              <p className={styles.hint}>
+                {used.tests} built-in {used.tests === 1 ? "test uses" : "tests use"} <code>{used.name}</code>. Reuse the name only if it means the same thing here.
+              </p>
+            )}
+            <div>
+              <Button variant="ghost" onClick={() => remove(index)}>
+                <DeleteIcon />
+                Remove {raw.name.trim() || "parameter"}
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+      <div className={styles.groupRow}>
+        <Select
+          value=""
+          onValueChange={(v) => onChange([...parameters, parameterForSetting(data.settings.find((s) => s.name === v))])}
+          placeholder="Add a shared setting"
+          options={unused.map((s) => ({ value: s.name, label: s.name, hint: s.description }))}
+        />
+        <Button onClick={() => onChange([...parameters, { ...emptyParameter }])}>
+          <PlusIcon />
+          Add a parameter
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 // Permission: each box is one thing the test needs (all of them); the permissions inside a box are alternatives
 // (any one of them), least privileged first.
 function PermissionBuilder({ groups, services, onChange }) {
@@ -358,10 +492,6 @@ function PermissionBuilder({ groups, services, onChange }) {
       <div className={styles.explain}>
         <p>
           Each box is one thing the test needs, and the test needs <strong>all</strong> of them. Permissions inside one box are <strong>alternatives</strong>: any one of them is enough. Put the least privileged one first.
-        </p>
-        <p>
-          A permission is written <code>&lt;Service&gt;:&lt;Kind&gt;:&lt;Name&gt;</code> and <code>|</code> joins alternatives, so “User.Read.All, and Policy.Read.All or Directory.Read.All” is{" "}
-          <code>Permission = ('Graph:Scope:User.Read.All', 'Graph:Scope:Policy.Read.All | Graph:Scope:Directory.Read.All')</code>.
         </p>
       </div>
       {shown.map((group, index) => {
@@ -484,9 +614,6 @@ function LicenseBuilder({ groups, onChange }) {
         <p>
           A test requires <strong>service plans</strong>, the building blocks inside a product such as Microsoft 365 E5. Plans inside one box are joined with <strong>and</strong>: the tenant needs all of them. Boxes are joined with <strong>or</strong>: any one box is enough.
         </p>
-        <p>
-          In the attribute each box is one element and <code>&amp;</code> joins the plans in it, so “Entra ID P1 and Intune, or Entra ID P2” is <code>License = ('AAD_PREMIUM&amp;INTUNE_A', 'AAD_PREMIUM_P2')</code>.
-        </p>
       </div>
       {shown.map((group, index) => (
         <React.Fragment key={index}>
@@ -526,6 +653,7 @@ function LicenseBuilder({ groups, onChange }) {
                 onSelect={(v) => !group.includes(v) && update(index, [...group, v])}
               />
               <Button onClick={() => setExploring(index)} disabled={!catalog}>
+                <AttributeIcon name="explore" />
                 Licence explorer
               </Button>
               {shown.length > 1 && (
@@ -592,11 +720,152 @@ function CopyBlock({ text, language }) {
   );
 }
 
+// The icon beside each field's label and each step. An attribute the report shows has the report's icon.
+const FIELD_ICONS = {
+  suite: "source", prefix: "tag", id: "id", title: "title", functionName: "code",
+  product: "product", feature: "feature", relatedProducts: "related", area: "area", resourceType: "resource",
+  severity: "severity", userImpact: "impact", implementationCost: "effort",
+  mitre: "attack", control: "framework",
+  services: "service", license: "licence", permission: "permission",
+  tenantType: "tenant", cloud: "cloud", platform: "platform",
+  parameters: "params",
+  lifecycle: "lifecycle", replacedBy: "related", flags: "duration", author: "person", contributor: "impact", tags: "tag",
+};
+const STEP_ICONS = { start: "person", name: "id", about: "product", priority: "severity", mapping: "framework", services: "service", licences: "licence", permissions: "permission", environment: "cloud", parameters: "params", lifecycle: "lifecycle" };
+const LIFECYCLE_ICONS = { Preview: ["preview", "info"], Stable: ["stable", "ok"], Deprecated: ["deprecated", "low"] };
+
+// Services show the icon of the product they connect to. Microsoft Graph has no icon of its own in the set, so it
+// shows Microsoft 365's; Dataverse has none either and shows its initials.
+const SERVICE_PRODUCT = { ActiveDirectory: "ad", Azure: "azure", AzureDevOps: "azure-devops", ExchangeOnline: "exchange", GitHub: "github", Graph: "microsoft-365", SecurityCompliance: "purview", SharePointOnline: "sharepoint", Teams: "teams" };
+const serviceIconOf = (name) => (SERVICE_PRODUCT[name] && productIcon(SERVICE_PRODUCT[name]) ? { icon: productIcon(SERVICE_PRODUCT[name]) } : { initials: name.slice(0, 2) });
+
+// Tenant types: the value written to the attribute stays Workforce or External; the label says what External
+// means. Workforce shows the Entra ID icon the report uses. External shows Microsoft's External ID icon
+// (public/img/icons/external-id.svg, from https://az-icons.com/icon/external-id-modified, unchanged).
+const TENANT_TYPES = {
+  Workforce: { label: "Workforce", icon: productIcon("entra") },
+  External: { label: "External (Consumer)", icon: "/img/icons/external-id.svg" },
+};
+
+// Clouds: the country whose cloud it is, shown as a flag. Commercial is the worldwide cloud and shows a globe.
+const CLOUDS = {
+  Commercial: { label: "Worldwide" },
+  GCC: { country: "us", label: "United States" },
+  GCCHigh: { country: "us", label: "United States" },
+  DoD: { country: "us", label: "United States" },
+  China: { country: "cn", label: "China" },
+  Bleu: { country: "fr", label: "France" },
+  Delos: { country: "de", label: "Germany" },
+  GovSG: { country: "sg", label: "Singapore" },
+};
+
+// The rating fields show a level icon on each choice, so the scale reads at a glance.
+const SEVERITY_LEVEL = { Critical: 4, High: 3, Medium: 2, Low: 1, Info: 0 };
+const SCALE_LEVEL = { Low: 1, Medium: 2, High: 3 };
+const SCALE_TONE = { Low: "low", Medium: "medium", High: "high" };
+const severityOptions = (options) => options.map((o) => ({ ...o, icon: <LevelIcon level={SEVERITY_LEVEL[o.value]} of={4} tone={o.value.toLowerCase()} /> }));
+const scaleOptions = (options) => options.map((o) => ({ ...o, icon: <LevelIcon level={SCALE_LEVEL[o.value]} of={3} tone={SCALE_TONE[o.value]} /> }));
+
+// The form is shown one step at a time. Each step lists the fields whose problems count against it.
+const STEPS = [
+  { key: "start", label: "Who it is for", fields: [] },
+  { key: "name", label: "Name", fields: ["suite", "prefix", "id", "title", "functionName"] },
+  { key: "about", label: "Subject", fields: ["product", "feature", "relatedProducts", "area", "resourceType"] },
+  { key: "priority", label: "Priority", fields: ["severity", "userImpact", "implementationCost"] },
+  { key: "mapping", label: "Mapping", fields: ["mitre", "control"] },
+  { key: "services", label: "Service connections", fields: ["services"] },
+  { key: "licences", label: "Licences", fields: ["license"] },
+  { key: "permissions", label: "Permissions", fields: ["permission"] },
+  { key: "environment", label: "Where it applies", fields: ["tenantType", "cloud", "platform"] },
+  { key: "parameters", label: "Parameters", fields: ["parameters"] },
+  { key: "lifecycle", label: "Lifecycle and credit", fields: ["lifecycle", "replacedBy", "flags", "author", "contributor", "tags"] },
+];
+const stepOfField = (field) => (STEPS.find((s) => s.fields.includes(field)) || STEPS[0]).key;
+const stepOfHash = (hash) => {
+  const value = (hash || "").replace(/^#/, "");
+  if (value.startsWith("field-")) return stepOfField(value.slice(6));
+  return value === "ai" || STEPS.some((s) => s.key === value) ? value : null;
+};
+
+// The list of steps: in the site's sidebar on a wide screen, a row above the form on a narrow one. A step shows
+// a tick once it has been opened and has nothing to fix, or the number of things to fix.
+function StepList({ steps, step, onStep, className }) {
+  return (
+    <ol className={className} aria-label="Steps">
+      {/* Not a step: the prompt uses whatever the steps hold so far, so it sits apart, after them. */}
+      {steps.map((s, index) => (
+        <li key={s.key}>
+          <button type="button" className={styles.step} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} title={s.label + (s.errors ? ": " + s.errors + " to fix" : "")} aria-current={s.key === step ? "step" : undefined} onClick={() => onStep(s.key)}>
+            <span className={styles.stepMark} data-state={s.errors ? "bad" : s.done ? "done" : "todo"} aria-hidden="true">
+              {s.errors ? s.errors : s.done ? "✓" : index + 1}
+            </span>
+            <AttributeIcon name={STEP_ICONS[s.key]} className={styles.stepIcon} />
+            <span className={styles.stepLabel}>{s.label}</span>
+            {s.optional && <span className={styles.stepNote}>Optional</span>}
+            {s.errors > 0 && (
+              <span className={styles.srOnly}>
+                , {s.errors} to fix
+              </span>
+            )}
+          </button>
+        </li>
+      ))}
+      <li className={styles.stepApart}>
+        <button type="button" className={styles.step} title="Write the test with AI" aria-current={step === "ai" ? "step" : undefined} onClick={() => onStep("ai")}>
+          <span className={styles.stepMark} data-state="ai" aria-hidden="true">
+            <AttributeIcon name="spark" />
+          </span>
+          <AttributeIcon name="spark" className={styles.stepIcon} />
+          <span className={styles.stepLabel}>Write it with AI</span>
+        </button>
+      </li>
+    </ol>
+  );
+}
+
+// Start from a test that ships with Maester: type its ID or part of its title. The list is fetched the first
+// time the picker is used, so the page does not carry all the tests.
+function ExistingTestPicker({ onLoad }) {
+  const [tests, setTests] = useState(null);
+  const [failed, setFailed] = useState(false);
+  const load = useCallback(() => {
+    if (tests || failed) return;
+    fetch("/data/builder-tests.json")
+      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
+      .then(setTests, () => setFailed(true));
+  }, [tests, failed]);
+  const items = useMemo(() => (tests || []).map((t) => ({ value: t.Id, label: t.Id + "  " + t.Title, hint: t.Suite, ...productIconOf(t.Product) })), [tests]);
+  return (
+    <div className={styles.existing} onPointerDown={load} onFocus={load}>
+      <Combobox
+        id="input-existing"
+        value=""
+        items={items}
+        placeholder="Start from an existing test: type an ID or a title"
+        searchPlaceholder="MT.1001, CIS.M365.2.1.9, device code, DKIM"
+        empty={failed ? "The list of tests could not be loaded." : tests ? "No test matches." : "Loading the tests…"}
+        onSelect={(id) => {
+          const test = (tests || []).find((t) => t.Id === id);
+          if (test) onLoad(test);
+        }}
+      />
+    </div>
+  );
+}
+
 export default function TestBuilder() {
   const [state, setState] = useState(exampleState);
   const [tab, setTab] = useState("ps1");
+  const [loaded, setLoaded] = useState(null);
+  const [goal, setGoal] = useState("");
+  const [step, setStepState] = useState("start");
+  const [seen, setSeen] = useState(["start"]);
+  const [railHost, setRailHost] = useState(null);
+  const formRef = useRef(null);
+  const jump = useRef(null);
+  const [jumps, setJumps] = useState(0);
   const [helpId, setHelpId] = useState(null);
-  const helpContext = useMemo(() => ({ openId: helpId, setOpenId: setHelpId }), [helpId]);
+  const helpContext = useMemo(() => ({ openId: helpId, setOpenId: setHelpId, builtin: state.mode === "builtin" }), [helpId, state.mode]);
   const [guide, openGuide] = useGuides(setHelpId);
   const set = (patch) => setState((s) => ({ ...s, ...patch }));
   const builtin = state.mode === "builtin";
@@ -617,6 +886,49 @@ export default function TestBuilder() {
   const firstFramework = state.controls.find((c) => data.frameworks.some((f) => c.startsWith(f.key + ":") && f.requirements.some((r) => f.key + ":" + r.id === c)));
 
   const need = (name) => builtin && P[name].required !== "No";
+
+  // Steps. The address keeps the step, so a link or a reload opens it; a link to a field opens the field's step.
+  const setStep = useCallback((key, field) => {
+    setStepState(key);
+    setSeen((list) => (list.includes(key) ? list : [...list, key]));
+    setHelpId(null);
+    try {
+      window.history.replaceState(null, "", "#" + key);
+    } catch (e) {
+      // The address is not updated; the step still opens.
+    }
+    jump.current = { field };
+    setJumps((n) => n + 1);
+  }, []);
+  const goField = (field) => setStep(stepOfField(field), field);
+  // After the step is on the page: bring the field, or the top of the form, into view.
+  useEffect(() => {
+    if (!jump.current) return;
+    const { field } = jump.current;
+    jump.current = null;
+    const target = field ? document.getElementById("field-" + field) : formRef.current;
+    if (!target) return;
+    if (field) target.scrollIntoView({ block: "center" });
+    else if (target.getBoundingClientRect().top < 0) target.scrollIntoView({ block: "start" });
+    const input = field && document.getElementById("input-" + field);
+    if (input && input.focus) input.focus({ preventScroll: true });
+  }, [jumps]);
+  useEffect(() => {
+    setRailHost(document.getElementById("mt-builder-steps"));
+    const open = () => {
+      const hash = window.location.hash;
+      const key = stepOfHash(hash);
+      if (key) setStep(key, hash.startsWith("#field-") ? hash.slice(7) : undefined);
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, [setStep]);
+  const steps = STEPS.map((s) => {
+    const count = errors.filter((p) => s.fields.includes(p.field)).length;
+    return { ...s, errors: count, done: seen.includes(s.key) && count === 0 && s.key !== step, optional: !builtin && !["start", "name"].includes(s.key) };
+  });
+  const stepIndex = STEPS.findIndex((s) => s.key === step);
 
   // The prefix of custom tests is remembered in this browser.
   useEffect(() => {
@@ -682,6 +994,9 @@ export default function TestBuilder() {
     </>
   );
 
+  const configExample = buildConfigExample(state, data);
+  const handParameters = (state.parameters || []).filter((p) => p.name.trim()).length - scaffoldedSettings(state, data).length;
+
   const tabs = [
     ["ps1", "Test." + id + ".ps1"],
     ["md", "Test." + id + ".md"],
@@ -692,26 +1007,48 @@ export default function TestBuilder() {
     <HelpContext.Provider value={helpContext}>
     <div className={styles.shell}>
     <div className={styles.builder}>
-      <div className={styles.form}>
-        <section className={styles.section}>
+      <div className={styles.form} ref={formRef}>
+        <StepList steps={steps} step={step} onStep={setStep} className={styles.stepStrip} />
+        <section className={styles.section} id={"step-" + "start"} hidden={step !== "start"}>
           <h2>Who is the test for?</h2>
+          <p className={styles.intro}>
+            Every Maester test declares what it is about, how urgent a failure is and what it needs to run, in a <code>[MaesterTest()]</code> attribute. Pick the values step by step and the code updates as you go. The help button beside a field says what it means, what happens when you leave it empty, and the rule reviewers apply.
+          </p>
           <RadioCards
             label="Who is the test for?"
             columns
             value={state.mode}
             onValueChange={setMode}
             options={[
-              { value: "builtin", label: "A test for Maester", text: "You will open a pull request. Values come from Maester's registries and every rubric attribute is required." },
-              { value: "custom", label: "My own custom test", text: "It lives in your custom folder. Only the ID and title are required, and you may use your own values." },
+              { value: "builtin", icon: <AttributeIcon name="maester" />, label: "A test for Maester", text: "You will open a pull request. Values come from Maester's registries and every rubric attribute is required." },
+              { value: "custom", icon: <AttributeIcon name="source" />, label: "My own custom test", text: "It lives in your custom folder. Only the ID and title are required, and you may use your own values." },
             ]}
           />
           <div className={styles.actions}>
-            <Button onClick={() => reset(exampleState)}>Load the example</Button>
-            <Button onClick={() => reset(emptyState)}>Start empty</Button>
+            <Button onClick={() => { setLoaded(null); reset(exampleState); }}>Load the example</Button>
+            <Button onClick={() => { setLoaded(null); reset(emptyState); }}>Start empty</Button>
           </div>
+          <ExistingTestPicker
+            onLoad={(test) => {
+              setState((s) => ({ ...stateFromTest(test, data), customPrefix: s.customPrefix }));
+              setLoaded({ id: test.Id, title: test.Title, instanceSource: false });
+            }}
+          />
+          <p className={styles.note}>
+            <AttributeIcon name="spark" /> Want an AI assistant to write the test? Fill in what you know, then open{" "}
+            <button type="button" className={styles.linkButton} onClick={() => setStep("ai")}>
+              Write it with AI
+            </button>
+            . <Link to="/docs/writing-tests/with-ai">How it works</Link>.
+          </p>
+          {loaded && (
+            <p className={styles.note}>
+              Loaded <a href={"/docs/tests/" + loaded.id}>{loaded.id}</a>: its attributes and parameters are in the form. The code on the right is still the builder's template, not the test's own code, so copy the attribute and the <code>param()</code> block from it, not the body.
+            </p>
+          )}
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "name"} hidden={step !== "name"}>
           <h2>Name it</h2>
           {builtin && (
             <Field id="suite" label="Suite" required hint="The suite decides the ID prefix and the folder. New checks written by the community go in Maester." problems={problems}>
@@ -763,7 +1100,7 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "about"} hidden={step !== "about"}>
           <div className={styles.sectionHead}>
             <h2>What is it about?</h2>
             <Help id="rate-the-test" title="Rate the test, not your tenant" label="Rate the test, not your tenant">
@@ -827,26 +1164,26 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "priority"} hidden={step !== "priority"}>
           <h2>What should be fixed first?</h2>
           <Field id="severity" name="Severity" label="Severity" required={need("Severity")} hint="The risk to the organization while the test fails. Not the effort to fix it and not the disruption of fixing it." rubric={R.Severity} problems={problems} notInList={<p>The five values are fixed. The report, the scores and the <code>-Severity</code> selector depend on them.</p>}>
-            <RadioCards label="severity" value={state.severity} options={firstTable(R.Severity)} onValueChange={(v) => set({ severity: v })} />
+            <RadioPills label="severity" value={state.severity} options={severityOptions(firstTable(R.Severity))} onValueChange={(v) => set({ severity: v })} />
           </Field>
           {state.severity === "Info" ? (
             <p className={styles.note}>An Info test makes no risk judgement, so it has no user impact or implementation cost and is left out of scores.</p>
           ) : (
             <>
               <Field id="userImpact" name="UserImpact" label="User impact" required={need("UserImpact")} hint={P.UserImpact.description} rubric={R.UserImpact} problems={problems}>
-                <RadioCards label="userImpact" value={state.userImpact} options={firstTable(R.UserImpact)} onValueChange={(v) => set({ userImpact: v })} />
+                <RadioPills label="userImpact" value={state.userImpact} options={scaleOptions(firstTable(R.UserImpact))} onValueChange={(v) => set({ userImpact: v })} />
               </Field>
               <Field id="implementationCost" name="ImplementationCost" label="Implementation cost" required={need("ImplementationCost")} hint={P.ImplementationCost.description} rubric={R.ImplementationCost} problems={problems}>
-                <RadioCards label="implementationCost" value={state.implementationCost} options={firstTable(R.ImplementationCost)} onValueChange={(v) => set({ implementationCost: v })} />
+                <RadioPills label="implementationCost" value={state.implementationCost} options={scaleOptions(firstTable(R.ImplementationCost))} onValueChange={(v) => set({ implementationCost: v })} />
               </Field>
             </>
           )}
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "mapping"} hidden={step !== "mapping"}>
           <h2>What does it map to?</h2>
           <Field
             id="mitre"
@@ -942,12 +1279,12 @@ export default function TestBuilder() {
           </Field>
         </section>
 
-        <section className={styles.section}>
-          <h2>What does it need to run?</h2>
+        <section className={styles.section} id={"step-" + "services"} hidden={step !== "services"}>
+          <h2>Which service connections does it need?</h2>
           <Field
             id="services"
             name="Service"
-            label="Services"
+            label="Service connections"
             required={need("Service")}
             hint="The connections the test needs. The engine checks them before it calls your function and skips the test when one is missing, so the function needs no connection check."
             problems={problems}
@@ -960,8 +1297,12 @@ export default function TestBuilder() {
             <Checkbox checked={state.serviceNone} onCheckedChange={(v) => set({ serviceNone: v })}>
               None: the test needs no connection
             </Checkbox>
-            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} describe={(n) => (data.services.find((s) => s.name === n).optIn ? n + " (opt-in)" : n)} onChange={(v) => set({ services: v })} />}
+            {!state.serviceNone && <Checks id="services" values={state.services} options={data.services.map((s) => s.name)} iconFor={serviceIconOf} onChange={(v) => set({ services: v })} />}
           </Field>
+        </section>
+
+        <section className={styles.section} id={"step-" + "licences"} hidden={step !== "licences"}>
+          <h2>Which licences does the tenant need?</h2>
           <Field
             id="license"
             name="License"
@@ -981,6 +1322,10 @@ export default function TestBuilder() {
           >
             <LicenseBuilder groups={state.license} onChange={(v) => set({ license: v })} />
           </Field>
+        </section>
+
+        <section className={styles.section} id={"step-" + "permissions"} hidden={step !== "permissions"}>
+          <h2>Which permissions does it need?</h2>
           <Field
             id="permission"
             name="Permission"
@@ -989,27 +1334,120 @@ export default function TestBuilder() {
             problems={problems}
             notInList={
               <p>
-                The kinds of permission each service has are listed in <RepoFile path="powershell/assets/MaesterServiceRegistry.psd1" />. A test shipped with Maester names only the services it lists under Services.
+                The kinds of permission each service has are listed in <RepoFile path="powershell/assets/MaesterServiceRegistry.psd1" />. A test shipped with Maester names only the services it lists under Service connections.
               </p>
             }
           >
             <PermissionBuilder groups={state.permission} services={state.serviceNone ? [] : state.services} onChange={(v) => set({ permission: v })} />
           </Field>
-          <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Leave empty for Workforce only."} problems={problems}>
-            <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} onChange={(v) => set({ tenantType: v })} />
+        </section>
+
+        <section className={styles.section} id={"step-" + "environment"} hidden={step !== "environment"}>
+          <h2>Where does it apply?</h2>
+          <p className={styles.intro}>Leave these empty unless the test is only valid in some tenants, clouds or operating systems. Most tests leave them empty.</p>
+          <Field id="tenantType" name="TenantType" label="Tenant types" hint={P.TenantType.description + " Workforce is an organization's own tenant; External is a Microsoft Entra External ID tenant for customers. Leave empty for Workforce only."} problems={problems}>
+            <Checks id="tenantType" values={state.tenantType} options={P.TenantType.allowedValues} describe={(o) => TENANT_TYPES[o]?.label || o} iconFor={(o) => ({ icon: TENANT_TYPES[o]?.icon })} onChange={(v) => set({ tenantType: v })} />
           </Field>
           <Field id="cloud" name="Cloud" label="Clouds" hint={P.Cloud.description} problems={problems}>
-            <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} onChange={(v) => set({ cloud: v })} />
+            <Checks id="cloud" values={state.cloud} options={P.Cloud.allowedValues} iconFor={(o) => ({ glyph: <Flag country={CLOUDS[o]?.country} label={CLOUDS[o]?.label} /> })} onChange={(v) => set({ cloud: v })} />
           </Field>
           <Field id="platform" name="Platform" label="Platforms" hint={P.Platform.description} problems={problems}>
             <Checks id="platform" values={state.platform} options={P.Platform.allowedValues} iconFor={(o) => ({ glyph: osGlyph(o) })} onChange={(v) => set({ platform: v })} />
           </Field>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id={"step-" + "parameters"} hidden={step !== "parameters"}>
+          <h2>What can an administrator change?</h2>
+          <div className={styles.explain}>
+            <p>
+              A <strong>parameter</strong> is a value of this test that an administrator can change in <code>maester-config.json</code>, such as a threshold or a list of exceptions.
+            </p>
+            <p>
+              A <strong>shared setting</strong> is one value that many tests use: a fact about the tenant, or a choice the organization makes once, such as its emergency access accounts or the domains that never send email. The administrator sets it once under <code>GlobalSettings</code> and every test that binds a parameter to it receives it. The help button explains how to add a new one.
+            </p>
+          </div>
+          <Field
+            id="parameters"
+            label="Parameters"
+            hint="A value an administrator may need to change: a threshold, a list of exceptions, a choice. Leave this empty when the check has nothing to tune. Every parameter has a default, so the test runs with no configuration."
+            rubric={R["Parameter names"]}
+            rubricTitle="How to name a parameter, and when to bind a setting"
+            problems={problems}
+            guide={
+              <>
+                <h3>What a shared setting is</h3>
+                <p>
+                  Some values mean the same thing to every test that needs them: which accounts are the emergency access accounts, which domains are parked. Asking the administrator to repeat such a value on every test would be tedious and easy to get wrong. A shared setting holds it once, under <code>GlobalSettings</code> in <code>maester-config.json</code>.
+                </p>
+                <p>
+                  A test does not read the setting itself. It declares a parameter bound to it, <code>[MaesterParameter(Setting = 'ParkedDomains')]</code>, and the engine fills the parameter in. The result records the value and that it came from the setting, and a <code>TestSettings</code> row can still override it for one test.
+                </p>
+                <p>
+                  Bind a parameter only when the organization sets the value once and it means the same to every test. A value a benchmark sets, such as a lockout threshold, is never a shared setting: it stays a parameter of that test, with the benchmark's value as the default.
+                </p>
+                <h3>Use a shared setting that exists</h3>
+                <p>
+                  Choose it under <em>Add a shared setting</em>. The builder writes the parameter with the setting's type, default and allowed values, which must not be changed.
+                </p>
+                <h3>Add a new shared setting</h3>
+                {builtin ? (
+                  <ol className={styles.steps}>
+                    <li>
+                      <strong>Name it after what it holds</strong>, never after a test or a suite, in PascalCase and plural for a list: <code>ParkedDomains</code>, not <code>Cis218Domains</code>.
+                    </li>
+                    <li>
+                      <strong>Register it</strong> in <RepoFile path="powershell/assets/MaesterSettings.psd1" />, in the same pull request, with its <code>Type</code>, <code>Default</code>, <code>Sensitive</code> and <code>Description</code>. Add <code>AllowedValues</code> for a fixed set of choices, <code>Kind</code> when a string holds something a picker can offer (a domain, a group), and <code>Items</code> for a list of objects.
+                      <CopyBlock text={"ExcludedRegions = @{ Type = 'string[]'; Default = @(); Sensitive = $false; Description = 'Regions the organization does not operate in.' }"} language="powershell" />
+                    </li>
+                    <li>
+                      <strong>Bind the parameter</strong> in the test with the same type, default and allowed values. The builder lists a setting only once it is registered, so write this one by hand:
+                      <CopyBlock text={"# Regions the organization does not operate in.\n[MaesterParameter(Setting = 'ExcludedRegions')]\n[string[]] $ExcludedRegions = @()"} language="powershell" />
+                    </li>
+                    <li>
+                      <strong>Pass the value on.</strong> Give it to the helper functions that need it as an argument. A helper never reads a setting that tests bind, or it would ignore the value the test was given.
+                    </li>
+                    <li>
+                      <strong>Document it</strong> in the <code>GlobalSettings</code> table of <RepoFile path="website/docs/configuration/run-configuration.md" />.
+                    </li>
+                    <li>
+                      <strong>Regenerate and test.</strong> Run <code>./build/website/Update-MtTestBuilderData.ps1</code>, so this page offers the setting, then <code>./powershell/tests/pester.ps1</code>. The unit tests fail when a parameter's type or default differs from its setting.
+                    </li>
+                  </ol>
+                ) : (
+                  <ol className={styles.steps}>
+                    <li>
+                      <strong>Name it <code>Namespace.Key</code></strong>, with your organization or pack as the namespace: <code>Contoso.Regions</code>. The dot keeps it apart from Maester's own settings, and Maester does not report it as a typo.
+                    </li>
+                    <li>
+                      <strong>Add a parameter</strong> here and type that name under <em>Shared setting of your own</em>. Give it a default, so the test runs before anyone sets the value.
+                    </li>
+                    <li>
+                      <strong>Set the value</strong> once under <code>GlobalSettings</code> in <code>maester-config.json</code>. Every test of yours that binds <code>Contoso.Regions</code> receives it. The example below the form shows the file.
+                    </li>
+                    <li>
+                      <strong>In a Maester Pack</strong>, also declare the setting under <code>Settings</code> in <code>maester-pack.json</code>, with its type. Maester then checks the value in the config before a run.
+                    </li>
+                  </ol>
+                )}
+              </>
+            }
+          >
+            <ParameterBuilder parameters={state.parameters || []} builtin={builtin} onChange={(v) => set({ parameters: v })} />
+          </Field>
+          {configExample && (
+            <div className={styles.field}>
+              <p className={styles.hint}>
+                How an administrator sets {(state.parameters || []).length === 1 ? "it" : "them"} in <code>maester-config.json</code>. A shared setting is set once under <code>GlobalSettings</code>, and the test's row under <code>TestSettings</code> can still override it for this test.
+              </p>
+              <CopyBlock text={configExample} language="json" />
+            </div>
+          )}
+        </section>
+
+        <section className={styles.section} id={"step-" + "lifecycle"} hidden={step !== "lifecycle"}>
           <h2>Lifecycle and credit</h2>
           <Field id="lifecycle" name="Lifecycle" label="Lifecycle" hint={P.Lifecycle.description} rubric={R["Lifecycle and ReplacedBy"]} problems={problems}>
-            <RadioCards label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v }))} onValueChange={(v) => set({ lifecycle: v })} />
+            <RadioPills label="lifecycle" value={state.lifecycle} options={P.Lifecycle.allowedValues.map((v) => ({ value: v, icon: <AttributeIcon name={LIFECYCLE_ICONS[v][0]} tone={LIFECYCLE_ICONS[v][1]} /> }))} onValueChange={(v) => set({ lifecycle: v })} />
           </Field>
           {(state.lifecycle === "Deprecated" || state.replacedBy) && (
             <Field id="replacedBy" name="ReplacedBy" label="Replaced by" hint={P.ReplacedBy.description} problems={problems}>
@@ -1043,7 +1481,47 @@ export default function TestBuilder() {
             </p>
           )}
         </section>
+        <section className={styles.section} id="step-ai" hidden={step !== "ai"}>
+          <h2>Write it with AI</h2>
+          <div className={styles.explain}>
+            <p>
+              An AI coding assistant such as GitHub Copilot or Claude Code can write the test from a prompt. The prompt below carries the values you picked in the steps, points the assistant at Maester's guides and tells it how to check its work. The ID and the title are enough to start; every other value you pick is one less for it to guess.
+            </p>
+            <p>
+              {builtin ? "Run it in a clone of the Maester repository, which has agents and skills for writing a check." : "Run it in the folder that holds your custom tests. The assistant does not need the Maester repository."} <Link to="/docs/writing-tests/with-ai">How this works, and how to check the result</Link>.
+            </p>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.miniField}>
+              <span>What should the test verify?</span>
+              <Textarea value={goal} rows={4} placeholder="Guest users cannot invite other guests. The setting is 'Guest invite restrictions' under External collaboration settings, and it should be 'Only users assigned to specific admin roles'." onChange={(e) => setGoal(e.target.value)} />
+            </label>
+          </div>
+          <div className={styles.field}>
+            <p className={styles.hint}>Copy this into your assistant.</p>
+            <CopyBlock text={buildAiPrompt(state, data, goal)} language="markdown" />
+            <p className={styles.hint}>Read what the assistant writes before you run it: check the endpoint and property names against Microsoft Learn, and run the test on a tenant you know.</p>
+          </div>
+        </section>
+        {stepIndex >= 0 && (
+        <div className={styles.stepNav}>
+          <Button disabled={stepIndex === 0} onClick={() => setStep(STEPS[stepIndex - 1].key)}>
+            Back
+          </Button>
+          <span className={styles.stepCount}>
+            Step {stepIndex + 1} of {STEPS.length}
+          </span>
+          {stepIndex < STEPS.length - 1 ? (
+            <Button variant="primary" onClick={() => setStep(STEPS[stepIndex + 1].key)}>
+              Next: {STEPS[stepIndex + 1].label}
+            </Button>
+          ) : (
+            <span className={styles.stepCount}>{errors.length ? "Fix what is listed with the code, then copy it." : "Done. Copy the code."}</span>
+          )}
+        </div>
+        )}
       </div>
+      {railHost && createPortal(<StepList steps={steps} step={step} onStep={setStep} className={styles.stepRail} />, railHost)}
 
       <aside className={styles.output} aria-label="Generated test" data-help-dock>
         {/* Only problems are shown here; a test that meets the rules needs no banner. */}
@@ -1056,7 +1534,15 @@ export default function TestBuilder() {
               <ul>
                 {errors.slice(0, 6).map((p, i) => (
                   <li key={i}>
-                    <a href={"#field-" + p.field}>{p.text}</a>
+                    <a
+                      href={"#field-" + p.field}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        goField(p.field);
+                      }}
+                    >
+                      {p.text}
+                    </a>
                   </li>
                 ))}
                 {errors.length > 6 && <li>and {errors.length - 6} more</li>}
@@ -1070,7 +1556,7 @@ export default function TestBuilder() {
             <p className={styles.where}>
               Save as <code>{folder + "/Test." + id + ".ps1"}</code>
             </p>
-            <CopyBlock text={buildPs1(state)} language="powershell" />
+            <CopyBlock text={buildPs1(state, data)} language="powershell" />
           </TabsContent>
           <TabsContent value="md">
             <p className={styles.where}>
@@ -1091,6 +1577,11 @@ export default function TestBuilder() {
                   </span>
                 ))}
                 . Copy those lines from the <code>.ps1</code> tab.
+              </p>
+            )}
+            {handParameters > 0 && (
+              <p className={styles.where}>
+                <code>New-MtTest -Setting</code> writes the parameters bound to a shared setting. Copy the {handParameters === 1 ? "other parameter" : "other " + handParameters + " parameters"} of the <code>param()</code> block from the <code>.ps1</code> tab.
               </p>
             )}
           </TabsContent>

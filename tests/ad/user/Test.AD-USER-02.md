@@ -10,7 +10,7 @@ Investigate dormant enabled accounts with their owners before disabling them; do
 
 #### How the Test Works
 
-The test compares the recorded replicated logon timestamp for enabled users with `DormantThresholdDays` (default 90). Replication lag and absent timestamps prevent this result from proving the exact last logon.
+The test compares the recorded replicated logon timestamp for enabled users with `MaximumInactiveDays` (default 90). Replication lag and absent timestamps prevent this result from proving the exact last logon.
 
 #### Related Tests
 

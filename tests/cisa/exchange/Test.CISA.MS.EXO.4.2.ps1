@@ -38,11 +38,7 @@
     )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# Parked domains should have DMARC with reject policy
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # Every accepted domain is checked, a parked domain included: MS.EXO.4.2v1 asks for p=reject on all domains.
     $expandedDomains = @()
     foreach($domain in $acceptedDomains){
         # If it's the coexistence domain (contoso.mail.onmicrosoft.com), skip the 2nd level check.

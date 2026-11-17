@@ -41,7 +41,7 @@
     [OutputType([bool])]
     param(
         # Maximum allowed age of the KRBTGT password, in days.
-        [ValidateRange(1, 3650)] [int] $MaxPasswordAgeDays = 180
+        [ValidateRange(1, 3650)] [int] $MaximumPasswordAgeDays = 180
     )
 
     Write-Verbose "Starting Test-MtAdKrbtgtPasswordLastSet"
@@ -68,7 +68,7 @@
     $passwordAgeDaysExact = if ($daysSinceChange) { $daysSinceChange.TotalDays } else { [int]::MaxValue }
     $passwordAgeDays = if ($daysSinceChange) { [Math]::Round($daysSinceChange.TotalDays, 0) } else { [int]::MaxValue }
 
-    $maxAge = $MaxPasswordAgeDays
+    $maxAge = $MaximumPasswordAgeDays
     $testResult = $passwordAgeDaysExact -le $maxAge
 
     $result = "| Property | Value |" + "`n"

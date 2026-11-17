@@ -39,12 +39,27 @@ const mix = severityMix(list);
 const total = list.length;
 const width = (n: number, of: number) => `width: ${((n / of) * 100).toFixed(2)}%`;
 
+// The columns of the list. ID and Check are always shown; the reader adds the others with the Columns menu, and their
+// browser remembers the choice. The grid widths are in the script, which lays out the columns that are shown.
+const columns: { key: string; label: string; standard?: boolean }[] = [
+	{ key: 'where', label: scope === 'product' ? 'Feature' : 'Product', standard: true },
+	...(scope === 'product' ? [] : [{ key: 'feature', label: 'Feature' }]),
+	{ key: 'area', label: 'Area' },
+	{ key: 'severity', label: 'Severity', standard: true },
+	{ key: 'impact', label: 'User impact' },
+	{ key: 'cost', label: 'Effort' },
+	{ key: 'mitre', label: 'ATT&CK' },
+	{ key: 'control', label: 'Controls' },
+	...(scope === 'pack' ? [] : [{ key: 'source', label: 'Source' }]),
+];
+const standardColumns = columns.filter((c) => c.standard).map((c) => c.key);
+const dash = '—';
 const sourceLabel = (t: Check) => (t.pack ? packName(t.pack) : suiteInfo[t.suite]?.name ?? t.suite);
 const channel = channelOf;
 const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : scope === 'suite' ? `Invoke-Maester -Suite ${suiteMembers(value).join(',').toLowerCase()}` : scope === 'pack' ? `Invoke-Maester -Pack ${value} -SkipBuiltIn` : 'Invoke-Maester';
 ---
 
-<mt-catalog-list class="mt-cl not-content" data-scope={scope} data-value={value} data-default-group={defaultGroup} data-base={baseCommand}>
+<mt-catalog-list class="mt-cl not-content" data-standard-columns={standardColumns.join(' ')} data-scope={scope} data-value={value} data-default-group={defaultGroup} data-base={baseCommand}>
 	{
 		pack && (
 			<div class="mt-cl__pack">
@@ -115,11 +130,32 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			<span>Group by</span>
 			{groupings.map(([key, label]) => <button type="button" data-group={key} aria-pressed={String(key === defaultGroup)}>{label}</button>)}
 		</div>
+		<details class="mt-cl__cols" data-cols-menu>
+			<summary>Columns</summary>
+			<div class="mt-cl__colsbox" role="group" aria-label="Columns">
+				{
+					columns.map((c) => (
+						<label>
+							<input type="checkbox" data-col-toggle={c.key} checked={c.standard} />
+							{c.label}
+						</label>
+					))
+				}
+				<button type="button" data-cols-reset>Reset to default</button>
+			</div>
+		</details>
 	</div>
 
-	<div class="mt-cl__table" data-table>
-		<div class="mt-cl__head" aria-hidden="true">
-			<span>ID</span><span>Check</span><span>{scope === 'product' ? 'Feature' : 'Product'}</span><span>Severity</span>
+	<div class="mt-cl__table" data-table data-show={standardColumns.join(' ')}>
+		<div class="mt-cl__head" role="group" aria-label="Sort by">
+			{
+				[{ key: 'id', label: 'ID' }, { key: 'title', label: 'Check' }, ...columns].map(({ key, label }) => (
+					<button type="button" class="mt-cl__sort" data-sort={key} data-col={key} aria-pressed="false" title={`Sort by ${label === 'ID' ? 'ID' : label.toLowerCase()}`}>
+						{label}
+						<span class="mt-cl__sorti" aria-hidden="true">↕</span>
+					</button>
+				))
+			}
 		</div>
 		<div data-rows>
 			{
@@ -149,6 +185,12 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 						data-g-pillar={(t.pillar ?? []).map((p) => `${p}|${pillarName(p)}`).join(';') || '|No pillar'}
 						data-g-category={`${t.category ?? ''}|${t.category || 'No category'}`}
 						data-test-id={t.id}
+						data-s-title={t.title}
+						data-s-where={scope === 'product' ? t.featureName : t.productName}
+						data-s-feature={t.featureName}
+						data-s-area={t.areaName}
+						data-s-control={t.control.join(' ')}
+						data-s-source={sourceLabel(t)}
 					>
 						<span class:list={['mt-cl__id', { 'mt-cl__id--pack': Boolean(t.pack) }]}>{t.id}</span>
 						<span class="mt-cl__title">
@@ -161,7 +203,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 							{t.previewOnly && !t.pack && <span class="mt-cl__badge">New in {previewLabel}</span>}
 							{t.previewCheck && <span class="mt-cl__badge mt-cl__badge--mono">-IncludePreview</span>}
 						</span>
-						<span class="mt-cl__where">
+						<span class="mt-cl__where" data-col="where">
 							{scope === 'product' ? (
 								t.featureName
 							) : (
@@ -175,9 +217,25 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 								</>
 							)}
 						</span>
-						<span>
+						{scope !== 'product' && (
+							<span class="mt-cl__where" data-col="feature">
+								{featureIcon(t.product, t.feature) && <img src={featureIcon(t.product, t.feature)} alt="" width="16" height="16" loading="lazy" />}
+								{t.featureName || dash}
+							</span>
+						)}
+						<span class="mt-cl__cell" data-col="area">{t.areaName || dash}</span>
+						<span data-col="severity">
 							<span class={`mt-cl__sev mt-sev--${t.severity.toLowerCase()}`}>{t.severity}</span>
 						</span>
+						<span class="mt-cl__cell" data-col="impact">{t.impact || dash}</span>
+						<span class="mt-cl__cell" data-col="cost">{t.cost || dash}</span>
+						<span class="mt-cl__cell mt-cl__codes" data-col="mitre" title={t.mitre.join(', ')}>
+							{t.mitre.length ? `${t.mitre.slice(0, 2).join(', ')}${t.mitre.length > 2 ? ` +${t.mitre.length - 2}` : ''}` : dash}
+						</span>
+						<span class="mt-cl__cell mt-cl__codes" data-col="control" title={t.control.join(', ')}>
+							{t.control.length ? `${t.control.slice(0, 2).join(', ')}${t.control.length > 2 ? ` +${t.control.length - 2}` : ''}` : dash}
+						</span>
+						{scope !== 'pack' && <span class="mt-cl__cell" data-col="source">{sourceLabel(t)}</span>}
 					</a>
 				))
 			}
@@ -187,15 +245,57 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 </mt-catalog-list>
 
 <script>
-	import { matches, onState, readState, update, writeState, FILTERS, type State } from './state';
+	import { matches, onState, readState, update, writeState, FILTERS, VIEW, type State } from './state';
 
 	// The rows shown of a group before "Show all", and of the whole list when it is not grouped.
 	const GROUP_ROWS = 8;
 	const FLAT_ROWS = 100;
 	const SEVERITIES = ['Critical', 'High', 'Medium', 'Low', 'Info'];
 
+	const LEVELS = ['Low', 'Medium', 'High'];
+
+	// The columns the list sorts by. Ascending is the order a reader looks for first: the most severe first, A to Z.
+	// A second click reverses it, a third goes back to the catalog's own order. Rows without a value stay last.
+	const rankOf = (order: string[], v: string) => (order.includes(v) ? order.indexOf(v) : order.length);
+	const SORTS: Record<string, { value: (r: HTMLElement) => string; compare: (a: string, b: string) => number }> = {
+		id: { value: (r) => r.dataset.testId ?? '', compare: (a, b) => a.localeCompare(b, undefined, { numeric: true }) },
+		title: { value: (r) => r.dataset.sTitle ?? '', compare: (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }) },
+		where: { value: (r) => r.dataset.sWhere ?? '', compare: (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }) },
+		severity: { value: (r) => (SEVERITIES.includes(r.dataset.severity ?? '') ? r.dataset.severity! : ''), compare: (a, b) => rankOf(SEVERITIES, a) - rankOf(SEVERITIES, b) },
+		feature: { value: (r) => r.dataset.sFeature ?? '', compare: (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }) },
+		area: { value: (r) => r.dataset.sArea ?? '', compare: (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }) },
+		impact: { value: (r) => r.dataset.impact ?? '', compare: (a, b) => rankOf(LEVELS, a) - rankOf(LEVELS, b) },
+		cost: { value: (r) => r.dataset.cost ?? '', compare: (a, b) => rankOf(LEVELS, a) - rankOf(LEVELS, b) },
+		mitre: { value: (r) => r.dataset.mitre ?? '', compare: (a, b) => a.localeCompare(b, undefined, { numeric: true }) },
+		control: { value: (r) => r.dataset.sControl ?? '', compare: (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }) },
+		source: { value: (r) => r.dataset.sSource ?? '', compare: (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }) },
+	};
+
+	// The grid track of each column, in the order the columns are laid out.
+	// The table scrolls sideways once the columns' smallest widths (in rem) no longer fit.
+	const TRACKS: [string, string, number][] = [
+		['id', 'minmax(8rem, 12rem)', 8],
+		['title', 'minmax(12rem, 1fr)', 12],
+		['where', 'minmax(7rem, 12rem)', 7],
+		['feature', 'minmax(7rem, 12rem)', 7],
+		['area', 'minmax(6rem, 10rem)', 6],
+		['severity', '5.5rem', 5.5],
+		['impact', '5.5rem', 5.5],
+		['cost', '5rem', 5],
+		['mitre', 'minmax(5rem, 8rem)', 5],
+		['control', 'minmax(6rem, 10rem)', 6],
+		['source', 'minmax(5rem, 9rem)', 5],
+	];
+	const COLUMNS_KEY = 'maester.catalog.columns';
+	const nextSort = (sort: string, key: string) => (sort === key ? `-${key}` : sort === `-${key}` ? '' : key);
+
 	class CatalogList extends HTMLElement {
 		expanded = new Set<string>();
+		listening?: AbortController;
+
+		disconnectedCallback() {
+			this.listening?.abort();
+		}
 
 		connectedCallback() {
 			const rowsBox = this.querySelector<HTMLElement>('[data-rows]')!;
@@ -212,6 +312,13 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			const total = rows.length;
 
 			for (const b of segButtons) b.addEventListener('click', () => update({ group: b.dataset.group === defaultGroup ? [] : [b.dataset.group!] }));
+			const sortButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-sort]')];
+			for (const b of sortButtons) {
+				b.addEventListener('click', () => {
+					const next = nextSort(readState().sort[0] ?? '', b.dataset.sort!);
+					update({ sort: next ? [next] : [] });
+				});
+			}
 			for (const tile of tiles) {
 				tile.addEventListener('click', () => {
 					const state = readState();
@@ -234,11 +341,88 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			});
 			this.querySelector('[data-clear]')?.addEventListener('click', () => {
 				const state = readState();
-				for (const name of FILTERS) if (name !== 'group') state[name] = [];
+				for (const name of FILTERS) if (!VIEW.includes(name)) state[name] = [];
 				writeState(state);
 			});
 
-			onState((state) => this.render(state, { rowsBox, rows, segButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
+			this.columns();
+
+			onState((state) => this.render(state, { table: this.querySelector<HTMLElement>('[data-table]')!, rowsBox, rows, segButtons, sortButtons, tiles, cmd, note, countEl, chips, empty, defaultGroup, scope, total }));
+		}
+
+		// Draws the list again without touching the URL: a column change is not part of the state a link carries.
+		refresh() {
+			window.dispatchEvent(new CustomEvent('mt-catalog', { detail: readState() }));
+		}
+
+		// The Columns menu: which optional columns the list shows, remembered by the reader's browser.
+		columns() {
+			const table = this.querySelector<HTMLElement>('[data-table]')!;
+			const menu = this.querySelector<HTMLDetailsElement>('[data-cols-menu]')!;
+			const boxes = [...this.querySelectorAll<HTMLInputElement>('[data-col-toggle]')];
+			const offered = boxes.map((b) => b.dataset.colToggle!);
+			const standard = (this.dataset.standardColumns ?? '').split(' ').filter(Boolean);
+			const apply = (keys: string[]) => {
+				const shown = ['id', 'title', ...keys];
+				table.dataset.show = keys.join(' ');
+				const tracks = TRACKS.filter(([k]) => shown.includes(k));
+				table.style.setProperty('--mt-cl-cols', tracks.map(([, w]) => w).join(' '));
+				// Each track's smallest width, the 1rem gaps between them and the row's 1rem padding on each side.
+				table.style.setProperty('--mt-cl-min', `${tracks.reduce((n, [, , min]) => n + min, 0) + tracks.length + 1}rem`);
+				for (const b of boxes) b.checked = keys.includes(b.dataset.colToggle!);
+			};
+			const save = (keys: string[]) => {
+				try {
+					localStorage.setItem(COLUMNS_KEY, JSON.stringify(keys));
+				} catch {
+					/* not remembered */
+				}
+			};
+			let saved: string[] | null = null;
+			try {
+				const value = JSON.parse(localStorage.getItem(COLUMNS_KEY) ?? 'null');
+				if (Array.isArray(value)) saved = value.filter((k) => typeof k === 'string');
+			} catch {
+				/* the standard columns */
+			}
+			// A column saved on another view that this one does not offer (Feature on a product's page) is skipped here.
+			apply(saved ? saved.filter((k) => offered.includes(k)) : standard);
+			for (const b of boxes) {
+				b.addEventListener('change', () => {
+					const keys = boxes.filter((x) => x.checked).map((x) => x.dataset.colToggle!);
+					const other = (saved ?? standard).filter((k) => !offered.includes(k));
+					saved = [...keys, ...other];
+					save(saved);
+					apply(keys);
+					this.refresh();
+				});
+			}
+			this.querySelector('[data-cols-reset]')?.addEventListener('click', () => {
+				saved = null;
+				try {
+					localStorage.removeItem(COLUMNS_KEY);
+				} catch {
+					/* nothing stored */
+				}
+				apply(standard);
+				this.refresh();
+			});
+			// Removed when the list leaves the page (disconnectedCallback), so a list that is put back adds it once.
+			this.listening?.abort();
+			this.listening = new AbortController();
+			document.addEventListener(
+				'click',
+				(e) => {
+					if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+				},
+				{ signal: this.listening.signal },
+			);
+			menu.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && menu.open) {
+					menu.open = false;
+					menu.querySelector('summary')?.focus();
+				}
+			});
 		}
 
 		matches(row: HTMLElement, s: State) {
@@ -246,7 +430,7 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		}
 
 		render(state: State, ui: any) {
-			const { rowsBox, rows, segButtons, tiles, countEl, empty, defaultGroup, total } = ui;
+			const { rowsBox, rows, segButtons, sortButtons, tiles, countEl, empty, defaultGroup, total } = ui;
 			const group = state.group[0] && segButtons.some((b: HTMLButtonElement) => b.dataset.group === state.group[0]) ? state.group[0] : defaultGroup;
 			for (const b of segButtons) b.setAttribute('aria-pressed', String(b.dataset.group === group));
 			for (const tile of tiles) {
@@ -254,7 +438,25 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 				tile.setAttribute('aria-pressed', String(on));
 			}
 
-			const shown = rows.filter((r: HTMLElement) => this.matches(r, state));
+			const shown: HTMLElement[] = rows.filter((r: HTMLElement) => this.matches(r, state));
+			const sort = state.sort[0] ?? '';
+			// A sort by a column the reader has hidden is ignored: the order would have no header to show it or undo it.
+			const sortKey = sort.replace(/^-/, '');
+			const sortShown = sortKey === 'id' || sortKey === 'title' || (ui.table.dataset.show ?? '').split(' ').includes(sortKey);
+			const column = sortShown ? SORTS[sortKey] : undefined;
+			for (const b of sortButtons as HTMLButtonElement[]) {
+				const dir = sort === b.dataset.sort ? 'asc' : sort === `-${b.dataset.sort}` ? 'desc' : '';
+				b.setAttribute('aria-pressed', String(Boolean(dir)));
+				b.querySelector('.mt-cl__sorti')!.textContent = dir === 'asc' ? '▲' : dir === 'desc' ? '▼' : '↕';
+			}
+			if (column) {
+				const dir = sort.startsWith('-') ? -1 : 1;
+				shown.sort((a, b) => {
+					const x = column.value(a);
+					const y = column.value(b);
+					return !x || !y ? Number(!x) - Number(!y) : dir * column.compare(x, y);
+				});
+			}
 			countEl.textContent = shown.length === total ? `${total.toLocaleString('en-US')} checks` : `${shown.length.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} checks`;
 			empty.hidden = shown.length > 0;
 
@@ -268,11 +470,16 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			}
 			// Ranked by Maester's own checks, so groups of community pack checks come last.
 			const own = (rows: HTMLElement[]) => rows.filter((r) => !r.hasAttribute('data-community')).length;
-			const ordered = [...buckets.entries()].sort((a, b) =>
-				group === 'severity'
-					? SEVERITIES.indexOf(a[0]) - SEVERITIES.indexOf(b[0])
-					: own(b[1].rows) - own(a[1].rows) || b[1].rows.length - a[1].rows.length || a[1].label.localeCompare(b[1].label),
-			);
+			// Sorted by the column the list is grouped by, the groups follow the sort: the rows are already in its order,
+			// checks without a value last.
+			const groupColumn: Record<string, string> = { product: 'where', feature: ui.scope === 'product' ? 'where' : 'feature', area: 'area', severity: 'severity', suite: 'source' };
+			const ordered = column && groupColumn[group] === sortKey
+				? [...buckets.entries()]
+				: [...buckets.entries()].sort((a, b) =>
+						group === 'severity'
+							? SEVERITIES.indexOf(a[0]) - SEVERITIES.indexOf(b[0])
+							: own(b[1].rows) - own(a[1].rows) || b[1].rows.length - a[1].rows.length || a[1].label.localeCompare(b[1].label),
+					);
 
 			rowsBox.querySelectorAll('.mt-cl__ghead, .mt-cl__more').forEach((el: Element) => el.remove());
 			const fragment = document.createDocumentFragment();
@@ -677,12 +884,17 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 	.mt-cl__table {
 		border: 1px solid var(--sl-color-gray-5);
 		border-radius: 12px;
-		overflow: hidden;
+		overflow-x: auto;
+	}
+	.mt-cl__table > .mt-cl__head,
+	.mt-cl__table > [data-rows],
+	.mt-cl__table > .mt-cl__empty {
+		min-width: var(--mt-cl-min, 0);
 	}
 	.mt-cl__head,
 	.mt-cl__row {
 		display: grid;
-		grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr) minmax(8rem, 13rem) 5.5rem;
+		grid-template-columns: var(--mt-cl-cols, minmax(8rem, 12rem) minmax(12rem, 1fr) minmax(7rem, 12rem) 5.5rem);
 		gap: 1rem;
 		align-items: center;
 		padding: 0.55rem 1rem;
@@ -695,6 +907,111 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: var(--sl-color-gray-3);
+	}
+	.mt-cl__table:not([data-show~='where']) [data-col='where'],
+	.mt-cl__table:not([data-show~='feature']) [data-col='feature'],
+	.mt-cl__table:not([data-show~='area']) [data-col='area'],
+	.mt-cl__table:not([data-show~='severity']) [data-col='severity'],
+	.mt-cl__table:not([data-show~='impact']) [data-col='impact'],
+	.mt-cl__table:not([data-show~='cost']) [data-col='cost'],
+	.mt-cl__table:not([data-show~='mitre']) [data-col='mitre'],
+	.mt-cl__table:not([data-show~='control']) [data-col='control'],
+	.mt-cl__table:not([data-show~='source']) [data-col='source'] {
+		display: none;
+	}
+	.mt-cl__cell {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 0.82rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-cl__codes {
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+	}
+	.mt-cl__cols {
+		position: relative;
+	}
+	.mt-cl__cols summary {
+		list-style: none;
+		cursor: pointer;
+		padding: 0.3rem 0.65rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 8px;
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-2);
+	}
+	.mt-cl__cols summary::-webkit-details-marker {
+		display: none;
+	}
+	.mt-cl__cols[open] summary,
+	.mt-cl__cols summary:hover {
+		color: var(--sl-color-white);
+		border-color: var(--sl-color-gray-3);
+	}
+	.mt-cl__colsbox {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 6px);
+		z-index: 20;
+		min-width: 11rem;
+		padding: 0.35rem;
+		background: var(--sl-color-bg);
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 10px;
+		box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+	}
+	.mt-cl__colsbox label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.3rem 0.5rem;
+		border-radius: 6px;
+		font-size: 0.82rem;
+		cursor: pointer;
+	}
+	.mt-cl__colsbox label:hover {
+		background: var(--sl-color-gray-6);
+	}
+	.mt-cl__colsbox button {
+		all: unset;
+		display: block;
+		margin-top: 0.25rem;
+		padding: 0.4rem 0.5rem 0.2rem;
+		border-top: 1px solid var(--sl-color-gray-6);
+		width: calc(100% - 1rem);
+		font-size: 0.75rem;
+		color: var(--sl-color-gray-3);
+		cursor: pointer;
+	}
+	.mt-cl__colsbox button:hover {
+		color: var(--sl-color-white);
+	}
+	.mt-cl__sort {
+		all: unset;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		cursor: pointer;
+		border-radius: 0.25rem;
+	}
+	.mt-cl__sort:hover,
+	.mt-cl__sort[aria-pressed='true'] {
+		color: var(--sl-color-white);
+	}
+	.mt-cl__sort:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+	.mt-cl__sorti {
+		font-size: 0.6rem;
+		opacity: 0.5;
+	}
+	.mt-cl__sort[aria-pressed='true'] .mt-cl__sorti,
+	.mt-cl__sort:hover .mt-cl__sorti {
+		opacity: 1;
 	}
 	.mt-cl__row {
 		border-bottom: 1px solid var(--sl-color-gray-6);
@@ -891,8 +1208,14 @@ const baseCommand = scope === 'product' ? `Invoke-Maester -Product ${value}` : s
 			grid-column: 1 / -1;
 			grid-row: 2;
 		}
-		.mt-cl__where {
+		.mt-cl__where,
+		.mt-cl__row [data-col]:not([data-col='severity']),
+		.mt-cl__cols {
 			display: none;
+		}
+		.mt-cl__table > .mt-cl__head,
+		.mt-cl__table > [data-rows] {
+			min-width: 0;
 		}
 		.mt-cl__seg {
 			margin-inline-start: 0;

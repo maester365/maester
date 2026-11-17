@@ -28,8 +28,13 @@
         # Fetch exactly this commit (Restore-MtPack), skipping release selection.
         [Parameter()] [string] $Commit,
         # The branch or tag the commit was installed from (the lock file's Ref), which it may be reachable from.
-        [Parameter()] [string] $CommitRef
+        [Parameter()] [string] $CommitRef,
+        # The -Token of the pack command, passed on to Invoke-MtPackGitHubRequest.
+        [Parameter()] [AllowNull()] [securestring] $Token
     )
+
+    $auth = @{}
+    if ($Token) { $auth.Token = $Token }
 
     # Staging is only a temporary copy to read, so it happens under -WhatIf too.
     $WhatIfPreference = $false
@@ -52,14 +57,14 @@
         }
         'GitHub' {
             if ($Commit) { $parsed.Ref = $Commit }
-            $resolved = Resolve-MtPackGitHubSource -Source $parsed -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $CooldownHours -ReachableFrom @($CommitRef | Where-Object { $_ })
+            $resolved = Resolve-MtPackGitHubSource @auth -Source $parsed -Version $Version -IncludeRecent:$IncludeRecent -CooldownHours $CooldownHours -ReachableFrom @($CommitRef | Where-Object { $_ })
             foreach ($p in $resolved.PSObject.Properties) { if ($candidate.Contains($p.Name)) { $candidate[$p.Name] = $p.Value } }
             $candidate.Source = "github.com/$($resolved.Owner)/$($resolved.Repo)$(if ($resolved.Folder) { "/$($resolved.Folder)" })"
             $staging = Join-Path ([System.IO.Path]::GetTempPath()) "maester-pack-$([guid]::NewGuid().ToString('n'))"
             $candidate.Staging = $staging
             $null = New-Item -Path $staging -ItemType Directory -Force
             $archive = Join-Path $staging 'archive.zip'
-            $null = Invoke-MtPackGitHubRequest -Path "repos/$($resolved.Owner)/$($resolved.Repo)/zipball/$($resolved.Commit)" -OutFile $archive
+            $null = Invoke-MtPackGitHubRequest @auth -Path "repos/$($resolved.Owner)/$($resolved.Repo)/zipball/$($resolved.Commit)" -OutFile $archive
             $root = Join-Path $staging 'pack'
             Expand-MtPackArchive -Archive $archive -Destination $root -Folder $resolved.Folder
             Remove-Item -LiteralPath $archive -Force
