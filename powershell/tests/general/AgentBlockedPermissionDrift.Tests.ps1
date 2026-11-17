@@ -33,6 +33,7 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
 
         $snapshot = Get-Content -LiteralPath $snapshotPath -Raw | ConvertFrom-Json
         $script:BlockedPermissions = $snapshot.Permissions
+        $script:SnapshotCount = $snapshot.Count
     }
 
     It 'Snapshot file should exist' {
@@ -45,8 +46,22 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
             'Get-MtEntraAgentHighRiskGraphPermission returned no permissions, so the drift check below would run nothing.'
     }
 
-    It 'Snapshot file should have at least 50 permissions' -Skip:($script:SnapshotMissing) {
-        $script:BlockedPermissions.Count | Should -BeGreaterOrEqual 50
+    # The generator stops on a broken table, so these check that the committed file is whole rather than its
+    # size: a fixed minimum here would fail CI on a real shrink by Microsoft that a reviewer had accepted.
+    It 'Snapshot should not be empty' -Skip:($script:SnapshotMissing) {
+        @($script:BlockedPermissions).Count | Should -BeGreaterThan 0 -Because `
+            'an empty snapshot would make every per-permission check below pass without checking anything.'
+    }
+
+    It 'Snapshot Count should match the number of permissions it lists' -Skip:($script:SnapshotMissing) {
+        $script:SnapshotCount | Should -Be @($script:BlockedPermissions).Count -Because `
+            'a mismatch means the file was edited by hand or written incompletely. Regenerate it with build/Update-MtAgentBlockedPermissions.ps1.'
+    }
+
+    It 'Snapshot should not list a permission twice' -Skip:($script:SnapshotMissing) {
+        $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        $duplicates = @($script:BlockedPermissions | Where-Object { -not $seen.Add([string]$_.Permission) } | ForEach-Object { $_.Permission })
+        $duplicates | Should -BeNullOrEmpty -Because 'the generator stops on a duplicate name, so one here means the file was edited by hand.'
     }
 
     It '<permission> should not be blocked for Application in the snapshot' -Skip:($script:SnapshotMissing) -ForEach @(

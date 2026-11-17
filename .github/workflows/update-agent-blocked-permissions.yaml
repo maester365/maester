@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "0 8 10 * *" # Monthly on the 10th at 08:00 UTC
   workflow_dispatch:
+    inputs:
+      allow_large_removal:
+        description: Accept more removed permissions than the script allows. Tick only after checking Microsoft's table.
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -14,6 +19,8 @@ concurrency:
 
 env:
   SNAPSHOT_PATH: powershell/internal/generated/AgentBlockedPermissions.json
+  FAILURE_LABEL: agent-blocked-permissions
+  FAILURE_TITLE: The agent blocked permissions snapshot could not be updated
 
 jobs:
   update-agent-blocked-permissions:
@@ -28,7 +35,12 @@ jobs:
 
       - name: Update agent blocked permissions snapshot
         shell: pwsh
-        run: ./build/Update-MtAgentBlockedPermissions.ps1 -Verbose
+        env:
+          ALLOW_LARGE_REMOVAL: ${{ inputs.allow_large_removal == true }}
+        run: |
+          $parameters = @{ Verbose = $true }
+          if ($env:ALLOW_LARGE_REMOVAL -eq 'true') { $parameters.AllowLargeRemoval = $true }
+          ./build/Update-MtAgentBlockedPermissions.ps1 @parameters
 
       - name: Summarize snapshot changes
         id: diff
@@ -113,8 +125,14 @@ jobs:
           title: "chore: update agent blocked permissions snapshot"
           body: |
             Refreshes `powershell/internal/generated/AgentBlockedPermissions.json` from
-            Microsoft's [agent identity platform overview](https://learn.microsoft.com/en-us/graph/api/resources/agentid-platform-overview)
+            Microsoft's [agent identity platform overview](https://learn.microsoft.com/graph/api/resources/agentid-platform-overview)
             documentation.
+
+            **Review the diff as data, not as a routine bump.** The source is `main` of
+            [microsoftgraph/microsoft-graph-docs-contrib](https://github.com/microsoftgraph/microsoft-graph-docs-contrib),
+            a public docs repository that takes community pull requests. `SourceSha256` shows the snapshot
+            matches the table that was downloaded; it does not show that the edit upstream was correct.
+            Check each added or removed permission against Microsoft's documentation before merging.
 
             Why this matters in Maester:
             - `AgentBlockedPermissionDrift.Tests.ps1` compares MT.1223's curated list of high-risk
@@ -128,7 +146,51 @@ jobs:
 
             Reviewer note:
             - **Newly blocked** permissions that overlap with MT.1223 need to be removed from
-              `Get-MtEntraAgentHighRiskGraphPermissionFinding` because agents can no longer hold them.
+              `Get-MtEntraAgentHighRiskGraphPermission` because agents can no longer hold them.
             - **Unblocked** permissions need a judgment call on whether they belong in MT.1223.
           labels: automation
+
+  # The update runs on a schedule and stops on purpose when Microsoft's table changes shape, so a failed run would
+  # otherwise go unnoticed while the drift test keeps passing against the old snapshot. Like eidsca-sync, one issue
+  # (labelled agent-blocked-permissions) stays open while runs fail and closes when a run succeeds. The snapshot keeps
+  # no timestamp, so an unchanged table still raises no pull request.
+  report-update-status:
+    needs: update-agent-blocked-permissions
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Open, update or close the failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RESULT: ${{ needs.update-agent-blocked-permissions.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          issue=$(gh issue list --label "$FAILURE_LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ "$RESULT" = "failure" ]; then
+            body=$(printf '%s\n' \
+              "The \`update-agent-blocked-permissions\` workflow failed, so \`$SNAPSHOT_PATH\` was not refreshed: $RUN_URL" \
+              "" \
+              "The drift test keeps passing against the old snapshot, so this issue is the signal that the snapshot is going stale." \
+              "" \
+              "The script stops on purpose when Microsoft's table no longer looks the way it expects: a renamed section, changed columns or symbols, a duplicate name, or more removed permissions than it allows in one update. Read the error in the run log and check the [source table](https://learn.microsoft.com/graph/api/resources/agentid-platform-overview). Then fix the script, or, if a large removal is real, run the workflow manually with **allow_large_removal** ticked." \
+              "" \
+              "This issue closes when a run succeeds.")
+            if [ -n "$issue" ]; then
+              gh issue comment "$issue" --body "$body"
+              echo "Commented on issue #$issue."
+            else
+              gh label create "$FAILURE_LABEL" --color d93f0b --description "The agent blocked permissions snapshot could not be updated" --force
+              url=$(gh issue create --title "$FAILURE_TITLE" --body "$body" --label "$FAILURE_LABEL")
+              echo "Opened issue ${url##*/}."
+            fi
+          elif [ "$RESULT" = "success" ] && [ -n "$issue" ]; then
+            gh issue close "$issue" --reason completed --comment "The snapshot update ran successfully again: $RUN_URL"
+            echo "Closed issue #$issue."
+          else
+            echo "Update job result: $RESULT. Nothing to report."
+          fi
 

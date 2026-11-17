@@ -22,8 +22,17 @@ param (
     # Raw URL of Microsoft's agent ID platform overview page.
     [string] $SourceUrl = 'https://raw.githubusercontent.com/microsoftgraph/microsoft-graph-docs-contrib/main/api-reference/v1.0/resources/agentid-platform-overview.md',
 
-    # Minimum expected row count. The table has 59 rows today.
-    [int] $MinimumRowCount = 50
+    # Fewest rows accepted when there is no earlier snapshot to compare with. The table has 59 rows today.
+    [int] $MinimumRowCount = 50,
+
+    # Most permissions that may drop out of the table in one update, as a percentage of the earlier snapshot.
+    # A larger drop is more likely a broken parse or a bad edit upstream than a real change, so the script
+    # stops. After checking Microsoft's table, run it again with -AllowLargeRemoval.
+    [ValidateRange(0, 100)]
+    [int] $MaximumRemovedPercent = 20,
+
+    # Accept more removals than -MaximumRemovedPercent allows. Use it only after checking Microsoft's table.
+    [switch] $AllowLargeRemoval
 )
 
 $ErrorActionPreference = 'Stop'
@@ -132,8 +141,35 @@ for ($i = $tableStartIndex + 2; $i -lt $lines.Count; $i++) {
 
 # --- Validate ---
 
-if ($permissions.Count -lt $MinimumRowCount) {
-    throw "Only $($permissions.Count) permissions parsed; expected at least $MinimumRowCount. The table format may have changed."
+# Compare with the snapshot already checked in. A fixed minimum stops a real shrink by Microsoft just as it
+# stops a broken parse, so the guard is relative to the earlier snapshot: too many permissions dropping out at
+# once stops the update. With no earlier snapshot (the first run), the fixed minimum still applies.
+$previousNames = @()
+if (Test-Path -LiteralPath $SnapshotPath) {
+    try {
+        $previousSnapshot = Get-Content -LiteralPath $SnapshotPath -Raw | ConvertFrom-Json
+    } catch {
+        throw "Could not read the existing snapshot at $SnapshotPath to compare with. $($_.Exception.Message)"
+    }
+    $previousNames = @($previousSnapshot.Permissions | ForEach-Object { [string]$_.Permission })
+}
+
+if ($previousNames.Count -eq 0) {
+    if ($permissions.Count -lt $MinimumRowCount) {
+        throw "Only $($permissions.Count) permissions parsed; expected at least $MinimumRowCount. The table format may have changed."
+    }
+} else {
+    $currentNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($p in $permissions) { [void]$currentNames.Add($p.Permission) }
+    $removedNames = @($previousNames | Where-Object { -not $currentNames.Contains($_) })
+    $allowedRemovals = [math]::Floor($previousNames.Count * $MaximumRemovedPercent / 100)
+    if ($removedNames.Count -gt $allowedRemovals -and -not $AllowLargeRemoval) {
+        throw ("$($removedNames.Count) of the $($previousNames.Count) permissions in the current snapshot are no longer in the table, " +
+            "more than the $allowedRemovals ($MaximumRemovedPercent%) allowed in one update. That is more likely a broken parse or a bad edit " +
+            "upstream than a real change. Check the source; if the removals are real, run again with -AllowLargeRemoval. " +
+            "No longer listed: $($removedNames -join ', ')")
+    }
+    Write-Verbose "$($removedNames.Count) permission(s) dropped out of the table since the last snapshot (at most $allowedRemovals allowed)."
 }
 
 # A name listed twice makes the snapshot ambiguous (which row's values apply?), and the ordinal
