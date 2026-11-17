@@ -5,7 +5,8 @@
     .DESCRIPTION
     Walks every commit that touched a *.Tests.ps1 file under tests/ (tests/Custom excluded), parses the
     It names of every changed file version with the PowerShell AST (regex fallback for files that do
-    not parse) and records every static test ID that ever shipped.
+    not parse) and records every static test ID that ever shipped. Current native test IDs, titles and
+    check functions are read from the current tests/ tree.
 
     The ID of an It name is the text before the first colon when that text has no spaces
     (for example 'MT.1001' or 'MS.AAD.7.1'). Early wrappers had no ID; for those the whole It name is
@@ -19,9 +20,11 @@
       function - the single check function called in the It body is called by exactly one current test
       retired  - nothing matched
 
-    The output is deterministic: GeneratedFrom is the last commit that touched the scanned test files,
-    and current IDs are read from that commit's tree, so rerunning on a later commit that does not touch
-    tests/ produces identical output.
+    A previous mapping is retained with its original rule when no new match is found and its target is
+    still a current ID.
+
+    Historical IDs are derived from git history. Current native test IDs and functions come from the
+    working tree, so the output is deterministic for the same history and current test files.
 
     .EXAMPLE
     ./build/golden/Export-MtLegacyIdTable.ps1
@@ -55,6 +58,8 @@ $ManualOverrides = [ordered]@{
     # Pre-colon names of the split checks; the current titles say 'Global Administrator' and both call one function.
     'MT.1050 Apps with high-risk permissions having a direct path to Global Admin'                                                = 'MT.1050'
     'MT.1051 Apps with high-risk permissions having an indirect path to Global Admin'                                             = 'MT.1051'
+    # This title matches both the CIS and Maester checks; preserve the historical Maester mapping.
+    'Ensure modern authentication for Exchange Online is enabled'                                                                  = 'MT.1044'
     # Mock-based unit tests that briefly lived under tests/; they were never security checks.
     'MFA for All users should pass even if not targeting guests'                                                                   = 'retired'
     'MFA for All users that excludes any guest type should fail'                                                                   = 'retired'
@@ -244,7 +249,7 @@ foreach ($commit in $commits) {
 }
 #endregion Scan history
 
-#region Current IDs (from the tree of $generatedFrom)
+#region Current IDs
 $currentIds = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
 $familyPrefixes = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
 $treeLines = Invoke-Git ls-tree -r $generatedFrom -- tests
@@ -261,7 +266,65 @@ foreach ($line in $treeLines) {
         $currentIds[$split.Id] = [pscustomobject]@{ Id = $split.Id; Title = (Get-NormalizedTitle $split.Title); Functions = $it.Functions; Path = $path }
     }
 }
+
+$testsRoot = Join-Path $RepoRoot 'tests'
+$customRoot = Join-Path $testsRoot 'Custom'
+$nativeTestFiles = Get-ChildItem -Path $testsRoot -Filter 'Test.*.ps1' -File -Recurse |
+    Where-Object { -not $_.FullName.StartsWith($customRoot, [System.StringComparison]::OrdinalIgnoreCase) }
+foreach ($nativeTestFile in $nativeTestFiles) {
+    $id = [System.IO.Path]::GetFileNameWithoutExtension($nativeTestFile.Name).Substring(5)
+    $tokens = $null
+    $parseErrors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($nativeTestFile.FullName, [ref] $tokens, [ref] $parseErrors)
+    if ($parseErrors.Count -gt 0) {
+        throw "Failed to parse native test '$($nativeTestFile.FullName)': $($parseErrors[0].Message)"
+    }
+    $functionAsts = @($ast.FindAll({
+                param($node)
+                $node -is [System.Management.Automation.Language.FunctionDefinitionAst]
+            }, $false))
+    $functions = @($functionAsts | ForEach-Object { $_.Name } |
+            Where-Object { $_ -like 'Test-*' -and $_ -notin $IgnoredFunctions } | Sort-Object -Unique)
+    $testFunctions = @($functionAsts | Where-Object {
+            $_.Body.ParamBlock -and ($_.Body.ParamBlock.Attributes | Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' })
+        })
+    if ($testFunctions.Count -ne 1) {
+        throw "Expected one function with a [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
+
+    $attribute = $testFunctions[0].Body.ParamBlock.Attributes |
+        Where-Object { $_.TypeName.Name -in 'MaesterTest', 'MaesterTestAttribute' } |
+        Select-Object -First 1
+    $titleArgument = $attribute.NamedArguments |
+        Where-Object { $_.ArgumentName -eq 'Title' } |
+        Select-Object -First 1
+    if (-not $titleArgument) {
+        throw "Missing Title in the [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
+    $titleExpression = $titleArgument.Argument
+    $title = if ($titleExpression -is [System.Management.Automation.Language.StringConstantExpressionAst]) {
+        $titleExpression.Value
+    } elseif (
+        $titleExpression -is [System.Management.Automation.Language.ExpandableStringExpressionAst] -and
+        $titleExpression.NestedExpressions.Count -eq 0
+    ) {
+        $titleExpression.Value
+    } else {
+        throw "Title must be a constant string in the [MaesterTest] attribute in '$($nativeTestFile.FullName)'."
+    }
+    $currentIds[$id] = [pscustomobject]@{
+        Id = $id; Title = (Get-NormalizedTitle $title); Functions = $functions; Path = $nativeTestFile.FullName
+    }
+}
 Write-Verbose "Current static IDs: $($currentIds.Count); family prefixes: $($familyPrefixes -join ', ')"
+
+$previousEntries = @{}
+if (Test-Path -Path $OutputPath) {
+    $previousTable = [System.IO.File]::ReadAllText($OutputPath) | ConvertFrom-Json
+    foreach ($entry in $previousTable.Entries) {
+        $previousEntries[$entry.LegacyId] = $entry
+    }
+}
 
 $titleIndex = @{}
 $functionIndex = @{}
@@ -321,6 +384,16 @@ foreach ($record in $history.Values) {
         $currentId = @($functionCandidates)[0]; $rule = 'function'
     } elseif ($functionCandidates.Count -gt 1) {
         $review.Add("AMBIGUOUS $($record.Id): function -> $($functionCandidates -join '|')")
+    }
+
+    if ($previousEntries.ContainsKey($record.Id)) {
+        $previous = $previousEntries[$record.Id]
+        if ($currentId -eq 'retired' -and $previous.CurrentId -ne 'retired' -and $currentIds.ContainsKey($previous.CurrentId)) {
+            $currentId = $currentIds[$previous.CurrentId].Id
+            $rule = $previous.Rule
+        } elseif ($currentId -eq $previous.CurrentId) {
+            $rule = $previous.Rule
+        }
     }
 
     if ($currentId -ne 'retired' -and -not $currentIds.ContainsKey($currentId)) {

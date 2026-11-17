@@ -18,10 +18,13 @@ Regenerate it after a change to `tests/` that renames or removes a check:
   script), `prefix` (known prefix renames such as `MS.` to `CISA.MS.`), `title`
   (same normalised title), `function` (same single `Test-*` function called),
   otherwise `retired`.
+- If no new match is found, the exporter retains a previous mapping only when its
+  target is still a current built-in ID.
 - `-Verbose` prints counts by rule and a `REVIEW` line for each ambiguous, conflicting
   or title-only match. Resolve ambiguous ones by adding them to `$ManualOverrides`.
-- `GeneratedFrom` is the last commit that touched the scanned test files, so the
-  output only changes when `tests/` changes.
+- `GeneratedFrom` is the last commit that touched historical `*.Tests.ps1`
+  files. Current native test IDs, titles and functions are read from the working
+  tree, so run the exporter after renaming or removing a native check as well.
 - `powershell/tests/general/LegacyIds.Tests.ps1` checks that no legacy ID is a current ID
   and that every target ID still exists. If it fails after you rename or remove a
   check, regenerate the table.

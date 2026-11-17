@@ -336,7 +336,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
     It 'Gives every <Prefix> test a Benchmark of <Label>, from the first Control of the test' -ForEach @(
         @{ Prefix = 'CIS.M365.'; Label = 'cis-m365'; Framework = 'cis-m365'; Version = '7.0.0'; Count = 144 }
         @{ Prefix = 'CIS.GH.'; Label = 'cis-github'; Framework = 'cis-github'; Version = '1.2.0'; Count = 5 }
-        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 79 }
+        @{ Prefix = 'CISA.'; Label = 'cisa-scuba'; Framework = 'cisa-scuba'; Version = $null; Count = 78 }
         @{ Prefix = 'ASD.'; Label = 'essential-eight or ism'; Framework = @('essential-eight', 'ism'); Version = $null; Count = 14 }
         @{ Prefix = 'DISA.'; Label = 'a DISA STIG'; Framework = @('disa-stig-entra-id', 'disa-stig-intune-mdm', 'disa-stig-intune-desktop'); Version = $null; Count = 19 }
     ) {
@@ -380,7 +380,7 @@ Describe 'Benchmark of the tests shipped with Maester' {
 
         $cisa = @($script:builtIn | Where-Object { $_.Id -like 'CISA.*' })
         @($cisa | Where-Object { $_.Benchmark.Criticality -cnotin 'SHALL', 'SHOULD' -or $_.Benchmark.Upstream.Status -cnotin 'Current', 'Moved', 'Removed', 'NotFound' } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($cisa | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 70
         @($cisa | ForEach-Object { $_.Control } | Where-Object { $_ -cnotlike 'nist-800-53-r5:*' -and $_ -cnotlike 'cisa-scuba:*' }) | Should -BeNullOrEmpty
     }
 
@@ -524,9 +524,9 @@ Describe 'Benchmark and Control on result rows' {
     It 'Gives the rows of the CISA suite their Benchmark and the NIST SP 800-53 controls without a tenant' {
         $run = Get-Run 'Cisa'
         $rows = @($run.Tests | Where-Object Suite -EQ 'CISA')
-        $rows.Count | Should -Be 79
+        $rows.Count | Should -Be 78
         @($rows | Where-Object { $_.Benchmark.Framework -cne 'cisa-scuba' -or -not $_.Benchmark.Criticality } | ForEach-Object Id) | Should -BeNullOrEmpty
-        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 71
+        @($rows | Where-Object { @($_.Control).Count -gt 1 }).Count | Should -Be 70
         $row = $rows | Where-Object Id -EQ 'CISA.MS.AAD.3.1'
         $row.Benchmark.Requirement | Should -BeExactly 'MS.AAD.3.1'
         $row.Benchmark.Upstream.Id | Should -Be 'MS.AAD.3.1v1'
