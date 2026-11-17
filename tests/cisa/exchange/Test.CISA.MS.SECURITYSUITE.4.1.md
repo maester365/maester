@@ -7,6 +7,8 @@ At a minimum, the following alerts SHALL be enabled:
 - Tenant restricted from sending email.
 - A potentially malicious URL click was detected.
 
+The check always requires the six baseline alerts listed above. It also checks **A potentially malicious URL click was detected** when that alert is returned by `Get-ProtectionAlert`; ScubaGear likewise includes it only when the alert is present.
+
 Rationale: Potentially malicious or service impacting events may go undetected without a means of detecting these events. Setting up a mechanism to alert administrators to events listed above draws attention to them to help minimize impact to users and the agency.
 
 #### Remediation action:
@@ -14,22 +16,22 @@ Rationale: Potentially malicious or service impacting events may go undetected w
 1. Sign in to **Microsoft 365 Defender**.
 2. Under **Email & collaboration**, select **Policies & rules**.
 3. Select [**Alert Policy**](https://security.microsoft.com/alertpoliciesv2).
-4. Select the checkbox next to each alert to enable as determined by the agency and at a minimum those referenced in the [CISA M365 Security Configuration Baseline for Exchange Online](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo161v1) which are:
+4. Select the checkbox next to each alert to enable as determined by the agency and at a minimum those referenced in the [CISA Security Suite baseline](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite41v1), which are:
     - Suspicious email sending patterns detected.
     - Suspicious connector activity.
     - Suspicious Email Forwarding Activity.
     - Messages have been delayed.
     - Tenant restricted from sending unprovisioned email.
     - Tenant restricted from sending email.
-    - A potentially malicious URL click was detected.
+    - A potentially malicious URL click was detected, if returned by Exchange Online.
 5. Click the pencil icon from the top menu.
 6. Select the **Enable selected policies** action from the **Bulk actions** menu.
 
 #### Related links
 
 * [Defender admin center - Alert policy](https://security.microsoft.com/alertpoliciesv2)
-* [CISA 16 Alerts - MS.EXO.16.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo161v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L863)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.4.1v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite41v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%

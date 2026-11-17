@@ -1,4 +1,4 @@
-Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.
+The alerts SHOULD be sent to a monitored address or incorporated into a Security Information and Event Management (SIEM).
 
 Rationale: Suspicious or malicious events, if not resolved promptly, may have a greater impact to users and the agency. Sending alerts to a monitored email address or SIEM system helps ensure these suspicious or malicious events are acted upon in a timely manner to limit overall impact.
 
@@ -16,8 +16,8 @@ Rationale: Suspicious or malicious events, if not resolved promptly, may have a 
 * [Defender admin center - Alert policy](https://security.microsoft.com/alertpoliciesv2)
 * [Defender admin center - Streaming API](https://security.microsoft.com/securitysettings/defender/raw_data_export)
 * [Defender admin center - Sentinel workspaces](https://security.microsoft.com/sentinel/settings)
-* [CISA 16 Alerts - MS.EXO.16.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo162v1)
-* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L878)
+* [CISA Security Suite baseline - MS.SECURITYSUITE.4.2v1](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/baselines/securitysuite.md#mssecuritysuite42v1)
+* [CISA ScubaGear Security Suite implementation](https://github.com/cisagov/ScubaGear/blob/92e5f2e361e433554f72d38180d11210deb640dc/PowerShell/ScubaGear/Rego/SecuritySuiteConfig.rego)
 
 <!--- Results --->
 %TestResult%
