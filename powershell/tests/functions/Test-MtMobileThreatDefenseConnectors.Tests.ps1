@@ -63,6 +63,35 @@ Describe 'Test-MtMobileThreatDefenseConnectors' {
         $script:Result | Should -BeLike '*No heartbeat has been received*'
     }
 
+    It 'Asks for a MAM enrolment instead of more setup when Windows MAM is already on' {
+        # Measured in #2595: with the toggle on, the connector still reports notSetUp and no
+        # heartbeat until the first Windows MAM user enrols. The verdict must not move.
+        $script:Connector.partnerState = 'notSetUp'
+        $script:Connector.lastHeartbeatDateTime = '0001-01-01T00:00:00Z'
+        $script:Connector | Add-Member -NotePropertyName windowsMobileApplicationManagementEnabled -NotePropertyValue $true
+
+        Test-MtMobileThreatDefenseConnectors | Should -BeFalse
+        $script:Result | Should -BeLike '*first Windows MAM user enrols*'
+        $script:Result | Should -BeLike '*device threat messages are blocked*'
+        $script:Result | Should -Not -BeLike '*verify that the partner can communicate with Intune*'
+        $script:Result | Should -Not -BeLike '*Complete setup in Intune and with the partner*'
+    }
+
+    It 'Keeps the generic setup reason when <Case>' -ForEach @(
+        @{ Case = 'Windows MAM is off'; Id = 'c2b688fe-48c0-464b-a89c-67041aa8fcb2'; MamEnabled = $false }
+        @{ Case = 'another connector has MAM on'; Id = 'fc780465-2017-40d4-a0c5-307022471b92'; MamEnabled = $true }
+    ) {
+        # Both guards matter: the reason is anchored on this connector's ID and on its own toggle,
+        # so neither one alone can swallow the generic explanation.
+        $script:Connector.id = $Id
+        $script:Connector.partnerState = 'notSetUp'
+        $script:Connector | Add-Member -NotePropertyName windowsMobileApplicationManagementEnabled -NotePropertyValue $MamEnabled
+
+        Test-MtMobileThreatDefenseConnectors | Should -BeFalse
+        $script:Result | Should -BeLike '*Complete setup in Intune and with the partner*'
+        $script:Result | Should -Not -BeLike '*first Windows MAM user enrols*'
+    }
+
     It 'Explains a stale heartbeat' {
         $script:Connector.lastHeartbeatDateTime = '2026-11-05T12:00:00Z'
 
@@ -152,6 +181,23 @@ Describe 'MT.1098 native engine results' {
         $rows | Should -HaveCount 1
         $rows[0].Result | Should -Be 'Failed'
         $rows[0].ResultDetail.TestResult | Should -BeLike '*Setup is incomplete*'
+        $rows[0].ResultDetail.TestResult | Should -BeLike '*Never received*'
+    }
+
+    It 'Records the Windows MAM wait as Failed with the enrolment reason through the engine' {
+        Mock -ModuleName Maester Invoke-MtGraphRequest {
+            [pscustomobject]@{
+                id = 'c2b688fe-48c0-464b-a89c-67041aa8fcb2'
+                partnerState = 'notSetUp'
+                lastHeartbeatDateTime = '0001-01-01T00:00:00Z'
+                windowsMobileApplicationManagementEnabled = $true
+            }
+        }
+
+        $rows = @(Invoke-MtTest -Id 'MT.1098' -Config $script:config)
+        $rows | Should -HaveCount 1
+        $rows[0].Result | Should -Be 'Failed'
+        $rows[0].ResultDetail.TestResult | Should -BeLike '*first Windows MAM user enrols*'
         $rows[0].ResultDetail.TestResult | Should -BeLike '*Never received*'
     }
 
