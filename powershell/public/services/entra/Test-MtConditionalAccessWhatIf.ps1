@@ -7,6 +7,10 @@
     This function tests a Conditional Access evaluation with What If for a given scenario.
 
     The function uses the Microsoft Graph API to evaluate the Conditional Access policies.
+    Evaluated plan rules are matched by rule ID to the cached plan inventory and annotated with planId,
+    planDisplayName and sourceType for reporting. All evaluation fields and filtering are preserved.
+    Reading plans requires a supported delegated Entra role (Conditional Access Administrator or an appropriate
+    custom role) in addition to the Graph read permission. A failed plan read terminates the operation.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
@@ -216,6 +220,30 @@
             # Filter out policies that do not apply
             if (!$AllResults) {
                 $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }
+            }
+            if ($ConditionalAccessWhatIfResult) {
+                # Match IDs, never names: evaluation results do not identify the parent plan.
+                $planByRuleId = @{}
+                foreach ($plan in @(Get-MtConditionalAccessPolicyPlan -ErrorAction Stop)) {
+                    foreach ($rule in @($plan.rules)) {
+                        if ($rule.id) { $planByRuleId[[string]$rule.id] = $plan }
+                    }
+                }
+                $ConditionalAccessWhatIfResult = foreach ($policy in $ConditionalAccessWhatIfResult) {
+                    $plan = $planByRuleId[[string]$policy.id]
+                    if ($plan) {
+                        # Annotate a copy so the original evaluation response is not changed.
+                        $copy = $policy | Select-Object *
+                        $copy | Add-Member -NotePropertyMembers @{
+                            planId = $plan.id
+                            planDisplayName = $plan.displayName
+                            sourceType = 'PolicyPlanRule'
+                        } -Force
+                        $copy
+                    } else {
+                        $policy
+                    }
+                }
             }
             return $ConditionalAccessWhatIfResult
         } catch {

@@ -9,6 +9,7 @@
         'powershell/internal/services/graph/Invoke-MtGraphRequestCache.ps1'
         'powershell/internal/services/entra/Get-MtDirectoryRoleAssignment.ps1'
         'powershell/public/services/entra/Get-MtConditionalAccessPolicy.ps1'
+        'powershell/public/services/entra/Get-MtConditionalAccessPolicyPlan.ps1'
         'powershell/internal/services/global-secure-access/Get-MtPrivateAccessApplication.ps1'
         'powershell/internal/services/defender/Get-MdeConfiguration.ps1'
         'powershell/internal/services/github/Invoke-MtGitHubRequest.ps1'

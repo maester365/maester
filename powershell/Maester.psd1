@@ -86,6 +86,7 @@
         'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup',
         'Get-MtConditionalAccessPolicy',
+        'Get-MtConditionalAccessPolicyPlan',
         'Get-MtConnectionState',
         'Get-MtConnector',
         'Get-MtExo',

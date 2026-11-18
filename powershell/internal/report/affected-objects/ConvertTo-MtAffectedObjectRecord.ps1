@@ -30,6 +30,7 @@
     # Get-MtAffectedObjectFromMarkdown so records from both sources dedupe correctly.
     $canonicalType = @{
         ConditionalAccess = 'ConditionalAccessPolicy'
+        ConditionalAccessPlan = 'ConditionalAccessPolicyPlan'
         Users             = 'User'
         UserRole          = 'User'
         Groups            = 'Group'
@@ -67,12 +68,13 @@
             $type = $objectTypeAlias[$type]
         }
 
+        $isPlanRule = (Get-ObjectProperty $item 'sourceType') -eq 'PolicyPlanRule' -and (Get-ObjectProperty $item 'planId')
         $portalLink = $null
         if ($type -and $portalLinkTemplate.LinkTemplates.ContainsKey($type)) {
             $template = $portalLinkTemplate.LinkTemplates[$type]
             # A per-object template without the id would open a broken blade.
             if ($id -or -not $template.Contains('{0}')) {
-                $portalLink = $template -f $id
+                $portalLink = if ($isPlanRule) { $portalLinkTemplate.LinkTemplates.ConditionalAccessPlan -f $item.planId } else { $template -f $id }
             }
         }
 
@@ -90,7 +92,8 @@
         [PSCustomObject]@{
             System            = 'EntraID'
             AnchorKind        = $anchorKind
-            Type              = if ($type -and $canonicalType.ContainsKey($type)) { $canonicalType[$type] }
+            Type              = if ($isPlanRule) { 'ConditionalAccessPolicyRule' }
+            elseif ($type -and $canonicalType.ContainsKey($type)) { $canonicalType[$type] }
             elseif ($type) { $type }
             elseif ($odataType -and $odataObjectType.ContainsKey($odataType)) { $odataObjectType[$odataType] }
             elseif ($odataType) { $odataType }

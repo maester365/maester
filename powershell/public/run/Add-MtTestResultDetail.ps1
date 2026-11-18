@@ -58,7 +58,7 @@
         [Object[]] $GraphObjects,
 
         # The type of graph object, this will be used to show the right deep-link to the test results report.
-        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
+        [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConditionalAccessPlan', 'ConsentPolicy',
             'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
         )]
         [string] $GraphObjectType,

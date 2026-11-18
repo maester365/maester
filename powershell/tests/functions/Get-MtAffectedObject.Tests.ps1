@@ -190,11 +190,7 @@ Describe 'Affected objects' {
             # literal backslash on the affected-objects page. This drives the whole set through
             # both sides rather than naming a few characters, so adding one to the helper without
             # adding it here fails this case instead of reaching the page.
-            # Every character Get-MtSafeMarkdown escapes, except '[' and ']'. Those two are left out
-            # for a reason that is not the unescape pattern: $linkPattern admits at most one level of
-            # brackets in a name, so an escaped bracket breaks the link match before the unescape is
-            # ever reached. That is a pre-existing limit of the link pattern and is unchanged here.
-            $chars = @('\', '`', '*', '_', '(', ')', '!', '|', '<', '>', '~', ':', '@')
+            $chars = @('\', '`', '*', '_', '[', ']', '(', ')', '!', '|', '<', '>', '~', ':', '@')
             foreach ($c in $chars) {
                 $nombre = InModuleScope Maester -Parameters @{ C = $c } {
                     param($C)
@@ -1299,5 +1295,30 @@ Describe 'Affected objects' {
 
             $redacted | Should -Be 'object-b and object-a'
         }
+    }
+}
+
+Describe 'Conditional Access plan affected objects' {
+    It 'Keeps a rule identity while linking to its parent plan' {
+        $record = InModuleScope Maester {
+            ConvertTo-MtAffectedObjectRecord -GraphObjectType ConditionalAccess -GraphObjects ([pscustomobject]@{
+                id = '11111111-1111-1111-1111-111111111111'
+                displayName = 'Rule'
+                planId = '22222222-2222-2222-2222-222222222222'
+                sourceType = 'PolicyPlanRule'
+            })
+        }
+        $record.Type | Should -Be ConditionalAccessPolicyRule
+        $record.Id | Should -Be '11111111-1111-1111-1111-111111111111'
+        $record.AnchorKind | Should -Be Instance
+        $record.PortalLink | Should -BeLike '*PolicyPlanView.ReactView/planId/22222222-2222-2222-2222-222222222222'
+    }
+
+    It 'Recognizes a plan deep link in existing Markdown reports' {
+        $record = InModuleScope Maester {
+            Get-MtAffectedObjectFromMarkdown -Markdown '[Plan](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyPlanView.ReactView/planId/22222222-2222-2222-2222-222222222222)'
+        }
+        $record.Type | Should -Be ConditionalAccessPolicyPlan
+        $record.Id | Should -Be '22222222-2222-2222-2222-222222222222'
     }
 }
