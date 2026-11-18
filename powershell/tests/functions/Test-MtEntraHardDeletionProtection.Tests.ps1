@@ -53,7 +53,7 @@
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeNullOrEmpty
             $State.Investigate | Should -BeTrue
             $State.Detail | Should -Match 'verified manually'
-            $State.Detail | Should -Match 'No object in Microsoft Entra has Hard Deletion Protection yet'
+            $State.Detail | Should -Match 'The scan did not find any objects with Hard Deletion Protection'
         }
 
         It 'is Investigate and lists the protected objects it finds' {
@@ -172,14 +172,47 @@
             $State.Detail | Should -Match 'Group \| 22222222-2222-2222-2222-222222222222 \|  \| Not found'
         }
 
-        It 'rejects an Id that is not a GUID before it calls Graph' {
+        It 'rejects an Id that is not a GUID without calling Graph' {
+            InModuleScope Maester {
+                $Entry = [pscustomobject]@{ Type = 'User'; Id = 'admin@contoso.com' }
+                { Get-MtEntraHardDeletionObjectStatus -Configured $Entry } |
+                    Should -Throw '*Id must be the object ID (a GUID)*'
+            }
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 0 -Exactly
+        }
+
+        It 'fails the check with an error that names the entry when an Id is not a GUID' {
             $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = 'admin@contoso.com' })
 
             { Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed } |
-                Should -Throw '*Id must be the object ID (a GUID)*'
-            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 0 -Exactly -ParameterFilter {
-                $RelativeUri -like 'users/*'
+                Should -Throw "*Id 'admin@contoso.com'*"
+        }
+
+        It 'keeps a display name with line breaks in one table cell' {
+            $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
+            $State.ObjectById[$script:UserId] = [pscustomobject]@{
+                id = $script:UserId; displayName = "Ops`r`nTeam`nLead"; isHardDeleteProtectionEnabled = $null
             }
+
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
+            $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Ops Team Lead \| Not protected'
+        }
+
+        It 'counts an entry that is listed more than once as one object' {
+            $State.Listed = @(
+                [pscustomobject]@{ Type = 'User'; Id = $script:UserId }
+                [pscustomobject]@{ Type = 'user'; Id = $script:UserId.ToUpperInvariant() }
+                [pscustomobject]@{ Type = 'User'; Id = "{$($script:UserId)}" }
+                [pscustomobject]@{ Type = 'Group'; Id = $script:GroupId }
+            )
+            $State.ObjectById[$script:UserId] = [pscustomobject]@{
+                id = $script:UserId; displayName = 'Plain user'; isHardDeleteProtectionEnabled = $null
+            }
+
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
+            $State.Detail | Should -Match '2 of 2 listed object\(s\)'
+            [regex]::Matches($State.Detail, '\| User \|').Count | Should -Be 1
+            $State.Detail | Should -Match 'Group \| 22222222-2222-2222-2222-222222222222 \|  \| Not found'
         }
 
         It 'uses the canonical lower-case form of the Id in the request and in the result' {

@@ -42,7 +42,8 @@
 
     $Table = "| Type | Object ID | Display name | $StateHeading |`n| --- | --- | --- | --- |"
     foreach ($Row in @($InputObject | Select-Object -First $Limit)) {
-        $DisplayName = [System.Net.WebUtility]::HtmlEncode([string]$Row.DisplayName) -replace '\|', '&#124;'
+        $DisplayName = [string]$Row.DisplayName -replace '\r\n|\r|\n', ' '
+        $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
         $Table += "`n| $($Row.Type) | $($Row.Id) | $DisplayName | $($Row.$StateProperty) |"
     }
     if (@($InputObject).Count -gt $Limit) {

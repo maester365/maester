@@ -43,12 +43,12 @@ Hard Deletion Protection objects are configured in the `GlobalSettings` section 
 ```json
 {
   "GlobalSettings": {
-    "HardDeletionProtectedObjects": [
-      // The critical objects that must be protected
-    ]
+    "HardDeletionProtectedObjects": []
   }
 }
 ```
+
+An empty list is the default. Add one entry per critical object, as in the examples below.
 
 ### Supported Parameters
 

@@ -15,7 +15,7 @@
     Hard Deletion Protection is in preview and the property is only available in Microsoft Graph beta.
 
     .EXAMPLE
-    Test-MtEntraHardDeletionProtection
+    Invoke-Maester -TestId MT.1276 -IncludePreview
 
     .LINK
     https://maester.dev/docs/tests/MT.1276
@@ -54,7 +54,7 @@
                 "Add the ones that matter to the config so this test can check them:`n`n"
             $Result += Format-MtEntraHardDeletionTable -InputObject $Protected -StateProperty State -StateHeading State
         } else {
-            $Result += 'No object in Microsoft Entra has Hard Deletion Protection yet. Add the critical users, ' +
+            $Result += 'The scan did not find any objects with Hard Deletion Protection. Add the critical users, ' +
                 'groups, applications and service principals to protect to GlobalSettings.' +
                 'HardDeletionProtectedObjects, then enable protection on them. See ' +
                 'https://maester.dev/docs/configuration/hard-deletion-protection for the format.'
@@ -63,13 +63,17 @@
         return $null
     }
 
+    $ListedKeys = @{}
     $Rows = @(
         foreach ($Configured in $ConfiguredObjects) {
-            Get-MtEntraHardDeletionObjectStatus -Configured $Configured
+            $Row = Get-MtEntraHardDeletionObjectStatus -Configured $Configured
+            $Key = "$($Row.Type)|$($Row.Id)"
+            if (-not $ListedKeys.ContainsKey($Key)) {
+                $ListedKeys[$Key] = $true
+                $Row
+            }
         }
     )
-    $ListedKeys = @{}
-    foreach ($Row in $Rows) { $ListedKeys["$($Row.Type)|$($Row.Id)"] = $true }
     $Unlisted = @($Protected | Where-Object { -not $ListedKeys.ContainsKey("$($_.Type)|$($_.Id)") })
     $UnlistedTable = if ($Unlisted.Count -gt 0) {
         "`n`n$($Unlisted.Count) other object(s) have Hard Deletion Protection in Microsoft Entra but are not " +
