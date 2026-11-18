@@ -11,7 +11,7 @@ Hard Deletion Protection (preview) is a Microsoft Entra feature that stops a pro
 Maester includes tests that check the objects you list in the Maester configuration against their Hard Deletion Protection setting in Microsoft Entra.
 
 :::caution
-Protection is **permanent**. Once enabled on an object it cannot be removed. If you enable it by mistake, soft delete the object and wait seven days before you permanently delete it. Microsoft intends the feature for selected critical objects, not for every object in the tenant.
+Protection is **permanent**. Once enabled on an object it cannot be removed, and soft deleting the object does not undo it. Soft delete an object that you protected by mistake only if you want to retire it: it stops working while it is deleted, you can restore it for up to 30 days, and you can permanently delete it seven days after the soft delete. Microsoft intends the feature for selected critical objects, not for every object in the tenant.
 :::
 
 ## How Hard Deletion Protection Works
@@ -97,6 +97,8 @@ The result lists at most 25 objects in each table and gives the total when there
 - **State** in the table of protected objects that are not in the configuration, which is also the table you get when nothing is listed. It is `Active` or `Soft deleted`, and `Active or soft deleted` when the two reads of the run disagree about an object, for example because it was deleted between them. The result does not say which read is newer.
 
 A failed result also lists the protected objects that are not in the configuration, so you can see both gaps at once.
+
+The scan for protected objects reads the active and the deleted objects one after the other, so it is not a snapshot. An object that is soft deleted or restored while the scan runs can be listed twice (shown once, with the state `Active or soft deleted`), or be missed. If an object you expect is missing from a table, run the test again.
 
 ## Which Objects to Protect
 
