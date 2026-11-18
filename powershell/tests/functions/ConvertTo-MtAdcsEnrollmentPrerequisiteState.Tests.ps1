@@ -231,12 +231,14 @@ Describe 'AD-CS-01 native engine outcomes' {
         $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
         $row.Result.ToString() | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'NotApplicable'
+        $row.ResultDetail.TestResult.Trim() | Should -Be 'Skipped. The completed AD CS inventory contains no published certificate templates.'
     }
     It 'uses NotApplicable when an existing CA has an observed null publication list' {
         $script:adcsConfiguration.EnterpriseCAs[0].certificateTemplates = $null
         $row = Invoke-MtTest -Id AD-CS-01 -Config $script:adcsRunConfig
         $row.Result.ToString() | Should -Be 'Skipped'
         $row.ReasonCode | Should -Be 'NotApplicable'
+        $row.ResultDetail.TestResult.Trim() | Should -Be 'Skipped. The completed AD CS inventory contains no published certificate templates.'
     }
     It 'escapes directory-controlled names without changing table columns or rendering HTML' {
         $name = "Template | <img src=x> `$&`nnext"

@@ -35,7 +35,8 @@
         return $false
     }
     if ($state.PublishedTemplateCount -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause NotApplicable -SkippedCustomReason 'The completed AD CS inventory contains no published certificate templates.'
+        Add-MtTestResultDetail -SkippedBecause NotApplicable -Result 'Skipped. The completed AD CS inventory contains no published certificate templates.'
+        return
     }
     $candidates = @($state.Templates | Where-Object Disposition -IN 'PotentiallyEligible', 'Inconclusive')
     if ($candidates.Count -eq 0) {
