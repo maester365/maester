@@ -13,12 +13,12 @@
         $State = @{
             Detail = $null; Investigate = $false; Listed = @(); Protected = @{}; ObjectById = @{}; DeletedById = @{}
         }
-        $NotFoundError = [System.Exception]::new('NotFound (Not Found).')
-        $NotFoundError | Add-Member -NotePropertyName Response -NotePropertyValue (
-            [pscustomobject]@{ StatusCode = [System.Net.HttpStatusCode]::NotFound }
+        # The exception Invoke-MtGraphRequest lets through for a single request that Graph answers with 404.
+        $NotFoundError = [Microsoft.PowerShell.Commands.HttpResponseException]::new(
+            'Response status code does not indicate success: NotFound (Not Found).',
+            [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::NotFound)
         )
 
-        Mock -ModuleName Maester Get-MtSetting -MockWith { return $State.Listed }.GetNewClosure()
         Mock -ModuleName Maester Add-MtTestResultDetail -MockWith {
             param($Result, [switch] $Investigate)
             $State.Detail = $Result
@@ -50,7 +50,7 @@
 
     Context 'No objects are listed' {
         It 'is Investigate and says nothing is protected yet' {
-            Test-MtEntraHardDeletionProtection | Should -BeNullOrEmpty
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeNullOrEmpty
             $State.Investigate | Should -BeTrue
             $State.Detail | Should -Match 'verified manually'
             $State.Detail | Should -Match 'No object in Microsoft Entra has Hard Deletion Protection yet'
@@ -62,7 +62,7 @@
                 [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
             )
 
-            Test-MtEntraHardDeletionProtection | Should -BeNullOrEmpty
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeNullOrEmpty
             $State.Investigate | Should -BeTrue
             $State.Detail | Should -Match '2 object\(s\) have Hard Deletion Protection'
             $State.Detail | Should -Match "User \| $($script:UserId) \| Admin One \| Active"
@@ -78,7 +78,7 @@
             }
             $State.Protected['users'] = @([pscustomobject]@{ id = $script:UserId; displayName = 'Admin One' })
 
-            Test-MtEntraHardDeletionProtection | Should -BeTrue
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeTrue
             $State.Investigate | Should -BeFalse
             $State.Detail | Should -Match 'Well done'
         }
@@ -93,7 +93,7 @@
                 [pscustomobject]@{ id = $script:GroupId; displayName = 'Other admin' }
             )
 
-            Test-MtEntraHardDeletionProtection | Should -BeNullOrEmpty
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeNullOrEmpty
             $State.Investigate | Should -BeTrue
             $State.Detail | Should -Match 'Other admin'
             $State.Detail | Should -Not -Match 'Admin One \|'
@@ -106,7 +106,7 @@
             }
             $State.Protected['groups'] = @([pscustomobject]@{ id = $script:GroupId; displayName = 'Some group' })
 
-            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Investigate | Should -BeFalse
             $State.Detail | Should -Match '1 of 1 listed object'
             $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Plain &#124; User \| Not protected'
@@ -116,7 +116,7 @@
         It 'fails an object that cannot be found' {
             $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
 
-            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Detail | Should -Match 'Not found'
         }
 
@@ -127,7 +127,7 @@
                 [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
             )
 
-            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Detail | Should -Match 'Group \| 22222222-2222-2222-2222-222222222222 \| Deleted group \| Soft deleted'
         }
 
@@ -135,7 +135,7 @@
             $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
             $State.DeletedById[$script:UserId] = [pscustomobject]@{ id = $script:UserId; displayName = 'Removed user' }
 
-            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Removed user \| Soft deleted'
             $State.Detail | Should -Not -Match 'Not found'
         }
@@ -143,7 +143,7 @@
         It 'looks for a deleted object among deleted items of the listed type only' {
             $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
 
-            Test-MtEntraHardDeletionProtection | Should -BeFalse
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 1 -ParameterFilter {
                 $RelativeUri -eq "directory/deletedItems/microsoft.graph.group/$('22222222-2222-2222-2222-222222222222')"
             }
@@ -160,7 +160,7 @@
                 }
             )
 
-            Test-MtEntraHardDeletionProtection | Should -BeNullOrEmpty
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeNullOrEmpty
             $State.Detail | Should -Match '30 other object\(s\)'
             $State.Detail | Should -Match 'Showing the first 25 of 30 objects'
             $State.Detail | Should -Match 'Group 25 \|'
@@ -172,7 +172,7 @@
         It 'throws for an invalid object type' {
             $State.Listed = @([pscustomobject]@{ Type = 'Device'; Id = $script:UserId })
 
-            { Test-MtEntraHardDeletionProtection } |
+            { Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed } |
                 Should -Throw '*Type must be User, Group, Application or ServicePrincipal*'
         }
 
@@ -181,16 +181,26 @@
             Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
                 param($RelativeUri)
                 if ($RelativeUri -like 'users/*') {
-                    $exception = [System.Exception]::new('Forbidden (Forbidden).')
-                    $exception | Add-Member -NotePropertyName Response -NotePropertyValue (
-                        [pscustomobject]@{ StatusCode = [System.Net.HttpStatusCode]::Forbidden }
+                    throw [Microsoft.PowerShell.Commands.HttpResponseException]::new(
+                        'Response status code does not indicate success: Forbidden (Forbidden).',
+                        [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]::Forbidden)
                     )
-                    throw $exception
                 }
                 return @()
             }
 
-            { Test-MtEntraHardDeletionProtection } | Should -Throw '*Forbidden*'
+            { Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed } | Should -Throw '*Forbidden*'
+        }
+
+        It 'throws, instead of reporting Not found, when the error has no HTTP response' {
+            $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
+            Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
+                param($RelativeUri)
+                if ($RelativeUri -like 'users/*') { throw [System.InvalidOperationException]::new('Batch request failed.') }
+                return @()
+            }
+
+            { Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed } | Should -Throw '*Batch request failed*'
         }
     }
 }

@@ -61,6 +61,8 @@ Each entry in the `HardDeletionProtectedObjects` array supports the following pa
 
 For an application, use the **Object ID** of the app registration, not the Application (client) ID. For a service principal, use the Object ID of the enterprise application.
 
+Maester checks the list before a run starts. A `Type` that is not one of the four values, or an entry without an `Id`, stops the run with a message that names the entry. A property name that is not listed above, such as `ObjectId`, is reported as a warning.
+
 ## Configuration Examples
 
 ```json

@@ -4,7 +4,7 @@
     Checks that the critical Entra objects listed in the Maester config have Hard Deletion Protection enabled.
 
     .DESCRIPTION
-    Reads the HardDeletionProtectedObjects setting and checks that each listed user, group, application or
+    Takes the HardDeletionProtectedObjects setting as a parameter and checks that each listed user, group, application or
     service principal has isHardDeleteProtectionEnabled set to true. Protection is permanent once enabled, so
     Maester never guesses which objects are critical.
 
@@ -37,9 +37,13 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param (
+        # The objects to check, from the HardDeletionProtectedObjects setting: a Type and an Id each.
+        [MaesterParameter(Setting = 'HardDeletionProtectedObjects')]
+        [object[]] $HardDeletionProtectedObjects = @()
+    )
 
-    $ConfiguredObjects = @(Get-MtSetting -Name 'HardDeletionProtectedObjects' | Where-Object { $_ })
+    $ConfiguredObjects = @($HardDeletionProtectedObjects | Where-Object { $_ })
     $Protected = @(Get-MtEntraHardDeletionProtectedObject)
 
     if ($ConfiguredObjects.Count -eq 0) {
