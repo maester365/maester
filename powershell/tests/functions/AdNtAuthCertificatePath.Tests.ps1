@@ -4,6 +4,7 @@
     Use-MtModuleFunction -Name Get-MtAdNtAuthCertificatePath, Get-MtAdCertificateInventory
 
     function New-PathTestCertificate {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Creates in-memory certificate fixtures without changing external state.')]
         param(
             [string] $Name,
             $Issuer,
