@@ -109,9 +109,8 @@
             $CaText = Get-MtDynamicGroupCaReferenceMarkdown `
                 -Reference $CaReferences -GroupId $Group.id
         }
-        $SingleLineRule = $Group.membershipRule -replace "`r?`n", ' '
-        $Rule = [System.Net.WebUtility]::HtmlEncode($SingleLineRule) -replace '\|', '&#124;'
-        $Result += "`n| $GroupLink | $ErrorText | $CaText | <code>$Rule</code> |"
+        $Rule = ConvertTo-MtMarkdownCodeSpan -Text $Group.membershipRule -TableCell
+        $Result += "`n| $GroupLink | $ErrorText | $CaText | $Rule |"
     }
     if ($CaReadError) {
         $CaMessage = $CaReadError.Exception.Message -replace "`r?`n", ' '

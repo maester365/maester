@@ -131,6 +131,7 @@
             $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path $searchPath -Config $Config -WarningAction SilentlyContinue
         }
         $runConfig = $__MtSession.MaesterConfig
+        if ($ownsConfig) { Assert-MtGlobalSetting -RunConfig $runConfig }
         $selection = Resolve-MtSelection -RunConfig $runConfig -TestId @($tests | ForEach-Object { $_.Id })
         # The caller named the tests: the allow-list and the selectors of the config do not apply.
         $selection.DefaultAction = 'Run'

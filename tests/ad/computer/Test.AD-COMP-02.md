@@ -20,10 +20,10 @@ Establish a process to:
 #### How the Test Works
 
 This test examines all enabled computer accounts and identifies those where:
-- The `lastLogonDate` property is older than `DormantThresholdDays` (default 90 days)
+- The `lastLogonDate` property is older than `MaximumInactiveDays` (default 90 days)
 - The account remains enabled
 
-The default 90-day threshold is a common security baseline. Set `DormantThresholdDays` to adjust it based on your organization's requirements (e.g., seasonal systems, remote workstations).
+The default 90-day threshold is a common security baseline. Set `MaximumInactiveDays` to adjust it based on your organization's requirements (e.g., seasonal systems, remote workstations).
 
 #### Related Tests
 

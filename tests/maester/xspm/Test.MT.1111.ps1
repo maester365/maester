@@ -37,7 +37,11 @@
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users and roles.')]
     [OutputType([bool])]
-    param()
+    param(
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
     $UnifiedIdentityInfoExecutable = Get-MtXspmUnifiedIdentityInfo -ValidateRequiredTablesOnly
     if ( $UnifiedIdentityInfoExecutable -eq $false) {
@@ -58,7 +62,6 @@ $UnlinkedPrivilegedUsers = $UnifiedIdentityInfo `
             } `
         | Sort-Object Classification, AccountDisplayName
 
-    $EmergencyAccessAccounts = Get-MtSetting -Name 'EmergencyAccessAccounts'
     if ($EmergencyAccessAccounts -and $EmergencyAccessAccounts.Count -gt 0) {
         Write-Verbose "Excluding Emergency Access Accounts from the test results ..."
         $UnlinkedPrivilegedUsers = $UnlinkedPrivilegedUsers | Where-Object { $_.AccountUpn -notin $EmergencyAccessAccounts.UserPrincipalName }

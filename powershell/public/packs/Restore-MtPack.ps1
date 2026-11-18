@@ -20,6 +20,16 @@
     The lock file to restore from. By default the one beside the Maester config found from the current
     folder, else the user's.
 
+    .PARAMETER Token
+    A GitHub token that can read the pack's repository, as a SecureString, for a private or internal
+    repository. It is used for this command only, is sent to api.github.com only, and is not stored. When it
+    is given, no other sign-in is tried. Without it, Maester uses the first of these that can read the
+    repository: the sign-in of Connect-MtGitHub in this session, the GitHub CLI (`gh auth token`, when gh is
+    installed and signed in), then the GH_TOKEN and GITHUB_TOKEN environment variables. An environment
+    variable can be read by every process and module in the session, including installed packs, so prefer
+    the other ways outside a pipeline. A fine-grained token needs only read-only Contents access to the
+    one repository.
+
     .EXAMPLE
     Restore-MtPack
 
@@ -29,6 +39,11 @@
     Restore-MtPack -PackLock ./maester/maester-packs.lock.json; Invoke-Maester -Path ./maester
 
     Restores, then runs, in a pipeline.
+
+    .EXAMPLE
+    Restore-MtPack -Token (Get-Secret -Name PackReadToken)
+
+    Restores packs from private repositories with a token read from a secret vault.
 
     .LINK
     https://maester.dev/docs/commands/Restore-MtPack
@@ -40,7 +55,10 @@
         [string[]] $Id,
 
         [Parameter()]
-        [string] $PackLock
+        [string] $PackLock,
+
+        [Parameter()]
+        [securestring] $Token
     )
 
     Write-Verbose "Restore-MtPack: Id=$($Id -join ', ') PackLock=$PackLock"
@@ -61,7 +79,7 @@
                 $Present = $false
                 if (Test-Path -LiteralPath $Target -PathType Container) { $Present = (Get-MtPackDigest -Path $Target).Digest -eq $Entry.Digest }
                 if (-not $Present -and $PSCmdlet.ShouldProcess("$($Entry.Id) $($Entry.Version)", 'Restore the pack')) {
-                    $Candidate = Get-MtPackCandidate -Source $Entry.Source -Commit $Entry.Commit -CommitRef $(if ($Entry.PSObject.Properties['Ref']) { [string]$Entry.Ref }) -IncludeRecent
+                    $Candidate = Get-MtPackCandidate -Token $Token -Source $Entry.Source -Commit $Entry.Commit -CommitRef $(if ($Entry.PSObject.Properties['Ref']) { [string]$Entry.Ref }) -IncludeRecent
                     if ($Candidate.Digest -ne $Entry.Digest) { throw "its files are not the approved files (digest $($Candidate.Digest), the lock file has $($Entry.Digest))." }
                     $null = Save-MtPackToStore -Path $Candidate.Root -Digest $Entry.Digest
                     $Status = 'Restored'

@@ -7,6 +7,9 @@
     with Get-MtTest and writes its metadata to a JSON file. website/scripts/generate-test-docs.mjs reads
     that file, plus each test's Test.<ID>.md, to build the test pages of the website.
 
+    Each test also has TenantType, Cloud, Platform, Exclusive and Parameters (name, type, description, default,
+    range, allowed values, kind and bound setting), which the test builder reads to load an existing test.
+
     Each test has its attributes (Product, RelatedProduct, Feature, Area and ResourceType as taxonomy keys),
     the derived Block, Suite and Source, and LegacyTag: the tags it carried in Maester 2.x, which -Tag still
     matches. Taxonomy at the top level gives the display names of the keys and ATT&CK techniques the tests use.
@@ -92,9 +95,25 @@ $catalog = foreach ($t in $sorted) {
         Service            = ConvertTo-StringArray $t.Service
         License            = ConvertTo-StringArray $t.License
         Permission         = ConvertTo-StringArray $t.Permission
+        TenantType         = ConvertTo-StringArray $t.TenantType
+        Cloud              = ConvertTo-StringArray $t.Cloud
+        Platform           = ConvertTo-StringArray $t.Platform
         Lifecycle          = "$($t.Lifecycle)"
         ReplacedBy         = if ($t.ReplacedBy) { "$($t.ReplacedBy)" } else { '' }
         LongRunning        = [bool]$t.LongRunning
+        Exclusive          = [bool]$t.Exclusive
+        Parameters         = @($t.Parameters | Where-Object { $_ -and -not $_.EngineOwned } | ForEach-Object {
+                [ordered]@{
+                    Name          = $_.Name
+                    Type          = $_.Type
+                    Description   = "$($_.Description)"
+                    Default       = if ($_.HasDefault) { $_.Default } else { $null }
+                    Range         = if ($_.Range) { , @($_.Range) } else { $null }
+                    AllowedValues = ConvertTo-StringArray $_.AllowedValues
+                    Kind          = "$($_.Kind)"
+                    Setting       = "$($_.Setting)"
+                }
+            })
         InstanceSource     = if ($t.InstanceSource) { "$($t.InstanceSource)" } else { '' }
         Tag                = ConvertTo-StringArray $t.Tag
         LegacyTag          = ConvertTo-StringArray (& $module { param($test) (Get-MtSelectionTag -Test $test).Legacy } $t)

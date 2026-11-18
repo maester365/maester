@@ -710,13 +710,33 @@ function New-MtResultConfig {
     )
 
     if ($null -eq $RunConfig) { return $null }
-    if ($NativeRows.Count -eq 0) { return $RunConfig }
 
-    $copy = [pscustomobject]@{}
-    foreach ($p in $RunConfig.PSObject.Properties) {
-        if ($p.Name -in 'TestSettings', 'TestSettingsHash') { continue }
-        $copy | Add-Member -NotePropertyName $p.Name -NotePropertyValue $p.Value
+    # The result records the config, so the value of a sensitive setting is replaced before it is copied.
+    $registry = (Get-MtSettingRegistry).Settings
+    $globalSettings = if ($RunConfig.PSObject.Properties['GlobalSettings']) { $RunConfig.GlobalSettings } else { $null }
+    if ($globalSettings -and @($globalSettings.PSObject.Properties | Where-Object { $null -ne $_.Value -and $registry.ContainsKey($_.Name) -and $registry[$_.Name].Sensitive }).Count -gt 0) {
+        $redacted = [pscustomobject]@{}
+        foreach ($p in $globalSettings.PSObject.Properties) {
+            $isSensitive = $null -ne $p.Value -and $registry.ContainsKey($p.Name) -and $registry[$p.Name].Sensitive
+            $redacted | Add-Member -NotePropertyName $p.Name -NotePropertyValue $(if ($isSensitive) { '[redacted]' } else { $p.Value })
+        }
+        $globalSettings = $redacted
     }
+    $withSettings = {
+        param($skip)
+        $object = [pscustomobject]@{}
+        foreach ($p in $RunConfig.PSObject.Properties) {
+            if ($p.Name -in $skip) { continue }
+            $object | Add-Member -NotePropertyName $p.Name -NotePropertyValue $(if ($p.Name -eq 'GlobalSettings') { $globalSettings } else { $p.Value })
+        }
+        $object
+    }
+    if ($NativeRows.Count -eq 0) {
+        if ([object]::ReferenceEquals($globalSettings, $RunConfig.GlobalSettings)) { return $RunConfig }
+        return & $withSettings @()
+    }
+
+    $copy = & $withSettings @('TestSettings', 'TestSettingsHash')
     $catalog = @{}
     foreach ($t in @(Get-MtTestCatalog)) { if ($t.Id) { $catalog[$t.Id] = $t } }
     $settings = foreach ($row in $Rows) {

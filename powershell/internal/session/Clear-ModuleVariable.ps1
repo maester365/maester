@@ -17,7 +17,9 @@
     $__MtSession.TestResultDetail = @{}
     $__MtSession.NativeTestInfo = @{}
     $__MtSession.NativeReturnValue = @{}
+    $__MtSession.SettingRead = @{}
     $__MtSession.MaesterConfig = $null
+    $__MtSession.ConnectionConfig = $null
     $__MtSession.AdminPortalUrl = @{}
     Clear-MtDnsCache
     Clear-MtExoCache

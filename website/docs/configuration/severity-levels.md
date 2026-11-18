@@ -1,7 +1,7 @@
 ---
 title: Severity Levels
 sidebar:
-  order: 3
+  order: 4
 ---
 
 # Severity Levels for Maester Tests

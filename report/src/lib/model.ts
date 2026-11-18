@@ -51,10 +51,11 @@ export const TACTICS: [string, string][] = [
 export const FRAMEWORK_LABEL: Record<string, string> = {
   "cis-m365": "CIS Microsoft 365", "cis-github": "CIS GitHub", "cisa-scuba": "CISA SCuBA",
   "essential-eight": "Essential Eight", ism: "ASD ISM", "nist-800-53-r5": "NIST SP 800-53",
+  "disa-stig-entra-id": "DISA STIG Entra ID", "disa-stig-intune-mdm": "DISA STIG Intune MDM", "disa-stig-intune-desktop": "DISA STIG Intune Desktop",
 }
 
-// The order frameworks are listed in everywhere: NIST, CISA, CIS, then ASD's ISM and Essential Eight, then any other.
-const FRAMEWORK_ORDER = ["nist-800-53-r5", "cisa-scuba", "cis-m365", "cis-github", "ism", "essential-eight"]
+// The order frameworks are listed in everywhere: NIST, CISA, CIS, then ASD's ISM and Essential Eight, then the DISA STIGs, then any other.
+const FRAMEWORK_ORDER = ["nist-800-53-r5", "cisa-scuba", "cis-m365", "cis-github", "ism", "essential-eight", "disa-stig-entra-id", "disa-stig-intune-mdm", "disa-stig-intune-desktop"]
 export const frameworkRank = (key: string) => (FRAMEWORK_ORDER.indexOf(key) + 1 || FRAMEWORK_ORDER.length + 1)
 
 // Why a test did not run, as a heading and what to do about it. Codes: website/docs/configuration/applicability.md.

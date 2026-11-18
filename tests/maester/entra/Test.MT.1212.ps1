@@ -82,8 +82,7 @@
         foreach ($Item in $OpenAccessFindings) {
             $Name = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-            $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
             $Result += "`n| $($Item.ObjectId) | $Name | $($Item.AppId) | $($Item.RoleCount) |"
         }
 

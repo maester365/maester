@@ -127,6 +127,7 @@
             [string]::IsNullOrWhiteSpace($ApiBaseUri) -or
             [string]::IsNullOrWhiteSpace($ApiVersion))) {
         $__MtSession.MaesterConfig = Resolve-MtRunConfig -Path (Get-Location).Path -WarningAction SilentlyContinue
+        $__MtSession.ConnectionConfig = $__MtSession.MaesterConfig
     }
 
     # Resolve organization (param -> config -> error)

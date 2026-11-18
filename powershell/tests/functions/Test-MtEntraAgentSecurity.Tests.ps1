@@ -700,7 +700,7 @@
             Test-MtEntraAgentUserExcessiveAccess | Should -BeTrue
             $script:TestResult | Should -Match 'Custom Agent Role'
             $script:TestResult | Should -Match 'Agent User 1'
-            $script:TestResult | Should -Match 'au1@ contoso.com'
+            $script:TestResult | Should -Match 'au1\\@ contoso.com'
             $script:TestResult | Should -Not -Match "Agent`nUser 1"
             $script:TestResult | Should -Not -Match "au1@`r`ncontoso.com"
             $script:TestResult | Should -Not -Match "Custom`r`nAgent Role"
