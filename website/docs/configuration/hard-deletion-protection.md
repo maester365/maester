@@ -61,7 +61,7 @@ Each entry in the `HardDeletionProtectedObjects` array supports the following pa
 
 For an application, use the **Object ID** of the app registration, not the Application (client) ID. For a service principal, use the Object ID of the enterprise application.
 
-Maester checks the list before a run starts. A `Type` that is not one of the four values, or an entry without an `Id`, stops the run with a message that names the entry. A property name that is not listed above, such as `ObjectId`, is reported as a warning.
+Maester checks the list before a run starts. A `Type` that is not one of the four values, or an entry without an `Id`, stops the run with a message that names the entry. A property name that is not listed above, such as `ObjectId`, is reported as a warning. An entry without a `Type`, or with an `Id` that is not a GUID (a user principal name, for example), passes that check and then makes the test fail with an error that names the entry.
 
 ## Configuration Examples
 
@@ -91,7 +91,12 @@ Maester checks the list before a run starts. A `Type` that is not one of the fou
 
 Microsoft Graph returns `null` for an object that is not protected, so an unprotected object and an object that cannot be protected (such as a synchronized user) both appear as not protected.
 
-The result lists at most 25 objects in each table and gives the total when there are more. Each table shows the object type, object ID, display name, and whether the object is active or soft deleted. A failed result also lists the objects that have protection but are not in the configuration, so you can see both gaps at once.
+The result lists at most 25 objects in each table and gives the total when there are more. Every table shows the object type, object ID and display name, and one more column:
+
+- **Status** in the table of failing listed objects. It is `Not protected`, `Soft deleted` or `Not found`. This is the outcome of the check for that entry.
+- **State** in the table of protected objects that are not in the configuration, which is also the table you get when nothing is listed. It is `Active` or `Soft deleted`, and `Active or soft deleted` when the two reads of the run disagree about an object, for example because it was deleted between them. The result does not say which read is newer.
+
+A failed result also lists the protected objects that are not in the configuration, so you can see both gaps at once.
 
 ## Which Objects to Protect
 
@@ -138,7 +143,7 @@ Maester does not enable protection. Use the Microsoft Entra admin center or Micr
 
 ### Microsoft Graph
 
-Set `isHardDeleteProtectionEnabled` to `true` on the object with the Microsoft Graph beta endpoint. The calling app or user needs the `HardDeletionSetting.ReadWrite.Enable` permission and the Global Administrator or Backup Administrator role.
+Set `isHardDeleteProtectionEnabled` to `true` on the object with the Microsoft Graph beta endpoint. The calling app or user needs the `HardDeletionSetting.ReadWrite.Enable` permission, and the caller must have the Microsoft Entra Backup Administrator role.
 
 ```powershell
 Connect-MgGraph -Scopes 'HardDeletionSetting.ReadWrite.Enable'

@@ -18,7 +18,7 @@
     Test-MtEntraHardDeletionProtection
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtEntraHardDeletionProtection
+    https://maester.dev/docs/tests/MT.1276
     #>
     [MaesterTest(
         Id = 'MT.1276',
@@ -68,7 +68,9 @@
             Get-MtEntraHardDeletionObjectStatus -Configured $Configured
         }
     )
-    $Unlisted = @($Protected | Where-Object { $Rows.Id -notcontains $_.Id })
+    $ListedKeys = @{}
+    foreach ($Row in $Rows) { $ListedKeys["$($Row.Type)|$($Row.Id)"] = $true }
+    $Unlisted = @($Protected | Where-Object { -not $ListedKeys.ContainsKey("$($_.Type)|$($_.Id)") })
     $UnlistedTable = if ($Unlisted.Count -gt 0) {
         "`n`n$($Unlisted.Count) other object(s) have Hard Deletion Protection in Microsoft Entra but are not " +
             "listed in the Maester config:`n`n" +
