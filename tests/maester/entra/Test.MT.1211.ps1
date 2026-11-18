@@ -108,9 +108,8 @@
         foreach ($Item in $InheritanceFindings) {
             $Name = [string]$Item.DisplayName
             if ([string]::IsNullOrWhiteSpace($Name)) { $Name = '(unnamed)' }
-            $Name = [System.Net.WebUtility]::HtmlEncode($Name) -replace '\|', '&#124;'
-            $Name = $Name -replace "`r?`n", ' '
-            $Issue = [System.Net.WebUtility]::HtmlEncode([string]$Item.Issue) -replace '\|', '&#124;'
+            $Name = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode($Name))
+            $Issue = Get-MtSafeMarkdown -Text ([System.Net.WebUtility]::HtmlEncode([string]$Item.Issue))
             $Result += "`n| $($Item.BlueprintId) | $Name | $($Item.AppId) | " +
                 "$($Item.Resource) | $($Item.Kind) | $Issue |"
         }

@@ -17,10 +17,15 @@ if (id === 'docs/2.x' || id.startsWith('docs/2.x/')) {
 	const own = sidebar.find(holds);
 	if (own?.type === 'group') sidebar = own.entries;
 }
+// The test builder lists its steps here (TestBuilder/index.jsx renders them into the element below), above the
+// guides on writing tests. The link to the builder itself is the page you are on, so it is left out.
+const isBuilder = Astro.url.pathname.replace(/\/$/, '') === '/test-builder';
+if (isBuilder) sidebar = sidebar.filter((entry) => !(entry.type === 'link' && /\/test-builder(\.html|\/)?$/.test(entry.href)));
 const topics = (Astro.locals.starlightSidebarTopics?.topics ?? []).filter((topic) => !topic.link.startsWith('/docs/2.x'));
 
 // The commands are grouped by job; a switch lists them A to Z instead (remembered in the browser).
 const isCommands = id === 'docs/commands' || id.startsWith('docs/commands/');
+// The test catalog and the test builder can fold the sidebar to a strip.
 // The test catalog has a nav of its own: its views, then the filters of the page (catalog/CatalogNav.astro).
 const isCatalog = id === 'docs/tests' || id.startsWith('docs/tests/');
 type Entry = (typeof sidebar)[number];
@@ -41,15 +46,14 @@ const alphabetical: Entry[] = isCommands
 ---
 
 {
-	isCatalog && (
+	(isCatalog || isBuilder) && (
 		<>
-			<button type="button" class="mt-nav-toggle" data-nav-toggle aria-expanded="true" aria-label="Hide the sidebar" title="Hide the sidebar">
+			<button type="button" class="mt-nav-toggle" data-nav-toggle data-nav-key={isBuilder ? 'maester-builder-nav' : 'maester-catalog-nav'} aria-expanded="true" aria-label="Hide the sidebar" title="Hide the sidebar">
 				<svg viewBox="0 0 24 24" aria-hidden="true">
 					<rect x="3" y="4" width="18" height="16" rx="2" />
 					<path d="M9 4v16" />
 					<path class="mt-nav-toggle__arrow" d="M15.5 9.5L13 12l2.5 2.5" />
 				</svg>
-				<span>Hide sidebar</span>
 			</button>
 			{/* Before the page paints, so a hidden sidebar does not flash open on the next page. */}
 			<script is:inline>
@@ -65,13 +69,13 @@ const alphabetical: Entry[] = isCommands
 						button.title = label;
 						if (save) {
 							try {
-								localStorage.setItem('maester-catalog-nav', collapsed ? 'collapsed' : 'open');
+								localStorage.setItem(button.dataset.navKey, collapsed ? 'collapsed' : 'open');
 							} catch (e) {}
 						}
 					}
 					var stored = null;
 					try {
-						stored = localStorage.getItem('maester-catalog-nav');
+						stored = localStorage.getItem(button.dataset.navKey);
 					} catch (e) {}
 					set(stored === 'collapsed', false);
 					button.addEventListener('click', function () {
@@ -91,6 +95,14 @@ const alphabetical: Entry[] = isCommands
 		<div class="mt-cmd-order" role="group" aria-label="List commands">
 			<button type="button" data-order="job" aria-pressed="true">By job</button>
 			<button type="button" data-order="az" aria-pressed="false">A to Z</button>
+		</div>
+	)
+}
+{
+	isBuilder && (
+		<div class="mt-builder-steps">
+			<p class="mt-builder-steps__title">Steps</p>
+			<div id="mt-builder-steps" />
 		</div>
 	)
 }
@@ -203,7 +215,14 @@ const alphabetical: Entry[] = isCommands
 		:root[data-mt-nav='collapsed'] .mt-nav-toggle {
 			margin: 0;
 		}
-		:root[data-mt-nav='collapsed'] .mt-nav-toggle span {
+		/* The test builder keeps its steps in the strip, as icons (TestBuilder/styles.module.css). */
+		:root[data-mt-nav='collapsed'] .sidebar-content > .mt-builder-steps {
+			display: block;
+			margin: 0.75rem 0 0;
+			padding: 0;
+			border: 0;
+		}
+		:root[data-mt-nav='collapsed'] .mt-builder-steps__title {
 			display: none;
 		}
 		:root[data-mt-nav='collapsed'] .mt-nav-toggle__arrow {
@@ -214,6 +233,27 @@ const alphabetical: Entry[] = isCommands
 </style>
 
 <style>
+	/* Test builder: its steps, above the guides. On a phone the steps are above the form instead. */
+	.mt-builder-steps {
+		display: none;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--sl-color-hairline-light);
+	}
+	@media (min-width: 50rem) {
+		.mt-builder-steps {
+			display: block;
+		}
+	}
+	.mt-builder-steps__title {
+		margin: 0 0 0.4rem 0.5rem;
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		color: var(--sl-color-gray-3);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+
 	/* Commands: by job or A to Z, one name a line (cut with an ellipsis; the full name is in its tooltip). */
 	.mt-cmd-order {
 		display: flex;
@@ -295,14 +335,21 @@ const alphabetical: Entry[] = isCommands
 			display: block;
 		}
 	}
-	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. */
+	/* The site's main menu at the foot of the phone drawer: a plain two-column list under a dividing line. Hidden on
+	   wide screens here, not with md:sl-hidden: that class is in Starlight's cascade layer, so this unlayered rule
+	   would win over it. */
 	.mt-mobile-site {
-		display: grid;
+		display: none;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 0.15rem 1rem;
 		margin-top: 1.5rem;
 		padding-top: 1rem;
 		border-top: 1px solid var(--sl-color-gray-6);
+	}
+	@media (max-width: 49.99rem) {
+		.mt-mobile-site {
+			display: grid;
+		}
 	}
 	.mt-mobile-site a {
 		padding: 0.4rem 0;

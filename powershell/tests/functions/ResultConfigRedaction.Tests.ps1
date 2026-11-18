@@ -14,6 +14,8 @@
 Describe 'Sensitive settings in result configuration' {
     BeforeEach {
         InModuleScope Maester {
+            $script:savedLayeredRegistry = $script:__MtLayeredSettingRegistry
+            $script:__MtLayeredSettingRegistry = $null
             $script:savedSettingsRegistry = $script:__MtSettingsRegistry
             $script:__MtSettingsRegistry = Import-PowerShellDataFile (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
             $script:__MtSettingsRegistry.Settings.FixtureSensitive = @{ Type = 'object'; Default = @{}; Sensitive = $true; Description = 'Synthetic sensitive setting.' }
@@ -33,7 +35,7 @@ Describe 'Sensitive settings in result configuration' {
             TestSettingsHash = @{}
         }
     }
-    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null; $script:__MtSettingsRegistry = $script:savedSettingsRegistry } }
+    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null; $script:__MtSettingsRegistry = $script:savedSettingsRegistry; $script:__MtLayeredSettingRegistry = $script:savedLayeredRegistry } }
 
     It 'Redacts the whole policy, preserves public settings and does not mutate input (native=<Native>)' -ForEach @(@{ Native = $true }, @{ Native = $false }) {
         $before = $script:config | ConvertTo-Json -Depth 30 -Compress
@@ -41,7 +43,7 @@ Describe 'Sensitive settings in result configuration' {
             $nativeRows = if ($Native) { @([pscustomobject]@{ Id = 'CIS.GH.1.2.3' }) } else { @() }
             New-MtResultConfig -RunConfig $Config -NativeRows $nativeRows -Rows @([pscustomobject]@{ Id = 'CIS.GH.1.2.3'; Title = 'Fixture'; Severity = 'Low' })
         }
-        $out.GlobalSettings.FixtureSensitive | Should -Be '<redacted>'
+        $out.GlobalSettings.FixtureSensitive | Should -Be '[redacted]'
         $out.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
         $out.TestSettings[0].Severity | Should -Be 'Low'
         $out.GlobalSettings.'Pack.Public'.Values[0] = 'changed'
@@ -69,16 +71,18 @@ Describe 'Sensitive settings in result configuration' {
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 
-    It 'Uses registry sensitivity rather than a hard-coded setting name' {
+    It 'Uses sensitivity from the layered pack registry and preserves unset values' {
         InModuleScope Maester -Parameters @{ Config = $script:config } {
-            $saved = $script:__MtSettingsRegistry
+            $savedPackSettings = $script:__MtPackSettings
             try {
-                $script:__MtSettingsRegistry = @{ Settings = @{ GitHubOrganization = @{ Sensitive = $true } } }
+                $script:__MtPackSettings = @{ 'Pack.Public' = @{ Sensitive = $true } }
+                $script:__MtLayeredSettingRegistry = $null
+                $Config.GlobalSettings.FixtureSensitive = $null
                 $out = New-MtResultConfig -RunConfig $Config
-                $out.GlobalSettings.GitHubOrganization | Should -Be '<redacted>'
-                $out.GlobalSettings.FixtureSensitive.OrganizationId | Should -Be '123456789'
-                $Config.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
-            } finally { $script:__MtSettingsRegistry = $saved }
+                $out.GlobalSettings.'Pack.Public' | Should -Be '[redacted]'
+                $out.GlobalSettings.FixtureSensitive | Should -BeNullOrEmpty
+                $Config.GlobalSettings.'Pack.Public'.Values | Should -Be @('one', 'two')
+            } finally { $script:__MtPackSettings = $savedPackSettings }
         }
     }
 
@@ -98,7 +102,7 @@ Describe 'Sensitive settings in result configuration' {
             $content | Should -Match 'FixtureSensitive'
             $content | Should -Match 'redacted'
         }
-        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.FixtureSensitive) | Should -Be '<redacted>'
+        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.FixtureSensitive) | Should -Be '[redacted]'
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 

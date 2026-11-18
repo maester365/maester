@@ -669,13 +669,8 @@
       try {
          $adoModule = Get-Module -Name ADOPS
          $adoAvailable = $adoModule -or (Get-Module -Name ADOPS -ListAvailable)
-         if ($adoAvailable) {
-            if (-not $adoModule) {
-               Import-Module -Name ADOPS -Global -ErrorAction Stop
-            }
-            # Reset persisted state before config discovery too: a missing or invalid config
-            # must not revive the old organization when the next run resets its probe cache.
-            Disconnect-ADOPS -ErrorAction Stop
+         if ($adoAvailable -and -not $adoModule) {
+            Import-Module -Name ADOPS -Global -ErrorAction Stop
          }
          # A connector may have discovered config before the tenant was known. Refresh that
          # config for this tenant, while preserving any config supplied by a test run.
@@ -693,12 +688,25 @@
             }
             Add-ConnectionResult -Name 'Azure DevOps' -Status 'Not installed' -Details 'Run: Install-Module ADOPS -Scope CurrentUser'
          } elseif ([string]::IsNullOrWhiteSpace($organization)) {
-            $azureDevOpsProblem = @{
-               Message  = 'No Azure DevOps organization specified. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json.'
-               Category = [System.Management.Automation.ErrorCategory]::InvalidArgument
+            # Without an organization there is nothing to connect to, so an existing ADOPS session (for example
+            # from Connect-ADOPS) is kept rather than torn down. Test-MtConnection verifies it the way it does
+            # for every run, so the summary reports the organization the tests will actually read.
+            $__MtSession.AzureDevOpsConnectionCache = $null
+            $existingOrganization = if (Test-MtConnection -Service AzureDevOps) { $__MtSession.AzureDevOpsConnectionCache['Organization'] }
+            if ($existingOrganization) {
+               Write-Warning "No Azure DevOps organization specified. Using the existing ADOPS session to '$existingOrganization'. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json to connect to a different organization."
+               Add-ConnectionResult -Name 'Azure DevOps' -Status 'Connected' -Details "$existingOrganization (existing ADOPS session; no organization specified)"
+            } else {
+               $azureDevOpsProblem = @{
+                  Message  = 'No Azure DevOps organization specified. Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json.'
+                  Category = [System.Management.Automation.ErrorCategory]::InvalidArgument
+               }
+               Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
             }
-            Add-ConnectionResult -Name 'Azure DevOps' -Status 'Skipped' -Details 'Provide -AzureDevOpsOrganization or set AzureDevOpsOrganization in maester-config.json'
          } else {
+            # ADOPS persists the organization. A failed token request or sign-in must not revive
+            # the previous organization when Invoke-Maester resets its per-run connection probe.
+            Disconnect-ADOPS -ErrorAction Stop
             $connectAdoParams = @{ Organization = $organization; ErrorAction = 'Stop' }
             if ($TenantId) {
                $connectAdoParams['TenantId'] = $TenantId

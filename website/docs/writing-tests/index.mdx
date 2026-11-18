@@ -12,6 +12,9 @@ Start with [Your first custom test](./first-custom-test.md), a short walk-throug
 own. This page is the full reference.
 :::
 
+An AI coding assistant can write the test for you: [Write a test with AI](./with-ai.md) has the prompt and how to
+check the result.
+
 From Maester 3.0 a test is two files: `Test.<ID>.ps1`, which holds one PowerShell function with a
 `[MaesterTest(...)]` attribute, and `Test.<ID>.md`, which holds the description and remediation shown in the
 report. Every test that ships with Maester is written this way, and your own tests use the same format.
@@ -47,6 +50,8 @@ Invoke-Maester -Path .
 `New-MtTest` writes to `./custom` unless you pass `-Path`. It supports `-WhatIf` and refuses to overwrite
 existing files unless you pass `-Force`. Only `-Id` and `-Title` are required; `-Product`, `-Feature`, `-Area`,
 `-ResourceType`, `-UserImpact`, `-ImplementationCost` and `-Mitre` fill in the attributes of the same name.
+`-Setting EmergencyAccessAccounts, ParkedDomains` adds a parameter for each shared setting the test needs (see
+[Values set once for many tests](#values-set-once-for-many-tests)).
 
 ## Files and layout
 
@@ -548,7 +553,10 @@ param(
 
 Rules:
 
-- Types are `int`, `bool`, `switch`, `string` or `string[]`.
+- Types are `int`, `bool`, `switch`, `string` or `string[]`, and `object[]` for a parameter bound to a setting
+  that holds a list of objects.
+- Names follow the [parameter naming rules](./attribute-rubric.md#parameter-names): `MaximumInactiveDays`,
+  `ExcludedGroups`, `Strict`.
 - Defaults are constants. No parameter is mandatory.
 - Every parameter has a description: a `#` comment on the line directly above it, or `.PARAMETER` help. Only
   the comment line nearest the parameter is read, so keep the comment to one line or use `.PARAMETER`.
@@ -571,7 +579,52 @@ The engine checks each value against the `param()` block before the test runs. A
 a fraction for an `int`, a number for a `string`, a string for a `bool` or `switch`, or a value outside the
 `ValidateRange` or `ValidateSet` gives that test an `Error` row with reason `InvalidConfiguration`; the run
 carries on. A `string[]` parameter accepts one string or a list. The effective values, and where each came from
-(`Default`, `Config` or `Parameter`), are written to the result row's `Parameters`.
+(`Default`, `Config`, `Setting` or `Parameter`), are written to the result row's `Parameters`.
+
+### Values set once for many tests
+
+Some values are the same for every test that needs them: the domains that never send email, the emergency access
+accounts. An administrator sets these once in `GlobalSettings`, and a test receives one as a parameter bound to
+the setting:
+
+```powershell
+param(
+    # Domains that never send email.
+    [MaesterParameter(Setting = 'ParkedDomains')]
+    [string[]] $ParkedDomains = @()
+)
+```
+
+```json
+{
+  "GlobalSettings": { "ParkedDomains": ["contoso-old.com"] },
+  "TestSettings": [ { "Id": "CIS.M365.2.1.9", "Parameters": { "ParkedDomains": [] } } ]
+}
+```
+
+The most specific value wins: `Invoke-MtTest -Parameter` or `Invoke-Maester -Parameter`, then the test's
+`TestSettings` row, then `GlobalSettings`, then the parameter's default. A built-in setting must be registered in
+`powershell/assets/MaesterSettings.psd1`, and the parameter's type must match it; the parameter takes the
+setting's kind when it names none. A custom test or pack binds its own settings with a `Namespace.Key` name, such
+as `Contoso.Regions`.
+
+Maester checks `GlobalSettings` against the registry once, before the run: a value of the wrong type or one the
+setting does not allow stops the run with one message, and a key it does not know is reported as a likely typo.
+So give the parameter the same type, default and `ValidateSet` as the setting, and pass the value on to the
+helpers that need it; a built-in test never calls `Get-MtSetting`. If another test calls yours as a
+[shim](#tests-that-another-suite-already-has), it declares the same bound parameter and passes it on.
+
+A test or helper that does call `Get-MtSetting`, as custom tests and packs may, has the name of each setting it
+read recorded on its result (`SettingsRead`).
+
+The [test builder](/test-builder) has a step for parameters: it lists the shared settings, writes the bound
+parameter, checks each name against the [naming rules](./attribute-rubric.md#parameter-names) as you type, and
+shows the `maester-config.json` an administrator would write. `New-MtTest -Setting <name>` writes the same
+bound parameter.
+
+Bind a parameter only to a fact about the tenant or a choice the organisation makes once. A value a benchmark
+sets stays a parameter of that test. Read [Parameters bound to a setting](./attribute-rubric.md#parameters-bound-to-a-setting)
+before adding one.
 
 ### Parameter kinds
 
@@ -673,16 +726,29 @@ Selection and configuration understand families:
 
 ## Settings shared by many tests
 
-Read tenant-wide settings from `GlobalSettings` in the config with `Get-MtSetting`:
+A custom test receives a tenant-wide setting from `GlobalSettings` the way a built-in test does: as a parameter
+bound to the setting (see [Values set once for many tests](#values-set-once-for-many-tests)). The value then
+shows in `Get-MtTest` and in the results, and a `TestSettings` row can override it for that test:
 
 ```powershell
-$accounts = Get-MtSetting -Name EmergencyAccessAccounts
-$siteUrl  = Get-MtSetting -Name 'Contoso.SiteUrl' -Default 'https://contoso.sharepoint.com'
+param(
+    # Emergency access (break glass) accounts and groups.
+    [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+    [object[]] $EmergencyAccessAccounts = @(),
+
+    # SharePoint site the check reads.
+    [MaesterParameter(Setting = 'Contoso.SiteUrl')]
+    [string] $SiteUrl = 'https://contoso.sharepoint.com'
+)
 ```
 
-When the config does not set the value, `Get-MtSetting` returns Maester's default for the settings it knows,
-else `-Default`. Use a `Namespace.Key` name for your own settings. Prefer a test parameter when the value
-belongs to one test.
+Name your own settings `Namespace.Key`. A key without a dot is one of Maester's settings, listed in the
+[run configuration reference](../configuration/run-configuration.md#globalsettings); any other key without a dot
+gives a warning when the run starts. Use a plain parameter, with no setting, when the value belongs to one test.
+
+`Get-MtSetting -Name 'Contoso.SiteUrl' -Default '...'` still reads a setting directly, and is the only way in a
+Pester-format test or in a helper that runs before any test. A native test that calls it has the setting's name
+recorded on its result (`SettingsRead`), but the value is not shown and cannot be overridden per test.
 
 ## What a custom test can call
 

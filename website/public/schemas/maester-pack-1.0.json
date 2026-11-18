@@ -86,6 +86,23 @@
       "description": "A JSON file in the pack that says how to install, connect and run it, for its page on packs.maester.cloud. See https://maester.dev/schemas/maester-pack-guide-1.0.json.",
       "allOf": [{ "$ref": "#/$defs/relativePath" }, { "pattern": "\\.json$" }]
     },
+    "Settings": {
+      "description": "The GlobalSettings keys the pack reads, each named Namespace.Key. Maester checks the run config against them, returns Default from Get-MtSetting when the config does not set one, and lets a pack test bind one with [MaesterParameter(Setting = 'Namespace.Key')]. See https://maester.dev/docs/packs/writing-a-pack#settings.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["Type"],
+        "properties": {
+          "Type": { "enum": ["int", "bool", "string", "string[]", "object", "object[]"] },
+          "Default": { "description": "The value Get-MtSetting returns when the config does not set the setting." },
+          "Description": { "type": "string" },
+          "AllowedValues": { "description": "The values a string or string[] setting accepts.", "type": "array", "items": { "type": "string" } },
+          "Kind": { "description": "What a string holds, for example Entra.Group, so a user interface can offer a picker.", "type": "string" },
+          "Sensitive": { "description": "The value is redacted in the results.", "type": "boolean" }
+        }
+      }
+    },
     "Report": {
       "description": "How the pack appears in the Maester report. See https://maester.dev/docs/packs/writing-a-pack#the-packs-menu-in-the-report.",
       "type": "object",

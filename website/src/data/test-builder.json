@@ -18240,6 +18240,336 @@
       }
     ]
   },
+  "settings": [
+    {
+      "name": "AzureDevOpsOrganization",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "Azure DevOps organization that Connect-Maester -Service AzureDevOps connects to.",
+      "connection": true
+    },
+    {
+      "name": "DataverseEnvironmentUrl",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "URL of the Dataverse environment that the Copilot Studio checks read.",
+      "connection": true
+    },
+    {
+      "name": "DefenderEndpointComplianceLogic",
+      "type": "string",
+      "kind": null,
+      "default": "EffectivePolicy",
+      "allowedValues": [
+        "EffectivePolicy",
+        "AllPolicies",
+        "AnyPolicy"
+      ],
+      "description": "How the Defender for Endpoint checks combine policies: EffectivePolicy, AllPolicies or AnyPolicy.",
+      "connection": false
+    },
+    {
+      "name": "DefenderEndpointPolicyFiltering",
+      "type": "string",
+      "kind": null,
+      "default": "OnlyAssigned",
+      "allowedValues": [
+        "All",
+        "IncludeUnassigned",
+        "OnlyAssigned"
+      ],
+      "description": "Which Defender for Endpoint policies the Defender checks read: All, IncludeUnassigned or OnlyAssigned.",
+      "connection": false
+    },
+    {
+      "name": "EmergencyAccessAccounts",
+      "type": "object[]",
+      "kind": null,
+      "default": [],
+      "allowedValues": [],
+      "description": "Emergency access (break glass) accounts and groups. Checks of Conditional Access, privileged roles and sign-in activity treat them as the exception they are.",
+      "connection": false
+    },
+    {
+      "name": "GitHubApiBaseUri",
+      "type": "string",
+      "kind": null,
+      "default": "https://api.github.com",
+      "allowedValues": [],
+      "description": "Base URI of the GitHub REST API.",
+      "connection": true
+    },
+    {
+      "name": "GitHubApiVersion",
+      "type": "string",
+      "kind": null,
+      "default": "2022-11-28",
+      "allowedValues": [],
+      "description": "GitHub REST API version.",
+      "connection": true
+    },
+    {
+      "name": "GitHubOrganization",
+      "type": "string",
+      "kind": null,
+      "default": "",
+      "allowedValues": [],
+      "description": "GitHub organization that the GitHub checks read.",
+      "connection": true
+    },
+    {
+      "name": "ParkedDomains",
+      "type": "string[]",
+      "kind": "Entra.Domain",
+      "default": [],
+      "allowedValues": [],
+      "description": "Accepted domains that never send email. The email authentication checks expect them to deny all mail.",
+      "connection": false
+    },
+    {
+      "name": "XspmExternalDataUris",
+      "type": "object",
+      "kind": null,
+      "default": null,
+      "allowedValues": [],
+      "description": "HTTPS mirrors of the data sources the XSPM Advanced Hunting queries read: EntraDirectoryRoles, MicrosoftApps, ApiPermissions, ArmApiRequests.",
+      "connection": true
+    }
+  ],
+  "parameterKinds": [
+    "Azure.Resource",
+    "Azure.ResourceGroup",
+    "Azure.Subscription",
+    "Entra.Application",
+    "Entra.ConditionalAccessPolicy",
+    "Entra.DirectoryRole",
+    "Entra.Domain",
+    "Entra.Group",
+    "Entra.NamedLocation",
+    "Entra.ServicePrincipal",
+    "Entra.User"
+  ],
+  "parameterNames": [
+    {
+      "name": "AcceptedBannerTexts",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AllDevices",
+      "type": "switch",
+      "tests": 2
+    },
+    {
+      "name": "AllDomains",
+      "type": "switch",
+      "tests": 1
+    },
+    {
+      "name": "AllowedLicenseSkuPartNumbers",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "AllowedPolicies",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "ComplianceLogic",
+      "type": "string",
+      "tests": 24
+    },
+    {
+      "name": "EmergencyAccessAccounts",
+      "type": "object[]",
+      "tests": 8
+    },
+    {
+      "name": "EvaluationPeriodDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "ExpiringWithinDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MailboxServicePlanIds",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "MaximumActiveSecrets",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumDevicesPerUser",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumExternalRecipientsPerHour",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumIdleTimeoutHours",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumIdleTimeoutMinutes",
+      "type": "int",
+      "tests": 3
+    },
+    {
+      "name": "MaximumInactiveDays",
+      "type": "int",
+      "tests": 7
+    },
+    {
+      "name": "MaximumInactivityMinutes",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumInstallDelayDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumInstanceDurationDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumInternalRecipientsPerHour",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumLifetimeDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumLockoutThreshold",
+      "type": "int",
+      "tests": 4
+    },
+    {
+      "name": "MaximumPasswordAgeDays",
+      "type": "int",
+      "tests": 3
+    },
+    {
+      "name": "MaximumPatchLevelAgeDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumRecipientsPerDay",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumSignInFrequencyDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumSignInFrequencyHours",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MaximumValidationAgeDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MaximumValidityDays",
+      "type": "int",
+      "tests": 2
+    },
+    {
+      "name": "MinimumIPv4PrefixLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MinimumLockoutDurationSeconds",
+      "type": "int",
+      "tests": 4
+    },
+    {
+      "name": "MinimumOsVersion",
+      "type": "string",
+      "tests": 1
+    },
+    {
+      "name": "MinimumPasscodeLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "MinimumPasswordLength",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "ParkedDomains",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "PolicyFiltering",
+      "type": "string",
+      "tests": 24
+    },
+    {
+      "name": "RecentModificationDays",
+      "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "RequiredLogCategories",
+      "type": "string[]",
+      "tests": 2
+    },
+    {
+      "name": "RequiredPolicyTypes",
+      "type": "string[]",
+      "tests": 2
+    },
+    {
+      "name": "RequiredRecipients",
+      "type": "string[]",
+      "tests": 1
+    },
+    {
+      "name": "Selector",
+      "type": "string",
+      "tests": 2
+    },
+    {
+      "name": "SkipHybridJoinCheck",
+      "type": "switch",
+      "tests": 2
+    },
+    {
+      "name": "Strict",
+      "type": "switch",
+      "tests": 3
+    }
+  ],
   "rubric": {
     "Rate the test, not your tenant": "Rate every value for a typical organization that fails the test, using the fix the test's own Markdown file\nrecommends. Do not rate for the best case, the worst case or one tenant you know. When two values fit, choose the\nlower one for `Severity`, `UserImpact` and `ImplementationCost`. A reader should be able to see the reason for\neach value in the test's description and remediation text.",
     "Product": "The product where the fix is made. One value.\n\n- Use the product whose admin surface holds the setting, not every product the test reads from.\n- Tests in a product folder (`tests/maester/entra`, `tests/cisa/exchange`) use that folder's product.\n- A product the test only reads from, or a licence it needs, is not a second product. `Service` and `License`\n  already say that.",
@@ -18254,6 +18584,7 @@
     "Control": "Requirements of frameworks the test implements or supports, written `<framework-key>:<requirement-id>`, for\nexample `cis-m365:5.1.5.1`, `cisa-scuba:MS.AAD.3.1` or `nist-800-53-r5:IA-2(1)`. Optional list. Any test can use\nit: one shipped with Maester or one of your own.\n\n- `Control` is the only way a test is mapped to a framework. A CIS test carries `Control = 'cis-m365:5.1.5.1'` and\n  a CISA test carries `Control = 'cisa-scuba:MS.AAD.3.1'` and an ASD test `Control = 'essential-eight:ISM-1504'`.\n  Every test in `tests/cis`, `tests/cisa`, `tests/asd` and `tests/disa` must name a requirement of its suite's framework. The unit\n  tests check this.\n- The first value that names a requirement in a framework file becomes the `Benchmark` of the result. Put the\n  requirement the test is written for first, and any other requirement it supports after it.\n- Use the same attribute for a test that exists for its own reasons and also supports a requirement: a Maester\n  test that checks the setting a CISA policy asks for, or a CIS test that also supports a NIST control.\n- When the key is a framework shipped with Maester (`cis-m365`, `cis-github`, `cisa-scuba`, `essential-eight`, `ism`), the requirement must\n  exist in that framework's file. If it is new, add it to the file with its facts. The module build and the unit\n  tests fail otherwise.\n- Do not repeat the `Related` controls of a requirement. The framework file lists them and Maester adds them to\n  the result.\n- List a requirement only when a passing result is evidence for it. A test that checks one part of a requirement\n  may list it; a test that is merely on the same topic may not.\n\nA reference says the test supports the requirement. It never says the organization complies with it.\n\n### NIST SP 800-53\n\nA test may list the NIST SP 800-53 Rev. 5 controls its setting implements, as `nist-800-53-r5:<control>`.\n\n- Use an ID from the pinned list, [`powershell/assets/MaesterNistControls.json`](https://github.com/maester365/maester/blob/main/powershell/assets/MaesterNistControls.json):\n  a base control (`AC-2`) or an enhancement (`IA-2(1)`). The unit tests reject anything else.\n- List a control only when a passing result is direct evidence that it is implemented for what the test checks.\n- Prefer the enhancement when the test checks exactly what it says: MFA for privileged accounts is `IA-2(1)`.\n  Do not list a base control together with one of its own enhancements.\n- At most three, best fit first. Never the policy-and-procedures controls (`AC-1`, `IA-1` and so on).\n- A test that only reports a count, or checks health, licensing or tidiness, lists none, unless the count is\n  itself what a control asks to be tracked: dormant accounts for `AC-2(3)`.\n- A test that implements a CISA SCuBA policy does not list NIST controls. CISA publishes that mapping, the\n  framework file carries it as `Related`, and the result gets it from there.",
     "Lifecycle and ReplacedBy": "- `Preview`: new and still changing. Not run unless previews are included.\n- `Stable`: the default.\n- `Deprecated`: kept so history stays readable. Give `ReplacedBy` when another test took its place.",
     "Tag": "`Tag` holds labels the owner of a test folder finds useful. It is not part of Maester's taxonomy.\n\n- Built-in tests do not carry tags for product, feature, area, suite, benchmark, licence, severity or their own ID.\n  Each of those has an attribute or is derived.\n- A custom test may tag freely.",
-    "How the rubric is enforced": "1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1`) fail when a built-in test misses a\n   required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a\n   retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not\n   have, or is a CIS or CISA test without a `Control` for its own framework.\n2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A\n   reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit\n   the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the\n   same product and feature. It fails a test whose area, resource type or severity differs from the same check in\n   another suite, and whose user impact or implementation cost differs when both plainly recommend the same fix.\n   MITRE techniques and related products are not compared. A maintainer can overrule it.\n3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`."
+    "Parameter names": "A parameter's name is what an administrator types in `TestSettings` and reads in `Get-MtTest` and the results, so\nevery parameter of a test shipped with Maester follows one convention. A name belongs to its own test: two tests\nmay use one name for two different things, and nothing links them unless both bind the same setting. Still, a\nname says what is measured, so a reader never has to open the test to learn what a value means.\n\n| Kind of value | Name | Examples |\n| --- | --- | --- |\n| Upper or lower limit | `Maximum` or `Minimum`, what is measured, then the unit | `MaximumInactiveDays`, `MinimumPasswordLength`, `MaximumIdleTimeoutMinutes` |\n| Other number of days, hours or minutes | What it is, then the unit | `ExpiringWithinDays`, `EvaluationPeriodDays` |\n| List | Its role, then a plural noun | `ExcludedGroups`, `AllowedPolicies`, `ParkedDomains` |\n| Switch | What turning it on does; off by default | `Strict`, `AllDevices`, `SkipHybridJoinCheck` |\n| Choice | A noun for what is chosen, with a `ValidateSet` | `PolicyFiltering`, `ComplianceLogic` |\n\n- PascalCase. Spell out `Maximum` and `Minimum`, never `Max` or `Min`.\n- A unit is a plain suffix: `Days`, `Hours`, `Minutes`, `Seconds`. Not `InDays`.\n- A `string[]` or `object[]` name is plural.\n- Say what is measured. `MaximumInactiveDays`, not `ThresholdDays`; `MaximumValidationAgeDays`, not\n  `StaleThresholdDays`.\n- Reuse an established name for the same idea. If other tests already call it `MaximumInactiveDays`, a new test\n  that counts days without a sign-in does not call it `DormantDays`.\n- Do not use the names of PowerShell common parameters (`Force`, `Confirm`, `WhatIf`, `PassThru`).\n\n### Parameters bound to a setting\n\nA fact about the tenant or a choice the organisation makes once, such as its parked domains or its emergency\naccess accounts, is a setting in `GlobalSettings`. A test receives it as a parameter bound to that setting:\n\n```powershell\nparam(\n    # Domains that never send email.\n    [MaesterParameter(Setting = 'ParkedDomains')]\n    [string[]] $ParkedDomains = @()\n)\n```\n\n- Bind a parameter only when the value means the same thing to every test that binds it, and the organisation\n  sets it once. A value a benchmark sets, such as a lockout threshold, is never bound: each benchmark test keeps\n  its own default.\n- A test never calls `Get-MtSetting` for such a value. The engine binds it, so `Get-MtTest` and the results show\n  it and a `TestSettings` row can override it.\n- A setting is named after what it holds, never after a test or a suite. It is registered in\n  `powershell/assets/MaesterSettings.psd1` with its type, default, allowed values and, for a list of objects,\n  the properties of an item; a pack names its own settings `Namespace.Key` and declares them under `Settings`\n  in its `maester-pack.json`.\n- The parameter's type, default and `ValidateSet` are those of the setting. The config is checked against the\n  registry once before a run, so a test must not accept or default to anything else.\n- Pass the value to the helpers that need it. A helper never reads a setting that tests bind, or it would ignore\n  the value the test was given.\n- A shim declares each bound parameter of the test it calls and passes it on. The engine binds the parameters of\n  the test it runs, the shim; the function the shim calls is an ordinary call.\n- A connection or transport setting that a connect command or a data helper needs, such as `GitHubOrganization`\n  or `XspmExternalDataUris`, is not a test input and is read with `Get-MtSetting`. It is still registered, and\n  the engine records the read on the result of the test that caused it (`SettingsRead`).",
+    "How the rubric is enforced": "1. **Unit tests** (`powershell/tests/general/NativeTestAttributes.Tests.ps1` and\n   `powershell/tests/general/TestParameterNames.Tests.ps1`) fail when a built-in test misses a\n   required attribute, uses a key that is not in the taxonomy, pairs a feature with the wrong product, lists a\n   retired ATT&CK technique, carries a taxonomy tag, names a requirement that a shipped framework file does not\n   have, or is a CIS or CISA test without a `Control` for its own framework. They also fail on a parameter name\n   that breaks a mechanical rule of [Parameter names](#parameter-names): not PascalCase, `Max` or `Min`, a unit\n   with `In`, a singular list, a common parameter's name, one name with two types, or a bound parameter whose default or\n   allowed values differ from its setting. And they fail when a built-in test calls `Get-MtSetting`, a helper\n   reads a setting that tests bind, the module or a shipped pack reads a setting that is not declared, or a shim\n   does not pass on a bound parameter of the test it calls (`powershell/tests/general/TestShims.Tests.ps1`).\n2. **Attribute review** runs on every pull request that adds a test or changes one of these attributes. A\n   reviewer model reads the test, its Markdown file and this page, and fails the check when a value does not fit\n   the rubric, with the value it expected and the reason. It also sees the attributes of the other tests with the\n   same product and feature. It fails a test whose area, resource type or severity differs from the same check in\n   another suite, and whose user impact or implementation cost differs when both plainly recommend the same fix.\n   MITRE techniques and related products are not compared. It also reviews the names of a new, renamed or\n   rebound parameter against [Parameter names](#parameter-names) and the names other tests already use. A\n   maintainer can overrule it.\n3. **Reviewers**, human or agent, apply the same page. See `AGENTS.md`."
   }
 }

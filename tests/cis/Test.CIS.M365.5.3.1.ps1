@@ -33,14 +33,18 @@
     )]
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
+    )
 
     Write-Verbose 'Getting privileged role definitions and assignments...'
     $globalAdminId = '62e90394-69f5-4237-9190-012177145e10'
     $privilegedRoles = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta -Filter 'isPrivileged eq true'
     $instances = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignmentScheduleInstances' -QueryParameters @{ expand = 'principal' }
 
-    $emergencyIds = @(Get-MtEmergencyAccessAccount | ForEach-Object { $_.ObjectId })
+    $emergencyIds = @(Get-MtEmergencyAccessAccount -Account $EmergencyAccessAccounts | ForEach-Object { $_.ObjectId })
     $emergencyCandidates = 0
     $report = foreach ($instance in $instances) {
         $role = @($privilegedRoles) | Where-Object { $_.id -eq $instance.roleDefinitionId } | Select-Object -First 1

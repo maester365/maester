@@ -104,8 +104,18 @@ New-MtTest -Id MT.1234 -Title 'At least one Conditional Access policy blocks dev
 ```
 
 Only `-Id` and `-Title` are required, so you can scaffold first and set the other values once the `.md` is
-written (see [Choosing the attribute values](#choosing-the-attribute-values)). `New-MtTest` does not write
-`Author`; add it.
+written (see [Choosing the attribute values](#choosing-the-attribute-values)). `New-MtTest` is made for custom
+tests, so for a built-in check finish what it leaves:
+
+- It warns that the `MT`, `CIS`, `CISA`, `ASD` and other built-in prefixes are reserved. For a check that ships
+  with Maester the warning is expected; ignore it.
+- It names the function after the ID (`Test-MT1234`). Rename it to say what it checks
+  (`Test-MtCaBlockDeviceCodeFlow`), with the `Mt` prefix and an approved verb.
+- `-Setting EmergencyAccessAccounts` (one or more registered settings) writes the bound parameter for each, with
+  the registry's type, default and allowed values. Other parameters are added by hand; the
+  [test builder](https://maester.dev/test-builder) writes them and checks their names.
+- It does not write `Author`. Add the contributor's GitHub handle; ask if you do not know it, and do not take it
+  from the git email address.
 
 ```powershell
 function Test-MtCaBlockDeviceCodeFlow {
@@ -235,6 +245,10 @@ Licence tokens: `AAD_PREMIUM` (Entra ID P1 or better), `AAD_PREMIUM_P2`, `Entra_
   that kind exist). Never return `$null` to mean "not applicable".
 - Never use `NotConnected*` or `NotLicensed*` skip codes in a built-in check; declare `Service` /
   `License`.
+- A check that needs a setting the organisation has not filled in, such as `EmergencyAccessAccounts`, must not
+  fail and must not pass: skip with `-SkippedBecause Custom -SkippedCustomReason '<what to set and where>'`, naming
+  the setting and linking its configuration page (see `tests/maester/global-secure-access/Test.MT.1191.ps1`).
+  `NotApplicable` is for tenant state, not for missing configuration.
 - Checks that need delegated permissions skip with `-SkippedBecause NotSupportedAppPermission` when
   `(Get-MgContext).AuthType -ne 'Delegated'`.
 
@@ -254,8 +268,12 @@ param(
 )
 ```
 
-- Types: `int`, `bool`, `switch`, `string`, `string[]`. Constant defaults. Nothing mandatory: the check must run
-  with no config.
+- Types: `int`, `bool`, `switch`, `string`, `string[]` (and `object[]` only when bound to a setting). Constant
+  defaults. Nothing mandatory: the check must run with no config.
+- Names follow the rubric's "Parameter names": PascalCase; `Maximum`/`Minimum` + what + unit
+  (`MaximumInactiveDays`, never `MaxInactiveDays` or `...InDays`); plural lists (`ExcludedGroups`); say what is
+  measured. Reuse a name other tests already use for the same idea (`Get-MtTest` lists them). Unit tests
+  (`TestParameterNames.Tests.ps1`) and the attribute review enforce this.
 - Every parameter has a **one-line** `#` comment directly above it (only the nearest comment line is read), or
   `.PARAMETER` help. The unit tests require a description.
 - Thresholds get `ValidateRange`; choices get `ValidateSet`.
@@ -279,8 +297,34 @@ Each instance object has `Id` (required, unique, `^[A-Za-z0-9][A-Za-z0-9._-]{0,1
 
 ### Settings
 
-Read tenant-wide settings with `Get-MtSetting -Name <name>` (for example `EmergencyAccessAccounts`). New settings
-Maester itself reads go in `powershell/assets/MaesterSettings.psd1` with a type, default and description.
+A tenant-wide setting (`EmergencyAccessAccounts`, `ParkedDomains`, ...) reaches a check as a parameter bound to it,
+never through `Get-MtSetting` in the check:
+
+```powershell
+param(
+    # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+    [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+    [object[]] $EmergencyAccessAccounts = @()
+)
+```
+
+The engine binds `GlobalSettings.<Setting>` when the test's `TestSettings` row does not set the parameter, and
+records `Source = 'Setting'`. Pass the value on to helpers (`Get-MtEmergencyAccessAccount -Account
+$EmergencyAccessAccounts`). Bind only a fact about the tenant or a choice made once for all tests; a value a
+benchmark sets stays a plain parameter. A new built-in setting goes in `powershell/assets/MaesterSettings.psd1`
+with its `Type`, default, description, `AllowedValues`, `Items` (for a list of objects) and, for IDs or domains,
+`Kind`. The parameter's type, default and `ValidateSet` must match the registry entry, because the config is
+checked against the registry once before a run.
+
+- A built-in test never calls `Get-MtSetting`, and a helper never reads a setting that tests bind.
+- A shim declares each bound parameter of the test it calls and passes it on
+  (`return Test-MtX -EmergencyAccessAccounts $EmergencyAccessAccounts`); otherwise the called test runs with the
+  default.
+- A connection or transport setting that a connect command or data helper needs is read with `Get-MtSetting` and
+  must still be registered; the read is recorded on the result as `SettingsRead`.
+- A pack declares its `Namespace.Key` settings under `Settings` in `maester-pack.json`.
+
+`powershell/tests/general/TestParameterNames.Tests.ps1` and `TestShims.Tests.ps1` enforce these.
 
 ## Data Retrieval
 
@@ -531,8 +575,16 @@ the rubric. When you review a check yourself, follow "Reviewing a test's attribu
    rules of a custom test, so it does not report a missing attribute or a key that is not in the taxonomy.
 9. **Run against a tenant**: `Connect-Maester; Invoke-MtTest -Path <file>` (or `Invoke-MtTest -Id <ID>`). Try
    `-Parameter @{...}` for each parameter. Check the row's `Result`, `ReasonCode`, `ResultDetail.TestResult`.
-10. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
-   and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test.
+10. **Update the golden fixture.** A new built-in test changes the number of tests each selection returns, so
+   `powershell/tests/general/Golden.Tests.ps1` fails until you run `./build/golden/Export-MtGoldenFixture.ps1` and
+   commit `powershell/tests/fixtures/golden/selection.json`. Commit only that file: on macOS and Windows the
+   script can also rewrite the case of a path in `config-layouts/`, which you revert.
+11. **Update the pages that list the tests of a setting.** If the check binds `EmergencyAccessAccounts`, add it to
+   "Related Tests" in `website/docs/configuration/emergency-access-accounts.md`.
+12. **Run the unit tests**: `./powershell/tests/pester.ps1`. `powershell/tests/general/NativeTestLint.Tests.ps1`
+   and `powershell/tests/general/NativeTestAttributes.Tests.ps1` check every built-in test. A new `.ps1` file
+   needs a UTF-8 byte order mark (`FileEncoding.Tests.ps1`); the test only sees files git tracks, so `git add`
+   the new files before the run.
 
 ## Converting a User's Pester-format Test
 

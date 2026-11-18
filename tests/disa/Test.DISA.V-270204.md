@@ -2,7 +2,7 @@ No enabled user account in Microsoft Entra ID has gone 35 days or more without s
 
 Accounts that nobody uses are a gift to an attacker: a stolen or guessed password for a dormant account is unlikely to be noticed, because its owner never sees the sign-in prompts, alerts or mailbox changes. DISA asks that accounts are disabled after 35 days of inactivity.
 
-The check reads every enabled user, members and guests, as the STIG's audit procedure does, and lists those whose last interactive sign-in is older than 35 days (`InactiveDays`), or who never signed in and were created more than 35 days ago. Microsoft Entra ID does not disable inactive accounts by itself, so the fix is a recurring process. [ASD.ISM-1648](https://maester.dev/docs/tests/ASD.ISM-1648) checks the same for privileged users with a 45-day limit.
+The check reads every enabled user, members and guests, as the STIG's audit procedure does, and lists those whose last interactive sign-in is older than 35 days (`MaximumInactiveDays`), or who never signed in and were created more than 35 days ago. Microsoft Entra ID does not disable inactive accounts by itself, so the fix is a recurring process. [ASD.ISM-1648](https://maester.dev/docs/tests/ASD.ISM-1648) checks the same for privileged users with a 45-day limit.
 
 Accounts that must stay enabled without signing in, such as emergency access accounts, need the exception documented with your authorizing official; leave them enabled and expect them in this list.
 

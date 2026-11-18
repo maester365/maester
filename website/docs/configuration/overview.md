@@ -1,7 +1,7 @@
 ---
 title: Configuration overview
 sidebar:
-  order: 1
+  order: 2
 ---
 
 # Configure Maester
@@ -44,6 +44,23 @@ The configuration file has two main sections:
 ### GlobalSettings
 
 The `GlobalSettings` section contains organization-wide configuration that can be used by multiple tests. For example, you can define your emergency access accounts here so that all related tests use the same accounts.
+
+A test receives a global setting as one of its parameters, so `Get-MtTest` shows which tests use it and the result shows the value each test ran with. To give one test a different value, set the parameter in that test's `TestSettings` row; it wins over `GlobalSettings`:
+
+```json
+{
+  "GlobalSettings": { "ParkedDomains": ["contoso-old.com"] },
+  "TestSettings": [ { "Id": "CIS.M365.2.1.9", "Parameters": { "ParkedDomains": [] } } ]
+}
+```
+
+Maester checks `GlobalSettings` once, before any test runs:
+
+- A value of the wrong type, or one the setting does not allow, stops the run with a message that names the setting.
+- A key Maester does not know gives a warning that names the closest setting, so a typo such as `ParkedDomain` is not silently ignored.
+- A setting marked sensitive is written to the results as `[redacted]`.
+
+Your own custom tests can have settings too. Name them `Namespace.Key`, for example `Contoso.Regions`, so they cannot collide with a setting of Maester or of a pack. A [Maester Pack](../packs/index.md) declares the settings it reads, and they are checked the same way when the pack runs. The [run configuration reference](./run-configuration.md#globalsettings) lists every setting Maester knows.
 
 ### XSPM external data sources
 
@@ -120,6 +137,9 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `ParkedDomains` | Accepted domains that never send email; the email authentication checks expect them to deny all mail | This page |
+| `DefenderEndpointPolicyFiltering` | Which Defender for Endpoint policies the Defender checks read: `All`, `IncludeUnassigned` or `OnlyAssigned` (default) | This page |
+| `DefenderEndpointComplianceLogic` | How the Defender for Endpoint checks combine policies: `EffectivePolicy` (default), `AllPolicies` or `AnyPolicy` | This page |
 | `XspmExternalDataUris` | Override the HTTPS sources used by XSPM Advanced Hunting queries | This page |
 
 The GitHub and Dataverse settings are listed in the [run configuration reference](./run-configuration.md#globalsettings).
