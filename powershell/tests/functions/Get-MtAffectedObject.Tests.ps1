@@ -209,6 +209,31 @@ Describe 'Affected objects' {
             }
         }
 
+        It 'Should remove the escape Get-MtSafeMarkdown adds to an HTML entity: <Name>' -ForEach @(
+            @{ Name = 'Ops &copy;' }
+            @{ Name = '&#169; sign' }
+            @{ Name = '&#xA9; sign' }
+            @{ Name = 'Q &amp; A' }
+            @{ Name = 'R&D &amp; Q' }
+            @{ Name = 'R&D' }
+            @{ Name = 'Ops & Support' }
+        ) {
+            # '&' is not in the character loop above because "Contoso&App" is not an entity, so the
+            # helper leaves it alone and the case would pass without testing the new escape.
+            $Policy = 'Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId'
+            $Link = "https://entra.microsoft.com/#view/$Policy/44444444-4444-4444-4444-444444444444"
+            $escaped = InModuleScope Maester -Parameters @{ Name = $Name } {
+                param($Name)
+                Get-MtSafeMarkdown $Name
+            }
+            $affectedObject = InModuleScope Maester -Parameters @{ Markdown = "- [$escaped]($Link)" } {
+                param($Markdown)
+                Get-MtAffectedObjectFromMarkdown -Markdown $Markdown
+            }
+
+            $affectedObject.DisplayName | Should -BeExactly $Name
+        }
+
         It 'Should capture an enterprise application linked by object id only' {
             $markdown = '- [Mailbox Migration Account](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/55555555-5555-5555-5555-555555555555) with Global Administrator'
 

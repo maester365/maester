@@ -61,6 +61,39 @@
         Get-MtSafeMarkdown $Text | Should -BeExactly $Text
     }
 
+    # The report renders markdown to HTML, and a browser turns `&copy;` into its character. A
+    # tenant-controlled name that contains an entity would then show as a different text, so the
+    # ampersand is escaped. The backslash is consumed by the renderer, and the reader sees the
+    # original text.
+    It 'Escapes an ampersand that starts an HTML entity: <Text>' -ForEach @(
+        @{ Text = 'Ops &copy;'; Expected = 'Ops \&copy;' }
+        @{ Text = '&#169; sign'; Expected = '\&#169; sign' }
+        @{ Text = '&#xA9;'; Expected = '\&#xA9;' }
+        @{ Text = '&#XA9;'; Expected = '\&#XA9;' }
+        @{ Text = 'Q &amp; A'; Expected = 'Q \&amp; A' }
+        @{ Text = 'R&D &amp; Q'; Expected = 'R&D \&amp; Q' }
+        @{ Text = '[a](b) &copy;'; Expected = '\[a\]\(b\) \&copy;' }
+        # Over-escaped on purpose: `&Marketing;` has the shape of an entity, and the backslash
+        # costs nothing because the renderer consumes it.
+        @{ Text = 'Sales&Marketing; Europe'; Expected = 'Sales\&Marketing; Europe' }
+    ) {
+        Get-MtSafeMarkdown $Text | Should -BeExactly $Expected
+    }
+
+    It 'Leaves an ampersand that does not start an entity alone: <Text>' -ForEach @(
+        @{ Text = 'R&D' }
+        @{ Text = 'Ops & Support' }
+        @{ Text = 'AT&T Inc' }
+        @{ Text = 'a && b' }
+        @{ Text = '&' }
+        @{ Text = 'x &copy y' }
+        @{ Text = 'a &= b;' }
+    ) {
+        # No entity body or no semicolon. Escaping these would fill the JSON output with
+        # backslashes for no benefit.
+        Get-MtSafeMarkdown $Text | Should -BeExactly $Text
+    }
+
     It 'Replaces line breaks so values stay on one line' {
         Get-MtSafeMarkdown "line1`r`n| --- |`nline3" | Should -BeExactly 'line1 \| --- \| line3'
     }

@@ -14,8 +14,10 @@
 		Characters with meaning in markdown are backslash-escaped, and so are the ones that make GFM
 		turn text into a link on its own: a bare 'https://host', 'ftp://host', 'www.host', 'a@b' or
 		'mailto:a@b' is an autolink literal, not markdown syntax, and the report renders with
-		'gfm: true'. Line breaks are replaced with spaces. Every backslash added here is consumed by
-		the renderer, so the value is displayed exactly as entered.
+		'gfm: true'. An ampersand that starts an HTML entity, such as '&copy;' or '&#169;', is
+		escaped as well. Without it the renderer would show the character the entity stands for
+		and not the text. Line breaks are replaced with spaces. Every backslash added here is
+		consumed by the renderer, so the value is displayed exactly as entered.
 
 	.PARAMETER Text
 		The text to escape
@@ -63,5 +65,14 @@
     # tenant-controlled name each render as a live link without them. A plain `contoso.com`
     # is deliberately left alone: GFM does not autolink it, and escaping every dot would be
     # noise in the JSON output for no gain.
-    ($Text -replace '([\\`*_\[\]()!|<>~:@])', '\$1') -replace '(?<=www)\.', '\.'
+    $Text = ($Text -replace '([\\`*_\[\]()!|<>~:@])', '\$1') -replace '(?<=www)\.', '\.'
+
+    # Third pass: an ampersand that starts an HTML entity (`&copy;`, `&#169;`, `&#xA9;`). The report
+    # renders markdown to HTML, and a browser turns the entity into its character, so `Ops &copy;`
+    # would show as `Ops (c)` and two different names could look the same. `\&` is a markdown
+    # escape that the renderer consumes, so the entity is shown as typed. It runs last, so the
+    # backslash it adds is not escaped again, and it only matches an ampersand followed by an
+    # entity body and a semicolon: a plain `R&D` or `Ops & Support` is left alone, so the JSON
+    # output does not fill with backslashes.
+    $Text -replace '&(?=#[0-9]+;|#[xX][0-9A-Fa-f]+;|[A-Za-z][A-Za-z0-9]*;)', '\&'
 }

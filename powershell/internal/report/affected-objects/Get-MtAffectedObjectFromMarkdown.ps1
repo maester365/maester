@@ -71,7 +71,9 @@
         # Must stay a superset of what Get-MtSafeMarkdown escapes, or a name keeps a literal
         # backslash on the affected-objects page. `:` and `@` were added there for GFM autolink
         # literals; `~` has been escaped by the helper for longer and was missing here too.
-        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>~:@])'
+        # `&` is escaped when it starts an HTML entity (`&copy;`), so `Ops \&copy;` is read back
+        # as `Ops &copy;`.
+        $markdownEscape = '\\([\\`*_{}\[\]()#+\-.!|<>~:@&])'
 
         foreach ($link in [regex]::Matches($Markdown, $linkPattern)) {
             $url = $link.Groups['url'].Value
