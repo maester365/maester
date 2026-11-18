@@ -56,6 +56,7 @@ $test03 | Should -Match "Area='applications'"
                     sAMAccountName = 'svc-web$'
                     dNSHostName = 'svc-web.contoso.com'
                     objectSid = 'S-1-5-21-1-2-3-1101'
+                    userAccountControl = 2
                     'msDS-GroupMSAMembership' = [byte[]](1, 2, 3, 4)
                 }
             } -ParameterFilter {
@@ -92,6 +93,7 @@ $test03 | Should -Match "Area='applications'"
             $result.Count | Should -Be 1
             $result[0].PasswordRetrievalTrustees.Count | Should -Be 1
             $result[0].BroadPasswordRetrievalTrustees.Count | Should -Be 1
+            $result[0].Enabled | Should -BeFalse
 
             $trustee = $result[0].BroadPasswordRetrievalTrustees[0]
             $trustee.Sid | Should -Be 'S-1-5-32-545'

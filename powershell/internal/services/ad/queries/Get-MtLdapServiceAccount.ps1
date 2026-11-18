@@ -42,7 +42,7 @@
     # Request the authorization descriptor only. The managed-password value is intentionally excluded.
     $attributes = @(
         'distinguishedName','name','sAMAccountName','dNSHostName','whenCreated','whenChanged',
-        'objectSid','msDS-GroupMSAMembership'
+        'objectSid','userAccountControl','msDS-GroupMSAMembership'
     )
     $entries = @(Invoke-MtLdapSearch -Connection $Connection -SearchBase $SearchBase -Scope Subtree -Filter '(objectClass=msDS-GroupManagedServiceAccount)' -Attributes $attributes)
 
@@ -184,6 +184,14 @@
             })
         }
 
+        $rawUserAccountControl=$entry.userAccountControl
+        if($null -ne $rawUserAccountControl -and $null -ne $rawUserAccountControl.PSObject.Properties['Value']){$rawUserAccountControl=$rawUserAccountControl.Value}
+        if($rawUserAccountControl -is [System.Array]){$rawUserAccountControl=@($rawUserAccountControl)[0]}
+        $enabled=$null
+        if($null -ne $rawUserAccountControl){
+            try{$enabled=(([uint32]$rawUserAccountControl -band [uint32]0x00000002) -eq 0)}catch{$enabled=$null}
+        }
+
         [pscustomobject][ordered]@{
             DistinguishedName=[string]$entry.DistinguishedName
             Name=[string]$entry.name
@@ -194,7 +202,7 @@
             Sid=$entry.objectSid
             ObjectClass=@('msDS-GroupManagedServiceAccount')
             ServiceAccountType='GroupManagedServiceAccount'
-            Enabled=$true
+            Enabled=$enabled
             PasswordRetrievalTrustees=$trustees
             BroadPasswordRetrievalTrustees=@($trustees|Where-Object Classification -eq 'Broad')
             UnresolvedPasswordRetrievalTrustees=@($trustees|Where-Object Classification -eq 'Unresolved')
