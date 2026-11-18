@@ -214,7 +214,7 @@
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Get-MtSetting { return $null }
 
-            InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
         }
 
         It 'Should pass when a group is excluded from all policies (auto-detected)' {
@@ -223,7 +223,7 @@
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Get-MtSetting { return $null }
 
-            InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
         }
     }
 
@@ -469,7 +469,7 @@
 
             # Returns $false because Agent Identity policies don't apply to users and are filtered out
             # When all policies are filtered out, there are no policies to check, so no emergency access is detected
-            InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
         }
 
         It 'Should return false (no emergency access detected) when only a Service Principal policy exists (which should be ignored)' {
@@ -480,7 +480,7 @@
 
             # Returns $false because Service Principal policies don't apply to users and are filtered out
             # When all policies are filtered out, there are no policies to check, so no emergency access is detected
-            InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeFalse
         }
 
         It 'Should only check user-targeted policies when both Agent Identity and user policies exist' {
@@ -493,7 +493,7 @@
             Mock -ModuleName Maester Get-MtSetting { return $null }
 
             # Should pass because the Agent Identity policy is ignored and the user policy has exclusions
-            InModuleScope Maester -Parameters @{ C = $config } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
+            InModuleScope Maester -Parameters @{ C = $null } { Test-MtCaEmergencyAccessExists -EmergencyAccessAccounts $C } | Should -BeTrue
         }
     }
 }
