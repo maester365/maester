@@ -8,11 +8,13 @@
     original Graph shape, including controls and rule-specific conditions. Shared conditions and owners stay
     on the parent plan. Empty plan inventories return no objects; failed reads terminate instead of hiding plans.
     This preview API accepts Policy.Read.All; write permissions are not required.
-    Delegated callers also need a supported Microsoft Entra role: Conditional Access Administrator is the least
-    privileged built-in role supported for listing plans; an appropriate custom role is also supported.
-    Policy.Read.All alone is not sufficient for every delegated caller. Existing CA checks read plans through
-    the combined inventory, so callers who can read standalone policies may now encounter a plan-read error.
-    See https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta
+    For delegated access, Microsoft documents Conditional Access Administrator as the least privileged supported
+    built-in role for listing plans; an appropriate custom role is also supported.
+    On 18 November 2026, julien-ly reported successful plan and rule reads in one tenant with either Global Reader
+    or Security Reader and delegated Policy.Read.All. This describes observed preview behavior in that tenant;
+    validate plan and rule access with the intended audit identity against Microsoft's documented requirements.
+    Existing CA checks read plans through the combined inventory, so callers who can read standalone policies
+    may still encounter a plan-read error.
 
     .PARAMETER MetadataOnly
     Reads only plan metadata and does not request child rules. Useful for accountability checks.
@@ -28,6 +30,12 @@
 
     .LINK
     https://maester.dev/docs/commands/Get-MtConditionalAccessPolicyPlan
+
+    .LINK
+    https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta
+
+    .LINK
+    https://github.com/maester365/maester/pull/2733#issuecomment-6979345045
     #>
     [CmdletBinding()]
     [OutputType([pscustomobject])]

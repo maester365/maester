@@ -33,7 +33,9 @@ No plans is a valid empty inventory: standalone policies continue to be evaluate
 
 ## Read permissions
 
-This integration reads configuration only and does not request write permissions. `Policy.Read.All` is the existing Maester permission used for the standalone inventory and the tested plans endpoints. For delegated access, Microsoft documents **Conditional Access Administrator** as the least privileged supported built-in Entra role for listing plans; an appropriate custom role is also supported. The Graph permission alone does not grant this role.
+This integration reads configuration only and does not request write permissions. `Policy.Read.All` is the existing Maester permission used for the standalone inventory and the tested plans endpoints. For delegated access, [Microsoft documents](https://learn.microsoft.com/graph/api/conditionalaccessroot-list-plans?view=graph-rest-beta) **Conditional Access Administrator** as the least privileged supported built-in Entra role for listing plans; an appropriate custom role is also supported. The Graph permission alone does not grant this role.
+
+In a [tenant validation reported by julien-ly on 18 November 2026](https://github.com/maester365/maester/pull/2733#issuecomment-6979345045), an account assigned a single directory role, either **Global Reader** or **Security Reader**, successfully read standalone policies, listed plans, retrieved a plan with inline rules, and read the rules endpoint. The client used delegated `Policy.Read.All` only. These results describe the preview service behavior observed in that tenant; Microsoft's documented role requirements remain the support reference. Validate plan and rule access with the intended audit identity before relying on either reader role.
 
 This affects existing CA checks: the combined collector now requests plans as well as standalone policies. A delegated caller who previously could read standalone policies may receive a plan-read authorization error, even with `Policy.Read.All`. Such an error propagates to the check rather than silently returning standalone-only coverage. Preview availability can also prevent a plans request from succeeding.
 
