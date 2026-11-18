@@ -79,5 +79,10 @@
         } -ParameterFilter { $RelativeUri -like '*/vault-two/*' }
 
         Test-MtVaultSoftDelete | Should -BeFalse
+
+        Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Result -like '*vault-one*soft delete is enabled*' -and
+            $Result -like '*vault-two*state: Disabled*'
+        }
     }
 }
