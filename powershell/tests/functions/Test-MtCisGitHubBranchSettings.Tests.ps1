@@ -9,10 +9,11 @@
 
 Describe 'CIS GitHub branch audits through production evidence and native results' {
     BeforeEach {
-        $script:repoBody = '[{"id":101,"name":"repo","full_name":"fixture-org/repo","owner":{"login":"fixture-org"},"visibility":"private","archived":false,"disabled":false}]'
+        $script:repoBody = '[{"id":101,"node_id":"repo-node","name":"repo","full_name":"fixture-org/repo","owner":{"login":"fixture-org"},"visibility":"private","archived":false,"disabled":false}]'
         $script:branchBody = '[{"name":"main","protected":true}]'
         $script:policyBody = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection","required_pull_request_reviews":{"dismiss_stale_reviews":true,"require_code_owner_reviews":true},"required_conversation_resolution":{"enabled":true},"enforce_admins":{"enabled":true},"allow_force_pushes":{"enabled":false},"allow_deletions":{"enabled":false}}'
         $script:statusBody = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection/required_status_checks","strict":true,"contexts":["ci"],"contexts_url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection/required_status_checks/contexts","checks":[{"context":"ci","app_id":null}]}'
+        $script:graphBody = '{"data":{"repository":{"id":"repo-node","ref":{"prefix":"refs/heads/","name":"main","branchProtectionRule":{"requiresStatusChecks":true,"requiresStrictStatusChecks":true}}}}}'
         $script:signatureBody = '{"enabled":true}'
         $script:rulesBody = '[]'
         $script:defaultBody = '{"id":101,"default_branch":"main"}'
@@ -28,6 +29,13 @@ Describe 'CIS GitHub branch audits through production evidence and native result
             $__MtSession.GitHubAuthHeader = @{ 'X-GitHub-Api-Version' = '2022-11-28' }
             $__MtSession.GitHubCache = @{}
             $__MtSession.MaesterConfig = $null
+        }
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Method -eq 'POST' -and $Uri -eq 'https://api.github.com/graphql' } {
+            $request = $Body | ConvertFrom-Json
+            if ($request.variables.owner -cne 'fixture-org' -or $request.variables.name -cne 'repo' -or
+                $request.variables.ref -cne 'refs/heads/main' -or $request.query -notmatch 'branchProtectionRule\s*\{requiresStatusChecks requiresStrictStatusChecks\}' -or
+                $Headers.ContainsKey('X-GitHub-Api-Version')) { throw 'Unexpected status rule request.' }
+            [pscustomobject]@{ Content = $script:graphBody; Headers = @{} }
         }
         Mock Invoke-WebRequest -ModuleName Maester {
             if ($Method -ne 'GET' -or $Uri -notlike 'https://api.github.com/*') { throw 'Unexpected fixture request.' }
@@ -101,19 +109,14 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $script:policyBody = '{"' + $Parent + '":[{' + $Fields + '}]}'
         (Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Skipped'
     }
-    It 'Keeps the predefined-check requirement distinct from unresolved empty-set freshness' {
-        $policy = $script:statusBody | ConvertFrom-Json
-        $policy.contexts = @()
-        $policy.checks = @()
-        $script:statusBody = $policy | ConvertTo-Json -Depth 8 -Compress
-        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Failed'
-        $row = Invoke-MtTest -Id CIS.GH.1.1.10 -Config (Get-CisBranchFixtureConfig)
-        $row.Result | Should -Be 'Skipped'
-        $row.ReasonCode | Should -Be 'TestSkipped'
-        $row.ReasonDetail | Should -Match 'strict=True.*empty.*freshness enforcement.*not established'
-        $row.ResultDetail.TestResult | Should -Match 'Indeterminate findings: 1'
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -match '/protection/required_status_checks$' -and $Headers['X-GitHub-Api-Version'] -eq '2026-03-10' }
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/repos/fixture-org/repo/rules/branches/main' }
+    It 'Reports an empty list separately from the enabled status settings' {
+        $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
+        foreach ($id in 'CIS.GH.1.1.9', 'CIS.GH.1.1.10') {
+            $row = Invoke-MtTest -Id $id -Config (Get-CisBranchFixtureConfig)
+            $row.Result | Should -Be 'Passed'
+            $row.ResultDetail.TestResult | Should -Match 'no predefined checks'
+        }
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -match '/graphql$' }
     }
     It 'Preserves <Expected> precedence over an indeterminate empty-set freshness branch' -ForEach @(
         @{ Expected = 'Failed'; RequestError = $false }
@@ -123,6 +126,7 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $policy.contexts = @()
         $policy.checks = @()
         $script:statusBody = $policy | ConvertTo-Json -Depth 8 -Compress
+        $script:graphBody = '{"data":{"repository":null}}'
         $script:otherStatusBody = $script:statusBody.Replace('/main/', '/other/').Replace('"strict":true', '"strict":false')
         $script:statusRequestError = $RequestError
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/branches/other/protection/required_status_checks$' } {
@@ -133,22 +137,21 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $row.Result | Should -Be $Expected
         $row.ResultDetail.TestResult | Should -Match 'Indeterminate findings: 1'
         $row.ResultDetail.TestResult | Should -Match ($Expected + ' findings: 1')
-        $row.ResultDetail.TestResult | Should -Match 'freshness enforcement.*not established'
+        $row.ResultDetail.TestResult | Should -Match 'status settings on the matching classic rule are unavailable'
     }
-    It 'Keeps an empty required-check set indeterminate with potentially compensating <Type> rules' -ForEach @(
-        @{ Type = 'required_status_checks' }, @{ Type = 'future_rule' }
-    ) {
+    It 'Skips conflicting REST and GraphQL evidence about strict status checks' {
         $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
-        $script:rulesBody = '[{"type":"' + $Type + '","ruleset_source_type":"Enterprise","ruleset_id":1}]'
-        $row = Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)
+        $script:graphBody = $script:graphBody.Replace('"requiresStrictStatusChecks":true','"requiresStrictStatusChecks":false')
+        $row = Invoke-MtTest -Id CIS.GH.1.1.10 -Config (Get-CisBranchFixtureConfig)
         $row.Result | Should -Be 'Skipped'
-        $row.ResultDetail.TestResult | Should -Match 'alternative ruleset enforcement is unresolved'
+        $row.ResultDetail.TestResult | Should -Match 'REST and GraphQL disagree'
     }
-    It 'Retains an empty-set violation alongside <Expected> evidence on another branch' -ForEach @(
+    It 'Retains a confirmed disabled setting alongside <Expected> evidence on another branch' -ForEach @(
         @{ Expected = 'Failed'; RequestError = $false }
         @{ Expected = 'Error'; RequestError = $true }
     ) {
         $script:statusBody = '{"strict":true,"contexts":[],"checks":[]}'
+        $script:graphBody = $script:graphBody.Replace('"requiresStatusChecks":true','"requiresStatusChecks":false')
         $script:statusRequestError = $RequestError
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/branches/other/protection/required_status_checks$' } {
             if ($script:statusRequestError) { throw [Microsoft.PowerShell.Commands.HttpResponseException]::new('Synthetic forbidden policy', [System.Net.Http.HttpResponseMessage]::new([System.Net.HttpStatusCode]403)) }
@@ -265,50 +268,41 @@ Describe 'CIS GitHub branch audits through production evidence and native result
         $script:branchStateBody='{"name":"main","protected":false}'
         (Invoke-MtTest -Id CIS.GH.1.1.4 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Failed'
     }
-    It 'Fails absent status-check protection confirmed by classic protection for <Id>' -ForEach @(
-        @{ Id = 'CIS.GH.1.1.9' }, @{ Id = 'CIS.GH.1.1.10' }
+    It 'Uses the matching classic rule after a status-check 404 for <Id> (<Required>, <Strict>)' -ForEach @(
+        @{ Id='CIS.GH.1.1.9'; Required=$false; Strict=$false; Expected='Failed' }
+        @{ Id='CIS.GH.1.1.9'; Required=$true; Strict=$false; Expected='Passed' }
+        @{ Id='CIS.GH.1.1.10'; Required=$true; Strict=$false; Expected='Failed' }
+        @{ Id='CIS.GH.1.1.10'; Required=$false; Strict=$true; Expected='Failed' }
+        @{ Id='CIS.GH.1.1.10'; Required=$true; Strict=$true; Expected='Passed' }
     ) {
         $script:statusStatus = 404
+        $data = $script:graphBody | ConvertFrom-Json
+        $data.data.repository.ref.branchProtectionRule.requiresStatusChecks = $Required
+        $data.data.repository.ref.branchProtectionRule.requiresStrictStatusChecks = $Strict
+        $script:graphBody = $data | ConvertTo-Json -Depth 8 -Compress
+        $script:rulesBody = '[{"type":"required_status_checks"}]'
         $row = Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)
-        $row.Result | Should -Be 'Failed'
-        $row.ResultDetail.TestResult | Should -Match 'classic branch protection has no required status-check policy'
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { $Uri -match '/branches/main/protection$' }
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1 -ParameterFilter { ([uri]$Uri).AbsolutePath -eq '/repos/fixture-org/repo/rules/branches/main' }
+        $row.Result | Should -Be $Expected
+        $row.ResultDetail.TestResult | Should -Match "requiresStatusChecks=$Required"
+        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/rules/branches/|/protection$' }
     }
-    It 'Keeps absent status-check protection indeterminate with potential <Type> rules for <Id>' -ForEach @(
-        foreach ($id in 'CIS.GH.1.1.9', 'CIS.GH.1.1.10') {
-            foreach ($type in 'required_status_checks', 'future_rule') { @{ Id = $id; Type = $type } }
-        }
+    It 'Keeps a status-check 404 indeterminate with <Case>' -ForEach @(
+        @{ Case='wrong repository'; From='repo-node'; To='other-node' }
+        @{ Case='wrong branch'; From='"main"'; To='"other"' }
+        @{ Case='array branch'; From='"name":"main"'; To='"name":["main"]' }
+        @{ Case='tag ref'; From='refs/heads/'; To='refs/tags/' }
+        @{ Case='invisible rule'; From='{"requiresStatusChecks":true,"requiresStrictStatusChecks":true}'; To='null' }
+        @{ Case='invalid setting'; From='"requiresStrictStatusChecks":true'; To='"requiresStrictStatusChecks":"true"' }
+        @{ Case='partial data and field error'; From='"data":'; To='"errors":[{"type":"FORBIDDEN"}],"data":' }
     ) {
         $script:statusStatus = 404
-        $script:rulesBody = '[{"type":"' + $Type + '"}]'
-        $row = Invoke-MtTest -Id $Id -Config (Get-CisBranchFixtureConfig)
-        $row.Result | Should -Be 'Skipped'
-        $row.ResultDetail.TestResult | Should -Match 'alternative ruleset enforcement is unresolved'
+        $script:graphBody = $script:graphBody.Replace($From,$To)
+        (Invoke-MtTest -Id CIS.GH.1.1.10 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Skipped'
     }
-    It 'Keeps status-check 404 indeterminate with unusable or contradictory classic protection: <Case>' -ForEach @(
-        @{ Case = 'empty object'; Body = '{}' },
-        @{ Case = 'wrong branch'; Body = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/other/protection"}' },
-        @{ Case = 'wrong host'; Body = '{"url":"https://example.invalid/repos/fixture-org/repo/branches/main/protection"}' },
-        @{ Case = 'unexpected query'; Body = '{"url":"https://api.github.com/repos/fixture-org/repo/branches/main/protection?other=1"}' },
-        @{ Case = 'null policy'; Policy = 'null' },
-        @{ Case = 'object policy'; Policy = '{"strict":true,"contexts":["ci"],"checks":[]}' },
-        @{ Case = 'wrong-type policy'; Policy = 'false' }
-    ) {
+    It 'Retains execution errors on the status-check 404 fallback' {
         $script:statusStatus = 404
-        if ($Body) { $script:policyBody = $Body }
-        else { $script:policyBody = $script:policyBody.Substring(0, $script:policyBody.Length - 1) + ',"required_status_checks":' + $Policy + '}' }
-        $row = Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)
-        $row.Result | Should -Be 'Skipped'
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/rules/branches/' }
-    }
-    It 'Preserves <Expected> when classic protection cannot contextualize a status-check 404' -ForEach @(
-        @{ Status = 404; Expected = 'Skipped' }, @{ Status = 403; Expected = 'Error' }
-    ) {
-        $script:statusStatus = 404
-        $script:policyStatus = $Status
-        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be $Expected
-        Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 0 -ParameterFilter { $Uri -match '/rules/branches/' }
+        $script:graphBody = '{'
+        (Invoke-MtTest -Id CIS.GH.1.1.9 -Config (Get-CisBranchFixtureConfig)).Result | Should -Be 'Error'
     }
     It 'Retains archived/disabled repositories and all <Visibility> visibility classes' -ForEach @(@{Visibility='public'},@{Visibility='internal'},@{Visibility='private'}) {
         $script:repoBody=$script:repoBody.Replace('"private"','"'+$Visibility+'"').Replace('"archived":false','"archived":true').Replace('"disabled":false','"disabled":true')

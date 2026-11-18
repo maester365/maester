@@ -4,15 +4,13 @@ Required checks help prevent unsafe or malicious changes from entering the softw
 
 CIS GitHub Benchmark v1.2.0 lists section 1.1.9 as a Manual assessment. This test checks the declared main branches using `GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks` with REST version `2026-03-10`. The benchmark source is section 1.1.9, physical PDF pages 35–36; printed pages 34–35.
 
-The test requires valid `contexts` and `checks` arrays with at least one required check between them. Context names must be nonempty strings; check entries need a nonempty context and a numeric or null application ID. A valid empty required-check set fails when alternative protection has been ruled out. Missing or invalid values produce **Skipped**.
-
-The CIS audit names the status-check checkbox, while its description and rationale also require predefined checks. The test uses those requirements together. CIS does not name the jobs or specify a numeric minimum. The API-to-checkbox mapping for an empty set has not been confirmed against a live platform.
+The audit requires the status-check setting on the applicable classic rule. A valid required check in either REST list establishes that checks are required. When both lists are empty, Maester reports that no predefined checks were returned and reads the checkbox directly. CIS describes predefined checks as the protection these settings provide. Review an empty list even when the checkbox passes.
 
 GitHub accepts successful, skipped, or neutral conclusions for required checks. This test reads the configured requirements; it does not inspect historical check runs or choose required jobs for the organization.
 
 Configure the repositories and branch names in [GitHub CIS configuration](https://maester.dev/docs/next/configuration/github-cis). A pass requires complete coverage of the declared applicable repositories and branches. A confirmed violation can fail the check while other coverage remains incomplete; the report keeps those gaps visible. A complete declaration with justified exclusions and no applicable repositories produces **NotApplicable**. An empty API response alone does not establish that result.
 
-A 404 response alone does not prove a branch is unprotected, because GitHub can hide inaccessible resources with that status. For a protected branch, Maester also reads classic protection. A matching protection URL with the `required_status_checks` field omitted corroborates that the status-check policy is absent; it fails only after applicable active rules rule out alternative protection. A null, malformed or contradictory field remains **Skipped**. This combines the documented response schema with the 404 response; the disabled-policy response has not been verified against a live tenant. Ruleset-only or possibly equivalent protection remains **Skipped** for review. A conforming classic setting can pass without requiring empty bypass lists. Required request, JSON parsing, or collection failures produce **Error**, even when earlier findings are available.
+For a valid empty list or a status-check 404 on a confirmed protected branch, Maester reads the classic rule on the matching Git ref through GraphQL. `requiresStatusChecks` must be true. A known disabled setting fails even if a separate ruleset applies. An inaccessible rule, field access error, or unmatched target leaves the result **Skipped**. A confirmed unprotected branch fails. A required request or JSON parsing failure produces **Error**.
 
 The test reads the current configuration and keeps its original UTC collection interval. Paginated reads can span concurrent changes. It checks the fields needed for this assessment, rather than the entire response schema, historical merges, or enforcement against every actor. It does not change repository settings.
 
@@ -36,7 +34,8 @@ The API operations support fine-grained PATs and GitHub App user or installation
 * [GitHub protection REST operations](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branch-protection?apiVersion=2026-03-10)
 * [GitHub protected branch behavior](https://docs.github.com/en/enterprise-cloud@latest/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 * [GitHub branch enumeration](https://docs.github.com/en/enterprise-cloud@latest/rest/branches/branches?apiVersion=2026-03-10#list-branches)
-* [Applicable active rules](https://docs.github.com/en/enterprise-cloud@latest/rest/repos/rules?apiVersion=2026-03-10#get-rules-for-a-branch)
+* [GitHub GraphQL ref](https://docs.github.com/en/graphql/reference/git#ref)
+* [GitHub GraphQL branch protection settings](https://docs.github.com/en/graphql/reference/branches#branchprotectionrule)
 
 <!--- Results --->
 %TestResult%

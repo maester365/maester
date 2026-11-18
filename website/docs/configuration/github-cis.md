@@ -99,7 +99,7 @@ The branch checks read the classic branch protection settings named by CIS. A co
 
 When classic settings are nonconforming or ambiguous, Maester reads applicable active rules where needed to determine whether another policy may provide protection. Ruleset-only or possibly equivalent protection remains **Skipped** for review. The checks do not calculate ruleset equivalence. Unrelated rules do not establish compliance, and an additional ruleset does not weaken an already applicable conforming classic rule.
 
-The status-check tests use GitHub's documented successful, skipped, and neutral conclusions. The signed-commit test reads the current requirement for every existing branch; it does not verify historical signatures or establish author trust. The default-branch test requires an applicable classic protection rule without choosing a minimum set of settings for it. Other recommendations check the individual settings.
+For CIS.GH.1.1.9 and CIS.GH.1.1.10, an empty list of required checks or a status-check 404 on a protected branch prompts a read of the matching classic rule through GraphQL. A confirmed disabled checkbox fails the named audit even when a separate ruleset applies. Maester reports an empty list of predefined checks alongside the checkbox result. The signed-commit test reads the current requirement for every existing branch; it does not verify historical signatures or establish author trust. The default-branch test requires an applicable classic protection rule without choosing a minimum set of settings for it. Other recommendations check the individual settings.
 
 ## Understand the results
 

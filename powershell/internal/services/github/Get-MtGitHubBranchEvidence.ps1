@@ -8,9 +8,26 @@
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [object] $Repository,
-        [Parameter(Mandatory)] [ValidateSet('Protection', 'StatusChecks', 'Signatures', 'Branch', 'Rules', 'Repository', 'Branches')] [string] $Kind,
+        [Parameter(Mandatory)] [ValidateSet('Protection', 'StatusChecks', 'StatusCheckRule', 'Signatures', 'Branch', 'Rules', 'Repository', 'Branches')] [string] $Kind,
         [string] $Branch
     )
+    if ($Kind -eq 'StatusCheckRule') {
+        $query = 'query MaesterCisStatusRule($owner:String!,$name:String!,$ref:String!){repository(owner:$owner,name:$name){id ref(qualifiedName:$ref){name prefix branchProtectionRule{requiresStatusChecks requiresStrictStatusChecks}}}}'
+        $variables = @{ owner = $Repository.owner.login; name = $Repository.name; ref = "refs/heads/$Branch" }
+        $response = Invoke-MtGitHubGraphQLRequest -Query $query -Variables $variables -OperationName MaesterCisStatusRule
+        $repo = $response.Data.repository
+        $ref = $repo.ref
+        $rule = $ref.branchProtectionRule
+        $matched = $response.Errors.Count -eq 0 -and $null -ne $repo -and $repo.GetType() -eq [System.Management.Automation.PSCustomObject] -and
+            $repo.id -is [string] -and -not [string]::IsNullOrWhiteSpace($repo.id) -and $repo.id -ceq $Repository.node_id -and
+            $null -ne $ref -and $ref.GetType() -eq [System.Management.Automation.PSCustomObject] -and
+            $ref.name -is [string] -and $ref.name -ceq $Branch -and $ref.prefix -is [string] -and $ref.prefix -ceq 'refs/heads/' -and
+            $null -ne $rule -and $rule.GetType() -eq [System.Management.Automation.PSCustomObject]
+        return [pscustomobject]@{
+            State = $(if ($matched) { 'Available' } else { 'Indeterminate' })
+            Data = $rule; StartedUtc = $response.StartedUtc; CompletedUtc = $response.CompletedUtc
+        }
+    }
     $owner = [uri]::EscapeDataString($Repository.owner.login)
     $name = [uri]::EscapeDataString($Repository.name)
     $prefix = "/repos/$owner/$name"

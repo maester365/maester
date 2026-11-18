@@ -13,7 +13,6 @@
     $knownRuleTypes = @('creation', 'update', 'deletion', 'required_linear_history', 'merge_queue', 'required_deployments', 'required_signatures', 'pull_request', 'required_status_checks', 'non_fast_forward', 'commit_message_pattern', 'commit_author_email_pattern', 'committer_email_pattern', 'branch_name_pattern', 'tag_name_pattern', 'workflows', 'code_scanning', 'code_quality', 'code_coverage', 'copilot_code_review', 'license_compliance_scanning', 'file_path_restriction', 'max_file_path_length', 'file_extension_restriction', 'max_file_size')
     $candidateTypes = switch ($Control) {
         { $_ -in '1.1.4', '1.1.7', '1.1.11' } { @('pull_request', 'update') }
-        { $_ -in '1.1.9', '1.1.10' } { @('required_status_checks', 'workflows', 'merge_queue', 'update') }
         '1.1.12' { @('required_signatures', 'update') }
         '1.1.16' { @('non_fast_forward', 'update') }
         '1.1.17' { @('deletion') }
@@ -58,6 +57,7 @@
                 $evidence = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind $kind
                 $policy = $evidence.Data
                 $conforming = $null
+                $readStatusRule = $false
                 if ($evidence.State -eq 'Available') {
                     switch ($Control) {
                         '1.1.4' { if (($null -ne $policy.required_pull_request_reviews -and $policy.required_pull_request_reviews.GetType() -eq [System.Management.Automation.PSCustomObject]) -and $policy.required_pull_request_reviews.dismiss_stale_reviews -is [bool]) { $conforming = $policy.required_pull_request_reviews.dismiss_stale_reviews; $reason = "dismiss_stale_reviews=$conforming" } }
@@ -70,16 +70,13 @@
                             }
                             if ($Control -eq '1.1.10' -and $policy.strict -isnot [bool]) { $usable = $false }
                             if ($usable) {
-                                $conforming = ($policy.contexts.Count + $policy.checks.Count) -gt 0
-                                if ($Control -eq '1.1.10') { $conforming = $conforming -and $policy.strict }
+                                $hasChecks = ($policy.contexts.Count + $policy.checks.Count) -gt 0
                                 $reason = "Required contexts=$($policy.contexts.Count); checks=$($policy.checks.Count)"
-                                if ($Control -eq '1.1.10') {
-                                    $reason += "; strict=$($policy.strict)"
-                                    if ($policy.strict -and $policy.contexts.Count -eq 0 -and $policy.checks.Count -eq 0) {
-                                        $conforming = $null
-                                        $reason += '; the required-check set is empty and freshness enforcement is not established.'
-                                    }
-                                }
+                                if ($Control -eq '1.1.10') { $reason += "; strict=$($policy.strict)" }
+                                if (-not $hasChecks) { $reason += '; no predefined checks were returned.' }
+                                if ($Control -eq '1.1.10' -and -not $policy.strict) { $conforming = $false }
+                                elseif ($hasChecks) { $conforming = $true }
+                                else { $readStatusRule = $true }
                             }
                         }
                         '1.1.11' { if ($null -ne $policy.required_conversation_resolution -and $policy.required_conversation_resolution.GetType() -eq [System.Management.Automation.PSCustomObject] -and $policy.required_conversation_resolution.enabled -is [bool]) { $conforming = $policy.required_conversation_resolution.enabled; $reason = "required_conversation_resolution.enabled=$conforming" } }
@@ -100,37 +97,37 @@
                         }
                     }
                 }
-                if ($null -ne $conforming -and $conforming) {
-                    $verdict = 'Passed'
-                } elseif ($null -ne $conforming -or $evidence.State -eq 'NotFoundOrNotVisible') {
-                    $absent = $false
-                    if ($evidence.State -eq 'NotFoundOrNotVisible') {
-                        $state = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Branch
-                        if ($state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool] -and -not $state.Data.protected) { $absent = $true }
-                        else {
-                            $reason = 'HTTP 404 is ambiguous or protection may be supplied by rulesets.'
-                            if ($kind -eq 'StatusChecks' -and $state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool] -and $state.Data.protected) {
-                                $protection = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Protection
-                                $expectedUri = [uri]"$($__MtSession.GitHubConnection.ApiBaseUri)/repos/$([uri]::EscapeDataString($repository.owner.login))/$([uri]::EscapeDataString($repository.name))/branches/$([uri]::EscapeDataString($branch))/protection"
-                                $actualUri = $null
-                                # The GET schema makes required_status_checks optional, but not nullable.
-                                # A matching classic policy with that field omitted contextualizes the 404;
-                                # a contradictory or malformed field must not become a confirmed violation.
-                                if ($protection.State -eq 'Available' -and $protection.Data.url -is [string] -and
-                                    [uri]::TryCreate($protection.Data.url, [UriKind]::Absolute, [ref]$actualUri) -and
-                                    $actualUri.Scheme -eq $expectedUri.Scheme -and $actualUri.Host -eq $expectedUri.Host -and $actualUri.Port -eq $expectedUri.Port -and
-                                    [uri]::UnescapeDataString($actualUri.AbsolutePath) -ceq [uri]::UnescapeDataString($expectedUri.AbsolutePath) -and
-                                    [string]::IsNullOrEmpty($actualUri.Query) -and [string]::IsNullOrEmpty($actualUri.Fragment) -and [string]::IsNullOrEmpty($actualUri.UserInfo) -and
-                                    -not (Test-MtGitHubObjectProperty -InputObject $protection.Data -PropertyName required_status_checks)) {
-                                    $conforming = $false
-                                    $evidence = $protection
-                                    $reason = 'Accessible classic branch protection has no required status-check policy.'
-                                }
-                            }
+                if ($evidence.State -eq 'NotFoundOrNotVisible') {
+                    $state = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Branch
+                    $reason = 'HTTP 404 is ambiguous or protection may be supplied by rulesets.'
+                    if ($state.State -eq 'Available' -and $state.Data.name -ceq $branch -and $state.Data.protected -is [bool]) {
+                        if (-not $state.Data.protected) {
+                            $verdict = 'Failed'
+                            $reason = 'An accessible existing branch is unprotected.'
+                        } elseif ($kind -eq 'StatusChecks') { $readStatusRule = $true }
+                    }
+                }
+                if ($readStatusRule) {
+                    $evidence = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind StatusCheckRule
+                    $rule = $evidence.Data
+                    if ($evidence.State -ne 'Available' -or $rule.requiresStatusChecks -isnot [bool] -or
+                        ($Control -eq '1.1.10' -and $rule.requiresStrictStatusChecks -isnot [bool])) {
+                        $reason += ' The status settings on the matching classic rule are unavailable.'
+                    } elseif ($Control -eq '1.1.10' -and $policy.strict -is [bool] -and $policy.strict -ne $rule.requiresStrictStatusChecks) {
+                        $reason += ' REST and GraphQL disagree about strict status checks.'
+                    } else {
+                        $conforming = $rule.requiresStatusChecks
+                        $reason += " requiresStatusChecks=$conforming"
+                        if ($Control -eq '1.1.10') {
+                            $conforming = $conforming -and $rule.requiresStrictStatusChecks
+                            $reason += "; requiresStrictStatusChecks=$($rule.requiresStrictStatusChecks)"
                         }
                     }
-                    if ($absent) { $verdict = 'Failed'; $reason = 'An accessible existing branch is unprotected.' }
-                    elseif ($null -ne $conforming) {
+                }
+                if ($null -ne $conforming) {
+                    if ($conforming) { $verdict = 'Passed' }
+                    elseif ($kind -eq 'StatusChecks') { $verdict = 'Failed' }
+                    else {
                         $rules = Get-MtGitHubBranchEvidence -Repository $repository -Branch $branch -Kind Rules
                         $potential = $rules.State -ne 'Available'
                         foreach ($rule in $rules.Data) {
