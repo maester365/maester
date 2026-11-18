@@ -55,29 +55,30 @@
         }.GetNewClosure()
         Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
             param($RelativeUri)
+            # The real parameter is an array, and a hashtable lookup with an array returns an array.
+            $uri = [string]$RelativeUri
             $notFound = $NotFoundError
             if ($State.Wrap) {
                 $notFound = [System.InvalidOperationException]::new(
                     'Request failed.', $NotFoundError
                 )
             }
-            $id = $RelativeUri.Split('/')[-1]
-            if ($RelativeUri -match '^directory/deletedItems/[0-9a-fA-F-]{36}$') {
+            $id = $uri.Split('/')[-1]
+            if ($uri -match '^directory/deletedItems/[0-9a-fA-F-]{36}$') {
                 if ($null -eq $State.DeletedById[$id]) { throw $notFound }
                 return $State.DeletedById[$id]
             }
-            if ($RelativeUri -match '^(users|groups|applications|servicePrincipals)/[^/]+$') {
-                if ($State.Sequence.ContainsKey($id)) {
-                    $step = [int]$State.Seen[$id]
-                    $State.Seen[$id] = $step + 1
-                    $answers = $State.Sequence[$id]
+            if ($uri -match '^(users|groups|applications|servicePrincipals)/[^/]+$') {
+                if ($State.Sequence.ContainsKey($uri)) {
+                    $step = [int]$State.Seen[$uri]
+                    $State.Seen[$uri] = $step + 1
+                    $answers = $State.Sequence[$uri]
                     return $answers[[Math]::Min($step, $answers.Count - 1)]
                 }
-                if ($null -eq $State.ObjectById[$id]) { throw $notFound }
-                return $State.ObjectById[$id]
+                if ($null -eq $State.ObjectById[$uri]) { throw $notFound }
+                return $State.ObjectById[$uri]
             }
-            $key = [string]$RelativeUri
-            if ($State.Protected.Keys -contains $key) { return $State.Protected[$key] }
+            if ($State.Protected.Keys -contains $uri) { return $State.Protected[$uri] }
             return @()
         }.GetNewClosure()
     }
@@ -124,7 +125,7 @@
     Context 'Objects are listed' {
         It 'passes when every listed object is protected and nothing else is' {
             $State.Listed = @(Get-Entry User $script:UserId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['users'] = @(Get-InventoryObject $script:UserId 'Admin One')
 
@@ -135,7 +136,7 @@
 
         It 'is Investigate when listed objects pass but other protected objects are not listed' {
             $State.Listed = @(Get-Entry User $script:UserId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['users'] = @(
                 Get-InventoryObject $script:UserId 'Admin One'
@@ -150,7 +151,8 @@
 
         It 'fails and lists an unprotected object, even when others are not listed' {
             $State.Listed = @(Get-Entry user $script:UserId)
-            $State.ObjectById[$script:UserId] = Get-GraphObject $script:UserId 'Plain | User'
+            $State.ObjectById["users/$($script:UserId)"] =
+                Get-GraphObject $script:UserId 'Plain | User'
             $State.Protected['groups'] = @(Get-InventoryObject $script:GroupId 'Some group')
 
             Invoke-Check | Should -BeFalse
@@ -225,11 +227,41 @@
             $State.Detail | Should -Not -Match 'Soft deleted'
         }
 
+        It 'reports a soft-deleted <Subtype> listed as <Type> as soft deleted' -ForEach @(
+            @{ Type = 'User'; Subtype = 'agentUser' }
+            @{ Type = 'Application'; Subtype = 'agentIdentityBlueprint' }
+            @{ Type = 'ServicePrincipal'; Subtype = 'agentIdentity' }
+            @{ Type = 'ServicePrincipal'; Subtype = 'agentIdentityBlueprintPrincipal' }
+        ) {
+            $State.Listed = @(Get-Entry $Type $script:UserId)
+            $State.DeletedById[$script:UserId] = Get-DeletedObject $script:UserId 'Agent object' `
+                -ODataType "#microsoft.graph.$Subtype"
+
+            Invoke-Check | Should -BeFalse
+            $Row = "$Type \| $($script:UserId) \| Agent object"
+            $State.Detail | Should -Match "$Row \| Soft deleted"
+        }
+
+        It 'reports a soft-deleted <Subtype> listed as <Type> as not found' -ForEach @(
+            @{ Type = 'Group'; Subtype = 'agentUser' }
+            @{ Type = 'User'; Subtype = 'agentIdentity' }
+            @{ Type = 'Application'; Subtype = 'agentUser' }
+            @{ Type = 'ServicePrincipal'; Subtype = 'agentIdentityBlueprint' }
+        ) {
+            $State.Listed = @(Get-Entry $Type $script:UserId)
+            $State.DeletedById[$script:UserId] = Get-DeletedObject $script:UserId 'Agent object' `
+                -ODataType "#microsoft.graph.$Subtype"
+
+            Invoke-Check | Should -BeFalse
+            $State.Detail | Should -Match "$Type \| $($script:UserId) \|  \| Not found"
+            $State.Detail | Should -Not -Match 'Soft deleted'
+        }
+
         It 'shows a display name that looks like a link or an image as plain text' {
             $State.Listed = @(Get-Entry User $script:UserId; Get-Entry Group $script:GroupId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId '[Sign in](https://phish.example)'
-            $State.ObjectById[$script:GroupId] =
+            $State.ObjectById["groups/$($script:GroupId)"] =
                 Get-GraphObject $script:GroupId '![x](https://attacker.example/p.png)'
 
             Invoke-Check | Should -BeFalse
@@ -264,7 +296,7 @@
 
         It 'keeps a display name with line breaks in one table cell' {
             $State.Listed = @(Get-Entry User $script:UserId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId "Ops`r`nTeam`nLead"
 
             Invoke-Check | Should -BeFalse
@@ -279,7 +311,7 @@
                 Get-Entry User "{$HexId}"
                 Get-Entry Group $script:GroupId
             )
-            $State.ObjectById[$HexId] = Get-GraphObject $HexId 'Plain user'
+            $State.ObjectById["users/$HexId"] = Get-GraphObject $HexId 'Plain user'
 
             $HexId | Should -Not -BeExactly $HexId.ToUpperInvariant()
             Invoke-Check | Should -BeFalse
@@ -290,7 +322,7 @@
 
         It 'keeps one passing row when an entry is listed twice and both lookups pass' {
             $State.Listed = @(Get-Entry User $script:UserId; Get-Entry User "{$script:UserId}")
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['users'] = @(Get-InventoryObject $script:UserId 'Admin One')
 
@@ -300,7 +332,7 @@
 
         It 'lets a failing lookup win when an entry is listed twice and the lookups differ' {
             $State.Listed = @(Get-Entry User $script:UserId; Get-Entry User "{$script:UserId}")
-            $State.Sequence[$script:UserId] = @(
+            $State.Sequence["users/$($script:UserId)"] = @(
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
                 Get-GraphObject $script:UserId 'Admin One' -Protected $null
             )
@@ -312,7 +344,7 @@
 
         It 'keeps the failure when the failing lookup comes first' {
             $State.Listed = @(Get-Entry User $script:UserId; Get-Entry User "{$script:UserId}")
-            $State.Sequence[$script:UserId] = @(
+            $State.Sequence["users/$($script:UserId)"] = @(
                 Get-GraphObject $script:UserId 'Admin One' -Protected $null
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             )
@@ -323,7 +355,7 @@
 
         It 'uses the canonical lower-case form of the Id in the request and in the result' {
             $State.Listed = @(Get-Entry User '{AAAAAAAA-1111-2222-3333-BBBBBBBBBBBB}')
-            $State.ObjectById['aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb'] =
+            $State.ObjectById['users/aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb'] =
                 Get-GraphObject 'aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb' 'Mixed case'
 
             Invoke-Check | Should -BeFalse
@@ -336,6 +368,8 @@
 
         It 'keeps a protected object in the unlisted table when listed under another Type' {
             $State.Listed = @(Get-Entry Group $script:UserId)
+            $State.ObjectById["users/$($script:UserId)"] =
+                Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['users'] = @(Get-InventoryObject $script:UserId 'Admin One')
 
             Invoke-Check | Should -BeFalse
@@ -345,7 +379,7 @@
 
         It 'does not list a correctly listed object as unlisted' {
             $State.Listed = @(Get-Entry User $script:UserId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['users'] = @(Get-InventoryObject $script:UserId 'Admin One')
 
@@ -355,7 +389,7 @@
 
         It 'shows the first 25 unlisted objects and the total' {
             $State.Listed = @(Get-Entry User $script:UserId)
-            $State.ObjectById[$script:UserId] =
+            $State.ObjectById["users/$($script:UserId)"] =
                 Get-GraphObject $script:UserId 'Admin One' -Protected $true
             $State.Protected['groups'] = @(
                 1..30 | ForEach-Object {

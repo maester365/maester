@@ -16,9 +16,9 @@ configuration format and for suggestions on which objects to list.
 
 #### Remediation action:
 
-For an object with the status **Not protected**, first check that it can be protected. Users synchronized from
-on-premises Active Directory and mail-enabled security groups cannot be, and also show as not protected. Remove
-them from the config, or protect another object instead. For an object that can be protected:
+For an object with the status **Not protected**, first check that it can be protected. Users and groups
+synchronized from on-premises Active Directory and mail-enabled security groups cannot be, and also show as not
+protected. Remove them from the config, or protect another object instead. For an object that can be protected:
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Microsoft Entra Backup Administrator**.
 2. Browse to **Backup and recovery** > **Hard deletion protection**.

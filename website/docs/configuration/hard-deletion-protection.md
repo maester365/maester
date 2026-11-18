@@ -98,7 +98,7 @@ The result lists at most 25 objects in each table and gives the total when there
 
 A failed result also lists the protected objects that are not in the configuration, so you can see both gaps at once.
 
-The scan for protected objects reads the active and the deleted objects one after the other, so it is not a snapshot. An object that is soft deleted or restored while the scan runs can be listed twice (shown once, with the state `Active or soft deleted`), or be missed. If an object you expect is missing from a table, run the test again.
+The scan for protected objects reads the active and the deleted objects one after the other, so it is not a snapshot. An object that is soft deleted or restored while the scan runs can be listed twice (shown once, with the state `Active or soft deleted`), or be missed. If an object you expect is missing from a table, run the test again, which answers a missed scan. Running it again does not show objects beyond the table limit of 25: to see all of them, use the Microsoft Entra admin center or Microsoft Graph.
 
 ## Which Objects to Protect
 

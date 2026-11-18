@@ -9,9 +9,13 @@
 
     When the active lookup returns HTTP 404, the function reads the object through the
     documented single-item route, directory/deletedItems/{id}, and checks that its @odata.type is
-    the configured type. It reports 'Soft deleted' when it finds the object there, whether or not
-    the object has protection. An object of another type, a response without an @odata.type, or
-    no object gives 'Not found'. Any Graph error other than a 404 is thrown.
+    the configured type or one of its Agent ID subtypes: agentUser for User,
+    agentIdentityBlueprint for Application, and agentIdentity or
+    agentIdentityBlueprintPrincipal for ServicePrincipal.
+
+    It reports 'Soft deleted' when it finds the object there, whether or not the object has
+    protection. An object of another type, a response without an @odata.type, or no object
+    gives 'Not found'. Any Graph error other than a 404 is thrown.
 
     The Id must be the object ID, a GUID. The function uses its canonical lower-case form in both
     requests and in the result, so the result matches the objects that
@@ -30,14 +34,22 @@
         [object] $Configured
     )
 
+    # GraphTypes are the @odata.type values a deleted object of this type can have. Agent ID objects
+    # are covered through their underlying user, application and service principal types.
     $EndpointByType = @{
-        user             = @{ Name = 'User'; Path = 'users'; GraphType = 'user' }
-        group            = @{ Name = 'Group'; Path = 'groups'; GraphType = 'group' }
+        user             = @{
+            Name = 'User'; Path = 'users'; GraphTypes = @('user', 'agentUser')
+        }
+        group            = @{ Name = 'Group'; Path = 'groups'; GraphTypes = @('group') }
         application      = @{
-            Name = 'Application'; Path = 'applications'; GraphType = 'application'
+            Name = 'Application'; Path = 'applications'
+            GraphTypes = @('application', 'agentIdentityBlueprint')
         }
         serviceprincipal = @{
-            Name = 'ServicePrincipal'; Path = 'servicePrincipals'; GraphType = 'servicePrincipal'
+            Name = 'ServicePrincipal'; Path = 'servicePrincipals'
+            GraphTypes = @(
+                'servicePrincipal', 'agentIdentity', 'agentIdentityBlueprintPrincipal'
+            )
         }
     }
 
@@ -52,6 +64,7 @@
         )
     }
     $Endpoint = $EndpointByType[$Type]
+    $AcceptedTypes = @($Endpoint.GraphTypes | ForEach-Object { "#microsoft.graph.$_" })
     $Id = $ParsedId.ToString()
 
     $Object = $null
@@ -73,7 +86,8 @@
             $Deleted = Invoke-MtGraphRequest -ApiVersion 'beta' `
                 -RelativeUri "directory/deletedItems/$Id" `
                 -Select @('id', 'displayName') -ErrorAction Stop
-            if ([string]$Deleted.'@odata.type' -eq "#microsoft.graph.$($Endpoint.GraphType)") {
+            $DeletedType = [string]$Deleted.'@odata.type'
+            if ($DeletedType -in $AcceptedTypes) {
                 $Object = $Deleted
                 $Status = 'Soft deleted'
             }
