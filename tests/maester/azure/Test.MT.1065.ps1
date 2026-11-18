@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     This test ensures that all Recovery Services Vaults have Soft Delete enabled
-    by evaluating the `enhancedSecurityState` property. Soft Delete protects backup
+    by evaluating the `softDeleteFeatureState` property. Soft Delete protects backup
     data from accidental or malicious deletion and is a recommended security control.
 
     .EXAMPLE
@@ -62,13 +62,13 @@
                 -RelativeUri "/subscriptions/$subId/resourceGroups/$vaultRg/providers/Microsoft.RecoveryServices/vaults/$vaultName/backupconfig/vaultconfig" `
                 -ApiVersion "2025-02-01"
 
-            $softDeleteState = $vaultConfig.properties.enhancedSecurityState
+            $softDeleteState = $vaultConfig.properties.softDeleteFeatureState
 
             if (-not $softDeleteState) {
                 $softDeleteState = "Unknown"
             }
 
-            if ($softDeleteState -ne "Enabled") {
+            if ($softDeleteState -notin @('Enabled', 'AlwaysON')) {
                 $nonCompliantVaults += "- $vaultName (subscription: $subId, resource group: $vaultRg) has soft delete not enabled (state: $softDeleteState)"
             }
             else {
