@@ -310,6 +310,10 @@
         {
           "key": "recommendations",
           "name": "Entra recommendations"
+        },
+        {
+          "key": "backup-and-recovery",
+          "name": "Backup and recovery"
         }
       ]
     },
@@ -18322,6 +18326,15 @@
       "connection": true
     },
     {
+      "name": "HardDeletionProtectedObjects",
+      "type": "object[]",
+      "kind": null,
+      "default": [],
+      "allowedValues": [],
+      "description": "Critical users, groups, applications and service principals (Type and Id) that must have Hard Deletion Protection enabled.",
+      "connection": false
+    },
+    {
       "name": "ParkedDomains",
       "type": "string[]",
       "kind": "Entra.Domain",
@@ -18397,6 +18410,11 @@
     {
       "name": "ExpiringWithinDays",
       "type": "int",
+      "tests": 1
+    },
+    {
+      "name": "HardDeletionProtectedObjects",
+      "type": "object[]",
       "tests": 1
     },
     {
