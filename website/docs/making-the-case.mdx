@@ -1,0 +1,307 @@
+---
+title: Making the case for Maester
+description: Templates to explain to executives, a CISO and an IT Security Adviser why your organisation should monitor its Microsoft 365 configuration with Maester, with examples of what goes unnoticed without it.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+# Making the case for Maester
+
+Maester is free, but rolling it out still needs someone's time, a place to run it and, often, approval. This page
+helps you get that approval. It has three parts:
+
+1. [What organisations miss without continuous monitoring](#what-organisations-miss-without-continuous-monitoring):
+   real configuration failures, each with the Maester test that catches it. Use them as examples in any of the
+   templates.
+2. [Templates](#templates) for three audiences: general executives, a CISO, and an IT Security Adviser (ITSA). Copy
+   one, replace the text in `[brackets]`, and delete what does not apply.
+3. [Common questions](#common-questions) that come up in these conversations, with honest answers.
+
+:::tip[Run Maester first]
+The strongest argument is your own tenant. Run Maester once (see [Getting started](getting-started.mdx)) and quote
+your own numbers: how many Critical and High failures there are, and two or three examples from the list below that
+you actually found.
+:::
+
+## What organisations miss without continuous monitoring
+
+A Microsoft 365 tenant changes every week: people join and leave, admins grant exceptions, projects add apps, and
+Microsoft releases new features with new settings. Most security weaknesses in a tenant are not the result of an
+attack. They are a setting that was right once, and was then changed, or quietly stopped working, without anyone
+noticing. A yearly audit or a one-off assessment sees the tenant on one day. Continuous monitoring sees the day it
+changed.
+
+| What goes wrong | Why nobody notices | What it can lead to | Maester checks |
+| --- | --- | --- | --- |
+| **A Conditional Access policy stops protecting anyone.** The group it targets is deleted, or a user or role it names no longer exists. | The policy still shows as *On* in the portal. Nothing alerts. | Users who should need MFA, or a compliant device, sign in without either. | [MT.1038](/docs/tests/MT.1038), [MT.1066](/docs/tests/MT.1066) |
+| **Admins lock themselves out.** An emergency access (break glass) account is caught by a new policy, or blocked. | The account is used only in an emergency, so the problem is found during the emergency. | No way into the tenant during an outage or an incident. | [MT.1005](/docs/tests/MT.1005), [MT.1034](/docs/tests/MT.1034) |
+| **Too many people hold the keys.** Global Administrators accumulate; people who left or changed role keep privileged roles. | Role assignments are rarely reviewed, and each one was justified when it was made. | A single phished account can take over the whole tenant. | [MT.1032](/docs/tests/MT.1032), [MT.1029](/docs/tests/MT.1029), [CIS.M365.1.1.3](/docs/tests/CIS.M365.1.1.3) |
+| **MFA is bypassed through legacy authentication.** An exception is added for an old device or app and never removed. | MFA appears to be enforced for everyone. | Password spraying succeeds against accounts that "have MFA". | [MT.1009](/docs/tests/MT.1009), [CISA.MS.AAD.1.1](/docs/tests/CISA.MS.AAD.1.1) |
+| **Users hand attackers access through an app.** Users can consent to third-party apps that read mail and files. | Consent looks like a normal sign-in prompt to the user. | Persistent access to mailboxes and files that survives a password reset. | [CIS.M365.5.1.5.1](/docs/tests/CIS.M365.5.1.5.1), [EIDSCA.AP08](/docs/tests/EIDSCA.AP08) |
+| **Mail is forwarded outside the organisation.** Automatic forwarding to external domains is allowed. | Forwarding rules are set per mailbox, often by an attacker after a compromise. | Silent, continuing data loss. | [CISA.MS.EXO.1.1](/docs/tests/CISA.MS.EXO.1.1) |
+| **There is no record when you need it.** Audit logging or mailbox auditing is off. | Logs are only looked at after an incident. | You cannot tell what an attacker did, or meet breach-notification and legal obligations. | [CIS.M365.3.1.1](/docs/tests/CIS.M365.3.1.1), [CISA.MS.EXO.13.1](/docs/tests/CISA.MS.EXO.13.1) |
+| **Anyone can send email as you.** DMARC is missing or not enforced on a domain. | Mail still flows normally. | Invoice fraud and phishing that appears to come from your own domain. | [MT.1182](/docs/tests/MT.1182) |
+| **Applications hold powerful, long-lived secrets.** A service principal with a client secret holds a permanent privileged role. | Apps are created by projects and rarely reviewed by security. | A leaked secret gives an attacker admin rights without any user sign-in or MFA. | [MT.1027](/docs/tests/MT.1027), [MT.1057](/docs/tests/MT.1057) |
+| **An integration stops working.** An app registration's certificate or secret expires. | The expiry date is in the portal, but nobody is watching it. | An outage of a business process that depends on the app. | [MT.1199](/docs/tests/MT.1199) (long-running: add `-IncludeLongRunning`) |
+| **Files are shared with anyone.** External sharing is opened up for one project and left open. | Sharing settings are changed in a different admin centre from the rest of security. | Sensitive documents reachable by people outside the organisation. | [CIS.M365.7.2.3](/docs/tests/CIS.M365.7.2.3) |
+| **A new phishing technique works.** Device code sign-in is allowed for everyone. | It is on by default and rarely needed. | Phishing that captures a signed-in session, including MFA. | [CIS.M365.5.2.2.12](/docs/tests/CIS.M365.5.2.2.12) |
+
+Beyond individual weaknesses, an organisation without continuous monitoring also misses:
+
+- **Early warning.** A weakening change is found within a day, by your team, instead of months later by an auditor,
+  a penetration tester or an attacker.
+- **Evidence on demand.** Every run is a dated, repeatable record of which controls passed. Audit and assurance
+  evidence no longer has to be gathered by hand.
+- **Knowledge that stays when people leave.** Your intent ("this group must always be in this policy") is written
+  down as a test, not kept in one admin's head.
+- **A measurable trend.** You can report the number of open Critical and High findings each month, and show it
+  going down.
+- **Safe change.** Admins can make changes with the confidence that a mistake will be caught by the next run.
+
+## Templates
+
+<Tabs syncKey="audience">
+<TabItem label="General executives">
+
+Keep this to one page. Executives want to know the risk, the cost and what you need from them. Avoid product names
+and technical terms beyond the first mention.
+
+---
+
+**To:** [Name, role]
+**From:** [Your name, role]
+**Subject:** Continuous checks on our Microsoft 365 security settings
+
+**Summary**
+
+Our email, files, Teams and user sign-ins run on Microsoft 365. Its security depends on hundreds of settings, and
+those settings change every week as people join and leave and as we add new services. Today we check them
+[once a year during the audit / when something goes wrong / not at all]. I propose that we check them automatically
+every day with Maester, a free tool used by [organisations like ours], so that we find a weakening change within a day
+instead of at the next audit or after an incident.
+
+**Why this matters**
+
+Most security weaknesses in cloud services are not caused by sophisticated attacks. They are caused by a setting
+that was changed, or stopped working, without anyone noticing. For example:
+
+- [A sign-in protection that appears to be on but no longer covers anyone, because the group it applied to was deleted.]
+- [Our own example from the first run: "We found [number] accounts with full administrator rights; we expected [number]."]
+- [An example from the list above that applies to us.]
+
+Any one of these can lead to [a data breach / fraudulent payments from spoofed email / an outage of a business
+system / a failed audit].
+
+**What we propose**
+
+- Run Maester every day against our Microsoft 365 environment. It reads our settings; it does not change them.
+- Send the results to [the security team / IT operations]. Serious findings are raised as [tickets / alerts].
+- Report a short summary to [this group] every [month / quarter].
+
+**What it costs**
+
+- Licence: none. Maester is free and open source.
+- Running costs: [about $X per month for the cloud service that runs it / none, it runs on existing infrastructure].
+- Staff time: [N days] to set up, then [N hours per week] to review results and fix findings.
+
+**What you will see**
+
+A short [monthly] update: the number of serious findings open, how many were fixed, and anything that needs a
+decision from you.
+
+**Decision requested**
+
+Approval to [set up Maester and assign N hours per week of (team)'s time to act on its results] by [date].
+
+---
+
+</TabItem>
+<TabItem label="CISO">
+
+A CISO wants to know how this fits the security programme: which risks it reduces, how it supports compliance and
+assurance, what it reports, and what it does not do.
+
+---
+
+**To:** [CISO name]
+**From:** [Your name, role]
+**Subject:** Proposal: continuous configuration assurance for Microsoft 365
+
+**Purpose**
+
+To approve continuous, automated testing of our Microsoft 365 and Entra ID security configuration with Maester, and
+to use its results as evidence for [framework / standard / internal policy].
+
+**Risk addressed**
+
+[Risk register ID and title, for example "R-017 Unauthorised access to corporate data through cloud
+misconfiguration".]
+
+Our Microsoft 365 controls are currently verified [annually / at audit / ad hoc]. Between checks, configuration drift
+can disable a control without any alert: a Conditional Access policy whose target group is deleted, an exception for
+legacy authentication that bypasses MFA, privileged roles held by stale accounts, or user consent to third-party
+apps. Our first run of Maester on [date] found [N] Critical and [N] High findings, including [two or three examples].
+
+**Proposal**
+
+- Run Maester [daily] from [our pipeline / an Azure service] with a read-only identity.
+- Baseline: [the suites we chose, see [Choosing a baseline](choosing-a-baseline.md)], with our
+  accepted exceptions recorded in a version-controlled configuration, each with a reason and a risk reference.
+- Route Critical and High failures to [team / queue] with a target remediation time of [N days].
+- Add our own tests for organisation-specific controls [examples].
+
+**Compliance and assurance**
+
+- Each result names the requirement it implements, for example a CIS Microsoft 365 Benchmark recommendation, a
+  CISA SCuBA policy with its related NIST SP 800-53 controls, an ASD Essential Eight requirement and ISM control, or a DISA STIG rule. Our own tests can be mapped to [framework] the same way.
+- Each run produces a dated report and machine-readable results that can be kept as evidence.
+- Accepted exceptions are visible in every report with their reason, rather than hidden.
+
+**Proposed metrics**
+
+| Metric | Baseline (first run) | Target |
+| --- | --- | --- |
+| Open Critical and High findings | [N] | [N] by [date] |
+| Median time from a failing change to detection | [unknown / at audit] | 1 day |
+| Median time to remediate a Critical or High finding | [N/A] | [N] days |
+| Share of [framework] automated controls passing | [N%] | [N%] |
+
+**Limits**
+
+Maester checks configuration. It does not detect an active attacker, replace our SIEM or EDR, or test controls
+outside Microsoft 365, Entra ID and the other services it supports. Some tests need licences we
+[have / do not have] and are reported as skipped. Findings still need a person to judge them in context.
+
+**Resources and cost**
+
+No licence cost. [Running cost.] [N days] of [team]'s time to set up, then [N hours per week].
+
+**Decision requested**
+
+Approve the proposal, the baseline and the remediation targets, and the owner for each.
+
+---
+
+</TabItem>
+<TabItem label="IT Security Adviser (ITSA)">
+
+An IT Security Adviser will assess the tool itself before it is allowed to read the tenant: what it can access, where
+it runs, where data goes, and how it is maintained. Answer those questions up front.
+
+---
+
+**To:** [ITSA name]
+**From:** [Your name, role]
+**Subject:** Security assessment request: Maester for Microsoft 365 configuration monitoring
+
+**What it is**
+
+Maester ([maester.dev](https://maester.dev), [source](https://github.com/maester365/maester)) is an open-source
+PowerShell module (MIT licence) that reads Microsoft 365, Entra ID and related service configuration and tests it
+against built-in and custom checks. It is published on the PowerShell Gallery.
+
+**Business need**
+
+[One or two sentences from the executive or CISO template. Name the risk register entry and the baseline.]
+
+**Access required**
+
+- An identity with read access to Microsoft Graph. `Get-MtGraphScope` lists the exact permissions; by default they are
+  all read-only (`*.Read.All` and similar).
+- Optional, only if we turn them on: `Mail.Send` to email the report (`-SendMail`), `ChannelMessage.Send` to post
+  it to Teams through Microsoft Graph (`-SendTeamsMessage`; posting through a Teams webhook needs no permission), and
+  `ReportSettings.ReadWrite.All` (`-Privileged`). With that permission, test MT.1076 turns off the tenant's report
+  obfuscation setting while it reads a usage report, then turns it back on. If restoring the setting fails, Maester
+  only writes a warning, and the setting stays off until an admin restores it. [We will / will not use these.]
+- For the Exchange Online and Teams tests: [a reader role such as Global Reader / the roles listed in the
+  monitoring guide]. Unattended Exchange Online runs also need the `Exchange.ManageAsApp` application permission,
+  limited by an Exchange role such as View-Only Configuration.
+- For the SharePoint tests: an app registration with `AllSites.FullControl` (delegated) or `Sites.FullControl.All`
+  (unattended). The tests only read, but the permission would allow changes, so treat this identity as privileged.
+  [We will / will not run the SharePoint tests.]
+- Unattended runs use [a workload identity with federated credentials / a managed identity / a certificate], with no
+  stored secret [where possible]. See [Monitoring with Maester](monitoring/readme.mdx).
+
+**Where it runs and where data goes**
+
+- Runs in [our GitHub Actions / Azure DevOps / Azure Automation / an admin workstation], in [region / environment].
+- Results (HTML, JSON, optional CSV and Excel) are written to [storage location], with access limited to [group].
+  They describe our security configuration and should be classified as [classification].
+- User identities can be replaced in every output with `-RedactUserIdentity AllOutputs`. `HtmlOnly` redacts only
+  the HTML report, so the JSON, CSV and other machine-readable outputs keep the real identifiers. Redaction is best
+  effort and can miss names in free text. It is pseudonymisation, not anonymisation: each user is replaced by a token
+  derived from an unsalted hash of their identity, so anyone who can guess a user's user principal name or object ID
+  can confirm it. See [Hiding user identities from reports](export-results.md#hiding-user-identities-from-reports).
+- By default the results include the list of affected objects (the users, policies and apps behind each finding).
+  `-ExcludeAffectedObjects` leaves it out.
+- Results are sent only where we configure them: [email recipients / a Teams channel / none].
+- Telemetry: by default each run sends a start and an end event to `api.maester.dev`, run by the Maester
+  maintainers. They hold a hash of our tenant ID and the number of tests that passed, failed or were skipped, never
+  which tests or what they found. For now each run also sends a legacy usage event, which holds our tenant ID, to
+  PostHog. See [What telemetry does Maester send?](faq.md#what-telemetry-does-maester-send). We will turn both off
+  with `-DisableTelemetry`. [Yes / No]
+- With `-SkipVersionCheck` the module makes no calls to check for a newer version.
+
+**Supply chain**
+
+- Source code is public and reviewed through pull requests; each test is a readable PowerShell file.
+- We will [pin a specific module version](installation.mdx#update-or-pin-a-version), review release notes before
+  upgrading, and install from [the PowerShell Gallery / our internal repository].
+- Optional Maester Packs are third-party code and are not installed unless we install them. [We will not use packs /
+  we will use only (pack) after review.]
+
+**Residual risks and mitigations**
+
+| Risk | Mitigation |
+| --- | --- |
+| The monitoring identity is compromised and used to read the tenant's configuration | Read-only Graph permissions (plus the SharePoint and optional permissions above, if used), [federated credential / certificate in Key Vault], sign-in monitoring on the identity, Conditional Access for workload identities [if licensed] |
+| Reports disclose our security weaknesses | Access-controlled storage, redaction of user identities, retention of [N days] |
+| A malicious or faulty module release | Version pinning, review before upgrade, [internal repository] |
+| False assurance from passing tests | Maester tests configuration only; it complements, and does not replace, [penetration testing / SIEM / audit] |
+
+**Request**
+
+Assessment and approval to run Maester [version] with the access above, from [environment], by [date].
+
+---
+
+</TabItem>
+</Tabs>
+
+## Common questions
+
+**We already have Microsoft Secure Score. Why add this?**
+Secure Score is Microsoft's view of recommended settings, and it is worth tracking. Maester adds what Secure Score
+does not: tests for your own rules (this group must be in this policy, this app must not have these permissions),
+results mapped to the framework you report against, a daily result in your own pipeline with alerts, and the
+CIS, CISA, ASD Essential Eight, DISA STIG, EIDSCA and ORCA checks side by side with Maester's own.
+
+**We already have a SIEM, Defender and Sentinel.**
+Those watch for activity: sign-ins, alerts, attacks in progress. Maester checks configuration: whether the controls
+that prevent those attacks are still in place. A weak setting produces no alert until it is exploited.
+
+**It is free. Who supports it?**
+Maester is an open-source project maintained by a community of Microsoft security practitioners, with the source
+on [GitHub](https://github.com/maester365/maester). Questions and bugs go to
+[GitHub issues](https://github.com/maester365/maester/issues), and the open-source module comes with no support
+contract.
+
+If your organisation needs a product with a vendor behind it, [Maester Cloud](https://maester.cloud) runs Maester in
+your own Azure subscription, keeps the results over time and alerts you when something changes. It comes with
+support for setting it up and running it, and each subscription also funds the open-source project.
+
+Because Maester reads configuration and runs in your own environment, the operational risk of a fault is low: the
+worst case is a run that fails or a test that reports the wrong result, which you can turn off.
+
+**Will it change anything in our tenant?**
+Not by default: Maester asks only for read permissions. Two optional permissions are off unless you ask for them:
+sending mail, and `-Privileged`, which lets one test turn off report obfuscation while it runs and then turn it back
+on. The SharePoint tests need a full-control SharePoint permission, although they only read.
+
+**How much work is it?**
+A first report takes about fifteen minutes. Scheduled monitoring takes a few hours to set up with one of the
+[monitoring guides](monitoring/readme.mdx). The ongoing work is fixing what it finds, which is the point.
+
+**We will get hundreds of failures on the first run.**
+That is normal, and it is the reason to start. Fix Critical and High first, record the findings you accept as
+exceptions with a reason, and report the trend. See [Getting started](getting-started.mdx#step-3-fix-what-matters-first).

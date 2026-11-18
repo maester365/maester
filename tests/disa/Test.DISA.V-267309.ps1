@@ -38,8 +38,8 @@
     param(
         # Days without a sign-in after which an account must be disabled. DISA sets 35.
         [ValidateRange(1, 365)]
-        [int] $InactiveDays = 35
+        [int] $MaximumInactiveDays = 35
     )
 
-    return Test-MtDisaInactiveAccount -InactiveDays $InactiveDays
+    return Test-MtDisaInactiveAccount -MaximumInactiveDays $MaximumInactiveDays
 }

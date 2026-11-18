@@ -14,6 +14,8 @@
 Describe 'Sensitive settings in result configuration' {
     BeforeEach {
         InModuleScope Maester {
+            $script:savedLayeredRegistry = $script:__MtLayeredSettingRegistry
+            $script:__MtLayeredSettingRegistry = $null
             $script:savedSettingsRegistry = $script:__MtSettingsRegistry
             $script:__MtSettingsRegistry = Import-PowerShellDataFile (Join-Path $ExecutionContext.SessionState.Module.ModuleBase 'assets/MaesterSettings.psd1')
             $script:__MtSettingsRegistry.Settings.FixtureSensitive = @{ Type = 'object'; Default = @{}; Sensitive = $true; Description = 'Synthetic sensitive setting.' }
@@ -33,7 +35,7 @@ Describe 'Sensitive settings in result configuration' {
             TestSettingsHash = @{}
         }
     }
-    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null; $script:__MtSettingsRegistry = $script:savedSettingsRegistry } }
+    AfterEach { InModuleScope Maester { $__MtSession.MaesterConfig = $null; $script:__MtSettingsRegistry = $script:savedSettingsRegistry; $script:__MtLayeredSettingRegistry = $script:savedLayeredRegistry } }
 
     It 'Redacts the whole policy, preserves public settings and does not mutate input (native=<Native>)' -ForEach @(@{ Native = $true }, @{ Native = $false }) {
         $before = $script:config | ConvertTo-Json -Depth 30 -Compress
@@ -41,23 +43,46 @@ Describe 'Sensitive settings in result configuration' {
             $nativeRows = if ($Native) { @([pscustomobject]@{ Id = 'CIS.GH.1.2.3' }) } else { @() }
             New-MtResultConfig -RunConfig $Config -NativeRows $nativeRows -Rows @([pscustomobject]@{ Id = 'CIS.GH.1.2.3'; Title = 'Fixture'; Severity = 'Low' })
         }
-        $out.GlobalSettings.FixtureSensitive | Should -Be '<redacted>'
+        $out.GlobalSettings.FixtureSensitive | Should -Be '[redacted]'
         $out.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
         $out.TestSettings[0].Severity | Should -Be 'Low'
         $out.GlobalSettings.'Pack.Public'.Values[0] = 'changed'
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 
-    It 'Uses registry sensitivity rather than a hard-coded setting name' {
+    It 'Preserves configured values while allowing native rows without a user setting' {
+        $script:config.TestSettingsHash = @{
+            'Custom.Configured' = [pscustomobject]@{ Id = 'Custom.Configured'; CustomValue = @('one', 'two') }
+        }
+        $before = $script:config | ConvertTo-Json -Depth 30 -Compress
+        $out = InModuleScope Maester -Parameters @{ Config = $script:config } {
+            $rows = @(
+                [pscustomobject]@{ Id = 'Custom.Configured'; Title = 'Configured'; Severity = 'Low'; ParentId = $null }
+                [pscustomobject]@{ Id = 'Custom.Unconfigured'; Title = 'Unconfigured'; Severity = 'Medium'; ParentId = $null }
+            )
+            New-MtResultConfig -RunConfig $Config -NativeRows $rows -Rows $rows
+        }
+        $out.TestSettings.Count | Should -Be 2
+        $out.TestSettings[0].CustomValue | Should -Be @('one', 'two')
+        $out.TestSettings[1].Id | Should -Be 'Custom.Unconfigured'
+        $out.TestSettings[1].Severity | Should -Be 'Medium'
+        $out.TestSettings[1].PSObject.Properties.Name | Should -Not -Contain 'CustomValue'
+        $out.TestSettings[0].CustomValue[0] = 'changed'
+        ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
+    }
+
+    It 'Uses sensitivity from the layered pack registry and preserves unset values' {
         InModuleScope Maester -Parameters @{ Config = $script:config } {
-            $saved = $script:__MtSettingsRegistry
+            $savedPackSettings = $script:__MtPackSettings
             try {
-                $script:__MtSettingsRegistry = @{ Settings = @{ GitHubOrganization = @{ Sensitive = $true } } }
+                $script:__MtPackSettings = @{ 'Pack.Public' = @{ Sensitive = $true } }
+                $script:__MtLayeredSettingRegistry = $null
+                $Config.GlobalSettings.FixtureSensitive = $null
                 $out = New-MtResultConfig -RunConfig $Config
-                $out.GlobalSettings.GitHubOrganization | Should -Be '<redacted>'
-                $out.GlobalSettings.FixtureSensitive.OrganizationId | Should -Be '123456789'
-                $Config.GlobalSettings.GitHubOrganization | Should -Be 'fixture-org'
-            } finally { $script:__MtSettingsRegistry = $saved }
+                $out.GlobalSettings.'Pack.Public' | Should -Be '[redacted]'
+                $out.GlobalSettings.FixtureSensitive | Should -BeNullOrEmpty
+                $Config.GlobalSettings.'Pack.Public'.Values | Should -Be @('one', 'two')
+            } finally { $script:__MtPackSettings = $savedPackSettings }
         }
     }
 
@@ -77,7 +102,7 @@ Describe 'Sensitive settings in result configuration' {
             $content | Should -Match 'FixtureSensitive'
             $content | Should -Match 'redacted'
         }
-        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.FixtureSensitive) | Should -Be '<redacted>'
+        ((Get-Content $jsonPath -Raw | ConvertFrom-Json).MaesterConfig.GlobalSettings.FixtureSensitive) | Should -Be '[redacted]'
         ($script:config | ConvertTo-Json -Depth 30 -Compress) | Should -Be $before
     }
 

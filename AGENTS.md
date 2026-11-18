@@ -26,7 +26,10 @@ maester.dev), `report/` (React app that builds the HTML report template).
 
 ## Commands
 
-- Unit tests: `./powershell/tests/pester.ps1` — run before pushing. These enforce
+- New built-in test: `git add` its files, then `./build/golden/Export-MtGoldenFixture.ps1` and commit
+  `powershell/tests/fixtures/golden/selection.json` (the selection counts change); the unit tests fail otherwise.
+- Unit tests: `./powershell/tests/pester.ps1` — run before pushing. Some checks (file encoding) only see files
+  git tracks, so `git add` new files first. These enforce
   naming, exports, help, and PSScriptAnalyzer conventions; fix what they flag.
 - Build module: `./build/Build-MaesterModule.ps1`; validate: `./build/Test-MaesterModuleOutput.ps1`
 - Website: `cd website && npm ci && npm start` · Report: `cd report && npm ci && npm run build`

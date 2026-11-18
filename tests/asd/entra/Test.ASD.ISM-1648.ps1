@@ -46,16 +46,20 @@
     param(
         # Days without a sign-in after which privileged access must be disabled.
         [ValidateRange(1, 365)]
-        [int] $InactiveDays = 45
+        [int] $MaximumInactiveDays = 45,
+
+        # Emergency access (break glass) accounts and groups, from the EmergencyAccessAccounts setting.
+        [MaesterParameter(Setting = 'EmergencyAccessAccounts')]
+        [object[]] $EmergencyAccessAccounts = @()
     )
 
-    $rolesOf = Get-MtPrivilegedRoleUser -ExcludeEmergencyAccessAccount
+    $rolesOf = Get-MtPrivilegedRoleUser -EmergencyAccessAccounts $EmergencyAccessAccounts
     if ($rolesOf.Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NotApplicable
         return $null
     }
 
-    $cutoff = [datetime]::UtcNow.AddDays(-$InactiveDays)
+    $cutoff = [datetime]::UtcNow.AddDays(-$MaximumInactiveDays)
     $users = @(Invoke-MtGraphRequest -RelativeUri 'users' -UniqueId @($rolesOf.Keys) -Select id, userPrincipalName, displayName, accountEnabled, createdDateTime, signInActivity)
     $inactive = foreach ($user in $users) {
         if ($user.accountEnabled -ne $true) { continue }
@@ -75,11 +79,11 @@
     $testResult = $inactive.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Every enabled user with a privileged directory role signed in within the last $InactiveDays days ($($rolesOf.Count) users checked)."
+        $testResultMarkdown = "Well done. Every enabled user with a privileged directory role signed in within the last $MaximumInactiveDays days ($($rolesOf.Count) users checked)."
     } else {
         $table = "| User | Last sign-in | Privileged roles |`n| --- | --- | --- |`n"
         foreach ($user in ($inactive | Sort-Object userPrincipalName)) { $table += "| $($user.userPrincipalName) | $($user.LastSignIn) | $($user.Roles) |`n" }
-        $testResultMarkdown = "$($inactive.Count) enabled user(s) with a privileged directory role have not signed in for $InactiveDays days or more. Disable the account or remove the role, and let an access review or a PIM alert catch the next one.`n`n$table"
+        $testResultMarkdown = "$($inactive.Count) enabled user(s) with a privileged directory role have not signed in for $MaximumInactiveDays days or more. Disable the account or remove the role, and let an access review or a PIM alert catch the next one.`n`n$table"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult

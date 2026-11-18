@@ -2,7 +2,7 @@ An Intune Multi Admin Approval policy requires a second administrator to approve
 
 One compromised or careless Intune administrator can wipe every managed device in a few clicks. Multi Admin Approval makes a second administrator approve the wipe before it runs, which is why DISA rates this rule CAT I.
 
-This test runs [MT.1096](https://maester.dev/docs/tests/MT.1096) with `RequiredPolicyType`, so it passes only when an approval policy covers device wipes (a **Device wipe** or **Device actions** policy). The STIG also asks you to confirm that the approver group is the right one and that the policy itself is approved; check that by hand.
+This test runs [MT.1096](https://maester.dev/docs/tests/MT.1096) with `RequiredPolicyTypes`, so it passes only when an approval policy covers device wipes (a **Device wipe** or **Device actions** policy). The STIG also asks you to confirm that the approver group is the right one and that the policy itself is approved; check that by hand.
 
 #### Remediation action
 

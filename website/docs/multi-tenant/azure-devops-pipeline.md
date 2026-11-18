@@ -16,7 +16,7 @@ The pipeline uses a `${{ each }}` loop to generate a step per tenant, so adding 
 ## Prerequisites
 
 **Per tenant:**
-- An **app registration** with the required [Microsoft Graph read permissions](https://maester.dev/docs/installation#permissions) granted with admin consent
+- An **app registration** with the required [Microsoft Graph read permissions](/docs/sections/create-entra-app#grant-permissions-to-microsoft-graph) granted with admin consent
 - A **workload identity federation service connection** in Azure DevOps pointing to the app registration
 
 **For publishing:**
@@ -305,4 +305,4 @@ The pipeline expects an Azure Web App to already exist. If you don't have one ye
 
 ### Get Started
 
-Follow the prerequisites above and the [Maester permissions docs](https://maester.dev/docs/installation#permissions) to get your multi-tenant monitoring up and running.
+Follow the prerequisites above and the [Maester permissions docs](/docs/sections/create-entra-app#grant-permissions-to-microsoft-graph) to get your multi-tenant monitoring up and running.

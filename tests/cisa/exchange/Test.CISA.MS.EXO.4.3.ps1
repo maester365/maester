@@ -38,25 +38,21 @@
     [OutputType([bool])]
     param(
         # Check all domains, not only .gov domains.
-        [switch]$Force,
+        [switch]$AllDomains,
 
         # Check 2nd Level Domains Explicitly per CISA
         [switch]$Strict
     )
 
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
-    <# Parked domains should have DMARC with reject policy
-    $sendingDomains = $acceptedDomains | Where-Object {`
-        -not $_.SendingFromDomainDisabled
-    }
-    #>
+    # Every accepted domain is checked, a parked domain included: MS.EXO.4.3v1 gives no separate rule for one.
     $tldMatch = "^.*\.(?'tld'.*)$"
     $govDomains = $acceptedDomains | Where-Object {`
         $_ -imatch $tldMatch|Out-Null;
         if($Matches.tld -eq "gov"){$_}
     }
 
-    if(!($govDomains) -and !($Force)){
+    if(!($govDomains) -and !($AllDomains)){
         Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
         return $null
     }

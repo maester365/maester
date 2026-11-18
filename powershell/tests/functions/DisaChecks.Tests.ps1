@@ -80,7 +80,7 @@ Describe 'DISA STIG checks' {
             Test-MtDisaSignInBanner | Should -BeTrue
             Mock Invoke-MtGraphRequest { [pscustomobject]@{ signInPageText = 'Welcome to Contoso' } } -ParameterFilter { $RelativeUri -eq 'organization/org1/branding' }
             Test-MtDisaSignInBanner | Should -BeFalse
-            Test-MtDisaSignInBanner -RequiredText 'welcome to CONTOSO' | Should -BeTrue
+            Test-MtDisaSignInBanner -AcceptedBannerTexts 'welcome to CONTOSO' | Should -BeTrue
             Mock Invoke-MtGraphRequest { throw 'Response status code does not indicate success: NotFound (Not Found).' } -ParameterFilter { $RelativeUri -eq 'organization/org1/branding' }
             Test-MtDisaSignInBanner | Should -BeFalse
         }
@@ -117,8 +117,8 @@ Describe 'DISA STIG checks' {
             $policy = { param($recipients) [pscustomobject]@{ policy = [pscustomobject]@{ rules = @([pscustomobject]@{ id = 'Notification_Admin_EndUser_Assignment'; notificationRecipients = $recipients }) } } }
             Mock Invoke-MtGraphRequest { & $policy @('isso@contoso.mil', 'sa@contoso.mil') } -ParameterFilter { $RelativeUri -eq 'policies/roleManagementPolicyAssignments' }
             Test-MtDisaRoleActivationNotification | Should -BeTrue
-            Test-MtDisaRoleActivationNotification -RequiredRecipient 'sa@contoso.mil', 'isso@contoso.mil' | Should -BeTrue
-            Test-MtDisaRoleActivationNotification -RequiredRecipient 'soc@contoso.mil' | Should -BeFalse
+            Test-MtDisaRoleActivationNotification -RequiredRecipients 'sa@contoso.mil', 'isso@contoso.mil' | Should -BeTrue
+            Test-MtDisaRoleActivationNotification -RequiredRecipients 'soc@contoso.mil' | Should -BeFalse
             Mock Invoke-MtGraphRequest { & $policy @() } -ParameterFilter { $RelativeUri -eq 'policies/roleManagementPolicyAssignments' }
             Test-MtDisaRoleActivationNotification | Should -BeFalse
             Get-MtRoleActivationNotificationRecipient -RoleDefinitionId 'r1' | Should -BeNullOrEmpty
@@ -134,7 +134,7 @@ Describe 'DISA STIG checks' {
             Test-MtDisaInactiveAccount | Should -BeTrue
             Mock Invoke-MtGraphRequest { @((& $user 'b@contoso.mil' $now.AddDays(-40).ToString('o') $now.AddDays(-1).ToString('o') $now.AddDays(-400))) }
             Test-MtDisaInactiveAccount | Should -BeFalse -Because 'the STIG audit reads the interactive sign-in only'
-            Test-MtDisaIntuneDesktopInactiveAccount -InactiveDays 45 | Should -BeTrue
+            Test-MtDisaIntuneDesktopInactiveAccount -MaximumInactiveDays 45 | Should -BeTrue
             Mock Invoke-MtGraphRequest { @((& $user 'c@contoso.mil' $null $null $now.AddDays(-100))) }
             Test-MtDisaInactiveAccount | Should -BeFalse
         }

@@ -33,7 +33,7 @@
     param(
         # Number of days without a logon before an enabled account is considered dormant.
         [ValidateRange(1, 3650)]
-        [int] $DormantThresholdDays = 90
+        [int] $MaximumInactiveDays = 90
     )
 
     Write-Verbose "Starting Test-MtAdUserDormantEnabledCount"
@@ -45,7 +45,7 @@
     }
     Write-Verbose "Filtering/counting user dormant enabled count"
 
-    $thresholdDays = $DormantThresholdDays
+    $thresholdDays = $MaximumInactiveDays
     $thresholdDate = (Get-Date).AddDays(-$thresholdDays)
     $users = @($adState.Users)
     $enabledUsers = @($users | Where-Object { $_.Enabled -eq $true })

@@ -4,7 +4,7 @@ Android publishes a **security patch level**, a date, that says which monthly se
 
 A minimum security patch level in a compliance policy is how the tenant notices. A device below the date is marked non-compliant and can then be blocked by Conditional Access.
 
-A date that is itself old makes the setting pointless: a policy that requires patches from three years ago accepts every device while looking configured in the portal. This check therefore requires both that the setting is configured **and** that the date is no older than `MaximumPatchLevelAgeInDays`, which is one year by default and can be set in the Maester configuration.
+A date that is itself old makes the setting pointless: a policy that requires patches from three years ago accepts every device while looking configured in the portal. This check therefore requires both that the setting is configured **and** that the date is no older than `MaximumPatchLevelAgeDays`, which is one year by default and can be set in the Maester configuration.
 
 A value that cannot be read as a date is reported with its raw value and does not count towards a pass, rather than being guessed at in either direction.
 

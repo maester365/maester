@@ -41,9 +41,11 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        [MaesterParameter(Setting = 'DefenderEndpointComplianceLogic')]
         [ValidateSet('EffectivePolicy', 'AllPolicies', 'AnyPolicy')]
         [string]$ComplianceLogic = 'EffectivePolicy',
 
+        [MaesterParameter(Setting = 'DefenderEndpointPolicyFiltering')]
         [ValidateSet('All', 'IncludeUnassigned', 'OnlyAssigned')]
         [string]$PolicyFiltering = 'OnlyAssigned'
     )

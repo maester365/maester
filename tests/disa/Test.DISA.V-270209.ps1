@@ -43,11 +43,11 @@
     [OutputType([bool])]
     param(
         # Texts of which the sign-in page text must contain one. Empty looks for the full and the short DoD banner.
-        [string[]] $RequiredText
+        [string[]] $AcceptedBannerTexts
     )
 
-    if (-not $RequiredText) {
-        $RequiredText = @(
+    if (-not $AcceptedBannerTexts) {
+        $AcceptedBannerTexts = @(
             'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.'
             "I've read & consent to terms in IS user agreem't."
         )
@@ -64,7 +64,7 @@
     }
     $pageText = "$($branding.signInPageText)"
     $normalizedPage = & $normalize $pageText
-    $found = @($RequiredText | Where-Object { $_ -and $normalizedPage.IndexOf((& $normalize $_), [System.StringComparison]::OrdinalIgnoreCase) -ge 0 })
+    $found = @($AcceptedBannerTexts | Where-Object { $_ -and $normalizedPage.IndexOf((& $normalize $_), [System.StringComparison]::OrdinalIgnoreCase) -ge 0 })
     $testResult = $found.Count -gt 0
 
     $link = 'https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyBrandingMenuBlade/~/CompanyBranding'

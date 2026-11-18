@@ -6,7 +6,8 @@
     .DESCRIPTION
     Handles single-tenant and merged results without changing the caller's objects.
     The optional alternative covers TestResult only. Other fields retain the existing
-    best-effort identity replacement behavior.
+    best-effort identity replacement behavior. Missing, blank or non-string alternatives also fall
+    back to generic replacement, which can redact only identities in ReplacementMap.
     #>
     [CmdletBinding()]
     param(

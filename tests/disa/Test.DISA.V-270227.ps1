@@ -36,8 +36,8 @@
     [OutputType([bool])]
     param(
         # The log categories that a diagnostic setting must send. DISA names eight.
-        [string[]] $RequiredLogCategory = ('SignInLogs', 'AuditLogs', 'ServicePrincipalSignInLogs', 'ManagedIdentitySignInLogs', 'UserRiskEvents', 'RiskyUsers', 'RiskyServicePrincipals', 'ServicePrincipalRiskEvents')
+        [string[]] $RequiredLogCategories = ('SignInLogs', 'AuditLogs', 'ServicePrincipalSignInLogs', 'ManagedIdentitySignInLogs', 'UserRiskEvents', 'RiskyUsers', 'RiskyServicePrincipals', 'ServicePrincipalRiskEvents')
     )
 
-    return Test-MtCisaDiagnosticSettings -RequiredLogCategory $RequiredLogCategory
+    return Test-MtCisaDiagnosticSettings -RequiredLogCategories $RequiredLogCategories
 }
