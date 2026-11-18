@@ -20,7 +20,9 @@
     [OutputType([pscustomobject])]
     param()
 
-    foreach ($subscription in Get-MtAzureSecureScore) {
+    $scores = Get-MtAzureSecureScore
+
+    foreach ($subscription in $scores) {
         [pscustomobject]@{
             Id    = $subscription.SubscriptionId
             Title = "The Defender for Cloud secure score of subscription '$($subscription.SubscriptionName)' should meet the target."
