@@ -84,6 +84,20 @@
     { "Id": "MS.SHAREPOINT.2.2", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.SHAREPOINT.2.2v1" }, "Related": ["nist-800-53-r5:AC-6"] },
     { "Id": "MS.SHAREPOINT.3.1", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.SHAREPOINT.3.1v1" }, "Related": ["nist-800-53-r5:AC-3", "nist-800-53-r5:AC-21b"] },
     { "Id": "MS.SHAREPOINT.3.2", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.SHAREPOINT.3.2v1" }, "Related": ["nist-800-53-r5:AC-6"] },
-    { "Id": "MS.SHAREPOINT.3.3", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.SHAREPOINT.3.3v2" }, "Related": ["nist-800-53-r5:IA-11"] }
+    { "Id": "MS.SHAREPOINT.3.3", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.SHAREPOINT.3.3v2" }, "Related": ["nist-800-53-r5:IA-11"] },
+    { "Id": "MS.TEAMS.1.1", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.1v1" }, "Related": ["nist-800-53-r5:AC-17a"] },
+    { "Id": "MS.TEAMS.1.2", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.2v2" }, "Related": ["nist-800-53-r5:SC-15a"] },
+    { "Id": "MS.TEAMS.1.3", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.3v1" }, "Related": ["nist-800-53-r5:SC-15a"] },
+    { "Id": "MS.TEAMS.1.4", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.4v1" }, "Related": ["nist-800-53-r5:AC-3"] },
+    { "Id": "MS.TEAMS.1.5", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.5v1" }, "Related": ["nist-800-53-r5:SC-15a"] },
+    { "Id": "MS.TEAMS.1.6", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.6v1" }, "Related": ["nist-800-53-r5:CM-7"] },
+    { "Id": "MS.TEAMS.1.7", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.1.7v2" }, "Related": ["nist-800-53-r5:AC-21a"] },
+    { "Id": "MS.TEAMS.2.1", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.2.1v2" }, "Related": ["nist-800-53-r5:AC-3"] },
+    { "Id": "MS.TEAMS.2.2", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.2.2v2" }, "Related": ["nist-800-53-r5:CM-7", "nist-800-53-r5:SI-8"] },
+    { "Id": "MS.TEAMS.2.3", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.2.3v2" }, "Related": ["nist-800-53-r5:CM-7", "nist-800-53-r5:SC-7(10)(a)"] },
+    { "Id": "MS.TEAMS.4.1", "Criticality": "SHALL", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.4.1v1" }, "Related": ["nist-800-53-r5:SI-8", "nist-800-53-r5:SC-7(10)(a)", "nist-800-53-r5:AC-4"] },
+    { "Id": "MS.TEAMS.5.1", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.5.1v2" }, "Related": ["nist-800-53-r5:CM-11"] },
+    { "Id": "MS.TEAMS.5.2", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.5.2v2" }, "Related": ["nist-800-53-r5:CM-11"] },
+    { "Id": "MS.TEAMS.5.3", "Criticality": "SHOULD", "Upstream": { "Status": "Current", "Id": "MS.TEAMS.5.3v2" }, "Related": ["nist-800-53-r5:CM-11"] }
   ]
 }

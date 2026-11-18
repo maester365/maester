@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -177,6 +177,7 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
                 Connected        = $true
                 DomainController = 'dc01.contoso.com'
             }
+
             $__MtSession.ADCredential = [PSCredential]::new('CONTOSO\Maester', ([System.Security.SecureString]::new()))
             $__MtSession.ADCache = @{ DomainState = [PSCustomObject]@{ Domain = 'contoso.com' } }
         }
@@ -212,6 +213,29 @@ Describe 'Disconnect-Maester - Active Directory session lifecycle' {
             $__MtSession.ADConnection.Connected | Should -BeTrue
             $__MtSession.ADCredential.UserName | Should -Be 'CONTOSO\Maester'
             $__MtSession.ADCache.Count | Should -Be 1
+        }
+    }
+}
+
+Describe 'Disconnect-Maester - Teams unified settings authentication lifecycle' {
+    BeforeEach {
+        Mock Get-Module -ModuleName Maester { $null } -ParameterFilter { $Name -eq 'ADOPS' }
+        InModuleScope Maester {
+            $__MtSession.Connections = @()
+            $__MtSession.TeamsCache = @{ 'UnifiedAppSettings:tenant' = @('stale') }
+            $__MtSession.TeamsAuthCache = @{ Clients = @{ tenant = 'cached-client' } }
+            $__MtSession.TeamsUseDeviceCode = $true
+            $__MtSession.TeamsEnvironmentName = 'TeamsGCCH'
+        }
+    }
+
+    It 'Clears the Teams authentication client and device-code preference' {
+        Disconnect-Maester
+        InModuleScope Maester {
+            $__MtSession.TeamsCache.Count | Should -Be 0
+            $__MtSession.TeamsAuthCache.Count | Should -Be 0
+            $__MtSession.TeamsUseDeviceCode | Should -BeFalse
+            $__MtSession.TeamsEnvironmentName | Should -BeNullOrEmpty
         }
     }
 }

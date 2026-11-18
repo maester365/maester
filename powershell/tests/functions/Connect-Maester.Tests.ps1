@@ -1,4 +1,4 @@
-﻿BeforeAll {
+BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 
     # Keep -Service All tests isolated from optional service modules that may not be installed.
@@ -302,6 +302,10 @@ Describe 'Connect-Maester connection summary' {
 
         Should -Invoke Connect-MicrosoftTeams -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $UseDeviceAuthentication -and $TeamsEnvironmentName -eq 'TeamsGCCH'
+        }
+        InModuleScope Maester {
+            $__MtSession.TeamsUseDeviceCode | Should -BeTrue
+            $__MtSession.TeamsEnvironmentName | Should -Be 'TeamsGCCH'
         }
     }
 

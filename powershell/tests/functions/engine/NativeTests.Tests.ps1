@@ -19,6 +19,40 @@ function $name {
         if (-not $NoMarkdown) { "Description of $Id.`n`n<!--- Results --->`n%TestResult%" | Set-Content (Join-Path $Folder "Test.$Id.md") }
         Join-Path $Folder "Test.$Id.ps1"
     }
+
+    function New-BuiltInNativeTestFile {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
+        param([string] $Folder, [string] $Id, [string] $Body = '$true', [string] $Param = '', [string] $RequiredModule = '', [string] $InstanceSource = '')
+        $null = New-Item -ItemType Directory -Path $Folder -Force
+        $name = 'Test-' + ($Id -replace '[^A-Za-z0-9]', '')
+        $extra = if ($InstanceSource) { ", InstanceSource = '$InstanceSource'" } else { '' }
+        $source = @"
+function $name {
+    [MaesterTest(
+        Id = '$Id',
+        Title = 'Built-in source test',
+        Product = 'teams',
+        Feature = 'apps',
+        Area = 'applications',
+        ResourceType = 'Tenant',
+        Severity = 'Medium',
+        UserImpact = 'Medium',
+        ImplementationCost = 'Medium',
+        Mitre = 'T1195',
+        Service = 'None',
+        Author = 'unit-test'$extra
+    )]
+    [CmdletBinding()]
+    param($Param)
+    $Body
+}
+"@
+        if ($RequiredModule) { $source = "#Requires -Modules $RequiredModule`n$source" }
+        $source | Set-Content -LiteralPath (Join-Path $Folder "Test.$Id.ps1")
+        "Description of $Id.`n`n<!--- Results --->`n%TestResult%" |
+            Set-Content -LiteralPath (Join-Path $Folder "Test.$Id.md")
+        Join-Path $Folder "Test.$Id.ps1"
+    }
 }
 
 Describe 'Read-MtNativeTest' {
@@ -435,6 +469,189 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         $row.Format | Should -Be 'Native'
         $row.Source | Should -Be 'Custom'
         ($row.Parameters | Where-Object Name -EQ 'Limit').Value | Should -Be 5
+    }
+
+    It 'Keeps tests under <Name> classified as custom' -ForEach @(
+        @{ Name = 'custom' }
+        @{ Name = 'Custom' }
+    ) {
+        $root = Join-Path $TestDrive "source-$Name"
+        $file = New-NativeTestFile -Folder (Join-Path $root $Name) -Id 'CONTOSO.9000' -Attribute "Service = 'None'"
+        Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $root }.GetNewClosure()
+
+        $row = Invoke-MtTest -Path $file -Config @{}
+
+        $row.Result | Should -Be 'Passed'
+        $row.Source | Should -Be 'Custom'
+    }
+
+    It 'Reloads a built-in source test and accepts its updated parameter by ID' {
+        $folder = Join-Path $TestDrive 'builtin-source'
+        $file = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9997' -Param '[int] $OldLimit = 1' -Body 'return ($OldLimit -eq 5)'
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+            $oldTest = InModuleScope Maester -Parameters @{ File = $file; Root = $folder } {
+                Get-MtNativeTestInventory -Path $File -Root $Root -BuiltIn | Select-Object -First 1
+            }
+            InModuleScope Maester -Parameters @{ Test = $oldTest } {
+                $script:__MtTestCatalog = @($script:__MtTestCatalog | Where-Object Id -NE $Test.Id) + @($Test)
+            }
+            $module = Get-Module Maester
+            $loadOldTest = [scriptblock]::Create(
+                '. $args[0]; $function = Get-Item -LiteralPath Function:\Test-CONTOSO9997; Set-Item -LiteralPath Function:\script:Test-CONTOSO9997 -Value $function.ScriptBlock'
+            )
+            $null = $module.SessionState.InvokeCommand.InvokeScript($false, $loadOldTest, $null, @($file))
+
+            $updatedSource = (Get-Content -LiteralPath $file -Raw).Replace('OldLimit', 'NewLimit').Replace(
+                'return ($NewLimit -eq 5)',
+                'Get-MtTestSchema | Out-Null; return ($NewLimit -eq 5)'
+            )
+            $updatedSource | Set-Content -LiteralPath $file
+
+            $pathRow = Invoke-MtTest -Path $file -Parameter @{ NewLimit = 5 } -Config @{} -WarningAction SilentlyContinue
+            $catalogEntry = InModuleScope Maester {
+                Get-MtTestCatalog | Where-Object Id -EQ 'CONTOSO.9997' | Select-Object -First 1
+            }
+            $moduleFunction = InModuleScope Maester {
+                Get-Command Test-CONTOSO9997 -ErrorAction SilentlyContinue
+            }
+            $catalogEntry | Should -Not -BeNullOrEmpty -Because 'the selected source test should remain in the catalog'
+            $catalogEntry.FunctionName | Should -Be 'Test-CONTOSO9997'
+            @($catalogEntry.Parameters.Name) | Should -Contain 'NewLimit'
+            $moduleFunction | Should -Not -BeNullOrEmpty -Because 'the reloaded function should remain in the module for ID runs'
+            $idRow = Invoke-MtTest -Id 'CONTOSO.9997' -Parameter @{ NewLimit = 5 } -Config @{} -WarningAction SilentlyContinue
+
+            $pathRow.Result | Should -Be 'Passed' -Because "the path run should use the reloaded function: $($pathRow.ReasonDetail)"
+            $pathRow.Source | Should -Be 'Maester'
+            $idRow.Result | Should -Be 'Passed' -Because "the ID run should use the refreshed catalog: $($idRow.ReasonDetail)"
+            ($idRow.Parameters | Where-Object Name -EQ 'NewLimit').Value | Should -Be 5
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9997 -ErrorAction SilentlyContinue
+            }
+        }
+    }
+
+    It 'Continues after a built-in source test fails to load and records LoadFailed' {
+        $folder = Join-Path $TestDrive 'builtin-load-failure'
+        $missingModule = "Maester.TestMissing.$([guid]::NewGuid().ToString('N'))"
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            $null = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9998' -Body 'return $true' -RequiredModule $missingModule
+            $null = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9999' -Body 'return $true'
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+
+            $rows = @(Invoke-MtTest -Path $folder -Config @{} -WarningAction SilentlyContinue)
+            $failed = $rows | Where-Object Id -EQ 'CONTOSO.9998'
+            $passed = $rows | Where-Object Id -EQ 'CONTOSO.9999'
+
+            $failed.Result | Should -Be 'Error'
+            $failed.ReasonCode | Should -Be 'LoadFailed'
+            $failed.ReasonDetail | Should -Match ([regex]::Escape($missingModule))
+            $passed.Result | Should -Be 'Passed'
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9998 -ErrorAction SilentlyContinue
+                Remove-Item Function:\Test-CONTOSO9999 -ErrorAction SilentlyContinue
+            }
+        }
+    }
+
+    It 'Reloads a built-in family instance source for later ID runs' {
+        $folder = Join-Path $TestDrive 'builtin-family-source'
+        $file = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9996' -InstanceSource 'Get-ContosoReloadInstances' -Param '$Instance' -Body 'return ($Instance.Id -eq ''new'')'
+        "function Get-ContosoReloadInstances { [pscustomobject]@{ Id = 'old' } }" | Add-Content -LiteralPath $file
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+            $null = Invoke-MtTest -Path $file -Config @{} -WarningAction SilentlyContinue
+            (Get-Content -LiteralPath $file -Raw).Replace("Id = 'old'", "Id = 'new'") | Set-Content -LiteralPath $file
+
+            $pathRow = Invoke-MtTest -Path $file -Config @{} -WarningAction SilentlyContinue
+            $idRow = Invoke-MtTest -Id 'CONTOSO.9996.new' -Config @{} -WarningAction SilentlyContinue
+
+            $pathRow.Id | Should -Be 'CONTOSO.9996.new'
+            $pathRow.Result | Should -Be 'Passed'
+            $idRow.Id | Should -Be 'CONTOSO.9996.new'
+            $idRow.Result | Should -Be 'Passed'
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9996 -ErrorAction SilentlyContinue
+                Remove-Item Function:\Get-ContosoReloadInstances -ErrorAction SilentlyContinue
+            }
+        }
+    }
+
+    It 'Rejects a cross-file <CollisionType> collision without replacing the cached test' -ForEach @(
+        @{ CollisionType = 'function'; Detail = '*function Test-CONTOSO9994*' }
+        @{ CollisionType = 'ID'; Detail = '*ID CONTOSO.9994*' }
+    ) {
+        $folder = Join-Path $TestDrive 'builtin-function-collision'
+        $firstFile = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9994' -Body 'return $true'
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+            (Invoke-MtTest -Path $firstFile -Config @{} -WarningAction SilentlyContinue).Result | Should -Be 'Passed'
+            $secondId = if ($CollisionType -eq 'ID') { 'CONTOSO.9994' } else { 'CONTOSO.9995' }
+            $secondFile = New-BuiltInNativeTestFile -Folder (Join-Path $folder 'other') -Id $secondId -Body 'return $false'
+            $source = Get-Content -LiteralPath $secondFile -Raw
+            $source = if ($CollisionType -eq 'ID') {
+                $source.Replace('Test-CONTOSO9994', 'Test-CONTOSO9995')
+            }
+            else {
+                $source.Replace('Test-CONTOSO9995', 'Test-CONTOSO9994')
+            }
+            $source | Set-Content -LiteralPath $secondFile
+
+            $collisionRow = Invoke-MtTest -Path $secondFile -Config @{} -WarningAction SilentlyContinue
+            $cachedRow = Invoke-MtTest -Id 'CONTOSO.9994' -Config @{} -WarningAction SilentlyContinue
+
+            $collisionRow.Result | Should -Be 'Error'
+            $collisionRow.ReasonCode | Should -Be 'DuplicateId'
+            $collisionRow.ReasonDetail | Should -BeLike $Detail
+            $cachedRow.Result | Should -Be 'Passed'
+            InModuleScope Maester {
+                @(Get-MtTestCatalog | Where-Object Id -EQ 'CONTOSO.9995') | Should -HaveCount 0
+            }
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9994 -ErrorAction SilentlyContinue
+                Remove-Item Function:\Test-CONTOSO9995 -ErrorAction SilentlyContinue
+            }
+        }
     }
 
     It 'Rejects an invalid parameter value as InvalidConfiguration' {

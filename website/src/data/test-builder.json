@@ -1248,7 +1248,8 @@
       "productFolders": [
         "entra",
         "exchange",
-        "sharepoint"
+        "sharepoint",
+        "teams"
       ]
     },
     {
@@ -8800,6 +8801,150 @@
           "criticality": "SHALL",
           "related": [
             "nist-800-53-r5:IA-11"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.1",
+          "tests": [
+            "CISA.MS.TEAMS.1.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-17a"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.2",
+          "tests": [
+            "CISA.MS.TEAMS.1.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SC-15a"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.3",
+          "tests": [
+            "CISA.MS.TEAMS.1.3"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SC-15a"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.4",
+          "tests": [
+            "CISA.MS.TEAMS.1.4"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-3"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.5",
+          "tests": [
+            "CISA.MS.TEAMS.1.5"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:SC-15a"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.6",
+          "tests": [
+            "CISA.MS.TEAMS.1.6"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:CM-7"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.1.7",
+          "tests": [
+            "CISA.MS.TEAMS.1.7"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:AC-21a"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.2.1",
+          "tests": [
+            "CISA.MS.TEAMS.2.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:AC-3"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.2.2",
+          "tests": [
+            "CISA.MS.TEAMS.2.2"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:CM-7",
+            "nist-800-53-r5:SI-8"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.2.3",
+          "tests": [
+            "CISA.MS.TEAMS.2.3"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:CM-7",
+            "nist-800-53-r5:SC-7(10)(a)"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.4.1",
+          "tests": [
+            "CISA.MS.TEAMS.4.1"
+          ],
+          "criticality": "SHALL",
+          "related": [
+            "nist-800-53-r5:SI-8",
+            "nist-800-53-r5:SC-7(10)(a)",
+            "nist-800-53-r5:AC-4"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.5.1",
+          "tests": [
+            "CISA.MS.TEAMS.5.1"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:CM-11"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.5.2",
+          "tests": [
+            "CISA.MS.TEAMS.5.2"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:CM-11"
+          ]
+        },
+        {
+          "id": "MS.TEAMS.5.3",
+          "tests": [
+            "CISA.MS.TEAMS.5.3"
+          ],
+          "criticality": "SHOULD",
+          "related": [
+            "nist-800-53-r5:CM-11"
           ]
         }
       ]

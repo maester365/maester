@@ -66,6 +66,7 @@
 
     Write-Verbose "Invoke-MtTest: Id=$($Id -join ', ') Path=$Path"
     $tests = [System.Collections.Generic.List[object]]::new()
+    $reloadBuiltInSourceTests = $false
     if ($Path) {
         if (-not (Test-Path -LiteralPath $Path)) { Write-Error "The path '$Path' does not exist."; return }
         $root = if (Test-Path -LiteralPath $Path -PathType Container) { (Resolve-Path -LiteralPath $Path).Path } else { Split-Path (Resolve-Path -LiteralPath $Path).Path -Parent }
@@ -83,7 +84,20 @@
                 if ($inPath) { $tests.Add($t) }
             }
         } else {
-            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $root)) { $tests.Add($t) }
+            # Built-in tests in a source checkout need Maester's module scope for private helpers.
+            $testRoot = [System.IO.Path]::GetFullPath((Get-MtMaesterTestFolderPath))
+            $fullPath = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $Path).Path)
+            $comparison = if ($IsWindows) { [System.StringComparison]::OrdinalIgnoreCase } else { [System.StringComparison]::Ordinal }
+            $separator = [System.IO.Path]::DirectorySeparatorChar
+            $testRootPrefix = $testRoot.TrimEnd($separator, [System.IO.Path]::AltDirectorySeparatorChar) + $separator
+            $customRoot = Join-Path $testRoot 'custom'
+            $customRootPrefix = $customRoot.TrimEnd($separator, [System.IO.Path]::AltDirectorySeparatorChar) + $separator
+            $withinTestRoot = [string]::Equals($fullPath, $testRoot, $comparison) -or $fullPath.StartsWith($testRootPrefix, $comparison)
+            $withinCustomRoot = [string]::Equals($fullPath, $customRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $fullPath.StartsWith($customRootPrefix, [System.StringComparison]::OrdinalIgnoreCase)
+            $isBuiltInPath = $withinTestRoot -and -not $withinCustomRoot
+            $reloadBuiltInSourceTests = $isBuiltInPath
+            $inventoryRoot = if ($isBuiltInPath) { $testRoot } else { $root }
+            foreach ($t in @(Get-MtNativeTestInventory -Path $Path -Root $inventoryRoot -BuiltIn:$isBuiltInPath)) { $tests.Add($t) }
         }
     }
     if ($Id) {
@@ -107,6 +121,63 @@
     }
     if ($tests.Count -eq 0) { Write-Error 'No native tests to run.'; return }
     if ($Parameter -and $tests.Count -ne 1) { Write-Error "-Parameter can be used only when exactly one test is selected; $($tests.Count) are."; return }
+
+    if ($reloadBuiltInSourceTests) {
+        $maester = $ExecutionContext.SessionState.Module
+        $loadTestFile = [scriptblock]::Create('. $args[0]')
+        $reloadedTests = [System.Collections.Generic.List[object]]::new()
+        $catalog = @(Get-MtTestCatalog)
+        foreach ($test in @($tests | Where-Object { $_.BuiltIn -and $_.File -and $_.Errors.Count -eq 0 })) {
+            $collision = @($catalog | Where-Object {
+                    ($_.Id -eq $test.Id -or $_.FunctionName -eq $test.FunctionName) -and
+                    -not [string]::Equals($_.File, $test.File, $comparison)
+                })
+            if ($collision.Count -gt 0) {
+                $test.Errors.Add([pscustomobject]@{
+                        Code    = 'DuplicateId'
+                        Message = if ($collision.Id -contains $test.Id) {
+                            "Another test file has the ID $($test.Id)."
+                        }
+                        else {
+                            "Another test file defines the function $($test.FunctionName)."
+                        }
+                        Line    = $test.Line
+                    })
+                continue
+            }
+            # Promote the refreshed function from this command's scope to module scope for path and ID runs.
+            try {
+                $null = $maester.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($test.File))
+                $function = Get-Item -LiteralPath "Function:\$($test.FunctionName)" -ErrorAction Stop
+                Set-Item -LiteralPath "Function:\script:$($test.FunctionName)" -Value $function.ScriptBlock -ErrorAction Stop
+                if ($test.InstanceSource) {
+                    $sourceFunction = Get-Item -LiteralPath "Function:\$($test.InstanceSource)" -ErrorAction Stop
+                    Set-Item -LiteralPath "Function:\script:$($test.InstanceSource)" -Value $sourceFunction.ScriptBlock -ErrorAction Stop
+                }
+                $reloadedTests.Add($test)
+            } catch {
+                $test.Errors.Add([pscustomobject]@{
+                        Code    = 'LoadFailed'
+                        Message = "The file could not be loaded: $($_.Exception.Message)"
+                        Line    = 1
+                    })
+            }
+        }
+
+        if ($reloadedTests.Count -gt 0) {
+            # ID-based runs use the cached parameter and attribute metadata as well as the refreshed function.
+            foreach ($test in $reloadedTests) {
+                $index = 0
+                while ($index -lt $catalog.Count -and $catalog[$index].Id -ne $test.Id) { $index++ }
+                if ($index -lt $catalog.Count) {
+                    $catalog[$index] = $test
+                } else {
+                    $catalog += $test
+                }
+            }
+            $script:__MtTestCatalog = $catalog
+        }
+    }
 
     # Called by a test during an Invoke-Maester run, the run's config is kept; otherwise it is resolved for
     # this call (the config a finished run leaves in the session must not apply to a later standalone call).
