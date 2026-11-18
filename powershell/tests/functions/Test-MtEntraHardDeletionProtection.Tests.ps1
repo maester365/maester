@@ -189,7 +189,10 @@
             }
 
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
-            $State.Detail | Should -Match 'User \| aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb \| Mixed case \| Not protected'
+            $State.Detail | Should -MatchExactly 'User \| aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb \| Mixed case \| Not protected'
+            Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 1 -Exactly -ParameterFilter {
+                $RelativeUri -ceq 'users/aaaaaaaa-1111-2222-3333-bbbbbbbbbbbb'
+            }
         }
 
         It 'keeps a protected object in the unlisted table when its Id is listed under another Type' {

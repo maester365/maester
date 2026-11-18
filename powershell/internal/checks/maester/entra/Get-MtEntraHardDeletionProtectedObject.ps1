@@ -36,7 +36,8 @@
             $Path = if ($State -eq 'Active') { $Source.Path } else { $Source.Deleted }
             $Objects = @(
                 Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri $Path `
-                    -Filter 'isHardDeleteProtectionEnabled eq true' -Select @('id', 'displayName')
+                    -Filter 'isHardDeleteProtectionEnabled eq true' -Select @('id', 'displayName') `
+                    -ErrorAction Stop
             )
             foreach ($Object in $Objects) {
                 $Observed.Add([pscustomobject]@{
