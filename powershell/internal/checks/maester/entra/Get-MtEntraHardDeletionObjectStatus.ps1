@@ -5,9 +5,10 @@
 
     .DESCRIPTION
     Reads the object from Microsoft Graph beta. Status is 'Protected', 'Not protected', 'Soft deleted' or
-    'Not found'. When the active lookup returns HTTP 404, the function looks for the object among the deleted
-    items of the same type. It reports 'Soft deleted' when it finds the object there, whether or not the object
-    has protection, and 'Not found' when neither lookup finds it. Any Graph error other than a 404 is thrown.
+    'Not found'. When the active lookup returns HTTP 404, the function reads the object through the documented
+    single-item route, directory/deletedItems/{id}, and checks that it has the configured type. It reports
+    'Soft deleted' when it finds the object there, whether or not the object has protection. An object of another
+    type, or none, gives 'Not found'. Any Graph error other than a 404 is thrown.
 
     The Id must be the object ID, a GUID. The function uses its canonical lower-case form in both requests and
     in the result, so the result matches the objects that Get-MtEntraHardDeletionProtectedObject returns.
@@ -55,10 +56,13 @@
 
     if (!$Object) {
         try {
-            $Object = Invoke-MtGraphRequest -ApiVersion 'beta' `
-                -RelativeUri "directory/deletedItems/microsoft.graph.$($Endpoint.GraphType)/$Id" `
+            $Deleted = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "directory/deletedItems/$Id" `
                 -Select @('id', 'displayName') -ErrorAction Stop
-            $Status = 'Soft deleted'
+            $DeletedType = [string]$Deleted.'@odata.type'
+            if (!$DeletedType -or $DeletedType -eq "#microsoft.graph.$($Endpoint.GraphType)") {
+                $Object = $Deleted
+                $Status = 'Soft deleted'
+            }
         } catch {
             if (!(Test-MtGraphNotFoundError -ErrorRecord $_)) { throw }
         }

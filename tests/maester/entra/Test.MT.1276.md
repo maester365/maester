@@ -24,9 +24,15 @@ For an object with the status **Not protected**:
 4. Select the reported objects (up to 20 per operation) and review the permanent-protection warning.
 5. Select **Save**.
 
-For an object with the status **Soft deleted**: protection can only be enabled on an active object. Restore the
-object from the deleted items in the Microsoft Entra admin center first. A restored object keeps protection if it
-already had it. If it did not, follow the steps above.
+For an object with the status **Soft deleted**: protection can only be enabled on an active object, so restore the
+object first. A restored object keeps protection if it already had it. If it did not, follow the steps above.
+
+* A user or a group: restore it from **Deleted users** or **Deleted groups** in the Microsoft Entra admin center.
+* An application: restore it from **App registrations** > **Deleted applications**.
+* A service principal: the admin center does not show deleted service principals. Restore it with Microsoft Graph,
+  `POST https://graph.microsoft.com/v1.0/directory/deletedItems/{id}/restore`, or with
+  `Restore-MgDirectoryDeletedItem -DirectoryObjectId <id>`, as at least an Application Administrator or Cloud
+  Application Administrator. Customers cannot restore a deleted managed identity.
 
 For an object with the status **Not found**: check the `Type` and `Id` in the Maester config. The `Id` is the object
 ID, not the application (client) ID or a user principal name. If the object was permanently deleted, remove it from
@@ -37,6 +43,7 @@ Protection is permanent and cannot be removed once enabled.
 #### Related links
 
 * [Configure Hard Deletion Protection in Microsoft Entra (preview)](https://learn.microsoft.com/entra/backup/configure-hard-deletion-protection)
+* [Restore a soft deleted enterprise application](https://learn.microsoft.com/entra/identity/enterprise-apps/restore-application)
 
 <!--- Results --->
 %TestResult%

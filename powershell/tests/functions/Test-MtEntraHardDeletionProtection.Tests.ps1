@@ -26,7 +26,7 @@
         }.GetNewClosure()
         Mock -ModuleName Maester Invoke-MtGraphRequest -MockWith {
             param($RelativeUri)
-            if ($RelativeUri -match '^directory/deletedItems/microsoft\.graph\.[A-Za-z]+/[^/]+$') {
+            if ($RelativeUri -match '^directory/deletedItems/[0-9a-fA-F-]{36}$') {
                 $deleted = $State.DeletedById[$RelativeUri.Split('/')[-1]]
                 if ($null -eq $deleted) { throw $(if ($State.Wrap) { [System.InvalidOperationException]::new('Request failed.', $NotFoundError) } else { $NotFoundError }) }
                 return $deleted
@@ -120,7 +120,7 @@
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Investigate | Should -BeFalse
             $State.Detail | Should -Match '1 of 1 listed object'
-            $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Plain &#124; User \| Not protected'
+            $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Plain \\\| User \| Not protected'
             $State.Detail | Should -Match 'Some group'
         }
 
@@ -133,7 +133,9 @@
 
         It 'fails a listed object that is protected but soft deleted' {
             $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
-            $State.DeletedById[$script:GroupId] = [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
+            $State.DeletedById[$script:GroupId] = [pscustomobject]@{
+                id = $script:GroupId; displayName = 'Deleted group'; '@odata.type' = '#microsoft.graph.group'
+            }
             $State.Protected['directory/deletedItems/microsoft.graph.group'] = @(
                 [pscustomobject]@{ id = $script:GroupId; displayName = 'Deleted group' }
             )
@@ -144,24 +146,55 @@
 
         It 'reports a listed object that was soft deleted without protection as soft deleted, not as not found' {
             $State.Listed = @([pscustomobject]@{ Type = 'User'; Id = $script:UserId })
-            $State.DeletedById[$script:UserId] = [pscustomobject]@{ id = $script:UserId; displayName = 'Removed user' }
+            $State.DeletedById[$script:UserId] = [pscustomobject]@{
+                id = $script:UserId; displayName = 'Removed user'; '@odata.type' = '#microsoft.graph.user'
+            }
 
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Detail | Should -Match 'User \| 11111111-1111-1111-1111-111111111111 \| Removed user \| Soft deleted'
             $State.Detail | Should -Not -Match 'Not found'
         }
 
-        It 'looks for a deleted object only among the deleted items of the listed type' {
+        It 'reads a deleted object through the documented deletedItems route, once' {
             $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:GroupId })
 
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 1 -Exactly -ParameterFilter {
-                $RelativeUri -eq 'directory/deletedItems/microsoft.graph.group/22222222-2222-2222-2222-222222222222'
+                $RelativeUri -eq 'directory/deletedItems/22222222-2222-2222-2222-222222222222'
             }
             Should -Invoke -ModuleName Maester Invoke-MtGraphRequest -Times 0 -Exactly -ParameterFilter {
-                $RelativeUri -like 'directory/deletedItems/microsoft.graph.*/22222222-2222-2222-2222-222222222222' -and
-                $RelativeUri -notlike 'directory/deletedItems/microsoft.graph.group/*'
+                $RelativeUri -like 'directory/deletedItems/microsoft.graph.*/22222222-2222-2222-2222-222222222222'
             }
+        }
+
+        It 'reports a deleted object of another type as not found' {
+            $State.Listed = @([pscustomobject]@{ Type = 'Group'; Id = $script:UserId })
+            $State.DeletedById[$script:UserId] = [pscustomobject]@{
+                id = $script:UserId; displayName = 'Removed user'; '@odata.type' = '#microsoft.graph.user'
+            }
+
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
+            $State.Detail | Should -Match 'Group \| 11111111-1111-1111-1111-111111111111 \|  \| Not found'
+            $State.Detail | Should -Not -Match 'Soft deleted'
+        }
+
+        It 'shows a display name that looks like a link or an image as plain text' {
+            $State.Listed = @(
+                [pscustomobject]@{ Type = 'User'; Id = $script:UserId }
+                [pscustomobject]@{ Type = 'Group'; Id = $script:GroupId }
+            )
+            $State.ObjectById[$script:UserId] = [pscustomobject]@{
+                id = $script:UserId; displayName = '[Sign in](https://phish.example)'; isHardDeleteProtectionEnabled = $null
+            }
+            $State.ObjectById[$script:GroupId] = [pscustomobject]@{
+                id = $script:GroupId; displayName = '![x](https://attacker.example/p.png)'; isHardDeleteProtectionEnabled = $null
+            }
+
+            Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
+            $State.Detail.Contains('\[Sign in\]\(https\://phish.example\)') | Should -BeTrue
+            $State.Detail.Contains('\!\[x\]\(https\://attacker.example/p.png\)') | Should -BeTrue
+            $State.Detail.Contains('[Sign in](') | Should -BeFalse
+            $State.Detail.Contains('![x](') | Should -BeFalse
         }
 
         It 'reports a 404 that sits on the inner exception as not found' {
@@ -199,19 +232,21 @@
         }
 
         It 'counts an entry that is listed more than once as one object' {
+            $HexId = 'aabbccdd-1111-2222-3333-eeeeffff0000'
             $State.Listed = @(
-                [pscustomobject]@{ Type = 'User'; Id = $script:UserId }
-                [pscustomobject]@{ Type = 'user'; Id = $script:UserId.ToUpperInvariant() }
-                [pscustomobject]@{ Type = 'User'; Id = "{$($script:UserId)}" }
+                [pscustomobject]@{ Type = 'User'; Id = $HexId }
+                [pscustomobject]@{ Type = 'user'; Id = $HexId.ToUpperInvariant() }
+                [pscustomobject]@{ Type = 'User'; Id = "{$HexId}" }
                 [pscustomobject]@{ Type = 'Group'; Id = $script:GroupId }
             )
-            $State.ObjectById[$script:UserId] = [pscustomobject]@{
-                id = $script:UserId; displayName = 'Plain user'; isHardDeleteProtectionEnabled = $null
+            $State.ObjectById[$HexId] = [pscustomobject]@{
+                id = $HexId; displayName = 'Plain user'; isHardDeleteProtectionEnabled = $null
             }
 
+            $HexId | Should -Not -BeExactly $HexId.ToUpperInvariant()
             Test-MtEntraHardDeletionProtection -HardDeletionProtectedObjects $State.Listed | Should -BeFalse
             $State.Detail | Should -Match '2 of 2 listed object\(s\)'
-            [regex]::Matches($State.Detail, '\| User \|').Count | Should -Be 1
+            [regex]::Matches($State.Detail, '\| User \| aabbccdd-1111-2222-3333-eeeeffff0000 \|').Count | Should -Be 1
             $State.Detail | Should -Match 'Group \| 22222222-2222-2222-2222-222222222222 \|  \| Not found'
         }
 

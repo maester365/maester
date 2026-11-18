@@ -5,7 +5,8 @@
 
     .DESCRIPTION
     Builds a table with the columns Type, Object ID, Display name and one more column taken from the
-    StateProperty. When there are more rows than Limit, the table shows the first Limit rows and a line
+    StateProperty. The display name comes from the tenant, so it goes through Get-MtSafeMarkdown: a name that
+    looks like a link or an image is shown as text, and a pipe or a line break does not break the row. When there are more rows than Limit, the table shows the first Limit rows and a line
     gives the total.
 
     .PARAMETER InputObject
@@ -42,8 +43,7 @@
 
     $Table = "| Type | Object ID | Display name | $StateHeading |`n| --- | --- | --- | --- |"
     foreach ($Row in @($InputObject | Select-Object -First $Limit)) {
-        $DisplayName = [string]$Row.DisplayName -replace '\r\n|\r|\n', ' '
-        $DisplayName = [System.Net.WebUtility]::HtmlEncode($DisplayName) -replace '\|', '&#124;'
+        $DisplayName = Get-MtSafeMarkdown -Text ([string]$Row.DisplayName)
         $Table += "`n| $($Row.Type) | $($Row.Id) | $DisplayName | $($Row.$StateProperty) |"
     }
     if (@($InputObject).Count -gt $Limit) {

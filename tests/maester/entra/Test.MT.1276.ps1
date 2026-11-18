@@ -54,10 +54,10 @@
                 "Add the ones that matter to the config so this test can check them:`n`n"
             $Result += Format-MtEntraHardDeletionTable -InputObject $Protected -StateProperty State -StateHeading State
         } else {
-            $Result += 'The scan did not find any objects with Hard Deletion Protection. Add the critical users, ' +
-                'groups, applications and service principals to protect to GlobalSettings.' +
-                'HardDeletionProtectedObjects, then enable protection on them. See ' +
-                'https://maester.dev/docs/configuration/hard-deletion-protection for the format.'
+            $Result += 'The scan did not find any objects with Hard Deletion Protection. Add the critical objects that support ' +
+                'it to GlobalSettings.HardDeletionProtectedObjects, then enable protection on them. See ' +
+                'https://maester.dev/docs/configuration/hard-deletion-protection for the format and for ' +
+                'the objects that support it.'
         }
         Add-MtTestResultDetail -Investigate -Result $Result
         return $null
