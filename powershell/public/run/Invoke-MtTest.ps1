@@ -93,7 +93,7 @@
             $customRoot = Join-Path $testRoot 'custom'
             $customRootPrefix = $customRoot.TrimEnd($separator, [System.IO.Path]::AltDirectorySeparatorChar) + $separator
             $withinTestRoot = [string]::Equals($fullPath, $testRoot, $comparison) -or $fullPath.StartsWith($testRootPrefix, $comparison)
-            $withinCustomRoot = [string]::Equals($fullPath, $customRoot, $comparison) -or $fullPath.StartsWith($customRootPrefix, $comparison)
+            $withinCustomRoot = [string]::Equals($fullPath, $customRoot, [System.StringComparison]::OrdinalIgnoreCase) -or $fullPath.StartsWith($customRootPrefix, [System.StringComparison]::OrdinalIgnoreCase)
             $isBuiltInPath = $withinTestRoot -and -not $withinCustomRoot
             $reloadBuiltInSourceTests = $isBuiltInPath
             $inventoryRoot = if ($isBuiltInPath) { $testRoot } else { $root }
@@ -126,12 +126,28 @@
         $maester = $ExecutionContext.SessionState.Module
         $loadTestFile = [scriptblock]::Create('. $args[0]')
         $reloadedTests = [System.Collections.Generic.List[object]]::new()
+        $catalog = @(Get-MtTestCatalog)
         foreach ($test in @($tests | Where-Object { $_.BuiltIn -and $_.File -and $_.Errors.Count -eq 0 })) {
+            $collision = @($catalog | Where-Object {
+                    $_.FunctionName -eq $test.FunctionName -and -not [string]::Equals($_.File, $test.File, $comparison)
+                })
+            if ($collision.Count -gt 0) {
+                $test.Errors.Add([pscustomobject]@{
+                        Code    = 'DuplicateId'
+                        Message = "Another test file defines the function $($test.FunctionName)."
+                        Line    = $test.Line
+                    })
+                continue
+            }
             # Promote the refreshed function from this command's scope to module scope for path and ID runs.
             try {
                 $null = $maester.SessionState.InvokeCommand.InvokeScript($false, $loadTestFile, $null, @($test.File))
                 $function = Get-Item -LiteralPath "Function:\$($test.FunctionName)" -ErrorAction Stop
                 Set-Item -LiteralPath "Function:\script:$($test.FunctionName)" -Value $function.ScriptBlock -ErrorAction Stop
+                if ($test.InstanceSource) {
+                    $sourceFunction = Get-Item -LiteralPath "Function:\$($test.InstanceSource)" -ErrorAction Stop
+                    Set-Item -LiteralPath "Function:\script:$($test.InstanceSource)" -Value $sourceFunction.ScriptBlock -ErrorAction Stop
+                }
                 $reloadedTests.Add($test)
             } catch {
                 $test.Errors.Add([pscustomobject]@{
@@ -144,7 +160,6 @@
 
         if ($reloadedTests.Count -gt 0) {
             # ID-based runs use the cached parameter and attribute metadata as well as the refreshed function.
-            $catalog = @(Get-MtTestCatalog)
             foreach ($test in $reloadedTests) {
                 $index = 0
                 while ($index -lt $catalog.Count -and $catalog[$index].Id -ne $test.Id) { $index++ }

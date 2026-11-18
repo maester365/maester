@@ -22,9 +22,10 @@ function $name {
 
     function New-BuiltInNativeTestFile {
         [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper.')]
-        param([string] $Folder, [string] $Id, [string] $Body = '$true', [string] $Param = '', [string] $RequiredModule = '')
+        param([string] $Folder, [string] $Id, [string] $Body = '$true', [string] $Param = '', [string] $RequiredModule = '', [string] $InstanceSource = '')
         $null = New-Item -ItemType Directory -Path $Folder -Force
         $name = 'Test-' + ($Id -replace '[^A-Za-z0-9]', '')
+        $extra = if ($InstanceSource) { ", InstanceSource = '$InstanceSource'" } else { '' }
         $source = @"
 function $name {
     [MaesterTest(
@@ -39,7 +40,7 @@ function $name {
         ImplementationCost = 'Medium',
         Mitre = 'T1195',
         Service = 'None',
-        Author = 'unit-test'
+        Author = 'unit-test'$extra
     )]
     [CmdletBinding()]
     param($Param)
@@ -470,6 +471,20 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         ($row.Parameters | Where-Object Name -EQ 'Limit').Value | Should -Be 5
     }
 
+    It 'Keeps tests under <Name> classified as custom' -ForEach @(
+        @{ Name = 'custom' }
+        @{ Name = 'Custom' }
+    ) {
+        $root = Join-Path $TestDrive "source-$Name"
+        $file = New-NativeTestFile -Folder (Join-Path $root $Name) -Id 'CONTOSO.9000' -Attribute "Service = 'None'"
+        Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $root }.GetNewClosure()
+
+        $row = Invoke-MtTest -Path $file -Config @{}
+
+        $row.Result | Should -Be 'Passed'
+        $row.Source | Should -Be 'Custom'
+    }
+
     It 'Reloads a built-in source test and accepts its updated parameter by ID' {
         $folder = Join-Path $TestDrive 'builtin-source'
         $file = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9997' -Param '[int] $OldLimit = 1' -Body 'return ($OldLimit -eq 5)'
@@ -555,6 +570,74 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
                 $script:__MtBuiltInFramework = $Framework
                 Remove-Item Function:\Test-CONTOSO9998 -ErrorAction SilentlyContinue
                 Remove-Item Function:\Test-CONTOSO9999 -ErrorAction SilentlyContinue
+            }
+        }
+    }
+
+    It 'Reloads a built-in family instance source for later ID runs' {
+        $folder = Join-Path $TestDrive 'builtin-family-source'
+        $file = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9996' -InstanceSource 'Get-ContosoReloadInstances' -Param '$Instance' -Body 'return ($Instance.Id -eq ''new'')'
+        "function Get-ContosoReloadInstances { [pscustomobject]@{ Id = 'old' } }" | Add-Content -LiteralPath $file
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+            $null = Invoke-MtTest -Path $file -Config @{} -WarningAction SilentlyContinue
+            (Get-Content -LiteralPath $file -Raw).Replace("Id = 'old'", "Id = 'new'") | Set-Content -LiteralPath $file
+
+            $pathRow = Invoke-MtTest -Path $file -Config @{} -WarningAction SilentlyContinue
+            $idRow = Invoke-MtTest -Id 'CONTOSO.9996.new' -Config @{} -WarningAction SilentlyContinue
+
+            $pathRow.Id | Should -Be 'CONTOSO.9996.new'
+            $pathRow.Result | Should -Be 'Passed'
+            $idRow.Id | Should -Be 'CONTOSO.9996.new'
+            $idRow.Result | Should -Be 'Passed'
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9996 -ErrorAction SilentlyContinue
+                Remove-Item Function:\Get-ContosoReloadInstances -ErrorAction SilentlyContinue
+            }
+        }
+    }
+
+    It 'Rejects a cross-file function collision without replacing the cached test' {
+        $folder = Join-Path $TestDrive 'builtin-function-collision'
+        $firstFile = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9994' -Body 'return $true'
+        $catalogState = InModuleScope Maester {
+            $null = Get-MtTestCatalog
+            [pscustomobject]@{
+                Catalog          = $script:__MtTestCatalog
+                BuiltInFramework = $script:__MtBuiltInFramework
+            }
+        }
+        try {
+            Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
+            (Invoke-MtTest -Path $firstFile -Config @{} -WarningAction SilentlyContinue).Result | Should -Be 'Passed'
+            $secondFile = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9995' -Body 'return $false'
+            (Get-Content -LiteralPath $secondFile -Raw).Replace('Test-CONTOSO9995', 'Test-CONTOSO9994') | Set-Content -LiteralPath $secondFile
+
+            $collisionRow = Invoke-MtTest -Path $secondFile -Config @{} -WarningAction SilentlyContinue
+            $cachedRow = Invoke-MtTest -Id 'CONTOSO.9994' -Config @{} -WarningAction SilentlyContinue
+
+            $collisionRow.Result | Should -Be 'Error'
+            $collisionRow.ReasonCode | Should -Be 'DuplicateId'
+            $collisionRow.ReasonDetail | Should -BeLike '*function Test-CONTOSO9994*'
+            $cachedRow.Result | Should -Be 'Passed'
+            InModuleScope Maester {
+                @(Get-MtTestCatalog | Where-Object Id -EQ 'CONTOSO.9995') | Should -HaveCount 0
+            }
+        } finally {
+            InModuleScope Maester -Parameters @{ Catalog = $catalogState.Catalog; Framework = $catalogState.BuiltInFramework } {
+                $script:__MtTestCatalog = $Catalog
+                $script:__MtBuiltInFramework = $Framework
+                Remove-Item Function:\Test-CONTOSO9994 -ErrorAction SilentlyContinue
             }
         }
     }
