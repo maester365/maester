@@ -64,7 +64,7 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
         $duplicates | Should -BeNullOrEmpty -Because 'the generator stops on a duplicate name, so one here means the file was edited by hand.'
     }
 
-    It '<permission> should not be blocked for Application in the snapshot' -Skip:($script:SnapshotMissing) -ForEach @(
+    It '<permission> should not be blocked for both Application and Delegated in the snapshot' -Skip:($script:SnapshotMissing) -ForEach @(
         $script:Mt1223Permissions | ForEach-Object { @{ Permission = $_ } }
     ) {
         $entry = $script:BlockedPermissions | Where-Object { $_.Permission -eq $permission }
@@ -72,10 +72,10 @@ Describe 'MT.1223 permission list vs. agent blocked permissions snapshot' {
             # Permission isn't in the blocked list at all, which means it's grantable. Pass.
             $true | Should -BeTrue
         } else {
-            # If it IS in the blocked list with Application = true, it can't be granted to agents.
-            # That means MT.1223 is checking a permission that can never fire.
-            $entry.Application | Should -BeFalse -Because `
-                "'$permission' is now blocked for Application by Microsoft (per AgentBlockedPermissions.json). It should be removed from MT.1223's curated list because agents can no longer hold it."
+            # MT.1223 reports a permission held as an application permission or as a delegated grant, so it can
+            # still fire while either one is allowed. Only a permission blocked for both can never fire.
+            ($entry.Application -and $entry.Delegated) | Should -BeFalse -Because `
+                "'$permission' is now blocked for both Application and Delegated by Microsoft (per AgentBlockedPermissions.json). It should be removed from MT.1223's curated list because agents can no longer hold it either way."
         }
     }
 }
