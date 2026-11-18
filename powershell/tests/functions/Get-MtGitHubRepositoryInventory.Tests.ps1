@@ -77,6 +77,11 @@ Describe 'Validated GitHub repository inventory identities' {
         $actual.Issues.Count | Should -BeGreaterThan 0
     }
 
+    It 'Preserves throwing on request errors unless partial retention is explicitly requested' {
+        Mock Invoke-MtGitHubRequest -ModuleName Maester { throw 'Synthetic inventory failure' }
+        { Get-MtGitHubRepositoryInventory } | Should -Throw '*Synthetic inventory failure*'
+    }
+
     It 'Retains a successful empty inventory without inventing identities or retrieval gaps' {
         $actual = Get-MtGitHubRepositoryInventory
         $actual.Repositories.Count | Should -Be 0

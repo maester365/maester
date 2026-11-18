@@ -18313,6 +18313,15 @@
       "connection": true
     },
     {
+      "name": "GitHubDeletionPolicy",
+      "type": "object",
+      "kind": null,
+      "default": {},
+      "allowedValues": [],
+      "description": "Host and organization-bound approved owner and repository administrator IDs for GitHub deletion assessments.",
+      "connection": false
+    },
+    {
       "name": "GitHubOrganization",
       "type": "string",
       "kind": null,
@@ -18463,6 +18472,11 @@
       "name": "MaximumLockoutThreshold",
       "type": "int",
       "tests": 4
+    },
+    {
+      "name": "MaximumOrganizationOwners",
+      "type": "int",
+      "tests": 2
     },
     {
       "name": "MaximumPasswordAgeDays",

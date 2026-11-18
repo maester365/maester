@@ -2,12 +2,30 @@
     <#
     .SYNOPSIS
     Internal: Enumerates organization repositories without visibility or archived-state filtering.
+    .DESCRIPTION
+    With RetainPartialOnError, returns validated partial identities and ExecutionError after a
+    request fails. The caller must report the rows and propagate the error without further requests.
+    By default, request failures still throw.
     #>
     [CmdletBinding()]
-    param()
+    param([switch] $RetainPartialOnError)
     $organization = $__MtSession.GitHubConnection.Organization
     $encoded = [uri]::EscapeDataString($organization)
-    $evidence = Invoke-MtGitHubRequest -RelativeUri "/orgs/$encoded/repos?type=all" -Paginate -ApiVersion '2026-03-10' -IncludeMetadata -MaxPages 100
+    $executionError = $null
+    try {
+        $evidence = Invoke-MtGitHubRequest -RelativeUri "/orgs/$encoded/repos?type=all" -Paginate -ApiVersion '2026-03-10' -IncludeMetadata -MaxPages 100
+    } catch {
+        if (-not $RetainPartialOnError) { throw }
+        # Apply the same identity validation to earlier pages, without carrying raw server
+        # text or response data into the exception that consumers may export.
+        $partial = $_.Exception.Data['GitHubPartialResponse']
+        $evidence = [pscustomobject]@{
+            Data = $partial.Data; ContentKind = 'Array'; CollectionIntegrityValid = $false; PaginationComplete = $false
+            StartedUtc = $partial.StartedUtc; CompletedUtc = $partial.CompletedUtc
+        }
+        $message = if ($_.Exception.Data['GitHubRateLimit']) { 'GitHub rate limit stopped repository inventory collection.' } else { 'GitHub repository inventory request or JSON parsing failed.' }
+        $executionError = [System.InvalidOperationException]::new($message)
+    }
     $issues = [System.Collections.Generic.List[string]]::new()
     foreach ($issue in $evidence.Issues) { $issues.Add($issue) }
     if (-not $evidence.CollectionIntegrityValid -or $evidence.ContentKind -ne 'Array' -or $evidence.Data -isnot [array]) { $issues.Add('Repository inventory is incomplete or has an unexpected API shape.') }
@@ -48,5 +66,10 @@
         $seenIds[$key] = $path
         $repositories.Add($repository)
     }
-    return [pscustomobject]@{ Repositories = @($repositories | Where-Object { [string]$_.id -cnotin $conflictingIds }); Issues = @($issues | Select-Object -Unique); StartedUtc = $evidence.StartedUtc; CompletedUtc = $evidence.CompletedUtc }
+    return [pscustomobject]@{
+        Repositories = @($repositories | Where-Object { [string]$_.id -cnotin $conflictingIds })
+        Issues = @($issues | Select-Object -Unique)
+        StartedUtc = $evidence.StartedUtc; CompletedUtc = $evidence.CompletedUtc
+        ExecutionError = $executionError
+    }
 }
