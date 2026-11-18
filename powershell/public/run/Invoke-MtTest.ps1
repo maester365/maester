@@ -129,12 +129,18 @@
         $catalog = @(Get-MtTestCatalog)
         foreach ($test in @($tests | Where-Object { $_.BuiltIn -and $_.File -and $_.Errors.Count -eq 0 })) {
             $collision = @($catalog | Where-Object {
-                    $_.FunctionName -eq $test.FunctionName -and -not [string]::Equals($_.File, $test.File, $comparison)
+                    ($_.Id -eq $test.Id -or $_.FunctionName -eq $test.FunctionName) -and
+                    -not [string]::Equals($_.File, $test.File, $comparison)
                 })
             if ($collision.Count -gt 0) {
                 $test.Errors.Add([pscustomobject]@{
                         Code    = 'DuplicateId'
-                        Message = "Another test file defines the function $($test.FunctionName)."
+                        Message = if ($collision.Id -contains $test.Id) {
+                            "Another test file has the ID $($test.Id)."
+                        }
+                        else {
+                            "Another test file defines the function $($test.FunctionName)."
+                        }
                         Line    = $test.Line
                     })
                 continue

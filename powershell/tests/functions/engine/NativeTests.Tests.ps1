@@ -607,7 +607,10 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         }
     }
 
-    It 'Rejects a cross-file function collision without replacing the cached test' {
+    It 'Rejects a cross-file <CollisionType> collision without replacing the cached test' -ForEach @(
+        @{ CollisionType = 'function'; Detail = '*function Test-CONTOSO9994*' }
+        @{ CollisionType = 'ID'; Detail = '*ID CONTOSO.9994*' }
+    ) {
         $folder = Join-Path $TestDrive 'builtin-function-collision'
         $firstFile = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9994' -Body 'return $true'
         $catalogState = InModuleScope Maester {
@@ -620,15 +623,23 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
         try {
             Mock -ModuleName Maester Get-MtMaesterTestFolderPath { $folder }.GetNewClosure()
             (Invoke-MtTest -Path $firstFile -Config @{} -WarningAction SilentlyContinue).Result | Should -Be 'Passed'
-            $secondFile = New-BuiltInNativeTestFile -Folder $folder -Id 'CONTOSO.9995' -Body 'return $false'
-            (Get-Content -LiteralPath $secondFile -Raw).Replace('Test-CONTOSO9995', 'Test-CONTOSO9994') | Set-Content -LiteralPath $secondFile
+            $secondId = if ($CollisionType -eq 'ID') { 'CONTOSO.9994' } else { 'CONTOSO.9995' }
+            $secondFile = New-BuiltInNativeTestFile -Folder (Join-Path $folder 'other') -Id $secondId -Body 'return $false'
+            $source = Get-Content -LiteralPath $secondFile -Raw
+            $source = if ($CollisionType -eq 'ID') {
+                $source.Replace('Test-CONTOSO9994', 'Test-CONTOSO9995')
+            }
+            else {
+                $source.Replace('Test-CONTOSO9995', 'Test-CONTOSO9994')
+            }
+            $source | Set-Content -LiteralPath $secondFile
 
             $collisionRow = Invoke-MtTest -Path $secondFile -Config @{} -WarningAction SilentlyContinue
             $cachedRow = Invoke-MtTest -Id 'CONTOSO.9994' -Config @{} -WarningAction SilentlyContinue
 
             $collisionRow.Result | Should -Be 'Error'
             $collisionRow.ReasonCode | Should -Be 'DuplicateId'
-            $collisionRow.ReasonDetail | Should -BeLike '*function Test-CONTOSO9994*'
+            $collisionRow.ReasonDetail | Should -BeLike $Detail
             $cachedRow.Result | Should -Be 'Passed'
             InModuleScope Maester {
                 @(Get-MtTestCatalog | Where-Object Id -EQ 'CONTOSO.9995') | Should -HaveCount 0
@@ -638,6 +649,7 @@ Describe 'Invoke-MtTest, New-MtTest and Get-MtTest' {
                 $script:__MtTestCatalog = $Catalog
                 $script:__MtBuiltInFramework = $Framework
                 Remove-Item Function:\Test-CONTOSO9994 -ErrorAction SilentlyContinue
+                Remove-Item Function:\Test-CONTOSO9995 -ErrorAction SilentlyContinue
             }
         }
     }
